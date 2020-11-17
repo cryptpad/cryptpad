@@ -37,42 +37,6 @@ define([
         window.alert("CryptPad needs localStorage to work. Try changing your cookie permissions, or using a different browser");
     };
 
-
-    var getLogElement = function () {
-        var logger = document.querySelector('#cp-logger');
-        if (logger) { return logger; }
-        logger = document.createElement('div');
-        logger.setAttribute('id', 'cp-logger');
-        document.body.appendChild(logger);
-        var css = function(){/* #cp-logger { display: none; } */}.toString().slice(14, -3);
-        var style = document.createElement('style');
-        style.type = 'text/css';
-        style.appendChild(document.createTextNode(css));
-        document.head.appendChild(style);
-        return logger;
-    };
-
-
-    var logToDom = function () {
-        var pre = document.createElement('pre');
-        pre.innerText = 'x';
-        getLogElement().appendChild(pre);
-    };
-
-    if (window.Proxy) {
-        var c = console;
-        window.console = new window.Proxy(c, {
-            get: function (o, k) {
-                if (k !== 'error') { return o[k]; }
-                return function () {
-                    var args = Array.prototype.slice.call(arguments);
-                    c.error.apply(null, args);
-                    logToDom();
-                };
-            },
-        });
-    }
-
     window.onerror = function (e) {
         if (/requirejs\.org/.test(e)) {
             console.log();

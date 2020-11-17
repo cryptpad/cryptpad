@@ -2056,9 +2056,27 @@ define([
         };
 
         var userHash;
-        console.error('without this error statement Firefox on iOS throws a script error...');
 
-        Nthen(function (waitFor) {
+        Nthen(function () {
+            var getLogElement = function () {
+                var logger = document.createElement('div');
+                logger.setAttribute('id', 'cp-logger');
+                document.body.appendChild(logger);
+                var css = function(){/* #cp-logger { display: none; } */}.toString().slice(14, -3);
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.appendChild(document.createTextNode(css));
+                document.head.appendChild(style);
+                return logger;
+            };
+            var logToDom = function () {
+                var pre = document.createElement('pre');
+                pre.innerText = 'x';
+                getLogElement();
+                getLogElement().appendChild(pre);
+            };
+            logToDom();
+        }).nThen(function (waitFor) {
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }

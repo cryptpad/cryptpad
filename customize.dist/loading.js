@@ -312,29 +312,15 @@ button.primary:hover{
         return bar;
     };
 
-    var hideSpinner = function () {
-        try {
-            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
-        } catch (err) { return; }
-    };
-
-    var getList = function () {
-        return document.querySelector('.cp-loading-progress-list') || {};
-    };
-
-    var getProgressBar = function () {
-        return document.querySelector('.cp-loading-progress-container') || {};
-    };
-
     var hasErrored = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
         try {
-            hideSpinner();
-            getList().innerHTML = makeList(data);
-            getProgressBar().innerHTML = makeBar(data);
+            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
+            document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
+            document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
         } catch (e) {
             if (!hasErrored) { console.error(e); }
         }
@@ -343,7 +329,6 @@ button.primary:hover{
 
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
-        console.error(err);
         hasErrored = true;
         var err2;
         if (err === 'Script error.') {
@@ -354,12 +339,10 @@ button.primary:hover{
             var node = document.querySelector('.cp-loading-progress');
             if (!node) { return; }
             if (node.parentNode) { node.parentNode.removeChild(node); }
-            hideSpinner();
+            document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
             document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
             document.querySelector('#cp-loading-message').innerText = err2 || err;
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) { console.error(e); }
     };
     return function () {
         built = true;
