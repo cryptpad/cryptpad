@@ -2056,6 +2056,7 @@ define([
         };
 
         var userHash;
+        console.error('without this error statement Firefox on iOS throws a script error...');
 
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
@@ -2108,7 +2109,6 @@ define([
 
             // FIXME Backward compatibility
             if (sessionStorage.newPadFileData) {
-                /*
                 common.fromFileData = JSON.parse(sessionStorage.newPadFileData);
                 var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
                 var _parsed2 = Hash.parsePadUrl(window.location.href);
@@ -2116,7 +2116,6 @@ define([
                     if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
                 }
                 delete sessionStorage.newPadFileData;
-                */
             }
 
             if (sessionStorage.newPadPath) {
@@ -2136,12 +2135,11 @@ define([
             var postMsg, worker;
             var noWorker = AppConfig.disableWorkers || false;
             var noSharedWorker = false;
-            if (localStorage.CryptPad_noWorkers || true) {
+            if (localStorage.CryptPad_noWorkers) {
                 noWorker = localStorage.CryptPad_noWorkers === '1';
-                //console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
+                console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
             }
             Nthen(function (waitFor2) {
-                return;
                 if (Worker) {
                     var w = waitFor2();
                     try {
@@ -2164,7 +2162,6 @@ define([
                         w();
                     }
                 }
-                return;
                 if (typeof(SharedWorker) !== "undefined") {
                     try {
                         new SharedWorker('');
@@ -2174,18 +2171,6 @@ define([
                     }
                 }
             }).nThen(function (waitFor2) {
-                    // Use the async store in the main thread if workers are not available
-                    require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
-                        NoWorker.onMessage(function (data) {
-                            msgEv.fire({data: data});
-                        });
-                        postMsg = function (d) { setTimeout(function () { NoWorker.query(d); }); };
-                        NoWorker.create();
-                    }));
-                    return;
-
-
-
                 if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
