@@ -1310,6 +1310,16 @@ define([
                         if (APP.migrate && !readOnly) {
                             onMigrateRdy.fire();
                         }
+
+                        // Check if history can/should be trimmed
+                        var cp = getLastCp();
+                        if (cp && cp.file && cp.hash) {
+                            var channels = [{
+                                channel: content.channel,
+                                lastKnownHash: cp.hash
+                            }];
+                            common.checkTrimHistory(channels);
+                        }
                     }
                 }
             };
