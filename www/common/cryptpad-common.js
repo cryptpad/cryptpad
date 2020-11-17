@@ -2057,26 +2057,34 @@ define([
 
         var userHash;
 
-        Nthen(function () {
-            var getLogElement = function () {
-                var logger = document.createElement('div');
-                logger.setAttribute('id', 'cp-logger');
-                document.body.appendChild(logger);
-                var css = function(){/* #cp-logger { display: none; } */}.toString().slice(14, -3);
+        (function iOSFirefoxFix () {
+/*
+    For some bizarre reason Firefox on iOS throws an error during the
+    loading process unless we call this function. Drawing these elements
+    to the DOM presumably causes the JS engine to wait just a little bit longer
+    until some APIs we need are ready. This occurs despite all this code being
+    run after the usual dom-ready events. This fix was discovered while trying
+    to log the error messages to the DOM because it's extremely difficult
+    to debug Firefox iOS in the usual ways. In summary, computers are terrible.
+*/
+             try {
                 var style = document.createElement('style');
-                style.type = 'text/css';
-                style.appendChild(document.createTextNode(css));
+                    style.type = 'text/css';
+                    style.appendChild(document.createTextNode('#cp-logger { display: none; }'));
                 document.head.appendChild(style);
-                return logger;
-            };
-            var logToDom = function () {
+
+                var logger = document.createElement('div');
+                    logger.setAttribute('id', 'cp-logger');
+                document.body.appendChild(logger);
+
                 var pre = document.createElement('pre');
-                pre.innerText = 'x';
-                getLogElement();
-                getLogElement().appendChild(pre);
-            };
-            logToDom();
-        }).nThen(function (waitFor) {
+                    pre.innerText = 'x';
+                    pre.style.display = 'none';
+                logger.appendChild(pre);
+            } catch (err) { console.error(err); }
+        }());
+
+        Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
