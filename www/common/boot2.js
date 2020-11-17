@@ -61,7 +61,7 @@ define([
 
     if (window.Proxy) {
         var c = console;
-        window.console = new Proxy(c, {
+        window.console = new window.Proxy(c, {
             get: function (o, k) {
                 if (k !== 'error') { return o[k]; }
                 return function () {

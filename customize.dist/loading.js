@@ -315,8 +315,15 @@ button.primary:hover{
     var hideSpinner = function () {
         try {
             document.querySelector('.cp-loading-spinner-container').style.display = 'none';
-            document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
         } catch (err) { return; }
+    };
+
+    var getList = function () {
+        return document.querySelector('.cp-loading-progress-list') || {};
+    };
+
+    var getProgressBar = function () {
+        return document.querySelector('.cp-loading-progress-container') || {};
     };
 
     var hasErrored = false;
@@ -326,10 +333,8 @@ button.primary:hover{
         if (c < current) { return console.error(data); }
         try {
             hideSpinner();
-            var list = document.querySelector('.cp-loading-progress-list');
-            list && (list.innerHTML = makeList(data));
-            var container = document.querySelector('.cp-loading-progress-container');
-            container && (container.innerHTML = makeBar(data));
+            getList().innerHTML = makeList(data);
+            getProgressBar().innerHTML = makeBar(data);
         } catch (e) {
             if (!hasErrored) { console.error(e); }
         }
