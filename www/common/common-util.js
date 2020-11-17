@@ -30,6 +30,15 @@
         return JSON.parse(JSON.stringify(o));
     };
 
+    Util.serializeError = function (err) {
+        if (!(err instanceof Error)) { return err; }
+        var ser = {};
+        Object.getOwnPropertyNames(err).forEach(function (key) {
+            ser[key] = err[key];
+        });
+        return ser;
+    };
+
     Util.tryParse = function (s) {
         try { return JSON.parse(s); } catch (e) { return;}
     };
@@ -113,13 +122,13 @@
         var handle = function (id, args) {
             var fn = pending[id];
             if (typeof(fn) !== 'function') {
-                errorHandler("MISSING_CALLBACK", {
+                return void errorHandler("MISSING_CALLBACK", {
                     id: id,
                     args: args,
                 });
             }
             try {
-                pending[id].apply(null, Array.isArray(args)? args : [args]);
+                fn.apply(null, Array.isArray(args)? args : [args]);
             } catch (err) {
                 errorHandler('HANDLER_ERROR', {
                     error: err,
