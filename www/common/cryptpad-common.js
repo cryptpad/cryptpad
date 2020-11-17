@@ -2056,8 +2056,6 @@ define([
         };
 
         var userHash;
-        console.error("pewpew");
-        //console.error('pewpew');
 
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
@@ -2355,8 +2353,6 @@ define([
                 }
                 if (parsedNew.hashData) { oldHref = newHref; }
             };
-
-            /*
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
                 if (e.key !== Constants.userHashKey) { return; }
@@ -2367,7 +2363,7 @@ define([
                 } else if (o && !n) {
                     LocalStore.logout();
                 }
-            });*/
+            });
             LocalStore.onLogout(function () {
                 console.log('onLogout: disconnect');
                 postMessage("DISCONNECT");
@@ -2387,7 +2383,6 @@ define([
                 common.mergeAnonDrive(waitFor());
             }
         }).nThen(function (waitFor) {
-            return;
             if (AppConfig.afterLogin) {
                 AppConfig.afterLogin(common, waitFor());
             }
