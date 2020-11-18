@@ -329,6 +329,12 @@ button.primary:hover{
 
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
+
+        if (err === 'Error: XDR encoding failure') {
+            console.warn(err);
+            return;
+        }
+
         hasErrored = true;
         var err2;
         if (err === 'Script error.') {
