@@ -202,6 +202,7 @@ var serveConfig = (function () {
                 adminKeys: Env.admins,
                 inactiveTime: Env.inactiveTime,
                 supportMailbox: Env.supportMailbox,
+                defaultStorageLimit: Env.defaultStorageLimit,
                 maxUploadSize: Env.maxUploadSize,
                 premiumUploadSize: Env.premiumUploadSize,
             }, null, '\t'),
