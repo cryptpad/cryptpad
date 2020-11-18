@@ -43,6 +43,8 @@ define([
         'general': [
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
+            'cp-admin-archive',
+            'cp-admin-unarchive',
             // 'cp-admin-registration',
         ],
         'quota': [
@@ -107,6 +109,141 @@ define([
         });
         return $div;
     };
+    Messages.admin_archiveTitle = "Archive documents"; // XXX
+    Messages.admin_archiveHint = "Make a document unavailable without deleting it permanently. It will be placed in an 'archive' directory and deleted after a few days (configurable in the server configuration file)."; // XXX
+    Messages.admin_archiveButton = "Archive";
+
+    Messages.admin_unarchiveTitle = "Restore archived documents"; // XXX
+    Messages.admin_unarchiveHint = "Restore a document that has previously been archived";
+    Messages.admin_unarchiveButton = "Restore";
+
+    Messages.admin_archiveInput = "Document URL";
+    Messages.admin_archiveInput2 = "Document password";
+    Messages.admin_archiveInval = "Invalid document";
+    Messages.restoredFromServer = "Pad restored";
+
+    var archiveForm = function (archive, $div, $button) {
+        var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
+        var input = h('input#cp-admin-archive', {
+            type: 'text'
+        });
+
+        var label2 = h('label.cp-admin-pw', {
+            for: 'cp-admin-archive-pw'
+        }, Messages.admin_archiveInput2);
+        var input2 = UI.passwordInput({
+            id: 'cp-admin-archive-pw',
+            placeholder: Messages.login_password
+        });
+        var $pw = $(input2);
+        $pw.addClass('cp-admin-pw');
+        var $pwInput = $pw.find('input');
+
+
+        $button.before(h('div.cp-admin-setlimit-form', [
+            label,
+            input,
+            label2,
+            input2
+        ]));
+
+        $div.addClass('cp-admin-nopassword');
+
+        var parsed;
+        var $input = $(input).on('keypress change paste', function () {
+            setTimeout(function () {
+                $input.removeClass('cp-admin-inval');
+                var val = $input.val().trim();
+                if (!val) {
+                    $div.toggleClass('cp-admin-nopassword', true);
+                    return;
+                }
+
+                parsed = Hash.isValidHref(val);
+                $pwInput.val('');
+
+                if (!parsed || !parsed.hashData) {
+                    $div.toggleClass('cp-admin-nopassword', true);
+                    return void $input.addClass('cp-admin-inval');
+                }
+
+                var pw = parsed.hashData.version !== 3 && parsed.hashData.password;
+                $div.toggleClass('cp-admin-nopassword', !pw);
+            });
+        });
+        $pw.on('keypress change', function () {
+            setTimeout(function () {
+                $pw.toggleClass('cp-admin-inval', !$pwInput.val());
+            });
+        });
+
+        var clicked = false;
+        $button.click(function () {
+            if (!parsed || !parsed.hashData) {
+                UI.warn(Messages.admin_archiveInval);
+                return;
+            }
+            var pw = parsed.hashData.password ? $pwInput.val() : undefined;
+            var channel;
+            if (parsed.hashData.version === 3) {
+                channel = parsed.hashData.channel;
+            } else {
+                var secret = Hash.getSecrets(parsed.type, parsed.hash, pw);
+                channel = secret && secret.channel;
+            }
+
+            if (!channel) {
+                UI.warn(Messages.admin_archiveInval);
+                return;
+            }
+
+            if (clicked) { return; }
+            clicked = true;
+
+            nThen(function (waitFor) {
+                if (!archive) { return; }
+                common.getFileSize(channel, waitFor(function (err, size) {
+                    if (!err && size === 0) {
+                        clicked = false;
+                        waitFor.abort();
+                        return void UI.warn(Messages.admin_archiveInval);
+                    }
+                }));
+            }).nThen(function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: archive ? 'ARCHIVE_DOCUMENT' : 'RESTORE_ARCHIVED_DOCUMENT',
+                    data: channel
+                }, function (err, obj) {
+                    var e = err || (obj && obj.error);
+                    clicked = false;
+                    if (e) {
+                        UI.warn(Messages.error);
+                        console.error(e);
+                        return;
+                    }
+                    UI.log(archive ? Messages.deletedFromServer : Messages.restoredFromServer);
+                    $input.val('');
+                    $pwInput.val('');
+                });
+            });
+        });
+    };
+
+    create['archive'] = function () {
+        var key = 'archive';
+        var $div = makeBlock(key, true);
+        var $button = $div.find('button');
+        archiveForm(true, $div, $button);
+        return $div;
+    };
+    create['unarchive'] = function () {
+        var key = 'unarchive';
+        var $div = makeBlock(key, true);
+        var $button = $div.find('button');
+        archiveForm(false, $div, $button);
+        return $div;
+    };
+
     create['registration'] = function () {
         var key = 'registration';
         var $div = makeBlock(key, true);
