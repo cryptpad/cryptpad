@@ -123,8 +123,8 @@ define([
 /*  If we're certain that we aren't using these "*Class" APIs
     anywhere else then we can deprecate them and make this a
     custom modal in common-interface (or here).  */
-                cancelClass: 'btn.cancel',
-                okClass: 'btn.btn-danger.btn-register-confirm',
+                cancelClass: 'btn.btn-cancel.btn-register',
+                okClass: 'btn.btn-danger.btn-register',
                 reverseOrder: true,
                 done: function ($dialog) {
                     $dialog.find('> div').addClass('half');
