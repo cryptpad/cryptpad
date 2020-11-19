@@ -127,15 +127,26 @@
 
 
     // Download a blob from href
-    var download = function (src, _cb) {
+    var download = function (src, _cb, progressCb) {
         var cb = function (e, res) {
             _cb(e, res);
             cb = function () {};
         };
 
+        var progress = function (offset) {
+            progressCb(offset * 100);
+        };
+
         var xhr = new XMLHttpRequest();
         xhr.open('GET', src, true);
         xhr.responseType = 'arraybuffer';
+
+        xhr.addEventListener("progress", function (evt) {
+            if (evt.lengthComputable) {
+                var percentComplete = evt.loaded / evt.total;
+                progress(percentComplete);
+            }
+        }, false);
 
         xhr.onerror = function () { return void cb("XHR_ERROR"); };
         xhr.onload = function () {
@@ -453,8 +464,12 @@
                 end(u8Decrypted);
             }, function (progress) {
                 emit('progress', {
-                    progress: progress
+                    progress: 50+0.5*progress
                 });
+            });
+        }, function (progress) {
+            emit('progress', {
+                progress: 0.5*progress
             });
         });
 
