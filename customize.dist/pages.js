@@ -62,6 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
+    // XXX
     Msg.docs_link = "Documentation";
     // XXX Remove FAQ from translations
     // XXX Add FAQ to docs
@@ -161,6 +162,7 @@ define([
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                 h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
                 h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
+                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
             ].concat(rightLinks))
         );
     };
