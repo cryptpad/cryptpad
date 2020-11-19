@@ -89,7 +89,7 @@ define([
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
-    var faCopy = 'fa-copy';
+    var faCopy = 'fa-files-o';
     var faDelete = 'cptools-destroy';
     var faAccess = 'fa-unlock-alt';
     var faProperties = 'fa-info-circle';

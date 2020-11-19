@@ -611,7 +611,7 @@ define([
                 break;
             case 'copy':
                 button = $('<button>', {
-                    'class': 'fa fa-copy cp-toolbar-icon-import',
+                    'class': 'fa fa-files-o cp-toolbar-icon-import',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
                 button
                 .click(common.prepareFeedback(type))
