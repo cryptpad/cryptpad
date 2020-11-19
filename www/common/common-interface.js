@@ -981,7 +981,7 @@ define([
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
-            console.warn(err);
+            console.warn(error);
             return;
         }
 
