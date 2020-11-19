@@ -2079,7 +2079,6 @@ define([
 
                 var pre = document.createElement('pre');
                     pre.innerText = 'x';
-                    pre.style.display = 'none';
                 logger.appendChild(pre);
             } catch (err) { console.error(err); }
         }());
