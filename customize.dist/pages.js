@@ -94,7 +94,7 @@ define([
                     footerCol('footer_product', [
                         footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
                         Pages.docsLink,
-                        footLink('/features.html', 'features'),
+                        footLink('/features.html', 'pricing'),
                         Pages.githubLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
@@ -160,7 +160,7 @@ define([
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
                 h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
             ].concat(rightLinks))
