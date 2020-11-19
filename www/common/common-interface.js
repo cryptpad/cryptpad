@@ -980,6 +980,11 @@ define([
         setTimeout(cb, 750);
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
+        if (error === 'Error: XDR encoding failure') {
+            console.warn(err);
+            return;
+        }
+
         var $loading = $('#' + LOADING);
         if (!$loading.is(':visible') || $loading.hasClass('cp-loading-hidden')) {
             UI.addLoadingScreen();
