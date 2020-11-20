@@ -128,6 +128,11 @@ define([
             metadata: undefined,
         };
 
+        var cancelled = false;
+        var cancel = function () {
+            cancelled = true;
+        };
+
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
 
         var metaChunk = Nacl.secretbox.open(metaBox, nonce, key);
@@ -168,6 +173,7 @@ define([
         var chunks = [];
 
         var again = function () {
+            if (cancelled) { return; }
             takeChunk(function (e, plaintext) {
                 if (e) {
                     return setTimeout(function () {
@@ -188,6 +194,10 @@ define([
         };
 
         again();
+
+        return {
+            cancel: cancel
+        };
     };
 
     // metadata

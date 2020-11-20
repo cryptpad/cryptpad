@@ -4149,6 +4149,17 @@ define([
                 data.name = Util.fixFileName(folderName);
                 data.folderName = Util.fixFileName(folderName) + '.zip';
 
+                var uo = manager.user.userObject;
+                if (sfId && manager.folders[sfId]) {
+                    uo = manager.folders[sfId].userObject;
+                }
+                if (uo.getFilesRecursively) {
+                    data.list = uo.getFilesRecursively(folderElement).map(function (el) {
+                        var d = uo.getFileData(el);
+                        return d.channel;
+                    });
+                }
+
                 APP.FM.downloadFolder(data, function (err, obj) {
                     console.log(err, obj);
                     console.log('DONE');

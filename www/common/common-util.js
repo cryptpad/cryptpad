@@ -296,6 +296,12 @@
             return void CB(void 0, new Uint8Array(xhr.response));
         };
         xhr.send(null);
+
+        return {
+            cancel: function () {
+                if (xhr.abort) { xhr.abort(); }
+            }
+        };
     };
 
     Util.dataURIToBlob = function (dataURI) {

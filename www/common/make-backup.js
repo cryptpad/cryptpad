@@ -53,9 +53,6 @@ define([
 
     var _downloadFile = function (ctx, fData, cb, updateProgress) {
         var cancelled = false;
-        var cancel = function () {
-            cancelled = true;
-        };
         var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
         var parsed = Hash.parsePadUrl(href);
         var hash = parsed.hash;
@@ -63,10 +60,13 @@ define([
         var secret = Hash.getSecrets('file', hash, fData.password);
         var src = (ctx.fileHost || '') + Hash.getBlobPathFromHex(secret.channel);
         var key = secret.keys && secret.keys.cryptKey;
-        Util.fetch(src, function (err, u8) {
+
+        var fetchObj, decryptObj;
+
+        fetchObj = Util.fetch(src, function (err, u8) {
             if (cancelled) { return; }
             if (err) { return void cb('E404'); }
-            FileCrypto.decrypt(u8, key, function (err, res) {
+            decryptObj = FileCrypto.decrypt(u8, key, function (err, res) {
                 if (cancelled) { return; }
                 if (err) { return void cb(err); }
                 if (!res.content) { return void cb('EEMPTY'); }
@@ -78,8 +78,25 @@ define([
                     content: res.content,
                     download: dl
                 });
-            }, updateProgress && updateProgress.progress2);
-        }, updateProgress && updateProgress.progress);
+            }, function (data) {
+                if (cancelled) { return; }
+                if (updateProgress && updateProgress.progress2) {
+                    updateProgress.progress2(data);
+                }
+            });
+        }, function (data) {
+            if (cancelled) { return; }
+            if (updateProgress && updateProgress.progress) {
+                updateProgress.progress(data);
+            }
+        });
+
+        var cancel = function () {
+            cancelled = true;
+            if (fetchObj && fetchObj.cancel) { fetchObj.cancel(); }
+            if (decryptObj && decryptObj.cancel) { decryptObj.cancel(); }
+        };
+
         return {
             cancel: cancel
         };
@@ -162,10 +179,10 @@ define([
                 if (ctx.stop) { return; }
                 if (to) { clearTimeout(to); }
                 //setTimeout(g, 2000);
-                g();
-                w();
                 ctx.done++;
                 ctx.updateProgress('download', {max: ctx.max, current: ctx.done});
+                g();
+                w();
             };
 
             var error = function (err) {
@@ -312,13 +329,14 @@ define([
             delete ctx.zip;
         };
         return {
-            stop: stop
+            stop: stop,
+            cancel: stop
         };
     };
 
 
     var _downloadFolder = function (ctx, data, cb, updateProgress) {
-        create(data, ctx.get, ctx.fileHost, function (blob, errors) {
+        return create(data, ctx.get, ctx.fileHost, function (blob, errors) {
             if (errors && errors.length) { console.error(errors); } // TODO show user errors
             var dl = function () {
                 saveAs(blob, data.folderName);
@@ -332,8 +350,11 @@ define([
                 if (typeof progress.current !== "number") { return; }
                 updateProgress.folderProgress(progress.current / progress.max);
             }
+            else if (state === "compressing") {
+                updateProgress.folderProgress(2);
+            }
             else if (state === "done") {
-                updateProgress.folderProgress(1);
+                updateProgress.folderProgress(3);
             }
         });
     };
