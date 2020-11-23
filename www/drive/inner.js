@@ -314,6 +314,10 @@ define([
                 onReconnect();
             });
             common.onLogout(function () { setEditable(false); });
+
+            // Check if our drive history needs to be trimmed
+            common.checkTrimHistory(null, true);
+
         });
     };
     main();

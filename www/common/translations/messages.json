@@ -1467,5 +1467,7 @@
     "loading_state_4": "Load Teams",
     "loading_state_5": "Reconstruct document",
     "tag_add": "Add",
-    "tag_edit": "Edit"
+    "tag_edit": "Edit",
+    "error_unhelpfulScriptError": "Script Error: See browser console for details",
+    "documentID": "Document identifier"
 }

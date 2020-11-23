@@ -12,12 +12,21 @@ define([
              Messages, nThen) {
     var Properties = {};
 
+    Messages.documentID = Messages.documentID || 'Document identifier'; // XXX
+
     var getPadProperties = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
         opts = opts || {};
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
+
+        if (data.channel) {
+            $('<label>', { 'for': 'cp-app-prop-id'}).text(Messages.documentID).appendTo($d);
+            $d.append(UI.dialog.selectable(data.channel, {
+                id: 'cp-app-prop-id',
+            }));
+        }
 
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);

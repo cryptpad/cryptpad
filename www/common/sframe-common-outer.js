@@ -2,9 +2,56 @@
 define([
     '/bower_components/nthen/index.js',
     '/api/config',
+    '/common/requireconfig.js',
+    '/customize/messages.js',
     'jquery',
-], function (nThen, ApiConfig, $) {
+], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
+
+    common.initIframe = function (waitFor, isRt) {
+        var requireConfig = RequireConfig();
+        var lang = Messages._languageUsed;
+        var req = {
+            cfg: requireConfig,
+            req: [ '/common/loading.js' ],
+            pfx: window.location.origin,
+            lang: lang
+        };
+        window.rc = requireConfig;
+        window.apiconf = ApiConfig;
+
+        var hash, href;
+        if (isRt) {
+            // Hidden hash
+            hash = window.location.hash;
+            href = window.location.href;
+            if (window.history && window.history.replaceState && hash) {
+                window.history.replaceState({}, window.document.title, '#');
+            }
+        }
+
+        document.getElementById('sbox-iframe').setAttribute('src',
+            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
+                requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
+
+        // This is a cheap trick to avoid loading sframe-channel in parallel with the
+        // loading screen setup.
+        var done = waitFor();
+        var onMsg = function (msg) {
+            var data = JSON.parse(msg.data);
+            if (data.q !== 'READY') { return; }
+            window.removeEventListener('message', onMsg);
+            var _done = done;
+            done = function () { };
+            _done();
+        };
+        window.addEventListener('message', onMsg);
+
+        return {
+            hash: hash,
+            href: href
+        };
+    };
 
     common.start = function (cfg) {
         cfg = cfg || {};
@@ -76,6 +123,7 @@ define([
                 Utils.LocalStore = _LocalStore;
                 Utils.Cache = _Cache;
                 Utils.UserObject = _UserObject;
+                Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
                 Test = _Test;
 
@@ -534,6 +582,7 @@ define([
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
+                        notifications: Notification && Notification.permission === "granted",
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
@@ -570,7 +619,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
                     }
 
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);
@@ -1534,9 +1583,13 @@ define([
                 });
             });
 
-            if (cfg.messaging) {
-                Notifier.getPermission();
+            sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
+                Notification.requestPermission(function (s) {
+                    cb(s === "granted");
+                });
+            });
 
+            if (cfg.messaging) {
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
                     Cryptpad.universal.execCommand({
                         type: 'messenger',

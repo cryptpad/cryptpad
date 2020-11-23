@@ -150,20 +150,19 @@ define([
         send();
     };
 
-    common.setTabHref = function (href) {
-        var ohc = window.onhashchange;
-        window.onhashchange = function () {};
-        window.location.href = href;
-        window.onhashchange = ohc;
-        ohc({reset: true});
-    };
-    common.setTabHash = function (hash) {
-        var ohc = window.onhashchange;
-        window.onhashchange = function () {};
-        window.location.hash = hash;
-        window.onhashchange = ohc;
-        ohc({reset: true});
-    };
+    (function () {
+        var bypassHashChange = function (key) {
+            return function (value) {
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location[key] = value;
+                window.onhashchange = ohc;
+                ohc({reset: true});
+            };
+        };
+        common.setTabHref = bypassHashChange('href');
+        common.setTabHash = bypassHashChange('hash');
+    }());
 
     // RESTRICTED
     // Settings only
@@ -2104,6 +2103,32 @@ define([
         };
 
         var userHash;
+
+        (function iOSFirefoxFix () {
+/*
+    For some bizarre reason Firefox on iOS throws an error during the
+    loading process unless we call this function. Drawing these elements
+    to the DOM presumably causes the JS engine to wait just a little bit longer
+    until some APIs we need are ready. This occurs despite all this code being
+    run after the usual dom-ready events. This fix was discovered while trying
+    to log the error messages to the DOM because it's extremely difficult
+    to debug Firefox iOS in the usual ways. In summary, computers are terrible.
+*/
+             try {
+                var style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.appendChild(document.createTextNode('#cp-logger { display: none; }'));
+                document.head.appendChild(style);
+
+                var logger = document.createElement('div');
+                    logger.setAttribute('id', 'cp-logger');
+                document.body.appendChild(logger);
+
+                var pre = document.createElement('pre');
+                    pre.innerText = 'x';
+                logger.appendChild(pre);
+            } catch (err) { console.error(err); }
+        }());
 
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
