@@ -48,5 +48,30 @@ define([
         throw e;
     };
 
-    require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
+    var called = false;
+    var load = function () {
+        if (called) { return; }
+        called = true;
+        require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
+    };
+
+    var sw = window.navigator.serviceWorker;
+    if (!sw) { return void load(); }
+    try {
+        sw
+            .register('/sw.js?'
+            + RequireConfig().urlArgs
+            , { scope: '/' })
+            .then(function (reg) {
+                console.log("service-worker registered", reg);
+                load();
+            })
+            .catch(function (err) {
+                console.error(err);
+                load();
+            });
+    } catch (e) {
+        console.error(e);
+        load();
+    }
 });

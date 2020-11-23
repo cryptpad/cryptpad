@@ -70,11 +70,8 @@ define([
     };
 
     var sw = window.navigator.serviceWorker;
-
     if (!sw) { return void load(); }
-
     try {
-        //console.log(RequireConfig());
         sw
             .register('/sw.js?'
             + RequireConfig().urlArgs

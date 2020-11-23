@@ -101,7 +101,7 @@ var handleApiConfig = function (event) {
             return openCache(version).then(function (cache) {
                 //console.log('API CONFIG REQUEST', request.clone());
                 cacheResponse(cache, event.request, response);
-                return response;
+                return response.clone();
             }).catch(function (err) {
                 console.error(err);
             });
@@ -124,7 +124,7 @@ var handleApiConfig = function (event) {
                 //console.log('response.text', response.clone().text());
 
                 //console.log("falling back to cached /api/config");
-                return response;
+                return response.clone();
             });
         })
     );
