@@ -1468,5 +1468,6 @@
     "loading_state_0": "Construction de l'interface",
     "tag_edit": "Modifier",
     "tag_add": "Ajouter",
-    "error_unhelpfulScriptError": "Erreur de script : consultez la console du navigateur pour plus de détails"
+    "error_unhelpfulScriptError": "Erreur de script : consultez la console du navigateur pour plus de détails",
+    "documentID": "Référence du document"
 }
