@@ -474,7 +474,8 @@ define([
                 return UI.errorLoadingScreen("Reload loop: empty chainpad for a non-empty channel");
             }
             noCache = true;
-            sframeChan.event("Q_CORRUPTED_CACHE");
+            var sframeChan = common.getSframeChannel();
+            sframeChan.event("EV_CORRUPTED_CACHE");
         };
         var onCacheReady = function () {
             stateChange(STATE.DISCONNECTED);

@@ -246,7 +246,7 @@ var factory = function (Cache) {
                 if (arrayBuffer) {
                     var u8 = new Uint8Array(arrayBuffer);
                     if (cacheKey) {
-                        return void Cache.setBlobCache(cacheKey, u8, function (err) {
+                        return void Cache.setBlobCache(cacheKey, u8, function () {
                             cb(null, u8);
                         });
                     }
