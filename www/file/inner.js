@@ -168,7 +168,9 @@ define([
 
                         var rightsideDisplayed = false;
 
-                        MediaTag($mt[0]).on('complete', function (decrypted) {
+                        MediaTag($mt[0], {
+                            force: true // Download starts automatically
+                        }).on('complete', function (decrypted) {
                             $dlview.show();
                             $dlform.hide();
                             var $dlButton = $dlview.find('media-tag button');

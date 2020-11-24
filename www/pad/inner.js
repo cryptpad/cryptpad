@@ -462,7 +462,7 @@ define([
         setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
             Array.prototype.slice.call(tags).forEach(function(el) {
-                MediaTag(el);
+                var mediaObject = MediaTag(el);
                 $(el).on('keydown', function(e) {
                     if ([8, 46].indexOf(e.which) !== -1) {
                         $(el).remove();
@@ -474,6 +474,7 @@ define([
                         if (mutation.type === 'childList') {
                             var list_values = [].slice.call(el.children);
                             mediaTagMap[el.getAttribute('src')] = list_values;
+                            if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
                 });
@@ -492,7 +493,7 @@ define([
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
                 mediaTagMap[src].forEach(function(n) {
-                    tag.appendChild(n.cloneNode());
+                    tag.appendChild(n.cloneNode(true));
                 });
             }
         });
