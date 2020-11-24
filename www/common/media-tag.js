@@ -1,5 +1,6 @@
 (function (window) {
 var factory = function (Cache) {
+    var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
 
@@ -190,24 +191,43 @@ var factory = function (Cache) {
         mediaObject.tag.appendChild(btn);
     };
 
+    var getCacheKey = function (src) {
+        var _src = src.replace(/(\/)*$/, ''); // Remove trailing slashes
+        var idx = _src.lastIndexOf('/');
+        var cacheKey = _src.slice(idx+1);
+        if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
+        return cacheKey;
+    };
+
     var getFileSize = function (src, _cb) {
         var cb = function (e, res) {
             _cb(e, res);
             cb = function () {};
         };
-        // XXX Cache
-        var xhr = new XMLHttpRequest();
-        xhr.open("HEAD", src);
-        xhr.onerror = function () { return void cb("XHR_ERROR"); };
-        xhr.onreadystatechange = function() {
-            if (this.readyState === this.DONE) {
-                cb(null, Number(xhr.getResponseHeader("Content-Length")));
-            }
+
+        var cacheKey = getCacheKey(src);
+
+        var check = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open("HEAD", src);
+            xhr.onerror = function () { return void cb("XHR_ERROR"); };
+            xhr.onreadystatechange = function() {
+                if (this.readyState === this.DONE) {
+                    cb(null, Number(xhr.getResponseHeader("Content-Length")));
+                }
+            };
+            xhr.onload = function () {
+                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+            };
+            xhr.send();
         };
-        xhr.onload = function () {
-            if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
-        };
-        xhr.send();
+
+        if (!cacheKey) { return void check(); }
+
+        Cache.getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void check(); }
+            cb(null, 0);
+        });
     };
 
     // Download a blob from href
@@ -217,10 +237,7 @@ var factory = function (Cache) {
             cb = function () {};
         };
 
-        var _src = src.replace(/(\/)*$/, ''); // Remove trailing slashes
-        var idx = _src.lastIndexOf('/');
-        var cacheKey = _src.slice(idx+1);
-        if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
+        var cacheKey = getCacheKey(src);
 
         var fetch = function () {
             var xhr = new XMLHttpRequest();
@@ -547,39 +564,41 @@ var factory = function (Cache) {
             });
         };
 
-        // If we have the blob in our cache, don't download & decrypt it again, just display
-        // XXX Store in the cache the pending mediaobject: make sure we don't download and decrypt twice the same element at the same time
-        if (cache[uid]) {
-            end(cache[uid]);
-            return mediaObject;
-        }
+        var error = function (err) {
+            mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+            emit('error', err);
+        };
 
         var dl = function () {
             // Download the encrypted blob
-            download(src, function (err, u8Encrypted) {
-                if (err) {
-                    if (err === "XHR_ERROR 404") {
-                        mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+            cache[uid] = cache[uid] || new Promise(function (resolve, reject) {
+                download(src, function (err, u8Encrypted) {
+                    if (err) {
+                        return void reject(err);
                     }
-                    return void emit('error', err);
-                }
-                // Decrypt the blob
-                decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
-                    if (errDecryption) {
-                        return void emit('error', errDecryption);
-                    }
-                    // Cache and display the decrypted blob
-                    cache[uid] = u8Decrypted;
-                    end(u8Decrypted);
+                    // Decrypt the blob
+                    decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
+                        if (errDecryption) {
+                            return void reject(errDecryption);
+                        }
+                        // Cache and display the decrypted blob
+                        cache[uid] = u8Decrypted;
+                        resolve(u8Decrypted);
+                    }, function (progress) {
+                        emit('progress', {
+                            progress: 50+0.5*progress
+                        });
+                    });
                 }, function (progress) {
                     emit('progress', {
-                        progress: 50+0.5*progress
+                        progress: 0.5*progress
                     });
                 });
-            }, function (progress) {
-                emit('progress', {
-                    progress: 0.5*progress
-                });
+            });
+            cache[uid].then(function (u8) {
+                end(u8);
+            }, function (err) {
+                error(err);
             });
         };
 
@@ -588,10 +607,7 @@ var factory = function (Cache) {
         var maxSize = 5 * 1024 * 1024;
         getFileSize(src, function (err, size) {
             if (err) {
-                if (err === "XHR_ERROR 404") {
-                    mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
-                }
-                return void emit('error', err);
+                return void error(err);
             }
             if (!size || size <  maxSize) { return void dl(); }
             var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
@@ -618,6 +634,7 @@ var factory = function (Cache) {
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/outer/cache-store.js',
+            '/bower_components/es6-promise/es6-promise.min.js'
         ], function (Cache) {
             return factory(Cache);
         });
