@@ -2684,6 +2684,45 @@ define([
 
     };
 
+    Messages.history_trimPrompt = "This document's history is very large ({0}) and it may impact the loading time. You can delete the unnecessary history.";
+    UIElements.displayTrimHistoryPrompt = function (common, data) {
+        var mb = Util.bytesToMegabytes(data.size);
+        var text = Messages._getKey('history_trimPrompt', [
+            Messages._getKey('formattedMB', [mb])
+        ]);
+        var yes = h('button.cp-corner-primary', [
+            h('span.fa.fa-trash-o'),
+            Messages.trimHistory_button
+        ]);
+        var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no); // Not now
+        var actions = h('div', [no, yes]);
+
+        var dontShowAgain = function () {
+            var until = (+new Date()) + (7 * 24 * 3600 * 1000); // 7 days from now
+            until = (+new Date()) + 30000; // XXX 30s from now
+            if (data.drive) {
+                common.setAttribute(['drive', 'trim'], until);
+                return;
+            }
+            common.setPadAttribute('trim', until);
+        };
+
+        var modal = UI.cornerPopup(text, actions, '', {});
+
+        $(yes).click(function () {
+            modal.delete();
+            if (data.drive) {
+                common.openURL('/settings/#drive');
+                return;
+            }
+            common.getSframeChannel().event('EV_PROPERTIES_OPEN');
+        });
+        $(no).click(function () {
+            dontShowAgain();
+            modal.delete();
+        });
+    };
+
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
         var userData = msg.content.user;

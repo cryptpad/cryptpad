@@ -264,6 +264,66 @@ define([
         return teamChatChannel;
     };
 
+    // When opening a pad, if were an owner check the history size and prompt for trimming if
+    // necessary
+    funcs.checkTrimHistory = function (channels, isDrive) {
+        channels = channels || [];
+        var priv = ctx.metadataMgr.getPrivateData();
+
+        var limit = 100 * 1024 * 1024; // 100MB
+        limit = 100 * 1024; // XXX 100KB
+
+        var owned;
+        nThen(function (w) {
+            if (isDrive) {
+                funcs.getAttribute(['drive', 'trim'], w(function (err, val) {
+                    if (err || typeof(val) !== "number") { return; }
+                    if (val < (+new Date())) { return; }
+                    w.abort();
+                }));
+                return;
+            }
+            funcs.getPadAttribute('trim', w(function (err, val) {
+                if (err || typeof(val) !== "number") { return; }
+                if (val < (+new Date())) { return; }
+                w.abort();
+            }));
+        }).nThen(function (w) {
+            // Check ownership
+            // DRIVE
+            if (isDrive) {
+                if (!priv.isDriveOwned) { return void w.abort(); }
+                return;
+            }
+            // PAD
+            channels.push({ channel: priv.channel });
+            funcs.getPadMetadata({
+                channel: priv.channel
+            }, w(function (md) {
+                if (md && md.error) { return void w.abort(); }
+                var owners = md.owners;
+                owned = funcs.isOwned(owners);
+                if (!owned) { return void w.abort(); }
+            }));
+        }).nThen(function () {
+            // We're an owner: check the history size
+            var history = funcs.makeUniversal('history');
+            history.execCommand('GET_HISTORY_SIZE', {
+                account: isDrive,
+                pad: !isDrive,
+                channels: channels,
+                teamId: typeof(owned) === "number" && owned
+            }, function (obj) {
+                if (obj && obj.error) { return; } // can't get history size: abort
+                var bytes = obj.size;
+                if (!bytes || typeof(bytes) !== "number") { return; } // no history: abort
+                if (bytes < limit) { return; }
+                obj.drive = isDrive;
+                UIElements.displayTrimHistoryPrompt(funcs, obj);
+            });
+        });
+    };
+
     var cursorChannel;
     // common-ui-elements needs to be able to get the cursor channel to put it in metadata when
     // importing a template

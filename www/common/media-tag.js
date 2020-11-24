@@ -60,7 +60,8 @@ var factory = function (Cache) {
         ],
         pdf: {},
         download: {
-            text: "Download"
+            text: "Save",
+            textDl: "Load attachment"
         },
         Plugins: {
             /**
@@ -111,8 +112,8 @@ var factory = function (Cache) {
             },
             download: function (metadata, url, content, cfg, cb) {
                 var btn = document.createElement('button');
-                btn.setAttribute('class', 'btn btn-success');
-                btn.innerHTML = cfg.download.text + '<br>' +
+                btn.setAttribute('class', 'btn btn-default');
+                btn.innerHTML = '<i class="fa fa-save"></i>' + cfg.download.text + '<br>' +
                                 (metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '');
                 btn.addEventListener('click', function () {
                     saveFile(content, url, metadata.name);
@@ -122,9 +123,95 @@ var factory = function (Cache) {
         }
     };
 
+    var makeProgressBar = function (cfg, mediaObject) {
+        // XXX CSP: we'll need to add style in cryptpad's less
+        var style = (function(){/*
+.mediatag-progress-container {
+    position: relative;
+    border: 1px solid #0087FF;
+    background: white;
+    height: 25px;
+    display: inline-flex;
+    width: 200px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+.mediatag-progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: #0087FF;
+    width: 0%;
+}
+.mediatag-progress-text {
+    height: 25px;
+    margin-left: 5px;
+    line-height: 25px;
+    vertical-align: top;
+    width: auto;
+    display: inline-block;
+    color: #3F4141;
+    font-weight: bold;
+}
+*/}).toString().slice(14, -3);
+        var container = document.createElement('div');
+        container.classList.add('mediatag-progress-container');
+        var bar = document.createElement('div');
+        bar.classList.add('mediatag-progress-bar');
+        container.appendChild(bar);
+
+        var text = document.createElement('span');
+        text.classList.add('mediatag-progress-text');
+        text.innerText = '0%';
+
+        mediaObject.on('progress', function (obj) {
+            var percent = obj.progress;
+            text.innerText = (Math.round(percent*10))/10+'%';
+            bar.setAttribute('style', 'width:'+percent+'%;');
+        });
+
+        mediaObject.tag.innerHTML = '<style>'+style+'</style>';
+        mediaObject.tag.appendChild(container);
+        mediaObject.tag.appendChild(text);
+    };
+    var makeDownloadButton = function (cfg, mediaObject, size, cb) {
+        var btn = document.createElement('button');
+        btn.setAttribute('class', 'btn btn-default');
+        btn.innerHTML = '<i class="fa fa-paperclip"></i>' +
+                cfg.download.textDl + ' <b>(' + size  + 'MB)</b>';
+        btn.addEventListener('click', function () {
+            makeProgressBar(cfg, mediaObject);
+            cb();
+        });
+        mediaObject.tag.innerHTML = '';
+        mediaObject.tag.appendChild(btn);
+    };
+
+    var getFileSize = function (src, _cb) {
+        var cb = function (e, res) {
+            _cb(e, res);
+            cb = function () {};
+        };
+        // XXX Cache
+        var xhr = new XMLHttpRequest();
+        xhr.open("HEAD", src);
+        xhr.onerror = function () { return void cb("XHR_ERROR"); };
+        xhr.onreadystatechange = function() {
+            if (this.readyState === this.DONE) {
+                cb(null, Number(xhr.getResponseHeader("Content-Length")));
+            }
+        };
+        xhr.onload = function () {
+            if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+        };
+        xhr.send();
+    };
 
     // Download a blob from href
-    var download = function (src, _cb) {
+    var download = function (src, _cb, progressCb) {
         var cb = function (e, res) {
             _cb(e, res);
             cb = function () {};
@@ -139,6 +226,16 @@ var factory = function (Cache) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.responseType = 'arraybuffer';
+
+            var progress = function (offset) {
+                progressCb(offset * 100);
+            };
+            xhr.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    progress(percentComplete);
+                }
+            }, false);
 
             xhr.onerror = function () { return void cb("XHR_ERROR"); };
             xhr.onload = function () {
@@ -164,7 +261,6 @@ var factory = function (Cache) {
 
         Cache.getBlobCache(cacheKey, function (err, u8) {
             if (err || !u8) { return void fetch(); }
-            console.error('using cache', cacheKey);
             cb(null, u8);
         });
 
@@ -443,6 +539,7 @@ var factory = function (Cache) {
 
         // End media-tag rendering: display the tag and emit the event
         var end = function (decrypted) {
+            mediaObject.complete = true;
             process(mediaObject, decrypted, cfg, function (err) {
                 if (err) { return void emit('error', err); }
                 mediaObject._blob = decrypted;
@@ -451,32 +548,54 @@ var factory = function (Cache) {
         };
 
         // If we have the blob in our cache, don't download & decrypt it again, just display
+        // XXX Store in the cache the pending mediaobject: make sure we don't download and decrypt twice the same element at the same time
         if (cache[uid]) {
             end(cache[uid]);
             return mediaObject;
         }
 
-        // Download the encrypted blob
-        download(src, function (err, u8Encrypted) {
+        var dl = function () {
+            // Download the encrypted blob
+            download(src, function (err, u8Encrypted) {
+                if (err) {
+                    if (err === "XHR_ERROR 404") {
+                        mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+                    }
+                    return void emit('error', err);
+                }
+                // Decrypt the blob
+                decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
+                    if (errDecryption) {
+                        return void emit('error', errDecryption);
+                    }
+                    // Cache and display the decrypted blob
+                    cache[uid] = u8Decrypted;
+                    end(u8Decrypted);
+                }, function (progress) {
+                    emit('progress', {
+                        progress: 50+0.5*progress
+                    });
+                });
+            }, function (progress) {
+                emit('progress', {
+                    progress: 0.5*progress
+                });
+            });
+        };
+
+        if (cfg.force) { dl(); return mediaObject; }
+
+        var maxSize = 5 * 1024 * 1024;
+        getFileSize(src, function (err, size) {
             if (err) {
                 if (err === "XHR_ERROR 404") {
                     mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
                 }
                 return void emit('error', err);
             }
-            // Decrypt the blob
-            decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
-                if (errDecryption) {
-                    return void emit('error', errDecryption);
-                }
-                // Cache and display the decrypted blob
-                cache[uid] = u8Decrypted;
-                end(u8Decrypted);
-            }, function (progress) {
-                emit('progress', {
-                    progress: progress
-                });
-            });
+            if (!size || size <  maxSize) { return void dl(); }
+            var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
+            makeDownloadButton(cfg, mediaObject, sizeMb, dl);
         });
 
         return mediaObject;

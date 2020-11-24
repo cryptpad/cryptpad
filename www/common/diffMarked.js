@@ -668,7 +668,7 @@ define([
                     }
                     return;
                 }
-                MediaTag(el);
+                var mediaObject = MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
@@ -676,7 +676,7 @@ define([
                                                 .map(function (el) { return el.outerHTML; })
                                                 .join('');
                             mediaMap[mutation.target.getAttribute('src')] = list_values;
-                            observer.disconnect();
+                            if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
                     $mt.off('click dblclick preview');

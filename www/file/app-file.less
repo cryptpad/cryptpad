@@ -64,7 +64,49 @@
         }
     }
 
-    #cp-app-file-upload-form, #cp-app-file-download-form {
+    #cp-app-file-download-form {
+        padding: 0px;
+        margin: 0px;
+
+        position: relative;
+        display: block;
+        max-width: 90vw;
+        height: 150px;
+        width: ~"min(90vw, 600px)";
+        .cp-app-file-progress-container {
+            margin-top: 5px;
+            height: 40px;
+            font-size: 20px;
+            border: 1px solid @colortheme_logo-2;
+            background: white;
+            color: @cryptpad_text_col;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            .cp-app-file-progress-dl {
+                border-right: 1px solid @cryptpad_text_col;
+            }
+            .cp-app-file-progress-dl, .cp-app-file-progress-dc {
+                width: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2;
+            }
+            .cp-app-file-progress {
+                z-index: 1;
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                background: @colortheme_logo-2;
+            }
+        }
+        .cp-app-file-progress-txt {
+            margin-left: 30px;
+        }
+    }
+    #cp-app-file-upload-form {
         padding: 0px;
         margin: 0px;
 

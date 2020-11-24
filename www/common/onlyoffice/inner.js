@@ -1310,6 +1310,16 @@ define([
                         if (APP.migrate && !readOnly) {
                             onMigrateRdy.fire();
                         }
+
+                        // Check if history can/should be trimmed
+                        var cp = getLastCp();
+                        if (cp && cp.file && cp.hash) {
+                            var channels = [{
+                                channel: content.channel,
+                                lastKnownHash: cp.hash
+                            }];
+                            common.checkTrimHistory(channels);
+                        }
                     }
                 }
             };
@@ -2070,7 +2080,9 @@ define([
 
                 // Import template
                 var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
-                $template.appendTo(toolbar.$drawer);
+                if ($template && typeof($template.appendTo) === 'function') {
+                    $template.appendTo(toolbar.$drawer);
+                }
             })();
             }
 

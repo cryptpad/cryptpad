@@ -598,6 +598,8 @@ define([
                         Thumb.initPadThumbnails(common, options.thumbnail);
                     }
                 }
+
+                common.checkTrimHistory();
             });
         };
         var onConnectionChange = function (info) {

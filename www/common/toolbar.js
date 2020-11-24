@@ -990,6 +990,30 @@ MessengerUI, Messages) {
             h('div.cp-notifications-empty', Messages.notifications_empty)
         ]);
         var pads_options = [div];
+
+        var metadataMgr = config.metadataMgr;
+        var privateData = metadataMgr.getPrivateData();
+        if (!privateData.notifications) {
+            Messages.allowNotifications = "Allow notifications"; // XXX
+            var allowNotif = h('div.cp-notifications-gotoapp', h('p', Messages.allowNotifications));
+            pads_options.unshift(h("hr"));
+            pads_options.unshift(allowNotif);
+            var $allow = $(allowNotif).click(function () {
+                Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
+                    if (!allow) { return; }
+                    $(allowNotif).remove();
+                });
+            });
+            var onChange = function () {
+                var privateData = metadataMgr.getPrivateData();
+                if (!privateData.notifications) { return; }
+                $allow.remove();
+                metadataMgr.off('change', onChange);
+            };
+            metadataMgr.onChange(onChange);
+        }
+
+
         if (Common.isLoggedIn()) {
             pads_options.unshift(h("hr"));
             pads_options.unshift(openNotifsApp);

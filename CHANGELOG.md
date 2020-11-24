@@ -1,3 +1,40 @@
+# YunnanLakeNewt (3.24.0)
+
+## Goals
+
+We are once again working to develop some significant new features. This release is fairly small but includes some significant changes to detect and handle a variety of errors.
+
+## Update notes
+
+This release includes some minor corrections the recommended NGINX configuration supplied in `cryptpad/docs/example.nginx.conf`.
+
+To update from 3.23.2 to 3.24.0:
+
+1. Update your NGINX config to replicate the most recent changes and reload NGINX to apply them.
+2. Stop the nodejs server.
+3. Pull the latest code from the `3.24.0` tag or the `main` branch using `git`.
+4. Ensure you have the latest clientside and serverside dependencies with `bower update` and `npm install`.
+5. Restart the nodejs server.
+
+## Features
+
+* A variety of CryptPad's pages now feature a much-improved loading screen which provides a more informative account of what is being loaded. It also implements some generic error handling to detect and report when something has failed in a catastrophic way. This is intended to both inform users that the page is in a broken state as well as to improve the quality of the debugging information they can provide to us so that we can fix the underlying cause.
+* It is now possible to create spreadsheets from templates. Template functionality has existed for a long time in our other editors, however, OnlyOffice's architecture differs significantly and required the implementation of a wholly different system.
+* One user reported some confusion regarding the use of the Kanban app's _tag_ functionality. We've updated the UI to be a little more informative.
+* The "table of contents" in rich text pads now includes "anchors" created via the editor's toolbar.
+
+## Bug fixes
+
+* Recent changes to CryptPad's recommended CSP headers enabled Firefox to export spreadsheets to XLSX format, but they also triggered some regressions due to a number of incompatible APIs.
+  * Our usage of the `sessionStorage` for the purpose of passing important information to editors opened in a new tab stopped working. This meant that when you created a document in a folder, the resulting new tab would not receive the argument describing where it should be stored, and would instead save it to the default location. We've addressed this by replacing our usage of sessionStorage with a new format for passing the same arguments via the hash in the new document's URL.
+  * The `window.print` API also failed in a variety of cases. We've updated the relevant CSP headers to only be applied on the sheet editor (to support XSLX export) but allow printing elsewhere. We've also updated some print styles to provide more appealing results.
+* The table of contents available in rich text pads failed to scroll when there were a sufficient number of heading to flow beyond the length of the page. Now a scrollbar appears when necessary.
+* We discovered a number of cases where the presence of an allow list prevented some valid behaviour due to the server incorrectly concluding that users were not authenticated. We've improved the client's ability to detect these cases and re-authenticate when necessary.
+* We also found that when the server was under very heavy load some database queries were timing out because they were slow (but not stopped). We've addressed this to only terminate such queries if they have been entirely inactive for several minutes.
+* It was possible for "safe links" to include a mode ("edit" or "view") which did not match the rights of the user opening them. For example, if a user loaded a safe link with edit rights though they only had read-only access via their "viewer" role in a team. CryptPad will now recover from such cases and open the document with the closest set of access rights that they possess.
+* We found that the server query `"IS_NEW_PAD"` could return an error but that clients would incorrectly interpret such a response as a `false`. This has been corrected.
+* Finally, we've modified the "trash" UI for user and team drives such that when users attempt to empty their trash of owned shared folders they are prompted to remove the items or delete them from the server entirely, as they would be with other owned assets.
+
 # XerusDaamsi reloaded (3.23.2)
 
 A number of instance administrators reported issues following our 3.23.1 release. We suspect the issues were caused by applying the recommended update steps out of order which would result in the incorrect HTTP header values getting cached for the most recent version of a file. Since the most recently updated headers modified some security settings, this caused a catastrophic error on clients receiving the incorrect headers which caused them to fail to load under certain circumstances.

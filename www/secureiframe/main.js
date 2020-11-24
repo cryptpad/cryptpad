@@ -4,7 +4,8 @@ define([
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
-], function (nThen, ApiConfig, $, RequireConfig) {
+    '/customize/messages.js',
+], function (nThen, ApiConfig, $, RequireConfig, Messages) {
     var requireConfig = RequireConfig();
 
     var ready = false;
@@ -15,10 +16,12 @@ define([
         nThen(function (waitFor) {
             $(waitFor());
         }).nThen(function (waitFor) {
+            var lang = Messages._languageUsed;
             var req = {
                 cfg: requireConfig,
                 req: [ '/common/loading.js' ],
-                pfx: window.location.origin
+                pfx: window.location.origin,
+                lang: lang
             };
             window.rc = requireConfig;
             window.apiconf = ApiConfig;

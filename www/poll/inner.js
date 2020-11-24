@@ -1087,6 +1087,8 @@ define([
         common.openPadChat(function () {});
 
         UI.removeLoadingScreen();
+
+        common.checkTrimHistory();
     };
 
     var onError = function (info) {

@@ -2,6 +2,10 @@
 @import (reference) "./variables.less";
 
 .forms_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
+& {
     @alertify-fore: @colortheme_modal-fg;
     @alertify-btn-fg: @alertify-fore;
     @alertify-light-bg: fade(@alertify-fore, 25%);
@@ -122,6 +126,14 @@
             color: @colortheme_old-base;
             white-space: normal;
             font-weight: bold;
+        }
+
+        &.btn-default {
+            border-color: @cryptpad_text_col;
+            color: @cryptpad_text_col;
+            &:hover, &:active, &:focus {
+                background-color: #ccc;
+            }
         }
 
         &.danger, &.btn-danger {

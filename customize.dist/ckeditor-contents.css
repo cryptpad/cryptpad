@@ -213,3 +213,33 @@ media-tag * {
     width: 100%;
     height: 100%;
 }
+media-tag button.btn {
+    background-color: #fff;
+    box-sizing: border-box;
+    outline: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 6px;
+    min-height: 36px;
+    line-height: 22px;
+    white-space: nowrap;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 0;
+    transition: none;
+    color: #3F4141;
+    border: 1px solid #3F4141;
+}
+media-tag button.btn:hover, media-tag button.btn:active, media-tag button.btn:focus {
+    background-color: #ccc;
+}
+media-tag button b {
+    margin-left: 5px;
+}
+media-tag button .fa {
+    display: inline;
+    margin-right: 5px;
+}

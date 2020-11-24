@@ -462,7 +462,7 @@ define([
         setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
             Array.prototype.slice.call(tags).forEach(function(el) {
-                MediaTag(el);
+                var mediaObject = MediaTag(el);
                 $(el).on('keydown', function(e) {
                     if ([8, 46].indexOf(e.which) !== -1) {
                         $(el).remove();
@@ -474,6 +474,7 @@ define([
                         if (mutation.type === 'childList') {
                             var list_values = [].slice.call(el.children);
                             mediaTagMap[el.getAttribute('src')] = list_values;
+                            if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
                 });
@@ -492,7 +493,7 @@ define([
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
                 mediaTagMap[src].forEach(function(n) {
-                    tag.appendChild(n.cloneNode());
+                    tag.appendChild(n.cloneNode(true));
                 });
             }
         });
@@ -650,9 +651,25 @@ define([
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
+        var isAnchor = function (el) { return el.nodeName === 'A'; };
+        var getAnchorName = function (el) {
+            return el.getAttribute('id') ||
+                el.getAttribute('data-cke-saved-name') ||
+                el.getAttribute('name') ||
+                Util.stripTags($(el).text());
+        };
+
         var updateTOC = Util.throttle(function () {
             var toc = [];
-            $inner.find('h1, h2, h3').each(function (i, el) {
+            $inner.find('h1, h2, h3, a[id][data-cke-saved-name]').each(function (i, el) {
+                if (isAnchor(el)) {
+                    return void toc.push({
+                        level: 2,
+                        el: el,
+                        title: getAnchorName(el),
+                    });
+                }
+
                 toc.push({
                     level: Number(el.tagName.slice(1)),
                     el: el,
@@ -661,6 +678,8 @@ define([
             });
             var content = [h('h2', Messages.markdown_toc)];
             toc.forEach(function (obj) {
+                var title = (obj.title || "").trim();
+                if (!title) { return; }
                 // Only include level 2 headings
                 var level = obj.level;
                 var a = h('a.cp-pad-toc-link', {
@@ -672,7 +691,7 @@ define([
                     if (!obj.el || UIElements.isVisible(obj.el, $inner)) { return; }
                     obj.el.scrollIntoView();
                 });
-                a.innerHTML = obj.title;
+                a.innerHTML = title;
                 content.push(h('p.cp-pad-toc-'+level, a));
             });
             $toc.html('').append(content);
@@ -1098,7 +1117,7 @@ define([
 */
                 Ckeditor.dom.element.prototype.setHtml = function(a){
                     if (/callFunction/.test(a)) {
-                        a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart)/g, function (value) {
+                        a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart|mouseover|mouseout)/g, function (value) {
                             return 'o' + value;
                         });
                     }
