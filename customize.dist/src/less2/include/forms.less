@@ -2,6 +2,10 @@
 @import (reference) "./variables.less";
 
 .forms_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
+& {
     @alertify-fore: @colortheme_modal-fg;
     @alertify-btn-fg: @alertify-fore;
     @alertify-light-bg: fade(@alertify-fore, 25%);
