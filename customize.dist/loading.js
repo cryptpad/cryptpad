@@ -241,7 +241,7 @@ p.cp-password-info{
     animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
 }
 
-button.primary{
+button:not(.btn).primary{
     border: 1px solid #4591c4;
     padding: 8px 12px;
     text-transform: uppercase;
@@ -250,7 +250,7 @@ button.primary{
     font-weight: bold;
 }
 
-button.primary:hover{
+button:not(.btn).primary:hover{
     background-color: rgb(52, 118, 162);
 }
 
