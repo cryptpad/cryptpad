@@ -582,7 +582,6 @@ var factory = function (Cache) {
                             return void reject(errDecryption);
                         }
                         // Cache and display the decrypted blob
-                        cache[uid] = u8Decrypted;
                         resolve(u8Decrypted);
                     }, function (progress) {
                         emit('progress', {
