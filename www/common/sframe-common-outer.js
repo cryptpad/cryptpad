@@ -1802,7 +1802,12 @@ define([
                             }
                             startRealtime();
                             cb();
-                        }, cryptputCfg);
+                        }, cryptputCfg, function (progress) {
+                            sframeChan.event('EV_LOADING_INFO', {
+                                type: 'pad',
+                                progress: progress
+                            });
+                        });
                         return;
                     }
                     // Start realtime outside the iframe and callback

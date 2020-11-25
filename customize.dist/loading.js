@@ -279,7 +279,7 @@ button:not(.btn).primary:hover{
     var built = false;
 
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
-    var current;
+    var current, progress;
     var makeList = function (data) {
         var c = types.indexOf(data.type);
         current = c;
@@ -295,7 +295,7 @@ button:not(.btn).primary:hover{
         };
         var list = '<ul>';
         types.forEach(function (el, i) {
-            if (i >= 6) { return; }
+            if (el === "end") { return; }
             list += getLi(i);
         });
         list += '</ul>';
@@ -303,7 +303,7 @@ button:not(.btn).primary:hover{
     };
     var makeBar = function (data) {
         var c = types.indexOf(data.type);
-        var l = types.length;
+        var l = types.length - 1; // don't count "end" as a type
         var progress = Math.min(data.progress, 100);
         var p = (progress / l) + (100 * c / l);
         var bar = '<div class="cp-loading-progress-bar">'+
@@ -315,8 +315,13 @@ button:not(.btn).primary:hover{
     var hasErrored = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
+
+        // Make sure progress doesn't go backward
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
+        if (c === current && progress > data.progress) { return console.error(data); }
+        progress = data.progress;
+
         try {
             document.querySelector('.cp-loading-spinner-container').style.display = 'none';
             document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
