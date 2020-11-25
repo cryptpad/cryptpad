@@ -362,6 +362,9 @@ define([
         });
     };
 
+    Messages.pad_mediatagShare = "Share file"; // XXX
+    Messages.pad_mediatagOpen = "Open file"; // XXX
+
     var mediatagContextMenu;
     MT.importMediaTagMenu = function (common) {
         if (mediatagContextMenu) { return mediatagContextMenu; }
@@ -377,6 +380,14 @@ define([
                     'tabindex': '-1',
                     'data-icon': "fa-eye",
                 }, Messages.pad_mediatagPreview)),
+                h('li.cp-svg', h('a.cp-app-code-context-openin.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-external-link",
+                }, Messages.pad_mediatagOpen)),
+                h('li.cp-svg', h('a.cp-app-code-context-share.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-shhare-alt",
+                }, Messages.pad_mediatagShare)),
                 h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-cloud-upload",
@@ -418,6 +429,21 @@ define([
             }
             else if ($this.hasClass("cp-app-code-context-open")) {
                 $mt.trigger('preview');
+            }
+            else if ($this.hasClass("cp-app-code-context-openin")) {
+                var hash = common.getHashFromMediaTag($mt);
+                common.openURL(Hash.hashToHref(hash, 'file'));
+            }
+            else if ($this.hasClass("cp-app-code-context-share")) {
+                var data = {
+                    file: true,
+                    pathname: '/file/',
+                    hashes: {
+                        fileHash: common.getHashFromMediaTag($mt)
+                    },
+                    title: Util.find($mt[0], ['_mediaObject', 'name']) || ''
+                };
+                common.getSframeChannel().event('EV_SHARE_OPEN', data);
             }
         });
 
