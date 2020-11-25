@@ -331,10 +331,11 @@ define([
                 APP.FM.handleFile(blob);
             });
         };
+        var MAX_IMAGE_SIZE = 1 * 1024 * 1024; // 1 MB
+        var maxSizeStr = Messages._getKey('formattedMB', [Util.bytesToMegabytes(MAX_IMAGE_SIZE)]);
         var addImageToCanvas = function (img) {
-            // 1 MB maximum
-            if (img.src && img.src.length > 1 * 1024 * 1024) {
-                UI.warn(Messages.upload_tooLargeBrief);
+            if (img.src && img.src.length > MAX_IMAGE_SIZE) {
+                UI.warn(Messages._getKey('upload_tooLargeBrief', [maxSizeStr])); // XXX update key
                 return;
             }
             var w = img.width;
@@ -356,8 +357,8 @@ define([
             var file = e.target.files[0];
             var reader = new FileReader();
             // 1 MB maximum
-            if (file.size > 1 * 1024 * 1024) {
-                UI.warn(Messages.upload_tooLargeBrief);
+            if (file.size > MAX_IMAGE_SIZE) {
+                UI.warn(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
                 return;
             }
             reader.onload = function () {
