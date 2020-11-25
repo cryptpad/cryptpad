@@ -120,7 +120,8 @@ define([
     Messages.admin_archiveInput = "Document URL";
     Messages.admin_archiveInput2 = "Document password";
     Messages.admin_archiveInval = "Invalid document";
-    Messages.restoredFromServer = "Pad restored";
+    Messages.restoredFromServer = "Document restored";
+    Messages.archivedFromServer = "Document archived";
 
     var archiveForm = function (archive, $div, $button) {
         var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
@@ -221,7 +222,7 @@ define([
                         console.error(e);
                         return;
                     }
-                    UI.log(archive ? Messages.deletedFromServer : Messages.restoredFromServer);
+                    UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
                     $input.val('');
                     $pwInput.val('');
                 });
