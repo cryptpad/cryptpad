@@ -809,6 +809,12 @@ define([
             var privateData = ctx.metadataMgr.getPrivateData();
             funcs.addShortcuts(window, Boolean(privateData.app));
 
+            var mt = Util.find(privateData, ['settings', 'general', 'mediatag-size']);
+            if (MT.MediaTag && typeof(mt) === "number") {
+                var maxMtSize = mt === -1 ? Infinity : mt * 1024 * 1024;
+                MT.MediaTag.setDefaultConfig('maxDownloadSize', maxMtSize);
+            }
+
             try {
                 var feedback = privateData.feedbackAllowed;
                 Feedback.init(feedback);

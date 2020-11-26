@@ -17,11 +17,18 @@ define([
     var Nacl = window.nacl;
 
     // Configure MediaTags to use our local viewer
+    // This file is loaded by sframe-common so the following config is used in all the inner apps
     if (MediaTag) {
         MediaTag.setDefaultConfig('pdf', {
             viewer: '/common/pdfjs/web/viewer.html'
         });
+        Messages.mediatag_saveButton = "Save"; // XXX
+        MediaTag.setDefaultConfig('download', {
+            text: Messages.download_mt_button,
+            textDl: Messages.mediatag_saveButton
+        });
     }
+    MT.MediaTag = MediaTag;
 
     // Cache of the avatars outer html (including <media-tag>)
     var avatars = {};
@@ -68,7 +75,7 @@ define([
             childList: true,
             characterData: false
         });
-        MediaTag($tag[0]).on('error', function (data) {
+        MediaTag($tag[0], {force: true}).on('error', function (data) {
             console.error(data);
         });
     };

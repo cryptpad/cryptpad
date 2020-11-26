@@ -566,7 +566,8 @@
 
         if (cfg.force) { dl(); return mediaObject; }
 
-        var maxSize = 5 * 1024 * 1024;
+        var maxSize = typeof(config.maxDownloadSize) === "number" ? config.maxDownloadSize
+                                : (5 * 1024 * 1024);
         getFileSize(src, function (err, size) {
             if (err) {
                 if (err === "XHR_ERROR 404") {

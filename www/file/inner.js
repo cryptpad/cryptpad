@@ -39,9 +39,6 @@ define([
     var Nacl = window.nacl;
 
     var APP = window.APP = {};
-    MediaTag.setDefaultConfig('download', {
-        text: Messages.download_mt_button
-    });
 
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
