@@ -1468,5 +1468,6 @@
     "loading_state_1": "Drive laden",
     "loading_state_0": "Oberfläche vorbereiten",
     "loading_state_5": "Dokument rekonstruieren",
-    "error_unhelpfulScriptError": "Skriptfehler: Siehe Konsole im Browser für Details"
+    "error_unhelpfulScriptError": "Skriptfehler: Siehe Konsole im Browser für Details",
+    "documentID": "Kennung des Dokuments"
 }

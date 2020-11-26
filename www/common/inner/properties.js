@@ -12,8 +12,6 @@ define([
              Messages, nThen) {
     var Properties = {};
 
-    Messages.documentID = Messages.documentID;
-
     var getPadProperties = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
