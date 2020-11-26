@@ -203,7 +203,6 @@ define([
                                 cb();
                             }
                         }).on('progress', function (data) {
-                            if (data.progress > 75) { return; }
                             var p = data.progress +'%';
                             $progress.width(p);
                             $progressTxt.text(Math.floor(data.progress) + '%');
