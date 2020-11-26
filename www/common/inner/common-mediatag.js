@@ -364,6 +364,7 @@ define([
 
     Messages.pad_mediatagShare = "Share file"; // XXX
     Messages.pad_mediatagOpen = "Open file"; // XXX
+    Messages.mediatag_notReady = "Not ready"; // XXX
 
     var mediatagContextMenu;
     MT.importMediaTagMenu = function (common) {
@@ -424,6 +425,8 @@ define([
             }
             else if ($this.hasClass("cp-app-code-context-download")) {
                 var media = Util.find($mt, [0, '_mediaObject']);
+                if (!media) { return void console.error('no media'); }
+                if (!media.complete) { return void UI.warn(Messages.mediatag_notReady); }
                 if (!(media && media._blob)) { return void console.error($mt); }
                 window.saveAs(media._blob.content, media.name);
             }

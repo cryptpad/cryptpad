@@ -1171,6 +1171,8 @@ define([
                 };
                 editor.plugins.mediatag.download = function($mt) {
                     var media = Util.find($mt, [0, '_mediaObject']);
+                    if (!media) { return void console.error('no media'); }
+                    if (!media.complete) { return void UI.warn(Messages.mediatag_notReady); }
                     if (!(media && media._blob)) { return void console.error($mt); }
                     window.saveAs(media._blob.content, media.name);
                 };
