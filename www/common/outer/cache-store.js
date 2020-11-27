@@ -82,8 +82,9 @@ define([
         });
     };
 
-    S.clear = function () {
-        cache.clear();
+    S.clear = function (cb) {
+        cb = Util.once(Util.mkAsync(cb || function () {}));
+        cache.clear(cb);
     };
 
     return S;

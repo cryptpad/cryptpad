@@ -1,9 +1,10 @@
 define([
     '/common/common-constants.js',
     '/common/common-hash.js',
+    '/common/outer/cache-store.js',
     '/bower_components/localforage/dist/localforage.min.js',
     '/customize/application_config.js',
-], function (Constants, Hash, localForage, AppConfig) {
+], function (Constants, Hash, Cache, localForage, AppConfig) {
     var LocalStore = {};
 
     LocalStore.setThumbnail = function (key, value, cb) {
@@ -119,7 +120,14 @@ define([
             return void AppConfig.customizeLogout(cb);
         }
 
-        if (cb) { cb(); }
+        cb = cb || function () {};
+
+        try {
+            Cache.clear(cb);
+        } catch (e) {
+            console.error(e);
+            cb();
+        }
     };
     var loginHandlers = [];
     LocalStore.loginReload = function () {
