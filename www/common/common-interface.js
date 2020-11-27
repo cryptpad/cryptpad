@@ -65,12 +65,13 @@ define([
             switch (e.which) {
                 case 27: // cancel
                     if (typeof(no) === 'function') { no(e); }
+                    $(el || window).off('keydown', handler);
                     break;
                 case 13: // enter
                     if (typeof(yes) === 'function') { yes(e); }
+                    $(el || window).off('keydown', handler);
                     break;
             }
-            $(el || window).off('keydown', handler);
         };
 
         $(el || window).keydown(handler);

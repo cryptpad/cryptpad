@@ -53,13 +53,55 @@
                     editor.plugins.mediatag.import($mt);
                 }
             });
+            editor.addCommand('downloadMT', {
+                exec: function (editor) {
+                    var w = targetWidget;
+                    targetWidget = undefined;
+                    var $mt = $(w.$).find('media-tag');
+                    editor.plugins.mediatag.download($mt);
+                }
+            });
+            editor.addCommand('openMT', {
+                exec: function (editor) {
+                    var w = targetWidget;
+                    targetWidget = undefined;
+                    var $mt = $(w.$).find('media-tag');
+                    editor.plugins.mediatag.open($mt);
+                }
+            });
+            editor.addCommand('shareMT', {
+                exec: function (editor) {
+                    var w = targetWidget;
+                    targetWidget = undefined;
+                    var $mt = $(w.$).find('media-tag');
+                    editor.plugins.mediatag.share($mt);
+                }
+            });
 
             if (editor.addMenuItems) {
                 editor.addMenuGroup('mediatag');
+                editor.addMenuItem('open', {
+                        label: Messages.open,
+                        icon: 'iframe',
+                        command: 'openMT',
+                        group: 'mediatag'
+                });
+                editor.addMenuItem('share', {
+                        label: Messages.share,
+                        icon: 'link',
+                        command: 'shareMT',
+                        group: 'mediatag'
+                });
                 editor.addMenuItem('importMediatag', {
                         label: Messages.import,
                         icon: 'save',
                         command: 'importMediatag',
+                        group: 'mediatag'
+                });
+                editor.addMenuItem('download', {
+                        label: Messages.download,
+                        icon: 'save',
+                        command: 'downloadMT',
                         group: 'mediatag'
                 });
                 editor.addMenuItem('mediatag', {
@@ -76,6 +118,9 @@
                         targetWidget = element;
                         return {
                             mediatag: CKEDITOR.TRISTATE_OFF,
+                            open: CKEDITOR.TRISTATE_OFF,
+                            share: CKEDITOR.TRISTATE_OFF,
+                            download: CKEDITOR.TRISTATE_OFF,
                             importMediatag: CKEDITOR.TRISTATE_OFF,
                         };
                     }

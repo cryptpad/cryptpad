@@ -39,9 +39,6 @@ define([
     var Nacl = window.nacl;
 
     var APP = window.APP = {};
-    MediaTag.setDefaultConfig('download', {
-        text: Messages.download_mt_button
-    });
 
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
@@ -203,7 +200,6 @@ define([
                                 cb();
                             }
                         }).on('progress', function (data) {
-                            if (data.progress > 75) { return; }
                             var p = data.progress +'%';
                             $progress.width(p);
                             $progressTxt.text(Math.floor(data.progress) + '%');

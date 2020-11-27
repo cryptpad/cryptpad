@@ -701,7 +701,7 @@ define([
         });
     };
 
-    common.useFile = function (Crypt, cb, optsPut) {
+    common.useFile = function (Crypt, cb, optsPut, onProgress) {
         var fileHost = Config.fileHost || window.location.origin;
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
@@ -758,7 +758,9 @@ define([
                         return void cb(err);
                     }
                     u8 = _u8;
-                }));
+                }), function (progress) {
+                    onProgress(progress * 50);
+                });
             }).nThen(function (waitFor) {
                 require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
                     FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
@@ -767,7 +769,9 @@ define([
                             return void cb(err);
                         }
                         res = _res;
-                    }));
+                    }), function (progress) {
+                        onProgress(50 + progress * 50);
+                    });
                 }));
             }).nThen(function (waitFor) {
                 var ext = Util.parseFilename(data.title).ext;
