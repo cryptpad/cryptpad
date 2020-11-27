@@ -1,5 +1,5 @@
 (function (window) {
-var factory = function (Cache) {
+var factory = function () {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
@@ -199,6 +199,19 @@ var factory = function (Cache) {
         return cacheKey;
     };
 
+    var getBlobCache = function (id, cb) {
+        if (!config.Cache || typeof(config.Cache.getBlobCache) !== "function") {
+            return void cb('EINVAL');
+        }
+        config.Cache.getBlobCache(id, cb);
+    };
+    var setBlobCache = function (id, u8, cb) {
+        if (!config.Cache || typeof(config.Cache.setBlobCache) !== "function") {
+            return void cb('EINVAL');
+        }
+        config.Cache.setBlobCache(id, u8, cb);
+    };
+
     var getFileSize = function (src, _cb) {
         var cb = function (e, res) {
             _cb(e, res);
@@ -224,7 +237,7 @@ var factory = function (Cache) {
 
         if (!cacheKey) { return void check(); }
 
-        Cache.getBlobCache(cacheKey, function (err, u8) {
+        getBlobCache(cacheKey, function (err, u8) {
             if (err || !u8) { return void check(); }
             cb(null, 0);
         });
@@ -263,7 +276,7 @@ var factory = function (Cache) {
                 if (arrayBuffer) {
                     var u8 = new Uint8Array(arrayBuffer);
                     if (cacheKey) {
-                        return void Cache.setBlobCache(cacheKey, u8, function () {
+                        return void setBlobCache(cacheKey, u8, function () {
                             cb(null, u8);
                         });
                     }
@@ -276,7 +289,7 @@ var factory = function (Cache) {
 
         if (!cacheKey) { return void fetch(); }
 
-        Cache.getBlobCache(cacheKey, function (err, u8) {
+        getBlobCache(cacheKey, function (err, u8) {
             if (err || !u8) { return void fetch(); }
             cb(null, u8);
         });
@@ -628,15 +641,12 @@ var factory = function (Cache) {
 };
 
     if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(
-            require("./outer/cache-store.js")
-        );
+        module.exports = factory();
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
-            '/common/outer/cache-store.js',
             '/bower_components/es6-promise/es6-promise.min.js'
-        ], function (Cache) {
-            return factory(Cache);
+        ], function () {
+            return factory();
         });
     } else {
         // unsupported initialization

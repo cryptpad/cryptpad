@@ -680,6 +680,22 @@ define([
                     });
                 });
 
+                sframeChan.on('Q_GET_BLOB_CACHE', function (data, cb) {
+                    Utils.Cache.getBlobCache(data.id, function (err, obj) {
+                        if (err) { return void cb({error: err}); }
+                        cb(obj);
+                    });
+                });
+                sframeChan.on('Q_SET_BLOB_CACHE', function (data, cb) {
+                    if (!data || !data.u8 || typeof(data.u8) !== "object") { return void cb({error: 'EINVAL'}); }
+                    var arr = Object.keys(data.u8).map(function (i) { return data.u8[i]; });
+                    var u8 = Uint8Array.from(arr);
+                    Utils.Cache.setBlobCache(data.id, u8, function (err) {
+                        if (err) { return void cb({error: err}); }
+                        cb();
+                    });
+                });
+
                 sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
                     Cryptpad.getAttribute(data.key, function (e, data) {
                         cb({

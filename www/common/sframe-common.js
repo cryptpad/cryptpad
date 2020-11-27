@@ -11,6 +11,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
     '/common/sframe-common-mailbox.js',
+    '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
     '/common/metadata-manager.js',
 
@@ -36,6 +37,7 @@ define([
     CodeMirror,
     Cursor,
     Mailbox,
+    Cache,
     MT,
     MetadataMgr,
     AppConfig,
@@ -813,6 +815,11 @@ define([
             if (MT.MediaTag && typeof(mt) === "number") {
                 var maxMtSize = mt === -1 ? Infinity : mt * 1024 * 1024;
                 MT.MediaTag.setDefaultConfig('maxDownloadSize', maxMtSize);
+            }
+
+            if (MT.MediaTag && Cache) {
+                var cache = Cache.create(ctx.sframeChan);
+                MT.MediaTag.setDefaultConfig('Cache', cache);
             }
 
             try {
