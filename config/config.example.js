@@ -141,6 +141,8 @@ module.exports = {
 
     /*  CryptPad will display a point of contact for your instance on its contact page
      *  (/contact.html) if you provide it below.
+     *  This email will also be sent to the CryptPad Team as part of the daily check unless you
+     *  set the blockAdminEmail parameter.
      */
     adminEmail: 'i.did.not.read.my.config@cryptpad.fr',
 
@@ -148,11 +150,64 @@ module.exports = {
      *  By default, CryptPad contacts one of our servers once a day.
      *  This check-in will also send some very basic information about your instance including its
      *  version and the adminEmail so we can reach you if we are aware of a serious problem.
-     *  We will never sell it or send you marketing mail.
+     *
      *
      *  If you want to block this check-in and remain set 'blockDailyCheck' to true.
+     *  If you want to send the daily check but without the administrator email set 'blockAdminEmail' to true
+     *  If you want to send the daily check but without instance statistical information set 'blockStats' to true
+     *
+     *  These information allows the CryptPad Team to count how many instances are running including by country
+     *  It also allows to estimate the number of users of CryptPad instances around the world.
+     *  We will use the aggregated information in order to promote CryptPad and encourage more use of it.  
+     *
+     *  We will never sell it or send you marketing mail.
+     *
+     *  In case you would like your data to be deleted, you can contact the CryptPad Team at privacy@cryptpad.fr
      */
     //blockDailyCheck: false,
+    //blockAdminEmail: false,
+    //blockStats: false,
+
+    /*
+     *  By default the information sent with the daily check will NOT be published
+     *  and is kept only by the CryptPad development team
+     *  If you would like to publish this information and be listed in the directory
+     *  at https://cryptpad.fr/servers/ please set the following value to "true"
+     *  and update the information below that are being sent
+     */
+    //serverPublish: false,    
+
+    /*
+     *
+     *  By default the statistical information sent with the daily check will NOT be published
+     *  and is kept only by the CryptPad development team
+     *  If you would like to publish this information in the directory
+     *  at https://cryptpad.fr/servers/ please set the following value to "true"
+     *  and update the information below that are being sent
+     */
+    //serverStatsPublish: false,
+
+    /* 
+     *  In case you would like you instance to be published in the directory of CryptPad instances
+     *  You should provide a name of your instance.
+     *
+     *  For this update the information below 
+     */
+    //serverName: "noname",
+
+    /* 
+     *  In case you would like you instance to be published in the directory of CryptPad instances
+     *  You should provide a description of your instance.
+     *
+     *  For this update the information below 
+     */
+    //serverDesc: "no description provided",
+
+    /*
+     * Wether the Server is open for registration or private
+     * It should be one of: open, private, unknown
+     */
+    //serverType: "unknown",
 
     /*
      *  By default users get 50MB of storage by registering on an instance.
