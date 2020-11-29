@@ -1,0 +1,306 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) "../../customize/src/less2/include/limit-bar.less";
+
+&.cp-app-accounts {
+    .limit-bar_main();
+
+    .framework_min_main(
+        @bg-color: @colortheme_admin-bg,
+        @warn-color: @colortheme_admin-warn,
+        @color: @colortheme_admin-color
+    );
+    .sidebar-layout_main();
+
+    .cp-hidden {
+        display: none !important;
+    }
+
+    display: flex;
+    flex-flow: column;
+
+    @plan_basic: #DDEFFF;
+    @plan_pro: #E4FFDD;
+    @plan_power: #F6DDFF;
+    @alert-neutral: #EFEFEF;
+    @active-color: #AFFDC2;
+    @inactive-color: #FFD4D4;
+
+
+    #cp-sidebarlayout-rightside {
+        color: @cryptpad_text_col !important;
+        .alert {
+            font-size: 14px;
+        }
+    }
+    .cp-accounts-subscribe-anon, .cp-accounts-subscribe-form, .cp-accounts-subscribe-admin {
+        max-width: 940px;
+        margin: 10px auto 20px !important;
+    }
+
+    .cp-accounts-donate {
+        max-width: 650px;
+    }
+
+    .cp-limit-container {
+        .cp-limit-buttons {
+            display: none;
+        }
+    }
+
+    .cp-accounts-mysubs-addplan {
+        max-width: 830px;
+        #gift label {
+            margin-bottom: 0;
+            margin-top: 10px;
+            font-weight: unset;
+        }
+    }
+    .cp-accounts-subscribe-form {
+        ul {
+            list-style-position: outside;
+            padding-left: 10px;
+            margin-left: 10px;
+        }
+        .subscription-info {
+            font-size: 14px;
+        }
+        .subscription-terms {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .active-plan {
+            margin: 20px 0;
+        }
+
+        .choose-plan {
+            display: flex;
+            justify-content: space-between;
+            @media (max-width: @browser_media-medium-screen) {
+                flex-flow: column;
+                align-items: center;
+            }
+        }
+        .plan {
+            display: flex;
+            flex-flow: column;
+            width: 300px;
+            min-height: 350px;
+            &:not(:last-child) {
+                margin-right: 20px;
+                @media (max-width: @browser_media-medium-screen) {
+                    margin-right: 0;
+                    margin-bottom: 20px;
+                }
+            }
+            .plan-header-text {
+                text-transform: capitalize;
+                font-size: 30px;
+            }
+            .plan-price-area {
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                .plan-price-text {
+                    font-size: 60px;
+                    font-weight: bold;
+                }
+            }
+            ul.plan-details {
+                flex: 1;
+                padding-right: 10px;
+                margin-left: 15px;
+            }
+            .buttons {
+                margin: 10px;
+                button {
+                    width: 100%;
+                    font-weight: bold;
+                }
+            }
+            .alert {
+                margin: 0 10px;
+                background: white;
+                border: none;
+                color: inherit;
+            }
+        }
+        .plan-basic {
+            background-color: @plan_basic;
+        }
+        .plan-pro {
+            background-color: @plan_pro;
+        }
+        .plan-power {
+            background-color: @plan_power;
+        }
+        .link-to-stripe {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .info-bottom {
+            font-size: 14px;
+            p {
+                margin-bottom: 0;
+            }
+        }
+    }
+    .cp-accounts-mysubs-data {
+        .active-subs {
+            .subscription {
+                min-height: 300px;
+                width: 500px;
+            }
+
+            .alert {
+                background: white;
+                display: flex;
+                flex-flow: row;
+                color: inherit;
+                border: none;
+                align-items: center;
+                font-size: 14px;
+                button {
+                    flex-shrink: 0;
+                    margin-top: 0px !important;
+                }
+            }
+
+            .users {
+                display: flex;
+                width: 100%;
+                & > span {
+                    width: 180px;
+                    margin-right: 10px;
+                }
+            }
+        }
+        .subscription-container {
+            .subscription {
+                min-height: 175px;
+                width: 300px;
+                &:not(.details) {
+                    .creation, .notes, .expired, .cancel, .close-d, .storage {
+                        display: none !important;
+                    }
+                }
+                &.details {
+                    .open-d {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+        .subscription-container, .active-subs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+
+            .subscription {
+                display: flex;
+                flex-flow: column;
+                align-items: baseline;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                margin-right: 20px;
+                padding: 10px;
+                background-color: #eee;
+                position: relative;
+
+                & > span {
+                    margin-bottom: 10px;
+                }
+
+                button.open-details {
+                    width: 100%;
+                }
+
+                .open-d, .close-d {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    i {
+                        margin-right: 5px;
+                    }
+                }
+
+                .billing, .shared, .expired {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    button {
+                        margin-right: 0 !important;
+                    }
+                }
+                .billing {
+                    .text {
+                        display: flex;
+                        flex-flow: column;
+                    }
+                }
+
+                .plan {
+                    font-size: 20px;
+                }
+
+                .active, .inactive {
+                    position: absolute;
+                    padding: 0 5px;
+                    right: 5px;
+                    top: 5px;
+                }
+                .inactive {
+                    background-color: @inactive-color;
+                }
+                .active {
+                    background-color: @active-color;
+                }
+
+                .benificiary-data {
+                    display: flex;
+                    align-items: center;
+                    background: white;
+                    padding: 5px;
+                    .cp-avatar {
+                        margin-right: 10px;
+                        flex-shrink: 0;
+                    }
+                    .name {
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                }
+
+                .notes {
+                    flex: 1;
+                    max-height: 60px;
+                }
+
+                .avatar_main(30px);
+            }
+        }
+    }
+    .cp-accounts-mysubs-addplan {
+        .avatar_main(30px);
+    }
+
+    .cp-accounts-subscribe-admin {
+        div.admin {
+            margin-bottom: 150px;
+        }
+    }
+
+    .cp-accounts-admin {
+        input[type="text"] {
+            width: auto;
+        }
+    }
+
+}
+

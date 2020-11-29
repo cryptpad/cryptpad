@@ -1,0 +1,360 @@
+.hide {
+    display:none;
+}
+
+div.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+div.plan, div.renewal {
+    border: 1px solid transparent;
+}
+div.plan-selected, div.renewal-selected {
+    border: 1px solid #dde;
+    background: #eef;
+}
+#info {
+    margin-bottom: 20px;
+}
+.bold {
+    font-weight: bold;
+}
+.choose-plan .plan img {
+    width: 100%;
+}
+.spinner-div {
+    margin: 20px auto;
+    text-align: center;
+    display: block;
+}
+.loading-message {
+    font-size: 2rem;
+}
+
+/* login form */
+
+.login-form {
+    width: 300px;
+}
+
+.login-form-entry {
+    margin-bottom: 10px;
+}
+
+
+.support-disabled {
+        opacity: 0.4;
+        background: #eee;
+}
+.support-pro-noauth {
+        width: 90%;
+        margin-right: auto;
+        margin-left: auto;
+}
+
+
+.plan-details, .support-details, .donate-details {
+    margin-top: 20px;
+    text-align:left;
+    font-family: lato, Helvetica, sans-serif;
+    font-size: 1.02em;
+}
+
+/*End of Plan Style*/
+
+.choose-renewal {
+    margin: 10px 10%;
+    padding: 20px;
+    flex-flow: column;
+    display: flex;
+    background: #efe;
+    justify-content: center;
+    align-items: center;
+}
+.renewal-options {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    justify-content: space-evenly;
+}
+.cp h3.renewal-description {
+    padding-top: 0;
+}
+.renewal-label {
+    display: inline-flex;
+    align-items: center;
+}
+.renewal-label input {
+    margin-right: 5px;
+}
+
+
+.cp button.btn-plan-basic, button.btn-donate5, button.btn-gift {
+    background-color: #00ADEE;
+    border-color: #00ADEE;
+}
+.cp button.btn-plan-pro {
+    background-color: #78b336;
+    border-color: #78b336;
+}
+.cp button.btn-plan-power, .cp button.btn-donate10 {
+    background-color: #F87217;
+    border-color: #F87217;
+}
+.cp button.paybutton:hover {
+    opacity: 0.7;
+}
+
+.center {
+    text-align: center;
+}
+
+table.subscription-table {
+    width: 100%;
+}
+table.subscription-table .cell-benificiary {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+table.subscription-table tr.personnal-subscription {
+    background-color: #eef;
+}
+table.subscription-table .cell-cancel {
+    text-align: center;
+}
+
+.active-subs div.buttons {
+    text-align: center;
+}
+.active-subs div.buttons button {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.active-subs div.buttons .show-active-only-box {
+    margin-left: 5px;
+}
+
+.cp-contacts-container {
+    display: flex;
+    flex-flow: row wrap;
+}
+.cp-contacts-container .cp-contact {
+    padding: 5px;
+    margin-right: 5px;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 20px;
+    cursor: pointer;
+}
+.cp-contacts-container .cp-contact:hover {
+    background: rgba(0,0,0,0.2);
+}
+.cp-contacts-container .cp-avatar {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+}
+.cp-contacts-container .cp-name {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.subscription-form div.buttons {
+    text-align: center;
+}
+
+#info .button-container {
+    justify-content: flex-end;
+}
+
+
+#info div.row > div {
+    height: 40px;
+    line-height: 40px;
+}
+#info div.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+#info #error {
+    padding: 0 10px 0 10px;
+}
+/* TODO(cjd) this is crap */
+#info > span {
+    padding-left: 15px;
+}
+#info a.btn {
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: normal;
+}
+
+#heading {
+    text-align: center;
+}
+
+.pay-spinner {
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color:rgba(0, 0, 0, 0.6);
+    z-index: 999999;
+    color:white;
+
+    min-height: 100%;
+    min-height: 100vh;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+}
+.pay-spinner div {
+    width: 100%
+}
+
+#hallOfFameCheck {
+    margin-right: 5px;
+}
+
+
+.faq-container .faq-questions-q {
+    color: #3a84b6;
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 5px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.faq-container .faq-questions-q:hover {
+    color: #2e688f;
+    text-decoration: underline;
+}
+.faq-container .faq-questions-a {
+    display: none;
+    padding: 0;
+}
+
+.crypto input {
+    width: 100%;
+    background-color: rgba(0,0,0,0.03);
+    border: 0px;
+}
+.crypto table {
+    width: 100%;
+}
+.crypto .coin-address {
+    width: 100%;
+    padding-left: 5px;
+}
+
+.cp-admin-tabs-container {
+    height: 50px;
+    margin: 20px 0;
+    display: flex;
+}
+
+.cp-admin-tab {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    background: #EEF;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top: 1px solid #AAA;
+    border-left: 1px solid #AAA;
+    border-right: 1px solid #AAA;
+    padding: 10px;
+    cursor: pointer;
+}
+.cp-admin-tab:hover {
+    background: #DDE;
+}
+.cp-admin-tab.active {
+    background: #DDE;
+    cursor: default;
+}
+
+.cp-admin-stats {
+    background-color: #EEE;
+    padding: 20px;
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.cp-admin-stats p {
+    margin-bottom: 0;
+}
+.cp div.cp-stats {
+    flex: 1;
+}
+.cp div.cp-stats * {
+    padding: 0;
+    margin: 0;
+}
+
+.cp-admin-stats .cp-stats-note {
+    font-style: italic;
+    font-size: 14px;
+    width: 100%;
+}
+
+.cp-admin-edit-getform input {
+    margin: 0 10px;
+}
+.cp-admin-edit-found th {
+    border: 1px solid #CCC;
+}
+.cp-admin-edit-found tbody tr:hover {
+    background: #EEE;
+}
+.cp-admin-edit-found td {
+    padding: 5px;
+    border: 1px solid #CCC;
+    cursor: pointer;
+}
+.cp-admin-edit-getform input {
+    margin: 0 10px;
+}
+.cp-admin-edit-form p {
+    background: #AA0000;
+    color: white;
+    font-weight: bold;
+    padding: 5px;
+}
+.cp-admin-edit-form-content .cp-edit-field {
+    font-weight: bold;
+}
+.cp-admin-edit-form-content .cp-edit-note {
+    font-size: 0.9em;
+    font-style: italic;
+}
+.cp-admin-edit-form-content input {
+    margin: 0 10px;
+    padding: 0 5px;
+    border: 1px solid #888;
+}
+.cp-admin-edit-form-content {
+    display: flex;
+    flex-flow: column;
+}
