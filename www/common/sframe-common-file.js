@@ -654,6 +654,7 @@ define([
                 fileHost: privateData.fileHost,
                 get: common.getPad,
                 sframeChan: sframeChan,
+                cache: common.getCache()
             };
 
             var dl = downloadFunction(ctx, data, function (err, obj) {

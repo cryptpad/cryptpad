@@ -274,32 +274,71 @@
 
 
     // given a path, asynchronously return an arraybuffer
-    Util.fetch = function (src, cb, progress) {
-        var CB = Util.once(cb);
+    var getCacheKey = function (src) {
+        var _src = src.replace(/(\/)*$/, ''); // Remove trailing slashes
+        var idx = _src.lastIndexOf('/');
+        var cacheKey = _src.slice(idx+1);
+        if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
+        return cacheKey;
+    };
+    Util.fetch = function (src, cb, progress, cache) {
+        var CB = Util.once(Util.mkAsync(cb));
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", src, true);
-        if (progress) {
-            xhr.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    var percentComplete = evt.loaded / evt.total;
-                    progress(percentComplete);
-                }
-            }, false);
-        }
-        xhr.responseType = "arraybuffer";
-        xhr.onerror = function (err) { CB(err); };
-        xhr.onload = function () {
-            if (/^4/.test(''+this.status)) {
-                return CB('XHR_ERROR');
-            }
-            return void CB(void 0, new Uint8Array(xhr.response));
+        var cacheKey = getCacheKey(src);
+        var getBlobCache = function (id, cb) {
+            if (!cache || typeof(cache.getBlobCache) !== "function") { return void cb('EINVAL'); }
+            cache.getBlobCache(id, cb);
         };
-        xhr.send(null);
+        var setBlobCache = function (id, u8, cb) {
+            if (!cache || typeof(cache.setBlobCache) !== "function") { return void cb('EINVAL'); }
+            cache.setBlobCache(id, u8, cb);
+        };
+
+        var xhr;
+
+        var fetch = function () {
+            xhr = new XMLHttpRequest();
+            xhr.open("GET", src, true);
+            if (progress) {
+                xhr.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        progress(percentComplete);
+                    }
+                }, false);
+            }
+            xhr.responseType = "arraybuffer";
+            xhr.onerror = function (err) { CB(err); };
+            xhr.onload = function () {
+                if (/^4/.test(''+this.status)) {
+                    return CB('XHR_ERROR');
+                }
+
+                var arrayBuffer = xhr.response;
+                if (arrayBuffer) {
+                    var u8 = new Uint8Array(arrayBuffer);
+                    if (cacheKey) {
+                        return void setBlobCache(cacheKey, u8, function () {
+                            CB(null, u8);
+                        });
+                    }
+                    return void CB(void 0, u8);
+                }
+                CB('ENOENT');
+            };
+            xhr.send(null);
+        };
+
+        if (!cacheKey) { return void fetch(); }
+
+        getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void fetch(); }
+            CB(void 0, u8);
+        });
 
         return {
             cancel: function () {
-                if (xhr.abort) { xhr.abort(); }
+                if (xhr && xhr.abort) { xhr.abort(); }
             }
         };
     };

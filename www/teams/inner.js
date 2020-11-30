@@ -1071,7 +1071,7 @@ define([
                         Feedback.send('FULL_TEAMDRIVE_EXPORT_COMPLETE');
                         saveAs(blob, filename);
                     }, errors);
-                }, ui.update);
+                }, ui.update, common.getCache);
                 ui.onCancel(function() {
                     ui.close();
                     bu.stop();

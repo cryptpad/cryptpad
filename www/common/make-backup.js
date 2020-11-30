@@ -1,17 +1,18 @@
 define([
     'jquery',
-    '/common/cryptget.js',
     '/file/file-crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/common-feedback.js',
+    '/common/inner/cache.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
     '/bower_components/jszip/dist/jszip.min.js',
-], function ($, Crypt, FileCrypto, Hash, Util, UI, h, Feedback, Messages, nThen, Saferphore, JsZip) {
+], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
+             Cache, Messages, nThen, Saferphore, JsZip) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
@@ -89,7 +90,7 @@ define([
             if (updateProgress && updateProgress.progress) {
                 updateProgress.progress(data);
             }
-        });
+        }, ctx.cache);
 
         var cancel = function () {
             cancelled = true;
@@ -291,7 +292,7 @@ define([
     };
 
     // Main function. Create the empty zip and fill it starting from drive.root
-    var create = function (data, getPad, fileHost, cb, progress) {
+    var create = function (data, getPad, fileHost, cb, progress, cache) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
         var ctx = {
@@ -305,7 +306,8 @@ define([
             sem: sem,
             updateProgress: progress,
             max: 0,
-            done: 0
+            done: 0,
+            cache: cache
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         progress('reading', -1);
@@ -356,7 +358,7 @@ define([
             else if (state === "done") {
                 updateProgress.folderProgress(3);
             }
-        });
+        }, ctx.cache);
     };
 
     var createExportUI = function (origin) {

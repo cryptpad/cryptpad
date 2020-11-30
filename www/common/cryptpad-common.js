@@ -3,6 +3,7 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/outer/cache-store.js',
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
@@ -14,7 +15,7 @@ define([
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-], function (Config, Messages, Util, Hash,
+], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
@@ -760,7 +761,7 @@ define([
                     u8 = _u8;
                 }), function (progress) {
                     onProgress(progress * 50);
-                });
+                }, Cache);
             }).nThen(function (waitFor) {
                 require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
                     FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
