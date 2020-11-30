@@ -24,8 +24,8 @@ define([
         });
         Messages.mediatag_saveButton = "Save"; // XXX
         MediaTag.setDefaultConfig('download', {
-            text: Messages.download_mt_button,
-            textDl: Messages.mediatag_saveButton
+            text: Messages.mediatag_saveButton,
+            textDl: Messages.download_mt_button,
         });
     }
     MT.MediaTag = MediaTag;

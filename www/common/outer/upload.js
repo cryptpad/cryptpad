@@ -1,9 +1,11 @@
 define([
     '/file/file-crypto.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
+    '/common/outer/cache-store.js',
     '/bower_components/nthen/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (FileCrypto, Hash, nThen) {
+], function (FileCrypto, Hash, Util, Cache, nThen) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -31,9 +33,11 @@ define([
         };
 
         var actual = 0;
+        var encryptedArr = [];;
         var again = function (err, box) {
             if (err) { onError(err); }
             if (box) {
+                encryptedArr.push(box);
                 actual += box.length;
                 var progressValue = (actual / estimate * 100);
                 progressValue = Math.min(progressValue, 100);
@@ -55,9 +59,11 @@ define([
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
 
-
-
-                cb();
+                var box_u8 = Util.uint8ArrayJoin(encryptedArr);
+                Cache.setBlobCache(id, box_u8, function (err) {
+                    if (err) { console.warn(err); }
+                    cb();
+                });
             });
         };
 
