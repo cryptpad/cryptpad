@@ -33,7 +33,7 @@ define([
         };
 
         var actual = 0;
-        var encryptedArr = [];;
+        var encryptedArr = [];
         var again = function (err, box) {
             if (err) { onError(err); }
             if (box) {

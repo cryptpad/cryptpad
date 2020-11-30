@@ -658,7 +658,7 @@ define([
                     $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
-                if ($mt.children().length) {
+                if ($mt.children().length && $mt[0]._mediaObject) {
                     $mt.off('click dblclick preview');
                     $mt.on('preview', onPreview($mt));
                     if ($mt.find('img').length) {
@@ -672,10 +672,10 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            var list_values = slice(mutation.target.children)
+                            var list_values = slice(el.children)
                                                 .map(function (el) { return el.outerHTML; })
                                                 .join('');
-                            mediaMap[mutation.target.getAttribute('src')] = list_values;
+                            mediaMap[el.getAttribute('src')] = list_values;
                             if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
@@ -689,6 +689,7 @@ define([
                 });
                 observer.observe(el, {
                     attributes: false,
+                    subtree: true,
                     childList: true,
                     characterData: false
                 });

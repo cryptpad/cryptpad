@@ -126,6 +126,8 @@ var factory = function () {
 
     var makeProgressBar = function (cfg, mediaObject) {
         // XXX CSP: we'll need to add style in cryptpad's less
+        if (mediaObject.bar) { return; }
+        mediaObject.bar = true;
         var style = (function(){/*
 .mediatag-progress-container {
     position: relative;
@@ -181,10 +183,15 @@ var factory = function () {
     var makeDownloadButton = function (cfg, mediaObject, size, cb) {
         var btn = document.createElement('button');
         btn.setAttribute('class', 'btn btn-default');
+        btn.setAttribute('data-dl', '1');
         btn.innerHTML = '<i class="fa fa-paperclip"></i>' +
                 cfg.download.textDl + ' <b>(' + size  + 'MB)</b>';
         btn.addEventListener('click', function () {
             makeProgressBar(cfg, mediaObject);
+            var a = document.querySelectorAll('media-tag[src="'+mediaObject.tag.getAttribute('src')+'"] button[data-dl]');
+            for(var i = 0; i < a.length; i++) {
+                if (a[i] !== btn) { a[i].click(); }
+            }
             cb();
         });
         mediaObject.tag.innerHTML = '';
@@ -582,32 +589,50 @@ var factory = function () {
             emit('error', err);
         };
 
+        var getCache = function () {
+            var c = cache[uid];
+            if (!c || !c.promise || !c.mt) { console.error(uid);return; }
+            return c;
+        };
+
         var dl = function () {
             // Download the encrypted blob
-            cache[uid] = cache[uid] || new Promise(function (resolve, reject) {
-                download(src, function (err, u8Encrypted) {
-                    if (err) {
-                        return void reject(err);
-                    }
-                    // Decrypt the blob
-                    decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
-                        if (errDecryption) {
-                            return void reject(errDecryption);
+            cache[uid] = getCache() || {
+                promise: new Promise(function (resolve, reject) {
+                    download(src, function (err, u8Encrypted) {
+                        if (err) {
+                            return void reject(err);
                         }
-                        // Cache and display the decrypted blob
-                        resolve(u8Decrypted);
+                        // Decrypt the blob
+                        decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
+                            if (errDecryption) {
+                                return void reject(errDecryption);
+                            }
+                            // Cache and display the decrypted blob
+                            resolve(u8Decrypted);
+                        }, function (progress) {
+                            emit('progress', {
+                                progress: 50+0.5*progress
+                            });
+                        });
                     }, function (progress) {
                         emit('progress', {
-                            progress: 50+0.5*progress
+                            progress: 0.5*progress
                         });
                     });
-                }, function (progress) {
+                }),
+                mt: mediaObject
+            };
+            if (cache[uid].mt !== mediaObject) {
+                // Add progress for other instances of this tag
+                cache[uid].mt.on('progress', function (obj) {
+                    if (!mediaObject.bar) { makeProgressBar(cfg, mediaObject); }
                     emit('progress', {
-                        progress: 0.5*progress
+                        progress: obj.progress
                     });
                 });
-            });
-            cache[uid].then(function (u8) {
+            }
+            cache[uid].promise.then(function (u8) {
                 end(u8);
             }, function (err) {
                 error(err);
@@ -622,7 +647,12 @@ var factory = function () {
             if (err) {
                 return void error(err);
             }
-            if (!size || size <  maxSize) { return void dl(); }
+            // If the size is smaller than the autodownload limit, load the blob.
+            // If the blob is already loaded or being loaded, don't show the button.
+            if (!size || size <  maxSize || getCache()) {
+                makeProgressBar(cfg, mediaObject);
+                return void dl();
+            }
             var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
             makeDownloadButton(cfg, mediaObject, sizeMb, dl);
         });
