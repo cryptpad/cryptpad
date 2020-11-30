@@ -591,7 +591,7 @@ var factory = function () {
 
         var getCache = function () {
             var c = cache[uid];
-            if (!c || !c.promise || !c.mt) { console.error(uid);return; }
+            if (!c || !c.promise || !c.mt) { return; }
             return c;
         };
 

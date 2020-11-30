@@ -683,15 +683,12 @@ define([
                 sframeChan.on('Q_GET_BLOB_CACHE', function (data, cb) {
                     Utils.Cache.getBlobCache(data.id, function (err, obj) {
                         if (err) { return void cb({error: err}); }
-                        var arr = [].slice.call(obj);
-                        cb(arr);
+                        cb(obj);
                     });
                 });
                 sframeChan.on('Q_SET_BLOB_CACHE', function (data, cb) {
                     if (!data || !data.u8 || typeof(data.u8) !== "object") { return void cb({error: 'EINVAL'}); }
-                    var arr = data.u8;
-                    var u8 = Uint8Array.from(arr);
-                    Utils.Cache.setBlobCache(data.id, u8, function (err) {
+                    Utils.Cache.setBlobCache(data.id, data.u8, function (err) {
                         if (err) { return void cb({error: err}); }
                         cb();
                     });
