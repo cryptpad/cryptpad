@@ -1355,6 +1355,10 @@ define([
                 });
             };
 
+            APP.openURL = function (url) {
+                common.openUnsafeURL(url);
+            };
+
             APP.loadingImage = 0;
             APP.getImageURL = function(name, callback) {
                 var mediasSources = getMediasSources();

@@ -1598,9 +1598,9 @@ define([
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/profile/');
+                        Common.openURL(origin+'/profile/');
                     } else {
-                        window.parent.location = origin+'/profile/';
+                        Common.gotoURL(origin+'/profile/');
                     }
                 },
             });
@@ -1645,9 +1645,9 @@ define([
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/settings/');
+                        Common.openURL(origin+'/settings/');
                     } else {
-                        window.parent.location = origin+'/settings/';
+                        Common.gotoURL(origin+'/settings/');
                     }
                 },
             });
@@ -1662,9 +1662,9 @@ define([
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/admin/');
+                        Common.openURL(origin+'/admin/');
                     } else {
-                        window.parent.location = origin+'/admin/';
+                        Common.gotoURL(origin+'/admin/');
                     }
                 },
             });
@@ -1676,9 +1676,9 @@ define([
                 content: h('span', Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/support/');
+                        Common.openURL(origin+'/support/');
                     } else {
-                        window.parent.location = origin+'/support/';
+                        Common.gotoURL(origin+'/support/');
                     }
                 },
             });
@@ -1763,7 +1763,7 @@ define([
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
                     Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                        window.parent.location = origin + '/';
+                        Common.gotoURL(origin + '/');
                     });
                 },
             });
@@ -1773,7 +1773,7 @@ define([
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
-                        window.parent.location = origin+'/';
+                        Common.gotoURL(origin+'/');
                     });
                 },
             });

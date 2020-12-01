@@ -136,13 +136,11 @@ define([
 
             file.uid = Util.uid();
             response.expect(file.uid, function (href) {
-                var mdMgr = common.getMetadataMgr();
-                var origin = mdMgr.getPrivateData().origin;
                 $link.prepend($('<span>', {'class': 'fa fa-external-link'}));
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
-                        window.open(origin + $link.attr('href'), '_blank');
+                        common.openURL($link.attr('href'));
                     });
                 var title = metadata.name;
                 if (!config.noStore) {

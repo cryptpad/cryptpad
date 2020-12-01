@@ -552,6 +552,10 @@ define([
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.openUnsafeURL = function (url) {
+        var app = ctx.metadataMgr.getPrivateData().app;
+        if (app === "sheet") {
+            return void ctx.sframeChan.event('EV_OPEN_UNSAFE_URL', url);
+        }
         var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(url);
         window.open(bounceHref);
     };
@@ -680,6 +684,10 @@ define([
 
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
                 UI.errorLoadingScreen(Messages.password_error_seed);
+            });
+
+            ctx.sframeChan.on("EV_POPUP_BLOCKED", function () {
+                UI.alert(Messages.errorPopupBlocked);
             });
 
             ctx.sframeChan.on("EV_EXPIRED_ERROR", function () {

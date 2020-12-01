@@ -338,7 +338,7 @@ MessengerUI, Messages) {
             if (data.profile) {
                 $span.addClass('cp-userlist-clickable');
                 $span.click(function () {
-                    window.open(origin+'/profile/#' + data.profile);
+                    Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
             Common.displayAvatar($span, data.avatar, name, function () {
@@ -830,7 +830,7 @@ MessengerUI, Messages) {
             title: buttonTitle,
             'class': "cp-toolbar-link-logo"
         }).append(UIElements.getSvgLogo());
-        
+
         /*.append($('<img>', {
             //src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
             src: '/customize/main-favicon.png?' + ApiConfig.requireConf.urlArgs
@@ -838,10 +838,10 @@ MessengerUI, Messages) {
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
-                window.open(href);
+                Common.openURL(href);
                 return;
             }
-            window.parent.location = href;
+            Common.gotoURL(href);
         };
 
         var onContext = function (e) { e.stopPropagation(); };
