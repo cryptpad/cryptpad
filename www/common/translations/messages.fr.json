@@ -1469,5 +1469,7 @@
     "tag_edit": "Modifier",
     "tag_add": "Ajouter",
     "error_unhelpfulScriptError": "Erreur de script : consultez la console du navigateur pour plus de détails",
-    "documentID": "Référence du document"
+    "documentID": "Référence du document",
+    "unableToDisplay": "Impossible d'afficher le document. Veuillez recharger la page avec la touche Échap.",
+    "errorPopupBlocked": "CryptPad doit pouvoir ouvrir de nouveaux onglets pour fonctionner. Veuillez autoriser les fenêtres pop-up dans la barre d'adresse de votre navigateur. Ces fenêtres ne seront jamais utilisées pour vous montrer de la publicité."
 }
