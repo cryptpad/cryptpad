@@ -295,6 +295,8 @@ module.exports = {
      */
     blobStagingPath: './data/blobstage',
 
+    decreePath: './data/decrees',
+
     /* CryptPad supports logging events directly to the disk in a 'logs' directory
      * Set its location here, or set it to false (or nothing) if you'd rather not log
      */
