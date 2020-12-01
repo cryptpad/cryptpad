@@ -1609,33 +1609,37 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/drive/',
                     'class': 'fa fa-hdd-o'
                 },
-                content: h('span', Messages.type.drive)
+                content: h('span', Messages.type.drive),
+                action: function () {
+                    Common.openURL(origin+'/drive/');
+                },
+            });
             });
         }
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/teams/',
                     'class': 'fa fa-users'
                 },
-                content: h('span', Messages.type.teams)
+                content: h('span', Messages.type.teams),
+                action: function () {
+                    Common.openURL('/teams/');
+                },
             });
         }
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/contacts/',
                     'class': 'fa fa-address-book'
                 },
-                content: h('span', Messages.type.contacts)
+                content: h('span', Messages.type.contacts),
+                action: function () {
+                    Common.openURL('/contacts/');
+                },
             });
         }
         if (padType !== 'settings') {
@@ -1687,13 +1691,11 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': AppConfig.surveyURL,
                     'class': 'cp-toolbar-survey fa fa-graduation-cap'
                 },
                 content: h('span', Messages.survey),
                 action: function () {
+                    Common.openUnsafeURL(AppConfig.surveyURL);
                     Feedback.send('SURVEY_CLICKED');
                 },
             });
@@ -1712,11 +1714,12 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'target': '_blank',
-                'href': origin+'/index.html',
                 'class': 'fa fa-home'
             },
-            content: h('span', Messages.homePage)
+            content: h('span', Messages.homePage),
+            action: function () {
+                Common.openURL('/index.html');
+            },
         });
         // Add the change display name button if not in read only mode
         /*
@@ -1732,23 +1735,24 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html',
                     'class': 'fa fa-star-o'
                 },
-                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing),
+                action: function () {
+                    Common.openURL(priv.plan ? priv.accounts.upgradeURL :'/features.html');
+                },
             });
         }
         if (!priv.plan && !Config.removeDonateButton) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': priv.accounts.donateURL,
                     'class': 'fa fa-gift'
                 },
-                content: h('span', Messages.crowdfunding_button2)
+                content: h('span', Messages.crowdfunding_button2),
+                action: function () {
+                    Common.openUnsafeURL(priv.accounts.donateURL);
+                },
             });
         }
 
