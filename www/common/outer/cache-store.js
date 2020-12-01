@@ -87,5 +87,7 @@ define([
         cache.clear(cb);
     };
 
+    self.CryptPad_clearIndexedDB = S.clear;
+
     return S;
 });

@@ -463,7 +463,9 @@ define([
         setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
             Array.prototype.slice.call(tags).forEach(function(el) {
-                var mediaObject = MediaTag(el);
+                var mediaObject = MediaTag(el, {
+                    body: dom
+                });
                 $(el).on('keydown', function(e) {
                     if ([8, 46].indexOf(e.which) !== -1) {
                         $(el).remove();
@@ -473,14 +475,17 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            var list_values = [].slice.call(el.children);
-                            mediaTagMap[el.getAttribute('src')] = list_values;
+                            var list_values = slice(el.children)
+                                                .map(function (el) { return el.outerHTML; })
+                                                .join('');
+                            mediaMap[el.getAttribute('src')] = list_values;
                             if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
                 });
                 observer.observe(el, {
                     attributes: false,
+                    subtree: true,
                     childList: true,
                     characterData: false
                 });

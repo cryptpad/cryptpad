@@ -188,7 +188,7 @@ var factory = function () {
                 cfg.download.textDl + ' <b>(' + size  + 'MB)</b>';
         btn.addEventListener('click', function () {
             makeProgressBar(cfg, mediaObject);
-            var a = document.querySelectorAll('media-tag[src="'+mediaObject.tag.getAttribute('src')+'"] button[data-dl]');
+            var a = (cfg.body || document).querySelectorAll('media-tag[src="'+mediaObject.tag.getAttribute('src')+'"] button[data-dl]');
             for(var i = 0; i < a.length; i++) {
                 if (a[i] !== btn) { a[i].click(); }
             }
