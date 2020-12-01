@@ -1616,7 +1616,6 @@ define([
                     Common.openURL(origin+'/drive/');
                 },
             });
-            });
         }
         if (padType !== 'teams' && accountName) {
             options.push({
