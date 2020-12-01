@@ -739,7 +739,16 @@ define([
 
                 sframeChan.on('EV_OPEN_URL', function (url) {
                     if (url) {
-                        window.open(url);
+                        var a = window.open(url);
+                        if (!a) {
+                            sframeChan.event('EV_POPUP_BLOCKED');
+                        }
+                    }
+                });
+
+                sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
+                    if (url) {
+                        window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
                     }
                 });
 
