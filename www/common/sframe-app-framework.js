@@ -470,8 +470,9 @@ define([
         var noCache = false; // Prevent reload loops
         var onCorruptedCache = function () {
             if (noCache) {
-                // XXX translation key
-                return UI.errorLoadingScreen("Reload loop: empty chainpad for a non-empty channel");
+                UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
+                    common.gotoURL('');
+                });
             }
             noCache = true;
             var sframeChan = common.getSframeChannel();
