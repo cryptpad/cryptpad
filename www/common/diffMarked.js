@@ -303,14 +303,22 @@ define([
         return renderParagraph(p);
     };
 
+    // Note: iframe, video and audio are used in mediatags and are allowed in rich text pads.
     var forbiddenTags = [
         'SCRIPT',
-        'IFRAME',
+        //'IFRAME',
         'OBJECT',
         'APPLET',
-        'VIDEO', // privacy implications of videos are the same as images
-        'AUDIO', // same with audio
+        //'VIDEO', // privacy implications of videos are the same as images
+        //'AUDIO', // same with audio
+        'SOURCE'
     ];
+    var restrictedTags = [
+        'IFRAME',
+        'VIDEO',
+        'AUDIO'
+    ];
+
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {
             // Do not remove elements inside a media-tag
@@ -347,9 +355,16 @@ define([
         parent.removeChild(node);
     };
 
+    // Only allow iframe, video and audio with local source
+    var checkSrc = function (root) {
+        if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
+        return root.getAttribute && /^(blob\:|\/)/.test(root.getAttribute('src'));
+    };
+
     var removeForbiddenTags = function (root) {
         if (!root) { return; }
         if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
+        if (!checkSrc(root)) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
     };
 
