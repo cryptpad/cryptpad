@@ -1,5 +1,6 @@
 @import (reference) '../../customize/src/less2/include/tokenfield.less';
 @import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/markdown.less';
 
 &.cp-app-file {
 
@@ -47,6 +48,7 @@
         z-index: -1;
     }
 
+    .mediatag_cryptpad();
     media-tag {
         img {
             max-width: 100%;
@@ -197,6 +199,9 @@
             &> * {
                 max-height: 100%;
                 max-width: 100%;
+            }
+            &:empty {
+                display: none !important;
             }
         }
 

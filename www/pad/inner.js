@@ -478,7 +478,7 @@ define([
                             var list_values = slice(el.children)
                                                 .map(function (el) { return el.outerHTML; })
                                                 .join('');
-                            mediaMap[el.getAttribute('src')] = list_values;
+                            mediaTagMap[el.getAttribute('src')] = list_values;
                             if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });

@@ -125,7 +125,6 @@ var factory = function () {
     };
 
     var makeProgressBar = function (cfg, mediaObject) {
-        // XXX CSP: we'll need to add style in cryptpad's less
         if (mediaObject.bar) { return; }
         mediaObject.bar = true;
         var style = (function(){/*
@@ -151,10 +150,10 @@ var factory = function () {
 }
 .mediatag-progress-text {
     height: 25px;
+    width: 50px;
     margin-left: 5px;
     line-height: 25px;
     vertical-align: top;
-    width: auto;
     display: inline-block;
     color: #3F4141;
     font-weight: bold;
@@ -618,6 +617,7 @@ var factory = function () {
         var handlers = cfg.handlers || {
             'progress': [],
             'complete': [],
+            'metadata': [],
             'error': []
         };
 
@@ -700,8 +700,7 @@ var factory = function () {
                             if (errDecryption) {
                                 return void reject(errDecryption);
                             }
-                            // XXX emit 'metadata' u8Decrypted.metadata
-                            // Cache and display the decrypted blob
+                            emit('metadata', u8Decrypted.metadata);
                             resolve(u8Decrypted);
                         }, function (progress) {
                             emit('progress', {
@@ -736,21 +735,18 @@ var factory = function () {
 
         var maxSize = typeof(config.maxDownloadSize) === "number" ? config.maxDownloadSize
                                 : (5 * 1024 * 1024);
-        getFileSize(src, function (err, size) {
-            if (err) {
-                return void error(err);
-            }
-            // If the size is smaller than the autodownload limit, load the blob.
-            // If the blob is already loaded or being loaded, don't show the button.
-            if (!size || size <  maxSize || getCache()) {
-                makeProgressBar(cfg, mediaObject);
-                return void dl();
-            }
-            var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
-            fetchDecryptedMetadata(src, strKey, function (err, md) {
-                if (err) { return void error(err); }
-                cfg.metadata = md;
-                // XXX emit 'metadata'
+        fetchDecryptedMetadata(src, strKey, function (err, md) {
+            if (err) { return void error(err); }
+            cfg.metadata = md;
+            emit('metadata', md);
+            getFileSize(src, function (err, size) {
+                // If the size is smaller than the autodownload limit, load the blob.
+                // If the blob is already loaded or being loaded, don't show the button.
+                if (!size || size <  maxSize || getCache()) {
+                    makeProgressBar(cfg, mediaObject);
+                    return void dl();
+                }
+                var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
                 makeDownloadButton(cfg, mediaObject, sizeMb, dl);
             });
         });
@@ -764,6 +760,8 @@ var factory = function () {
     init.setDefaultConfig = function (key, value) {
         config[key] = value;
     };
+
+    init.fetchDecryptedMetadata = fetchDecryptedMetadata;
 
     return init;
 };

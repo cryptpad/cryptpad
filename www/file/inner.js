@@ -43,7 +43,6 @@ define([
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
         var $form = $('#cp-app-file-upload-form');
-        var $dlform = $('#cp-app-file-download-form');
         var $dlview = $('#cp-app-file-download-view');
         var $label = $form.find('label');
         var $bar = $('.cp-toolbar-container');
@@ -86,36 +85,44 @@ define([
 
         if (!uploadMode) {
             (function () {
-                Messages.download = "Download"; // XXX
-                Messages.decrypt = "Decrypt"; // XXX
-
-                var progress = h('div.cp-app-file-progress');
-                var progressTxt = h('span.cp-app-file-progress-txt');
-                var $progress = $(progress);
-                var $progressTxt = $(progressTxt);
-                var downloadEl = h('span.cp-app-file-progress-dl', Messages.download);
-                var decryptEl = h('span.cp-app-file-progress-dc', Messages.decrypt);
-                var progressContainer = h('div.cp-app-file-progress-container', [
-                    downloadEl,
-                    decryptEl,
-                    progress
-                ]);
-
                 var hexFileName = secret.channel;
                 var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
                 var key = secret.keys && secret.keys.cryptKey;
                 var cryptKey = Nacl.util.encodeBase64(key);
 
-                FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
-                    if (e) {
-                        if (e === 'XHR_ERROR') {
-                            return void UI.errorLoadingScreen(Messages.download_resourceNotAvailable, false, function () {
-                                common.gotoURL('/file/');
-                            });
-                        }
-                        return void console.error(e);
+                var $mt = $dlview.find('media-tag');
+                $mt.attr('src', src);
+                $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
+                $mt.css('transform', 'scale(2)');
+
+                var rightsideDisplayed = false;
+                var metadataReceived = false;
+                UI.removeLoadingScreen();
+                $dlview.show();
+
+                MediaTag($mt[0]).on('complete', function (decrypted) {
+                    $mt.css('transform', '');
+                    if (!rightsideDisplayed) {
+                        toolbar.$drawer
+                        .append(common.createButton('export', true, {}, function () {
+                            saveAs(decrypted.content, decrypted.metadata.name);
+                        }));
+                        rightsideDisplayed = true;
                     }
 
+                    // make pdfs big
+                    var toolbarHeight = $('#cp-toolbar').height();
+                    $('media-tag iframe').css({
+                        'height': 'calc(100vh - ' + toolbarHeight + 'px)',
+                        'width': '100vw',
+                        'position': 'absolute',
+                        'bottom': 0,
+                        'left': 0,
+                        'border': 0
+                    });
+                }).on('metadata', function (metadata) {
+                    if (metadataReceived) { return; }
+                    metadataReceived = true;
                     // Add pad attributes when the file is saved in the drive
                     Title.onTitleChange(function () {
                         var owners = metadata.owners;
@@ -150,106 +157,11 @@ define([
                         toolbar.$drawer.append(common.createButton('hashtag', true));
                     }
                     toolbar.$file.show();
-
-                    var displayFile = function (ev, sizeMb, CB) {
-                        var called_back;
-                        var cb = function (e) {
-                            if (called_back) { return; }
-                            called_back = true;
-                            if (CB) { CB(e); }
-                        };
-
-                        var $mt = $dlview.find('media-tag');
-                        $mt.attr('src', src);
-                        $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
-
-                        var rightsideDisplayed = false;
-
-                        MediaTag($mt[0], {
-                            force: true // Download starts automatically
-                        }).on('complete', function (decrypted) {
-                            $dlview.show();
-                            $dlform.hide();
-                            var $dlButton = $dlview.find('media-tag button');
-                            if (ev) { $dlButton.click(); }
-
-                            if (!rightsideDisplayed) {
-                                toolbar.$drawer
-                                .append(common.createButton('export', true, {}, function () {
-                                    saveAs(decrypted.content, decrypted.metadata.name);
-                                }));
-                                rightsideDisplayed = true;
-                            }
-
-                            // make pdfs big
-                            var toolbarHeight = $('#cp-toolbar').height();
-                            var $another_iframe = $('media-tag iframe').css({
-                                'height': 'calc(100vh - ' + toolbarHeight + 'px)',
-                                'width': '100vw',
-                                'position': 'absolute',
-                                'bottom': 0,
-                                'left': 0,
-                                'border': 0
-                            });
-
-                            if ($another_iframe.length) {
-                                $another_iframe.load(function () {
-                                    cb();
-                                });
-                            } else {
-                                cb();
-                            }
-                        }).on('progress', function (data) {
-                            var p = data.progress +'%';
-                            $progress.width(p);
-                            $progressTxt.text(Math.floor(data.progress) + '%');
-                        }).on('error', function (err) {
-                            console.error(err);
-                        });
-                    };
-
-                    // XXX Update "download_button" key to use "download" first and "decrypt" second
-                    var todoBigFile = function (sizeMb) {
-                        $dlform.show();
-                        UI.removeLoadingScreen();
-                        var button = h('button.btn.btn-primary', {
-                            title: Messages.download_button
-                        }, Messages.download_button);
-                        $dlform.append([
-                            h('h2', Util.fixHTML(metadata.name)),
-                            h('div.cp-button-container', [
-                                button,
-                                progressTxt
-                            ]),
-                        ]);
-
-                        // don't display the size if you don't know it.
-                        if (typeof(sizeMb) === 'number') {
-                            $dlform.find('h2').append(' - ' +
-                                Messages._getKey('formattedMB', [sizeMb]));
-                        }
-                        var decrypting = false;
-                        var onClick = function (ev) {
-                            if (decrypting) { return; }
-                            decrypting = true;
-                            $(button).prop('disabled', 'disabled');
-                            $dlform.append(progressContainer);
-                            displayFile(ev, sizeMb, function (err) {
-                                $appContainer.css('background-color',
-                                                  common.getAppConfig().appBackgroundColor);
-                                if (err) { UI.alert(err); }
-                            });
-                        };
-                        if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
-                        $(button).click(onClick);
-                    };
-                    common.getFileSize(hexFileName, function (e, data) {
-                        if (e) {
-                            return void UI.errorLoadingScreen(e);
-                        }
-                        var size = Util.bytesToMegabytes(data);
-                        return void todoBigFile(size);
-                    });
+                }).on('error', function (err) {
+                    $appContainer.css('background-color',
+                                      common.getAppConfig().appBackgroundColor);
+                    UI.warn(Messages.error);
+                    console.error(err);
                 });
             })();
             return;
