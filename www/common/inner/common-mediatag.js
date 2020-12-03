@@ -23,9 +23,10 @@ define([
             viewer: '/common/pdfjs/web/viewer.html'
         });
         Messages.mediatag_saveButton = "Save"; // XXX
+        Messages.mediatag_loadButton = "Load attachment"; // XXX
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
-            textDl: Messages.download_mt_button,
+            textDl: Messages.mediatag_loadButton,
         });
     }
     MT.MediaTag = MediaTag;

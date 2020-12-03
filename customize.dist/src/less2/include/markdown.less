@@ -94,8 +94,24 @@
             height: 80vh;
             max-height: 90vh;
         }
+        button.mediatag-download-btn {
+            flex-flow: column;
+            & > span {
+                display: flex;
+                line-height: 1.5;
+                align-items: center;
+                &.mediatag-download-name b {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
         button.btn-default {
             display: inline-flex;
+            max-width: 250px;
+            min-height: 38px;
+            justify-content: center;
             .fa {
                 margin-right: 5px;
             }

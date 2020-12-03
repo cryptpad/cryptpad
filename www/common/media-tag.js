@@ -181,14 +181,17 @@ var factory = function () {
         mediaObject.tag.appendChild(text);
     };
     var makeDownloadButton = function (cfg, mediaObject, size, cb) {
+        var metadata = cfg.metadata || {};
+        var i = '<i class="fa fa-paperclip"></i>';
+        var name = metadata.name ? '<span class="mediatag-download-name">'+ i +'<b>'+
+                                    fixHTML(metadata.name)+'</b></span>' : '';
         var btn = document.createElement('button');
-        btn.setAttribute('class', 'btn btn-default');
-        btn.setAttribute('data-dl', '1');
-        btn.innerHTML = '<i class="fa fa-paperclip"></i>' +
-                cfg.download.textDl + ' <b>(' + size  + 'MB)</b>';
+        btn.setAttribute('class', 'btn btn-default mediatag-download-btn');
+        btn.innerHTML = name + '<span>' + (name ? '' : i) +
+                cfg.download.textDl + ' <b>(' + size  + 'MB)</b></span>';
         btn.addEventListener('click', function () {
             makeProgressBar(cfg, mediaObject);
-            var a = (cfg.body || document).querySelectorAll('media-tag[src="'+mediaObject.tag.getAttribute('src')+'"] button[data-dl]');
+            var a = (cfg.body || document).querySelectorAll('media-tag[src="'+mediaObject.tag.getAttribute('src')+'"] button.mediatag-download-btn');
             for(var i = 0; i < a.length; i++) {
                 if (a[i] !== btn) { a[i].click(); }
             }
@@ -344,6 +347,95 @@ var factory = function () {
         getKeyFromStr: function (str) {
             return window.nacl.util.decodeBase64(str);
         }
+    };
+
+    // The metadata size can go up to 65535 (16 bits - 2 bytes)
+    // The first 8 bits are stored in A[0]
+    // The last 8 bits are stored in A[0]
+    var uint8ArrayJoin = function (AA) {
+        var l = 0;
+        var i = 0;
+        for (; i < AA.length; i++) { l += AA[i].length; }
+        var C = new Uint8Array(l);
+
+        i = 0;
+        for (var offset = 0; i < AA.length; i++) {
+            C.set(AA[i], offset);
+            offset += AA[i].length;
+        }
+        return C;
+    };
+    var fetchMetadata = function (src, _cb) {
+        var cb = function (e, res) {
+            _cb(e, res);
+            cb = function () {};
+        };
+
+        var cacheKey = getCacheKey(src);
+
+        var fetch = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.setRequestHeader('Range', 'bytes=0-1');
+            xhr.responseType = 'arraybuffer';
+
+            xhr.onerror = function () { return void cb("XHR_ERROR"); };
+            xhr.onload = function () {
+                // Error?
+                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+                var res = new Uint8Array(xhr.response);
+                var size = Decrypt.decodePrefix(res);
+                var xhr2 = new XMLHttpRequest();
+
+                xhr2.open("GET", src, true);
+                xhr2.setRequestHeader('Range', 'bytes=2-' + (size + 2));
+                xhr2.responseType = 'arraybuffer';
+                xhr2.onload = function () {
+                    if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+                    var res2 = new Uint8Array(xhr2.response);
+                    var all = uint8ArrayJoin([res, res2]);
+                    cb(void 0, all);
+                };
+                xhr2.send(null);
+            };
+
+            xhr.send(null);
+        };
+
+        if (!cacheKey) { return void fetch(); }
+
+        getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void fetch(); }
+
+            var size = Decrypt.decodePrefix(u8.subarray(0,2));
+            console.error(size);
+
+            cb(null, u8.subarray(0, size+2));
+        });
+    };
+    var decryptMetadata = function (u8, key) {
+        var prefix = u8.subarray(0, 2);
+        var metadataLength = Decrypt.decodePrefix(prefix);
+
+        var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
+        var metaChunk = window.nacl.secretbox.open(metaBox, Decrypt.createNonce(), key);
+
+        try {
+            return JSON.parse(window.nacl.util.encodeUTF8(metaChunk));
+        }
+        catch (e) { return null; }
+    };
+    var fetchDecryptedMetadata = function (src, strKey, cb) {
+        if (typeof(src) !== 'string') {
+            return window.setTimeout(function () {
+                cb('NO_SOURCE');
+            });
+        }
+        fetchMetadata(src, function (e, buffer) {
+            if (e) { return cb(e); }
+            var key = Decrypt.getKeyFromStr(strKey);
+            cb(void 0, decryptMetadata(buffer, key));
+        });
     };
 
     // Decrypts a Uint8Array with the given key.
@@ -608,6 +700,7 @@ var factory = function () {
                             if (errDecryption) {
                                 return void reject(errDecryption);
                             }
+                            // XXX emit 'metadata' u8Decrypted.metadata
                             // Cache and display the decrypted blob
                             resolve(u8Decrypted);
                         }, function (progress) {
@@ -654,7 +747,12 @@ var factory = function () {
                 return void dl();
             }
             var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
-            makeDownloadButton(cfg, mediaObject, sizeMb, dl);
+            fetchDecryptedMetadata(src, strKey, function (err, md) {
+                if (err) { return void error(err); }
+                cfg.metadata = md;
+                // XXX emit 'metadata'
+                makeDownloadButton(cfg, mediaObject, sizeMb, dl);
+            });
         });
 
         return mediaObject;
