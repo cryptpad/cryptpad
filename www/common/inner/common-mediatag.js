@@ -249,7 +249,6 @@ define([
         var locked = false;
         var show = function (_i) {
             if (locked) { return; }
-            locked = true;
             if (_i < 0) { i = 0; }
             else if (_i > tags.length -1) { i = tags.length - 1; }
             else { i = _i; }
@@ -293,7 +292,6 @@ define([
                     if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
                 }
                 if (!src || !key) {
-                    locked = false;
                     $spinner.hide();
                     return void UI.log(Messages.error);
                 }
@@ -307,13 +305,18 @@ define([
                         locked = false;
                         $spinner.hide();
                         UI.log(Messages.error);
+                    }).on('progress', function () {
+                        $spinner.hide();
+                        locked = true;
+                    }).on('complete', function () {
+                        locked = false;
+                        $spinner.hide();
                     });
                 });
             }
 
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function() {
-                    locked = false;
                     $spinner.hide();
                 });
             });

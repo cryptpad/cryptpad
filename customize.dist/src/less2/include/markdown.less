@@ -66,6 +66,9 @@
 
 .mediatag_cryptpad() {
     media-tag {
+        &:empty {
+            display: none !important;
+        }
         cursor: pointer;
         * {
             max-width: 100%;
