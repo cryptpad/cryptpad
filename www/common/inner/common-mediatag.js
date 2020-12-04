@@ -22,8 +22,6 @@ define([
         MediaTag.setDefaultConfig('pdf', {
             viewer: '/common/pdfjs/web/viewer.html'
         });
-        Messages.mediatag_saveButton = "Save"; // XXX
-        Messages.mediatag_loadButton = "Load attachment"; // XXX
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
             textDl: Messages.mediatag_loadButton,
@@ -372,10 +370,6 @@ define([
             }
         });
     };
-
-    Messages.pad_mediatagShare = "Share file"; // XXX
-    Messages.pad_mediatagOpen = "Open file"; // XXX
-    Messages.mediatag_notReady = "Not ready"; // XXX
 
     var mediatagContextMenu;
     MT.importMediaTagMenu = function (common) {

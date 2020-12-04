@@ -1394,7 +1394,6 @@ MessengerUI, Messages) {
             toolbar.isErrorState = bool; // Stop kickSpinner
             toolbar.title.toggleClass('cp-toolbar-unsync', bool); // "read only" next to the title
             if (bool && toolbar.spinner) {
-                Messages.offline = "OFFLINE"; // XXX
                 toolbar.spinner.text(Messages.offline);
             } else {
                 kickSpinner(toolbar, config);
