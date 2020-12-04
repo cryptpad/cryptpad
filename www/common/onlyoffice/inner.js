@@ -1365,6 +1365,10 @@ define([
                 });
             };
 
+            APP.openURL = function (url) {
+                common.openUnsafeURL(url);
+            };
+
             APP.loadingImage = 0;
             APP.getImageURL = function(name, callback) {
                 var mediasSources = getMediasSources();
@@ -2176,6 +2180,12 @@ define([
                     url: newLatest.file
                 }, function () { });
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
+            } else if (!privateData.isNewFile) {
+                // This is an empty doc but not a new file: error
+                UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
+                    common.gotoURL('');
+                });
+                throw new Error("Empty chainpad for a non-empty doc");
             } else {
                 Title.updateTitle(Title.defaultTitle);
             }
