@@ -109,19 +109,6 @@ define([
         });
         return $div;
     };
-    Messages.admin_archiveTitle = "Archive documents"; // XXX
-    Messages.admin_archiveHint = "Make a document unavailable without deleting it permanently. It will be placed in an 'archive' directory and deleted after a few days (configurable in the server configuration file)."; // XXX
-    Messages.admin_archiveButton = "Archive";
-
-    Messages.admin_unarchiveTitle = "Restore archived documents"; // XXX
-    Messages.admin_unarchiveHint = "Restore a document that has previously been archived";
-    Messages.admin_unarchiveButton = "Restore";
-
-    Messages.admin_archiveInput = "Document URL";
-    Messages.admin_archiveInput2 = "Document password";
-    Messages.admin_archiveInval = "Invalid document";
-    Messages.restoredFromServer = "Document restored";
-    Messages.archivedFromServer = "Document archived";
 
     var archiveForm = function (archive, $div, $button) {
         var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
