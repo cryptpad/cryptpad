@@ -994,7 +994,6 @@ MessengerUI, Messages) {
         var metadataMgr = config.metadataMgr;
         var privateData = metadataMgr.getPrivateData();
         if (!privateData.notifications) {
-            Messages.allowNotifications = "Allow notifications"; // XXX
             var allowNotif = h('div.cp-notifications-gotoapp', h('p', Messages.allowNotifications));
             pads_options.unshift(h("hr"));
             pads_options.unshift(allowNotif);
