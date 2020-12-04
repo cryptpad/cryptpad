@@ -8,7 +8,7 @@ define([
 ], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
 
-    common.initIframe = function (waitFor, isRt) {
+    common.initIframe = function (waitFor, isRt, pathname) {
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
         var req = {
@@ -31,7 +31,7 @@ define([
         }
 
         document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
+            ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
