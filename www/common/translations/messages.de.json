@@ -1469,5 +1469,7 @@
     "loading_state_0": "Oberfläche vorbereiten",
     "loading_state_5": "Dokument rekonstruieren",
     "error_unhelpfulScriptError": "Skriptfehler: Siehe Konsole im Browser für Details",
-    "documentID": "Kennung des Dokuments"
+    "documentID": "Kennung des Dokuments",
+    "errorPopupBlocked": "Für die Funktionsweise von CryptPad ist es erforderlich, dass neue Tabs geöffnet werden können. Bitte erlaube Pop-up-Fenster in der Adressleiste deines Browsers. Diese Fenster werden niemals dafür verwendet, dir Werbung anzuzeigen.",
+    "unableToDisplay": "Das Dokument kann nicht angezeigt werden. Drücke ESC, um die Seite neu zu laden."
 }

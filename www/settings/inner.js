@@ -577,8 +577,6 @@ define([
         cb(form);
     }, true);
 
-    Messages.settings_mediatagSizeTitle = "Autodownload size in MegaBytes (MB)"; // XXX
-    Messages.settings_mediatagSizeHint = 'Maximum size for automatically loading media elements (images, videos, pdf) embedded into the pads. Elements bigger than the specified size can be loaded manually. Use "-1" to always load the media elements automatically.'; // XXX
     makeBlock('mediatag-size', function(cb) {
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input-block',

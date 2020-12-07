@@ -994,7 +994,6 @@ MessengerUI, Messages) {
         var metadataMgr = config.metadataMgr;
         var privateData = metadataMgr.getPrivateData();
         if (!privateData.notifications) {
-            Messages.allowNotifications = "Allow notifications"; // XXX
             var allowNotif = h('div.cp-notifications-gotoapp', h('p', Messages.allowNotifications));
             pads_options.unshift(h("hr"));
             pads_options.unshift(allowNotif);
@@ -1395,7 +1394,6 @@ MessengerUI, Messages) {
             toolbar.isErrorState = bool; // Stop kickSpinner
             toolbar.title.toggleClass('cp-toolbar-unsync', bool); // "read only" next to the title
             if (bool && toolbar.spinner) {
-                Messages.offline = "OFFLINE"; // XXX
                 toolbar.spinner.text(Messages.offline);
             } else {
                 kickSpinner(toolbar, config);

@@ -47,7 +47,6 @@ define([
             return 'cp-fileupload-element-' + String(Math.random()).substring(2);
         };
 
-        Messages.fileTableHeader = "Downloads and uploads"; // XXX
         var tableHeader = h('div.cp-fileupload-header', [
             h('div.cp-fileupload-header-title', h('span', Messages.fileTableHeader)),
             h('div.cp-fileupload-header-close', h('span.fa.fa-times')),
@@ -626,8 +625,6 @@ define([
              * As updateDLProgress but for folders
              * @param {number} progressValue Progression of download, between 0 and 1
              */
-            Messages.download_zip = "Building ZIP file..."; // XXX
-            Messages.download_zip_file = "File {0}/{1}"; // XXX
             var updateProgress = function (progressValue) {
                 var text = Math.round(progressValue*100) + '%';
                 if (Array.isArray(data.list)) {

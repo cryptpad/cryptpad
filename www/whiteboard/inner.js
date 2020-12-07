@@ -335,7 +335,7 @@ define([
         var maxSizeStr = Messages._getKey('formattedMB', [Util.bytesToMegabytes(MAX_IMAGE_SIZE)]);
         var addImageToCanvas = function (img) {
             if (img.src && img.src.length > MAX_IMAGE_SIZE) {
-                UI.warn(Messages._getKey('upload_tooLargeBrief', [maxSizeStr])); // XXX update key
+                UI.warn(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
                 return;
             }
             var w = img.width;
