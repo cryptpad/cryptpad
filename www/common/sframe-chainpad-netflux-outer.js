@@ -46,6 +46,7 @@ define([], function () {
         // shim between chainpad and netflux
         var msgIn = function (peer, msg) {
             try {
+                if (/^\[/.test(msg)) { return msg; } // Already decrypted
                 var isHk = peer.length !== 32;
                 var key = isNewHash ? validateKey : false;
                 var decryptedMsg = Crypto.decrypt(msg, key, isHk);
