@@ -54,7 +54,13 @@ define([
                 if (Utils.LocalStore.isLoggedIn()) { return; }
                 Utils.LocalStore.setFSHash('');
                 Utils.LocalStore.clearThumbnail();
-                window.location.reload();
+                try {
+                    Utils.Cache.clear(function () {
+                        window.location.reload();
+                    });
+                } catch (e) {
+                    window.location.reload();
+                }
             });
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
                 Cryptpad.userObjectCommand(data, cb);
