@@ -228,12 +228,12 @@ module.exports = {
      */
 /*
     customLimits: {
-        "https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
+        "[cryptpad-user1@my.awesome.website/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=]": {
             limit: 20 * 1024 * 1024 * 1024,
             plan: 'insider',
             note: 'storage space donated by my.awesome.website'
         },
-        "https://my.awesome.website/user/#/1/cryptpad-user2/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=": {
+        "[cryptpad-user2@my.awesome.website/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=]": {
             limit: 10 * 1024 * 1024 * 1024,
             plan: 'insider',
             note: 'storage space donated by my.awesome.website'
