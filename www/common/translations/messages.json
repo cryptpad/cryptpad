@@ -1472,7 +1472,6 @@
     "documentID": "Document identifier",
     "unableToDisplay": "Unable to display the document. Please press Esc to reload the page. If the problem persists, please contact support.",
     "errorPopupBlocked": "CryptPad needs to be able to open new tabs to operate. Please allow popup windows in your browser's address bar. These windows will never be used to show you advertising.",
-    "braveWarning": "It seems you are currently using the Brave browser. We have received reports of users being unable to confirm the payment form due to strict privacy settings on this browser. If the payment button does not work, you can try with a different browser or contact us with the Support form to find an alternative solution.",
     "admin_archiveTitle": "Archive documents",
     "admin_archiveHint": "Make a document unavailable without deleting it permanently. It will be placed in an 'archive' directory and deleted after a few days (configurable in the server configuration file).",
     "admin_archiveButton": "Archive",
