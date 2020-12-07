@@ -1137,7 +1137,7 @@ define([
             var ownedByMe = Array.isArray(owners) && owners.indexOf(edPublic) !== -1;
 
             // Add the pad if it does not exist in our drive
-            if (!contains || (ownedByMe && !inMyDrive)) {
+            if (!contains) { // || (ownedByMe && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
                     // send event to inner to display the corner popup
