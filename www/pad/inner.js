@@ -498,9 +498,10 @@ define([
         Array.prototype.slice.call(tags).forEach(function(tag) {
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
-                mediaTagMap[src].forEach(function(n) {
+                tag.innerHTML = mediaTagMap[src];
+                /*mediaTagMap[src].forEach(function(n) {
                     tag.appendChild(n.cloneNode(true));
-                });
+                });*/
             }
         });
     };
