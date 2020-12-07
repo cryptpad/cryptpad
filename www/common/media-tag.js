@@ -718,7 +718,7 @@ var factory = function () {
             if (cache[uid].mt !== mediaObject) {
                 // Add progress for other instances of this tag
                 cache[uid].mt.on('progress', function (obj) {
-                    if (!mediaObject.bar) { makeProgressBar(cfg, mediaObject); }
+                    if (!mediaObject.bar && !cfg.force) { makeProgressBar(cfg, mediaObject); }
                     emit('progress', {
                         progress: obj.progress
                     });
