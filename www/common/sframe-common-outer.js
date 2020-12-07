@@ -100,12 +100,13 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/common/outer/cache-store.js',
                 '/customize/application_config.js',
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, _AppConfig, _Test, _UserObject) {
+            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -120,6 +121,7 @@ define([
                 Utils.Constants = _Constants;
                 Utils.Feedback = _Feedback;
                 Utils.LocalStore = _LocalStore;
+                Utils.Cache = _Cache;
                 Utils.UserObject = _UserObject;
                 Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
@@ -675,6 +677,20 @@ define([
                 sframeChan.on('Q_THUMBNAIL_SET', function (data, cb) {
                     Utils.LocalStore.setThumbnail(data.key, data.value, function (e) {
                         cb({error:e});
+                    });
+                });
+
+                sframeChan.on('Q_GET_BLOB_CACHE', function (data, cb) {
+                    Utils.Cache.getBlobCache(data.id, function (err, obj) {
+                        if (err) { return void cb({error: err}); }
+                        cb(obj);
+                    });
+                });
+                sframeChan.on('Q_SET_BLOB_CACHE', function (data, cb) {
+                    if (!data || !data.u8 || typeof(data.u8) !== "object") { return void cb({error: 'EINVAL'}); }
+                    Utils.Cache.setBlobCache(data.id, data.u8, function (err) {
+                        if (err) { return void cb({error: err}); }
+                        cb();
                     });
                 });
 
@@ -1697,6 +1713,10 @@ define([
                 });
             };
 
+            sframeChan.on('EV_CORRUPTED_CACHE', function () {
+                Cryptpad.onCorruptedCache(secret.channel);
+            });
+
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
                 // Create a new hash
@@ -1811,7 +1831,12 @@ define([
                             }
                             startRealtime();
                             cb();
-                        }, cryptputCfg);
+                        }, cryptputCfg, function (progress) {
+                            sframeChan.event('EV_LOADING_INFO', {
+                                type: 'pad',
+                                progress: progress
+                            });
+                        });
                         return;
                     }
                     // Start realtime outside the iframe and callback

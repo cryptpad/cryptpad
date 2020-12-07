@@ -1423,7 +1423,7 @@ define([
                         console.error(e);
                         callback("");
                     }
-                });
+                }, void 0, common.getCache());
             };
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);

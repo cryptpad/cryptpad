@@ -397,6 +397,7 @@ define([
 
         var fmConfig = {
             body: $('body'),
+            noStore: true, // Don't store attachments into our drive
             onUploaded: function (ev, data) {
                 if (ev.callback) {
                     ev.callback(data);

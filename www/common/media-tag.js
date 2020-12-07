@@ -1,8 +1,6 @@
-(function(name, definition) {
-    if (typeof module !== 'undefined') { module.exports = definition(); }
-    else if (typeof define === 'function' && typeof define.amd === 'object') { define(definition); }
-    else  { this[name] = definition(); }
-}('MediaTag', function() {
+(function (window) {
+var factory = function () {
+    var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
 
@@ -63,7 +61,8 @@
         ],
         pdf: {},
         download: {
-            text: "Download"
+            text: "Save",
+            textDl: "Load attachment"
         },
         Plugins: {
             /**
@@ -114,8 +113,8 @@
             },
             download: function (metadata, url, content, cfg, cb) {
                 var btn = document.createElement('button');
-                btn.setAttribute('class', 'btn btn-success');
-                btn.innerHTML = cfg.download.text + '<br>' +
+                btn.setAttribute('class', 'btn btn-default');
+                btn.innerHTML = '<i class="fa fa-save"></i>' + cfg.download.text + '<br>' +
                                 (metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '');
                 btn.addEventListener('click', function () {
                     saveFile(content, url, metadata.name);
@@ -125,28 +124,185 @@
         }
     };
 
+    var makeProgressBar = function (cfg, mediaObject) {
+        if (mediaObject.bar) { return; }
+        mediaObject.bar = true;
+        var style = (function(){/*
+.mediatag-progress-container {
+    position: relative;
+    border: 1px solid #0087FF;
+    background: white;
+    height: 25px;
+    display: inline-flex;
+    width: 200px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+.mediatag-progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: #0087FF;
+    width: 0%;
+}
+.mediatag-progress-text {
+    height: 25px;
+    width: 50px;
+    margin-left: 5px;
+    line-height: 25px;
+    vertical-align: top;
+    display: inline-block;
+    color: #3F4141;
+    font-weight: bold;
+}
+*/}).toString().slice(14, -3);
+        var container = document.createElement('div');
+        container.classList.add('mediatag-progress-container');
+        var bar = document.createElement('div');
+        bar.classList.add('mediatag-progress-bar');
+        container.appendChild(bar);
 
-    // Download a blob from href
-    var download = function (src, _cb) {
+        var text = document.createElement('span');
+        text.classList.add('mediatag-progress-text');
+        text.innerText = '0%';
+
+        mediaObject.on('progress', function (obj) {
+            var percent = obj.progress;
+            text.innerText = (Math.round(percent*10))/10+'%';
+            bar.setAttribute('style', 'width:'+percent+'%;');
+        });
+
+        mediaObject.tag.innerHTML = '<style>'+style+'</style>';
+        mediaObject.tag.appendChild(container);
+        mediaObject.tag.appendChild(text);
+    };
+    var makeDownloadButton = function (cfg, mediaObject, size, cb) {
+        var metadata = cfg.metadata || {};
+        var i = '<i class="fa fa-paperclip"></i>';
+        var name = metadata.name ? '<span class="mediatag-download-name">'+ i +'<b>'+
+                                    fixHTML(metadata.name)+'</b></span>' : '';
+        var btn = document.createElement('button');
+        btn.setAttribute('class', 'btn btn-default mediatag-download-btn');
+        btn.innerHTML = name + '<span>' + (name ? '' : i) +
+                cfg.download.textDl + ' <b>(' + size  + 'MB)</b></span>';
+        btn.addEventListener('click', function () {
+            makeProgressBar(cfg, mediaObject);
+            var a = (cfg.body || document).querySelectorAll('media-tag[src="'+mediaObject.tag.getAttribute('src')+'"] button.mediatag-download-btn');
+            for(var i = 0; i < a.length; i++) {
+                if (a[i] !== btn) { a[i].click(); }
+            }
+            cb();
+        });
+        mediaObject.tag.innerHTML = '';
+        mediaObject.tag.appendChild(btn);
+    };
+
+    var getCacheKey = function (src) {
+        var _src = src.replace(/(\/)*$/, ''); // Remove trailing slashes
+        var idx = _src.lastIndexOf('/');
+        var cacheKey = _src.slice(idx+1);
+        if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
+        return cacheKey;
+    };
+
+    var getBlobCache = function (id, cb) {
+        if (!config.Cache || typeof(config.Cache.getBlobCache) !== "function") {
+            return void cb('EINVAL');
+        }
+        config.Cache.getBlobCache(id, cb);
+    };
+    var setBlobCache = function (id, u8, cb) {
+        if (!config.Cache || typeof(config.Cache.setBlobCache) !== "function") {
+            return void cb('EINVAL');
+        }
+        config.Cache.setBlobCache(id, u8, cb);
+    };
+
+    var getFileSize = function (src, _cb) {
         var cb = function (e, res) {
             _cb(e, res);
             cb = function () {};
         };
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', src, true);
-        xhr.responseType = 'arraybuffer';
+        var cacheKey = getCacheKey(src);
 
-        xhr.onerror = function () { return void cb("XHR_ERROR"); };
-        xhr.onload = function () {
-            // Error?
-            if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
-
-            var arrayBuffer = xhr.response;
-            if (arrayBuffer) { cb(null, new Uint8Array(arrayBuffer)); }
+        var check = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open("HEAD", src);
+            xhr.onerror = function () { return void cb("XHR_ERROR"); };
+            xhr.onreadystatechange = function() {
+                if (this.readyState === this.DONE) {
+                    cb(null, Number(xhr.getResponseHeader("Content-Length")));
+                }
+            };
+            xhr.onload = function () {
+                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+            };
+            xhr.send();
         };
 
-        xhr.send(null);
+        if (!cacheKey) { return void check(); }
+
+        getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void check(); }
+            cb(null, 0);
+        });
+    };
+
+    // Download a blob from href
+    var download = function (src, _cb, progressCb) {
+        var cb = function (e, res) {
+            _cb(e, res);
+            cb = function () {};
+        };
+
+        var cacheKey = getCacheKey(src);
+
+        var fetch = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.responseType = 'arraybuffer';
+
+            var progress = function (offset) {
+                progressCb(offset * 100);
+            };
+            xhr.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    progress(percentComplete);
+                }
+            }, false);
+
+            xhr.onerror = function () { return void cb("XHR_ERROR"); };
+            xhr.onload = function () {
+                // Error?
+                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+
+                var arrayBuffer = xhr.response;
+                if (arrayBuffer) {
+                    var u8 = new Uint8Array(arrayBuffer);
+                    if (cacheKey) {
+                        return void setBlobCache(cacheKey, u8, function () {
+                            cb(null, u8);
+                        });
+                    }
+                    cb(null, u8);
+                }
+            };
+
+            xhr.send(null);
+        };
+
+        if (!cacheKey) { return void fetch(); }
+
+        getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void fetch(); }
+            cb(null, u8);
+        });
+
     };
 
     // Decryption tools
@@ -190,6 +346,95 @@
         getKeyFromStr: function (str) {
             return window.nacl.util.decodeBase64(str);
         }
+    };
+
+    // The metadata size can go up to 65535 (16 bits - 2 bytes)
+    // The first 8 bits are stored in A[0]
+    // The last 8 bits are stored in A[0]
+    var uint8ArrayJoin = function (AA) {
+        var l = 0;
+        var i = 0;
+        for (; i < AA.length; i++) { l += AA[i].length; }
+        var C = new Uint8Array(l);
+
+        i = 0;
+        for (var offset = 0; i < AA.length; i++) {
+            C.set(AA[i], offset);
+            offset += AA[i].length;
+        }
+        return C;
+    };
+    var fetchMetadata = function (src, _cb) {
+        var cb = function (e, res) {
+            _cb(e, res);
+            cb = function () {};
+        };
+
+        var cacheKey = getCacheKey(src);
+
+        var fetch = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.setRequestHeader('Range', 'bytes=0-1');
+            xhr.responseType = 'arraybuffer';
+
+            xhr.onerror = function () { return void cb("XHR_ERROR"); };
+            xhr.onload = function () {
+                // Error?
+                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+                var res = new Uint8Array(xhr.response);
+                var size = Decrypt.decodePrefix(res);
+                var xhr2 = new XMLHttpRequest();
+
+                xhr2.open("GET", src, true);
+                xhr2.setRequestHeader('Range', 'bytes=2-' + (size + 2));
+                xhr2.responseType = 'arraybuffer';
+                xhr2.onload = function () {
+                    if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+                    var res2 = new Uint8Array(xhr2.response);
+                    var all = uint8ArrayJoin([res, res2]);
+                    cb(void 0, all);
+                };
+                xhr2.send(null);
+            };
+
+            xhr.send(null);
+        };
+
+        if (!cacheKey) { return void fetch(); }
+
+        getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void fetch(); }
+
+            var size = Decrypt.decodePrefix(u8.subarray(0,2));
+            console.error(size);
+
+            cb(null, u8.subarray(0, size+2));
+        });
+    };
+    var decryptMetadata = function (u8, key) {
+        var prefix = u8.subarray(0, 2);
+        var metadataLength = Decrypt.decodePrefix(prefix);
+
+        var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
+        var metaChunk = window.nacl.secretbox.open(metaBox, Decrypt.createNonce(), key);
+
+        try {
+            return JSON.parse(window.nacl.util.encodeUTF8(metaChunk));
+        }
+        catch (e) { return null; }
+    };
+    var fetchDecryptedMetadata = function (src, strKey, cb) {
+        if (typeof(src) !== 'string') {
+            return window.setTimeout(function () {
+                cb('NO_SOURCE');
+            });
+        }
+        fetchMetadata(src, function (e, buffer) {
+            if (e) { return cb(e); }
+            var key = Decrypt.getKeyFromStr(strKey);
+            cb(void 0, decryptMetadata(buffer, key));
+        });
     };
 
     // Decrypts a Uint8Array with the given key.
@@ -372,6 +617,7 @@
         var handlers = cfg.handlers || {
             'progress': [],
             'complete': [],
+            'metadata': [],
             'error': []
         };
 
@@ -422,6 +668,7 @@
 
         // End media-tag rendering: display the tag and emit the event
         var end = function (decrypted) {
+            mediaObject.complete = true;
             process(mediaObject, decrypted, cfg, function (err) {
                 if (err) { return void emit('error', err); }
                 mediaObject._blob = decrypted;
@@ -429,32 +676,78 @@
             });
         };
 
-        // If we have the blob in our cache, don't download & decrypt it again, just display
-        if (cache[uid]) {
-            end(cache[uid]);
-            return mediaObject;
-        }
+        var error = function (err) {
+            mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+            emit('error', err);
+        };
 
-        // Download the encrypted blob
-        download(src, function (err, u8Encrypted) {
-            if (err) {
-                if (err === "XHR_ERROR 404") {
-                    mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
-                }
-                return void emit('error', err);
-            }
-            // Decrypt the blob
-            decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
-                if (errDecryption) {
-                    return void emit('error', errDecryption);
-                }
-                // Cache and display the decrypted blob
-                cache[uid] = u8Decrypted;
-                end(u8Decrypted);
-            }, function (progress) {
-                emit('progress', {
-                    progress: progress
+        var getCache = function () {
+            var c = cache[uid];
+            if (!c || !c.promise || !c.mt) { return; }
+            return c;
+        };
+
+        var dl = function () {
+            // Download the encrypted blob
+            cache[uid] = getCache() || {
+                promise: new Promise(function (resolve, reject) {
+                    download(src, function (err, u8Encrypted) {
+                        if (err) {
+                            return void reject(err);
+                        }
+                        // Decrypt the blob
+                        decrypt(u8Encrypted, strKey, function (errDecryption, u8Decrypted) {
+                            if (errDecryption) {
+                                return void reject(errDecryption);
+                            }
+                            emit('metadata', u8Decrypted.metadata);
+                            resolve(u8Decrypted);
+                        }, function (progress) {
+                            emit('progress', {
+                                progress: 50+0.5*progress
+                            });
+                        });
+                    }, function (progress) {
+                        emit('progress', {
+                            progress: 0.5*progress
+                        });
+                    });
+                }),
+                mt: mediaObject
+            };
+            if (cache[uid].mt !== mediaObject) {
+                // Add progress for other instances of this tag
+                cache[uid].mt.on('progress', function (obj) {
+                    if (!mediaObject.bar && !cfg.force) { makeProgressBar(cfg, mediaObject); }
+                    emit('progress', {
+                        progress: obj.progress
+                    });
                 });
+            }
+            cache[uid].promise.then(function (u8) {
+                end(u8);
+            }, function (err) {
+                error(err);
+            });
+        };
+
+        if (cfg.force) { dl(); return mediaObject; }
+
+        var maxSize = typeof(config.maxDownloadSize) === "number" ? config.maxDownloadSize
+                                : (5 * 1024 * 1024);
+        fetchDecryptedMetadata(src, strKey, function (err, md) {
+            if (err) { return void error(err); }
+            cfg.metadata = md;
+            emit('metadata', md);
+            getFileSize(src, function (err, size) {
+                // If the size is smaller than the autodownload limit, load the blob.
+                // If the blob is already loaded or being loaded, don't show the button.
+                if (!size || size <  maxSize || getCache()) {
+                    makeProgressBar(cfg, mediaObject);
+                    return void dl();
+                }
+                var sizeMb = Math.round(10 * size / 1024 / 1024) / 10;
+                makeDownloadButton(cfg, mediaObject, sizeMb, dl);
             });
         });
 
@@ -468,5 +761,20 @@
         config[key] = value;
     };
 
+    init.fetchDecryptedMetadata = fetchDecryptedMetadata;
+
     return init;
-}));
+};
+
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory();
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([
+            '/bower_components/es6-promise/es6-promise.min.js'
+        ], function () {
+            return factory();
+        });
+    } else {
+        // unsupported initialization
+    }
+}(typeof(window) !== 'undefined'? window : {}));

@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/pinpad.js',
+    '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -28,7 +29,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad,
+             Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
@@ -120,10 +121,13 @@ define([
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             var id = data.id;
+            var proxy;
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
             if (s.manager.folders[id]) {
+                proxy = Util.clone(s.manager.folders[id].proxy);
+                proxy.offline = Boolean(s.manager.folders[id].offline);
                 // If it is loaded, return the shared folder proxy
-                return void cb(s.manager.folders[id].proxy);
+                return void cb(proxy);
             } else {
                 // Otherwise, check if we know this shared folder
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
@@ -1133,7 +1137,7 @@ define([
             var ownedByMe = Array.isArray(owners) && owners.indexOf(edPublic) !== -1;
 
             // Add the pad if it does not exist in our drive
-            if (!contains || (ownedByMe && !inMyDrive)) {
+            if (!contains) { // || (ownedByMe && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
                     // send event to inner to display the corner popup
@@ -1590,13 +1594,20 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
+                Cache: Cache,
+                onCacheStart: function () {
+                    postMessage(clientId, "PAD_CACHE");
+                },
+                onCacheReady: function () {
+                    postMessage(clientId, "PAD_CACHE_READY");
+                },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY");
+                    postMessage(clientId, "PAD_READY", pad.noCache);
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -1725,6 +1736,14 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        Store.corruptedCache = function (clientId, channel) {
+            var chan = channels[channel];
+            if (!chan || !chan.cpNf) { return; }
+            Cache.clearChannel(channel);
+            if (!chan.cpNf.resetCache) { return; }
+            chan.cpNf.resetCache();
         };
 
         // Unpin and pin the new channel in all team when changing a pad password
@@ -2640,6 +2659,7 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
+                Cache: Cache,
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,

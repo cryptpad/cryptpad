@@ -136,6 +136,20 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 });
 }());
 
+app.use('/blob', function (req, res, next) {
+    if (req.method === 'HEAD') {
+        Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
+            setHeaders: function (res, path, stat) {
+                res.set('Access-Control-Allow-Origin', '*');
+                res.set('Access-Control-Allow-Headers', 'Content-Length');
+                res.set('Access-Control-Expose-Headers', 'Content-Length');
+            }
+        })(req, res, next);
+        return;
+    }
+    next();
+});
+
 app.use(function (req, res, next) {
     if (req.method === 'OPTIONS' && /\/blob\//.test(req.url)) {
         res.setHeader('Access-Control-Allow-Origin', '*');

@@ -1388,6 +1388,18 @@ MessengerUI, Messages) {
             }
         };
 
+        toolbar.offline = function (bool) {
+            toolbar.connected = !bool; // Can't edit title
+            toolbar.history = bool; // Stop "Initializing" state
+            toolbar.isErrorState = bool; // Stop kickSpinner
+            toolbar.title.toggleClass('cp-toolbar-unsync', bool); // "read only" next to the title
+            if (bool && toolbar.spinner) {
+                toolbar.spinner.text(Messages.offline);
+            } else {
+                kickSpinner(toolbar, config);
+            }
+        };
+
         // On log out, remove permanently the realtime elements of the toolbar
         Common.onLogout(function () {
             failed();

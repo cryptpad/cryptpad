@@ -303,14 +303,22 @@ define([
         return renderParagraph(p);
     };
 
+    // Note: iframe, video and audio are used in mediatags and are allowed in rich text pads.
     var forbiddenTags = [
         'SCRIPT',
-        'IFRAME',
+        //'IFRAME',
         'OBJECT',
         'APPLET',
-        'VIDEO', // privacy implications of videos are the same as images
-        'AUDIO', // same with audio
+        //'VIDEO', // privacy implications of videos are the same as images
+        //'AUDIO', // same with audio
+        'SOURCE'
     ];
+    var restrictedTags = [
+        'IFRAME',
+        'VIDEO',
+        'AUDIO'
+    ];
+
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {
             // Do not remove elements inside a media-tag
@@ -347,9 +355,16 @@ define([
         parent.removeChild(node);
     };
 
+    // Only allow iframe, video and audio with local source
+    var checkSrc = function (root) {
+        if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
+        return root.getAttribute && /^blob\:/.test(root.getAttribute('src'));
+    };
+
     var removeForbiddenTags = function (root) {
         if (!root) { return; }
         if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
+        if (!checkSrc(root)) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
     };
 
@@ -658,7 +673,7 @@ define([
                     $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
-                if ($mt.children().length) {
+                if ($mt.children().length && $mt[0]._mediaObject) {
                     $mt.off('click dblclick preview');
                     $mt.on('preview', onPreview($mt));
                     if ($mt.find('img').length) {
@@ -668,15 +683,15 @@ define([
                     }
                     return;
                 }
-                MediaTag(el);
+                var mediaObject = MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            var list_values = slice(mutation.target.children)
+                            var list_values = slice(el.children)
                                                 .map(function (el) { return el.outerHTML; })
                                                 .join('');
-                            mediaMap[mutation.target.getAttribute('src')] = list_values;
-                            observer.disconnect();
+                            mediaMap[el.getAttribute('src')] = list_values;
+                            if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
                     $mt.off('click dblclick preview');
@@ -689,6 +704,7 @@ define([
                 });
                 observer.observe(el, {
                     attributes: false,
+                    subtree: true,
                     childList: true,
                     characterData: false
                 });

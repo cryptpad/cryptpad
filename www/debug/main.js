@@ -29,6 +29,8 @@ define([
     nThen(function (waitFor) {
         $(waitFor());
     }).nThen(function (waitFor) {
+        SFCommonO.initIframe(waitFor);
+    }).nThen(function (waitFor) {
         var req = {
             cfg: requireConfig,
             req: [ '/common/loading.js' ],

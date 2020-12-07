@@ -82,6 +82,8 @@ define([
                     var readOnly = !secret.keys.editKeyStr;
                     if (!manager || !manager.folders[fId]) { return; }
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
+
+                    manager.folders[fId].offline = newObj.offline;
                 }));
             });
             // Remove from memory folders that have been deleted from the drive remotely

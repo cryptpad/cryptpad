@@ -1,6 +1,7 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
 @import (reference) "./browser.less";
+@import (reference) "./markdown.less";
 
 .modals-ui-elements_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -214,6 +215,7 @@
                 flex: 1;
                 min-width: 0;
                 overflow: auto;
+                .mediatag_cryptpad();
                 media-tag {
                     & > * {
                         max-width: 100%;

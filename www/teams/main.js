@@ -55,10 +55,10 @@ define([
                     sframeChan.event('EV_'+obj.data.ev, obj.data.data);
                 }
                 if (obj.data.ev === 'NETWORK_RECONNECT') {
-                    sframeChan.event('EV_NETWORK_RECONNECT');
+                    sframeChan.event('EV_NETWORK_RECONNECT', obj.data.data);
                 }
                 if (obj.data.ev === 'NETWORK_DISCONNECT') {
-                    sframeChan.event('EV_NETWORK_DISCONNECT');
+                    sframeChan.event('EV_NETWORK_DISCONNECT', obj.data.data);
                 }
             });
 

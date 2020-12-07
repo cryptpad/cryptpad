@@ -6,10 +6,11 @@ define([
     '/common/common-hash.js',
     '/common/common-realtime.js',
     '/common/outer/network-config.js',
+    '/common/outer/cache-store.js',
     '/common/pinpad.js',
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Crypto, CPNetflux, Netflux, Util, Hash, Realtime, NetConfig, Pinpad, nThen) {
+], function (Crypto, CPNetflux, Netflux, Util, Hash, Realtime, NetConfig, Cache, Pinpad, nThen) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);
@@ -92,7 +93,8 @@ define([
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
             logLevel: 0,
-            initialState: opt.initialState
+            initialState: opt.initialState,
+            Cache: Cache
         };
         return config;
     };
@@ -132,9 +134,11 @@ define([
         };
 
         config.onError = function (info) {
+            console.warn(info);
             finish(Session, info.error);
         };
         config.onChannelError = function (info) {
+            console.error(info);
             finish(Session, info.error);
         };
 
