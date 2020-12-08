@@ -1318,6 +1318,10 @@ MessengerUI, Messages) {
                 toolbar.spinner.text(Messages.reconnecting);
             }
         };
+        toolbar.ready = function () {
+            toolbar.connected = true;
+            kickSpinner(toolbar, config);
+        };
 
         toolbar.errorState = function (state, error) {
             toolbar.isErrorState = state;

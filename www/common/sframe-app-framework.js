@@ -221,6 +221,10 @@ define([
                     evStart.reg(function () { toolbar.deleted(); });
                     break;
                 }
+                case STATE.READY: {
+                    evStart.reg(function () { toolbar.ready(); });
+                    break;
+                }
                 default:
             }
             var isEditable = (state === STATE.READY && !unsyncMode);
@@ -479,7 +483,7 @@ define([
             sframeChan.event("EV_CORRUPTED_CACHE");
         };
         var onCacheReady = function () {
-            stateChange(STATE.DISCONNECTED);
+            stateChange(STATE.INITIALIZING);
             toolbar.offline(true);
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (toolbar) {
@@ -525,7 +529,6 @@ define([
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             var type = privateDat.app;
-
 
             // contentUpdate may be async so we need an nthen here
             nThen(function (waitFor) {
@@ -783,7 +786,7 @@ define([
                 onRemote: onRemote,
                 onLocal: onLocal,
                 onInit: onInit,
-                onCacheReady: onCacheReady,
+                onCacheReady: function () { evStart.reg(onCacheReady); },
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError,
