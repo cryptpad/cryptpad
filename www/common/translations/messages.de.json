@@ -1494,5 +1494,6 @@
     "admin_archiveInval": "Ungültiges Dokument",
     "admin_unarchiveButton": "Wiederherstellen",
     "admin_unarchiveTitle": "Dokumente wiederherstellen",
-    "admin_archiveTitle": "Dokumente archivieren"
+    "admin_archiveTitle": "Dokumente archivieren",
+    "history_trimPrompt": "Dieses Dokument hat einen Verlauf von {0} angesammelt, was das Laden verlangsamen kann. Ziehe in Betracht, den Verlauf zu löschen, sofern er nicht benötigt wird."
 }
