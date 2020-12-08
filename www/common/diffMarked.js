@@ -351,14 +351,14 @@ define([
         if (!(node && node.parentElement)) { return; }
         var parent = node.parentElement;
         if (!parent) { return; }
-        console.log('removing %s tag', node.nodeName);
+        console.debug('removing %s tag', node.nodeName);
         parent.removeChild(node);
     };
 
     // Only allow iframe, video and audio with local source
     var checkSrc = function (root) {
         if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
-        return root.getAttribute && /^blob\:/.test(root.getAttribute('src'));
+        return root.getAttribute && /^(blob\:|\/common\/pdfjs)/.test(root.getAttribute('src'));
     };
 
     var removeForbiddenTags = function (root) {
