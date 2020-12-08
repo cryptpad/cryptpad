@@ -2702,7 +2702,6 @@ define([
 
         var dontShowAgain = function () {
             var until = (+new Date()) + (7 * 24 * 3600 * 1000); // 7 days from now
-            until = (+new Date()) + 30000; // XXX 30s from now
             if (data.drive) {
                 common.setAttribute(['drive', 'trim'], until);
                 return;
