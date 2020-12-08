@@ -1494,5 +1494,6 @@
     "admin_archiveButton": "Archiver",
     "admin_archiveHint": "Rendre un document indisponible sans le supprimer définitivement. Il sera placé dans un répertoire \"archive\" et supprimé après quelques jours (configurable dans le fichier de configuration du serveur).",
     "admin_archiveTitle": "Archiver les documents",
-    "mediatag_loadButton": "Charger la pièce jointe"
+    "mediatag_loadButton": "Charger la pièce jointe",
+    "history_trimPrompt": "Ce document a accumulé {0} d'historique qui peut ralentir le temps de chargement. Envisagez de supprimer l'historique s'il n'est pas nécessaire."
 }
