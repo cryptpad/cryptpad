@@ -99,6 +99,9 @@ define([
         var sessionId = Hash.createChannelId();
         var cpNfInner;
 
+        var evOnPatch = Util.mkEvent();
+        var evOnSync = Util.mkEvent();
+
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
@@ -261,13 +264,17 @@ define([
                 });
             },
             sendMsg: function (msg, cp, cb) {
+                evOnPatch.fire();
                 rtChannel.sendCmd({
                     cmd: 'SEND_MESSAGE',
                     data: {
                         msg: msg,
                         isCp: cp
                     }
-                }, cb);
+                }, function (err, h) {
+                    if (!err) { evOnSync.fire(); }
+                    cb(err, h);
+                });
             },
         };
 
@@ -1221,6 +1228,7 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
+                        evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
                         onMigrateRdy.reg(function () {
                             var div = h('div.cp-oo-x2tXls', [
@@ -1963,6 +1971,10 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
                 realtime: info.realtime,
+                spinner: {
+                    onPatch: evOnPatch,
+                    onSync: evOnSync
+                },
                 sfCommon: common,
                 $container: $bar,
                 $contentContainer: $('#cp-app-oo-container')

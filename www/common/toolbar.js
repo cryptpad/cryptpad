@@ -879,6 +879,14 @@ MessengerUI, Messages) {
                 $spin.text(Messages.saved);
             }, /*local ? 0 :*/ SPINNER_DISAPPEAR_TIME);
         };
+        if (config.spinner) {
+            var h = function () {
+                onSynced();
+                try { config.spinner.onSync.unreg(h); } catch (e) { console.error(e); }
+            };
+            config.spinner.onSync.reg(h);
+            return;
+        }
         config.sfCommon.whenRealtimeSyncs(onSynced);
     };
     var ks = function (toolbar, config, local) {
@@ -890,6 +898,15 @@ MessengerUI, Messages) {
         if (config.readOnly === 1) { return; }
         var $spin = $('<span>', {'class': SPINNER_CLS}).appendTo(toolbar.title);
         $spin.text(Messages.synchronizing);
+
+        if (config.spinner) {
+            config.spinner.onPatch.reg(ks(toolbar, config));
+            typing = 0;
+            setTimeout(function () {
+                kickSpinner(toolbar, config);
+            });
+            return $spin;
+        }
 
         if (config.realtime) {
             config.realtime.onPatch(ks(toolbar, config));
