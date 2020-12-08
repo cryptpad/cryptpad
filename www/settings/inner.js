@@ -955,7 +955,7 @@ define([
         cb(content);
     };
     makeBlock('trim-history', function(cb, $div) {
-        if (!common.isLoggedIn()) { return; }
+        if (!common.isLoggedIn()) { return void cb(false); }
         redrawTrimHistory(cb, $div);
     }, true);
 
