@@ -290,7 +290,6 @@ define([
         var priv = ctx.metadataMgr.getPrivateData();
 
         var limit = 100 * 1024 * 1024; // 100MB
-        limit = 100 * 1024; // XXX 100KB
 
         var owned;
         nThen(function (w) {
