@@ -248,6 +248,9 @@ media-tag button.mediatag-download-btn > span {
 media-tag button.mediatag-download-btn * {
     width: auto;
 }
+media-tag button.mediatag-download-btn > span.mediatag-download-name {
+    max-width: 100%;
+}
 media-tag button.mediatag-download-btn > span.mediatag-download-name b {
     white-space: nowrap;
     overflow: hidden;
@@ -259,8 +262,12 @@ media-tag button.btn:hover, media-tag button.btn:active, media-tag button.btn:fo
 }
 media-tag button.btn b {
     margin-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 media-tag button.btn .fa {
     display: inline;
     margin-right: 5px;
+    flex: 0;
 }

@@ -149,6 +149,7 @@ var factory = function () {
     width: 0%;
 }
 .mediatag-progress-text {
+    font-size: 14px;
     height: 25px;
     width: 50px;
     margin-left: 5px;
