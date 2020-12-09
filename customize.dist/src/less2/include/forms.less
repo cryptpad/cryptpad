@@ -118,7 +118,7 @@
             margin: 0;
         }
 
-        &:hover, &:active, &:focus {
+        &:hover, &:not(:disabled):active, &:focus {
             color: @alertify-btn-fg;
             border: 1px solid @alertify-btn-fg;
             background-color: lighten(@alertify-fore, 35%);
@@ -133,7 +133,7 @@
         &.btn-default {
             border-color: @cryptpad_text_col;
             color: @cryptpad_text_col;
-            &:hover, &:active, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 background-color: #ccc;
             }
         }
@@ -142,7 +142,7 @@
             background-color: @colortheme_alertify-red;
             border-color: @colortheme_alertify-red-border;
             color: @colortheme_alertify-red-color;
-            &:hover, &:active, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
             }
         }
@@ -150,7 +150,7 @@
         &.danger-alt, &.btn-danger-alt, &.btn-danger-outline {
             border-color: @colortheme_alertify-red;
             color: @colortheme_alertify-red;
-            &:hover, &:active, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 color: @colortheme_alertify-red-color;
                 background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
             }
@@ -160,7 +160,7 @@
             background-color: @colortheme_alertify-green;
             border-color: @colortheme_alertify-green-border;
             color: @colortheme_alertify-green-color;
-            &:hover, &:active, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-green, 10%), lighten(@colortheme_alertify-green, 10%));
             }
         }
@@ -170,7 +170,7 @@
             color: @colortheme_alertify-primary-text;
             border-color: @colortheme_alertify-primary-border;
             font-weight: bold;
-            &:hover, &:active, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
             }
         }
@@ -179,7 +179,7 @@
             border-color: @cryptpad_text_col;
             color: @cryptpad_text_col;
             background-color: transparent;
-            &:hover, &:hover, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 background-color: fade(@cryptpad_text_col, 25%);
             }
         }
@@ -187,7 +187,7 @@
         &.cancel, &.btn-cancel {
             border-color: @colortheme_alertify-cancel-border;
             color: @colortheme_alertify-cancel-border;
-            &:hover, &:hover, &:focus {
+            &:hover, &:not(:disabled):active, &:focus {
                 background-color: fade(@colortheme_alertify-cancel-border, 25%);
             }
         }
@@ -196,7 +196,7 @@
 
         &:focus {
             //border: 1px dotted @alertify-base;
-            box-shadow: 0px 0px 5px @colortheme_alertify-primary;
+            box-shadow: 0px 0px 5px @colortheme_alertify-primary !important;
             outline: none;
         }
         &::-moz-focus-inner {
