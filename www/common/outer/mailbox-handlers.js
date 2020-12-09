@@ -86,6 +86,7 @@ define([
     // until the message is manually dismissed.
 
     var friendRequestDeclined = {};
+    var friendRequestAccepted = {};
     handlers['DECLINE_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
         // Old format: data was stored directly in "content"
         var userData = data.msg.content.user || data.msg.content;
@@ -133,7 +134,6 @@ define([
         if (friendRequestDeclined[curve]) { delete friendRequestDeclined[curve]; }
     };
 
-    var friendRequestAccepted = {};
     handlers['ACCEPT_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
         // Old format: data was stored directly in "content"
         var userData = data.msg.content.user || data.msg.content;
