@@ -243,10 +243,35 @@ define([
             return;
         }
 
+        Messages.contacts_confirmCancel = "Are you sure you want to cancel your contact request with <b>{0}</b>?"; // XXX
+        var addCancel = function () {
+            var cancelButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
+                h('i.fa.fa-user-times'),
+                Messages.cancel
+            ]);
+            $(cancelButton).click(function () {
+                // Unfriend confirm
+                var content = h('div', [
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmCancel', [name]))
+                ]);
+                UI.confirm(content, function (yes) {
+                    if (!yes) { return; }
+                    module.execCommand('CANCEL_FRIEND', {
+                        curvePublic: data.curvePublic,
+                        notifications: data.notifications
+                    }, function (e) {
+                        refreshFriendRequest(data);
+                        if (e) { UI.warn(Messages.error); return void console.error(e); }
+                    });
+                });
+            }).appendTo(APP.$friend);
+        };
+
         // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
             $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+            addCancel();
             return;
         }
         // This is not a friend yet: we can send a friend request
@@ -255,8 +280,10 @@ define([
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
                     notifications: data.notifications
-                }, function () {
+                }, function (err, obj) {
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
                     $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+                    addCancel();
                 });
             });
     };

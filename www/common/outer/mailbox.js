@@ -271,7 +271,7 @@ proxy.mailboxes = {
                         hash: hash
                     };
                     showMessage(ctx, type, message);
-                    cb();
+                    cb(hash);
                 }, keys.curvePublic);
             };
             box.queue.forEach(function (msg) {

@@ -1330,13 +1330,16 @@ define([
 
             store.proxy.friends_pending = store.proxy.friends_pending || {};
 
-            var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
-            if (store.proxy.friends_pending[data.curvePublic] &&
-                    store.proxy.friends_pending[data.curvePublic] > twoDaysAgo) {
-                return void cb({error: 'TIMEOUT'});
+            var p = store.proxy.friends_pending[data.curvePublic];
+            if (p) {
+                return void cb({error: 'ALREADY_SENT'});
             }
 
-            store.proxy.friends_pending[data.curvePublic] = +new Date();
+            store.proxy.friends_pending[data.curvePublic] = {
+                time: +new Date(),
+                channel: data.notifications,
+                curvePublic: data.curvePublic
+            };
             broadcast([], "UPDATE_METADATA");
 
             store.mailbox.sendTo('FRIEND_REQUEST', {
@@ -1346,6 +1349,37 @@ define([
                 curvePublic: data.curvePublic
             }, function (obj) {
                 cb(obj);
+            });
+        };
+        Store.cancelFriendRequest = function (data, cb) {
+            if (!data.curvePublic || !data.notifications) {
+                return void cb({error: 'EINVAL'});
+            }
+
+            var proxy = store.proxy;
+            var f = Messaging.getFriend(proxy, data.curvePublic);
+
+            if (f) {
+                // Already friend
+                console.error("You can't cancel an accepted friend request");
+                return void cb({error: 'ALREADY_FRIEND'});
+            }
+
+            var pending = Util.find(store, ['proxy', 'friends_pending']) || {};
+            if (!pending) { return void cb(); }
+
+            store.mailbox.sendTo('CANCEL_FRIEND_REQUEST', {
+                user: Messaging.createData(store.proxy)
+            }, {
+                channel: data.notifications,
+                curvePublic: data.curvePublic
+            }, function (obj) {
+                if (obj && obj.error) { return void cb(obj); }
+                delete store.proxy.friends_pending[data.curvePublic];
+                broadcast([], "UPDATE_METADATA");
+                onSync(null, function () {
+                    cb(obj);
+                });
             });
         };
 
@@ -2448,18 +2482,6 @@ define([
             });
         };
 
-        var cleanFriendRequests = function () {
-            try {
-                if (!store.proxy.friends_pending) { return; }
-                var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
-                Object.keys(store.proxy.friends_pending).forEach(function (curve) {
-                    if (store.proxy.friends_pending[curve] < twoDaysAgo) {
-                        delete store.proxy.friends_pending[curve];
-                    }
-                });
-            } catch (e) {}
-        };
-
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
@@ -2543,7 +2565,6 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor, clientId);
                 loadUniversal(History, 'history', waitFor);
-                cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");

@@ -33,11 +33,15 @@ define([
         // in memory from the same user, dismiss the new one
         if (friendRequest[data.msg.author]) { return void cb(true); }
 
-        friendRequest[data.msg.author] = true;
+        friendRequest[data.msg.author] = {
+            type: box.type,
+            hash: data.hash
+        };
 
         // If the user is already in our friend list, automatically accept the request
         if (Messaging.getFriend(ctx.store.proxy, data.msg.author) ||
             ctx.store.proxy.friends_pending[data.msg.author]) {
+
             delete ctx.store.proxy.friends_pending[data.msg.author];
 
             Messaging.acceptFriendRequest(ctx.store, userData, function (obj) {
@@ -49,13 +53,16 @@ define([
                     realtime: ctx.store.realtime,
                     pinPads: ctx.pinPads
                 }, userData, function (err) {
-                    if (err) { return void console.error(err); }
+                    if (err) {
+                        console.error(err);
+                        return void cb(true);
+                    }
                     if (ctx.store.messenger) {
                         ctx.store.messenger.onFriendAdded(userData);
                     }
+                    ctx.updateMetadata();
+                    cb(true);
                 });
-                ctx.updateMetadata();
-                cb(true);
             });
             return;
         }
@@ -97,20 +104,29 @@ define([
 
             ctx.updateMetadata();
             if (friendRequestDeclined[data.msg.author]) { return; }
-            friendRequestDeclined[data.msg.author] = true;
             box.sendMessage({
                 type: 'FRIEND_REQUEST_DECLINED',
                 content: { user: userData }
-            }, function () {});
+            }, function (hash) {
+                friendRequestDeclined[data.msg.author] = {
+                    type: box.type,
+                    hash: hash
+                };
+            });
         }, getRandomTimeout(ctx));
     };
     // UI for declined friend request
     handlers['FRIEND_REQUEST_DECLINED'] = function (ctx, box, data, cb) {
         ctx.updateMetadata();
         var curve = data.msg.content.user.curvePublic || data.msg.content.user;
-        if (friendRequestDeclined[curve]) { return void cb(true); }
-        friendRequestDeclined[curve] = true;
-        cb();
+        var toRemove = friendRequestAccepted[curve];
+        delete friendRequestAccepted[curve];
+        if (friendRequestDeclined[curve]) { return void cb(true, toRemove); }
+        friendRequestDeclined[curve] = {
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false, toRemove);
     };
     removeHandlers['FRIEND_REQUEST_DECLINED'] = function (ctx, box, data) {
         var curve = data.content.user.curvePublic || data.content.user;
@@ -148,11 +164,15 @@ define([
                 if (ctx.store.modules['profile']) { ctx.store.modules['profile'].update(); }
                 // Display the "accepted" state in the UI
                 if (friendRequestAccepted[data.msg.author]) { return; }
-                friendRequestAccepted[data.msg.author] = true;
                 box.sendMessage({
                     type: 'FRIEND_REQUEST_ACCEPTED',
                     content: { user: userData }
-                }, function () {});
+                }, function (hash) {
+                    friendRequestAccepted[data.msg.author] = {
+                        type: box.type,
+                        hash: hash
+                    };
+                });
             });
         }, getRandomTimeout(ctx));
     };
@@ -160,13 +180,24 @@ define([
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data, cb) {
         ctx.updateMetadata();
         var curve = data.msg.content.user.curvePublic || data.msg.content.user;
-        if (friendRequestAccepted[curve]) { return void cb(true); }
-        friendRequestAccepted[curve] = true;
-        cb();
+        var toRemove = friendRequestDeclined[curve];
+        delete friendRequestDeclined[curve];
+        if (friendRequestAccepted[curve]) { return void cb(true, toRemove); }
+        friendRequestAccepted[curve] = {
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false, toRemove);
     };
     removeHandlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data) {
         var curve = data.content.user.curvePublic || data.content.user;
         if (friendRequestAccepted[curve]) { delete friendRequestAccepted[curve]; }
+    };
+
+    handlers['CANCEL_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
+        var f = friendRequest[data.msg.author];
+        if (!f) { return void cb(true); }
+        cb(true, f);
     };
 
     handlers['UNFRIEND'] = function (ctx, box, data, cb) {
@@ -174,6 +205,7 @@ define([
         var friend = Messaging.getFriend(ctx.store.proxy, curve);
         if (!friend) { return void cb(true); }
         delete ctx.store.proxy.friends[curve];
+        delete ctx.store.proxy.friends_pending[curve];
         if (ctx.store.messenger) {
             ctx.store.messenger.onFriendRemoved(curve, friend.channel);
         }
