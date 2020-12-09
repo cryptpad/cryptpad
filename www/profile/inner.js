@@ -282,8 +282,7 @@ define([
                     notifications: data.notifications
                 }, function (err, obj) {
                     if (obj && obj.error) { return void UI.warn(Messages.error); }
-                    $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
-                    addCancel();
+                    //$button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
                 });
             });
     };
