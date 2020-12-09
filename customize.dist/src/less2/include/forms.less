@@ -119,6 +119,8 @@
         }
 
         &:hover, &:active, &:focus {
+            color: @alertify-btn-fg;
+            border: 1px solid @alertify-btn-fg;
             background-color: lighten(@alertify-fore, 35%);
         }
 
@@ -145,7 +147,7 @@
             }
         }
 
-        &.danger-alt, &.btn-danger-alt {
+        &.danger-alt, &.btn-danger-alt, &.btn-danger-outline {
             border-color: @colortheme_alertify-red;
             color: @colortheme_alertify-red;
             &:hover, &:active, &:focus {
@@ -163,7 +165,7 @@
             }
         }
 
-        &.primary, &.btn-primary {
+        &.primary, &.btn-primary, &.btn-success {
             background-color: @colortheme_alertify-primary;
             color: @colortheme_alertify-primary-text;
             border-color: @colortheme_alertify-primary-border;

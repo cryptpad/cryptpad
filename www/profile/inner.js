@@ -101,13 +101,13 @@ define([
         var url = APP.origin + '/profile/#' + hash;
 
         $('<button>', {
-            'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
+            'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
         }).text(Messages.profile_viewMyProfile).click(function () {
             window.open(url, '_blank');
         }).appendTo($container);
 
         $('<button>', {
-            'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
+            'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
         }).append(h('i.fa.fa-shhare-alt'))
           .append(h('span', Messages.shareButton))
           .click(function () {
