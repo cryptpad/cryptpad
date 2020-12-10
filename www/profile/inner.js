@@ -494,7 +494,7 @@ define([
 
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
-            'class': 'btn btn-success',
+            'class': 'btn',
         }).append(h('i.fa.fa-key'))
           .append(h('span', Messages.profile_copyKey))
           .click(function () {
