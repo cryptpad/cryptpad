@@ -8,7 +8,7 @@ define([
     // Check if indexedDB is allowed
     var allowed = false;
     try {
-        let request = indexedDB.open('mydatabase', 1);
+        var request = window.indexedDB.open('test_db', 1);
         request.onsuccess = function () {
             allowed = true;
             onReady.fire();
