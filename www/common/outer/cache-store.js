@@ -3,30 +3,55 @@ define([
     '/bower_components/localforage/dist/localforage.min.js',
 ], function (Util, localForage) {
     var S = {};
+    var onReady = Util.mkEvent(true);
+
+    // Check if indexedDB is allowed
+    var allowed = false;
+    try {
+        let request = indexedDB.open('mydatabase', 1);
+        request.onsuccess = function () {
+            allowed = true;
+            onReady.fire();
+        };
+        request.onerror = function () {
+            onReady.fire();
+        };
+    } catch (e) {
+        onReady.fire();
+    }
 
     var cache = localForage.createInstance({
+        driver: localForage.INDEXEDDB,
         name: "cp_cache"
     });
 
     S.getBlobCache = function (id, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
-        cache.getItem(id, function (err, obj) {
-            if (err || !obj || !obj.c) {
-                return void cb(err || 'EINVAL');
-            }
-            cb(null, obj.c);
-            obj.t = +new Date();
-            cache.setItem(id, obj);
+
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            cache.getItem(id, function (err, obj) {
+                if (err || !obj || !obj.c) {
+                    return void cb(err || 'EINVAL');
+                }
+                cb(null, obj.c);
+                obj.t = +new Date();
+                cache.setItem(id, obj);
+            });
         });
     };
     S.setBlobCache = function (id, u8, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
-        if (!u8) { return void cb('EINVAL'); }
-        cache.setItem(id, {
-            c: u8,
-            t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
-        }, function (err) {
-            cb(err);
+
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            if (!u8) { return void cb('EINVAL'); }
+            cache.setItem(id, {
+                c: u8,
+                t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
+            }, function (err) {
+                cb(err);
+            });
         });
     };
 
@@ -34,13 +59,17 @@ define([
     // returns array of messages
     S.getChannelCache = function (id, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
-        cache.getItem(id, function (err, obj) {
-            if (err || !obj || !Array.isArray(obj.c)) {
-                return void cb(err || 'EINVAL');
-            }
-            cb(null, obj);
-            obj.t = +new Date();
-            cache.setItem(id, obj);
+
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            cache.getItem(id, function (err, obj) {
+                if (err || !obj || !Array.isArray(obj.c)) {
+                    return void cb(err || 'EINVAL');
+                }
+                cb(null, obj);
+                obj.t = +new Date();
+                cache.setItem(id, obj);
+            });
         });
     };
 
@@ -64,27 +93,39 @@ define([
 
     S.storeCache = function (id, validateKey, val, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
-        if (!Array.isArray(val) || !validateKey) { return void cb('EINVAL'); }
-        checkCheckpoints(val);
-        cache.setItem(id, {
-            k: validateKey,
-            c: val,
-            t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
-        }, function (err) {
-            cb(err);
+
+        onReady.reg(function (allowed) {
+            if (!allowed) { return void cb('NOCACHE'); }
+            if (!Array.isArray(val) || !validateKey) { return void cb('EINVAL'); }
+            checkCheckpoints(val);
+            cache.setItem(id, {
+                k: validateKey,
+                c: val,
+                t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
+            }, function (err) {
+                cb(err);
+            });
         });
     };
 
     S.clearChannel = function (id, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
-        cache.removeItem(id, function () {
-            cb();
+
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            cache.removeItem(id, function () {
+                cb();
+            });
         });
     };
 
     S.clear = function (cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
-        cache.clear(cb);
+
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            cache.clear(cb);
+        });
     };
 
     self.CryptPad_clearIndexedDB = S.clear;
