@@ -101,7 +101,7 @@ define([
         var url = APP.origin + '/profile/#' + hash;
 
         $('<button>', {
-            'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
+            'class': 'btn '+VIEW_PROFILE_BUTTON,
         }).text(Messages.profile_viewMyProfile).click(function () {
             window.open(url, '_blank');
         }).appendTo($container);
@@ -136,7 +136,7 @@ define([
         APP.$linkEdit = $();
         if (APP.readOnly) { return; }
 
-        var button = h('button.btn.btn-primary', {
+        var button = h('button.btn', {
             title: Messages.clickToEdit
         }, Messages.profile_addLink);
         APP.$linkEdit = $(button);
