@@ -1494,5 +1494,6 @@
     "mediatag_notReady": "Please complete the download",
     "settings_mediatagSizeTitle": "Automatic download limit",
     "settings_mediatagSizeHint": "Maximum size in megabytes (MB) for automatically loading media elements (images, videos, pdf) embedded into documents. Elements bigger than the specified size can be loaded manually. Use \"-1\" to always load the media elements automatically.",
-    "mediatag_loadButton": "Load attachment"
+    "mediatag_loadButton": "Load attachment",
+    "history_trimPrompt": "This document has accumulated {0} of history that may slow down loading time. Consider deleting the history if it is not needed."
 }
