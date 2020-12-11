@@ -782,6 +782,18 @@ define([
                     view: false
                 };
             });
+            // Add an history keeper user to show that we're never alone
+            var hkId = Util.createRandomInteger();
+            p.push({
+                id: hkId,
+                idOriginal: String(hkId),
+                username: "History",
+                indexUser: i,
+                connectionId: Hash.createChannelId(),
+                isCloseCoAuthoring:false,
+                view: false
+            });
+            i++;
             if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + i; }
             p.push({
                 id: myUniqueOOId,
@@ -1308,6 +1320,8 @@ define([
                             makeCheckpoint(true);
                             return;
                         }
+
+                        APP.onLocal(); // Add our data to the userlist
 
                         if (APP.history) {
                             try {
