@@ -1313,6 +1313,8 @@ define([
                             return;
                         }
 
+                        APP.onLocal(); // Add our data to the userlist
+
                         if (APP.history) {
                             try {
                                 getEditor().asc_setRestriction(true);
