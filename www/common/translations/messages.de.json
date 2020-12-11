@@ -1495,5 +1495,6 @@
     "admin_unarchiveButton": "Wiederherstellen",
     "admin_unarchiveTitle": "Dokumente wiederherstellen",
     "admin_archiveTitle": "Dokumente archivieren",
-    "history_trimPrompt": "Dieses Dokument hat einen Verlauf von {0} angesammelt, was das Laden verlangsamen kann. Ziehe in Betracht, den Verlauf zu löschen, sofern er nicht benötigt wird."
+    "history_trimPrompt": "Dieses Dokument hat einen Verlauf von {0} angesammelt, was das Laden verlangsamen kann. Ziehe in Betracht, den Verlauf zu löschen, sofern er nicht benötigt wird.",
+    "contacts_confirmCancel": "Bist du sicher, dass du die Kontaktanfrage an <b>{0}</b> zurücknehmen möchtest?"
 }
