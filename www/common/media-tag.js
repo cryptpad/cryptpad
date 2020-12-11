@@ -408,7 +408,7 @@ var factory = function () {
             if (err || !u8) { return void fetch(); }
 
             var size = Decrypt.decodePrefix(u8.subarray(0,2));
-            console.error(size);
+            console.error(size); // XXX noise
 
             cb(null, u8.subarray(0, size+2));
         });

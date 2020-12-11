@@ -123,7 +123,7 @@ define([
         cb = cb || function () {};
 
         try {
-            Cache.clear(cb);
+            Cache.clear(cb); // XXX might call back twice in extreme circumstances?
         } catch (e) {
             console.error(e);
             cb();
