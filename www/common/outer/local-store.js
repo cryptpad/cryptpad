@@ -4,7 +4,8 @@ define([
     '/common/outer/cache-store.js',
     '/bower_components/localforage/dist/localforage.min.js',
     '/customize/application_config.js',
-], function (Constants, Hash, Cache, localForage, AppConfig) {
+    '/common/common-util.js',
+], function (Constants, Hash, Cache, localForage, AppConfig, Util) {
     var LocalStore = {};
 
     LocalStore.setThumbnail = function (key, value, cb) {
@@ -120,7 +121,7 @@ define([
             return void AppConfig.customizeLogout(cb);
         }
 
-        cb = cb || function () {};
+        cb = Util.once(cb || function () {});
 
         try {
             Cache.clear(cb);

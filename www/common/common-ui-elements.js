@@ -2687,7 +2687,6 @@ define([
 
     };
 
-    Messages.history_trimPrompt = "This document's history is very large ({0}) and it may impact the loading time. You can delete the unnecessary history.";
     UIElements.displayTrimHistoryPrompt = function (common, data) {
         var mb = Util.bytesToMegabytes(data.size);
         var text = Messages._getKey('history_trimPrompt', [

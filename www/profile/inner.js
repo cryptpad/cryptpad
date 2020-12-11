@@ -243,7 +243,6 @@ define([
             return;
         }
 
-        Messages.contacts_confirmCancel = "Are you sure you want to cancel your contact request with <b>{0}</b>?"; // XXX
         var addCancel = function () {
             var cancelButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
                 h('i.fa.fa-user-times'),

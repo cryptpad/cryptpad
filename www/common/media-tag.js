@@ -406,10 +406,7 @@ var factory = function () {
 
         getBlobCache(cacheKey, function (err, u8) {
             if (err || !u8) { return void fetch(); }
-
             var size = Decrypt.decodePrefix(u8.subarray(0,2));
-            console.error(size);
-
             cb(null, u8.subarray(0, size+2));
         });
     };
