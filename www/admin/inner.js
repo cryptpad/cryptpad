@@ -347,7 +347,7 @@ define([
                     var keyEl = h('code.cp-limit-key', key);
                     $(keyEl).click(function () {
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
-                        $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit/1024));
+                        $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                     });
                     if (compact) {
