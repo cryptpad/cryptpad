@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/file/file-crypto.js',
     '/common/make-backup.js',
     '/common/common-thumbnail.js',
@@ -12,7 +13,7 @@ define([
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages) {
+], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -166,8 +167,12 @@ define([
                 if (config.onError) { config.onError(e); }
 
                 if (e === 'TOO_LARGE') {
-                    $pv.text(Messages.upload_tooLargeBrief);
-                    return void UI.alert(Messages.upload_tooLarge);
+                    var privateData = common.getMetadataMgr().getPrivateData();
+                    var l = privateData.plan ? ApiConfig.premiumUploadSize : false;
+                    l = l || ApiConfig.maxUploadSize || '?';
+                    var maxSizeStr = Util.bytesToMegabytes(l);
+                    $pv.text(Messages.error);
+                    return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
                     $pv.text(Messages.upload_notEnoughSpaceBrief);
