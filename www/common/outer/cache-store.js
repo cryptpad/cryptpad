@@ -118,9 +118,6 @@ define([
     };
 
     S.leaveChannel = function (id) {
-        if (t[id] && typeof(t[id].clear) === "function") {
-            t[id].clear();
-        }
         delete t[id];
     };
 
