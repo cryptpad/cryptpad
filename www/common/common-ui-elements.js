@@ -2552,7 +2552,7 @@ define([
 
         var block = h('div#cp-loading-burn-after-reading', [
             info,
-            button
+            h('nav', button),
         ]);
         UI.errorLoadingScreen(block);
     };

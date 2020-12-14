@@ -254,6 +254,10 @@ button:not(.btn).primary:hover{
     background-color: rgb(52, 118, 162);
 }
 
+nav {
+    text-align: right;
+}
+
 */}).toString().slice(14, -3);
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
