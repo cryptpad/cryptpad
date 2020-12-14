@@ -480,6 +480,7 @@ define([
                             // We've received a link without /p/ and it doesn't work without a password: abort
                             return void todo();
                         }
+
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);
                     }));
@@ -534,6 +535,12 @@ define([
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
+
+            var isDeleted = isNewFile && currentPad.hash.length > 0;
+            if (isDeleted) {
+                Utils.Cache.clearChannel(secret.channel);
+            }
+
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -577,7 +584,7 @@ define([
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: isNewFile && currentPad.hash.length > 0,
+                        isDeleted: isDeleted,
                         password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
