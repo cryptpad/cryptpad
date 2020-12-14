@@ -332,7 +332,7 @@ define([
             });
         };
         var MAX_IMAGE_SIZE = 1 * 1024 * 1024; // 1 MB
-        var maxSizeStr = Messages._getKey('formattedMB', [Util.bytesToMegabytes(MAX_IMAGE_SIZE)]);
+        var maxSizeStr = Util.bytesToMegabytes(MAX_IMAGE_SIZE);
         var addImageToCanvas = function (img) {
             if (img.src && img.src.length > MAX_IMAGE_SIZE) {
                 UI.warn(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
