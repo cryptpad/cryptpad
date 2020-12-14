@@ -94,7 +94,7 @@ define([
     S.storeCache = function (id, validateKey, val, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
 
-        onReady.reg(function (allowed) {
+        onReady.reg(function () {
             if (!allowed) { return void cb('NOCACHE'); }
             if (!Array.isArray(val) || !validateKey) { return void cb('EINVAL'); }
             checkCheckpoints(val);
