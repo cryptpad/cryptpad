@@ -331,6 +331,7 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             s.rpc.removeOwnedChannel(channel, function (err) {
+                if (!err) { Cache.clearChannel(channel); }
                 cb({error:err});
             });
         };
@@ -2276,6 +2277,9 @@ define([
             } catch (e) { console.error(e); }
             try {
                 store.onlyoffice.leavePad(chanId);
+            } catch (e) { console.error(e); }
+            try {
+                Cache.leaveChannel(chanId);
             } catch (e) { console.error(e); }
 
             if (!Store.channels[chanId]) { return; }
