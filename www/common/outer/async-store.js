@@ -331,6 +331,7 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             s.rpc.removeOwnedChannel(channel, function (err) {
+                if (!err) { Cache.clearChannel(channel); }
                 cb({error:err});
             });
         };
