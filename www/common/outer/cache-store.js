@@ -117,6 +117,13 @@ define([
         });
     };
 
+    S.leaveChannel = function (id) {
+        if (t[id] && typeof(t[id].clear) === "function") {
+            t[id].clear();
+        }
+        delete t[id];
+    };
+
     S.clearChannel = function (id, cb) {
         cb = Util.once(Util.mkAsync(cb || function () {}));
 

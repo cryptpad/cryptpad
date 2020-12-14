@@ -2277,6 +2277,9 @@ define([
             try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
+            try {
+                Cache.leaveChannel(chanId);
+            } catch (e) { console.error(e); }
 
             if (!Store.channels[chanId]) { return; }
 
