@@ -464,6 +464,7 @@ define([
             store.anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'number') {
+                    if (response[0] === 0) { Cache.clearChannel(channelId); }
                     return void cb({size: response[0]});
                 } else {
                     cb({error: 'INVALID_RESPONSE'});
@@ -477,6 +478,7 @@ define([
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'boolean') {
+                    if (response[0]) { Cache.clearChannel(channelId); }
                     return void cb({
                         isNew: response[0]
                     });
