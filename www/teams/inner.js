@@ -476,7 +476,7 @@ define([
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {
                 role:'alert'
-            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+            }, Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
         };
 
         if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS || isOwner) {
