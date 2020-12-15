@@ -46,6 +46,7 @@ To upgrade from 3.24.0 to 3.25.0:
 
 ## Bug fixes
 
+* This release includes a fix for a very severe bug in Chrome and its derivatives where attempting to open a URL from within our sandboxing system would crash the browser entirely. This version works around the problem by _not doing that_.
 * We've improved offline detection such that "offline" status is specific to particular resources like your drive, teams, and shared folders rather than treating your account as simply "online or offline".
 * We've optimized one of our less style sheet mixins that was used in a lot of places at a more specific scope than was necessary. This resulted in more time compiling styles and higher storage space requirements for the css cache in localStorage.
 * A small helper function that was intended to stop listening for `enter` and `esc` keypresses after closing a modal was overly zealous and stopped listening after _any keypress_. This made it so that any prompt with an input field did not correctly submit or cancel when pressing `enter` or `esc` after  typing some text.
