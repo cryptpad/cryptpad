@@ -593,8 +593,8 @@ define([
 
         var todo = function () {
             var val = parseInt($input.val());
+            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.error); }
             if (val === oldVal) { return; }
-            if (typeof(val) !== 'number') { return UI.warn(Messages.error); }
             spinner.spin();
             common.setAttribute(['general', 'mediatag-size'], val, function (err) {
                 if (err) {
@@ -602,6 +602,7 @@ define([
                     console.error(err);
                     return UI.warn(Messages.error);
                 }
+                oldVal = val;
                 spinner.done();
                 UI.log(Messages.saved);
             });
@@ -616,7 +617,7 @@ define([
 
         common.getAttribute(['general', 'mediatag-size'], function(e, val) {
             if (e) { return void console.error(e); }
-            if (typeof(val) !== 'number') {
+            if (typeof(val) !== 'number' || isNaN(val)) {
                 oldVal = 5;
                 $input.val(5);
             } else {

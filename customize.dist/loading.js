@@ -318,8 +318,8 @@ button:not(.btn).primary:hover{
 
         // Make sure progress doesn't go backward
         var c = types.indexOf(data.type);
-        if (c < current) { return console.error(data); }
-        if (c === current && progress > data.progress) { return console.error(data); }
+        if (c < current) { return console.debug(data); }
+        if (c === current && progress > data.progress) { return console.debug(data); }
         progress = data.progress;
 
         try {

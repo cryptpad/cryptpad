@@ -12,8 +12,8 @@ define(['/customize/application_config.js'], function (AppConfig) {
         tokenKey: 'loginToken',
         displayPadCreationScreen: 'displayPadCreationScreen',
         deprecatedKey: 'deprecated',
-        MAX_TEAMS_SLOTS: AppConfig.maxTeamsSlots || 3,
-        MAX_TEAMS_OWNED: AppConfig.maxOwnedTeams || 1,
+        MAX_TEAMS_SLOTS: AppConfig.maxTeamsSlots || 5,
+        MAX_TEAMS_OWNED: AppConfig.maxOwnedTeams || 5,
         // Apps
         criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications']
     };

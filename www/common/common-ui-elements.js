@@ -2552,7 +2552,9 @@ define([
 
         var block = h('div#cp-loading-burn-after-reading', [
             info,
-            button
+            h('nav', {
+                style: 'text-align: right'
+            }, button),
         ]);
         UI.errorLoadingScreen(block);
     };

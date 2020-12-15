@@ -91,21 +91,34 @@ define([
         array.splice(0, firstCpIdx);
     };
 
-    S.storeCache = function (id, validateKey, val, cb) {
-        cb = Util.once(Util.mkAsync(cb || function () {}));
+    var t = {};
+    S.storeCache = function (id, validateKey, val, onError) {
+        onError = Util.once(Util.mkAsync(onError || function () {}));
 
-        onReady.reg(function (allowed) {
-            if (!allowed) { return void cb('NOCACHE'); }
-            if (!Array.isArray(val) || !validateKey) { return void cb('EINVAL'); }
-            checkCheckpoints(val);
-            cache.setItem(id, {
-                k: validateKey,
-                c: val,
-                t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
-            }, function (err) {
-                cb(err);
-            });
+        onReady.reg(function () {
+
+            // Make a throttle or use the existing one to avoid calling
+            // storeCache with the same array multiple times
+            t[id] = t[id] || Util.throttle(function (validateKey, val, onError) {
+                if (!allowed) { return void onError('NOCACHE'); }
+                if (!Array.isArray(val) || !validateKey) { return void onError('EINVAL'); }
+                checkCheckpoints(val);
+                cache.setItem(id, {
+                    k: validateKey,
+                    c: val,
+                    t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
+                }, function (err) {
+                    if (err) { onError(err); }
+                });
+
+            }, 50);
+            t[id](validateKey, val, onError);
+
         });
+    };
+
+    S.leaveChannel = function (id) {
+        delete t[id];
     };
 
     S.clearChannel = function (id, cb) {

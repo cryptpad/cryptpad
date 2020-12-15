@@ -97,6 +97,7 @@ define([
                 '/common/common-hash.js',
                 '/common/common-util.js',
                 '/common/common-realtime.js',
+                '/common/notify.js',
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
@@ -105,7 +106,7 @@ define([
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -123,6 +124,7 @@ define([
                 Utils.LocalStore = _LocalStore;
                 Utils.Cache = _Cache;
                 Utils.UserObject = _UserObject;
+                Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
                 Test = _Test;
@@ -480,6 +482,7 @@ define([
                             // We've received a link without /p/ and it doesn't work without a password: abort
                             return void todo();
                         }
+
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);
                     }));
@@ -534,6 +537,12 @@ define([
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
+
+            var isDeleted = isNewFile && currentPad.hash.length > 0;
+            if (isDeleted) {
+                Utils.Cache.clearChannel(secret.channel);
+            }
+
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -557,6 +566,7 @@ define([
                         defaultTitle: defaultTitle,
                         type: cfg.type || parsed.type
                     };
+                    var notifs = Utils.Notify.isSupported() && Utils.Notify.hasPermission();
                     var additionalPriv = {
                         app: parsed.type,
                         loggedIn: Utils.LocalStore.isLoggedIn(),
@@ -571,13 +581,13 @@ define([
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
-                        notifications: Notification && Notification.permission === "granted",
+                        notifications: notifs,
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: isNewFile && currentPad.hash.length > 0,
+                        isDeleted: isDeleted,
                         password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
@@ -1598,6 +1608,7 @@ define([
             });
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
+                if (!Utils.Notify.isSupported()) { return void cb(false); }
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });
