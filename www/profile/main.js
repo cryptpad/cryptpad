@@ -50,7 +50,7 @@ define([
                 cb(null, secret);
             });
         };
-        var addData = function (meta, Cryptad, user) {
+        var addData = function (meta, Cryptpad, user) {
             meta.isOwnProfile = !window.location.hash ||
                 window.location.hash.slice(1) === user.profile;
         };
