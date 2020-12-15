@@ -258,7 +258,8 @@ define([
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
             url = h('button.btn.btn-primary.fa.fa-clipboard');
-            $(url).click(function () {
+            $(url).click(function (e) {
+                e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
                 var success = Clipboard.copy(link);
                 if (success) { UI.log(Messages.shareSuccess); }
