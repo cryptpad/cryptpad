@@ -1,3 +1,58 @@
+# ZyzomysPedunculatus (3.25.0)
+
+## Goals
+
+This is the last major release of our 3.0.0 release cycle. We wanted to mark the occasion with some big improvements to keep everyone happy in case we need to take some more time to prepare our upcoming 4.0.0 release.
+
+## Update notes
+
+This update introduces some major database optimizations that should decrease both CPU and disk usage over time as users request resources and prime an on-disk cache for the next time.
+
+We've also introduce the ability to archive illegal or otherwise objectionable material from the admin panel assuming you possess the ability to load the content in question. It's also possible to restore archived content via an adjacent form field on the admin panel as long as it has not been permanently deleted. Due to a quirk in how ownership of uploaded files works, restored files will not retain their "owners" property. We hope to fix this in a future release.
+
+We've also made some minor changes to the example NGINX config file provided in `cryptpad/docs/example.nginx.confg`, specifically in [this commit](https://github.com/xwiki-labs/cryptpad/commit/2647acbb78643e651b71d2d4f74c2f66e264a258). CryptPad will probably work if you don't apply these changes to your nginx conf, but some functional improvements depend on the exposed headers.
+
+To upgrade from 3.24.0 to 3.25.0:
+
+1. Update your NGINX config as mentioned above.
+2. Stop your nodejs server.
+3. Pull the latest code using git (from the `3.25.0` tag or the `main` branch)
+4. Ensure you have the latest clientside and serverside dependencies with `bower update` and `npm install`.
+5. Restart  the nodejs server.
+
+## Features
+
+* This release makes a lot of changes to how content is loaded over the network.
+  * Most notably, CryptPad now employs a client-side cache based on the the _indexedDB API_. Browsers that support this functionality will opportunistically store messages in a local cache for the next time they need them. This should make a considerable difference in how quickly you're able to load a pad, particularly if you accessing the server over a low-bandwidth network.
+  * Uploaded files (images, PDFs, etc.) are also cached in a similar way. Once you'd loaded an asset, your client will prefer to load its local copy instead of the server.
+  * We've updated the code for our _full drive backup_ functionality so that it uses the local cache to load files more quickly. In addition to this, backing up the contents of your drive will also populate the cache as though you had loaded your documents in the normal fashion. This cache will persist until it is invalidated (due to the authoritative document having been deleted or had its history trimmed) or until you have logged out.
+  * We've added the ability to configure the maximum size for automatically downloaded files. Any encrypted files that are above this size will instead require manual interaction to begin downloading. Files that are larger than this limit which are already loaded in your cache will still be automatically displayed.
+* We've also changed a lot of the UI related to encrypted file uploads and downloads:
+  * Encrypted files can display buttons instead of the intended media under a variety of circumstances (if they are larger than your configured limit or if there is no applicable rendering mode). The styles for these buttons are now much more consistent with those found throughout the rest of the platform.
+  * The same assets should now display progress bars when downloading and decrypting encrypted media.
+  * When the same asset is embedded into a document in more than one location it used to be possible to trigger two (or more) concurrent decryption processes. We've modified the rendering process so that duplicates are detected and rendered simultaneously after the relevant assets have been decrypted (once).
+  * We noticed that some old code to filter out forbidden content from rich text pads was interfering with encrypted media. We've clarified the filtering rules to preserve such content (audio, video, iframes) when it occurs within an acceptable context.
+  * We've fixed some inconsistencies with media styles and functionality across different editors. Most types of media now allow you to right-click and choose to _share_ (open that asset's share menu) or open it in a different context (in the file app or in the relevant editor where this behaviour is supported).
+  * The _file_ app has been greatly simplified. It now uses the same methods to render encrypted media as is used elsewhere, so it also displays progress and has a more consistent UI.
+  * The file uploads/downloads table has also been improved somewhat:
+    * Download progress is displayed for groups of items when downloading a folder from your drive.
+    * We found and removed a hard-coded translation from the table's header.
+* In keeping with the theme of network traffic and files we've also made some improvements to policies for users' storage:
+  * Users should now be prompted to trim the history of very large documents when viewing them, saving space for the server operator as well as freeing up some of the user's quota.
+  * Users will also be prompted to use similar functionality available through the settings page when the history of their drive and other account-related functionality is consuming a significant amount of their quota.
+  * Documents that you own used to be automatically added to your drive when viewed if they weren't already present. This was originally intended as an integrity check and a means to recover from incorrectly removed entries in your drive, however, as we now support the removal of owned elements from your drive without destroying them this only serves as an annoyance. As such, we have dropped this functionality.
+  * The whiteboard editor allows users to insert encrypted images into whiteboards, but only up to a certain size. Before it would just warn you that your image was too large. Now it provides the actual size limit that you've exceeded.
+  * The prompt to store uploads in your drive is now suppressed when uploading images via the support ticket panel.
+
+## Bug fixes
+
+* We've improved offline detection such that "offline" status is specific to particular resources like your drive, teams, and shared folders rather than treating your account as simply "online or offline".
+* We've optimized one of our less style sheet mixins that was used in a lot of places at a more specific scope than was necessary. This resulted in more time compiling styles and higher storage space requirements for the css cache in localStorage.
+* A small helper function that was intended to stop listening for `enter` and `esc` keypresses after closing a modal was overly zealous and stopped listening after _any keypress_. This made it so that any prompt with an input field did not correctly submit or cancel when pressing `enter` or `esc` after  typing some text.
+* Various browsers now require the request for the permission to send notifications to originate from a "click" event, so CryptPad now opens a dialog prompting you to allow (or disallow) permission if you haven't already made that decision.
+* Modern browsers commonly prevent tabs from opening new windows unless you've explicitly enabled that behaviour (it's an important feature), however, in some cases the indication that a new tab was blocked can be very subtle and some of our users did not notice it. We now check whether attempts to open a new tab were successful, and prompt the user to enable this behaviour so that CryptPad can perform regular actions like opening a pad from the drive.
+* After some deep investigation we identified a number of scenarios where contact requests would behave incorrectly, such as not triggering a notification. Contact requests should now be much more stable. On a related note, it's now possible to cancel a pending contact request from the concerned user's profile.
+
 # YunnanLakeNewt (3.24.0)
 
 ## Goals
