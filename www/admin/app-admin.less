@@ -85,12 +85,7 @@
             font-size: 1.5rem;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            span:first-child {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
+            align-items: top;
             .cp-support-title-buttons {
                 flex-shrink: 0;
             }
@@ -123,6 +118,11 @@
         }
     }
     .cp-support-list-ticket:not(.cp-support-open) {
+        span:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         & > :not(h2):not(.cp-support-collapsed) {
             display: none;
         }
