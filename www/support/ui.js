@@ -257,7 +257,7 @@ define([
         var url;
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn.btn-primary.fa.fa-clipboard');
+            url = h('button.btn.fa.fa-clipboard');
             $(url).click(function (e) {
                 e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
