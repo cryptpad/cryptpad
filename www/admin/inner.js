@@ -556,8 +556,10 @@ define([
         Messages.admin_support_normal = "Unanswered tickets";
         Messages.admin_support_answered = "Answered tickets";
         Messages.admin_support_closed = "Closed tickets";
-        Messages.admin_support_open = "Show ticket";
-        Messages.admin_support_collapse = "Collapse ticket";
+        Messages.admin_support_open = "Show";
+        Messages.admin_support_collapse = "Collapse";
+        Messages.admin_support_first = "Created on: ";
+        Messages.admin_support_last = "Updated on: ";
         var col1 = h('div.cp-support-column', h('h1', Messages.admin_support_premium));
         var col2 = h('div.cp-support-column', h('h1', Messages.admin_support_normal));
         var col3 = h('div.cp-support-column', h('h1', Messages.admin_support_answered));
@@ -613,7 +615,7 @@ define([
         };
 
         var makeOpenButton = function ($ticket) {
-            var button = h('button.btn.btn-primary', Messages.admin_support_open);
+            var button = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
             var collapse = h('button.btn.cp-support-collapse', Messages.admin_support_collapse);
             $(button).click(function () {
                 $ticket.toggleClass('cp-support-open', true);
@@ -621,8 +623,28 @@ define([
             $(collapse).click(function () {
                 $ticket.toggleClass('cp-support-open', false);
             });
-            $ticket.append(h('div.cp-support-open-button', button));
-            $ticket.find('.cp-support-list-actions').append(collapse);
+            $ticket.find('.cp-support-title-buttons').prepend([button, collapse]);
+            $ticket.append(h('div.cp-support-collapsed'));
+        };
+        var updateTicketDetails = function ($ticket) {
+            console.log($ticket.find('.cp-support-message-from'));
+            var $first = $ticket.find('.cp-support-message-from').first();
+            var user = $first.find('span').first().html();
+            var time = $first.find('.cp-support-message-time').text();
+            var last = $ticket.find('.cp-support-message-from').last().find('.cp-support-message-time').text();
+            var $c = $ticket.find('.cp-support-collapsed');
+            $c.html('').append([
+                UI.setHTML(h('span'), user),
+                h('span', [
+                    h('b', Messages.admin_support_first),
+                    h('span', time)
+                ]),
+                h('span', [
+                    h('b', Messages.admin_support_last),
+                    h('span', last)
+                ])
+            ]);
+
         };
 
         var sort = function (id1, id2) {
@@ -639,7 +661,7 @@ define([
             return t1.time - t2.time;
         };
 
-        var reorder = function () {
+        var _reorder = function () {
             var orderAnswered = Object.keys(hashesById).filter(function (id) {
                 var d = getTicketData(id);
                 return d && d.lastAdmin && !d.closed;
@@ -656,26 +678,28 @@ define([
                 var d = getTicketData(id);
                 return d && d.closed;
             }).sort(sort);
-            orderAnswered.forEach(function (id, i) {
-                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col3);
-            });
-            orderPremium.forEach(function (id, i) {
-                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col1);
-            });
-            orderNormal.forEach(function (id, i) {
-                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col2);
-            });
-            orderClosed.forEach(function (id, i) {
-                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col4);
+            var cols = [$col1, $col2, $col3, $col4];
+            [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
+                list.forEach(function (id, i) {
+                    var $t = $div.find('[data-id="'+id+'"]');
+                    $t.css('order', i).appendTo(cols[j]);
+                    updateTicketDetails($t);
+                });
+                if (!list.length) {
+                    cols[j].hide();
+                } else {
+                    cols[j].show();
+                }
             });
         };
+        var reorder = Util.throttle(_reorder, 150);
 
         var to = Util.throttle(function () {
             var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
             $ticket.addClass('cp-support-open');
             $ticket[0].scrollIntoView();
             linkedId = undefined;
-        }, 100);
+        }, 200);
 
         // Register to the "support" mailbox
         common.mailbox.subscribe(['supportadmin'], {

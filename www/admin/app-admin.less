@@ -77,6 +77,20 @@
         }
     }
 
+    .cp-support-list-ticket {
+        h2 {
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cp-support-collapsed {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+    }
+
     .cp-support-list-ticket:not(.cp-support-list-closed) {
         .cp-support-list-message {
             &:last-child:not(.cp-support-fromadmin)  {
@@ -98,15 +112,18 @@
         }
     }
     .cp-support-list-ticket:not(.cp-support-open) {
-        & > :not(h2):not(.cp-support-open-button) {
+        & > :not(h2):not(.cp-support-collapsed) {
             display: none;
         }
-        .cp-support-list-actions .cp-support-collapse {
+        .cp-support-collapse {
             display: none;
         }
     }
     .cp-support-list-ticket.cp-support-open {
-        .cp-support-open-button {
+        .cp-support-collapsed {
+            display: none;
+        }
+        .cp-support-expand {
             display: none;
         }
     }

@@ -269,7 +269,7 @@ define([
             'data-cat': content.category,
             'data-id': content.id
         }, [
-            h('h2', [ticketCategory, ticketTitle, url]),
+            h('h2', [ticketCategory, ticketTitle, h('span.cp-support-title-buttons',url)]),
             actions
         ]));
 
