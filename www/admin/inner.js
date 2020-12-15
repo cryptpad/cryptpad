@@ -552,7 +552,24 @@ define([
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
         var catContainer = h('div.cp-dropdown-container');
-        $div.append(catContainer);
+        Messages.admin_support_premium = "Premium tickets"; // XXX
+        Messages.admin_support_normal = "Unanswered tickets";
+        Messages.admin_support_answered = "Answered tickets";
+        Messages.admin_support_closed = "Closed tickets";
+        Messages.admin_support_open = "Show ticket";
+        Messages.admin_support_collapse = "Collapse ticket";
+        var col1 = h('div.cp-support-column', h('h1', Messages.admin_support_premium));
+        var col2 = h('div.cp-support-column', h('h1', Messages.admin_support_normal));
+        var col3 = h('div.cp-support-column', h('h1', Messages.admin_support_answered));
+        var col4 = h('div.cp-support-column', h('h1', Messages.admin_support_closed));
+        var $col1 = $(col1), $col2 = $(col2), $col3 = $(col3), $col4 = $(col4);
+        $div.append([
+            //catContainer
+            col1,
+            col2,
+            col3,
+            col4
+        ]);
         var category = 'all';
         var $drop = APP.support.makeCategoryDropdown(catContainer, function (key) {
             category = key;
@@ -572,34 +589,90 @@ define([
 
         var hashesById = {};
 
-        var reorder = function () {
-            var order = Object.keys(hashesById);
-            order.sort(function (id1, id2) {
-                var t1 = hashesById[id1];
-                var t2 = hashesById[id2];
-                if (!Array.isArray(t1)) { return 1; }
-                if (!Array.isArray(t2)) { return -1; }
-                var lastMsg1 = t1[t1.length - 1];
-                var lastMsg2 = t2[t2.length - 1];
-                var time1 = Util.find(lastMsg1, ['content', 'msg', 'content', 'time']);
-                var time2 = Util.find(lastMsg2, ['content', 'msg', 'content', 'time']);
-                var authorEd1 = Util.find(lastMsg1, ['content', 'msg', 'content', 'sender', 'edPublic']);
-                var authorEd2 = Util.find(lastMsg2, ['content', 'msg', 'content', 'sender', 'edPublic']);
-                var admin1 = ApiConfig.adminKeys.indexOf(authorEd1) !== -1;
-                var admin2 = ApiConfig.adminKeys.indexOf(authorEd2) !== -1;
-                // If one is answered and not the other, put the unanswered first
-                if (admin1 && !admin2) { return 1; }
-                if (!admin1 && admin2) { return -1; }
-                // Otherwise, sort them by time
-                return time2 - time1;
+        var getTicketData = function (id) {
+            var t = hashesById[id];
+            if (!Array.isArray(t) || !t.length) { return; }
+            var ed = Util.find(t[0], ['content', 'msg', 'content', 'sender', 'edPublic']);
+            // If one of their ticket was sent as a premium user, mark them as premium
+            var premium = t.some(function (msg) {
+                var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
+                if (ed !== _ed) { return; }
+                return Util.find(t[0], ['content', 'msg', 'content', 'sender', 'plan']);
             });
-            order.forEach(function (id, i) {
-                $div.find('[data-id="'+id+'"]').css('order', i);
+            var lastMsg = t[t.length - 1];
+            var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
+            return {
+                lastMsg: lastMsg,
+                time: Util.find(lastMsg, ['content', 'msg', 'content', 'time']),
+                lastMsgEd: lastMsgEd,
+                lastAdmin: lastMsgEd !== ed && ApiConfig.adminKeys.indexOf(lastMsgEd) !== -1,
+                premium: premium,
+                authorEd: ed,
+                closed: Util.find(lastMsg, ['content', 'msg', 'type']) === 'CLOSE'
+            };
+        };
+
+        var makeOpenButton = function ($ticket) {
+            var button = h('button.btn.btn-primary', Messages.admin_support_open);
+            var collapse = h('button.btn.cp-support-collapse', Messages.admin_support_collapse);
+            $(button).click(function () {
+                $ticket.toggleClass('cp-support-open', true);
+            });
+            $(collapse).click(function () {
+                $ticket.toggleClass('cp-support-open', false);
+            });
+            $ticket.append(h('div.cp-support-open-button', button));
+            $ticket.find('.cp-support-list-actions').append(collapse);
+        };
+
+        var sort = function (id1, id2) {
+            var t1 = getTicketData(id1);
+            var t2 = getTicketData(id2);
+            if (!t1) { return 1; }
+            if (!t2) { return -1; }
+            /*
+            // If one is answered and not the other, put the unanswered first
+            if (t1.lastAdmin && !t2.lastAdmin) { return 1; }
+            if (!t1.lastAdmin && t2.lastAdmin) { return -1; }
+            */
+            // Otherwise, sort them by time
+            return t1.time - t2.time;
+        };
+
+        var reorder = function () {
+            var orderAnswered = Object.keys(hashesById).filter(function (id) {
+                var d = getTicketData(id);
+                return d && d.lastAdmin && !d.closed;
+            }).sort(sort);
+            var orderPremium = Object.keys(hashesById).filter(function (id) {
+                var d = getTicketData(id);
+                return d && d.premium && !d.lastAdmin && !d.closed;
+            }).sort(sort);
+            var orderNormal = Object.keys(hashesById).filter(function (id) {
+                var d = getTicketData(id);
+                return d && !d.premium && !d.lastAdmin && !d.closed;
+            }).sort(sort);
+            var orderClosed = Object.keys(hashesById).filter(function (id) {
+                var d = getTicketData(id);
+                return d && d.closed;
+            }).sort(sort);
+            orderAnswered.forEach(function (id, i) {
+                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col3);
+            });
+            orderPremium.forEach(function (id, i) {
+                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col1);
+            });
+            orderNormal.forEach(function (id, i) {
+                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col2);
+            });
+            orderClosed.forEach(function (id, i) {
+                $div.find('[data-id="'+id+'"]').css('order', i).appendTo($col4);
             });
         };
 
         var to = Util.throttle(function () {
             var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
+            $ticket.addClass('cp-support-open');
             $ticket[0].scrollIntoView();
             linkedId = undefined;
         }, 100);
@@ -657,6 +730,7 @@ define([
                             UI.alert(Messages.error);
                         });
                     });
+                    makeOpenButton($ticket);
                     if (category !== 'all' && $ticket.attr('data-cat') !== category) {
                         $ticket.hide();
                     }

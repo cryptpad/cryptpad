@@ -62,11 +62,19 @@
 
     .cp-support-container {
         display: flex;
-        flex-flow: column;
+        flex-wrap: wrap;
+        .cp-support-column {
+            min-width: 700px;
+            flex: 1 0 50%;
+        }
     }
 
     .cp-support-list-actions {
         margin: 10px 0px 10px 2px;
+        .cp-support-close {
+            order: 20;
+            margin-left: auto !important;
+        }
     }
 
     .cp-support-list-ticket:not(.cp-support-list-closed) {
@@ -87,6 +95,19 @@
                     }
                 }
             }
+        }
+    }
+    .cp-support-list-ticket:not(.cp-support-open) {
+        & > :not(h2):not(.cp-support-open-button) {
+            display: none;
+        }
+        .cp-support-list-actions .cp-support-collapse {
+            display: none;
+        }
+    }
+    .cp-support-list-ticket.cp-support-open {
+        .cp-support-open-button {
+            display: none;
         }
     }
 
