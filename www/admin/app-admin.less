@@ -83,6 +83,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            span:first-child {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .cp-support-title-buttons {
+                flex-shrink: 0;
+            }
         }
         .cp-support-collapsed {
             display: flex;
