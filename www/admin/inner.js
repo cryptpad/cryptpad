@@ -614,20 +614,30 @@ define([
             };
         };
 
+        var addClickHandler = function ($ticket) {
+            $ticket.on('click', function () {
+                $ticket.toggleClass('cp-support-open', true);
+                $ticket.off('click');
+            });
+        };
         var makeOpenButton = function ($ticket) {
             var button = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
             var collapse = h('button.btn.cp-support-collapse', Messages.admin_support_collapse);
             $(button).click(function () {
                 $ticket.toggleClass('cp-support-open', true);
             });
-            $(collapse).click(function () {
+            addClickHandler($ticket);
+            $(collapse).click(function (e) {
                 $ticket.toggleClass('cp-support-open', false);
+                e.stopPropagation();
+                setTimeout(function () {
+                    addClickHandler($ticket);
+                });
             });
             $ticket.find('.cp-support-title-buttons').prepend([button, collapse]);
             $ticket.append(h('div.cp-support-collapsed'));
         };
         var updateTicketDetails = function ($ticket) {
-            console.log($ticket.find('.cp-support-message-from'));
             var $first = $ticket.find('.cp-support-message-from').first();
             var user = $first.find('span').first().html();
             var time = $first.find('.cp-support-message-time').text();
