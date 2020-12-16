@@ -593,8 +593,10 @@ define([
             $col.toggleClass('cp-support-column-collapsed');
             if ($col.hasClass('cp-support-column-collapsed')) {
                 $(this).text(Messages.admin_support_open);
+                $(this).toggleClass('btn-primary');
             } else {
                 $(this).text(Messages.admin_support_collapse);
+                $(this).toggleClass('btn-primary');
             }
         });
         var category = 'all';
