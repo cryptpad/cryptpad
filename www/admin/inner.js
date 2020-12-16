@@ -662,14 +662,15 @@ define([
             $ticket.find('.cp-support-title-buttons').prepend([button, collapse]);
             $ticket.append(h('div.cp-support-collapsed'));
         };
-        var updateTicketDetails = function ($ticket) {
+        var updateTicketDetails = function ($ticket, isPremium) {
             var $first = $ticket.find('.cp-support-message-from').first();
             var user = $first.find('span').first().html();
             var time = $first.find('.cp-support-message-time').text();
             var last = $ticket.find('.cp-support-message-from').last().find('.cp-support-message-time').text();
             var $c = $ticket.find('.cp-support-collapsed');
+            var txtClass = isPremium ? ".cp-support-ispremium" : "";
             $c.html('').append([
-                UI.setHTML(h('span'), user),
+                UI.setHTML(h('span'+ txtClass), user),
                 h('span', [
                     h('b', Messages.admin_support_first),
                     h('span', time)
@@ -717,8 +718,9 @@ define([
             [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
                 list.forEach(function (id, i) {
                     var $t = $div.find('[data-id="'+id+'"]');
+                    var d = getTicketData(id);
                     $t.css('order', i).appendTo(cols[j]);
-                    updateTicketDetails($t);
+                    updateTicketDetails($t, d.premium);
                 });
                 if (!list.length) {
                     cols[j].hide();
