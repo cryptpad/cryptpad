@@ -588,7 +588,7 @@ define([
             col3,
             col4
         ]);
-        $div.find('.cp-support-column-button').click(function (e) {
+        $div.find('.cp-support-column-button').click(function () {
             var $col = $(this).closest('.cp-support-column');
             $col.toggleClass('cp-support-column-collapsed');
             if ($col.hasClass('cp-support-column-collapsed')) {
