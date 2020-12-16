@@ -552,18 +552,34 @@ define([
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
         var catContainer = h('div.cp-dropdown-container');
-        Messages.admin_support_premium = "Premium tickets"; // XXX
-        Messages.admin_support_normal = "Unanswered tickets";
-        Messages.admin_support_answered = "Answered tickets";
-        Messages.admin_support_closed = "Closed tickets";
+        Messages.admin_support_premium = "Premium tickets:"; // XXX
+        Messages.admin_support_normal = "Unanswered tickets:";
+        Messages.admin_support_answered = "Answered tickets:";
+        Messages.admin_support_closed = "Closed tickets:";
         Messages.admin_support_open = "Show";
         Messages.admin_support_collapse = "Collapse";
         Messages.admin_support_first = "Created on: ";
         Messages.admin_support_last = "Updated on: ";
-        var col1 = h('div.cp-support-column', h('h1', Messages.admin_support_premium));
-        var col2 = h('div.cp-support-column', h('h1', Messages.admin_support_normal));
-        var col3 = h('div.cp-support-column', h('h1', Messages.admin_support_answered));
-        var col4 = h('div.cp-support-column', h('h1', Messages.admin_support_closed));
+        var col1 = h('div.cp-support-column', h('h1', [
+            h('span', Messages.admin_support_premium),
+            h('span.cp-support-count'),
+            h('button.btn.cp-support-column-button', Messages.admin_support_collapse)
+        ]));
+        var col2 = h('div.cp-support-column', h('h1', [
+            h('span', Messages.admin_support_normal),
+            h('span.cp-support-count'),
+            h('button.btn.cp-support-column-button', Messages.admin_support_collapse)
+        ]));
+        var col3 = h('div.cp-support-column', h('h1', [
+            h('span', Messages.admin_support_answered),
+            h('span.cp-support-count'),
+            h('button.btn.cp-support-column-button', Messages.admin_support_collapse)
+        ]));
+        var col4 = h('div.cp-support-column', h('h1', [
+            h('span', Messages.admin_support_closed),
+            h('span.cp-support-count'),
+            h('button.btn.cp-support-column-button', Messages.admin_support_collapse)
+        ]));
         var $col1 = $(col1), $col2 = $(col2), $col3 = $(col3), $col4 = $(col4);
         $div.append([
             //catContainer
@@ -572,6 +588,15 @@ define([
             col3,
             col4
         ]);
+        $div.find('.cp-support-column-button').click(function (e) {
+            var $col = $(this).closest('.cp-support-column');
+            $col.toggleClass('cp-support-column-collapsed');
+            if ($col.hasClass('cp-support-column-collapsed')) {
+                $(this).text(Messages.admin_support_open);
+            } else {
+                $(this).text(Messages.admin_support_collapse);
+            }
+        });
         var category = 'all';
         var $drop = APP.support.makeCategoryDropdown(catContainer, function (key) {
             category = key;
@@ -699,6 +724,7 @@ define([
                     cols[j].hide();
                 } else {
                     cols[j].show();
+                    cols[j].find('.cp-support-count').text(list.length);
                 }
             });
         };

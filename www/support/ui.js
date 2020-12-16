@@ -230,7 +230,7 @@ define([
         var form = h('div.cp-support-form-container', content);
 
         $(cancel).click(function () {
-            $(form).closest('.cp-support-list-ticket').find('.cp-support-list-actions').show();
+            $(form).closest('.cp-support-list-ticket').find('.cp-support-list-actions').css('display', '');
             $(form).remove();
         });
 

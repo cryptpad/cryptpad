@@ -69,6 +69,21 @@
         .cp-support-column {
             min-width: 700px;
             flex: 1 0 50%;
+            h1 {
+                display: flex;
+                align-items: center;
+                button {
+                    margin-left: 50px !important;
+                }
+            }
+            .cp-support-count {
+                margin-left: 10px;
+            }
+            &.cp-support-column-collapsed {
+                .cp-support-list-ticket {
+                    display: none;
+                }
+            }
         }
     }
 
@@ -94,6 +109,7 @@
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
+            color: #666;
         }
     }
 
