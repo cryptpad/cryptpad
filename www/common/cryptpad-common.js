@@ -148,6 +148,22 @@ define([
         };
         send();
     };
+    common.fixRosterHash = function () {
+        // Push teams keys
+        postMessage("GET", {
+            key: ['teams'],
+        }, function (obj) {
+            if (obj.error) { return console.error(obj.error); }
+            Object.keys(obj || {}).forEach(function (id) {
+                postMessage("SET", {
+                    key: ['teams', id, 'keys', 'roster', 'lastKnownHash'],
+                    value: ''
+                }, function () {
+                    console.log('done, please close all your CryptPad tabs before testing the fix');
+                });
+            });
+        });
+    };
 
     (function () {
         var bypassHashChange = function (key) {
