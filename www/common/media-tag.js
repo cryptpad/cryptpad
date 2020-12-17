@@ -48,6 +48,7 @@ var factory = function () {
             'image/jpeg',
             'image/jpg',
             'image/gif',
+            'audio/mpeg',
             'audio/mp3',
             'audio/ogg',
             'audio/wav',
