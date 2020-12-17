@@ -42,7 +42,7 @@ module.exports = {
  *
  *  In a production instance this should be available ONLY over HTTPS
  *  using the default port for HTTPS (443) ie. https://cryptpad.fr
- *  In such a case this should be handled by NGINX, as documented in
+ *  In such a case this should be also handled by NGINX, as documented in
  *  cryptpad/docs/example.nginx.conf (see the $main_domain variable)
  *
  */
