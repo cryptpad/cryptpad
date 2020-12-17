@@ -45,7 +45,7 @@ define([
                 Env.folders[id].offline = true;
             });
             proxy.on('reconnect', function () {
-                Env.folders[id].online = true;
+                Env.folders[id].offline = false;
             });
         }
         return userObject;
