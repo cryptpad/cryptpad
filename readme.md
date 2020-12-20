@@ -65,7 +65,7 @@ CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), 
 
 # Contributing
 
-We love Open Source and we love contribution. Learn more about [contributing](https://github.com/xwiki-labs/cryptpad/wiki/Contributor-overview). 
+We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.fr/en/how_to_contribute.html). 
 
 If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi on IRC, `#cryptpad` on Freenode.
 
