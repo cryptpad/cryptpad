@@ -89,10 +89,6 @@
 
     .cp-support-list-actions {
         margin: 10px 0px 10px 2px;
-        .cp-support-close {
-            order: 20;
-            margin-left: auto !important;
-        }
     }
 
     .cp-support-list-ticket {
@@ -119,6 +115,12 @@
     }
 
     .cp-support-list-ticket:not(.cp-support-list-closed) {
+        .cp-support-list-actions {
+            .cp-button-confirm, .cp-support-close {
+                order: 20;
+                margin-left: auto !important;
+            }
+        }
         .cp-support-list-message {
             &:last-child:not(.cp-support-fromadmin)  {
                 color: @colortheme_cp-red;
