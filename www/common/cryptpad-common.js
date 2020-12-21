@@ -1903,12 +1903,12 @@ define([
 
     var requestLogin = function () {
         // log out so that you don't go into an endless loop...
-        LocalStore.logout();
-
-        // redirect them to log in, and come back when they're done.
-        var href = Hash.hashToHref('', 'login');
-        var url = Hash.getNewPadURL(href, { href: currentPad.href });
-        window.location.href = url;
+        LocalStore.logout(function () {
+            // redirect them to log in, and come back when they're done.
+            var href = Hash.hashToHref('', 'login');
+            var url = Hash.getNewPadURL(href, { href: currentPad.href });
+            window.location.href = url;
+        });
     };
 
     common.startAccountDeletion = function (data, cb) {
