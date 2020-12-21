@@ -307,7 +307,7 @@ define([
             var form = makeForm(ctx, function () {
                 var sent = sendForm(ctx, content.id, form, content.sender);
                 if (sent) {
-                    $(actions).show();
+                    $(actions).css('display', '');
                     $(form).remove();
                 }
             }, content.title);
