@@ -587,8 +587,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         // deleted while you are open
         // emit an event
         var onChannelError = function (info) {
-            Feedback.send('ROSTER_CHANNEL_ERROR='+info.type);
-            if (info.type === "EUNKNOWN") {
+            if (Feedback) { Feedback.send('ROSTER_CHANNEL_ERROR='+(info && info.type)); }
+            if (info && info.type === "EUNKNOWN") {
                 // chainpad-netflux should recover by itself
                 return;
             }
