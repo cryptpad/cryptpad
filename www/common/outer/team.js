@@ -1796,7 +1796,11 @@ define([
                 teams[id].keys.mailbox = deriveMailbox(teams[id]);
             }
             openChannel(ctx, teams[id], id, waitFor(function (err) {
-                if (err) { return void console.error(err); }
+                if (err) {
+                    var txt = typeof(err) === "string" ? err : (err.type || err.message);
+                    Feedback.send("TEAM_LOADING_ERROR="+txt);
+                    return void console.error(err);
+                }
                 console.debug('Team '+id+' ready');
             }));
         });

@@ -1,5 +1,5 @@
 (function () {
-var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
+var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback) {
     var Roster = {};
 
     // this constant is somewhat arbitrary.
@@ -587,6 +587,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // deleted while you are open
         // emit an event
         var onChannelError = function (info) {
+            if (Feedback) { Feedback.send('ROSTER_CHANNEL_ERROR='+(info && info.type)); }
+            if (info && info.type === "EUNKNOWN") {
+                // chainpad-netflux should recover by itself
+                return;
+            }
             if (!ready) { return void cb(info); }
             console.error("CHANNEL_ERROR", info);
         };
@@ -870,7 +875,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             require("../../bower_components/chainpad-netflux/chainpad-netflux.js"),
             require("../../bower_components/json.sortify"),
             require("nthen"),
-            require("../../bower_components/chainpad-crypto/crypto")
+            require("../../bower_components/chainpad-crypto/crypto"),
+            null // no feedback here
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         require.config({ paths:  { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
@@ -880,16 +886,18 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             '/bower_components/chainpad-netflux/chainpad-netflux.js',
             'json.sortify',
             '/bower_components/nthen/index.js',
-            '/bower_components/chainpad-crypto/crypto.js'
+            '/bower_components/chainpad-crypto/crypto.js',
+            '/common/common-feedback.js',
             //'/bower_components/tweetnacl/nacl-fast.min.js',
-        ], function (Util, Hash, CPNF, Sortify, nThen, Crypto) {
+        ], function (Util, Hash, CPNF, Sortify, nThen, Crypto, Feedback) {
             return factory.apply(null, [
                 Util,
                 Hash,
                 CPNF,
                 Sortify,
                 nThen,
-                Crypto
+                Crypto,
+                Feedback
             ]);
         });
     } else {

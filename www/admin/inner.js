@@ -767,6 +767,7 @@ define([
                     if (!$ticket.length) { return; }
                     $ticket.addClass('cp-support-list-closed');
                     $ticket.append(APP.support.makeCloseMessage(content, hash));
+                    reorder();
                     return;
                 }
                 if (msg.type !== 'TICKET') { return; }
@@ -787,7 +788,12 @@ define([
                                 }));
                             });
                         }).nThen(function () {
-                            if (!error) { return void $ticket.remove(); }
+                            if (!error) {
+                                $ticket.remove();
+                                delete hashesById[id];
+                                reorder();
+                                return;
+                            }
                             // if deletion failed then reactivate the button and warn
                             hideButton.removeAttribute('disabled');
                             // and show a generic error message
