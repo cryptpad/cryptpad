@@ -476,7 +476,7 @@ define([
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {
                 role:'alert'
-            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+            }, Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
         };
 
         if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS || isOwner) {
@@ -1071,7 +1071,7 @@ define([
                         Feedback.send('FULL_TEAMDRIVE_EXPORT_COMPLETE');
                         saveAs(blob, filename);
                     }, errors);
-                }, ui.update);
+                }, ui.update, common.getCache);
                 ui.onCancel(function() {
                     ui.close();
                     bu.stop();

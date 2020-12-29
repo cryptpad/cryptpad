@@ -3,6 +3,7 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/outer/cache-store.js',
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
@@ -11,13 +12,11 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
-    '/common/outer/cache-store.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-], function (Config, Messages, Util, Hash,
+], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cache,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -148,6 +147,22 @@ define([
             });
         };
         send();
+    };
+    common.fixRosterHash = function () {
+        // Push teams keys
+        postMessage("GET", {
+            key: ['teams'],
+        }, function (obj) {
+            if (obj.error) { return console.error(obj.error); }
+            Object.keys(obj || {}).forEach(function (id) {
+                postMessage("SET", {
+                    key: ['teams', id, 'keys', 'roster', 'lastKnownHash'],
+                    value: ''
+                }, function () {
+                    console.log('done, please close all your CryptPad tabs before testing the fix');
+                });
+            });
+        });
     };
 
     (function () {
@@ -740,7 +755,7 @@ define([
         });
     };
 
-    common.useFile = function (Crypt, cb, optsPut) {
+    common.useFile = function (Crypt, cb, optsPut, onProgress) {
         var fileHost = Config.fileHost || window.location.origin;
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
@@ -797,7 +812,9 @@ define([
                         return void cb(err);
                     }
                     u8 = _u8;
-                }));
+                }), function (progress) {
+                    onProgress(progress * 50);
+                }, Cache);
             }).nThen(function (waitFor) {
                 require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
                     FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
@@ -806,7 +823,9 @@ define([
                             return void cb(err);
                         }
                         res = _res;
-                    }));
+                    }), function (progress) {
+                        onProgress(50 + progress * 50);
+                    });
                 }));
             }).nThen(function (waitFor) {
                 var ext = Util.parseFilename(data.title).ext;
@@ -1921,12 +1940,12 @@ define([
 
     var requestLogin = function () {
         // log out so that you don't go into an endless loop...
-        LocalStore.logout();
-
-        // redirect them to log in, and come back when they're done.
-        var href = Hash.hashToHref('', 'login');
-        var url = Hash.getNewPadURL(href, { href: currentPad.href });
-        window.location.href = url;
+        LocalStore.logout(function () {
+            // redirect them to log in, and come back when they're done.
+            var href = Hash.hashToHref('', 'login');
+            var url = Hash.getNewPadURL(href, { href: currentPad.href });
+            window.location.href = url;
+        });
     };
 
     common.startAccountDeletion = function (data, cb) {

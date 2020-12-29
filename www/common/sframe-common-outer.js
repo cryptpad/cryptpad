@@ -8,7 +8,7 @@ define([
 ], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
 
-    common.initIframe = function (waitFor, isRt) {
+    common.initIframe = function (waitFor, isRt, pathname) {
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
         var req = {
@@ -31,7 +31,7 @@ define([
         }
 
         document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
+            ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -97,6 +97,7 @@ define([
                 '/common/common-hash.js',
                 '/common/common-util.js',
                 '/common/common-realtime.js',
+                '/common/notify.js',
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
@@ -105,7 +106,7 @@ define([
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -123,6 +124,7 @@ define([
                 Utils.LocalStore = _LocalStore;
                 Utils.Cache = _Cache;
                 Utils.UserObject = _UserObject;
+                Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
                 Test = _Test;
@@ -545,6 +547,12 @@ define([
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
+
+            var isDeleted = isNewFile && currentPad.hash.length > 0;
+            if (isDeleted) {
+                Utils.Cache.clearChannel(secret.channel);
+            }
+
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -568,6 +576,7 @@ define([
                         defaultTitle: defaultTitle,
                         type: cfg.type || parsed.type
                     };
+                    var notifs = Utils.Notify.isSupported() && Utils.Notify.hasPermission();
                     var additionalPriv = {
                         app: parsed.type,
                         loggedIn: Utils.LocalStore.isLoggedIn(),
@@ -582,13 +591,13 @@ define([
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
-                        notifications: Notification && Notification.permission === "granted",
+                        notifications: notifs,
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: isNewFile && currentPad.hash.length > 0,
+                        isDeleted: isDeleted,
                         password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
@@ -691,6 +700,22 @@ define([
                     });
                 });
 
+                sframeChan.on('Q_GET_BLOB_CACHE', function (data, cb) {
+                    if (!Utils.Cache) { return void cb({error: 'NOCACHE'}); }
+                    Utils.Cache.getBlobCache(data.id, function (err, obj) {
+                        if (err) { return void cb({error: err}); }
+                        cb(obj);
+                    });
+                });
+                sframeChan.on('Q_SET_BLOB_CACHE', function (data, cb) {
+                    if (!Utils.Cache) { return void cb({error: 'NOCACHE'}); }
+                    if (!data || !data.u8 || typeof(data.u8) !== "object") { return void cb({error: 'EINVAL'}); }
+                    Utils.Cache.setBlobCache(data.id, data.u8, function (err) {
+                        if (err) { return void cb({error: err}); }
+                        cb();
+                    });
+                });
+
                 sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
                     Cryptpad.getAttribute(data.key, function (e, data) {
                         cb({
@@ -736,7 +761,16 @@ define([
 
                 sframeChan.on('EV_OPEN_URL', function (url) {
                     if (url) {
-                        Utils.Util.open(url);
+                        var a = window.open(url);
+                        if (!a) {
+                            sframeChan.event('EV_POPUP_BLOCKED');
+                        }
+                    }
+                });
+
+                sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
+                    if (url) {
+                        window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
                     }
                 });
 
@@ -1584,6 +1618,7 @@ define([
             });
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
+                if (!Utils.Notify.isSupported()) { return void cb(false); }
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });
@@ -1819,7 +1854,12 @@ define([
                             }
                             startRealtime();
                             cb();
-                        }, cryptputCfg);
+                        }, cryptputCfg, function (progress) {
+                            sframeChan.event('EV_LOADING_INFO', {
+                                type: 'pad',
+                                progress: progress
+                            });
+                        });
                         return;
                     }
                     // Start realtime outside the iframe and callback

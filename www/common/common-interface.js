@@ -65,12 +65,13 @@ define([
             switch (e.which) {
                 case 27: // cancel
                     if (typeof(no) === 'function') { no(e); }
+                    $(el || window).off('keydown', handler);
                     break;
                 case 13: // enter
                     if (typeof(yes) === 'function') { yes(e); }
+                    $(el || window).off('keydown', handler);
                     break;
             }
-            $(el || window).off('keydown', handler);
         };
 
         $(el || window).keydown(handler);
@@ -773,7 +774,8 @@ define([
             $(originalBtn).show();
         };
 
-        $button.click(function () {
+        $button.click(function (e) {
+            e.stopPropagation();
             done(true);
         });
 
@@ -791,7 +793,8 @@ define([
             to = setTimeout(todo, INTERVAL);
         };
 
-        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function () {
+        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function (e) {
+            e.stopPropagation();
             // If we have a validation function, continue only if it's true
             if (config.validate && !config.validate()) { return; }
             i = 1;

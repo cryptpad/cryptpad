@@ -175,7 +175,7 @@ define([
                 ChainPad: ChainPad,
                 classic: true,
                 network: network,
-                Cache: Cache,
+                Cache: Cache, // XXX re-enable cache usage
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners

@@ -101,13 +101,13 @@ define([
         var url = APP.origin + '/profile/#' + hash;
 
         $('<button>', {
-            'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
+            'class': 'btn '+VIEW_PROFILE_BUTTON,
         }).text(Messages.profile_viewMyProfile).click(function () {
             Util.open(url, '_blank');
         }).appendTo($container);
 
         $('<button>', {
-            'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
+            'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
         }).append(h('i.fa.fa-shhare-alt'))
           .append(h('span', Messages.shareButton))
           .click(function () {
@@ -136,7 +136,7 @@ define([
         APP.$linkEdit = $();
         if (APP.readOnly) { return; }
 
-        var button = h('button.btn.btn-primary', {
+        var button = h('button.btn', {
             title: Messages.clickToEdit
         }, Messages.profile_addLink);
         APP.$linkEdit = $(button);
@@ -243,10 +243,34 @@ define([
             return;
         }
 
+        var addCancel = function () {
+            var cancelButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
+                h('i.fa.fa-user-times'),
+                Messages.cancel
+            ]);
+            $(cancelButton).click(function () {
+                // Unfriend confirm
+                var content = h('div', [
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmCancel', [name]))
+                ]);
+                UI.confirm(content, function (yes) {
+                    if (!yes) { return; }
+                    module.execCommand('CANCEL_FRIEND', {
+                        curvePublic: data.curvePublic,
+                        notifications: data.notifications
+                    }, function (e) {
+                        refreshFriendRequest(data);
+                        if (e) { UI.warn(Messages.error); return void console.error(e); }
+                    });
+                });
+            }).appendTo(APP.$friend);
+        };
+
         // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
             $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+            addCancel();
             return;
         }
         // This is not a friend yet: we can send a friend request
@@ -255,8 +279,9 @@ define([
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
                     notifications: data.notifications
-                }, function () {
-                    $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+                }, function (err, obj) {
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    //$button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
                 });
             });
     };
@@ -468,7 +493,7 @@ define([
 
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
-            'class': 'btn btn-success',
+            'class': 'btn',
         }).append(h('i.fa.fa-key'))
           .append(h('span', Messages.profile_copyKey))
           .click(function () {

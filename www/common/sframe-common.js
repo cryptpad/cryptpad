@@ -11,11 +11,11 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
     '/common/sframe-common-mailbox.js',
+    '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
-    '/common/outer/cache-store.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -37,10 +37,10 @@ define([
     CodeMirror,
     Cursor,
     Mailbox,
+    Cache,
     MT,
     MetadataMgr,
     AppConfig,
-    Cache,
     CommonRealtime,
     Util,
     Hash,
@@ -144,7 +144,7 @@ define([
         }
         return;
     };
-    funcs.importMediaTag = function ($mt) {
+    var getMtData = function ($mt) {
         if (!$mt || !$mt.is('media-tag')) { return; }
         var chanStr = $mt.attr('src');
         var keyStr = $mt.attr('data-crypto-key');
@@ -156,10 +156,27 @@ define([
         var channel = src.replace(/\/blob\/[0-9a-f]{2}\//i, '');
         // Get key
         var key = keyStr.replace(/cryptpad:/i, '');
+        return {
+            channel: channel,
+            key: key
+        };
+    };
+    funcs.getHashFromMediaTag = function ($mt) {
+        var data = getMtData($mt);
+        if (!data) { return; }
+        return Hash.getFileHashFromKeys({
+            version: 1,
+            channel: data.channel,
+            keys: { fileKeyStr: data.key }
+        });
+    };
+    funcs.importMediaTag = function ($mt) {
+        var data = getMtData($mt);
+        if (!data) { return; }
         var metadata = $mt[0]._mediaObject._blob.metadata;
         ctx.sframeChan.query('Q_IMPORT_MEDIATAG', {
-            channel: channel,
-            key: key,
+            channel: data.channel,
+            key: data.key,
             name: metadata.name,
             type: metadata.type,
             owners: metadata.owners
@@ -281,7 +298,6 @@ define([
         var priv = ctx.metadataMgr.getPrivateData();
 
         var limit = 100 * 1024 * 1024; // 100MB
-        limit = 100 * 1024; // XXX 100KB
 
         var owned;
         nThen(function (w) {
@@ -598,6 +614,10 @@ define([
         });
     };
 
+    funcs.getCache = function () {
+        return ctx.cache;
+    };
+
 /*    funcs.storeLinkToClipboard = function (readOnly, cb) {
         ctx.sframeChan.query('Q_STORE_LINK_TO_CLIPBOARD', readOnly, function (err) {
             if (cb) { cb(err); }
@@ -622,6 +642,10 @@ define([
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.openUnsafeURL = function (url) {
+        var app = ctx.metadataMgr.getPrivateData().app;
+        if (app === "sheet") {
+            return void ctx.sframeChan.event('EV_OPEN_UNSAFE_URL', url);
+        }
         var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(url);
         Util.open(bounceHref);
     };
@@ -756,6 +780,10 @@ define([
                 UI.errorLoadingScreen(Messages.password_error_seed);
             });
 
+            ctx.sframeChan.on("EV_POPUP_BLOCKED", function () {
+                UI.alert(Messages.errorPopupBlocked);
+            });
+
             ctx.sframeChan.on("EV_EXPIRED_ERROR", function () {
                 funcs.onServerError({
                     type: 'EEXPIRED'
@@ -800,11 +828,23 @@ define([
                 modules[type].onEvent(obj.data);
             });
 
+            ctx.cache = Cache.create(ctx.sframeChan);
+
             ctx.metadataMgr.onReady(waitFor());
 
         }).nThen(function () {
             var privateData = ctx.metadataMgr.getPrivateData();
             funcs.addShortcuts(window, Boolean(privateData.app));
+
+            var mt = Util.find(privateData, ['settings', 'general', 'mediatag-size']);
+            if (MT.MediaTag && typeof(mt) === "number") {
+                var maxMtSize = mt === -1 ? Infinity : mt * 1024 * 1024;
+                MT.MediaTag.setDefaultConfig('maxDownloadSize', maxMtSize);
+            }
+
+            if (MT.MediaTag && ctx.cache) {
+                MT.MediaTag.setDefaultConfig('Cache', ctx.cache);
+            }
 
             try {
                 var feedback = privateData.feedbackAllowed;

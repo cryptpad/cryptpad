@@ -1599,9 +1599,9 @@ define([
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
-                        Util.open(origin+'/profile/');
+                        Common.openURL(origin+'/profile/');
                     } else {
-                        window.parent.location = origin+'/profile/';
+                        Common.gotoURL(origin+'/profile/');
                     }
                 },
             });
@@ -1610,27 +1610,25 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    //'target': '_blank',
-                    //'href': origin+'/drive/',
                     'class': 'fa fa-hdd-o'
                 },
                 content: h('span', Messages.type.drive),
                 action: function () {
-                    Util.open(origin + '/drive/', '_blank');
-                }
+                    //Util.open(origin + '/drive/', '_blank');
+                    Common.openURL(origin+'/drive/');
+                },
             });
         }
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    //'target': '_blank',
-                    //'href': origin+'/teams/',
                     'class': 'fa fa-users'
                 },
                 content: h('span', Messages.type.teams),
                 action: function () {
-                    Util.open(origin + '/teams/', '_blank');
+                    //Util.open(origin + '/teams/', '_blank');
+                    Common.openURL('/teams/');
                 },
             });
         }
@@ -1638,11 +1636,12 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    //'target': '_blank',
-                    //'href': origin+'/contacts/',
                     'class': 'fa fa-address-book'
                 },
-                content: h('span', Messages.type.contacts)
+                content: h('span', Messages.type.contacts),
+                action: function () {
+                    Common.openURL('/contacts/');
+                },
             });
         }
         if (padType !== 'settings') {
@@ -1652,9 +1651,9 @@ define([
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
-                        Util.open(origin+'/settings/');
+                        Common.openURL(origin+'/settings/');
                     } else {
-                        window.parent.location = origin+'/settings/';
+                        Common.gotoURL(origin+'/settings/');
                     }
                 },
             });
@@ -1669,9 +1668,9 @@ define([
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
-                        Util.open(origin+'/admin/');
+                        Common.openURL(origin+'/admin/');
                     } else {
-                        window.parent.location = origin+'/admin/';
+                        Common.gotoURL(origin+'/admin/');
                     }
                 },
             });
@@ -1683,9 +1682,9 @@ define([
                 content: h('span', Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
-                        Util.open(origin+'/support/');
+                        Common.openURL(origin+'/support/');
                     } else {
-                        window.parent.location = origin+'/support/';
+                        Common.gotoURL(origin+'/support/');
                     }
                 },
             });
@@ -1694,13 +1693,11 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': AppConfig.surveyURL,
                     'class': 'cp-toolbar-survey fa fa-graduation-cap'
                 },
                 content: h('span', Messages.survey),
                 action: function () {
+                    Common.openUnsafeURL(AppConfig.surveyURL);
                     Feedback.send('SURVEY_CLICKED');
                 },
             });
@@ -1719,13 +1716,11 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'target': '_blank',
-                //'href': origin+'/index.html',
                 'class': 'fa fa-home'
             },
             content: h('span', Messages.homePage),
             action: function () {
-                Util.open(origin + '/index.html');
+                Common.openURL('/index.html');
             },
         });
         // Add the change display name button if not in read only mode
@@ -1742,23 +1737,24 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html', // XXX
                     'class': 'fa fa-star-o'
                 },
-                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing),
+                action: function () {
+                    Common.openURL(priv.plan ? priv.accounts.upgradeURL :'/features.html');
+                },
             });
         }
         if (!priv.plan && !Config.removeDonateButton) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': priv.accounts.donateURL, // XXX
                     'class': 'fa fa-gift'
                 },
-                content: h('span', Messages.crowdfunding_button2)
+                content: h('span', Messages.crowdfunding_button2),
+                action: function () {
+                    Common.openUnsafeURL(priv.accounts.donateURL);
+                },
             });
         }
 
@@ -1773,7 +1769,7 @@ define([
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
                     Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                        window.parent.location = origin + '/'; // XXX
+                        Common.gotoURL(origin + '/');
                     });
                 },
             });
@@ -1783,7 +1779,7 @@ define([
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
-                        window.parent.location = origin+'/'; // XXX
+                        Common.gotoURL(origin+'/');
                     });
                 },
             });
@@ -2559,7 +2555,9 @@ define([
 
         var block = h('div#cp-loading-burn-after-reading', [
             info,
-            button
+            h('nav', {
+                style: 'text-align: right'
+            }, button),
         ]);
         UI.errorLoadingScreen(block);
     };
@@ -2694,7 +2692,6 @@ define([
 
     };
 
-    Messages.history_trimPrompt = "This document's history is very large ({0}) and it may impact the loading time. You can delete the unnecessary history.";
     UIElements.displayTrimHistoryPrompt = function (common, data) {
         var mb = Util.bytesToMegabytes(data.size);
         var text = Messages._getKey('history_trimPrompt', [
@@ -2709,7 +2706,6 @@ define([
 
         var dontShowAgain = function () {
             var until = (+new Date()) + (7 * 24 * 3600 * 1000); // 7 days from now
-            until = (+new Date()) + 30000; // XXX 30s from now
             if (data.drive) {
                 common.setAttribute(['drive', 'trim'], until);
                 return;

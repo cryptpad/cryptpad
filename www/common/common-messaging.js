@@ -91,7 +91,7 @@ define([
     Msg.updateMyData = function (store, curve) {
         var myData = createData(store.proxy, false);
         if (store.proxy.friends) {
-            store.proxy.friends.me = myData;
+            store.proxy.friends.me = Util.clone(myData);
             delete store.proxy.friends.me.channel;
         }
         if (store.modules['team']) {
@@ -99,6 +99,7 @@ define([
         }
         var todo = function (friend) {
             if (!friend || !friend.notifications) { return; }
+            delete friend.user;
             myData.channel = friend.channel;
             store.mailbox.sendTo('UPDATE_DATA', myData, {
                 channel: friend.notifications,

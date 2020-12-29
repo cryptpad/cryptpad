@@ -3,9 +3,9 @@ define([
     '/common/common-util.js',
     '/common/visible.js',
     '/common/common-hash.js',
-    '/file/file-crypto.js',
+    '/common/media-tag.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, Util, Visible, Hash, FileCrypto) {
+], function ($, Util, Visible, Hash, MediaTag) {
     var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
@@ -314,7 +314,7 @@ define([
             var hexFileName = secret.channel;
             var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
             var key = secret.keys && secret.keys.cryptKey;
-            FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
+            MediaTag.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
                     if (e === 'XHR_ERROR') { return; }
                     return console.error(e);

@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/file/file-crypto.js',
     '/common/make-backup.js',
     '/common/common-thumbnail.js',
@@ -12,7 +13,7 @@ define([
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages) {
+], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -48,7 +49,7 @@ define([
         };
 
         var tableHeader = h('div.cp-fileupload-header', [
-            h('div.cp-fileupload-header-title', h('span', Messages.fileuploadHeader || 'Uploaded files')),
+            h('div.cp-fileupload-header-title', h('span', Messages.fileTableHeader)),
             h('div.cp-fileupload-header-close', h('span.fa.fa-times')),
         ]);
 
@@ -136,13 +137,12 @@ define([
 
             file.uid = Util.uid();
             response.expect(file.uid, function (href) {
-                var mdMgr = common.getMetadataMgr();
-                var origin = mdMgr.getPrivateData().origin;
                 $link.prepend($('<span>', {'class': 'fa fa-external-link'}));
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
-                        Util.open(origin + $link.attr('href'), '_blank');
+                        //Util.open(origin + $link.attr('href'), '_blank'); // XXX
+                        common.openURL($link.attr('href'));
                     });
                 var title = metadata.name;
                 if (!config.noStore) {
@@ -168,8 +168,12 @@ define([
                 if (config.onError) { config.onError(e); }
 
                 if (e === 'TOO_LARGE') {
-                    $pv.text(Messages.upload_tooLargeBrief);
-                    return void UI.alert(Messages.upload_tooLarge);
+                    var privateData = common.getMetadataMgr().getPrivateData();
+                    var l = privateData.plan ? ApiConfig.premiumUploadSize : false;
+                    l = l || ApiConfig.maxUploadSize || '?';
+                    var maxSizeStr = Util.bytesToMegabytes(l);
+                    $pv.text(Messages.error);
+                    return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
                     $pv.text(Messages.upload_notEnoughSpaceBrief);
@@ -262,7 +266,8 @@ define([
             // name
             $('<td>').append($link).appendTo($tr);
             // size
-            $('<td>').text(UIElements.prettySize(estimate)).appendTo($tr);
+            var size = estimate ? UIElements.prettySize(estimate) : '';
+            $(h('td.cp-fileupload-size')).text(size).appendTo($tr);
             // progress
             $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressContainer).appendTo($tr);
             // cancel
@@ -590,12 +595,11 @@ define([
                 queue.next();
             };
 
-            /*
             var cancelled = function () {
                 $row.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
                 queue.inProgress = false;
                 queue.next();
-            };*/
+            };
 
             /**
              * Update progress in the download panel, for downloading a file
@@ -629,6 +633,17 @@ define([
              */
             var updateProgress = function (progressValue) {
                 var text = Math.round(progressValue*100) + '%';
+                if (Array.isArray(data.list)) {
+                    text = Messages._getKey('download_zip_file', [Math.round(progressValue * data.list.length), data.list.length]);
+                }
+                if (progressValue === 2) {
+                    text = Messages.download_zip;
+                    progressValue = 1;
+                }
+                if (progressValue === 3) {
+                    text = "100%";
+                    progressValue = 1;
+                }
                 $pv.text(text);
                 $pb.css({
                     width: (progressValue * 100) + '%'
@@ -640,8 +655,10 @@ define([
                 fileHost: privateData.fileHost,
                 get: common.getPad,
                 sframeChan: sframeChan,
+                cache: common.getCache()
             };
-            downloadFunction(ctx, data, function (err, obj) {
+
+            var dl = downloadFunction(ctx, data, function (err, obj) {
                 $link.prepend($('<span>', {'class': 'fa fa-external-link'}))
                     .attr('href', '#')
                     .click(function (e) {
@@ -657,19 +674,17 @@ define([
                 folderProgress: updateProgress,
             });
 
-/*
-            var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
-                dl.cancel();
-                $cancel.remove();
-                $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
-                cancelled();
-            });
-*/
-
-            $row.find('.cp-fileupload-table-cancel')
-                .html('')
-                .append(h('span.fa.fa-minus'));
-                //.append($cancel);
+            var $cancel = $row.find('.cp-fileupload-table-cancel').html('');
+            if (dl && dl.cancel) {
+                $('<span>', {
+                    'class': 'cp-fileupload-table-cancel-button fa fa-times'
+                }).click(function () {
+                    dl.cancel();
+                    $cancel.remove();
+                    $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
+                    cancelled();
+                }).appendTo($cancel);
+            }
         };
 
         File.downloadFile = function (fData, cb) {

@@ -31,6 +31,9 @@
             margin-top: 5px;
         }
     }
+    .cp-admin-setlimit-form + button {
+        margin-top: 5px !important;
+    }
     .cp-admin-getlimits {
         code {
             cursor: pointer;
@@ -62,14 +65,62 @@
 
     .cp-support-container {
         display: flex;
-        flex-flow: column;
+        flex-wrap: wrap;
+        .cp-support-column {
+            min-width: 700px;
+            flex: 1 0 50%;
+            h1 {
+                display: flex;
+                align-items: center;
+                button {
+                    margin-left: 50px !important;
+                }
+            }
+            .cp-support-count {
+                margin-left: 10px;
+            }
+            &.cp-support-column-collapsed {
+                .cp-support-list-ticket {
+                    display: none;
+                }
+            }
+        }
     }
 
     .cp-support-list-actions {
         margin: 10px 0px 10px 2px;
     }
 
+    .cp-support-list-ticket {
+        h2 {
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: top;
+            .cp-support-title-buttons {
+                flex-shrink: 0;
+            }
+        }
+        .cp-support-collapsed {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            color: #666;
+            .cp-support-ispremium {
+                padding: 0 5px;
+                color: @colortheme_cp-red;
+                background-color: lighten(@colortheme_cp-red, 25%);
+            }
+        }
+    }
+
     .cp-support-list-ticket:not(.cp-support-list-closed) {
+        .cp-support-list-actions {
+            .cp-button-confirm, .cp-support-close {
+                order: 20;
+                margin-left: auto !important;
+            }
+        }
         .cp-support-list-message {
             &:last-child:not(.cp-support-fromadmin)  {
                 color: @colortheme_cp-red;
@@ -87,6 +138,28 @@
                     }
                 }
             }
+        }
+    }
+    .cp-support-list-ticket:not(.cp-support-open) {
+        span:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        & > :not(h2):not(.cp-support-collapsed) {
+            display: none;
+        }
+        .cp-support-collapse {
+            display: none;
+        }
+        cursor: pointer;
+    }
+    .cp-support-list-ticket.cp-support-open {
+        .cp-support-collapsed {
+            display: none;
+        }
+        .cp-support-expand {
+            display: none;
         }
     }
 

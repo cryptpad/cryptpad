@@ -65,11 +65,13 @@ define([
                 cb(undefined, data.content, msg);
             };
             evReady.reg(function () {
-                postMsg(JSON.stringify({
+                var toSend = {
                     txid: txid,
                     content: content,
-                    q: q
-                }));
+                    q: q,
+                    raw: opts.raw
+                };
+                postMsg(opts.raw ? toSend : JSON.stringify(toSend));
             });
         };
 
@@ -84,12 +86,13 @@ define([
         // If the type is a query, your handler will be invoked with a reply function that takes
         // one argument (the content to reply with).
         chan.on = function (queryType, handler, quiet) {
-            var h = function (data, msg) {
+            var h = function (data, msg, raw) {
                 handler(data.content, function (replyContent) {
-                    postMsg(JSON.stringify({
+                    var toSend = {
                         txid: data.txid,
                         content: replyContent
-                    }));
+                    };
+                    postMsg(raw ? toSend : JSON.stringify(toSend));
                 }, msg);
             };
             (handlers[queryType] = handlers[queryType] || []).push(h);
@@ -150,7 +153,7 @@ define([
         onMsg.reg(function (msg) {
             if (!chanLoaded) { return; }
             if (!msg.data || msg.data === '_READY') { return; }
-            var data = JSON.parse(msg.data);
+            var data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
             if (typeof(data.ack) !== "undefined") {
                 if (acks[data.txid]) { acks[data.txid](!data.ack); }
             } else if (typeof(data.q) === 'string') {
@@ -163,7 +166,7 @@ define([
                         }));
                     }
                     handlers[data.q].forEach(function (f) {
-                        f(data || JSON.parse(msg.data), msg);
+                        f(data || JSON.parse(msg.data), msg, data && data.raw);
                         data = undefined;
                     });
                 } else {

@@ -17,11 +17,17 @@ define([
     var Nacl = window.nacl;
 
     // Configure MediaTags to use our local viewer
+    // This file is loaded by sframe-common so the following config is used in all the inner apps
     if (MediaTag) {
         MediaTag.setDefaultConfig('pdf', {
             viewer: '/common/pdfjs/web/viewer.html'
         });
+        MediaTag.setDefaultConfig('download', {
+            text: Messages.mediatag_saveButton,
+            textDl: Messages.mediatag_loadButton,
+        });
     }
+    MT.MediaTag = MediaTag;
 
     // Cache of the avatars outer html (including <media-tag>)
     var avatars = {};
@@ -68,7 +74,7 @@ define([
             childList: true,
             characterData: false
         });
-        MediaTag($tag[0]).on('error', function (data) {
+        MediaTag($tag[0], {force: true}).on('error', function (data) {
             console.error(data);
         });
     };
@@ -241,7 +247,6 @@ define([
         var locked = false;
         var show = function (_i) {
             if (locked) { return; }
-            locked = true;
             if (_i < 0) { i = 0; }
             else if (_i > tags.length -1) { i = tags.length - 1; }
             else { i = _i; }
@@ -285,7 +290,6 @@ define([
                     if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
                 }
                 if (!src || !key) {
-                    locked = false;
                     $spinner.hide();
                     return void UI.log(Messages.error);
                 }
@@ -299,13 +303,18 @@ define([
                         locked = false;
                         $spinner.hide();
                         UI.log(Messages.error);
+                    }).on('progress', function () {
+                        $spinner.hide();
+                        locked = true;
+                    }).on('complete', function () {
+                        locked = false;
+                        $spinner.hide();
                     });
                 });
             }
 
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function() {
-                    locked = false;
                     $spinner.hide();
                 });
             });
@@ -377,6 +386,14 @@ define([
                     'tabindex': '-1',
                     'data-icon': "fa-eye",
                 }, Messages.pad_mediatagPreview)),
+                h('li.cp-svg', h('a.cp-app-code-context-openin.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-external-link",
+                }, Messages.pad_mediatagOpen)),
+                h('li.cp-svg', h('a.cp-app-code-context-share.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-shhare-alt",
+                }, Messages.pad_mediatagShare)),
                 h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-cloud-upload",
@@ -413,11 +430,28 @@ define([
             }
             else if ($this.hasClass("cp-app-code-context-download")) {
                 var media = Util.find($mt, [0, '_mediaObject']);
+                if (!media) { return void console.error('no media'); }
+                if (!media.complete) { return void UI.warn(Messages.mediatag_notReady); }
                 if (!(media && media._blob)) { return void console.error($mt); }
                 window.saveAs(media._blob.content, media.name);
             }
             else if ($this.hasClass("cp-app-code-context-open")) {
                 $mt.trigger('preview');
+            }
+            else if ($this.hasClass("cp-app-code-context-openin")) {
+                var hash = common.getHashFromMediaTag($mt);
+                common.openURL(Hash.hashToHref(hash, 'file'));
+            }
+            else if ($this.hasClass("cp-app-code-context-share")) {
+                var data = {
+                    file: true,
+                    pathname: '/file/',
+                    hashes: {
+                        fileHash: common.getHashFromMediaTag($mt)
+                    },
+                    title: Util.find($mt[0], ['_mediaObject', 'name']) || ''
+                };
+                common.getSframeChannel().event('EV_SHARE_OPEN', data);
             }
         });
 

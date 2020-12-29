@@ -52,10 +52,10 @@ define([
                                               : Share.getShareModal;
                 f(common, {
                     origin: priv.origin,
-                    pathname: priv.pathname,
-                    password: priv.password,
-                    isTemplate: priv.isTemplate,
-                    hashes: priv.hashes,
+                    pathname: data.pathname || priv.pathname,
+                    password: data.hashes ? '' : priv.password,
+                    isTemplate: data.hashes ? false : priv.isTemplate,
+                    hashes: data.hashes || priv.hashes,
                     common: common,
                     title: data.title,
                     versionHash: data.versionHash,
@@ -64,8 +64,8 @@ define([
                         hideIframe();
                     },
                     fileData: {
-                        hash: priv.hashes.fileHash,
-                        password: priv.password
+                        hash: (data.hashes && data.hashes.fileHash) || priv.hashes.fileHash,
+                        password: data.hashes ? '' :  priv.password
                     }
                 }, function (e, modal) {
                     if (e) { console.error(e); }
