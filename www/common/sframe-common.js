@@ -186,22 +186,14 @@ define([
     };
 
     funcs.getFileSize = function (channelId, cb) {
-        nThen(function (waitFor) {
-            Cache.getBlobCache(channelId, waitFor(function(err, blob) {
-                if (err) { return; }
-                waitFor.abort();
-                cb(null, blob.length);
-            }));
-        }).nThen(function () {
-            funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
-                if (!data) { return void cb("No response"); }
-                if (data.error) { return void cb(data.error); }
-                if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
-                    return void cb(void 0, data.response[0]);
-                } else {
-                    cb('INVALID_RESPONSE');
-                }
-            });
+        funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
+            if (!data) { return void cb("No response"); }
+            if (data.error) { return void cb(data.error); }
+            if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
+                return void cb(void 0, data.response[0]);
+            } else {
+                cb('INVALID_RESPONSE');
+            }
         });
     };
 
