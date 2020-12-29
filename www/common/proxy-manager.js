@@ -40,6 +40,14 @@ define([
             userObject: userObject,
             leave: leave
         };
+        if (proxy.on) {
+            proxy.on('disconnect', function () {
+                Env.folders[id].offline = true;
+            });
+            proxy.on('reconnect', function () {
+                Env.folders[id].offline = false;
+            });
+        }
         return userObject;
     };
 

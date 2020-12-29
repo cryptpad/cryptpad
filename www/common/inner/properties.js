@@ -19,6 +19,13 @@ define([
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
 
+        if (data.channel) {
+            $('<label>', { 'for': 'cp-app-prop-id'}).text(Messages.documentID).appendTo($d);
+            $d.append(UI.dialog.selectable(data.channel, {
+                id: 'cp-app-prop-id',
+            }));
+        }
+
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.href, {

@@ -42,7 +42,7 @@ module.exports = {
  *
  *  In a production instance this should be available ONLY over HTTPS
  *  using the default port for HTTPS (443) ie. https://cryptpad.fr
- *  In such a case this should be handled by NGINX, as documented in
+ *  In such a case this should be also handled by NGINX, as documented in
  *  cryptpad/docs/example.nginx.conf (see the $main_domain variable)
  *
  */
@@ -228,12 +228,12 @@ module.exports = {
      */
 /*
     customLimits: {
-        "https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
+        "[cryptpad-user1@my.awesome.website/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=]": {
             limit: 20 * 1024 * 1024 * 1024,
             plan: 'insider',
             note: 'storage space donated by my.awesome.website'
         },
-        "https://my.awesome.website/user/#/1/cryptpad-user2/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=": {
+        "[cryptpad-user2@my.awesome.website/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=]": {
             limit: 10 * 1024 * 1024 * 1024,
             plan: 'insider',
             note: 'storage space donated by my.awesome.website'

@@ -33,7 +33,7 @@ define([
             // loading screen setup.
             var done = waitFor();
             var onMsg = function (msg) {
-                var data = JSON.parse(msg.data);
+                var data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
                 if (data.q !== 'READY') { return; }
                 window.removeEventListener('message', onMsg);
                 var _done = done;

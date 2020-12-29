@@ -20,6 +20,8 @@ define(['/api/config'], function (ApiConfig) {
 
     var getPermission = Module.getPermission = function (f) {
         f = f || function () {};
+        // "Notification.requestPermission is not a function" on Firefox 68.11.0esr
+        if (!Notification || typeof(Notification.requestPermission) !== 'function') { return void f(false); }
         Notification.requestPermission(function (permission) {
             if (permission === "granted") { f(true); }
             else { f(false); }

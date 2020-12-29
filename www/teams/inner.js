@@ -46,7 +46,9 @@ define([
     Backup,
     Messages)
 {
-    var APP = {};
+    var APP = {
+        teams: {}
+    };
     var driveAPP = {};
     var saveAs = window.saveAs;
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
@@ -91,6 +93,8 @@ define([
                     var readOnly = !secret.keys.editKeyStr;
                     if (!manager || !manager.folders[fId]) { return; }
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
+
+                    manager.folders[fId].offline = newObj.offline;
                 }));
             });
             // Remove from memory folders that have been deleted from the drive remotely
@@ -211,6 +215,11 @@ define([
                 if (obj && obj.error) {
                     return void UI.warn(Messages.error);
                 }
+
+                // Refresh offline state
+                APP.teams[APP.team] = APP.teams[APP.team] || {};
+                APP.teams[APP.team].offline = obj.offline;
+
                 common.displayAvatar($avatar, obj.avatar, obj.name);
                 $category.append($avatar);
                 $avatar.append(h('span.cp-sidebarlayout-category-name', obj.name));
@@ -333,6 +342,11 @@ define([
             });
             APP.drive = drive;
             driveAPP.refresh = drive.refresh;
+
+            if (APP.teams[id] && APP.teams[id].offline) {
+                setEditable(false);
+                drive.refresh();
+            }
         });
     };
 
@@ -406,7 +420,15 @@ define([
 
             content.push(h('h3', Messages.team_listTitle + ' ' + slots));
 
+            APP.teams = {};
+
             keys.forEach(function (id) {
+                if (!obj[id].empty) {
+                    APP.teams[id] = {
+                        offline: obj[id] && obj[id].offline
+                    };
+                }
+
                 var team = obj[id];
                 if (team.empty) {
                     list.push(h('div.cp-team-list-team.empty', [
@@ -454,7 +476,7 @@ define([
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {
                 role:'alert'
-            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+            }, Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
         };
 
         if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS || isOwner) {
@@ -1049,7 +1071,7 @@ define([
                         Feedback.send('FULL_TEAMDRIVE_EXPORT_COMPLETE');
                         saveAs(blob, filename);
                     }, errors);
-                }, ui.update);
+                }, ui.update, common.getCache);
                 ui.onCancel(function() {
                     ui.close();
                     bu.stop();
@@ -1433,13 +1455,15 @@ define([
                 }
             });
 
-            var onDisconnect = function (noAlert) {
+            var onDisconnect = function (teamId) {
+                if (APP.team && teamId && APP.team !== teamId) { return; }
                 setEditable(false);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.failed();
-                if (!noAlert) { UIElements.disconnectAlert(); }
+                UIElements.disconnectAlert();
             };
-            var onReconnect = function () {
+            var onReconnect = function (teamId) {
+                if (APP.team && teamId && APP.team !== teamId) { return; }
                 setEditable(true);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.reconnecting();
@@ -1449,11 +1473,17 @@ define([
             sframeChan.on('EV_DRIVE_LOG', function (msg) {
                 UI.log(msg);
             });
-            sframeChan.on('EV_NETWORK_DISCONNECT', function () {
-                onDisconnect();
+            sframeChan.on('EV_NETWORK_DISCONNECT', function (teamId) {
+                onDisconnect(teamId);
+                if (teamId && APP.teams[teamId]) {
+                    APP.teams[teamId].offline = true;
+                }
             });
-            sframeChan.on('EV_NETWORK_RECONNECT', function () {
-                onReconnect();
+            sframeChan.on('EV_NETWORK_RECONNECT', function (teamId) {
+                onReconnect(teamId);
+                if (teamId && APP.teams[teamId]) {
+                    APP.teams[teamId].offline = false;
+                }
             });
             common.onLogout(function () { setEditable(false); });
         });

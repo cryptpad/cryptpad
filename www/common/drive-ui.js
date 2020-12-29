@@ -42,6 +42,7 @@ define([
 
     var APP = window.APP = {
         editable: false,
+        online: true,
         mobile: function () {
             if (window.matchMedia) { return !window.matchMedia('(any-pointer:fine)').matches; }
             else { return $('body').width() <= 600; }
@@ -267,13 +268,25 @@ define([
     };
 
     // Handle disconnect/reconnect
-    var setEditable = function (state, isHistory) {
+    // If isHistory and isSf are both false, update the "APP.online" flag
+    // If isHistory is true, update the "APP.history" flag
+    // isSf is used to detect offline shared folders: setEditable is called on displayDirectory
+    var setEditable = function (state, isHistory, isSf) {
         if (APP.closed || !APP.$content || !$.contains(document.documentElement, APP.$content[0])) { return; }
+        if (isHistory) {
+            APP.history = !state;
+        } else if (!isSf) {
+            APP.online = state;
+        }
+        state = APP.online && !APP.history && state;
         APP.editable = !APP.readOnly && state;
+
         if (!state) {
             APP.$content.addClass('cp-app-drive-readonly');
-            if (!isHistory) {
+            if (!APP.history || !APP.online) {
                 $('#cp-app-drive-connection-state').show();
+            } else {
+                $('#cp-app-drive-connection-state').hide();
             }
             $('[draggable="true"]').attr('draggable', false);
         }
@@ -3661,6 +3674,15 @@ define([
             }
 
             var readOnlyFolder = false;
+
+            // If the shared folder is offline, add the "DISCONNECTED" banner, otherwise
+            // use the normal "editable" behavior (based on drive offline or history mode)
+            if (sfId && manager.folders[sfId].offline) {
+                setEditable(false, false, true);
+            } else {
+                setEditable(true, false, true);
+            }
+
             if (APP.readOnly) {
                 // Read-only drive (team?)
                 $content.prepend($readOnly.clone());
@@ -4139,6 +4161,17 @@ define([
                 data.sharedFolderId = sfId;
                 data.name = Util.fixFileName(folderName);
                 data.folderName = Util.fixFileName(folderName) + '.zip';
+
+                var uo = manager.user.userObject;
+                if (sfId && manager.folders[sfId]) {
+                    uo = manager.folders[sfId].userObject;
+                }
+                if (uo.getFilesRecursively) {
+                    data.list = uo.getFilesRecursively(folderElement).map(function (el) {
+                        var d = uo.getFileData(el);
+                        return d.channel;
+                    });
+                }
 
                 APP.FM.downloadFolder(data, function (err, obj) {
                     console.log(err, obj);

@@ -46,6 +46,7 @@ define([
     '/common/test.js',
 
     '/bower_components/diff-dom/diffDOM.js',
+    '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/customize/src/print.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -462,7 +463,9 @@ define([
         setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
             Array.prototype.slice.call(tags).forEach(function(el) {
-                MediaTag(el);
+                var mediaObject = MediaTag(el, {
+                    body: dom
+                });
                 $(el).on('keydown', function(e) {
                     if ([8, 46].indexOf(e.which) !== -1) {
                         $(el).remove();
@@ -472,13 +475,17 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            var list_values = [].slice.call(el.children);
+                            var list_values = slice(el.children)
+                                                .map(function (el) { return el.outerHTML; })
+                                                .join('');
                             mediaTagMap[el.getAttribute('src')] = list_values;
+                            if (mediaObject.complete) { observer.disconnect(); }
                         }
                     });
                 });
                 observer.observe(el, {
                     attributes: false,
+                    subtree: true,
                     childList: true,
                     characterData: false
                 });
@@ -491,9 +498,10 @@ define([
         Array.prototype.slice.call(tags).forEach(function(tag) {
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
-                mediaTagMap[src].forEach(function(n) {
-                    tag.appendChild(n.cloneNode());
-                });
+                tag.innerHTML = mediaTagMap[src];
+                /*mediaTagMap[src].forEach(function(n) {
+                    tag.appendChild(n.cloneNode(true));
+                });*/
             }
         });
     };
@@ -1084,6 +1092,9 @@ define([
                     border: Messages.pad_mediatagBorder,
                     preview: Messages.pad_mediatagPreview,
                     'import': Messages.pad_mediatagImport,
+                    download: Messages.download_mt_button,
+                    share: Messages.pad_mediatagShare,
+                    open: Messages.pad_mediatagOpen,
                     options: Messages.pad_mediatagOptions
                 };
                 Ckeditor._commentsTranslations = {
@@ -1163,6 +1174,28 @@ define([
                 window.__defineGetter__('_cke_htmlToLoad', function() {});
                 editor.plugins.mediatag.import = function($mt) {
                     framework._.sfCommon.importMediaTag($mt);
+                };
+                editor.plugins.mediatag.download = function($mt) {
+                    var media = Util.find($mt, [0, '_mediaObject']);
+                    if (!media) { return void console.error('no media'); }
+                    if (!media.complete) { return void UI.warn(Messages.mediatag_notReady); }
+                    if (!(media && media._blob)) { return void console.error($mt); }
+                    window.saveAs(media._blob.content, media.name);
+                };
+                editor.plugins.mediatag.open = function($mt) {
+                    var hash = framework._.sfCommon.getHashFromMediaTag($mt);
+                    framework._.sfCommon.openURL(Hash.hashToHref(hash, 'file'));
+                };
+                editor.plugins.mediatag.share = function($mt) {
+                    var data = {
+                        file: true,
+                        pathname: '/file/',
+                        hashes: {
+                            fileHash: framework._.sfCommon.getHashFromMediaTag($mt)
+                        },
+                        title: Util.find($mt[0], ['_mediaObject', 'name']) || ''
+                    };
+                    framework._.sfCommon.getSframeChannel().event('EV_SHARE_OPEN', data);
                 };
                 Links.init(Ckeditor, editor);
             }).nThen(function() {

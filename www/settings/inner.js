@@ -51,7 +51,7 @@ define([
             'cp-settings-info-block',
             'cp-settings-displayname',
             'cp-settings-language-selector',
-            'cp-settings-resettips',
+            'cp-settings-mediatag-size',
             'cp-settings-change-password',
             'cp-settings-delete'
         ],
@@ -62,6 +62,7 @@ define([
             'cp-settings-userfeedback',
         ],
         'drive': [
+            'cp-settings-resettips',
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
@@ -576,6 +577,58 @@ define([
         cb(form);
     }, true);
 
+    makeBlock('mediatag-size', function(cb) {
+        var $inputBlock = $('<div>', {
+            'class': 'cp-sidebarlayout-input-block',
+        });
+
+        var spinner;
+        var $input = $('<input>', {
+            'min': -1,
+            'max': 1000,
+            type: 'number',
+        }).appendTo($inputBlock);
+
+        var oldVal;
+
+        var todo = function () {
+            var val = parseInt($input.val());
+            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.error); }
+            if (val === oldVal) { return; }
+            spinner.spin();
+            common.setAttribute(['general', 'mediatag-size'], val, function (err) {
+                if (err) {
+                    spinner.hide();
+                    console.error(err);
+                    return UI.warn(Messages.error);
+                }
+                oldVal = val;
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        };
+        var $save = $(h('button.btn.btn-primary', Messages.settings_save)).appendTo($inputBlock);
+        spinner = UI.makeSpinner($inputBlock);
+
+        $save.click(todo);
+        $input.on('keyup', function(e) {
+            if (e.which === 13) { todo(); }
+        });
+
+        common.getAttribute(['general', 'mediatag-size'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (typeof(val) !== 'number' || isNaN(val)) {
+                oldVal = 5;
+                $input.val(5);
+            } else {
+                oldVal = val;
+                $input.val(val);
+            }
+        });
+
+        cb($inputBlock);
+    }, true);
+
     // Security
 
     makeBlock('safe-links', function(cb) {
@@ -777,7 +830,7 @@ define([
                         Feedback.send('FULL_DRIVE_EXPORT_COMPLETE');
                         saveAs(blob, filename);
                     }, errors);
-                }, ui.update);
+                }, ui.update, common.getCache());
                 ui.onCancel(function() {
                     ui.close();
                     bu.stop();
@@ -903,7 +956,7 @@ define([
         cb(content);
     };
     makeBlock('trim-history', function(cb, $div) {
-        if (!common.isLoggedIn()) { return; }
+        if (!common.isLoggedIn()) { return void cb(false); }
         redrawTrimHistory(cb, $div);
     }, true);
 

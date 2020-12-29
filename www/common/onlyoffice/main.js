@@ -12,7 +12,7 @@ define([
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
-        var obj = SFCommonO.initIframe(waitFor, true, true);
+        var obj = SFCommonO.initIframe(waitFor, true);
         href = obj.href;
         hash = obj.hash;
         var parsed = Hash.parsePadUrl(href);

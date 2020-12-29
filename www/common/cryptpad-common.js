@@ -3,6 +3,7 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/outer/cache-store.js',
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
@@ -14,7 +15,7 @@ define([
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-], function (Config, Messages, Util, Hash,
+], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
@@ -146,6 +147,22 @@ define([
             });
         };
         send();
+    };
+    common.fixRosterHash = function () {
+        // Push teams keys
+        postMessage("GET", {
+            key: ['teams'],
+        }, function (obj) {
+            if (obj.error) { return console.error(obj.error); }
+            Object.keys(obj || {}).forEach(function (id) {
+                postMessage("SET", {
+                    key: ['teams', id, 'keys', 'roster', 'lastKnownHash'],
+                    value: ''
+                }, function () {
+                    console.log('done, please close all your CryptPad tabs before testing the fix');
+                });
+            });
+        });
     };
 
     (function () {
@@ -701,7 +718,7 @@ define([
         });
     };
 
-    common.useFile = function (Crypt, cb, optsPut) {
+    common.useFile = function (Crypt, cb, optsPut, onProgress) {
         var fileHost = Config.fileHost || window.location.origin;
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
@@ -758,7 +775,9 @@ define([
                         return void cb(err);
                     }
                     u8 = _u8;
-                }));
+                }), function (progress) {
+                    onProgress(progress * 50);
+                }, Cache);
             }).nThen(function (waitFor) {
                 require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
                     FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
@@ -767,7 +786,9 @@ define([
                             return void cb(err);
                         }
                         res = _res;
-                    }));
+                    }), function (progress) {
+                        onProgress(50 + progress * 50);
+                    });
                 }));
             }).nThen(function (waitFor) {
                 var ext = Util.parseFilename(data.title).ext;
@@ -991,6 +1012,8 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onCacheEvent = Util.mkEvent();
+    pad.onCacheReadyEvent = Util.mkEvent();
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
@@ -1001,6 +1024,10 @@ define([
     };
     pad.giveAccess = function (data, cb) {
         postMessage("GIVE_PAD_ACCESS", data, cb);
+    };
+
+    common.onCorruptedCache = function (channel) {
+        postMessage("CORRUPTED_CACHE", channel);
     };
 
     common.setPadMetadata = function (data, cb) {
@@ -1876,12 +1903,12 @@ define([
 
     var requestLogin = function () {
         // log out so that you don't go into an endless loop...
-        LocalStore.logout();
-
-        // redirect them to log in, and come back when they're done.
-        var href = Hash.hashToHref('', 'login');
-        var url = Hash.getNewPadURL(href, { href: currentPad.href });
-        window.location.href = url;
+        LocalStore.logout(function () {
+            // redirect them to log in, and come back when they're done.
+            var href = Hash.hashToHref('', 'login');
+            var url = Hash.getNewPadURL(href, { href: currentPad.href });
+            window.location.href = url;
+        });
     };
 
     common.startAccountDeletion = function (data, cb) {
@@ -1956,6 +1983,8 @@ define([
         PAD_JOIN: common.padRpc.onJoinEvent.fire,
         PAD_LEAVE: common.padRpc.onLeaveEvent.fire,
         PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
+        PAD_CACHE: common.padRpc.onCacheEvent.fire,
+        PAD_CACHE_READY: common.padRpc.onCacheReadyEvent.fire,
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         PAD_METADATA: common.padRpc.onMetadataEvent.fire,
@@ -2056,6 +2085,32 @@ define([
         };
 
         var userHash;
+
+        (function iOSFirefoxFix () {
+/*
+    For some bizarre reason Firefox on iOS throws an error during the
+    loading process unless we call this function. Drawing these elements
+    to the DOM presumably causes the JS engine to wait just a little bit longer
+    until some APIs we need are ready. This occurs despite all this code being
+    run after the usual dom-ready events. This fix was discovered while trying
+    to log the error messages to the DOM because it's extremely difficult
+    to debug Firefox iOS in the usual ways. In summary, computers are terrible.
+*/
+             try {
+                var style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.appendChild(document.createTextNode('#cp-logger { display: none; }'));
+                document.head.appendChild(style);
+
+                var logger = document.createElement('div');
+                    logger.setAttribute('id', 'cp-logger');
+                document.body.appendChild(logger);
+
+                var pre = document.createElement('pre');
+                    pre.innerText = 'x';
+                logger.appendChild(pre);
+            } catch (err) { console.error(err); }
+        }());
 
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {

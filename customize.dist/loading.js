@@ -253,7 +253,7 @@ p.cp-password-info{
     animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
 }
 
-button.primary{
+button:not(.btn).primary{
     border: 1px solid #4591c4;
     padding: 8px 12px;
     text-transform: uppercase;
@@ -262,7 +262,7 @@ button.primary{
     font-weight: bold;
 }
 
-button.primary:hover{
+button:not(.btn).primary:hover{
     background-color: rgb(52, 118, 162);
 }
 
@@ -291,7 +291,7 @@ button.primary:hover{
     var built = false;
 
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
-    var current;
+    var current, progress;
     var makeList = function (data) {
         var c = types.indexOf(data.type);
         current = c;
@@ -307,7 +307,7 @@ button.primary:hover{
         };
         var list = '<ul>';
         types.forEach(function (el, i) {
-            if (i >= 6) { return; }
+            if (el === "end") { return; }
             list += getLi(i);
         });
         list += '</ul>';
@@ -315,7 +315,7 @@ button.primary:hover{
     };
     var makeBar = function (data) {
         var c = types.indexOf(data.type);
-        var l = types.length;
+        var l = types.length - 1; // don't count "end" as a type
         var progress = Math.min(data.progress, 100);
         var p = (progress / l) + (100 * c / l);
         var bar = '<div class="cp-loading-progress-bar">'+
@@ -327,20 +327,34 @@ button.primary:hover{
     var hasErrored = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
+
+        // Make sure progress doesn't go backward
         var c = types.indexOf(data.type);
-        if (c < current) { return console.error(data); }
+        if (c < current) { return console.debug(data); }
+        if (c === current && progress > data.progress) { return console.debug(data); }
+        progress = data.progress;
+
         try {
-            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
-            document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
-            document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+            var el1 = document.querySelector('.cp-loading-spinner-container');
+            if (el1) { el1.style.display = 'none'; }
+            var el2 = document.querySelector('.cp-loading-progress-list');
+            if (el2) { el2.innerHTML = makeList(data); }
+            var el3 = document.querySelector('.cp-loading-progress-container');
+            if (el3) { el3.innerHTML = makeBar(data); }
         } catch (e) {
-            if (!hasErrored) { console.error(e); }
+            //if (!hasErrored) { console.error(e); }
         }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;
 
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
+
+        if (err === 'Error: XDR encoding failure') {
+            console.warn(err);
+            return;
+        }
+
         hasErrored = true;
         var err2;
         if (err === 'Script error.') {

@@ -459,6 +459,13 @@ define([
         }
     };
 
+    // Cancel pending friend requests
+    var cancelFriend = function (ctx, data, _cb) {
+        var cb = Util.once(_cb);
+        if (typeof(cb) !== 'function') { return void console.error('NO_CALLBACK'); }
+        ctx.Store.cancelFriendRequest(data, cb);
+    };
+
     var getAllClients = function (ctx) {
         var all = [];
         Array.prototype.push.apply(all, ctx.friendsClients);
@@ -935,6 +942,7 @@ define([
         if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
         var ctx = {
             store: store,
+            Store: cfg.Store,
             updateMetadata: cfg.updateMetadata,
             pinPads: cfg.pinPads,
             emit: emit,
@@ -1046,6 +1054,9 @@ define([
             }
             if (cmd === 'REMOVE_FRIEND') {
                 return void removeFriend(ctx, data, cb);
+            }
+            if (cmd === 'CANCEL_FRIEND') {
+                return void cancelFriend(ctx, data, cb);
             }
             if (cmd === 'MUTE_USER') {
                 return void muteUser(ctx, data, cb);

@@ -271,7 +271,7 @@ proxy.mailboxes = {
                         hash: hash
                     };
                     showMessage(ctx, type, message);
-                    cb();
+                    cb(hash);
                 }, keys.curvePublic);
             };
             box.queue.forEach(function (msg) {
@@ -297,6 +297,7 @@ proxy.mailboxes = {
                     msg: msg,
                     hash: hash
                 };
+                var notify = box.ready;
                 Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
                     if (toDismiss) { // List of other messages to remove
                         dismiss(ctx, toDismiss, '', function () {
@@ -314,8 +315,7 @@ proxy.mailboxes = {
                     }
                     box.content[hash] = msg;
                     showMessage(ctx, type, message, null, function (obj) {
-                        if (!box.ready) { return; }
-                        if (!obj || !obj.msg) { return; }
+                        if (!obj || !obj.msg || !notify) { return; }
                         Notify.system(undefined, obj.msg);
                     });
                 });

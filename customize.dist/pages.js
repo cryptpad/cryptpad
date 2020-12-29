@@ -69,7 +69,7 @@ define([
     Msg.footer_team = "Contributors"; // XXX existing key
     Msg.footer_tos = "Terms of Service"; // XXX existing key
 
-    Pages.versionString = "v3.24.0 (YunnanLakeNewt)";
+    Pages.versionString = "v3.25.0 (ZyzomysPedunculatus)";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;

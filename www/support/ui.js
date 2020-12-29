@@ -230,7 +230,7 @@ define([
         var form = h('div.cp-support-form-container', content);
 
         $(cancel).click(function () {
-            $(form).closest('.cp-support-list-ticket').find('.cp-support-list-actions').show();
+            $(form).closest('.cp-support-list-ticket').find('.cp-support-list-actions').css('display', '');
             $(form).remove();
         });
 
@@ -257,8 +257,9 @@ define([
         var url;
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn.btn-primary.fa.fa-clipboard');
-            $(url).click(function () {
+            url = h('button.btn.fa.fa-clipboard');
+            $(url).click(function (e) {
+                e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
                 var success = Clipboard.copy(link);
                 if (success) { UI.log(Messages.shareSuccess); }
@@ -269,7 +270,10 @@ define([
             'data-cat': content.category,
             'data-id': content.id
         }, [
-            h('h2', [ticketCategory, ticketTitle, url]),
+            h('h2', [
+                h('span', [ticketCategory, ticketTitle]),
+                h('span.cp-support-title-buttons',url)
+            ]),
             actions
         ]));
 
@@ -303,7 +307,7 @@ define([
             var form = makeForm(ctx, function () {
                 var sent = sendForm(ctx, content.id, form, content.sender);
                 if (sent) {
-                    $(actions).show();
+                    $(actions).css('display', '');
                     $(form).remove();
                 }
             }, content.title);
@@ -397,6 +401,7 @@ define([
 
         var fmConfig = {
             body: $('body'),
+            noStore: true, // Don't store attachments into our drive
             onUploaded: function (ev, data) {
                 if (ev.callback) {
                     ev.callback(data);

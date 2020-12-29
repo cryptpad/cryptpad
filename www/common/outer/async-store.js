@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/pinpad.js',
+    '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -28,7 +29,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad,
+             Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
@@ -120,10 +121,13 @@ define([
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             var id = data.id;
+            var proxy;
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
             if (s.manager.folders[id]) {
+                proxy = Util.clone(s.manager.folders[id].proxy);
+                proxy.offline = Boolean(s.manager.folders[id].offline);
                 // If it is loaded, return the shared folder proxy
-                return void cb(s.manager.folders[id].proxy);
+                return void cb(proxy);
             } else {
                 // Otherwise, check if we know this shared folder
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
@@ -327,6 +331,7 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             s.rpc.removeOwnedChannel(channel, function (err) {
+                if (!err) { Cache.clearChannel(channel); }
                 cb({error:err});
             });
         };
@@ -459,6 +464,7 @@ define([
             store.anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'number') {
+                    if (response[0] === 0) { Cache.clearChannel(channelId); }
                     return void cb({size: response[0]});
                 } else {
                     cb({error: 'INVALID_RESPONSE'});
@@ -472,6 +478,7 @@ define([
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'boolean') {
+                    if (response[0]) { Cache.clearChannel(channelId); }
                     return void cb({
                         isNew: response[0]
                     });
@@ -1133,7 +1140,7 @@ define([
             var ownedByMe = Array.isArray(owners) && owners.indexOf(edPublic) !== -1;
 
             // Add the pad if it does not exist in our drive
-            if (!contains || (ownedByMe && !inMyDrive)) {
+            if (!contains) { // || (ownedByMe && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
                     // send event to inner to display the corner popup
@@ -1326,13 +1333,16 @@ define([
 
             store.proxy.friends_pending = store.proxy.friends_pending || {};
 
-            var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
-            if (store.proxy.friends_pending[data.curvePublic] &&
-                    store.proxy.friends_pending[data.curvePublic] > twoDaysAgo) {
-                return void cb({error: 'TIMEOUT'});
+            var p = store.proxy.friends_pending[data.curvePublic];
+            if (p) {
+                return void cb({error: 'ALREADY_SENT'});
             }
 
-            store.proxy.friends_pending[data.curvePublic] = +new Date();
+            store.proxy.friends_pending[data.curvePublic] = {
+                time: +new Date(),
+                channel: data.notifications,
+                curvePublic: data.curvePublic
+            };
             broadcast([], "UPDATE_METADATA");
 
             store.mailbox.sendTo('FRIEND_REQUEST', {
@@ -1342,6 +1352,37 @@ define([
                 curvePublic: data.curvePublic
             }, function (obj) {
                 cb(obj);
+            });
+        };
+        Store.cancelFriendRequest = function (data, cb) {
+            if (!data.curvePublic || !data.notifications) {
+                return void cb({error: 'EINVAL'});
+            }
+
+            var proxy = store.proxy;
+            var f = Messaging.getFriend(proxy, data.curvePublic);
+
+            if (f) {
+                // Already friend
+                console.error("You can't cancel an accepted friend request");
+                return void cb({error: 'ALREADY_FRIEND'});
+            }
+
+            var pending = Util.find(store, ['proxy', 'friends_pending']) || {};
+            if (!pending) { return void cb(); }
+
+            store.mailbox.sendTo('CANCEL_FRIEND_REQUEST', {
+                user: Messaging.createData(store.proxy)
+            }, {
+                channel: data.notifications,
+                curvePublic: data.curvePublic
+            }, function (obj) {
+                if (obj && obj.error) { return void cb(obj); }
+                delete store.proxy.friends_pending[data.curvePublic];
+                broadcast([], "UPDATE_METADATA");
+                onSync(null, function () {
+                    cb(obj);
+                });
             });
         };
 
@@ -1590,13 +1631,20 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
+                Cache: Cache, // XXX re-enable cache usage
+                onCacheStart: function () {
+                    postMessage(clientId, "PAD_CACHE");
+                },
+                onCacheReady: function () {
+                    postMessage(clientId, "PAD_CACHE_READY");
+                },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY");
+                    postMessage(clientId, "PAD_READY", pad.noCache);
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -1725,6 +1773,14 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        Store.corruptedCache = function (clientId, channel) {
+            var chan = channels[channel];
+            if (!chan || !chan.cpNf) { return; }
+            Cache.clearChannel(channel);
+            if (!chan.cpNf.resetCache) { return; }
+            chan.cpNf.resetCache();
         };
 
         // Unpin and pin the new channel in all team when changing a pad password
@@ -2224,6 +2280,9 @@ define([
             try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
+            try {
+                Cache.leaveChannel(chanId);
+            } catch (e) { console.error(e); }
 
             if (!Store.channels[chanId]) { return; }
 
@@ -2429,18 +2488,6 @@ define([
             });
         };
 
-        var cleanFriendRequests = function () {
-            try {
-                if (!store.proxy.friends_pending) { return; }
-                var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
-                Object.keys(store.proxy.friends_pending).forEach(function (curve) {
-                    if (store.proxy.friends_pending[curve] < twoDaysAgo) {
-                        delete store.proxy.friends_pending[curve];
-                    }
-                });
-            } catch (e) {}
-        };
-
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
@@ -2524,7 +2571,6 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor, clientId);
                 loadUniversal(History, 'history', waitFor);
-                cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -2640,6 +2686,7 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
+                Cache: Cache, // XXX re-enable cache usage
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,

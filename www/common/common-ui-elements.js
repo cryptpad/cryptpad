@@ -1602,9 +1602,9 @@ define([
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/profile/');
+                        Common.openURL(origin+'/profile/');
                     } else {
-                        window.parent.location = origin+'/profile/';
+                        Common.gotoURL(origin+'/profile/');
                     }
                 },
             });
@@ -1613,33 +1613,36 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/drive/',
                     'class': 'fa fa-hdd-o'
                 },
-                content: h('span', Messages.type.drive)
+                content: h('span', Messages.type.drive),
+                action: function () {
+                    Common.openURL(origin+'/drive/');
+                },
             });
         }
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/teams/',
                     'class': 'fa fa-users'
                 },
-                content: h('span', Messages.type.teams)
+                content: h('span', Messages.type.teams),
+                action: function () {
+                    Common.openURL('/teams/');
+                },
             });
         }
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/contacts/',
                     'class': 'fa fa-address-book'
                 },
-                content: h('span', Messages.type.contacts)
+                content: h('span', Messages.type.contacts),
+                action: function () {
+                    Common.openURL('/contacts/');
+                },
             });
         }
         if (padType !== 'settings') {
@@ -1649,9 +1652,9 @@ define([
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/settings/');
+                        Common.openURL(origin+'/settings/');
                     } else {
-                        window.parent.location = origin+'/settings/';
+                        Common.gotoURL(origin+'/settings/');
                     }
                 },
             });
@@ -1666,9 +1669,9 @@ define([
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/admin/');
+                        Common.openURL(origin+'/admin/');
                     } else {
-                        window.parent.location = origin+'/admin/';
+                        Common.gotoURL(origin+'/admin/');
                     }
                 },
             });
@@ -1690,29 +1693,28 @@ define([
                 content: h('span', Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/support/');
+                        Common.openURL(origin+'/support/');
                     } else {
-                        window.parent.location = origin+'/support/';
+                        Common.gotoURL(origin+'/support/');
                     }
                 },
             });
         }
-        // XXX Trade the survey for documentation
-        // if (AppConfig.surveyURL) {
-        //     options.push({
-        //         tag: 'a',
-        //         attributes: {
-        //             'target': '_blank',
-        //             'rel': 'noopener',
-        //             'href': AppConfig.surveyURL,
-        //             'class': 'cp-toolbar-survey fa fa-graduation-cap'
-        //         },
-        //         content: h('span', Messages.survey),
-        //         action: function () {
-        //             Feedback.send('SURVEY_CLICKED');
-        //         },
-        //     });
-        // }
+/*
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Common.openUnsafeURL(AppConfig.surveyURL);
+                    Feedback.send('SURVEY_CLICKED');
+                },
+            });
+        }
+*/
         options.push({
             tag: 'a',
             attributes: {
@@ -1727,11 +1729,12 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'target': '_blank',
-                'href': origin+'/index.html',
                 'class': 'fa fa-home'
             },
-            content: h('span', Messages.homePage)
+            content: h('span', Messages.homePage),
+            action: function () {
+                Common.openURL('/index.html');
+            },
         });
         // Add the change display name button if not in read only mode
         /*
@@ -1747,23 +1750,24 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html',
                     'class': 'fa fa-star-o'
                 },
-                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing),
+                action: function () {
+                    Common.openURL(priv.plan ? priv.accounts.upgradeURL :'/features.html');
+                },
             });
         }
         if (!priv.plan && !Config.removeDonateButton) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': priv.accounts.donateURL,
                     'class': 'fa fa-gift'
                 },
-                content: h('span', Messages.crowdfunding_button2)
+                content: h('span', Messages.crowdfunding_button2),
+                action: function () {
+                    Common.openUnsafeURL(priv.accounts.donateURL);
+                },
             });
         }
 
@@ -1778,7 +1782,7 @@ define([
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
                     Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                        window.parent.location = origin + '/';
+                        Common.gotoURL(origin + '/');
                     });
                 },
             });
@@ -1788,7 +1792,7 @@ define([
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
-                        window.parent.location = origin+'/';
+                        Common.gotoURL(origin+'/');
                     });
                 },
             });
@@ -2603,7 +2607,9 @@ define([
 
         var block = h('div#cp-loading-burn-after-reading', [
             info,
-            button
+            h('nav', {
+                style: 'text-align: right'
+            }, button),
         ]);
         UI.errorLoadingScreen(block);
     };
@@ -2736,6 +2742,43 @@ define([
             });
         });
 
+    };
+
+    UIElements.displayTrimHistoryPrompt = function (common, data) {
+        var mb = Util.bytesToMegabytes(data.size);
+        var text = Messages._getKey('history_trimPrompt', [
+            Messages._getKey('formattedMB', [mb])
+        ]);
+        var yes = h('button.cp-corner-primary', [
+            h('span.fa.fa-trash-o'),
+            Messages.trimHistory_button
+        ]);
+        var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no); // Not now
+        var actions = h('div', [no, yes]);
+
+        var dontShowAgain = function () {
+            var until = (+new Date()) + (7 * 24 * 3600 * 1000); // 7 days from now
+            if (data.drive) {
+                common.setAttribute(['drive', 'trim'], until);
+                return;
+            }
+            common.setPadAttribute('trim', until);
+        };
+
+        var modal = UI.cornerPopup(text, actions, '', {});
+
+        $(yes).click(function () {
+            modal.delete();
+            if (data.drive) {
+                common.openURL('/settings/#drive');
+                return;
+            }
+            common.getSframeChannel().event('EV_PROPERTIES_OPEN');
+        });
+        $(no).click(function () {
+            dontShowAgain();
+            modal.delete();
+        });
     };
 
     UIElements.displayFriendRequestModal = function (common, data) {

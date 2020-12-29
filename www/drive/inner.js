@@ -82,6 +82,8 @@ define([
                     var readOnly = !secret.keys.editKeyStr;
                     if (!manager || !manager.folders[fId]) { return; }
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
+
+                    manager.folders[fId].offline = newObj.offline;
                 }));
             });
             // Remove from memory folders that have been deleted from the drive remotely
@@ -310,6 +312,10 @@ define([
                 onReconnect();
             });
             common.onLogout(function () { setEditable(false); });
+
+            // Check if our drive history needs to be trimmed
+            common.checkTrimHistory(null, true);
+
         });
     };
     main();

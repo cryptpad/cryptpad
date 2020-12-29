@@ -34,6 +34,7 @@ define([
         var onLocal = config.onLocal || function () { };
         var setMyID = config.setMyID || function () { };
         var onReady = config.onReady || function () { };
+        var onCacheReady = config.onCacheReady || function () { };
         var onError = config.onError || function () { };
         var userName = config.userName;
         var initialState = config.initialState;
@@ -93,6 +94,9 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
+        sframeChan.on('EV_RT_CACHE_READY', function () {
+            onCacheReady({realtime: chainpad});
+        });
         sframeChan.on('EV_RT_DISCONNECT', function (isPermanent) {
             isReady = false;
             chainpad.abort();

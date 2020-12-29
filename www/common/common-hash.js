@@ -464,6 +464,8 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         };
 
         if (!/^https*:\/\//.test(href)) {
+            // If it doesn't start with http(s), it should be a relative href
+            if (!/^\/($|[^\/])/.test(href)) { return ret; }
             idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
             if (idx === -1) { return ret; }
@@ -661,7 +663,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 if (parsed.hashData.key && !/^[a-zA-Z0-9+-/=]+$/.test(parsed.hashData.key)) { return; }
             }
         }
-        return true;
+        return parsed;
     };
 
     Hash.decodeDataOptions = function (opts) {

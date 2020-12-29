@@ -99,6 +99,9 @@ define([
         var sessionId = Hash.createChannelId();
         var cpNfInner;
 
+        var evOnPatch = Util.mkEvent();
+        var evOnSync = Util.mkEvent();
+
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
@@ -261,13 +264,17 @@ define([
                 });
             },
             sendMsg: function (msg, cp, cb) {
+                evOnPatch.fire();
                 rtChannel.sendCmd({
                     cmd: 'SEND_MESSAGE',
                     data: {
                         msg: msg,
                         isCp: cp
                     }
-                }, cb);
+                }, function (err, h) {
+                    if (!err) { evOnSync.fire(); }
+                    cb(err, h);
+                });
             },
         };
 
@@ -775,6 +782,18 @@ define([
                     view: false
                 };
             });
+            // Add an history keeper user to show that we're never alone
+            var hkId = Util.createRandomInteger();
+            p.push({
+                id: hkId,
+                idOriginal: String(hkId),
+                username: "History",
+                indexUser: i,
+                connectionId: Hash.createChannelId(),
+                isCloseCoAuthoring:false,
+                view: false
+            });
+            i++;
             if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + i; }
             p.push({
                 id: myUniqueOOId,
@@ -1221,6 +1240,7 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
+                        evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
                         onMigrateRdy.reg(function () {
                             var div = h('div.cp-oo-x2tXls', [
@@ -1301,6 +1321,8 @@ define([
                             return;
                         }
 
+                        APP.onLocal(); // Add our data to the userlist
+
                         if (APP.history) {
                             try {
                                 getEditor().asc_setRestriction(true);
@@ -1309,6 +1331,16 @@ define([
 
                         if (APP.migrate && !readOnly) {
                             onMigrateRdy.fire();
+                        }
+
+                        // Check if history can/should be trimmed
+                        var cp = getLastCp();
+                        if (cp && cp.file && cp.hash) {
+                            var channels = [{
+                                channel: content.channel,
+                                lastKnownHash: cp.hash
+                            }];
+                            common.checkTrimHistory(channels);
                         }
                     }
                 }
@@ -1353,6 +1385,10 @@ define([
                         });
                     });
                 });
+            };
+
+            APP.openURL = function (url) {
+                common.openUnsafeURL(url);
             };
 
             APP.loadingImage = 0;
@@ -1409,7 +1445,7 @@ define([
                         console.error(e);
                         callback("");
                     }
-                });
+                }, void 0, common.getCache());
             };
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
@@ -1949,6 +1985,10 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
                 realtime: info.realtime,
+                spinner: {
+                    onPatch: evOnPatch,
+                    onSync: evOnSync
+                },
                 sfCommon: common,
                 $container: $bar,
                 $contentContainer: $('#cp-app-oo-container')
@@ -2166,6 +2206,12 @@ define([
                     url: newLatest.file
                 }, function () { });
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
+            } else if (!privateData.isNewFile) {
+                // This is an empty doc but not a new file: error
+                UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
+                    common.gotoURL('');
+                });
+                throw new Error("Empty chainpad for a non-empty doc");
             } else {
                 Title.updateTitle(Title.defaultTitle);
             }

@@ -169,7 +169,7 @@ define(function() {
     // make them have a very slow loading time. To avoid impacting the user experience
     // significantly, we're limiting the number of teams per user to 3 by default.
     // You can change this value here.
-    //config.maxTeamsSlots = 3;
+    //config.maxTeamsSlots = 5;
 
     // Each team is considered as a registered user by the server. Users and teams are indistinguishable
     // in the database so teams will offer the same storage limits as users by default.
@@ -177,7 +177,7 @@ define(function() {
     // We're limiting the number of teams each user is able to own to 1 in order to make sure
     // users don't use "fake" teams (1 member) just to increase their storage limit.
     // You can change the value here.
-    // config.maxOwnedTeams = 1;
+    // config.maxOwnedTeams = 5;
 
     return config;
 });
