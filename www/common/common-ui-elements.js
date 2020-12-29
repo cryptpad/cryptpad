@@ -2106,6 +2106,8 @@ define([
 
         // Title
         var colorClass = 'cp-icon-color-'+type;
+        colorClass = colorClass; // XXX
+
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
         var newPadH3Title = Messages['button_new' + type];
 
