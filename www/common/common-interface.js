@@ -774,7 +774,8 @@ define([
             $(originalBtn).show();
         };
 
-        $button.click(function () {
+        $button.click(function (e) {
+            e.stopPropagation();
             done(true);
         });
 
@@ -792,7 +793,8 @@ define([
             to = setTimeout(todo, INTERVAL);
         };
 
-        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function () {
+        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function (e) {
+            e.stopPropagation();
             // If we have a validation function, continue only if it's true
             if (config.validate && !config.validate()) { return; }
             i = 1;

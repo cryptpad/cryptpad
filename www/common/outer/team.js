@@ -427,7 +427,7 @@ define([
                 channel: secret.channel,
                 crypto: crypto,
                 ChainPad: ChainPad,
-                //Cache: Cache, // XXX re-enable cache usage
+                Cache: Cache, // XXX re-enable cache usage
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                 },
