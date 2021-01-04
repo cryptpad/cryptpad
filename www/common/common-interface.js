@@ -941,6 +941,7 @@ define([
             // Show the loading screen
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
+            $loading.removeClass('cp-loading-transparent');
             if (config.newProgress) {
                 var progress = h('div.cp-loading-progress', [
                     h('p.cp-loading-progress-list'),
@@ -996,7 +997,8 @@ define([
         $loading.find('.cp-loading-progress').remove();
         // Hide the spinner
         $('.cp-loading-spinner-container').hide();
-        if (transparent) { $loading.css('opacity', 0.9); }
+        $loading.removeClass('cp-loading-transparent');
+        if (transparent) { $loading.addClass('cp-loading-transparent'); }
 
         // Add the error message
         var $error = $loading.find('#cp-loading-message').show();
@@ -1169,7 +1171,14 @@ define([
             }
         });
 
-        $input.change(function () { $mark.focus(); });
+        $input.change(function () {
+            if (!opts.labelAlt) { return; }
+            if ($input.is(':checked') !== checked) {
+                $(label).text(opts.labelAlt);
+            } else {
+                $(label).text(labelTxt);
+            }
+        });
 
         return h('label.cp-checkmark', labelOpts, [
             input,

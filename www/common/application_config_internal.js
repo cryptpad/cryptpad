@@ -107,7 +107,7 @@ define(function() {
         file: 'cptools-file',
         fileupload: 'cptools-file-upload',
         folderupload: 'cptools-folder-upload',
-        pad: 'cptools-pad',
+        pad: 'cptools-richtext',
         code: 'cptools-code',
         slide: 'cptools-slide',
         poll: 'cptools-poll',
@@ -117,7 +117,7 @@ define(function() {
         kanban: 'cptools-kanban',
         oodoc: 'fa-file-word-o',
         ooslide: 'fa-file-powerpoint-o',
-        sheet: 'fa-file-excel-o',
+        sheet: 'cptools-sheet',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
     };

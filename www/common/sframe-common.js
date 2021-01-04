@@ -633,6 +633,9 @@ define([
 
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
+    funcs.getBounceURL = function (url) {
+        return window.location.origin + '/bounce/#' + encodeURIComponent(url);
+    };
     funcs.openUnsafeURL = function (url) {
         var app = ctx.metadataMgr.getPrivateData().app;
         if (app === "sheet") {

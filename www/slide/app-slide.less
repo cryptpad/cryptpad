@@ -7,9 +7,7 @@
     .mediatag_base();
 
     .framework_main(
-        @bg-color: @colortheme_slide-bg,
-        @warn-color: @colortheme_slide-warn,
-        @color: @colortheme_slide-color
+        @bg-color: @colortheme_apps[slide]
     );
 
     @slide-default-bg: #e3e3e3;
@@ -239,6 +237,7 @@
             img {
                 max-width: 100%;
                 max-height: 100%;
+                opacity: 0.2;
             }
         }
 

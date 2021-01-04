@@ -252,7 +252,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            opts.common.openURL(opts.origin + "/faq.html#security-pad_password");
+            opts.common.openUnsafeURL("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders");
         });
         return link;
     };
