@@ -1496,5 +1496,13 @@
     "settings_mediatagSizeHint": "Maximum size in megabytes (MB) for automatically loading media elements (images, videos, pdf) embedded into documents. Elements bigger than the specified size can be loaded manually. Use \"-1\" to always load the media elements automatically.",
     "mediatag_loadButton": "Load attachment",
     "history_trimPrompt": "This document has accumulated {0} of history that may slow down loading time. Consider deleting the history if it is not needed.",
-    "contacts_confirmCancel": "Are you sure you want to cancel your contact request with <b>{0}</b>?"
+    "contacts_confirmCancel": "Are you sure you want to cancel your contact request with <b>{0}</b>?",
+    "admin_support_premium": "Premium tickets:",
+    "admin_support_normal": "Unanswered tickets:",
+    "admin_support_answered": "Answered tickets:",
+    "admin_support_closed": "Closed tickets:",
+    "admin_support_open": "Show",
+    "admin_support_collapse": "Collapse",
+    "admin_support_first": "Created on: ",
+    "admin_support_last": "Updated on: "
 }
