@@ -1585,9 +1585,8 @@ define([
             if (type === "sheet" && extension === "pdf") {
                 var e = getEditor();
                 var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
-                var url = URL.createObjectURL( new Blob([d.data]), { type: "application/octet-stream" });
                 xlsData = x2tConvertDataInternal(x2t, {
-                    buffer: imdata.data,
+                    buffer: d.data,
                     bin: data
                 }, filename, extension);
                 if (xlsData) {
