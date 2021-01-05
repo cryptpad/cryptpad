@@ -1184,7 +1184,7 @@ define([
                     "url": url,
                     "permissions": {
                         "download": false,
-                        "print": false,
+                        "print": true,
                     }
                 },
                 "documentType": file.doc,
@@ -1476,6 +1476,41 @@ define([
                 x2tReady.fire();
             });
         };
+        APP.printPdf = function (obj, cb) {
+            getX2T(function (x2t) {
+                //var e = getEditor();
+                //var d = e.asc_nativePrint(undefined, undefined, 0x100 + opts.printType).ImData;
+                var bin = getContent();
+                xlsData = x2tConvertDataInternal(x2t, {
+                    buffer: obj.data,
+                    bin: bin
+                }, 'output.bin', 'pdf');
+                if (xlsData) {
+                    var md = common.getMetadataMgr().getMetadataLazy();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var title = md.title || md.defaultTitle || type;
+                    var blob = new Blob([xlsData], {type: "application/pdf"});
+                    var url = URL.createObjectURL(blob, { type: "application/pdf" })
+                    saveAs(blob, title+'.pdf');
+                    //window.open(url);
+                    cb({
+                        "type":"save",
+                        "status":"ok",
+                        "data":url + "?disposition=inline&ooname=output.pdf"
+                    });
+                    /*
+                    ooChannel.send({
+                        "type":"documentOpen",
+                        "data": {
+                            "type":"save",
+                            "status":"ok",
+                            "data":url + "?disposition=inline&ooname=output.pdf"
+                        }
+                    });
+                    */
+                }
+            });
+        };
 
         var x2tInitialized = false;
         var x2tInit = function(x2t) {
@@ -1614,7 +1649,7 @@ define([
             }
         };
 
-        var x2tSaveAndConvertData = function(data, filename, extension, finalName) {
+        var getX2T = function (cb) {
             // Perform the x2t conversion
             require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
                 var x2t = window.Module;
@@ -1622,7 +1657,7 @@ define([
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
                     return void x2tReady.reg(function () {
-                        x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalName);
+                        cb(x2t);
                     });
                 }
 
@@ -1631,9 +1666,15 @@ define([
                     // Init x2t js module
                     x2tInit(x2t);
                     x2tReady.reg(function () {
-                        x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalName);
+                        cb(x2t);
                     });
                 };
+            });
+        };
+
+        var x2tSaveAndConvertData = function(data, filename, extension, finalName) {
+            getX2T(function (x2t) {
+                x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalName);
             });
         };
 
@@ -1844,24 +1885,10 @@ define([
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             setTimeout(function () {
-                require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                    var x2t = window.Module;
-                    x2t.run();
-                    if (x2tInitialized) {
-                        debug("x2t runtime already initialized");
-                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                            importFile(convertedContent);
-                        });
-                    }
-
-                    x2t.onRuntimeInitialized = function() {
-                        debug("x2t in runtime initialized");
-                        // Init x2t js module
-                        x2tInit(x2t);
-                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                            importFile(convertedContent);
-                        });
-                    };
+                getX2T(function (x2t) {
+                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(c) {
+                        importFile(c);
+                    });
                 });
             }, 100);
         };
