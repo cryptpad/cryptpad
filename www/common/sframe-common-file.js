@@ -319,7 +319,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
-                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
+                    createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
                 ]),
                 manualStore
             ]);
@@ -374,7 +374,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-upload-owned', Messages.uploadFolder_modal_owner, modalState.owned),
-                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
+                    createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
                 ]),
                 manualStore
             ]);

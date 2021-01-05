@@ -1,3 +1,4 @@
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./browser.less";
 @import (reference) "./variables.less";
@@ -168,6 +169,23 @@
                 &:last-child {
                     margin-bottom: 0;
                 }
+                .cp-info-menu-container {
+                    .logo-block {
+                        text-align: center;
+                        h6 {
+                            font-family: "IBM Plex Mono";
+                            font-size: 30px;
+                            margin-top: 5px;
+                        }
+                        img {
+                            max-width: 100px;
+                        }
+                    }
+                    a {
+                        color: @colortheme_logo-2;
+                        text-decoration: underline;
+                    }
+                }
             }
             .cp-alertify-type-container {
                 overflow: visible !important;
@@ -248,7 +266,7 @@
                 }
             }
 
-            .fa-question-circle { // help links to FAQ
+            .fa-question-circle { // help links to Docs
                 color: @colortheme_logo-2;
                 &:hover {
                     text-decoration: none;

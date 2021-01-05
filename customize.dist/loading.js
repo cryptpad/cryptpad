@@ -1,5 +1,6 @@
-// dark #326599
-// light #4591c4
+// bg #e7e7e7
+// blue #0087FF
+// text #3F4141
 define(['/customize/messages.js'], function (Messages) {
     var loadingStyle = (function(){/*
 @font-face {
@@ -21,8 +22,8 @@ define(['/customize/messages.js'], function (Messages) {
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: linear-gradient(to right, #326599 0%, #326599 50%, #4591c4 50%, #4591c4 100%);
-  color: #fafafa;
+  background-color: #e7e7e7;
+  color: #3F4141;
   font-size: 1.3em;
   line-height: 120%;
   opacity: 1;
@@ -31,6 +32,9 @@ define(['/customize/messages.js'], function (Messages) {
   justify-content: center;
   align-items: center;
   font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+#cp-loading.cp-loading-transparent {
+    background-color: rgba(231, 231, 231, 0.7);
 }
 #cp-loading.cp-loading-hidden {
   opacity: 0;
@@ -52,34 +56,38 @@ define(['/customize/messages.js'], function (Messages) {
 #cp-loading .cp-loading-container {
     width: 700px;
     max-width: 90vw;
-    height: 500px;
+    height: 236px;
     max-height: calc(100vh - 20px);
     margin: 50px;
     flex-shrink: 0;
     display: flex;
     flex-flow: column;
-    justify-content: space-around;
     align-items: center;
-}
-@media screen and (max-height: 800px) {
-    #cp-loading .cp-loading-container {
-        height: auto;
-    }
-}
-@media screen and (max-width: 600px) {
-    #cp-loading .cp-loading-container {
-        height: auto;
-    }
 }
 #cp-loading .cp-loading-cryptofist {
   margin-left: auto;
   margin-right: auto;
-  //height: 300px;
   max-width: 90vw;
   max-height: 300px;
   width: auto;
   height: auto;
   margin-bottom: 2em;
+}
+@media screen and (max-width: 500px) {
+  #cp-loading {
+      font-size: 16px !important;
+  }
+  #cp-loading .cp-loading-container {
+      height: 206px;
+  }
+}
+@media screen and (max-height: 700px) {
+  #cp-loading {
+      font-size: 16px !important;
+  }
+  #cp-loading .cp-loading-container {
+      height: 206px;
+  }
 }
 @media screen and (max-height: 500px) {
   #cp-loading .cp-loading-logo {
@@ -170,14 +178,11 @@ p.cp-password-info{
 }
 #cp-loading .cp-loading-spinner-container {
   position: relative;
-  height: 100px;
-}
-#cp-loading .cp-loading-spinner-container > div {
-  height: 100px;
+  height: 80px;
+  margin-bottom: 50px;
 }
 .cp-loading-progress {
     width: 100%;
-    margin: 20px;
     text-align: center;
 }
 .cp-loading-progress p {
@@ -189,10 +194,13 @@ p.cp-password-info{
 .cp-loading-progress-list {
     text-align: left;
     display: inline-block;
+    margin-bottom: 50px;
+    max-width: 100%;
 }
 .cp-loading-progress-list ul {
     list-style: none;
     padding-left: 0;
+    margin: 0;
 }
 .cp-loading-progress-list li {
     padding: 0px 5px;
@@ -200,6 +208,9 @@ p.cp-password-info{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .cp-loading-progress-list li i {
     width: 22px;
@@ -214,10 +225,11 @@ p.cp-password-info{
 .cp-loading-progress-bar {
     height: 24px;
     background: white;
+    border: 1px solid #0087FF;
 }
 .cp-loading-progress-bar-value {
     height: 100%;
-    background: #5cb85c;
+    background: #0087FF;
 }
 
 @keyframes spin {
@@ -234,7 +246,7 @@ p.cp-password-info{
     box-sizing: border-box;
     width: 80px;
     height: 80px;
-    border: 11px solid white;
+    border: 11px solid #999999;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin infinite 3s;
@@ -263,7 +275,7 @@ button:not(.btn).primary:hover{
         loadingStyle,
         '</style>',
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/loading-logo.png?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',

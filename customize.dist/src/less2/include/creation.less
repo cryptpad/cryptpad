@@ -5,21 +5,21 @@
 @import (reference) "./avatar.less";
 
 .creation_vars(
-    @color: @colortheme_default-color,
-    @bg-color: @colortheme_default-bg
+    @bg-color: @colortheme_apps[default]
 ) {
-    @creation-color: @color;
+    @creation-color: @cryptpad_text_col;
     @creation-bg-color: @bg-color;
+    @creation-bg-color-light: lighten(@bg-color, 30%);
 };
 
 .creation_main(
-    @color: @colortheme_default-color,
-    @bg-color: @colortheme_default-bg
+    @bg-color: @colortheme_apps[default]
 ) {
     --LessLoader_require: LessLoader_currentFile();
-    .creation_vars(@color, @bg-color);
-    --creation-color: @color;
+    .creation_vars(@bg-color);
+    --creation-color: @cryptpad_text_col;
     --creation-bg-color: @bg-color;
+    --creation-bg-color-light: @creation-bg-color-light;
 }
 & {
     .creation_vars();
@@ -32,7 +32,7 @@
         z-index: 100000000; // #loading * 10
         top: 0px;
         //background: @colortheme_loading-bg;
-        background: linear-gradient(to right, @colortheme_loading-bg 0%, @colortheme_loading-bg 50%, @colortheme_loading-bg-alt 50%, @colortheme_loading-bg-alt 100%);
+        background: @colortheme_loading_bg;
         color: @colortheme_loading-color;
         display: flex;
         flex-flow: column; /* we need column so that the child can shrink vertically */
@@ -41,16 +41,19 @@
         width: 100%;
         height: 100%;
         overflow: auto;
+        .cp-creation-fill {
+            flex: 1 1 50%;
+        }
         .cp-creation-logo {
             height: 300px;
-            width: 300px;
-            margin-top: 50px;
-            flex: 0 1 auto; /* allows shrink */
+            width: 200px;
             min-height: 0;
             text-align: center;
             img {
+                margin-top: 50px;
+                margin-bottom: 50px;
                 max-width: 100%;
-                max-height: 100%;
+                max-height: ~"calc(100% - 100px)";
             }
         }
     }
@@ -63,9 +66,9 @@
         outline: none;
         width: 700px;
         max-width: 90vw;
-        height: 550px;
-        max-height: calc(~"100vh - 20px");
-        margin: 50px;
+        height: 500px;
+        max-height: ~"calc(100vh - 20px)";
+        margin: 0px;
         flex-shrink: 0;
         display: flex;
         flex-flow: column;
@@ -77,40 +80,64 @@
             text-align: left;
         }
 
+        .cp-creation-checkboxes {
+            flex-flow: column;
+            align-items: baseline !important;
+            max-height: 150px;
+            min-height: 120px !important;
+            justify-content: space-evenly;
+            flex: 1;
+            & > div {
+                display: flex;
+                width: 100%;
+                max-width: 100%;
+                margin: auto;
+                text-align: left;
+            }
+        }
+
+
         .cp-creation-title {
-            color: @colortheme_creation-modal-title;
-            font-weight: bold;
-            margin: 15px;
+            font-size: 20px;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            .cp-icon {
+                margin-bottom: 5px;
+                font-size: 50px;
+            }
+            .cp-creation-title-text {
+                position: relative;
+                a {
+                    position: absolute;
+                    top: 7px;
+                    margin-left: 30px;
+                    font-size: 16px;
+                    color: inherit;
+                }
+            }
         }
 
         .cp-creation-create {
-            margin-top: 0px;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 15px;
             button {
                 .tools_unselectable();
-                padding: 15px;
-                background: linear-gradient(to right, @colortheme_logo-2, @colortheme_logo-1);
+                padding: 6px;
+                background: @colortheme_logo-2;
+                font-size: 20px;
                 color: #FFF;
-                font-weight: bold;
                 margin: 3px 10px;
                 border: none;
                 cursor: pointer;
                 outline: none;
-                width: 100%;
+                text-transform: uppercase;
                 &:hover {
-                    background: linear-gradient(to right, lighten(@colortheme_logo-2, 5%), lighten(@colortheme_logo-1, 5%));
-                    //background: darken(@creation-button, 5%);
-                    //background: lighten(@creation-button, 5%);
+                    background: lighten(@colortheme_logo-2, 5%);
                 }
-            }
-        }
-        .cp-creation-create {
-            text-align: center;
-            //margin: auto;
-            //margin-top: 20px;
-            width: 400px;
-            max-width: 100%;
-            button {
-                margin: 0;
             }
         }
 
@@ -121,7 +148,7 @@
             flex: 1 0 auto;
             justify-content: space-around;
             & > div {
-                width: 400px;
+                width: 300px;
                 max-width: 100%;
                 display: flex;
                 align-items: center;
@@ -169,11 +196,11 @@
 
             input, select {
                 font-size: 14px;
-                border: 1px solid @colortheme_form-border;
+                border: 1px solid @colortheme_form-bg;
                 height: 26px;
                 line-height: 26px;
-                background-color: @colortheme_form-bg;
-                color: @colortheme_form-color;
+                //background-color: @colortheme_form-bg;
+                color: @cryptpad_text_col;
             }
 
             .cp-creation-teams {
@@ -224,7 +251,10 @@
                 .cp-creation-expire-picker {
                     text-align: center;
                     input {
-                        width: 50px;
+                        width: 45px;
+                        margin: 0 5px;
+                        padding: 0;
+                        padding-left: 3px;
                         margin: 0 5px;
                     }
                     select {
@@ -241,6 +271,7 @@
                 }
             }
             .cp-creation-password {
+                flex-flow: column;
                 .cp-creation-password-picker {
                     text-align: center;
                     width: 100%;
@@ -280,6 +311,7 @@
                 width: 100%;
                 //flex: 1 0 auto;
                 flex-wrap: nowrap;
+                justify-content: space-between;
                 .cp-creation-template-more {
                     font-size: 30px;
                     cursor: pointer;
@@ -301,34 +333,34 @@
             }
             .cp-creation-template-container {
                 width: 100%;
+                max-width: ~"calc(100% - 60px)";
                 flex: 1;
                 display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+                flex-flow: column wrap;
                 //overflow-y: auto;
+                max-height: 159px;
                 align-items: center;
                 .cp-creation-template-element {
                     box-shadow: 2px 2px 7px @colortheme_form-border;
-                    width: 135px;
-                    padding: 5px;
+                    width: 300px;
+                    max-width: calc(100% - 10px);
+                    padding: 2px;
                     margin: 5px;
                     display: inline-flex;
-                    flex-flow: column;
 
-                    box-sizing: content-box;
+                    box-sizing: border-box;
 
                     text-align: left;
                     line-height: 1em;
                     cursor: pointer;
 
-                    color: black;
+                    color: @creation-color;
+                    color: var(--creation-color);
                     border: 1px solid transparent;
 
                     &.cp-creation-template-selected, &:hover {
-                        color: @creation-color !important;
-                        color: var(--creation-color) !important;
-                        background-color: @creation-bg-color !important;
-                        background-color: var(--creation-bg-color) !important;
+                        background-color: @creation-bg-color-light;
+                        background-color: var(--creation-bg-color-light);
                         .fa, .cptools {
                             color: @creation-color;
                             color: var(--creation-color);
@@ -340,9 +372,10 @@
                     align-items: center;
 
                     img {
-                        max-width: 100px;
-                        max-height: 100px;
+                        max-width: 30px;
+                        max-height: 30px;
                         background: #fff;
+                        margin-right: 10px;
                     }
 
                     .cp-creation-template-element-name {
@@ -353,18 +386,15 @@
                         min-height: 20px;
                         height: 20px;
                         line-height: 20px;
-                        margin-top: 5px;
                         max-width: 100%;
                     }
                     .fa, .cptools {
                         color: @creation-bg-color;
                         color: var(--creation-bg-color);
                         cursor: pointer;
-                        width: 100px;
-                        height: 100px;
-                        font-size: 70px;
+                        font-size: 30px;
                         text-align: center;
-                        line-height: 100px;
+                        margin-right: 10px;
                     }
                 }
             }
@@ -384,67 +414,43 @@
         }
     }
 
-        @media screen and (max-height: 700px) {
-            #cp-creation-container {
-                .cp-creation-logo {
-                    //flex-shrink: 0;
-                    display: none;
-                }
+    @media screen and (max-height: 850px) {
+        #cp-creation-container {
+            .cp-creation-logo img {
+                display: none;
             }
         }
-        @media screen and (max-width: 500px) {
-            #cp-creation {
-                #cp-creation-form {
-                    & > div {
-                        width: 95%;
-                        margin: 10px auto;
-                    }
-                    .cp-creation-expire {
-                        &.active {
-                            label {
-                                flex: 1;
-                            }
-                            .cp-creation-slider {
-                                flex: none;
-                                order: 10;
-                                width: 100%;
-                            }
+    }
+    @media screen and (max-width: 400px) {
+        #cp-creation {
+            #cp-creation-form {
+                & > div {
+                    width: 95%;
+                    margin: 0 auto;
+                }
+                .cp-creation-expire {
+                    &.active {
+                        label {
+                            flex: 1;
+                        }
+                        .cp-creation-slider {
+                            flex: none;
+                            order: 10;
+                            width: 100%;
                         }
                     }
                 }
             }
         }
-        @media screen and (max-width: @browser_media-medium-screen) {
-            #cp-creation {
-                height: auto;
-                #cp-creation-form {
-                    div.cp-creation-template {
-                        margin: 0;
-                        padding: 5px;
-                        .cp-creation-template-container {
-                            .cp-creation-template-element {
-                                flex-flow: row;
-                                margin: 1px;
-                                padding: 5px;
-                                width: 155px;
-                                img {
-                                    display: none;
-                                }
-                                .fa {
-                                    font-size: 18px;
-                                    width: 20px;
-                                    height: 20px;
-                                    line-height: 20px;
-                                    display: inline !important;
-                                }
-                                .cp-creation-template-element-name {
-                                    margin: 0;
-                                    margin-left: 5px;
-                                }
-                            }
-                        }
-                    }
+    }
+    @media screen and (max-width: 800px) {
+        #cp-creation {
+            height: 550px;
+            #cp-creation-form {
+                div.cp-creation-template {
+                    flex-flow: column;
                 }
             }
         }
+    }
 }

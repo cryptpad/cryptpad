@@ -7,11 +7,9 @@
     .fa {
         padding-right: 0.25em;
     }
-    #cp-main {
-        background-color: #fff;
-    }
+
     .cp-container {
-        background: #fff;
+
         .cp-iconCont {
             h4 {
                 margin-top: 1.5em;
@@ -19,12 +17,13 @@
             }
             div {
                 .card {
-                    box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
-                    border-color: #fff;
+                    .cp-shadow();
+                    border-radius: 0;
                     margin-bottom: 1em;
+                    border: 0;
                     &:hover, &:focus {
                         text-decoration: none;
-                        transform: scale(1.05);
+                        background-color: @colortheme_logo_2_light;
                     }
                     @media (max-width: 1200px) and (min-width: 769px) {
                         min-height: 139px;
@@ -39,7 +38,7 @@
                         min-height: 162px;
                     }
                     img {
-                        max-width: 50px;
+                        width: 80px;
                         margin-bottom: 10px;
                     }
                     p {
@@ -49,21 +48,10 @@
                         align-items: center;
                         margin: 0;
                         height: 100%;
+                        font-size: 1.3em;
                     }
                 }
             }
-        }
-    }
-    .cp-contdet {
-        padding-top: 3em;
-        padding-bottom: 3em;
-        background-image: url(/customize/images/bkcontact.jpg);
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        h1 {
-            font-weight: 700;
-            color: #fff;
         }
     }
 }
