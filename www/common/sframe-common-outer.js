@@ -157,7 +157,22 @@ define([
                 var msgEv = _Util.mkEvent();
                 var iframe = $('#sbox-iframe')[0].contentWindow;
                 var postMsg = function (data) {
-                    iframe.postMessage(data, '*');
+                    try {
+                        iframe.postMessage(data, '*');
+                    } catch (err) {
+                        console.error(err, data);
+                        if (data && data.error && data.error instanceof Error) {
+                            data.error = Util.serializeError(data.error);
+                            try {
+                                iframe.postMessage(data, '*');
+                            } catch (err2) {
+                                console.error("impossible serialization");
+                                throw err2;
+                            }
+                        } else {
+                             throw err;
+                        }
+                    }
                 };
                 var whenReady = waitFor(function (msg) {
                     if (msg.source !== iframe) { return; }
