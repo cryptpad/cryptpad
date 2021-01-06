@@ -32,7 +32,7 @@ define([
             if (!allowed) { return void cb('NOCACHE'); }
             cache.getItem(id, function (err, obj) {
                 if (err || !obj || !obj.c) {
-                    return void cb(err || 'EINVAL');
+                    return void cb(Util.serializeError(err || 'EINVAL'));
                 }
                 cb(null, obj.c);
                 obj.t = +new Date();
@@ -50,7 +50,7 @@ define([
                 c: u8,
                 t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
             }, function (err) {
-                cb(err);
+                cb(Util.serializeError(err));
             });
         });
     };
@@ -64,7 +64,7 @@ define([
             if (!allowed) { return void cb('NOCACHE'); }
             cache.getItem(id, function (err, obj) {
                 if (err || !obj || !Array.isArray(obj.c)) {
-                    return void cb(err || 'EINVAL');
+                    return void cb(Util.serializeError(err || 'EINVAL'));
                 }
                 cb(null, obj);
                 obj.t = +new Date();
@@ -108,7 +108,7 @@ define([
                     c: val,
                     t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
                 }, function (err) {
-                    if (err) { onError(err); }
+                    if (err) { onError(Util.serializeError(err)); }
                 });
 
             }, 50);
