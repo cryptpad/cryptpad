@@ -15,8 +15,8 @@
    viewBox="0 0 135.46606 135.46728"
    id="svg942"
    sodipodi:docname="favicon_source.svg"
-   inkscape:version="1.0.1 (1.0.1+r73)"
-   inkscape:export-filename="/home/david/cryptpad/customize.dist/alt-favicon-richtext.png"
+   inkscape:version="1.0.1 (1.0.1+r74)"
+   inkscape:export-filename="/home/david/cryptpad/customize.dist/main-favicon-team.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
   <metadata
@@ -33,6 +33,14 @@
   </metadata>
   <defs
      id="defs946">
+    <linearGradient
+       id="linearGradient943"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#0087ff;stop-opacity:1;"
+         offset="0"
+         id="stop941" />
+    </linearGradient>
     <linearGradient
        id="linearGradient947"
        osb:paint="solid">
@@ -85,16 +93,16 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1900"
-     inkscape:window-height="1036"
+     inkscape:window-height="996"
      id="namedview944"
      showgrid="false"
      inkscape:zoom="1.1590258"
-     inkscape:cx="261.35067"
+     inkscape:cx="161.26662"
      inkscape:cy="302.92144"
      inkscape:window-x="10"
-     inkscape:window-y="10"
+     inkscape:window-y="50"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="g934"
      inkscape:document-rotation="0" />
   <g
      inkscape:groupmode="layer"
@@ -163,6 +171,49 @@
              d="m 127,42.651 h 4.2265 l 4.2333,22.354 h -12.693 z"
              style="fill:#0087ff"
              id="path934" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="g939"
+     inkscape:label="[export] shield [teams]"
+     style="display:inline">
+    <g
+       id="g937"
+       transform="matrix(1.4853714,0,0,1.4853714,12.798765,-0.61151946)">
+      <g
+         transform="translate(-125.38,-26.449)"
+         id="g934">
+        <path
+           d="m 128.98,30.355 0.55499,39.644 h 33.141 l 0.004,-39.644 z"
+           style="fill:#4839b7;fill-opacity:0.39607844"
+           id="path912" />
+        <path
+           d="m 162.69,70 0.003,43.946 c 12.825,-5.8796 32.762,-17.077 33.127,-43.157 l 0.0108,-0.78911 z"
+           style="fill:#4839b7;fill-opacity:0.39607844"
+           id="path915" />
+        <path
+           d="m 128.98,30.355 h 44.386 L 195.78,51.181 V 76.08 c 0,26.166 -21.414,32.228 -33.117,38.409 -12.815,-5.8945 -32.794,-12.329 -33.117,-38.409 z"
+           style="fill:none;stroke:#4839b7;stroke-width:5.2922;stroke-opacity:1"
+           id="path917" />
+        <path
+           d="m 171.32,29.811 v 23.04 h 24.575"
+           style="fill:none;stroke:#4839b7;stroke-width:5.2917;stroke-opacity:1"
+           id="path920" />
+        <g
+           transform="matrix(1.1107,0,0,1.1107,18.926,21.932)"
+           style="fill:#4839b7;fill-opacity:1"
+           id="g932">
+          <path
+             d="m 137.23,42.719 a 8.1185,8.1185 0 0 1 -8.1185,8.1185 8.1185,8.1185 0 0 1 -8.1185,-8.1185 8.1185,8.1185 0 0 1 8.1185,-8.1185 8.1185,8.1185 0 0 1 8.1185,8.1185 z"
+             style="fill:#4839b7;fill-opacity:1"
+             id="path922" />
+          <path
+             d="m 127,42.651 h 4.2265 l 4.2333,22.354 h -12.693 z"
+             style="fill:#4839b7;fill-opacity:1"
+             id="path929" />
         </g>
       </g>
     </g>
@@ -436,7 +487,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="dot"
-     style="display:inline">
+     style="display:none">
     <circle
        style="fill:#ff0000;fill-opacity:1;stroke-width:7.93754"
        id="path968"
