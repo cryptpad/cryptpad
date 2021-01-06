@@ -1457,20 +1457,32 @@ define([
         var x2tReady = Util.mkEvent(true);
         var fetchFonts = function (x2t) {
             var path = '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
-            var map = {
-                'arial.ttf': 'Arial.ttf',
-                'arialbd.ttf': 'Arial_Bold.ttf',
-                'arialbi.ttf': 'Arial_Bold_Italic.ttf',
-                'ariali.ttf': 'Arial_Italic.ttf',
+            var e = getEditor();
+            var fonts = e.FontLoader.fontInfos;
+            var files = e.FontLoader.fontFiles;
+            var suffixes = {
+                indexR: '',
+                indexB: '_Bold',
+                indexBI: '_Bold_Italic',
+                indexI: '_Italic',
             };
             nThen(function (waitFor) {
-                Object.keys(map).forEach(function (font) {
-                    Util.fetch(path + font, waitFor(function (err, buffer) {
-                        if (buffer) {
-                            console.log(buffer);
-                            x2t.FS.writeFile('/working/fonts/' + map[font], buffer);
-                        }
-                    }));
+                fonts.forEach(function (font) {
+                    // Check if the font is already loaded
+                    if (!font.NeedStyles) { return; }
+                    // Pick the variants we need (regular, bold, italic)
+                    ['indexR', 'indexB', 'indexI', 'indexBI'].forEach(function (k) {
+                        if (typeof(font[k]) !== "number" || font[k] === -1) { return; } // No matching file
+                        var file = files[font[k]];
+
+                        var name = font.Name + suffixes[k] + '.ttf';
+                        Util.fetch(path + file.Id, waitFor(function (err, buffer) {
+                            if (buffer) {
+                                console.log(buffer);
+                                x2t.FS.writeFile('/working/fonts/' + font.Name, buffer);
+                            }
+                        }));
+                    });
                 });
             }).nThen(function () {
                 x2tReady.fire();
@@ -1496,7 +1508,7 @@ define([
                     cb({
                         "type":"save",
                         "status":"ok",
-                        "data":url + "?disposition=inline&ooname=output.pdf"
+                        //"data":url + "?disposition=inline&ooname=output.pdf"
                     });
                     /*
                     ooChannel.send({
