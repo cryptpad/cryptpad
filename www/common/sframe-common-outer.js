@@ -160,14 +160,12 @@ define([
                     try {
                         iframe.postMessage(data, '*');
                     } catch (err) {
-                        console.error(err);
-                        console.error(data);
+                        console.error(err, data);
                         if (data && data.error && data.error instanceof Error) {
                             data.error = Util.serializeError(data.error);
                             try {
                                 iframe.postMessage(data, '*');
                             } catch (err2) {
-                                // XXX
                                 console.error("impossible serialization");
                                 throw err2;
                             }
