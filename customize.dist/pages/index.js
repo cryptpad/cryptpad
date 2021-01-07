@@ -72,29 +72,6 @@ define([
         });
         UI.addTooltips();
 
-        /* // XXX remove this commented code?
-        var more = icons.length < 4? undefined: h('div.bs-callout.cp-callout-more', [
-                h('div.cp-callout-more-lessmsg.cp-hidden', [
-                    "see less ",
-                    h('i.fa.fa-caret-up')
-                ]),
-                h('div.cp-callout-more-moremsg', [
-                    "see more ",
-                    h('i.fa.fa-caret-down')
-                ]),
-                {
-                    onclick: function () {
-                        if (showingMore) {
-                            $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
-                            $('.cp-callout-more-moremsg').removeClass('cp-hidden');
-                        } else {
-                            $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
-                            $('.cp-callout-more-moremsg').addClass('cp-hidden');
-                        }
-                        showingMore = !showingMore;
-                    }
-                }
-            ]);*/
 
         // XXX move this button to pages.js to make it available to other pages
         var _link = h('a', {
@@ -112,7 +89,7 @@ define([
             Feedback.send('HOME_SUPPORT_CRYPTPAD');
         });
 
-        // XXX
+        // XXX translations
         Msg.home_privacy_title = "Private by design";
         Msg.home_privacy_text = "CryptPad is built to enable collaboration while keeping data private. All information including documents, chats, and files is encrypted and decrypted by your browser. This means nothing is readable outside of the session where you are logged in. Even the service administrators do not have access to your information.";
         Msg.home_host_title = "About this instance";
@@ -159,7 +136,8 @@ define([
             ])
         ];
 
-        Msg.main_catch_phrase = "Collaboration suite,<br>encrypted and open-source"; // XXX existing key
+         // XXX translation
+        Msg.main_catch_phrase = "Collaboration suite,<br>encrypted and open-source";
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
@@ -176,17 +154,9 @@ define([
                         ]),
                         h('div.col-md-5.cp-app-grid', [
                             icons,
-                            // XXX remove this commented code?
-                            //more
                         ])
                     ]),
                     blocks,
-                    // XXX remove this commented code?
-                    /*h('div.row', [
-                        h('div.cp-crowdfunding', [
-                            crowdFunding
-                        ])
-                    ])*/
                 ]),
             ]),
             Pages.infopageFooter(),

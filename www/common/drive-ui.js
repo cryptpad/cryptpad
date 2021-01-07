@@ -4377,8 +4377,6 @@ define([
                     }
                     // if folder does not contains SF
 
-                    // XXX rewrite "creation_owned1": "An <b>owned</b> pad can be deleted from the server whenever the owner wants. Deleting an owned pad removes it from other users' CryptDrives."
-                    // tipy used in dialog to create a shared folder
                     else {
                         var convertContent = h('div', [
                             h('p', Messages.convertFolderToSF_confirm),

@@ -13,10 +13,10 @@ define([
         upgradeURL: AppConfig.upgradeURL || 'https://accounts.cryptpad.fr/#/?on=' + origin,
     };
 
-    Msg.features_title = "Features"; // XXX existing key
+    // XXX translations
+    Msg.features_title = "Features";
 
     return function () {
-        // XXX ALL are existing keys
         // Non-registered column
         Msg.features_anon = "Non-registered";
         Msg.features_f_apps = "Access to all the applications";
@@ -36,13 +36,13 @@ define([
         Msg.features_f_social = "Social Features";
         Msg.features_f_social_note = "Add contacts for secure collaboration, create a profile, fine-grained access controls";
         // Msg.features_f_file1 = "";
-        // XXX hard coding file limit in keys?
+        // XXX add instance limit
         Msg.features_f_file1_note = "Store files in your CryptDrive: images, PDFs, videos, and more. Share them with your contacts or embed them in your documents. (up to 25MB)";
         // Msg.features_f_cryptdrive1 = "";
         // Msg.features_f_cryptdrive1_note = "";
         // Msg.features_f_devices = "";
         // Msg.features_f_devices_note = "";
-        // XXX hard coding storage limit in keys?
+        // XXX add instance limit
         Msg.features_f_storage1 = "Permanent Storage (1GB)";
         Msg.features_f_storage1_note = "Documents stored in your CryptDrive are never deleted for inactivity";
         // Premium column
@@ -120,7 +120,6 @@ define([
                                 href: '/register/'
                             }, h('button.cp-features-register-button', Msg.features_f_register))
                         ]),
-                        // XXX remove Msg.features_f_register_note
                     ]),
                 ]),
             ]);

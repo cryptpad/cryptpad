@@ -99,7 +99,7 @@ define([
                 return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
-            // XXX
+            // XXX translations
             Messages.register_warning = "<i class='fa fa-warning'></i> Warning"; // existing key
             Messages.register_warning_note = "Due to the encrypted nature of CrytpPad even the the service administrators will not be able to recover data in case the username and/or password are forgotten. Please save them in a safe place.";
             Messages.register_cancel = "Cancel"; // existing key

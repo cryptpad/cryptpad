@@ -1530,7 +1530,7 @@ define([
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
 
-        // XXX existing key
+        // XXX translation
         Messages.help.generic.more = "Learn more about how CryptPad can work for you by reading our <a href=\"https://docs.cryptpad.fr\" target=\"_blank\">Documentation</a>.";
 
         var faqLine = template(Messages.help.generic.more, Pages.docsLink);
@@ -1684,7 +1684,7 @@ define([
                 'href': 'https://docs.cryptpad.fr',
                 'class': 'fa fa-book'
             },
-            content: h('span', Messages.docs_link) // XXX
+            content: h('span', Messages.docs_link)
         });
         if (padType !== 'support' && accountName && Config.supportMailbox) {
             options.push({
@@ -2115,7 +2115,8 @@ define([
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
         var newPadH3Title = Messages['button_new' + type];
 
-        Messages.creation_helperText = "Learn more..."; // XXX
+        // XXX translation
+        Messages.creation_helperText = "Learn more...";
         var title = h('div.cp-creation-title', [
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
@@ -2185,18 +2186,15 @@ define([
 
         // Owned pads
         // Default is Owned pad
-        // XXX Remove creation_owned1 and creation_owned2 keys
         var owned = h('div.cp-creation-owned', [
             UI.createCheckbox('cp-creation-owned', Messages.creation_owned, true),
         ]);
 
         // Life time
 
-        // XXX rewrite "creation_expire2": "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives."
-
-
-        Messages.creation_expiration = "Expiration date"; // XXX
-        Messages.creation_expiresIn = "Expires in"; // XXX
+        // XXX translations
+        Messages.creation_expiration = "Expiration date";
+        Messages.creation_expiresIn = "Expires in";
         var expire = h('div.cp-creation-expire', [
             UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
                 labelAlt: Messages.creation_expiresIn
@@ -2220,7 +2218,8 @@ define([
         ]);
 
         // Password
-        Messages.creation_password = "Password"; // XXX
+        // XXX translation
+        Messages.creation_password = "Password";
         var password = h('div.cp-creation-password', [
             UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [

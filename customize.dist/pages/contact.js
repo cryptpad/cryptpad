@@ -6,7 +6,7 @@ define([
     '/common/outer/local-store.js'
 ], function (Config, h, Msg, Pages, LocalStore) {
 
-    // XXX
+    // XXX translations
     Msg.contact_adminHint = "For any issues related to your account, storage limit, or availability of the service."; // existing key
 
 
@@ -38,7 +38,7 @@ define([
                             )
                         )
                     ) : undefined,
-                    (adminMailbox && LocalStore.isLoggedIn()) ? h('div.col-12.col-sm-6.col-md-3.col-lg-3', // XXX show "disabled" support if not logged in
+                    (adminMailbox && LocalStore.isLoggedIn()) ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "/support/"},
                             h('div.card-body',
                                 h('p', [

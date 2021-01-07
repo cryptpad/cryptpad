@@ -62,12 +62,10 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    // XXX
+    // XXX translations
     Msg.docs_link = "Documentation";
-    // XXX Remove FAQ from translations
-    // XXX Add FAQ to docs
-    Msg.footer_team = "Contributors"; // XXX existing key
-    Msg.footer_tos = "Terms of Service"; // XXX existing key
+    Msg.footer_team = "Contributors";
+    Msg.footer_tos = "Terms of Service";
 
     Pages.versionString = "v3.25.0 (ZyzomysPedunculatus)";
 
