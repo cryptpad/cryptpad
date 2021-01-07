@@ -1420,7 +1420,7 @@ MessengerUI, Messages) {
             toolbar.isErrorState = bool; // Stop kickSpinner
             toolbar.title.toggleClass('cp-toolbar-unsync', bool); // "read only" next to the title
             if (bool && toolbar.spinner) {
-                toolbar.spinner.text(Messages.offline);
+                toolbar.spinner.text(Messages.Offline);
             } else {
                 kickSpinner(toolbar, config);
             }
