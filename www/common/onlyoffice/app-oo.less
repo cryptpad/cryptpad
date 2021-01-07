@@ -7,23 +7,17 @@ body.cp-app-sheet, body.cp-app-oodoc, body.cp-app-ooslide {
 
     &.cp-app-sheet {
         .framework_main(
-            @bg-color: @colortheme_oocell-bg,
-            @warn-color: @colortheme_oocell-warn,
-            @color: @colortheme_oocell-color
+            @bg-color: @colortheme_apps[sheet],
         );
     }
     &.cp-app-oodoc {
         .framework_main(
-            @bg-color: @colortheme_oodoc-bg,
-            @warn-color: @colortheme_oodoc-warn,
-            @color: @colortheme_oodoc-color
+            @bg-color: @colortheme_apps[oodoc],
         );
     }
     &.cp-app-ooslide {
         .framework_main(
-            @bg-color: @colortheme_ooslide-bg,
-            @warn-color: @colortheme_ooslide-warn,
-            @color: @colortheme_ooslide-color
+            @bg-color: @colortheme_apps[ooslide],
         );
     }
 

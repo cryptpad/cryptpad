@@ -1636,7 +1636,7 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
-                Cache: Cache, // XXX re-enable cache usage
+                Cache: Cache, // ICE pad cache
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },
@@ -2718,7 +2718,7 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
-                Cache: Cache, // XXX re-enable cache usage
+                Cache: Cache, // ICE drive cache
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,

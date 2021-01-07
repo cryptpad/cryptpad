@@ -12,9 +12,7 @@
 @import (reference) "./notifications.less";
 
 .toolbar_vars (
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn // color of the warning text in the toolbar
+    @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
     @toolbar-bg-color-light: lighten(@bg-color, 30%);
@@ -22,13 +20,10 @@
 };
 
 .toolbar_main (
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
-    @barWidth: 600px // width of the toolbar
+    @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     --LessLoader_require: LessLoader_currentFile();
-    .toolbar_vars(@color, @bg-color, @warn-color);
+    .toolbar_vars(@bg-color);
 
     --toolbar-bg-color: @toolbar-bg-color;
     --toolbar-bg-color-light: @toolbar-bg-color-light;
@@ -271,8 +266,11 @@
             border: 1px solid @colortheme_modal-fg;
             &:hover {
                 //border: 1px solid @colortheme_modal-fg;
-                background: @colortheme_modal-fg;
-                color: @colortheme_modal-bg;
+                background: @colortheme_logo_2_light;
+                color: @cryptpad_text_col;
+                .cptools {
+                    color: @cryptpad_text_col;
+                }
             }
         }
         .cp-modal {
@@ -282,7 +280,7 @@
                 cursor: pointer;
             }
             &> p {
-                margin: 50px;
+                margin: 20px;
             }
             &> div {
                 flex: 1;
@@ -293,7 +291,7 @@
             }
             &> div:last-child {
                 flex: unset;
-                margin: 50px 0;
+                margin: 20px 0;
             }
         }
 
@@ -811,10 +809,8 @@
                 padding: 10px;
 
                 svg {
-                    * {
-                        fill: @toolbar-bg-color;
-                        fill: var(--toolbar-bg-color);
-                    }
+                    fill: @toolbar-bg-color;
+                    fill: var(--toolbar-bg-color);
                 }
 
                 img {
@@ -1055,7 +1051,7 @@
                     &.fa-hashtag { order: 10; }
                     &.fa-bookmark { order: 15; }
                     &.fa-upload { order: 20; }
-                    &.fa-clone { order: 25; }
+                    &.fa-files-o { order: 25; }
                     &.fa-download { order: 30; }
                     &.fa-print { order: 35; }
                     &.fa-trash { order: 40; }
@@ -1125,6 +1121,7 @@
 
     .cp-toolbar-spinner {
         color: @cryptpad_text_col;
+        font-family: "Open Sans";
         font-size: 14px;
         padding: 0 8px;
         height: 20px;

@@ -3,6 +3,9 @@
 @import (reference) "./colortheme-all.less";
 
 .leftside-menu_main() {
+    div.cp-empty-rule {
+        display: block; // XXX workaround lesshint complaining about empty rules
+    }
 }
 .leftside-menu-category_main() {
     .unselectable_make();

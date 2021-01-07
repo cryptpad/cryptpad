@@ -2,10 +2,9 @@
 @import (reference) "./colortheme-all.less";
 
 .messenger_vars (
-    @color: @colortheme_friends-color, // color of the toolbar text
-    @bg-color: @colortheme_friends-bg, // color of the toolbar background
+    @bg-color: @colortheme_static_apps[contacts], // color of the toolbar background
 ) {
-    @msg-color: @color;
+    @msg-color: @cryptpad_text_col;
     @msg-bg-color: @bg-color;
     @msg-bg-color-light: lighten(@bg-color, 15%);
     @msg-bg-color-lighter: lighten(@bg-color, 20%);
@@ -13,11 +12,10 @@
     @msg-bg-color-darker: darken(@bg-color, 20%);
 };
 .messenger_main(
-    @color: @colortheme_friends-color, // color of the toolbar text
-    @bg-color: @colortheme_friends-bg, // color of the toolbar background
+    @bg-color: @colortheme_static_apps[contacts], // color of the toolbar background
 ) {
     --LessLoader_require: LessLoader_currentFile();
-    .messenger_vars(@color, @bg-color);
+    .messenger_vars(@bg-color);
     --msg-color: @msg-color;
     --msg-bg-color: @msg-bg-color;
     --msg-bg-color-light: @msg-bg-color-light;

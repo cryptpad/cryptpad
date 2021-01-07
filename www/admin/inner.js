@@ -552,14 +552,6 @@ define([
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
         var catContainer = h('div.cp-dropdown-container');
-        Messages.admin_support_premium = "Premium tickets:"; // XXX
-        Messages.admin_support_normal = "Unanswered tickets:";
-        Messages.admin_support_answered = "Answered tickets:";
-        Messages.admin_support_closed = "Closed tickets:";
-        Messages.admin_support_open = "Show";
-        Messages.admin_support_collapse = "Collapse";
-        Messages.admin_support_first = "Created on: ";
-        Messages.admin_support_last = "Updated on: ";
         var col1 = h('div.cp-support-column', h('h1', [
             h('span', Messages.admin_support_premium),
             h('span.cp-support-count'),
