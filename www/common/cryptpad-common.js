@@ -1948,6 +1948,64 @@ define([
         });
     };
 
+
+    var provideFeedback = function () {
+        if (typeof(window.Proxy) === 'undefined') {
+            Feedback.send("NO_PROXIES");
+        }
+
+        if (!common.isWebRTCSupported()) {
+            Feedback.send("NO_WEBRTC");
+        }
+
+        var shimPattern = /CRYPTPAD_SHIM/;
+        if (shimPattern.test(Array.isArray.toString())) {
+            Feedback.send("NO_ISARRAY");
+        }
+
+        if (shimPattern.test(Array.prototype.fill.toString())) {
+            Feedback.send("NO_ARRAYFILL");
+        }
+
+        if (typeof(Symbol) === 'undefined') {
+            Feedback.send('NO_SYMBOL');
+        }
+
+        if (typeof(SharedWorker) === "undefined") {
+            Feedback.send('NO_SHAREDWORKER');
+        } else {
+            Feedback.send('SHAREDWORKER');
+        }
+        if (typeof(Worker) === "undefined") {
+            Feedback.send('NO_WEBWORKER');
+        }
+        if (!('serviceWorker' in navigator)) {
+            Feedback.send('NO_SERVICEWORKER');
+        }
+        if (!common.hasCSSVariables()) {
+            Feedback.send('NO_CSS_VARIABLES');
+        }
+
+        Feedback.reportScreenDimensions();
+        Feedback.reportLanguage();
+    };
+    var initFeedback = function (feedback) {
+        // Initialize feedback
+        Feedback.init(feedback);
+        provideFeedback();
+    };
+    var onStoreReady = function (data) {
+        if (common.userHash) {
+            var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
+            if (localToken === null) {
+                // if that number hasn't been set to localStorage, do so.
+                localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
+            }
+        }
+
+        initFeedback(data.feedback);
+    };
+
     common.startAccountDeletion = function (data, cb) {
         // Logout other tabs
         LocalStore.logout(null, true);
@@ -1994,6 +2052,8 @@ define([
             var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
             if (localToken !== data.token) { requestLogin(); }
         },
+        // Store
+        STORE_READY: onStoreReady,
         // Network
         NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
         NETWORK_RECONNECT: function (data) {
@@ -2075,52 +2135,6 @@ define([
             return void setTimeout(function () { f(void 0, env); });
         }
 
-        var provideFeedback = function () {
-            if (typeof(window.Proxy) === 'undefined') {
-                Feedback.send("NO_PROXIES");
-            }
-
-            if (!common.isWebRTCSupported()) {
-                Feedback.send("NO_WEBRTC");
-            }
-
-            var shimPattern = /CRYPTPAD_SHIM/;
-            if (shimPattern.test(Array.isArray.toString())) {
-                Feedback.send("NO_ISARRAY");
-            }
-
-            if (shimPattern.test(Array.prototype.fill.toString())) {
-                Feedback.send("NO_ARRAYFILL");
-            }
-
-            if (typeof(Symbol) === 'undefined') {
-                Feedback.send('NO_SYMBOL');
-            }
-
-            if (typeof(SharedWorker) === "undefined") {
-                Feedback.send('NO_SHAREDWORKER');
-            } else {
-                Feedback.send('SHAREDWORKER');
-            }
-            if (typeof(Worker) === "undefined") {
-                Feedback.send('NO_WEBWORKER');
-            }
-            if (!('serviceWorker' in navigator)) {
-                Feedback.send('NO_SERVICEWORKER');
-            }
-            if (!common.hasCSSVariables()) {
-                Feedback.send('NO_CSS_VARIABLES');
-            }
-
-            Feedback.reportScreenDimensions();
-            Feedback.reportLanguage();
-        };
-        var initFeedback = function (feedback) {
-            // Initialize feedback
-            Feedback.init(feedback);
-            provideFeedback();
-        };
-
         var userHash;
 
         (function iOSFirefoxFix () {
@@ -2198,6 +2212,7 @@ define([
                 cache: rdyCfg.cache,
                 driveEvents: true //rdyCfg.driveEvents // Boolean
             };
+            common.userHash = userHash;
 
             // FIXME Backward compatibility
             if (sessionStorage.newPadFileData) {
@@ -2392,15 +2407,6 @@ define([
 
                         if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
-                        if (cfg.userHash) {
-                            var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
-                            if (localToken === null) {
-                                // if that number hasn't been set to localStorage, do so.
-                                localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
-                            }
-                        }
-
-                        initFeedback(data.feedback);
                         initialized = true;
                         channelIsReady();
                     });

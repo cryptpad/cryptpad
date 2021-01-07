@@ -2640,9 +2640,12 @@ define([
                 // XXX send feedback and logintoken to outer...
                 // "cb" may have already been called by onCacheReady
                 if (typeof(cb) === 'function') { cb(returned); }
-                sendDriveEvent('NETWORK_RECONNECT');
-                broadcast([], "UPDATE_METADATA");
+
                 store.offline = false;
+                sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online
+                broadcast([], "UPDATE_METADATA");
+                broadcast([], "STORE_READY", returned);
+
 // XXX broadcast READY event with the missing data
 // XXX we can improve feedback to queue the queries and send them when coming back online
 
