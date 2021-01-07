@@ -12,13 +12,11 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
-    '/common/outer/cache-store.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cache,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
