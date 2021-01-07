@@ -814,28 +814,21 @@ define([
                 ]));
             }
 
+            var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'})
+                            .text(Messages.creation_passwordValue).appendTo($d);
             var hasPassword = data.password;
-            if (hasPassword) {
-                $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue).appendTo($d);
-                var password = UI.passwordInput({
-                    id: 'cp-app-prop-password',
-                    readonly: 'readonly'
-                });
-                $d.append(password);
-                var $pwInput = $(password).find('.cp-password-input');
-                $pwInput.val(data.password || '').click(function () {
-                    $pwInput[0].select();
-                });
-            } else {
-                /*
-                // XXX don't show the "current password" field if there is no password?
-                Messages.noPassword = "No password";
-                $d.append(h('div.cp-app-prop', [
-                    Messages.creation_passwordValue,
-                    h('br'),
-                    h('span.cp-app-prop-content', Messages.noPassword)
-                ]));
-                */
+            var password = UI.passwordInput({
+                id: 'cp-app-prop-password',
+                readonly: 'readonly'
+            });
+            var $password = $(password).appendTo($d);
+            var $pwInput = $password.find('.cp-password-input');
+            $pwInput.val(data.password || '').click(function () {
+                $pwInput[0].select();
+            });
+            if (!hasPassword) {
+                $password.hide();
+                $pwLabel.hide();
             }
 
             // In the properties, we should have the edit href if we know it.
@@ -910,6 +903,13 @@ define([
                             UI.findOKButton().click();
 
                             $pwInput.val(newPass);
+                            if (newPass) {
+                                $password.show();
+                                $pwLabel.show();
+                            } else {
+                                $password.hide();
+                                $pwLabel.hide();
+                            }
 
                             // If the current document is a file or if we're changing the password from a drive,
                             // we don't have to reload the page at the end.
