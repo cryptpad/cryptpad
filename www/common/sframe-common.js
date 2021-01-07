@@ -16,7 +16,6 @@ define([
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
-    '/common/outer/cache-store.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -42,7 +41,6 @@ define([
     MT,
     MetadataMgr,
     AppConfig,
-    Cache,
     CommonRealtime,
     Util,
     Hash,
@@ -189,7 +187,7 @@ define([
 
     funcs.getFileSize = function (channelId, cb) {
         nThen(function (waitFor) {
-            Cache.getBlobCache(channelId, waitFor(function(err, blob) {
+            ctx.cache.getBlobCache(channelId, waitFor(function(err, blob) {
                 if (err) { return; }
                 waitFor.abort();
                 cb(null, blob.length);
