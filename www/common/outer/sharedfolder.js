@@ -197,7 +197,12 @@ define([
                     // 1. addProxy won't re-add the same folder twice on 'ready'
                     // 2. obj.cb is using Util.once
                     rt.cache = true;
-                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
+
+                    // If we're updating the password of an existing folder, force the creation
+                    // of a new userobject in proxy-manager. Once it's done, remove this flag
+                    // to make sure we won't create a second new userobject on 'ready'
+                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey, config.updatePassword);
+                    config.updatePassword = false;
                     obj.cb(sf.rt);
                 });
                 sf.ready = true;
@@ -220,7 +225,7 @@ define([
                     });
                     */
                     rt.cache = false;
-                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
+                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey, config.updatePassword);
                     obj.cb(sf.rt);
                 });
                 sf.ready = true;
@@ -324,6 +329,7 @@ define([
                 SF.load({
                     network: network,
                     store: s,
+                    updatePassword: true,
                     isNewChannel: Store.isNewChannel
                 }, sfId, sf, waitFor());
                 if (!s.rpc) { return; }

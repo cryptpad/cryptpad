@@ -16,8 +16,8 @@ define([
     };
 
     // Add a shared folder to the list
-    var addProxy = function (Env, id, lm, leave, editKey) {
-        if (Env.folders[id]) {
+    var addProxy = function (Env, id, lm, leave, editKey, force) {
+        if (Env.folders[id] && !force) {
             // Shared folder already added to the proxy-manager, probably
             // a cached version
             if (Env.folders[id].offline && !lm.cache) {
