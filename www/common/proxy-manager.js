@@ -973,8 +973,8 @@ define([
         if (!resolved.id) {
             var el = Env.user.userObject.find(resolved.path);
             if (Env.user.userObject.isSharedFolder(el) && Env.folders[el]) {
-                Env.folders[el].proxy.metadata.title = data.newName;
-                Env.user.proxy[UserObject.SHARED_FOLDERS][el].lastTitle = data.newName;
+                Env.folders[el].proxy.metadata.title = data.newName || Messages.fm_folder;
+                Env.user.proxy[UserObject.SHARED_FOLDERS][el].lastTitle = data.newName || Messages.fm_folder;
                 return void cb();
             }
         }

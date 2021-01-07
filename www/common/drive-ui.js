@@ -3945,7 +3945,8 @@ define([
                     var newRoot = Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) || {};
                     subfolder = manager.hasSubfolder(newRoot);
                     // Fix name
-                    key = manager.getSharedFolderData(sfId).title || Messages.fm_deletedFolder;
+                    var sfData = manager.getSharedFolderData(sfId);
+                    key = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
                     // Fix icon
                     $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
                     isSharedFolder = sfId;
