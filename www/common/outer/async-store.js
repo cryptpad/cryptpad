@@ -1038,6 +1038,7 @@ define([
             });
         };
         Store.setPadTitle = function (clientId, data, cb) {
+            onReadyEvt.reg(function () {
             var title = data.title;
             var href = data.href;
             var channel = data.channel;
@@ -1193,6 +1194,8 @@ define([
                     onSync(teamId, waitFor());
                 });
             }).nThen(cb);
+
+            });
         };
 
         // Filepicker app
