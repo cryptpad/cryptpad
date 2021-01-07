@@ -17,6 +17,15 @@ define([
 
     // Add a shared folder to the list
     var addProxy = function (Env, id, lm, leave, editKey) {
+        if (Env.folders[id]) {
+            // Shared folder already added to the proxy-manager, probably
+            // a cached version
+            if (Env.folders[id].offline && !lm.cache) {
+                Env.folders[id].offline = false;
+                Env.Store.refreshDriveUI();
+            }
+            return;
+        }
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
@@ -38,7 +47,8 @@ define([
         Env.folders[id] = {
             proxy: lm.proxy,
             userObject: userObject,
-            leave: leave
+            leave: leave,
+            offline: Boolean(lm.cache)
         };
         if (proxy.on) {
             proxy.on('disconnect', function () {
@@ -537,7 +547,7 @@ define([
             Env.user.userObject.add(id, resolved.path);
 
             // 2b. load the proxy
-            Env.loadSharedFolder(id, folderData, waitFor(function (rt, metadata) {
+            Env.loadSharedFolder(id, folderData, waitFor(function (rt) {
                 if (!rt) {
                     waitFor.abort();
                     return void cb({ error: 'EDELETED' });
@@ -546,11 +556,13 @@ define([
                 if (!rt.proxy.metadata) { // Creating a new shared folder
                     rt.proxy.metadata = { title: data.name || Messages.fm_newFolder };
                 }
-                // If we're importing a folder, check its serverside metadata
-                if (data.folderData && metadata) {
-                    var fData = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
-                    if (metadata.owners) { fData.owners = metadata.owners; }
-                    if (metadata.expire) { fData.expire = +metadata.expire; }
+                if (data.folderData) {
+                    // If we're importing a folder, check its serverside metadata
+                    Env.Store.getPadMetadata(null, { channel: folderData.channel }, function (md) {
+                        var fData = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
+                        if (md.owners) { fData.owners = md.owners; }
+                        if (md.expire) { fData.expire = +md.expire; }
+                    });
                 }
             }), !Boolean(data.folderData));
         }).nThen(function () {

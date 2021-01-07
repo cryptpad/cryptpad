@@ -12,11 +12,13 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
+    '/common/outer/cache-store.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
+            Cache,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -453,10 +455,35 @@ define([
         });
     };
 
-    common.getFileSize = function (href, password, cb) {
-        postMessage("GET_FILE_SIZE", {href: href, password: password}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.size);
+    common.getFileSize = function (href, password, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var channel = Hash.hrefToHexChannelId(href, password);
+        var error;
+        Nthen(function (waitFor) {
+            // Blobs can't change, if it's in the cache, use it
+            Cache.getBlobCache(channel, waitFor(function(err, blob) {
+                if (err) { return; }
+                waitFor.abort();
+                cb(null, blob.length);
+            }));
+
+        }).nThen(function (waitFor) {
+            // If it's not in the cache or it's not a blob, try to get the value from the server
+            postMessage("GET_FILE_SIZE", {channel:channel}, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    // If disconnected, try to get the value from the channel cache (next nThen)
+                    error = obj.error;
+                    return;
+                }
+                waitFor.abort();
+                cb(undefined, obj.size);
+            }));
+        }).nThen(function () {
+            Cache.getChannelCache(channel, function(err, data) {
+                if (err) { return void cb(error); }
+                var size = data && Array.isArray(data.c) && data.c.join('').length;
+                cb(null, size || 0);
+            });
         });
     };
 
@@ -467,11 +494,23 @@ define([
         });
     };
 
-    common.isNewChannel = function (href, password, cb) {
-        postMessage('IS_NEW_CHANNEL', {href: href, password: password}, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            if (!obj) { return void cb('INVALID_RESPONSE'); }
-            cb(undefined, obj.isNew);
+    common.isNewChannel = function (href, password, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var channel = Hash.hrefToHexChannelId(href, password);
+        var error;
+        Nthen(function (waitFor) {
+            // If it's not in the cache or it's not a blob, try to get the value from the server
+            postMessage('IS_NEW_CHANNEL', {channel: channel}, waitFor(function (obj) {
+                if (obj && obj.error) { error = obj.error; return; }
+                if (!obj) { error = "INVALID_RESPONSE"; return; }
+                waitFor.abort();
+                cb(undefined, obj.isNew);
+            }));
+        }).nThen(function () {
+            Cache.getChannelCache(channel, function(err, data) {
+                if (err || !data) { return void cb(error); }
+                cb(null, false);
+            });
         });
     };
 
@@ -2158,6 +2197,7 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
+                cache: rdyCfg.cache,
                 driveEvents: true //rdyCfg.driveEvents // Boolean
             };
 

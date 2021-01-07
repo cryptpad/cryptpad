@@ -42,7 +42,7 @@ define([
 
     var APP = window.APP = {
         editable: false,
-        online: true,
+        online: false,
         mobile: function () {
             if (window.matchMedia) { return !window.matchMedia('(any-pointer:fine)').matches; }
             else { return $('body').width() <= 600; }
@@ -4372,8 +4372,12 @@ define([
                 var anonDrive = manager.isPathIn(currentPath, [FILES_DATA]) && !APP.loggedIn;
 
                 if (manager.isFolder(el) && !manager.isSharedFolder(el) && !anonDrive) { // Folder
+                    // disconnected
+                    if (!APP.editable) {
+                        return void UI.warn(Messages.error); // XXX
+                    }
                     // if folder is inside SF
-                    if (manager.isInSharedFolder(paths[0].path)) {
+                    else if (manager.isInSharedFolder(paths[0].path)) {
                         return void UI.alert(Messages.convertFolderToSF_SFParent);
                     }
                     // if folder already contains SF
