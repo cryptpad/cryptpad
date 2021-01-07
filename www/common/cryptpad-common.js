@@ -964,9 +964,11 @@ define([
     // Get data about a given channel: use with hidden hashes
     common.getPadDataFromChannel = function (obj, cb) {
         if (!obj || !obj.channel) { return void cb('EINVAL'); }
+        // Note: no timeout for this command, we may only have loaded the cached drive
+        // and need to wait for the fully synced drive
         postMessage("GET_PAD_DATA_FROM_CHANNEL", obj, function (data) {
             cb(void 0, data);
-        });
+        }, {timeout: -1});
     };
 
 

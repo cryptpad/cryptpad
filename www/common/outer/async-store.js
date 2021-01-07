@@ -1268,8 +1268,17 @@ define([
                     }
                 });
             });
+            var result = res || viewRes;
+
+            // If we're not fully synced yet and we don't have a result, wait for the ready event
+            if (!result && store.offline) {
+                onReadyEvt.reg(function () {
+                    Store.getPadDataFromChannel(clientId, obj, cb);
+                });
+                return;
+            }
             // Call back with the best value we can get
-            cb(res || viewRes || {});
+            cb(result || {});
         };
 
         // Hidden hash: if a pad is deleted, we may have to switch back to full hash
