@@ -2600,7 +2600,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor, clientId); // XXX load teams offline?
+                loadUniversal(Team, 'team', waitFor, clientId); // TODO load teams offline
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
@@ -2637,7 +2637,6 @@ define([
                 returned.feedback = Util.find(proxy, ['settings', 'general', 'allowUserFeedback']);
                 Feedback.init(returned.feedback);
 
-                // XXX send feedback and logintoken to outer...
                 // "cb" may have already been called by onCacheReady
                 if (typeof(cb) === 'function') { cb(returned); }
 
@@ -2645,9 +2644,6 @@ define([
                 sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online
                 broadcast([], "UPDATE_METADATA");
                 broadcast([], "STORE_READY", returned);
-
-// XXX broadcast READY event with the missing data
-// XXX we can improve feedback to queue the queries and send them when coming back online
 
                 if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                     // even anonymous users should have a persistent, unique-ish id
@@ -2753,7 +2749,10 @@ define([
                 store.offline = true;
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
-                // XXX make sure we have a valid drive available
+
+                // Make sure we have a valid user object before emitting cacheready
+                if (rt.proxy && !rt.proxy.drive) { return; }
+
                 onCacheReady(clientId, function () {
                     if (typeof(cb) === "function") { cb(returned); }
                 });
