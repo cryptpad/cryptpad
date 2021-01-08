@@ -2653,7 +2653,7 @@ define([
 
                 // "cb" may have already been called by onCacheReady
                 store.returned = returned;
-                if (typeof(cb) === 'function') { cb(); }
+                if (typeof(cb) === 'function') { cb(returned); }
 
                 store.offline = false;
                 sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online
