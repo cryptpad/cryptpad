@@ -1504,5 +1504,8 @@
     "admin_support_closed": "Geschlossene Tickets:",
     "admin_support_answered": "Beantwortete Tickets:",
     "admin_support_normal": "Unbeantwortete Tickets:",
-    "admin_support_premium": "Premium-Tickets:"
+    "admin_support_premium": "Premium-Tickets:",
+    "access_offline": "Du bist offline. Verwaltung von Zugriffsrechten ist nicht verfügbar.",
+    "share_noContactsOffline": "Du bist offline. Kontakte sind nicht verfügbar.",
+    "offlineNoCacheError": "Du bist offline und das Dokument ist nicht verfügbar."
 }
