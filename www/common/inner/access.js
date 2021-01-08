@@ -769,7 +769,6 @@ define([
         }, function () {});
     };
 
-    Messages.access_offline = "You're currently offline. Access management is not available"; // XXX
     var getAccessTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
