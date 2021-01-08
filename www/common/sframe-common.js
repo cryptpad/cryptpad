@@ -772,10 +772,6 @@ define([
                 UI.errorLoadingScreen(Messages.restrictedError);
             });
 
-            ctx.sframeChan.on("EV_OFFLINE", function () {
-                UI.errorLoadingScreen(Messages.offlineNoCacheError);
-            });
-
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
                 UI.errorLoadingScreen(Messages.password_error_seed);
             });
