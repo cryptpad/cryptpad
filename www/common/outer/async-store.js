@@ -2762,6 +2762,22 @@ define([
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
                 store.cacheReturned = returned;
+
+                // Check if we can connect
+                var to = setTimeout(function () {
+                    console.error('TO');
+                    broadcast([], "LOADING_DRIVE", {
+                        type: "offline"
+                    });
+                }, 5000);
+
+                store.networkPromise.then(function () {
+                    clearTimeout(to);
+                }, function (err) {
+                    console.error(err);
+                    clearTimeout(to);
+                });
+
                 if (!data.cache) { return; }
 
                 // Make sure we have a valid user object before emitting cacheready
