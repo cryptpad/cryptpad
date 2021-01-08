@@ -635,8 +635,8 @@ function getValue(ptr, type, noSafe) {
 }
 var wasmMemory;
 var wasmTable = new WebAssembly.Table({
- "initial": 63857,
- "maximum": 63857 + 0,
+ "initial": 64685,
+ "maximum": 64685 + 0,
  "element": "anyfunc"
 });
 var wasmModule;
@@ -996,7 +996,7 @@ function updateGlobalBufferAndViews(buf) {
  Module["HEAPF32"] = HEAPF32 = new Float32Array(buf);
  Module["HEAPF64"] = HEAPF64 = new Float64Array(buf);
 }
-var STATIC_BASE = 1024, STACK_BASE = 17838800, STACKTOP = STACK_BASE, STACK_MAX = 12595920, DYNAMIC_BASE = 17838800, DYNAMICTOP_PTR = 12594960;
+var STATIC_BASE = 1024, STACK_BASE = 19131664, STACKTOP = STACK_BASE, STACK_MAX = 13888784, DYNAMIC_BASE = 19131664, DYNAMICTOP_PTR = 13887824;
 assert(STACK_BASE % 16 === 0, "stack must start aligned");
 assert(DYNAMIC_BASE % 16 === 0, "heap must start aligned");
 if (ENVIRONMENT_IS_PTHREAD) {
@@ -1385,15 +1385,15 @@ var ASM_CONSTS = {
    root: "."
   }, "/working");
  }),
- 10774952: (function() {
+ 11958700: (function() {
   throw "Canceled!";
  }),
- 10775091: (function() {
+ 11958839: (function() {
   postMessage({
    cmd: "processQueuedMainThreadWork"
   });
  }),
- 10775142: (function($0) {
+ 11958890: (function($0) {
   if (!ENVIRONMENT_IS_PTHREAD) {
    if (!PThread.pthreads[$0] || !PThread.pthreads[$0].worker) {
     return 0;
@@ -1409,10 +1409,10 @@ var ASM_CONSTS = {
   }
   return 1;
  }),
- 10775510: (function() {
+ 11959258: (function() {
   return !!Module["canvas"];
  }),
- 10775546: (function() {
+ 11959294: (function() {
   noExitRuntime = true;
  })
 };
@@ -1480,96 +1480,261 @@ function stackTrace() {
  return demangleAll(js);
 }
 Module["stackTrace"] = stackTrace;
-function __ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE() {
- err("missing function: _ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE"] = __ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE;
-function __ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE() {
- err("missing function: _ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE"] = __ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE;
-function __ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE() {
- err("missing function: _ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE"] = __ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE;
-function __ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE() {
- err("missing function: _ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE"] = __ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE;
-function __ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE() {
- err("missing function: _ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE"] = __ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE;
-function __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb() {
- err("missing function: _ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb"] = __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb;
-function __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb() {
- err("missing function: _ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb");
- abort(-1);
-}
-Module["__ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb"] = __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb;
-function __ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb() {
- err("missing function: _ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb");
- abort(-1);
-}
-Module["__ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb"] = __ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb;
-function __ZN12CPdfRendererD1Ev() {
- err("missing function: _ZN12CPdfRendererD1Ev");
- abort(-1);
-}
-Module["__ZN12CPdfRendererD1Ev"] = __ZN12CPdfRendererD1Ev;
-function __ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv() {
- err("missing function: _ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv");
- abort(-1);
-}
-Module["__ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv"] = __ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv;
-function __ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_() {
- err("missing function: _ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_");
- abort(-1);
-}
-Module["__ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_"] = __ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_;
-function __ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE() {
- err("missing function: _ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE");
- abort(-1);
-}
-Module["__ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE"] = __ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE;
-function __ZN14NSDoctRenderer13CDoctrendererD1Ev() {
- err("missing function: _ZN14NSDoctRenderer13CDoctrendererD1Ev");
- abort(-1);
-}
-Module["__ZN14NSDoctRenderer13CDoctrendererD1Ev"] = __ZN14NSDoctRenderer13CDoctrendererD1Ev;
-function __ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_() {
- err("missing function: _ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_");
- abort(-1);
-}
-Module["__ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_"] = __ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_;
-function __ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb() {
- err("missing function: _ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb");
- abort(-1);
-}
-Module["__ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb"] = __ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb;
-function __ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev() {
- err("missing function: _ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev");
- abort(-1);
-}
-Module["__ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev"] = __ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev;
-function __ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev() {
- err("missing function: _ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev");
- abort(-1);
-}
-Module["__ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev"] = __ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev;
 function __ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb() {
  err("missing function: _ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb");
  abort(-1);
 }
 Module["__ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb"] = __ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb;
+function __ZN2v810Uint8Array3NewENS_5LocalINS_11ArrayBufferEEEmm() {
+ err("missing function: _ZN2v810Uint8Array3NewENS_5LocalINS_11ArrayBufferEEEmm");
+ abort(-1);
+}
+Module["__ZN2v810Uint8Array3NewENS_5LocalINS_11ArrayBufferEEEmm"] = __ZN2v810Uint8Array3NewENS_5LocalINS_11ArrayBufferEEEmm;
+function __ZN2v811ArrayBuffer11ExternalizeEv() {
+ err("missing function: _ZN2v811ArrayBuffer11ExternalizeEv");
+ abort(-1);
+}
+Module["__ZN2v811ArrayBuffer11ExternalizeEv"] = __ZN2v811ArrayBuffer11ExternalizeEv;
+function __ZN2v811ArrayBuffer3NewEPNS_7IsolateEPvmNS_23ArrayBufferCreationModeE() {
+ err("missing function: _ZN2v811ArrayBuffer3NewEPNS_7IsolateEPvmNS_23ArrayBufferCreationModeE");
+ abort(-1);
+}
+Module["__ZN2v811ArrayBuffer3NewEPNS_7IsolateEPvmNS_23ArrayBufferCreationModeE"] = __ZN2v811ArrayBuffer3NewEPNS_7IsolateEPvmNS_23ArrayBufferCreationModeE;
+function __ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv() {
+ err("missing function: _ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv");
+ abort(-1);
+}
+Module["__ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv"] = __ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv;
+function __ZN2v811HandleScope12CreateHandleEPNS_8internal10HeapObjectEPNS1_6ObjectE() {
+ err("missing function: _ZN2v811HandleScope12CreateHandleEPNS_8internal10HeapObjectEPNS1_6ObjectE");
+ abort(-1);
+}
+Module["__ZN2v811HandleScope12CreateHandleEPNS_8internal10HeapObjectEPNS1_6ObjectE"] = __ZN2v811HandleScope12CreateHandleEPNS_8internal10HeapObjectEPNS1_6ObjectE;
+function __ZN2v811HandleScopeC1EPNS_7IsolateE() {
+ err("missing function: _ZN2v811HandleScopeC1EPNS_7IsolateE");
+ abort(-1);
+}
+Module["__ZN2v811HandleScopeC1EPNS_7IsolateE"] = __ZN2v811HandleScopeC1EPNS_7IsolateE;
+function __ZN2v811HandleScopeD1Ev() {
+ err("missing function: _ZN2v811HandleScopeD1Ev");
+ abort(-1);
+}
+Module["__ZN2v811HandleScopeD1Ev"] = __ZN2v811HandleScopeD1Ev;
+function __ZN2v814ObjectTemplate11NewInstanceEv() {
+ err("missing function: _ZN2v814ObjectTemplate11NewInstanceEv");
+ abort(-1);
+}
+Module["__ZN2v814ObjectTemplate11NewInstanceEv"] = __ZN2v814ObjectTemplate11NewInstanceEv;
+function __ZN2v814ObjectTemplate11SetAccessorENS_5LocalINS_6StringEEEPFvS3_RKNS_20PropertyCallbackInfoINS_5ValueEEEEPFvS3_NS1_IS5_EERKNS4_IvEEESB_NS_13AccessControlENS_17PropertyAttributeENS1_INS_17AccessorSignatureEEE() {
+ err("missing function: _ZN2v814ObjectTemplate11SetAccessorENS_5LocalINS_6StringEEEPFvS3_RKNS_20PropertyCallbackInfoINS_5ValueEEEEPFvS3_NS1_IS5_EERKNS4_IvEEESB_NS_13AccessControlENS_17PropertyAttributeENS1_INS_17AccessorSignatureEEE");
+ abort(-1);
+}
+Module["__ZN2v814ObjectTemplate11SetAccessorENS_5LocalINS_6StringEEEPFvS3_RKNS_20PropertyCallbackInfoINS_5ValueEEEEPFvS3_NS1_IS5_EERKNS4_IvEEESB_NS_13AccessControlENS_17PropertyAttributeENS1_INS_17AccessorSignatureEEE"] = __ZN2v814ObjectTemplate11SetAccessorENS_5LocalINS_6StringEEEPFvS3_RKNS_20PropertyCallbackInfoINS_5ValueEEEEPFvS3_NS1_IS5_EERKNS4_IvEEESB_NS_13AccessControlENS_17PropertyAttributeENS1_INS_17AccessorSignatureEEE;
+function __ZN2v814ObjectTemplate21SetInternalFieldCountEi() {
+ err("missing function: _ZN2v814ObjectTemplate21SetInternalFieldCountEi");
+ abort(-1);
+}
+Module["__ZN2v814ObjectTemplate21SetInternalFieldCountEi"] = __ZN2v814ObjectTemplate21SetInternalFieldCountEi;
+function __ZN2v814ObjectTemplate3NewEv() {
+ err("missing function: _ZN2v814ObjectTemplate3NewEv");
+ abort(-1);
+}
+Module["__ZN2v814ObjectTemplate3NewEv"] = __ZN2v814ObjectTemplate3NewEv;
+function __ZN2v814ScriptCompiler10CachedDataC1EPKhiNS1_12BufferPolicyE() {
+ err("missing function: _ZN2v814ScriptCompiler10CachedDataC1EPKhiNS1_12BufferPolicyE");
+ abort(-1);
+}
+Module["__ZN2v814ScriptCompiler10CachedDataC1EPKhiNS1_12BufferPolicyE"] = __ZN2v814ScriptCompiler10CachedDataC1EPKhiNS1_12BufferPolicyE;
+function __ZN2v814ScriptCompiler7CompileENS_5LocalINS_7ContextEEEPNS0_6SourceENS0_14CompileOptionsE() {
+ err("missing function: _ZN2v814ScriptCompiler7CompileENS_5LocalINS_7ContextEEEPNS0_6SourceENS0_14CompileOptionsE");
+ abort(-1);
+}
+Module["__ZN2v814ScriptCompiler7CompileENS_5LocalINS_7ContextEEEPNS0_6SourceENS0_14CompileOptionsE"] = __ZN2v814ScriptCompiler7CompileENS_5LocalINS_7ContextEEEPNS0_6SourceENS0_14CompileOptionsE;
+function __ZN2v815ArrayBufferView6BufferEv() {
+ err("missing function: _ZN2v815ArrayBufferView6BufferEv");
+ abort(-1);
+}
+Module["__ZN2v815ArrayBufferView6BufferEv"] = __ZN2v815ArrayBufferView6BufferEv;
+function __ZN2v816FunctionTemplate3NewEPNS_7IsolateEPFvRKNS_20FunctionCallbackInfoINS_5ValueEEEENS_5LocalIS4_EENSA_INS_9SignatureEEEiNS_19ConstructorBehaviorE() {
+ err("missing function: _ZN2v816FunctionTemplate3NewEPNS_7IsolateEPFvRKNS_20FunctionCallbackInfoINS_5ValueEEEENS_5LocalIS4_EENSA_INS_9SignatureEEEiNS_19ConstructorBehaviorE");
+ abort(-1);
+}
+Module["__ZN2v816FunctionTemplate3NewEPNS_7IsolateEPFvRKNS_20FunctionCallbackInfoINS_5ValueEEEENS_5LocalIS4_EENSA_INS_9SignatureEEEiNS_19ConstructorBehaviorE"] = __ZN2v816FunctionTemplate3NewEPNS_7IsolateEPFvRKNS_20FunctionCallbackInfoINS_5ValueEEEENS_5LocalIS4_EENSA_INS_9SignatureEEEiNS_19ConstructorBehaviorE;
+function __ZN2v819ResourceConstraintsC1Ev() {
+ err("missing function: _ZN2v819ResourceConstraintsC1Ev");
+ abort(-1);
+}
+Module["__ZN2v819ResourceConstraintsC1Ev"] = __ZN2v819ResourceConstraintsC1Ev;
+function __ZN2v82V812ToLocalEmptyEv() {
+ err("missing function: _ZN2v82V812ToLocalEmptyEv");
+ abort(-1);
+}
+Module["__ZN2v82V812ToLocalEmptyEv"] = __ZN2v82V812ToLocalEmptyEv;
+function __ZN2v84JSON5ParseENS_5LocalINS_6StringEEE() {
+ err("missing function: _ZN2v84JSON5ParseENS_5LocalINS_6StringEEE");
+ abort(-1);
+}
+Module["__ZN2v84JSON5ParseENS_5LocalINS_6StringEEE"] = __ZN2v84JSON5ParseENS_5LocalINS_6StringEEE;
+function __ZN2v85Array3NewEPNS_7IsolateEi() {
+ err("missing function: _ZN2v85Array3NewEPNS_7IsolateEi");
+ abort(-1);
+}
+Module["__ZN2v85Array3NewEPNS_7IsolateEi"] = __ZN2v85Array3NewEPNS_7IsolateEi;
+function __ZN2v86Locker10InitializeEPNS_7IsolateE() {
+ err("missing function: _ZN2v86Locker10InitializeEPNS_7IsolateE");
+ abort(-1);
+}
+Module["__ZN2v86Locker10InitializeEPNS_7IsolateE"] = __ZN2v86Locker10InitializeEPNS_7IsolateE;
+function __ZN2v86LockerD1Ev() {
+ err("missing function: _ZN2v86LockerD1Ev");
+ abort(-1);
+}
+Module["__ZN2v86LockerD1Ev"] = __ZN2v86LockerD1Ev;
+function __ZN2v86Object16SetInternalFieldEiNS_5LocalINS_5ValueEEE() {
+ err("missing function: _ZN2v86Object16SetInternalFieldEiNS_5LocalINS_5ValueEEE");
+ abort(-1);
+}
+Module["__ZN2v86Object16SetInternalFieldEiNS_5LocalINS_5ValueEEE"] = __ZN2v86Object16SetInternalFieldEiNS_5LocalINS_5ValueEEE;
+function __ZN2v86Object20SlowGetInternalFieldEi() {
+ err("missing function: _ZN2v86Object20SlowGetInternalFieldEi");
+ abort(-1);
+}
+Module["__ZN2v86Object20SlowGetInternalFieldEi"] = __ZN2v86Object20SlowGetInternalFieldEi;
+function __ZN2v86Object3GetENS_5LocalINS_5ValueEEE() {
+ err("missing function: _ZN2v86Object3GetENS_5LocalINS_5ValueEEE");
+ abort(-1);
+}
+Module["__ZN2v86Object3GetENS_5LocalINS_5ValueEEE"] = __ZN2v86Object3GetENS_5LocalINS_5ValueEEE;
+function __ZN2v86Object3NewEPNS_7IsolateE() {
+ err("missing function: _ZN2v86Object3NewEPNS_7IsolateE");
+ abort(-1);
+}
+Module["__ZN2v86Object3NewEPNS_7IsolateE"] = __ZN2v86Object3NewEPNS_7IsolateE;
+function __ZN2v86Object3SetENS_5LocalINS_5ValueEEES3_() {
+ err("missing function: _ZN2v86Object3SetENS_5LocalINS_5ValueEEES3_");
+ abort(-1);
+}
+Module["__ZN2v86Object3SetENS_5LocalINS_5ValueEEES3_"] = __ZN2v86Object3SetENS_5LocalINS_5ValueEEES3_;
+function __ZN2v86Object3SetEjNS_5LocalINS_5ValueEEE() {
+ err("missing function: _ZN2v86Object3SetEjNS_5LocalINS_5ValueEEE");
+ abort(-1);
+}
+Module["__ZN2v86Object3SetEjNS_5LocalINS_5ValueEEE"] = __ZN2v86Object3SetEjNS_5LocalINS_5ValueEEE;
+function __ZN2v86Script3RunEv() {
+ err("missing function: _ZN2v86Script3RunEv");
+ abort(-1);
+}
+Module["__ZN2v86Script3RunEv"] = __ZN2v86Script3RunEv;
+function __ZN2v86Script7CompileENS_5LocalINS_6StringEEEPNS_12ScriptOriginE() {
+ err("missing function: _ZN2v86Script7CompileENS_5LocalINS_6StringEEEPNS_12ScriptOriginE");
+ abort(-1);
+}
+Module["__ZN2v86Script7CompileENS_5LocalINS_6StringEEEPNS_12ScriptOriginE"] = __ZN2v86Script7CompileENS_5LocalINS_6StringEEEPNS_12ScriptOriginE;
+function __ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS0_13NewStringTypeEi() {
+ err("missing function: _ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS0_13NewStringTypeEi");
+ abort(-1);
+}
+Module["__ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS0_13NewStringTypeEi"] = __ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS0_13NewStringTypeEi;
+function __ZN2v86String5ValueC1ENS_5LocalINS_5ValueEEE() {
+ err("missing function: _ZN2v86String5ValueC1ENS_5LocalINS_5ValueEEE");
+ abort(-1);
+}
+Module["__ZN2v86String5ValueC1ENS_5LocalINS_5ValueEEE"] = __ZN2v86String5ValueC1ENS_5LocalINS_5ValueEEE;
+function __ZN2v86String5ValueD1Ev() {
+ err("missing function: _ZN2v86String5ValueD1Ev");
+ abort(-1);
+}
+Module["__ZN2v86String5ValueD1Ev"] = __ZN2v86String5ValueD1Ev;
+function __ZN2v86String9Utf8ValueC1ENS_5LocalINS_5ValueEEE() {
+ err("missing function: _ZN2v86String9Utf8ValueC1ENS_5LocalINS_5ValueEEE");
+ abort(-1);
+}
+Module["__ZN2v86String9Utf8ValueC1ENS_5LocalINS_5ValueEEE"] = __ZN2v86String9Utf8ValueC1ENS_5LocalINS_5ValueEEE;
+function __ZN2v86String9Utf8ValueD1Ev() {
+ err("missing function: _ZN2v86String9Utf8ValueD1Ev");
+ abort(-1);
+}
+Module["__ZN2v86String9Utf8ValueD1Ev"] = __ZN2v86String9Utf8ValueD1Ev;
+function __ZN2v87Context3NewEPNS_7IsolateEPNS_22ExtensionConfigurationENS_10MaybeLocalINS_14ObjectTemplateEEENS5_INS_5ValueEEE() {
+ err("missing function: _ZN2v87Context3NewEPNS_7IsolateEPNS_22ExtensionConfigurationENS_10MaybeLocalINS_14ObjectTemplateEEENS5_INS_5ValueEEE");
+ abort(-1);
+}
+Module["__ZN2v87Context3NewEPNS_7IsolateEPNS_22ExtensionConfigurationENS_10MaybeLocalINS_14ObjectTemplateEEENS5_INS_5ValueEEE"] = __ZN2v87Context3NewEPNS_7IsolateEPNS_22ExtensionConfigurationENS_10MaybeLocalINS_14ObjectTemplateEEENS5_INS_5ValueEEE;
+function __ZN2v87Context4ExitEv() {
+ err("missing function: _ZN2v87Context4ExitEv");
+ abort(-1);
+}
+Module["__ZN2v87Context4ExitEv"] = __ZN2v87Context4ExitEv;
+function __ZN2v87Context5EnterEv() {
+ err("missing function: _ZN2v87Context5EnterEv");
+ abort(-1);
+}
+Module["__ZN2v87Context5EnterEv"] = __ZN2v87Context5EnterEv;
+function __ZN2v87Context6GlobalEv() {
+ err("missing function: _ZN2v87Context6GlobalEv");
+ abort(-1);
+}
+Module["__ZN2v87Context6GlobalEv"] = __ZN2v87Context6GlobalEv;
+function __ZN2v87Integer3NewEPNS_7IsolateEi() {
+ err("missing function: _ZN2v87Integer3NewEPNS_7IsolateEi");
+ abort(-1);
+}
+Module["__ZN2v87Integer3NewEPNS_7IsolateEi"] = __ZN2v87Integer3NewEPNS_7IsolateEi;
+function __ZN2v87Isolate10GetCurrentEv() {
+ err("missing function: _ZN2v87Isolate10GetCurrentEv");
+ abort(-1);
+}
+Module["__ZN2v87Isolate10GetCurrentEv"] = __ZN2v87Isolate10GetCurrentEv;
+function __ZN2v87Isolate17GetCurrentContextEv() {
+ err("missing function: _ZN2v87Isolate17GetCurrentContextEv");
+ abort(-1);
+}
+Module["__ZN2v87Isolate17GetCurrentContextEv"] = __ZN2v87Isolate17GetCurrentContextEv;
+function __ZN2v87Isolate3NewERKNS0_12CreateParamsE() {
+ err("missing function: _ZN2v87Isolate3NewERKNS0_12CreateParamsE");
+ abort(-1);
+}
+Module["__ZN2v87Isolate3NewERKNS0_12CreateParamsE"] = __ZN2v87Isolate3NewERKNS0_12CreateParamsE;
+function __ZN2v87Isolate4ExitEv() {
+ err("missing function: _ZN2v87Isolate4ExitEv");
+ abort(-1);
+}
+Module["__ZN2v87Isolate4ExitEv"] = __ZN2v87Isolate4ExitEv;
+function __ZN2v87Isolate5EnterEv() {
+ err("missing function: _ZN2v87Isolate5EnterEv");
+ abort(-1);
+}
+Module["__ZN2v87Isolate5EnterEv"] = __ZN2v87Isolate5EnterEv;
+function __ZN2v87Isolate7DisposeEv() {
+ err("missing function: _ZN2v87Isolate7DisposeEv");
+ abort(-1);
+}
+Module["__ZN2v87Isolate7DisposeEv"] = __ZN2v87Isolate7DisposeEv;
+function __ZN2v88External3NewEPNS_7IsolateEPv() {
+ err("missing function: _ZN2v88External3NewEPNS_7IsolateEPv");
+ abort(-1);
+}
+Module["__ZN2v88External3NewEPNS_7IsolateEPv"] = __ZN2v88External3NewEPNS_7IsolateEPv;
+function __ZN2v88Function4CallENS_5LocalINS_5ValueEEEiPS3_() {
+ err("missing function: _ZN2v88Function4CallENS_5LocalINS_5ValueEEEiPS3_");
+ abort(-1);
+}
+Module["__ZN2v88Function4CallENS_5LocalINS_5ValueEEEiPS3_"] = __ZN2v88Function4CallENS_5LocalINS_5ValueEEEiPS3_;
+function __ZN2v88Template3SetENS_5LocalINS_4NameEEENS1_INS_4DataEEENS_17PropertyAttributeE() {
+ err("missing function: _ZN2v88Template3SetENS_5LocalINS_4NameEEENS1_INS_4DataEEENS_17PropertyAttributeE");
+ abort(-1);
+}
+Module["__ZN2v88Template3SetENS_5LocalINS_4NameEEENS1_INS_4DataEEENS_17PropertyAttributeE"] = __ZN2v88Template3SetENS_5LocalINS_4NameEEENS1_INS_4DataEEENS_17PropertyAttributeE;
+function __ZN2v88TryCatchC1Ev() {
+ err("missing function: _ZN2v88TryCatchC1Ev");
+ abort(-1);
+}
+Module["__ZN2v88TryCatchC1Ev"] = __ZN2v88TryCatchC1Ev;
+function __ZN2v88TryCatchD1Ev() {
+ err("missing function: _ZN2v88TryCatchD1Ev");
+ abort(-1);
+}
+Module["__ZN2v88TryCatchD1Ev"] = __ZN2v88TryCatchD1Ev;
 function __ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE() {
  err("missing function: _ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE");
  abort(-1);
@@ -1605,16 +1770,76 @@ function __ZN9CHtmlFileD1Ev() {
  abort(-1);
 }
 Module["__ZN9CHtmlFileD1Ev"] = __ZN9CHtmlFileD1Ev;
-function __ZN9PdfReader10CPdfReader8GetErrorEv() {
- err("missing function: _ZN9PdfReader10CPdfReader8GetErrorEv");
+function __ZNK2v85Int325ValueEv() {
+ err("missing function: _ZNK2v85Int325ValueEv");
  abort(-1);
 }
-Module["__ZN9PdfReader10CPdfReader8GetErrorEv"] = __ZN9PdfReader10CPdfReader8GetErrorEv;
-function __ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE() {
- err("missing function: _ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE");
+Module["__ZNK2v85Int325ValueEv"] = __ZNK2v85Int325ValueEv;
+function __ZNK2v85Value10IsFunctionEv() {
+ err("missing function: _ZNK2v85Value10IsFunctionEv");
  abort(-1);
 }
-Module["__ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE"] = __ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE;
+Module["__ZNK2v85Value10IsFunctionEv"] = __ZNK2v85Value10IsFunctionEv;
+function __ZNK2v85Value12BooleanValueEv() {
+ err("missing function: _ZNK2v85Value12BooleanValueEv");
+ abort(-1);
+}
+Module["__ZNK2v85Value12BooleanValueEv"] = __ZNK2v85Value12BooleanValueEv;
+function __ZNK2v85Value7ToInt32ENS_5LocalINS_7ContextEEE() {
+ err("missing function: _ZNK2v85Value7ToInt32ENS_5LocalINS_7ContextEEE");
+ abort(-1);
+}
+Module["__ZNK2v85Value7ToInt32ENS_5LocalINS_7ContextEEE"] = __ZNK2v85Value7ToInt32ENS_5LocalINS_7ContextEEE;
+function __ZNK2v85Value8ToNumberENS_5LocalINS_7ContextEEE() {
+ err("missing function: _ZNK2v85Value8ToNumberENS_5LocalINS_7ContextEEE");
+ abort(-1);
+}
+Module["__ZNK2v85Value8ToNumberENS_5LocalINS_7ContextEEE"] = __ZNK2v85Value8ToNumberENS_5LocalINS_7ContextEEE;
+function __ZNK2v85Value8ToObjectENS_5LocalINS_7ContextEEE() {
+ err("missing function: _ZNK2v85Value8ToObjectENS_5LocalINS_7ContextEEE");
+ abort(-1);
+}
+Module["__ZNK2v85Value8ToObjectENS_5LocalINS_7ContextEEE"] = __ZNK2v85Value8ToObjectENS_5LocalINS_7ContextEEE;
+function __ZNK2v85Value8ToUint32ENS_5LocalINS_7ContextEEE() {
+ err("missing function: _ZNK2v85Value8ToUint32ENS_5LocalINS_7ContextEEE");
+ abort(-1);
+}
+Module["__ZNK2v85Value8ToUint32ENS_5LocalINS_7ContextEEE"] = __ZNK2v85Value8ToUint32ENS_5LocalINS_7ContextEEE;
+function __ZNK2v86Number5ValueEv() {
+ err("missing function: _ZNK2v86Number5ValueEv");
+ abort(-1);
+}
+Module["__ZNK2v86Number5ValueEv"] = __ZNK2v86Number5ValueEv;
+function __ZNK2v86Uint325ValueEv() {
+ err("missing function: _ZNK2v86Uint325ValueEv");
+ abort(-1);
+}
+Module["__ZNK2v86Uint325ValueEv"] = __ZNK2v86Uint325ValueEv;
+function __ZNK2v87Message13GetSourceLineEv() {
+ err("missing function: _ZNK2v87Message13GetSourceLineEv");
+ abort(-1);
+}
+Module["__ZNK2v87Message13GetSourceLineEv"] = __ZNK2v87Message13GetSourceLineEv;
+function __ZNK2v87Message3GetEv() {
+ err("missing function: _ZNK2v87Message3GetEv");
+ abort(-1);
+}
+Module["__ZNK2v87Message3GetEv"] = __ZNK2v87Message3GetEv;
+function __ZNK2v88External5ValueEv() {
+ err("missing function: _ZNK2v88External5ValueEv");
+ abort(-1);
+}
+Module["__ZNK2v88External5ValueEv"] = __ZNK2v88External5ValueEv;
+function __ZNK2v88TryCatch7MessageEv() {
+ err("missing function: _ZNK2v88TryCatch7MessageEv");
+ abort(-1);
+}
+Module["__ZNK2v88TryCatch7MessageEv"] = __ZNK2v88TryCatch7MessageEv;
+function __ZNK2v88TryCatch9HasCaughtEv() {
+ err("missing function: _ZNK2v88TryCatch9HasCaughtEv");
+ abort(-1);
+}
+Module["__ZNK2v88TryCatch9HasCaughtEv"] = __ZNK2v88TryCatch9HasCaughtEv;
 function ___assert_fail(condition, filename, line, func) {
  abort("Assertion failed: " + UTF8ToString(condition) + ", at: " + [ filename ? UTF8ToString(filename) : "unknown filename", line, func ? UTF8ToString(func) : "unknown function" ]);
 }
@@ -1765,7 +1990,7 @@ var ERRNO_CODES = {
  ESTRPIPE: 135
 };
 Module["ERRNO_CODES"] = ERRNO_CODES;
-var __main_thread_futex_wait_address = 12595904;
+var __main_thread_futex_wait_address = 13888768;
 Module["__main_thread_futex_wait_address"] = __main_thread_futex_wait_address;
 function _emscripten_futex_wake(addr, count) {
  if (addr <= 0 || addr > HEAP8.length || addr & 3 != 0 || count < 0) return -28;
@@ -1832,12 +2057,12 @@ var PThread = {
  }),
  initMainThreadBlock: (function() {
   if (ENVIRONMENT_IS_PTHREAD) return undefined;
-  PThread.mainThreadBlock = 12595120;
+  PThread.mainThreadBlock = 13887984;
   for (var i = 0; i < 244 / 4; ++i) GROWABLE_HEAP_STORE_I32((PThread.mainThreadBlock / 4 + i) * 4 | 0, 0);
   GROWABLE_HEAP_STORE_I32(PThread.mainThreadBlock + 24 | 0, PThread.mainThreadBlock);
   var headPtr = PThread.mainThreadBlock + 168;
   GROWABLE_HEAP_STORE_I32(headPtr | 0, headPtr);
-  var tlsMemory = 12595376;
+  var tlsMemory = 13888240;
   for (var i = 0; i < 128; ++i) GROWABLE_HEAP_STORE_I32((tlsMemory / 4 + i) * 4 | 0, 0);
   Atomics.store(HEAPU32, PThread.mainThreadBlock + 116 >> 2, tlsMemory);
   Atomics.store(HEAPU32, PThread.mainThreadBlock + 52 >> 2, PThread.mainThreadBlock);
@@ -5124,95 +5349,8 @@ function ___syscall183(which, varargs) {
  }
 }
 Module["___syscall183"] = ___syscall183;
-function _memset(ptr, value, num) {
- ptr = ptr | 0;
- value = value | 0;
- num = num | 0;
- var end = 0, aligned_end = 0, block_aligned_end = 0, value4 = 0;
- end = ptr + num | 0;
- value = value & 255;
- if ((num | 0) >= 67) {
-  while ((ptr & 3) != 0) {
-   GROWABLE_HEAP_STORE_I8(ptr >> 0 | 0, value);
-   ptr = ptr + 1 | 0;
-  }
-  aligned_end = end & -4 | 0;
-  value4 = value | value << 8 | value << 16 | value << 24;
-  block_aligned_end = aligned_end - 64 | 0;
-  while ((ptr | 0) <= (block_aligned_end | 0)) {
-   GROWABLE_HEAP_STORE_I32(ptr | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 4 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 8 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 12 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 16 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 20 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 24 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 28 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 32 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 36 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 40 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 44 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 48 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 52 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 56 | 0, value4);
-   GROWABLE_HEAP_STORE_I32(ptr + 60 | 0, value4);
-   ptr = ptr + 64 | 0;
-  }
-  while ((ptr | 0) < (aligned_end | 0)) {
-   GROWABLE_HEAP_STORE_I32(ptr | 0, value4);
-   ptr = ptr + 4 | 0;
-  }
- }
- while ((ptr | 0) < (end | 0)) {
-  GROWABLE_HEAP_STORE_I8(ptr >> 0 | 0, value);
-  ptr = ptr + 1 | 0;
- }
- return end - num | 0;
-}
-Module["_memset"] = _memset;
-function __emscripten_syscall_mmap2(addr, len, prot, flags, fd, off) {
- off <<= 12;
- var ptr;
- var allocated = false;
- if ((flags & 16) !== 0 && addr % PAGE_SIZE !== 0) {
-  return -28;
- }
- if ((flags & 32) !== 0) {
-  ptr = _memalign(PAGE_SIZE, len);
-  if (!ptr) return -48;
-  _memset(ptr, 0, len);
-  allocated = true;
- } else {
-  var info = FS.getStream(fd);
-  if (!info) return -8;
-  var res = FS.mmap(info, HEAPU8, addr, len, off, prot, flags);
-  ptr = res.ptr;
-  allocated = res.allocated;
- }
- SYSCALLS.mappings[ptr] = {
-  malloc: ptr,
-  len: len,
-  allocated: allocated,
-  fd: fd,
-  flags: flags
- };
- return ptr;
-}
-Module["__emscripten_syscall_mmap2"] = __emscripten_syscall_mmap2;
-function ___syscall192(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(5, 1, which, varargs);
- SYSCALLS.varargs = varargs;
- try {
-  var addr = SYSCALLS.get(), len = SYSCALLS.get(), prot = SYSCALLS.get(), flags = SYSCALLS.get(), fd = SYSCALLS.get(), off = SYSCALLS.get();
-  return __emscripten_syscall_mmap2(addr, len, prot, flags, fd, off);
- } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) abort(e);
-  return -e.errno;
- }
-}
-Module["___syscall192"] = ___syscall192;
 function ___syscall195(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(6, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(5, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var path = SYSCALLS.getStr(), buf = SYSCALLS.get();
@@ -5224,7 +5362,7 @@ function ___syscall195(which, varargs) {
 }
 Module["___syscall195"] = ___syscall195;
 function ___syscall196(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(7, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(6, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var path = SYSCALLS.getStr(), buf = SYSCALLS.get();
@@ -5236,7 +5374,7 @@ function ___syscall196(which, varargs) {
 }
 Module["___syscall196"] = ___syscall196;
 function ___syscall220(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(8, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(7, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var stream = SYSCALLS.getStreamFromFD(), dirp = SYSCALLS.get(), count = SYSCALLS.get();
@@ -5276,7 +5414,7 @@ function ___syscall220(which, varargs) {
 }
 Module["___syscall220"] = ___syscall220;
 function ___syscall221(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(9, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(8, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var stream = SYSCALLS.getStreamFromFD(), cmd = SYSCALLS.get();
@@ -5330,7 +5468,7 @@ function ___syscall221(which, varargs) {
 }
 Module["___syscall221"] = ___syscall221;
 function ___syscall3(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(10, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(9, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var stream = SYSCALLS.getStreamFromFD(), buf = SYSCALLS.get(), count = SYSCALLS.get();
@@ -5342,7 +5480,7 @@ function ___syscall3(which, varargs) {
 }
 Module["___syscall3"] = ___syscall3;
 function ___syscall39(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(11, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(10, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var path = SYSCALLS.getStr(), mode = SYSCALLS.get();
@@ -5354,7 +5492,7 @@ function ___syscall39(which, varargs) {
 }
 Module["___syscall39"] = ___syscall39;
 function ___syscall4(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(12, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(11, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var stream = SYSCALLS.getStreamFromFD(), buf = SYSCALLS.get(), count = SYSCALLS.get();
@@ -5366,7 +5504,7 @@ function ___syscall4(which, varargs) {
 }
 Module["___syscall4"] = ___syscall4;
 function ___syscall40(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(13, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(12, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var path = SYSCALLS.getStr();
@@ -5379,7 +5517,7 @@ function ___syscall40(which, varargs) {
 }
 Module["___syscall40"] = ___syscall40;
 function ___syscall5(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(14, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(13, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var pathname = SYSCALLS.getStr(), flags = SYSCALLS.get(), mode = SYSCALLS.get();
@@ -5392,7 +5530,7 @@ function ___syscall5(which, varargs) {
 }
 Module["___syscall5"] = ___syscall5;
 function ___syscall54(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(15, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(14, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var stream = SYSCALLS.getStreamFromFD(), op = SYSCALLS.get();
@@ -5450,7 +5588,7 @@ function ___syscall54(which, varargs) {
 }
 Module["___syscall54"] = ___syscall54;
 function ___syscall85(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(16, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(15, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var path = SYSCALLS.getStr(), buf = SYSCALLS.get(), bufsize = SYSCALLS.get();
@@ -5480,7 +5618,7 @@ function __emscripten_syscall_munmap(addr, len) {
 }
 Module["__emscripten_syscall_munmap"] = __emscripten_syscall_munmap;
 function ___syscall91(which, varargs) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(17, 1, which, varargs);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(16, 1, which, varargs);
  SYSCALLS.varargs = varargs;
  try {
   var addr = SYSCALLS.get(), len = SYSCALLS.get();
@@ -5541,7 +5679,7 @@ function _emscripten_get_heap_size() {
 }
 Module["_emscripten_get_heap_size"] = _emscripten_get_heap_size;
 function _emscripten_get_sbrk_ptr() {
- return 12594960;
+ return 13887824;
 }
 Module["_emscripten_get_sbrk_ptr"] = _emscripten_get_sbrk_ptr;
 function _emscripten_has_threading_support() {
@@ -5930,7 +6068,7 @@ function _emscripten_set_canvas_element_size_calling_thread(target, width, heigh
 }
 Module["_emscripten_set_canvas_element_size_calling_thread"] = _emscripten_set_canvas_element_size_calling_thread;
 function _emscripten_set_canvas_element_size_main_thread(target, width, height) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(18, 1, target, width, height);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(17, 1, target, width, height);
  return _emscripten_set_canvas_element_size_calling_thread(target, width, height);
 }
 Module["_emscripten_set_canvas_element_size_main_thread"] = _emscripten_set_canvas_element_size_main_thread;
@@ -5964,8 +6102,6 @@ function _emscripten_syscall(which, varargs) {
   return ___syscall12(which, varargs);
  case 183:
   return ___syscall183(which, varargs);
- case 192:
-  return ___syscall192(which, varargs);
  case 195:
   return ___syscall195(which, varargs);
  case 196:
@@ -6269,7 +6405,7 @@ function _exit(status) {
 }
 Module["_exit"] = _exit;
 function _fd_close(fd) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(19, 1, fd);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(18, 1, fd);
  try {
   var stream = SYSCALLS.getStreamFromFD(fd);
   FS.close(stream);
@@ -6281,7 +6417,7 @@ function _fd_close(fd) {
 }
 Module["_fd_close"] = _fd_close;
 function _fd_read(fd, iov, iovcnt, pnum) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(20, 1, fd, iov, iovcnt, pnum);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(19, 1, fd, iov, iovcnt, pnum);
  try {
   var stream = SYSCALLS.getStreamFromFD(fd);
   var num = SYSCALLS.doReadv(stream, iov, iovcnt);
@@ -6294,7 +6430,7 @@ function _fd_read(fd, iov, iovcnt, pnum) {
 }
 Module["_fd_read"] = _fd_read;
 function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(21, 1, fd, offset_low, offset_high, whence, newOffset);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(20, 1, fd, offset_low, offset_high, whence, newOffset);
  try {
   var stream = SYSCALLS.getStreamFromFD(fd);
   var HIGH_OFFSET = 4294967296;
@@ -6314,7 +6450,7 @@ function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
 }
 Module["_fd_seek"] = _fd_seek;
 function _fd_write(fd, iov, iovcnt, pnum) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(22, 1, fd, iov, iovcnt, pnum);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(21, 1, fd, iov, iovcnt, pnum);
  try {
   var stream = SYSCALLS.getStreamFromFD(fd);
   var num = SYSCALLS.doWritev(stream, iov, iovcnt);
@@ -6337,9 +6473,9 @@ function _gettimeofday(ptr) {
  return 0;
 }
 Module["_gettimeofday"] = _gettimeofday;
-var ___tm_current = 12594976;
+var ___tm_current = 13887840;
 Module["___tm_current"] = ___tm_current;
-var ___tm_timezone = (stringToUTF8("GMT", 12595024, 4), 12595024);
+var ___tm_timezone = (stringToUTF8("GMT", 13887888, 4), 13887888);
 Module["___tm_timezone"] = ___tm_timezone;
 function _gmtime_r(time, tmPtr) {
  var date = new Date(GROWABLE_HEAP_LOAD_I32(time | 0) * 1e3);
@@ -6431,8 +6567,54 @@ function _memcpy(dest, src, num) {
  return ret | 0;
 }
 Module["_memcpy"] = _memcpy;
+function _memset(ptr, value, num) {
+ ptr = ptr | 0;
+ value = value | 0;
+ num = num | 0;
+ var end = 0, aligned_end = 0, block_aligned_end = 0, value4 = 0;
+ end = ptr + num | 0;
+ value = value & 255;
+ if ((num | 0) >= 67) {
+  while ((ptr & 3) != 0) {
+   GROWABLE_HEAP_STORE_I8(ptr >> 0 | 0, value);
+   ptr = ptr + 1 | 0;
+  }
+  aligned_end = end & -4 | 0;
+  value4 = value | value << 8 | value << 16 | value << 24;
+  block_aligned_end = aligned_end - 64 | 0;
+  while ((ptr | 0) <= (block_aligned_end | 0)) {
+   GROWABLE_HEAP_STORE_I32(ptr | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 4 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 8 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 12 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 16 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 20 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 24 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 28 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 32 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 36 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 40 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 44 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 48 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 52 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 56 | 0, value4);
+   GROWABLE_HEAP_STORE_I32(ptr + 60 | 0, value4);
+   ptr = ptr + 64 | 0;
+  }
+  while ((ptr | 0) < (aligned_end | 0)) {
+   GROWABLE_HEAP_STORE_I32(ptr | 0, value4);
+   ptr = ptr + 4 | 0;
+  }
+ }
+ while ((ptr | 0) < (end | 0)) {
+  GROWABLE_HEAP_STORE_I8(ptr >> 0 | 0, value);
+  ptr = ptr + 1 | 0;
+ }
+ return end - num | 0;
+}
+Module["_memset"] = _memset;
 function _tzset() {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(23, 1);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(22, 1);
  if (_tzset.called) return;
  _tzset.called = true;
  GROWABLE_HEAP_STORE_I32(__get_timezone() | 0, (new Date).getTimezoneOffset() * 60);
@@ -6953,7 +7135,7 @@ function _strftime_l(s, maxsize, format, tm) {
 }
 Module["_strftime_l"] = _strftime_l;
 function _sysconf(name) {
- if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(24, 1, name);
+ if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(23, 1, name);
  switch (name) {
  case 30:
   return PAGE_SIZE;
@@ -7136,6 +7318,76 @@ function _times(buffer) {
  return 0;
 }
 Module["_times"] = _times;
+function _u_strFromWCS_62() {
+ err("missing function: u_strFromWCS_62");
+ abort(-1);
+}
+Module["_u_strFromWCS_62"] = _u_strFromWCS_62;
+function _u_strToWCS_62() {
+ err("missing function: u_strToWCS_62");
+ abort(-1);
+}
+Module["_u_strToWCS_62"] = _u_strToWCS_62;
+function _ucnv_close_62() {
+ err("missing function: ucnv_close_62");
+ abort(-1);
+}
+Module["_ucnv_close_62"] = _ucnv_close_62;
+function _ucnv_fromUnicode_62() {
+ err("missing function: ucnv_fromUnicode_62");
+ abort(-1);
+}
+Module["_ucnv_fromUnicode_62"] = _ucnv_fromUnicode_62;
+function _ucnv_getCCSID_62() {
+ err("missing function: ucnv_getCCSID_62");
+ abort(-1);
+}
+Module["_ucnv_getCCSID_62"] = _ucnv_getCCSID_62;
+function _ucnv_getMaxCharSize_62() {
+ err("missing function: ucnv_getMaxCharSize_62");
+ abort(-1);
+}
+Module["_ucnv_getMaxCharSize_62"] = _ucnv_getMaxCharSize_62;
+function _ucnv_getMinCharSize_62() {
+ err("missing function: ucnv_getMinCharSize_62");
+ abort(-1);
+}
+Module["_ucnv_getMinCharSize_62"] = _ucnv_getMinCharSize_62;
+function _ucnv_getName_62() {
+ err("missing function: ucnv_getName_62");
+ abort(-1);
+}
+Module["_ucnv_getName_62"] = _ucnv_getName_62;
+function _ucnv_openCCSID_62() {
+ err("missing function: ucnv_openCCSID_62");
+ abort(-1);
+}
+Module["_ucnv_openCCSID_62"] = _ucnv_openCCSID_62;
+function _ucnv_open_62() {
+ err("missing function: ucnv_open_62");
+ abort(-1);
+}
+Module["_ucnv_open_62"] = _ucnv_open_62;
+function _ucnv_toUnicode_62() {
+ err("missing function: ucnv_toUnicode_62");
+ abort(-1);
+}
+Module["_ucnv_toUnicode_62"] = _ucnv_toUnicode_62;
+function _usprep_close_62() {
+ err("missing function: usprep_close_62");
+ abort(-1);
+}
+Module["_usprep_close_62"] = _usprep_close_62;
+function _usprep_openByType_62() {
+ err("missing function: usprep_openByType_62");
+ abort(-1);
+}
+Module["_usprep_openByType_62"] = _usprep_openByType_62;
+function _usprep_prepare_62() {
+ err("missing function: usprep_prepare_62");
+ abort(-1);
+}
+Module["_usprep_prepare_62"] = _usprep_prepare_62;
 if (!ENVIRONMENT_IS_PTHREAD) PThread.initMainThreadBlock(); else PThread.initWorker();
 if (ENVIRONMENT_IS_NODE) {
  _emscripten_get_now = function _emscripten_get_now_actual() {
@@ -7163,7 +7415,7 @@ if (ENVIRONMENT_HAS_NODE) {
 }
 var GLctx;
 GL.init();
-var proxiedFunctionTable = [ null, _atexit, ___syscall10, ___syscall12, ___syscall183, ___syscall192, ___syscall195, ___syscall196, ___syscall220, ___syscall221, ___syscall3, ___syscall39, ___syscall4, ___syscall40, ___syscall5, ___syscall54, ___syscall85, ___syscall91, _emscripten_set_canvas_element_size_main_thread, _fd_close, _fd_read, _fd_seek, _fd_write, _tzset, _sysconf ];
+var proxiedFunctionTable = [ null, _atexit, ___syscall10, ___syscall12, ___syscall183, ___syscall195, ___syscall196, ___syscall220, ___syscall221, ___syscall3, ___syscall39, ___syscall4, ___syscall40, ___syscall5, ___syscall54, ___syscall85, ___syscall91, _emscripten_set_canvas_element_size_main_thread, _fd_close, _fd_read, _fd_seek, _fd_write, _tzset, _sysconf ];
 var ASSERTIONS = true;
 function intArrayFromString(stringy, dontAddNull, length) {
  var len = length > 0 ? length : lengthBytesUTF8(stringy) + 1;
@@ -7188,24 +7440,57 @@ function intArrayToString(array) {
 }
 var asmGlobalArg = {};
 var asmLibraryArg = {
- "_ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE,
- "_ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE,
- "_ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE,
- "_ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE,
- "_ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE,
- "_ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb": __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb,
- "_ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb": __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb,
- "_ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb": __ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb,
- "_ZN12CPdfRendererD1Ev": __ZN12CPdfRendererD1Ev,
- "_ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv": __ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv,
- "_ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_": __ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_,
- "_ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE": __ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE,
- "_ZN14NSDoctRenderer13CDoctrendererD1Ev": __ZN14NSDoctRenderer13CDoctrendererD1Ev,
- "_ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_": __ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_,
- "_ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb": __ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb,
- "_ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev": __ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev,
- "_ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev": __ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev,
  "_ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb": __ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb,
+ "_ZN2v810Uint8Array3NewENS_5LocalINS_11ArrayBufferEEEmm": __ZN2v810Uint8Array3NewENS_5LocalINS_11ArrayBufferEEEmm,
+ "_ZN2v811ArrayBuffer11ExternalizeEv": __ZN2v811ArrayBuffer11ExternalizeEv,
+ "_ZN2v811ArrayBuffer3NewEPNS_7IsolateEPvmNS_23ArrayBufferCreationModeE": __ZN2v811ArrayBuffer3NewEPNS_7IsolateEPvmNS_23ArrayBufferCreationModeE,
+ "_ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv": __ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv,
+ "_ZN2v811HandleScope12CreateHandleEPNS_8internal10HeapObjectEPNS1_6ObjectE": __ZN2v811HandleScope12CreateHandleEPNS_8internal10HeapObjectEPNS1_6ObjectE,
+ "_ZN2v811HandleScopeC1EPNS_7IsolateE": __ZN2v811HandleScopeC1EPNS_7IsolateE,
+ "_ZN2v811HandleScopeD1Ev": __ZN2v811HandleScopeD1Ev,
+ "_ZN2v814ObjectTemplate11NewInstanceEv": __ZN2v814ObjectTemplate11NewInstanceEv,
+ "_ZN2v814ObjectTemplate11SetAccessorENS_5LocalINS_6StringEEEPFvS3_RKNS_20PropertyCallbackInfoINS_5ValueEEEEPFvS3_NS1_IS5_EERKNS4_IvEEESB_NS_13AccessControlENS_17PropertyAttributeENS1_INS_17AccessorSignatureEEE": __ZN2v814ObjectTemplate11SetAccessorENS_5LocalINS_6StringEEEPFvS3_RKNS_20PropertyCallbackInfoINS_5ValueEEEEPFvS3_NS1_IS5_EERKNS4_IvEEESB_NS_13AccessControlENS_17PropertyAttributeENS1_INS_17AccessorSignatureEEE,
+ "_ZN2v814ObjectTemplate21SetInternalFieldCountEi": __ZN2v814ObjectTemplate21SetInternalFieldCountEi,
+ "_ZN2v814ObjectTemplate3NewEv": __ZN2v814ObjectTemplate3NewEv,
+ "_ZN2v814ScriptCompiler10CachedDataC1EPKhiNS1_12BufferPolicyE": __ZN2v814ScriptCompiler10CachedDataC1EPKhiNS1_12BufferPolicyE,
+ "_ZN2v814ScriptCompiler7CompileENS_5LocalINS_7ContextEEEPNS0_6SourceENS0_14CompileOptionsE": __ZN2v814ScriptCompiler7CompileENS_5LocalINS_7ContextEEEPNS0_6SourceENS0_14CompileOptionsE,
+ "_ZN2v815ArrayBufferView6BufferEv": __ZN2v815ArrayBufferView6BufferEv,
+ "_ZN2v816FunctionTemplate3NewEPNS_7IsolateEPFvRKNS_20FunctionCallbackInfoINS_5ValueEEEENS_5LocalIS4_EENSA_INS_9SignatureEEEiNS_19ConstructorBehaviorE": __ZN2v816FunctionTemplate3NewEPNS_7IsolateEPFvRKNS_20FunctionCallbackInfoINS_5ValueEEEENS_5LocalIS4_EENSA_INS_9SignatureEEEiNS_19ConstructorBehaviorE,
+ "_ZN2v819ResourceConstraintsC1Ev": __ZN2v819ResourceConstraintsC1Ev,
+ "_ZN2v82V812ToLocalEmptyEv": __ZN2v82V812ToLocalEmptyEv,
+ "_ZN2v84JSON5ParseENS_5LocalINS_6StringEEE": __ZN2v84JSON5ParseENS_5LocalINS_6StringEEE,
+ "_ZN2v85Array3NewEPNS_7IsolateEi": __ZN2v85Array3NewEPNS_7IsolateEi,
+ "_ZN2v86Locker10InitializeEPNS_7IsolateE": __ZN2v86Locker10InitializeEPNS_7IsolateE,
+ "_ZN2v86LockerD1Ev": __ZN2v86LockerD1Ev,
+ "_ZN2v86Object16SetInternalFieldEiNS_5LocalINS_5ValueEEE": __ZN2v86Object16SetInternalFieldEiNS_5LocalINS_5ValueEEE,
+ "_ZN2v86Object20SlowGetInternalFieldEi": __ZN2v86Object20SlowGetInternalFieldEi,
+ "_ZN2v86Object3GetENS_5LocalINS_5ValueEEE": __ZN2v86Object3GetENS_5LocalINS_5ValueEEE,
+ "_ZN2v86Object3NewEPNS_7IsolateE": __ZN2v86Object3NewEPNS_7IsolateE,
+ "_ZN2v86Object3SetENS_5LocalINS_5ValueEEES3_": __ZN2v86Object3SetENS_5LocalINS_5ValueEEES3_,
+ "_ZN2v86Object3SetEjNS_5LocalINS_5ValueEEE": __ZN2v86Object3SetEjNS_5LocalINS_5ValueEEE,
+ "_ZN2v86Script3RunEv": __ZN2v86Script3RunEv,
+ "_ZN2v86Script7CompileENS_5LocalINS_6StringEEEPNS_12ScriptOriginE": __ZN2v86Script7CompileENS_5LocalINS_6StringEEEPNS_12ScriptOriginE,
+ "_ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS0_13NewStringTypeEi": __ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS0_13NewStringTypeEi,
+ "_ZN2v86String5ValueC1ENS_5LocalINS_5ValueEEE": __ZN2v86String5ValueC1ENS_5LocalINS_5ValueEEE,
+ "_ZN2v86String5ValueD1Ev": __ZN2v86String5ValueD1Ev,
+ "_ZN2v86String9Utf8ValueC1ENS_5LocalINS_5ValueEEE": __ZN2v86String9Utf8ValueC1ENS_5LocalINS_5ValueEEE,
+ "_ZN2v86String9Utf8ValueD1Ev": __ZN2v86String9Utf8ValueD1Ev,
+ "_ZN2v87Context3NewEPNS_7IsolateEPNS_22ExtensionConfigurationENS_10MaybeLocalINS_14ObjectTemplateEEENS5_INS_5ValueEEE": __ZN2v87Context3NewEPNS_7IsolateEPNS_22ExtensionConfigurationENS_10MaybeLocalINS_14ObjectTemplateEEENS5_INS_5ValueEEE,
+ "_ZN2v87Context4ExitEv": __ZN2v87Context4ExitEv,
+ "_ZN2v87Context5EnterEv": __ZN2v87Context5EnterEv,
+ "_ZN2v87Context6GlobalEv": __ZN2v87Context6GlobalEv,
+ "_ZN2v87Integer3NewEPNS_7IsolateEi": __ZN2v87Integer3NewEPNS_7IsolateEi,
+ "_ZN2v87Isolate10GetCurrentEv": __ZN2v87Isolate10GetCurrentEv,
+ "_ZN2v87Isolate17GetCurrentContextEv": __ZN2v87Isolate17GetCurrentContextEv,
+ "_ZN2v87Isolate3NewERKNS0_12CreateParamsE": __ZN2v87Isolate3NewERKNS0_12CreateParamsE,
+ "_ZN2v87Isolate4ExitEv": __ZN2v87Isolate4ExitEv,
+ "_ZN2v87Isolate5EnterEv": __ZN2v87Isolate5EnterEv,
+ "_ZN2v87Isolate7DisposeEv": __ZN2v87Isolate7DisposeEv,
+ "_ZN2v88External3NewEPNS_7IsolateEPv": __ZN2v88External3NewEPNS_7IsolateEPv,
+ "_ZN2v88Function4CallENS_5LocalINS_5ValueEEEiPS3_": __ZN2v88Function4CallENS_5LocalINS_5ValueEEEiPS3_,
+ "_ZN2v88Template3SetENS_5LocalINS_4NameEEENS1_INS_4DataEEENS_17PropertyAttributeE": __ZN2v88Template3SetENS_5LocalINS_4NameEEENS1_INS_4DataEEENS_17PropertyAttributeE,
+ "_ZN2v88TryCatchC1Ev": __ZN2v88TryCatchC1Ev,
+ "_ZN2v88TryCatchD1Ev": __ZN2v88TryCatchD1Ev,
  "_ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE": __ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE,
  "_ZN9CDjVuFileC1EPN7NSFonts17IApplicationFontsE": __ZN9CDjVuFileC1EPN7NSFonts17IApplicationFontsE,
  "_ZN9CHtmlFile10ConvertMhtERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_S8_": __ZN9CHtmlFile10ConvertMhtERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_S8_,
@@ -7213,8 +7498,20 @@ var asmLibraryArg = {
  "_ZN9CHtmlFile7ConvertERKNSt3__26vectorINS0_12basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEENS5_IS7_EEEERKS7_SD_": __ZN9CHtmlFile7ConvertERKNSt3__26vectorINS0_12basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEENS5_IS7_EEEERKS7_SD_,
  "_ZN9CHtmlFileC1Ev": __ZN9CHtmlFileC1Ev,
  "_ZN9CHtmlFileD1Ev": __ZN9CHtmlFileD1Ev,
- "_ZN9PdfReader10CPdfReader8GetErrorEv": __ZN9PdfReader10CPdfReader8GetErrorEv,
- "_ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE": __ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE,
+ "_ZNK2v85Int325ValueEv": __ZNK2v85Int325ValueEv,
+ "_ZNK2v85Value10IsFunctionEv": __ZNK2v85Value10IsFunctionEv,
+ "_ZNK2v85Value12BooleanValueEv": __ZNK2v85Value12BooleanValueEv,
+ "_ZNK2v85Value7ToInt32ENS_5LocalINS_7ContextEEE": __ZNK2v85Value7ToInt32ENS_5LocalINS_7ContextEEE,
+ "_ZNK2v85Value8ToNumberENS_5LocalINS_7ContextEEE": __ZNK2v85Value8ToNumberENS_5LocalINS_7ContextEEE,
+ "_ZNK2v85Value8ToObjectENS_5LocalINS_7ContextEEE": __ZNK2v85Value8ToObjectENS_5LocalINS_7ContextEEE,
+ "_ZNK2v85Value8ToUint32ENS_5LocalINS_7ContextEEE": __ZNK2v85Value8ToUint32ENS_5LocalINS_7ContextEEE,
+ "_ZNK2v86Number5ValueEv": __ZNK2v86Number5ValueEv,
+ "_ZNK2v86Uint325ValueEv": __ZNK2v86Uint325ValueEv,
+ "_ZNK2v87Message13GetSourceLineEv": __ZNK2v87Message13GetSourceLineEv,
+ "_ZNK2v87Message3GetEv": __ZNK2v87Message3GetEv,
+ "_ZNK2v88External5ValueEv": __ZNK2v88External5ValueEv,
+ "_ZNK2v88TryCatch7MessageEv": __ZNK2v88TryCatch7MessageEv,
+ "_ZNK2v88TryCatch9HasCaughtEv": __ZNK2v88TryCatch9HasCaughtEv,
  "__assert_fail": ___assert_fail,
  "__call_main": ___call_main,
  "__clock_gettime": ___clock_gettime,
@@ -7227,7 +7524,6 @@ var asmLibraryArg = {
  "__syscall10": ___syscall10,
  "__syscall12": ___syscall12,
  "__syscall183": ___syscall183,
- "__syscall192": ___syscall192,
  "__syscall195": ___syscall195,
  "__syscall196": ___syscall196,
  "__syscall220": ___syscall220,
@@ -7300,7 +7596,21 @@ var asmLibraryArg = {
  "table": wasmTable,
  "testSetjmp": _testSetjmp,
  "time": _time,
- "times": _times
+ "times": _times,
+ "u_strFromWCS_62": _u_strFromWCS_62,
+ "u_strToWCS_62": _u_strToWCS_62,
+ "ucnv_close_62": _ucnv_close_62,
+ "ucnv_fromUnicode_62": _ucnv_fromUnicode_62,
+ "ucnv_getCCSID_62": _ucnv_getCCSID_62,
+ "ucnv_getMaxCharSize_62": _ucnv_getMaxCharSize_62,
+ "ucnv_getMinCharSize_62": _ucnv_getMinCharSize_62,
+ "ucnv_getName_62": _ucnv_getName_62,
+ "ucnv_openCCSID_62": _ucnv_openCCSID_62,
+ "ucnv_open_62": _ucnv_open_62,
+ "ucnv_toUnicode_62": _ucnv_toUnicode_62,
+ "usprep_close_62": _usprep_close_62,
+ "usprep_openByType_62": _usprep_openByType_62,
+ "usprep_prepare_62": _usprep_prepare_62
 };
 var asm = createWasm();
 var real____wasm_call_ctors = asm["__wasm_call_ctors"];
@@ -7381,12 +7691,6 @@ asm["emscripten_get_global_libc"] = (function() {
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return real__emscripten_get_global_libc.apply(null, arguments);
 });
-var real____em_js__initPthreadsJS = asm["__em_js__initPthreadsJS"];
-asm["__em_js__initPthreadsJS"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return real____em_js__initPthreadsJS.apply(null, arguments);
-});
 var real____emscripten_pthread_data_constructor = asm["__emscripten_pthread_data_constructor"];
 asm["__emscripten_pthread_data_constructor"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
@@ -7422,18 +7726,6 @@ asm["memalign"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return real__memalign.apply(null, arguments);
-});
-var real__emscripten_builtin_free = asm["emscripten_builtin_free"];
-asm["emscripten_builtin_free"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return real__emscripten_builtin_free.apply(null, arguments);
-});
-var real__emscripten_builtin_memalign = asm["emscripten_builtin_memalign"];
-asm["emscripten_builtin_memalign"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return real__emscripten_builtin_memalign.apply(null, arguments);
 });
 var real__emscripten_main_browser_thread_id = asm["emscripten_main_browser_thread_id"];
 asm["emscripten_main_browser_thread_id"] = (function() {
@@ -7789,6 +8081,78 @@ asm["dynCall_viiiiiii"] = (function() {
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return real_dynCall_viiiiiii.apply(null, arguments);
 });
+var real_dynCall_iiiiiiiiiiii = asm["dynCall_iiiiiiiiiiii"];
+asm["dynCall_iiiiiiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_iiiiiiiiiiii.apply(null, arguments);
+});
+var real_dynCall_iiiddiiiiiiiiiii = asm["dynCall_iiiddiiiiiiiiiii"];
+asm["dynCall_iiiddiiiiiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_iiiddiiiiiiiiiii.apply(null, arguments);
+});
+var real_dynCall_viddii = asm["dynCall_viddii"];
+asm["dynCall_viddii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viddii.apply(null, arguments);
+});
+var real_dynCall_viidddddd = asm["dynCall_viidddddd"];
+asm["dynCall_viidddddd"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viidddddd.apply(null, arguments);
+});
+var real_dynCall_viid = asm["dynCall_viid"];
+asm["dynCall_viid"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viid.apply(null, arguments);
+});
+var real_dynCall_viiiiiiiiiiidd = asm["dynCall_viiiiiiiiiiidd"];
+asm["dynCall_viiiiiiiiiiidd"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viiiiiiiiiiidd.apply(null, arguments);
+});
+var real_dynCall_viiiiiiddddddi = asm["dynCall_viiiiiiddddddi"];
+asm["dynCall_viiiiiiddddddi"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viiiiiiddddddi.apply(null, arguments);
+});
+var real_dynCall_viiddddddiiii = asm["dynCall_viiddddddiiii"];
+asm["dynCall_viiddddddiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viiddddddiiii.apply(null, arguments);
+});
+var real_dynCall_iiiddddiii = asm["dynCall_iiiddddiii"];
+asm["dynCall_iiiddddiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_iiiddddiii.apply(null, arguments);
+});
+var real_dynCall_viiiiiiii = asm["dynCall_viiiiiiii"];
+asm["dynCall_viiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viiiiiiii.apply(null, arguments);
+});
+var real_dynCall_viiiiiiiiiii = asm["dynCall_viiiiiiiiiii"];
+asm["dynCall_viiiiiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viiiiiiiiiii.apply(null, arguments);
+});
+var real_dynCall_viidd = asm["dynCall_viidd"];
+asm["dynCall_viidd"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return real_dynCall_viidd.apply(null, arguments);
+});
 var real_dynCall_viiiiiiiiiiii = asm["dynCall_viiiiiiiiiiii"];
 asm["dynCall_viiiiiiiiiiii"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
@@ -7824,12 +8188,6 @@ asm["dynCall_viidddd"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return real_dynCall_viidddd.apply(null, arguments);
-});
-var real_dynCall_viidddddd = asm["dynCall_viidddddd"];
-asm["dynCall_viidddddd"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return real_dynCall_viidddddd.apply(null, arguments);
 });
 var real_dynCall_iiiiiddd = asm["dynCall_iiiiiddd"];
 asm["dynCall_iiiiiddd"] = (function() {
@@ -7975,11 +8333,6 @@ var _emscripten_get_global_libc = Module["_emscripten_get_global_libc"] = (funct
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["emscripten_get_global_libc"].apply(null, arguments);
 });
-var ___em_js__initPthreadsJS = Module["___em_js__initPthreadsJS"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["__em_js__initPthreadsJS"].apply(null, arguments);
-});
 var ___emscripten_pthread_data_constructor = Module["___emscripten_pthread_data_constructor"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
@@ -8009,16 +8362,6 @@ var _memalign = Module["_memalign"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["memalign"].apply(null, arguments);
-});
-var _emscripten_builtin_free = Module["_emscripten_builtin_free"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["emscripten_builtin_free"].apply(null, arguments);
-});
-var _emscripten_builtin_memalign = Module["_emscripten_builtin_memalign"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["emscripten_builtin_memalign"].apply(null, arguments);
 });
 var _emscripten_main_browser_thread_id = Module["_emscripten_main_browser_thread_id"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
@@ -8315,6 +8658,66 @@ var dynCall_viiiiiii = Module["dynCall_viiiiiii"] = (function() {
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["dynCall_viiiiiii"].apply(null, arguments);
 });
+var dynCall_iiiiiiiiiiii = Module["dynCall_iiiiiiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_iiiiiiiiiiii"].apply(null, arguments);
+});
+var dynCall_iiiddiiiiiiiiiii = Module["dynCall_iiiddiiiiiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_iiiddiiiiiiiiiii"].apply(null, arguments);
+});
+var dynCall_viddii = Module["dynCall_viddii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viddii"].apply(null, arguments);
+});
+var dynCall_viidddddd = Module["dynCall_viidddddd"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viidddddd"].apply(null, arguments);
+});
+var dynCall_viid = Module["dynCall_viid"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viid"].apply(null, arguments);
+});
+var dynCall_viiiiiiiiiiidd = Module["dynCall_viiiiiiiiiiidd"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viiiiiiiiiiidd"].apply(null, arguments);
+});
+var dynCall_viiiiiiddddddi = Module["dynCall_viiiiiiddddddi"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viiiiiiddddddi"].apply(null, arguments);
+});
+var dynCall_viiddddddiiii = Module["dynCall_viiddddddiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viiddddddiiii"].apply(null, arguments);
+});
+var dynCall_iiiddddiii = Module["dynCall_iiiddddiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_iiiddddiii"].apply(null, arguments);
+});
+var dynCall_viiiiiiii = Module["dynCall_viiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viiiiiiii"].apply(null, arguments);
+});
+var dynCall_viiiiiiiiiii = Module["dynCall_viiiiiiiiiii"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viiiiiiiiiii"].apply(null, arguments);
+});
+var dynCall_viidd = Module["dynCall_viidd"] = (function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viidd"].apply(null, arguments);
+});
 var dynCall_viiiiiiiiiiii = Module["dynCall_viiiiiiiiiiii"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
@@ -8344,11 +8747,6 @@ var dynCall_viidddd = Module["dynCall_viidddd"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["dynCall_viidddd"].apply(null, arguments);
-});
-var dynCall_viidddddd = Module["dynCall_viidddddd"] = (function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_viidddddd"].apply(null, arguments);
 });
 var dynCall_iiiiiddd = Module["dynCall_iiiiiddd"] = (function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
