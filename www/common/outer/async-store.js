@@ -2870,13 +2870,6 @@ define([
          */
         var initialized = false;
 
-        var whenReady = function (cb) {
-            if (store.returned) { return void cb(); }
-            setTimeout(function() {
-                whenReady(cb);
-            }, 100);
-        };
-
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
 
@@ -2899,7 +2892,7 @@ define([
                         type: "offline"
                     });
                 }
-                return void whenReady(function () {
+                return void onReadyEvt.reg(function () {
                     callback({
                         state: 'ALREADY_INIT',
                         returned: store.returned
