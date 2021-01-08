@@ -1496,5 +1496,8 @@
     "admin_archiveTitle": "Archiver les documents",
     "mediatag_loadButton": "Charger la pièce jointe",
     "history_trimPrompt": "Ce document a accumulé {0} d'historique qui peut ralentir le temps de chargement. Envisagez de supprimer l'historique s'il n'est pas nécessaire.",
-    "contacts_confirmCancel": "Êtes-vous sûr de vouloir annuler votre demande de contact avec <b>{0}</b> ?"
+    "contacts_confirmCancel": "Êtes-vous sûr de vouloir annuler votre demande de contact avec <b>{0}</b> ?",
+    "share_noContactsOffline": "Vous êtes déconnecté. Les contacts ne sont pas disponibles.",
+    "access_offline": "Vous êtes déconnecté. La gestion de l'accès n'est pas disponible.",
+    "offlineNoCacheError": "Vous êtes déconnecté et ce document n'est pas disponible."
 }

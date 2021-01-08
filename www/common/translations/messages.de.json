@@ -1496,5 +1496,13 @@
     "admin_unarchiveTitle": "Dokumente wiederherstellen",
     "admin_archiveTitle": "Dokumente archivieren",
     "history_trimPrompt": "Dieses Dokument hat einen Verlauf von {0} angesammelt, was das Laden verlangsamen kann. Ziehe in Betracht, den Verlauf zu löschen, sofern er nicht benötigt wird.",
-    "contacts_confirmCancel": "Bist du sicher, dass du die Kontaktanfrage an <b>{0}</b> zurücknehmen möchtest?"
+    "contacts_confirmCancel": "Bist du sicher, dass du die Kontaktanfrage an <b>{0}</b> zurücknehmen möchtest?",
+    "admin_support_collapse": "Einklappen",
+    "admin_support_open": "Anzeigen",
+    "admin_support_first": "Erstellt: ",
+    "admin_support_last": "Aktualisiert: ",
+    "admin_support_closed": "Geschlossene Tickets:",
+    "admin_support_answered": "Beantwortete Tickets:",
+    "admin_support_normal": "Unbeantwortete Tickets:",
+    "admin_support_premium": "Premium-Tickets:"
 }

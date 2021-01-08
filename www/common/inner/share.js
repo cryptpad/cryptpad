@@ -273,6 +273,20 @@ define([
         var hasFriends = opts.hasFriends;
         var onFriendShare = Util.mkEvent();
 
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
+        if (priv.offline) {
+            return void cb(void 0, {
+                content: h('p', Messages.share_noContactsOffline),
+                buttons: [{
+                    className: 'cancel',
+                    name: Messages.filePicker_close,
+                    onClick: function () {},
+                    keys: [27]
+                }]
+            });
+        }
+
         var friendsObject = hasFriends ? createShareWithFriends(opts, onFriendShare, opts.getLinkValue) : UIElements.noContactsMessage(common);
         var friendsList = friendsObject.content;
 
@@ -642,6 +656,8 @@ define([
         opts.teams = teams;
         var hasFriends = opts.hasFriends = Object.keys(opts.friends || {}).length ||
                          Object.keys(teams).length;
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
 
         // check if the pad is password protected
         var pathname = opts.pathname;
@@ -662,23 +678,24 @@ define([
             $rights.find('input[type="radio"]').trigger('change');
         };
         var onShowContacts = function () {
-            if (!hasFriends) {
+            if (!hasFriends || priv.offline) {
                 $rights.hide();
             }
         };
 
+        var contactsActive = hasFriends && !priv.offline;
         var tabs = [{
             getTab: getContactsTab,
             title: Messages.share_contactCategory,
             icon: "fa fa-address-book",
-            active: hasFriends,
+            active: contactsActive,
             onShow: onShowContacts,
             onHide: resetTab
         }, {
             getTab: getLinkTab,
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
-            active: !hasFriends,
+            active: !contactsActive,
         }, {
             getTab: getEmbedTab,
             title: Messages.share_embedCategory,

@@ -82,7 +82,7 @@ define([
     MT.displayAvatar = function (common, $container, href, name, _cb) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var displayDefault = function () {
-            var text = (href && typeof(href) === "string") ? href : Util.getFirstCharacter(name);
+            var text = Util.getFirstCharacter(name || Messages.anonymous);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }

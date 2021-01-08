@@ -15,6 +15,7 @@ define([
         hash = obj.hash;
     }).nThen(function (/*waitFor*/) {
         SFCommonO.start({
+            cache: true,
             hash: hash,
             href: href,
             useCreationScreen: true,

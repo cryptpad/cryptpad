@@ -367,6 +367,9 @@ MessengerUI, Messages) {
                 if (!toolbar.connected) { return; }
                 updateUserList(toolbar, config);
             });
+            setTimeout(function () {
+                updateUserList(toolbar, config, true);
+            });
         }
     };
 
@@ -1288,8 +1291,8 @@ MessengerUI, Messages) {
                 if (typeof el !== "string" || !el.trim()) { return; }
                 if (typeof tb[el] === "function") {
                     if (!init && config.displayed.indexOf(el) !== -1) { return; } // Already done
-                    toolbar[el] = tb[el](toolbar, config);
                     if (!init) { config.displayed.push(el); }
+                    toolbar[el] = tb[el](toolbar, config);
                 }
             });
             checkSize();
@@ -1417,7 +1420,7 @@ MessengerUI, Messages) {
             toolbar.isErrorState = bool; // Stop kickSpinner
             toolbar.title.toggleClass('cp-toolbar-unsync', bool); // "read only" next to the title
             if (bool && toolbar.spinner) {
-                toolbar.spinner.text(Messages.offline);
+                toolbar.spinner.text(Messages.Offline);
             } else {
                 kickSpinner(toolbar, config);
             }

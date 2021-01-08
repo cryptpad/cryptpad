@@ -218,6 +218,7 @@ define([
 
                 Cryptpad.ready(waitFor(), {
                     driveEvents: cfg.driveEvents,
+                    cache: Boolean(cfg.cache),
                     currentPad: currentPad
                 });
 
@@ -497,7 +498,6 @@ define([
                             // We've received a link without /p/ and it doesn't work without a password: abort
                             return void todo();
                         }
-
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);
                     }));

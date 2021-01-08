@@ -325,8 +325,29 @@ button:not(.btn).primary:hover{
     };
 
     var hasErrored = false;
+    var isOffline = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
+
+        // If we receive a "offline" event, show the warning text
+        if (data.type === "offline") {
+            try {
+                isOffline = true;
+                Messages.offlineError = "OFFLINE MODE NOT AVAILABLE"; // XXX
+                document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
+                document.querySelector('#cp-loading-message').innerText = Messages.offlineError;
+            } catch (e) { console.error(e); }
+            return;
+        }
+
+        // If we receive a new event and we were offline, remove
+        // the offline warning text
+        if (isOffline) {
+            try {
+                isOffline = false;
+                document.querySelector('#cp-loading-message').setAttribute('style', 'display:none;');
+            } catch (e) { console.error(e); }
+        }
 
         // Make sure progress doesn't go backward
         var c = types.indexOf(data.type);

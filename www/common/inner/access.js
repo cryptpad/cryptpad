@@ -776,8 +776,14 @@ define([
 
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
 
         var $div = $(h('div.cp-share-columns'));
+
+        if (priv.offline) {
+            $div.append(h('p', Messages.access_offline));
+            return void cb(void 0, $div);
+        }
         if (!data) { return void cb(void 0, $div); }
 
         var div1 = h('div.cp-usergrid-user.cp-share-column.cp-access');
@@ -807,130 +813,139 @@ define([
                 ]));
             }
 
-            $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue).appendTo($d);
+            var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'})
+                            .text(Messages.creation_passwordValue).appendTo($d);
+            var hasPassword = data.password;
             var password = UI.passwordInput({
                 id: 'cp-app-prop-password',
                 readonly: 'readonly'
             });
-            $d.append(password);
-            if (!data.noPassword) {
-                var hasPassword = data.password;
-                var $password = $(password);
-                var $pwInput = $password.find('.cp-password-input');
-                $pwInput.val(data.password || '').click(function () {
-                    $pwInput[0].select();
+            var $password = $(password).appendTo($d);
+            var $pwInput = $password.find('.cp-password-input');
+            $pwInput.val(data.password || '').click(function () {
+                $pwInput[0].select();
+            });
+            if (!hasPassword) {
+                $password.hide();
+                $pwLabel.hide();
+            }
+
+            // In the properties, we should have the edit href if we know it.
+            // We should know it because the pad is stored, but it's better to check...
+            if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
+                var isOO = parsed.type === 'sheet';
+                var isFile = parsed.hashData.type === 'file';
+                var isSharedFolder = parsed.type === 'drive';
+
+                var changePwTitle = Messages.properties_changePassword;
+                var changePwConfirm = isFile ? Messages.properties_confirmChangeFile : Messages.properties_confirmChange;
+                if (!hasPassword) {
+                    changePwTitle = Messages.properties_addPassword;
+                    changePwConfirm = isFile ? Messages.properties_confirmNewFile : Messages.properties_confirmNew;
+                }
+                $('<label>', {'for': 'cp-app-prop-change-password'})
+                    .text(changePwTitle).appendTo($d);
+                var newPassword = UI.passwordInput({
+                    id: 'cp-app-prop-change-password',
+                    style: 'flex: 1;'
                 });
-
-                // In the properties, we should have the edit href if we know it.
-                // We should know it because the pad is stored, but it's better to check...
-                if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
-                    var isOO = parsed.type === 'sheet';
-                    var isFile = parsed.hashData.type === 'file';
-                    var isSharedFolder = parsed.type === 'drive';
-
-                    var changePwTitle = Messages.properties_changePassword;
-                    var changePwConfirm = isFile ? Messages.properties_confirmChangeFile : Messages.properties_confirmChange;
-                    if (!hasPassword) {
-                        changePwTitle = Messages.properties_addPassword;
-                        changePwConfirm = isFile ? Messages.properties_confirmNewFile : Messages.properties_confirmNew;
+                var passwordOk = h('button.btn', Messages.properties_changePasswordButton);
+                var changePass = h('span.cp-password-change-container', [
+                    newPassword,
+                    passwordOk
+                ]);
+                var pLocked = false;
+                $(passwordOk).click(function () {
+                    var newPass = $(newPassword).find('input').val();
+                    if (data.password === newPass ||
+                        (!data.password && !newPass)) {
+                        return void UI.alert(Messages.properties_passwordSame);
                     }
-                    $('<label>', {'for': 'cp-app-prop-change-password'})
-                        .text(changePwTitle).appendTo($d);
-                    var newPassword = UI.passwordInput({
-                        id: 'cp-app-prop-change-password',
-                        style: 'flex: 1;'
-                    });
-                    var passwordOk = h('button.btn', Messages.properties_changePasswordButton);
-                    var changePass = h('span.cp-password-change-container', [
-                        newPassword,
-                        passwordOk
-                    ]);
-                    var pLocked = false;
-                    $(passwordOk).click(function () {
-                        var newPass = $(newPassword).find('input').val();
-                        if (data.password === newPass ||
-                            (!data.password && !newPass)) {
-                            return void UI.alert(Messages.properties_passwordSame);
-                        }
-                        if (pLocked) { return; }
-                        pLocked = true;
-                        UI.confirm(changePwConfirm, function (yes) {
-                            if (!yes) { pLocked = false; return; }
-                            $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
-                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' :
-                                        (isOO ? 'Q_OO_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE');
+                    if (pLocked) { return; }
+                    pLocked = true;
+                    UI.confirm(changePwConfirm, function (yes) {
+                        if (!yes) { pLocked = false; return; }
+                        $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
+                        var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' :
+                                    (isOO ? 'Q_OO_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE');
 
-                            // If this is a file password change, register to the upload events:
-                            // * if there is a pending upload, ask if we shoudl interrupt
-                            // * display upload progress
-                            var onPending;
-                            var onProgress;
-                            if (isFile) {
-                                onPending = sframeChan.on('Q_BLOB_PASSWORD_CHANGE_PENDING', function (data, cb) {
-                                    onPending.stop();
-                                    UI.confirm(Messages.upload_uploadPending, function (yes) {
-                                        cb({cancel: yes});
-                                    });
+                        // If this is a file password change, register to the upload events:
+                        // * if there is a pending upload, ask if we shoudl interrupt
+                        // * display upload progress
+                        var onPending;
+                        var onProgress;
+                        if (isFile) {
+                            onPending = sframeChan.on('Q_BLOB_PASSWORD_CHANGE_PENDING', function (data, cb) {
+                                onPending.stop();
+                                UI.confirm(Messages.upload_uploadPending, function (yes) {
+                                    cb({cancel: yes});
                                 });
-                                onProgress = sframeChan.on('EV_BLOB_PASSWORD_CHANGE_PROGRESS', function (data) {
-                                    if (typeof (data) !== "number") { return; }
-                                    var p = Math.round(data);
-                                    $(passwordOk).text(p + '%');
-                                });
+                            });
+                            onProgress = sframeChan.on('EV_BLOB_PASSWORD_CHANGE_PROGRESS', function (data) {
+                                if (typeof (data) !== "number") { return; }
+                                var p = Math.round(data);
+                                $(passwordOk).text(p + '%');
+                            });
+                        }
+
+                        sframeChan.query(q, {
+                            teamId: typeof(owned) !== "boolean" ? owned : undefined,
+                            href: data.href,
+                            password: newPass
+                        }, function (err, data) {
+                            $(passwordOk).text(Messages.properties_changePasswordButton);
+                            pLocked = false;
+                            if (err || data.error) {
+                                console.error(err || data.error);
+                                return void UI.alert(Messages.properties_passwordError);
+                            }
+                            UI.findOKButton().click();
+
+                            $pwInput.val(newPass);
+                            if (newPass) {
+                                $password.show();
+                                $pwLabel.show();
+                            } else {
+                                $password.hide();
+                                $pwLabel.hide();
                             }
 
-                            sframeChan.query(q, {
-                                teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                                href: data.href,
-                                password: newPass
-                            }, function (err, data) {
+                            // If the current document is a file or if we're changing the password from a drive,
+                            // we don't have to reload the page at the end.
+                            // Tell the user the password change was successful and abort
+                            if (isFile || priv.app !== parsed.type) {
+                                if (onProgress && onProgress.stop) { onProgress.stop(); }
                                 $(passwordOk).text(Messages.properties_changePasswordButton);
-                                pLocked = false;
-                                if (err || data.error) {
-                                    console.error(err || data.error);
-                                    return void UI.alert(Messages.properties_passwordError);
-                                }
-                                UI.findOKButton().click();
+                                var alertMsg = data.warning ? Messages.properties_passwordWarningFile
+                                                            : Messages.properties_passwordSuccessFile;
+                                return void UI.alert(alertMsg, undefined, {force: true});
+                            }
 
-                                $pwInput.val(newPass);
+                            // Pad password changed: update the href
+                            // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
+                            var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+                            var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
+                            if (useUnsafe !== true) {
+                                var newParsed = Hash.parsePadUrl(href);
+                                var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
+                                var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
+                                href = Hash.hashToHref(newHash, parsed.type);
+                            }
 
-                                // If the current document is a file or if we're changing the password from a drive,
-                                // we don't have to reload the page at the end.
-                                // Tell the user the password change was successful and abort
-                                if (isFile || priv.app !== parsed.type) {
-                                    if (onProgress && onProgress.stop) { onProgress.stop(); }
-                                    $(passwordOk).text(Messages.properties_changePasswordButton);
-                                    var alertMsg = data.warning ? Messages.properties_passwordWarningFile
-                                                                : Messages.properties_passwordSuccessFile;
-                                    return void UI.alert(alertMsg, undefined, {force: true});
+                            if (data.warning) {
+                                return void UI.alert(Messages.properties_passwordWarning, function () {
+                                    common.gotoURL(href);
+                                }, {force: true});
+                            }
+                            return void UI.alert(Messages.properties_passwordSuccess, function () {
+                                if (!isSharedFolder) {
+                                    common.gotoURL(href);
                                 }
-
-                                // Pad password changed: update the href
-                                // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
-                                var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-                                var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
-                                if (useUnsafe !== true) {
-                                    var newParsed = Hash.parsePadUrl(href);
-                                    var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
-                                    var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
-                                    href = Hash.hashToHref(newHash, parsed.type);
-                                }
-
-                                if (data.warning) {
-                                    return void UI.alert(Messages.properties_passwordWarning, function () {
-                                        common.gotoURL(href);
-                                    }, {force: true});
-                                }
-                                return void UI.alert(Messages.properties_passwordSuccess, function () {
-                                    if (!isSharedFolder) {
-                                        common.gotoURL(href);
-                                    }
-                                }, {force: true});
-                            });
+                            }, {force: true});
                         });
                     });
-                    $d.append(changePass);
-                }
+                });
+                $d.append(changePass);
             }
             if (owned) {
                 var deleteOwned = h('button.btn.btn-danger-alt', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);

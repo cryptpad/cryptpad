@@ -423,7 +423,7 @@ var factory = function () {
         }
         catch (e) { return null; }
     };
-    var fetchDecryptedMetadata = function (src, strKey, cb) {
+    var fetchDecryptedMetadata = function (src, key, cb) {
         if (typeof(src) !== 'string') {
             return window.setTimeout(function () {
                 cb('NO_SOURCE');
@@ -431,7 +431,7 @@ var factory = function () {
         }
         fetchMetadata(src, function (e, buffer) {
             if (e) { return cb(e); }
-            var key = Decrypt.getKeyFromStr(strKey);
+            if (typeof(key) === "string") { key = Decrypt.getKeyFromStr(key); }
             cb(void 0, decryptMetadata(buffer, key));
         });
     };
