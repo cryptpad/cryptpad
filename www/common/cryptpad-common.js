@@ -499,7 +499,6 @@ define([
         var cb = Util.once(Util.mkAsync(_cb));
         var channel = Hash.hrefToHexChannelId(href, password);
         var error;
-        var inCache = false;
         Nthen(function (waitFor) {
             Cache.getChannelCache(channel, waitFor(function(err, data) {
                 if (err || !data) { return; }

@@ -2533,8 +2533,6 @@ define([
         var onCacheReady = function (clientId, cb) {
             var proxy = store.proxy;
             if (store.manager) { return void cb(); }
-            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
-            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var unpin = function (data, cb) {
                 if (!store.loggedIn) { return void cb(); }
                 Store.unpinPads(null, data, cb);
@@ -2579,6 +2577,8 @@ define([
 
             nThen(function (waitFor) {
                 if (manager) { return; }
+                if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+                if (!proxy.friends_pending) { proxy.friends_pending = {}; }
                 onCacheReady(clientId, waitFor());
                 manager = store.manager;
                 userObject = store.userObject;
@@ -2767,7 +2767,6 @@ define([
 
                 // Check if we can connect
                 var to = setTimeout(function () {
-                    console.error('TO');
                     store.networkTimeout = true;
                     broadcast([], "LOADING_DRIVE", {
                         type: "offline"

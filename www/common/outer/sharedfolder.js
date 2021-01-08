@@ -183,10 +183,6 @@ define([
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
             rt.proxy.on('cacheready', function () {
-                if (isNew && !Object.keys(rt.proxy).length) {
-                    // New Shared folder: no migration required
-                    rt.proxy.version = 2;
-                }
                 if (!sf.teams) {
                     return;
                 }
