@@ -773,7 +773,7 @@ define([
             });
 
             ctx.sframeChan.on("EV_OFFLINE", function () {
-                UI.errorLoadingScreen("OFFLINE AND NO CACHE"); // XXX
+                UI.errorLoadingScreen(Messages.offlineNoCacheError);
             });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
