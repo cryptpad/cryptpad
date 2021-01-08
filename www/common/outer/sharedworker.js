@@ -73,6 +73,7 @@ var init = function (client, cb) {
                     });
                     chan.on('CONNECT', function (cfg, cb) {
                         debug('SharedW connecting to store...');
+                        /*
                         if (self.store) {
                             debug('Store already exists!');
                             if (cfg.driveEvents) {
@@ -80,31 +81,35 @@ var init = function (client, cb) {
                             }
                             return void cb(self.store);
                         }
+                        */
 
-                        debug('Loading new async store');
-                        // One-time initialization (init async-store)
-                        cfg.query = function (cId, cmd, data, cb) {
-                            cb = cb || function () {};
-                            self.tabs[cId].chan.query(cmd, data, function (err, data2) {
-                                if (err) { return void cb({error: err}); }
-                                cb(data2);
-                            });
-                        };
-                        cfg.broadcast = function (excludes, cmd, data, cb) {
-                            cb = cb || function () {};
-                            Object.keys(self.tabs).forEach(function (cId) {
-                                if (excludes.indexOf(cId) !== -1) { return; }
+                        if (!self.store) {
+                            debug('Loading new async store');
+                            // One-time initialization (init async-store)
+                            cfg.query = function (cId, cmd, data, cb) {
+                                cb = cb || function () {};
                                 self.tabs[cId].chan.query(cmd, data, function (err, data2) {
                                     if (err) { return void cb({error: err}); }
                                     cb(data2);
                                 });
-                            });
-                        };
+                            };
+                            cfg.broadcast = function (excludes, cmd, data, cb) {
+                                cb = cb || function () {};
+                                Object.keys(self.tabs).forEach(function (cId) {
+                                    if (excludes.indexOf(cId) !== -1) { return; }
+                                    self.tabs[cId].chan.query(cmd, data, function (err, data2) {
+                                        if (err) { return void cb({error: err}); }
+                                        cb(data2);
+                                    });
+                                });
+                            };
+                        }
                         Rpc.queries['CONNECT'](clientId, cfg, function (data) {
                             if (cfg.driveEvents) {
                                 Rpc._subscribeToDrive(clientId);
                             }
                             if (data && data.state === "ALREADY_INIT") {
+                                debug('Store already exists!');
                                 self.store = data.returned;
                                 return void cb(data.returned);
                             }

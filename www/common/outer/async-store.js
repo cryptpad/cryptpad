@@ -35,6 +35,7 @@ define([
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
+    var onCacheReadyEvt = Util.mkEvent(true);
 
     // Default settings for new users
     var NEW_USER_SETTINGS = {
@@ -2651,7 +2652,8 @@ define([
                 Feedback.init(returned.feedback);
 
                 // "cb" may have already been called by onCacheReady
-                if (typeof(cb) === 'function') { cb(returned); }
+                store.returned = returned;
+                if (typeof(cb) === 'function') { cb(); }
 
                 store.offline = false;
                 sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online
@@ -2762,6 +2764,23 @@ define([
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
                 store.cacheReturned = returned;
+
+                // Check if we can connect
+                var to = setTimeout(function () {
+                    console.error('TO');
+                    store.networkTimeout = true;
+                    broadcast([], "LOADING_DRIVE", {
+                        type: "offline"
+                    });
+                }, 5000);
+
+                store.networkPromise.then(function () {
+                    clearTimeout(to);
+                }, function (err) {
+                    console.error(err);
+                    clearTimeout(to);
+                });
+
                 if (!data.cache) { return; }
 
                 // Make sure we have a valid user object before emitting cacheready
@@ -2769,8 +2788,10 @@ define([
 
                 onCacheReady(clientId, function () {
                     if (typeof(cb) === "function") { cb(returned); }
+                    onCacheReadyEvt.fire();
                 });
             }).on('ready', function (info) {
+                delete store.networkTimeout;
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
@@ -2859,15 +2880,26 @@ define([
 
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
-            if (!store.returned && data.cache && store.cacheReturned) {
-                return void onCacheReady(clientId, function () {
+
+            // If this is not the first tab and we're offline, callback only if the app
+            // supports offline mode
+            if (initialized && !store.returned && data.cache) {
+                return void onCacheReadyEvt.reg(function () {
                     callback({
                         state: 'ALREADY_INIT',
                         returned: store.cacheReturned
                     });
                 });
             }
+
+            // If this is not the first tab (initialized is true), it means either we don't
+            // support offline or we're already online
             if (initialized) {
+                if (store.networkTimeout) {
+                    postMessage(clientId, "LOADING_DRIVE", {
+                        type: "offline"
+                    });
+                }
                 return void whenReady(function () {
                     callback({
                         state: 'ALREADY_INIT',
@@ -2890,8 +2922,6 @@ define([
                 }
                 if (ret && ret.error) {
                     initialized = false;
-                } else {
-                    store.returned = ret;
                 }
 
                 callback(ret);

@@ -492,23 +492,38 @@ define([
         });
     };
 
+    // This function is used when we want to open a pad. We first need
+    // to check if it exists. With the cached drive, we need to wait for
+    // the network to be available before we can continue.
     common.isNewChannel = function (href, password, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var channel = Hash.hrefToHexChannelId(href, password);
         var error;
+        var inCache = false;
         Nthen(function (waitFor) {
-            // If it's not in the cache or it's not a blob, try to get the value from the server
-            postMessage('IS_NEW_CHANNEL', {channel: channel}, waitFor(function (obj) {
-                if (obj && obj.error) { error = obj.error; return; }
-                if (!obj) { error = "INVALID_RESPONSE"; return; }
+            Cache.getChannelCache(channel, waitFor(function(err, data) {
+                if (err || !data) { return; }
                 waitFor.abort();
-                cb(undefined, obj.isNew);
+                cb(undefined, false);
             }));
         }).nThen(function () {
-            Cache.getChannelCache(channel, function(err, data) {
-                if (err || !data) { return void cb(error); }
-                cb(null, false);
-            });
+            // If it's not in the cache try to get the value from the server
+            var isNew = function () {
+                error = undefined;
+                postMessage('IS_NEW_CHANNEL', {channel: channel}, function (obj) {
+                    if (obj && obj.error) { error = obj.error; }
+                    if (!obj) { error = "INVALID_RESPONSE"; }
+
+                    if (error === "ANON_RPC_NOT_READY") {
+                        // Try again in 1s
+                        return void setTimeout(isNew, 100);
+                    } else if (error) {
+                        return void cb(error);
+                    }
+                    cb(undefined, obj.isNew);
+                }, {timeout: -1});
+            };
+            isNew();
         });
     };
 
