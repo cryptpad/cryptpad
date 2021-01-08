@@ -1504,5 +1504,8 @@
     "admin_support_open": "Show",
     "admin_support_collapse": "Collapse",
     "admin_support_first": "Created on: ",
-    "admin_support_last": "Updated on: "
+    "admin_support_last": "Updated on: ",
+    "offlineNoCacheError": "You are offline and this document is not available.",
+    "access_offline": "You are currently offline. Access management is not available.",
+    "share_noContactsOffline": "You are currently offline. Contacts are not available."
 }
