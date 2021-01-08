@@ -2531,6 +2531,7 @@ define([
 
         var onCacheReady = function (clientId, cb) {
             var proxy = store.proxy;
+            if (store.manager) { return void cb(); }
             if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
             if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var unpin = function (data, cb) {
@@ -2757,10 +2758,11 @@ define([
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
             }).on('cacheready', function (info) {
-                if (!data.cache) { return; }
                 store.offline = true;
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
+                store.cacheReturned = returned;
+                if (!data.cache) { return; }
 
                 // Make sure we have a valid user object before emitting cacheready
                 if (rt.proxy && !rt.proxy.drive) { return; }
@@ -2857,6 +2859,14 @@ define([
 
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
+            if (!store.returned && data.cache && store.cacheReturned) {
+                return void onCacheReady(clientId, function () {
+                    callback({
+                        state: 'ALREADY_INIT',
+                        returned: store.cacheReturned
+                    });
+                });
+            }
             if (initialized) {
                 return void whenReady(function () {
                     callback({
