@@ -4377,7 +4377,7 @@ define([
                 if (manager.isFolder(el) && !manager.isSharedFolder(el) && !anonDrive) { // Folder
                     // disconnected
                     if (!APP.editable) {
-                        return void UI.warn(Messages.error); // XXX
+                        return void UI.warn(Messages.error);
                     }
                     // if folder is inside SF
                     else if (manager.isInSharedFolder(paths[0].path)) {
