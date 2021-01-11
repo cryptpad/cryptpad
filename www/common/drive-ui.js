@@ -50,6 +50,7 @@ define([
         isMac: navigator.platform === "MacIntel",
         allowFolderUpload: File.prototype.hasOwnProperty("webkitRelativePath"),
     };
+    var onConnectEvt = Util.mkEvent(true);
 
     var stringify = function (obj) {
         return JSONSortify(obj);
@@ -280,6 +281,7 @@ define([
         }
         state = APP.online && !APP.history && state;
         APP.editable = !APP.readOnly && state;
+        if (APP.editable) { onConnectEvt.fire(); }
 
         if (!state) {
             APP.$content.addClass('cp-app-drive-readonly');
@@ -4865,22 +4867,24 @@ define([
                 onClose: cb
             });
         };
-        var deprecated = files.sharedFoldersTemp;
-        if (typeof (deprecated) === "object" && APP.editable && Object.keys(deprecated).length) {
-            Object.keys(deprecated).forEach(function (fId) {
-                var data = deprecated[fId];
-                var sfId = manager.user.userObject.getSFIdFromHref(data.href);
-                if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
-                    return void manager.delete([['sharedFoldersTemp', fId]], function () { });
-                }
-                nt = nt(function (waitFor) {
-                    UI.openCustomModal(passwordModal(fId, data, waitFor()));
-                }).nThen;
-            });
-            nt(function () {
-                refresh();
-            });
-        }
+        onConnectEvt.reg(function () {
+            var deprecated = files.sharedFoldersTemp;
+            if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
+                Object.keys(deprecated).forEach(function (fId) {
+                    var data = deprecated[fId];
+                    var sfId = manager.user.userObject.getSFIdFromHref(data.href);
+                    if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
+                        return void manager.delete([['sharedFoldersTemp', fId]], function () { });
+                    }
+                    nt = nt(function (waitFor) {
+                        UI.openCustomModal(passwordModal(fId, data, waitFor()));
+                    }).nThen;
+                });
+                nt(function () {
+                    refresh();
+                });
+            }
+        });
 
         return {
             refresh: refresh,
