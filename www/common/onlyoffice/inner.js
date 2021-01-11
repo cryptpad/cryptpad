@@ -1478,49 +1478,13 @@ define([
                         var name = font.Name + suffixes[k] + '.ttf';
                         Util.fetch(path + file.Id, waitFor(function (err, buffer) {
                             if (buffer) {
-                                console.log(buffer);
-                                x2t.FS.writeFile('/working/fonts/' + font.Name, buffer);
+                                x2t.FS.writeFile('/working/fonts/' + name, buffer);
                             }
                         }));
                     });
                 });
             }).nThen(function () {
                 x2tReady.fire();
-            });
-        };
-        APP.printPdf = function (obj, cb) {
-            getX2T(function (x2t) {
-                //var e = getEditor();
-                //var d = e.asc_nativePrint(undefined, undefined, 0x100 + opts.printType).ImData;
-                var bin = getContent();
-                xlsData = x2tConvertDataInternal(x2t, {
-                    buffer: obj.data,
-                    bin: bin
-                }, 'output.bin', 'pdf');
-                if (xlsData) {
-                    var md = common.getMetadataMgr().getMetadataLazy();
-                    var type = common.getMetadataMgr().getPrivateData().ooType;
-                    var title = md.title || md.defaultTitle || type;
-                    var blob = new Blob([xlsData], {type: "application/pdf"});
-                    var url = URL.createObjectURL(blob, { type: "application/pdf" })
-                    saveAs(blob, title+'.pdf');
-                    //window.open(url);
-                    cb({
-                        "type":"save",
-                        "status":"ok",
-                        //"data":url + "?disposition=inline&ooname=output.pdf"
-                    });
-                    /*
-                    ooChannel.send({
-                        "type":"documentOpen",
-                        "data": {
-                            "type":"save",
-                            "status":"ok",
-                            "data":url + "?disposition=inline&ooname=output.pdf"
-                        }
-                    });
-                    */
-                }
             });
         };
 
@@ -1535,6 +1499,29 @@ define([
             fetchFonts(x2t);
             debug("x2t mount done");
         };
+        var getX2T = function (cb) {
+            // Perform the x2t conversion
+            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
+                var x2t = window.Module;
+                x2t.run();
+                if (x2tInitialized) {
+                    debug("x2t runtime already initialized");
+                    return void x2tReady.reg(function () {
+                        cb(x2t);
+                    });
+                }
+
+                x2t.onRuntimeInitialized = function() {
+                    debug("x2t in runtime initialized");
+                    // Init x2t js module
+                    x2tInit(x2t);
+                    x2tReady.reg(function () {
+                        cb(x2t);
+                    });
+                };
+            });
+        };
+
 
         /*
             Converting Data
@@ -1624,6 +1611,42 @@ define([
             return result;
         };
 
+        APP.printPdf = function (obj, cb) {
+            getX2T(function (x2t) {
+                //var e = getEditor();
+                //var d = e.asc_nativePrint(undefined, undefined, 0x100 + opts.printType).ImData;
+                var bin = getContent();
+                var xlsData = x2tConvertDataInternal(x2t, {
+                    buffer: obj.data,
+                    bin: bin
+                }, 'output.bin', 'pdf');
+                if (xlsData) {
+                    var md = common.getMetadataMgr().getMetadataLazy();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var title = md.title || md.defaultTitle || type;
+                    var blob = new Blob([xlsData], {type: "application/pdf"});
+                    //var url = URL.createObjectURL(blob, { type: "application/pdf" });
+                    saveAs(blob, title+'.pdf');
+                    //window.open(url);
+                    cb({
+                        "type":"save",
+                        "status":"ok",
+                        //"data":url + "?disposition=inline&ooname=output.pdf"
+                    });
+                    /*
+                    ooChannel.send({
+                        "type":"documentOpen",
+                        "data": {
+                            "type":"save",
+                            "status":"ok",
+                            "data":url + "?disposition=inline&ooname=output.pdf"
+                        }
+                    });
+                    */
+                }
+            });
+        };
+
         var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var xlsData;
@@ -1637,9 +1660,9 @@ define([
                     bin: data
                 }, filename, extension);
                 if (xlsData) {
-                    var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                    var _blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
                     UI.removeModals();
-                    saveAs(blob, finalFilename);
+                    saveAs(_blob, finalFilename);
                 }
                 return;
             }
@@ -1659,29 +1682,6 @@ define([
                 UI.removeModals();
                 saveAs(blob, finalFilename);
             }
-        };
-
-        var getX2T = function (cb) {
-            // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
-                var x2t = window.Module;
-                x2t.run();
-                if (x2tInitialized) {
-                    debug("x2t runtime already initialized");
-                    return void x2tReady.reg(function () {
-                        cb(x2t);
-                    });
-                }
-
-                x2t.onRuntimeInitialized = function() {
-                    debug("x2t in runtime initialized");
-                    // Init x2t js module
-                    x2tInit(x2t);
-                    x2tReady.reg(function () {
-                        cb(x2t);
-                    });
-                };
-            });
         };
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalName) {
