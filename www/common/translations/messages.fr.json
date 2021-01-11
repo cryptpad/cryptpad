@@ -1506,5 +1506,6 @@
     "admin_support_closed": "Tickets fermé :",
     "admin_support_answered": "Tickets traité :",
     "admin_support_normal": "Tickets sans réponse :",
-    "admin_support_premium": "Tickets prime  :"
+    "admin_support_premium": "Tickets prime :",
+    "offlineError": "MODE HORS LIGNE NON DISPONIBLE"
 }
