@@ -321,7 +321,6 @@ button:not(.btn).primary:hover{
         if (data.type === "offline") {
             try {
                 isOffline = true;
-                Messages.offlineError = "OFFLINE MODE NOT AVAILABLE"; // XXX
                 document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
                 document.querySelector('#cp-loading-message').innerText = Messages.offlineError;
             } catch (e) { console.error(e); }
