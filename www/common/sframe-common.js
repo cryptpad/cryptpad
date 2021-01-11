@@ -185,8 +185,9 @@ define([
         });
     };
 
-    funcs.getFileSize = function (channelId, cb) {
+    funcs.getFileSize = function (channelId, cb, noCache) {
         nThen(function (waitFor) {
+            if (channelId.length < 48 || noCache) { return; }
             ctx.cache.getBlobCache(channelId, waitFor(function(err, blob) {
                 if (err) { return; }
                 waitFor.abort();

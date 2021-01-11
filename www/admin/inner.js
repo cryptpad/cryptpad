@@ -196,7 +196,7 @@ define([
                         waitFor.abort();
                         return void UI.warn(Messages.admin_archiveInval);
                     }
-                }));
+                }), true);
             }).nThen(function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: archive ? 'ARCHIVE_DOCUMENT' : 'RESTORE_ARCHIVED_DOCUMENT',
