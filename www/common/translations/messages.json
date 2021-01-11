@@ -1506,5 +1506,6 @@
     "admin_support_first": "Created on: ",
     "admin_support_last": "Updated on: ",
     "access_offline": "You are currently offline. Access management is not available.",
-    "share_noContactsOffline": "You are currently offline. Contacts are not available."
+    "share_noContactsOffline": "You are currently offline. Contacts are not available.",
+    "offlineError": "OFFLINE MODE NOT AVAILABLE"
 }
