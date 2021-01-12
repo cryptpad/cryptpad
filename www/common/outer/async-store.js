@@ -2773,12 +2773,14 @@ define([
                     });
                 }, 5000);
 
-                store.networkPromise.then(function () {
-                    clearTimeout(to);
-                }, function (err) {
-                    console.error(err);
-                    clearTimeout(to);
-                });
+                if (store.networkPromise && store.networkPromise.then) {
+                    store.networkPromise.then(function () {
+                        clearTimeout(to);
+                    }, function (err) {
+                        console.error(err);
+                        clearTimeout(to);
+                    });
+                }
 
                 if (!data.cache) { return; }
 
