@@ -1005,6 +1005,16 @@ define([
         } else {
             $error.html(error || Messages.error);
         }
+        $error.find('a[href]').click(function (e) {
+            e.preventDefault();
+            var href = $(this).prop('href');
+            if (!href) { return; }
+            if (e && e.ctrlKey) {
+                window.open('/bounce/#'+encodeURIComponent(href));
+                return;
+            }
+            window.parent.location = href;
+        });
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {
