@@ -2765,20 +2765,22 @@ define([
                 store.networkPromise = info.networkPromise;
                 store.cacheReturned = returned;
 
-                // Check if we can connect
-                var to = setTimeout(function () {
-                    store.networkTimeout = true;
-                    broadcast([], "LOADING_DRIVE", {
-                        type: "offline"
-                    });
-                }, 5000);
+                if (store.networkPromise && store.networkPromise.then) {
+                    // Check if we can connect
+                    var to = setTimeout(function () {
+                        store.networkTimeout = true;
+                        broadcast([], "LOADING_DRIVE", {
+                            type: "offline"
+                        });
+                    }, 5000);
 
-                store.networkPromise.then(function () {
-                    clearTimeout(to);
-                }, function (err) {
-                    console.error(err);
-                    clearTimeout(to);
-                });
+                    store.networkPromise.then(function () {
+                        clearTimeout(to);
+                    }, function (err) {
+                        console.error(err);
+                        clearTimeout(to);
+                    });
+                }
 
                 if (!data.cache) { return; }
 

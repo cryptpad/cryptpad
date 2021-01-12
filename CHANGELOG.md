@@ -1,3 +1,33 @@
+# ZyzomysPedunculatus' revenge (3.25.1)
+
+This minor release is primarily intended to fix some minor issues that were introduced or detected following our 3.25.0 release, but it also includes some major improvements that we want to test and stabilize before our upcoming 4.0.0 release.
+
+Features
+
+* Our recent introduction of a clientside cache for document content now allows us to load and display a readable copy of a document before the most recent history has been fully loaded from the server. You might notice that your drive and some document typees are now displayed in a "DISCONNECTED" of "OFFLINE" state until they gets the latest history. For now this just means the loading screen is removed soon so you can start reading, but it's also an essential improvement that will become even more useful when we introduce the use of service-workers for offline usage.
+* We've added an `offline` mode to the server so that anyone developing features in CryptPad can test its offline and caching features by disabling the websocket components of the server. Use `npm run offline` to launch in this mode.
+* We spent some time improving the support ticket components of the administration panel. Tickets are now shown in four categories: tickets from premium users, tickets from non-paying users, answered tickets, and closed tickets.
+* We also improved the readability of some of the server's activity logs by rounding off some numbers to display fewer decimal points. On a related note, log events indicating the completion of a file upload now display the size of the uploaded file.
+* Errors that occur when loading teams now trigger some basic telemetry to the server to indicate the error code. This should help us determine the origin of some annoying teams issues that several users have reported.
+* Users of the rich text editor should now find that their scroll position is now maintained when they are at the bottom of the document and a remote users adds more text.
+
+Bug fixes
+
+* Shortly after deploying 3.25.0 we identified several cases in which its cache invalidation logic was not correctly detecting corrupted cache entries. This caused some documents to fail to load. We quickly disabled most caching until we got the chance to review. Since then, we've tested it much more thoroughly under situations which made it more likely to become corrupt. Our new cache invalidation logic seems to catch all the known cases, so we're re-enabling the use of the cache for encrypted files and most of our supported document types.
+* We found that a race condition in the logout process prevented the document cache from being cleared correctly. We now wait until the asynchronous cache eviction process completes before redirecting users to the login page.
+* We discovered that the `postMessage` API by which CryptPad's different iframes and workers communicate could not serialize certain error messages after recent changes. We've added some special logic to send such messages in a valid format as well as some extra error handling to better recover from and report failed transmissions.
+* In cases where user avatars fail to load (due to network issues or 404s) the first letter of the user's display name will be displayed instead
+* We found that shared folders were reconnecting to the server correctly after a network failure, however, some changes in the UI caused clients to incorrectly remain locked.
+* Some recent refactoring of some styles caused some buttons on the login page to inherit bootstrap's styles instead of our custom ones.
+* A third-party admin brought it to our attention that a library that was used for some development tests was being fetched via http instead of https, and was thus blocked by some of their local configuration parameters. We've updated its source to load via secure protocols only.
+
+To update from 3.25.0 to 3.25.1:
+
+1. Stop your server
+2. Get the latest code with `git checkout 3.25.1`
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
 # ZyzomysPedunculatus (3.25.0)
 
 ## Goals

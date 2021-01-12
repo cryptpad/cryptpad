@@ -67,7 +67,7 @@ define([
     Msg.footer_team = "Contributors";
     Msg.footer_tos = "Terms of Service";
 
-    Pages.versionString = "v3.25.0 (ZyzomysPedunculatus)";
+    Pages.versionString = "CryptPad v3.25.1 (ZyzomysPedunculatus' revenge)";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;

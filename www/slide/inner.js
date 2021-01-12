@@ -357,7 +357,7 @@ define([
         };
         var updateLocalColors = function (text, back) {
             updateColors(text, back);
-            var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
+            var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadataLazy()));
             if (backColor) { metadata.backColor = backColor; }
             if (textColor) { metadata.color = textColor; }
             metadataMgr.updateMetadata(metadata);
@@ -527,8 +527,6 @@ define([
 
             if (newPad) {
                 colors.updateLocalColors('#000', '#FFF');
-            } else {
-                colors.updateLocalColors('#FFF', '#000');
             }
 
             CodeMirror.setMode('markdown', function () { });
