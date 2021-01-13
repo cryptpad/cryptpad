@@ -9,7 +9,7 @@ Features
 * We spent some time improving the support ticket components of the administration panel. Tickets are now shown in four categories: tickets from premium users, tickets from non-paying users, answered tickets, and closed tickets.
 * We also improved the readability of some of the server's activity logs by rounding off some numbers to display fewer decimal points. On a related note, log events indicating the completion of a file upload now display the size of the uploaded file.
 * Errors that occur when loading teams now trigger some basic telemetry to the server to indicate the error code. This should help us determine the origin of some annoying teams issues that several users have reported.
-* Users of the rich text editor should now find that their scroll position is now maintained when they are at the bottom of the document and a remote users adds more text.
+* Users of the rich text editor should now find that their scroll position is maintained when they are at the bottom of the document and a remote users adds more text.
 
 Bug fixes
 
@@ -20,6 +20,8 @@ Bug fixes
 * We found that shared folders were reconnecting to the server correctly after a network failure, however, some changes in the UI caused clients to incorrectly remain locked.
 * Some recent refactoring of some styles caused some buttons on the login page to inherit bootstrap's styles instead of our custom ones.
 * A third-party admin brought it to our attention that a library that was used for some development tests was being fetched via http instead of https, and was thus blocked by some of their local configuration parameters. We've updated its source to load via secure protocols only.
+* The recent replacement of a link to our faq with a link to our documentation platform violated some security headers and prevented the link from loading. We've fixed the inline link with some code to open this link in a compatible way.
+* Finally, we found a bug that caused custom colors in the slide app to revert to the default settings on page reloads. Custom slide colors should now be preserved.
 
 To update from 3.25.0 to 3.25.1:
 
