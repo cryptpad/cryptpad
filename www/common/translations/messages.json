@@ -1507,5 +1507,5 @@
     "admin_support_last": "Updated on: ",
     "access_offline": "You are currently offline. Access management is not available.",
     "share_noContactsOffline": "You are currently offline. Contacts are not available.",
-    "offlineError": "OFFLINE MODE NOT AVAILABLE"
+    "offlineError": "Unable to synchronize the most recent data, this page cannot be displayed at this time. Loading will continue when your connection to the service is restored."
 }
