@@ -360,6 +360,7 @@ define([
             var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadataLazy()));
             if (backColor) { metadata.backColor = backColor; }
             if (textColor) { metadata.color = textColor; }
+            if (!metadata.title) { metadata.title = metadata.defaultTitle; }
             metadataMgr.updateMetadata(metadata);
             framework.localChange();
         };
