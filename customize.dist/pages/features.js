@@ -67,6 +67,53 @@ define([
             rel: 'noopener noreferrer'
         }, h('button.cp-features-register-button', Msg.features_f_subscribe));
 
+        var groupItemTemplate = function (title, content) {
+            return h('li.list-group-item', [
+                h('div.cp-check'),
+                h('div.cp-content', [
+                    h('div.cp-feature', title),
+                    h('div.cp-note', content),
+                ])
+            ]);
+        };
+
+        var defaultGroupItem = function (key) {
+            return groupItemTemplate(
+                Msg['features_f_' + key],
+                Msg['features_f_' + key + '_note']
+            );
+        };
+
+        var SPECIAL_GROUP_ITEMS = {};
+        SPECIAL_GROUP_ITEMS.storage0 = function (f) {
+            return groupItemTemplate(
+                Msg['features_f_' + f],
+                Msg._getKey('features_f_' + f + '_note', [Config.inactiveTime])
+            );
+        };
+        SPECIAL_GROUP_ITEMS.file1 = function (f) {
+            return groupItemTemplate(
+                Msg['features_f_' + f],
+                Msg._getKey('features_f_' + f + '_note', [Config.maxUploadSize / 1024 / 1024])
+            );
+        };
+        SPECIAL_GROUP_ITEMS.storage1 = function (f) {
+            return groupItemTemplate(
+                Msg._getKey('features_f_' + f, [Config.defaultStorageLimit / 1024 / 1024]),
+                Msg['features_f_' + f + '_note']
+            );
+        };
+        SPECIAL_GROUP_ITEMS.storage2 = function (f) {
+            return groupItemTemplate(
+                Msg['features_f_' + f],
+                Msg._getKey('features_f_' + f + '_note', [Config.premiumUploadSize / 1024 / 1024])
+            );
+        };
+
+        var groupItem = function (key) {
+            return (SPECIAL_GROUP_ITEMS[key] || defaultGroupItem)(key);
+        };
+
         var anonymousFeatures =
             h('div.col-12.col-sm-4.cp-anon-user',[
                 h('div.card',[
@@ -77,17 +124,7 @@ define([
                         h('div.text-center', '0€'),
                         h('div.text-center', Msg.features_noData),
                     ]),
-                    h('ul.list-group.list-group-flush',
-                        ['apps', 'file0', 'core', 'cryptdrive0', 'storage0'].map(function (f) {
-                            return h('li.list-group-item', [
-                                h('div.cp-check'),
-                                h('div.cp-content', [
-                                    h('div.cp-feature', Msg['features_f_' + f]),
-                                    h('div.cp-note', Msg._getKey('features_f_' + f + '_note', [Config.inactiveTime]))
-                                ])
-                            ]);
-                        })
-                    ),
+                    h('ul.list-group.list-group-flush', ['apps', 'file0', 'core', 'cryptdrive0', 'storage0'].map(groupItem)),
                 ]),
             ]);
 
@@ -101,17 +138,7 @@ define([
                         h('div.text-center', '0€'),
                         h('div.text-center', Msg.features_noData),
                     ]),
-                    h('ul.list-group.list-group-flush', [
-                        ['anon', 'social', 'file1', 'cryptdrive1', 'devices', 'storage1'].map(function (f) {
-                            return h('li.list-group-item', [
-                                h('div.cp-check'),
-                                h('div.cp-content', [
-                                    h('div.cp-feature', Msg._getKey('features_f_' + f, [Config.defaultStorageLimit / 1024 / 1024])),
-                                    h('div.cp-note', Msg._getKey('features_f_' + f + '_note', [Config.maxUploadSize / 1024 / 1024]))
-                                ])
-                            ]);
-                        }),
-                    ]),
+                    h('ul.list-group.list-group-flush', ['anon', 'social', 'file1', 'cryptdrive1', 'devices', 'storage1'].map(groupItem)),
                     h('div.card-body',[
                         h('div.cp-features-register#cp-features-register', [
                             h('a', {
@@ -134,19 +161,7 @@ define([
                         }, Msg._getKey('features_pricing', ['5', '10', '15']))),
                         h('div.text-center', Msg.features_emailRequired),
                     ]),
-                    h('ul.list-group.list-group-flush', [
-                        ['reg', 'storage2', 'support', 'supporter'].map(function (f) {
-                            console.log('features_f_' + f);
-                            console.log('features_f_' + f + '_note');
-                            return h('li.list-group-item', [
-                                h('div.cp-check'),
-                                h('div.cp-content', [
-                                    h('div.cp-feature', Msg['features_f_' + f]),
-                                    h('div.cp-note', Msg._getKey('features_f_' + f + '_note', [Config.premiumUploadSize / 1024 / 1024]))
-                                ])
-                            ]);
-                        }),
-                    ]),
+                    h('ul.list-group.list-group-flush', ['reg', 'storage2', 'support', 'supporter'].map(groupItem)),
                     h('div.card-body',[
                         h('div.cp-features-register#cp-features-subscribe', [
                             premiumButton
