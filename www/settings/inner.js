@@ -60,6 +60,7 @@ define([
             'cp-settings-autostore',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
+            'cp-settings-cache',
         ],
         'drive': [
             'cp-settings-resettips',
@@ -358,6 +359,59 @@ define([
         }
         return $div;
     };
+
+    // XXX
+    Messages.settings_cacheTitle = "Cache";
+    Messages.settings_cacheHint = "CryptPad stores parts of your documents in your browser's memory in order to save network usage and improve loading times. The documents stored in cache can then be loaded faster the next time you visit them. You can disable the cache if your device doesn't have a lot of free storage space. For security reasons, the cache is always cleared when you log out, but you can clear it manually if you want to reclaim storage space on your machine.";
+    Messages.settings_cacheCheckbox = "Enable cache on this device";
+    Messages.settings_cacheButton = "Clear existing cache";
+    makeBlock('cache', function (cb, $div) {
+        var store = window.cryptpadStore;
+
+        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+            Messages.settings_cacheCheckbox,
+            false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
+
+        // Checkbox: "Enable safe links"
+        var $checkbox = $cbox.find('input').on('change', function() {
+            spinner.spin();
+            var val = !$checkbox.is(':checked') ? '1' : undefined;
+            store.put('disableCache', val, function () {
+                sframeChan.query('Q_CACHE_DISABLE', {
+                    disabled: Boolean(val)
+                }, function () {
+                    spinner.done();
+                });
+            });
+        });
+
+        store.get('disableCache', function (val) {
+            if (!val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        var button = h('button.btn.btn-danger', [
+            h('i.fa.fa-trash-o'),
+            h('span', Messages.settings_cacheButton)
+        ]);
+        var buttonContainer = h('div.cp-settings-clear-cache', button);
+        var spinner2 = UI.makeSpinner($(buttonContainer));
+        UI.confirmButton(button, {
+            classes: 'btn-danger'
+        }, function () {
+            spinner.spin();
+            sframeChan.query('Q_CLEAR_CACHE', null, function() {
+                spinner.done();
+            });
+        });
+
+        cb([
+            $cbox[0],
+            buttonContainer
+        ]);
+    }, true);
 
     create['delete'] = function() {
         if (!common.isLoggedIn()) { return; }

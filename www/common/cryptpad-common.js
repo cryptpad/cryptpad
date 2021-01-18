@@ -985,6 +985,24 @@ define([
         }, {timeout: -1});
     };
 
+    common.disableCache = function (disabled, cb) {
+        postMessage("CACHE_DISABLE", disabled, cb);
+    };
+    window.addEventListener('storage', function (e) {
+        if (e.key !== 'CRYPTPAD_STORE|disableCache') { return; }
+        var o = e.oldValue;
+        var n = e.newValue;
+        if (n) {
+            Cache.disable();
+            common.disableCache(true, function () {});
+        } else {
+            Cache.enable();
+            common.disableCache(false, function () {});
+        }
+    });
+    if (localStorage['CRYPTPAD_STORE|disableCache']) {
+        Cache.disable();
+    }
 
     // Admin
     common.adminRpc = function (data, cb) {
@@ -2226,6 +2244,7 @@ define([
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
                 cache: rdyCfg.cache,
+                disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: true //rdyCfg.driveEvents // Boolean
             };
             common.userHash = userHash;

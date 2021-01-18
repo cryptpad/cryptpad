@@ -758,7 +758,7 @@ define([
                     window.cryptpadStore._put(k, v, cb);
                     var x = {};
                     x[k] = v;
-                    ctx.sframeChan.event('EV_LOCALSTORE_PUT', x);
+                    ctx.sframeChan.event('EV_LOCALSTORE_PUT', x, {raw:true});
                 };
             });
 
