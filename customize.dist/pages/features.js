@@ -28,7 +28,7 @@ define([
         // Msg.features_f_cryptdrive0 = "";
         // Msg.features_f_cryptdrive0_note = "";
         // Msg.features_f_storage0 = "";
-        Msg.features_f_storage0_note = "Documents are deleted after 3 months of inactivity";
+        Msg.features_f_storage0_note = "Documents are deleted after {0} days of inactivity";
         // Registered column
         Msg.features_registered = "Registered"; //
         // Msg.features_f_anon = "";
@@ -36,14 +36,12 @@ define([
         Msg.features_f_social = "Social Features";
         Msg.features_f_social_note = "Add contacts for secure collaboration, create a profile, fine-grained access controls";
         // Msg.features_f_file1 = "";
-        // XXX add instance limit
-        Msg.features_f_file1_note = "Store files in your CryptDrive: images, PDFs, videos, and more. Share them with your contacts or embed them in your documents. (up to 25MB)";
+        Msg.features_f_file1_note = "Store files in your CryptDrive: images, PDFs, videos, and more. Share them with your contacts or embed them in your documents. (up to {0}MB)";
         // Msg.features_f_cryptdrive1 = "";
         // Msg.features_f_cryptdrive1_note = "";
         // Msg.features_f_devices = "";
         // Msg.features_f_devices_note = "";
-        // XXX add instance limit
-        Msg.features_f_storage1 = "Permanent Storage (1GB)";
+        Msg.features_f_storage1 = "Permanent Storage ({0}GB)";
         Msg.features_f_storage1_note = "Documents stored in your CryptDrive are never deleted for inactivity";
         // Premium column
         Msg.features_premium = "Premium";
@@ -51,7 +49,7 @@ define([
         // Msg.features_f_reg = ""
         Msg.features_f_reg_note = "With additional benefits";
         // Msg.features_f_storage2 = ""
-        Msg.features_f_storage2_note = "From 5GB to 50GB depending on the plan. Increased limit of 150MB for file uploads.";
+        Msg.features_f_storage2_note = "From 5GB to 50GB depending on the plan. Increased limit of {0}MB for file uploads.";
         // Msg.features_f_support = ""
         Msg.features_f_support_note = "Priority response from the administration team via email and built in ticket system.";
         Msg.features_f_supporter = "Support privacy";
@@ -85,7 +83,7 @@ define([
                                 h('div.cp-check'),
                                 h('div.cp-content', [
                                     h('div.cp-feature', Msg['features_f_' + f]),
-                                    h('div.cp-note', Msg['features_f_' + f + '_note'])
+                                    h('div.cp-note', Msg._getKey('features_f_' + f + '_note', [Config.inactiveTime]))
                                 ])
                             ]);
                         })
@@ -108,8 +106,8 @@ define([
                             return h('li.list-group-item', [
                                 h('div.cp-check'),
                                 h('div.cp-content', [
-                                    h('div.cp-feature', Msg['features_f_' + f]),
-                                    h('div.cp-note', Msg['features_f_' + f + '_note'])
+                                    h('div.cp-feature', Msg._getKey('features_f_' + f, [Config.defaultStorageLimit / 1024 / 1024])),
+                                    h('div.cp-note', Msg._getKey('features_f_' + f + '_note', [Config.maxUploadSize / 1024 / 1024]))
                                 ])
                             ]);
                         }),
@@ -144,7 +142,7 @@ define([
                                 h('div.cp-check'),
                                 h('div.cp-content', [
                                     h('div.cp-feature', Msg['features_f_' + f]),
-                                    h('div.cp-note', Msg['features_f_' + f + '_note'])
+                                    h('div.cp-note', Msg._getKey('features_f_' + f + '_note', [Config.premiumUploadSize / 1024 / 1024]))
                                 ])
                             ]);
                         }),
