@@ -7,10 +7,14 @@ define([
 
     // Check if indexedDB is allowed
     var allowed = false;
+    var disabled = false;
+    var supported = false;
+
     try {
         var request = window.indexedDB.open('test_db', 1);
         request.onsuccess = function () {
-            allowed = true;
+            supported = true;
+            allowed = supported && !disabled;
             onReady.fire();
         };
         request.onerror = function () {
@@ -19,6 +23,15 @@ define([
     } catch (e) {
         onReady.fire();
     }
+
+    S.enable = function () {
+        disabled = false;
+        allowed = supported && !disabled;
+    };
+    S.disable = function () {
+        disabled = true;
+        allowed = supported && !disabled;
+    };
 
     var cache = localForage.createInstance({
         driver: localForage.INDEXEDDB,
@@ -138,6 +151,30 @@ define([
         onReady.reg(function () {
             if (!allowed) { return void cb('NOCACHE'); }
             cache.clear(cb);
+        });
+    };
+
+    S.getKeys = function (cb) {
+        cb = Util.once(Util.mkAsync(cb || function () {}));
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            cache.keys().then(function (keys) {
+                cb(null, keys);
+            }).catch(function (err) {
+                cb(err);
+            });
+        });
+    };
+    S.getTime = function (id, cb) {
+        cb = Util.once(Util.mkAsync(cb || function () {}));
+        onReady.reg(function () {
+            if (!allowed) { return void cb('NOCACHE'); }
+            cache.getItem(id, function (err, obj) {
+                if (err || !obj || !obj.c) {
+                    return void cb(Util.serializeError(err || 'EINVAL'));
+                }
+                cb(null, obj.t);
+            });
         });
     };
 

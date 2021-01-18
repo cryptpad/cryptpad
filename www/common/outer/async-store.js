@@ -37,6 +37,9 @@ define([
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 
+    // XXX Number of days before deleting the cache for a channel or blob
+    var CACHE_MAX_AGE = 90; // DAYS
+
     // Default settings for new users
     var NEW_USER_SETTINGS = {
         drive: {
@@ -334,7 +337,6 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             s.rpc.removeOwnedChannel(channel, function (err) {
-                if (!err) { Cache.clearChannel(channel); }
                 cb({error:err});
             });
         };
@@ -2861,6 +2863,15 @@ define([
             }, PING_INTERVAL);
         };
 
+        Store.disableCache = function (clientId, disabled, cb) {
+            if (disabled) {
+                Cache.disable();
+            } else {
+                Cache.enable();
+            }
+            cb();
+        };
+
         /**
          * Data:
          *   - userHash or anonHash
@@ -2901,6 +2912,11 @@ define([
                     });
                 });
             }
+
+            if (data.disableCache) {
+                Cache.disable();
+            }
+
             initialized = true;
             postMessage = function (clientId, cmd, d, cb) {
                 data.query(clientId, cmd, d, cb);
@@ -2919,6 +2935,27 @@ define([
                 }
 
                 callback(ret);
+            });
+
+            // Clear inactive channels from cache
+            onReadyEvt.reg(function () {
+                var inactiveTime = (+new Date()) - CACHE_MAX_AGE * (24 * 3600 * 1000);
+                Cache.getKeys(function (err, keys) {
+                    if (err) { return void console.error(err); }
+                    var next = function (cb) {
+                        if (!keys.length) { return; }
+                        var key = keys.pop();
+                        var value = Cache.getTime(key, function (err, atime) {
+                            if (err) { return void next(); }
+                            if (!atime || atime < inactiveTime) {
+                                Cache.clearChannel(key, next());
+                                return;
+                            }
+                            next();
+                        });
+                    };
+                    next();
+                });
             });
         };
 

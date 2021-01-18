@@ -1,6 +1,6 @@
 (function () {
 var factory = function (Util, Rpc) {
-    var create = function (network, proxy, _cb) {
+    var create = function (network, proxy, _cb, Cache) {
         if (typeof(_cb) !== 'function') { throw new Error("Expected callback"); }
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -155,6 +155,9 @@ var factory = function (Util, Rpc) {
                     if (e) { return void cb(e); }
                     if (response && response.length && response[0] === "OK") {
                         cb();
+                        if (Cache && Cache.clearChannel) {
+                            Cache.clearChannel(channel);
+                        }
                     } else {
                         cb('INVALID_RESPONSE');
                     }
