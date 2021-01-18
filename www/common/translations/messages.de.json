@@ -1507,5 +1507,5 @@
     "admin_support_premium": "Premium-Tickets:",
     "access_offline": "Du bist offline. Verwaltung von Zugriffsrechten ist nicht verfügbar.",
     "share_noContactsOffline": "Du bist offline. Kontakte sind nicht verfügbar.",
-    "offlineError": "OFFLINE-MODUS NICHT VERFÜGBAR"
+    "offlineError": "Die Seite kann nicht geladen werden, da die letzten Daten nicht synchronisiert werden konnten. Das Laden wird fortgesetzt, wenn die Verbindung wiederhergestellt ist."
 }
