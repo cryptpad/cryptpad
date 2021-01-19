@@ -165,5 +165,24 @@ define([
         );
     };
 
+    Pages.crowdfundingButton = function (onClick) {
+        var _link = h('a', {
+            href: "https://opencollective.com/cryptpad/",
+            target: '_blank',
+            rel: 'noopener',
+        });
+
+        var crowdFunding = h('button', [
+            Msg.crowdfunding_button
+        ]);
+
+        $(crowdFunding).click(function () {
+            _link.click();
+            if (typeof(onClick) === 'function') { onClick(); }
+        });
+
+        return crowdFunding;
+    };
+
     return Pages;
 });
