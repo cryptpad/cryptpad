@@ -8,7 +8,7 @@ define([
 
     return function () {
         var adminEmail = Config.adminEmail && Config.adminEmail !== 'i.did.not.read.my.config@cryptpad.fr';
-        var adminMailbox = Config.supportMailbox;
+        var adminMailbox = Config.supportMailbox && LocalStore.isLoggedIn();
         return h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
@@ -34,7 +34,7 @@ define([
                             )
                         )
                     ) : undefined,
-                    (adminMailbox && LocalStore.isLoggedIn()) ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
+                    adminMailbox ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "/support/"},
                             h('div.card-body',
                                 h('p', [
