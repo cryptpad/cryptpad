@@ -618,7 +618,7 @@
     "about_core": "Core Developers",
     "about_contributors": "Key Contributors",
     "main_info": "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.",
-    "main_catch_phrase": "The Zero Knowledge Cloud",
+    "main_catch_phrase": "Collaboration suite,<br>encrypted and open-source",
     "main_footerText": "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.",
     "footer_applications": "Applications",
     "footer_contact": "Contact",
@@ -663,7 +663,7 @@
     "policy_choices_vpn": "If you want to use our hosted instance, but don't want to expose your IP address, you can protect your IP using the <a href=\"https://www.torproject.org/projects/torbrowser.html.en\" title=\"downloads from the Tor project\" target=\"_blank\" rel=\"noopener noreferrer\">Tor browser bundle</a>, or a <a href=\"https://riseup.net/en/vpn\" title=\"VPNs provided by Riseup\" target=\"_blank\" rel=\"noopener noreferrer\">VPN</a>.",
     "policy_choices_ads": "If you just want to block our analytics platform, you can use adblocking tools like <a href=\"https://www.eff.org/privacybadger\" title=\"download privacy badger\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Badger</a>.",
     "features": "Features",
-    "features_title": "Feature comparison",
+    "features_title": "Features",
     "features_feature": "Feature",
     "features_anon": "Non-registered",
     "features_registered": "Registered",
@@ -939,7 +939,7 @@
     "creation_owned": "Owned pad",
     "creation_ownedTrue": "Owned pad",
     "creation_ownedFalse": "Open pad",
-    "creation_owned1": "An <b>owned</b> item can be destroyed whenever the owner wants. Destroying an owned item removes it from other users' CryptDrives.",
+    "creation_owned1": "An <b>owned</b> item can be destroyed whenever the owner wants. Destroying an owned item makes it unavailable from other users' CryptDrives.",
     "creation_owned2": "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.",
     "creation_expireTitle": "Life time",
     "creation_expire": "Expiring pad",
@@ -1527,5 +1527,6 @@
     "whatis_xwiki": "Made at XWiki",
     "whatis_xwiki_info": "<p>CryptPad is made at <a rel=\"noopener noreferrer\" target=\"_blank\" href=\"https://xwiki.com\">XWiki</a>, a company based in Paris, France that has been making open-source software for over 15 years. We have extensive experience making collaborative software to organise information. Our track record shows we are committed to the long-term development and maintenance of CryptPad.</p>",
     "creation_expiresIn": "Expires in",
-    "creation_helperText": "Open in documentation"
+    "creation_helperText": "Open in documentation",
+    "docs_link": "Documentation"
 }
