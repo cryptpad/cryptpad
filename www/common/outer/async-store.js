@@ -2943,10 +2943,10 @@ define([
                 var inactiveTime = (+new Date()) - CACHE_MAX_AGE * (24 * 3600 * 1000);
                 Cache.getKeys(function (err, keys) {
                     if (err) { return void console.error(err); }
-                    var next = function (cb) {
+                    var next = function () {
                         if (!keys.length) { return; }
                         var key = keys.pop();
-                        var value = Cache.getTime(key, function (err, atime) {
+                        Cache.getTime(key, function (err, atime) {
                             if (err) { return void next(); }
                             if (!atime || atime < inactiveTime) {
                                 Cache.clearChannel(key, next());
