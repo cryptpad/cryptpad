@@ -64,19 +64,23 @@ define([
                     h('div.col-md-6.order-md-1.small-logos', [
                         h('img', {
                             src: '/customize/images/logo_ngi.png?' + urlArgs,
-                            alt: 'Logo NGI Trust'
+                            alt: 'NGI Award 2019'
                         }),
                         h('img', {
                             src: '/customize/images/logo_nlnet.svg?' + urlArgs,
-                            alt: 'Logo NLNet Foundation'
+                            alt: 'NLNet Foundation logo'
                         }),
                         h('img', {
                             src: '/customize/images/logo_bpifrance.svg?' + urlArgs,
-                            alt: 'Logo BPI France'
+                            alt: 'BPI France logo'
                         }),
                         h('img', {
                             src: '/customize/images/logo_moss.jpg?' + urlArgs,
-                            alt: 'Logo Mozilla Open Source Support'
+                            alt: 'Mozilla Open Source Support logo'
+                        }),
+                        h('img', {
+                            src: '/customize/images/logo_ngi_trust.png?' + urlArgs,
+                            alt: 'NGI Trust logo'
                         }),
                     ]),
                 ]),
