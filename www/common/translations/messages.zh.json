@@ -233,7 +233,6 @@
     "register_mustAcceptTerms": "你必須同意我們的服務條款。",
     "register_mustRememberPass": "如果你忘了密碼，我們也無法為你重置。因此務必自行好好記住！ 請在勾選處勾選確認。",
     "register_header": "歡迎來到 CryptPad",
-    "register_explanation": "<p>首先讓我們先了解幾件事</p><ul><li>你的密碼是你用來加密所有工作檔案的密鑰。一旦遺失它，我們也沒辦法幫你恢復你的資料。</li><li>你可以滙入近期在瀏覽器下檢視的工作檔案到你的雲端硬碟裏。</li><li>如果你使用的是公用分享電腦，你需要在完成工作後進行登出，只是關閉分頁是不夠的。</li></ul>",
     "register_writtenPassword": "我已記下了我的用戶名和密碼，請繼續",
     "register_cancel": "回去",
     "register_warning": "零知識表示如果你遺失了密碼,我們也無法還原你的資料",
