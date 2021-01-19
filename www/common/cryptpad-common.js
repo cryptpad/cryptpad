@@ -990,7 +990,6 @@ define([
     };
     window.addEventListener('storage', function (e) {
         if (e.key !== 'CRYPTPAD_STORE|disableCache') { return; }
-        var o = e.oldValue;
         var n = e.newValue;
         if (n) {
             Cache.disable();

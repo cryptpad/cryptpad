@@ -9,12 +9,6 @@ define([
     return function () {
         var urlArgs = Config.requireConf.urlArgs;
 
-        // XXX translations
-        Msg.register_header = "Register"; // existing key
-        Msg.register_notes_title = "Important notes";
-        Msg.register_notes = '<ul class="cp-notes-list"><li>Your password is your secret key which encrypts all of your pads. <span class="red">If you lose it there is no way we can recover your data.</span></li><li>If you are using a shared computer, <span class="red">remember to log out</span> when you are done. Only closing the browser window leaves your documents exposed. </li><li>To keep the documents you created and/or stored without being logged in, tick "Import documents from your anonymous session". </li></ul>';
-        Msg.register_importRecent = "Import documents from your anonymous session"; // existing key
-
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
