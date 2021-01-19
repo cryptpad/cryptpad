@@ -60,7 +60,6 @@ define([
                         Pages.crowdfundingButton(function () {
                             Feedback.send('WHATIS_SUPPORT_CRYPTPAD');
                         }),
-                        // XXX add link to subscription here on cryptpad.fr
                     ]),
                     h('div.col-md-6.order-md-1.small-logos', [
                         h('img', {
