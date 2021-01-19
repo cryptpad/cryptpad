@@ -7,7 +7,6 @@ define([
     '/customize/pages.js',
     '/api/config',
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config) {
-    var origin = encodeURIComponent(window.location.hostname);
     var accounts = {
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
         upgradeURL: AppConfig.upgradeURL
