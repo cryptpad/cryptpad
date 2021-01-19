@@ -10,7 +10,7 @@ define([
     var origin = encodeURIComponent(window.location.hostname);
     var accounts = {
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL || 'https://accounts.cryptpad.fr/#/?on=' + origin, // XXX
+        upgradeURL: AppConfig.upgradeURL
     };
 
     return function () {
@@ -121,14 +121,14 @@ define([
                     h('ul.list-group.list-group-flush', ['reg', 'storage2', 'support', 'supporter'].map(groupItem)),
                     h('div.card-body',[
                         h('div.cp-features-register#cp-features-subscribe', [
-                            premiumButton // XXX
+                            premiumButton
                         ]),
                         LocalStore.isLoggedIn() ? undefined : h('div.cp-note', Msg.features_f_subscribe_note)
                     ]),
                 ]),
             ]);
         var availableFeatures =
-            Config.allowSubscriptions ?
+            (Config.allowSubscriptions && accounts.upgradeURL) ?
                 [anonymousFeatures, registeredFeatures, premiumFeatures] :
                 [anonymousFeatures, registeredFeatures];
 
