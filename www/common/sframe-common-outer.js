@@ -1476,6 +1476,21 @@ define([
                 });
             });
 
+            sframeChan.on('Q_CACHE_DISABLE', function (data, cb) {
+                if (data.disabled) {
+                    Utils.Cache.clear(function () {
+                        Utils.Cache.disable();
+                    });
+                    Cryptpad.disableCache(true, cb);
+                    return;
+                }
+                Utils.Cache.enable();
+                Cryptpad.disableCache(false, cb);
+            });
+            sframeChan.on('Q_CLEAR_CACHE', function (data, cb) {
+                Utils.Cache.clear(cb);
+            });
+
             sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
                 Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
                     cb({

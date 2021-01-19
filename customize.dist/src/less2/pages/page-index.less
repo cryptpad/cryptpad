@@ -4,13 +4,7 @@
 &.cp-page-index {
     .infopages_main();
 
-    @background_lighter: rgba(0,0,0,0.1);
-    @background_darker: rgba(0,0,0,0.4);
     #cp-main {
-        color: #FFF;
-        background: linear-gradient( @background_darker, @background_lighter ), url('/customize/bg14.jpg');
-        background-size: cover;
-        background-position: center;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -31,6 +25,7 @@
     }
     body {
         font-family: "Open Sans", Helvetica;
+        color: @cryptpad_text_col;
     }
     .cp-right {
         .cp-register-btn {
@@ -48,57 +43,38 @@
             }
         }
     }
+    .cp-home-hero {
+        width: 100%;
+        margin-bottom: 50px;
+        align-self: center;
+        align-items: center;
+    }
     .cp-title {
         display: flex;
         align-items: center;
+        justify-content: center;
         flex-direction: column;
+        color: @colortheme_logo-2;
         margin-top: 1.5em;
         img {
-            height: 20vh;
+            max-width: 200px;
             margin-bottom: 1.5em;
         }
         margin-left: 0;
         h1 {
-            font-family: "Neuropolitical";
+            font-family: "IBM Plex Mono";
+            font-weight: 500;
             //font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", Times, serif;
             //font-family: "Raleway";
-            font-size: 45px;
+            font-size: 3.7rem;
         }
-        p {
-            //font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-            font-size: 20px;
+        .tag-line {
+            text-align: center;
+            font-size: 1.4em;
             //font-style: italic;
         }
     }
-    .navbar {
-        background: transparent;
-        width: 100%;
-        @media only screen and (max-device-width: 991px) {
-            margin-top: 0;
-        }
-        .navbar-brand {
-            background-image: url(/customize/CryptPad-white-logo.svg);
-        }
-        a {
-            color: #fff;
-            &:visited {
-                color: rgba(255,255,255,.9);
-            };
-        }
-        .nav-link {
-            &:hover {
-                color: inherit;
-                transform: scale(1.05);
-            };
-        }
-        .cp-register-btn {
-                border: 2px solid #fff;
-        }
-        .navbar-toggler {
-            margin-top: 10px;
-            color: #fff;
-        }
-    }
+
     @callout-padding: 15px;
     a:hover {
         text-decoration: none;
@@ -107,28 +83,26 @@
     .cp-app-grid {
         display: flex;
         flex-wrap: wrap;
-        & > a {
-            margin: 20px;
+        justify-content: space-around;
+        a {
+            margin: 10px;
+        }
+        @media screen and (max-width: 768px) {
+            margin-top: 40px;
         }
     }
     @icons-size: 120px;
-    @icons-text-size: 30px;
+    @icons-text-size: 24px;
     .bs-callout {
         display: flex;
         align-items: stretch;
         margin: 0;
-        background: rgba(255,255,255,0.6);
-        color: black;
-        transition: all .1s ease-in-out;
         box-sizing: border-box;
         position: relative;
         flex-flow: column;
-        height: @icons-size;
+        //height: @icons-size;
         width: @icons-size;
-        a {
-            color: black;
-            &:hover { text-decoration-line: none; }
-        }
+
         div h4 {
             @media only screen and (min-device-width: 576px) and (max-device-width: 767px) {
                 font-size: 1.3em;
@@ -148,16 +122,19 @@
         .fa, .cptools {
             display: flex;
             align-items: center;
-            font-size: @icons-size - 60px;
+            font-size: 3.5em;
             justify-content: center;
             width: @icons-size;
-            height: @icons-size - @icons-text-size;
-            transition: width 0.1s;
-            color: #fff;
+            padding: 10px 10px 0px 10px;
+            //height: @icons-size - @icons-text-size;
         }
         &.cp-app-disabled {
             cursor: not-allowed !important;
             opacity: 0.5;
+        }
+        .pad-button-text {
+            color: @cryptpad_text_col;
+            padding: 5px;
         }
     }
     h4 {
@@ -171,21 +148,22 @@
     }
 
     .bs-callout:hover {
-        //color: white;
-        transform: scale(1.05);
         cursor: pointer;
     }
     .bs-callout:hover.cp-callout-more {
         transform: none !important;
     }
-    .cp-callout-pad .cptools { background-color: @colortheme_pad-bg; }
-    .cp-callout-code .cptools { background-color: @colortheme_code-bg; }
-    .cp-callout-slide .cptools { background-color: @colortheme_slide-bg; }
-    .cp-callout-poll .cptools { background-color: @colortheme_poll-bg; }
-    .cp-callout-kanban .cptools { background-color: @colortheme_kanban-bg; }
-    .cp-callout-whiteboard .cptools { background-color: @colortheme_whiteboard-bg; }
-    .cp-callout-drive .fa { background-color: @colortheme_drive-bg; }
-    .cp-callout-sheet .fa { background-color: @colortheme_oocell-bg; }
+
+    each(@colortheme_apps, {
+        .cp-callout-@{key} {
+            i { color: @value; }
+            &:hover {
+                background-color: lighten(@value, 30%);
+                i { color: @cryptpad_text_col; }
+            }
+        }
+    });
+
     .cp-hidden { display: none !important; }
     .cp-callout-more {
         display: inline-block;
@@ -209,43 +187,13 @@
         }
     }
 
-    .cp-index-block-help {
-        button {
-            outline: none;
-            background-color: @colortheme_logo-2;
-            color: @colortheme_base;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 44px;
-            cursor: pointer;
-            &:hover {
-                background-color: lighten(@colortheme_logo-2, 3%);
-            }
-        }
-    }
-
-    .cp-index-block {
-        min-height: 100%;
-        & > div {
-            background: rgba(0,0,0,0.5);
-            margin: 0 5px;
-            padding: 15px 10px;
-            height: 100%;
-            display: flex;
-            flex-flow: column;
-            justify-content: space-evenly;
-        }
-        .cp-img-container {
-            display: flex;
-        }
-        img, a.img {
-            margin: auto;
-            background: white;
-            &.agpl {
-                max-height: 50px;
-            }
-            &.ngi {
-                max-height: 100px;
+    #cp-main {
+        .cp-container {
+            .row.cp-index-section {
+                margin: 50px 0px;
+                .small-logo {
+                    max-width: 40%;
+                }
             }
         }
     }

@@ -76,9 +76,15 @@ define([
         };
 
         // Fire an event.  channel.event('EV_SOMETHING', { args: "whatever" });
-        var event = chan.event = function (e, content) {
+        var event = chan.event = function (e, content, opts) {
+            opts = opts || {};
             evReady.reg(function () {
-                postMsg(JSON.stringify({ content: content, q: e }));
+                var toSend = {
+                    content: content,
+                    q: e,
+                    raw: opts.raw
+                };
+                postMsg(opts.raw ? toSend : JSON.stringify(toSend));
             });
         };
 

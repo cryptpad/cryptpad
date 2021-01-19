@@ -1507,5 +1507,5 @@
     "admin_support_answered": "Tickets traité :",
     "admin_support_normal": "Tickets sans réponse :",
     "admin_support_premium": "Tickets prime :",
-    "offlineError": "MODE HORS LIGNE NON DISPONIBLE"
+    "offlineError": "Impossible de synchroniser les données les plus récentes, cette page ne peut pas être affichée pour le moment. Le chargement continuera au retour de votre connexion au service."
 }

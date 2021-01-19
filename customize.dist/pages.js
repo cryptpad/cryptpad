@@ -18,11 +18,11 @@ define([
         var selected = Msg._languageUsed;
         var keys = Object.keys(languages).sort();
         keys.forEach(function (l) {
-            var attr = { value: l };
+            var attr = { value: l, role: 'option'};
             if (selected === l) { attr.selected = 'selected'; }
             options.push(h('option', attr, languages[l]));
         });
-        var select = h('select', {}, options);
+        var select = h('select', {role: 'listbox', 'label': 'language'}, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {
                 window.location.reload();
@@ -32,7 +32,7 @@ define([
     };
 
     var footerCol = function (title, L, literal) {
-        return h('div.col-6.col-sm-3', [
+        return h('div.col-sm-3', [
             h('ul.list-unstyled', [
                 h('li.footer-title', {
                     'data-localization': title,
@@ -62,36 +62,44 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
+    // XXX translations
+    Msg.docs_link = "Documentation";
+    Msg.footer_team = "Contributors";
+    Msg.footer_tos = "Terms of Service";
+
     Pages.versionString = "CryptPad v3.25.1 (ZyzomysPedunculatus' revenge)";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
     Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
     Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
-    Pages.faqLink = footLink('/faq.html', 'faq_link');
+    Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
 
     Pages.infopageFooter = function () {
         return h('footer', [
             h('div.container', [
                 h('div.row', [
-                    footerCol(null, [
-                        h('div.cp-bio-foot', [
-                            h('p', Msg.main_footerText),
-                            languageSelector()
+                    h('div.col-sm-3', [
+                        h('div.cp-logo-foot', [
+                            h('img', {
+                                src: '/customize/CryptPad_logo.svg',
+                                "aria-hidden": true,
+                                alt: ''
+                            }),
+                            h('span.logo-font', 'CryptPad')
                         ])
                     ], ''),
                     footerCol('footer_product', [
                         footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
-                        Pages.faqLink,
+                        Pages.docsLink,
+                        footLink('/features.html', 'pricing'),
                         Pages.githubLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
                     footerCol('footer_aboutUs', [
-                        /*footLink('https://blog.cryptpad.fr', 'blog'), */
-                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
-                        footLink('https://www.open-paas.org', null, 'OpenPaaS'),
-                        footLink('/about.html', 'footer_team'),
                         footLink('/contact.html', 'contact'),
+                        footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
+                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
                     ]),
                     footerCol('footer_legal', [
                         footLink('/terms.html', 'footer_tos'),
@@ -100,7 +108,10 @@ define([
                     ]),
                 ])
             ]),
-            h('div.cp-version-footer', Pages.versionString)
+            h('div.cp-version-footer', [
+                languageSelector(),
+                h('span', "CryptPad " + Pages.versionString)
+            ])
         ]);
     };
 
@@ -137,12 +148,19 @@ define([
         });
 
         return h('nav.navbar.navbar-expand-lg',
-            h('a.navbar-brand', { href: '/index.html'}),
+            h('a.navbar-brand', { href: '/index.html'}, [
+                h('img', {
+                    src: '/customize/CryptPad_logo.svg?',
+                    'aria-hidden': true,
+                    alt: ''
+                }), 'CryptPad'
+            ]),
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                 h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
-                h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
+                h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
+                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
             ].concat(rightLinks))
         );
     };

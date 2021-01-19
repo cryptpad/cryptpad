@@ -20,9 +20,7 @@
 @import (reference) "./modals-ui-elements.less";
 
 .framework_main(
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
-    @color: @colortheme_default-color, // Color of the text for the toolbar
+    @bg-color: @colortheme_apps[default]
 ) {
     --LessLoader_require: LessLoader_currentFile();
     // Set the HTML style for the apps which shouldn't have a body scrollbar
@@ -35,8 +33,6 @@
 
     .toolbar_main(
         @bg-color: @bg-color,
-        @warn-color: @warn-color,
-        @color: @color
     );
     .alertify_main();
     .modals-ui-elements_main();
@@ -48,7 +44,6 @@
     .checkmark_main(20px);
     .password_main();
     .messenger_main(
-        @color: @cryptpad_text_col,
         @bg-color: @colortheme_pad-chat-bg
     );
     .cursor_main();
@@ -57,15 +52,12 @@
     .mentions_main();
     .creation_main(
         @bg-color: @bg-color,
-        @color: @color
     );
     font: @colortheme_app-font;
 };
 
 .framework_min_main(
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
+    @bg-color: @colortheme_static_apps[default]
 ) {
     --LessLoader_require: LessLoader_currentFile();
     // Set the HTML style for the apps which shouldn't have a body scrollbar
@@ -78,8 +70,6 @@
 
     .toolbar_main(
         @bg-color: @bg-color,
-        @warn-color: @warn-color,
-        @color: @color
     );
     .fileupload_main();
     .alertify_main();

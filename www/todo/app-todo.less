@@ -2,11 +2,8 @@
 
 &.cp-app-todo {
 
-    .framework_min_main(
-        @bg-color: @colortheme_todo-bg,
-        @warn-color: @colortheme_todo-warn,
-        @color: @colortheme_todo-color
-    );
+    @colortheme_todo-bg: @colortheme_static_apps[default];
+    .framework_min_main();
 
     display: flex;
     flex-flow: column;
