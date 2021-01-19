@@ -102,6 +102,7 @@ define([
                             password: config.data.password,
                             isTemplate: isTemplate,
                             file: config.data.file,
+                            secureIframe: true,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 

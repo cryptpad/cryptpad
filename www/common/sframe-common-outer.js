@@ -659,7 +659,16 @@ define([
 
 
             // Put in the following function the RPC queries that should also work in filepicker
+            var _sframeChan = sframeChan;
             var addCommonRpc = function (sframeChan, safe) {
+                // Send UI.log and UI.warn commands from the secureiframe to the normal iframe
+                sframeChan.on('EV_ALERTIFY_LOG', function (msg) {
+                    _sframeChan.event('EV_ALERTIFY_LOG', msg);
+                });
+                sframeChan.on('EV_ALERTIFY_WARN', function (msg) {
+                    _sframeChan.event('EV_ALERTIFY_WARN', msg);
+                });
+
                 Cryptpad.universal.onEvent.reg(function (data) {
                     sframeChan.event('EV_UNIVERSAL_EVENT', data);
                 });

@@ -851,6 +851,14 @@ define([
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
 
+            if (privateData.secureIframe) {
+                UI.log = function (msg) { ctx.sframeChan.event('EV_ALERTIFY_LOG', msg); };
+                UI.warn = function (msg) { ctx.sframeChan.event('EV_ALERTIFY_WARN', msg); };
+            } else {
+                ctx.sframeChan.on('EV_ALERTIFY_LOG', function (msg) { UI.log(msg); });
+                ctx.sframeChan.on('EV_ALERTIFY_WARN', function (msg) { UI.warn(msg); });
+            }
+
             try {
                 var forbidden = privateData.disabledApp;
                 if (forbidden) {
