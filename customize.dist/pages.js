@@ -62,12 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    // XXX translations
-    Msg.docs_link = "Documentation";
-    Msg.footer_team = "Contributors";
-    Msg.footer_tos = "Terms of Service";
-
-    Pages.versionString = "CryptPad v3.25.1 (ZyzomysPedunculatus' revenge)";
+    Pages.versionString = "v4.0.0";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
