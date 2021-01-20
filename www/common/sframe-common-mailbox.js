@@ -207,6 +207,7 @@ define([
             if (historyState) { return void cb("ALREADY_CALLED"); }
             historyState = true;
             var txid = Util.uid();
+            // XXX OFFSET: no change? offsets are useless in get_history_range
             execCommand('LOAD_HISTORY', {
                 type: type,
                 count: lastKnownHash ? count + 1 : count,

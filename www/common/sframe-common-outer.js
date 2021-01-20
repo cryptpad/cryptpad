@@ -1222,6 +1222,7 @@ define([
                             if (typeof(_msg) === "object") {
                                 decryptedMsgs.push({
                                     author: _msg.author,
+                                    serverHash: _msg.serverHash,
                                     time: _msg.time,
                                     msg: crypto.decrypt(_msg.msg, true, true)
                                 });
