@@ -209,7 +209,6 @@
     "register_mustAcceptTerms": "Trebuie să accepți termenii serviciului",
     "register_mustRememberPass": "Nu putem să îți resetăm parola dacă o uiți. Este foarte important să o ții minte! Bifează căsuța pentru a confirma.",
     "register_header": "Bine ai venit în CryptPad",
-    "register_explanation": "<p>Hai să stabilim câteva lucruri, mai întâi</p><ul><li>Parola ta este cheia secretă care criptează toate pad-urile tale. Dacă pierzi/uiți parola nu există nici-o metodă prin care îți putem recupera datele.</li><li>Poți importa pad-uri care au fost vizionate recent în browser pentru a le avea în cont.</li><li>Dacă folosești un computer împărțit, trebuie să te deloghezi, închiderea taburilor nu este de ajuns.</li></ul>",
     "register_writtenPassword": "Mi-am notat numele de utilizator și parola, înaintează.",
     "register_cancel": "Întoarce-te",
     "register_warning": "Zero Knowledge înseamnă că noi nu îți putem recupera datele dacă îți pierzi parola.",
