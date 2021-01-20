@@ -360,11 +360,6 @@ define([
         return $div;
     };
 
-    // XXX
-    Messages.settings_cacheTitle = "Cache";
-    Messages.settings_cacheHint = "CryptPad stores parts of your documents in your browser's memory in order to save network usage and improve loading times. The documents stored in cache can then be loaded faster the next time you visit them. You can disable the cache if your device doesn't have a lot of free storage space. For security reasons, the cache is always cleared when you log out, but you can clear it manually if you want to reclaim storage space on your machine.";
-    Messages.settings_cacheCheckbox = "Enable cache on this device";
-    Messages.settings_cacheButton = "Clear existing cache";
     makeBlock('cache', function (cb) {
         var store = window.cryptpadStore;
 
