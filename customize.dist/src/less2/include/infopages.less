@@ -37,6 +37,16 @@ body {
     margin: 0;
     font-size: 16px;
     font-family: @colortheme_font;
+
+    #cp-main {
+        display: flex;
+        flex-flow: column;
+        min-height: 100vh;
+        & > .cp-container {
+            flex: 1;
+        }
+    }
+
     .cp-container {
         font-size: 16px;
         padding-top: @infopages_padding;
@@ -121,6 +131,8 @@ body {
 
         background-color: @footer-color;
         padding-top: 20px;
+        align-self: normal; // override align-items:center from parent in index.html
+
         .container {
             margin-bottom: 20px;
             a {

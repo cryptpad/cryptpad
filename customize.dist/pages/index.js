@@ -133,8 +133,8 @@ define([
                     ]),
                     blocks,
                 ]),
+                Pages.infopageFooter(),
             ]),
-            Pages.infopageFooter(),
         ];
     };
 });
