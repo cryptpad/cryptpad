@@ -1373,5 +1373,9 @@
     "home_host_title": "À propos de cette instance",
     "home_privacy_text": "CryptPad est conçu pour permettre la collaboration tout en préservant la confidentialité des données. Tout le contenu est chiffré et déchiffré par votre navigateur. Cela signifie que les documents, les chats et les fichiers sont illisibles en dehors de la session à laquelle vous êtes connecté. Même les administrateurs du service n'ont pas accès à vos informations.",
     "home_privacy_title": "Protège votre vie privée",
-    "docs_link": "Documentation"
+    "docs_link": "Documentation",
+    "settings_cacheButton": "Vider la mémoire cache",
+    "settings_cacheCheckbox": "Activer la mémoire cache sur cet appareil",
+    "settings_cacheHint": "CryptPad stocke des parties de vos documents dans la mémoire de votre navigateur afin d'économiser de la bande passante et d'améliorer les temps de chargement. Vous pouvez désactiver la mémoire cache si votre appareil a peu d'espace de stockage disponible. Pour des raisons de sécurité, la mémoire cache est toujours vidée lorsque vous vous déconnectez, mais vous pouvez la vider manuellement si vous souhaitez récupérer de l'espace de stockage sur votre appareil.",
+    "settings_cacheTitle": "Mémoire Cache"
 }
