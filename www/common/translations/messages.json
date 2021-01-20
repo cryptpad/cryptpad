@@ -1373,5 +1373,9 @@
     "whatis_xwiki_info": "<p>CryptPad is made at <a rel=\"noopener noreferrer\" target=\"_blank\" href=\"https://xwiki.com\">XWiki</a>, a company based in Paris, France that has been making open-source software for over 15 years. We have extensive experience making collaborative software to organise information. Our track record shows we are committed to the long-term development and maintenance of CryptPad.</p>",
     "creation_expiresIn": "Expires in",
     "creation_helperText": "Open in documentation",
-    "docs_link": "Documentation"
+    "docs_link": "Documentation",
+    "settings_cacheTitle": "Cache",
+    "settings_cacheHint": "CryptPad stores parts of your documents in your browser's memory in order to save network usage and improve loading times. You can disable the cache if your device doesn't have a lot of free storage space. For security reasons, the cache is always cleared when you log out, but you can clear it manually if you want to reclaim storage space on your machine.",
+    "settings_cacheCheckbox": "Enable cache on this device",
+    "settings_cacheButton": "Clear existing cache"
 }
