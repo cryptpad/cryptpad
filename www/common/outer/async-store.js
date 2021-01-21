@@ -37,7 +37,7 @@ define([
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 
-    // XXX Number of days before deleting the cache for a channel or blob
+    // Number of days before deleting the cache for a channel or blob
     var CACHE_MAX_AGE = 90; // DAYS
 
     // Default settings for new users
