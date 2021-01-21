@@ -56,7 +56,7 @@ define([
         };
         SPECIAL_GROUP_ITEMS.storage1 = function (f) {
             return groupItemTemplate(
-                Msg._getKey('features_f_' + f, [Util.getPrettySize(Config.defaultStorageLimit)]),
+                Msg._getKey('features_f_' + f, [Util.getPrettySize(Config.defaultStorageLimit, Msg)]),
                 Msg['features_f_' + f + '_note']
             );
         };
