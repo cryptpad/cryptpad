@@ -649,7 +649,7 @@
     "features_f_social_note": "Kontakte für sichere Zusammenarbeit hinzufügen, ein Profil erstellen, detaillierte Zugriffskontrolle",
     "features_f_file1": "Dateien hochladen und teilen",
     "features_f_file1_note": "Speichere Dateien in deinem CryptDrive: Bilder, PDFs, Videos und mehr. Teile sie mit deinen Kontakten oder bette sie in deine Dokumente ein. (Bis zu {0} MB)",
-    "features_f_storage1": "Persönlicher Speicherplatz ({0} GB)",
+    "features_f_storage1": "Persönlicher Speicherplatz ({0})",
     "features_f_storage1_note": "Dokumente in deinem CryptDrive werden nicht wegen Inaktivität gelöscht",
     "features_f_register": "Registrieren (kostenlos)",
     "features_f_reg": "Alle Funktionen für angemeldete Benutzer",
@@ -1373,5 +1373,9 @@
     "whatis_apps": "Eine vollständige Anwendungs-Suite",
     "whatis_drive_info": "<p>Speichere und verwalte Dokumente mit CryptDrive. Erstelle Ordner, gemeinsame Ordner und Tags, um Dokumente zu organisieren. Lade Dateien hoch und teile sie (PDFs, Fotos, Video, Audio, etc.). Team-Drives werden zwischen Benutzern geteilt und ermöglichen eine gemeinsame Organisation und detaillierte Zugriffskontrolle.</p>",
     "whatis_apps_info": "<p>CryptPad bietet eine vollwertige Office-Suite mit allen notwendigen Werkzeugen für eine produktive Zusammenarbeit. Die Anwendungen umfassen: Rich Text, Tabellen, Code/Markdown, Kanban, Präsentationen, Whiteboard und Umfragen.</p><p>Die Anwendungen werden ergänzt durch eine Reihe von Funktionen zur Zusammenarbeit wie Chat, Kontakte, Farbe nach Autor (Code/Markdown) und Kommentare mit Erwähnungen (Rich Text).</p>",
-    "register_notes": "<ul class=\"cp-notes-list\"><li>Dein Passwort ist der geheime Schlüssel, der alle deine Dokumente verschlüsselt. <span class=\"red\">Wenn du ihn verlierst, gibt es keine Möglichkeit, deine Daten wiederherzustellen.</span></li><li>Wenn du einen gemeinsam genutzten Computer verwendest, <span class=\"red\">denke daran, dich abzumelden</span>, wenn du fertig bist. Durch bloßes Schließen des Browserfensters bleibt das Konto ungeschützt.</li><li>Um die erstellten und/oder gespeicherten Dokumente zu behalten, ohne eingeloggt zu sein, setze einen Haken bei \"Dokumente aus deiner nicht-registrierten Sitzung importieren\". </li></ul>"
+    "register_notes": "<ul class=\"cp-notes-list\"><li>Dein Passwort ist der geheime Schlüssel, der alle deine Dokumente verschlüsselt. <span class=\"red\">Wenn du ihn verlierst, gibt es keine Möglichkeit, deine Daten wiederherzustellen.</span></li><li>Wenn du einen gemeinsam genutzten Computer verwendest, <span class=\"red\">denke daran, dich abzumelden</span>, wenn du fertig bist. Durch bloßes Schließen des Browserfensters bleibt das Konto ungeschützt.</li><li>Um die erstellten und/oder gespeicherten Dokumente zu behalten, ohne eingeloggt zu sein, setze einen Haken bei \"Dokumente aus deiner nicht-registrierten Sitzung importieren\". </li></ul>",
+    "settings_cacheTitle": "Cache",
+    "settings_cacheButton": "Cache leeren",
+    "settings_cacheCheckbox": "Cache auf diesem Gerät aktivieren",
+    "settings_cacheHint": "CryptPad legt Teile deiner Dokumente im Speicher deines Browser ab, um den Datenverkehr und die Ladezeiten zu reduzieren. Du kannst diesen Cache deaktivieren, wenn dein Gerät nicht über viel freien Speicherplatz verfügt. Aus Sicherheitsgründen wird der Cache immer beim Ausloggen geleert. Du kannst ihn auch manuell leeren, sofern du Speicherplatz auf deinem Gerät freigeben möchtest."
 }
