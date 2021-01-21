@@ -179,5 +179,22 @@ define([
         return crowdFunding;
     };
 
+    Pages.subscribeButton = function (onClick) {
+        var _link = h('a', {
+            href: "/accounts/",
+        });
+
+        var subscribe = h('button', [
+            Msg.subscribe_button
+        ]);
+
+        $(subscribe).click(function () {
+            _link.click();
+            if (typeof(onClick) === 'function') { onClick(); }
+        });
+
+        return subscribe;
+    };
+
     return Pages;
 });

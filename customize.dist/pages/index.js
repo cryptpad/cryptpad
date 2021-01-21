@@ -72,10 +72,6 @@ define([
         });
         UI.addTooltips();
 
-        var crowdFunding = Pages.crowdfundingButton(function () {
-            Feedback.send('HOME_SUPPORT_CRYPTPAD');
-        });
-
         var blocks = [
             h('div.row.cp-index-section', [
                 h('div.col-sm-6',
@@ -108,7 +104,9 @@ define([
                 h('div.col-sm-6', [
                     h('h2', Msg.home_support_title),
                     Pages.setHTML(h('span'), Msg.home_support),
-                    crowdFunding
+                    Pages.crowdfundingButton(function () {
+                        Feedback.send('HOME_SUPPORT_CRYPTPAD');
+                    }),
                 ])
             ])
         ];

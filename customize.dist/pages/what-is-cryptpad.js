@@ -57,6 +57,10 @@ define([
                     h('div.col-md-6.order-md-2', [
                         Pages.setHTML(h('h2'), Msg.whatis_model),
                         Pages.setHTML(h('span'), Msg.whatis_model_info),
+                        Config.allowSubscriptions ?
+                            Pages.subscribeButton(function () {
+                                Feedback.send('WHATIS_SUBSCRIBE_CRYPTPAD');
+                            }) : undefined,
                         Pages.crowdfundingButton(function () {
                             Feedback.send('WHATIS_SUPPORT_CRYPTPAD');
                         }),
