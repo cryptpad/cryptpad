@@ -129,7 +129,7 @@ define([
                             icons,
                         ])
                     ]),
-                    blocks,
+                    blocks
                 ]),
                 Pages.infopageFooter(),
             ]),
