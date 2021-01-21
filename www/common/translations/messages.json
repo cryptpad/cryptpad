@@ -674,7 +674,7 @@
     "features_f_social_note": "Add contacts for secure collaboration, create a profile, fine-grained access controls",
     "features_f_file1": "Upload and share files",
     "features_f_file1_note": "Store files in your CryptDrive: images, PDFs, videos, and more. Share them with your contacts or embed them in your documents. (up to {0}MB)",
-    "features_f_storage1": "Personal storage ({0}GB)",
+    "features_f_storage1": "Personal storage ({0})",
     "features_f_storage1_note": "Documents stored in your CryptDrive are not deleted for inactivity",
     "features_f_register": "Register for free",
     "features_f_reg": "All registered user features",

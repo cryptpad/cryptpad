@@ -656,7 +656,7 @@
     "features_f_social_note": "Ajout de contacts pour une collaboration sécurisée, création d'un profil, contrôles d'accès affinés",
     "features_f_file1": "Importer et partager des fichiers",
     "features_f_file1_note": "Stockez des fichiers dans votre CryptDrive : images, PDF, vidéos, etc. Partagez-les avec vos contacts ou intégrez-les dans vos documents. (jusqu'à {0}Mo)",
-    "features_f_storage1": "Stockage personnel ({0}Go)",
+    "features_f_storage1": "Stockage personnel ({0})",
     "features_f_storage1_note": "Les documents stockés dans votre CryptDrive ne sont pas supprimés pour cause d'inactivité",
     "features_f_register": "S'enregistrer gratuitement",
     "features_f_reg": "Avantages des utilisateurs enregistrés",
