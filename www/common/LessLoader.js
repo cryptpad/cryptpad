@@ -93,6 +93,13 @@ define([
         xhr.send(null);
     };
 
+    var COLORTHEME = '/customize/src/less2/include/colortheme.less';
+    var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
+    var getColorthemeURL = function () {
+        if (window.CryptPad_theme === 'dark') { return COLORTHEME_DARK; }
+        return COLORTHEME;
+    };
+
     var lessEngine;
     var tempCache = { key: Math.random() };
     var getLessEngine = function (cb) {
@@ -108,6 +115,13 @@ define([
                 });
                 var doXHR = lessEngine.FileManager.prototype.doXHR;
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
+                    console.error(url, COLORTHEME); // XXX
+                    var col = false;
+                    if (url === COLORTHEME) {
+                        col = true;
+                        url = getColorthemeURL();
+                        console.warn(url);
+                    }
                     url = fixURL(url);
                     var cached = tempCache[url];
                     if (cached && cached.res) {
@@ -117,6 +131,10 @@ define([
                     if (cached) { return void cached.queue.push(callback); }
                     cached = tempCache[url] = { queue: [ callback ], res: undefined };
                     return doXHR(url, type, function (text, lastModified) {
+                        if (col) {
+                            console.warn(text, lastModified);
+                            // XXX COLOR: append custom theme here
+                        }
                         cached.res = [ text, lastModified ];
                         var queue = cached.queue;
                         cached.queue = [];
