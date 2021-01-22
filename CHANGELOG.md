@@ -32,7 +32,7 @@ To update from 3.25.1 to 4.0.0:
 Finally, the "rebrand" part of this release:
 
 * Our home page features our new logo, a cleaner layout, new text (notably dropping the use of "zero-knowledge" from our explanation), new app icons, softer colors, neater fonts, and a custom illustration of a document shredder that hints at how CryptPad works.
-* We no longer include a FAQ page with each instance, and instead link to relevant parts of our dedicated documentation platform (https://docs.cryptpad.fr) from any place that previously referenced the FAQ. This will make it easier for translators to focus on text for the platform's interface if they wish.
+* We no longer include a FAQ page with each instance, and instead link to relevant parts of our dedicated documentation platform (https://docs.cryptpad.fr) from any place that previously referenced the FAQ. This will make it easier for translators to focus on text for the platform's interface if they wish. An updated Frequently Asked Questions will be added to the documentation in the near future.
 * Each of our editors now features a dedicated favicon to make it easier to distinguish different CryptPad tabs in your browser.
 * The contact page now points to _Element_ instead of Riot, since the Matrix team rebranded in the last while as well.
 * The "pricing" or "features" page (features.html) reads the server's configured storage limits from a server endpoint and displays them, rather than hardcoding the default values in the text.
