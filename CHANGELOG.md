@@ -1,3 +1,52 @@
+# 4.0.0 (A)
+
+We're very happy to introduce CryptPad v4.0!
+
+This release is the culmination of a great deal of work over the last year, in which we searched for the right metaphors and imagery to clearly represent what CryptPad is all about. We've reworked our logo, color theme, text on our static pages, and the icons throughout the platform to convey the calm and safety we want our users to feel.
+
+Our release schedule typically follows an alphabetical naming scheme, ranging from A for the first (or zero-th) release of the cycle to Z for the last, with a thematic name for each letter. In the rush of preparing translations and double-checking all of our changes we never found time to settle on a theme for this release, but we do find there's some value in maintaining the otherwise arbitrary rhythm we've followed all this time. The progression through the alphabet gives a sense of pace to what can otherwise seem like a endless stream of problems that need solving, and the end of the alphabet prompts us to build towards major milestones like this one.
+
+With that in mind, you can expect 25 more major releases in this cycle before version 5.0, roughly every three weeks or so depending on circumstances.
+
+## Goals
+
+The main intent of this release was to deploy our `rebrand` branch which had been in development for some time. Along the way we also made notable improvements to the sheet editor which will be mentioned below.
+
+## Update notes
+
+In the process of redesigning the platform we started using some new features of the LESS CSS pre-processor language that were not supported by the version of lesshint that we were using to scan for errors. We've updated that dev dependency to a newer version (4.5.0 => 6.3.7) which introduced a rather large number of minor dependencies. These are only used during development, not by the server itself, so this is unlikely to have any impact on the software itself.
+
+Otherwise, this release includes lots of changes to the platform's style sheets and static pages. If you've applied heavy customizations to your instance you might notice errors due to incompatibilities with your local changes. We recommend that you test your customizations against the latest release locally before updating a public instance to avoid service outages.
+
+To update from 3.25.1 to 4.0.0:
+
+1. Stop your server
+2. Get the latest code from the 4.0.0 tag
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
+## Features
+
+* We've built a new version of the web-assembly code used to convert between OnlyOffice's internal representation of spreadsheet data and standard formats like XLSX, ODS, and CSV. We've also improved the ability to print whole sheets and selections in the UI. This still depends on the host browser's support of the required web APIs, but it should work in common browsers except maybe Safari and Internet Explorer.
+* We found that certain issues reported via the built-in support ticket system were not easy to debug without knowing the id of the user's drive. Support tickets now include a `driveChannel` attribute to simplify this process.
+* We've added a variety of settings for the control of how your browser uses a local database to speed up loading times and display cached versions of documents even when disconnected from our server. These are available in the "confidentiality" section of the settings page (https://cryptpad.fr/settings/#security).
+
+Finally, the "rebrand" part of this release:
+
+* Our home page features our new logo, a cleaner layout, new text (notably dropping the use of "zero-knowledge" from our explanation), new app icons, softer colors, neater fonts, and a custom illustration of a document shredder that hints at how CryptPad works.
+* We no longer include a FAQ page with each instance, and instead link to relevant parts of our dedicated documentation platform (https://docs.cryptpad.fr) from any place that previously referenced the FAQ. This will make it easier for translators to focus on text for the platform's interface if they wish. An updated Frequently Asked Questions will be added to the documentation in the near future.
+* Each of our editors now features a dedicated favicon to make it easier to distinguish different CryptPad tabs in your browser.
+* The contact page now points to _Element_ instead of Riot, since the Matrix team rebranded in the last while as well.
+* The "pricing" or "features" page (features.html) reads the server's configured storage limits from a server endpoint and displays them, rather than hardcoding the default values in the text.
+* There is now a custom illustration of a person swallowing a key on the registration page to convey that CryptPad admins cannot restore access to documents if users lose or forget their credentials. This is underscored by highlights to the explanatory text displayed to the left of the form.
+* Our loading screen now features a much simpler color scheme instead of the vibrant blue blocks. This is part of an effort to pave the way for a _dark theme_ that we hope to introduce very soon.
+* Lastly, we've added a number of semantic cues in various places to improve the experience of users that rely on screen-readers. There's still a lot to do in this regard, but this big rewrite was a good opportunity to review some easy pain-points to alleviate.
+
+## Bug fixes
+
+* We found andd fixed a regression in the slide app which caused newly created documents to be initialized without a title.
+* Thanks to a helpful user-report we were able to identify an issue in our rich text editor's _comments_ system that prevented iOS users from typing.
+
 # ZyzomysPedunculatus' revenge (3.25.1)
 
 This minor release is primarily intended to fix some minor issues that were introduced or detected following our 3.25.0 release, but it also includes some major improvements that we want to test and stabilize before our upcoming 4.0.0 release.
