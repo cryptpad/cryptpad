@@ -95,6 +95,9 @@ define([
 
     var COLORTHEME = '/customize/src/less2/include/colortheme.less';
     var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
+    var getColortheme = function () {
+        return window.CryptPad_theme;
+    };
     var getColorthemeURL = function () {
         if (window.CryptPad_theme === 'dark') { return COLORTHEME_DARK; }
         return COLORTHEME;
@@ -133,7 +136,13 @@ define([
                     return doXHR(url, type, function (text, lastModified) {
                         if (col) {
                             console.warn(text, lastModified);
-                            // XXX COLOR: append custom theme here
+                            if (getColortheme() === "custom") {
+                                // XXX COLOR: append custom theme here
+                                var custom = [
+                                    '@cryptpad_text_col: #FF0000;'
+                                ].join('\n');
+                                text += '\n'+custom;
+                            }
                         }
                         cached.res = [ text, lastModified ];
                         var queue = cached.queue;
