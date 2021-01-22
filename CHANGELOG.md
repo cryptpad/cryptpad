@@ -16,6 +16,8 @@ The main intent of this release was to deploy our `rebrand` branch which had bee
 
 In the process of redesigning the platform we started using some new features of the LESS CSS pre-processor language that were not supported by the version of lesshint that we were using to scan for errors. We've updated that dev dependency to a newer version (4.5.0 => 6.3.7) which introduced a rather large number of minor dependencies. These are only used during development, not by the server itself, so this is unlikely to have any impact on the software itself.
 
+Otherwise, this release includes lots of changes to the platform's style sheets and static pages. If you've applied heavy customizations to your instance you might notice errors due to incompatibilities with your local changes. We recommend that you test your customizations against the latest release locally before updating a public instance to avoid service outages.
+
 To update from 3.25.1 to 4.0.0:
 
 1. Stop your server
