@@ -1,6 +1,9 @@
-.tools_placeholder-color (@color) {
+@import (reference) "./colortheme-all.less";
+
+.tools_placeholder-color () {
+    @color: @cp_forms-placeholder;
     &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color: @color;;
+        color: @color;
     }
     &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
         color: @color;

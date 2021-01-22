@@ -9,17 +9,16 @@
 @colortheme_loading_bg: #E7E7E7;
 
 @colortheme_link-color: #0275D8;
-@colortheme_link-color-visited: #005999;
+@colortheme_link-color-visited: lighten(@colortheme_link-color, 10%);
 @colortheme_info-background: #eeeeee;
-
-@colortheme_old-base: #302B28;
-@colortheme_old-fore: #fafafa;
 
 @colortheme_base: #fff;
 @colortheme_light-base: lighten(@colortheme_base, 20%);
 
 @colortheme_cp-red: #FA5858; // remove red
 @colortheme_cp-green: #46E981;
+
+@colortheme_old-fore: #fafafa;
 
 @colortheme_form-border: #bbbbbb;
 @colortheme_form-bg: @colortheme_logo-2;
@@ -48,9 +47,6 @@
 @colortheme_alertify-red: #E55236;
 @colortheme_alertify-red-color: #FFF;
 @colortheme_alertify-red-border: transparent;
-@colortheme_alertify-green: #77C825;
-@colortheme_alertify-green-color: #FFF;
-@colortheme_alertify-green-border: transparent;
 @colortheme_alertify-primary: @colortheme_form-bg;
 @colortheme_alertify-primary-text: @colortheme_form-color;
 @colortheme_alertify-primary-border: transparent;
@@ -60,14 +56,7 @@
 @colortheme_alertify-cancel: @colortheme_modal-bg;
 @colortheme_alertify-cancel-border: #949494;
 
-@colortheme_notification-log: fade(@colortheme_logo-2, 90%);
-@colortheme_notification-color: #fff;;
 @colortheme_notification-warn: rgba(205, 37, 50, 0.8);
-
-@colortheme_dropdown-bg: #f9f9f9;
-@colortheme_dropdown-color: black;
-@colortheme_dropdown-bg-hover: #f1f1f1;
-@colortheme_dropdown-bg-active: #e8e8e8;
 
 // Apps, these colors are used for customizing the toolbar for the apps.
 @colortheme_toolbar-warn: @colortheme_alertify-red;
@@ -115,11 +104,8 @@
 @colortheme_sidebar-button-alt-bg: #fff;
 
 @cryptpad_color_blue: #4591C4;
-@cryptpad_color_grey: #999999;
-@cryptpad_color_light_grey: #e0e0e0;
 @cryptpad_header_col: #1E1F1F;
 @cryptpad_text_col: #3F4141;
-@cryptpad_color_light_blue: #00b7d8;
 
 @colortheme_checkmark-back0: @colortheme_form-bg-alt;
 @colortheme_checkmark-back0-active: @colortheme_form-border;
@@ -128,3 +114,69 @@
 @colortheme_checkmark-back2: @colortheme_form-bg-alt;
 @colortheme_checkmark-col2: @colortheme_form-color-alt;
 @colortheme_checkmark-disabled: #AAA;
+
+// New variables
+
+// Colors
+@cryptpad_color_dark_grey: #999999;
+@cryptpad_color_grey: #e0e0e0;
+@cryptpad_color_light_grey: #f1f1f1;
+@cryptpad_color_lighter_grey: #f9f9f9;
+@cryptpad_color_light_blue: #00b7d8;
+@cryptpad_color_black: #000;
+@cryptpad_color_white: #FFF;
+
+// Alertify
+@cp_alertify-bg: @cryptpad_color_white;
+@cp_alertify-fg: @colortheme_logo-2;
+@cp_alertify-hover: fade(@cp_alertify-fg, 25%);
+@cp_alertify-overlay: fade(@cryptpad_text_col, 50%);
+@cp_alertify-log-bg: fade(@colortheme_logo-2, 90%);
+@cp_alertify-log-fg: @cryptpad_color_white;
+@cp_alertify-warn-bg: rgba(205, 37, 50);
+
+// Forms
+@cp_forms-fg: @cryptpad_text_col;
+@cp_forms-border: @colortheme_logo-2;
+@cp_forms-placeholder: @cryptpad_color_dark_grey;
+@cp_forms-readonly: fade(@colortheme_logo-2, 25%);
+@cp_forms-disabled: #AAA;
+
+// Buttons
+@cp_buttons-fg: @colortheme_logo-2;
+@cp_buttons-default: #CCC;
+@cp_buttons-default-color: @cryptpad_text_col;
+@cp_buttons-default-border: @cryptpad_text_col;
+@cp_buttons-red: #E55236;
+@cp_buttons-red-color: #FFF;
+@cp_buttons-red-border: transparent;
+@cp_buttons-primary: @colortheme_form-bg;
+@cp_buttons-primary-text: @colortheme_form-color;
+@cp_buttons-primary-border: transparent;
+@cp_buttons-disabled: #6c757d;
+@cp_buttons-disabled-text: #ffffff;
+@cp_buttons-disabled-border: #6c757d;
+@cp_buttons-cancel: @colortheme_modal-bg;
+@cp_buttons-cancel-border: #949494;
+
+
+// Tooltip background
+@cp_tooltip-bg: @cryptpad_color_grey;
+@cp_tooltip-fg: @cryptpad_text_col;
+
+// Dropdown
+@cp_dropdown-fg: @cryptpad_text_col;
+@cp_dropdown-bg: @cryptpad_color_lighter_grey;
+@cp_dropdown-bg-hover: @cryptpad_color_light_grey;
+@cp_dropdown-bg-active: @cryptpad_color_grey;
+
+// Rendered Markdown
+@cp_markdown-bg: @cryptpad_color_light_grey;
+@cp_markdown-border: @cryptpad_color_grey;
+
+// Avatar
+@cp_avatar-bg: @cryptpad_color_grey;
+@cp_avatar-fg: @cryptpad_text_col;
+
+// Other
+@cp_shadow-color: rgba(0,0,0,0.4);

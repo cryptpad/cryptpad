@@ -570,9 +570,6 @@
         .cp-toolbar-limit {
             color: @colortheme_toolbar-warn;
         }
-        .cp-dropdown-content.cp-dropdown-left a {
-            color: black;
-        }
     }
 
     .cp-toolbar-top {
@@ -1076,7 +1073,7 @@
                 top: @toolbar_line-height;
                 margin: -1px;
                 min-width: 50px;
-                background: @colortheme_dropdown-bg;
+                background: @cp_dropdown-bg;
                 display: flex;
                 flex-flow: column;
                 z-index: 10000; //Z cp-toolbar-drawer-content
@@ -1111,8 +1108,8 @@
                         vertical-align: baseline;
                     }
                     &:hover {
-                        background-color: @colortheme_dropdown-bg-hover !important;
-                        color: @colortheme_dropdown-color;
+                        background-color: @cp_dropdown-bg-hover !important;
+                        color: @cp_dropdown-fg;
                     }
                 }
             }

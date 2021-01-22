@@ -1,3 +1,5 @@
+@import (reference) "./colortheme-all.less";
+
 // This is a file for generic constants which we didn't want to hardcode everywhere.
 // However, unlike colortheme, customizing these variables will cause breakage.
 
@@ -7,4 +9,4 @@
 
 // Used in modal.less and alertify.less
 @variables_padding: 12px;
-@variables_shadow: 0 8px 32px 0 rgba(0,0,0,.4);
+@variables_shadow: 0 8px 32px 0 @cp_shadow-color;

@@ -6,24 +6,18 @@
 }
 
 & {
-    @alertify-fore: @colortheme_modal-fg;
-    @alertify-btn-fg: @alertify-fore;
-    @alertify-light-bg: fade(@alertify-fore, 25%);
     @alertify_padding-base: @variables_padding;
-    @alertify-input-bg: @colortheme_modal-input;
-    @alertify-input-fg: @colortheme_modal-input-fg;
 
     input:not(.form-control):not([type="checkbox"]), textarea, div.cp-textarea {
         // background-color: @alertify-input-fg;
-        color: @cryptpad_text_col;
-        border: 1px solid @alertify-input-bg;
+        color: @cp_forms-fg;
+        border: 1px solid @cp_forms-border;
         width: 100%;
         font-size: 100%;
         padding: @alertify_padding-base;
         &[readonly] {
-            background-color: @alertify-light-bg;
-            color: @cryptpad_text_col;
-            border-color: @alertify-input-fg;
+            background-color: @cp_forms-readonly;
+            color: @cp_forms-fg;
         }
     }
 
@@ -76,9 +70,9 @@
             height: 3px;
             & > div {
                 height: 100%;
-                background-color: @colortheme_alertify-primary;
+                background-color: @cp_buttons-primary;
                 &.danger, &.btn-danger, &.danger-alt, &.btn-danger-alt {
-                    background-color: @colortheme_alertify-red;
+                    background-color: @cp_buttons-red;
                 }
             }
         }
@@ -89,7 +83,7 @@
 
     button.btn {
 
-        background-color: @colortheme_alertify-cancel;
+        background-color: @cp_buttons-cancel;
         box-sizing: border-box;
         outline: 0;
         align-items: center;
@@ -111,80 +105,63 @@
             vertical-align: middle;
         }
 
-        color: @alertify-btn-fg;
-        border: 1px solid @alertify-btn-fg;
+        color: @cp_buttons-fg;
+        border: 1px solid @cp_buttons-fg;
 
         &.no-margin {
             margin: 0;
         }
 
         &:hover, &:not(:disabled):not(.disabled):active, &:focus {
-            color: @alertify-btn-fg;
-            border: 1px solid @alertify-btn-fg;
-            background-color: lighten(@alertify-fore, 35%);
-        }
-
-        &.safe, &.danger, &.btn-safe, &.btn-danger {
-            color: @colortheme_old-base;
-            white-space: normal;
-            font-weight: bold;
+            color: @cp_buttons-fg;
+            border: 1px solid @cp_buttons-fg;
+            background-color: lighten(@cp_buttons-fg, 35%);
         }
 
         &.btn-default {
-            border-color: @cryptpad_text_col;
-            color: @cryptpad_text_col;
+            border-color: @cp_buttons-default-border;
+            color: @cp_buttons-default-color;
             &:hover, &:not(:disabled):active, &:focus {
-                border-color: @cryptpad_text_col;
-                color: @cryptpad_text_col;
-                background-color: #ccc;
+                border-color: @cp_buttons-default-border;
+                color: @cp_buttons-default-color;
+                background-color: @cp_buttons-default;
             }
         }
 
         &.danger, &.btn-danger {
-            background-color: @colortheme_alertify-red;
-            border-color: @colortheme_alertify-red-border;
-            color: @colortheme_alertify-red-color;
+            background-color: @cp_buttons-red;
+            border-color: @cp_buttons-red-border;
+            color: @cp_buttons-red-color;
             &:hover, &:not(:disabled):active, &:focus {
-                border-color: @colortheme_alertify-red-border;
-                color: @colortheme_alertify-red-color;
-                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
+                border-color: @cp_buttons-red-border;
+                color: @cp_buttons-red-color;
+                background-color: contrast(@cp_buttons-red-color, darken(@cp_buttons-red, 10%), lighten(@colortheme_alertify-red, 10%));
             }
         }
 
         &.danger-alt, &.btn-danger-alt, &.btn-danger-outline {
-            border-color: @colortheme_alertify-red;
-            color: @colortheme_alertify-red;
+            border-color: @cp_buttons-red;
+            color: @cp_buttons-red;
             &:hover, &:not(:disabled):active, &:focus {
-                border-color: @colortheme_alertify-red;
-                color: @colortheme_alertify-red-color;
-                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
-            }
-        }
-
-        &.safe, &.btn-safe {
-            background-color: @colortheme_alertify-green;
-            border-color: @colortheme_alertify-green-border;
-            color: @colortheme_alertify-green-color;
-            &:hover, &:not(:disabled):active, &:focus {
-                border-color: @colortheme_alertify-green-border;
-                color: @colortheme_alertify-green-color;
-                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-green, 10%), lighten(@colortheme_alertify-green, 10%));
+                border-color: @cp_buttons-red;
+                color: @cp_buttons-red-color;
+                background-color: @cp_buttons-red;
             }
         }
 
         &.primary, &.btn-primary, &.btn-success {
-            background-color: @colortheme_alertify-primary;
-            color: @colortheme_alertify-primary-text;
-            border-color: @colortheme_alertify-primary-border;
+            background-color: @cp_buttons-primary;
+            color: @cp_buttons-primary-text;
+            border-color: @cp_buttons-primary-border;
             font-weight: bold;
             &:hover, &:not(:disabled):active, &:focus {
-                color: @colortheme_alertify-primary-text;
-                border-color: @colortheme_alertify-primary-border;
-                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
+                color: @cp_buttons-primary-text;
+                border-color: @cp_buttons-primary-border;
+                background-color: contrast(@colortheme_modal-bg, darken(@cp_buttons-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
             }
         }
 
-        &.btn-light {
+        &.btn-light { // XXX DARK
             border-color: @cryptpad_text_col;
             color: @cryptpad_text_col;
             background-color: transparent;
@@ -196,12 +173,12 @@
         }
 
         &.cancel, &.btn-cancel {
-            border-color: @colortheme_alertify-cancel-border;
-            color: @colortheme_alertify-cancel-border;
+            border-color: @cp_buttons-cancel-border;
+            color: @cp_buttons-cancel-border;
             &:hover, &:not(:disabled):active, &:focus {
-                border-color: @colortheme_alertify-cancel-border;
-                color: @colortheme_alertify-cancel-border;
-                background-color: fade(@colortheme_alertify-cancel-border, 25%);
+                border-color: @cp_buttons-cancel-border;
+                color: @cp_buttons-cancel-border;
+                background-color: fade(@cp_buttons-cancel-border, 25%);
             }
         }
         &.btn-register {
@@ -212,7 +189,7 @@
 
         &:focus {
             //border: 1px dotted @alertify-base;
-            box-shadow: 0px 0px 5px @colortheme_alertify-primary !important;
+            box-shadow: 0px 0px 5px @cp_buttons-primary !important;
             outline: none;
         }
         &::-moz-focus-inner {
@@ -221,11 +198,11 @@
 
         &:disabled {
             cursor: not-allowed !important;
-            background-color: @colortheme_alertify-disabled;
-            color: @colortheme_alertify-disabled-text;
-            border-color: @colortheme_alertify-disabled-border;
+            background-color: @cp_buttons-disabled;
+            color: @cp_buttons-disabled-text;
+            border-color: @cp_buttons-disabled-border;
             &:hover, &:active {
-                background-color: @colortheme_alertify-disabled;
+                background-color: @cp_buttons-disabled;
             }
         }
     }
