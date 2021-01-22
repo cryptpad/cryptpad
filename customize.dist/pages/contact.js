@@ -6,13 +6,9 @@ define([
     '/common/outer/local-store.js'
 ], function (Config, h, Msg, Pages, LocalStore) {
 
-    // XXX translations
-    Msg.contact_adminHint = "For any issues related to your account, storage limit, or availability of the service."; // existing key
-
-
     return function () {
         var adminEmail = Config.adminEmail && Config.adminEmail !== 'i.did.not.read.my.config@cryptpad.fr';
-        var adminMailbox = Config.supportMailbox;
+        var adminMailbox = Config.supportMailbox && LocalStore.isLoggedIn();
         return h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
@@ -38,7 +34,7 @@ define([
                             )
                         )
                     ) : undefined,
-                    (adminMailbox && LocalStore.isLoggedIn()) ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
+                    adminMailbox ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "/support/"},
                             h('div.card-body',
                                 h('p', [

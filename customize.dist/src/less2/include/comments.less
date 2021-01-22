@@ -54,6 +54,8 @@
             height: unset !important;
             max-height: 140px; // 6 lines
             padding: 3px 5px;
+            user-select: text;
+            -webkit-user-select: text; // fix for iOS (can't type in contenteditable if user-select none)
         }
         margin-bottom: 5px;
     }

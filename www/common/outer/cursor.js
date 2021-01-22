@@ -21,6 +21,7 @@ define([
         if (!client || !client.cursor) { return; }
         var chan = ctx.channels[client.channel];
         if (!chan) { return; }
+        if (!chan.sendMsg) { return; } // Store not synced yet, we're running with the cache
         var data = {
             id: client.id,
             cursor: client.cursor

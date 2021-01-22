@@ -35,6 +35,10 @@ define([
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
+    var onCacheReadyEvt = Util.mkEvent(true);
+
+    // Number of days before deleting the cache for a channel or blob
+    var CACHE_MAX_AGE = 90; // DAYS
 
     // Default settings for new users
     var NEW_USER_SETTINGS = {
@@ -333,7 +337,6 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             s.rpc.removeOwnedChannel(channel, function (err) {
-                if (!err) { Cache.clearChannel(channel); }
                 cb({error:err});
             });
         };
@@ -597,6 +600,7 @@ define([
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
+                    driveChannel: store.driveChannel,
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
                     accountName: store.proxy.login_name || '',
@@ -1038,6 +1042,7 @@ define([
             });
         };
         Store.setPadTitle = function (clientId, data, cb) {
+            onReadyEvt.reg(function () {
             var title = data.title;
             var href = data.href;
             var channel = data.channel;
@@ -1193,6 +1198,8 @@ define([
                     onSync(teamId, waitFor());
                 });
             }).nThen(cb);
+
+            });
         };
 
         // Filepicker app
@@ -1268,8 +1275,17 @@ define([
                     }
                 });
             });
+            var result = res || viewRes;
+
+            // If we're not fully synced yet and we don't have a result, wait for the ready event
+            if (!result && store.offline) {
+                onReadyEvt.reg(function () {
+                    Store.getPadDataFromChannel(clientId, obj, cb);
+                });
+                return;
+            }
             // Call back with the best value we can get
-            cb(res || viewRes || {});
+            cb(result || {});
         };
 
         // Hidden hash: if a pad is deleted, we may have to switch back to full hash
@@ -1415,13 +1431,15 @@ define([
         // Universal
         Store.universal = {
             execCommand: function (clientId, obj, cb) {
-                var type = obj.type;
-                var data = obj.data;
-                if (store.modules[type]) {
-                    store.modules[type].execCommand(clientId, data, cb);
-                } else {
-                    return void cb({error: type + ' is disabled'});
-                }
+                onReadyEvt.reg(function () {
+                    var type = obj.type;
+                    var data = obj.data;
+                    if (store.modules[type]) {
+                        store.modules[type].execCommand(clientId, data, cb);
+                    } else {
+                        return void cb({error: type + ' is disabled'});
+                    }
+                });
             }
         };
         var loadUniversal = function (Module, type, waitFor, clientId) {
@@ -1461,17 +1479,23 @@ define([
         // Cursor
         Store.cursor = {
             execCommand: function (clientId, data, cb) {
-                if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
-                store.cursor.execCommand(clientId, data, cb);
+                // The cursor module can only be used when the store is ready
+                onReadyEvt.reg(function () {
+                    if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
+                    store.cursor.execCommand(clientId, data, cb);
+                });
             }
         };
 
         // Mailbox
         Store.mailbox = {
             execCommand: function (clientId, data, cb) {
-                if (!store.loggedIn) { return void cb(); }
-                if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
-                store.mailbox.execCommand(clientId, data, cb);
+                // The mailbox can only be used when the store is ready
+                onReadyEvt.reg(function () {
+                    if (!store.loggedIn) { return void cb(); }
+                    if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
+                    store.mailbox.execCommand(clientId, data, cb);
+                });
             }
         };
 
@@ -2511,8 +2535,7 @@ define([
 
         var onCacheReady = function (clientId, cb) {
             var proxy = store.proxy;
-            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
-            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
+            if (store.manager) { return void cb(); }
             var unpin = function (data, cb) {
                 if (!store.loggedIn) { return void cb(); }
                 Store.unpinPads(null, data, cb);
@@ -2557,6 +2580,8 @@ define([
 
             nThen(function (waitFor) {
                 if (manager) { return; }
+                if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+                if (!proxy.friends_pending) { proxy.friends_pending = {}; }
                 onCacheReady(clientId, waitFor());
                 manager = store.manager;
                 userObject = store.userObject;
@@ -2592,11 +2617,11 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor, clientId); // XXX load teams offline?
+                loadUniversal(Team, 'team', waitFor, clientId); // TODO load teams offline
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
-            var requestLogin = function () {
-                broadcast([], "REQUEST_LOGIN");
+                var requestLogin = function () {
+                    broadcast([], "REQUEST_LOGIN");
                 };
 
                 if (store.loggedIn) {
@@ -2629,14 +2654,14 @@ define([
                 returned.feedback = Util.find(proxy, ['settings', 'general', 'allowUserFeedback']);
                 Feedback.init(returned.feedback);
 
-                // XXX send feedback and logintoken to outer...
                 // "cb" may have already been called by onCacheReady
+                store.returned = returned;
                 if (typeof(cb) === 'function') { cb(returned); }
-                sendDriveEvent('NETWORK_RECONNECT');
-                broadcast([], "UPDATE_METADATA");
+
                 store.offline = false;
-// XXX broadcast READY event with the missing data
-// XXX we can improve feedback to queue the queries and send them when coming back online
+                sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online
+                broadcast([], "UPDATE_METADATA");
+                broadcast([], "STORE_READY", returned);
 
                 if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                     // even anonymous users should have a persistent, unique-ish id
@@ -2691,9 +2716,9 @@ define([
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
-                onReadyEvt.fire();
-
                 loadMailbox();
+
+                onReadyEvt.fire();
             });
         };
 
@@ -2738,15 +2763,39 @@ define([
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
             }).on('cacheready', function (info) {
-                if (!data.cache) { return; }
                 store.offline = true;
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
-                // XXX make sure we have a valid drive available
+                store.cacheReturned = returned;
+
+                if (store.networkPromise && store.networkPromise.then) {
+                    // Check if we can connect
+                    var to = setTimeout(function () {
+                        store.networkTimeout = true;
+                        broadcast([], "LOADING_DRIVE", {
+                            type: "offline"
+                        });
+                    }, 5000);
+
+                    store.networkPromise.then(function () {
+                        clearTimeout(to);
+                    }, function (err) {
+                        console.error(err);
+                        clearTimeout(to);
+                    });
+                }
+
+                if (!data.cache) { return; }
+
+                // Make sure we have a valid user object before emitting cacheready
+                if (rt.proxy && !rt.proxy.drive) { return; }
+
                 onCacheReady(clientId, function () {
                     if (typeof(cb) === "function") { cb(returned); }
+                    onCacheReadyEvt.fire();
                 });
             }).on('ready', function (info) {
+                delete store.networkTimeout;
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
@@ -2815,6 +2864,15 @@ define([
             }, PING_INTERVAL);
         };
 
+        Store.disableCache = function (clientId, disabled, cb) {
+            if (disabled) {
+                Cache.disable();
+            } else {
+                Cache.enable();
+            }
+            cb();
+        };
+
         /**
          * Data:
          *   - userHash or anonHash
@@ -2826,23 +2884,40 @@ define([
          */
         var initialized = false;
 
-        var whenReady = function (cb) {
-            if (store.returned) { return void cb(); }
-            setTimeout(function() {
-                whenReady(cb);
-            }, 100);
-        };
-
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
+
+            // If this is not the first tab and we're offline, callback only if the app
+            // supports offline mode
+            if (initialized && !store.returned && data.cache) {
+                return void onCacheReadyEvt.reg(function () {
+                    callback({
+                        state: 'ALREADY_INIT',
+                        returned: store.cacheReturned
+                    });
+                });
+            }
+
+            // If this is not the first tab (initialized is true), it means either we don't
+            // support offline or we're already online
             if (initialized) {
-                return void whenReady(function () {
+                if (store.networkTimeout) {
+                    postMessage(clientId, "LOADING_DRIVE", {
+                        type: "offline"
+                    });
+                }
+                return void onReadyEvt.reg(function () {
                     callback({
                         state: 'ALREADY_INIT',
                         returned: store.returned
                     });
                 });
             }
+
+            if (data.disableCache) {
+                Cache.disable();
+            }
+
             initialized = true;
             postMessage = function (clientId, cmd, d, cb) {
                 data.query(clientId, cmd, d, cb);
@@ -2858,11 +2933,30 @@ define([
                 }
                 if (ret && ret.error) {
                     initialized = false;
-                } else {
-                    store.returned = ret;
                 }
 
                 callback(ret);
+            });
+
+            // Clear inactive channels from cache
+            onReadyEvt.reg(function () {
+                var inactiveTime = (+new Date()) - CACHE_MAX_AGE * (24 * 3600 * 1000);
+                Cache.getKeys(function (err, keys) {
+                    if (err) { return void console.error(err); }
+                    var next = function () {
+                        if (!keys.length) { return; }
+                        var key = keys.pop();
+                        Cache.getTime(key, function (err, atime) {
+                            if (err) { return void next(); }
+                            if (!atime || atime < inactiveTime) {
+                                Cache.clearChannel(key, next());
+                                return;
+                            }
+                            next();
+                        });
+                    };
+                    next();
+                });
             });
         };
 

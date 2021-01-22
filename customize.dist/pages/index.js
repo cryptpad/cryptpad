@@ -72,33 +72,6 @@ define([
         });
         UI.addTooltips();
 
-
-        // XXX move this button to pages.js to make it available to other pages
-        var _link = h('a', {
-            href: "https://opencollective.com/cryptpad/",
-            target: '_blank',
-            rel: 'noopener',
-        });
-
-        var crowdFunding = h('button', [
-            Msg.crowdfunding_button
-        ]);
-
-        $(crowdFunding).click(function () {
-            _link.click();
-            Feedback.send('HOME_SUPPORT_CRYPTPAD');
-        });
-
-        // XXX translations
-        Msg.home_privacy_title = "Private by design";
-        Msg.home_privacy_text = "CryptPad is built to enable collaboration while keeping data private. All information including documents, chats, and files is encrypted and decrypted by your browser. This means nothing is readable outside of the session where you are logged in. Even the service administrators do not have access to your information.";
-        Msg.home_host_title = "About this instance";
-        Msg.home_host = "This is an independent community instance of CryptPad."; // existing key
-        Msg.home_opensource_title = "Open Source";
-        Msg.home_opensource = 'Anyone can host CryptPad and offer the service in a personal or professional capacity. The source code is available on <a href="https://github.com/xwiki-labs/cryptpad">Github</a>.';
-        Msg.home_support_title = "Support CryptPad";
-        Msg.home_support = "<p>CryptPad does not profit from user's data. This is part of a vision for online services that respect privacy. Instead of pretending to be \"free\" like the big platforms, CryptPad aims to build a sustainable model: funded willingly by users instead of making profits from personal information.</p><p>You can support the project by making a one-time or recurring donation through our Open Collective. Our budget is transparent and updates are published regularly. There are also a number of <a href=\"https://docs.cryptpad.fr/en/how_to_contribute.html\" rel=\"noopener noreferrer\" target=\"_blank\">non-financial ways to contribute</a>.</p>";
-
         var blocks = [
             h('div.row.cp-index-section', [
                 h('div.col-sm-6',
@@ -131,13 +104,13 @@ define([
                 h('div.col-sm-6', [
                     h('h2', Msg.home_support_title),
                     Pages.setHTML(h('span'), Msg.home_support),
-                    crowdFunding
+                    Pages.crowdfundingButton(function () {
+                        Feedback.send('HOME_SUPPORT_CRYPTPAD');
+                    }),
                 ])
             ])
         ];
 
-         // XXX translation
-        Msg.main_catch_phrase = "Collaboration suite,<br>encrypted and open-source";
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
@@ -156,10 +129,10 @@ define([
                             icons,
                         ])
                     ]),
-                    blocks,
+                    blocks
                 ]),
+                Pages.infopageFooter(),
             ]),
-            Pages.infopageFooter(),
         ];
     };
 });

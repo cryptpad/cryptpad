@@ -37,6 +37,16 @@ body {
     margin: 0;
     font-size: 16px;
     font-family: @colortheme_font;
+
+    #cp-main {
+        display: flex;
+        flex-flow: column;
+        min-height: 100vh;
+        & > .cp-container {
+            flex: 1;
+        }
+    }
+
     .cp-container {
         font-size: 16px;
         padding-top: @infopages_padding;
@@ -84,6 +94,7 @@ body {
             color: @colortheme_base;
             border: none;
             padding: 10px 20px;
+            margin-right: 10px;
             border-radius: 0px;
             cursor: pointer;
             &:hover, &:focus {
@@ -117,10 +128,12 @@ body {
         }
     }
     footer {
-        @footer-color: #d9d9d9; // XXX use/make variable
+        @footer-color: #d9d9d9; // FIXME use/make variable
 
         background-color: @footer-color;
         padding-top: 20px;
+        align-self: normal; // override align-items:center from parent in index.html
+
         .container {
             margin-bottom: 20px;
             a {

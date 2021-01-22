@@ -14,6 +14,7 @@ define([
             CREATE_README: Store.createReadme,
             MIGRATE_ANON_DRIVE: Store.migrateAnonDrive,
             PING: function (cId, data, cb) { cb(); },
+            CACHE_DISABLE: Store.disableCache,
             // RPC
             UPDATE_PIN_LIMIT: Store.updatePinLimit,
             GET_PIN_LIMIT: Store.getPinLimit,

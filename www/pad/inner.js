@@ -729,6 +729,11 @@ define([
             cursor.offsetUpdate();
             var oldText = inner.outerHTML;
 
+            // Get scroll position
+            var sTop = $iframe.scrollTop();
+            var sTopMax = $iframe.innerHeight() - $('iframe').innerHeight();
+            var scrollMax = Math.abs(sTop - sTopMax) < 1;
+
             // Apply the changes
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
@@ -765,6 +770,10 @@ define([
             comments.onContentUpdate();
 
             updateTOC();
+
+            if (scrollMax) {
+                $iframe.scrollTop($iframe.innerHeight());
+            }
         });
 
         framework.setTextContentGetter(function() {

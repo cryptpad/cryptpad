@@ -273,7 +273,6 @@ define([
         var hasFriends = opts.hasFriends;
         var onFriendShare = Util.mkEvent();
 
-        Messages.share_noContactsOffline = "OFFLINE"; // XXX
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
         if (priv.offline) {

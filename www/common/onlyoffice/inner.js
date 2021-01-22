@@ -61,6 +61,7 @@ define([
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 3;
     var PENDING_TIMEOUT = 30000;
+    var CURRENT_VERSION = 'v2b';
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x) {
@@ -1183,7 +1184,7 @@ define([
                     "url": url,
                     "permissions": {
                         "download": false,
-                        "print": false,
+                        "print": true,
                     }
                 },
                 "documentType": file.doc,
@@ -1453,15 +1454,74 @@ define([
             makeChannel();
         };
 
+        var x2tReady = Util.mkEvent(true);
+        var fetchFonts = function (x2t) {
+            var path = '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
+            var e = getEditor();
+            var fonts = e.FontLoader.fontInfos;
+            var files = e.FontLoader.fontFiles;
+            var suffixes = {
+                indexR: '',
+                indexB: '_Bold',
+                indexBI: '_Bold_Italic',
+                indexI: '_Italic',
+            };
+            nThen(function (waitFor) {
+                fonts.forEach(function (font) {
+                    // Check if the font is already loaded
+                    if (!font.NeedStyles) { return; }
+                    // Pick the variants we need (regular, bold, italic)
+                    ['indexR', 'indexB', 'indexI', 'indexBI'].forEach(function (k) {
+                        if (typeof(font[k]) !== "number" || font[k] === -1) { return; } // No matching file
+                        var file = files[font[k]];
+
+                        var name = font.Name + suffixes[k] + '.ttf';
+                        Util.fetch(path + file.Id, waitFor(function (err, buffer) {
+                            if (buffer) {
+                                x2t.FS.writeFile('/working/fonts/' + name, buffer);
+                            }
+                        }));
+                    });
+                });
+            }).nThen(function () {
+                x2tReady.fire();
+            });
+        };
+
         var x2tInitialized = false;
         var x2tInit = function(x2t) {
             debug("x2t mount");
             // x2t.FS.mount(x2t.MEMFS, {} , '/');
             x2t.FS.mkdir('/working');
             x2t.FS.mkdir('/working/media');
+            x2t.FS.mkdir('/working/fonts');
             x2tInitialized = true;
+            fetchFonts(x2t);
             debug("x2t mount done");
         };
+        var getX2T = function (cb) {
+            // Perform the x2t conversion
+            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
+                var x2t = window.Module;
+                x2t.run();
+                if (x2tInitialized) {
+                    debug("x2t runtime already initialized");
+                    return void x2tReady.reg(function () {
+                        cb(x2t);
+                    });
+                }
+
+                x2t.onRuntimeInitialized = function() {
+                    debug("x2t in runtime initialized");
+                    // Init x2t js module
+                    x2tInit(x2t);
+                    x2tReady.reg(function () {
+                        cb(x2t);
+                    });
+                };
+            });
+        };
+
 
         /*
             Converting Data
@@ -1470,10 +1530,41 @@ define([
             The filename extension needs to represent the input format
             Example: fileName=cryptpad.bin outputFormat=xlsx
         */
+        var getFormatId = function (ext) {
+            // Sheets
+            if (ext === 'xlsx') { return 257; }
+            if (ext === 'xls') { return 258; }
+            if (ext === 'ods') { return 259; }
+            if (ext === 'csv') { return 260; }
+            if (ext === 'pdf') { return 513; }
+            return;
+        };
+        var getFromId = function (ext) {
+            var id = getFormatId(ext);
+            if (!id) { return ''; }
+            return '<m_nFormatFrom>'+id+'</m_nFormatFrom>';
+        };
+        var getToId = function (ext) {
+            var id = getFormatId(ext);
+            if (!id) { return ''; }
+            return '<m_nFormatTo>'+id+'</m_nFormatTo>';
+        };
         var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
             debug("Converting Data for " + fileName + " to " + outputFormat);
-            // writing file to mounted working disk (in memory)
-            x2t.FS.writeFile('/working/' + fileName, data);
+
+            // PDF
+            var pdfData = '';
+            if (outputFormat === "pdf" && typeof(data) === "object" && data.bin && data.buffer) {
+                // Add conversion rules
+                pdfData = "<m_bIsNoBase64>false</m_bIsNoBase64>" +
+                          "<m_sFontDir>/working/fonts/</m_sFontDir>";
+                // writing file to mounted working disk (in memory)
+                x2t.FS.writeFile('/working/' + fileName, data.bin);
+                x2t.FS.writeFile('/working/pdf.bin', data.buffer);
+            } else {
+                // writing file to mounted working disk (in memory)
+                x2t.FS.writeFile('/working/' + fileName, data);
+            }
 
             // Adding images
             Object.keys(window.frames[0].AscCommon.g_oDocumentUrls.urls || {}).forEach(function (_mediaFileName) {
@@ -1491,10 +1582,16 @@ define([
                 }
             });
 
+
+            var inputFormat = fileName.split('.').pop();
+
             var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                         + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
                         + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
                         + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
+                        + pdfData
+                        + getFromId(inputFormat)
+                        + getToId(outputFormat)
                         + "<m_bIsNoBase64>false</m_bIsNoBase64>"
                         + "</TaskQueueDataConvert>";
             // writing params file to mounted working disk (in memory)
@@ -1514,9 +1611,61 @@ define([
             return result;
         };
 
+        APP.printPdf = function (obj, cb) {
+            getX2T(function (x2t) {
+                //var e = getEditor();
+                //var d = e.asc_nativePrint(undefined, undefined, 0x100 + opts.printType).ImData;
+                var bin = getContent();
+                var xlsData = x2tConvertDataInternal(x2t, {
+                    buffer: obj.data,
+                    bin: bin
+                }, 'output.bin', 'pdf');
+                if (xlsData) {
+                    var md = common.getMetadataMgr().getMetadataLazy();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var title = md.title || md.defaultTitle || type;
+                    var blob = new Blob([xlsData], {type: "application/pdf"});
+                    //var url = URL.createObjectURL(blob, { type: "application/pdf" });
+                    saveAs(blob, title+'.pdf');
+                    //window.open(url);
+                    cb({
+                        "type":"save",
+                        "status":"ok",
+                        //"data":url + "?disposition=inline&ooname=output.pdf"
+                    });
+                    /*
+                    ooChannel.send({
+                        "type":"documentOpen",
+                        "data": {
+                            "type":"save",
+                            "status":"ok",
+                            "data":url + "?disposition=inline&ooname=output.pdf"
+                        }
+                    });
+                    */
+                }
+            });
+        };
+
         var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var xlsData;
+
+            // PDF
+            if (type === "sheet" && extension === "pdf") {
+                var e = getEditor();
+                var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
+                xlsData = x2tConvertDataInternal(x2t, {
+                    buffer: d.data,
+                    bin: data
+                }, filename, extension);
+                if (xlsData) {
+                    var _blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                    UI.removeModals();
+                    saveAs(_blob, finalFilename);
+                }
+                return;
+            }
             if (type === "sheet" && extension !== 'xlsx') {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
                 filename += '.xlsx';
@@ -1535,22 +1684,9 @@ define([
             }
         };
 
-        var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
-            // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
-                var x2t = window.Module;
-                x2t.run();
-                if (x2tInitialized) {
-                    debug("x2t runtime already initialized");
-                    return void x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
-                }
-
-                x2t.onRuntimeInitialized = function() {
-                    debug("x2t in runtime initialized");
-                    // Init x2t js module
-                    x2tInit(x2t);
-                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
-                };
+        var x2tSaveAndConvertData = function(data, filename, extension, finalName) {
+            getX2T(function (x2t) {
+                x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalName);
             });
         };
 
@@ -1561,7 +1697,7 @@ define([
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext = ['.xlsx', /*'.ods',*/ '.bin'];
+            var ext = ['.xlsx', '.ods', '.bin', '.csv', '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="ooslide") {
@@ -1693,7 +1829,9 @@ define([
             // Convert from ODF format:
             // first convert to Office format then to the selected extension
             if (filename.endsWith(".ods")) {
+                console.log(x2t, data, filename, extension);
                 convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
+                console.log(convertedContent);
                 convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
             } else if (filename.endsWith(".odt")) {
                 convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "docx");
@@ -1759,24 +1897,10 @@ define([
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             setTimeout(function () {
-                require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                    var x2t = window.Module;
-                    x2t.run();
-                    if (x2tInitialized) {
-                        debug("x2t runtime already initialized");
-                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                            importFile(convertedContent);
-                        });
-                    }
-
-                    x2t.onRuntimeInitialized = function() {
-                        debug("x2t in runtime initialized");
-                        // Init x2t js module
-                        x2tInit(x2t);
-                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                            importFile(convertedContent);
-                        });
-                    };
+                getX2T(function (x2t) {
+                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(c) {
+                        importFile(c);
+                    });
                 });
             }, 100);
         };
@@ -2216,7 +2340,7 @@ define([
                 Title.updateTitle(Title.defaultTitle);
             }
 
-            var version = 'v2b/';
+            var version = CURRENT_VERSION + '/';
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {

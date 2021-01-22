@@ -38,6 +38,19 @@
         p:empty {
             display: none;
         }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        @media screen and (max-width: 600px) {
+            nav .btn-danger {
+                line-height: inherit;
+            }
+        }
+
     }
 
     .cp-register-det {
@@ -56,10 +69,19 @@
                 margin-bottom: 1em;
             }
         }
+        .cp-reg-form {
+            img {
+                margin-top: 0px;
+                position: relative;
+                z-index: 0;
+            }
+        }
         #userForm {
             padding: 15px;
             background-color: white;
-            height: min-content; // XXX why does the form expand without this?
+            position: relative;
+            z-index: 2;
+            margin-bottom: 100px;
             .cp-shadow();
             .form-control {
                 border-radius: 0;

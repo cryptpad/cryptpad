@@ -91,7 +91,7 @@ define([
                         console.error(e);
                     }
                     bytes += _bytes;
-                }));
+                }), true);
             });
 
             if (!owned) { return; }

@@ -313,6 +313,7 @@ nThen(function (w) {
         Env.Log = _log;
         config.log = _log;
 
+        if (Env.OFFLINE_MODE) { return; }
         if (config.externalWebsocketURL) { return; }
 
         require("./lib/api").create(Env);

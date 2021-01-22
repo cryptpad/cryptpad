@@ -62,12 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    // XXX translations
-    Msg.docs_link = "Documentation";
-    Msg.footer_team = "Contributors";
-    Msg.footer_tos = "Terms of Service";
-
-    Pages.versionString = "v3.25.0 (ZyzomysPedunculatus)";
+    Pages.versionString = "v4.0.0";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
@@ -163,6 +158,42 @@ define([
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
             ].concat(rightLinks))
         );
+    };
+
+    Pages.crowdfundingButton = function (onClick) {
+        var _link = h('a', {
+            href: "https://opencollective.com/cryptpad/",
+            target: '_blank',
+            rel: 'noopener',
+        });
+
+        var crowdFunding = h('button', [
+            Msg.crowdfunding_button
+        ]);
+
+        $(crowdFunding).click(function () {
+            _link.click();
+            if (typeof(onClick) === 'function') { onClick(); }
+        });
+
+        return crowdFunding;
+    };
+
+    Pages.subscribeButton = function (onClick) {
+        var _link = h('a', {
+            href: "/accounts/",
+        });
+
+        var subscribe = h('button', [
+            Msg.subscribe_button
+        ]);
+
+        $(subscribe).click(function () {
+            _link.click();
+            if (typeof(onClick) === 'function') { onClick(); }
+        });
+
+        return subscribe;
     };
 
     return Pages;

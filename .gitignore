@@ -8,6 +8,7 @@ customization
 .*.swp
 *.db
 /customize/
+customize
 messages.log
 .DS_Store
 www/scratch
