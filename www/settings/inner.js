@@ -421,15 +421,13 @@ define([
     Messages.settings_colortheme_custom = "Custom";
 
     makeBlock('colortheme', function (cb) {
-        var store = window.cryptpadStore;
-
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
         var os = window.cryptpadStore.store['colortheme_default'] || 'light';
         var values = ['default', 'light', 'dark', 'custom'];
 
         var defaultTheme = Messages['settings_colortheme_'+os];
         var opts = h('div.cp-settings-radio-container', [
-            values.map(function (key, i) {
+            values.map(function (key) {
                 return UI.createRadio('cp-colortheme-radio', 'cp-colortheme-radio-'+key,
                     Messages._getKey('settings_colortheme_' + key, [defaultTheme]),
                     key === theme, {
@@ -469,51 +467,6 @@ define([
                 spinner.done();
             });
         });
-
-        return;
-        var $cbox = $(UI.createCheckbox('cp-settings-cache',
-            Messages.settings_cacheCheckbox,
-            false, { label: { class: 'noTitle' } }));
-        var spinner = UI.makeSpinner($cbox);
-
-        // Checkbox: "Enable safe links"
-        var $checkbox = $(opts).find('.cp-radio-colortheme input').on('change', function() {
-            spinner.spin();
-            var val = !$checkbox.is(':checked') ? '1' : undefined;
-            store.put('disableCache', val, function () {
-                sframeChan.query('Q_CACHE_DISABLE', {
-                    disabled: Boolean(val)
-                }, function () {
-                    spinner.done();
-                });
-            });
-        });
-
-        store.get('disableCache', function (val) {
-            if (!val) {
-                $checkbox.attr('checked', 'checked');
-            }
-        });
-
-        var button = h('button.btn.btn-danger', [
-            h('i.fa.fa-trash-o'),
-            h('span', Messages.settings_cacheButton)
-        ]);
-        var buttonContainer = h('div.cp-settings-clear-cache', button);
-        var spinner2 = UI.makeSpinner($(buttonContainer));
-        UI.confirmButton(button, {
-            classes: 'btn-danger'
-        }, function () {
-            spinner2.spin();
-            sframeChan.query('Q_CLEAR_CACHE', null, function() {
-                spinner2.done();
-            });
-        });
-
-        cb([
-            $cbox[0],
-            buttonContainer
-        ]);
     }, true);
 
     create['delete'] = function() {
