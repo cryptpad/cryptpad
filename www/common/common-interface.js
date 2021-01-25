@@ -1265,9 +1265,6 @@ define([
 
         var $popup = $(popup);
 
-        if (opts.hidden) {
-            $popup.addClass('cp-minimized');
-        }
         if (opts.big) {
             $popup.addClass('cp-corner-big');
         }

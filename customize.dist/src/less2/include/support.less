@@ -1,8 +1,8 @@
 @import (reference) "./colortheme-all.less";
 .support_main () {
-    @ticket-bg: #F7F7F7;
-    @msg-bg: #eee;
-    @fromme-bg: #ddd;
+    @ticket-bg: @cp_support-bg;
+    @msg-bg: @cp_support-msg-bg;
+    @fromme-bg: @cp_support-header-bg;
     .cp-support-form-container {
         div {
             margin-bottom: 10px;
@@ -25,7 +25,7 @@
             margin-right: 10px;
         }
         &> span {
-            border: 1px solid #ddd;
+            border: 1px solid @fromme-bg;
             margin-right: 5px;
             padding: 10px;
         }

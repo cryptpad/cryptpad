@@ -32,6 +32,7 @@
                 left: 0;
                 top: 0;
                 z-index: 1; // .usage
+                // XXX Check if we can keep the same colors in dark themes
                 &.cp-limit-usage-normal {
                     background: @colortheme_green;
                 }
@@ -45,7 +46,7 @@
         }
 
         .cp-limit-usage-text {
-            color: @cryptpad_text_col;
+            color: @cp_limit-fg;
             margin-left: 5px;
             z-index: 2; // .usageText
             font-size: @colortheme_app-font-size-small;

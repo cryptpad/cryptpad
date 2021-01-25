@@ -8,6 +8,9 @@
         display: none;
         position: absolute;
         z-index: 50000;
+        & > ul {
+            background-color: @cp_context-bg;
+        }
         li {
             padding: 0;
             font-size: @colortheme_app-font-size;
@@ -33,16 +36,25 @@
             }
             a {
                 cursor: pointer;
+                color: @cp_context-fg;
+                &:hover {
+                    background-color: @cp_context-bg-hover;
+                    color: @cp_context-fg;
+                }
+                &:active {
+                    background-color: @cp_context-bg-active;
+                    color: @cp_context-fg;
+                }
                 .fa, .cptools {
                     margin-right: 1rem;
-                    color: @colortheme_context-menu-icon-color;
+                    color: @cp_context-icon;
                     width: 16px;
                 }
             }
         }
         .cp-app-drive-context-noAction {
             font-style: italic;
-            color: #aaa;
+            color: @cp_context-disabled;
             cursor: default;
             display: none;
         }

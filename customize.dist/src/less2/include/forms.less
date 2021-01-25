@@ -17,6 +17,7 @@
         padding: @alertify_padding-base;
         &[readonly] {
             background-color: @cp_forms-readonly;
+            border-color: @cp_forms-readonly-border;
             color: @cp_forms-fg;
         }
     }
@@ -135,7 +136,7 @@
             &:hover, &:not(:disabled):active, &:focus {
                 border-color: @cp_buttons-red-border;
                 color: @cp_buttons-red-color;
-                background-color: contrast(@cp_buttons-red-color, darken(@cp_buttons-red, 10%), lighten(@colortheme_alertify-red, 10%));
+                background-color: contrast(@cp_buttons-red-color, darken(@cp_buttons-red, 10%), lighten(@cp_buttons-red, 10%));
             }
         }
 
@@ -157,7 +158,7 @@
             &:hover, &:not(:disabled):active, &:focus {
                 color: @cp_buttons-primary-text;
                 border-color: @cp_buttons-primary-border;
-                background-color: contrast(@colortheme_modal-bg, darken(@cp_buttons-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
+                background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
             }
         }
 

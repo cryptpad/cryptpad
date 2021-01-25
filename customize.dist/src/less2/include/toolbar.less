@@ -37,11 +37,10 @@
     .modal_main();
 };
 & {
-    @toolbar-color: @cryptpad_text_col;
-    @toolbar-color-light: lighten(@cryptpad_text_col, 10%);
+    @toolbar-color: @cp_toolbar-fg;
 
     .toolbar_vars();
-    @toolbar-top-bg: #eee;
+    @toolbar-top-bg: @cp_toolbar-bg;
     @toolbar_line-height: 32px;
     @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
@@ -60,7 +59,8 @@
 
     .cp-markdown-toolbar {
         height: @toolbar_line-height;
-        background-color: @colortheme_pad-toolbar-bg;
+        background-color: @cp_toolbar-bg;
+        color: @cp_toolbar-fg;
         display: none;
         button {
             height: @toolbar_line-height !important;
@@ -69,7 +69,7 @@
             .toolbar_button;
             font: normal normal normal 14px/1 FontAwesome;
             &:hover {
-                background-color: darken(@colortheme_pad-toolbar-bg, 5%);
+                background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
             &.cp-markdown-help { float: right; }
         }
@@ -102,7 +102,7 @@
         }
         background: transparent;
         &:hover {
-            background-color: rgba(50,50,50,0.3);
+            background-color: @cp_toolbar-fade3;
         }
     }
 
@@ -174,7 +174,7 @@
         .cp-toolbar-userlist-viewer {
             font-style: italic;
             padding: 5px;
-            background: rgba(0,0,0,0.1);
+            background: @cp_toolbar-fade1;
             margin: 2px 0;
         }
 
@@ -194,7 +194,7 @@
                 height: 48px;
                 padding: 5px;
                 margin: 2px 0;
-                background: rgba(0,0,0,0.1);
+                background: @cp_toolbar-fade1;
                 border-right: 3px solid transparent;
                 .avatar_main(30px);
                 .cp-avatar-default, media-tag {
@@ -203,7 +203,7 @@
                 &.cp-userlist-clickable {
                     cursor: pointer;
                     &:hover {
-                        background-color: rgba(0,0,0,0.3);
+                        background: @cp_toolbar-fade3;
                     }
                 }
                 .cp-toolbar-userlist-rightcol {
@@ -263,14 +263,11 @@
         .icons_main();
 
         li {
-            border: 1px solid @colortheme_modal-fg;
+            color: @cp_drive-fg;
+            border: 1px solid @cp_drive-icon-border;
             &:hover {
-                //border: 1px solid @colortheme_modal-fg;
-                background: @colortheme_logo_2_light;
-                color: @cryptpad_text_col;
-                .cptools {
-                    color: @cryptpad_text_col;
-                }
+                background: @cp_drive-icon-hover;
+                color: @cp_drive-fg;
             }
         }
         .cp-modal {
@@ -339,7 +336,7 @@
     }
 
     .cp-toolbar-userlist-drawer {
-        background-color: @colortheme_userlist-bg;
+        background-color: @cp_toolbar-bg;
         color: @toolbar-color;
         .cp-toolbar-userlist-drawer-close {
             color: @toolbar-color;
@@ -348,12 +345,12 @@
             color: @toolbar-color;
         }
         .cp-toolbar-userlist-name-input {
-            background-color: rgba(0,0,0,0.1);
+            background: @cp_toolbar-fade1;
         }
         .cp-toolbar-userlist-button {
             background: transparent;
             &:hover {
-                color: @toolbar-color-light;
+                color: contrast(@cp_toolbar-bg, lighten(@cp_toolbar-fg, 10%), darken(@cp_toolbar-fg, 10%));
             }
         }
     }
@@ -365,8 +362,6 @@
                 outline-width: 0;
             }
         }
-
-        @toolbar-green: #5cb85c;
 
         box-sizing: border-box;
         padding: 0px;
@@ -431,6 +426,7 @@
             margin: 0;
         }*/
 
+        // XXX I don't think we still use any select in the toolbar
         select {
             margin-left: 5px;
             margin-right: 5px;
@@ -568,7 +564,7 @@
         }
 
         .cp-toolbar-limit {
-            color: @colortheme_toolbar-warn;
+            color: @cp_toolbar-warn;
         }
     }
 
@@ -591,7 +587,7 @@
             padding: 0;
             margin: 0 5px;
             font-size: @colortheme_app-font-size;
-            color: @colortheme_toolbar-warn;
+            color: @cp_toolbar-warn;
             .cp-pnp-msg {
                 padding-left: 5px;
                 font-family: @colortheme_font;
@@ -600,7 +596,7 @@
                     font-size: @colortheme_app-font-size;
                     font-family: @colortheme_font;
                     font-weight: bold;
-                    color: @colortheme_toolbar-warn;
+                    color: @cp_toolbar-warn;
                     &:hover {
                         text-decoration: underline;
                     }
@@ -621,7 +617,7 @@
             //flex: 1;
         }
         .cp-toolbar-title {
-            color: @cryptpad_text_col;
+            color: @cp_toolbar-fg;
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -756,7 +752,7 @@
                 }
                 &:hover {
                     border-color: transparent;
-                    background-color: rgba(50,50,50,0.1);
+                    background-color: @cp_toolbar-fade1;
                 }
                 span {
                     vertical-align: top;
@@ -859,7 +855,7 @@
                     padding: 0;
                     &:hover {
                         border-color: transparent;
-                        background-color: rgba(50,50,50,0.1);
+                        background-color: @cp_toolbar-fade1;
                     }
                     span {
                         text-align: center;
@@ -888,7 +884,7 @@
                 border-radius: 0;
                 background: transparent;
                 &:hover {
-                    background-color: rgba(0,0,0,0.2);
+                    background-color: @cp_toolbar-fade1;
                 }
             }
         }
@@ -897,7 +893,7 @@
     .cp-toolbar-history, .cp-toolbar-snapshots {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
-        color: @cryptpad_text_col;
+        color: @toolbar-color;
     }
     .cp-toolbar-snapshots {
         display: none;
@@ -925,7 +921,7 @@
         .cp-toolbar-snapshots-actions {
             button {
                 margin: 0 5px;
-                border: 1px solid @cryptpad_text_col;
+                border: 1px solid @toolbar-color;
                 text-transform: uppercase;
                 i:not(:last-child) {
                     margin-right: 5px;
@@ -936,7 +932,7 @@
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
-        color: @cryptpad_text_col;
+        color: @cp_toolbar-bottom-fg;
         button:hover, button.cp-toolbar-button-active {
             background-color: @toolbar-bg-color-active;
             background-color: var(--toolbar-bg-color-active);
@@ -1062,7 +1058,7 @@
                 display: none;
             }
             .cp-toolbar-drawer-content {
-                box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+                box-shadow: 0px 1px 5px 0px @cp_shadow-color;
                 overflow-y: auto;
                 overflow-x: hidden;
                 &.cp-dropdown-visible {
@@ -1117,7 +1113,7 @@
     }
 
     .cp-toolbar-spinner {
-        color: @cryptpad_text_col;
+        color: @cp_toolbar-fg;
         font-family: "Open Sans";
         font-size: 14px;
         padding: 0 8px;

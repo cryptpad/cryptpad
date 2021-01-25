@@ -1,4 +1,5 @@
 @import (reference) "./colortheme-all.less";
+@import (reference) "./tools.less";
 
 .checkmark_vars(
     @size: 20px
@@ -23,12 +24,12 @@
 }
 & {
     // XXX DARK 
-    @cp_checkmark-back0: @colortheme_form-bg-alt;
-    @cp_checkmark-back0-active: @colortheme_form-border;
-    @cp_checkmark-back1: @colortheme_form-bg;
-    @cp_checkmark-col1: @colortheme_form-color;
-    @cp_checkmark-back2: @colortheme_form-bg-alt;
-    @cp_checkmark-col2: @colortheme_form-color-alt;
+    @cp_checkmark-back0: @cp_forms-bg;
+    @cp_checkmark-back0-active: @cp_forms-disabled;
+    @cp_checkmark-back1: @cp_forms-border;
+    @cp_checkmark-col1: @cp_forms-bg;
+    @cp_checkmark-back2: @cp_forms-bg;
+    @cp_checkmark-col2: @cp_forms-border;
     @cp_checkmark-disabled: @cp_forms-disabled;
 
     .checkmark_vars();
@@ -38,10 +39,7 @@
         display: flex;
         align-items: center;
         position: relative;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        .tools_unselectable();
 
         & > a {
             margin-left: 0.25em;
@@ -103,7 +101,7 @@
             background-color: @cp_checkmark-back0;
             display: flex;
             justify-content: center;
-            border: 1px solid @colortheme_form-border;
+            border: 1px solid @cp_checkmark-disabled;
             flex-shrink: 0;
             &:after {
                 content: "";
@@ -196,7 +194,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid @colortheme_form-border;
+            border: 1px solid @cp_checkmark-disabled;
             flex-shrink: 0;
             &:after {
                 display: none;

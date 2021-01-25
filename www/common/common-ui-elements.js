@@ -2130,6 +2130,7 @@ define([
 
         // Team pad
         var team;
+        // FIXME: broken wen cache is enabled
         var teamExists = privateData.teams && Object.keys(privateData.teams).length;
         var teamValue;
         // storeInTeam can be

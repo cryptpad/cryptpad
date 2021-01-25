@@ -95,6 +95,7 @@ define([
 
     var COLORTHEME = '/customize/src/less2/include/colortheme.less';
     var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
+    //COLORTHEME_DARK = '/customize/src/less2/include/colortheme.less'; // XXX
     var getColortheme = function () {
         return window.CryptPad_theme;
     };

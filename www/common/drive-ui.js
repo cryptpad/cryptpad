@@ -4023,16 +4023,6 @@ define([
 
             $tree.html('');
 
-            /*
-            $(h('button.fa.fa-times.cp-close-button', {
-                title: Messages.filePicker_close
-            })).click(function (e) {
-                e.stopPropagation();
-                $tree.hide();
-                checkCollapseButton();
-            }).appendTo($tree);
-            */
-
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);
             if (displayedCategories.indexOf(SEARCH) !== -1) { createCategory($div, SEARCH); }

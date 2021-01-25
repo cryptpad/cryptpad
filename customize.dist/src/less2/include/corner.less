@@ -4,9 +4,11 @@
     --LessLoader_require: LessLoader_currentFile();
 };
 & {
-    @corner-link: #ffff7a;
     @corner-blue: @colortheme_logo-1;
     @corner-white: @colortheme_base;
+    @corner-blue-alt: darken(@corner-blue, 10%);
+    @corner-white-alt: darken(@corner-white, 10%);
+
 
     @keyframes appear {
         0% {
@@ -32,7 +34,6 @@
         width: 350px;
         padding: 10px;
         background-color: fade(@corner-blue, 95%);
-        border: 1px solid @corner-blue;
         color: @corner-white;
         z-index: 9999;
         transform-origin: bottom right;
@@ -41,7 +42,6 @@
 
         &.cp-corner-alt {
             background-color: fade(@corner-white, 95%);
-            border: 1px solid @corner-blue;
             color: @corner-blue;
         }
 
@@ -53,39 +53,6 @@
             float: left;
             clear: left;
             height: 21px;
-        }
-        .cp-corner-minimize, .cp-corner-maximize {
-            position: absolute;
-            height: 15px;
-            width: 20px;
-            top: 0;
-            right: 0;
-            font-size: 12px;
-            text-align: left;
-            cursor: pointer;
-            line-height: 15px;
-            display: none;
-            &:hover {
-                color: darken(@corner-white, 15%);
-            }
-        }
-        .cp-corner-minimize {
-            display: inline;
-        }
-        &.cp-minimized {
-            transition: transform 0.8s ease-in-out;
-            transform: scale(0.1);
-            animation: none;
-            .cp-corner-text, .cp-corner-actions, .cp-corner-footer {
-                display: none;
-            }
-            .cp-corner-maximize {
-                display: inline;
-                font-size: 130px;
-                width: 180px;
-                height: 200px;
-                line-height: 200px;
-            }
         }
         &.cp-corner-big {
             width: 500px;
@@ -99,13 +66,14 @@
                 font-size: 1.1em;
             }
             &:hover {
-                color: darken(@corner-white, 10%);
+                color: @corner-white-alt;
+
             }
         }
         &.cp-corner-alt {
             .cp-corner-dontshow {
                 &:hover {
-                    color: lighten(@corner-blue, 10%);
+                    color: @corner-blue-alt;
                 }
             }
         }
@@ -124,19 +92,19 @@
                 color: @corner-white;
                 text-decoration: underline;
                 &:hover {
-                    color: darken(@corner-white, 10%);
+                    color: @corner-white-alt;
                 }
             }
         }
         &.cp-corner-alt a {
             color: @corner-blue;
             &:hover {
-                color: lighten(@corner-blue, 10%);
+                color: @corner-blue-alt;
             }
         }
 
         button {
-            padding: 5px;
+        padding: 5px;
             color: @corner-white;
             &:not(:first-child) {
                 margin-left: 10px;
@@ -151,15 +119,15 @@
                 background-color: @corner-white;
                 color: @corner-blue;
                 &:hover {
-                    background-color: lighten(@corner-blue, 50%);
-                    border-color: lighten(@corner-blue, 50%);
+                    background-color: @corner-white-alt;
+                    border-color: @corner-white-alt;
                 }
             }
             &.cp-corner-cancel {
                 background-color: @corner-blue;
                 color: @corner-white;
                 &:hover {
-                    background-color: darken(@corner-blue, 10%);
+                    background-color: @corner-blue-alt;
                 }
             }
         }
@@ -169,15 +137,15 @@
                 background-color: @corner-blue;
                 color: @corner-white;
                 &:hover {
-                    background-color: darken(@corner-blue, 10%);
-                    border-color: darken(@corner-blue, 10%);
+                    background-color: @corner-blue-alt;
+                    border-color: @corner-blue-alt;
                 }
             }
             &.cp-corner-cancel {
                 background-color: @corner-white;
                 color: @corner-blue;
                 &:hover {
-                    background-color: lighten(@corner-blue, 50%);
+                    background-color: @corner-white-alt;
                 }
             }
         }

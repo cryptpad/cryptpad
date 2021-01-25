@@ -6,13 +6,16 @@
         min-height: 0;
         align-items: center;
         justify-content: center;
+        background-color: @cp_export-bg;
+        color: @cp_export-fg;
         .cp-export-block {
             width: 800px;
             max-width: 90vw;
+            // XXX Keep hardcoded progress bar colors for now...
             .cp-export-progress-bar-container {
                 height: 24px;
                 background: white;
-                border: 1px solid #DDD;
+                border: 1px solid ;
                 width: 80%;
                 margin: auto;
                 position: relative;
@@ -33,7 +36,7 @@
                 }
             }
             & > p {
-                color: #777;
+                color: @cp_export-hint;
             }
             .cp-export-progress {
                 margin-bottom: 1rem;
@@ -58,8 +61,8 @@
                 display: none;
                 overflow-x: auto;
                 max-height: 300px;
-                background: #ededed;
-                border: 1px solid #777;
+                background: @cp_export-error-bg;
+                border: 1px solid @cp_export-hint;
                 padding: 5px 20px;
                 margin-top: 1rem;
                 & > p {
@@ -69,7 +72,7 @@
                     & > div {
                         padding: 5px 10px;
                         margin: 5px 0;
-                        background: #dedede;
+                        background: @cp_export-error-bg2;
                         .title {
                             font-weight: bold;
                         }
@@ -79,7 +82,7 @@
                         }
                         .reason {
                             padding: 0 20px;
-                            color: #777;
+                            color: @cp_export-hint;
                         }
                     }
                 }
