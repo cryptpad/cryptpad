@@ -1,13 +1,3 @@
-(function () {
-try {
-    if (!window.cryptpadStore) { return; }
-    var theme = window.cryptpadStore.store['colortheme'];
-    var os = window.cryptpadStore.store['colortheme_default'];
-    window.CryptPad_theme = theme || os;
-    console.error(theme, os);
-} catch (e) { console.error(e); }
-})();
-
 // This is stage 1, it can be changed but you must bump the version of the project.
 // Note: This must only be loaded from inside of a sandbox-iframe.
 define([

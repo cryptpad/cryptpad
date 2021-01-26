@@ -11,10 +11,13 @@ define([
     common.initIframe = function (waitFor, isRt, pathname) {
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
+        var themeKey = 'CRYPTPAD_STORE|colortheme';
         var req = {
             cfg: requireConfig,
             req: [ '/common/loading.js' ],
             pfx: window.location.origin,
+            theme: localStorage[themeKey],
+            themeOS: localStorage[themeKey+'_default'],
             lang: lang
         };
         window.rc = requireConfig;
