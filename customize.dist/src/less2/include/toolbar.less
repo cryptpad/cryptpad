@@ -15,8 +15,8 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
-    @toolbar-bg-color-light: lighten(@bg-color, 30%);
-    @toolbar-bg-color-active: lighten(@bg-color, 20%);
+    @toolbar-bg-color-light: contrast(@cp_toolbar-fg, lighten(@bg-color, 30%), darken(@bg-color, 30%));
+    @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@bg-color, 20%));
 };
 
 .toolbar_main (
