@@ -22,6 +22,11 @@ try {
             localStorage[key+'_default'] = os;
         }
     }
+    if (window.CryptPad_theme === 'dark') {
+        var s = document.createElement('style');
+        s.innerHTML = 'body { background: black; }';
+        document.body.appendChild(s);
+    }
     //localStorage[key] = theme;
     // If the wrong theme is built, flush it
     /* XXX flush cache when change
