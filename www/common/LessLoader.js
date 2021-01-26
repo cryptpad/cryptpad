@@ -121,19 +121,20 @@ define([
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
                     console.error(url, COLORTHEME); // XXX
                     var col = false;
+                    var _url = url;
                     if (url === COLORTHEME) {
                         col = true;
                         url = getColorthemeURL();
                         console.warn(url);
                     }
                     url = fixURL(url);
-                    var cached = tempCache[url];
+                    var cached = tempCache[_url];
                     if (cached && cached.res) {
                         var res = cached.res;
                         return void setTimeout(function () { callback(res[0], res[1]); });
                     }
                     if (cached) { return void cached.queue.push(callback); }
-                    cached = tempCache[url] = { queue: [ callback ], res: undefined };
+                    cached = tempCache[_url] = { queue: [ callback ], res: undefined };
                     return doXHR(url, type, function (text, lastModified) {
                         if (col) {
                             console.warn(text, lastModified);
