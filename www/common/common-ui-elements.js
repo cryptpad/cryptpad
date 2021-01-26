@@ -1615,7 +1615,6 @@ define([
                 },
                 content: h('span', Messages.type.drive),
                 action: function () {
-                    //Util.open(origin + '/drive/', '_blank');
                     Common.openURL(origin+'/drive/');
                 },
             });
@@ -1628,7 +1627,6 @@ define([
                 },
                 content: h('span', Messages.type.teams),
                 action: function () {
-                    //Util.open(origin + '/teams/', '_blank');
                     Common.openURL('/teams/');
                 },
             });

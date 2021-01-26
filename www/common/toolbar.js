@@ -842,9 +842,6 @@ MessengerUI, Messages) {
         }));*/
         var onClick = function (e) {
             e.preventDefault();
-
-            return void Util.open(href);
-
             if (e.ctrlKey) {
                 Common.openURL(href);
                 return;

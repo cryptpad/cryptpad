@@ -129,7 +129,7 @@ define([
 
         APP.$link = $('<a>', {
             'class': LINK_ID,
-            target: '_blank', // XXX
+            target: '_blank',
             rel: 'noreferrer noopener'
         }).appendTo($block).hide();
 

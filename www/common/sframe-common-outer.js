@@ -473,8 +473,6 @@ define([
                         // `isNewChannel` doesn't work for files (not a channel)
                         // `getFileSize` is not adapted to channels because of metadata
                         Cryptpad.getFileSize(currentPad.href, password, w(function (e, size) {
-                            console.error('GET_FILE_SIZE', e, size);
-                            if (e === 'DISCONNECTED') { return void todo(); } // XXX handle disconnected case
                             if (size !== 0) { return void todo(); }
                             // Wrong password or deleted file?
                             askPassword(true, passwordCfg);
@@ -483,9 +481,6 @@ define([
                     }
                     // Not a file, so we can use `isNewChannel`
                     Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
-                        console.error('IS_NEW_CHANNEL', e, isNew);
-                        if (e === 'DISCONNECTED') { return void todo(); } // XXX if offline just proceed to use the cache?
-
                         if (isNew && expire && expire < (+new Date())) {
                             sframeChan.event("EV_EXPIRED_ERROR");
                             waitFor.abort();
@@ -502,13 +497,6 @@ define([
                         if (!stored && !parsed.hashData.password) {
                             // We've received a link without /p/ and it doesn't work without a password: abort
                             return void todo();
-                        }
-
-                        // XXX is this required?
-                        if (e === "ANON_RPC_NOT_READY") {
-                            // We're currently offline and the pad is not in our cache
-                            w.abort();
-                            return void sframeChan.event('EV_OFFLINE');
                         }
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);

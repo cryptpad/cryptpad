@@ -141,7 +141,6 @@ define([
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
-                        //Util.open(origin + $link.attr('href'), '_blank'); // XXX
                         common.openURL($link.attr('href'));
                     });
                 var title = metadata.name;
