@@ -458,6 +458,7 @@ define([
             }
 
             if (val === 'default') { val = ''; }
+            window.location.hash = ''; // XXX This is a hack to fix Firefox trying to be smart
             sframeChan.query('Q_COLORTHEME_CHANGE', {
                 theme: val,
                 flush: flush
