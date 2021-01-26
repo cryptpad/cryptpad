@@ -2546,7 +2546,7 @@ define([
         var info = h('p.cp-password-info', Messages.password_info);
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var $password = $(password);
-        var button = h('button', Messages.password_submit);
+        var button = h('button.btn.btn-primary', Messages.password_submit);
         cfg = cfg || {};
 
         if (cfg.value && !isError) {
@@ -2587,7 +2587,7 @@ define([
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
         var info = h('p.cp-password-info', Messages.burnAfterReading_warningAccess);
-        var button = h('button.primary', Messages.burnAfterReading_proceed);
+        var button = h('button.btn.primary', Messages.burnAfterReading_proceed);
 
         $(button).on('click', function () {
             cb();
