@@ -13,7 +13,7 @@
     .cp-clickable {
         cursor: pointer;
         &:hover {
-            background-color: rgba(0,0,0,0.1);
+            background-color: @cp_notif-hover;
         }
     }
 
@@ -29,9 +29,8 @@
             flex-direction: row;
             justify-content: flex-start;
             align-items: center;
-//            border-radius: 5px 5px 0 0;
-            background-color: #888;
-            color: #fff;
+            background-color: @cp_notif-header-bg;
+            color: @cp_notif-header-fg;
 
             .cp-app-notifications-panel-title {
                 flex-grow: 1;
@@ -63,9 +62,8 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: stretch;
-            border: 1px solid #ccc;
+            border: 1px solid @cp_notif-table-border;
             border-top: none;
-//            border-radius: 0 0 5px 5px;
             overflow: hidden;
 
             .cp-notification {
@@ -73,12 +71,12 @@
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: center;
-                background-color: #ffffff;
+                background-color: @cp_notif-bg;
                 &.no-notifications {
                     display: none;
                     padding: 1rem 1rem;
                     font-style: italic;
-                    color: #777;
+                    color: @cp_notif-fg;
                     &:only-child {
                         display: block;
                     }
@@ -88,14 +86,14 @@
                     padding: 0 10px;
                     cursor: pointer;
                     &:hover {
-                        background-color: rgba(0,0,0,0.1);
+                        background-color: @cp_notif-hover;
                     }
                 }
                 &.cp-app-notification-archived {
-                    background-color: #f1f1f1;
+                    background-color: @cp_notif-bg;
                 }
                 &:not(:first-child) {
-                    border-top: 1px solid #ccc;
+                    border-top: 1px solid @cp_notif-table-border;
                 }
                 &.dismissed {
                     display: none;
@@ -127,7 +125,7 @@
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
-                    border-left: 1px solid #ccc;
+                    border-left: 1px solid @cp_notif-table-border;
                     width: 3rem;
                 }
             }
@@ -141,8 +139,9 @@
         align-items: center;
         width: 100%;
         padding: 0.5rem;
-        border: 1px solid #ccc;
-        color: #333;
+        background-color: @cp_notif-bg;
+        border: 1px solid @cp_notif-table-border;
+        color: @cp_notif-fg;
     }
 
 }

@@ -202,7 +202,7 @@ define([
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars'})); }
             if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user'})); }
-            if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-pad'})); }
+            if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-richtext'})); }
             if (key === 'archived') { $category.append($('<span>', {'class': 'fa fa-archive'})); }
 
             if (key === active) {
