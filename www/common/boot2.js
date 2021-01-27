@@ -14,6 +14,7 @@ try {
     var os = isDarkOS() ? 'dark' : 'light';
     var key = 'CRYPTPAD_STORE|colortheme';
     window.CryptPad_theme = localStorage[key] || os;
+    console.error(localStorage[key], os);
     if (!localStorage[key]) {
         // We're using OS theme, check if we need to change
         if (os !== localStorage[key+'_default']) {
