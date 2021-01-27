@@ -76,6 +76,10 @@
                 height: 100%;
                 vertical-align: middle;
                 padding-right: 4px;
+                color: @cp_token-fg;
+                &:hover {
+                    color: contrast(@cp_token-fg, darken(@cp_token-fg, 10%), lighten(@cp_token-fg, 10%));
+                }
             }
         }
         .token-input {

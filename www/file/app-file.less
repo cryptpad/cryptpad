@@ -14,6 +14,7 @@
     // body
     display: flex;
     flex-flow: column;
+    background-color: @cp_app-bg;
 
     #cp-app-file-content {
         flex: 1;
@@ -57,7 +58,8 @@
             width: 90vw;
             height: 100%;
             padding: 2em;
-            background-color: white;
+            background-color: @cp_mediatag-text-bg;
+            color: @cp_mediatag-text-fg;
             overflow-y: auto;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -77,14 +79,14 @@
             margin-top: 5px;
             height: 40px;
             font-size: 20px;
-            border: 1px solid @colortheme_logo-2;
+            border: 1px solid @cp_file-progress-bg;
             background: white;
-            color: @cryptpad_text_col;
+            color: @cp_file-progress-fg;
             display: flex;
             justify-content: space-between;
             position: relative;
             .cp-app-file-progress-dl {
-                border-right: 1px solid @cryptpad_text_col;
+                border-right: 1px solid @cp_file-progress-fg;
             }
             .cp-app-file-progress-dl, .cp-app-file-progress-dc {
                 width: 50%;
@@ -99,7 +101,7 @@
                 top: 0;
                 left: 0;
                 bottom: 0;
-                background: @colortheme_logo-2;
+                background: @cp_file-progress-bg;
             }
         }
         .cp-app-file-progress-txt {
@@ -116,7 +118,8 @@
         display: block;
         margin: 50px auto;
         max-width: 80vw;
-        label {
+        button {
+            width: 100%;
             line-height: ~"calc(50vh - 20px)";
             text-align: center;
             position: relative;
@@ -143,10 +146,6 @@
             }
         }
     }
-    .cp-app-file-hovering {
-        background-color: rgba(255, 0, 115, 0.5) !important;
-    }
-
     .cp-app-file-block {
         display: block;
     }
@@ -154,31 +153,9 @@
         display: none;
     }
     .cp-app-file-input + label {
-        //border: 2px solid black;
-        //background-color: rgba(50, 50, 50, .10);
         display: block;
     }
 
-    .cp-app-file-input:focus + label,
-    .cp-app-file-input + label:hover {
-        //background-color: rgba(50, 50, 50, 0.30);
-    }
-
-    #cp-app-file-dlprogress {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-
-
-        transition: width 200ms;
-        width: 0%;
-        max-width: 100%;
-        max-height: 100%;
-        background-color: rgba(255, 0, 115, 0.75);
-        z-index: 10000;
-        display: block;
-    }
 
     #cp-app-file-download-view {
         flex: 1;
