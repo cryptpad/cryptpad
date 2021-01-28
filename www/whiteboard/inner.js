@@ -88,7 +88,7 @@ define([
             ctx.moveTo(size/2, size); ctx.lineTo(size/2, size-10);
             ctx.moveTo(0, size/2); ctx.lineTo(10, size/2);
             ctx.moveTo(size, size/2); ctx.lineTo(size-10, size/2);
-            ctx.strokeStyle = '#000000';
+            ctx.strokeStyle = window.CryptPad_theme === 'dark' ? '#FFFFFF' : '#000000';
             ctx.stroke();
 
             var img = ccanvas.toDataURL("image/png");

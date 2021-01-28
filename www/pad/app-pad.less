@@ -7,7 +7,9 @@ body.cp-app-pad {
         @bg-color: @colortheme_apps[pad],
     );
 
-    @bg-color: #e3e3e3;
+    @bg-color: @cp_app-bg;
+    @toolbar-bg-active: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 10%), lighten(@cp_toolbar-bg, 10%));
+
 
     display: flex;
     flex-flow: column;
@@ -29,7 +31,7 @@ body.cp-app-pad {
         margin-top: 10px;
         margin-left: 10px;
         width: 200px;
-        color: @cryptpad_text_col;
+        color: @cp_pad-fg;
         h2 {
             font-size: 1.5rem;
         }
@@ -39,7 +41,7 @@ body.cp-app-pad {
             white-space: nowrap;
             text-overflow: ellipsis;
             a {
-                color: @cryptpad_text_col;
+                color: @cp_pad-fg;
             }
             &.cp-pad-toc-2 {
                 margin-left: @toc-level-indent;
@@ -51,7 +53,8 @@ body.cp-app-pad {
     }
 
     .cke_toolbox_main {
-        background-color: @colortheme_pad-toolbar-bg;
+        background-color: @cp_toolbar-bg;
+        color: @cp_toolbar-fg;
         .cke_toolbar {
             height: 28px;
             padding: 2px 0;
@@ -66,8 +69,22 @@ body.cp-app-pad {
         .cke_button__print {
             display: none !important;
         }
-        .cke_button {
+        .cke_combo_on .cke_combo_button {
+            background-color: @toolbar-bg-active;
+            border-color: @toolbar-bg-active;
+        }
+        .cke_button, .cke_combo_button {
             .tools_unselectable();
+            &.cke_button_on, &.cke_combo_button:hover, &.cke_button_off:hover {
+                background-color: @toolbar-bg-active;
+                border-color: @toolbar-bg-active;
+            }
+            .cke_combo_text {
+                color: @cp_toolbar-fg;
+            }
+            .cke_button_icon {
+                filter: @cp_pad-icon-filter;
+            }
         }
     }
     .cke_wysiwyg_frame {

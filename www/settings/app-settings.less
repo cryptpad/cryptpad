@@ -48,12 +48,6 @@
                     width: @sidebar_button-width;
                     max-width: 100%;
                     margin: 0 !important;
-                    background-color: @colortheme_sidebar-button-alt-bg;
-                    border-color: #adadad;
-                    color: black;
-                    &:hover {
-                        background-color: darken(@colortheme_sidebar-button-alt-bg, 15%);
-                    }
                 }
             }
             .cp-sidebarlayout-input-block {
@@ -106,79 +100,6 @@
                         margin-right: 5px;
                     }
                     margin-right: 5px;
-                }
-            }
-            .cp-settings-creation-owned, .cp-settings-creation-expire,
-            .cp-settings-creation-skip, .cp-settings-creation-template {
-                input[type="radio"] {
-                    display: none;
-                    &:checked {
-                        & + label {
-                            font-weight: bold;
-                            background-color: @colortheme_logo-2;
-                            cursor: default;
-                            border: 1px solid @colortheme_logo-2;
-                            color: @colortheme_loading-color;
-                            &:hover {
-                                background-color: @colortheme_logo-2;
-                            }
-                        }
-                    }
-                }
-                input[type="radio"] + label {
-                    .tools_unselectable();
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 200px;
-                    height: 50px;
-                    padding: 5px;
-                    margin: 0 20px;
-                    color: @colortheme_logo-2;
-                    border: 1px solid @colortheme_logo-2;
-                    cursor: pointer;
-                    &:hover {
-                        background-color: lighten(@colortheme_logo-2, 35%);
-                    }
-                }
-                .fa {
-                    margin-left: 50px;
-                }
-            }
-            .cp-settings-creation-skipped {
-                display: none !important; // we have to override an inline style attribute
-            }
-            .cp-settings-creation-expire {
-                #cp-creation-expire-true {
-                    display: none;
-                    &:checked {
-                        & + label {
-                            height: 100px;
-                            .cp-creation-expire-picker {
-                                display: inline;
-                            }
-                        }
-                    }
-                }
-                label[for="cp-creation-expire-true"] {
-                    flex-wrap: wrap;
-                    .cp-creation-expire-picker {
-                        display: none;
-                    }
-                    input {
-                        width: 70px;
-                        padding: 0 5px;
-                    }
-                    select {
-                        width: 100px;
-                    }
-                    input, select {
-                        border: none;
-                        height: 30px;
-                        background: @colortheme_loading-bg;
-                        color: @colortheme_loading-color;
-                        border-radius: 3px;
-                    }
                 }
             }
         }

@@ -132,6 +132,9 @@ define([
                 APP.teamEdPublic = null;
                 APP.drive = null;
                 APP.cryptor = null;
+                APP.toolbar.$bottomR.empty();
+                APP.toolbar.$bottomM.empty();
+                APP.toolbar.$bottomL.empty();
                 APP.buildUI(common);
                 if (APP.usageBar) {
                     APP.usageBar.stop();
@@ -403,6 +406,12 @@ define([
             });
         });
     };
+    var canCreateTeams = function (teams) {
+        var owned = Object.keys(teams || {}).filter(function (id) {
+            return teams[id].owner;
+        }).length;
+        return Constants.MAX_TEAMS_OWNED - owned;
+    };
     var refreshList = function (common, cb) {
         var content = [];
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
@@ -412,6 +421,7 @@ define([
             var list = [];
             var keys = Object.keys(obj).slice(0,MAX_TEAMS_SLOTS);
             var slots = '('+Math.min(keys.length, MAX_TEAMS_SLOTS)+'/'+MAX_TEAMS_SLOTS+')';
+            var createSlots = canCreateTeams(obj);
             for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
                 obj[i] = {
                     empty: true
@@ -421,8 +431,10 @@ define([
 
             content.push(h('h3', Messages.team_listTitle + ' ' + slots));
 
+            console.error(createSlots, Constants);
             APP.teams = {};
 
+            var created = 0;
             keys.forEach(function (id) {
                 if (!obj[id].empty) {
                     APP.teams[id] = {
@@ -431,23 +443,34 @@ define([
                 }
 
                 var team = obj[id];
+
+                var createBtn;
+                var createCls = '';
+                if (team.empty && created < createSlots) {
+                    createBtn = h('div.cp-team-list-team-create', [
+                        h('i.fa.fa-plus-circle'),
+                        h('span', Messages.team_cat_create)
+                    ]);
+                    createCls = '.create';
+                    created++;
+                }
                 if (team.empty) {
-                    list.push(h('div.cp-team-list-team.empty', [
-                        h('span.cp-team-list-name.empty', Messages.team_listSlot)
+                    list.push(h('div.cp-team-list-team.empty'+createCls, [
+                        h('span.cp-team-list-name.empty', Messages.team_listSlot),
+                        createBtn
                     ]));
                     return;
                 }
-                var btn;
                 var avatar = h('span.cp-avatar');
-                list.push(h('div.cp-team-list-team', [
+                var teamDiv = h('div.cp-team-list-team', [
                     h('span.cp-team-list-avatar', avatar),
                     h('span.cp-team-list-name', {
                         title: team.metadata.name
                     }, team.metadata.name),
-                    btn = h('button.cp-team-list-open.btn.btn-primary', Messages.team_listLoad)
-                ]));
+                ]);
+                list.push(teamDiv);
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(btn).click(function () {
+                $(teamDiv).click(function () {
                     if (team.error) {
                         UI.warn(Messages.error); // FIXME better error message - roster bug, can't load the team for now
                         return;

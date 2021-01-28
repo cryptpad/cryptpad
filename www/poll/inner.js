@@ -1263,10 +1263,10 @@ define([
                         ]),
                         h('div#cp-app-poll-table-container', [
                             h('div#cp-app-poll-table-scroll', [h('table')]),
-                            h('button#cp-app-poll-create-user.btn.btn-secondary', {
+                            h('button#cp-app-poll-create-user.btn.btn-default', {
                                 title: Messages.poll_create_user
                             }, Messages.poll_commit),
-                            h('button#cp-app-poll-create-option.btn.btn-secondary', {
+                            h('button#cp-app-poll-create-option.btn.btn-default', {
                                 title: Messages.poll_create_option
                             }, h('span.fa.fa-plus')),
                         ]),

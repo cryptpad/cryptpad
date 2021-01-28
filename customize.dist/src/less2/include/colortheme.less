@@ -142,6 +142,7 @@
 @cryptpad_color_white: #FFF;
 @cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_green: #5cb85c;
+@cryptpad_color_light_yellow: #FFE69C;
 
 @cryptpad_color_link: #0275D8;
 
@@ -203,7 +204,7 @@
 @cp_buttons-cancel-border: #949494;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_grey;
+@cp_sidebar-left-bg: @cryptpad_color_toolbar_grey;
 @cp_sidebar-left-fg: @cryptpad_color_black;
 @cp_sidebar-left-active: @cryptpad_color_white;
 @cp_sidebar-right-bg: @cryptpad_color_white;
@@ -216,6 +217,7 @@
 @cp_drive-header-fg: @cryptpad_color_dark_grey;
 @cp_drive-icon-hover: @cryptpad_color_grey;
 @cp_drive-icon-border: @cryptpad_color_neutral2_grey;
+@cp_drive-thumb-bg: @cryptpad_color_white;
 @cp_drive-selected-bg: @cryptpad_color_dark_grey;
 @cp_drive-selected-fg: contrast(@cp_drive-droppable-bg, @cryptpad_text_col, @cryptpad_color_light_grey);
 @cp_drive-selection-overlay: fade(@cryptpad_color_black, 70%);
@@ -347,6 +349,7 @@
 // Apps
 
 @cp_app-bg: @cryptpad_color_light_grey;
+@cp_app-fg: @cryptpad_text_col;
 
 // Accounts
 @cp_accounts-basic: @cryptpad_color_basic;
@@ -405,4 +408,42 @@
 @cp_notif-bg: @cryptpad_color_lighter_grey;
 @cp_notif-fg: @cryptpad_text_col;
 
-// XXX OO OO OO OO OO
+// OO
+@cp_oo-offline-overlay: fade(@cryptpad_color_white, 50%);
+
+// Rich text
+@cp_pad-fg: @cryptpad_text_col;
+@cp_pad-icon-filter: none;
+
+// Poll
+@cp_poll-th-bg: @cryptpad_color_lighter_blue;
+@cp_poll-th-fg: @cryptpad_text_col;
+@cp_poll-uncommitted-bg: @cryptpad_color_toolbar_grey;
+@cp_poll-border-color: @cryptpad_color_hint_grey;
+@cp_poll-cell-fg: @cryptpad_text_col;
+@cp_poll-unset: @cryptpad_color_help_grey;
+@cp_poll-yes: @cryptpad_color_light_green;
+@cp_poll-no: @cryptpad_color_light_red;
+@cp_poll-maybe: @cryptpad_color_light_yellow;
+@cp_poll-hint: @cryptpad_color_dark_grey;
+
+// Profile
+@cp_profile-border: @cryptpad_color_help_grey;
+@cp_profile-hint: @cryptpad_color_hint_grey;
+
+// SLide
+@cp_slide-fg: @cp_app-fg;
+@cp_slide-css-error: @cryptpad_color_toolbar_grey;
+
+// Teams
+@cp_teams-card-bg: @cryptpad_color_grey;
+@cp_teams-leftside-bg: @cryptpad_color_grey;
+@cp_teams-invite-bg: fade(@colortheme_logo-2, 50%);
+@cp_teams-invite-fg: @cryptpad_text_col;
+@cp_teams-roster-odd: fade(@cryptpad_text_col, 15%);
+
+// Whiteboard
+@cp_whiteboard-board-bg: @cryptpad_color_white;
+@cp_whiteboard-board-border: @cryptpad_color_hint_grey;
+@cp_whiteboard-bg: @cp_app-bg;
+@cp_whiteboard-fg: @cryptpad_text_col;

@@ -23,8 +23,6 @@ define([
         UI: UI
     };
 
-    var requireConfig = RequireConfig();
-
     // Loaded in load #2
     nThen(function (waitFor) {
         $(waitFor());
