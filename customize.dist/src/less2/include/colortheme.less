@@ -117,14 +117,14 @@
 // Sidebar layout
 @cp_sidebar-left-bg: @cryptpad_color_toolbar_grey;
 @cp_sidebar-left-fg: @cryptpad_color_black;
-@cp_sidebar-left-active: @cryptpad_color_white;
 @cp_sidebar-right-bg: @cryptpad_color_white;
 @cp_sidebar-right-fg: @cryptpad_text_col; // XXX was black
+@cp_sidebar-left-active: @cp_sidebar-right-bg;
 @cp_sidebar-hint: @cryptpad_color_hint_grey;
 
 // Drive
-@cp_drive-bg: @cryptpad_color_white;
-@cp_drive-fg: @cryptpad_text_col;
+@cp_drive-bg: @cp_sidebar_right-bg;
+@cp_drive-fg: @cp_sidebar-right-fg;
 @cp_drive-header-fg: @cryptpad_color_dark_grey;
 @cp_drive-icon-hover: @cryptpad_color_grey;
 @cp_drive-icon-border: @cryptpad_color_neutral2_grey;
