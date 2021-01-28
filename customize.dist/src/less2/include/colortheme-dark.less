@@ -79,8 +79,8 @@
 @cp_messenger-online: @cryptpad_color_light_green;
 
 // Alertify
-@cp_alertify-bg: @cryptpad_color_white;
-@cp_alertify-fg: @cryptpad_color_brand;
+@cp_alertify-bg: @cryptpad_color_light_grey;
+@cp_alertify-fg: lighten(@cryptpad_color_brand, 30%);
 @cp_alertify-hover: fade(@cp_alertify-fg, 25%);
 @cp_alertify-overlay: fade(@cryptpad_text_col, 50%);
 @cp_alertify-log-bg: fade(@cryptpad_color_brand, 90%);
@@ -90,7 +90,7 @@
 
 // Forms
 @cp_forms-fg: @cryptpad_text_col;
-@cp_forms-bg: @cryptpad_color_white;
+@cp_forms-bg: @cryptpad_color_toolbar_grey; // XXX
 @cp_forms-border: @cryptpad_color_brand;
 @cp_forms-placeholder: @cryptpad_color_dark_grey;
 @cp_forms-readonly: fade(@cryptpad_color_brand, 25%);
