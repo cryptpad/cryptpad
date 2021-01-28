@@ -657,8 +657,16 @@ define([
 
         var lm = APP.lm = Listmap.create(listmapConfig);
 
+        var onCorruptedCache = function () {
+            var sframeChan = common.getSframeChannel();
+            sframeChan.event("EV_PROFILE_CORRUPTED_CACHE");
+        };
+
         init();
         lm.proxy.on('ready', function () {
+            if (JSON.stringify(lm.proxy) === '{}') {
+                return void onCorruptedCache();
+            }
             updateValues(lm.proxy);
             UI.removeLoadingScreen();
             common.mailbox.subscribe(["notifications"], {
