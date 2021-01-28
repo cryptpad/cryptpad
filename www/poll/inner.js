@@ -17,6 +17,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
+    '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
     '/common/test.js',
 
@@ -48,6 +49,7 @@ define([
     UIElements,
     h,
     Messages,
+    SFCodeMirror,
     CMeditor,
     Test)
 {
@@ -1330,12 +1332,13 @@ define([
             APP.$comments = $('#cp-app-poll-comments-list');
             APP.$addComment = $('#cp-app-poll-comments-add');
 
-            APP.editor = CMeditor.fromTextArea(APP.$description[0], {
-                lineNumbers: true,
-                lineWrapping: true,
-                styleActiveLine : true,
-                mode: "markdown",
-            });
+            var cm = SFCodeMirror.create("gfm", CMeditor, APP.$description[0]);
+            var editor = APP.editor = cm.editor;
+            editor.setOption('lineNumbers', true);
+            editor.setOption('lineWrapping', true);
+            editor.setOption('styleActiveLine', true);
+            editor.setOption('readOnly', false);
+            cm.configureTheme(common, function () {});
 
             APP.$descriptionPublished.click(function (e) {
                 if (!e.target) { return; }

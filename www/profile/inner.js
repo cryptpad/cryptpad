@@ -16,6 +16,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/marked/marked.min.js',
+    '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
     'cm/mode/markdown/markdown',
@@ -44,6 +45,7 @@ define([
     Messages,
     AppConfig,
     Marked,
+    SFCodeMirror,
     CodeMirror
     )
 {
@@ -438,12 +440,13 @@ define([
         ]);
         $block.append(div);
 
-        var editor = APP.editor = CodeMirror.fromTextArea(text, {
-            lineNumbers: true,
-            lineWrapping: true,
-            styleActiveLine : true,
-            mode: "markdown",
-        });
+        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
+        var editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', true);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', true);
+        editor.setOption('readOnly', false);
+        cm.configureTheme(common, function () {});
 
         var markdownTb = common.createMarkdownToolbar(editor);
         $(code).prepend(markdownTb.toolbar);
