@@ -220,7 +220,7 @@
 @cp_mentions-hover: @cryptpad_color_help_grey;
 
 // Modals
-@cp_access-overlay: fade(@cryptpad_color_white, 50%);
+@cp_access-overlay: fade(@cp_alertify-bg, 50%);
 @cp_snapshots-hover: @cryptpad_color_help_grey;
 
 // Support
@@ -255,11 +255,9 @@
 @cp_usergrid-selected-fg: @cryptpad_color_white;
 
 // Other
-@cp_shadow-color: rgba(0,0,0,0.4);
-
+@cp_shadow-color: fade(@cryptpad_color_black, 40%);
 
 // Apps
-
 @cp_app-bg: @cryptpad_color_light_grey;
 @cp_app-fg: @cryptpad_text_col;
 
@@ -342,7 +340,6 @@
 // Profile
 @cp_profile-border: @cryptpad_color_help_grey;
 @cp_profile-hint: @cryptpad_color_hint_grey;
-
 
 // SLide
 @cp_slide-fg: @cp_app-fg;
