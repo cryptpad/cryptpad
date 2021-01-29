@@ -62,6 +62,9 @@ define([
         'support': [
             'cp-admin-support-list',
             'cp-admin-support-init'
+        ],
+        'performance': [
+            'cp-admin-performance-profiling',
         ]
     };
 
@@ -850,6 +853,63 @@ define([
             return $div;
         }
         return;
+    };
+
+    Messages.admin_cat_performance = "PERFORMANCE"; // XXX
+    Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX
+    Messages.admin_performanceProfilingTitle = "Performance"; // XXX
+
+    Messages.admin_performanceKeyHeading = 'KEY'; // XXX
+    Messages.admin_performanceTimeHeading = 'Time (seconds)'; // XXX
+    Messages.admin_performancePercentHeading = '%'; // XXX
+
+    create['performance-profiling'] = function () {
+        var $div = makeBlock('performance-profiling');
+
+        var body = h('tbody');
+
+        var table = h('table#cp-performance-table', [
+            h('thead', [
+                h('th', Messages.admin_performanceKeyHeading), // XXX
+                h('th', Messages.admin_performanceTimeHeading), // XXX
+                h('th', Messages.admin_performancePercentHeading), // XXX
+            ]),
+            body,
+        ]);
+
+        $div.append(table);
+
+        var appendRow = function (key, time, percent) {
+            console.log("[%s] %ss running time (%s%)", key, time, percent);
+            body.appendChild(h('tr', [ key, time, percent ].map(function (x) {
+                return h('td', x);
+            })));
+        };
+
+        var process = function (_o) {
+            var o = _o[0];
+            var sorted = Object.keys(o).sort(function (a, b) {
+              if (o[b] - o[a] <= 0) { return -1; }
+              return 1;
+            });
+            var x = {};
+            var total = 0;
+            sorted.forEach(function (k) { total += o[k]; });
+            sorted.forEach(function (k) {
+                var percent = Math.floor((o[k] / total) * 1000) / 10;
+                appendRow(k, o[k], percent)
+            });
+        };
+
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'GET_WORKER_PROFILES',
+        }, function (e, data) {
+            if (e) { return void console.error(e); }
+            //console.info(data);
+            process(data);
+        });
+
+        return $div;
     };
 
     var hideCategories = function () {
