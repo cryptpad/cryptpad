@@ -10,10 +10,10 @@ body
     font-size: 13px;
 
     /* Text color */
-    color: #333;
+    color: inherit;
 
     /* Remove the background color to make it transparent */
-    background-color: #fff;
+    background-color: inherit !important;
 
     margin: 0;
     padding: 20px;

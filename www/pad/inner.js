@@ -1216,6 +1216,14 @@ define([
                 $contentContainer.append(h('div#cp-app-pad-comments'));
                 $contentContainer.prepend(h('div#cp-app-pad-toc'));
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
+
+                if (window.CryptPad_theme === 'dark') {
+                    var $iframe = $('iframe').contents();
+                    $iframe.find('html').css({
+                        'background-color': '#222', // XXX
+                        'color': '#aaa' // XXX
+                    });
+                }
             }).nThen(waitFor());
 
         }).nThen(function(waitFor) {
