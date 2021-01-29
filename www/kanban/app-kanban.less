@@ -51,9 +51,9 @@
         @color: extract(@kanban-colors, @index);
         // make a numbered class selector for each color
         .cp-kanban-palette-color@{index}{
-            background-color: @color;
+            background-color: @color !important;
             &.kanban-board-inner {
-                background-color: fade(@color, 50%);
+                background-color: fade(@color, 50%) !important;
             }
         }
     }
