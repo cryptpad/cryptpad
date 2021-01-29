@@ -12,6 +12,7 @@ define([
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
         var req = {
+            worker: window.consentfulWorker,
             cfg: requireConfig,
             req: [ '/common/loading.js' ],
             pfx: window.location.origin,
@@ -30,6 +31,7 @@ define([
             }
         }
 
+        // XXX load with cached URL args via window.consentfulWorker
         document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));

@@ -1,6 +1,12 @@
 /* jshint esversion: 6 */
 var version = self.location.search || "DEFAULT";
 //console.log('worker location:', self.location);
+console.info('SW VERSION', version);
+
+var params = new URLSearchParams(version);
+var OFFLINE = params.has('offline');
+
+console.info("SW OFFLINE?", OFFLINE);
 
 var filesToCache = [
     '/common/sframe-app-outer.js',

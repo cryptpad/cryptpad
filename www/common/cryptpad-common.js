@@ -1932,7 +1932,7 @@ define([
 
     var CRYPTPAD_VERSION = 'cryptpad-version';
     var currentVersion = localStorage[CRYPTPAD_VERSION];
-    var updateLocalVersion = function (newUrlArgs) {
+    var updateLocalVersion = function (newUrlArgs) { // XXX
         // Check for CryptPad updates
         var urlArgs = newUrlArgs || (Config.requireConf ? Config.requireConf.urlArgs : null);
         if (!urlArgs) { return; }
@@ -2089,7 +2089,7 @@ define([
         STORE_READY: onStoreReady,
         // Network
         NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
-        NETWORK_RECONNECT: function (data) {
+        NETWORK_RECONNECT: function (data) { // XXX reconnect
             require(['/api/config?' + (+new Date())], function (NewConfig) {
                 var update = updateLocalVersion(NewConfig.requireConf && NewConfig.requireConf.urlArgs);
                 if (update) {

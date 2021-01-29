@@ -60,7 +60,7 @@ define([
     try {
         sw
             .register('/sw.js?'
-            + RequireConfig().urlArgs
+            + RequireConfig().urlArgs // XXX should match the query string provided by outer
             , { scope: '/' })
             .then(function (reg) {
                 console.log("service-worker registered", reg);

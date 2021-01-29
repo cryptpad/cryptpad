@@ -69,24 +69,76 @@ define([
         require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
     };
 
+    var urlArgs = RequireConfig().urlArgs;
     var sw = window.navigator.serviceWorker;
+    // If the browser doesn't support service workers, just start loading normally
     if (!sw) { return void load(); }
-    try {
-        sw
-            .register('/sw.js?'
-            + RequireConfig().urlArgs
-            , { scope: '/' })
-            .then(function (reg) {
-                console.log("service-worker registered", reg);
-                load();
-            })
-            .catch(function (err) {
-                console.error(err);
-                load();
-            });
-    } catch (e) {
-        console.error(e);
-        load();
-    }
 
+    // TOFU
+    // calling back 'true' means it's safe to proceed
+    // otherwise load the old version
+    var TOFU_KEY = 'TOFU_URL_ARGS';
+    var checkVersion = function (msg, cb) {
+        var newUrlArgs = urlArgs;
+        var k = TOFU_KEY;
+        try {
+            var oldUrlArgs = localStorage.getItem(k);
+            if (!oldUrlArgs) {
+                //localStorage.setItem(k, newUrlArgs);
+                return void cb(true);
+            }
+            if (oldUrlArgs === newUrlArgs) {
+                return void cb(true);
+            }
+            // we don't have our fancy loading screen or other UI, so use window.confirm
+            return void setTimeout(function () {
+                var answer = window.confirm(msg);
+                //localStorage.setItem(k, newUrlArgs);
+                return void cb(answer);
+            });
+        } catch (err) {
+            localStorage.removeItem(k);
+            return void cb(false);
+        }
+    };
+
+    var loadServiceWorker = function (args, offline) {
+        var path = '/sw.js?' + args; // + (offline ? '&offline=1': ''); // XXX wrong way to do offline...
+        try {
+            sw
+                .register(path, { scope: '/' })
+                .then(function (reg) {
+                    // XXX tell the service worker if it should stay offline...
+
+                    localStorage.setItem(TOFU_KEY, args);
+                    console.log("service-worker registered", reg);
+                    load();
+                })
+                .catch(function (err) {
+                    console.error(err);
+                    load();
+                });
+        } catch (e) {
+            console.error(e);
+            load();
+        }
+    };
+
+    var msg = "ok to load a new version of cryptpad (" + urlArgs + ")?";
+    checkVersion(msg, function (consent) {
+        var consentfulWorker = urlArgs;
+        var offline = false;
+
+        //console.log(urlArgs);
+        if (!consent) {
+            consentfulWorker = localStorage.getItem(TOFU_KEY);
+            offline = true;
+            //return void loadServiceWorker(localStorage.getItem(TOFU_KEY), true);
+        } else {
+            console.error("THE USER CONSENTED TO THE UPDATE");
+        }
+        window.consentfulWorker = consentfulWorker;
+
+        loadServiceWorker(consentfulWorker, offline);
+    });
 });

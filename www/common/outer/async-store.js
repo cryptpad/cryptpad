@@ -2659,7 +2659,7 @@ define([
                 if (typeof(cb) === 'function') { cb(returned); }
 
                 store.offline = false;
-                sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online
+                sendDriveEvent('NETWORK_RECONNECT'); // Tell inner that we're now online // XXX
                 broadcast([], "UPDATE_METADATA");
                 broadcast([], "STORE_READY", returned);
 
@@ -2826,7 +2826,7 @@ define([
             });
             rt.proxy.on('reconnect', function () {
                 store.offline = false;
-                sendDriveEvent('NETWORK_RECONNECT');
+                sendDriveEvent('NETWORK_RECONNECT'); // XXX reconnect
                 broadcast([], "UPDATE_METADATA");
             });
 
