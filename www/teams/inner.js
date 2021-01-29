@@ -455,10 +455,16 @@ define([
                     created++;
                 }
                 if (team.empty) {
-                    list.push(h('div.cp-team-list-team.empty'+createCls, [
+                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls, [
                         h('span.cp-team-list-name.empty', Messages.team_listSlot),
                         createBtn
-                    ]));
+                    ]);
+                    list.push(createTeamDiv);
+                    if (createCls) {
+                        $(createTeamDiv).click(function () {
+                            $('div.cp-team-cat-create').click();
+                        });
+                    }
                     return;
                 }
                 var avatar = h('span.cp-avatar');
