@@ -855,13 +855,13 @@ define([
         return;
     };
 
-    Messages.admin_cat_performance = "PERFORMANCE"; // XXX
-    Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX
-    Messages.admin_performanceProfilingTitle = "Performance"; // XXX
+    Messages.admin_cat_performance = "PERFORMANCE"; // XXX admin
+    Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX admin
+    Messages.admin_performanceProfilingTitle = "Performance"; // XXX admin
 
-    Messages.admin_performanceKeyHeading = 'KEY'; // XXX
-    Messages.admin_performanceTimeHeading = 'Time (seconds)'; // XXX
-    Messages.admin_performancePercentHeading = '%'; // XXX
+    Messages.admin_performanceKeyHeading = 'KEY'; // XXX admin
+    Messages.admin_performanceTimeHeading = 'Time (seconds)'; // XXX admin
+    Messages.admin_performancePercentHeading = '%'; // XXX admin
 
     create['performance-profiling'] = function () {
         var $div = makeBlock('performance-profiling');
@@ -870,9 +870,9 @@ define([
 
         var table = h('table#cp-performance-table', [
             h('thead', [
-                h('th', Messages.admin_performanceKeyHeading), // XXX
-                h('th', Messages.admin_performanceTimeHeading), // XXX
-                h('th', Messages.admin_performancePercentHeading), // XXX
+                h('th', Messages.admin_performanceKeyHeading),
+                h('th', Messages.admin_performanceTimeHeading),
+                h('th', Messages.admin_performancePercentHeading),
             ]),
             body,
         ]);
