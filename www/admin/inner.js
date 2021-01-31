@@ -62,6 +62,9 @@ define([
         'support': [
             'cp-admin-support-list',
             'cp-admin-support-init'
+        ],
+        'performance': [
+            'cp-admin-performance-profiling',
         ]
     };
 
@@ -850,6 +853,63 @@ define([
             return $div;
         }
         return;
+    };
+
+    Messages.admin_cat_performance = "PERFORMANCE"; // XXX admin
+    Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX admin
+    Messages.admin_performanceProfilingTitle = "Performance"; // XXX admin
+
+    Messages.admin_performanceKeyHeading = 'KEY'; // XXX admin
+    Messages.admin_performanceTimeHeading = 'Time (seconds)'; // XXX admin
+    Messages.admin_performancePercentHeading = '%'; // XXX admin
+
+    create['performance-profiling'] = function () {
+        var $div = makeBlock('performance-profiling');
+
+        var body = h('tbody');
+
+        var table = h('table#cp-performance-table', [
+            h('thead', [
+                h('th', Messages.admin_performanceKeyHeading),
+                h('th', Messages.admin_performanceTimeHeading),
+                h('th', Messages.admin_performancePercentHeading),
+            ]),
+            body,
+        ]);
+
+        $div.append(table);
+
+        var appendRow = function (key, time, percent) {
+            console.log("[%s] %ss running time (%s%)", key, time, percent);
+            body.appendChild(h('tr', [ key, time, percent ].map(function (x) {
+                return h('td', x);
+            })));
+        };
+
+        var process = function (_o) {
+            var o = _o[0];
+            var sorted = Object.keys(o).sort(function (a, b) {
+              if (o[b] - o[a] <= 0) { return -1; }
+              return 1;
+            });
+            var x = {};
+            var total = 0;
+            sorted.forEach(function (k) { total += o[k]; });
+            sorted.forEach(function (k) {
+                var percent = Math.floor((o[k] / total) * 1000) / 10;
+                appendRow(k, o[k], percent)
+            });
+        };
+
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'GET_WORKER_PROFILES',
+        }, function (e, data) {
+            if (e) { return void console.error(e); }
+            //console.info(data);
+            process(data);
+        });
+
+        return $div;
     };
 
     var hideCategories = function () {
