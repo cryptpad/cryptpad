@@ -892,12 +892,11 @@ define([
               if (o[b] - o[a] <= 0) { return -1; }
               return 1;
             });
-            var x = {};
             var total = 0;
             sorted.forEach(function (k) { total += o[k]; });
             sorted.forEach(function (k) {
                 var percent = Math.floor((o[k] / total) * 1000) / 10;
-                appendRow(k, o[k], percent)
+                appendRow(k, o[k], percent);
             });
         };
 
