@@ -855,7 +855,7 @@ define([
         return;
     };
 
-    Messages.admin_cat_performance = "PERFORMANCE"; // XXX admin
+    Messages.admin_cat_performance = "Performance"; // XXX admin
     Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX admin
     Messages.admin_performanceProfilingTitle = "Performance"; // XXX admin
 
@@ -921,6 +921,15 @@ define([
             APP.$rightside.find('.'+c).show();
         });
     };
+
+    var SIDEBAR_ICONS = {
+        general: 'fa fa-user-o',
+        stats: 'fa fa-line-chart',
+        quota: 'fa fa-hdd-o',
+        support: 'fa fa-life-ring',
+        performance: 'fa fa-heartbeat',
+    };
+
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
@@ -933,10 +942,10 @@ define([
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
-            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
-            if (key === 'stats') { $category.append($('<span>', {'class': 'fa fa-line-chart'})); }
-            if (key === 'quota') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
-            if (key === 'support') { $category.append($('<span>', {'class': 'fa fa-life-ring'})); }
+            var iconClass = SIDEBAR_ICONS[key];
+            if (iconClass) {
+                $category.append($('<span>', {'class': iconClass}));
+            }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
