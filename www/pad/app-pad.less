@@ -22,14 +22,40 @@ body.cp-app-pad {
         overflow: hidden;
     }
 
+    #cp-app-pad-toc, #cp-app-pad-comments {
+        .cp-pad-show, .cp-pad-hide {
+            position: absolute;
+            cursor: pointer;
+            height: 28px;
+            line-height: 28px;
+            .fa { margin: 0 !important; }
+        }
+        &.hidden {
+            width: auto !important;
+            .cp-pad-show {
+                position: relative;
+            }
+            & > :not(.cp-pad-show) {
+                display: none;
+            }
+        }
+        &:not(.hidden) {
+            .cp-pad-show { display: none; }
+        }
+    }
     #cp-app-pad-toc {
         @toc-level-indent: 15px;
 
         overflow-y: auto;
         margin-top: 10px;
         margin-left: 10px;
+        margin-right: 10px;
         width: 200px;
         color: @cryptpad_text_col;
+        position: relative;
+        .cp-pad-show, .cp-pad-hide {
+            right: 0;
+        }
         h2 {
             font-size: 1.5rem;
         }
@@ -117,7 +143,15 @@ body.cp-app-pad {
             order: 3;
             width: 330px;
             //background-color: white;
-            margin: 0px 20px;
+            margin: 10px;
+            position: relative;
+            .cp-pad-show, .cp-pad-hide {
+                left: 0;
+            }
+            h2 {
+                font-size: 1.5rem;
+                text-align: right;
+            }
             .comments_main();
         }
         &.cke_body_width {

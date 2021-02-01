@@ -298,6 +298,30 @@ define([
 
         // Remove everything
         Env.$container.html('');
+        var hideBtn = h('button.cp-pad-hide.btn.btn-default.fa.fa-chevron-right');
+        var showBtn = h('button.cp-pad-show.btn.btn-default', {
+            title: Messages.poll_comment_list
+        }, [
+            h('i.fa.fa-comment')
+        ]);
+        var store = window.cryptpadStore;
+        var key = 'hide-pad-comments';
+        if (store.store[key] === '1') {
+            Env.$container.addClass('hidden');
+        }
+        $(hideBtn).click(function () {
+            Env.$container.addClass('hidden');
+            if (store) { store.put(key, '1'); }
+        });
+        $(showBtn).click(function () {
+            Env.$container.removeClass('hidden');
+            if (store) { store.put(key, '0'); }
+        });
+        Env.$container.append([
+            showBtn,
+            hideBtn,
+            h('h2', Messages.poll_comment_list)
+        ]);
 
         // "show" tells us if we need to display the "comments" column or not
         var show = false;

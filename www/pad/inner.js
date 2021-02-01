@@ -457,6 +457,11 @@ define([
                 $tocButton.addClass('cp-toolbar-button-active');
             }
         });
+        var store = window.cryptpadStore;
+        var key = 'hide-pad-toc';
+        if (store.store[key] === '1') {
+            $toc.addClass('hidden');
+        }
     };
 
     var displayMediaTags = function(framework, dom, mediaTagMap) {
@@ -683,7 +688,30 @@ define([
                     title: Util.stripTags($(el).text())
                 });
             });
-            var content = [h('h2', Messages.markdown_toc)];
+            var hideBtn = h('button.btn.btn-default.cp-pad-hide.fa.fa-chevron-left');
+            var showBtn = h('button.btn.btn-default.cp-pad-show', {
+                title: Messages.pad_tocHide
+            }, [
+                h('i.fa.fa-list-ul')
+            ]);
+            var content = [
+                hideBtn,
+                showBtn,
+                h('h2', Messages.markdown_toc)
+            ];
+            var store = window.cryptpadStore;
+            var key = 'hide-pad-toc';
+            if (store.store[key] === '1') {
+                $toc.addClass('hidden');
+            }
+            $(hideBtn).click(function () {
+                $toc.addClass('hidden');
+                if (store) { store.put(key, '1'); }
+            });
+            $(showBtn).click(function () {
+                $toc.removeClass('hidden');
+                if (store) { store.put(key, '0'); }
+            });
             toc.forEach(function (obj) {
                 var title = (obj.title || "").trim();
                 if (!title) { return; }
