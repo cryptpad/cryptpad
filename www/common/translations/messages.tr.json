@@ -1,1 +1,24 @@
-{}
+{
+    "common_connectionLost": "<b>Sunucu Bağlantısı Kesildi</b><br>Bağlantı geri gelene kadar salt-okunur moddasınız.",
+    "button_newwhiteboard": "Yeni Beyaz tahta",
+    "button_newslide": "Yeni Sunum",
+    "button_newpoll": "Yeni Anket",
+    "button_newcode": "Yeni Kod padi",
+    "button_newpad": "Yeni Zengin Metin padi",
+    "type": {
+        "teams": "Ekipler",
+        "contacts": "Kişiler",
+        "todo": "Yapılacaklar listesi",
+        "media": "Medya",
+        "file": "Dosya",
+        "whiteboard": "Beyaz Tahta",
+        "drive": "CryptSürücü",
+        "slide": "Sunum",
+        "poll": "Anket",
+        "code": "Kod",
+        "pad": "Zengin metin biçimi"
+    },
+    "fm_alert_anonymous": "Merhaba, şu anda CryptPad'i anonim olarak kullanıyorsunuz, sorun değil, ancak padlariniz bir süre kullanılmadığında silinebilir. Anonim kullanıcılar için sürücünün gelişmiş özelliklerini devre dışı bıraktık, çünkü bir şeyleri depolamak için güvenli bir yer olmadığını açıkça belirtmek istiyoruz. Bunu neden yaptığımız hakkında <a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\"> ve neden <a href=\"/register/\"> Kayıt olmanız</a> ve <a href=\"/login/\"> Giriş yapmanız</a> gerektiği hakkında okuyabilirsiniz.",
+    "main_catch_phrase": "Ekip iş birliği sistemi, <br>şifreli ve açık kaynak",
+    "main_title": "CryptPad: Tamamen Gizli, İşbirliğine Dayalı Gerçek Zamanlı Düzenleme"
+}
