@@ -1849,6 +1849,13 @@ define([
         var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
+            var privateData = metadataMgr.getPrivateData();
+            if (!priv.plan && privateData.plan) {
+                config.$initBlock.empty();
+                metadataMgr.off('change', updateButton);
+                UIElements.createUserAdminMenu(Common, config);
+                return;
+            }
             if (!myData) { return; }
             if (loadingAvatar) {
                 // Try again in 200ms
