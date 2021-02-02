@@ -133,6 +133,12 @@ define([
         return tags;
     };
 
+    var updateBoards = Util.throttle(function (framework, kanban, boards) {
+        kanban.setBoards(Util.clone(boards));
+        kanban.inEditMode = false;
+        addEditItemButton(framework, kanban);
+    }, 500);
+
     var addEditItemButton = function () {};
     var onRemoteChange = Util.mkEvent();
     var editModal;
@@ -146,10 +152,9 @@ define([
         var isBoard, id;
         var offline = false;
 
-        var update = Util.throttle(function () {
-            kanban.setBoards(kanban.options.boards);
-            addEditItemButton(framework, kanban);
-        }, 400);
+        var update = function () {
+            updateBoards(framework, kanban, kanban.options.boards);
+        };
 
         var commit = function () {
             framework.localChange();
@@ -830,7 +835,8 @@ define([
             openLink: openLink,
             getTags: getExistingTags,
             cursors: remoteCursors,
-            boards: boards
+            boards: boards,
+            _boards: Util.clone(boards),
         });
 
         framework._.cpNfInner.metadataMgr.onChange(function () {
@@ -841,7 +847,7 @@ define([
             // If the rendering has changed, update the value and redraw
             kanban.options.tagsAnd = tagsAnd;
             _tagsAnd = tagsAnd;
-            kanban.setBoards(kanban.options.boards);
+            updateBoards(kanban.options.boards);
         });
 
         if (migrated) { framework.localChange(); }
@@ -1166,9 +1172,8 @@ define([
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 var cursor = getCursor();
                 verbose("Content is different.. Applying content");
-                kanban.setBoards(remoteContent);
-                kanban.inEditMode = false;
-                addEditItemButton(framework, kanban);
+                kanban.options.boards = remoteContent;
+                updateBoards(framework, kanban, remoteContent);
                 restoreCursor(cursor);
                 onRemoteChange.fire();
             }

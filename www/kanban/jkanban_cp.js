@@ -32,7 +32,8 @@ define([
                 data: {},
                 items: {},
                 list: []
-            },
+            }, // The realtime kanban
+            _boards: {}, // The displayed kanban. We need to remember the old columns when we redraw
             getAvatar: function () {},
             openLink: function () {},
             getTags: function () {},
@@ -707,21 +708,29 @@ define([
         };
         this.addBoard = function (board) {
             if (!board || !board.id) { return; }
+            // We need to store all the columns in _boards too because it's used to
+            // remember what columns were already displayed when we redraw (in order to
+            // preserve their scroll value)
             var boards = self.options.boards;
             boards.data = boards.data || {};
             boards.list = boards.list || [];
+            var _boards = self.options._boards;
+            _boards.data = _boards.data || {};
+            _boards.list = _boards.list || [];
             // If it already there, abort
             boards.data[board.id] = board;
+            _boards.data[board.id] = board;
             if (boards.list.indexOf(board.id) !== -1) { return; }
 
             boards.list.push(board.id);
+            _boards.list.push(board.id);
             var boardNode = getBoardNode(board);
             self.container.appendChild(boardNode);
         };
 
         this.addBoards = function() {
             //for on all the boards
-            var boards = self.options.boards;
+            var boards = self.options._boards;
             boards.list = boards.list || [];
             boards.data = boards.data || {};
             var toRemove = [];
@@ -759,10 +768,10 @@ define([
             var $el = $(self.element);
             var scrollLeft = $el.scrollLeft();
             // Get existing boards list
-            var list = Util.clone(this.options.boards.list);
+            var list = Util.clone(this.options._boards.list);
 
             // Update memory
-            this.options.boards = boards;
+            this.options._boards = boards;
 
             // If the tab is not focused but a handler already exists: abort
             if (!Visible.currently() && onVisibleHandler) { return; }
@@ -779,7 +788,7 @@ define([
                 self.addBoards();
                 self.options.refresh();
                 // Preserve scroll
-                self.options.boards.list.forEach(function (id) {
+                self.options._boards.list.forEach(function (id) {
                     if (!scroll[id]) { return; }
                     $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
                 });
