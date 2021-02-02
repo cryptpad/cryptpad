@@ -9,7 +9,12 @@
         position: absolute;
         z-index: 50000;
         & > ul {
+            border: 1px solid @cp_context-border;
             background-color: @cp_context-bg;
+            border-radius: 0px;
+            .dropdown-divider {
+                border-top: 1px solid @cp_context-border;
+            }
         }
         li {
             padding: 0;
@@ -37,6 +42,7 @@
             a {
                 cursor: pointer;
                 color: @cp_context-fg;
+                padding-left: 10px;
                 &:hover {
                     background-color: @cp_context-bg-hover;
                     color: @cp_context-fg;
@@ -46,7 +52,7 @@
                     color: @cp_context-fg;
                 }
                 .fa, .cptools {
-                    margin-right: 1rem;
+                    margin-right: 10px;
                     color: @cp_context-icon;
                     width: 16px;
                 }

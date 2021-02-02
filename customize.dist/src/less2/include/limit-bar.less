@@ -18,7 +18,7 @@
             margin: 5px;
             box-sizing: border-box;
             border-radius: 3px;
-            background: white;
+            background: @cp-limit-bar-bg;
             position: relative;
             text-align: center;
             width: ~"calc(100% - 10px)";
@@ -34,13 +34,13 @@
                 z-index: 1; // .usage
                 // XXX Check if we can keep the same colors in dark themes
                 &.cp-limit-usage-normal {
-                    background: @colortheme_green;
+                    background: @cp-limit-bar-normal;
                 }
                 &.cp-limit-usage-warning {
-                    background: orange;
+                    background: @cp-limit-bar-warning;
                 }
                 &.cp-limit-usage-above {
-                    background: red;
+                    background: @cp-limit-bar-above;
                 }
             }
         }
@@ -67,6 +67,7 @@
                 padding-bottom: 0;
                 justify-content: center;
                 flex: 1;
+                border-radius: 0px;
             }
         }
     }
