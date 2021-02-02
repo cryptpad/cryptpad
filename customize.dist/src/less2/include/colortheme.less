@@ -26,9 +26,9 @@
 
 // Colors
 @cryptpad_color_brand: #0087FF;
-@cryptpad_color_brand_soft: lighten(@cryptpad_color_brand, 40%);
-
-@cryptpad_text_col: #3F4141;
+@cryptpad_color_brand_fade: fade(@cryptpad_color_brand, 75%);
+@cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
+@cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
 @cryptpad_color_hint_grey: #777;
 @cryptpad_color_dark_grey: #999999;
@@ -40,11 +40,24 @@
 @cryptpad_color_light_grey: #f1f1f1;
 @cryptpad_color_lighter_grey: #f9f9f9;
 
+@cryptpad_color_grey_50: #FAFAFA;
+@cryptpad_color_grey_100: #F5F5F5;
+@cryptpad_color_grey_200: #EEEEEE;
+@cryptpad_color_grey_300: #E0E0E0;
+@cryptpad_color_grey_400: #BDBDBD;
+@cryptpad_color_grey_500: #9E9E9E;
+@cryptpad_color_grey_600: #757575;
+@cryptpad_color_grey_700: #616161;
+@cryptpad_color_grey_800: #424242;
+@cryptpad_color_grey_900: #212121;
+
+@cryptpad_text_col:@cryptpad_color_grey_800;
+
 @cryptpad_color_blue: #326599; // former logo-1
 @cryptpad_color_light_blue: #00b7d8;
 @cryptpad_color_lighter_blue: #d2e1f2;
-@cryptpad_color_warn_red: #eb675e;
-@cryptpad_color_red: #f00;
+@cryptpad_color_warn_red: fade(#ff1100, 50%);
+@cryptpad_color_red: #ff1100;
 @cryptpad_color_dark_red: #9e0000;
 @cryptpad_color_light_red: #FFD4D4;
 @cryptpad_color_orange: #f49842;
@@ -128,26 +141,34 @@
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;
 @cp_drive-fg: @cp_sidebar-right-fg;
-@cp_drive-header-fg: @cryptpad_color_dark_grey;
-@cp_drive-icon-hover: @cryptpad_color_grey;
-@cp_drive-icon-border: @cryptpad_color_neutral2_grey;
-@cp_drive-thumb-bg: @cryptpad_color_white;
-@cp_drive-selected-bg: @cryptpad_color_dark_grey;
-@cp_drive-selected-fg: contrast(@cp_drive-droppable-bg, @cryptpad_text_col, @cryptpad_color_light_grey);
-@cp_drive-selection-overlay: fade(@cryptpad_color_black, 70%);
-@cp_drive-selection-bg: @cryptpad_color_neutral_grey;
+@cp_drive-header-fg: fade(@cryptpad_text_col, 70%);
+@cp_drive-icon-hover: fade(@cryptpad_text_col, 5%);
+@cp_drive-icon-border: fade(@cryptpad_text_col, 20%);
+@cp_drive-thumb-bg: transparent;
+@cp_drive-selected-bg: fade(@cryptpad_text_col, 10%);
+@cp_drive-selected-fg: @cryptpad_text_col;
+@cp_drive-selection-overlay: fade(@cryptpad_text_col, 5%);
+@cp_drive-selection-bg: @cryptpad_color_grey_200;
 @cp_drive-selection-fg: @cryptpad_text_col;
-@cp_drive-droppable-bg: @cryptpad_color_brand;
-@cp_drive-droppable-fg: contrast(@cp_drive-droppable-bg, @cryptpad_text_col, @cryptpad_color_light_grey);
-@cp_drive-infobox-bg: @cryptpad_color_lighter_blue;
-@cp_drive-infobox-fg: @cryptpad_color_black;
+@cp_drive-droppable-bg: @cryptpad_color_grey_400;
+@cp_drive-droppable-fg: @cryptpad_text_col;
+@cp_drive-infobox-bg: @cryptpad_color_brand_fadest;
+@cp_drive-infobox-fg: @cryptpad_text_col;
 @cp_drive-warnbox-bg: @cryptpad_color_warn_red;
-@cp_drive-warnbox-fg: @cryptpad_color_white;
-@cp_drive-tree-branch: @cryptpad_color_dark_grey;
+@cp_drive-warnbox-fg: @cryptpad_text_col;
+@cp_drive-tree-branch: @cryptpad_text_col;
 
+// Contextmenu
+@cp_context-bg: @cryptpad_color_white;
+@cp_context-border: @cryptpad_color_grey_400;
+@cp_context-bg-hover: @cryptpad_color_grey_300;
+@cp_context-bg-active: @cryptpad_color_grey_400;
+@cp_context-fg: @cryptpad_text_col;
+@cp_context-icon: @cryptpad_text_col;
+@cp_context-disabled: @cryptpad_color_grey_400;
 
 // Tooltip background
-@cp_tooltip-bg: @cryptpad_color_grey;
+@cp_tooltip-bg: @cryptpad_color_grey_300;
 @cp_tooltip-fg: @cryptpad_text_col;
 
 // Dropdown
@@ -168,14 +189,6 @@
 @cp_comments-fg: @cryptpad_text_col;
 @cp_comments-bg: @cryptpad_color_white;
 @cp_comments-header: @cryptpad_color_dark_grey;
-
-// Contextmenu
-@cp_context-bg: @cryptpad_color_white;
-@cp_context-bg-hover: @cryptpad_color_lighter_grey;
-@cp_context-bg-active: @cryptpad_color_light_grey;
-@cp_context-fg: @cryptpad_text_col;
-@cp_context-icon: @cryptpad_color_dark_grey;
-@cp_context-disabled: @cryptpad_color_neutral_grey;
 
 // Corner
 @cp_corner-primary: @cryptpad_color_blue;
@@ -217,6 +230,10 @@
 
 // Limit
 @cp_limit-fg: @cryptpad_text_col;
+@cp-limit-bar-bg: @cryptpad_color_white;
+@cp-limit-bar-normal: @cryptpad_color_green;
+@cp-limit-bar-warning: @cryptpad_color_orange;
+@cp-limit-bar-above: @cryptpad_color_red;
 
 // Mentions
 @cp_mentions-bg: @cryptpad_color_grey;
