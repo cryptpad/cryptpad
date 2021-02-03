@@ -56,12 +56,13 @@ define([
         var $history = $('.cp-whiteboard-history');
         var $undo = $('.cp-whiteboard-history .undo');
         var $redo = $('.cp-whiteboard-history .redo');
+        var $text = $('.cp-whiteboard-text button');
         var $deleteButton = $('#cp-app-whiteboard-delete');
 
         var metadataMgr = framework._.cpNfInner.metadataMgr;
 
         var brush = {
-            color: '#000000',
+            color: window.CryptPad_theme === "dark" ? '#FFFFFF' : '#000000',
             opacity: 1
         };
 
@@ -140,6 +141,14 @@ define([
             $deleteButton.prop('disabled', '');
         });
 
+        $text.click(function () {
+            $move.click();
+            canvas.add(new fabric.Textbox('My Text', {
+                fill: brush.color,
+                top: 5,
+                left: 5
+            }));
+        });
         $undo.click(function () {
             if (typeof(APP.canvas.undo) !== "function") { return; }
             APP.canvas.undo();
@@ -199,6 +208,16 @@ define([
             c = Colors.rgb2hex(c);
             brush.color = c;
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
+            if (!APP.draw) {
+                var active = canvas.getActiveObject();
+                if (active) {
+                    var col = Colors.hex2rgba(brush.color, brush.opacity);
+                    if (active.text) { active.set('fill', col); }
+                    else { active.set('stroke', col); }
+                    canvas.renderAll();
+                    APP.onLocal();
+                }
+            }
             createCursor();
         };
 
@@ -532,6 +551,9 @@ define([
                 h('div.cp-whiteboard-history', [
                     h('button.btn.undo.fa.fa-undo', {title: Messages.undo}),
                     h('button.btn.redo.fa.fa-repeat', {title: Messages.redo}),
+                ]),
+                h('div.cp-whiteboard-text', [
+                    h('button.btn.fa.fa-font')
                 ]),
                 h('button.btn.fa.fa-trash#cp-app-whiteboard-delete', {
                     disabled: 'disabled',
