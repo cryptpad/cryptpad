@@ -149,7 +149,7 @@ define([
             _updateBoards(framework, kanban, boards);
             return;
         }
-        _updateBoardsThrottle();
+        _updateBoardsThrottle(framework, kanban, boards);
     };
 
     var onRemoteChange = Util.mkEvent();
