@@ -1180,6 +1180,12 @@ define([
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
         var todo = function (err, data) {
+            if (err === 'RPC_NOT_READY') {
+                setTimeout(function () {
+                    common.getPinUsage(teamId, todo);
+                }, 1000);
+                return;
+            }
             if (err || !data) { return void console.error(err || 'No data'); }
 
             var usage = data.usage;
@@ -1849,6 +1855,13 @@ define([
         var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
+            var privateData = metadataMgr.getPrivateData();
+            if (!priv.plan && privateData.plan) {
+                config.$initBlock.empty();
+                metadataMgr.off('change', updateButton);
+                UIElements.createUserAdminMenu(Common, config);
+                return;
+            }
             if (!myData) { return; }
             if (loadingAvatar) {
                 // Try again in 200ms

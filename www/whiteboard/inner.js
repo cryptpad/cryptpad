@@ -53,6 +53,9 @@ define([
         var $type = $('.cp-whiteboard-type');
         var $brush = $('.cp-whiteboard-type .brush');
         var $move = $('.cp-whiteboard-type .move');
+        var $history = $('.cp-whiteboard-history');
+        var $undo = $('.cp-whiteboard-history .undo');
+        var $redo = $('.cp-whiteboard-history .redo');
         var $deleteButton = $('#cp-app-whiteboard-delete');
 
         var metadataMgr = framework._.cpNfInner.metadataMgr;
@@ -135,6 +138,27 @@ define([
             $type.find('button').removeClass('btn-primary');
             $move.addClass('btn-primary');
             $deleteButton.prop('disabled', '');
+        });
+
+        $undo.click(function () {
+            if (typeof(APP.canvas.undo) !== "function") { return; }
+            APP.canvas.undo();
+            APP.onLocal();
+        });
+        $redo.click(function () {
+            if (typeof(APP.canvas.undo) !== "function") { return; }
+            APP.canvas.redo();
+            APP.onLocal();
+        });
+        $('body').on('keydown', function (e) {
+            if (e.which === 90 && e.ctrlKey) {
+                $undo.click();
+                return;
+            }
+            if (e.which === 89 && e.ctrlKey) {
+                $redo.click();
+                return;
+            }
         });
 
         var deleteSelection = function () {
@@ -436,7 +460,15 @@ define([
             };
         });
 
+        var cleanHistory = function () {
+            if (Array.isArray(canvas.historyUndo)) {
+                canvas.historyUndo = canvas.historyUndo.slice(-100);
+                canvas.historyRedo = canvas.historyRedo.slice(-100);
+            }
+        };
+
         framework.onContentUpdate(function (newContent, waitFor) {
+            cleanHistory();
             var content = newContent.content;
             canvas.loadFromJSON(content, waitFor(function () {
                 canvas.renderAll();
@@ -445,6 +477,7 @@ define([
         });
 
         framework.setContentGetter(function () {
+            cleanHistory();
             var content = canvas.toDatalessJSON();
             return {
                 content: content
@@ -475,6 +508,8 @@ define([
     };
 
 
+    Messages.undo = "Undo"; // XXX
+    Messages.redo = "Redo"; // XXX
     var initialContent = function () {
         return [
             h('div#cp-toolbar.cp-toolbar-container'),
@@ -493,6 +528,10 @@ define([
                 h('div.cp-whiteboard-type', [
                     h('button.btn.brush.fa.fa-paint-brush.btn-primary', {title: Messages.canvas_brush}),
                     h('button.btn.move.fa.fa-arrows', {title: Messages.canvas_select}),
+                ]),
+                h('div.cp-whiteboard-history', [
+                    h('button.btn.undo.fa.fa-undo', {title: Messages.undo}),
+                    h('button.btn.redo.fa.fa-repeat', {title: Messages.redo}),
                 ]),
                 h('button.btn.fa.fa-trash#cp-app-whiteboard-delete', {
                     disabled: 'disabled',
@@ -560,6 +599,7 @@ define([
                 $('body').append($div.html());
             }));
         }).nThen(function (waitFor) {
+            require(['/lib/fabric-history.min.js'], waitFor());
 
             // Framework initialization
             Framework.create({
