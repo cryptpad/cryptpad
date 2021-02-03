@@ -3341,6 +3341,7 @@ define([
                 if (!filesList.length) {
                     $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
                     spinner.hide();
+                    searching = false;
                     return;
                 }
                 var sortable = {};
