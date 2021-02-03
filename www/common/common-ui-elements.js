@@ -1179,9 +1179,14 @@ define([
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
+        var to;
         var todo = function (err, data) {
+            if (to) {
+                clearTimeout(to);
+                to = undefined;
+            }
             if (err === 'RPC_NOT_READY') {
-                setTimeout(function () {
+                to = setTimeout(function () {
                     common.getPinUsage(teamId, todo);
                 }, 1000);
                 return;
