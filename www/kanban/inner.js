@@ -147,6 +147,7 @@ define([
     var updateBoards = function (framework, kanban, boards) {
         if ((now() - _lastUpdate) > 5000) {
             _updateBoards(framework, kanban, boards);
+            return;
         }
         _updateBoardsThrottle();
     };
