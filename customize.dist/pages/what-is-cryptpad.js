@@ -20,7 +20,7 @@ define([
                         Pages.setHTML(h('span'), Msg.whatis_collaboration_info),
                     ]),
                     h('div.col-md-6', [
-                        h('img', {
+                        h('img.cp-img-invert', {
                             src: '/customize/images/collaboration.png?' + urlArgs,
                             alt: '',
                             'aria-hidden': 'true'
@@ -66,11 +66,11 @@ define([
                         }),
                     ]),
                     h('div.col-md-6.order-md-1.small-logos', [
-                        h('img', {
+                        h('img.cp-img-invert', {
                             src: '/customize/images/logo_ngi.png?' + urlArgs,
                             alt: 'NGI Award 2019'
                         }),
-                        h('img', {
+                        h('img.cp-img-invert', {
                             src: '/customize/images/logo_nlnet.svg?' + urlArgs,
                             alt: 'NLNet Foundation logo'
                         }),

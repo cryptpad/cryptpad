@@ -26,6 +26,7 @@
 
 // Colors
 @cryptpad_color_brand: #0087FF;
+@cryptpad_color_brand_300: lighten(@cryptpad_color_brand, 30%);
 @cryptpad_color_brand_fade: fade(@cryptpad_color_brand, 75%);
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
 @cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
@@ -51,6 +52,7 @@
 @cryptpad_color_grey_700: #616161;
 @cryptpad_color_grey_800: #424242;
 @cryptpad_color_grey_900: #212121;
+@cryptpad_color_grey_950: #121212;
 @cryptpad_color_black: #000;
 
 @cryptpad_text_col: @cryptpad_color_grey_200;
@@ -222,11 +224,13 @@
 // Static pages
 @cp_static-bg: @cryptpad_color_grey_900;
 @cp_static-fg: @cryptpad_text_col;
-@cp_static-link: @cryptpad_color_brand;
+@cp_static-link: @cryptpad_color_brand_300;
 @cp_static-title: @cryptpad_color_brand;
-@cp_static-footer: @cryptpad_color_grey_800;
-@cp_static-footer-border: @cryptpad_color_white;
-@cp_static-topbar-fg: @cryptpad_color_brand;
+@cp_static-footer: @cryptpad_color_grey_950;
+@cp_static-footer-border: @cryptpad_color_grey_600;
+@cp_static-topbar-fg: @cryptpad_color_brand_300;
+@cp_static-card-bg: @cryptpad_color_grey_800;
+@cp_static-img-invert-filter: hue-rotate(200grad) invert();
 
 // Limit
 @cp_limit-fg: @cryptpad_text_col;

@@ -81,11 +81,25 @@ body.html {
                 margin: 50px auto;
             }
         }
+        p {
+            a {
+                text-decoration: underline;
+            }
+        }
         .row.cp-page-section {
             margin: 50px 0px;
+            a {
+                text-decoration: underline;
+            }
+            .small-logo {
+                max-width: 40%;
+            }
         }
         img.cp-shadow {
             .cp-shadow();
+        }
+        img.cp-img-invert {
+            filter: @cp_static-img-invert-filter;
         }
 
         button {
@@ -155,7 +169,7 @@ body.html {
                 display: block;
                 font-family: "IBM Plex Mono";
                 font-size: 1.5rem;
-                color: @cp_static-link;
+                color: @cp_static-title;
                 margin-bottom: 10px;
             }
 
@@ -196,12 +210,11 @@ body.html {
         a {
             border: 2px solid transparent;
             white-space: nowrap;
-            &:visited {
-                color: @cp_static-link;
-            }
+            color: @cp_static-title;
         }
         .nav-link {
             padding: 0.5em 0.7em;
+            color: @cp_static-link;
             &:hover {
                 color: @cryptpad_text_col;
             }

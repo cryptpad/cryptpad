@@ -21,15 +21,17 @@
     .cp-container {
         #userForm {
             .cp-shadow();
-            background-color: @cryptpad_color_white;
+            background-color: @cp_static-card-bg;
             padding: 10px;
             .form-control {
                 border-radius: 0;
                 color: @cryptpad_text_col;
+                background-color: @cp_forms-bg;
                 margin-bottom: 5px;
                 &:focus {
                     border-color: @cryptpad_color_brand;
                 }
+                .tools_placeholder-color();
             }
             .checkbox-container {
                 color: @cryptpad_text_col;
@@ -48,6 +50,7 @@
                 color: @cryptpad_color_brand;
                 padding: 10px;
                 border-radius: 0;
+                margin: 0px;
             }
         }
     }
