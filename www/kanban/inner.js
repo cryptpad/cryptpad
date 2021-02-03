@@ -133,13 +133,24 @@ define([
         return tags;
     };
 
-    var updateBoards = Util.throttle(function (framework, kanban, boards) {
+    var addEditItemButton = function () {};
+
+    var now = function () { return +new Date(); };
+    var _lastUpdate = 0;
+    var _updateBoards = function (framework, kanban, boards) {
+        _lastUpdate = now();
         kanban.setBoards(Util.clone(boards));
         kanban.inEditMode = false;
         addEditItemButton(framework, kanban);
-    }, 500);
+    };
+    var _updateBoardsThrottle = Util.throttle(_updateBoards, 500);
+    var updateBoards = function (framework, kanban, boards) {
+        if ((now() - _lastUpdate) > 5000) {
+            _updateBoards(framework, kanban, boards);
+        }
+        _updateBoardsThrottle();
+    };
 
-    var addEditItemButton = function () {};
     var onRemoteChange = Util.mkEvent();
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
