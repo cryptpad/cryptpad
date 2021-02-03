@@ -143,7 +143,7 @@ define([
         kanban.inEditMode = false;
         addEditItemButton(framework, kanban);
     };
-    var _updateBoardsThrottle = Util.throttle(_updateBoards, 500);
+    var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards) {
         if ((now() - _lastUpdate) > 5000) {
             _updateBoards(framework, kanban, boards);
@@ -860,7 +860,7 @@ define([
             // If the rendering has changed, update the value and redraw
             kanban.options.tagsAnd = tagsAnd;
             _tagsAnd = tagsAnd;
-            updateBoards(kanban.options.boards);
+            updateBoards(framework, kanban, kanban.options.boards);
         });
 
         if (migrated) { framework.localChange(); }
