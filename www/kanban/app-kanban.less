@@ -143,6 +143,9 @@
         border: 0;
         background: transparent;
         align-self: flex-start;
+        @media (hover: none) {
+            margin-right: 20px;
+        }
     }
 
     .cp-kanban-cursors {
@@ -167,6 +170,21 @@
         padding: 5px;
         flex-wrap: wrap;
         touch-action: none;
+        .tools_unselectable();
+        touch-action: none;
+        cursor: move;
+        cursor: grab;
+
+        margin-bottom: 10px;
+        &:last-child {
+            margin: 0;
+        }
+        &.is-moving.gu-mirror {
+            transform: rotate(3deg);
+            height: auto !important;
+            opacity: 0.8;
+        }
+
         .cp-kanban-cursors {
             margin-top: 10px;
         }
@@ -240,6 +258,26 @@
     }
 
     .kanban-board {
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        vertical-align: top;
+        display: flex;
+        flex-flow: column;
+        width: 300px;
+        margin: 10px 5px;
+        @media (hover: none) {
+            margin-bottom: 30px;
+        }
+
+        &.is-moving.gu-mirror {
+            transform: rotate(3deg);
+            opacity: 0.8;
+            .kanban-drag {
+                overflow: hidden;
+                padding-right: 50px;
+            }
+        }
+
         main {
             padding: 0 10px;
             margin: 10px 0;
@@ -247,12 +285,17 @@
             overflow-y: auto;
             justify-content: space-around;
             min-height: 38px; // Size of one card
+            @media (hover: none) {
+                padding-right: 30px;
+            }
         }
         header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             padding: 5px 10px;
+            cursor: move;
+            cursor: grab;
             .kanban-title-board {
                 flex: 1;
                 margin-right: 10px;
@@ -263,9 +306,6 @@
             }
             #kanban-edit {
                 font-weight: bold;
-            }
-            &:hover {
-                cursor: move;
             }
         }
         footer {
