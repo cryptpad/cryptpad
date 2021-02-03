@@ -802,8 +802,13 @@
                 padding: 10px;
 
                 svg {
-                    fill: @toolbar-bg-color;
-                    fill: var(--toolbar-bg-color);
+                    #outline, #squares {
+                        fill: @toolbar-bg-color;
+                        fill: var(--toolbar-bg-color);
+                    }
+                    #background {
+                        fill: @cp_toolbar-logo-bg;
+                    }
                 }
 
                 img {
