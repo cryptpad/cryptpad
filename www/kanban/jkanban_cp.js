@@ -26,7 +26,7 @@ define([
             element: '',
             gutter: '15px',
             widthBoard: '250px',
-            responsive: '700',
+            responsive: 0, //'700',
             responsivePercentage: false,
             boards: {
                 data: {},
