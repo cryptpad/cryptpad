@@ -2105,6 +2105,16 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
+
+        if (privateData.offline) {
+            metadataMgr.onChange(function () {
+                var privateData = metadataMgr.getPrivateData();
+                if (privateData.offline) { return; }
+                UIElements.getPadCreationScreen(common, cfg, appCfg, cb);
+            });
+            return;
+        }
+
         var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
 
