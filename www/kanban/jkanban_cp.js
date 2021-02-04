@@ -299,7 +299,9 @@ define([
                         // Move to trash?
                         if (target.classList.contains('kanban-trash')) {
                             list.splice(index1, 1);
-                            delete self.options.boards.data[id];
+                            if (list.indexOf(id) === -1) {
+                                delete self.options.boards.data[id];
+                            }
                             self.onChange();
                             return;
                         }
@@ -444,6 +446,14 @@ define([
             });
             return res;
         };
+        this.checkItem = function (eid) {
+            var boards = self.options.boards;
+            var data = boards.data || {};
+            var exists = Object.keys(data).some(function (id) {
+                return (data[id].item || []).indexOf(Number(eid)) !== -1;
+            });
+            return exists;
+        };
         this.moveItem = function (eid, board, pos) {
             var boards = self.options.boards;
             var same = -1;
@@ -453,11 +463,13 @@ define([
                 obj.board.item.splice(obj.pos, 1);
                 if (obj.board === board) { same = obj.pos; }
             });
-            // If it's a deletion, remove the item data
+            // If it's a deletion and not a duplicate, remove the item data
             if (!board) {
-                delete boards.items[eid];
-                delete self.cache[eid];
-                removeUnusedTags(boards);
+                if (!self.checkItem(eid)) {
+                    delete boards.items[eid];
+                    delete self.cache[eid];
+                    removeUnusedTags(boards);
+                }
                 self.options.refresh();
                 return;
             }

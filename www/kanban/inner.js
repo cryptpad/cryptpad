@@ -145,7 +145,7 @@ define([
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards) {
-        if ((now() - _lastUpdate) > 5000) {
+        if ((now() - _lastUpdate) > 5000 || framework.isLocked()) {
             _updateBoards(framework, kanban, boards);
             return;
         }
@@ -1207,8 +1207,17 @@ define([
             var items = boards.items || {};
             var data = boards.data || {};
             var list = boards.list || [];
+
+            // Remove duplicate boards
+            list = boards.list = Util.deduplicateString(list);
+
             Object.keys(data).forEach(function (id) {
-                if (list.indexOf(Number(id)) === -1) { delete data[id]; }
+                if (list.indexOf(Number(id)) === -1) {
+                    list.push(Number(id));
+                }
+                // Remove duplicate items
+                var b = data[id];
+                b.item = Util.deduplicateString(b.item || []);
             });
             Object.keys(items).forEach(function (eid) {
                 var exists = Object.keys(data).some(function (id) {
