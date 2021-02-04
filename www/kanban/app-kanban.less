@@ -111,6 +111,7 @@
             text-align: center;
             line-height: 30px;
             color: @cp_kanban-fg;
+            border: 1px solid fade(@cp_kanban-fg, 40%);
         }
     }
     #cp-kanban-edit-tags {
@@ -197,6 +198,10 @@
             p {
                 margin-bottom: 5px;
             }
+            a {
+                color: @cp_kanban-link;
+                text-decoration: underline;
+            }
             ul {
                 padding-left: 20px;
             }
@@ -213,12 +218,13 @@
             }
             table {
                 color: @cp_kanban-fg;
-                border-color: @cp_kanban-fg;
                 th {
                     padding: 5px !important;
                     background-color: fade(@cp_kanban-fg, 10%);
+                    border-color: @cp_kanban-fg !important;
                 }
                 td {
+                    border-color: @cp_kanban-fg !important;
                     padding: 5px;
                 }
             }

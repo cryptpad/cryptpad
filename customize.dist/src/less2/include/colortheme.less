@@ -63,12 +63,13 @@
 @cryptpad_color_red_fade: fade(@cryptpad_color_red, 50%);
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
-@cryptpad_color_light_red: darken(#FFD4D4, 75%);
+@cryptpad_color_light_red: #FFD4D4;
 @cryptpad_color_orange: #f49842;
 @cryptpad_color_green: #5cb85c;
 @cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
 @cryptpad_color_light_green: #c5ffa8;
-@cryptpad_color_light_yellow: darken(#FFE69C, 75%);
+@cryptpad_color_light_yellow: #FFE69C;
+@cryptpad_color_yellow_fade: fade(#FFE69C, 50%);
 @cryptpad_color_lighter_blue: #d2e1f2;
 
 @cryptpad_color_link: #0275D8;
@@ -329,14 +330,23 @@
 
 // Kanban
 @cp_kanban-fg: @cryptpad_text_col;
-@cp_kanban-item-bg: @cryptpad_color_light_grey;
-@cp_kanban-board-bg: @cryptpad_color_help_grey;
-@cp_kanban-conflict-bg: @cryptpad_color_toolbar_grey;
-@cp_kanban-tags-bg: @cryptpad_color_help_grey;
+@cp_kanban-item-bg: @cryptpad_color_grey_50;
+@cp_kanban-link: @cryptpad_color_brand;
+@cp_kanban-board-bg: @cryptpad_color_grey_300;
+@cp_kanban-conflict-bg: @cryptpad_color_grey_200;
+@cp_kanban-tags-bg: @cryptpad_color_grey_300;
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
-@cp_kanban-color0: @cryptpad_color_neutral2_grey;
-@cp_kanban-colors: #FFD4D4, #FFDECA, #FFE69C, #DBFFB7, #AFFDC2, #C9FFFE, #C8D6FF, #E4CAFF;
+@cp_kanban-color0: @cryptpad_color_grey_400;
+@cp_kanban-colors:
+    #FFD4D4,
+    #FFDECA,
+    #FFE69C,
+    #DBFFB7,
+    #AFFDC2,
+    #C9FFFE,
+    #C8D6FF,
+    #E4CAFF;
 
 // Notifications
 @cp_notif-hover: fade(@cryptpad_color_black, 10%);

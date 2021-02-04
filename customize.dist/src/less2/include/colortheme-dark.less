@@ -63,12 +63,12 @@
 @cryptpad_color_red_fade: fade(@cryptpad_color_red, 50%);
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
-@cryptpad_color_light_red: darken(#FFD4D4, 75%);
+@cryptpad_color_light_red: #FFD4D4;
 @cryptpad_color_orange: #f49842;
 @cryptpad_color_green: #5cb85c;
 @cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
 @cryptpad_color_light_green: #c5ffa8;
-@cryptpad_color_light_yellow: darken(#FFE69C, 75%);
+@cryptpad_color_light_yellow: #FFE69C;
 @cryptpad_color_yellow_fade: fade(#FFE69C, 50%);
 @cryptpad_color_lighter_blue: #d2e1f2; // XXX replace with @cryptpad_color_brand_fadest
 
@@ -273,9 +273,9 @@
 @cp_history-fg: @cp_toolbar-bottom-fg;
 
 // Tokenfield
-@cp_token-bg: @cryptpad_color_neutral2_grey;
+@cp_token-bg: @cryptpad_color_grey_700;
 @cp_token-fg: @cryptpad_text_col;
-@cp_token-bg-hover: @cryptpad_color_neutral_grey;
+@cp_token-bg-hover: @cryptpad_color_grey_600;
 @cp_token-invalid: @cryptpad_color_warn_red;
 
 // Usergrid
@@ -331,13 +331,22 @@
 // Kanban
 @cp_kanban-fg: @cryptpad_text_col;
 @cp_kanban-item-bg: @cryptpad_color_grey_800;
+@cp_kanban-link: @cryptpad_color_brand_300;
 @cp_kanban-board-bg: @cryptpad_color_grey_700;
-@cp_kanban-conflict-bg: @cryptpad_color_toolbar_grey;
+@cp_kanban-conflict-bg: @cryptpad_color_grey_700;
 @cp_kanban-tags-bg: @cryptpad_color_grey_700;
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
 @cp_kanban-color0: @cryptpad_color_grey_600;
-@cp_kanban-colors: darken(#FFD4D4,75%), darken(#FFDECA, 75%), darken(#FFE69C,75%), darken(#DBFFB7,75%), darken(#AFFDC2,75%), darken(#C9FFFE,75%), darken(#C8D6FF,75%), darken(#E4CAFF,75%);
+@cp_kanban-colors:
+    darken(desaturate(#FFD4D4,60%), 60%),
+    darken(desaturate(#FFDECA,60%), 60%),
+    darken(desaturate(#FFE69C,55%), 60%),
+    darken(desaturate(#DBFFB7,55%), 70%),
+    darken(desaturate(#AFFDC2,60%), 65%),
+    darken(desaturate(#C9FFFE,60%), 70%),
+    darken(desaturate(#C8D6FF,60%), 60%),
+    darken(desaturate(#E4CAFF,70%), 60%);
 
 // Notifications
 @cp_notif-hover: fade(@cryptpad_color_black, 10%);
