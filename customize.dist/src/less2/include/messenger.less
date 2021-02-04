@@ -7,7 +7,7 @@
     @msg-color: @cryptpad_text_col;
     @msg-color-hover: contrast(@msg-color, lighten(@msg-color, 10%), darken(@msg-color, 10%));
     @msg-bg-color: @bg-color;
-    @invert: #FFF-@bg-color;
+    @invert: @bg-color;
     // XXX Adjust chat colors
     @msg-bg-color-light: contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%));
     @msg-bg-color-lighter: contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%));
@@ -233,8 +233,8 @@
             padding: 20px;
         }
         .cp-app-contacts-header {
-            background-color: @msg-bg-color;
-            background-color: var(--msg-bg-color);
+            background-color: @msg-bg-color-dark;
+            background-color: var(--msg-bg-color-dark);
             padding: 0;
             display: flex;
             justify-content: space-between;
@@ -246,7 +246,8 @@
                 line-height: 30px;
                 padding: 10px;
                 &:hover {
-                    background-color: rgba(50,50,50,0.3);
+                    background-color: @msg-bg-color-darker;
+                    background-color: var(--msg-color-darker);
                 }
             }
 

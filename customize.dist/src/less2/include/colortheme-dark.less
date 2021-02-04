@@ -59,22 +59,24 @@
 
 @cryptpad_color_blue: #326599; // former logo-1
 @cryptpad_color_light_blue: #00b7d8;
-@cryptpad_color_warn_red: fade(#ff1100, 50%);
 @cryptpad_color_red: #ff1100;
+@cryptpad_color_red_fade: fade(@cryptpad_color_red, 50%);
+@cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
+@cryptpad_color_light_red: darken(#FFD4D4, 75%);
 @cryptpad_color_orange: #f49842;
 @cryptpad_color_green: #5cb85c;
-@cryptpad_color_light_red: darken(#FFD4D4, 75%);
-@cryptpad_color_light_green: darken(#c5ffa8, 75%);
+@cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
+@cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_light_yellow: darken(#FFE69C, 75%);
 @cryptpad_color_lighter_blue: #d2e1f2; // XXX replace with @cryptpad_color_brand_fadest
 
 @cryptpad_color_link: #0275D8;
 
 // Premium plans colors
-@cryptpad_color_basic: darken(#DDEFFF, 75%);
-@cryptpad_color_pro: darken(#E4FFDD, 75%);
-@cryptpad_color_power: darken(#F6DDFF, 75%);
+@cryptpad_color_basic: darken(desaturate(#DDEFFF, 70%), 75%);
+@cryptpad_color_pro: darken(desaturate(#E4FFDD, 70%), 75%);
+@cryptpad_color_power: darken(desaturate(#F6DDFF, 70%), 75%);
 
 @cp_scrollbar-fg: hsla(0,0%,100%,.2);
 @scrollbar_color: @cp_scrollbar-fg transparent;
@@ -90,7 +92,7 @@
 @cp_loading-spinner: @cryptpad_color_grey_600;
 
 // Chat
-@cp_messenger-bg: @cryptpad_color_neutral2_grey;
+@cp_messenger-bg: @cryptpad_color_grey_900;
 @cp_messenger-fg: @cryptpad_text_col;
 @cp_messenger-notif: @cryptpad_color_black;
 @cp_messenger-friend: @cryptpad_color_black;
@@ -259,7 +261,6 @@
 @cp_toolbar-bottom-fg: @cryptpad_text_col;
 @cp_toolbar-logo-bg: @cryptpad_color_grey_200;
 
-
 @cp_toolbar-fade1: fade(@cryptpad_color_black, 10%);
 @cp_toolbar-fade3: fade(@cryptpad_color_black, 30%);
 @cp_toolbar-warn: @cp_buttons-red;
@@ -291,15 +292,15 @@
 @cp_accounts-basic: @cryptpad_color_basic;
 @cp_accounts-pro: @cryptpad_color_pro;
 @cp_accounts-power: @cryptpad_color_power;
-@cp_accounts-active: @cryptpad_color_light_green;
-@cp_accounts-inactive: @cryptpad_color_light_red;
-@cp_accounts-mysubs-alert: @cryptpad_color_white;
-@cp_accounts-mysubs-bg: @cryptpad_color_help_grey;
+@cp_accounts-active: @cryptpad_color_green_fade;
+@cp_accounts-inactive: @cryptpad_color_red_fade;
+@cp_accounts-mysubs-alert: @cryptpad_color_grey_700;
+@cp_accounts-mysubs-bg: @cryptpad_color_grey_800;
 @cp_accounts-mysubs-fg: @cryptpad_text_col;
 @cp_accounts-contact-hover: fade(@cryptpad_color_black, 20%);
-@cp_accounts-tab-bg: @cryptpad_color_toolbar_grey;
-@cp_accounts-tab-hover: @cryptpad_color_grey;
-@cp_accounts-tab-border: @cryptpad_color_neutral_grey;
+@cp_accounts-tab-bg: @cryptpad_color_grey_800;
+@cp_accounts-tab-hover: @cryptpad_color_grey_700;
+@cp_accounts-tab-border: @cryptpad_color_grey_600;
 
 // Admin
 @cp_admin-isadmin-fg: @cryptpad_color_brand;
@@ -358,8 +359,8 @@
 @cp_poll-border-color: @cryptpad_color_hint_grey;
 @cp_poll-cell-fg: @cryptpad_text_col;
 @cp_poll-unset: @cryptpad_color_help_grey;
-@cp_poll-yes: @cryptpad_color_light_green;
-@cp_poll-no: @cryptpad_color_light_red;
+@cp_poll-yes: @cryptpad_color_green_fade;
+@cp_poll-no: @cryptpad_color_red_fade;
 @cp_poll-maybe: @cryptpad_color_light_yellow;
 @cp_poll-hint: @cryptpad_color_dark_grey;
 

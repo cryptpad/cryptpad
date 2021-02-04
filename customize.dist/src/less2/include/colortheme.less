@@ -59,15 +59,17 @@
 
 @cryptpad_color_blue: #326599; // former logo-1
 @cryptpad_color_light_blue: #00b7d8;
-@cryptpad_color_lighter_blue: #d2e1f2;
-@cryptpad_color_warn_red: fade(#ff1100, 50%);
 @cryptpad_color_red: #ff1100;
+@cryptpad_color_red_fade: fade(@cryptpad_color_red, 50%);
+@cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
-@cryptpad_color_light_red: #FFD4D4;
+@cryptpad_color_light_red: darken(#FFD4D4, 75%);
 @cryptpad_color_orange: #f49842;
-@cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_green: #5cb85c;
-@cryptpad_color_light_yellow: #FFE69C;
+@cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
+@cryptpad_color_light_green: #c5ffa8;
+@cryptpad_color_light_yellow: darken(#FFE69C, 75%);
+@cryptpad_color_lighter_blue: #d2e1f2;
 
 @cryptpad_color_link: #0275D8;
 
@@ -90,7 +92,7 @@
 @cp_loading-spinner: @cryptpad_color_grey_500;
 
 // Chat
-@cp_messenger-bg: @cryptpad_color_neutral2_grey;
+@cp_messenger-bg: @cryptpad_color_grey_200;
 @cp_messenger-fg: @cryptpad_text_col;
 @cp_messenger-notif: @cryptpad_color_black;
 @cp_messenger-friend: @cryptpad_color_black;
