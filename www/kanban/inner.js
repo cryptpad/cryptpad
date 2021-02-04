@@ -416,7 +416,9 @@ define([
         framework.onEditableChange(function (unlocked) {
             editor.setOption('readOnly', !unlocked);
             $title.prop('disabled', unlocked ? '' : 'disabled');
-            $(_field.element).tokenfield(unlocked ? 'enable' : 'disable');
+            if (_field) {
+                $(_field.element).tokenfield(unlocked ? 'enable' : 'disable');
+            }
 
             $modal.find('nav button.danger').prop('disabled', unlocked ? '' : 'disabled');
             offline = !unlocked;

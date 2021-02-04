@@ -396,10 +396,11 @@ define([
                         console.log("In drop");
 
                         var id1 = Number($(el).attr('data-eid'));
+                        var boardId = Number($(source).closest('.kanban-board').data('id'));
 
                         // Move to trash?
                         if (target.classList.contains('kanban-trash')) {
-                            self.moveItem(id1);
+                            self.moveItem(boardId, id1);
                             self.onChange();
                             return;
                         }
@@ -419,7 +420,7 @@ define([
                         }
 
                         // Move the item
-                        self.moveItem(id1, board2, pos2);
+                        self.moveItem(boardId, id1, board2, pos2);
 
                         // send event that board has changed
                         self.onChange();
@@ -454,23 +455,36 @@ define([
             });
             return exists;
         };
-        this.moveItem = function (eid, board, pos) {
+        this.moveItem = function (source, eid, board, pos) {
             var boards = self.options.boards;
             var same = -1;
-            var from = findItem(eid);
-            // Remove the item from its board
-            from.forEach(function (obj) {
-                obj.board.item.splice(obj.pos, 1);
-                if (obj.board === board) { same = obj.pos; }
-            });
+            console.error(source, eid, board, pos);
+            if (source && boards.data[source]) {
+                // Remove from this board only
+                var l = boards.data[source].item;
+                var idx = l.indexOf(eid);
+                if (idx !== -1) { l.splice(idx, 1); }
+                if (source === board) { same = idx; }
+            } else {
+                // Remove the item from all its board
+                var from = findItem(eid);
+                from.forEach(function (obj) {
+                    obj.board.item.splice(obj.pos, 1);
+                    if (obj.board === board) { same = obj.pos; }
+                });
+            }
             // If it's a deletion and not a duplicate, remove the item data
             if (!board) {
                 if (!self.checkItem(eid)) {
                     delete boards.items[eid];
                     delete self.cache[eid];
                     removeUnusedTags(boards);
+                    self.options.refresh();
                 }
-                self.options.refresh();
+                return;
+            }
+            // If the item already exists in the target board, abort (duplicate)
+            if (board.item.indexOf(eid) !== -1) {
                 return;
             }
             // If it's moved to the same board at a bigger index, decrement the index by one
@@ -783,7 +797,7 @@ define([
             var list = Util.clone(this.options._boards.list);
 
             // Update memory
-            this.options._boards = boards;
+            this.options._boards = Util.clone(boards);
 
             // If the tab is not focused but a handler already exists: abort
             if (!Visible.currently() && onVisibleHandler) { return; }
