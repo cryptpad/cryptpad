@@ -144,7 +144,8 @@
         .cp-callout-@{key} {
             i { color: @value; }
             &:hover {
-                background-color: contrast(@cryptpad_text_col, lighten(@value, 30%), darken(@value, 30%));
+                @desat: desaturate(@value, 15%);
+                background-color: contrast(@cryptpad_text_col, lighten(@value, 30%), darken(@desat, 20%));
                 i { color: @cryptpad_text_col; }
             }
         }
