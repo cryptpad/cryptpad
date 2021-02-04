@@ -53,7 +53,6 @@ define([
         var $type = $('.cp-whiteboard-type');
         var $brush = $('.cp-whiteboard-type .brush');
         var $move = $('.cp-whiteboard-type .move');
-        var $history = $('.cp-whiteboard-history');
         var $undo = $('.cp-whiteboard-history .undo');
         var $redo = $('.cp-whiteboard-history .redo');
         var $text = $('.cp-whiteboard-text button');
@@ -143,7 +142,7 @@ define([
 
         $text.click(function () {
             $move.click();
-            canvas.add(new fabric.Textbox('My Text', {
+            canvas.add(new Fabric.Textbox('My Text', {
                 fill: brush.color,
                 top: 5,
                 left: 5
