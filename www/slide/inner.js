@@ -310,7 +310,7 @@ define([
 
             var $nav = $('<nav>').appendTo($div);
             $('<button>', {'class': 'btn cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
-            $('<button>', {'class': 'btn ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
+            $('<button>', {'class': 'btn primary'}).text(Messages.settings_save).appendTo($nav).click(todo);
 
             return $container;
         };

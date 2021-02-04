@@ -69,9 +69,10 @@
 @cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
 @cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_light_yellow: darken(#FFE69C, 75%);
+@cryptpad_color_yellow_fade: fade(#FFE69C, 50%);
 @cryptpad_color_lighter_blue: #d2e1f2; // XXX replace with @cryptpad_color_brand_fadest
 
-@cryptpad_color_link: #0275D8;
+@cryptpad_color_link:@cryptpad_color_brand_300;
 
 // Premium plans colors
 @cryptpad_color_basic: darken(desaturate(#DDEFFF, 70%), 75%);
@@ -118,8 +119,9 @@
 @cp_forms-disabled: @cryptpad_color_grey_500;
 
 // Buttons
-@cp_buttons-fg: @cryptpad_color_brand;
-@cp_buttons-default: #CCC;
+@cp_buttons-fg: @cryptpad_color_brand_300;
+@cp_buttons-hover: @cryptpad_color_brand_fadest;
+@cp_buttons-default: @cryptpad_color_grey_700;
 @cp_buttons-default-color: @cryptpad_text_col;
 @cp_buttons-default-border: @cryptpad_text_col;
 @cp_buttons-red: #E55236;
@@ -131,8 +133,8 @@
 @cp_buttons-disabled: #6c757d;
 @cp_buttons-disabled-text: #ffffff;
 @cp_buttons-disabled-border: #6c757d;
-@cp_buttons-cancel: #ffffff;
-@cp_buttons-cancel-border: #949494;
+@cp_buttons-cancel: transparent;
+@cp_buttons-cancel-border: @cryptpad_color_grey_400;
 
 // Sidebar layout
 @cp_sidebar-left-bg: @cryptpad_color_grey_800;
@@ -182,11 +184,11 @@
 @cp_dropdown-bg-active: @cryptpad_color_grey_600;
 
 // Rendered Markdown
-@cp_markdown-bg: @cryptpad_color_lighter_grey;
-@cp_markdown-border: @cryptpad_color_grey;
+@cp_markdown-bg: @cryptpad_color_grey_900;
+@cp_markdown-border: @cryptpad_color_grey_700;
 
 // Avatar
-@cp_avatar-bg: @cryptpad_color_grey;
+@cp_avatar-bg: @cryptpad_color_grey_700;
 @cp_avatar-fg: @cryptpad_text_col;
 
 // Comments
@@ -214,12 +216,12 @@
 @cp_export-error-bg2: @cryptpad_color_neutral2_grey;
 
 // File upload
-@cp_upload-fg: @cryptpad_color_brand;
-@cp_upload-header: @cryptpad_color_help_grey;
-@cp_upload-progress: @cryptpad_color_help_grey;
+@cp_upload-fg: @cryptpad_color_brand_300;
+@cp_upload-header: @cryptpad_color_grey_700;
+@cp_upload-progress: @cryptpad_color_grey_700;
 
 // Help
-@cp_help-bg: @cryptpad_color_help_grey;
+@cp_help-bg: @cryptpad_color_grey_700;
 @cp_help-fg: @cryptpad_text_col;
 @cp_help-link: @cryptpad_color_link;
 
@@ -261,8 +263,8 @@
 @cp_toolbar-bottom-fg: @cryptpad_text_col;
 @cp_toolbar-logo-bg: @cryptpad_color_grey_200;
 
-@cp_toolbar-fade1: fade(@cryptpad_color_black, 10%);
-@cp_toolbar-fade3: fade(@cryptpad_color_black, 30%);
+@cp_toolbar-fade1: fade(@cryptpad_text_col, 10%);
+@cp_toolbar-fade3: fade(@cryptpad_text_col, 30%);
 @cp_toolbar-warn: @cp_buttons-red;
 
 @cp_history-line-bg: @cryptpad_color_white;
@@ -285,7 +287,7 @@
 @cp_shadow-color: fade(@cryptpad_color_black, 60%);
 
 // Apps
-@cp_app-bg: @cryptpad_color_light_grey;
+@cp_app-bg: @cryptpad_color_grey_900;
 @cp_app-fg: @cryptpad_text_col;
 
 // Accounts
@@ -311,7 +313,7 @@
 @cp_admin-last-bg: lighten(@cryptpad_color_orange, 25%);
 
 // Code
-@cp_preview-bg: @cryptpad_color_light_grey;
+@cp_preview-bg: @cryptpad_color_grey_900;
 @cp_preview-fg: @cryptpad_text_col;
 
 // Debug
@@ -328,13 +330,13 @@
 
 // Kanban
 @cp_kanban-fg: @cryptpad_text_col;
-@cp_kanban-item-bg: @cryptpad_color_light_grey;
-@cp_kanban-board-bg: @cryptpad_color_help_grey;
+@cp_kanban-item-bg: @cryptpad_color_grey_800;
+@cp_kanban-board-bg: @cryptpad_color_grey_700;
 @cp_kanban-conflict-bg: @cryptpad_color_toolbar_grey;
-@cp_kanban-tags-bg: @cryptpad_color_help_grey;
+@cp_kanban-tags-bg: @cryptpad_color_grey_700;
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
-@cp_kanban-color0: @cryptpad_color_neutral2_grey;
+@cp_kanban-color0: @cryptpad_color_grey_600;
 @cp_kanban-colors: darken(#FFD4D4,75%), darken(#FFDECA, 75%), darken(#FFE69C,75%), darken(#DBFFB7,75%), darken(#AFFDC2,75%), darken(#C9FFFE,75%), darken(#C8D6FF,75%), darken(#E4CAFF,75%);
 
 // Notifications
@@ -353,15 +355,15 @@
 @cp_pad-icon-filter: invert();
 
 // Poll
-@cp_poll-th-bg: @cryptpad_color_lighter_blue;
+@cp_poll-th-bg: @cryptpad_color_brand_fadest;
 @cp_poll-th-fg: @cryptpad_text_col;
-@cp_poll-uncommitted-bg: @cryptpad_color_toolbar_grey;
-@cp_poll-border-color: @cryptpad_color_hint_grey;
+@cp_poll-uncommitted-bg: @cryptpad_color_grey_800;
+@cp_poll-border-color: @cryptpad_color_grey_600;
 @cp_poll-cell-fg: @cryptpad_text_col;
-@cp_poll-unset: @cryptpad_color_help_grey;
+@cp_poll-unset: @cryptpad_color_grey_700;
 @cp_poll-yes: @cryptpad_color_green_fade;
 @cp_poll-no: @cryptpad_color_red_fade;
-@cp_poll-maybe: @cryptpad_color_light_yellow;
+@cp_poll-maybe: @cryptpad_color_grey_600;
 @cp_poll-hint: @cryptpad_color_dark_grey;
 
 // Profile
