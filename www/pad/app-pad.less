@@ -22,7 +22,7 @@ body.cp-app-pad {
         overflow: hidden;
     }
 
-    #cp-app-pad-toc, #cp-app-pad-comments {
+    #cp-app-pad-toc, #cp-app-pad-comments, #cp-app-pad-resize {
         .cp-pad-show, .cp-pad-hide {
             position: absolute;
             cursor: pointer;
@@ -41,6 +41,18 @@ body.cp-app-pad {
         }
         &:not(.hidden) {
             .cp-pad-show { display: none; }
+        }
+    }
+    #cp-app-pad-resize {
+        order: 2;
+        height: 28px;
+        width: 36px;
+        margin-left: -36px;
+        margin-top: 10px;
+        margin-right: 0;
+        &.hidden {
+            margin-left: -66px;
+            margin-right: 40px;
         }
     }
     #cp-app-pad-toc {
@@ -189,6 +201,20 @@ body.cp-app-pad {
 
     .cke_wysiwyg_frame {
         min-width: 60%;
+    }
+
+    .cp-pad-settings-dialog {
+        .cp-pad-settings-radio-container {
+            display: flex;
+            align-items: center;
+            .cp-radio, &>button {
+                margin-right: 20px;
+            }
+            margin-bottom: 20px;
+        }
+        .cp-app-prop-content {
+            margin-bottom: 0;
+        }
     }
 
     @media print {

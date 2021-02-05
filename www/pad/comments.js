@@ -304,17 +304,18 @@ define([
         }, [
             h('i.fa.fa-comment')
         ]);
+
+
         var store = window.cryptpadStore;
         var key = 'hide-pad-comments';
-        if (store.store[key] === '1') {
-            Env.$container.addClass('hidden');
-        }
         $(hideBtn).click(function () {
             Env.$container.addClass('hidden');
+            Env.localHide = true;
             if (store) { store.put(key, '1'); }
         });
         $(showBtn).click(function () {
             Env.$container.removeClass('hidden');
+            Env.localHide = false;
             if (store) { store.put(key, '0'); }
         });
         Env.$container.append([
@@ -619,11 +620,27 @@ define([
             });
         }
 
-        if (show) {
-            Env.$container.show();
+
+        // Hidden or visible? check pad settings first, then browser otherwise hide
+        var md = Util.clone(Env.metadataMgr.getMetadata());
+        var hide = false;
+        if (typeof(md.defaultComments) === "undefined") {
+            if (typeof(store.store[key]) === 'undefined') {
+                hide = !show; // Hide if there are no comments
+            } else {
+                hide = store.store[key] === '1';
+            }
         } else {
-            Env.$container.hide();
+            hide = md.defaultComments === 0;
         }
+        // If we've clicked on the show/hide buttons, always use our latest local value
+        if (typeof(Env.localHide) === "boolean") { hide = Env.localHide; }
+
+        Env.$container.removeClass('hidden');
+        if (hide) { Env.$container.addClass('hidden'); }
+
+
+        Env.$container.show();
     };
 
     var onChange = function(Env) {
@@ -786,6 +803,8 @@ define([
             // Remove active class on other comments
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$container.find('.cp-comment-form').remove();
+            Env.$container.removeClass('hidden');
+            Env.localHide = false;
             var form = getCommentForm(Env, false, function(val) {
                 $(form).remove();
                 Env.$inner.focus();
@@ -822,7 +841,9 @@ define([
 
                 Env.oldComments = undefined;
             });
-            Env.$container.prepend(form).show();
+
+            Env.$container.show();
+            Env.$container.find('> h2').after(form);
         };
 
 
@@ -850,6 +871,8 @@ define([
 
     var ready = function(Env) {
         Env.ready = 0;
+
+        onChange(Env);
 
         // If you're the only edit user online, clear "deleted" comments
         if (!Env.common.isLoggedIn()) { return; }

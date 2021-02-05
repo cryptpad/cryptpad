@@ -203,6 +203,153 @@ define([
         check();
     };
 
+    var mkSettingsMenu = function(framework) {
+
+        Messages.pad_settings_info = "Here you can change the defaults settings for this document. New users will use these settings until they change the values on their account.";
+        Messages.pad_settings_width_small = "Page mode";
+        Messages.pad_settings_width_large = "Large mode";
+        Messages.pad_settings_outline = "Choose whether the Table of Contents should be visible or hidden by default for new users.";
+        Messages.pad_settings_comments = "Choose whether the Comments should be visible or hidden by default for new users.";
+        Messages.pad_settings_hide = "Hide";
+        Messages.pad_settings_show = "Show";
+        var getSettings = function () {
+            var $d = $(h('div.cp-pad-settings-dialog'));
+            var common = framework._.sfCommon;
+            var metadataMgr = common.getMetadataMgr();
+            var md = Util.clone(metadataMgr.getMetadata());
+
+            var set = function (key, val, spinner) {
+                var md = Util.clone(metadataMgr.getMetadata());
+                if (typeof(val) === "undefined") { delete md[key]; }
+                else { md[key] = val; }
+                metadataMgr.updateMetadata(md);
+                framework.localChange();
+                framework._.cpNfInner.whenRealtimeSyncs(spinner.done);
+            };
+
+            // Pad width
+            var opt1 = UI.createRadio('cp-pad-settings-width', 'cp-pad-settings-width-small',
+                Messages.pad_settings_width_small, md.defaultWidth === 0, {
+                    input: { value: 0 },
+                    label: { class: 'noTitle' }
+                });
+            var opt2 = UI.createRadio('cp-pad-settings-width', 'cp-pad-settings-width-large',
+                Messages.pad_settings_width_large, md.defaultWidth === 1, {
+                    input: { value: 1 },
+                    label: { class: 'noTitle' }
+                });
+            var delWidth = h('button.btn.btn-default.fa.fa-times');
+            var width = h('div.cp-pad-settings-radio-container', [
+                opt1,
+                opt2,
+                delWidth
+            ]);
+            var $width = $(width);
+            var spinner = UI.makeSpinner($width);
+
+            $(delWidth).click(function () {
+                spinner.spin();
+                $width.find('input[type="radio"]').prop('checked', false);
+                set('defaultWidth', undefined, spinner);
+            });
+            $width.find('input[type="radio"]').on('change', function() {
+                spinner.spin();
+                var val = $('input:radio[name="cp-pad-settings-width"]:checked').val();
+                val = Number(val) || 0;
+                set('defaultWidth', val, spinner);
+            });
+
+            // Outline
+            var opt3 = UI.createRadio('cp-pad-settings-outline', 'cp-pad-settings-outline-false',
+                Messages.pad_settings_hide, md.defaultOutline === 0, {
+                    input: { value: 0 },
+                    label: { class: 'noTitle' }
+                });
+            var opt4 = UI.createRadio('cp-pad-settings-outline', 'cp-pad-settings-outline-true',
+                Messages.pad_settings_show, md.defaultOutline === 1, {
+                    input: { value: 1 },
+                    label: { class: 'noTitle' }
+                });
+            var delOutline = h('button.btn.btn-default.fa.fa-times');
+            var outline = h('div.cp-pad-settings-radio-container', [
+                opt3,
+                opt4,
+                delOutline
+            ]);
+            var $outline = $(outline);
+            var spinner2 = UI.makeSpinner($outline);
+
+            $(delOutline).click(function () {
+                spinner2.spin();
+                $outline.find('input[type="radio"]').prop('checked', false);
+                set('defaultOutline', undefined, spinner2);
+            });
+            $outline.find('input[type="radio"]').on('change', function() {
+                spinner2.spin();
+                var val = $('input:radio[name="cp-pad-settings-outline"]:checked').val();
+                val = Number(val) || 0;
+                set('defaultOutline', val, spinner2);
+            });
+
+            // Comments
+            var opt5 = UI.createRadio('cp-pad-settings-comments', 'cp-pad-settings-comments-false',
+                Messages.pad_settings_hide, md.defaultComments === 0, {
+                    input: { value: 0 },
+                    label: { class: 'noTitle' }
+                });
+            var opt6 = UI.createRadio('cp-pad-settings-comments', 'cp-pad-settings-comments-true',
+                Messages.pad_settings_show, md.defaultComments === 1, {
+                    input: { value: 1 },
+                    label: { class: 'noTitle' }
+                });
+            var delComments = h('button.btn.btn-default.fa.fa-times');
+            var comments = h('div.cp-pad-settings-radio-container', [
+                opt5,
+                opt6,
+                delComments
+            ]);
+            var $comments = $(comments);
+            var spinner3 = UI.makeSpinner($comments);
+
+            $(delComments).click(function () {
+                spinner3.spin();
+                $comments.find('input[type="radio"]').prop('checked', false);
+                set('defaultComments', undefined, spinner3);
+            });
+            $comments.find('input[type="radio"]').on('change', function() {
+                spinner3.spin();
+                var val = $('input:radio[name="cp-pad-settings-comments"]:checked').val();
+                val = Number(val) || 0;
+                set('defaultComments', val, spinner3);
+            });
+
+            $d.append([
+                h('p.cp-app-prop-content', h('em', Messages.pad_settings_info)),
+                h('label', Messages.settings_padWidth),
+                h('p.cp-app-prop-content', Messages.settings_padWidthHint),
+                $width[0],
+                h('label', Messages.markdown_toc),
+                h('p.cp-app-prop-content', Messages.pad_settings_outline),
+                $outline[0],
+                h('label', Messages.poll_comment_list),
+                h('p.cp-app-prop-content', Messages.pad_settings_comments),
+                $comments[0],
+            ]);
+
+            return $d[0];
+        };
+
+        var $settingsButton = framework._.sfCommon.createButton('', true, {
+            drawer: true,
+            text: 'DOCUMENT SETTINGS',
+            name: 'pad_settings',
+            icon: 'fa-cog',
+        }, function () {
+            UI.alert(getSettings());
+        });
+        framework._.toolbar.$drawer.append($settingsButton);
+    };
+
     var mkHelpMenu = function(framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
@@ -424,46 +571,6 @@ define([
         });
     };
 
-    var addTOCHideBtn = function(framework, $toc) {
-        // Expand / collapse the toolbar
-        var onClick = function(visible) {
-            framework._.sfCommon.setAttribute(['pad', 'showTOC'], visible);
-        };
-        framework._.sfCommon.getAttribute(['pad', 'showTOC'], function(err, data) {
-            var state = false;
-            if (($(window).height() >= 800 || $(window).width() >= 800) &&
-                (typeof(data) === "undefined" || data)) {
-                state = true;
-                $toc.show();
-            } else {
-                $toc.hide();
-            }
-            var $tocButton = framework._.sfCommon.createButton('', true, {
-                drawer: false,
-                text: Messages.pad_tocHide,
-                name: 'pad_toc',
-                icon: 'fa-list-ul',
-            }, function () {
-                $tocButton.removeClass('cp-toolbar-button-active');
-                $toc.toggle();
-                state = $toc.is(':visible');
-                if (state) {
-                    $tocButton.addClass('cp-toolbar-button-active');
-                }
-                onClick(state);
-            });
-            framework._.toolbar.$bottomL.append($tocButton);
-            if (state) {
-                $tocButton.addClass('cp-toolbar-button-active');
-            }
-        });
-        var store = window.cryptpadStore;
-        var key = 'hide-pad-toc';
-        if (store.store[key] === '1') {
-            $toc.addClass('hidden');
-        }
-    };
-
     var displayMediaTags = function(framework, dom, mediaTagMap) {
         setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
@@ -590,8 +697,9 @@ define([
             $container: $('#cp-app-pad-comments')
         });
 
+        var $resize = $('#cp-app-pad-resize');
         var $toc = $('#cp-app-pad-toc');
-        addTOCHideBtn(framework, $toc);
+        $toc.show();
 
         // My cursor
         var cursor = module.cursor = Cursor(inner);
@@ -611,6 +719,7 @@ define([
         if (!privateData.isEmbed) {
             mkHelpMenu(framework);
         }
+        mkSettingsMenu(framework);
 
         framework._.sfCommon.getAttribute(['pad', 'width'], function(err, data) {
             var active = data || typeof(data) === "undefined";
@@ -671,7 +780,61 @@ define([
                 Util.stripTags($(el).text());
         };
 
+        var updatePageMode = function () {
+            var md = Util.clone(metadataMgr.getMetadata());
+            var store = window.cryptpadStore;
+            var key = 'pad-small-width';
+
+            var hideBtn = h('button.btn.btn-default.cp-pad-hide.fa.fa-compress');
+            var showBtn = h('button.btn.btn-default.cp-pad-show.fa.fa-expand');
+
+            var localHide;
+            $(hideBtn).click(function () { // Expand
+                $contentContainer.addClass('cke_body_width');
+                $resize.addClass('hidden');
+                localHide = true;
+                if (store) { store.put(key, '1'); }
+            });
+            $(showBtn).click(function () {
+                $contentContainer.removeClass('cke_body_width');
+                $resize.removeClass('hidden');
+                localHide = false;
+                if (store) { store.put(key, '0'); }
+            });
+
+            var content = [
+                hideBtn,
+                showBtn,
+            ];
+            $resize.html('').append(content);
+
+            // Hidden or visible? check pad settings first, then browser otherwise hide
+            var hide = false;
+            if (typeof(md.defaultWidth) === "undefined") {
+                if (typeof(store.store[key]) === 'undefined') {
+                    hide = true;
+                } else {
+                    hide = store.store[key] === '1';
+                }
+            } else {
+                hide = md.defaultWidth === 0;
+            }
+
+            // If we've clicking on the show/hide buttons, always use our last value
+            if (typeof(localHide) === "boolean") { hide = localHide; }
+
+            $contentContainer.removeClass('cke_body_width');
+            $resize.removeClass('hidden');
+            if (hide) {
+                $resize.addClass('hidden');
+                $contentContainer.addClass('cke_body_width');
+            }
+
+        };
+        updatePageMode();
         var updateTOC = Util.throttle(function () {
+            var md = Util.clone(metadataMgr.getMetadata());
+
             var toc = [];
             $inner.find('h1, h2, h3, a[id][data-cke-saved-name]').each(function (i, el) {
                 if (isAnchor(el)) {
@@ -701,15 +864,33 @@ define([
             ];
             var store = window.cryptpadStore;
             var key = 'hide-pad-toc';
-            if (store.store[key] === '1') {
-                $toc.addClass('hidden');
+
+            // Hidden or visible? check pad settings first, then browser otherwise hide
+            var hide = false;
+            var localHide;
+            if (typeof(md.defaultOutline) === "undefined") {
+                if (typeof(store.store[key]) === 'undefined') {
+                    hide = true;
+                } else {
+                    hide = store.store[key] === '1';
+                }
+            } else {
+                hide = md.defaultOutline === 0;
             }
+            // If we've clicking on the show/hide buttons, always use our last value
+            if (typeof(localHide) === "boolean") { hide = localHide; }
+
+            $toc.removeClass('hidden');
+            if (hide) { $toc.addClass('hidden'); }
+
             $(hideBtn).click(function () {
                 $toc.addClass('hidden');
+                localHide = true;
                 if (store) { store.put(key, '1'); }
             });
             $(showBtn).click(function () {
                 $toc.removeClass('hidden');
+                localHide = false;
                 if (store) { store.put(key, '0'); }
             });
             toc.forEach(function (obj) {
@@ -938,6 +1119,8 @@ define([
                 }
             });
 
+            updateTOC();
+            updatePageMode();
             comments.ready();
 
             /*setTimeout(function () {
@@ -1176,29 +1359,6 @@ define([
                     customConfig: '/customize/ckeditor-config.js',
                 });
 
-                editor.addCommand('pagemode', {
-                    exec: function() {
-                        if (!framework) { return; }
-                        var $contentContainer = $('#cke_1_contents');
-                        var $button = $('.cke_button__pagemode');
-                        var isLarge = $button.hasClass('cke_button_on');
-                        if (isLarge) {
-                            $button.addClass('cke_button_off').removeClass('cke_button_on');
-                            $contentContainer.addClass('cke_body_width');
-                        } else {
-                            $button.addClass('cke_button_on').removeClass('cke_button_off');
-                            $contentContainer.removeClass('cke_body_width');
-                        }
-                        framework._.sfCommon.setAttribute(['pad', 'width'], isLarge);
-                    }
-                });
-                editor.ui.addButton('PageMode', {
-                    label: Messages.pad_useFullWidth,
-                    command: 'pagemode',
-                    icon: '/pad/icons/arrows-h.png',
-                    toolbar: 'document,60'
-                });
-
                 editor.on('instanceReady', waitFor());
             }).nThen(function() {
                 var _getPath = Ckeditor.plugins.getPath;
@@ -1241,6 +1401,7 @@ define([
                 var $mainContainer = $('#cke_editor1 > .cke_inner');
                 var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
                 $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
+                $contentContainer.append(h('div#cp-app-pad-resize'));
                 $contentContainer.append(h('div#cp-app-pad-comments'));
                 $contentContainer.prepend(h('div#cp-app-pad-toc'));
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
