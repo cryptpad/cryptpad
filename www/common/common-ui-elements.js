@@ -1179,7 +1179,18 @@ define([
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
+        var to;
         var todo = function (err, data) {
+            if (to) {
+                clearTimeout(to);
+                to = undefined;
+            }
+            if (err === 'RPC_NOT_READY') {
+                to = setTimeout(function () {
+                    common.getPinUsage(teamId, todo);
+                }, 1000);
+                return;
+            }
             if (err || !data) { return void console.error(err || 'No data'); }
 
             var usage = data.usage;
@@ -1849,6 +1860,13 @@ define([
         var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
+            var privateData = metadataMgr.getPrivateData();
+            if (!priv.plan && privateData.plan) {
+                config.$initBlock.empty();
+                metadataMgr.off('change', updateButton);
+                UIElements.createUserAdminMenu(Common, config);
+                return;
+            }
             if (!myData) { return; }
             if (loadingAvatar) {
                 // Try again in 200ms
@@ -2087,6 +2105,16 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
+
+        if (privateData.offline) {
+            metadataMgr.onChange(function () {
+                var privateData = metadataMgr.getPrivateData();
+                if (privateData.offline) { return; }
+                UIElements.getPadCreationScreen(common, cfg, appCfg, cb);
+            });
+            return;
+        }
+
         var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
 

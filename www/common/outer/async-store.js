@@ -1229,6 +1229,7 @@ define([
                     var data = obj.data;
                     if (channels.indexOf(data.channel) !== -1) { return; }
                     var id = obj.id;
+                    if (data.channel) { channels.push(data.channel); }
                     var parsed = Hash.parsePadUrl(data.href || data.roHref);
                     if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                         !isFiltered(parsed.type, data)) {

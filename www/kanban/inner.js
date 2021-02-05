@@ -134,6 +134,24 @@ define([
     };
 
     var addEditItemButton = function () {};
+
+    var now = function () { return +new Date(); };
+    var _lastUpdate = 0;
+    var _updateBoards = function (framework, kanban, boards) {
+        _lastUpdate = now();
+        kanban.setBoards(Util.clone(boards));
+        kanban.inEditMode = false;
+        addEditItemButton(framework, kanban);
+    };
+    var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
+    var updateBoards = function (framework, kanban, boards) {
+        if ((now() - _lastUpdate) > 5000 || framework.isLocked()) {
+            _updateBoards(framework, kanban, boards);
+            return;
+        }
+        _updateBoardsThrottle(framework, kanban, boards);
+    };
+
     var onRemoteChange = Util.mkEvent();
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
@@ -146,10 +164,9 @@ define([
         var isBoard, id;
         var offline = false;
 
-        var update = Util.throttle(function () {
-            kanban.setBoards(kanban.options.boards);
-            addEditItemButton(framework, kanban);
-        }, 400);
+        var update = function () {
+            updateBoards(framework, kanban, kanban.options.boards);
+        };
 
         var commit = function () {
             framework.localChange();
@@ -400,7 +417,9 @@ define([
         framework.onEditableChange(function (unlocked) {
             editor.setOption('readOnly', !unlocked);
             $title.prop('disabled', unlocked ? '' : 'disabled');
-            $(_field.element).tokenfield(unlocked ? 'enable' : 'disable');
+            if (_field) {
+                $(_field.element).tokenfield(unlocked ? 'enable' : 'disable');
+            }
 
             $modal.find('nav button.danger').prop('disabled', unlocked ? '' : 'disabled');
             offline = !unlocked;
@@ -831,7 +850,8 @@ define([
             openLink: openLink,
             getTags: getExistingTags,
             cursors: remoteCursors,
-            boards: boards
+            boards: boards,
+            _boards: Util.clone(boards),
         });
 
         framework._.cpNfInner.metadataMgr.onChange(function () {
@@ -842,7 +862,7 @@ define([
             // If the rendering has changed, update the value and redraw
             kanban.options.tagsAnd = tagsAnd;
             _tagsAnd = tagsAnd;
-            kanban.setBoards(kanban.options.boards);
+            updateBoards(framework, kanban, kanban.options.boards);
         });
 
         if (migrated) { framework.localChange(); }
@@ -1167,9 +1187,8 @@ define([
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 var cursor = getCursor();
                 verbose("Content is different.. Applying content");
-                kanban.setBoards(remoteContent);
-                kanban.inEditMode = false;
-                addEditItemButton(framework, kanban);
+                kanban.options.boards = remoteContent;
+                updateBoards(framework, kanban, remoteContent);
                 restoreCursor(cursor);
                 onRemoteChange.fire();
             }
@@ -1191,8 +1210,17 @@ define([
             var items = boards.items || {};
             var data = boards.data || {};
             var list = boards.list || [];
+
+            // Remove duplicate boards
+            list = boards.list = Util.deduplicateString(list);
+
             Object.keys(data).forEach(function (id) {
-                if (list.indexOf(Number(id)) === -1) { delete data[id]; }
+                if (list.indexOf(Number(id)) === -1) {
+                    list.push(Number(id));
+                }
+                // Remove duplicate items
+                var b = data[id];
+                b.item = Util.deduplicateString(b.item || []);
             });
             Object.keys(items).forEach(function (eid) {
                 var exists = Object.keys(data).some(function (id) {
