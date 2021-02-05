@@ -61,15 +61,18 @@
 @cryptpad_color_light_blue: #00b7d8;
 @cryptpad_color_red: #ff1100;
 @cryptpad_color_red_fade: fade(@cryptpad_color_red, 50%);
+@cryptpad_color_red_fader: fade(@cryptpad_color_red, 25%);
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
 @cryptpad_color_light_red: #FFD4D4;
+@cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 20%);
 @cryptpad_color_orange: #f49842;
 @cryptpad_color_green: #5cb85c;
 @cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
 @cryptpad_color_light_green: #c5ffa8;
+@cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
 @cryptpad_color_light_yellow: #FFE69C;
-@cryptpad_color_yellow_fade: fade(#FFE69C, 50%);
+@cryptpad_color_yellow_fade: fade(#FFE69C, 15%);
 @cryptpad_color_lighter_blue: #d2e1f2; // XXX replace with @cryptpad_color_brand_fadest
 
 @cryptpad_color_link:@cryptpad_color_brand_300;
@@ -117,6 +120,20 @@
 @cp_forms-readonly: @cryptpad_color_brand_fadest;
 @cp_forms-readonly-border: @cryptpad_color_brand;
 @cp_forms-disabled: @cryptpad_color_grey_500;
+
+// Bootstrap alerts
+@cp_alerts-warning-bg: @cryptpad_color_yellow_fade;
+@cp_alerts-warning-fg: @cryptpad_color_light_yellow;
+@cp_alerts-warning-text: @cryptpad_color_light_yellow;
+@cp_alerts-danger-bg: @cryptpad_color_red_fader;
+@cp_alerts-danger-fg: @cryptpad_color_light_red;
+@cp_alerts-danger-text: @cryptpad_color_light_red;
+@cp_alerts-info-bg: @cryptpad_color_brand_fadest;
+@cp_alerts-info-text: @cryptpad_color_brand_300;
+@cp_alerts-info-fg: @cryptpad_color_brand_300;
+@cp_alerts-success-bg: @cryptpad_color_light_green_fade;
+@cp_alerts-success-fg: @cryptpad_color_green;
+@cp_alerts-success-text: @cryptpad_color_light_green;
 
 // Buttons
 @cp_buttons-fg: @cryptpad_color_brand_300;
@@ -216,7 +233,7 @@
 @cp_upload-progress: @cryptpad_color_grey_700;
 
 // Help
-@cp_help-bg: @cryptpad_color_grey_700;
+@cp_help-bg: @cryptpad_color_grey_800;
 @cp_help-fg: @cryptpad_text_col;
 @cp_help-link: @cryptpad_color_link;
 

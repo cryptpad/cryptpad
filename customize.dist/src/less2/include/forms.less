@@ -207,4 +207,59 @@
             }
         }
     }
+    // Bootstrap Alerts
+    .alert {
+        margin: 0px 0px @alertify_padding-base 0px;
+        font-size: 12px;
+        padding: 5px;
+        border-radius: 0px;
+        i {
+            margin-right: 10px;
+        }
+        &.cp-alert-top {
+            margin-top: @alertify_padding-base;
+        }
+        a {
+            color: @cryptpad_text_col;
+            text-decoration: underline;
+        }
+        &.alert-primary {
+            background-color: fade(@cryptpad_color_brand, 15%);
+            color: @cp_alertify-fg;
+            border-color: @cp_alertify-fg;
+            a {
+                color: @cp_alertify-fg;
+                text-decoration: underline;
+            }
+        }
+        &.alert-warning {
+            background-color: @cp_alerts-warning-bg;
+            color: @cp_alerts-warning-text;
+            border-color: @cp_alerts-warning-fg;
+        }
+        &.alert-danger {
+            background-color: @cp_alerts-danger-bg;
+            color: @cp_alerts-danger-text;
+            border-color: @cp_alerts-danger-fg;
+        }
+        &.alert-info {
+            background-color: @cp_alerts-info-bg;
+            color: @cp_alerts-info-text;
+            border-color: @cp_alerts-info-fg;
+        }
+        &.alert-success {
+            background-color: @cp_alerts-success-bg;
+            color: @cp_alerts-success-text;
+            border-color: @cp_alerts-success-fg;
+        }
+        &.dismissable {
+            display: flex;
+            align-items: center;
+            span.fa-times {
+                font-size: @colortheme_app-font-size;
+                margin-left: 20px;
+                cursor: pointer;
+            }
+        }
+    }
 }
