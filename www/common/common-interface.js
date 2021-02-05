@@ -388,6 +388,7 @@ define([
                 }));
         };
 
+        $t.closest('.tokenfield').removeClass('form-control');
         t.focus = function () {
             var $temp = $t.closest('.tokenfield').find('.token-input');
             $temp.css('width', '20%');
