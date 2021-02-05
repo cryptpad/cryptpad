@@ -3,6 +3,29 @@ Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 
+html {
+    scrollbar-color: rgba(0,0,0,0.2) transparent;
+    scrollbar-width: thin;
+}
+body::-webkit-scrollbar {
+    width: 6px;
+    background-color: #FFF !important;
+}
+body::-webkit-scrollbar-thumb {
+    width: 6px;
+    background-color: rgba(0,0,0,0.2) !important;
+}
+html.cp-dark {
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+html.cp-dark ::-webkit-scrollbar {
+    background-color: #222 !important; /* should match the value un pad/inner.js */
+}
+html.cp-dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.2) !important;
+}
+
+
 body
 {
     /* Font */

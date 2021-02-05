@@ -1217,11 +1217,15 @@ define([
                 $contentContainer.prepend(h('div#cp-app-pad-toc'));
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
 
+                var $iframe = $('iframe').contents();
                 if (window.CryptPad_theme === 'dark') {
-                    var $iframe = $('iframe').contents();
-                    $iframe.find('html').css({
-                        'background-color': '#222', // XXX
+                    $iframe.find('html').addClass('cp-dark').css({
+                        'background-color': '#222', // XXX make sure it's the same in www/pad/app-pad.less
                         'color': '#aaa' // XXX
+                    });
+                } else {
+                    $iframe.find('html').css({
+                        'background-color': '#FFF'
                     });
                 }
             }).nThen(waitFor());
