@@ -9,7 +9,6 @@ try {
         s.innerHTML = 'body { background: black; }';
         document.body.appendChild(s);
     }
-    console.error(theme, os);
 } catch (e) { console.error(e); }
 })();
 

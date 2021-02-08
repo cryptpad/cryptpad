@@ -14,7 +14,6 @@ try {
     var os = isDarkOS() ? 'dark' : 'light';
     var key = 'CRYPTPAD_STORE|colortheme';
     window.CryptPad_theme = localStorage[key] || os;
-    console.error(localStorage[key], os);
     if (!localStorage[key]) {
         // We're using OS theme, check if we need to change
         if (os !== localStorage[key+'_default']) {
@@ -28,17 +27,6 @@ try {
         s.innerHTML = 'body { background: black; }';
         document.body.appendChild(s);
     }
-    //localStorage[key] = theme;
-    // If the wrong theme is built, flush it
-    /* XXX flush cache when change
-    if (theme !== built) {
-        console.warn('New theme, flush cache');
-        Object.keys(localStorage).forEach(function (k) {
-            if (k.indexOf('CRYPTPAD_CACHE|') !== 0 && k.indexOf('LESS_CACHE') !== 0) { return; }
-            delete localStorage[k];
-        });
-    }
-    */
 } catch (e) { console.error(e); }
 })();
 
