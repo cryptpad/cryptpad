@@ -51,6 +51,7 @@ define([
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
             'cp-admin-getlimits',
+            'cp-admin-getquota',
         ],
         'stats': [
             'cp-admin-refresh-stats',
@@ -464,6 +465,43 @@ define([
         });
 
         $div.append(form);
+        return $div;
+    };
+
+    create['getquota'] = function () {
+        var key = 'getquota';
+        var $div = makeBlock(key, true);
+
+        var input = h('input#cp-admin-getquota', {
+            type: 'text'
+        });
+        var $input = $(input);
+
+        var $button = $div.find('button');
+        $button.before(h('div.cp-admin-setlimit-form', [
+            input,
+        ]));
+
+        $button.click(function () {
+            var val = $input.val();
+            if (!val || !val.trim()) { return; }
+            var key = Keys.canonicalize(val);
+            if (!key) { return; }
+            $input.val('');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_USER_TOTAL_SIZE',
+                data: key
+            }, function (e, obj) {
+                if (e || (obj && obj.error)) {
+                    console.error(e || obj.error);
+                    return void UI.warn(Messages.error);
+                }
+                var size = Array.isArray(obj) && obj[0];
+                if (typeof(size) !== "number") { return; }
+                UI.alert(Util.getPrettySize(size, Messages));
+            });
+        });
+
         return $div;
     };
 
