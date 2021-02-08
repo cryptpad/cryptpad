@@ -10,9 +10,10 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
+    '/common/hyperscript.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -100,7 +101,12 @@ define([
             }
 
             setTimeout(function () {
-            UI.confirm("<h2 class='msg'>" + Messages.register_warning + "</h2>" + Messages.register_warning_note,
+                var span = h('span', [
+                    UI.setHTML(h('h2'), Messages.register_warning), // TODO remove the icon from this translation string and pass it separately
+                    Messages.register_warning_note
+                ]);
+
+            UI.confirm(span,
             function (yes) {
                 if (!yes) { return; }
 
@@ -124,7 +130,7 @@ define([
                 done: function ($dialog) {
                     $dialog.find('> div').addClass('half');
                 },
-            }, true);
+            });
             }, 150);
         };
 
