@@ -142,6 +142,7 @@
 @cp_buttons-default-color: @cryptpad_text_col;
 @cp_buttons-default-border: @cryptpad_text_col;
 @cp_buttons-red: #E55236;
+@cp_buttons-red-text: @cryptpad_color_light_red;
 @cp_buttons-red-color: #FFF;
 @cp_buttons-red-border: transparent;
 @cp_buttons-primary: @cryptpad_color_brand;
@@ -159,7 +160,7 @@
 @cp_sidebar-right-bg: @cryptpad_color_grey_900;
 @cp_sidebar-right-fg: @cryptpad_text_col; // XXX was black
 @cp_sidebar-left-active: @cp_sidebar-right-bg;
-@cp_sidebar-hint: @cryptpad_color_hint_grey;
+@cp_sidebar-hint: fade(@cryptpad_text_col, 80%);
 
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;
@@ -327,6 +328,7 @@
 // Code
 @cp_preview-bg: @cryptpad_color_grey_900;
 @cp_preview-fg: @cryptpad_text_col;
+@cp_preview-link: @cryptpad_color_brand_300;
 
 // Debug
 @cp_debug-hover: fade(@cryptpad_color_black, 10%);
