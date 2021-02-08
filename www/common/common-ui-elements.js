@@ -2107,11 +2107,13 @@ define([
         var privateData = metadataMgr.getPrivateData();
 
         if (privateData.offline) {
-            metadataMgr.onChange(function () {
+            var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
                 if (privateData.offline) { return; }
                 UIElements.getPadCreationScreen(common, cfg, appCfg, cb);
-            });
+                metadataMgr.off('change', onChange);
+            };
+            metadataMgr.onChange(onChange);
             return;
         }
 
