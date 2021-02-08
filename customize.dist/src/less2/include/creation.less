@@ -9,7 +9,8 @@
 ) {
     @creation-color: @cp_creation-fg;
     @creation-bg-color: @bg-color;
-    @creation-bg-color-light: contrast(@creation-color, lighten(@bg-color, 30%), darken(@bg-color, 30%));
+    @desat-color: desaturate(@bg-color, 20%);
+    @creation-bg-color-light: contrast(@creation-color, lighten(@bg-color, 30%), darken(@desat-color, 20%));
 };
 
 .creation_main(
