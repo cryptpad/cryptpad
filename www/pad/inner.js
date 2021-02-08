@@ -205,6 +205,7 @@ define([
 
     var mkSettingsMenu = function(framework) {
 
+        // XXX
         Messages.pad_settings_info = "Here you can change the defaults settings for this document. New users will use these settings until they change the values on their account.";
         Messages.pad_settings_width_small = "Page mode";
         Messages.pad_settings_width_large = "Large mode";
