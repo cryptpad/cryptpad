@@ -31,16 +31,6 @@
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
 @cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
-@cryptpad_color_hint_grey: #777;
-@cryptpad_color_dark_grey: #999999;
-@cryptpad_color_neutral_grey: #aaaaaa;
-@cryptpad_color_neutral2_grey: #cccccc;
-@cryptpad_color_help_grey: #dddddd;
-@cryptpad_color_grey: #e0e0e0;
-@cryptpad_color_toolbar_grey: #EEEEEE;
-@cryptpad_color_light_grey: #f1f1f1;
-@cryptpad_color_lighter_grey: #f9f9f9;
-
 @cryptpad_color_white: #FFF;
 @cryptpad_color_grey_50: #FAFAFA;
 @cryptpad_color_grey_100: #F5F5F5;
@@ -222,7 +212,7 @@
 @cp_creation-button-bg: @cryptpad_color_brand;
 @cp_creation-button-fg: @cryptpad_color_white;
 @cp_creation-error-bg: @cryptpad_color_blue;
-@cp_creation-error-fg: @cryptpad_color_light_grey;
+@cp_creation-error-fg: @cryptpad_color_grey_100; // XXX
 
 // Export
 @cp_export-bg: @cryptpad_color_grey_900;
@@ -271,7 +261,7 @@
 
 // Modals
 @cp_access-overlay: fade(@cp_alertify-bg, 50%);
-@cp_snapshots-hover: @cryptpad_color_help_grey;
+@cp_snapshots-hover: @cryptpad_color_grey_850;
 
 // Support
 @cp_support-bg: @cryptpad_color_grey_800;
@@ -341,7 +331,7 @@
 
 // Debug
 @cp_debug-hover: fade(@cryptpad_color_black, 10%);
-@cp_debug-icon-hover: @cryptpad_color_dark_grey;
+@cp_debug-icon-hover: @cryptpad_color_grey_500;
 
 // Mediatag
 @cp_mediatag-text-bg: @cryptpad_color_white;
@@ -418,7 +408,7 @@
 @cp_teams-roster-odd: fade(@cryptpad_text_col, 15%);
 
 // Whiteboard
-@cp_whiteboard-board-bg: @cp_app-bg;
-@cp_whiteboard-board-border: @cryptpad_color_hint_grey;
+@cp_whiteboard-board-bg: @cryptpad_color_grey_950;
+@cp_whiteboard-board-border: @cryptpad_color_grey_800;
 @cp_whiteboard-bg: @cp_app-bg;
 @cp_whiteboard-fg: @cryptpad_text_col;
