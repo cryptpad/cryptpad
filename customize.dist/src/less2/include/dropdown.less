@@ -7,6 +7,18 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    .ui-autocomplete {
+        background-color: @cp_autocomplete-bg;
+        color: @cp_autocomplete-fg;
+    }
+    ul.ui-menu {
+        border: 1px solid @cp_autocomplete-border; // XXX doesn't work
+        .ui-state-active {
+            background-color: @cp_autocomplete-hover;
+            color: @cp_autocomplete-fg;
+            border-color: @cp_autocomplete-hover;
+        }
+    }
     .cp-autocomplete-value {
         display: flex;
         align-items: center;
