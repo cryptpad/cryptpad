@@ -381,7 +381,7 @@ define([
             /*  Remember the user's last choice of theme using localStorage */
             var isDark = window.CryptPad_theme === "dark";
             var themeKey = ['codemirror', isDark ? 'themedark' : 'theme'];
-            var defaultTheme = isDark ? 'ansuz' : 'default';
+            var defaultTheme = isDark ? 'dracula' : 'default';
 
             var todo = function (err, lastTheme) {
                 lastTheme = lastTheme || defaultTheme;

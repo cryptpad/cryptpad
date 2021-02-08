@@ -119,13 +119,13 @@ define([
                 });
                 var doXHR = lessEngine.FileManager.prototype.doXHR;
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
-                    console.error(url, COLORTHEME); // XXX
+                    //console.error(url, COLORTHEME);
                     var col = false;
                     var _url = url;
                     if (url === COLORTHEME) {
                         col = true;
                         url = getColorthemeURL();
-                        console.warn(url);
+                        //console.warn(url);
                     }
                     url = fixURL(url);
                     var cached = tempCache[_url];
@@ -137,7 +137,7 @@ define([
                     cached = tempCache[_url] = { queue: [ callback ], res: undefined };
                     return doXHR(url, type, function (text, lastModified) {
                         if (col) {
-                            console.warn(text, lastModified);
+                            //console.warn(text, lastModified);
                             if (getColortheme() === "custom") {
                                 // XXX COLOR: append custom theme here
                                 var custom = [

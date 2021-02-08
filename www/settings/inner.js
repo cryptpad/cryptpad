@@ -424,7 +424,7 @@ define([
     makeBlock('colortheme', function (cb) {
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
         var os = window.cryptpadStore.store['colortheme_default'] || 'light';
-        var values = ['default', 'light', 'dark', 'custom'];
+        var values = ['default', 'light', 'dark'/*, 'custom'*/];
 
         var defaultTheme = Messages['settings_colortheme_'+os];
         var opts = h('div.cp-settings-radio-container', [
