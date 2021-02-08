@@ -313,7 +313,7 @@ define([
             Env.localHide = true;
             if (store) { store.put(key, '1'); }
         });
-        $(showBtn).click(function () {
+        var $showBtn = $(showBtn).click(function () {
             Env.$container.removeClass('hidden');
             Env.localHide = false;
             if (store) { store.put(key, '0'); }
@@ -638,6 +638,11 @@ define([
 
         Env.$container.removeClass('hidden');
         if (hide) { Env.$container.addClass('hidden'); }
+
+        $showBtn.removeClass('notif');
+        if (show) {
+            $showBtn.addClass('notif');
+        }
 
 
         Env.$container.show();

@@ -43,6 +43,21 @@ body.cp-app-pad {
             .cp-pad-show { display: none; }
         }
     }
+    #cp-app-pad-toc {
+        .cp-pad-show {
+            line-height: 25px;
+        }
+    }
+    #cp-app-pad-comments {
+        &.hidden {
+            .cp-pad-show.notif {
+                color: red;
+            }
+        }
+        .cp-pad-show {
+            line-height: 0px;
+        }
+    }
     #cp-app-pad-resize {
         order: 2;
         height: 28px;
