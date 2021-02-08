@@ -14,14 +14,14 @@
             // XXX Keep hardcoded progress bar colors for now...
             .cp-export-progress-bar-container {
                 height: 24px;
-                background: white;
-                border: 1px solid @cryptpad_color_grey;
+                background: @cp_loading-progress-bg;
+                border: 1px solid @cp_loading-progress-bar-bg;
                 width: 80%;
                 margin: auto;
                 position: relative;
                 .cp-export-progress-bar {
                     height: 100%;
-                    background: #5cb85c; // Same color as loading screen bar
+                    background: @cp_loading-progress-bar-bg; // Same color as loading screen bar
                     width: 0%;
                     display: inline-block;
                 }
@@ -62,7 +62,6 @@
                 overflow-x: auto;
                 max-height: 300px;
                 background: @cp_export-error-bg;
-                border: 1px solid @cp_export-hint;
                 padding: 5px 20px;
                 margin-top: 1rem;
                 & > p {
@@ -79,6 +78,9 @@
                         .link {
                             padding: 0 20px;
                             font-size: 14px;
+                            a {
+                                color: @cp_loading-link;
+                            }
                         }
                         .reason {
                             padding: 0 20px;
