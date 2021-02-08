@@ -419,6 +419,7 @@ define([
     Messages.settings_colortheme_light = "Light";
     Messages.settings_colortheme_dark = "Dark";
     Messages.settings_colortheme_custom = "Custom";
+    Messages.settings_cat_style = "Appearance";
 
     makeBlock('colortheme', function (cb) {
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
