@@ -4,10 +4,11 @@
     --LessLoader_require: LessLoader_currentFile();
 };
 & {
-    @corner-blue: @cp_corner-primary;
-    @corner-white: @cp_corner-secondary;
-    @corner-blue-alt: darken(@corner-blue, 10%);
-    @corner-white-alt: darken(@corner-white, 10%);
+    @corner-bg: @cp_corner-bg;
+    @corner-fg: @cp_corner-fg;
+    @corner-text: @cp_corner-text;
+    @corner-bg-alt: darken(@corner-bg, 10%);
+    @corner-fg-alt: darken(@corner-fg, 10%);
 
 
     @keyframes appear {
@@ -33,16 +34,18 @@
         bottom: 10px;
         width: 350px;
         padding: 10px;
-        background-color: fade(@corner-blue, 95%);
-        color: @corner-white;
+        background-color: fade(@corner-bg, 95%);
+        color: @corner-text;
         z-index: 9999;
         transform-origin: bottom right;
         animation: appear 0.8s ease-in-out;
-        //box-shadow: 0 0 10px 0 @corner-blue;
+        border: 1px solid @corner-fg;
+        box-shadow: 0 0 10px 0 @cp_shadow-color;
 
         &.cp-corner-alt {
-            background-color: fade(@corner-white, 95%);
-            color: @corner-blue;
+            background-color: fade(@corner-bg, 95%);
+            color: @corner-fg;
+            border-color: @corner-fg;
         }
 
         h1, h2, h3 {
@@ -66,14 +69,16 @@
                 font-size: 1.1em;
             }
             &:hover {
-                color: @corner-white-alt;
+                color: @corner-fg-alt;
 
             }
         }
         &.cp-corner-alt {
             .cp-corner-dontshow {
+                display: inline-block;
+                color: @corner-text;
                 &:hover {
-                    color: @corner-blue-alt;
+                    color: @corner-fg;
                 }
             }
         }
@@ -89,63 +94,44 @@
         }
         .cp-corner-footer, .cp-corner-text {
             a {
-                color: @corner-white;
+                color: @corner-fg;
                 text-decoration: underline;
                 &:hover {
-                    color: @corner-white-alt;
+                    color: @corner-fg-alt;
                 }
             }
         }
         &.cp-corner-alt a {
-            color: @corner-blue;
+            color: @corner-text;
             &:hover {
-                color: @corner-blue-alt;
+                color: @corner-fg;
             }
         }
 
         button {
         padding: 5px;
-            color: @corner-white;
+            color: @corner-fg;
             &:not(:first-child) {
                 margin-left: 10px;
             }
-            outline: none;
             text-transform: uppercase;
-            border: 1px solid @corner-white;
+            border: 1px solid @corner-fg;
             .fa, .cptools {
                 margin-right: 0.3em;
             }
             &.cp-corner-primary {
-                background-color: @corner-white;
-                color: @corner-blue;
+                background-color: @corner-fg;
+                color: @corner-bg;
                 &:hover {
-                    background-color: @corner-white-alt;
-                    border-color: @corner-white-alt;
+                    background-color: @corner-fg-alt;
+                    border-color: @corner-fg-alt;
                 }
             }
             &.cp-corner-cancel {
-                background-color: @corner-blue;
-                color: @corner-white;
+                background-color: @corner-bg;
+                color: @corner-fg;
                 &:hover {
-                    background-color: @corner-blue-alt;
-                }
-            }
-        }
-        &.cp-corner-alt button {
-            border-color: @corner-blue;
-            &.cp-corner-primary {
-                background-color: @corner-blue;
-                color: @corner-white;
-                &:hover {
-                    background-color: @corner-blue-alt;
-                    border-color: @corner-blue-alt;
-                }
-            }
-            &.cp-corner-cancel {
-                background-color: @corner-white;
-                color: @corner-blue;
-                &:hover {
-                    background-color: @corner-white-alt;
+                    background-color: @corner-bg-alt;
                 }
             }
         }
