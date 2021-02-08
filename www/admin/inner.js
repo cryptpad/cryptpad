@@ -53,6 +53,7 @@ define([
             'cp-admin-getlimits',
         ],
         'stats': [
+            'cp-admin-refresh-stats',
             'cp-admin-active-sessions',
             'cp-admin-active-pads',
             'cp-admin-open-files',
@@ -466,49 +467,86 @@ define([
         return $div;
     };
 
+    var onRefreshStats = Util.mkEvent();
+
+    create['refresh-stats'] = function () {
+        var key = 'refresh-stats';
+        var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
+        var $btn = $(h('button.btn.btn-primary', Messages.oo_refresh));
+        $btn.click(function () {
+            onRefreshStats.fire();
+        });
+        $div.append($btn);
+        return $div;
+    };
+
     create['active-sessions'] = function () {
         var key = 'active-sessions';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'ACTIVE_SESSIONS',
-        }, function (e, data) {
-            var total = data[0];
-            var ips = data[1];
-            $div.append(h('pre', total + ' (' + ips + ')'));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ACTIVE_SESSIONS',
+            }, function (e, data) {
+                var total = data[0];
+                var ips = data[1];
+                $div.find('pre').remove();
+                $div.append(h('pre', total + ' (' + ips + ')'));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['active-pads'] = function () {
         var key = 'active-pads';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'ACTIVE_PADS',
-        }, function (e, data) {
-            console.log(e, data);
-            $div.append(h('pre', String(data)));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ACTIVE_PADS',
+            }, function (e, data) {
+                console.log(e, data);
+                $div.find('pre').remove();
+                $div.append(h('pre', String(data)));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['open-files'] = function () {
         var key = 'open-files';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'GET_FILE_DESCRIPTOR_COUNT',
-        }, function (e, data) {
-            console.log(e, data);
-            $div.append(h('pre', String(data)));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_FILE_DESCRIPTOR_COUNT',
+            }, function (e, data) {
+                console.log(e, data);
+                $div.find('pre').remove();
+                $div.append(h('pre', String(data)));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['registered'] = function () {
         var key = 'registered';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'REGISTERED_USERS',
-        }, function (e, data) {
-            console.log(e, data);
-            $div.append(h('pre', String(data)));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'REGISTERED_USERS',
+            }, function (e, data) {
+                console.log(e, data);
+                $div.find('pre').remove();
+                $div.append(h('pre', String(data)));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['disk-usage'] = function () {
