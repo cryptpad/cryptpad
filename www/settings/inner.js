@@ -1555,6 +1555,18 @@ define([
         });
     };
 
+    var SIDEBAR_ICONS = {
+        account: 'fa fa-user-o',
+        drive: 'fa fa-hdd-o',
+        cursor: 'fa fa-i-cursor',
+        code: 'fa fa-file-code-o',
+        pad: 'fa fa-file-word-o',
+        security: 'fa fa-lock',
+        subscription: 'fa fa-star-o',
+        kanban: 'cptools cptools-kanban',
+        style: 'cptools cptools-palette',
+    };
+
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);
@@ -1565,14 +1577,11 @@ define([
                 'class': 'cp-sidebarlayout-category',
                 'data-category': key
             }).appendTo($categories);
-            if (key === 'account') { $category.append($('<span>', { 'class': 'fa fa-user-o' })); }
-            if (key === 'drive') { $category.append($('<span>', { 'class': 'fa fa-hdd-o' })); }
-            if (key === 'cursor') { $category.append($('<span>', { 'class': 'fa fa-i-cursor' })); }
-            if (key === 'code') { $category.append($('<span>', { 'class': 'fa fa-file-code-o' })); }
-            if (key === 'pad') { $category.append($('<span>', { 'class': 'fa fa-file-word-o' })); }
-            if (key === 'security') { $category.append($('<span>', { 'class': 'fa fa-lock' })); }
-            if (key === 'subscription') { $category.append($('<span>', { 'class': 'fa fa-star-o' })); }
-            if (key === 'kanban') { $category.append($('<span>', { 'class': 'cptools cptools-kanban' })); }
+
+            var iconClass = SIDEBAR_ICONS[key];
+            if (iconClass) {
+                $category.append($('<span>', { 'class': iconClass }));
+            }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
