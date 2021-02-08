@@ -1220,8 +1220,8 @@ define([
                 var $iframe = $('iframe').contents();
                 if (window.CryptPad_theme === 'dark') {
                     $iframe.find('html').addClass('cp-dark').css({
-                        'background-color': '#222', // XXX make sure it's the same in www/pad/app-pad.less
-                        'color': '#aaa' // XXX
+                        'background-color': '#323232', // grey_850
+                        'color': '#EEEEEE' // dark text_col
                     });
                 } else {
                     $iframe.find('html').css({
