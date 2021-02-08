@@ -635,7 +635,7 @@ define([
             gutter: '5px',
             widthBoard: '300px',
             buttonContent: '❌',
-            readOnly: framework.isReadOnly(),
+            readOnly: framework.isReadOnly() || framework.isLocked(),
             tagsAnd: _tagsAnd,
             refresh: function () {
                 onRedraw.fire();
@@ -869,7 +869,7 @@ define([
         var addBoardDefault = document.getElementById('kanban-addboard');
         $(addBoardDefault).attr('title', Messages.kanban_addBoard);
         addBoardDefault.addEventListener('click', function () {
-            if (framework.isReadOnly()) { return; }
+            if (framework.isReadOnly() || framework.isLocked()) { return; }
             /*var counter = 1;
 
             // Get the new board id
@@ -1051,7 +1051,7 @@ define([
             mkHelpMenu(framework);
         }
 
-        if (framework.isReadOnly()) {
+        if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
         } else {
             framework.setFileImporter({}, function (content /*, file */) {
