@@ -458,13 +458,12 @@ define([
         this.moveItem = function (source, eid, board, pos) {
             var boards = self.options.boards;
             var same = -1;
-            console.error(source, eid, board, pos);
             if (source && boards.data[source]) {
                 // Remove from this board only
                 var l = boards.data[source].item;
-                var idx = l.indexOf(eid);
+                var idx = l.indexOf(Number(eid));
                 if (idx !== -1) { l.splice(idx, 1); }
-                if (source === board) { same = idx; }
+                if (boards.data[source] === board) { same = idx; }
             } else {
                 // Remove the item from all its board
                 var from = findItem(eid);
