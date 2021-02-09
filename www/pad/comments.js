@@ -761,13 +761,14 @@ define([
             title: Messages.comments_comment
         }, h('i.fa.fa-commenting'));
         Env.bubble = {
-            range: ranges[0],
+            range: ranges[ranges.length-1],
             button: button
         };
         $(button).click(function(e)  {
             e.stopPropagation();
             Env.editor.execCommand('comment');
             Env.bubble = undefined;
+            removeCommentBubble(Env);
         });
         Env.$contentContainer.find('iframe').before(h('div.cp-comment-bubble', button));
         updateBubble(Env);
@@ -803,7 +804,7 @@ define([
                 $(form).remove();
                 Env.$inner.focus();
 
-                if (!val) { return; }
+                if (!val) { addCommentBubble(Env); return; }
                 var applicable = Env.editor.plugins.comments.isApplicable();
                 if (!applicable || !isEditable(Env.ifrWindow.document)) {
                     // text has been deleted by another user while we were typing our comment?
