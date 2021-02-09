@@ -1377,5 +1377,13 @@
     "settings_cacheTitle": "Cache",
     "settings_cacheButton": "Cache leeren",
     "settings_cacheCheckbox": "Cache auf diesem Gerät aktivieren",
-    "settings_cacheHint": "CryptPad legt Teile deiner Dokumente im Speicher deines Browser ab, um den Datenverkehr und die Ladezeiten zu reduzieren. Du kannst diesen Cache deaktivieren, wenn dein Gerät nicht über viel freien Speicherplatz verfügt. Aus Sicherheitsgründen wird der Cache immer beim Ausloggen geleert. Du kannst ihn auch manuell leeren, sofern du Speicherplatz auf deinem Gerät freigeben möchtest."
+    "settings_cacheHint": "CryptPad legt Teile deiner Dokumente im Speicher deines Browser ab, um den Datenverkehr und die Ladezeiten zu reduzieren. Du kannst diesen Cache deaktivieren, wenn dein Gerät nicht über viel freien Speicherplatz verfügt. Aus Sicherheitsgründen wird der Cache immer beim Ausloggen geleert. Du kannst ihn auch manuell leeren, sofern du Speicherplatz auf deinem Gerät freigeben möchtest.",
+    "admin_cat_performance": "Performance",
+    "admin_performanceProfilingTitle": "Performance",
+    "admin_performanceProfilingHint": "Übersicht über die Gesamtzeit für die Ausführung verschiedener serverseitiger Befehle",
+    "redo": "Wiederholen",
+    "undo": "Rückgängig",
+    "admin_performancePercentHeading": "Anteil",
+    "admin_performanceTimeHeading": "Zeit (Sekunden)",
+    "admin_performanceKeyHeading": "Befehl"
 }

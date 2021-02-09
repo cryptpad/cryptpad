@@ -412,15 +412,6 @@ define([
         ]);
     }, true);
 
-    // XXX
-    Messages.settings_colorthemeTitle = "Color theme";
-    Messages.settings_colorthemeHint = "Change the overall colors of CryptPad on this machine.";
-    Messages.settings_colortheme_default = "Default ({0})";
-    Messages.settings_colortheme_light = "Light";
-    Messages.settings_colortheme_dark = "Dark";
-    Messages.settings_colortheme_custom = "Custom";
-    Messages.settings_cat_style = "Appearance";
-
     makeBlock('colortheme', function (cb) {
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
         var os = window.cryptpadStore.store['colortheme_default'] || 'light';

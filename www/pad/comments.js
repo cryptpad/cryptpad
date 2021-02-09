@@ -771,7 +771,7 @@ define([
         var button = h('button.btn.btn-secondary', {
             style: 'top:' + y + 'px;',
             title: Messages.comments_comment
-        }, h('i.fa.fa-comment'));
+        }, h('i.fa.fa-commenting'));
         Env.bubble = {
             node: node,
             button: button
