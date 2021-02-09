@@ -1394,5 +1394,13 @@
     "settings_colorthemeTitle": "Color theme",
     "admin_getquotaTitle": "Check account storage",
     "admin_getquotaHint": "Check the total size of items counted against a user or team's quota given their public key.",
-    "admin_getquotaButton": "Check"
+    "admin_getquotaButton": "Check",
+    "pad_settings_title": "Document Settings",
+    "pad_settings_info": "Default settings for this document. These will be applied when new users visit this document.",
+    "pad_settings_width_small": "Page mode",
+    "pad_settings_width_large": "Full width",
+    "pad_settings_outline": "Choose whether the Table of Contents should be visible or hidden by default.",
+    "pad_settings_comments": "Choose whether the Comments should be visible or hidden by default.",
+    "pad_settings_hide": "Hide",
+    "pad_settings_show": "Show"
 }
