@@ -50,8 +50,8 @@ define([
         'quota': [
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
-            'cp-admin-getlimits',
             'cp-admin-getquota',
+            'cp-admin-getlimits',
         ],
         'stats': [
             'cp-admin-refresh-stats',
