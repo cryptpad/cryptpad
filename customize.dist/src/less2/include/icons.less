@@ -10,6 +10,7 @@
         text-overflow: ellipsis;
         padding-top: 5px;
         padding-bottom: 5px;
+        border: 1px solid transparent;
 
         .cp-icons-name {
             width: 100%;
@@ -22,11 +23,11 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             word-wrap: break-word;
-            color: @cryptpad_text_col;
+            color: @cp_drive-fg;
         }
         &.cp-icons-element-selected {
-            background-color: rgba(0,0,0,0.2);
-            color: #666;
+            background: @cp_drive-icon-hover;
+            color: @cp_drive-fg;
         }
         .fa, .cptools {
             display: block;
@@ -39,4 +40,3 @@
         }
     }
 }
-

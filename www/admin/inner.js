@@ -50,8 +50,8 @@ define([
         'quota': [
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
-            'cp-admin-getlimits',
             'cp-admin-getquota',
+            'cp-admin-getlimits',
         ],
         'stats': [
             'cp-admin-refresh-stats',
@@ -697,7 +697,7 @@ define([
             var premium = t.some(function (msg) {
                 var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
                 if (ed !== _ed) { return; }
-                return Util.find(t[0], ['content', 'msg', 'content', 'sender', 'plan']);
+                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']);
             });
             var lastMsg = t[t.length - 1];
             var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
@@ -930,14 +930,6 @@ define([
         }
         return;
     };
-
-    Messages.admin_cat_performance = "Performance"; // XXX admin
-    Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX admin
-    Messages.admin_performanceProfilingTitle = "Performance"; // XXX admin
-
-    Messages.admin_performanceKeyHeading = 'KEY'; // XXX admin
-    Messages.admin_performanceTimeHeading = 'Time (seconds)'; // XXX admin
-    Messages.admin_performancePercentHeading = '%'; // XXX admin
 
     create['performance-profiling'] = function () {
         var $div = makeBlock('performance-profiling');

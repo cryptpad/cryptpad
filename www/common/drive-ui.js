@@ -124,7 +124,7 @@ define([
     var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
-    var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
+    var $closeIcon = $('<span>', {"class": "fa fa-times"});
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-icon"});
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
@@ -4027,16 +4027,6 @@ define([
             var s = $categories.scrollTop() || 0;
 
             $tree.html('');
-
-            /*
-            $(h('button.fa.fa-times.cp-close-button', {
-                title: Messages.filePicker_close
-            })).click(function (e) {
-                e.stopPropagation();
-                $tree.hide();
-                checkCollapseButton();
-            }).appendTo($tree);
-            */
 
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);

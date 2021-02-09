@@ -73,9 +73,9 @@ define([
         UI.addTooltips();
 
         var blocks = [
-            h('div.row.cp-index-section', [
+            h('div.row.cp-page-section', [
                 h('div.col-sm-6',
-                    h('img.img-fluid', {
+                    h('img.img-fluid.cp-img-invert', {
                         src:'/customize/images/shredder.png',
                         alt:'',
                         'aria-hidden': 'true'
@@ -86,17 +86,17 @@ define([
                     h('p', Msg.home_privacy_text)
                 ])
             ]),
-            h('div.row.cp-index-section',
+            h('div.row.cp-page-section',
                 h('div.col-sm-12', [
                     h('h2', Msg.home_host_title),
                     h('p'), Msg.home_host
                 ])
             ),
-            h('div.row.cp-index-section', [
+            h('div.row.cp-page-section', [
                 h('div.col-sm-6', [
                     h('h2', Msg.home_opensource_title),
                     Pages.setHTML(h('p'), Msg.home_opensource),
-                    h('img.small-logo', {
+                    h('img.small-logo.cp-img-invert', {
                         src: '/customize/images/logo_AGPLv3.svg',
                         alt: 'APGL3 License Logo'
                     })

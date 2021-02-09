@@ -388,6 +388,7 @@ define([
                 }));
         };
 
+        $t.closest('.tokenfield').removeClass('form-control');
         t.focus = function () {
             var $temp = $t.closest('.tokenfield').find('.token-input');
             $temp.css('width', '20%');
@@ -1265,9 +1266,6 @@ define([
 
         var $popup = $(popup);
 
-        if (opts.hidden) {
-            $popup.addClass('cp-minimized');
-        }
         if (opts.big) {
             $popup.addClass('cp-corner-big');
         }

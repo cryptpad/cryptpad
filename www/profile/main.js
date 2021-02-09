@@ -70,6 +70,12 @@ define([
                     Cryptpad.setAvatar(undefined, cb);
                 });
             });
+
+            sframeChan.on('EV_PROFILE_CORRUPTED_CACHE', function () {
+                Utils.Cache.clearChannel(Utils.secret.channel, function () {
+                    window.location.reload();
+                });
+            });
         };
         SFCommonO.start({
             getSecrets: getSecrets,

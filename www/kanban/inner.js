@@ -266,6 +266,7 @@ define([
                 editor.refresh();
             }
         };
+        cm.configureTheme(common, function () {});
         SFCodeMirror.mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
         editor.on('change', function () {
             var val = editor.getValue();

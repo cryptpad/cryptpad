@@ -6,10 +6,10 @@
 & {
     .cp-toolbar-history {
 
-        @history_lineBg: #FFFFFF;
-        @history_userBg1: #DDD;
-        @history_userBg2: #BBB;
-        @pos-color: @cryptpad_text_col;
+        @history_lineBg: @cp_history-line-bg;
+        @history_userBg1: @cp_history-bg1;
+        @history_userBg2: @cp_history-bg2;
+        @pos-color: @cp_history-fg;
         @fill-width: 40px;
 
         display: none;
@@ -17,7 +17,7 @@
         padding: 10px 0 0;
         align-items: center;
         justify-content: center;
-        color: @cryptpad_text_col;
+        color: @cp_history-fg;
         * {
             font: @colortheme_app-font;
         }

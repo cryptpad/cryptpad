@@ -1,3 +1,35 @@
+(function () {
+try {
+    var isDarkOS = function () {
+        try {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        } catch (e) { return false; }
+    };
+    var flush = window.CryptPad_flushCache = function () {
+        Object.keys(localStorage).forEach(function (k) {
+            if (k.indexOf('CRYPTPAD_CACHE|') !== 0 && k.indexOf('LESS_CACHE') !== 0) { return; }
+            delete localStorage[k];
+        });
+    };
+    var os = isDarkOS() ? 'dark' : 'light';
+    var key = 'CRYPTPAD_STORE|colortheme';
+    window.CryptPad_theme = localStorage[key] || os;
+    if (!localStorage[key]) {
+        // We're using OS theme, check if we need to change
+        if (os !== localStorage[key+'_default']) {
+            console.warn('New OS theme, flush cache');
+            flush();
+            localStorage[key+'_default'] = os;
+        }
+    }
+    if (window.CryptPad_theme === 'dark') {
+        var s = document.createElement('style');
+        s.innerHTML = 'body { background: black; }';
+        document.body.appendChild(s);
+    }
+} catch (e) { console.error(e); }
+})();
+
 // This is stage 1, it can be changed but you must bump the version of the project.
 define([
     '/common/requireconfig.js'

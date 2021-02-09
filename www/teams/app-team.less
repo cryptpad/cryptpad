@@ -3,7 +3,7 @@
 @import (reference) '../../customize/src/less2/include/messenger.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) "../../customize/src/less2/include/tools.less";
-@import (reference) "../../customize/src/less2/include/colortheme.less";
+@import (reference) "../../customize/src/less2/include/colortheme-all.less";
 @import (reference) '../../customize/src/less2/include/export.less';
 
 
@@ -13,10 +13,14 @@
     );
 
     .drive_main();
-    .messenger_main();
+    .messenger_main(
+        @bg-color: @cp_messenger-bg
+    );
     .sidebar-layout_main();
 
-    @roster-bg-color: #efefef;
+    @roster-bg-color: @cp_teams-card-bg;
+    @roster-bg-color-hover: contrast(@roster-bg-color, darken(@roster-bg-color, 5%), lighten(@roster-bg-color, 5%));
+    @roster-bg-color-hover2: contrast(@roster-bg-color, darken(@roster-bg-color, 10%), lighten(@roster-bg-color, 10%));
 
     .export_main();
 
@@ -32,7 +36,7 @@
             }
         }
         div#cp-sidebarlayout-leftside {
-            background-color: #e0e0e0;
+            background-color: @cp_teams-leftside-bg;
         }
         div#cp-sidebarlayout-rightside.cp-rightside-drive {
             padding: 0;
@@ -46,7 +50,6 @@
                 .cp-app-contacts-input {
                     textarea {
                         border: 0px;
-                        color: @cryptpad_text_col;
                     }
                 }
             }
@@ -108,17 +111,23 @@
                 background-color: @roster-bg-color;
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 flex-flow: column;
                 width: 300px;
                 max-width: 90%;
-                height: 400px;
-                padding: 20px;
+                height: 384px;
+                padding: 50px;
                 margin: 5px;
+                &.create, &:not(.empty) {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: @roster-bg-color-hover;
+                    }
+                }
                 .cp-team-list-avatar {
                     .avatar_main(200px);
                 }
                 .cp-team-list-name {
-                    flex: 1;
                     min-width: 0;
                     overflow: hidden;
                     white-space: nowrap;
@@ -130,6 +139,23 @@
                     &.empty {
                         white-space: initial;
                         text-align: center;
+                    }
+                }
+                &.empty {
+                    justify-content: unset;
+                    .cp-team-list-name {
+                        flex: unset;
+                        font-size: 20px;
+                        height: 150px;
+                    }
+                }
+                .cp-team-list-team-create {
+                    font-size: 25px;
+                    display: flex;
+                    align-items: center;
+                    flex-flow: column;
+                    i {
+                        font-size: 40px;
                     }
                 }
                 .cp-team-list-open {
@@ -163,7 +189,7 @@
                 max-width: 500px;
                 background-color: @roster-bg-color;
                 &:hover {
-                    background-color: darken(@roster-bg-color, 5%);
+                    background-color: @roster-bg-color-hover;
                 }
                 .cp-avatar {
                     margin-right: 10px;
@@ -194,7 +220,7 @@
                         align-items: center;
                         cursor: pointer;
                         &:hover {
-                            background-color: darken(@roster-bg-color, 10%);
+                            background-color: @roster-bg-color-hover2;
                         }
                     }
                 }
@@ -215,8 +241,8 @@
                 }
             }
             .cp-teams-invite-message {
-                background-color: fade(@colortheme_logo-2, 25%);
-                color: @cryptpad_text_col;
+                background-color: @cp_teams-invite-bg;
+                color: @cp_teams-invite-fg;
                 resize: none;
                 width: 100%;
                 padding: 12px;
@@ -241,7 +267,7 @@
                 margin-top: 30px;
             }
             tr:nth-child(even) {
-                background-color: fade(@colortheme_modal-dim, 25%);
+                background-color: @cp_teams-roster-odd;
             }
         }
         p {

@@ -13,23 +13,6 @@
     .tokenfield_main();
 
     @colortheme_drive-bg-active: lighten(@colortheme_static_apps[default], 20%);
-    @colortheme_drive-color: @cryptpad_text_col;
-
-    @drive_hover: #eee;
-    @drive_hover-light: lighten(@drive_hover, 20%);
-    @drive_info-box-bg: #d2e1f2;
-    @drive_info-box-border: #bbb;
-    @drive_table-header-fg: #555;
-    @drive_table-header-bg: #e8e8e8;
-    @drive_mobile-tree-border-col: #ccc;
-
-    @drive_content-fg: @colortheme_sidebar-right-fg;
-    @drive_content-bg: @colortheme_sidebar-right-bg;
-    @drive_content-bg-ro: darken(@drive_content-bg, 10%);
-
-    @drive_selected-bg: #888;
-    @drive_droppable-bg: #FE9A2E;
-
 
     /* PAGE */
 
@@ -59,7 +42,7 @@
             border: 1px solid transparent;
 
             &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
-                border: 1px solid #CCC;
+                border: 1px solid @cp_drive-icon-border;
             }
             .cp-app-drive-element-name {
                 width: 100%;
@@ -126,7 +109,6 @@
                 min-width: unset;
                 max-width: unset;
                 max-height: unset;
-                border-bottom: 1px solid @drive_mobile-tree-border-col;
                 .cp-app-drive-tree-category {
                     margin-top: 0.5em;
                 }
@@ -152,38 +134,34 @@
 
     li {
         padding: 0px 5px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        .tools_unselectable();
     }
 
     .cp-app-drive-element-restricted {
-        color: #939393;
+        color: @cp_drive-header-fg;
     }
 
     .cp-app-drive-element-droppable {
-        background-color: @drive_droppable-bg;
-        color: #222;
+        background-color: @cp_drive-droppable-bg;
+        color: @cp_drive-droppable-fg;
     }
 
     .cp-app-drive-element-selected {
-        background: @drive_selected-bg !important;
-        color: #eee;
+        background: @cp_drive-selected-bg !important;
+        color: @cp_drive-selected-fg;
         .fa-minus-square-o, .fa-plus-square-o {
-            color: @colortheme_sidebar-left-fg;
+            color: @cp_sidebar-left-fg;
         }
         .cptools {
-            color: #eee;
+            color: @cp_drive-selected-fg;
         }
     }
 
     .cp-app-drive-element-selected-tmp {
-        border: 1px dotted #bbb;
-        background: #AAA;
-        color: #ddd;
+        background: @cp_drive-selection-bg;
+        color: @cp_drive-selection-fg;
         .fa-minus-square-o, .fa-plus-square-o {
-            color: @colortheme_sidebar-left-fg;
+            color: @cp_sidebar-left-fg;
         }
     }
 
@@ -205,19 +183,20 @@
                 font-size: 50px;
             }
             .cptools-folder-no-color {
-                color: #bbb;
+                color: #bbb; // XXX
             }
             .fa-check {
                 position: absolute;
                 top: 40%; left: 35%;
                 color: transparent;
             }
+            // XXX Check colors in the "change folder color" modal
             &.cp-app-drive-current-color > .fa-check {
-                color: white;
+                color: @cryptpad_color_white;
             }
 
             &.cp-app-drive-current-color:first-child > .fa-check {
-                color: black;
+                color: @cryptpad_color_black;
             }
         }
     }
@@ -231,13 +210,13 @@
         margin: 15px;
         input {
             background: transparent;
-            color: @colortheme_drive-color;
-            .tools_placeholder-color(@cryptpad_color_grey);
+            color: @cp_drive-fg;
+            .tools_placeholder-color();
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
             border: 0;
-            border-bottom: 3px solid @colortheme_drive-color;
+            border-bottom: 3px solid @cp_drive-fg;
             margin: 0 5px;
             flex: 1;
             min-width: 0;
@@ -255,12 +234,12 @@
             cursor: pointer;
         }
         .cp-app-drive-tree-search-icon, .cp-app-drive-search-cancel {
-            color: @colortheme_drive-color;
+            color: @cp_drive-fg;
         }
     }
     .cp-app-drive-search-spinner {
         display: inline-flex;
-        color: @colortheme_drive-color;
+        color: @cp_drive-fg;
         font-size: 40px;
         align-items: center;
         justify-content: center;
@@ -269,7 +248,7 @@
         font-size: 30px;
         padding: 15px;
         font-style: italic;
-        color: @cryptpad_color_grey;
+        color: fade(@cryptpad_text_col, 80%);
     }
 
 
@@ -280,7 +259,7 @@
         font-size: @colortheme_app-font-size;
         //border-right: 1px solid #ccc;
         box-sizing: border-box;
-        background: @colortheme_sidebar-left-bg;
+        background: @cp_sidebar-left-bg;
         overflow: auto;
         resize: horizontal;
         width: auto;
@@ -288,26 +267,11 @@
         max-width: 500px;
         min-width: 200px;
         padding: 0px;
-        color: @colortheme_sidebar-left-fg;
+        color: @cp_sidebar-left-fg;
         display: flex;
         flex-flow: column;
         max-height: 100%;
         position: relative;
-        .cp-close-button {
-            position: absolute;
-            cursor: pointer;
-            right: 5px;
-            top: 5px;
-            font-size: 18px;
-            padding: 3px;
-            margin: 0;
-            border: 0;
-            background-color: transparent;
-            outline: none;
-            &:hover {
-                color: #000;
-            }
-        }
         .cp-app-drive-tree-categories-container {
             flex: 1;
             overflow: auto;
@@ -330,7 +294,6 @@
                     width: ~"calc(100% - 30px)";
                     padding: 0 10px;
                     border: 0;
-                    color: lighten(@colortheme_sidebar-left-fg, 40%);
                     height: auto;
                 }
                 & > span.cp-app-drive-element-row {
@@ -389,9 +352,9 @@
             top: 10px;
             width: 11px !important;
             height: 11px !important;
+            background-color: @cp_sidebar-left-bg;
             padding: 0;
             margin: 0;
-            background: white;
             z-index: 10;
             cursor: default;
             &:before {
@@ -431,9 +394,9 @@
                     top: -11px;
                     content: '';
                     display: block;
-                    border-left: 1px solid @colortheme_sidebar-left-branch;
+                    border-left: 1px solid @cp_drive-tree-branch;
                     height: ~"calc(1em + 11px)";
-                    border-bottom: 1px solid @colortheme_sidebar-left-branch;
+                    border-bottom: 1px solid @cp_drive-tree-branch;
                     width: 15px;
                 }
                 &:after {
@@ -442,7 +405,7 @@
                     bottom: -7px;
                     content: '';
                     display: block;
-                    border-left: 1px solid @colortheme_sidebar-left-branch;
+                    border-left: 1px solid @cp_drive-tree-branch;
                     height: 100%;
                 }
                 &.cp-app-drive-tree-root {
@@ -470,8 +433,8 @@
     }
     #cp-app-drive-content {
         box-sizing: border-box;
-        background: @drive_content-bg;
-        color: @drive_content-fg;
+        background: @cp_sidebar-right-bg;
+        color: @cp_sidebar-right-fg;
         overflow-y: auto;
         flex: 1;
         display: flex;
@@ -479,12 +442,12 @@
         position: relative;
         .cp-app-drive-content-select-box {
             display: none;
-            background-color: rgba(100, 100, 100, 0.7);
+            background-color: @cp_drive-selection-overlay;
             position: absolute;
             z-index: 50;
         }
         &.cp-app-drive-readonly {
-            background: @drive_content-bg-ro;
+            background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
         }
         h1 {
             padding-left: 10px;
@@ -495,7 +458,8 @@
             line-height: 2em;
             padding: 0.25em 0.75em;
             margin: 1em;
-            background: @drive_info-box-bg;
+            background: @cp_drive-infobox-bg;
+            color: @cp_drive-infobox-fg;
             cursor: default;
             span {
                 cursor: pointer;
@@ -508,7 +472,7 @@
             &:not(.cp-app-drive-element-header) {
                 &:hover {
                     &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
-                        background-color: @drive_hover;
+                        background-color: @cp_drive-icon-hover;
                     }
                 }
             }
@@ -535,13 +499,13 @@
                             .cp-app-drive-path-clickable {
                                 cursor: pointer;
                                 &:hover {
-                                    background-color: #eee;
+                                    color: @cp_drive-fg;
                                 }
                             }
                         }
                         font-size: 12px;
                         line-height: 16px;
-                        color: @drive_table-header-fg;
+                        color: @cp_drive-header-fg;
                     }
                 }
                 &.cp-app-drive-tags-list {
@@ -603,7 +567,7 @@
                     margin: 0;
                     padding: 0;
                     border-radius: 0;
-                    border: 1px solid #ddd;
+                    border: 1px solid transparent;
                     font-size: 14px;
                     height: auto;
                 }
@@ -619,6 +583,7 @@
                 .cp-app-drive-element-thumbnail {
                     max-width: 100px;
                     max-height: 100px;
+                    background: @cp_drive-thumb-bg;
                     & ~ .fa, & ~ .cptools {
                         display: inline;
                         font-size: 17px;
@@ -658,7 +623,7 @@
             li {
                 display: flex;
                 input {
-                    border: 1px solid #ddd;
+                    border: 1px solid transparent;
                     margin: 0;
                     padding: 0 4px;
                     flex: 1;
@@ -734,7 +699,7 @@
                 }
                 &.cp-app-drive-element-header {
                     cursor: default;
-                    color: @drive_table-header-fg;
+                    color: @cp_drive-header-fg;
                     span {
                         &:not(.fa):not(.cptools) {
                             text-align: left;
@@ -748,7 +713,7 @@
                         &.cp-app-drive-sort-clickable {
                             cursor: pointer;
                             &:hover {
-                                background: @drive_table-header-bg;
+                                background: @cp_drive-icon-hover;
                             }
                         }
                     }
@@ -821,7 +786,7 @@
                     font-size: @colortheme_app-font-size;
                     padding: 0 5px;
                     border: 0;
-                    color: @colortheme_drive-color;
+                    color: @cp_drive-fg;
                     box-sizing: border-box;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -832,7 +797,7 @@
                     }
 
                     &.cp-app-drive-path-separator {
-                        color: #ccc;
+                        color: @cp_drive-header-fg;
                         cursor: default;
                     }
 
@@ -841,7 +806,8 @@
                     }
 
                     &.cp-app-drive-element-droppable {
-                        background-color: @drive_droppable-bg;
+                        background-color: @cp_drive-droppable-bg;
+                        color: @cp_drive-droppable-fg;
                     }
                     &.cp-app-drive-path-clickable {
                         cursor: pointer;
@@ -867,13 +833,8 @@
     #cp-app-drive-new-ghost-dialog.cp-modal-container {
         .drive_fileIcon;
 
-        border: 1px solid @colortheme_modal-fg;
         li:not(.cp-app-drive-element-selected):hover {
-            background: @colortheme_logo_2_light;
-            color: @cryptpad_text_col;
-            .cptools {
-                color: @cryptpad_text_col;
-            }
+            background: @cp_drive-icon-hover;
         }
         .cp-modal {
             display: flex;
@@ -900,7 +861,7 @@
         }
 
         .cp-app-drive-new-name {
-            color: @cryptpad_text_col;
+            color: @cp_drive-fg;
             white-space: nowrap;
         }
 
@@ -954,8 +915,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: @colortheme_drive-bg-active;
-        color: black;
+        background-color: @cp_drive-infobox-bg;
+        color: @cp_drive-infobox-fg;
         font-weight: bold;
         text-transform: uppercase;
         cursor: default;
@@ -965,8 +926,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #eb675e;
-        color: white;
+        background-color: @cp_drive-warnbox-bg;
+        color: @cp_drive-warnbox-fg;
         font-weight: bold;
         text-transform: uppercase;
         cursor: default;

@@ -948,7 +948,7 @@ define([
                 $d.append(changePass);
             }
             if (owned) {
-                var deleteOwned = h('button.btn.btn-danger-alt', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
+                var deleteOwned = h('button.btn.btn-danger', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
                 var spinner = UI.makeSpinner();
                 UI.confirmButton(deleteOwned, {
                     classes: 'btn-danger'

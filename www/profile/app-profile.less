@@ -6,7 +6,7 @@
     .framework_min_main();
     .sidebar-layout_main();
 
-    @cp-profile-is-your-friend: #777;
+    @cp-profile-is-your-friend: @cp_profile-hint;
 
     display: flex;
     flex-flow: column;
@@ -35,7 +35,7 @@
             text-align: center;
             height: 300px;
             width: 300px;
-            border: 1px solid black;
+            border: 1px solid @cp_profile-border;
             border-radius: 4px;
             overflow: hidden;
             position: relative;
@@ -151,7 +151,7 @@
             display: none;
         }
         .cp-app-profile-description-rendered {
-            border: 1px solid #DDD;
+            border: 1px solid @cp_profile-border;
             padding: 0 15px;
             &:empty {
                 display: none;

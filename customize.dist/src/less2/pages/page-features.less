@@ -10,8 +10,8 @@
     }
     .cp-features-register-button {
         font-size: 20px;
-        color: #fff;
-        background: @colortheme_logo-2;
+        color: @cryptpad_color_white;
+        background: @cryptpad_color_brand;
         border-radius: 0;
         &:hover {
             cursor: pointer;
@@ -21,8 +21,10 @@
         .card {
             .cp-shadow();
             border: none;
+            background-color: @cp_static-card-bg;
+            border-radius: 0px;;
             .title-card {
-                background-color: @colortheme_logo-2;
+                background-color: @cryptpad_color_brand;
                 padding: 20px;
             }
             .card-body, .title-card {
@@ -37,7 +39,10 @@
                 &.cp-pricing {
                     div {
                         font-size: 1.2em;
-                        color: @colortheme_logo-2;
+                        color: @cp_static-link;
+                        a {
+                            text-decoration: underline;
+                        }
                         &:first-child {
                             font-weight: bold;
                         }
@@ -46,10 +51,13 @@
                         }
                     }
                 }
+                &:last-child {
+                    border-top: 1px solid fade(@cryptpad_text_col, 30%);
+                }
             }
         }
         h3 {
-            color: #fff;
+            color: @cryptpad_color_white;
         }
         .list-group {
             li {
@@ -67,7 +75,7 @@
                         content: "\f00c";
                         font-family: "FontAwesome";
                         font-size: 14px;
-                        color: @colortheme_logo-2;
+                        color: @cryptpad_color_brand;
                     }
                 }
                 &.cp-content {
@@ -84,13 +92,12 @@
             font-size: 0.8em;
         }
         .list-group-item {
-            border-bottom: 1px solid rgba(0,0,0,0.125);
+            background-color: transparent;
             &:first-child {
-                border-top: 1px solid rgba(0,0,0,0.125);
+                border-top: 1px solid fade(@cryptpad_text_col, 30%);
             }
-            &:last-child {
-                border-bottom-right-radius: 0px;
-                border-bottom-left-radius: 0px;
+            &:not(:last-child) {
+                border-bottom: 1px solid fade(@cryptpad_text_col, 30%);
             }
         }
     }

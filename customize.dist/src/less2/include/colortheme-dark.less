@@ -31,6 +31,7 @@
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
 @cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
+// XXX this whole block was copy-pasted from colortheme.less to avoid a reference error --ansuz
 @cryptpad_color_hint_grey: #777;
 @cryptpad_color_dark_grey: #999999;
 @cryptpad_color_neutral_grey: #aaaaaa;
@@ -56,7 +57,7 @@
 @cryptpad_color_grey_950: #121212;
 @cryptpad_color_black: #000;
 
-@cryptpad_text_col:@cryptpad_color_grey_800;
+@cryptpad_text_col: @cryptpad_color_grey_200;
 
 @cryptpad_color_blue: #326599; // former logo-1
 @cryptpad_color_light_blue: #00b7d8;
@@ -66,58 +67,58 @@
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
 @cryptpad_color_light_red: #FFD4D4;
-@cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 75%);
+@cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 20%);
 @cryptpad_color_orange: #f49842;
 @cryptpad_color_green: #5cb85c;
 @cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
 @cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
 @cryptpad_color_light_yellow: #FFE69C;
-@cryptpad_color_yellow_fade: fade(#FFE69C, 50%); // XXX diff from dark
-@cryptpad_color_lighter_blue: #d2e1f2;
+@cryptpad_color_yellow_fade: fade(#FFE69C, 15%);
+@cryptpad_color_lighter_blue: #d2e1f2; // XXX replace with @cryptpad_color_brand_fadest
 
-@cryptpad_color_link: #0275D8;
+@cryptpad_color_link:@cryptpad_color_brand_300;
 
 // Premium plans colors
-@cryptpad_color_basic: #DDEFFF;
-@cryptpad_color_pro: #E4FFDD;
-@cryptpad_color_power: #F6DDFF;
+@cryptpad_color_basic: darken(desaturate(#DDEFFF, 70%), 75%);
+@cryptpad_color_pro: darken(desaturate(#E4FFDD, 70%), 75%);
+@cryptpad_color_power: darken(desaturate(#F6DDFF, 70%), 75%);
 
-@cp_scrollbar-fg: fade(@cryptpad_color_black, 20%);
+@cp_scrollbar-fg: hsla(0,0%,100%,.2);
 @scrollbar_color: @cp_scrollbar-fg transparent;
 
 // Loading screen
-@cp_loading-bg: @cryptpad_color_grey_200;
+@cp_loading-bg: @cryptpad_color_grey_900;
 @cp_loading-fg: @cryptpad_text_col;
-@cp_loading-msg-bg: @cryptpad_color_white;
-@cp_loading-link: @cryptpad_color_brand;
+@cp_loading-msg-bg: @cryptpad_color_grey_700;
+@cp_loading-link: @cryptpad_color_brand_300;
 @cp_loading-error-bg: @cryptpad_color_warn_red;
 @cp_loading-error-fg: @cryptpad_text_col;
-@cp_loading-progress-bg: @cryptpad_color_white;
+@cp_loading-progress-bg: @cryptpad_color_grey_800;
 @cp_loading-progress-bar-bg: @cryptpad_color_brand;
-@cp_loading-spinner: @cryptpad_color_grey_500;
+@cp_loading-spinner: @cryptpad_color_grey_600;
 
 // Chat
-@cp_messenger-bg: @cryptpad_color_grey_200;
+@cp_messenger-bg: @cryptpad_color_grey_900;
 @cp_messenger-fg: @cryptpad_text_col;
 @cp_messenger-notif: @cryptpad_color_black;
 @cp_messenger-friend: @cryptpad_color_black;
 @cp_messenger-online: @cryptpad_color_light_green;
 
 // Alertify
-@cp_alertify-bg: @cryptpad_color_white;
-@cp_alertify-fg: @cryptpad_color_brand;
+@cp_alertify-bg: @cryptpad_color_grey_800;
+@cp_alertify-fg: lighten(@cryptpad_color_brand, 30%);
 @cp_alertify-hover: fade(@cp_alertify-fg, 25%);
-@cp_alertify-overlay: fade(@cryptpad_text_col, 50%);
-@cp_alertify-log-bg: fade(@cryptpad_color_brand, 90%);
-@cp_alertify-log-fg: @cryptpad_color_white;
+@cp_alertify-overlay: fade(@cryptpad_color_grey_900, 50%);
+@cp_alertify-log-bg: fade(@cryptpad_color_brand_300, 90%);
+@cp_alertify-log-fg: @cryptpad_color_grey_900;
 @cp_alertify-warn-bg: rgba(205, 37, 50);
-@cp_alertify-disable-border: @cryptpad_color_dark_grey;
+@cp_alertify-disable-border: @cryptpad_color_grey_600;
 
 // Forms
 @cp_forms-fg: @cryptpad_text_col;
-@cp_forms-bg: @cryptpad_color_grey_100;
-@cp_forms-border: @cryptpad_color_brand;
+@cp_forms-bg: @cryptpad_color_grey_700;
+@cp_forms-border: lighten(@cryptpad_color_brand, 30%);
 @cp_forms-placeholder: fade(@cryptpad_text_col, 75%);
 @cp_forms-readonly: @cryptpad_color_brand_fadest;
 @cp_forms-readonly-border: @cryptpad_color_brand;
@@ -126,25 +127,25 @@
 // Bootstrap alerts
 @cp_alerts-warning-bg: @cryptpad_color_yellow_fade;
 @cp_alerts-warning-fg: @cryptpad_color_light_yellow;
-@cp_alerts-warning-text: darken(@cp_alerts-warning-fg, 55%);
-@cp_alerts-danger-bg: @cryptpad_color_light_red_fade;
+@cp_alerts-warning-text: @cryptpad_color_light_yellow;
+@cp_alerts-danger-bg: @cryptpad_color_red_fader;
 @cp_alerts-danger-fg: @cryptpad_color_light_red;
-@cp_alerts-danger-text: darken(@cp_alerts-danger-fg, 55%);
-@cp_alerts-info-bg: fade(@cryptpad_color_brand, 15%);
-@cp_alerts-info-text: @cryptpad_color_brand;
-@cp_alerts-info-fg: @cryptpad_color_brand;
+@cp_alerts-danger-text: @cryptpad_color_light_red;
+@cp_alerts-info-bg: @cryptpad_color_brand_fadest;
+@cp_alerts-info-text: @cryptpad_color_brand_300;
+@cp_alerts-info-fg: @cryptpad_color_brand_300;
 @cp_alerts-success-bg: @cryptpad_color_light_green_fade;
 @cp_alerts-success-fg: @cryptpad_color_green;
-@cp_alerts-success-text: darken(@cryptpad_color_green, 20%);
+@cp_alerts-success-text: @cryptpad_color_light_green;
 
 // Buttons
-@cp_buttons-fg: @cryptpad_color_brand;
+@cp_buttons-fg: @cryptpad_color_brand_300;
 @cp_buttons-hover: @cryptpad_color_brand_fadest;
-@cp_buttons-default: #CCC;
+@cp_buttons-default: @cryptpad_color_grey_700;
 @cp_buttons-default-color: @cryptpad_text_col;
 @cp_buttons-default-border: @cryptpad_text_col;
 @cp_buttons-red: #E55236;
-@cp_buttons-red-text: @cp_buttons-red;
+@cp_buttons-red-text: @cryptpad_color_light_red;
 @cp_buttons-red-color: #FFF;
 @cp_buttons-red-border: transparent;
 @cp_buttons-primary: @cryptpad_color_brand;
@@ -153,16 +154,16 @@
 @cp_buttons-disabled: #6c757d;
 @cp_buttons-disabled-text: #ffffff;
 @cp_buttons-disabled-border: #6c757d;
-@cp_buttons-cancel: #ffffff;
-@cp_buttons-cancel-border: #949494;
+@cp_buttons-cancel: transparent;
+@cp_buttons-cancel-border: @cryptpad_color_grey_400;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_toolbar_grey;
+@cp_sidebar-left-bg: @cryptpad_color_grey_800;
 @cp_sidebar-left-fg: @cryptpad_text_col;
-@cp_sidebar-right-bg: @cryptpad_color_white;
+@cp_sidebar-right-bg: @cryptpad_color_grey_900;
 @cp_sidebar-right-fg: @cryptpad_text_col; // XXX was black
 @cp_sidebar-left-active: @cp_sidebar-right-bg;
-@cp_sidebar-hint: @cryptpad_color_hint_grey;
+@cp_sidebar-hint: fade(@cryptpad_text_col, 80%);
 
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;
@@ -174,9 +175,9 @@
 @cp_drive-selected-bg: fade(@cryptpad_text_col, 10%);
 @cp_drive-selected-fg: @cryptpad_text_col;
 @cp_drive-selection-overlay: fade(@cryptpad_text_col, 5%);
-@cp_drive-selection-bg: @cryptpad_color_grey_200;
+@cp_drive-selection-bg: @cryptpad_color_grey_800;
 @cp_drive-selection-fg: @cryptpad_text_col;
-@cp_drive-droppable-bg: @cryptpad_color_grey_400;
+@cp_drive-droppable-bg: @cryptpad_color_grey_700;
 @cp_drive-droppable-fg: @cryptpad_text_col;
 @cp_drive-infobox-bg: @cryptpad_color_brand_fadest;
 @cp_drive-infobox-fg: @cryptpad_text_col;
@@ -185,121 +186,121 @@
 @cp_drive-tree-branch: @cryptpad_text_col;
 
 // Contextmenu
-@cp_context-bg: @cryptpad_color_white;
-@cp_context-border: @cryptpad_color_grey_400;
-@cp_context-bg-hover: @cryptpad_color_grey_300;
-@cp_context-bg-active: @cryptpad_color_grey_400;
+@cp_context-bg: @cryptpad_color_grey_800;
+@cp_context-border: @cryptpad_color_grey_600;
+@cp_context-bg-hover: @cryptpad_color_grey_700;
+@cp_context-bg-active: @cryptpad_color_grey_600;
 @cp_context-fg: @cryptpad_text_col;
 @cp_context-icon: @cryptpad_text_col;
-@cp_context-disabled: @cryptpad_color_grey_400;
+@cp_context-disabled: @cryptpad_color_grey_600;
 
 // Tooltip background
-@cp_tooltip-bg: @cryptpad_color_grey_300;
+@cp_tooltip-bg: @cryptpad_color_grey_700;
 @cp_tooltip-fg: @cryptpad_text_col;
 
 // Dropdown
 @cp_dropdown-fg: @cryptpad_text_col;
-@cp_dropdown-bg: @cryptpad_color_lighter_grey;
-@cp_dropdown-bg-hover: @cryptpad_color_light_grey;
-@cp_dropdown-bg-active: @cryptpad_color_grey;
+@cp_dropdown-bg: @cryptpad_color_grey_800;
+@cp_dropdown-bg-hover: @cryptpad_color_grey_700;
+@cp_dropdown-bg-active: @cryptpad_color_grey_600;
 
 // Rendered Markdown
-@cp_markdown-bg: @cryptpad_color_lighter_grey;
-@cp_markdown-border: @cryptpad_color_grey;
-@cp_markdown-contrast-fg: @cryptpad_text_col; // XXX
-@cp_markdown-contrast-bg: transparent; // XXX
+@cp_markdown-bg: @cryptpad_color_grey_900;
+@cp_markdown-border: @cryptpad_color_grey_700;
+@cp_markdown-contrast-fg: white; // XXX
+@cp_markdown-contrast-bg: @cryptpad_color_grey; // XXX
 
 // Avatar
-@cp_avatar-bg: @cryptpad_color_grey;
+@cp_avatar-bg: @cryptpad_color_grey_700;
 @cp_avatar-fg: @cryptpad_text_col;
 
 // Corner
-@cp_corner-bg: @cryptpad_color_grey_100;
-@cp_corner-fg: @cryptpad_color_brand;
+@cp_corner-bg: @cryptpad_color_grey_800;
+@cp_corner-fg: @cryptpad_color_brand_300;
 @cp_corner-text: @cryptpad_text_col;
 
 // Pad Creation Screen
-@cp_creation-bg: @cryptpad_color_white;
+@cp_creation-bg: @cryptpad_color_grey_800;
 @cp_creation-fg: @cryptpad_text_col;
 @cp_creation-button-bg: @cryptpad_color_brand;
 @cp_creation-button-fg: @cryptpad_color_white;
 @cp_creation-error-bg: @cryptpad_color_blue;
-@cp_creation-error-fg: @cryptpad_color_light_grey;
+@cp_creation-error-fg: @cryptpad_color_grey_100; // XXX
 
 // Export
-@cp_export-bg: @cryptpad_color_grey_200;
+@cp_export-bg: @cryptpad_color_grey_900;
 @cp_export-fg: @cryptpad_text_col;
 @cp_export-hint: fade(@cryptpad_text_col, 80%);
-@cp_export-error-bg: @cryptpad_color_grey_300;
+@cp_export-error-bg: @cryptpad_color_grey_800;
 @cp_export-error-bg2: @cryptpad_color_red_fader;
 
 // File upload
-@cp_upload-fg: @cryptpad_color_brand;
-@cp_upload-header: @cryptpad_color_help_grey;
-@cp_upload-progress: @cryptpad_color_help_grey;
+@cp_upload-fg: @cryptpad_color_brand_300;
+@cp_upload-header: @cryptpad_color_grey_700;
+@cp_upload-progress: @cryptpad_color_grey_700;
 
 // Help
-@cp_help-bg: @cryptpad_color_help_grey;
+@cp_help-bg: @cryptpad_color_grey_800;
 @cp_help-fg: @cryptpad_text_col;
 @cp_help-link: @cryptpad_color_link;
 
 // Static pages
-@cp_static-bg: @cryptpad_color_toolbar_grey;
+@cp_static-bg: @cryptpad_color_grey_900;
 @cp_static-fg: @cryptpad_text_col;
-@cp_static-link: @cryptpad_color_brand;
+@cp_static-link: @cryptpad_color_brand_300;
 @cp_static-title: @cryptpad_color_brand;
-@cp_static-footer: @cryptpad_color_help_grey;
-@cp_static-footer-border: @cryptpad_color_white;
-@cp_static-topbar-fg: @cryptpad_color_brand;
-@cp_static-card-bg: @cryptpad_color_white;
-@cp_static-img-invert-filter: none;
+@cp_static-footer: @cryptpad_color_grey_950;
+@cp_static-footer-border: @cryptpad_color_grey_600;
+@cp_static-topbar-fg: @cryptpad_color_brand_300;
+@cp_static-card-bg: @cryptpad_color_grey_800;
+@cp_static-img-invert-filter: hue-rotate(200grad) invert();
 
 // Limit
 @cp_limit-fg: @cryptpad_text_col;
-@cp-limit-bar-bg: @cryptpad_color_white;
+@cp-limit-bar-bg: @cryptpad_color_grey_600;
 @cp-limit-bar-normal: @cryptpad_color_green;
 @cp-limit-bar-warning: @cryptpad_color_orange;
 @cp-limit-bar-above: @cryptpad_color_red;
 
 // Mentions
-@cp_mentions-bg: @cryptpad_color_grey;
-@cp_mentions-hover: @cryptpad_color_help_grey;
+@cp_mentions-bg: @cryptpad_color_grey_700;
+@cp_mentions-hover: @cryptpad_color_grey_900;
 
 // Autocomplete
-@cp_autocomplete-bg: @cryptpad_color_grey_100;
+@cp_autocomplete-bg: @cryptpad_color_grey_900;
 @cp_autocomplete-fg: @cryptpad_text_col;
-@cp_autocomplete-border: @cryptpad_color_grey_300;
+@cp_autocomplete-border: @cryptpad_color_grey_700;
 @cp_autocomplete-hover: @cryptpad_color_brand_fadest;
 
 // Modals
-@cp_access-overlay: fade(@cryptpad_color_white, 50%);
-@cp_snapshots-hover: @cryptpad_color_help_grey;
+@cp_access-overlay: fade(@cp_alertify-bg, 50%);
+@cp_snapshots-hover: @cryptpad_color_grey_850;
 
 // Support
-@cp_support-bg: @cryptpad_color_lighter_grey;
+@cp_support-bg: @cryptpad_color_grey_800;
 @cp_support-msg-fg: @cryptpad_text_col;
-@cp_support-msg-bg: @cryptpad_color_grey;
-@cp_support-header-bg: @cryptpad_color_help_grey;
+@cp_support-msg-bg: @cryptpad_color_grey_900;
+@cp_support-header-bg: @cryptpad_color_grey_800;
 
 // Toolbar
-@cp_toolbar-bg: @cryptpad_color_grey_200;
+@cp_toolbar-bg: @cryptpad_color_grey_900;
 @cp_toolbar-fg: @cryptpad_text_col;
 @cp_toolbar-bottom-fg: @cryptpad_text_col;
-@cp_toolbar-logo-bg: @cryptpad_color_white;
+@cp_toolbar-logo-bg: @cryptpad_color_grey_200;
 
-@cp_toolbar-fade1: fade(@cryptpad_color_black, 10%);
-@cp_toolbar-fade3: fade(@cryptpad_color_black, 30%);
+@cp_toolbar-fade1: fade(@cryptpad_text_col, 10%);
+@cp_toolbar-fade3: fade(@cryptpad_text_col, 30%);
 @cp_toolbar-warn: @cp_buttons-red;
 
-@cp_history-line-bg: @cryptpad_color_white;
-@cp_history-bg1: #DDD;
-@cp_history-bg2: #BBB;
+@cp_history-line-bg: @cryptpad_color_grey_900;
+@cp_history-bg1: @cryptpad_color_grey_600;
+@cp_history-bg2: @cryptpad_color_grey_800;
 @cp_history-fg: @cp_toolbar-bottom-fg;
 
 // Tokenfield
-@cp_token-bg: @cryptpad_color_neutral2_grey;
+@cp_token-bg: @cryptpad_color_grey_700;
 @cp_token-fg: @cryptpad_text_col;
-@cp_token-bg-hover: @cryptpad_color_neutral_grey;
+@cp_token-bg-hover: @cryptpad_color_grey_600;
 @cp_token-invalid: @cryptpad_color_warn_red;
 
 // Usergrid
@@ -308,25 +309,25 @@
 @cp_usergrid-selected-fg: @cryptpad_color_white;
 
 // Other
-@cp_shadow-color: fade(@cryptpad_color_black, 40%);
+@cp_shadow-color: fade(@cryptpad_color_black, 60%);
 
 // Apps
-@cp_app-bg: @cryptpad_color_light_grey;
+@cp_app-bg: @cryptpad_color_grey_900;
 @cp_app-fg: @cryptpad_text_col;
 
 // Accounts
 @cp_accounts-basic: @cryptpad_color_basic;
 @cp_accounts-pro: @cryptpad_color_pro;
 @cp_accounts-power: @cryptpad_color_power;
-@cp_accounts-active: @cryptpad_color_light_green;
-@cp_accounts-inactive: @cryptpad_color_light_red;
-@cp_accounts-mysubs-alert: @cryptpad_color_white;
-@cp_accounts-mysubs-bg: @cryptpad_color_toolbar_grey;
+@cp_accounts-active: @cryptpad_color_green_fade;
+@cp_accounts-inactive: @cryptpad_color_red_fade;
+@cp_accounts-mysubs-alert: @cryptpad_color_grey_700;
+@cp_accounts-mysubs-bg: @cryptpad_color_grey_800;
 @cp_accounts-mysubs-fg: @cryptpad_text_col;
 @cp_accounts-contact-hover: fade(@cryptpad_color_black, 20%);
-@cp_accounts-tab-bg: @cryptpad_color_toolbar_grey;
-@cp_accounts-tab-hover: @cryptpad_color_grey;
-@cp_accounts-tab-border: @cryptpad_color_neutral_grey;
+@cp_accounts-tab-bg: @cryptpad_color_grey_800;
+@cp_accounts-tab-hover: @cryptpad_color_grey_700;
+@cp_accounts-tab-border: @cryptpad_color_grey_600;
 
 // Admin
 @cp_admin-isadmin-fg: @cryptpad_color_brand;
@@ -337,13 +338,13 @@
 @cp_admin-last-bg: lighten(@cryptpad_color_orange, 25%);
 
 // Code
-@cp_preview-bg: @cryptpad_color_white;
+@cp_preview-bg: @cryptpad_color_grey_900;
 @cp_preview-fg: @cryptpad_text_col;
-@cp_preview-link: @cryptpad_color_brand;
+@cp_preview-link: @cryptpad_color_brand_300;
 
 // Debug
 @cp_debug-hover: fade(@cryptpad_color_black, 10%);
-@cp_debug-icon-hover: @cryptpad_color_dark_grey;
+@cp_debug-icon-hover: @cryptpad_color_grey_500;
 
 // Mediatag
 @cp_mediatag-text-bg: @cryptpad_color_white;
@@ -355,30 +356,30 @@
 
 // Kanban
 @cp_kanban-fg: @cryptpad_text_col;
-@cp_kanban-item-bg: @cryptpad_color_grey_50;
-@cp_kanban-link: @cryptpad_color_brand;
-@cp_kanban-board-bg: @cryptpad_color_grey_300;
-@cp_kanban-conflict-bg: @cryptpad_color_grey_200;
-@cp_kanban-tags-bg: @cryptpad_color_grey_300;
+@cp_kanban-item-bg: @cryptpad_color_grey_800;
+@cp_kanban-link: @cryptpad_color_brand_300;
+@cp_kanban-board-bg: @cryptpad_color_grey_700;
+@cp_kanban-conflict-bg: @cryptpad_color_grey_700;
+@cp_kanban-tags-bg: @cryptpad_color_grey_700;
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
-@cp_kanban-color0: @cryptpad_color_grey_400;
+@cp_kanban-color0: @cryptpad_color_grey_600;
 @cp_kanban-colors:
-    #FFD4D4,
-    #FFDECA,
-    #FFE69C,
-    #DBFFB7,
-    #AFFDC2,
-    #C9FFFE,
-    #C8D6FF,
-    #E4CAFF;
+    darken(desaturate(#FFD4D4,60%), 60%),
+    darken(desaturate(#FFDECA,60%), 60%),
+    darken(desaturate(#FFE69C,55%), 60%),
+    darken(desaturate(#DBFFB7,55%), 70%),
+    darken(desaturate(#AFFDC2,60%), 65%),
+    darken(desaturate(#C9FFFE,60%), 70%),
+    darken(desaturate(#C8D6FF,60%), 60%),
+    darken(desaturate(#E4CAFF,70%), 60%);
 
 // Notifications
 @cp_notif-hover: fade(@cryptpad_color_black, 10%);
-@cp_notif-header-bg: @cryptpad_color_grey_200;
+@cp_notif-header-bg: @cryptpad_color_grey_700;
 @cp_notif-header-fg: @cryptpad_text_col;
-@cp_notif-table-border: @cryptpad_color_white;
-@cp_notif-bg: @cryptpad_color_grey_100;
+@cp_notif-table-border: @cryptpad_color_grey_900;
+@cp_notif-bg: @cryptpad_color_grey_800;
 @cp_notif-fg: @cryptpad_text_col;
 
 // OO
@@ -386,41 +387,41 @@
 
 // Rich text
 @cp_pad-fg: @cryptpad_text_col;
-@cp_pad-icon-filter: none;
+@cp_pad-icon-filter: invert();
 // Comments
 @cp_comments-fg: @cryptpad_text_col;
-@cp_comments-bg: @cryptpad_color_white;
-@cp_comments-header: @cryptpad_color_grey_600;
+@cp_comments-bg: @cryptpad_color_grey_800;
+@cp_comments-header: @cryptpad_color_grey_500;
 
 // Poll
-@cp_poll-th-bg: @cryptpad_color_lighter_blue;
+@cp_poll-th-bg: @cryptpad_color_brand_fadest;
 @cp_poll-th-fg: @cryptpad_text_col;
-@cp_poll-uncommitted-bg: @cryptpad_color_toolbar_grey;
-@cp_poll-border-color: @cryptpad_color_hint_grey;
+@cp_poll-uncommitted-bg: @cryptpad_color_grey_800;
+@cp_poll-border-color: @cryptpad_color_grey_600;
 @cp_poll-cell-fg: @cryptpad_text_col;
-@cp_poll-unset: @cryptpad_color_help_grey;
-@cp_poll-yes: @cryptpad_color_light_green;
-@cp_poll-no: @cryptpad_color_light_red;
-@cp_poll-maybe: @cryptpad_color_light_yellow;
-@cp_poll-hint: @cryptpad_color_dark_grey;
+@cp_poll-unset: @cryptpad_color_grey_700;
+@cp_poll-yes: @cryptpad_color_green_fade;
+@cp_poll-no: @cryptpad_color_red_fade;
+@cp_poll-maybe: @cryptpad_color_grey_600;
+@cp_poll-hint: @cryptpad_color_grey_500;
 
 // Profile
-@cp_profile-border: @cryptpad_color_grey_400;
-@cp_profile-hint: @cryptpad_color_grey_600;
+@cp_profile-border: @cryptpad_color_grey_500;
+@cp_profile-hint: @cryptpad_color_grey_400;
 
 // SLide
 @cp_slide-fg: @cp_app-fg;
 @cp_slide-css-error: @cryptpad_color_red_fader;
 
 // Teams
-@cp_teams-card-bg: @cryptpad_color_grey_300;
-@cp_teams-leftside-bg: darken(@cryptpad_color_grey_200, 5%);
+@cp_teams-card-bg: @cryptpad_color_grey_800;
+@cp_teams-leftside-bg: darken(@cryptpad_color_grey_800, 5%);
 @cp_teams-invite-bg: fade(@cryptpad_color_brand, 50%);
 @cp_teams-invite-fg: @cryptpad_text_col;
 @cp_teams-roster-odd: fade(@cryptpad_text_col, 15%);
 
 // Whiteboard
-@cp_whiteboard-board-bg: @cryptpad_color_white;
-@cp_whiteboard-board-border: @cryptpad_color_hint_grey;
+@cp_whiteboard-board-bg: @cryptpad_color_grey_950;
+@cp_whiteboard-board-border: @cryptpad_color_grey_800;
 @cp_whiteboard-bg: @cp_app-bg;
 @cp_whiteboard-fg: @cryptpad_text_col;

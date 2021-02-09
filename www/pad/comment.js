@@ -30,7 +30,7 @@
 
     CKEDITOR.plugins.add('comments', {
         onLoad: function() {
-            CKEDITOR.addCss('comment { background-color: ' + color1 + '; }' +
+            CKEDITOR.addCss('comment { background-color: ' + color1 + '; color:#333; }' +
                 '@keyframes color { 0% { background-color: ' + color2 + '; } 50% { background-color: ' + color1 + '; } 100% { background-color: ' + color2 + '; } }' +
                 'comment.active { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: ' + color2 + '; outline: none;}' +
                 'comment media-tag { border: 2px solid ' + color1 + ' !important; }' +

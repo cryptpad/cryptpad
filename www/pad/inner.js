@@ -1216,6 +1216,18 @@ define([
                 $contentContainer.append(h('div#cp-app-pad-comments'));
                 $contentContainer.prepend(h('div#cp-app-pad-toc'));
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
+
+                var $iframe = $('iframe').contents();
+                if (window.CryptPad_theme === 'dark') {
+                    $iframe.find('html').addClass('cp-dark').css({
+                        'background-color': '#323232', // grey_850
+                        'color': '#EEEEEE' // dark text_col
+                    });
+                } else {
+                    $iframe.find('html').css({
+                        'background-color': '#FFF'
+                    });
+                }
             }).nThen(waitFor());
 
         }).nThen(function(waitFor) {

@@ -3,7 +3,7 @@
 
 .infopages_link () {
     text-decoration: none;
-    color: #0275D8;
+    color: @cryptpad_color_link;
     cursor: pointer;
     display: inline-flex;
     &:hover {
@@ -11,23 +11,23 @@
     }
 }
 .cp-shadow() {
-    box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.34);
+    box-shadow: 0px 0px 25px 0px @cp_shadow-color;
 }
 
 .infopages_main () {
     --LessLoader_require: LessLoader_currentFile();
 }
-body {
+body.html {
     .font_main();
     @infopages_infobar-height: 64px;
     @infopages_padding: 32px;
 
     // Basic setup for info pages, this should be used at the global level
-    background-color: @colortheme_info-background;
-    color: @cryptpad_text_col;
+    background-color: @cp_static-bg;
+    color: @cp_static-fg;
     a {
-        color: @colortheme_logo-2;
-        &:visited { color: darken(@colortheme_logo-2, 5%); }
+        color: @cp_static-link;
+        &:visited { color: darken(@cp_static-link, 5%); }
     }
     a:hover {
         opacity: 1;
@@ -77,34 +77,48 @@ body {
         .cp-page-title {
             h1 {
                 font-family: "IBM Plex Mono";
-                color: @colortheme_logo-2;
+                color: @cp_static-title;
                 margin: 50px auto;
+            }
+        }
+        p {
+            a {
+                text-decoration: underline;
             }
         }
         .row.cp-page-section {
             margin: 50px 0px;
+            a {
+                text-decoration: underline;
+            }
+            .small-logo {
+                max-width: 40%;
+            }
         }
         img.cp-shadow {
             .cp-shadow();
         }
+        img.cp-img-invert {
+            filter: @cp_static-img-invert-filter;
+        }
 
         button {
             outline: none;
-            background-color: @colortheme_logo-2;
-            color: @colortheme_base;
+            background-color: @cp_buttons-primary;
+            color: @cp_buttons-primary-text;
             border: none;
             padding: 10px 20px;
             margin-right: 10px;
             border-radius: 0px;
             cursor: pointer;
             &:hover, &:focus {
-                background-color: darken(@colortheme_logo-2, 5%);
+                background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
             }
         }
         button.cp-secondary {
-            background-color: white;
-            color: @colortheme_logo-2;
-            border: 1px solid @colortheme_logo-2;
+            background-color: @cp_buttons-cancel;
+            color: @cp_buttons-fg;
+            border: 1px solid @cp_buttons-fg;
         }
 
         .form-group {
@@ -128,19 +142,18 @@ body {
         }
     }
     footer {
-        @footer-color: #d9d9d9; // FIXME use/make variable
 
-        background-color: @footer-color;
+        background-color: @cp_static-footer;
         padding-top: 20px;
         align-self: normal; // override align-items:center from parent in index.html
 
         .container {
             margin-bottom: 20px;
             a {
-                color: @colortheme_logo-2;
+                color: @cp_static-link;
                 &:visited {
-                    color: @colortheme_logo-2;
-                };
+                    color: @cp_static-link;
+                }
             }
         }
         .cp-logo-foot {
@@ -156,18 +169,18 @@ body {
                 display: block;
                 font-family: "IBM Plex Mono";
                 font-size: 1.5rem;
-                color: @colortheme_logo-2;
+                color: @cp_static-title;
                 margin-bottom: 10px;
             }
 
         }
         .cp-version-footer {
-            background-color: @footer-color;
+            background-color: @cp_static-footer;
             display: flex;
             flex-flow: column;
             align-items: center;
             padding: 0.5em;
-            border-top: 1px solid #fff;
+            border-top: 1px solid @cp_static-footer-border;
             select {
                 min-width: 0;
                 margin-bottom: 10px;
@@ -175,47 +188,10 @@ body {
         }
     }
 
-    // Apply this to the top bar div
-    .cp-topbar {
-        background: #fff;
-        z-index: 10000; //Z infopage toolbar
-        position: fixed;
-        top: 0;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        box-sizing: border-box;
-        width: 100%;
-        height: @infopages_infobar-height;
-        padding-left: 0.5em;
-        padding-right: 0.5em;
-        vertical-align: middle;
-        font-size: 1.25em;
-        line-height: 1.25em;
-        cursor: default;
-        user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        .navbar-nav {
-            display: flex;
-            align-items: center;
-        }
-        a {
-            font-weight: 500;
-            padding: 0.6em;
-            .infopages_link()
-        }
-        .cp-logo {
-            margin-right: 0.5em;
-        }
-    }
-
     // navigation top bar
     .navbar {
         width: 100%;
-        color: @colortheme_logo-2;
+        color: @cp_static-topbar-fg;
         .navbar-brand {
             display: block;
             height: 50px;
@@ -234,18 +210,17 @@ body {
         a {
             border: 2px solid transparent;
             white-space: nowrap;
-            &:visited {
-                color: @colortheme_logo-2;
-            }
+            color: @cp_static-title;
         }
         .nav-link {
             padding: 0.5em 0.7em;
+            color: @cp_static-link;
             &:hover {
                 color: @cryptpad_text_col;
             }
         }
         .cp-register-btn {
-            border: 2px solid @colortheme_logo-2;
+            border: 2px solid @cp_static-topbar-fg;
             display: inline-block;
         }
         button:focus {
@@ -253,7 +228,7 @@ body {
         }
         .navbar-toggler {
             margin-top: 10px;
-            color: @colortheme_logo-2;
+            color: @cp_static-topbar-fg;
         }
     }
     @media (max-width: 1000px) {

@@ -32,7 +32,7 @@ define([
 
     module.create = function (common, config) {
         var File = {};
-        var origin = common.getMetadataMgr().getPrivateData().origin;
+        //var origin = common.getMetadataMgr().getPrivateData().origin;
         var response = Util.response(function (label, info) {
             console.error('COMMON_UPLOAD__' + label, info);
         });
@@ -288,7 +288,7 @@ define([
             store: true
         };
         var createHelper = function (href, text) {
-            return UI.createHelper(origin + href, text);
+            return UI.createHelper(href, text);
         };
         var createManualStore = function (isFolderUpload) {
             var privateData = common.getMetadataMgr().getPrivateData();

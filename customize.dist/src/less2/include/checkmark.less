@@ -1,4 +1,5 @@
 @import (reference) "./colortheme-all.less";
+@import (reference) "./tools.less";
 
 .checkmark_vars(
     @size: 20px
@@ -22,6 +23,14 @@
     --checkmark-radio-size: @checkmark-radio-size;
 }
 & {
+    @cp_checkmark-back0: @cp_forms-bg;
+    @cp_checkmark-back0-active: @cp_forms-disabled;
+    @cp_checkmark-back1: @cp_forms-border;
+    @cp_checkmark-col1: @cp_forms-bg;
+    @cp_checkmark-back2: @cp_forms-bg;
+    @cp_checkmark-col2: @cp_forms-border;
+    @cp_checkmark-disabled: @cp_forms-disabled;
+
     .checkmark_vars();
     // <label.cp-checkmark><input><span.cp-checkmark-mark></span>Text</label>
     .cp-checkmark {
@@ -29,10 +38,7 @@
         display: flex;
         align-items: center;
         position: relative;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        .tools_unselectable();
 
         & > a {
             margin-left: 0.25em;
@@ -41,40 +47,40 @@
         &.cp-checkmark-secondary {
             .cp-checkmark-mark {
                 &:after {
-                    border-color: @colortheme_checkmark-col2;
+                    border-color: @cp_checkmark-col2;
                 }
             }
             input {
                 &:checked ~ .cp-checkmark-mark {
-                    background-color: @colortheme_checkmark-back2;
-                    border-color: @colortheme_checkmark-back2;
+                    background-color: @cp_checkmark-back2;
+                    border-color: @cp_checkmark-back2;
                 }
                 &:disabled ~ .cp-checkmark-mark {
-                    background-color: @colortheme_checkmark-disabled;
+                    background-color: @cp_checkmark-disabled;
                 }
                 &:disabled ~ .cp-checkmark-label {
-                    color: @colortheme_checkmark-disabled;
+                    color: @cp_checkmark-disabled;
                 }
             }
         }
         &:hover .cp-checkmark-mark {
-            background-color: @colortheme_checkmark-back0-active;
+            background-color: @cp_checkmark-back0-active;
         }
 
         input {
             display: none;
             &:checked ~ .cp-checkmark-mark {
-                background-color: @colortheme_checkmark-back1;
-                border-color: @colortheme_checkmark-back1;
+                background-color: @cp_checkmark-back1;
+                border-color: @cp_checkmark-back1;
                 &:after {
                     display: block;
                 }
             }
             &:disabled ~ .cp-checkmark-mark {
-                background-color: @colortheme_checkmark-disabled;
+                background-color: @cp_checkmark-disabled;
             }
             &:disabled ~ .cp-checkmark-label {
-                color: @colortheme_checkmark-disabled;
+                color: @cp_checkmark-disabled;
             }
         }
 
@@ -91,10 +97,10 @@
             height: var(--checkmark-size);
             width: @checkmark-size;
             width: var(--checkmark-size);
-            background-color: @colortheme_checkmark-back0;
+            background-color: @cp_checkmark-back0;
             display: flex;
             justify-content: center;
-            border: 1px solid @colortheme_form-border;
+            border: 1px solid @cp_checkmark-disabled;
             flex-shrink: 0;
             &:after {
                 content: "";
@@ -106,14 +112,13 @@
                 height: @checkmark-dim2;
                 height: var(--checkmark-dim2);
                 transform: rotate(45deg);
-                border: solid @colortheme_checkmark-col1;
+                border: solid @cp_checkmark-col1;
                 border-width: 0 @checkmark-width @checkmark-width 0;
                 border-width: 0 var(--checkmark-width) var(--checkmark-width) 0;
                 position: absolute;
             }
             &:focus {
-                //border-color: #FF007C !important;
-                box-shadow: 0px 0px 5px @colortheme_checkmark-back1;
+                box-shadow: 0px 0px 5px @cp_checkmark-back1;
                 outline: none;
             }
         }
@@ -133,39 +138,39 @@
         &.cp-radio-secondary {
             .cp-radio-mark {
                 &:after {
-                    border-color: @colortheme_checkmark-col2;
+                    border-color: @cp_checkmark-col2;
                 }
             }
             input {
                 &:checked ~ .cp-radio-mark {
-                    background-color: @colortheme_checkmark-back2;
+                    background-color: @cp_checkmark-back2;
                 }
                 &:disabled ~ .cp-checkmark-mark {
-                    background-color: @colortheme_checkmark-disabled;
+                    background-color: @cp_checkmark-disabled;
                 }
                 &:disabled ~ .cp-checkmark-label {
-                    color: @colortheme_checkmark-disabled;
+                    color: @cp_checkmark-disabled;
                 }
             }
         }
         &:hover .cp-radio-mark {
-            background-color: @colortheme_checkmark-back0-active;
+            background-color: @cp_checkmark-back0-active;
         }
 
         input {
             display: none;
             &:checked ~ .cp-radio-mark {
-                background-color: @colortheme_checkmark-back1;
-                border-color: @colortheme_checkmark-back1;
+                background-color: @cp_checkmark-back1;
+                border-color: @cp_checkmark-back1;
                 &:after {
                     display: block;
                 }
             }
             &:disabled ~ .cp-checkmark-mark {
-                background-color: @colortheme_checkmark-disabled;
+                background-color: @cp_checkmark-disabled;
             }
             &:disabled ~ .cp-checkmark-label {
-                color: @colortheme_checkmark-disabled;
+                color: @cp_checkmark-disabled;
             }
         }
 
@@ -183,30 +188,25 @@
             height: var(--checkmark-radio-size);
             width: @checkmark-radio-size;
             width: var(--checkmark-radio-size);
-            background-color: @colortheme_checkmark-back0;
+            background-color: @cp_checkmark-back0;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid @colortheme_form-border;
+            border: 1px solid @cp_checkmark-disabled;
             flex-shrink: 0;
             &:after {
                 display: none;
                 content: "";
                 border-radius: 50%;
-                background: white;
+                background: @cp_checkmark-back0;
                 width: @checkmark-dim1;
                 width: var(--checkmark-dim1);
                 height: @checkmark-dim1;
                 height: var(--checkmark-dim1);
-
-                //transform: rotate(45deg);
-                //border: solid @colortheme_checkmark-col1;
-                //border-width: 0 var(--checkmark-width) var(--checkmark-width) 0;
             }
             &:focus {
-                //border-color: #FF007C !important;
-                box-shadow: 0px 0px 5px @colortheme_checkmark-back1;
+                box-shadow: 0px 0px 5px @cp_checkmark-back1;
                 outline: none;
             }
         }
