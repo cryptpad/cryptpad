@@ -525,9 +525,6 @@ define([
         framework.start();
     };
 
-
-    Messages.undo = "Undo"; // XXX
-    Messages.redo = "Redo"; // XXX
     var initialContent = function () {
         return [
             h('div#cp-toolbar.cp-toolbar-container'),

@@ -931,14 +931,6 @@ define([
         return;
     };
 
-    Messages.admin_cat_performance = "Performance"; // XXX admin
-    Messages.admin_performanceProfilingHint = "Measure the running time of various server tasks by type"; // XXX admin
-    Messages.admin_performanceProfilingTitle = "Performance"; // XXX admin
-
-    Messages.admin_performanceKeyHeading = 'KEY'; // XXX admin
-    Messages.admin_performanceTimeHeading = 'Time (seconds)'; // XXX admin
-    Messages.admin_performancePercentHeading = '%'; // XXX admin
-
     create['performance-profiling'] = function () {
         var $div = makeBlock('performance-profiling');
 
