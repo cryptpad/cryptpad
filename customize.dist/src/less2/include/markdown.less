@@ -151,27 +151,34 @@
 
     // XXX apply the styles below in modals-ui-elements.less
 
-    pre.mermaid[mermaid-source^="pie"] { // XXX
+    pre.mermaid[mermaid-source^="pie"] {
         g.legend text, text.pieTitleText {
-            fill: @cp_markdown-contrast-fg;
+            fill: @cp_markdown-block-fg;
         }
     }
 
-    pre.mermaid[mermaid-source^="gantt"] { // XXX
-        background-color: @cp_markdown-contrast-bg;
-        background-color: #444;
+    pre.mermaid[mermaid-source^="gantt"] {
         text.titleText {
-            fill: @cp_markdown-contrast-fg;
+            fill: @cp_markdown-block-fg;
+        }
+        g.tick {
+            text {
+                fill: @cp_markdown-block-fg;
+            }
+            line {
+                stroke: fade(@cp_markdown-block-fg, 50%);
+            }
         }
     }
 
-    /* make sure markmap text shows up in dark mode */
-    pre.markmap svg { // XXX
-       color: @cp_markdown-contrast-fg;
+    pre.markmap svg {
+       color: @cp_markdown-block-fg;
     }
 
-    pre.mathjax { // XXX
-        background-color: @cp_markdown-contrast-bg;
+    pre.mathjax {
+        padding: 5px;
+        color: @cryptpad_text_col;
+        background-color: @cp_markdown-block-bg;
     }
 }
 
@@ -179,13 +186,13 @@
     pre > code {
         display: block;
         position: relative;
-        border: 1px solid @cp_markdown-border;
         width: 90%;
         margin: auto;
-        padding-left: .25vw;
+        padding: 5px;
         overflow-x: auto;
         overflow-y: hidden;
-        background-color: @cp_markdown-contrast-bg; // XXX
+        color: @cp_markdown-block-fg;
+        background-color: @cp_markdown-block-bg; // XXX
     }
 }
 
