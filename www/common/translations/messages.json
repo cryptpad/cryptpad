@@ -1385,5 +1385,14 @@
     "admin_performanceProfilingTitle": "Performance",
     "admin_performanceKeyHeading": "Command",
     "admin_performanceTimeHeading": "Time (seconds)",
-    "admin_performancePercentHeading": "Percentage"
+    "admin_performancePercentHeading": "Percentage",
+    "settings_cat_style": "Appearance",
+    "settings_colortheme_dark": "Dark",
+    "settings_colortheme_light": "Light",
+    "settings_colortheme_default": "System default ({0})",
+    "settings_colorthemeHint": "Change the overall colors of CryptPad on this device.",
+    "settings_colorthemeTitle": "Color theme",
+    "admin_getquotaTitle": "Check account storage",
+    "admin_getquotaHint": "Check the total size of items counted against a user or team's quota given their public key.",
+    "admin_getquotaButton": "Check"
 }
