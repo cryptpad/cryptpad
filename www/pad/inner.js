@@ -206,11 +206,12 @@ define([
     var mkSettingsMenu = function(framework) {
 
         // XXX
-        Messages.pad_settings_info = "Here you can change the defaults settings for this document. New users will use these settings until they change the values on their account.";
+        Messages.pad_settings_title = "Document Settings";
+        Messages.pad_settings_info = "Default settings for this document. These will be applied when new users visit this document.";
         Messages.pad_settings_width_small = "Page mode";
-        Messages.pad_settings_width_large = "Large mode";
-        Messages.pad_settings_outline = "Choose whether the Table of Contents should be visible or hidden by default for new users.";
-        Messages.pad_settings_comments = "Choose whether the Comments should be visible or hidden by default for new users.";
+        Messages.pad_settings_width_large = "Full width";
+        Messages.pad_settings_outline = "Choose whether the Table of Contents should be visible or hidden by default.";
+        Messages.pad_settings_comments = "Choose whether the Comments should be visible or hidden by default.";
         Messages.pad_settings_hide = "Hide";
         Messages.pad_settings_show = "Show";
         var getSettings = function () {
@@ -325,7 +326,8 @@ define([
             });
 
             $d.append([
-                h('p.cp-app-prop-content', h('em', Messages.pad_settings_info)),
+                h('h5', Messages.pad_settings_title),
+                h('p.cp-app-prop-content', h('p', Messages.pad_settings_info)),
                 h('label', Messages.settings_padWidth),
                 h('p.cp-app-prop-content', Messages.settings_padWidthHint),
                 $width[0],
@@ -342,7 +344,7 @@ define([
 
         var $settingsButton = framework._.sfCommon.createButton('', true, {
             drawer: true,
-            text: 'DOCUMENT SETTINGS',
+            text: Messages.pad_settings_title,
             name: 'pad_settings',
             icon: 'fa-cog',
         }, function () {
