@@ -412,8 +412,6 @@ define([
         ]);
     }, true);
 
-    Messages.settings_colortheme_custom = "Custom"; // XXX
-
     makeBlock('colortheme', function (cb) {
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
         var os = window.cryptpadStore.store['colortheme_default'] || 'light';
