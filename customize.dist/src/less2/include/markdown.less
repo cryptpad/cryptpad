@@ -148,6 +148,31 @@
             .tools_unselectable();
         }
     }
+
+    // XXX apply the styles below in modals-ui-elements.less
+
+    pre.mermaid[mermaid-source^="pie"] { // XXX
+        g.legend text, text.pieTitleText {
+            fill: @cp_markdown-contrast-fg;
+        }
+    }
+
+    pre.mermaid[mermaid-source^="gantt"] { // XXX
+        background-color: @cp_markdown-contrast-bg;
+        background-color: #444;
+        text.titleText {
+            fill: @cp_markdown-contrast-fg;
+        }
+    }
+
+    /* make sure markmap text shows up in dark mode */
+    pre.markmap svg { // XXX
+       color: @cp_markdown-contrast-fg;
+    }
+
+    pre.mathjax { // XXX
+        background-color: @cp_markdown-contrast-bg;
+    }
 }
 
 .markdown_preformatted-code () {
@@ -160,6 +185,7 @@
         padding-left: .25vw;
         overflow-x: auto;
         overflow-y: hidden;
+        background-color: @cp_markdown-contrast-bg; // XXX
     }
 }
 
@@ -168,11 +194,10 @@
         border-collapse: collapse;
         tr {
             th {
-                border: 1px solid @cryptpad_color_black;
                 padding: 15px;
             }
-            td {
-                border: 1px solid @cryptpad_color_black;
+            th, td {
+                border: 1px solid @cp_markdown-border; // XXX
             }
         }
     }
