@@ -1241,14 +1241,18 @@ define([
         var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
         var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
 
+        var store = window.cryptpadStore;
+        var key = 'pad-small-width';
+        var isHidden = store.store[key] === '1';
+
         var $cbox = $(UI.createCheckbox('cp-settings-padwidth',
             Messages.settings_padWidthLabel,
-            false, { label: { class: 'noTitle' } }));
+            isHidden, { label: { class: 'noTitle' } }));
         var $checkbox = $cbox.find('input').on('change', function() {
             $spinner.show();
             $ok.hide();
             var val = $checkbox.is(':checked');
-            common.setAttribute(['pad', 'width'], val, function() {
+            store.put(key, val ? '1' : '0', function () {
                 $spinner.hide();
                 $ok.show();
             });
@@ -1258,13 +1262,6 @@ define([
         $ok.hide().appendTo($cbox);
         $spinner.hide().appendTo($cbox);
 
-
-        common.getAttribute(['pad', 'width'], function(e, val) {
-            if (e) { return void console.error(e); }
-            if (val) {
-                $checkbox.attr('checked', 'checked');
-            }
-        });
         return $div;
     };
 
