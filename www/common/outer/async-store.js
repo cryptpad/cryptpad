@@ -2065,18 +2065,12 @@ define([
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     //var decryptedMsg = crypto.decrypt(msg, true);
-                    var opts = {};
-                    if (parsed[1][5] && typeof(parsed[1][5]) === "object") {
-                        opts = parsed[1][5];
-                        console.error(opts);
-                    }
                     if (data.debug) {
                         msgs.push({
                             serverHash: msg.slice(0,64),
                             msg: msg,
                             author: parsed[1][1],
-                            time: opts.time,
-                            offset: opts.offset
+                            time: parsed[1][5]
                         });
                     } else {
                         msgs.push(msg);
@@ -2206,17 +2200,12 @@ define([
                         lastKnownHash = msg.slice(0,64);
                         first = false;
                     }
-                    var opts = {};
-                    if (parsed[2][5] && typeof(parsed[2][5]) === "object") {
-                        opts = parsed[2][5];
-                    }
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     msgs.push({
                         serverHash: msg.slice(0,64),
                         msg: msg,
                         author: parsed[2][1],
-                        time: opts.time,
-                        offset: opts.offset
+                        time: parsed[2][5]
                     });
                 }
             };

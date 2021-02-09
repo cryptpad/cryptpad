@@ -396,14 +396,11 @@ proxy.mailboxes = {
                 } catch (e) {
                     console.log(e);
                 }
-                var opts = {};
-                if (_msg[5] && typeof(_msg[5]) === "object") { opts = _msg[5]; }
                 ctx.emit('HISTORY', {
                     txid: txid,
-                    time: opts.time,
+                    time: _msg[5],
                     message: message,
-                    hash: _msg[4].slice(0,64),
-                    offset: opts.offset
+                    hash: _msg[4].slice(0,64)
                 }, [req.cId]);
             } else if (type === 'HISTORY_RANGE_END') {
                 ctx.emit('HISTORY', {
