@@ -183,20 +183,15 @@
                 font-size: 50px;
             }
             .cptools-folder-no-color {
-                color: #bbb; // XXX
+                color: @cryptpad_color_grey_500;
             }
             .fa-check {
                 position: absolute;
                 top: 40%; left: 35%;
                 color: transparent;
             }
-            // XXX Check colors in the "change folder color" modal
             &.cp-app-drive-current-color > .fa-check {
-                color: @cryptpad_color_white;
-            }
-
-            &.cp-app-drive-current-color:first-child > .fa-check {
-                color: @cryptpad_color_black;
+                color: @cryptpad_color_grey_900;
             }
         }
     }

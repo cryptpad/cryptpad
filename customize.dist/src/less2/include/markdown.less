@@ -149,8 +149,6 @@
         }
     }
 
-    // XXX apply the styles below in modals-ui-elements.less
-
     pre.mermaid[mermaid-source^="pie"] {
         g.legend text, text.pieTitleText {
             fill: @cp_markdown-block-fg;
@@ -192,7 +190,7 @@
         overflow-x: auto;
         overflow-y: hidden;
         color: @cp_markdown-block-fg;
-        background-color: @cp_markdown-block-bg; // XXX
+        background-color: @cp_markdown-block-bg;
     }
 }
 
@@ -203,8 +201,11 @@
             th {
                 padding: 15px;
             }
+            td {
+                padding:3px;
+            }
             th, td {
-                border: 1px solid @cp_markdown-border; // XXX
+                border: 1px solid @cp_markdown-border;
             }
         }
     }
