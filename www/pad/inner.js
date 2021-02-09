@@ -204,16 +204,6 @@ define([
     };
 
     var mkSettingsMenu = function(framework) {
-
-        // XXX
-        Messages.pad_settings_title = "Document Settings";
-        Messages.pad_settings_info = "Default settings for this document. These will be applied when new users visit this document.";
-        Messages.pad_settings_width_small = "Page mode";
-        Messages.pad_settings_width_large = "Full width";
-        Messages.pad_settings_outline = "Choose whether the Table of Contents should be visible or hidden by default.";
-        Messages.pad_settings_comments = "Choose whether the Comments should be visible or hidden by default.";
-        Messages.pad_settings_hide = "Hide";
-        Messages.pad_settings_show = "Show";
         var getSettings = function () {
             var $d = $(h('div.cp-pad-settings-dialog'));
             var common = framework._.sfCommon;
