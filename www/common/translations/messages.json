@@ -1377,5 +1377,13 @@
     "settings_cacheTitle": "Cache",
     "settings_cacheHint": "CryptPad stores parts of your documents in your browser's memory in order to save network usage and improve loading times. You can disable the cache if your device doesn't have a lot of free storage space. For security reasons, the cache is always cleared when you log out, but you can clear it manually if you want to reclaim storage space on your machine.",
     "settings_cacheCheckbox": "Enable cache on this device",
-    "settings_cacheButton": "Clear existing cache"
+    "settings_cacheButton": "Clear existing cache",
+    "undo": "Undo",
+    "redo": "Redo",
+    "admin_cat_performance": "Performance",
+    "admin_performanceProfilingHint": "An overview of the total time spent executing various server-side commands",
+    "admin_performanceProfilingTitle": "Performance",
+    "admin_performanceKeyHeading": "Command",
+    "admin_performanceTimeHeading": "Time (seconds)",
+    "admin_performancePercentHeading": "Percentage"
 }
