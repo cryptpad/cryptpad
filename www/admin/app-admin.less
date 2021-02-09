@@ -104,8 +104,8 @@
             color: #666;
             .cp-support-ispremium {
                 padding: 0 5px;
-                color: @colortheme_cp-red;
-                background-color: lighten(@colortheme_cp-red, 25%);
+                color: @cp_admin-premium-fg;
+                background-color: @cp_admin-premium-bg;
             }
         }
     }
@@ -119,18 +119,18 @@
         }
         .cp-support-list-message {
             &:last-child:not(.cp-support-fromadmin)  {
-                color: @colortheme_cp-red;
-                background-color: lighten(@colortheme_form-warning, 25%);
+                color: @cp_admin-last-fg;
+                background-color: @cp_admin-last-bg;
                 .cp-support-showdata {
-                    background-color: lighten(@colortheme_form-warning, 30%);
+                    background-color: lighten(@cp_admin-last-bg, 5%);
                 }
             }
 
             &:last-child {
                 &.cp-support-frompremium {
-                    background-color: lighten(@colortheme_cp-red, 25%);
+                    background-color: @cp_admin-premium-bg;
                     .cp-support-showdata {
-                        background-color: lighten(@colortheme_cp-red, 30%);
+                        background-color: lighten(@cp_admin-premium-bg, 30%);
                     }
                 }
             }
@@ -160,10 +160,18 @@
     }
 
     .cp-support-fromadmin {
-        color: @colortheme_logo-2;
-        background-color: #FFF;
+        color: @cp_admin-isadmin-fg;
+        background-color: @cp_admin-isadmin-bg;
         .cp-support-message-content {
-            color: @colortheme_logo-2;
+            color: @cp_admin-isadmin-fg;
+        }
+    }
+
+    table#cp-performance-table {
+        td, th {
+            padding: 5px;
+            color: @cryptpad_text_col;
+            border: 1px solid @cryptpad_text_col;
         }
     }
 

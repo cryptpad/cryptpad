@@ -230,7 +230,6 @@
     "register_mustAcceptTerms": "Você precisa aceitar os termos de serviço.",
     "register_mustRememberPass": "Nós não podemos restaurar sua senha caso você a esqueça. É muito importante que você lembre-se dela! Clique nesta caixa de seleção para confirmar que você compreendeu isto.",
     "register_header": "Bem vindo ao CryptPad",
-    "register_explanation": "<p>Lets go over a couple things first</p><ul><li>Your password is your secret key which encrypts all of your pads. If you lose it there is no way we can recover your data.</li><li>You can import pads which were recently viewed in your browser so you have them in your account.</li><li>If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li></ul>",
     "register_writtenPassword": "I have written down my username and password, proceed",
     "register_cancel": "Go back",
     "register_warning": "Zero Knowledge means that we can't recover your data if you lose your password.",

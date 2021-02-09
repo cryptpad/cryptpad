@@ -69,6 +69,15 @@ define([
             sframeChan.on('Q_SETTINGS_DELETE_ACCOUNT', function (data, cb) {
                 Cryptpad.deleteAccount(cb);
             });
+            sframeChan.on('Q_COLORTHEME_CHANGE', function (data, cb) {
+                localStorage['CRYPTPAD_STORE|colortheme'] = data.theme;
+                if (data.flush && window.CryptPad_flushCache) {
+                    window.CryptPad_flushCache();
+                    window.location.reload();
+                    return;
+                }
+                cb();
+            });
         };
         var category;
         if (window.location.hash) {

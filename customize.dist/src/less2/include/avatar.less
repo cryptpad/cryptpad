@@ -5,8 +5,6 @@
 ) {
     @avatar-width: @width;
     @avatar-font-size: @width / 1.2;
-    @avatar-default-bg: #D9D8D8;
-    @avatar-default-fg: darken(@avatar-default-bg, 40%);
 }
 .avatar_main(@width: 30px) {
     --LessLoader_require: LessLoader_currentFile();
@@ -38,8 +36,8 @@
         }
         .cp-avatar-default {
             .tools_unselectable();
-            background: @avatar-default-bg;
-            color: @avatar-default-fg;
+            background: @cp_avatar-bg;
+            color: @cp_avatar-fg;
             font-size: @avatar-font-size;
             font-size: var(--avatar-font-size);
             text-transform: capitalize;

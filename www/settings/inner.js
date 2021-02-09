@@ -62,6 +62,10 @@ define([
             'cp-settings-userfeedback',
             'cp-settings-cache',
         ],
+        'style': [
+            'cp-settings-colortheme',
+            'cp-settings-custom-theme',
+        ],
         'drive': [
             'cp-settings-resettips',
             'cp-settings-drive-duplicate',
@@ -360,11 +364,6 @@ define([
         return $div;
     };
 
-    // XXX
-    Messages.settings_cacheTitle = "Cache";
-    Messages.settings_cacheHint = "CryptPad stores parts of your documents in your browser's memory in order to save network usage and improve loading times. The documents stored in cache can then be loaded faster the next time you visit them. You can disable the cache if your device doesn't have a lot of free storage space. For security reasons, the cache is always cleared when you log out, but you can clear it manually if you want to reclaim storage space on your machine.";
-    Messages.settings_cacheCheckbox = "Enable cache on this device";
-    Messages.settings_cacheButton = "Clear existing cache";
     makeBlock('cache', function (cb) {
         var store = window.cryptpadStore;
 
@@ -411,6 +410,56 @@ define([
             $cbox[0],
             buttonContainer
         ]);
+    }, true);
+
+    makeBlock('colortheme', function (cb) {
+        var theme = window.cryptpadStore.store['colortheme'] || 'default';
+        var os = window.cryptpadStore.store['colortheme_default'] || 'light';
+        var values = ['default', 'light', 'dark'/*, 'custom'*/];
+
+        var defaultTheme = Messages['settings_colortheme_'+os];
+        var opts = h('div.cp-settings-radio-container', [
+            values.map(function (key) {
+                return UI.createRadio('cp-colortheme-radio', 'cp-colortheme-radio-'+key,
+                    Messages._getKey('settings_colortheme_' + key, [defaultTheme]),
+                    key === theme, {
+                        input: { value: key },
+                        label: { class: 'noTitle' }
+                    });
+            })
+        ]);
+
+        cb(opts);
+
+        var spinner = UI.makeSpinner($(opts));
+        $(opts).find('input[name="cp-colortheme-radio"]').change(function () {
+            var val = this.value;
+            if (values.indexOf(val) === -1) { return; }
+            if (val === theme) { return; }
+            spinner.spin();
+
+            // Check if we need to flush cache
+            var flush = false;
+            if (val === "default" && os === theme) {
+                // Switch from a theme to default without changing value: nothing to do
+            } else if (theme === "default" && os === val) {
+                // Switch from default to a selected value without any change: nothing to do
+            } else {
+                // The theme is different, flush cache
+                flush = true;
+            }
+
+            if (val === 'default') { val = ''; }
+            window.location.hash = ''; // XXX This is a hack to fix Firefox trying to be smart
+            sframeChan.query('Q_COLORTHEME_CHANGE', {
+                theme: val,
+                flush: flush
+            }, function () {
+                window.cryptpadStore.store['colortheme'] = val;
+                theme = val || 'default';
+                spinner.done();
+            });
+        });
     }, true);
 
     create['delete'] = function() {
@@ -552,7 +601,6 @@ define([
                 }, {
                     ok: Messages.register_writtenPassword,
                     cancel: Messages.register_cancel,
-                    cancelClass: 'btn.btn-safe',
                     okClass: 'btn.btn-danger',
                     reverseOrder: true,
                     done: function($dialog) {
@@ -1184,14 +1232,18 @@ define([
         var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
         var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
 
+        var store = window.cryptpadStore;
+        var key = 'pad-small-width';
+        var isHidden = store.store[key] === '1';
+
         var $cbox = $(UI.createCheckbox('cp-settings-padwidth',
             Messages.settings_padWidthLabel,
-            false, { label: { class: 'noTitle' } }));
+            isHidden, { label: { class: 'noTitle' } }));
         var $checkbox = $cbox.find('input').on('change', function() {
             $spinner.show();
             $ok.hide();
             var val = $checkbox.is(':checked');
-            common.setAttribute(['pad', 'width'], val, function() {
+            store.put(key, val ? '1' : '0', function () {
                 $spinner.hide();
                 $ok.show();
             });
@@ -1201,13 +1253,6 @@ define([
         $ok.hide().appendTo($cbox);
         $spinner.hide().appendTo($cbox);
 
-
-        common.getAttribute(['pad', 'width'], function(e, val) {
-            if (e) { return void console.error(e); }
-            if (val) {
-                $checkbox.attr('checked', 'checked');
-            }
-        });
         return $div;
     };
 
@@ -1499,6 +1544,18 @@ define([
         });
     };
 
+    var SIDEBAR_ICONS = {
+        account: 'fa fa-user-o',
+        drive: 'fa fa-hdd-o',
+        cursor: 'fa fa-i-cursor',
+        code: 'fa fa-file-code-o',
+        pad: 'fa fa-file-word-o',
+        security: 'fa fa-lock',
+        subscription: 'fa fa-star-o',
+        kanban: 'cptools cptools-kanban',
+        style: 'cptools cptools-palette',
+    };
+
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);
@@ -1509,14 +1566,11 @@ define([
                 'class': 'cp-sidebarlayout-category',
                 'data-category': key
             }).appendTo($categories);
-            if (key === 'account') { $category.append($('<span>', { 'class': 'fa fa-user-o' })); }
-            if (key === 'drive') { $category.append($('<span>', { 'class': 'fa fa-hdd-o' })); }
-            if (key === 'cursor') { $category.append($('<span>', { 'class': 'fa fa-i-cursor' })); }
-            if (key === 'code') { $category.append($('<span>', { 'class': 'fa fa-file-code-o' })); }
-            if (key === 'pad') { $category.append($('<span>', { 'class': 'fa fa-file-word-o' })); }
-            if (key === 'security') { $category.append($('<span>', { 'class': 'fa fa-lock' })); }
-            if (key === 'subscription') { $category.append($('<span>', { 'class': 'fa fa-star-o' })); }
-            if (key === 'kanban') { $category.append($('<span>', { 'class': 'cptools cptools-kanban' })); }
+
+            var iconClass = SIDEBAR_ICONS[key];
+            if (iconClass) {
+                $category.append($('<span>', { 'class': iconClass }));
+            }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');

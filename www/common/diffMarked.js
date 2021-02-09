@@ -11,7 +11,7 @@ define([
     '/common/highlight/highlight.pack.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-    'css!/common/highlight/styles/github.css'
+    'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
 ],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages) {
     var DiffMd = {};
 
@@ -40,6 +40,7 @@ define([
                     Mermaid = _Mermaid;
                     Mermaid.initialize({
                         gantt: { axisFormat: '%m-%d', },
+                        theme: (window.CryptPad_theme === 'dark') ? 'dark' : undefined,
                         "themeCSS": mermaidThemeCSS,
                     });
                 }

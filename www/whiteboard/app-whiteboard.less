@@ -33,6 +33,7 @@
         display: flex;
         overflow: auto;
         flex-flow: column;
+        background: @cp_whiteboard-board-bg;
     }
 
     // created in the html
@@ -45,12 +46,11 @@
     .cp-app-whiteboard-canvas-container {
         width: 100%;
         margin: auto;
-        background: white;
         flex: 1;
         min-height: 0;
         & > canvas {
             width: 100%;
-            border: 1px solid black;
+            border: 1px solid @cp_whiteboard-board-border;
         }
     }
 
@@ -66,8 +66,9 @@
         justify-content: center;
 
         position: relative;
-        border-top: 1px solid black;
-        background: white;
+        border-top: 1px solid @cp_whiteboard-board-border;
+        background: @cp_whiteboard-bg;
+        color: @cp_whiteboard-fg;
 
         padding: 10px;
 
@@ -87,7 +88,7 @@
         #cp-app-whiteboard-delete {
             min-width: 40px;
         }
-        .cp-whiteboard-type {
+        .cp-whiteboard-type, .cp-whiteboard-history {
             button {
                 min-width: 40px;
                 text-align: center;
@@ -145,7 +146,7 @@
     #cp-app-whiteboard-colors {
         .middle;
         z-index: 100;
-        background: white;
+        background: @cp_whiteboard-bg;
         display: flex;
         flex-wrap: wrap;
         max-width: 320px;
@@ -155,7 +156,7 @@
             width: 30px;
             display: block;
             margin: 5px;
-            border: 1px solid #bbb;
+            border: 1px solid @cp_whiteboard-board-border;
             vertical-align: top;
             border-radius: 50%;
             cursor: pointer;

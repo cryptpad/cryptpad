@@ -21,28 +21,17 @@
             flex-flow: column;
             justify-content: space-around;
             justify-content: space-evenly;
+            .alert-info {
+                font-size: 16px;
+                border-radius: 0px;
+            }
         }
     }
     body {
         font-family: "Open Sans", Helvetica;
         color: @cryptpad_text_col;
     }
-    .cp-right {
-        .cp-register-btn {
-            padding: 0.5em 1em 0.7em 1em;
-            border: 2px solid #fff;
-            &:hover {
-                transform: scale(1.05);
-            }
-        }
-        .cp-login-btn {
-            color: #fff;
-            padding: 0.5em 1em 0.7em 1em;
-            &:hover {
-                transform: scale(1.05);
-            }
-        }
-    }
+
     .cp-home-hero {
         width: 100%;
         margin-bottom: 50px;
@@ -54,7 +43,7 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        color: @colortheme_logo-2;
+        color: @cryptpad_color_brand;
         margin-top: 1.5em;
         img {
             max-width: 200px;
@@ -71,7 +60,7 @@
         .tag-line {
             text-align: center;
             font-size: 1.4em;
-            //font-style: italic;
+            color: @cp_static-link;
         }
     }
 
@@ -86,6 +75,7 @@
         justify-content: space-around;
         a {
             margin: 10px;
+            text-decoration: none;
         }
         @media screen and (max-width: 768px) {
             margin-top: 40px;
@@ -158,7 +148,8 @@
         .cp-callout-@{key} {
             i { color: @value; }
             &:hover {
-                background-color: lighten(@value, 30%);
+                @desat: desaturate(@value, 15%);
+                background-color: contrast(@cryptpad_text_col, lighten(@value, 30%), darken(@desat, 20%));
                 i { color: @cryptpad_text_col; }
             }
         }
@@ -177,23 +168,12 @@
         width: 100%;
         div {
             .infopages_link();
-            color: #fff;
+            color: @cryptpad_color_white;
             .fa, .cptools {
                 font-size: inherit;
                 padding: 0;
                 width: 1em;
                 padding-left: 5px;
-            }
-        }
-    }
-
-    #cp-main {
-        .cp-container {
-            .row.cp-index-section {
-                margin: 50px 0px;
-                .small-logo {
-                    max-width: 40%;
-                }
             }
         }
     }

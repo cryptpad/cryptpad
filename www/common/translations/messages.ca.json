@@ -422,7 +422,6 @@
     "register_mustRememberPass": "No podem restablir la contrasenya si l'oblideu. És molt important que la recordeu! Marqueu la casella per confirmar que ho enteneu.",
     "register_whyRegister": "Per què cal registrar-se?",
     "register_header": "Us donem la benvinguda a CryptPad",
-    "register_explanation": "<h3>Abans de començar, veurem algunes coses:</h3><ul class='list-unstyled'><li><i class='fa fa-info-circle'></i>La contrasenya és la clau secreta que encripta tots els vostres documents. Si la perdeu, no hi ha manera de recuperar les vostres dades.</li><li><i class='fa fa-info-circle'></i>Podeu importar documents que hàgiu vist al vostre navegador per tenir-los al vostre compte.</li><li><i class='fa fa-info-circle'></i>Si utilitzeu un ordinador compartit, cal que tanqueu la sessió quan acabeu de treballar, tancar la pestanya no és suficient.</li></ul>",
     "register_writtenPassword": "He introduït el meu identificador i la contrasenya, continua",
     "register_cancel": "Torna",
     "register_warning": "Sense Rastre significa que no podem recuperar les vostres dades si perdeu o oblideu la vostra contrasenya.",
@@ -632,6 +631,5 @@
     "whatis_title": "Què és CryptPad",
     "terms": "Condicions d'ús",
     "main_info": "<h2>Col·laboreu amb Confiança</h2>\nFeu créixer les vostres idees conjuntament amb documents compartits mentre la tecnologia <strong>Coneixement Zero</strong> assegura la vostra privacitat; <strong>fins i tot per nosaltres</strong>.",
-    "whatis_collaboration_p1": "Amb CryptPad, podeu crear de forma ràpida, documents col·laboratius per prendre notes i posar en ordre idees conjuntament. Quan us registreu i inicieu la vostra sessió, teniu la capacitat de carregar fitxers i un CryptDrive on podeu organitzar tots els vostres documents. Com a persona registrada disposeu de 50MB d'espai gratuït.",
     "privacy": "Privacitat"
 }

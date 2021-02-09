@@ -1,16 +1,13 @@
 @import (reference) "./tools.less";
 
 .markdown_main() {
-    @nice-grey: #f3f3f3;
-    @accent-grey: rgba(0, 0, 0, 0.2);
     hr {
-        border-top: 1px solid @accent-grey;
+        border-top: 1px solid @cp_markdown-border;
     }
     blockquote {
-        background: @nice-grey;
-        background: rgba(144, 144, 144, 0.2);
+        background: @cp_markdown-bg;
         padding: 10px;
-        border-left: 2px solid @accent-grey;
+        border-left: 2px solid @cp_markdown-border;
         padding-right: 0;
         p { margin: 0; }
         blockquote { margin: 0; }
@@ -21,7 +18,7 @@
     // todo ul, ol
     // TOC
     div.cp-md-toc {
-        background: @nice-grey;
+        background: @cp_markdown-bg;
         padding: 20px;
         * {
             margin: 5px;
@@ -57,7 +54,7 @@
     }
 
     div.plain-text-reader {
-        background: #f3f3f3;
+        background: @cp_markdown-bg;
         padding: 10px;
         color: black;
         text-align: left;
@@ -111,7 +108,7 @@
         width: 100px;
         height: 100px;
         display: inline-block;
-        border: 1px solid #BBB;
+        border: 1px solid @cp_markdown-border;
     }
 }
 
@@ -121,7 +118,7 @@
     h1, h2, h3, h4, h5, h6 {
         font-weight: bold;
         padding-bottom: 0.3em;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid @cp_markdown-border;
     }
     li {
         min-height: 22px;
@@ -139,7 +136,7 @@
     .mediatag_cryptpad();
 
     pre.markmap {
-        border: 1px solid #ddd;
+        border: 1px solid @cp_markdown-border;
         svg {
             height: 400px;
         }
@@ -151,31 +148,56 @@
             .tools_unselectable();
         }
     }
+
+    // XXX apply the styles below in modals-ui-elements.less
+
+    pre.mermaid[mermaid-source^="pie"] { // XXX
+        g.legend text, text.pieTitleText {
+            fill: @cp_markdown-contrast-fg;
+        }
+    }
+
+    pre.mermaid[mermaid-source^="gantt"] { // XXX
+        background-color: @cp_markdown-contrast-bg;
+        background-color: #444;
+        text.titleText {
+            fill: @cp_markdown-contrast-fg;
+        }
+    }
+
+    /* make sure markmap text shows up in dark mode */
+    pre.markmap svg { // XXX
+       color: @cp_markdown-contrast-fg;
+    }
+
+    pre.mathjax { // XXX
+        background-color: @cp_markdown-contrast-bg;
+    }
 }
 
-.markdown_preformatted-code (@color: #333) {
+.markdown_preformatted-code () {
     pre > code {
         display: block;
         position: relative;
-        border: 1px solid @color;
+        border: 1px solid @cp_markdown-border;
         width: 90%;
         margin: auto;
         padding-left: .25vw;
         overflow-x: auto;
         overflow-y: hidden;
+        background-color: @cp_markdown-contrast-bg; // XXX
     }
 }
 
-.markdown_gfm-table (@color: black) {
+.markdown_gfm-table () {
     table {
         border-collapse: collapse;
         tr {
             th {
-                border: 1px solid @color;
                 padding: 15px;
             }
-            td {
-                border: 1px solid @color;
+            th, td {
+                border: 1px solid @cp_markdown-border; // XXX
             }
         }
     }

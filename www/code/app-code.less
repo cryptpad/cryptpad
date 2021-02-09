@@ -11,6 +11,7 @@
     flex-flow: column;
     max-height: 100%;
     min-height: auto;
+    background-color: @cp_preview-bg;
 
     #cp-app-code-container {
         display: inline-flex;
@@ -98,16 +99,22 @@
     }
 
     #cp-app-code-preview-content {
+        background-color: @cp_preview-bg;
+        color: @cp_preview-fg;
         max-width: 40vw;
         margin: 1em auto;
 
         .markdown_preformatted-code;
-        .markdown_gfm-table(black);
+        .markdown_gfm-table();
         table {
             margin-bottom: 1rem;
         }
         media-tag > * {
             margin-bottom: 1rem;
+        }
+        a {
+            color: @cp_preview-link;
+            text-decoration: underline;
         }
     }
 
@@ -135,7 +142,7 @@
         position: relative;
         display: none;
         .markdown_preformatted-code;
-        .markdown_gfm-table(black);
+        .markdown_gfm-table();
     }
 }
 

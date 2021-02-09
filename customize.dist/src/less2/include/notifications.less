@@ -22,7 +22,7 @@
                 padding: 0 5px;
                 cursor: pointer;
                 &:hover {
-                    background-color: rgba(0,0,0,0.1);
+                    background-color: @cp_dropdown-bg-hover;
                 }
             }
             .cp-notification-content {
@@ -35,19 +35,19 @@
                 &.cp-clickable {
                     cursor: pointer;
                     &:hover {
-                        background-color: rgba(0,0,0,0.1);
+                        background-color: @cp_dropdown-bg-hover;
                     }
                 }
             }
             .cp-notification-dismiss {
-                color: black;
+                color: @cp_dropdown-fg;
                 width: 25px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
                 &:hover {
-                    background-color: rgba(0,0,0,0.1);
+                    background-color: @cp_dropdown-bg-hover;
                 }
             }
         }
@@ -59,7 +59,7 @@
             font-weight: bold;
             cursor: pointer;
             &:hover {
-                background-color: rgba(0,0,0,0.1);
+                background-color: @cp_dropdown-bg-hover;
             }
         }
     }

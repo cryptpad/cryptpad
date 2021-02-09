@@ -124,7 +124,7 @@ define([
     var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
-    var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
+    var $closeIcon = $('<span>', {"class": "fa fa-times"});
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-icon"});
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
@@ -3259,6 +3259,7 @@ define([
 
             var $spinnerContainer = $(h('div.cp-app-drive-search-spinner'));
             var spinner = UI.makeSpinner($spinnerContainer);
+            var searching = true;
             var $input = APP.Search.$input = $('<input>', {
                 id: 'cp-app-drive-search-input',
                 placeholder: Messages.fm_searchName,
@@ -3266,21 +3267,19 @@ define([
                 draggable: false,
                 tabindex: 1,
             }).keyup(function (e) {
-                var lastValue = search.value;
-                search.value = $input.val().trim();
-                if (lastValue === search.value) { return; }
-
-                if (search.to) { window.clearTimeout(search.to); }
-                if (search.value === "") {
-                    search.cursor = 0;
-                    APP.displayDirectory([SEARCH]);
+                if (searching) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     return;
                 }
-                spinner.spin();
+                var currentValue = $input.val().trim();
+                if (search.to) { window.clearTimeout(search.to); }
                 if (e.which === 13) {
+                    spinner.spin();
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
                     if (!manager.comparePath(newLocation, currentPath.slice())) {
+                        searching = true;
                         APP.displayDirectory(newLocation);
                     }
                     return;
@@ -3288,27 +3287,30 @@ define([
                 if (e.which === 27) {
                     $input.val('');
                     search.cursor = 0;
+                    searching = true;
                     APP.displayDirectory([SEARCH]);
                     return;
                 }
-                if ($input.val()) {
-                    if (!$input.hasClass('cp-app-drive-search-active')) {
-                        $input.addClass('cp-app-drive-search-active');
-                    }
-                } else {
-                    $input.removeClass('cp-app-drive-search-active');
+
+                if (currentValue === "") {
+                    search.cursor = 0;
+                    APP.displayDirectory([SEARCH]);
+                    return;
                 }
+
+                if (currentValue.length < 2) { return; } // Don't autosearch 1 character
                 search.to = window.setTimeout(function () {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
+                    if (currentValue === search.value) { return; }
                     if (!manager.comparePath(newLocation, currentPath.slice())) {
+                        searching = true;
                         APP.displayDirectory(newLocation);
                     }
                 }, 500);
             }).on('click mousedown mouseup', function (e) {
                 e.stopPropagation();
             }).val(value || '').appendTo($div);
-            if (value) { $input.addClass('cp-app-drive-search-active'); }
             $input[0].selectionStart = search.cursor || 0;
             $input[0].selectionEnd = search.cursor || 0;
 
@@ -3329,6 +3331,7 @@ define([
             if (typeof(value) === "string" && value.trim()) {
                 spinner.spin();
             } else {
+                searching = false;
                 return;
             }
 
@@ -3338,6 +3341,7 @@ define([
                 if (!filesList.length) {
                     $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
                     spinner.hide();
+                    searching = false;
                     return;
                 }
                 var sortable = {};
@@ -3402,6 +3406,7 @@ define([
                 });
                 setTimeout(collapseDrivePath);
                 spinner.hide();
+                searching = false;
             });
         };
 
@@ -4022,16 +4027,6 @@ define([
             var s = $categories.scrollTop() || 0;
 
             $tree.html('');
-
-            /*
-            $(h('button.fa.fa-times.cp-close-button', {
-                title: Messages.filePicker_close
-            })).click(function (e) {
-                e.stopPropagation();
-                $tree.hide();
-                checkCollapseButton();
-            }).appendTo($tree);
-            */
 
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);

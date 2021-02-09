@@ -37,7 +37,7 @@ define([
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 
-    // XXX Number of days before deleting the cache for a channel or blob
+    // Number of days before deleting the cache for a channel or blob
     var CACHE_MAX_AGE = 90; // DAYS
 
     // Default settings for new users
@@ -1229,6 +1229,7 @@ define([
                     var data = obj.data;
                     if (channels.indexOf(data.channel) !== -1) { return; }
                     var id = obj.id;
+                    if (data.channel) { channels.push(data.channel); }
                     var parsed = Hash.parsePadUrl(data.href || data.roHref);
                     if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                         !isFiltered(parsed.type, data)) {

@@ -5,19 +5,16 @@
 }
 & {
     .tippy-tooltip.cryptpad-theme {
-        /* Your styling here. Example: */
-        background-color: @cryptpad_color_light_grey;
+        background-color: @cp_tooltip-bg;
         border-radius: 0px;
-        // box-shadow: 2px 2px 10px #000;
-        // font-weight: bold;
-        color: #333;
+        color: @cp_tooltip-fg;
         overflow-wrap: break-word;
         [x-circle] {
             background-color: unset;
         }
     }
     .tippy-popper {
-        @arrow-color: @cryptpad_color_light_grey;
+        @arrow-color: @cp_tooltip-bg;
         &[x-placement^='top'] .tippy-arrow {
           border-top-color: @arrow-color;
         }

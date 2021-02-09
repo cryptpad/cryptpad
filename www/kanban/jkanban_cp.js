@@ -26,13 +26,14 @@ define([
             element: '',
             gutter: '15px',
             widthBoard: '250px',
-            responsive: '700',
+            responsive: 0, //'700',
             responsivePercentage: false,
             boards: {
                 data: {},
                 items: {},
                 list: []
-            },
+            }, // The realtime kanban
+            _boards: {}, // The displayed kanban. We need to remember the old columns when we redraw
             getAvatar: function () {},
             openLink: function () {},
             getTags: function () {},
@@ -298,7 +299,9 @@ define([
                         // Move to trash?
                         if (target.classList.contains('kanban-trash')) {
                             list.splice(index1, 1);
-                            delete self.options.boards.data[id];
+                            if (list.indexOf(id) === -1) {
+                                delete self.options.boards.data[id];
+                            }
                             self.onChange();
                             return;
                         }
@@ -393,10 +396,11 @@ define([
                         console.log("In drop");
 
                         var id1 = Number($(el).attr('data-eid'));
+                        var boardId = Number($(source).closest('.kanban-board').data('id'));
 
                         // Move to trash?
                         if (target.classList.contains('kanban-trash')) {
-                            self.moveItem(id1);
+                            self.moveItem(boardId, id1);
                             self.onChange();
                             return;
                         }
@@ -416,7 +420,7 @@ define([
                         }
 
                         // Move the item
-                        self.moveItem(id1, board2, pos2);
+                        self.moveItem(boardId, id1, board2, pos2);
 
                         // send event that board has changed
                         self.onChange();
@@ -443,21 +447,43 @@ define([
             });
             return res;
         };
-        this.moveItem = function (eid, board, pos) {
+        this.checkItem = function (eid) {
+            var boards = self.options.boards;
+            var data = boards.data || {};
+            var exists = Object.keys(data).some(function (id) {
+                return (data[id].item || []).indexOf(Number(eid)) !== -1;
+            });
+            return exists;
+        };
+        this.moveItem = function (source, eid, board, pos) {
             var boards = self.options.boards;
             var same = -1;
-            var from = findItem(eid);
-            // Remove the item from its board
-            from.forEach(function (obj) {
-                obj.board.item.splice(obj.pos, 1);
-                if (obj.board === board) { same = obj.pos; }
-            });
-            // If it's a deletion, remove the item data
+            if (source && boards.data[source]) {
+                // Remove from this board only
+                var l = boards.data[source].item;
+                var idx = l.indexOf(Number(eid));
+                if (idx !== -1) { l.splice(idx, 1); }
+                if (boards.data[source] === board) { same = idx; }
+            } else {
+                // Remove the item from all its board
+                var from = findItem(eid);
+                from.forEach(function (obj) {
+                    obj.board.item.splice(obj.pos, 1);
+                    if (obj.board === board) { same = obj.pos; }
+                });
+            }
+            // If it's a deletion and not a duplicate, remove the item data
             if (!board) {
-                delete boards.items[eid];
-                delete self.cache[eid];
-                removeUnusedTags(boards);
-                self.options.refresh();
+                if (!self.checkItem(eid)) {
+                    delete boards.items[eid];
+                    delete self.cache[eid];
+                    removeUnusedTags(boards);
+                    self.options.refresh();
+                }
+                return;
+            }
+            // If the item already exists in the target board, abort (duplicate)
+            if (board.item.indexOf(eid) !== -1) {
                 return;
             }
             // If it's moved to the same board at a bigger index, decrement the index by one
@@ -707,21 +733,29 @@ define([
         };
         this.addBoard = function (board) {
             if (!board || !board.id) { return; }
+            // We need to store all the columns in _boards too because it's used to
+            // remember what columns were already displayed when we redraw (in order to
+            // preserve their scroll value)
             var boards = self.options.boards;
             boards.data = boards.data || {};
             boards.list = boards.list || [];
+            var _boards = self.options._boards;
+            _boards.data = _boards.data || {};
+            _boards.list = _boards.list || [];
             // If it already there, abort
             boards.data[board.id] = board;
+            _boards.data[board.id] = board;
             if (boards.list.indexOf(board.id) !== -1) { return; }
 
             boards.list.push(board.id);
+            _boards.list.push(board.id);
             var boardNode = getBoardNode(board);
             self.container.appendChild(boardNode);
         };
 
         this.addBoards = function() {
             //for on all the boards
-            var boards = self.options.boards;
+            var boards = self.options._boards;
             boards.list = boards.list || [];
             boards.data = boards.data || {};
             var toRemove = [];
@@ -759,10 +793,10 @@ define([
             var $el = $(self.element);
             var scrollLeft = $el.scrollLeft();
             // Get existing boards list
-            var list = Util.clone(this.options.boards.list);
+            var list = Util.clone(this.options._boards.list);
 
             // Update memory
-            this.options.boards = boards;
+            this.options._boards = Util.clone(boards);
 
             // If the tab is not focused but a handler already exists: abort
             if (!Visible.currently() && onVisibleHandler) { return; }
@@ -779,7 +813,7 @@ define([
                 self.addBoards();
                 self.options.refresh();
                 // Preserve scroll
-                self.options.boards.list.forEach(function (id) {
+                self.options._boards.list.forEach(function (id) {
                     if (!scroll[id]) { return; }
                     $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
                 });

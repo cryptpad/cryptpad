@@ -2,7 +2,12 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
-#sbox-iframe, #sbox-secure-iframe {
+@media (prefers-color-scheme: dark) {
+    html, body {
+        background: black;
+    }
+}
+iframe-placeholder, #sbox-iframe, #sbox-secure-iframe {
     position: fixed;
     top:0; left:0;
     bottom:0; right:0;

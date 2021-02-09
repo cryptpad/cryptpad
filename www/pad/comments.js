@@ -298,6 +298,31 @@ define([
 
         // Remove everything
         Env.$container.html('');
+        var hideBtn = h('button.cp-pad-hide.btn.btn-default.fa.fa-chevron-right');
+        var showBtn = h('button.cp-pad-show.btn.btn-default', {
+            title: Messages.poll_comment_list
+        }, [
+            h('i.fa.fa-comment')
+        ]);
+
+
+        var store = window.cryptpadStore;
+        var key = 'hide-pad-comments';
+        $(hideBtn).click(function () {
+            Env.$container.addClass('hidden');
+            Env.localHide = true;
+            if (store) { store.put(key, '1'); }
+        });
+        var $showBtn = $(showBtn).click(function () {
+            Env.$container.removeClass('hidden');
+            Env.localHide = false;
+            if (store) { store.put(key, '0'); }
+        });
+        Env.$container.append([
+            showBtn,
+            hideBtn,
+            h('h2', Messages.poll_comment_list)
+        ]);
 
         // "show" tells us if we need to display the "comments" column or not
         var show = false;
@@ -595,11 +620,32 @@ define([
             });
         }
 
-        if (show) {
-            Env.$container.show();
+
+        // Hidden or visible? check pad settings first, then browser otherwise hide
+        var md = Util.clone(Env.metadataMgr.getMetadata());
+        var hide = false;
+        if (typeof(md.defaultComments) === "undefined") {
+            if (typeof(store.store[key]) === 'undefined') {
+                hide = !show; // Hide if there are no comments
+            } else {
+                hide = store.store[key] === '1';
+            }
         } else {
-            Env.$container.hide();
+            hide = md.defaultComments === 0;
         }
+        // If we've clicked on the show/hide buttons, always use our latest local value
+        if (typeof(Env.localHide) === "boolean") { hide = Env.localHide; }
+
+        Env.$container.removeClass('hidden');
+        if (hide) { Env.$container.addClass('hidden'); }
+
+        $showBtn.removeClass('notif');
+        if (show) {
+            $showBtn.addClass('notif');
+        }
+
+
+        Env.$container.show();
     };
 
     var onChange = function(Env) {
@@ -725,7 +771,7 @@ define([
         var button = h('button.btn.btn-secondary', {
             style: 'top:' + y + 'px;',
             title: Messages.comments_comment
-        }, h('i.fa.fa-comment'));
+        }, h('i.fa.fa-commenting'));
         Env.bubble = {
             node: node,
             button: button
@@ -762,6 +808,8 @@ define([
             // Remove active class on other comments
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$container.find('.cp-comment-form').remove();
+            Env.$container.removeClass('hidden');
+            Env.localHide = false;
             var form = getCommentForm(Env, false, function(val) {
                 $(form).remove();
                 Env.$inner.focus();
@@ -798,7 +846,9 @@ define([
 
                 Env.oldComments = undefined;
             });
-            Env.$container.prepend(form).show();
+
+            Env.$container.show();
+            Env.$container.find('> h2').after(form);
         };
 
 
@@ -826,6 +876,8 @@ define([
 
     var ready = function(Env) {
         Env.ready = 0;
+
+        onChange(Env);
 
         // If you're the only edit user online, clear "deleted" comments
         if (!Env.common.isLoggedIn()) { return; }

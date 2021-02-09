@@ -44,7 +44,7 @@ define([
         var $appContainer = $('#cp-app-file-content');
         var $form = $('#cp-app-file-upload-form');
         var $dlview = $('#cp-app-file-download-view');
-        var $label = $form.find('label');
+        var $label = $form.find('button');
         var $bar = $('.cp-toolbar-container');
         var $body = $('body');
 
@@ -174,6 +174,10 @@ define([
                 common.setLoginRedirect('login');
             });
         }
+
+        $label.click(function () {
+            $form.find('input[type="file"]').click();
+        });
 
         $form.css({
             display: 'block',
