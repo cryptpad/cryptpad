@@ -568,7 +568,10 @@ define([
                 var metaObj;
                 nThen(function (waitFor) {
                     Cryptpad.getMetadata(waitFor(function (err, m) {
-                        if (err) { console.log(err); }
+                        if (err) {
+                            waitFor.abort();
+                            return void console.log(err);
+                        }
                         metaObj = m;
                         edPublic = metaObj.priv.edPublic; // needed to create an owned pad
                         curvePublic = metaObj.user.curvePublic;
