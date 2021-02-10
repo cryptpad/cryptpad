@@ -175,29 +175,43 @@ define([
             });
         }
 
-        $label.click(function () {
-            $form.find('input[type="file"]').click();
-        });
+        var todo = function () {
+            $label.click(function () {
+                $form.find('input[type="file"]').click();
+            });
 
-        $form.css({
-            display: 'block',
-        });
+            $form.css({
+                display: 'block',
+            });
 
-        var fmConfig = {
-            dropArea: $form,
-            hoverArea: $label,
-            body: $body,
-            keepTable: true // Don't fadeOut the table with the uploaded files
+            var fmConfig = {
+                dropArea: $form,
+                hoverArea: $label,
+                body: $body,
+                keepTable: true // Don't fadeOut the table with the uploaded files
+            };
+
+            var FM = common.createFileManager(fmConfig);
+
+            $form.find("#cp-app-file-upfile").on('change', function (e) {
+                var file = e.target.files[0];
+                FM.handleFile(file);
+            });
+
+            UI.removeLoadingScreen();
         };
 
-        var FM = common.createFileManager(fmConfig);
-
-        $form.find("#cp-app-file-upfile").on('change', function (e) {
-            var file = e.target.files[0];
-            FM.handleFile(file);
-        });
-
-        UI.removeLoadingScreen();
+        var checkOnline = function () {
+            var priv = metadataMgr.getPrivateData();
+            if (priv.offline) { return; }
+            metadataMgr.off('change', checkOnline);
+            todo();
+        };
+        if (priv.offline) {
+            metadataMgr.onChange(checkOnline);
+            return;
+        }
+        todo();
     };
 
     var main = function () {

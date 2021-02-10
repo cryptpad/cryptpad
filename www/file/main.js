@@ -19,6 +19,7 @@ define([
             meta.filehash = Cryptpad.currentPad.hash;
         };
         SFCommonO.start({
+            cache: true,
             hash: hash,
             href: href,
             noRealtime: true,
