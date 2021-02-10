@@ -18,15 +18,15 @@ Otherwise, to update from 4.0.0 to 4.1.0:
 ## Features
 
 * The new dark theme will be applied if CryptPad detects that your OS or browser are configured to prefer dark modes, otherwise you can choose to enable the dark mode on a per-device basis via the _Appearance_ tab of the settings page. Aside from general tweaks for common stylistic elements like the toolbar and loading screen, we made many app-specific changes:
-  * Markdown-based slides are initialized colors to match the theme of their creator.
+  * Markdown-based slide colors are initialized to match the theme of their creator.
   * Freshly-opened whiteboards are initialized with _white_ preselected instead of _black_ if you are using dark mode.
   * Markdown-extensions, like mermaid, markmap, and mathjax required additional effort to match users themes.
-  * The rich-text editor is somewhat challenging, like the whiteboard, because users can choose to use text colors that may not contrast well against the background, and users may not all see the same thing. We did our best to offer the same experience in either mode, but your results may vary.
-* We made some similar UI updates to offer an increased ability to hide features that can take up too much of the available screen space. In particular, rich-text editors can choose to hide comments and the table of contents. Document owners can use the new _Document settings_ menu (available from the _File_ dropdown) to suggest settings for the current document, such that new users can view the document in its intended configuration unless they have set their own preferences.
+  * The rich-text editor is somewhat challenging, like the whiteboard, because users can choose to use text colors that may not contrast well against the background, and users may not all see the same thing. The default text color will always contrast with the theme background. Manually set light/dark colors may render the text unreadable for users using another theme.
+* We made some UI updates to offer an increased ability to hide features that can take up too much of the available screen space. In particular, rich-text editors can choose to hide comments and the table of contents. Document owners can use the new _Document settings_ menu (available from the _File_ dropdown) to suggest settings for the current document, such that new users can view the document in its intended configuration unless they have set their own preferences.
 * We've made some performance optimizations in a few key places on the client:
   * Large, complex kanbans tended to slow down quite a bit when multiple people were editing or moving cards at once. Boards are now only applied one second after the most recent change (unless updates have not been displayed for more than five seconds).
   * The drive's search functionality is similarly throttled to prevent multiple concurrent searches from being executed in parallel.
-* Due to popular demand, the whiteboard now features undo/redo functionality via _fabric-history.js_.
+* Updates to the whiteboard include the undo/redo functionality via _fabric-history.js_, and the ability to add text to drawings.
 * The _teams-picker_ page has been redesigned to use a card-based interface so that clicking anywhere on a team's card opens its drive, rather than just a single "open" button.
 * We've added a number of new features to the admin panel:
   * The _Statistics_ tab now features a button to load the latest stats from the server instead of requiring a page reload to see the latest numbers.
@@ -39,7 +39,7 @@ Otherwise, to update from 4.0.0 to 4.1.0:
   * The user menu (in the top-right corner) incorrectly linked to a _donate link_ instead of a link to their subscription page because their first attempt to check their quota failed.
   * The usage bar in the drive, teams, and settings pages only appeared after some time because it is scheduled to update every thirty seconds, and the first attempt failed while it was still connecting. We now update retry more eagerly until a connection is established.
 * We've fixed a few links to our documentation which incorrectly concatenated two URLs together.
-* Users that had added the same docuement template to their own drive as well as a team's drive could see two instances of it suggested on the pad creation screen. We now deduplicate this list such that only one copy is suggested for use.
+* Users that had added the same document template to their own drive as well as a team's drive could see two instances of it suggested on the pad creation screen. We now deduplicate this list such that only one copy is suggested for use.
 * The Kanban app now offers better touch support, as some users reported that they were unable to drag and drop cards and columns.
 * Finally, we now guard against some edge cases in the _access modal_ in which the owner of a document could send themself a request for edit rights if they loaded the document in view mode after deleting it from their drive.
 
