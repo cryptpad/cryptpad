@@ -450,7 +450,9 @@ define([
             }
 
             if (val === 'default') { val = ''; }
-            window.location.hash = ''; // XXX This is a hack to fix Firefox trying to be smart
+            // browsers try to load iframes from cache if they have the same id as was previously seen
+            // this seems to help?
+            window.location.hash = '';
             sframeChan.query('Q_COLORTHEME_CHANGE', {
                 theme: val,
                 flush: flush

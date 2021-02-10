@@ -95,7 +95,7 @@ define([
 
     var COLORTHEME = '/customize/src/less2/include/colortheme.less';
     var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
-    //COLORTHEME_DARK = '/customize/src/less2/include/colortheme.less'; // XXX
+    //COLORTHEME_DARK = '/customize/src/less2/include/colortheme.less'; // TODO
     var getColortheme = function () {
         return window.CryptPad_theme;
     };
@@ -139,7 +139,7 @@ define([
                         if (col) {
                             //console.warn(text, lastModified);
                             if (getColortheme() === "custom") {
-                                // XXX COLOR: append custom theme here
+                                // TODO COLOR: append custom theme here
                                 var custom = [
                                     '@cryptpad_text_col: #FF0000;'
                                 ].join('\n');
