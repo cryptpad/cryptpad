@@ -313,7 +313,7 @@ define([
                 UIElements.setHTML(h('label', {for: 'cp-upload-name'}),
                                    Messages._getKey('upload_modal_filename', [ext])),
                 h('input#cp-upload-name', {type: 'text', placeholder: defaultFileName, value: defaultFileName}),
-                h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
+                h('label', {for: 'cp-upload-password'}, Messages.addOptionalPassword),
                 UI.passwordInput({id: 'cp-upload-password'}),
                 h('span', {
                     style: 'display:flex;align-items:center;justify-content:space-between'

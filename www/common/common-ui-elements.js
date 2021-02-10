@@ -2240,7 +2240,7 @@ define([
 
         // Password
         var password = h('div.cp-creation-password', [
-            UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
+            UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
                 UI.passwordInput({id: 'cp-creation-password-val'})
                 /*h('input#cp-creation-password-val', {
