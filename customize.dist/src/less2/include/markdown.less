@@ -112,6 +112,50 @@
     }
 }
 
+.markdown_extensions() {
+    pre.mermaid {
+        &[mermaid-source^="gantt"] svg {
+            g.tick {
+                text {
+                    fill: @cp_markdown-block-fg;
+                }
+                line {
+                    stroke: fade(@cp_markdown-block-fg, 50%);
+                }
+            }
+            text {
+                &.titleText {
+                    fill: @cp_markdown-block-fg;
+                }
+                &.taskTextOutside0, &.taskTextOutside1, &.taskTextOutside2, &.taskTextOutside3 {
+                    fill: @cp_markdown-block-fg !important;
+                    &.doneCritText1 {
+                        fill: @cp_markdown-block-fg !important;
+                    }
+                }
+            }
+        }
+        &[mermaid-source^="pie"] {
+            g.legend text, text.pieTitleText {
+                fill: @cp_markdown-block-fg;
+            }
+        }
+    }
+    pre.markmap {
+        border: 1px solid @cp_markdown-border;
+        svg {
+           color: @cp_markdown-block-fg;
+            height: 400px;
+        }
+    }
+
+    pre.mathjax {
+        padding: 5px;
+        color: @cryptpad_text_col;
+        background-color: @cp_markdown-block-bg;
+    }
+}
+
 .markdown_cryptpad() {
     word-wrap: break-word;
 
@@ -135,12 +179,6 @@
 
     .mediatag_cryptpad();
 
-    pre.markmap {
-        border: 1px solid @cp_markdown-border;
-        svg {
-            height: 400px;
-        }
-    }
     pre[data-plugin] {
         svg {
             max-width: 100%;
@@ -149,35 +187,7 @@
         }
     }
 
-    pre.mermaid[mermaid-source^="pie"] {
-        g.legend text, text.pieTitleText {
-            fill: @cp_markdown-block-fg;
-        }
-    }
-
-    pre.mermaid[mermaid-source^="gantt"] {
-        text.titleText {
-            fill: @cp_markdown-block-fg;
-        }
-        g.tick {
-            text {
-                fill: @cp_markdown-block-fg;
-            }
-            line {
-                stroke: fade(@cp_markdown-block-fg, 50%);
-            }
-        }
-    }
-
-    pre.markmap svg {
-       color: @cp_markdown-block-fg;
-    }
-
-    pre.mathjax {
-        padding: 5px;
-        color: @cryptpad_text_col;
-        background-color: @cp_markdown-block-bg;
-    }
+    .markdown_extensions();
 }
 
 .markdown_preformatted-code () {
