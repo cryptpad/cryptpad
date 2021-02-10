@@ -934,7 +934,7 @@ define([
             // Get scroll position
             var sTop = $iframe.scrollTop();
             var sTopMax = $iframe.innerHeight() - $('iframe').innerHeight();
-            var scrollMax = Math.abs(sTop - sTopMax) < 1;
+            var scrollMax = Math.abs(sTop - sTopMax) < 1 && sTop;
 
             // Apply the changes
             var patch = (DD).diff(inner, userDocStateDom);

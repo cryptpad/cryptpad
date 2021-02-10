@@ -73,7 +73,7 @@
 @cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
 @cryptpad_color_light_yellow: #FFE69C;
-@cryptpad_color_yellow_fade: fade(#FFE69C, 50%); // XXX diff from dark
+@cryptpad_color_yellow_fade: fade(#FFE69C, 50%); // different from dark
 @cryptpad_color_lighter_blue: #d2e1f2;
 
 @cryptpad_color_link: #0275D8;
@@ -160,7 +160,7 @@
 @cp_sidebar-left-bg: @cryptpad_color_toolbar_grey;
 @cp_sidebar-left-fg: @cryptpad_text_col;
 @cp_sidebar-right-bg: @cryptpad_color_white;
-@cp_sidebar-right-fg: @cryptpad_text_col; // XXX was black
+@cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cp_sidebar-right-bg;
 @cp_sidebar-hint: @cryptpad_color_hint_grey;
 
@@ -205,9 +205,9 @@
 
 // Rendered Markdown
 @cp_markdown-bg: @cryptpad_color_lighter_grey;
-@cp_markdown-border: @cryptpad_color_grey;
-@cp_markdown-contrast-fg: @cryptpad_text_col; // XXX
-@cp_markdown-contrast-bg: transparent; // XXX
+@cp_markdown-border: @cryptpad_color_grey_400;
+@cp_markdown-block-fg: @cryptpad_text_col;
+@cp_markdown-block-bg: @cryptpad_color_grey_200;
 
 // Avatar
 @cp_avatar-bg: @cryptpad_color_grey;
@@ -391,6 +391,7 @@
 @cp_comments-fg: @cryptpad_text_col;
 @cp_comments-bg: @cryptpad_color_white;
 @cp_comments-header: @cryptpad_color_grey_600;
+@cp_comments-notif: @cryptpad_color_red;
 
 // Poll
 @cp_poll-th-bg: @cryptpad_color_lighter_blue;

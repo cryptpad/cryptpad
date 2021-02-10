@@ -237,6 +237,24 @@
                 pre.mermaid {
                     overflow: unset;
                     margin-bottom: 0;
+                    &[mermaid-source^="pie"] {
+                        g.legend text, text.pieTitleText {
+                            fill: @cp_markdown-block-fg;
+                        }
+                    }
+                    &[mermaid-source^="gantt"] {
+                        text.titleText {
+                            fill: @cp_markdown-block-fg;
+                        }
+                        g.tick {
+                            text {
+                                fill: @cp_markdown-block-fg;
+                            }
+                            line {
+                                stroke: fade(@cp_markdown-block-fg, 50%);
+                            }
+                        }
+                    }
                 }
                 pre.markmap {
                     margin-bottom: 0;
@@ -246,7 +264,12 @@
                     flex-flow: column;
                     svg {
                         flex: 1;
+                        color: @cp_markdown-block-fg;
                     }
+                }
+                pre.mathjax {
+                    padding: 5px;
+                    color: @cryptpad_text_col;
                 }
                 .cp-spinner {
                     border-color: @cryptpad_color_brand;

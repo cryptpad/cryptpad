@@ -53,7 +53,8 @@ body.cp-app-pad {
     #cp-app-pad-comments {
         &.hidden {
             .cp-pad-show.notif {
-                color: red;
+                color: @cp_comments-notif;
+                border-color: @cryptpad_color_red;
             }
         }
         .cp-pad-show {
@@ -177,13 +178,19 @@ body.cp-app-pad {
         }
         div.cp-comment-bubble {
             position: relative;
-            order: 2;
             button {
                 .fa {
                     margin: 0 !important;
                 }
-                right: 20px;
                 position: absolute;
+                padding: 0 4px;
+                background: @cp_toolbar-bg;
+                margin-left: 0px;
+                margin-top: 20px;
+                line-height: unset;
+                &:hover {
+                    background: @toolbar-bg-active;
+                }
             }
         }
         #cp-app-pad-comments {
@@ -204,7 +211,7 @@ body.cp-app-pad {
         &.cke_body_width {
             div.cp-comment-bubble {
                 button {
-                    right: 0px;
+                    margin-left: 30px;
                 }
             }
             iframe {

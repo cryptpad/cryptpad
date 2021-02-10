@@ -31,7 +31,6 @@
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
 @cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
-// XXX this whole block was copy-pasted from colortheme.less to avoid a reference error --ansuz
 @cryptpad_color_hint_grey: #777;
 @cryptpad_color_dark_grey: #999999;
 @cryptpad_color_neutral_grey: #aaaaaa;
@@ -75,7 +74,7 @@
 @cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
 @cryptpad_color_light_yellow: #FFE69C;
 @cryptpad_color_yellow_fade: fade(#FFE69C, 15%);
-@cryptpad_color_lighter_blue: #d2e1f2; // XXX replace with @cryptpad_color_brand_fadest
+@cryptpad_color_lighter_blue: #d2e1f2;
 
 @cryptpad_color_link:@cryptpad_color_brand_300;
 
@@ -158,10 +157,10 @@
 @cp_buttons-cancel-border: @cryptpad_color_grey_400;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_grey_800;
+@cp_sidebar-left-bg: @cryptpad_color_grey_850;
 @cp_sidebar-left-fg: @cryptpad_text_col;
 @cp_sidebar-right-bg: @cryptpad_color_grey_900;
-@cp_sidebar-right-fg: @cryptpad_text_col; // XXX was black
+@cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cp_sidebar-right-bg;
 @cp_sidebar-hint: fade(@cryptpad_text_col, 80%);
 
@@ -207,8 +206,8 @@
 // Rendered Markdown
 @cp_markdown-bg: @cryptpad_color_grey_900;
 @cp_markdown-border: @cryptpad_color_grey_700;
-@cp_markdown-contrast-fg: white; // XXX
-@cp_markdown-contrast-bg: @cryptpad_color_grey; // XXX
+@cp_markdown-block-fg: @cryptpad_text_col;
+@cp_markdown-block-bg: @cryptpad_color_grey_800;
 
 // Avatar
 @cp_avatar-bg: @cryptpad_color_grey_700;
@@ -225,7 +224,7 @@
 @cp_creation-button-bg: @cryptpad_color_brand;
 @cp_creation-button-fg: @cryptpad_color_white;
 @cp_creation-error-bg: @cryptpad_color_blue;
-@cp_creation-error-fg: @cryptpad_color_grey_100; // XXX
+@cp_creation-error-fg: @cryptpad_color_grey_100;
 
 // Export
 @cp_export-bg: @cryptpad_color_grey_900;
@@ -283,7 +282,7 @@
 @cp_support-header-bg: @cryptpad_color_grey_800;
 
 // Toolbar
-@cp_toolbar-bg: @cryptpad_color_grey_900;
+@cp_toolbar-bg: @cryptpad_color_grey_850;
 @cp_toolbar-fg: @cryptpad_text_col;
 @cp_toolbar-bottom-fg: @cryptpad_text_col;
 @cp_toolbar-logo-bg: @cryptpad_color_grey_200;
@@ -332,10 +331,10 @@
 // Admin
 @cp_admin-isadmin-fg: @cryptpad_color_brand;
 @cp_admin-isadmin-bg: @cryptpad_color_white;
-@cp_admin-premium-fg: @cryptpad_color_warn_red;
-@cp_admin-premium-bg: lighten(@cryptpad_color_warn_red, 25%);
-@cp_admin-last-fg: @cryptpad_color_warn_red;
-@cp_admin-last-bg: lighten(@cryptpad_color_orange, 25%);
+@cp_admin-premium-fg: @cryptpad_color_light_red;
+@cp_admin-premium-bg: @cryptpad_color_red_fader;
+@cp_admin-last-fg: @cryptpad_color_light_red;
+@cp_admin-last-bg: @cryptpad_color_red_fader;
 
 // Code
 @cp_preview-bg: @cryptpad_color_grey_900;
@@ -392,6 +391,7 @@
 @cp_comments-fg: @cryptpad_text_col;
 @cp_comments-bg: @cryptpad_color_grey_800;
 @cp_comments-header: @cryptpad_color_grey_500;
+@cp_comments-notif: @cryptpad_color_light_red;
 
 // Poll
 @cp_poll-th-bg: @cryptpad_color_brand_fadest;

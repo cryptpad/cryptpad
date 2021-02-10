@@ -749,39 +749,29 @@ define([
     };
     var updateBubble = function(Env) {
         if (!Env.bubble) { return; }
-        var pos = Env.bubble.node.getBoundingClientRect();
-        if (pos.y < 0 || pos.y > Env.$inner.outerHeight()) {
-            //removeCommentBubble(Env);
-        }
-        Env.bubble.button.setAttribute('style', 'top:' + pos.y + 'px');
+        var pos = Env.bubble.range.getClientRects()[0];
+        var left = pos.x + pos.width;
+        Env.bubble.button.setAttribute('style', 'top:' + pos.y + 'px; left: '+left+'px');
     };
     var addCommentBubble = function(Env) {
         var ranges = Env.editor.getSelectedRanges();
         if (!ranges.length) { return; }
-        var el = ranges[0].endContainer || ranges[0].startContainer;
-        var node = el && el.$;
-        if (!node) { return; }
-        if (node.nodeType === Node.TEXT_NODE) {
-            node = node.parentNode;
-            if (!node) { return; }
-        }
-        var pos = node.getBoundingClientRect();
-        var y = pos.y;
-        if (y < 0 || y > Env.$inner.outerHeight()) { return; }
+
         var button = h('button.btn.btn-secondary', {
-            style: 'top:' + y + 'px;',
             title: Messages.comments_comment
         }, h('i.fa.fa-commenting'));
         Env.bubble = {
-            node: node,
+            range: ranges[ranges.length-1],
             button: button
         };
         $(button).click(function(e)  {
             e.stopPropagation();
             Env.editor.execCommand('comment');
             Env.bubble = undefined;
+            removeCommentBubble(Env);
         });
-        Env.$contentContainer.append(h('div.cp-comment-bubble', button));
+        Env.$contentContainer.find('iframe').before(h('div.cp-comment-bubble', button));
+        updateBubble(Env);
     };
 
     var isEditable = function (document) {
@@ -814,7 +804,7 @@ define([
                 $(form).remove();
                 Env.$inner.focus();
 
-                if (!val) { return; }
+                if (!val) { addCommentBubble(Env); return; }
                 var applicable = Env.editor.plugins.comments.isApplicable();
                 if (!applicable || !isEditable(Env.ifrWindow.document)) {
                     // text has been deleted by another user while we were typing our comment?
