@@ -431,7 +431,6 @@ define([
 
             content.push(h('h3', Messages.team_listTitle + ' ' + slots));
 
-            console.error(createSlots, Constants);
             APP.teams = {};
 
             var created = 0;
@@ -945,6 +944,9 @@ define([
             teamId: APP.team
         }, function (obj) {
             if (obj && obj.error) {
+                if (obj.error === 'OFFLINE') {
+                    return; // XXX show offline message in chat section
+                }
                 return void UI.alert(Messages.error);
             }
             common.setTeamChat(obj.channel);

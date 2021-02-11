@@ -299,7 +299,7 @@ nThen(function  (w) {
             oscar.edKeys.edPublic
         ],
         keys: rosterKeys,
-        anon_rpc: oscar.anonRpc,
+        store: oscar,
         lastKnownHash: void 0,
     }, w(function (err, roster) {
         if (err) {
@@ -514,7 +514,7 @@ nThen(function  (w) {
         channel: rosterKeys.channel,
         //owners: [], // Alice doesn't know who the owners might be...
         keys: rosterKeys,
-        anon_rpc: alice.anonRpc,
+        store: alice,
         lastKnownHash: void 0, // alice should fetch everything from the beginning of time...
     }, w(function (err, roster) {
         if (err) {
@@ -742,7 +742,7 @@ nThen(function  (w) {
         network: bob.network,
         channel: rosterKeys.channel,
         keys: rosterKeys,
-        anon_rpc: bob.anonRpc,
+        store: bob,
         //lastKnownHash: oscar.lastRosterCheckpointHash
         //lastKnownHash: oscar.lastKnownHash, // FIXME this doesn't work. off-by-one?
     }, w(function (err, roster) {

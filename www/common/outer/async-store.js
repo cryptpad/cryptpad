@@ -1432,7 +1432,7 @@ define([
         // Universal
         Store.universal = {
             execCommand: function (clientId, obj, cb) {
-                onReadyEvt.reg(function () {
+                var todo = function () {
                     var type = obj.type;
                     var data = obj.data;
                     if (store.modules[type]) {
@@ -1440,7 +1440,11 @@ define([
                     } else {
                         return void cb({error: type + ' is disabled'});
                     }
-                });
+                };
+                // Teams support offline/cache mode
+                if (obj.type === "team") { return void todo(); }
+                // Other modules should wait for the ready event
+                onReadyEvt.reg(todo);
             }
         };
         var loadUniversal = function (Module, type, waitFor, clientId) {
@@ -2577,6 +2581,8 @@ define([
                     };
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
+            }).nThen(function (waitFor) {
+                loadUniversal(Team, 'team', waitFor, clientId); // TODO load teams offline
             }).nThen(function () {
                 cb();
             });
@@ -2631,7 +2637,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor, clientId); // TODO load teams offline
+                store.modules['team'].onReady(waitFor);
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {

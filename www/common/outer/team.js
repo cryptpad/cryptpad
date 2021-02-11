@@ -27,6 +27,8 @@ define([
     var Team = {};
 
     var Nacl = window.nacl;
+    var onStoreReady = Util.mkEvent(true);
+    var openCachedTeamChat = function () {}; // Placeholder
 
     var registerChangeEvents = function (ctx, team, proxy, fId) {
         if (!team) { return; }
@@ -127,9 +129,11 @@ define([
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
-        ctx.store.mailbox.close('team-'+teamId, function () {
-            // Close team mailbox
-        });
+        if (ctx.store.mailbox) {
+            ctx.store.mailbox.close('team-'+teamId, function () {
+                // Close team mailbox
+            });
+        }
     };
 
     var getTeamChannelList = function (ctx, id) {
@@ -180,29 +184,13 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
-                team.pin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.pin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-
-                team.unpin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.unpin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
                 cb();
             });
         });
     };
 
-    var onReady = function (ctx, id, lm, roster, keys, cId, cb) {
+    var onCacheReady = function (ctx, id, lm, roster, keys, cId, cb) {
+        if (ctx.cache[id]) { return void cb(); }
         var proxy = lm.proxy;
         var team = {
             id: id,
@@ -212,8 +200,10 @@ define([
             realtime: lm.realtime,
             handleSharedFolder: function (sfId, rt) { handleSharedFolder(ctx, id, sfId, rt); },
             sharedFolders: {}, // equivalent of store.sharedFolders in async-store
-            roster: roster
+            roster: roster,
+            offline: true
         };
+        ctx.cache[id] = team;
 
         // Subscribe to events
         if (cId) { team.clients.push(cId); }
@@ -240,11 +230,6 @@ define([
             rosterData.lastKnownHash = hash;
         });
 
-        // Update metadata
-        var state = roster.getState();
-        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
-        if (teamData) { teamData.metadata = state.metadata; }
-
         // Broadcast an event to all the tabs displaying this team
         team.sendEvent = function (q, data, sender) {
             ctx.emit(q, data, team.clients.filter(function (cId) {
@@ -266,69 +251,113 @@ define([
             };
         };
 
-        var secret;
-        team.pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
-        team.unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
+        team.pin = function (data, cb) {
+            if (!keys.drive.edPrivate) { return void cb({error: 'EFORBIDDEN'}); }
+            if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+            if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+            team.rpc.pin(data, function (e, hash) {
+                if (e) { return void cb({error: e}); }
+                cb({hash: hash});
+            });
+        };
+        team.unpin = function (data, cb) {
+            if (!keys.drive.edPrivate) { return void cb({error: 'EFORBIDDEN'}); }
+            if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+            if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+            team.rpc.unpin(data, function (e, hash) {
+                if (e) { return void cb({error: e}); }
+                cb({hash: hash});
+            });
+        };
+
+        // Create the proxy manager
+        var loadSharedFolder = function (id, data, cb, isNew) {
+            SF.load({
+                isNew: isNew,
+                network: ctx.store.network || ctx.store.networkPromise,
+                store: team,
+                isNewChannel: ctx.Store.isNewChannel
+            }, id, data, cb);
+        };
+        var teamData = ctx.store.proxy.teams[team.id];
+        var hash = teamData.hash || teamData.roHash;
+        var secret = Hash.getSecrets('team', hash, teamData.password);
+        var manager = team.manager = ProxyManager.create(proxy.drive, {
+            onSync: function (cb) { ctx.Store.onSync(id, cb); },
+            edPublic: keys.drive.edPublic,
+            pin: team.pin,
+            unpin: team.unpin,
+            loadSharedFolder: loadSharedFolder,
+            settings: {
+                drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
+            },
+            removeOwnedChannel: function (channel, cb) {
+                var data;
+                if (typeof(channel) === "object") {
+                    channel.teamId = id;
+                    data = channel;
+                } else {
+                    data = {
+                        channel: channel,
+                        teamId: id
+                    };
+                }
+                ctx.Store.removeOwnedChannel('', data, cb);
+            },
+            Store: ctx.Store
+        }, {
+            outer: true,
+            edPublic: keys.drive.edPublic,
+            loggedIn: true,
+            log: function (msg) {
+                // broadcast to all drive apps
+                team.sendEvent("DRIVE_LOG", msg);
+            },
+            rt: team.realtime,
+            editKey: secret.keys.secondaryKey,
+            readOnly: Boolean(!secret.keys.secondaryKey)
+        });
+        team.secondaryKey = secret && secret.keys.secondaryKey;
+        team.userObject = manager.user.userObject;
+
         nThen(function (waitFor) {
+            // Load the shared folders
+            ctx.teams[id] = team;
+            delete ctx.cache[id];
+            registerChangeEvents(ctx, team, proxy);
+            var network = ctx.store.network || ctx.store.networkPromise;
+            SF.loadSharedFolders(ctx.Store, network, team,
+                                team.userObject, waitFor, function (data) {
+                ctx.progress += 70/(ctx.numberOfTeams * data.max);
+                ctx.updateProgress({
+                    progress: ctx.progress
+                });
+            });
+        }).nThen(function () {
+            cb();
+        });
+    };
+
+    var onReady = function (ctx, id, lm, roster, keys, cId, cb) {
+        // Update metadata
+        var state = roster.getState();
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
+        if (teamData) { teamData.metadata = state.metadata; }
+
+        var team;
+        if (!ctx.store.proxy.teams[id]) { return; }
+        nThen(function (waitFor) {
+            if (ctx.cache[id]) { return; }
+            onCacheReady(ctx, id, lm, roster, keys, cId, waitFor());
+        }).nThen(function (waitFor) {
+            team = ctx.teams[id];
             // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
             initRpc(ctx, team, keys.drive, waitFor(function () {}));
-        }).nThen(function () {
-            // Create the proxy manager
-            var loadSharedFolder = function (id, data, cb, isNew) {
-                SF.load({
-                    isNew: isNew,
-                    network: ctx.store.network,
-                    store: team,
-                    isNewChannel: ctx.Store.isNewChannel
-                }, id, data, cb);
-            };
-            var teamData = ctx.store.proxy.teams[team.id];
-            var hash = teamData.hash || teamData.roHash;
-            secret = Hash.getSecrets('team', hash, teamData.password);
-            var manager = team.manager = ProxyManager.create(proxy.drive, {
-                onSync: function (cb) { ctx.Store.onSync(id, cb); },
-                edPublic: keys.drive.edPublic,
-                pin: team.pin,
-                unpin: team.unpin,
-                loadSharedFolder: loadSharedFolder,
-                settings: {
-                    drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
-                },
-                removeOwnedChannel: function (channel, cb) {
-                    var data;
-                    if (typeof(channel) === "object") {
-                        channel.teamId = id;
-                        data = channel;
-                    } else {
-                        data = {
-                            channel: channel,
-                            teamId: id
-                        };
-                    }
-                    ctx.Store.removeOwnedChannel('', data, cb);
-                },
-                Store: ctx.Store
-            }, {
-                outer: true,
-                edPublic: keys.drive.edPublic,
-                loggedIn: true,
-                log: function (msg) {
-                    // broadcast to all drive apps
-                    team.sendEvent("DRIVE_LOG", msg);
-                },
-                rt: team.realtime,
-                editKey: secret.keys.secondaryKey,
-                readOnly: Boolean(!secret.keys.secondaryKey)
-            });
-            team.secondaryKey = secret && secret.keys.secondaryKey;
-            team.userObject = manager.user.userObject;
-            team.userObject.fixFiles();
         }).nThen(function (waitFor) {
             // Load the shared folders
-            ctx.teams[id] = team;
-            registerChangeEvents(ctx, team, proxy);
-            SF.checkMigration(team.secondaryKey, proxy, team.userObject, waitFor());
+            team.userObject.fixFiles();
+            SF.checkMigration(team.secondaryKey, team.proxy, team.userObject, waitFor());
             SF.loadSharedFolders(ctx.Store, ctx.store.network, team,
                                 team.userObject, waitFor, function (data) {
                 ctx.progress += 70/(ctx.numberOfTeams * data.max);
@@ -351,6 +380,7 @@ define([
                 }
             });
         }).nThen(function () {
+            team.offline = false;
             if (ctx.onReadyHandlers[id]) {
                 ctx.onReadyHandlers[id].forEach(function (obj) {
                     // Callback and subscribe the client to new notifications
@@ -368,10 +398,36 @@ define([
 
     };
 
+    var checkTeamChannels = function (ctx, id, channel, roster, waitFor, cb) {
+        var close = function () {
+            if (ctx.cache[id] || ctx.teams[id]) { closeTeam(ctx, id); }
+            delete ctx.store.proxy.teams[id];
+            delete ctx.onReadyHandlers[id];
+            waitFor.abort();
+            cb({error: 'ENOENT'});
+        };
+        if (channel) {
+            ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, waitFor(function (e, res) {
+                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                    // Channel is empty: remove this team
+                    close();
+                }
+            }));
+        }
+        if (roster) {
+            ctx.store.anon_rpc.send("IS_NEW_CHANNEL", roster, waitFor(function (e, res) {
+                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                    // Channel is empty: remove this team
+                    close();
+                }
+            }));
+        }
+    };
+
     // Progress:
     // One team = (30/(#teams))%
     // One shared folder = (70/(#teams * #folders))%
-    var openChannel = function (ctx, teamData, id, _cb) {
+    var openChannel = function (ctx, teamData, id, _cb, cache) {
         var cb = Util.once(Util.mkAsync(_cb));
 
         var hash = teamData.hash || teamData.roHash;
@@ -402,32 +458,55 @@ define([
                                         : Crypto.Team.deriveGuestKeys(rosterData.view || '');
 
         nThen(function (waitFor) {
-            ctx.store.anon_rpc.send("IS_NEW_CHANNEL", secret.channel, waitFor(function (e, response) {
-                if (response && response.length && typeof(response[0]) === 'boolean' && response[0]) {
-                    // Channel is empty: remove this team
-                    delete ctx.store.proxy.teams[id];
-                    waitFor.abort();
-                    cb({error: 'ENOENT'});
-                }
-            }));
-            ctx.store.anon_rpc.send("IS_NEW_CHANNEL", rosterKeys.channel, waitFor(function (e, response) {
-                if (response && response.length && typeof(response[0]) === 'boolean' && response[0]) {
-                    // Channel is empty: remove this team
-                    delete ctx.store.proxy.teams[id];
-                    waitFor.abort();
-                    cb({error: 'ENOENT'});
-                }
-            }));
+            if (cache) {
+                // If we're in cache mode, make sure we have a cache for this team
+                Cache.getChannelCache(secret.channel, waitFor(function (err, obj) {
+                    var c = obj && obj.c; // content
+                    if (!c) {
+                        waitFor.abort();
+                        cb({error: 'NOCACHE_DRIVE'});
+                    }
+                }));
+                Cache.getChannelCache(rosterKeys.channel, waitFor(function (err, obj) {
+                    var c = obj && obj.c; // content
+                    var k = obj && obj.k;
+                    if (k && !rosterKeys.teamEdPublic) {
+                        rosterKeys.teamEdPublic = k;
+                    }
+                    if (!c) {
+                        waitFor.abort();
+                        cb({error: 'NOCACHE_ROSTER'});
+                    }
+                }));
+                return;
+            }
+            checkTeamChannels(ctx, id, secret.channel, rosterKeys.channel, waitFor, cb);
         }).nThen(function (waitFor) {
+            var cacheRdy = {
+                lm: false,
+                roster: false,
+                check: function () {
+                    if (!this.lm || !this.roster) { return; }
+                    if (!cache) { return; }
+                    // Both are cacheready!
+                    ctx.progress += 30/ctx.numberOfTeams;
+                    ctx.updateProgress({
+                        progress: ctx.progress
+                    });
+                    onCacheReady(ctx, id, lm, roster, keys, null, cb);
+                    this.check = function () {};
+                }
+            };
+
             // Load the proxy
             var cfg = {
                 data: {},
                 readOnly: !Boolean(secret.keys.signKey),
-                network: ctx.store.network,
+                network: ctx.store.network || ctx.store.networkPromise,
                 channel: secret.channel,
                 crypto: crypto,
                 ChainPad: ChainPad,
-                Cache: Cache, // ICE team cache
+                Cache: Cache,
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                 },
@@ -440,6 +519,10 @@ define([
                 ctx.emit('ROSTER_CHANGE', id, team.clients);
             };
             lm = Listmap.create(cfg);
+            lm.proxy.on('cacheready', function () {
+                cacheRdy.lm = true;
+                cacheRdy.check();
+            });
             lm.proxy.on('ready', waitFor());
             lm.proxy.on('error', function (info) {
                 if (info && typeof (info.loaded) !== "undefined"  && !info.loaded) {
@@ -454,11 +537,17 @@ define([
 
             // Load the roster
             Roster.create({
-                network: ctx.store.network,
+                network: ctx.store.network || ctx.store.networkPromise,
                 channel: rosterKeys.channel,
                 keys: rosterKeys,
-                anon_rpc: ctx.store.anon_rpc,
+                store: ctx.store,
                 lastKnownHash: rosterData.lastKnownHash,
+                onCacheReady: function (_roster) {
+                    roster = _roster;
+                    cacheRdy.roster = true;
+                    cacheRdy.check();
+                },
+                Cache: Cache
             }, waitFor(function (err, _roster) {
                 if (err) {
                     waitFor.abort();
@@ -475,16 +564,18 @@ define([
                 var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
                 if (!state.members[me]) { return; }
 
-                // If you're allowed to edit the roster, try to update your data
-                if (!rosterData.edit) { return; }
-                var data = {};
-                var myData = Messaging.createData(ctx.store.proxy, false);
-                myData.pending = false;
-                data[ctx.store.proxy.curvePublic] = myData;
-                roster.describe(data, function (err) {
-                    if (!err) { return; }
-                    if (err === 'NO_CHANGE') { return; }
-                    console.error(err);
+                onStoreReady.reg(function () {
+                    // If you're allowed to edit the roster, try to update your data
+                    if (!rosterData.edit) { return; }
+                    var data = {};
+                    var myData = Messaging.createData(ctx.store.proxy, false);
+                    myData.pending = false;
+                    data[ctx.store.proxy.curvePublic] = myData;
+                    roster.describe(data, function (err) {
+                        if (!err) { return; }
+                        if (err === 'NO_CHANGE') { return; }
+                        console.error(err);
+                    });
                 });
             }));
         }).nThen(function (waitFor) {
@@ -537,10 +628,12 @@ define([
                 Feedback.send("TEAM_RIGHTS_OWNER");
             }
         }).nThen(function () {
-            ctx.progress += 30/ctx.numberOfTeams;
-            ctx.updateProgress({
-                progress: ctx.progress
-            });
+            if (!cache) {
+                ctx.progress += 30/ctx.numberOfTeams;
+                ctx.updateProgress({
+                    progress: ctx.progress
+                });
+            }
             onReady(ctx, id, lm, roster, keys, null, cb);
         });
     };
@@ -581,12 +674,13 @@ define([
         nThen(function (waitFor) {
             // Initialize the roster
             Roster.create({
-                network: ctx.store.network,
+                network: ctx.store.network || ctx.store.networkPromise,
                 channel: rosterKeys.channel, //sharedConfig.rosterChannel,
                 owners: [ctx.store.proxy.edPublic],
                 keys: rosterKeys,
-                anon_rpc: ctx.store.anon_rpc,
+                store: ctx.store,
                 lastKnownHash: void 0,
+                Cache: Cache
             }, waitFor(function (err, _roster) {
                 if (err) {
                     waitFor.abort();
@@ -897,13 +991,15 @@ define([
         }
 
         // Add online status (using messenger data)
-        var chatData = team.getChatData();
-        var online = ctx.store.messenger.getOnlineList(chatData.channel) || [];
-        online.forEach(function (curve) {
-            if (members[curve]) {
-                members[curve].online = true;
-            }
-        });
+        if (ctx.store.messenger) {
+            var chatData = team.getChatData();
+            var online = ctx.store.messenger.getOnlineList(chatData.channel) || [];
+            online.forEach(function (curve) {
+                if (members[curve]) {
+                    members[curve].online = true;
+                }
+            });
+        }
 
         cb(members);
     };
@@ -1357,10 +1453,11 @@ define([
         try {
             ctx.store.messenger.removeClient(cId);
         } catch (e) {}
+        openCachedTeamChat = function () {};
 
         if (!id) { return void cb(); }
-        // If the team is loading, as ourselves in the list
-        if (ctx.onReadyHandlers[id]) {
+        // If the team is loading, add ourselves to the list
+        if (ctx.onReadyHandlers[id] && !ctx.teams[id]) {
             var _idx = ctx.onReadyHandlers[id].indexOf(cId);
             if (_idx === -1) {
                 ctx.onReadyHandlers[id].push({
@@ -1388,7 +1485,13 @@ define([
         var onUpdate = function () {
             ctx.emit('ROSTER_CHANGE', data.teamId, team.clients);
         };
-        ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
+        if (ctx.store.messenger) {
+            ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
+        } else {
+            openCachedTeamChat = function () {
+                ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
+            };
+        }
     };
 
     var createInviteLink = function (ctx, data, cId, _cb) {
@@ -1629,10 +1732,11 @@ define([
             }
             var rosterKeys = Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys);
             Roster.create({
-                network: ctx.store.network,
+                network: ctx.store.network || ctx.store.networkPromise,
                 channel: rosterData.channel,
                 keys: rosterKeys,
-                anon_rpc: ctx.store.anon_rpc,
+                store: ctx.store,
+                Cache: Cache
             }, waitFor(function (err, roster) {
                 if (err) {
                     waitFor.abort();
@@ -1704,6 +1808,7 @@ define([
             emit: emit,
             onReadyHandlers: {},
             teams: {},
+            cache: {},
             updateMetadata: cfg.updateMetadata,
             updateProgress: cfg.updateLoadingProgress,
             progress: 0
@@ -1734,60 +1839,62 @@ define([
         };
 
         // Remove duplicate teams
-        var _teams = {};
-        Object.keys(teams).forEach(function (id) {
-            try {
-                var t = teams[id];
-                var _t = _teams[t.channel];
+        var removeDuplicates = function () {
+            var _teams = {};
+            Object.keys(teams).forEach(function (id) {
+                try {
+                    var t = teams[id];
+                    var _t = _teams[t.channel];
 
-                var edPrivate = Util.find(t, ['keys', 'drive', 'edPrivate']);
-                var edPublic = Util.find(t, ['keys', 'drive', 'edPublic']);
+                    var edPrivate = Util.find(t, ['keys', 'drive', 'edPrivate']);
+                    var edPublic = Util.find(t, ['keys', 'drive', 'edPublic']);
 
-                // If the edPrivate is corrupted, remove it
-                if (!edPublic) {
-                    Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
-                } else if (edPrivate && edPublic && !checkKeyPair(edPrivate, edPublic)) {
-                    Feedback.send("TEAM_CORRUPTED_EDPRIVATE");
-                    delete teams[id].keys.drive.edPrivate;
-                    edPrivate = undefined;
-                }
-
-                // If the hash is corrupted, feedback
-                if (t.hash) {
-                    var parsed = Hash.parseTypeHash('drive', t.hash);
-                    if (parsed.version === 2 && t.hash.length !== 40) {
-                        Feedback.send("TEAM_CORRUPTED_HASH");
-                        // FIXME ?
+                    // If the edPrivate is corrupted, remove it
+                    if (!edPublic) {
+                        Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
+                    } else if (edPrivate && edPublic && !checkKeyPair(edPrivate, edPublic)) {
+                        Feedback.send("TEAM_CORRUPTED_EDPRIVATE");
+                        delete teams[id].keys.drive.edPrivate;
+                        edPrivate = undefined;
                     }
-                }
 
-                // Not found yet? add to the list
-                if (!_t) {
-                    _teams[t.channel] = id;
-                    return;
-                }
+                    // If the hash is corrupted, feedback
+                    if (t.hash) {
+                        var parsed = Hash.parseTypeHash('drive', t.hash);
+                        if (parsed.version === 2 && t.hash.length !== 40) {
+                            Feedback.send("TEAM_CORRUPTED_HASH");
+                            // FIXME ?
+                        }
+                    }
 
-                // Duplicate found: update our team to add missing data
-                var best = teams[_t]; // This is a proxy!
-                var bestPrivate = Util.find(best, ['keys', 'drive', 'edPrivate']);
-                var bestChat = Util.find(best, ['keys', 'chat', 'edit']);
-                var chat = Util.find(t, ['keys', 'chat', 'edit']);
-                if (!best.hash && t.hash) {
-                    best.hash = t.hash;
-                }
-                if (!bestPrivate && edPrivate) {
-                    best.keys.drive.edPrivate = edPrivate;
-                }
-                if (!bestChat && chat) {
-                    best.keys.chat.edit = chat;
-                }
+                    // Not found yet? add to the list
+                    if (!_t) {
+                        _teams[t.channel] = id;
+                        return;
+                    }
 
-                // Deprecate the duplicate
-                ctx.store.proxy.duplicateTeams = ctx.store.proxy.duplicateTeams || {};
-                ctx.store.proxy.duplicateTeams[id] = teams[id];
-                delete teams[id];
-            } catch (e) { console.error(e); }
-        });
+                    // Duplicate found: update our team to add missing data
+                    var best = teams[_t]; // This is a proxy!
+                    var bestPrivate = Util.find(best, ['keys', 'drive', 'edPrivate']);
+                    var bestChat = Util.find(best, ['keys', 'chat', 'edit']);
+                    var chat = Util.find(t, ['keys', 'chat', 'edit']);
+                    if (!best.hash && t.hash) {
+                        best.hash = t.hash;
+                    }
+                    if (!bestPrivate && edPrivate) {
+                        best.keys.drive.edPrivate = edPrivate;
+                    }
+                    if (!bestChat && chat) {
+                        best.keys.chat.edit = chat;
+                    }
+
+                    // Deprecate the duplicate
+                    ctx.store.proxy.duplicateTeams = ctx.store.proxy.duplicateTeams || {};
+                    ctx.store.proxy.duplicateTeams[id] = teams[id];
+                    delete teams[id];
+                } catch (e) { console.error(e); }
+            });
+        };
 
         // Load teams
         Object.keys(teams).forEach(function (id) {
@@ -1801,9 +1908,62 @@ define([
                     Feedback.send("TEAM_LOADING_ERROR="+txt);
                     return void console.error(err);
                 }
-                console.debug('Team '+id+' ready');
-            }));
+                console.debug('Team '+id+' cache ready');
+            }), true);
         });
+
+        // Proxy is ready, check if our team list has changed
+        team.onReady = function (waitFor) {
+            removeDuplicates();
+
+            // Close all the teams from our cache that have been removed and add waitFor to the
+            // one that still exist
+            var checkTeam = function (id) {
+                if (!teams[id]) {
+                    closeTeam(ctx, id);
+                    delete ctx.onReadyHandlers[id];
+                    return true;
+                }
+                return false;
+            };
+            Object.keys(ctx.teams).forEach(checkTeam);
+            Object.keys(ctx.onReadyHandlers).forEach(function (id) {
+                var closed = checkTeam(id);
+                if (closed) { return; }
+                var team = ctx.store.proxy.teams[id];
+                var rosterChan = Util.find(team, ['keys', 'roster', 'channel']);
+                var _cb = waitFor();
+                nThen(function (w) {
+                    checkTeamChannels(ctx, id, team.channel, rosterChan, w, _cb);
+                });
+                ctx.onReadyHandlers[id].push({
+                    cb: _cb
+                });
+            });
+
+            // Load all the teams that weren't in our cache
+            Object.keys(teams).forEach(function (id) {
+                // Team already loaded? abort
+                if (ctx.onReadyHandlers[id] || ctx.teams[id]) { return; }
+
+                // Load team
+                ctx.onReadyHandlers[id] = [];
+                if (!Util.find(teams, [id, 'keys', 'mailbox'])) {
+                    teams[id].keys.mailbox = deriveMailbox(teams[id]);
+                }
+                openChannel(ctx, teams[id], id, waitFor(function (err) {
+                    if (err) {
+                        var txt = typeof(err) === "string" ? err : (err.type || err.message);
+                        Feedback.send("TEAM_LOADING_ERROR="+txt);
+                        return void console.error(err);
+                    }
+                    console.debug('Team '+id+' ready');
+                }));
+            });
+
+            openCachedTeamChat();
+            onStoreReady.fire();
+        };
 
         team.getTeam = function (id) {
             return ctx.teams[id];
