@@ -12,21 +12,55 @@ var ignoreLines = function (source, pattern) {
         .join("\n");
 };
 
+var GENERATED_PATTERNS = [
+   /(admin|settings)_.*(Hint|Title|Button)/,
+   /settings_colortheme/,
+   /loading_(state|drive|pad)_/,
+   /(admin|notifications|support|team|settings)_cat_/,
+   /features_f/,
+];
+var isPossiblyGenerated = function (key) {
+    return GENERATED_PATTERNS.some(function (patt) {
+        return patt.test(key);
+    });
+};
+
 var grep = function (pattern, cb) {
-    var command = 'git grep ' + pattern + " -- ':/' ':(exclude)www/common/translations/*'";
+    var exclude = [
+        'www/common/translations/*',
+        'www/common/onlyoffice/*',
+        'www/lib/*',
+        'www/common/pdfjs/*',
+        '*.css',
+        'www/common/highlight/*',
+        '*.min.js',
+        '.lesshintrc',
+        'CHANGELOG.md',
+        'LICENSE',
+        'package*.json',
+        'www/debug/chainpad.dist.js',
+        'www/pad/mathjax/MathJax.js',
+        'www/common/hyperscript.js',
+        'www/common/jscolor.js',
+        './/scripts/*',
+        './lib/*',
+        './docs/*',
+    ].map(function (patt) {
+        return "':(exclude)" + patt + "'";
+    }).join(' ');
+
+    // grep this repository, ignoring binary files and excluding anything matching the above patterns
+    var ignoreBinaries= '--binary-files=without-match ';
+    var command = 'git grep ' + pattern + " -- ':/' " + exclude;
+
     Exec(command, function (err, stdout, stderr) {
         if (err && err.code === 1 && err.killed === false) {
+            if (isPossiblyGenerated(pattern)) {
+                return cb(void 0, true, 'POSSIBLY_GENERATED');
+            }
             return cb(void 0, true, "NOT_FOUND");
         }
-        stdout = ignoreLines(stdout, /^CHANGELOG\.md:/);
-        stdout = ignoreLines(stdout, /^LICENSE:/);
-        stdout = ignoreLines(stdout, /\/onlyoffice/);
-        stdout = ignoreLines(stdout, /package.*\.json/);
-        stdout = ignoreLines(stdout, /package\.json/);
-        stdout = ignoreLines(stdout, /chainpad\.dist\.js/);
-        stdout = ignoreLines(stdout, /MathJax\.js/);
         stdout = ignoreLines(stdout, /Binary file/);
-        //stdout = stdout .replace(/^CHANGELOG\.md:.*$/g, '') .replace(/^LICENSE:.*$/g, '');
 
         if (err) {
             if (err.code === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER') {
@@ -39,9 +73,6 @@ var grep = function (pattern, cb) {
         }
         if (/(Messages|Msg|messages)\./.test(stdout)) {
             return cb(void 0, false);
-        }
-        if (/_cat_/.test(stdout)) {
-            return cb(void 0, true, 'POSSIBLE_CATEGORY');
         }
 
         //console.log(pattern, arguments);
@@ -56,7 +87,7 @@ var limit = total;
 
 var next = function () {
     var key = keys[0];
-    if (!key) { return void console.log("[DONE]"); }
+    if (!key) { return; }
     keys.shift();
 
     if (!limit--) { return void console.log("[DONE]"); }
