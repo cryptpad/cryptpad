@@ -335,7 +335,7 @@ define([
         var $settingsButton = framework._.sfCommon.createButton('', true, {
             drawer: true,
             text: Messages.pad_settings_title,
-            name: 'pad_settings',
+            name: 'pad-settings',
             icon: 'fa-cog',
         }, function () {
             UI.alert(getSettings());
@@ -655,6 +655,7 @@ define([
         var documentBody = ifrWindow.document.body;
         var inner = window.inner = documentBody;
         var $inner = $(inner);
+        $inner.attr('contenteditable', 'false');
 
         var observer = new MutationObserver(function(muts) {
             muts.forEach(function(mut) {
@@ -712,7 +713,6 @@ define([
         if (!privateData.isEmbed) {
             mkHelpMenu(framework);
         }
-        mkSettingsMenu(framework);
 
         framework._.sfCommon.getAttribute(['pad', 'width'], function(err, data) {
             var active = data || typeof(data) === "undefined";
@@ -1032,6 +1032,12 @@ define([
             if (framework.isReadOnly()) {
                 $inner.attr('contenteditable', 'false');
             }
+
+            common.getPadMetadata(null, function (md) {
+                if (md && md.error) { return; }
+                if (!common.isOwned(md.owners)) { return; }
+                mkSettingsMenu(framework);
+            });
 
             var fmConfig = {
                 ckeditor: editor,
