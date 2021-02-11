@@ -39,12 +39,16 @@ var grep = function (pattern, cb) {
         'LICENSE',
         'package*.json',
         'www/debug/chainpad.dist.js',
-        'www/pad/mathjax/MathJax.js',
+        'www/pad/mathjax/*',
         'www/common/hyperscript.js',
         'www/common/jscolor.js',
         './/scripts/*',
         './lib/*',
         './docs/*',
+        './github/*',
+        '*.svg',
+        '*.md',
+        './config/*',
     ].map(function (patt) {
         return "':(exclude)" + patt + "'";
     }).join(' ');
@@ -58,18 +62,18 @@ var grep = function (pattern, cb) {
             if (isPossiblyGenerated(pattern)) {
                 return cb(void 0, true, 'POSSIBLY_GENERATED');
             }
-            return cb(void 0, true, "NOT_FOUND");
+            return cb(void 0, true, "NOT_FOUND", stdout);
         }
         stdout = ignoreLines(stdout, /Binary file/);
 
         if (err) {
             if (err.code === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER') {
-                return cb(void 0, true, 'TOO_MUCH');
+                return cb(void 0, true, 'TOO_MUCH', stdout);
             }
             return void cb(err);
         }
         if (/data\-localization/.test(stdout)) {
-            return cb(void 0, true, "DATA_LOCALIZATION");
+            return cb(void 0, true, "DATA_LOCALIZATION", stdout);
         }
         if (/(Messages|Msg|messages)\./.test(stdout)) {
             return cb(void 0, false);
@@ -80,10 +84,30 @@ var grep = function (pattern, cb) {
     });
 };
 
-var keys = Object.keys(Messages);
+var keys = Object.keys(Messages).sort();
 var total = keys.length;
 
 var limit = total;
+
+var lineCount = function (s) {
+    var i = 0;
+    s.replace(/\n/g, function () { i++; return ''; });
+    return i;
+};
+
+var conditionallyPrintContent = function (output) {
+    if (!output) { return; }
+    if (lineCount(output) < 12) {
+        output.split('\n').map(function (line) {
+            if (!line) { return; }
+            console.log('\t> ' + line);
+        });
+        //console.log(output);
+        console.log();
+    } else {
+        console.log("\t> too much content to print");
+    }
+};
 
 var next = function () {
     var key = keys[0];
@@ -100,10 +124,11 @@ var next = function () {
         } else if (!flagged) {
 
         } else if (reason === 'OTHER') {
-            console.log('[%s] flagged for [OTHER]', key, output);
-            console.log();
+            console.log('[%s] flagged for [OTHER]', key);
+            conditionallyPrintContent(output);
         } else {
             console.log("[%s] flagged for [%s]", key, reason || '???');
+            conditionallyPrintContent(output);
         }
 
         next();
