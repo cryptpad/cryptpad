@@ -1674,7 +1674,9 @@ define([
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY", pad.noCache);
+                    onReadyEvt.reg(function () {
+                        postMessage(clientId, "PAD_READY", pad.noCache);
+                    });
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
