@@ -2565,8 +2565,21 @@ define([
                 rt: store.realtime
             });
             var userObject = store.userObject = manager.user.userObject;
-            addSharedFolderHandler();
-            userObject.migrate(cb);
+            nThen(function (waitFor) {
+                addSharedFolderHandler();
+                userObject.migrate(waitFor());
+            }).nThen(function (waitFor) {
+                var network = store.network || store.networkPromise;
+                SF.loadSharedFolders(Store, network, store, userObject, waitFor, function (obj) {
+                    var data = {
+                        type: 'sf',
+                        progress: 100*obj.progress/obj.max
+                    };
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                });
+            }).nThen(function () {
+                cb();
+            });
         };
 
         // onReady: called when the drive is synced (not using the cache anymore)
