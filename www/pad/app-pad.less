@@ -24,6 +24,21 @@ body.cp-app-pad {
         overflow: hidden;
     }
 
+    @media screen and (max-height: @browser_media-medium-screen),
+           screen and (max-width: @browser_media-medium-screen) {
+        #cp-app-pad-toc {
+            margin: 5px;
+            &.hidden {
+                margin: 1px;
+            }
+        }
+        #cp-app-pad-comments {
+            .cp-pad-show, .cp-pad-hide {
+                display: none;
+            }
+        }
+    }
+
     #cp-app-pad-toc, #cp-app-pad-comments, #cp-app-pad-resize {
         .cp-pad-show, .cp-pad-hide {
             position: absolute;
@@ -108,6 +123,29 @@ body.cp-app-pad {
             &.cp-pad-toc-3 {
                 margin-left: @toc-level-indent * 2;
             }
+        }
+    }
+    #cp-app-pad-comments {
+        order: 3;
+        width: 330px;
+        //background-color: white;
+        margin: 10px;
+        position: relative;
+        .cp-pad-show, .cp-pad-hide {
+            left: 0;
+        }
+        h2 {
+            font-size: 1.5rem;
+            text-align: right;
+        }
+        .comments_main();
+    }
+    .cp-app-pad-comments-modal {
+        display: flex;
+        flex-flow: column;
+        max-height: 100%;
+        h2 {
+            text-align: left;
         }
     }
 
@@ -196,21 +234,6 @@ body.cp-app-pad {
                     background: @toolbar-bg-active;
                 }
             }
-        }
-        #cp-app-pad-comments {
-            order: 3;
-            width: 330px;
-            //background-color: white;
-            margin: 10px;
-            position: relative;
-            .cp-pad-show, .cp-pad-hide {
-                left: 0;
-            }
-            h2 {
-                font-size: 1.5rem;
-                text-align: right;
-            }
-            .comments_main();
         }
         &.cke_body_width {
             div.cp-comment-bubble {

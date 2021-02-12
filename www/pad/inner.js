@@ -101,6 +101,7 @@ define([
         logFights: true,
         fights: [],
         Cursor: Cursor,
+        mobile: $('body').width() <= 600
     };
 
     // MEDIATAG: Filter elements to serialize
@@ -688,10 +689,13 @@ define([
             $iframe: $iframe,
             $inner: $inner,
             $contentContainer: $contentContainer,
-            $container: $('#cp-app-pad-comments')
+            $container: $(APP.commentsEl),
+            modal: APP.mobile && APP.comments,
+            mobile: APP.mobile
         });
 
         var $resize = $('#cp-app-pad-resize');
+        if (module.mobile) { $resize.hide(); }
         var $toc = $('#cp-app-pad-toc');
         $toc.show();
 
@@ -714,6 +718,7 @@ define([
             mkHelpMenu(framework);
         }
 
+        /*
         framework._.sfCommon.getAttribute(['pad', 'width'], function(err, data) {
             var active = data || typeof(data) === "undefined";
             if (active) {
@@ -722,6 +727,7 @@ define([
                 editor.execCommand('pagemode');
             }
         });
+        */
 
         framework.onEditableChange(function(unlocked) {
             if (!framework.isReadOnly()) {
@@ -813,8 +819,12 @@ define([
                 hide = md.defaultWidth === 0;
             }
 
-            // If we've clicking on the show/hide buttons, always use our last value
+            // If we've clicked on the show/hide buttons, always use our last value
             if (typeof(localHide) === "boolean") { hide = localHide; }
+
+            if (APP.mobile) {
+                hide = false;
+            }
 
             $contentContainer.removeClass('cke_body_width');
             $resize.removeClass('hidden');
@@ -870,7 +880,7 @@ define([
             } else {
                 hide = md.defaultOutline === 0;
             }
-            // If we've clicking on the show/hide buttons, always use our last value
+            // If we've clicked on the show/hide buttons, always use our last value
             if (typeof(localHide) === "boolean") { hide = localHide; }
 
             $toc.removeClass('hidden');
@@ -1401,7 +1411,20 @@ define([
                 var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
                 $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
                 $contentContainer.append(h('div#cp-app-pad-resize'));
-                $contentContainer.append(h('div#cp-app-pad-comments'));
+
+                var comments = h('div#cp-app-pad-comments');
+                APP.commentsEl = comments;
+                if (APP.mobile) {
+                    APP.comments = UI.dialog.customModal(comments, {
+                        buttons: [{
+                            name: Messages.filePicker_close,
+                            onClick: function () {}
+                        }]
+                    });
+                    $(APP.comments).addClass('cp-app-pad-comments-modal');
+                } else {
+                    $contentContainer.append(comments);
+                }
                 $contentContainer.prepend(h('div#cp-app-pad-toc'));
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
 

@@ -636,6 +636,8 @@ define([
         // If we've clicked on the show/hide buttons, always use our latest local value
         if (typeof(Env.localHide) === "boolean") { hide = Env.localHide; }
 
+        if (Env.mobile) { hide = false; }
+
         Env.$container.removeClass('hidden');
         if (hide) { Env.$container.addClass('hidden'); }
 
@@ -644,6 +646,10 @@ define([
             $showBtn.addClass('notif');
         }
 
+        if (Env.mobile && Env.current) {
+            Env.$container.find('.cp-comment-container[data-uid]').hide();
+            Env.$container.find('.cp-comment-container[data-uid="' + Env.current + '"]').show();
+        }
 
         Env.$container.show();
     };
@@ -823,6 +829,9 @@ define([
                         v: canonicalize(Env.editor.getSelection().getSelectedText())
                     }]
                 };
+
+                Env.current = uid;
+
                 // There may be a race condition between updateMetadata and addMark that causes
                 //  * updateMetadata first:  comment not rendered (redrawComments called
                 //                           before addMark)
@@ -839,6 +848,12 @@ define([
 
             Env.$container.show();
             Env.$container.find('> h2').after(form);
+
+            if (Env.modal) {
+                UI.openCustomModal(Env.modal);
+                Env.current = undefined;
+                Env.$container.find('.cp-comment-container[data-uid]').hide();
+            }
         };
 
 
@@ -934,7 +949,16 @@ define([
             var $comment = $(e.target);
             var uid = $comment.attr('data-uid');
             if (!uid) { return; }
-            Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click();
+            if (Env.modal) {
+                UI.openCustomModal(Env.modal);
+                Env.current = uid;
+                Env.$container.find('.cp-comment-container[data-uid]').hide();
+                setTimeout(function () {
+                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').show().click();
+                });
+            } else {
+                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click();
+            }
         });
 
         var call = function(f) {
