@@ -1,3 +1,10 @@
+# Pending
+
+* remove round corners on limit bar
+* update prompts related to password protection in various modals
+* script to identify unused translations
+* offline mode for file app
+
 # 4.1.0 (B)
 
 ## Goals
