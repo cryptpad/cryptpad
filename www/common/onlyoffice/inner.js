@@ -1200,7 +1200,7 @@ define([
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
                     "mode": "edit",
-                    "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
+                    "lang": (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {
