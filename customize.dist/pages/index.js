@@ -122,7 +122,7 @@ define([
 
         var notice;
         if (AppConfig.homeNotice) {
-            notice = h('div.alert.alert-info', h('span', AppConfig.homeNotice));
+            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), AppConfig.homeNotice));
         }
 
         return [
