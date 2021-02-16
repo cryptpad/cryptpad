@@ -72,6 +72,14 @@ define([
         });
         UI.addTooltips();
 
+        var subscribeButton;
+        /* Display a subscribe button if they are enabled and the button's translation key exists */
+        if (Config.allowSubscriptions && Msg.subscribe_button) {
+            subscribeButton = Pages.subscribeButton(function () {
+                Feedback.send('HOME_SUBSCRIBE_CRYPTPAD');
+            });
+        }
+
         var blocks = [
             h('div.row.cp-page-section', [
                 h('div.col-sm-6',
@@ -104,12 +112,18 @@ define([
                 h('div.col-sm-6', [
                     h('h2', Msg.home_support_title),
                     Pages.setHTML(h('span'), Msg.home_support),
+                    subscribeButton,
                     Pages.crowdfundingButton(function () {
                         Feedback.send('HOME_SUPPORT_CRYPTPAD');
                     }),
                 ])
             ])
         ];
+
+        var notice;
+        if (AppConfig.homeNotice) {
+            notice = h('div.alert.alert-info', h('span', AppConfig.homeNotice));
+        }
 
         return [
             h('div#cp-main', [
@@ -129,6 +143,7 @@ define([
                             icons,
                         ])
                     ]),
+                    notice,
                     blocks
                 ]),
                 Pages.infopageFooter(),

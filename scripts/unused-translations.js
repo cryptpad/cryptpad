@@ -54,10 +54,10 @@ var grep = function (pattern, cb) {
     }).join(' ');
 
     // grep this repository, ignoring binary files and excluding anything matching the above patterns
-    var ignoreBinaries= '--binary-files=without-match ';
+    //var ignoreBinaries= '--binary-files=without-match ';
     var command = 'git grep ' + pattern + " -- ':/' " + exclude;
 
-    Exec(command, function (err, stdout, stderr) {
+    Exec(command, function (err, stdout /*, stderr */) {
         if (err && err.code === 1 && err.killed === false) {
             if (isPossiblyGenerated(pattern)) {
                 return cb(void 0, true, 'POSSIBLY_GENERATED');
@@ -114,13 +114,14 @@ var next = function () {
     if (!key) { return; }
     keys.shift();
 
-    if (!limit--) { return void console.log("[DONE]"); }
+    if (!limit) { return void console.log("[DONE]"); }
+    limit--;
 
     grep(key, function (err, flagged, reason, output) {
         if (err) {
-            return;
             console.error("[%s]", key, err);
             console.log();
+            return;
         } else if (!flagged) {
 
         } else if (reason === 'OTHER') {
