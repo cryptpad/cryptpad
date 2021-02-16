@@ -64,9 +64,9 @@ define([
     var CURRENT_VERSION = 'v2b';
     //var READONLY_REFRESH_TO = 15000;
 
-    var debug = function (x) {
+    var debug = function (x, type) {
         if (!window.CP_DEV_MODE) { return; }
-        console.debug(x);
+        console.debug(x, type);
     };
 
     var stringify = function (obj) {
@@ -812,10 +812,16 @@ define([
         };
 
         // Get all existing locks
+        var getUserLock = function (id) {
+            var l = content.locks[id] || {};
+            return Object.keys(l).map(function (uid) { return l[uid]; });
+        };
         var getLock = function () {
-            return Object.keys(content.locks).map(function (id) {
-                return content.locks[id];
+            var locks = [];
+            Object.keys(content.locks).forEach(function (id) {
+                Array.prototype.push.apply(locks, getUserLock(id));
             });
+            return locks;
         };
 
         // Update the userlist in onlyoffice
@@ -831,37 +837,38 @@ define([
         };
         // Update the locks status in onlyoffice
         var handleNewLocks = function (o, n) {
-            Object.keys(n).forEach(function (id) {
-                // New lock
-                if (!o[id]) {
-                    ooChannel.send({
-                        type: "getLock",
-                        locks: getLock()
-                    });
-                    return;
-                }
-                // Updated lock
-                if (stringify(n[id]) !== stringify(o[id])) {
-                    ooChannel.send({
-                        type: "releaseLock",
-                        locks: [o[id]]
-                    });
-                    ooChannel.send({
-                        type: "getLock",
-                        locks: getLock()
-                    });
-                }
+            var hasNew = false;
+            // Check if we have at least one new lock
+            Object.keys(n).some(function (id) {
+                if (typeof(n[id]) !== "object") { return; } // Ignore old format
+                // n[id] = { uid: lock, uid2: lock2 };
+                return Object.keys(n[id]).some(function (uid) {
+                    // New lock
+                    if (!o[id] || !o[id][uid]) {
+                        hasNew = true;
+                        return true;
+                    }
+                });
             });
+            // Remove old locks
             Object.keys(o).forEach(function (id) {
-                // Removed lock
-                if (!n[id]) {
-                    ooChannel.send({
-                        type: "releaseLock",
-                        locks: [o[id]]
-                    });
-                    return;
-                }
+                if (typeof(o[id]) !== "object") { return; } // Ignore old format
+                Object.keys(o[id]).forEach(function (uid) {
+                    // Removed lock
+                    if (!n[id] || !n[id][uid]) {
+                        ooChannel.send({
+                            type: "releaseLock",
+                            locks: [o[id][uid]]
+                        });
+                    }
+                });
             });
+            if (hasNew) {
+                ooChannel.send({
+                    type: "getLock",
+                    locks: getLock()
+                });
+            }
         };
 
         // Remove locks from offline users
@@ -871,9 +878,11 @@ define([
             Object.keys(locks).forEach(function (id) {
                 var nId = id.slice(0,32);
                 if (users.indexOf(nId) === -1) {
+                    // Offline locks: support old format
+                    var l = typeof(locks[id]) === "object" ? getUserLock(id) : [locks[id]];
                     ooChannel.send({
                         type: "releaseLock",
-                        locks: [locks[id]]
+                        locks: l
                     });
                     delete content.locks[id];
                 }
@@ -927,6 +936,8 @@ define([
                 data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
             });
 
+            /*
+            // TODO: make sure we don't have new popups that can break our integration
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.type === "childList") {
@@ -942,6 +953,7 @@ define([
             observer.observe(window.frames[0].document.body, {
                 childList: true,
             });
+            */
         };
 
         var handleLock = function (obj, send) {
@@ -964,7 +976,9 @@ define([
                 block: obj.block && obj.block[0],
             };
             var myId = getId();
-            content.locks[myId] = msg;
+            content.locks[myId] = content.locks[myId] || {};
+            var uid = Util.uid();
+            content.locks[myId][uid] = msg;
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
@@ -1047,7 +1061,7 @@ define([
                 type: "saveChanges",
                 changes: parseChanges(obj.changes),
                 changesIndex: ooChannel.cpIndex || 0,
-                locks: [content.locks[getId()]],
+                locks: getUserLock(getId()),
                 excelAdditionalInfo: null
             }, null, function (err, hash) {
                 if (err) {
@@ -1072,7 +1086,7 @@ define([
                 ooChannel.lastHash = hash;
                 // Check if a checkpoint is needed
                 makeCheckpoint();
-                // Remove my lock
+                // Remove my locks
                 delete content.locks[getId()];
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
                 APP.onLocal();
@@ -1094,12 +1108,12 @@ define([
                 APP.chan = chan;
 
                 var send = ooChannel.send = function (obj) {
-                    debug(obj);
+                    debug(obj, 'toOO');
                     chan.event('CMD', obj);
                 };
 
                 chan.on('CMD', function (obj) {
-                    debug(obj);
+                    debug(obj, 'fromOO');
                     switch (obj.type) {
                         case "auth":
                             handleAuth(obj, send);
@@ -1144,7 +1158,7 @@ define([
                             if (obj.releaseLocks && content.locks && content.locks[getId()]) {
                                 send({
                                     type: "releaseLock",
-                                    locks: [content.locks[getId()]]
+                                    locks: getUserLock(getId())
                                 });
                                 delete content.locks[getId()];
                                 APP.onLocal();
@@ -2460,7 +2474,7 @@ define([
             if (content.hashes) {
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
-                if (newLatest.index > latest.index) {
+                if (newLatest.index > latest.index || (newLatest.index && !latest.index)) {
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     // New checkpoint
