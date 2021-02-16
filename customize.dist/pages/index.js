@@ -120,6 +120,11 @@ define([
             ])
         ];
 
+        var notice;
+        if (AppConfig.homeNotice) {
+            notice = h('div.alert.alert-info', h('span', AppConfig.homeNotice));
+        }
+
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
@@ -138,6 +143,7 @@ define([
                             icons,
                         ])
                     ]),
+                    notice,
                     blocks
                 ]),
                 Pages.infopageFooter(),
