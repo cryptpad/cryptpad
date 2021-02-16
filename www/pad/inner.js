@@ -679,6 +679,7 @@ define([
         var metadataMgr = framework._.sfCommon.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var common = framework._.sfCommon;
+        var APP = window.APP;
 
         var comments = Comments.create({
             framework: framework,
@@ -822,7 +823,7 @@ define([
             // If we've clicked on the show/hide buttons, always use our last value
             if (typeof(localHide) === "boolean") { hide = localHide; }
 
-            if (APP.mobile) {
+            if (window.APP.mobile) {
                 hide = false;
             }
 
@@ -1413,6 +1414,8 @@ define([
                 $contentContainer.append(h('div#cp-app-pad-resize'));
 
                 var comments = h('div#cp-app-pad-comments');
+                var APP = window.APP;
+
                 APP.commentsEl = comments;
                 if (APP.mobile) {
                     APP.comments = UI.dialog.customModal(comments, {
