@@ -1403,5 +1403,6 @@
     "admin_performanceProfilingHint": "Un aperçu du temps total passé à exécuter les différentes commandes côté serveur",
     "admin_cat_performance": "Performance",
     "redo": "Rétablir",
-    "undo": "Annuler"
+    "undo": "Annuler",
+    "addOptionalPassword": "Ajouter un mot de passe (optionnel)"
 }
