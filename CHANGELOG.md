@@ -5,7 +5,7 @@
 * script to identify unused translations
 * offline mode for file app
 * display subscribe button on home page if subscriptions are supported
-* display a home page notice via application_config.js
+* display a home page notice via application_config.js via supplied HTML
 * link to our sponsors websites via their logos
 * OnlyOffice sheets
   * use configured language from CryptPad
@@ -14,6 +14,8 @@
   * use white background for rich text documents even in dark mode
   * display button to adjust document width inline instead of in toolbar
   * display comments inline on mobile instead of on the right
+* translations
+  * russian
 
 # 4.1.0 (B)
 
