@@ -74,7 +74,7 @@ define([
 
         var subscribeButton;
         /* Display a subscribe button if they are enabled and the button's translation key exists */
-        if (Config.allowSubscriptions && Msg.subscribe_button) {
+        if (Config.allowSubscriptions) {
             subscribeButton = Pages.subscribeButton(function () {
                 Feedback.send('HOME_SUBSCRIBE_CRYPTPAD');
             });

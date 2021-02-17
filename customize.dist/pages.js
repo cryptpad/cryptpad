@@ -181,11 +181,11 @@ define([
 
     Pages.subscribeButton = function (onClick) {
         var _link = h('a', {
-            href: "/accounts/",
+            href: AppConfig.upgradeURL || "/accounts/",
         });
 
         var subscribe = h('button', [
-            Msg.subscribe_button
+            Msg.features_f_subscribe,
         ]);
 
         $(subscribe).click(function () {
