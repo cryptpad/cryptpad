@@ -31,16 +31,6 @@
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
 @cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
-@cryptpad_color_hint_grey: #777;
-@cryptpad_color_dark_grey: #999999;
-@cryptpad_color_neutral_grey: #aaaaaa;
-@cryptpad_color_neutral2_grey: #cccccc;
-@cryptpad_color_help_grey: #dddddd;
-@cryptpad_color_grey: #e0e0e0;
-@cryptpad_color_toolbar_grey: #EEEEEE;
-@cryptpad_color_light_grey: #f1f1f1;
-@cryptpad_color_lighter_grey: #f9f9f9;
-
 @cryptpad_color_white: #FFF;
 @cryptpad_color_grey_50: #FAFAFA;
 @cryptpad_color_grey_100: #F5F5F5;
@@ -76,7 +66,7 @@
 @cryptpad_color_yellow_fade: fade(#FFE69C, 50%); // different from dark
 @cryptpad_color_lighter_blue: #d2e1f2;
 
-@cryptpad_color_link: #0275D8;
+@cryptpad_color_link: @cryptpad_color_brand;
 
 // Premium plans colors
 @cryptpad_color_basic: #DDEFFF;
@@ -112,7 +102,7 @@
 @cp_alertify-log-bg: fade(@cryptpad_color_brand, 90%);
 @cp_alertify-log-fg: @cryptpad_color_white;
 @cp_alertify-warn-bg: rgba(205, 37, 50);
-@cp_alertify-disable-border: @cryptpad_color_dark_grey;
+@cp_alertify-disable-border: @cryptpad_color_grey_500;
 
 // Forms
 @cp_forms-fg: @cryptpad_text_col;
@@ -157,18 +147,18 @@
 @cp_buttons-cancel-border: #949494;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_toolbar_grey;
+@cp_sidebar-left-bg: @cryptpad_color_grey_200;
 @cp_sidebar-left-fg: @cryptpad_text_col;
 @cp_sidebar-right-bg: @cryptpad_color_white;
 @cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cp_sidebar-right-bg;
-@cp_sidebar-hint: @cryptpad_color_hint_grey;
+@cp_sidebar-hint: @cryptpad_color_grey_600;
 
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;
 @cp_drive-fg: @cp_sidebar-right-fg;
 @cp_drive-header-fg: fade(@cryptpad_text_col, 70%);
-@cp_drive-icon-hover: fade(@cryptpad_text_col, 5%);
+@cp_drive-icon-hover: fade(@cryptpad_text_col, 15%);
 @cp_drive-icon-border: fade(@cryptpad_text_col, 20%);
 @cp_drive-thumb-bg: transparent;
 @cp_drive-selected-bg: fade(@cryptpad_text_col, 10%);
@@ -199,18 +189,18 @@
 
 // Dropdown
 @cp_dropdown-fg: @cryptpad_text_col;
-@cp_dropdown-bg: @cryptpad_color_lighter_grey;
-@cp_dropdown-bg-hover: @cryptpad_color_light_grey;
-@cp_dropdown-bg-active: @cryptpad_color_grey;
+@cp_dropdown-bg: @cryptpad_color_grey_100;
+@cp_dropdown-bg-hover: @cryptpad_color_grey_100;
+@cp_dropdown-bg-active: @cryptpad_color_grey_300;
 
 // Rendered Markdown
-@cp_markdown-bg: @cryptpad_color_lighter_grey;
+@cp_markdown-bg: @cryptpad_color_grey_100;
 @cp_markdown-border: @cryptpad_color_grey_400;
 @cp_markdown-block-fg: @cryptpad_text_col;
 @cp_markdown-block-bg: @cryptpad_color_grey_200;
 
 // Avatar
-@cp_avatar-bg: @cryptpad_color_grey;
+@cp_avatar-bg: @cryptpad_color_grey_300;
 @cp_avatar-fg: @cryptpad_text_col;
 
 // Corner
@@ -224,7 +214,7 @@
 @cp_creation-button-bg: @cryptpad_color_brand;
 @cp_creation-button-fg: @cryptpad_color_white;
 @cp_creation-error-bg: @cryptpad_color_blue;
-@cp_creation-error-fg: @cryptpad_color_light_grey;
+@cp_creation-error-fg: @cryptpad_color_grey_100;
 
 // Export
 @cp_export-bg: @cryptpad_color_grey_200;
@@ -235,20 +225,20 @@
 
 // File upload
 @cp_upload-fg: @cryptpad_color_brand;
-@cp_upload-header: @cryptpad_color_help_grey;
-@cp_upload-progress: @cryptpad_color_help_grey;
+@cp_upload-header: @cryptpad_color_grey_300;
+@cp_upload-progress: @cryptpad_color_grey_300;
 
 // Help
-@cp_help-bg: @cryptpad_color_help_grey;
+@cp_help-bg: @cryptpad_color_grey_300;
 @cp_help-fg: @cryptpad_text_col;
 @cp_help-link: @cryptpad_color_link;
 
 // Static pages
-@cp_static-bg: @cryptpad_color_toolbar_grey;
+@cp_static-bg: @cryptpad_color_grey_200;
 @cp_static-fg: @cryptpad_text_col;
 @cp_static-link: @cryptpad_color_brand;
 @cp_static-title: @cryptpad_color_brand;
-@cp_static-footer: @cryptpad_color_help_grey;
+@cp_static-footer: @cryptpad_color_grey_300;
 @cp_static-footer-border: @cryptpad_color_white;
 @cp_static-topbar-fg: @cryptpad_color_brand;
 @cp_static-card-bg: @cryptpad_color_white;
@@ -262,8 +252,8 @@
 @cp-limit-bar-above: @cryptpad_color_red;
 
 // Mentions
-@cp_mentions-bg: @cryptpad_color_grey;
-@cp_mentions-hover: @cryptpad_color_help_grey;
+@cp_mentions-bg: @cryptpad_color_grey_300;
+@cp_mentions-hover: @cryptpad_color_grey_300;
 
 // Autocomplete
 @cp_autocomplete-bg: @cryptpad_color_grey_100;
@@ -273,13 +263,13 @@
 
 // Modals
 @cp_access-overlay: fade(@cryptpad_color_white, 50%);
-@cp_snapshots-hover: @cryptpad_color_help_grey;
+@cp_snapshots-hover: @cryptpad_color_grey_300;
 
 // Support
-@cp_support-bg: @cryptpad_color_lighter_grey;
+@cp_support-bg: @cryptpad_color_grey_200;
 @cp_support-msg-fg: @cryptpad_text_col;
-@cp_support-msg-bg: @cryptpad_color_grey;
-@cp_support-header-bg: @cryptpad_color_help_grey;
+@cp_support-msg-bg: @cryptpad_color_grey_300;
+@cp_support-header-bg: @cryptpad_color_grey_300;
 
 // Toolbar
 @cp_toolbar-bg: @cryptpad_color_grey_200;
@@ -297,9 +287,9 @@
 @cp_history-fg: @cp_toolbar-bottom-fg;
 
 // Tokenfield
-@cp_token-bg: @cryptpad_color_neutral2_grey;
+@cp_token-bg: @cryptpad_color_grey_400;
 @cp_token-fg: @cryptpad_text_col;
-@cp_token-bg-hover: @cryptpad_color_neutral_grey;
+@cp_token-bg-hover: @cryptpad_color_grey_500;
 @cp_token-invalid: @cryptpad_color_warn_red;
 
 // Usergrid
@@ -311,7 +301,7 @@
 @cp_shadow-color: fade(@cryptpad_color_black, 40%);
 
 // Apps
-@cp_app-bg: @cryptpad_color_light_grey;
+@cp_app-bg: @cryptpad_color_grey_100;
 @cp_app-fg: @cryptpad_text_col;
 
 // Accounts
@@ -321,20 +311,18 @@
 @cp_accounts-active: @cryptpad_color_light_green;
 @cp_accounts-inactive: @cryptpad_color_light_red;
 @cp_accounts-mysubs-alert: @cryptpad_color_white;
-@cp_accounts-mysubs-bg: @cryptpad_color_toolbar_grey;
+@cp_accounts-mysubs-bg: @cryptpad_color_grey_200;
 @cp_accounts-mysubs-fg: @cryptpad_text_col;
 @cp_accounts-contact-hover: fade(@cryptpad_color_black, 20%);
-@cp_accounts-tab-bg: @cryptpad_color_toolbar_grey;
-@cp_accounts-tab-hover: @cryptpad_color_grey;
-@cp_accounts-tab-border: @cryptpad_color_neutral_grey;
+@cp_accounts-tab-bg: @cryptpad_color_grey_200;
+@cp_accounts-tab-hover: @cryptpad_color_grey_300;
+@cp_accounts-tab-border: @cryptpad_color_grey_500;
 
 // Admin
-@cp_admin-isadmin-fg: @cryptpad_color_brand;
-@cp_admin-isadmin-bg: @cryptpad_color_white;
-@cp_admin-premium-fg: @cryptpad_color_warn_red;
-@cp_admin-premium-bg: lighten(@cryptpad_color_warn_red, 25%);
-@cp_admin-last-fg: @cryptpad_color_warn_red;
-@cp_admin-last-bg: lighten(@cryptpad_color_orange, 25%);
+@cp_admin-isadmin-bg: @cryptpad_color_brand_fadest;
+@cp_admin-premium-bg: @cryptpad_color_red_fader;
+@cp_admin-last-fg: @cryptpad_text_col;
+@cp_admin-last-bg: @cryptpad_color_grey_300;
 
 // Code
 @cp_preview-bg: @cryptpad_color_white;
@@ -343,7 +331,7 @@
 
 // Debug
 @cp_debug-hover: fade(@cryptpad_color_black, 10%);
-@cp_debug-icon-hover: @cryptpad_color_dark_grey;
+@cp_debug-icon-hover: @cryptpad_color_grey_300;
 
 // Mediatag
 @cp_mediatag-text-bg: @cryptpad_color_white;
@@ -397,14 +385,14 @@
 // Poll
 @cp_poll-th-bg: @cryptpad_color_lighter_blue;
 @cp_poll-th-fg: @cryptpad_text_col;
-@cp_poll-uncommitted-bg: @cryptpad_color_toolbar_grey;
-@cp_poll-border-color: @cryptpad_color_hint_grey;
+@cp_poll-uncommitted-bg: @cryptpad_color_grey_200;
+@cp_poll-border-color: @cryptpad_color_grey_600;
 @cp_poll-cell-fg: @cryptpad_text_col;
-@cp_poll-unset: @cryptpad_color_help_grey;
+@cp_poll-unset: @cryptpad_color_grey_300;
 @cp_poll-yes: @cryptpad_color_light_green;
 @cp_poll-no: @cryptpad_color_light_red;
 @cp_poll-maybe: @cryptpad_color_light_yellow;
-@cp_poll-hint: @cryptpad_color_dark_grey;
+@cp_poll-hint: @cryptpad_color_grey_500;
 
 // Profile
 @cp_profile-border: @cryptpad_color_grey_400;
@@ -423,6 +411,6 @@
 
 // Whiteboard
 @cp_whiteboard-board-bg: @cryptpad_color_white;
-@cp_whiteboard-board-border: @cryptpad_color_hint_grey;
+@cp_whiteboard-board-border: @cryptpad_color_grey_600;
 @cp_whiteboard-bg: @cp_app-bg;
 @cp_whiteboard-fg: @cryptpad_text_col;
