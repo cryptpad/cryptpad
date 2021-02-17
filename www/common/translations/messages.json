@@ -1403,5 +1403,6 @@
     "pad_settings_comments": "Choose whether the Comments should be visible or hidden by default.",
     "pad_settings_hide": "Hide",
     "pad_settings_show": "Show",
-    "settings_colortheme_custom": "Custom"
+    "settings_colortheme_custom": "Custom",
+    "addOptionalPassword": "Add a password (optional)"
 }
