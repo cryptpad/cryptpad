@@ -16,6 +16,13 @@
   * display comments inline on mobile instead of on the right
 * translations
   * russian
+* style fixes
+  * text media-tags use markdown's block styles
+  * 404 page
+    * uses the dark theme's background color correctly
+    * remove an unnecessary scrollbar
+  * assert page uses dark mode
+* separate archive deletion code from inactive pad removal
 
 # 4.1.0 (B)
 
