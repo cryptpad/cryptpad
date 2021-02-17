@@ -23,6 +23,16 @@
     * remove an unnecessary scrollbar
   * assert page uses dark mode
 * separate archive deletion code from inactive pad removal
+* darkfix branch
+  * removed unused colors
+  * admin support last message is no longer red
+  * sidebar hint uses new grey name
+  * more severe fade on drive icon hover
+  * drive info box inline links are now styled
+  * autocomplete dropdown styles weren't applied
+  * notifications bell now uses same text color as toolbar title
+  * filepicker background color
+
 
 # 4.1.0 (B)
 
