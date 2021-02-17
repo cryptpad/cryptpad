@@ -2584,7 +2584,7 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
             }).nThen(function (waitFor) {
-                loadUniversal(Team, 'team', waitFor, clientId); // TODO load teams offline
+                loadUniversal(Team, 'team', waitFor, clientId);
             }).nThen(function () {
                 cb();
             });
