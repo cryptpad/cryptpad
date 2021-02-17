@@ -398,8 +398,7 @@ define([
 
     };
 
-    var checkTeamChannels = function (ctx, id, channel, roster, waitFor, _cb) {
-        var cb = Util.once(Util.mkAsync(_cb));
+    var checkTeamChannels = function (ctx, id, channel, roster, waitFor, cb) {
         var close = function () {
             if (ctx.cache[id] || ctx.teams[id]) { closeTeam(ctx, id); }
             delete ctx.store.proxy.teams[id];
@@ -1933,7 +1932,7 @@ define([
                 if (closed) { return; }
                 var team = ctx.store.proxy.teams[id];
                 var rosterChan = Util.find(team, ['keys', 'roster', 'channel']);
-                var _cb = waitFor();
+                var _cb = Util.once(Util.mkAsync(waitFor()));
                 nThen(function (w) {
                     checkTeamChannels(ctx, id, team.channel, rosterChan, w, _cb);
                 });
