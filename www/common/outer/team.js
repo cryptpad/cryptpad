@@ -398,7 +398,8 @@ define([
 
     };
 
-    var checkTeamChannels = function (ctx, id, channel, roster, waitFor, cb) {
+    var checkTeamChannels = function (ctx, id, channel, roster, waitFor, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         var close = function () {
             if (ctx.cache[id] || ctx.teams[id]) { closeTeam(ctx, id); }
             delete ctx.store.proxy.teams[id];
