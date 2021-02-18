@@ -1904,6 +1904,7 @@ define([
             }
             openChannel(ctx, teams[id], id, waitFor(function (err) {
                 if (err) {
+                    delete ctx.onReadyHandlers[id];
                     var txt = typeof(err) === "string" ? err : (err.type || err.message);
                     Feedback.send("TEAM_LOADING_ERROR="+txt);
                     return void console.error(err);
