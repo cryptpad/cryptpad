@@ -824,5 +824,16 @@
     "policy_howweuse_p1": "Данная информация помогает нам принимать решения о продвижении CryptPad и оценивать успешность наших действий. Информация о вашем местоположении помогает нам понять необходимость больших усилий для поддержки других языков.",
     "policy_whatweknow_p2": "Мы используем <a href=\"https://www.elastic.co/products/kibana\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"open source analytics platform\">Kibana</a>, чтобы получше узнать наших пользователей. С помощью Kibana мы определяем как вы узнали о CryptPad: по прямой ссылке, через поисковый сервис или по ссылке на стороннем сайте как Reddit или Twitter.",
     "policy_whatweknow_p1": "Так как приложение размещено в Интернете, CryptPad имеет доступ ко всем метаданным протокола HTTP. Это включает ваш IP адрес и различные HTTP заголовки, которые могут быть использованы для идентификации вашего браузера. Информацию, которую раскрывает ваш браузер, вы можете найти на сайте <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending\" title=\"what http headers is my browser sending\">WhatIsMyBrowser.com</a>.",
-    "terms": "Пользовательское соглашение"
+    "terms": "Пользовательское соглашение",
+    "about_contributors": "Основные участники",
+    "about_intro": "CryptPad создан командой исследователей в <a href=\"http://xwiki.com\">XWiki SAS</a> - небольшй компании из Парижа (Франция) и Яссы (Румыния). Над CryptPad работают 3 основных члена команды и несколько энтузиастов из XWiki SAS и из вне.",
+    "tos_availability": "Мы надеемся, что вам понравится наш сервис, но не можем гарантировать его доступность или производительность. Поэтому, пожалуйста, регулярно экспортируйте ваши данные.",
+    "features_f_file0": "Работа с документами",
+    "policy_choices_ads": "Если вы хотите заблокировать аналитика на нашем сайте, можете использовать блокировщики рекламы, например, <a href=\"https://www.eff.org/privacybadger\" title=\"download privacy badger\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Badger</a>.",
+    "policy_choices_vpn": "Если вы решили развернуть свой сервер, но хотите раскрывать ваш IP адрес, вы можете его защитить с помощью <a href=\"https://www.torproject.org/projects/torbrowser.html.en\" title=\"downloads from the Tor project\" target=\"_blank\" rel=\"noopener noreferrer\">Tor браузера</a>, or a <a href=\"https://riseup.net/en/vpn\" title=\" VPN сервиса от Riseup\" target=\"_blank\" rel=\"noopener noreferrer\">VPN</a>.",
+    "policy_choices_open": "Наш код открыт, поэтому вы всегда можете развернуть свой собственный сервер CryptPad.",
+    "policy_choices": "Ваш выбор",
+    "policy_ads_p1": "Мы не показываем онлайн рекламу, хотя можем давать ссылки на стороны, финансирующие наших исследования.",
+    "policy_links_p1": "Данный сайт содержит ссылки на другие сайты, в том числе созданные другими организациями. Мы не несем ответственности за обеспечение конфиденциальности или сдержимое сторонних сайтов. По умолчанию ссылки на сторонние сайты запускаются в новом окне браузера, чтобы предупредить об уходе с CryptPad.fr.",
+    "about": "О нас"
 }

@@ -1,3 +1,49 @@
+# Pending
+
+* remove round corners on limit bar
+* update prompts related to password protection in various modals
+* script to identify unused translations
+* offline mode for file app
+* display subscribe button on home page if subscriptions are supported
+* display a home page notice via application_config.js via supplied HTML
+* link to our sponsors websites via their logos
+* OnlyOffice sheets
+  * use configured language from CryptPad
+  * fix a sorting issue caused by the overly eager suppression of a modal
+* rich text
+  * use white background for rich text documents even in dark mode
+  * display button to adjust document width inline instead of in toolbar
+  * display comments inline on mobile instead of on the right
+* translations
+  * russian
+* style fixes
+  * text media-tags use markdown's block styles
+  * 404 page
+    * uses the dark theme's background color correctly
+    * remove an unnecessary scrollbar
+  * assert page uses dark mode
+* separate archive deletion code from inactive pad removal
+* darkfix branch
+  * removed unused colors
+  * admin support last message is no longer red
+  * sidebar hint uses new grey name
+  * more severe fade on drive icon hover
+  * drive info box inline links are now styled
+  * autocomplete dropdown styles weren't applied
+  * notifications bell now uses same text color as toolbar title
+  * filepicker background color
+* chat colors
+  * in pads
+  * in the contacts app
+* server updates
+  * `npm i` to get latest dependencies
+  * messages are not acknowledged or broadcast until they have been validated and written to the disk
+    * see [#553](https://github.com/xwiki-labs/cryptpad/issues/553)
+  * optimized GET_OLDER_HISTORY
+* debugging app
+  * serverHash is included in the history of decrypted messages
+* link to the docs from the support page's ticket creation interface
+
 # 4.1.0 (B)
 
 ## Goals

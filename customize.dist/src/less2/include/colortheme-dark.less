@@ -31,16 +31,6 @@
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
 @cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
-@cryptpad_color_hint_grey: #777;
-@cryptpad_color_dark_grey: #999999;
-@cryptpad_color_neutral_grey: #aaaaaa;
-@cryptpad_color_neutral2_grey: #cccccc;
-@cryptpad_color_help_grey: #dddddd;
-@cryptpad_color_grey: #e0e0e0;
-@cryptpad_color_toolbar_grey: #EEEEEE;
-@cryptpad_color_light_grey: #f1f1f1;
-@cryptpad_color_lighter_grey: #f9f9f9;
-
 @cryptpad_color_white: #FFF;
 @cryptpad_color_grey_50: #FAFAFA;
 @cryptpad_color_grey_100: #F5F5F5;
@@ -278,8 +268,8 @@
 // Support
 @cp_support-bg: @cryptpad_color_grey_800;
 @cp_support-msg-fg: @cryptpad_text_col;
-@cp_support-msg-bg: @cryptpad_color_grey_900;
-@cp_support-header-bg: @cryptpad_color_grey_800;
+@cp_support-msg-bg: @cryptpad_color_grey_700;
+@cp_support-header-bg: @cryptpad_color_grey_700;
 
 // Toolbar
 @cp_toolbar-bg: @cryptpad_color_grey_850;
@@ -328,13 +318,11 @@
 @cp_accounts-tab-hover: @cryptpad_color_grey_700;
 @cp_accounts-tab-border: @cryptpad_color_grey_600;
 
-// Admin
-@cp_admin-isadmin-fg: @cryptpad_color_brand;
-@cp_admin-isadmin-bg: @cryptpad_color_white;
-@cp_admin-premium-fg: @cryptpad_color_light_red;
+// Admin Support
+@cp_admin-isadmin-bg: @cryptpad_color_brand_fadest;
 @cp_admin-premium-bg: @cryptpad_color_red_fader;
-@cp_admin-last-fg: @cryptpad_color_light_red;
-@cp_admin-last-bg: @cryptpad_color_red_fader;
+@cp_admin-last-fg: @cryptpad_text_col;
+@cp_admin-last-bg: @cryptpad_color_grey_700;
 
 // Code
 @cp_preview-bg: @cryptpad_color_grey_900;
@@ -387,6 +375,7 @@
 // Rich text
 @cp_pad-fg: @cryptpad_text_col;
 @cp_pad-icon-filter: invert();
+@cp_pad-resize: @cryptpad_color_grey_800;
 // Comments
 @cp_comments-fg: @cryptpad_text_col;
 @cp_comments-bg: @cryptpad_color_grey_800;

@@ -954,7 +954,7 @@
     "support_disabledHint": "This CryptPad instance is not yet configured to use a support form.",
     "support_cat_new": "New ticket",
     "support_formTitle": "New Ticket",
-    "support_formHint": "This form can be used to create a new support ticket. Use it to contact the administrators to solve issues or ask any question in a secure way. Please don't create a new ticket if you already have an open ticket about the same issue, but use the reply button to provide more information.",
+    "support_formHint": "Use this form to securely contact the administrators about issues and questions.<br>Please note that some issues/questions may already be addressed in the <a href=\"https://docs.cryptpad.fr/en/user_guide/index.html\" rel=\"noopener noreferrer\" target=\"_blank\">CryptPad User Guide</a>. Please do not create a new ticket if you already have an open ticket about the same issue. Instead, reply to your original message with any additional information.",
     "support_formButton": "Send",
     "support_formTitleError": "Error: title is empty",
     "support_formContentError": "Error: content is empty",
@@ -1403,5 +1403,6 @@
     "pad_settings_comments": "Choose whether the Comments should be visible or hidden by default.",
     "pad_settings_hide": "Hide",
     "pad_settings_show": "Show",
-    "settings_colortheme_custom": "Custom"
+    "settings_colortheme_custom": "Custom",
+    "addOptionalPassword": "Add a password (optional)"
 }

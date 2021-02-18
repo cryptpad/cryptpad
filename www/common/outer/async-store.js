@@ -2074,6 +2074,7 @@ define([
                     //var decryptedMsg = crypto.decrypt(msg, true);
                     if (data.debug) {
                         msgs.push({
+                            serverHash: msg.slice(0,64),
                             msg: msg,
                             author: parsed[1][1],
                             time: parsed[1][5]

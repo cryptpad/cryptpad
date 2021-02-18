@@ -55,7 +55,6 @@ define([
     var ctx = {};
 
     funcs.Messages = Messages;
-Messages.addOptionalPassword = "Add a password (optional)"; // XXX
 
     var evRealtimeSynced = Util.mkEvent(true);
 

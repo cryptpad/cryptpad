@@ -10,7 +10,7 @@
     @invert: @bg-color;
     @msg-bg-color-light: contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%));
     @msg-bg-color-lighter: contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%));
-    @msg-bg-color-dark: contrast(@bg-color, lighten(@bg-color, 5%), darken(@bg-color, 5%));
+    @msg-bg-color-dark: fade(@cp_messenger-fg, 10%);
     @msg-bg-color-darker: contrast(@bg-color, lighten(@bg-color, 10%), darken(@bg-color, 10%));
 };
 .messenger_main(
@@ -275,8 +275,8 @@
         }
         .cp-app-contacts-tips {
             margin: 1em;
-            background-color: @msg-bg-color-light;
-            background-color: var(--msg-bg-color-light);
+            background-color: @msg-bg-color-dark;
+            background-color: var(--msg-bg-color-dark);
             font-size: 14px;
             padding: 10px;
             position: relative;

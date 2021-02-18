@@ -14,7 +14,7 @@
   "dependencies": {
     "@mcrowe/minibloom": "^0.2.0",
     "chainpad-crypto": "^0.2.5",
-    "chainpad-server": "^4.0.9",
+    "chainpad-server": "^5.0.0",
     "express": "~4.16.0",
     "fs-extra": "^7.0.0",
     "get-folder-size": "^2.0.1",
