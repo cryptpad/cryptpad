@@ -32,7 +32,17 @@
   * autocomplete dropdown styles weren't applied
   * notifications bell now uses same text color as toolbar title
   * filepicker background color
-
+* chat colors
+  * in pads
+  * in the contacts app
+* server updates
+  * `npm i` to get latest dependencies
+  * messages are not acknowledged or broadcast until they have been validated and written to the disk
+    * see [#553](https://github.com/xwiki-labs/cryptpad/issues/553)
+  * optimized GET_OLDER_HISTORY
+* debugging app
+  * serverHash is included in the history of decrypted messages
+* link to the docs from the support page's ticket creation interface
 
 # 4.1.0 (B)
 
