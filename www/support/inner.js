@@ -66,8 +66,13 @@ define([
 
         var $div = $('<div>', {'class': 'cp-support-' + key + ' cp-sidebarlayout-element'});
         $('<label>').text(Messages['support_'+safeKey+'Title'] || key).appendTo($div);
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages['support_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
+        var $hintSpan = $('<span>', {'class': 'cp-sidebarlayout-description'}).appendTo($div);
+        var hintContent = Messages['support_'+safeKey+'Hint'] || 'Coming soon...';
+        if (safeKey === 'form') {
+            $hintSpan.html(hintContent);
+        } else {
+            $hintSpan.text(hintContent);
+        }
         if (addButton) {
             $('<button>', {
                 'class': 'btn btn-primary'
