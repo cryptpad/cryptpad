@@ -44,7 +44,7 @@ define([
         var $appContainer = $('#cp-app-file-content');
         var $form = $('#cp-app-file-upload-form');
         var $dlview = $('#cp-app-file-download-view');
-        var $label = $form.find('label');
+        var $label = $form.find('button');
         var $bar = $('.cp-toolbar-container');
         var $body = $('body');
 
@@ -175,25 +175,43 @@ define([
             });
         }
 
-        $form.css({
-            display: 'block',
-        });
+        var todo = function () {
+            $label.click(function () {
+                $form.find('input[type="file"]').click();
+            });
 
-        var fmConfig = {
-            dropArea: $form,
-            hoverArea: $label,
-            body: $body,
-            keepTable: true // Don't fadeOut the table with the uploaded files
+            $form.css({
+                display: 'block',
+            });
+
+            var fmConfig = {
+                dropArea: $form,
+                hoverArea: $label,
+                body: $body,
+                keepTable: true // Don't fadeOut the table with the uploaded files
+            };
+
+            var FM = common.createFileManager(fmConfig);
+
+            $form.find("#cp-app-file-upfile").on('change', function (e) {
+                var file = e.target.files[0];
+                FM.handleFile(file);
+            });
+
+            UI.removeLoadingScreen();
         };
 
-        var FM = common.createFileManager(fmConfig);
-
-        $form.find("#cp-app-file-upfile").on('change', function (e) {
-            var file = e.target.files[0];
-            FM.handleFile(file);
-        });
-
-        UI.removeLoadingScreen();
+        var checkOnline = function () {
+            var priv = metadataMgr.getPrivateData();
+            if (priv.offline) { return; }
+            metadataMgr.off('change', checkOnline);
+            todo();
+        };
+        if (priv.offline) {
+            metadataMgr.onChange(checkOnline);
+            return;
+        }
+        todo();
     };
 
     var main = function () {

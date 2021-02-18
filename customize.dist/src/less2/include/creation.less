@@ -7,9 +7,10 @@
 .creation_vars(
     @bg-color: @colortheme_apps[default]
 ) {
-    @creation-color: @cryptpad_text_col;
+    @creation-color: @cp_creation-fg;
     @creation-bg-color: @bg-color;
-    @creation-bg-color-light: lighten(@bg-color, 30%);
+    @desat-color: desaturate(@bg-color, 20%);
+    @creation-bg-color-light: contrast(@creation-color, lighten(@bg-color, 30%), darken(@desat-color, 20%));
 };
 
 .creation_main(
@@ -17,23 +18,18 @@
 ) {
     --LessLoader_require: LessLoader_currentFile();
     .creation_vars(@bg-color);
-    --creation-color: @cryptpad_text_col;
+    --creation-color: @cp_creation-fg;
     --creation-bg-color: @bg-color;
     --creation-bg-color-light: @creation-bg-color-light;
 }
 & {
     .creation_vars();
-    @colortheme_creation-modal-bg: #fff;
-    @colortheme_creation-modal: #666;
-    @colortheme_creation-modal-title: @colortheme_loading-bg;
 
     #cp-creation-container {
         position: absolute;
         z-index: 100000000; // #loading * 10
         top: 0px;
-        //background: @colortheme_loading-bg;
-        background: @colortheme_loading_bg;
-        color: @colortheme_loading-color;
+        background: @cp_loading-bg;
         display: flex;
         flex-flow: column; /* we need column so that the child can shrink vertically */
         justify-content: center;
@@ -60,8 +56,8 @@
     #cp-creation {
         overflow: auto;
         text-align: center;
-        background: @colortheme_creation-modal-bg;
-        color: @colortheme_creation-modal;
+        background: @cp_creation-bg;
+        color: @cp_creation-fg;
         font: @colortheme_app-font;
         outline: none;
         width: 700px;
@@ -127,16 +123,16 @@
             button {
                 .tools_unselectable();
                 padding: 6px;
-                background: @colortheme_logo-2;
+                background: @cp_creation-button-bg;
                 font-size: 20px;
-                color: #FFF;
+                color: @cp_creation-button-fg;
                 margin: 3px 10px;
                 border: none;
                 cursor: pointer;
                 outline: none;
                 text-transform: uppercase;
                 &:hover {
-                    background: lighten(@colortheme_logo-2, 5%);
+                    background: contrast(@cp_creation-button-fg, lighten(@cp_creation-button-bg, 5%), darken(@cp_creation-button-bg, 5%));
                 }
             }
         }
@@ -171,10 +167,9 @@
                 }
             }
             .cp-creation-help, .cp-creation-warning {
-                font-size: 18px;
-                color: @colortheme_form-warning;
+                font-size: 16px;
+                color: @cp_creation-fg;
                 &:hover {
-                    color: @colortheme_form-warning-hov;
                     text-decoration: none;
                 }
             }
@@ -196,11 +191,11 @@
 
             input, select {
                 font-size: 14px;
-                border: 1px solid @colortheme_form-bg;
+                background: @cp_forms-bg;
+                border: 1px solid @cp_forms-border;
                 height: 26px;
                 line-height: 26px;
-                //background-color: @colortheme_form-bg;
-                color: @cryptpad_text_col;
+                color: @cp_forms-fg;
             }
 
             .cp-creation-teams {
@@ -221,14 +216,13 @@
                     padding: 5px;
                     cursor: default;
                     font: @colortheme_app-font;
-                    color: @colortheme_modal-fg;
                     margin: 0 1px;
 
                     .tools_unselectable();
 
                     &.cp-selected {
-                        background-color: @colortheme_alertify-primary;
-                        color: @colortheme_alertify-primary-text;
+                        background-color: @cp_creation-button-bg;
+                        color: @cp_creation-button-fg;
                     }
                     .cp-creation-team-avatar {
                         .fa {
@@ -243,7 +237,7 @@
                         text-align: center;
                         line-height: 18px;
                     }
-                    border: 1px solid @colortheme_alertify-primary;
+                    border: 1px solid @cp_creation-button-bg;
                 }
             }
 
@@ -294,19 +288,6 @@
                 .cp-filler { flex: 1; }
             }
 
-            div.cp-creation-remember {
-                .cp-creation-remember-help {
-                    width: 100%;
-                    //font-style: italic;
-                    font-size: 12px;
-                    font-weight: bold;
-                    color: @colortheme_form-bg;
-                    line-height: 20px;
-                    .fa {
-                        margin-right: 10px;
-                    }
-                }
-            }
             div.cp-creation-template {
                 width: 100%;
                 //flex: 1 0 auto;
@@ -341,7 +322,7 @@
                 max-height: 159px;
                 align-items: center;
                 .cp-creation-template-element {
-                    box-shadow: 2px 2px 7px @colortheme_form-border;
+                    box-shadow: 2px 2px 7px @cp_shadow-color;
                     width: 300px;
                     max-width: calc(100% - 10px);
                     padding: 2px;
@@ -404,8 +385,8 @@
             text-align: center;
             .cp-creation-deleted {
                 margin: 0 10px;
-                background: @colortheme_loading-bg;
-                color: @colortheme_loading-color;
+                background: @cp_creation-error-bg;
+                color: @cp_creation-error-fg;
                 padding: 10px;
                 text-align: center;
                 font-weight: bold;

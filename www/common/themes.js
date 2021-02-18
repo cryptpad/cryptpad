@@ -12,6 +12,7 @@ define(function () {
         "blackboard blackboard.css",
         "cobalt cobalt.css",
         "colorforth colorforth.css",
+        "cryptpad-dark cryptpad-dark.css",
         "default default",
         "dracula dracula.css",
         "eclipse eclipse.css",

@@ -13,6 +13,7 @@ define([
     '/common/outer/login-block.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
+    'less!/customize/src/less2/pages/page-assert.less',
 ], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;

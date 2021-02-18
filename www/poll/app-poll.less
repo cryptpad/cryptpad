@@ -11,8 +11,8 @@
 
     @poll-fore: #555;
 
-    @poll-th-bg: @colortheme_poll-th-bg;
-    @poll-th-fg: @colortheme_poll-th-fg;
+    @poll-th-bg: @cp_poll-th-bg;
+    @poll-th-fg: @cp_poll-th-fg;
     @poll-th-user-bg: darken(@poll-th-bg, 10%);
     @poll-editing: lighten(@poll-th-bg, 10%);
     @poll-winner: darken(@poll-th-bg, 15%);
@@ -20,22 +20,15 @@
     @poll-td-bg: @poll-th-bg;
     @poll-td-fg: @poll-th-fg;
 
-    @poll-help-bg: @colortheme_poll-help-bg;
+    @poll-uncommitted-cell: @cp_poll-uncommitted-bg;
+    @poll-uncommitted-text: @cp_poll-cell-fg;
+    @poll-cover-color: @cp_poll-cell-fg;
 
-    @poll-uncommitted-cell: #eee;
-    @poll-uncommitted-bg: #ddd; //lighten(@poll-th-bg, 50%);
-    @poll-uncommitted-text: black;
-
-    @poll-placeholder: #fff;
-    @poll-border-color: #555;
-    @poll-cover-color: #000;
-    @poll-fg: #000;
-    @poll-option-yellow: #ff5;
-    @poll-option-gray: #ccc;
-
-    @poll-add-color: #fff;
-    @poll-add-bg: #777;
-    @poll-add-bg-alt: #444;
+    @poll-border-color: @cp_poll-border-color;
+    @poll-option-green: @cp_poll-yes;
+    @poll-option-red: @cp_poll-no;
+    @poll-option-yellow: @cp_poll-maybe;
+    @poll-option-gray: @cp_poll-unset;
 
     .bottom-left(@s: 5px) { border-bottom-left-radius: @s; }
     .top-left(@s: 5px) { border-top-left-radius: @s; }
@@ -48,6 +41,7 @@
         display: flex;
         flex: 1;
         min-height: 0;
+        background-color: @cp_app-bg;
         #cp-app-poll-form {
             flex: 1;
             overflow-y: auto;
@@ -80,8 +74,6 @@
     }
 
     input[type="text"], textarea {
-        background-color: white;
-        color: black;
         border: 0;
     }
 
@@ -93,7 +85,7 @@
     // The placeholder color only seems to effect Safari when not set
 
     input[type="text"][disabled]::placeholder {
-        color: @poll-placeholder;
+        color: @poll-th-fg;
         opacity: 1;
     }
 
@@ -107,7 +99,6 @@
     }
     #cp-app-poll-table-container button {
         border-radius: 0;
-        border: 0;
     }
     #cp-app-poll-create-user {
         display: inline-flex;
@@ -116,11 +107,6 @@
         margin: 2px auto;
         width: auto;
         overflow: hidden;
-        color: @poll-add-color;
-        background: @poll-add-bg;
-        &:hover {
-            background: @poll-add-bg-alt;
-        }
     }
     #cp-app-poll-create-option {
         order: 3;
@@ -129,11 +115,6 @@
         height: 20px;
         margin: 2px;
         padding: 0;
-        color: @poll-add-color;
-        background: @poll-add-bg;
-        &:hover {
-            background: @poll-add-bg-alt;
-        }
     }
     #cp-app-poll-table-scroll {
         overflow-y: hidden;
@@ -155,7 +136,7 @@
             width: 80%;
             min-height: 200px;
             height: 200px;
-            border: 1px solid black;
+            border: 1px solid @cp_forms-border;
             .CodeMirror-placeholder {
                 color: #777;
             }
@@ -169,9 +150,9 @@
         min-width: 80%;
         width: 80%;
         min-height: 7em;
-        color: #000;
+        color: @poll-uncommitted-text;
         border: 1px solid transparent;
-        background-color: #eeeeee;
+        background-color: @poll-uncommitted-cell;
         font: @colortheme_app-font;
         text-align: left;
         media-tag > * {
@@ -198,15 +179,9 @@
             }
             #cp-app-poll-comments {
                 display: block;
+                color: @cryptpad_text_col;
             }
         }
-    }
-
-    #cp-app-poll-help {
-        width: 100%;
-        margin: auto;
-        padding: 20px 10%;
-        background: @poll-help-bg;
     }
 
     // from cryptpad.less
@@ -277,11 +252,11 @@
                         background-color: @poll-uncommitted-cell !important;
                     }
                     div.cp-app-poll-table-text-cell {
-                        background-color: @poll-uncommitted-bg !important;
+                        background-color: @poll-uncommitted-cell !important;
                         color: @poll-uncommitted-text !important;
                     }
                     text-align: center;
-                    background-color: @poll-uncommitted-bg !important;
+                    background-color: @poll-uncommitted-cell !important;
                     color: @poll-uncommitted-text !important;
                 }
                 tr {
@@ -389,13 +364,13 @@
 
                                 input[type="number"][value="0"] {
                                     ~ .cp-app-poll-table-cover {
-                                        background-color: @colortheme_cp-red;
+                                        background-color: @poll-option-red;
                                         &:after { content: "✖"; }
                                     }
                                 }
                                 input[type="number"][value="1"] {
                                     ~ .cp-app-poll-table-cover {
-                                        background-color: @colortheme_cp-green;
+                                        background-color: @poll-option-green;
                                         &:after { content: "✔"; }
                                     }
                                 }
@@ -477,6 +452,7 @@
                                 box-sizing: border-box;
                                 padding: 1px 5px;
                                 margin: 1px;
+                                margin-bottom: 5px;
                                 &[disabled] {
                                     color: @poll-th-fg;
                                 }
@@ -530,35 +506,13 @@
                     margin-left: 10px;
                 }
 
-                thead {
-                    tr {
-                        th {
-                            input[type="text"][disabled] {
-                                background-color: transparent;
-                                color: @poll-fore;
-                                font-weight: bold;
-                            }
-                            .cp-app-poll-table-remove {
-                                cursor: pointer;
-                                font-size: 20px;
-                            }
-                        }
-                    }
-                }
-                tbody {
-                    tr {
-                        td {
-
-                        }
-                    }
-                }
                 tfoot {
                     display: none;
                 }
             }
         }
         #cp-app-poll-nocomments {
-            color: #999;
+            color: @cp_poll-hint;
             text-align: center;
             margin: 20px;
             font: @colortheme_app-font;
@@ -574,7 +528,7 @@
             }
             #cp-app-poll-comments-add {
                 input, textarea {
-                    border: 1px solid black;
+                    border: 1px solid @cp_forms-border;
                     width: 90%;
                     margin: 5px 5%;
                 }
@@ -582,7 +536,7 @@
                     padding: 5px;
                     height: 26px;
                     &[disabled] {
-                        background: #eee;
+                        background: @poll-uncommitted-cell;
                     }
                 }
                 textarea {
@@ -602,7 +556,8 @@
                 }
                 .cp-app-poll-comments-list-msg {
                     display: flex;
-                    background: #eee;
+                    background: @poll-uncommitted-cell;
+                    color: @cryptpad_text_col;
                     padding: 5px 10px;
                     .cp-app-poll-comments-list-msg-text {
                         flex: 1;
@@ -617,11 +572,13 @@
                     }
                 }
                 .cp-app-poll-comments-list-data {
-                    background: #ddd;
+                    background: @poll-option-gray;
+                    color: @cryptpad_text_col;
                     padding: 5px 10px;
                     display: flex;
                     align-items: center;
                     .cp-app-poll-comments-list-data-name {
+                        color: @cryptpad_color_link;
                         margin-left: 10px;
                         flex: 1;
                     }

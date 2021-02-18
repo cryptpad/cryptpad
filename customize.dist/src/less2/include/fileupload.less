@@ -16,7 +16,7 @@
         box-sizing: border-box;
         z-index: 100001; //Z file upload table container: just above the file picker
         display: none;
-        color: darken(@colortheme_static_apps[default], 10%);
+        color: @cp_upload-fg;
         max-height: 180px;
         overflow-y: auto;
 
@@ -26,7 +26,7 @@
 
         .cp-fileupload-header {
             display: flex;
-            background-color: darken(@colortheme_modal-bg, 10%);
+            background-color: @cp_upload-header;
             font-weight: bold;
             position: sticky;
             top: 0;
@@ -39,7 +39,7 @@
                 padding: 0.25em 0.5em;
                 cursor: pointer;
                 &:hover {
-                    background-color: rgba(0,0,0,0.1);
+                    color: lighten(@cp_upload-fg, 10%);
                 }
             }
         }
@@ -86,7 +86,7 @@
                 position: absolute;
                 width: 0px;
                 height: 100%;
-                background-color: #dddddd;
+                background-color: @cp_upload-progress;
                 z-index: -1; //Z file upload progress container
             }
             .cp-fileupload-table-cancel {

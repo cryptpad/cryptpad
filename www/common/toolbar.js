@@ -532,7 +532,7 @@ MessengerUI, Messages) {
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
             hidden: true
         });
-        $shareBlock.click(function () { 
+        $shareBlock.click(function () {
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";
@@ -1049,7 +1049,7 @@ MessengerUI, Messages) {
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');
         $button.attr('title', Messages.notificationsPage);
-        $button.addClass('fa fa-bell-o');
+        $button.addClass('fa fa-bell-o cp-notifications-bell');
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
 

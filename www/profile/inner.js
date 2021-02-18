@@ -16,6 +16,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/marked/marked.min.js',
+    '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
     'cm/mode/markdown/markdown',
@@ -44,6 +45,7 @@ define([
     Messages,
     AppConfig,
     Marked,
+    SFCodeMirror,
     CodeMirror
     )
 {
@@ -438,12 +440,13 @@ define([
         ]);
         $block.append(div);
 
-        var editor = APP.editor = CodeMirror.fromTextArea(text, {
-            lineNumbers: true,
-            lineWrapping: true,
-            styleActiveLine : true,
-            mode: "markdown",
-        });
+        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
+        var editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', true);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', true);
+        editor.setOption('readOnly', false);
+        cm.configureTheme(common, function () {});
 
         var markdownTb = common.createMarkdownToolbar(editor);
         $(code).prepend(markdownTb.toolbar);
@@ -657,8 +660,16 @@ define([
 
         var lm = APP.lm = Listmap.create(listmapConfig);
 
+        var onCorruptedCache = function () {
+            var sframeChan = common.getSframeChannel();
+            sframeChan.event("EV_PROFILE_CORRUPTED_CACHE");
+        };
+
         init();
         lm.proxy.on('ready', function () {
+            if (JSON.stringify(lm.proxy) === '{}') {
+                return void onCorruptedCache();
+            }
             updateValues(lm.proxy);
             UI.removeLoadingScreen();
             common.mailbox.subscribe(["notifications"], {

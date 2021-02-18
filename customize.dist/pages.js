@@ -62,7 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.0.0";
+    Pages.versionString = "v4.1.0";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
@@ -181,11 +181,11 @@ define([
 
     Pages.subscribeButton = function (onClick) {
         var _link = h('a', {
-            href: "/accounts/",
+            href: AppConfig.upgradeURL || "/accounts/",
         });
 
         var subscribe = h('button', [
-            Msg.subscribe_button
+            Msg.features_f_subscribe,
         ]);
 
         $(subscribe).click(function () {

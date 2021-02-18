@@ -7,6 +7,18 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    ul.ui-autocomplete {
+        background-color: @cp_autocomplete-bg;
+        color: @cp_autocomplete-fg;
+    }
+    ul.ui-menu.ui-widget {
+        border: 1px solid @cp_autocomplete-border;
+        .ui-state-active {
+            background-color: @cp_autocomplete-hover;
+            color: @cp_autocomplete-fg;
+            border-color: @cp_autocomplete-hover;
+        }
+    }
     .cp-autocomplete-value {
         display: flex;
         align-items: center;
@@ -46,7 +58,7 @@
         .cp-dropdown-content {
             display: none;
             position: absolute;
-            background-color: @colortheme_dropdown-bg;
+            background-color: @cp_dropdown-bg;
             min-width: 250px;
             box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
             z-index: 1000; //Z dropdown content
@@ -64,7 +76,7 @@
             }
 
             & > a, & > span {
-                color: @colortheme_dropdown-color;
+                color: @cp_dropdown-fg;
                 padding: 5px 16px;
                 text-decoration: none;
                 display: flex;
@@ -100,13 +112,13 @@
                 }
 
                 &:hover {
-                    background-color: @colortheme_dropdown-bg-hover;
-                    color: @colortheme_dropdown-color;
+                    background-color: @cp_dropdown-bg-hover;
+                    color: @cp_dropdown-fg;
                 }
 
                 &.cp-dropdown-element-active {
-                    background-color: @colortheme_dropdown-bg-active;
-                    color: @colortheme_dropdown-color;
+                    background-color: @cp_dropdown-bg-active;
+                    color: @cp_dropdown-fg;
                 }
             }
             &> span {
@@ -138,7 +150,7 @@
             hr {
                 margin: 5px 0px;
                 height: 1px;
-                background: #bbb;
+                background: @cp_dropdown-bg-active;
                 & + hr {
                     display: none;
                 }
@@ -150,20 +162,10 @@
                 margin: 0;
                 white-space: normal;
                 text-align: left;
-                color: black;
+                color: @cp_dropdown-fg;
                 font-size: 14px;
                 * {
                     font-size: 14px;
-                }
-                h2 {
-                    color: black;
-                    font-weight: bold;
-                    text-align: center;
-                    background-color: #EEEEEE;
-                    padding: 5px 0px;
-                    margin: 5px 0px;
-                    font-size: 16px;
-                    white-space: normal;
                 }
             }
         }

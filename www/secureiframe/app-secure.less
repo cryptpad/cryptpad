@@ -35,7 +35,7 @@
             .cp-loading-spinner-container {
                 height: 100px;
                 .cp-spinner {
-                    border-color: @colortheme_logo-2;
+                    border-color: @cryptpad_color_brand;
                     border-top-color: transparent;
                 }
             }
@@ -56,15 +56,13 @@
                 line-height: 1em;
                 cursor: pointer;
 
-                background-color: @colortheme_modal-bg;
-
-                border: 1px solid @colortheme_logo-2;
-                color: @colortheme_logo-2;
+                color: @cp_drive-fg;
+                border: 1px solid @cp_drive-icon-border;
 
                 transition: all 0.1s;
 
                 &:hover {
-                    color: @colortheme_modal-fg;
+                    background: @cp_drive-icon-hover;
                 }
 
                 align-items: center;
@@ -72,7 +70,7 @@
                 img {
                     max-width: 100px;
                     max-height: 100px;
-                    background: #fff;
+                    background: @cp_drive-thumb-bg;
                 }
 
                 .cp-filepicker-content-element-name {

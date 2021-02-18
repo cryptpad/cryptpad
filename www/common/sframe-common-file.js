@@ -32,7 +32,7 @@ define([
 
     module.create = function (common, config) {
         var File = {};
-        var origin = common.getMetadataMgr().getPrivateData().origin;
+        //var origin = common.getMetadataMgr().getPrivateData().origin;
         var response = Util.response(function (label, info) {
             console.error('COMMON_UPLOAD__' + label, info);
         });
@@ -288,7 +288,7 @@ define([
             store: true
         };
         var createHelper = function (href, text) {
-            return UI.createHelper(origin + href, text);
+            return UI.createHelper(href, text);
         };
         var createManualStore = function (isFolderUpload) {
             var privateData = common.getMetadataMgr().getPrivateData();
@@ -313,7 +313,7 @@ define([
                 UIElements.setHTML(h('label', {for: 'cp-upload-name'}),
                                    Messages._getKey('upload_modal_filename', [ext])),
                 h('input#cp-upload-name', {type: 'text', placeholder: defaultFileName, value: defaultFileName}),
-                h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
+                h('label', {for: 'cp-upload-password'}, Messages.addOptionalPassword),
                 UI.passwordInput({id: 'cp-upload-password'}),
                 h('span', {
                     style: 'display:flex;align-items:center;justify-content:space-between'

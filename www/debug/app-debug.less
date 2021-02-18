@@ -20,6 +20,8 @@
         overflow: auto;
         white-space: pre-wrap;
         display: none;
+        color: @cp_preview-fg;
+        background-color: @cp_preview-bg;
     }
     #cp-app-debug-content {
         margin: 10px 50px;
@@ -33,6 +35,9 @@
         }
         .cp-app-debug-progress, .cp-app-debug-init {
             text-align: center;
+            input {
+                width: auto !important;
+            }
         }
         #cp-app-debug-loading {
             text-align: center;
@@ -49,20 +54,20 @@
                 max-width: 500px;
             }
             .cp-debug-ok {
-                background-color: #eeffee;
+                background-color: @cryptpad_color_light_green;
             }
             .cp-debug-nok {
-                background-color: #ffeeee;
+                background-color: @cryptpad_color_light_red;
             }
             tr:not(:first-child):hover {
-                background-color: rgba(0,0,0,0.1);
+                background-color: @cp_debug-hover;
             }
         }
         .fa-chevron-left, .fa-chevron-right {
             margin: 5px 20px;
             cursor: pointer;
             &:hover {
-                color: #777;
+                color: @cp_debug-icon-hover;
             }
         }
         .cp-app-debug-progress {

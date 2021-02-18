@@ -1229,6 +1229,7 @@ define([
                     var data = obj.data;
                     if (channels.indexOf(data.channel) !== -1) { return; }
                     var id = obj.id;
+                    if (data.channel) { channels.push(data.channel); }
                     var parsed = Hash.parsePadUrl(data.href || data.roHref);
                     if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                         !isFiltered(parsed.type, data)) {
@@ -1673,7 +1674,9 @@ define([
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY", pad.noCache);
+                    onReadyEvt.reg(function () {
+                        postMessage(clientId, "PAD_READY", pad.noCache);
+                    });
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -2067,6 +2070,7 @@ define([
                     //var decryptedMsg = crypto.decrypt(msg, true);
                     if (data.debug) {
                         msgs.push({
+                            serverHash: msg.slice(0,64),
                             msg: msg,
                             author: parsed[1][1],
                             time: parsed[1][5]

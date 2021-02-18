@@ -948,7 +948,7 @@ define([
                 $d.append(changePass);
             }
             if (owned) {
-                var deleteOwned = h('button.btn.btn-danger-alt', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
+                var deleteOwned = h('button.btn.btn-danger', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
                 var spinner = UI.makeSpinner();
                 UI.confirmButton(deleteOwned, {
                     classes: 'btn-danger'
@@ -992,8 +992,10 @@ define([
             // Also stop for shared folders
             if (parsed.hashData.type !== 'pad' || parsed.type === 'drive') { return h('div', content); }
 
+            var owned = Modal.isOwned(Env, data);
+
             // Request edit access
-            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref)) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
@@ -1028,7 +1030,6 @@ define([
 
             // Mute access requests
             var edPublic = priv.edPublic;
-            var owned = Modal.isOwned(Env, data);
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);

@@ -1198,9 +1198,10 @@ define([
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
+                        "name": metadataMgr.getUserData().name || Messages.anonymous,
                     },
                     "mode": "edit",
-                    "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
+                    "lang": (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {

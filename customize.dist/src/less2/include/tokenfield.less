@@ -5,7 +5,7 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
-    .ui-autocomplete {
+    ul.ui-autocomplete {
         z-index: 100001; // alertify + 1
     }
     .tokenfield {
@@ -40,28 +40,23 @@
             box-sizing: border-box;
             display: inline-flex;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: @cp_token-bg;
             white-space: nowrap;
             margin: 2px 0;
             margin-right: 5px;
             height: 24px;
             vertical-align: middle;
             cursor: default;
-            color: @cryptpad_text_col;
+            color: @cp_token-fg;
 
             &:hover {
-                background-color: rgba(0, 0, 0, 0.2);
+                background-color: @cp_token-bg-hover;
             }
             &.invalid {
                 background: none;
                 border: 1px solid transparent;
                 border-radius: 0;
-                border-bottom: 1px dotted #d9534f;
-            }
-            &.invalid.active {
-                background: #ededed;
-                border: 1px solid #ededed;
-                border-radius: 3px;
+                border-bottom: 1px dotted @cp_token-invalid;
             }
             .token-label {
                 display: inline-block;
@@ -74,6 +69,7 @@
                 opacity: 1;
                 font-family: Arial;
                 display: inline-block;
+                text-decoration: none !important;
                 line-height: 1.49em;
                 font-size: 1.1em;
                 margin-left: 5px;
@@ -81,16 +77,13 @@
                 height: 100%;
                 vertical-align: middle;
                 padding-right: 4px;
-            }
-            &.active {
-                border-color: rgba(82, 168, 236, 0.8);
-            }
-            &.duplicate {
-                border-color: #ebccd1;
+                color: @cp_token-fg;
+                &:hover {
+                    color: contrast(@cp_token-fg, darken(@cp_token-fg, 10%), lighten(@cp_token-fg, 10%));
+                }
             }
         }
         .token-input {
-            background: none;
             flex: 1;
             border: 0;
             padding: 0;

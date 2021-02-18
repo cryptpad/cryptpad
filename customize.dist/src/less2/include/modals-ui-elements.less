@@ -38,25 +38,19 @@
     // Properties modal
     .cp-app-prop {
         margin-bottom: 10px;
-        .cp-app-prop-hint {
-            color: @cryptpad_text_col;
-            font-size: 0.8em;
-            margin-bottom: 5px;
-        }
         .cp-app-prop-size-container {
             height: 20px;
-            background-color: @colortheme_logo-2;
+            background-color: @cryptpad_color_brand;
             margin: 10px 0;
             padding: 0;
             div {
                 height: 20px;
                 margin: 0;
                 padding: 0;
-                background-color: #CCCCCC;
+                background-color: @cryptpad_color_grey_500;
             }
         }
         .cp-app-prop-size-legend {
-            color: @colortheme_modal-fg;
             display: flex;
             margin: 10px 0;
             & > div {
@@ -73,10 +67,10 @@
                 margin-right: 10px;
             }
             .cp-app-prop-history-size-color {
-                background-color: #CCCCCC;
+                background-color: @cryptpad_color_grey_500;
             }
             .cp-app-prop-contents-size-color {
-                background-color: @colortheme_logo-2;
+                background-color: @cryptpad_color_brand;
             }
         }
     }
@@ -108,7 +102,7 @@
         position: relative;
         .cp-overlay {
             position: absolute;
-            background-color: rgba(255,255,255,0.5);
+            background-color: @cp_access-overlay;
             top: 0;
             bottom: 0;
             left: 0;
@@ -200,7 +194,7 @@
                 .cp-snapshot-buttons {
                     display: flex;
                 }
-                background-color: #DDD;
+                background-color: @cp_snapshots-hover;
             }
         }
     }
@@ -240,6 +234,7 @@
                         padding: 5px;
                     }
                 }
+                .markdown_extensions();
                 pre.mermaid {
                     overflow: unset;
                     margin-bottom: 0;
@@ -252,10 +247,11 @@
                     flex-flow: column;
                     svg {
                         flex: 1;
+                        color: @cp_markdown-block-fg;
                     }
                 }
                 .cp-spinner {
-                    border-color: @colortheme_logo-1;
+                    border-color: @cryptpad_color_brand;
                     border-top-color: transparent;
                 }
             }

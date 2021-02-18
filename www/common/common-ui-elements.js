@@ -24,10 +24,10 @@ define([
 
     UIElements.getSvgLogo = function () {
         var svg = (function(){/*
-<svg width="45" height="50" version="1.1" viewBox="0 0 11.906 13.229" xmlns="http://www.w3.org/2000/svg" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb">
- <path id="squares" d="m1.1842 0.63976 0.078593 5.614h4.693l5.844e-4 -5.614zm4.7749 5.614 4.383e-4 6.2231c1.8161-0.83261 4.6393-2.4183 4.691-6.1113l0.0016-0.11174z" fill-opacity=".39608"/>
- <path id="outline" d="m0.80493 0.26501 0.004684 0.37943 0.079911 6.475c0.024028 1.9418 0.81004 3.2247 1.8144 4.0729 1.0043 0.84824 2.2063 1.2937 3.0935 1.7018l0.16787 0.0775 0.16377-0.08657c0.7899-0.41719 1.9998-0.86054 3.028-1.6991 1.0282-0.83852 1.8614-2.1164 1.8614-4.0713v-3.689l-3.4016-3.1607zm0.75864 0.74949h5.2426v3.1854h3.4628v2.9148c0 1.7505-0.68311 2.7546-1.5854 3.4905-0.84909 0.69243-1.8906 1.1058-2.7348 1.5342-0.89552-0.40429-1.9335-0.8206-2.7611-1.5196-0.87538-0.73932-1.5269-1.7585-1.5485-3.5098zm5.9918 0.21646 2.3888 2.2196h-2.3888z" color="#000000" color-rendering="auto" dominant-baseline="auto" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stop-color="#000000" style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;inline-size:0;isolation:auto;mix-blend-mode:normal;shape-margin:0;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
- <path id="keyhole" d="m5.9073 4.8889a1.2769 1.2769 0 0 0-1.276 1.277 1.2769 1.2769 0 0 0 0.72454 1.1513l-0.4458 2.3541h1.9965l-0.4458-2.3541a1.2769 1.2769 0 0 0 0.72447-1.1512 1.2769 1.2769 0 0 0-1.2769-1.277 1.2769 1.2769 0 0 0-9.488e-4 0z" />
+<svg width="45" height="50" version="1.1" viewBox="0 0 11.906 13.229" xmlns="http://www.w3.org/2000/svg">
+ <path id="background" d="m1.0914 0.43939h6.464l3.2642 3.0329v3.6261c0 3.8106-3.1186 4.6934-4.8229 5.5936-1.8663-0.85843-4.7759-1.7955-4.8229-5.5936z" style="stroke-width:0"/>
+ <path id="squares" transform="matrix(.26458 0 0 .26458 -5.37e-5 0)" d="m4.125 1.6582 0.30469 21.82h18.242l0.001953-21.82h-18.549zm18.555 21.822 0.001953 24.188c7.0591-3.2362 18.032-9.399 18.232-23.754l0.007813-0.43359h-18.242z" style="fill-opacity:.4;stroke-width:.55042"/>
+ <path id="outline" transform="matrix(.26458 0 0 .26458 -5.37e-5 0)" d="m2.6504 0.19922 0.021484 1.4766 0.31055 25.172c0.093479 7.5478 3.1451 12.529 7.0488 15.826 3.9038 3.297 8.5769 5.029 12.025 6.6152l0.65039 0.30274 0.63477-0.33984c3.0702-1.6216 7.7769-3.3403 11.773-6.5996 3.9966-3.2593 7.2344-8.2277 7.2344-15.826v-14.336l-13.221-12.291zm2.9453 2.916h20.381v12.379h13.457v11.332c0 6.8038-2.6491 10.706-6.1562 13.566-3.2982 2.6898-7.3426 4.2502-10.623 5.9141-3.4806-1.5714-7.5236-3.1369-10.74-5.8535-3.4025-2.8737-5.9391-6.8355-6.0234-13.643zm23.289 0.83789 9.2871 8.6328h-9.2871zm-6.5176 14.223a4.9632 4.9632 0 0 0-4.8496 4.9629 4.9632 4.9632 0 0 0 2.8184 4.4746l-1.7324 9.1504h7.7598l-1.7324-9.1523a4.9632 4.9632 0 0 0 2.8145-4.4727 4.9632 4.9632 0 0 0-4.9629-4.9629 4.9632 4.9632 0 0 0-0.11523 0z" style="color-rendering:auto;color:#000000;dominant-baseline:auto;font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;image-rendering:auto;inline-size:0;isolation:auto;mix-blend-mode:normal;shape-margin:0;shape-padding:0;shape-rendering:auto;solid-color:#000000;stop-color:#000000;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
 </svg>
 */}).toString().slice(14,-3);
         return svg;
@@ -1179,7 +1179,18 @@ define([
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
+        var to;
         var todo = function (err, data) {
+            if (to) {
+                clearTimeout(to);
+                to = undefined;
+            }
+            if (err === 'RPC_NOT_READY') {
+                to = setTimeout(function () {
+                    common.getPinUsage(teamId, todo);
+                }, 1000);
+                return;
+            }
             if (err || !data) { return void console.error(err || 'No data'); }
 
             var usage = data.usage;
@@ -1849,6 +1860,13 @@ define([
         var oldUrl = '';
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
+            var privateData = metadataMgr.getPrivateData();
+            if (!priv.plan && privateData.plan) {
+                config.$initBlock.empty();
+                metadataMgr.off('change', updateButton);
+                UIElements.createUserAdminMenu(Common, config);
+                return;
+            }
             if (!myData) { return; }
             if (loadingAvatar) {
                 // Try again in 200ms
@@ -2087,6 +2105,18 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
+
+        if (privateData.offline) {
+            var onChange = function () {
+                var privateData = metadataMgr.getPrivateData();
+                if (privateData.offline) { return; }
+                UIElements.getPadCreationScreen(common, cfg, appCfg, cb);
+                metadataMgr.off('change', onChange);
+            };
+            metadataMgr.onChange(onChange);
+            return;
+        }
+
         var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
 
@@ -2130,6 +2160,7 @@ define([
 
         // Team pad
         var team;
+        // FIXME: broken wen cache is enabled
         var teamExists = privateData.teams && Object.keys(privateData.teams).length;
         var teamValue;
         // storeInTeam can be
@@ -2209,7 +2240,7 @@ define([
 
         // Password
         var password = h('div.cp-creation-password', [
-            UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
+            UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
                 UI.passwordInput({id: 'cp-creation-password-val'})
                 /*h('input#cp-creation-password-val', {
@@ -2545,7 +2576,7 @@ define([
         var info = h('p.cp-password-info', Messages.password_info);
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var $password = $(password);
-        var button = h('button', Messages.password_submit);
+        var button = h('button.btn.btn-primary', Messages.password_submit);
         cfg = cfg || {};
 
         if (cfg.value && !isError) {
@@ -2586,7 +2617,7 @@ define([
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
         var info = h('p.cp-password-info', Messages.burnAfterReading_warningAccess);
-        var button = h('button.primary', Messages.burnAfterReading_proceed);
+        var button = h('button.btn.primary', Messages.burnAfterReading_proceed);
 
         $(button).on('click', function () {
             cb();

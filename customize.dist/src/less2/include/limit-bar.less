@@ -17,8 +17,7 @@
             max-width: 100%;
             margin: 5px;
             box-sizing: border-box;
-            border-radius: 3px;
-            background: white;
+            background: @cp-limit-bar-bg;
             position: relative;
             text-align: center;
             width: ~"calc(100% - 10px)";
@@ -33,19 +32,19 @@
                 top: 0;
                 z-index: 1; // .usage
                 &.cp-limit-usage-normal {
-                    background: @colortheme_green;
+                    background: @cp-limit-bar-normal;
                 }
                 &.cp-limit-usage-warning {
-                    background: orange;
+                    background: @cp-limit-bar-warning;
                 }
                 &.cp-limit-usage-above {
-                    background: red;
+                    background: @cp-limit-bar-above;
                 }
             }
         }
 
         .cp-limit-usage-text {
-            color: @cryptpad_text_col;
+            color: @cp_limit-fg;
             margin-left: 5px;
             z-index: 2; // .usageText
             font-size: @colortheme_app-font-size-small;
@@ -66,6 +65,7 @@
                 padding-bottom: 0;
                 justify-content: center;
                 flex: 1;
+                border-radius: 0px;
             }
         }
     }

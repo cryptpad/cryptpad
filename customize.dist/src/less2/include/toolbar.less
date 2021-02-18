@@ -15,8 +15,9 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
-    @toolbar-bg-color-light: lighten(@bg-color, 30%);
-    @toolbar-bg-color-active: lighten(@bg-color, 20%);
+    @desat-color: desaturate(@bg-color, 20%);
+    @toolbar-bg-color-light: contrast(@cp_toolbar-fg, lighten(@bg-color, 30%), darken(@desat-color, 20%));
+    @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@desat-color, 10%));
 };
 
 .toolbar_main (
@@ -37,11 +38,10 @@
     .modal_main();
 };
 & {
-    @toolbar-color: @cryptpad_text_col;
-    @toolbar-color-light: lighten(@cryptpad_text_col, 10%);
+    @toolbar-color: @cp_toolbar-fg;
 
     .toolbar_vars();
-    @toolbar-top-bg: #eee;
+    @toolbar-top-bg: @cp_toolbar-bg;
     @toolbar_line-height: 32px;
     @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
@@ -60,7 +60,8 @@
 
     .cp-markdown-toolbar {
         height: @toolbar_line-height;
-        background-color: @colortheme_pad-toolbar-bg;
+        background-color: @cp_toolbar-bg;
+        color: @cp_toolbar-fg;
         display: none;
         button {
             height: @toolbar_line-height !important;
@@ -69,7 +70,7 @@
             .toolbar_button;
             font: normal normal normal 14px/1 FontAwesome;
             &:hover {
-                background-color: darken(@colortheme_pad-toolbar-bg, 5%);
+                background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
             &.cp-markdown-help { float: right; }
         }
@@ -102,7 +103,7 @@
         }
         background: transparent;
         &:hover {
-            background-color: rgba(50,50,50,0.3);
+            background-color: @cp_toolbar-fade3;
         }
     }
 
@@ -174,7 +175,7 @@
         .cp-toolbar-userlist-viewer {
             font-style: italic;
             padding: 5px;
-            background: rgba(0,0,0,0.1);
+            background: @cp_toolbar-fade1;
             margin: 2px 0;
         }
 
@@ -194,7 +195,7 @@
                 height: 48px;
                 padding: 5px;
                 margin: 2px 0;
-                background: rgba(0,0,0,0.1);
+                background: @cp_toolbar-fade1;
                 border-right: 3px solid transparent;
                 .avatar_main(30px);
                 .cp-avatar-default, media-tag {
@@ -203,7 +204,7 @@
                 &.cp-userlist-clickable {
                     cursor: pointer;
                     &:hover {
-                        background-color: rgba(0,0,0,0.3);
+                        background: @cp_toolbar-fade3;
                     }
                 }
                 .cp-toolbar-userlist-rightcol {
@@ -263,14 +264,11 @@
         .icons_main();
 
         li {
-            border: 1px solid @colortheme_modal-fg;
+            color: @cp_drive-fg;
+            border: 1px solid @cp_drive-icon-border;
             &:hover {
-                //border: 1px solid @colortheme_modal-fg;
-                background: @colortheme_logo_2_light;
-                color: @cryptpad_text_col;
-                .cptools {
-                    color: @cryptpad_text_col;
-                }
+                background: @cp_drive-icon-hover;
+                color: @cp_drive-fg;
             }
         }
         .cp-modal {
@@ -339,7 +337,7 @@
     }
 
     .cp-toolbar-userlist-drawer {
-        background-color: @colortheme_userlist-bg;
+        background-color: @cp_toolbar-bg;
         color: @toolbar-color;
         .cp-toolbar-userlist-drawer-close {
             color: @toolbar-color;
@@ -348,12 +346,13 @@
             color: @toolbar-color;
         }
         .cp-toolbar-userlist-name-input {
-            background-color: rgba(0,0,0,0.1);
+            background: @cp_toolbar-fade1;
         }
         .cp-toolbar-userlist-button {
             background: transparent;
+            color: @cryptpad_text_col;
             &:hover {
-                color: @toolbar-color-light;
+                color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-fg, 10%), lighten(@cp_toolbar-fg, 10%));
             }
         }
     }
@@ -365,8 +364,6 @@
                 outline-width: 0;
             }
         }
-
-        @toolbar-green: #5cb85c;
 
         box-sizing: border-box;
         padding: 0px;
@@ -402,6 +399,9 @@
 
         button {
             .toolbar_button;
+            &.cp-notifications-bell {
+                color: @cryptpad_text_col;
+            }
         }
 
         .cp-toolbar-limit {
@@ -422,26 +422,6 @@
 
         div {
             white-space: normal;
-        }
-
-        /*button, select {
-            height: @toolbar_line-height;
-            box-sizing: border-box;
-            padding: 3px 10px;
-            margin: 0;
-        }*/
-
-        select {
-            margin-left: 5px;
-            margin-right: 5px;
-            padding-left: 5px;
-            border: 1px solid #A6A6A6;
-            border-bottom-color: #979797;
-            vertical-align: top;
-            box-sizing: content-box;
-            option {
-                height: 24px;
-            }
         }
 
         &.cp-toolbar-notitle {
@@ -568,10 +548,7 @@
         }
 
         .cp-toolbar-limit {
-            color: @colortheme_toolbar-warn;
-        }
-        .cp-dropdown-content.cp-dropdown-left a {
-            color: black;
+            color: @cp_toolbar-warn;
         }
     }
 
@@ -594,7 +571,7 @@
             padding: 0;
             margin: 0 5px;
             font-size: @colortheme_app-font-size;
-            color: @colortheme_toolbar-warn;
+            color: @cp_toolbar-warn;
             .cp-pnp-msg {
                 padding-left: 5px;
                 font-family: @colortheme_font;
@@ -603,7 +580,7 @@
                     font-size: @colortheme_app-font-size;
                     font-family: @colortheme_font;
                     font-weight: bold;
-                    color: @colortheme_toolbar-warn;
+                    color: @cp_toolbar-warn;
                     &:hover {
                         text-decoration: underline;
                     }
@@ -624,7 +601,7 @@
             //flex: 1;
         }
         .cp-toolbar-title {
-            color: @cryptpad_text_col;
+            color: @cp_toolbar-fg;
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -759,7 +736,7 @@
                 }
                 &:hover {
                     border-color: transparent;
-                    background-color: rgba(50,50,50,0.1);
+                    background-color: @cp_toolbar-fade1;
                 }
                 span {
                     vertical-align: top;
@@ -769,7 +746,7 @@
                 }
             }
             .cp-notifications-empty {
-                color: black;
+                color: @cp_dropdown-fg;
                 padding: 5px;
             }
             button {
@@ -809,8 +786,13 @@
                 padding: 10px;
 
                 svg {
-                    fill: @toolbar-bg-color;
-                    fill: var(--toolbar-bg-color);
+                    #outline, #squares {
+                        fill: @toolbar-bg-color;
+                        fill: var(--toolbar-bg-color);
+                    }
+                    #background {
+                        fill: @cp_toolbar-logo-bg;
+                    }
                 }
 
                 img {
@@ -852,6 +834,7 @@
 
                 .cp-dropdown-content {
                     margin: 0;
+                    padding-bottom: 10px;
                 }
                 & > button {
                     display: flex;
@@ -862,7 +845,7 @@
                     padding: 0;
                     &:hover {
                         border-color: transparent;
-                        background-color: rgba(50,50,50,0.1);
+                        background-color: @cp_toolbar-fade1;
                     }
                     span {
                         text-align: center;
@@ -891,7 +874,7 @@
                 border-radius: 0;
                 background: transparent;
                 &:hover {
-                    background-color: rgba(0,0,0,0.2);
+                    background-color: @cp_toolbar-fade1;
                 }
             }
         }
@@ -900,7 +883,7 @@
     .cp-toolbar-history, .cp-toolbar-snapshots {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
-        color: @cryptpad_text_col;
+        color: @toolbar-color;
     }
     .cp-toolbar-snapshots {
         display: none;
@@ -928,7 +911,7 @@
         .cp-toolbar-snapshots-actions {
             button {
                 margin: 0 5px;
-                border: 1px solid @cryptpad_text_col;
+                border: 1px solid @toolbar-color;
                 text-transform: uppercase;
                 i:not(:last-child) {
                     margin-right: 5px;
@@ -939,7 +922,7 @@
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
-        color: @cryptpad_text_col;
+        color: @cp_toolbar-bottom-fg;
         button:hover, button.cp-toolbar-button-active {
             background-color: @toolbar-bg-color-active;
             background-color: var(--toolbar-bg-color-active);
@@ -1055,6 +1038,7 @@
                     &.fa-download { order: 30; }
                     &.fa-print { order: 35; }
                     &.fa-trash { order: 40; }
+                    &.cp-toolbar-icon-pad-settings { order: 75; }
                     &.fa-info-circle { order: 100; }
 
                     &.cp-toolbar-icon-help { order: 150; }
@@ -1065,7 +1049,7 @@
                 display: none;
             }
             .cp-toolbar-drawer-content {
-                box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+                box-shadow: 0px 1px 5px 0px @cp_shadow-color;
                 overflow-y: auto;
                 overflow-x: hidden;
                 &.cp-dropdown-visible {
@@ -1076,11 +1060,11 @@
                 top: @toolbar_line-height;
                 margin: -1px;
                 min-width: 50px;
-                background: @colortheme_dropdown-bg;
+                background: @cp_dropdown-bg;
                 display: flex;
                 flex-flow: column;
                 z-index: 10000; //Z cp-toolbar-drawer-content
-                color: black;
+                color: @cp_dropdown-fg;
                 .tools_unselectable();
                 .fa {
                     font-size: 17px;
@@ -1111,8 +1095,8 @@
                         vertical-align: baseline;
                     }
                     &:hover {
-                        background-color: @colortheme_dropdown-bg-hover !important;
-                        color: @colortheme_dropdown-color;
+                        background-color: @cp_dropdown-bg-hover !important;
+                        color: @cp_dropdown-fg;
                     }
                 }
             }
@@ -1120,7 +1104,7 @@
     }
 
     .cp-toolbar-spinner {
-        color: @cryptpad_text_col;
+        color: @cp_toolbar-fg;
         font-family: "Open Sans";
         font-size: 14px;
         padding: 0 8px;

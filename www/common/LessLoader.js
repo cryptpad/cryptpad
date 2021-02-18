@@ -93,6 +93,17 @@ define([
         xhr.send(null);
     };
 
+    var COLORTHEME = '/customize/src/less2/include/colortheme.less';
+    var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
+    //COLORTHEME_DARK = '/customize/src/less2/include/colortheme.less'; // TODO
+    var getColortheme = function () {
+        return window.CryptPad_theme;
+    };
+    var getColorthemeURL = function () {
+        if (window.CryptPad_theme === 'dark') { return COLORTHEME_DARK; }
+        return COLORTHEME;
+    };
+
     var lessEngine;
     var tempCache = { key: Math.random() };
     var getLessEngine = function (cb) {
@@ -108,15 +119,33 @@ define([
                 });
                 var doXHR = lessEngine.FileManager.prototype.doXHR;
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
+                    //console.error(url, COLORTHEME);
+                    var col = false;
+                    var _url = url;
+                    if (url === COLORTHEME) {
+                        col = true;
+                        url = getColorthemeURL();
+                        //console.warn(url);
+                    }
                     url = fixURL(url);
-                    var cached = tempCache[url];
+                    var cached = tempCache[_url];
                     if (cached && cached.res) {
                         var res = cached.res;
                         return void setTimeout(function () { callback(res[0], res[1]); });
                     }
                     if (cached) { return void cached.queue.push(callback); }
-                    cached = tempCache[url] = { queue: [ callback ], res: undefined };
+                    cached = tempCache[_url] = { queue: [ callback ], res: undefined };
                     return doXHR(url, type, function (text, lastModified) {
+                        if (col) {
+                            //console.warn(text, lastModified);
+                            if (getColortheme() === "custom") {
+                                // TODO COLOR: append custom theme here
+                                var custom = [
+                                    '@cryptpad_text_col: #FF0000;'
+                                ].join('\n');
+                                text += '\n'+custom;
+                            }
+                        }
                         cached.res = [ text, lastModified ];
                         var queue = cached.queue;
                         cached.queue = [];

@@ -7,7 +7,9 @@ body.cp-app-pad {
         @bg-color: @colortheme_apps[pad],
     );
 
-    @bg-color: #e3e3e3;
+    @bg-color: @cp_app-bg;
+    @toolbar-bg-active: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 10%), lighten(@cp_toolbar-bg, 10%));
+
 
     display: flex;
     flex-flow: column;
@@ -22,14 +24,88 @@ body.cp-app-pad {
         overflow: hidden;
     }
 
+    @media screen and (max-height: @browser_media-medium-screen),
+           screen and (max-width: @browser_media-medium-screen) {
+        #cp-app-pad-toc {
+            margin: 5px;
+            &.hidden {
+                margin: 1px;
+            }
+        }
+        #cp-app-pad-comments {
+            .cp-pad-show, .cp-pad-hide {
+                display: none;
+            }
+        }
+    }
+
+    #cp-app-pad-toc, #cp-app-pad-comments, #cp-app-pad-resize {
+        .cp-pad-show, .cp-pad-hide {
+            position: absolute;
+            cursor: pointer;
+            height: 28px;
+            line-height: 28px;
+            .fa { margin: 0 !important; }
+        }
+        &.hidden {
+            width: auto !important;
+            .cp-pad-show {
+                position: relative;
+            }
+            & > :not(.cp-pad-show) {
+                display: none;
+            }
+        }
+        &:not(.hidden) {
+            .cp-pad-show { display: none; }
+        }
+    }
+    #cp-app-pad-toc {
+        .cp-pad-show {
+            line-height: 25px;
+        }
+    }
+    #cp-app-pad-comments {
+        &.hidden {
+            .cp-pad-show.notif {
+                color: @cp_comments-notif;
+                border-color: @cryptpad_color_red;
+            }
+        }
+        .cp-pad-show {
+            line-height: 0px;
+        }
+    }
+    #cp-app-pad-resize {
+        order: 2;
+        height: 28px;
+        width: 36px;
+        margin-left: -40px;
+        margin-top: 10px;
+        margin-right: 0;
+        button {
+            color: @cp_pad-resize;
+            border-color: @cp_pad-resize;
+        }
+        &.hidden {
+            margin-left: -70px;
+            margin-right: 40px;
+        }
+    }
     #cp-app-pad-toc {
         @toc-level-indent: 15px;
 
         overflow-y: auto;
         margin-top: 10px;
         margin-left: 10px;
+        margin-right: 10px;
         width: 200px;
-        color: @cryptpad_text_col;
+        color: @cp_pad-fg;
+        //color: @cryptpad_text_col;
+        position: relative;
+        .cp-pad-show, .cp-pad-hide {
+            right: 0;
+        }
         h2 {
             font-size: 1.5rem;
         }
@@ -39,7 +115,7 @@ body.cp-app-pad {
             white-space: nowrap;
             text-overflow: ellipsis;
             a {
-                color: @cryptpad_text_col;
+                color: @cp_pad-fg;
             }
             &.cp-pad-toc-2 {
                 margin-left: @toc-level-indent;
@@ -49,9 +125,33 @@ body.cp-app-pad {
             }
         }
     }
+    #cp-app-pad-comments {
+        order: 3;
+        width: 330px;
+        //background-color: white;
+        margin: 10px;
+        position: relative;
+        .cp-pad-show, .cp-pad-hide {
+            left: 0;
+        }
+        h2 {
+            font-size: 1.5rem;
+            text-align: right;
+        }
+        .comments_main();
+    }
+    .cp-app-pad-comments-modal {
+        display: flex;
+        flex-flow: column;
+        max-height: 100%;
+        h2 {
+            text-align: left;
+        }
+    }
 
     .cke_toolbox_main {
-        background-color: @colortheme_pad-toolbar-bg;
+        background-color: @cp_toolbar-bg;
+        color: @cp_toolbar-fg;
         .cke_toolbar {
             height: 28px;
             padding: 2px 0;
@@ -62,12 +162,27 @@ body.cp-app-pad {
             height: 24px;
             align-items: center;
             padding: 4px;
+            color: @cryptpad_text_col;
         }
         .cke_button__print {
             display: none !important;
         }
-        .cke_button {
+        .cke_combo_on .cke_combo_button {
+            background-color: @toolbar-bg-active;
+            border-color: @toolbar-bg-active;
+        }
+        .cke_button, .cke_combo_button {
             .tools_unselectable();
+            &.cke_button_on, &.cke_combo_button:hover, &.cke_button_off:hover {
+                background-color: @toolbar-bg-active;
+                border-color: @toolbar-bg-active;
+            }
+            .cke_combo_text {
+                color: @cp_toolbar-fg;
+            }
+            .cke_button_icon {
+                filter: @cp_pad-icon-filter;
+            }
         }
     }
     .cke_wysiwyg_frame {
@@ -98,32 +213,32 @@ body.cp-app-pad {
         background-color: @bg-color;
         justify-content: center;
         iframe {
+            background-color: transparent;
             flex: 1;
             min-width: 0;
             order: 1;
         }
         div.cp-comment-bubble {
             position: relative;
-            order: 2;
             button {
                 .fa {
                     margin: 0 !important;
                 }
-                right: 20px;
                 position: absolute;
+                padding: 0 4px;
+                background: @cp_toolbar-bg;
+                margin-left: 0px;
+                margin-top: 20px;
+                line-height: unset;
+                &:hover {
+                    background: @toolbar-bg-active;
+                }
             }
-        }
-        #cp-app-pad-comments {
-            order: 3;
-            width: 330px;
-            //background-color: white;
-            margin: 0px 20px;
-            .comments_main();
         }
         &.cke_body_width {
             div.cp-comment-bubble {
                 button {
-                    right: 0px;
+                    margin-left: 30px;
                 }
             }
             iframe {
@@ -155,6 +270,20 @@ body.cp-app-pad {
 
     .cke_wysiwyg_frame {
         min-width: 60%;
+    }
+
+    .cp-pad-settings-dialog {
+        .cp-pad-settings-radio-container {
+            display: flex;
+            align-items: center;
+            .cp-radio, &>button {
+                margin-right: 20px;
+            }
+            margin-bottom: 20px;
+        }
+        .cp-app-prop-content {
+            margin-bottom: 0;
+        }
     }
 
     @media print {

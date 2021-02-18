@@ -298,6 +298,31 @@ define([
 
         // Remove everything
         Env.$container.html('');
+        var hideBtn = h('button.cp-pad-hide.btn.btn-default.fa.fa-chevron-right');
+        var showBtn = h('button.cp-pad-show.btn.btn-default', {
+            title: Messages.poll_comment_list
+        }, [
+            h('i.fa.fa-comment')
+        ]);
+
+
+        var store = window.cryptpadStore;
+        var key = 'hide-pad-comments';
+        $(hideBtn).click(function () {
+            Env.$container.addClass('hidden');
+            Env.localHide = true;
+            if (store) { store.put(key, '1'); }
+        });
+        var $showBtn = $(showBtn).click(function () {
+            Env.$container.removeClass('hidden');
+            Env.localHide = false;
+            if (store) { store.put(key, '0'); }
+        });
+        Env.$container.append([
+            showBtn,
+            hideBtn,
+            h('h2', Messages.poll_comment_list)
+        ]);
 
         // "show" tells us if we need to display the "comments" column or not
         var show = false;
@@ -595,11 +620,38 @@ define([
             });
         }
 
-        if (show) {
-            Env.$container.show();
+
+        // Hidden or visible? check pad settings first, then browser otherwise hide
+        var md = Util.clone(Env.metadataMgr.getMetadata());
+        var hide = false;
+        if (typeof(md.defaultComments) === "undefined") {
+            if (typeof(store.store[key]) === 'undefined') {
+                hide = !show; // Hide if there are no comments
+            } else {
+                hide = store.store[key] === '1';
+            }
         } else {
-            Env.$container.hide();
+            hide = md.defaultComments === 0;
         }
+        // If we've clicked on the show/hide buttons, always use our latest local value
+        if (typeof(Env.localHide) === "boolean") { hide = Env.localHide; }
+
+        if (Env.mobile) { hide = false; }
+
+        Env.$container.removeClass('hidden');
+        if (hide) { Env.$container.addClass('hidden'); }
+
+        $showBtn.removeClass('notif');
+        if (show) {
+            $showBtn.addClass('notif');
+        }
+
+        if (Env.mobile && Env.current) {
+            Env.$container.find('.cp-comment-container[data-uid]').hide();
+            Env.$container.find('.cp-comment-container[data-uid="' + Env.current + '"]').show();
+        }
+
+        Env.$container.show();
     };
 
     var onChange = function(Env) {
@@ -703,39 +755,29 @@ define([
     };
     var updateBubble = function(Env) {
         if (!Env.bubble) { return; }
-        var pos = Env.bubble.node.getBoundingClientRect();
-        if (pos.y < 0 || pos.y > Env.$inner.outerHeight()) {
-            //removeCommentBubble(Env);
-        }
-        Env.bubble.button.setAttribute('style', 'top:' + pos.y + 'px');
+        var pos = Env.bubble.range.getClientRects()[0];
+        var left = pos.x + pos.width;
+        Env.bubble.button.setAttribute('style', 'top:' + pos.y + 'px; left: '+left+'px');
     };
     var addCommentBubble = function(Env) {
         var ranges = Env.editor.getSelectedRanges();
         if (!ranges.length) { return; }
-        var el = ranges[0].endContainer || ranges[0].startContainer;
-        var node = el && el.$;
-        if (!node) { return; }
-        if (node.nodeType === Node.TEXT_NODE) {
-            node = node.parentNode;
-            if (!node) { return; }
-        }
-        var pos = node.getBoundingClientRect();
-        var y = pos.y;
-        if (y < 0 || y > Env.$inner.outerHeight()) { return; }
+
         var button = h('button.btn.btn-secondary', {
-            style: 'top:' + y + 'px;',
             title: Messages.comments_comment
-        }, h('i.fa.fa-comment'));
+        }, h('i.fa.fa-commenting'));
         Env.bubble = {
-            node: node,
+            range: ranges[ranges.length-1],
             button: button
         };
         $(button).click(function(e)  {
             e.stopPropagation();
             Env.editor.execCommand('comment');
             Env.bubble = undefined;
+            removeCommentBubble(Env);
         });
-        Env.$contentContainer.append(h('div.cp-comment-bubble', button));
+        Env.$contentContainer.find('iframe').before(h('div.cp-comment-bubble', button));
+        updateBubble(Env);
     };
 
     var isEditable = function (document) {
@@ -762,11 +804,13 @@ define([
             // Remove active class on other comments
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$container.find('.cp-comment-form').remove();
+            Env.$container.removeClass('hidden');
+            Env.localHide = false;
             var form = getCommentForm(Env, false, function(val) {
                 $(form).remove();
                 Env.$inner.focus();
 
-                if (!val) { return; }
+                if (!val) { addCommentBubble(Env); return; }
                 var applicable = Env.editor.plugins.comments.isApplicable();
                 if (!applicable || !isEditable(Env.ifrWindow.document)) {
                     // text has been deleted by another user while we were typing our comment?
@@ -785,6 +829,9 @@ define([
                         v: canonicalize(Env.editor.getSelection().getSelectedText())
                     }]
                 };
+
+                Env.current = uid;
+
                 // There may be a race condition between updateMetadata and addMark that causes
                 //  * updateMetadata first:  comment not rendered (redrawComments called
                 //                           before addMark)
@@ -798,7 +845,15 @@ define([
 
                 Env.oldComments = undefined;
             });
-            Env.$container.prepend(form).show();
+
+            Env.$container.show();
+            Env.$container.find('> h2').after(form);
+
+            if (Env.modal) {
+                UI.openCustomModal(Env.modal);
+                Env.current = undefined;
+                Env.$container.find('.cp-comment-container[data-uid]').hide();
+            }
         };
 
 
@@ -826,6 +881,8 @@ define([
 
     var ready = function(Env) {
         Env.ready = 0;
+
+        onChange(Env);
 
         // If you're the only edit user online, clear "deleted" comments
         if (!Env.common.isLoggedIn()) { return; }
@@ -892,7 +949,16 @@ define([
             var $comment = $(e.target);
             var uid = $comment.attr('data-uid');
             if (!uid) { return; }
-            Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click();
+            if (Env.modal) {
+                UI.openCustomModal(Env.modal);
+                Env.current = uid;
+                Env.$container.find('.cp-comment-container[data-uid]').hide();
+                setTimeout(function () {
+                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').show().click();
+                });
+            } else {
+                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click();
+            }
         });
 
         var call = function(f) {

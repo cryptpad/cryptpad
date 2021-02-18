@@ -7,6 +7,15 @@ define([
 ], function (Config, h, Msg, Pages, Feedback) {
     var urlArgs = Config.requireConf.urlArgs;
 
+    var logoLink = function (alt, src, url, cls) {
+        var img = h('img' + (cls || ''), {
+            src: src + '?' + urlArgs,
+            alt: alt,
+        });
+        if (!url) { return img; }
+        return h('a', { href: url, }, img);
+    };
+
     return function () {
         return h('div#cp-main', [
             Pages.infopageTopbar(),
@@ -20,7 +29,7 @@ define([
                         Pages.setHTML(h('span'), Msg.whatis_collaboration_info),
                     ]),
                     h('div.col-md-6', [
-                        h('img', {
+                        h('img.cp-img-invert', {
                             src: '/customize/images/collaboration.png?' + urlArgs,
                             alt: '',
                             'aria-hidden': 'true'
@@ -66,26 +75,17 @@ define([
                         }),
                     ]),
                     h('div.col-md-6.order-md-1.small-logos', [
-                        h('img', {
-                            src: '/customize/images/logo_ngi.png?' + urlArgs,
-                            alt: 'NGI Award 2019'
-                        }),
-                        h('img', {
-                            src: '/customize/images/logo_nlnet.svg?' + urlArgs,
-                            alt: 'NLNet Foundation logo'
-                        }),
-                        h('img', {
-                            src: '/customize/images/logo_bpifrance.svg?' + urlArgs,
-                            alt: 'BPI France logo'
-                        }),
-                        h('img', {
-                            src: '/customize/images/logo_moss.jpg?' + urlArgs,
-                            alt: 'Mozilla Open Source Support logo'
-                        }),
-                        h('img', {
-                            src: '/customize/images/logo_ngi_trust.png?' + urlArgs,
-                            alt: 'NGI Trust logo'
-                        }),
+                        logoLink('NGI Award 2019', '/customize/images/logo_ngi.png',
+                            'https://www.ngi.eu/', '.cp-img-invert'),
+                        logoLink('NLnet Foundation logo', '/customize/images/logo_nlnet.svg',
+                            'https://nlnet.nl', '.cp-img-invert'),
+
+                        logoLink('BPI France logo', '/customize/images/logo_bpifrance.svg',
+                            'https://bpifrance.com'),
+                        logoLink('Mozilla Open Source Support logo', '/customize/images/logo_moss.jpg',
+                            'https://www.mozilla.org/en-US/moss/'),
+                        logoLink('NGI Trust logo', '/customize/images/logo_ngi_trust.png',
+                            'https://www.ngi.eu/ngi-projects/ngi-trust/'),
                     ]),
                 ]),
                 h('div.row.cp-page-section', [

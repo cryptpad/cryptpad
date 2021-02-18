@@ -13,20 +13,15 @@
     }
 }
 & {
-    @leftside-bg: @colortheme_sidebar-left-bg;
-    @leftside-color: @colortheme_sidebar-left-fg;
-    @rightside-color: @colortheme_sidebar-right-fg;
-    @description-color: @colortheme_sidebar-description;
-
     #cp-sidebarlayout-container {
         font-size: 16px;
         display: flex;
         flex: 1;
         min-height: 0;
         #cp-sidebarlayout-leftside {
-            color: @leftside-color;
+            color: @cp_sidebar-left-fg;
             width: 250px;
-            background: @leftside-bg;
+            background: @cp_sidebar-left-bg;
             display: flex;
             flex-flow: column;
             .cp-sidebarlayout-categories {
@@ -71,12 +66,16 @@
         #cp-sidebarlayout-rightside {
             flex: 1;
             padding: 5px 20px;
-            color: @rightside-color;
+            background: @cp_sidebar-right-bg;
+            color: @cp_sidebar-right-fg;
             overflow: auto;
             padding-bottom: 200px;
 
             // Following rules are only in settings
             .cp-sidebarlayout-element {
+                pre {
+                    color: @cryptpad_text_col;
+                }
                 label:not(.noTitle), .label {
                     display: block;
                     font-weight: bold;
@@ -84,7 +83,7 @@
                 }
                 .cp-sidebarlayout-description {
                     display: block;
-                    color: @description-color;
+                    color: @cp_sidebar-hint;
                     margin-bottom: 5px;
                     p {
                         margin-bottom: 0;
@@ -111,7 +110,7 @@
                 input {
                     flex: 1;
                     //border-radius: 0.25em 0 0 0.25em;
-                    border: 1px solid #adadad;
+                    border: 1px solid @cryptpad_color_grey_500;
                     border-right: 0px;
                 }
                 button {
@@ -131,38 +130,6 @@
             span.cp-password-container {
                 margin-bottom: 1px;
             }
-/*
-            button.btn {
-                @button-bg: @colortheme_sidebar-button-bg;
-                @button-red-bg: @colortheme_sidebar-button-red-bg;
-                @button-alt-bg: @colortheme_sidebar-button-alt-bg;
-                background-color: @button-bg;
-                border-color: darken(@button-bg, 10%);
-                color: white;
-                .fa {
-                    margin-right: 0.2em;
-                }
-                &:hover {
-                    background-color: darken(@button-bg, 10%);
-                }
-                &.btn-secondary {
-                    background-color: @button-alt-bg;
-                    border-color: darken(@button-alt-bg, 10%);
-                    color: black;
-                    &:hover {
-                        background-color: darken(@button-alt-bg, 10%);
-                    }
-                }
-                &.btn-danger {
-                    background-color: @button-red-bg;
-                    border-color: darken(@button-red-bg, 10%);
-                    color: white;
-                    &:hover {
-                        background-color: darken(@button-red-bg, 10%);
-                    }
-                }
-            }
-*/
         }
         @media screen and (max-width: @browser_media-medium-screen) {
             flex-flow: column;

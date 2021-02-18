@@ -50,9 +50,11 @@ define([
         'quota': [
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
+            'cp-admin-getquota',
             'cp-admin-getlimits',
         ],
         'stats': [
+            'cp-admin-refresh-stats',
             'cp-admin-active-sessions',
             'cp-admin-active-pads',
             'cp-admin-open-files',
@@ -62,6 +64,9 @@ define([
         'support': [
             'cp-admin-support-list',
             'cp-admin-support-init'
+        ],
+        'performance': [
+            'cp-admin-performance-profiling',
         ]
     };
 
@@ -463,49 +468,123 @@ define([
         return $div;
     };
 
+    create['getquota'] = function () {
+        var key = 'getquota';
+        var $div = makeBlock(key, true);
+
+        var input = h('input#cp-admin-getquota', {
+            type: 'text'
+        });
+        var $input = $(input);
+
+        var $button = $div.find('button');
+        $button.before(h('div.cp-admin-setlimit-form', [
+            input,
+        ]));
+
+        $button.click(function () {
+            var val = $input.val();
+            if (!val || !val.trim()) { return; }
+            var key = Keys.canonicalize(val);
+            if (!key) { return; }
+            $input.val('');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_USER_TOTAL_SIZE',
+                data: key
+            }, function (e, obj) {
+                if (e || (obj && obj.error)) {
+                    console.error(e || obj.error);
+                    return void UI.warn(Messages.error);
+                }
+                var size = Array.isArray(obj) && obj[0];
+                if (typeof(size) !== "number") { return; }
+                UI.alert(Util.getPrettySize(size, Messages));
+            });
+        });
+
+        return $div;
+    };
+
+    var onRefreshStats = Util.mkEvent();
+
+    create['refresh-stats'] = function () {
+        var key = 'refresh-stats';
+        var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
+        var $btn = $(h('button.btn.btn-primary', Messages.oo_refresh));
+        $btn.click(function () {
+            onRefreshStats.fire();
+        });
+        $div.append($btn);
+        return $div;
+    };
+
     create['active-sessions'] = function () {
         var key = 'active-sessions';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'ACTIVE_SESSIONS',
-        }, function (e, data) {
-            var total = data[0];
-            var ips = data[1];
-            $div.append(h('pre', total + ' (' + ips + ')'));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ACTIVE_SESSIONS',
+            }, function (e, data) {
+                var total = data[0];
+                var ips = data[1];
+                $div.find('pre').remove();
+                $div.append(h('pre', total + ' (' + ips + ')'));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['active-pads'] = function () {
         var key = 'active-pads';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'ACTIVE_PADS',
-        }, function (e, data) {
-            console.log(e, data);
-            $div.append(h('pre', String(data)));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ACTIVE_PADS',
+            }, function (e, data) {
+                console.log(e, data);
+                $div.find('pre').remove();
+                $div.append(h('pre', String(data)));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['open-files'] = function () {
         var key = 'open-files';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'GET_FILE_DESCRIPTOR_COUNT',
-        }, function (e, data) {
-            console.log(e, data);
-            $div.append(h('pre', String(data)));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_FILE_DESCRIPTOR_COUNT',
+            }, function (e, data) {
+                console.log(e, data);
+                $div.find('pre').remove();
+                $div.append(h('pre', String(data)));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['registered'] = function () {
         var key = 'registered';
         var $div = makeBlock(key);
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'REGISTERED_USERS',
-        }, function (e, data) {
-            console.log(e, data);
-            $div.append(h('pre', String(data)));
-        });
+        var onRefresh = function () {
+            $div.find('pre').remove();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'REGISTERED_USERS',
+            }, function (e, data) {
+                console.log(e, data);
+                $div.find('pre').remove();
+                $div.append(h('pre', String(data)));
+            });
+        };
+        onRefresh();
+        onRefreshStats.reg(onRefresh);
         return $div;
     };
     create['disk-usage'] = function () {
@@ -618,7 +697,7 @@ define([
             var premium = t.some(function (msg) {
                 var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
                 if (ed !== _ed) { return; }
-                return Util.find(t[0], ['content', 'msg', 'content', 'sender', 'plan']);
+                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']);
             });
             var lastMsg = t[t.length - 1];
             var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
@@ -852,6 +931,54 @@ define([
         return;
     };
 
+    create['performance-profiling'] = function () {
+        var $div = makeBlock('performance-profiling');
+
+        var body = h('tbody');
+
+        var table = h('table#cp-performance-table', [
+            h('thead', [
+                h('th', Messages.admin_performanceKeyHeading),
+                h('th', Messages.admin_performanceTimeHeading),
+                h('th', Messages.admin_performancePercentHeading),
+            ]),
+            body,
+        ]);
+
+        $div.append(table);
+
+        var appendRow = function (key, time, percent) {
+            console.log("[%s] %ss running time (%s%)", key, time, percent);
+            body.appendChild(h('tr', [ key, time, percent ].map(function (x) {
+                return h('td', x);
+            })));
+        };
+
+        var process = function (_o) {
+            var o = _o[0];
+            var sorted = Object.keys(o).sort(function (a, b) {
+              if (o[b] - o[a] <= 0) { return -1; }
+              return 1;
+            });
+            var total = 0;
+            sorted.forEach(function (k) { total += o[k]; });
+            sorted.forEach(function (k) {
+                var percent = Math.floor((o[k] / total) * 1000) / 10;
+                appendRow(k, o[k], percent);
+            });
+        };
+
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'GET_WORKER_PROFILES',
+        }, function (e, data) {
+            if (e) { return void console.error(e); }
+            //console.info(data);
+            process(data);
+        });
+
+        return $div;
+    };
+
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
     };
@@ -861,6 +988,15 @@ define([
             APP.$rightside.find('.'+c).show();
         });
     };
+
+    var SIDEBAR_ICONS = {
+        general: 'fa fa-user-o',
+        stats: 'fa fa-line-chart',
+        quota: 'fa fa-hdd-o',
+        support: 'fa fa-life-ring',
+        performance: 'fa fa-heartbeat',
+    };
+
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
@@ -873,10 +1009,10 @@ define([
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
-            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
-            if (key === 'stats') { $category.append($('<span>', {'class': 'fa fa-line-chart'})); }
-            if (key === 'quota') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
-            if (key === 'support') { $category.append($('<span>', {'class': 'fa fa-life-ring'})); }
+            var iconClass = SIDEBAR_ICONS[key];
+            if (iconClass) {
+                $category.append($('<span>', {'class': iconClass}));
+            }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');

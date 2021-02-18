@@ -101,11 +101,10 @@
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            color: #666;
+            color: fade(@cryptpad_text_col, 80%);
             .cp-support-ispremium {
                 padding: 0 5px;
-                color: @colortheme_cp-red;
-                background-color: lighten(@colortheme_cp-red, 25%);
+                background-color: @cp_admin-premium-bg;
             }
         }
     }
@@ -118,19 +117,19 @@
             }
         }
         .cp-support-list-message {
+            .cp-support-showdata {
+                background-color: lighten(@cp_admin-last-bg, 5%);
+            }
             &:last-child:not(.cp-support-fromadmin)  {
-                color: @colortheme_cp-red;
-                background-color: lighten(@colortheme_form-warning, 25%);
-                .cp-support-showdata {
-                    background-color: lighten(@colortheme_form-warning, 30%);
-                }
+                color: @cp_admin-last-fg;
+                background-color: @cp_admin-last-bg;
             }
 
             &:last-child {
                 &.cp-support-frompremium {
-                    background-color: lighten(@colortheme_cp-red, 25%);
+                    background-color: @cp_admin-premium-bg;
                     .cp-support-showdata {
-                        background-color: lighten(@colortheme_cp-red, 30%);
+                        background-color: fade(@cp_admin-premium-bg, 10%);
                     }
                 }
             }
@@ -160,10 +159,18 @@
     }
 
     .cp-support-fromadmin {
-        color: @colortheme_logo-2;
-        background-color: #FFF;
-        .cp-support-message-content {
-            color: @colortheme_logo-2;
+        background-color: @cp_admin-isadmin-bg !important;
+        .cp-support-message-from, .cp-support-showdata {
+            color: @cryptpad_text_col;
+            background-color: fade(@cp_admin-isadmin-bg, 10%) !important;
+        }
+    }
+
+    table#cp-performance-table {
+        td, th {
+            padding: 5px;
+            color: @cryptpad_text_col;
+            border: 1px solid @cryptpad_text_col;
         }
     }
 

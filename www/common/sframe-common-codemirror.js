@@ -379,10 +379,12 @@ define([
 
         exp.configureTheme = function (Common, cb) {
             /*  Remember the user's last choice of theme using localStorage */
-            var themeKey = ['codemirror', 'theme'];
+            var isDark = window.CryptPad_theme === "dark";
+            var themeKey = ['codemirror', isDark ? 'themedark' : 'theme'];
+            var defaultTheme = isDark ? 'cryptpad-dark' : 'default';
 
             var todo = function (err, lastTheme) {
-                lastTheme = lastTheme || 'default';
+                lastTheme = lastTheme || defaultTheme;
                 var options = [];
                 Themes.forEach(function (l) {
                     options.push({
