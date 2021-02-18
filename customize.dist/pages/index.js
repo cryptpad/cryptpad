@@ -121,8 +121,14 @@ define([
         ];
 
         var notice;
+/*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
+    If the text is the key for the translation system then then the most appropriate translated text
+    will be displayed. Otherwise, the direct text will be included as HTML.
+*/
         if (AppConfig.homeNotice) {
-            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), AppConfig.homeNotice));
+            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), [
+                Msg[AppConfig.homeNotice] || AppConfig.homeNotice
+            ]));
         }
 
         return [
