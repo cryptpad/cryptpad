@@ -189,7 +189,8 @@ define([
         });
     };
 
-    var onCacheReady = function (ctx, id, lm, roster, keys, cId, cb) {
+    var onCacheReady = function (ctx, id, lm, roster, keys, cId, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         if (ctx.cache[id]) { return void cb(); }
         var proxy = lm.proxy;
         var team = {
@@ -493,7 +494,7 @@ define([
                     ctx.updateProgress({
                         progress: ctx.progress
                     });
-                    onCacheReady(ctx, id, lm, roster, keys, null, cb);
+                    onCacheReady(ctx, id, lm, roster, keys, null, waitFor(cb));
                     this.check = function () {};
                 }
             };
@@ -1905,6 +1906,7 @@ define([
             openChannel(ctx, teams[id], id, waitFor(function (err) {
                 if (err) {
                     delete ctx.onReadyHandlers[id];
+                    delete ctx.cache[id];
                     var txt = typeof(err) === "string" ? err : (err.type || err.message);
                     Feedback.send("TEAM_LOADING_ERROR="+txt);
                     return void console.error(err);
