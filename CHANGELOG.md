@@ -10,6 +10,8 @@
 * OnlyOffice sheets
   * use configured language from CryptPad
   * fix a sorting issue caused by the overly eager suppression of a modal
+  * support multiple locks per-user
+    * not backwards compatible... restart server when updating!
 * rich text
   * use white background for rich text documents even in dark mode
   * display button to adjust document width inline instead of in toolbar
@@ -32,17 +34,23 @@
   * autocomplete dropdown styles weren't applied
   * notifications bell now uses same text color as toolbar title
   * filepicker background color
-* chat colors
-  * in pads
-  * in the contacts app
+* chat:
+  * colors
+    * in pads
+    * in the contacts app
+  * spinner
+    * correctly hidden when the chat finishes initializing
+      * caused by insufficient selector specificity
 * server updates
   * `npm i` to get latest dependencies
   * messages are not acknowledged or broadcast until they have been validated and written to the disk
     * see [#553](https://github.com/xwiki-labs/cryptpad/issues/553)
-  * optimized GET_OLDER_HISTORY
+  * ~~optimized GET_OLDER_HISTORY~~
+    * removed, presumably due to a bug
 * debugging app
   * serverHash is included in the history of decrypted messages
 * link to the docs from the support page's ticket creation interface
+* completion of unowned uploads was broken by a change introduced in late december
 
 # 4.1.0 (B)
 
