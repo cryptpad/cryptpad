@@ -989,6 +989,7 @@ define([
             deleteOfflineLocks();
             // Prepare callback
             if (cpNfInner) {
+                APP.waitLock = Util.mkEvent(true);
                 var onPatchSent = function (again) {
                     if (!again) { cpNfInner.offPatchSent(onPatchSent); }
                     // Answer to our onlyoffice
@@ -1004,6 +1005,8 @@ define([
                             type: "getLock",
                             locks: getLock()
                         });
+                        APP.waitLock.fire();
+                        delete APP.waitLock;
                     } else {
                         if (!isLockedModal.modal) {
                             isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
@@ -1127,10 +1130,19 @@ define([
                         case "isSaveLock":
                             // TODO ping the server to check if we're online first?
                             if (!offline) {
-                                send({
-                                    type: "saveLock",
-                                    saveLock: false
-                                }, true);
+                                if (APP.waitLock) {
+                                    APP.waitLock.reg(function () {
+                                        send({
+                                            type: "saveLock",
+                                            saveLock: false
+                                        }, true);
+                                    });
+                                } else {
+                                    send({
+                                        type: "saveLock",
+                                        saveLock: false
+                                    }, true);
+                                }
                             }
                             break;
                         case "getLock":
