@@ -1356,7 +1356,7 @@ define([
                                 var unsaved = APP.unsavedChanges;
                                 delete APP.unsavedChanges;
                                 rtChannel.sendMsg(unsaved, null, function (err, hash) {
-                                    if (err) { return; }
+                                    if (err) { return void UI.warn(Messages.error); } // XXX Better error message?
                                     // This is supposed to be a "send" function to tell our OO
                                     // to unlock the cell. We use this to know that the patch was
                                     // correctly sent so that we can apply it to our OO too.
@@ -2040,6 +2040,28 @@ define([
                 }).filter(Boolean);
                 sframeChan.query('EV_OO_PIN_IMAGES', toPin);
             }
+        };
+
+        var setStrictEditing = function () {
+            if (APP.isFast) { return; }
+            var editor = getEditor();
+            var editing = editor.asc_isDocumentModified();
+            if (editing) {
+                evOnPatch.fire();
+            } else {
+                evOnSync.fire();
+            }
+        };
+        APP.onFastChange = function (isFast) {
+            APP.isFast = isFast;
+            if (isFast) {
+                if (APP.hasChangedInterval) {
+                    window.clearInterval(APP.hasChangedInterval)
+                }
+                return;
+            }
+            setStrictEditing();
+            APP.hasChangedInterval = window.setInterval(setStrictEditing, 500);
         };
 
         APP.getContent = function () { return content; };
