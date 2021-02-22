@@ -1,7 +1,7 @@
 {
     "main_title": "Cryptpad: Zero Knowledge, Editor Colaborativo en Tiempo Real",
     "type": {
-        "pad": "Pad",
+        "pad": "Texto enriquecido",
         "code": "Código",
         "poll": "Encuesta",
         "slide": "Presentación",
