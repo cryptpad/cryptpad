@@ -2056,7 +2056,7 @@ define([
             APP.isFast = isFast;
             if (isFast) {
                 if (APP.hasChangedInterval) {
-                    window.clearInterval(APP.hasChangedInterval)
+                    window.clearInterval(APP.hasChangedInterval);
                 }
                 return;
             }
