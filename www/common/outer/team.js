@@ -1041,6 +1041,7 @@ define([
         if (!teamId) { return void cb({error: 'EINVAL'}); }
         var team = ctx.teams[teamId];
         if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (team.offline) { return void cb({error: 'OFFLINE'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         team.roster.metadata(data.metadata, function (err) {
             if (err) { return void cb({error: err}); }
