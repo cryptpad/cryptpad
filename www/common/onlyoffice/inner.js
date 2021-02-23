@@ -989,7 +989,12 @@ define([
             deleteOfflineLocks();
             // Prepare callback
             if (cpNfInner) {
-                APP.waitLock = Util.mkEvent(true);
+                var waitLock = APP.waitLock = Util.mkEvent(true);
+                setTimeout(function () {
+                    // Make sure the waitLock is never stuck
+                    waitLock.fire();
+                    if (waitLock === APP.waitLock) { delete APP.waitLock; }
+                }, 5000);
                 var onPatchSent = function (again) {
                     if (!again) { cpNfInner.offPatchSent(onPatchSent); }
                     // Answer to our onlyoffice
@@ -1005,8 +1010,8 @@ define([
                             type: "getLock",
                             locks: getLock()
                         });
-                        APP.waitLock.fire();
-                        delete APP.waitLock;
+                        waitLock.fire();
+                        if (waitLock === APP.waitLock) { delete APP.waitLock; }
                     } else {
                         if (!isLockedModal.modal) {
                             isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
