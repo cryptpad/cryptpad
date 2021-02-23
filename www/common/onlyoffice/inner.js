@@ -213,6 +213,19 @@ define([
             }
         };
 
+        // Make sure a former tab on the same worker doesn't have remaining locks
+        var checkClients = function (clients) {
+            Object.keys(content.ids).forEach(function (id) {
+                var tabId = Number(id.slice(33)); // remove the netflux ID and the "-"
+                if (clients.indexOf(tabId) === -1) {
+                    removeClient({
+                        id: tabId
+                    });
+                }
+            });
+        };
+
+
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var title = common.getMetadataMgr().getMetadataLazy().title;
@@ -728,6 +741,7 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'READY':
+                        checkClients(obj.data);
                         cb();
                         break;
                     case 'LEAVE':
@@ -1357,6 +1371,7 @@ define([
                             } catch (e) {}
                         } else {
                             setEditable(true);
+                            handleNewLocks({}, content.locks);
                             if (APP.unsavedChanges) {
                                 var unsaved = APP.unsavedChanges;
                                 delete APP.unsavedChanges;

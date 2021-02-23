@@ -40,7 +40,7 @@ define([
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
             getHistory(ctx, client, function () {
-                ctx.emit('READY', '', [client]);
+                ctx.emit('READY', chan.clients, [client]);
             });
 
             // ==> And push the new tab to the list
@@ -149,7 +149,7 @@ define([
             }
             // End of history: emit READY
             if (parsed.state && parsed.state === 1 && parsed.channel) {
-                ctx.emit('READY', '', chan.clients);
+                ctx.emit('READY', chan.clients, chan.clients);
                 return;
             }
             if (parsed.error && parsed.channel) { return; }
