@@ -51,6 +51,11 @@
   * serverHash is included in the history of decrypted messages
 * link to the docs from the support page's ticket creation interface
 * completion of unowned uploads was broken by a change introduced in late december
+* assertions
+  * remove /assert/translations/ and related code
+  * refactor /assert/
+  * introduce /checkup/ page for detecting incorrect instance configuration
+* fix tippy popper color
 
 # 4.1.0 (B)
 

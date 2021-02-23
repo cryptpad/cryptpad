@@ -1053,6 +1053,7 @@ define([
                             spinner.hide();
                             var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
                                                                           : Messages.error;
+                            console.error(err);
                             return void UI.warn(text);
                         }
                         spinner.done();
