@@ -280,6 +280,7 @@ define([
                     isNew: isNew,
                     network: ctx.store.network,
                     store: team,
+                    Store: ctx.Store,
                     isNewChannel: ctx.Store.isNewChannel
                 }, id, data, cb);
             };

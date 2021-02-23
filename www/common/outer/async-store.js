@@ -67,6 +67,8 @@ define([
             modules: {}
         };
 
+        Store.onReadyEvt = onReadyEvt;
+
         var getStore = function (teamId) {
             if (!teamId) { return store; }
             try {
@@ -2242,6 +2244,7 @@ define([
                 isNew: isNew,
                 network: store.network || store.networkPromise,
                 store: s,
+                Store: Store,
                 isNewChannel: Store.isNewChannel
             }, id, data, cb);
         };
