@@ -855,7 +855,6 @@ define([
                     var crypto = Crypto.createEncryptor(_secret.keys);
                     nThen(function (waitFor) {
                         // If we already have metadata, use it, otherwise, try to get it
-                        console.error(metadata);
                         if (metadata && metadata.owners) { return; }
 
                         Cryptpad.getPadMetadata({
