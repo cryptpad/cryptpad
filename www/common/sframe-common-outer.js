@@ -845,7 +845,7 @@ define([
                     var metadata = data.metadata;
                     var add = data.add;
                     var _secret = secret;
-                    if (metadata && (metadata.href || metadata.roHref)) {
+                    if (metadata && (metadata.href || metadata.roHref) && !metadata.fakeHref) {
                         var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
                         _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
                     }
@@ -855,7 +855,8 @@ define([
                     var crypto = Crypto.createEncryptor(_secret.keys);
                     nThen(function (waitFor) {
                         // If we already have metadata, use it, otherwise, try to get it
-                        if (metadata) { return; }
+                        console.error(metadata);
+                        if (metadata && metadata.owners) { return; }
 
                         Cryptpad.getPadMetadata({
                             channel: secret.channel
