@@ -190,7 +190,7 @@ define([
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners
                 },
-                onRejected: onRejected
+                //onRejected: onRejected // XXX not working
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
             rt.proxy.on('cacheready', function () {
