@@ -1,0 +1,57 @@
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/font.less";
+//@import (reference) "../include/forms.less";
+@import (reference) "../include/alertify.less";
+
+html, body {
+    .font_main();
+    .alertify_main();
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    background-color: @cp_static-bg !important;
+    color: @cryptpad_text_col;
+    font-family: "IBM Plex Mono";
+
+    .report {
+        font-size: 30px;
+        max-width: 50%;
+        margin: auto;
+        padding-top: 15px;
+    }
+
+    .success {
+        border: 1px solid green;
+    }
+    .failure {
+        border: 1px solid red;
+    }
+    .error {
+        border: 1px solid red;
+    }
+    .hidden {
+        display: none;
+    }
+
+    .failures div.error, .summary {
+        padding: 15px;
+    }
+
+    table {
+        td {
+            padding: 5px;
+            border: 1px solid white;
+        }
+    }
+
+    .advisory-text {
+        display: inline-block;
+        word-break: break-all;
+        padding: 5px;
+        //font-size: 16px;
+        border: 1px solid red;
+        background-color: @cp_alerts-danger-bg;
+        color: @cp_alerts-danger-text;
+    }
+}
+

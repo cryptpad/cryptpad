@@ -277,7 +277,8 @@ define([
                 isNew: isNew,
                 network: ctx.store.network || ctx.store.networkPromise,
                 store: team,
-                isNewChannel: ctx.Store.isNewChannel
+                isNewChannel: ctx.Store.isNewChannel,
+                Store: ctx.Store
             }, id, data, cb);
         };
         var teamData = ctx.store.proxy.teams[team.id];

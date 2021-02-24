@@ -164,6 +164,16 @@ define([
                 readOnly: !Boolean(secondaryKey)
             };
 
+            // If there is an allow list and we're offline, try again when we're synced
+            var onRejected = function (allowed, _cb) {
+                var cb = Util.once(Util.mkAsync(_cb));
+                if (store.offline && config.Store) {
+                    config.Store.onReadyEvt.reg(cb);
+                    return;
+                }
+                cb('ERESTRICTED');
+            };
+
             var owners = data.owners;
             var listmapConfig = {
                 data: {},
@@ -179,7 +189,8 @@ define([
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners
-                }
+                },
+                onRejected: onRejected
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
             rt.proxy.on('cacheready', function () {
@@ -246,8 +257,6 @@ define([
                         return void cb();
                     }
                     if (info.error === "ERESTRICTED" ) {
-                        // This shouldn't happen: allow list are disabled for shared folders
-                        // but call "cb" to make sure we won't block the initial "waitFor"
                         sf.teams.forEach(function (obj) {
                             obj.store.manager.restrictedProxy(obj.id, secret.channel);
                         });
@@ -326,6 +335,7 @@ define([
                     network: network,
                     store: s,
                     updatePassword: true,
+                    Store: Store,
                     isNewChannel: Store.isNewChannel
                 }, sfId, sf, waitFor());
                 if (!s.rpc) { return; }
@@ -356,6 +366,7 @@ define([
                 SF.load({
                     network: network,
                     store: store,
+                    Store: Store,
                     isNewChannel: Store.isNewChannel
                 }, id, sf, waitFor(function () {
                     progress({
