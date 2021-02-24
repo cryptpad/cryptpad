@@ -857,6 +857,7 @@
     "password_error": "Pad non trovato!<br>Questo errore può essere causato da due fattori: o la password è sbagliata o il pad è stato eliminato dal server.",
     "readme_cat1": "Andiamo a conoscere il tuo CryptDrive",
     "feedback_privacy": "Ci teniamo alla tua privacy e contemporaneamente vogliamo che CryptPad sia molto facile da usare. Usiamo questo file per capire quali caratteristiche dell'interfaccia utente contano per i nostri utenti, richiedendolo insieme a un parametro che specifica quale azione sia stata intrapresa.",
+    "creation_owned": "Pad di proprietà",
     "creation_owned1": "Un pad <b>di proprietà</b> può essere eliminato dal server quando il proprietario vuole. Eliminando un pad lo si rimuove anche dai CryptDrive degli altri utenti.",
     "feedback_about": "Se stai leggendo questo, probabilmente sei curioso di sapere perché CryptPad richieda pagine internet quando attivi certe azioni",
     "feedback_optout": "Se vuoi evitare di fornire questi dati visita <a href='/settings/'>la tua pagina delle impostazioni</a>, dove trovi una casella di controllo per abilitare o disabilitare il feedback utente",

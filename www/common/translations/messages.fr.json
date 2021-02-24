@@ -638,6 +638,7 @@
     "feedback_privacy": "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.",
     "feedback_optout": "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience",
     "creation_404": "Ce pad n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.",
+    "creation_owned": "Être propriétaire de ce pad",
     "creation_owned1": "Être <b>propriétaire</b> d'un élément signifie que vous pouvez le détruire à tout moment. Une fois détruit, un élément devient inaccessible dans CryptDrive de tous les utilisateurs.",
     "creation_expire": "Ajouter une durée de vie",
     "creation_expireFalse": "Illimité",
