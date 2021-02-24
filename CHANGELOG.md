@@ -56,6 +56,10 @@
   * refactor /assert/
   * introduce /checkup/ page for detecting incorrect instance configuration
 * fix tippy popper color
+* loss of access to shared folders
+  * related to access lists and the offline cache
+* remove old and unused translations
+* fix plaintext colors in file app
 
 # 4.1.0 (B)
 
