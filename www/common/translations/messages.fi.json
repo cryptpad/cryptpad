@@ -1052,6 +1052,7 @@
     "creation_expireFalse": "Rajoittamaton",
     "creation_expire": "Vanheneva padi",
     "creation_owned1": "<b>Omistettu</b> asiakirja voidaan poistaa palvelimelta omistajan niin halutessa. Omistetun asiakirjan poistaminen poistaa sen myös muiden käyttäjien CryptDriveista.",
+    "creation_owned": "Omistettu padi",
     "creation_404": "Tätä padia ei ole enää olemassa. Käytä seuraavaa lomaketta uuden padin luontiin.",
     "feedback_optout": "Jos haluat jättäytyä pois tästä toiminnallisuudesta, voit tehdä sen <a href='/settings/'>Käyttäjäasetukset</a>-sivulta löytyvän käyttäjäpalautevalintaruudun avulla",
     "feedback_privacy": "Välitämme yksityisyydestäsi, ja haluamme samalla tehdä CryptPadista mahdollisimman helppokäyttöisen. Käytämme tätä tiedostoa selvittääksemme, mitkä käyttöliittymätoiminnot ovat tärkeitä käyttäjillemme, pyytämällä sitä tehdyn toiminnon kertovan parametrin yhteydessä.",
