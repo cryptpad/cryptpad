@@ -631,6 +631,7 @@
     "feedback_privacy": "Wir respektieren deine Datenschutz, aber gleichzeitig wollen wir, dass die Benutzung von CryptPad sehr leicht ist. Deshalb wollen wir erfahren, welche Funktion am wichtigsten für unsere Benutzer ist, indem wir diese mit einer genauen Parameterbeschreibung anfordern.",
     "feedback_optout": "Wenn du das nicht möchtest, kannst du es in <a href='/settings/'>deinen Einstellungen</a> deaktivieren",
     "creation_404": "Dieses Pad existiert nicht mehr. Benutze das folgende Formular, um ein neues Pad zu erstellen.",
+    "creation_owned": "Eigenes Pad",
     "creation_owned1": "Ein <b>eigenes</b> Element kann zerstört werden, wann immer der Eigentümer so entscheidet. Nach der Zerstörung eines eigenen Elementes ist es nicht mehr in CryptDrives anderer Nutzer verfügbar.",
     "creation_expire": "Auslaufendes Pad",
     "creation_expireFalse": "Unbegrenzt",
