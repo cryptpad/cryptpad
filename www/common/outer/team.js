@@ -184,6 +184,7 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
+                team.onRpcReadyEvt.fire();
                 cb();
             });
         });
@@ -202,6 +203,7 @@ define([
             handleSharedFolder: function (sfId, rt) { handleSharedFolder(ctx, id, sfId, rt); },
             sharedFolders: {}, // equivalent of store.sharedFolders in async-store
             roster: roster,
+            onRpcReadyEvt: Util.mkEvent(true),
             offline: true
         };
         ctx.cache[id] = team;
@@ -334,7 +336,7 @@ define([
                 ctx.updateProgress({
                     progress: ctx.progress
                 });
-            });
+            }, true);
         }).nThen(function () {
             cb();
         });
