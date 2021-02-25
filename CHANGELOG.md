@@ -67,21 +67,27 @@
 
 * OnlyOffice sheets
   * use configured language from CryptPad
-  * fix a sorting issue caused by the overly eager suppression of a modal
   * support multiple locks per-user
     * not backwards compatible... restart server when updating!
+  * fix filter/sort
+    * caused by the overly eager suppression of a modal
+  * add support for strict mode
+    * supports undo/redo
+      * [#195](https://github.com/xwiki-labs/cryptpad/issues/195)
+
 
 * general improvements
   * offline mode for file app
+  * offline teams and team shared folder
+  * fix a bug: loss of access to shared folders
+    * related to access lists and the offline cache
+    * loss of access with pads loaded before the worker is ready
   * display subscribe button on home page if subscriptions are supported
   * display a home page notice via application_config.js via supplied HTML
   * link to our sponsors websites via their logos
   * debugging app
     * serverHash is included in the history of decrypted messages
-  * loss of access to shared folders
-    * related to access lists and the offline cache
-    * loss of access with pads loaded before the worker is ready
-
+  * download whiteboard from the drive
 
 * scripts
   * separate archive deletion code from inactive pad removal
