@@ -1603,8 +1603,8 @@ define([
             var cb = Util.once(Util.mkAsync(_cb));
 
             // There is an allow list: check if we can authenticate
-            if (!Array.isArray(allowed)) { return void cb('EINVAL'); }
-            if (!store.loggedIn || !store.proxy.edPublic) { return void cb('EFORBIDDEN'); }
+            if (!Array.isArray(allowed)) { return void cb('ERESTRICTED'); }
+            if (!store.loggedIn || !store.proxy.edPublic) { return void cb('ERESTRICTED'); }
 
             var teamModule = store.modules['team'];
             var teams = (teamModule && teamModule.getTeams()) || [];
@@ -1625,7 +1625,7 @@ define([
 
             var auth = function () {
                 var rpc = _store.rpc;
-                if (!rpc) { return void cb('EFORBIDDEN'); }
+                if (!rpc) { return void cb('ERESTRICTED'); }
                 rpc.send('COOKIE', '', function (err) {
                     cb(err);
                 });
