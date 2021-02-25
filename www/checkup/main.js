@@ -9,7 +9,7 @@ define([
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-checkup.less',
-], function ($, ApiConfig, Assertions, h, Messages, SFCommonO) {
+], function ($, ApiConfig, Assertions, h, Messages /*, SFCommonO*/) {
     var assert = Assertions();
 
     var trimSlashes = function (s) {
