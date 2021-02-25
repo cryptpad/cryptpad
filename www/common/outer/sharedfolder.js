@@ -113,7 +113,6 @@ define([
             if (!config.store.id && !config.store.network) {
                 Cache.getChannelCache(secret.channel, waitFor(function (err, res) {
                     if (err === "EINVAL") { // Cache not found
-                        console.warn(secret.channel);
                         waitFor.abort();
                         store.manager.restrictedProxy(id, secret.channel);
                         // XXX unrestrict when we connect?
