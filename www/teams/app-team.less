@@ -24,6 +24,21 @@
 
     .export_main();
 
+    &:not(.cp-app-team-offline) {
+        .cp-offline {
+            display: none !important;
+        }
+    }
+    &.cp-app-team-offline {
+        .cp-online {
+            display: none !important;
+        }
+        .cp-online-alt {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    }
+
     #cp-sidebarlayout-container {
         @media screen and (max-width: 900px) {
             .cp-app-drive-toolbar-leftside {

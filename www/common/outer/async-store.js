@@ -440,6 +440,7 @@ define([
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
+                store.onRpcReadyEvt.fire();
 
                 Store.getPinLimit(null, null, function (obj) {
                     if (obj.error) { console.error(obj.error); }
@@ -1434,7 +1435,7 @@ define([
         // Universal
         Store.universal = {
             execCommand: function (clientId, obj, cb) {
-                onReadyEvt.reg(function () {
+                var todo = function () {
                     var type = obj.type;
                     var data = obj.data;
                     if (store.modules[type]) {
@@ -1442,7 +1443,11 @@ define([
                     } else {
                         return void cb({error: type + ' is disabled'});
                     }
-                });
+                };
+                // Teams support offline/cache mode
+                if (obj.type === "team") { return void todo(); }
+                // Other modules should wait for the ready event
+                onReadyEvt.reg(todo);
             }
         };
         var loadUniversal = function (Module, type, waitFor, clientId) {
@@ -1594,6 +1599,50 @@ define([
             });
         };
 
+        Store.onRejected = function (allowed, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+
+            // There is an allow list: check if we can authenticate
+            if (!Array.isArray(allowed)) { return void cb('EINVAL'); }
+            if (!store.loggedIn || !store.proxy.edPublic) { return void cb('EFORBIDDEN'); }
+
+            var teamModule = store.modules['team'];
+            var teams = (teamModule && teamModule.getTeams()) || [];
+            var _store;
+
+            if (allowed.indexOf(store.proxy.edPublic) !== -1) {
+                // We are allowed: use our own rpc
+                _store = store;
+            } else if (teams.some(function (teamId) {
+                // We're not allowed: check our teams
+                var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
+                if (allowed.indexOf(ed) === -1) { return false; }
+                // This team is allowed: use its rpc
+                var t = teamModule.getTeam(teamId);
+                _store = t;
+                return true;
+            })) {}
+
+            var auth = function () {
+                var rpc = _store.rpc;
+                if (!rpc) { return void cb('EFORBIDDEN'); }
+                rpc.send('COOKIE', '', function (err) {
+                    cb(err);
+                });
+            };
+
+            // Wait for the RPC we need to be ready and then tyr to authenticate
+            if (_store.onRpcReadyEvt) {
+                _store.onRpcReadyEvt.reg(function () {
+                    auth();
+                });
+                return;
+            }
+
+            // Fall back to the old system in case onRpcReadyEvt doesn't exist (shouldn't happen)
+            auth();
+        };
+
         Store.joinPad = function (clientId, data) {
             if (data.versionHash) {
                 return void getVersionHash(clientId, data);
@@ -1697,37 +1746,7 @@ define([
                 },
                 onError: onError,
                 onChannelError: onError,
-                onRejected: function (allowed, _cb) {
-                    var cb = Util.once(Util.mkAsync(_cb));
-
-                    // There is an allow list: check if we can authenticate
-                    if (!Array.isArray(allowed)) { return void cb('EINVAL'); }
-                    if (!store.loggedIn || !store.proxy.edPublic) { return void cb('EFORBIDDEN'); }
-
-                    onReadyEvt.reg(function () {
-                        var rpc;
-                        var teamModule = store.modules['team'];
-                        var teams = (teamModule && teamModule.getTeams()) || [];
-
-                        if (allowed.indexOf(store.proxy.edPublic) !== -1) {
-                            // We are allowed: use our own rpc
-                            rpc = store.rpc;
-                        } else if (teams.some(function (teamId) {
-                            // We're not allowed: check our teams
-                            var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
-                            if (allowed.indexOf(ed) === -1) { return false; }
-                            // This team is allowed: use its rpc
-                            var t = teamModule.getTeam(teamId);
-                            rpc = t.rpc;
-                            return true;
-                        })) {}
-
-                        if (!rpc) { return void cb('EFORBIDDEN'); }
-                        rpc.send('COOKIE', '', function (err) {
-                            cb(err);
-                        });
-                    });
-                },
+                onRejected: Store.onRejected,
                 onConnectionChange: function (info) {
                     if (!info.state) {
                         channel.bcast("PAD_DISCONNECT");
@@ -2574,8 +2593,23 @@ define([
                 rt: store.realtime
             });
             var userObject = store.userObject = manager.user.userObject;
-            addSharedFolderHandler();
-            userObject.migrate(cb);
+            nThen(function (waitFor) {
+                addSharedFolderHandler();
+                userObject.migrate(waitFor());
+            }).nThen(function (waitFor) {
+                var network = store.network || store.networkPromise;
+                SF.loadSharedFolders(Store, network, store, userObject, waitFor, function (obj) {
+                    var data = {
+                        type: 'sf',
+                        progress: 100*obj.progress/obj.max
+                    };
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                }, true);
+            }).nThen(function (waitFor) {
+                loadUniversal(Team, 'team', waitFor, clientId);
+            }).nThen(function () {
+                cb();
+            });
         };
 
         // onReady: called when the drive is synced (not using the cache anymore)
@@ -2627,7 +2661,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor, clientId); // TODO load teams offline
+                store.modules['team'].onReady(waitFor);
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
@@ -2763,6 +2797,7 @@ define([
             var rt = window.rt = Listmap.create(listmapConfig);
             store.driveSecret = secret;
             store.proxy = rt.proxy;
+            store.onRpcReadyEvt = Util.mkEvent(true);
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
             var returned = {};

@@ -114,6 +114,7 @@ define([
             addRpc: addRpc,
             addData: addData,
             isDrive: true, // Used for history...
+            cache: true,
         });
     });
 });

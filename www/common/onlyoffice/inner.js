@@ -73,6 +73,11 @@ define([
         return JSONSortify(obj);
     };
 
+    var supportsXLSX = function () {
+        return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined");
+    };
+
+
     var toolbar;
 
 
@@ -207,6 +212,19 @@ define([
                 APP.onLocal();
             }
         };
+
+        // Make sure a former tab on the same worker doesn't have remaining locks
+        var checkClients = function (clients) {
+            Object.keys(content.ids).forEach(function (id) {
+                var tabId = Number(id.slice(33)); // remove the netflux ID and the "-"
+                if (clients.indexOf(tabId) === -1) {
+                    removeClient({
+                        id: tabId
+                    });
+                }
+            });
+        };
+
 
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -723,6 +741,7 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'READY':
+                        checkClients(obj.data);
                         cb();
                         break;
                     case 'LEAVE':
@@ -984,6 +1003,12 @@ define([
             deleteOfflineLocks();
             // Prepare callback
             if (cpNfInner) {
+                var waitLock = APP.waitLock = Util.mkEvent(true);
+                setTimeout(function () {
+                    // Make sure the waitLock is never stuck
+                    waitLock.fire();
+                    if (waitLock === APP.waitLock) { delete APP.waitLock; }
+                }, 5000);
                 var onPatchSent = function (again) {
                     if (!again) { cpNfInner.offPatchSent(onPatchSent); }
                     // Answer to our onlyoffice
@@ -999,6 +1024,8 @@ define([
                             type: "getLock",
                             locks: getLock()
                         });
+                        waitLock.fire();
+                        if (waitLock === APP.waitLock) { delete APP.waitLock; }
                     } else {
                         if (!isLockedModal.modal) {
                             isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
@@ -1107,7 +1134,8 @@ define([
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;
 
-                var send = ooChannel.send = function (obj) {
+                var send = ooChannel.send = function (obj, force) {
+                    if (APP.onStrictSaveChanges && !force) { return; } // can't push to OO before reloading cp
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
                 };
@@ -1121,10 +1149,19 @@ define([
                         case "isSaveLock":
                             // TODO ping the server to check if we're online first?
                             if (!offline) {
-                                send({
-                                    type: "saveLock",
-                                    saveLock: false
-                                });
+                                if (APP.waitLock) {
+                                    APP.waitLock.reg(function () {
+                                        send({
+                                            type: "saveLock",
+                                            saveLock: false
+                                        }, true);
+                                    });
+                                } else {
+                                    send({
+                                        type: "saveLock",
+                                        saveLock: false
+                                    }, true);
+                                }
                             }
                             break;
                         case "getLock":
@@ -1135,6 +1172,18 @@ define([
                             send({ type: "message" });
                             break;
                         case "saveChanges":
+                            // If we have unsaved data before reloading for a checkpoint...
+                            if (APP.onStrictSaveChanges) {
+                                APP.unsavedChanges = {
+                                    type: "saveChanges",
+                                    changes: parseChanges(obj.changes),
+                                    changesIndex: ooChannel.cpIndex || 0,
+                                    locks: getUserLock(getId()),
+                                    excelAdditionalInfo: null
+                                };
+                                APP.onStrictSaveChanges();
+                                return;
+                            }
                             // We're sending our changes to netflux
                             handleChanges(obj, send);
                             // If we're alone, clean up the medias
@@ -1223,27 +1272,29 @@ define([
                         $iframe.prop('tabindex', '-1');
                         var $tb = $iframe.find('head');
                         var css = // Old OO
-                                  '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
-                                  '#fm-btn-save { display: none !important; }' +
+                                  //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
+                                  //'#fm-btn-save { display: none !important; }' +
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
-                                  '#header { display: none !important; }' +
+                                  //'#header { display: none !important; }' +
                                   '#title-doc-name { display: none !important; }' +
+                                  '#title-user-name { display: none !important; }' +
+           (supportsXLSX() ? '' : '#slot-btn-dt-print { display: none !important; }') +
                                   // New OO:
                                   '#asc-gen566 { display: none !important; }' + // Insert image from url
                                   'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
                                   '#slot-btn-insequation { display: none !important; }' + // Insert equation
-                                  '.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
-                                  '#app-title { display: none !important; }' + // OnlyOffice logo + doc title
+                                  //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
                                   '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                                   '#panel-info { display: none !important; }' + // Same but content
                                   '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
-                                  '#file-menu-panel { top: 28px !important; }' + // Position of the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   'div.btn-users.dropdown-toggle { display: none; !important }';
                         if (readOnly) {
                             css += '#toolbar { display: none !important; }';
+                            //css += '#app-title { display: none !important; }'; // OnlyOffice logo + doc title
+                            //css += '#file-menu-panel { top: 28px !important; }'; // Position of the "File" menu
                         }
                         $('<style>').text(css).appendTo($tb);
                         setTimeout(function () {
@@ -1320,7 +1371,22 @@ define([
                             } catch (e) {}
                         } else {
                             setEditable(true);
+                            handleNewLocks({}, content.locks);
+                            if (APP.unsavedChanges) {
+                                var unsaved = APP.unsavedChanges;
+                                delete APP.unsavedChanges;
+                                rtChannel.sendMsg(unsaved, null, function (err, hash) {
+                                    if (err) { return void UI.warn(Messages.error); } // XXX Better error message?
+                                    // This is supposed to be a "send" function to tell our OO
+                                    // to unlock the cell. We use this to know that the patch was
+                                    // correctly sent so that we can apply it to our OO too.
+                                    ooChannel.send(unsaved);
+                                    ooChannel.cpIndex++;
+                                    ooChannel.lastHash = hash;
+                                });
+                            }
                         }
+
 
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
@@ -1361,10 +1427,13 @@ define([
                     }
                 }
             };
+            /*
+            // NOTE: Make sure it won't break anaything new (Firefox setTimeout bug)
             window.onbeforeunload = function () {
                 var ifr = document.getElementsByTagName('iframe')[0];
                 if (ifr) { ifr.remove(); }
             };
+            */
 
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
                 cb('NO');
@@ -1705,10 +1774,6 @@ define([
             });
         };
 
-        var supportsXLSX = function () {
-            return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined");
-        };
-
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
@@ -1995,6 +2060,28 @@ define([
                 }).filter(Boolean);
                 sframeChan.query('EV_OO_PIN_IMAGES', toPin);
             }
+        };
+
+        var setStrictEditing = function () {
+            if (APP.isFast) { return; }
+            var editor = getEditor();
+            var editing = editor.asc_isDocumentModified();
+            if (editing) {
+                evOnPatch.fire();
+            } else {
+                evOnSync.fire();
+            }
+        };
+        APP.onFastChange = function (isFast) {
+            APP.isFast = isFast;
+            if (isFast) {
+                if (APP.hasChangedInterval) {
+                    window.clearInterval(APP.hasChangedInterval);
+                }
+                return;
+            }
+            setStrictEditing();
+            APP.hasChangedInterval = window.setInterval(setStrictEditing, 500);
         };
 
         APP.getContent = function () { return content; };
@@ -2471,19 +2558,32 @@ define([
                 checkCheckpoint();
             }
 
+            var editor = getEditor();
             if (content.hashes) {
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index || (newLatest.index && !latest.index)) {
                     ooChannel.queue = [];
                     ooChannel.ready = false;
-                    // New checkpoint
-                    sframeChan.query('Q_OO_SAVE', {
-                        hash: newLatest.hash,
-                        url: newLatest.file
-                    }, function () {
-                        checkNewCheckpoint();
-                    });
+                    var reload = function () {
+                        // New checkpoint
+                        sframeChan.query('Q_OO_SAVE', {
+                            hash: newLatest.hash,
+                            url: newLatest.file
+                        }, function () {
+                            checkNewCheckpoint();
+                        });
+                    };
+                    if (editor.asc_isDocumentModified()) {
+                        setEditable(false);
+                        APP.onStrictSaveChanges = function () {
+                            reload();
+                            delete APP.onStrictSaveChanges;
+                        };
+                        editor.asc_Save();
+                    } else {
+                        reload();
+                    }
                 }
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }
