@@ -109,7 +109,7 @@ define([
         nThen(function (waitFor) {
             // If we're in onCacheReady, make sure we have a cache for this shared folder
             if (config.cache) {
-                Cache.getChannelCache(secret.channel, waitFor(function (err, res) {
+                Cache.getChannelCache(secret.channel, waitFor(function (err) {
                     if (err === "EINVAL") { // Cache not found
                         waitFor.abort();
                         store.manager.restrictedProxy(id, secret.channel);

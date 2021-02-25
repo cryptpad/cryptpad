@@ -1629,7 +1629,7 @@ define([
                 rpc.send('COOKIE', '', function (err) {
                     cb(err);
                 });
-            }
+            };
 
             // Wait for the RPC we need to be ready and then tyr to authenticate
             if (_store.onRpcReadyEvt) {
