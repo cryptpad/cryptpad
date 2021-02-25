@@ -17,7 +17,7 @@ define([
 
     // Add a shared folder to the list
     var addProxy = function (Env, id, lm, leave, editKey, force) {
-        if (Env.folders[id] && !force) {
+        if (Env.folders[id] && !force && !Env.folders[id].restricted) {
             // Shared folder already added to the proxy-manager, probably
             // a cached version
             if (Env.folders[id].offline && !lm.cache) {
@@ -26,6 +26,7 @@ define([
             }
             return;
         }
+        if (Env.folders[id]) { console.warn(Env.folders[id]); }
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
@@ -48,6 +49,7 @@ define([
             proxy: lm.proxy,
             userObject: userObject,
             leave: leave,
+            restricted: proxy.restricted,
             offline: Boolean(lm.cache)
         };
         if (proxy.on) {

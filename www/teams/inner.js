@@ -61,7 +61,7 @@ define([
         if (!drive || !drive.sharedFolders) {
             return void cb();
         }
-        var r = drive.restrictedFolders = drive.restrictedFolders || {};
+        var r = drive.restrictedFolders = {};
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
@@ -76,7 +76,7 @@ define([
                         r[fId] = drive.sharedFolders[fId];
                         if (!r[fId].title) { r[fId].title = r[fId].lastTitle; }
                     }
-                    if (newObj && (newObj.deprecated || newObj.restricted)) {
+                    if (newObj && (newObj.deprecated /*|| newObj.restricted*/)) {
                         delete folders[fId];
                         delete drive.sharedFolders[fId];
                         if (manager && manager.folders) {

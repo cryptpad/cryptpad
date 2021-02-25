@@ -1624,6 +1624,7 @@ define([
             })) {}
 
             var auth = function () {
+                if (!_store) { return void cb('ERESTRICTED'); }
                 var rpc = _store.rpc;
                 if (!rpc) { return void cb('ERESTRICTED'); }
                 rpc.send('COOKIE', '', function (err) {
@@ -1632,7 +1633,7 @@ define([
             };
 
             // Wait for the RPC we need to be ready and then tyr to authenticate
-            if (_store.onRpcReadyEvt) {
+            if (_store && _store.onRpcReadyEvt) {
                 _store.onRpcReadyEvt.reg(function () {
                     auth();
                 });
@@ -2851,6 +2852,12 @@ define([
                     drive[Constants.oldStorageKey] = [];
                 }
                 // Drive already exist: return the existing drive, don't load data from legacy store
+                if (store.manager) {
+                    // If a cache is loading, make sure it is complete before calling onReady
+                    return void onCacheReadyEvt.reg(function () {
+                        onReady(clientId, returned, cb);
+                    });
+                }
                 onReady(clientId, returned, cb);
             })
             .on('change', ['drive', 'migrate'], function () {

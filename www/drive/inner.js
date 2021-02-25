@@ -42,7 +42,7 @@ define([
         if (!drive || !drive.sharedFolders) {
             return void cb();
         }
-        var r = drive.restrictedFolders = drive.restrictedFolders || {};
+        var r = drive.restrictedFolders = {};
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
