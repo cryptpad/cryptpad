@@ -1,39 +1,48 @@
-# Pending
+# 4.2.0-candidate (C)
 
-* remove round corners on limit bar
-* update prompts related to password protection in various modals
-* script to identify unused translations
-* offline mode for file app
-* display subscribe button on home page if subscriptions are supported
-* display a home page notice via application_config.js via supplied HTML
-* link to our sponsors websites via their logos
-* OnlyOffice sheets
-  * use configured language from CryptPad
-  * fix a sorting issue caused by the overly eager suppression of a modal
-  * support multiple locks per-user
-    * not backwards compatible... restart server when updating!
-* rich text
-  * use white background for rich text documents even in dark mode
-  * display button to adjust document width inline instead of in toolbar
-  * display comments inline on mobile instead of on the right
-* translations
-  * russian
+## Goals
+
+* catch up on pending branches and activities
+  * documentation
+  * translation
+* stabilize
+
+## Update notes
+
+
+## Features
+
+## Bug fixes
+
+## Pending
+
 * style fixes
   * text media-tags use markdown's block styles
   * 404 page
     * uses the dark theme's background color correctly
     * remove an unnecessary scrollbar
   * assert page uses dark mode
-* separate archive deletion code from inactive pad removal
-* darkfix branch
-  * removed unused colors
-  * admin support last message is no longer red
-  * sidebar hint uses new grey name
-  * more severe fade on drive icon hover
-  * drive info box inline links are now styled
-  * autocomplete dropdown styles weren't applied
-  * notifications bell now uses same text color as toolbar title
-  * filepicker background color
+  * darkfix branch
+    * removed unused colors
+    * admin support last message is no longer red
+    * sidebar hint uses new grey name
+    * more severe fade on drive icon hover
+    * drive info box inline links are now styled
+    * autocomplete dropdown styles weren't applied
+    * notifications bell now uses same text color as toolbar title
+    * filepicker background color
+  * remove round corners on limit bar
+  * fix plaintext colors in file app
+  * fix tippy popper color
+
+
+* translations
+  * russian
+  * update prompts related to password protection in various modals
+  * script to identify unused translations
+  * link to the docs from the support page's ticket creation interface
+  * remove old and unused translations
+
 * chat:
   * colors
     * in pads
@@ -41,25 +50,47 @@
   * spinner
     * correctly hidden when the chat finishes initializing
       * caused by insufficient selector specificity
-* server updates
+
+
+* server
   * `npm i` to get latest dependencies
   * messages are not acknowledged or broadcast until they have been validated and written to the disk
     * see [#553](https://github.com/xwiki-labs/cryptpad/issues/553)
   * ~~optimized GET_OLDER_HISTORY~~
     * removed, presumably due to a bug
-* debugging app
-  * serverHash is included in the history of decrypted messages
-* link to the docs from the support page's ticket creation interface
-* completion of unowned uploads was broken by a change introduced in late december
+  * completion of unowned uploads was broken by a change introduced in late december
+
+* rich text
+  * use white background for rich text documents even in dark mode
+  * display button to adjust document width inline instead of in toolbar
+  * display comments inline on mobile instead of on the right
+
+* OnlyOffice sheets
+  * use configured language from CryptPad
+  * fix a sorting issue caused by the overly eager suppression of a modal
+  * support multiple locks per-user
+    * not backwards compatible... restart server when updating!
+
+* general improvements
+  * offline mode for file app
+  * display subscribe button on home page if subscriptions are supported
+  * display a home page notice via application_config.js via supplied HTML
+  * link to our sponsors websites via their logos
+  * debugging app
+    * serverHash is included in the history of decrypted messages
+  * loss of access to shared folders
+    * related to access lists and the offline cache
+    * loss of access with pads loaded before the worker is ready
+
+
+* scripts
+  * separate archive deletion code from inactive pad removal
+
 * assertions
   * remove /assert/translations/ and related code
   * refactor /assert/
   * introduce /checkup/ page for detecting incorrect instance configuration
-* fix tippy popper color
-* loss of access to shared folders
-  * related to access lists and the offline cache
-* remove old and unused translations
-* fix plaintext colors in file app
+
 
 # 4.1.0 (B)
 
