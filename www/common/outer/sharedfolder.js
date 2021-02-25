@@ -107,6 +107,21 @@ define([
         // If we try to load an existing shared folder (isNew === false) but this folder
         // doesn't exist in the database, abort and cb
         nThen(function (waitFor) {
+            // XXX use a config.cache flag in the new branches
+            // If we don't have a network yet and we're pulling our own SF (no team id)
+            // Make sure we have a cache
+            if (!config.store.id && !config.store.network) {
+                Cache.getChannelCache(secret.channel, waitFor(function (err, res) {
+                    if (err === "EINVAL") { // Cache not found
+                        console.warn(secret.channel);
+                        waitFor.abort();
+                        store.manager.restrictedProxy(id, secret.channel);
+                        // XXX unrestrict when we connect?
+                        return void cb(null);
+                    }
+                }));
+            }
+        }).nThen(function (waitFor) {
             isNewChannel(null, { channel: secret.channel }, waitFor(function (obj) {
                 if (obj.isNew && !isNew) {
                     store.manager.deprecateProxy(id, secret.channel);
@@ -190,7 +205,7 @@ define([
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners
                 },
-                //onRejected: onRejected // XXX not working
+                onRejected: onRejected // XXX not working
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
             rt.proxy.on('cacheready', function () {
