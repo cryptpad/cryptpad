@@ -2495,7 +2495,7 @@ define([
                 h('h4', Messages.sharedFolders_create),
                 h('label', {for: 'cp-app-drive-sf-name'}, Messages.sharedFolders_create_name),
                 h('input#cp-app-drive-sf-name', {type: 'text', placeholder: Messages.fm_newFolder}),
-                h('label', {for: 'cp-app-drive-sf-password'}, Messages.sharedFolders_create_password),
+                h('label', {for: 'cp-app-drive-sf-password'}, Messages.fm_shareFolderPassword),
                 UI.passwordInput({id: 'cp-app-drive-sf-password'}),
                 h('span', {
                     style: 'display:flex;align-items:center;justify-content:space-between'
