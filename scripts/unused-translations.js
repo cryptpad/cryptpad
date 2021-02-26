@@ -28,7 +28,10 @@ var isPossiblyGenerated = function (key) {
 var grep = function (pattern, cb) {
     var exclude = [
         'www/common/translations/*',
-        'www/common/onlyoffice/*',
+        'www/common/onlyoffice/v1/*',
+        'www/common/onlyoffice/v2b*',
+        'www/common/onlyoffice/x2t/*',
+        //'www/common/onlyoffice/build/*',
         'www/lib/*',
         'www/common/pdfjs/*',
         '*.css',
