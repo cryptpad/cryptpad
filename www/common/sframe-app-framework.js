@@ -698,6 +698,9 @@ define([
             if (readOnly) { return; }
             toolbar.$drawer.append(
                 common.createButton('import', true, options, function (c, f) {
+                    if (state !== STATE.READY || unsyncMode) {
+                        return void UI.warn(Messages.disconnected);
+                    }
                     if (async) {
                         fi(c, f, function (content) {
                             nThen(function (waitFor) {

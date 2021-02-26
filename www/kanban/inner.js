@@ -1054,14 +1054,13 @@ define([
 
         if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
-        } else {
-            framework.setFileImporter({}, function (content /*, file */) {
-                var parsed;
-                try { parsed = JSON.parse(content); }
-                catch (e) { return void console.error(e); }
-                return { content: parsed };
-            });
         }
+        framework.setFileImporter({}, function (content /*, file */) {
+            var parsed;
+            try { parsed = JSON.parse(content); }
+            catch (e) { return void console.error(e); }
+            return { content: parsed };
+        });
 
         framework.setFileExporter('.json', function () {
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
