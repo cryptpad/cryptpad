@@ -310,18 +310,18 @@ define([
             cache: cache
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
-        progress('reading', -1);
+        progress('reading', -1); // Msg.settings_export_reading
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
             var zipRoot = ctx.zip.folder(data.name || Messages.fm_rootName);
             makeFolder(ctx, ctx.folder || ctx.data.root, zipRoot, filesData);
-            progress('download', {});
+            progress('download', {}); // Msg.settings_export_download
         }).nThen(function () {
             console.log(ctx.zip);
             console.log(ctx.errors);
-            progress('compressing', -1);
+            progress('compressing', -1); // Msg.settings_export_compressing
             ctx.zip.generateAsync({type: 'blob'}).then(function (content) {
-                progress('done', -1);
+                progress('done', -1); // Msg.settings_export_done
                 cb(content, ctx.errors);
             });
         });
