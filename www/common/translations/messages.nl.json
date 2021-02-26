@@ -144,7 +144,6 @@
     "users": "Gebruikers",
     "anonymous": "Anoniem",
     "readonly": "Alleen-lezen",
-    "lag": "Vertraging",
     "errorState": "Kritieke fout: {0}",
     "forgotten": "Verplaatst naar de prullenbak",
     "initializing": "Bezig met initialiseren...",
