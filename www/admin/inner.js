@@ -66,6 +66,7 @@ define([
             'cp-admin-support-init'
         ],
         'performance': [
+            'cp-admin-refresh-performance',
             'cp-admin-performance-profiling',
         ]
     };
@@ -931,50 +932,67 @@ define([
         return;
     };
 
+    var onRefreshPerformance = Util.mkEvent();
+
+    create['refresh-performance'] = function () {
+        var key = 'refresh-performance';
+        var btn = h('button.btn.btn-primary', Messages.oo_refresh);
+        var div = h('div.cp-admin-' + key + '.cp-sidebarlayout-element', btn);
+        $(btn).click(function () {
+            onRefreshPerformance.fire();
+        });
+        return $(div);
+    };
+
     create['performance-profiling'] = function () {
         var $div = makeBlock('performance-profiling');
 
-        var body = h('tbody');
+        var onRefresh = function () {
+            var body = h('tbody');
 
-        var table = h('table#cp-performance-table', [
-            h('thead', [
-                h('th', Messages.admin_performanceKeyHeading),
-                h('th', Messages.admin_performanceTimeHeading),
-                h('th', Messages.admin_performancePercentHeading),
-            ]),
-            body,
-        ]);
+            var table = h('table#cp-performance-table', [
+                h('thead', [
+                    h('th', Messages.admin_performanceKeyHeading),
+                    h('th', Messages.admin_performanceTimeHeading),
+                    h('th', Messages.admin_performancePercentHeading),
+                ]),
+                body,
+            ]);
+            var appendRow = function (key, time, percent) {
+                console.log("[%s] %ss running time (%s%)", key, time, percent);
+                body.appendChild(h('tr', [ key, time, percent ].map(function (x) {
+                    return h('td', x);
+                })));
+            };
+            var process = function (_o) {
+                var o = _o[0];
+                var sorted = Object.keys(o).sort(function (a, b) {
+                  if (o[b] - o[a] <= 0) { return -1; }
+                  return 1;
+                });
+                var total = 0;
+                sorted.forEach(function (k) { total += o[k]; });
+                sorted.forEach(function (k) {
+                    var percent = Math.floor((o[k] / total) * 1000) / 10;
+                    appendRow(k, o[k], percent);
+                });
+            };
 
-        $div.append(table);
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_WORKER_PROFILES',
+            }, function (e, data) {
+                if (e) { return void console.error(e); }
+                //console.info(data);
+                $div.find("table").remove();
 
-        var appendRow = function (key, time, percent) {
-            console.log("[%s] %ss running time (%s%)", key, time, percent);
-            body.appendChild(h('tr', [ key, time, percent ].map(function (x) {
-                return h('td', x);
-            })));
+
+                process(data);
+                $div.append(table);
+            });
         };
 
-        var process = function (_o) {
-            var o = _o[0];
-            var sorted = Object.keys(o).sort(function (a, b) {
-              if (o[b] - o[a] <= 0) { return -1; }
-              return 1;
-            });
-            var total = 0;
-            sorted.forEach(function (k) { total += o[k]; });
-            sorted.forEach(function (k) {
-                var percent = Math.floor((o[k] / total) * 1000) / 10;
-                appendRow(k, o[k], percent);
-            });
-        };
-
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'GET_WORKER_PROFILES',
-        }, function (e, data) {
-            if (e) { return void console.error(e); }
-            //console.info(data);
-            process(data);
-        });
+        onRefresh();
+        onRefreshPerformance.reg(onRefresh);
 
         return $div;
     };
