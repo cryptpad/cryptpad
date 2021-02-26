@@ -1055,7 +1055,7 @@ define([
         if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
         }
-        framework.setFileImporter({}, function (content /*, file */) {
+        framework.setFileImporter({accept: ['.json', 'application/json']}, function (content /*, file */) {
             var parsed;
             try { parsed = JSON.parse(content); }
             catch (e) { return void console.error(e); }
