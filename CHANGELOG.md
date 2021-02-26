@@ -9,19 +9,58 @@
 
 ## Update notes
 
+* serverside dependency updates
+* removed translations. if you see something, say something
+  * removed /assert/translations/ and related code as this is handled by weblate
+* display subscribe button on home page if subscriptions are supported
+* display a home page notice via application_config.js via supplied HTML
+* link to our sponsors websites via their logos
+* scripts
+  * separate archive deletion code from inactive pad removal
+  * script to identify unused translations
+
+Otherwise, to update from 4.1.0 to 4.2.0:
+
+1. Stop your server
+2. Get the latest code from the 4.1.0 tag (`git fetch origin && git checkout 4.1.0`, or just `git pull origin main`)
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
 
 ## Features
 
+* chat color in pads, teams, and the contacts app
+* rich text
+  * use white background for rich text documents even in dark mode
+* offline improvements
+  * offline mode for file app
+  * offline teams and team shared folder
+* download whiteboard from the drive
+* checkup page
+* translations
+  * update prompts related to password protection in various modals
+* link to the docs from the support page's ticket creation interface
+* refresh server performance stats without refreshing the admin page
+
 ## Bug fixes
 
-## Pending
-
-* style fixes
+* chat spinner: correctly hidden when the chat finishes loading
+  * caused by insufficient selector specificity
+* rich text
+  * display button to adjust document width inline instead of in toolbar
+  * display comments inline on mobile instead of on the right
+* server
+  * messages are not acknowledged or broadcast until they have been validated and written to the disk
+    * see [#553](https://github.com/xwiki-labs/cryptpad/issues/553)
+  * completion of unowned uploads was broken by a change introduced in late december
+* shared folders
+  * fix a bug: loss of access to shared folders
+    * related to access lists and the offline cache
+    * loss of access with pads loaded before the worker is ready
+* dark mode
   * text media-tags use markdown's block styles
   * 404 page
     * uses the dark theme's background color correctly
     * remove an unnecessary scrollbar
-  * assert page uses dark mode
   * darkfix branch
     * removed unused colors
     * admin support last message is no longer red
@@ -31,40 +70,11 @@
     * autocomplete dropdown styles weren't applied
     * notifications bell now uses same text color as toolbar title
     * filepicker background color
-  * remove round corners on limit bar
-  * fix plaintext colors in file app
   * fix tippy popper color
-
-
-* translations
-  * russian
-  * update prompts related to password protection in various modals
-  * script to identify unused translations
-  * link to the docs from the support page's ticket creation interface
-  * remove old and unused translations
-
-* chat:
-  * colors
-    * in pads
-    * in the contacts app
-  * spinner
-    * correctly hidden when the chat finishes initializing
-      * caused by insufficient selector specificity
-
-
-* server
-  * `npm i` to get latest dependencies
-  * messages are not acknowledged or broadcast until they have been validated and written to the disk
-    * see [#553](https://github.com/xwiki-labs/cryptpad/issues/553)
-  * ~~optimized GET_OLDER_HISTORY~~
-    * removed, presumably due to a bug
-  * completion of unowned uploads was broken by a change introduced in late december
-
-* rich text
-  * use white background for rich text documents even in dark mode
-  * display button to adjust document width inline instead of in toolbar
-  * display comments inline on mobile instead of on the right
-
+  * fix plaintext colors in file app
+* styles
+  * remove round corners on limit bar
+  * add branded link color to support ticket attachment links in the admin panel
 * OnlyOffice sheets
   * use configured language from CryptPad
   * support multiple locks per-user
@@ -74,29 +84,6 @@
   * add support for strict mode
     * supports undo/redo
       * [#195](https://github.com/xwiki-labs/cryptpad/issues/195)
-
-
-* general improvements
-  * offline mode for file app
-  * offline teams and team shared folder
-  * fix a bug: loss of access to shared folders
-    * related to access lists and the offline cache
-    * loss of access with pads loaded before the worker is ready
-  * display subscribe button on home page if subscriptions are supported
-  * display a home page notice via application_config.js via supplied HTML
-  * link to our sponsors websites via their logos
-  * debugging app
-    * serverHash is included in the history of decrypted messages
-  * download whiteboard from the drive
-
-* scripts
-  * separate archive deletion code from inactive pad removal
-
-* assertions
-  * remove /assert/translations/ and related code
-  * refactor /assert/
-  * introduce /checkup/ page for detecting incorrect instance configuration
-
 
 # 4.1.0 (B)
 
