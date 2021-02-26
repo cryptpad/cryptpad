@@ -1233,5 +1233,8 @@
     "pad_settings_hide": "Hide",
     "pad_settings_show": "Show",
     "settings_colortheme_custom": "Custom",
-    "addOptionalPassword": "Add a password (optional)"
+    "addOptionalPassword": "Add a password (optional)",
+    "importError": "Failed to import (wrong format)",
+    "fm_cantUploadHere": "Can't upload a file here",
+    "oo_lostEdits": "Unfortunately your recent unsaved edits could not be recovered after synchronising new content."
 }
