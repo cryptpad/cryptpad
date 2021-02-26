@@ -1,17 +1,12 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/common/common-realtime.js',
-    '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
-    '/common/hyperscript.js',
     '/customize/messages.js',
 
-    '/file/file-crypto.js',
     '/common/media-tag.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
@@ -22,17 +17,12 @@ define([
 
 ], function (
     $,
-    Crypto,
     Toolbar,
     nThen,
     SFCommon,
-    CommonRealtime,
-    Util,
     Hash,
     UI,
-    h,
     Messages,
-    FileCrypto,
     MediaTag)
 {
     var saveAs = window.saveAs;
