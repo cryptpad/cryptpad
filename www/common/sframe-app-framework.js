@@ -712,7 +712,9 @@ define([
                         return;
                     }
                     nThen(function (waitFor) {
-                        contentUpdate(fi(c, f), waitFor);
+                        var content = fi(c, f);
+                        if (typeof(content) === "undefined") { return; }
+                        contentUpdate(content, waitFor);
                     }).nThen(function () {
                         onLocal();
                     });
