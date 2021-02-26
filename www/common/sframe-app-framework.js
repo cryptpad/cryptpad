@@ -714,7 +714,6 @@ define([
                     nThen(function (waitFor) {
                         var content = fi(c, f);
                         if (typeof(content) === "undefined") {
-                            Messages.importError = "Failed to import (wrong format)"; // XXX
                             return void UI.warn(Messages.importError);
                         }
                         contentUpdate(content, waitFor);

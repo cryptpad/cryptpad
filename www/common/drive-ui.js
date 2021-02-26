@@ -1779,7 +1779,7 @@ define([
             // Make sure we can only upload files in the Documents tree
             var p = ev.path;
             if (!Array.isArray(p) || !p.length || p[0] !== ROOT) {
-                return void UI.warn(Messages.error); // XXX new translation key? "~Can"t upload a file here"
+                return void UI.warn(Messages.fm_cantUploadHere);
             }
 
             APP.FM.onFileDrop(file, ev);

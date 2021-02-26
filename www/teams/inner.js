@@ -549,7 +549,7 @@ define([
                 if (obj && obj.error) {
                     $spinner.hide();
                     state = false;
-                    if (obj.error === "OFFLINE") { return UI.alert(Messages.disconnected); } // XXX
+                    if (obj.error === "OFFLINE") { return UI.warn(Messages.disconnected); }
                     console.error(obj.error);
                     return void UI.warn(Messages.error);
                 }
@@ -963,9 +963,7 @@ define([
             teamId: APP.team
         }, function (obj) {
             if (obj && obj.error) {
-                if (obj.error === 'OFFLINE') {
-                    return; // XXX show offline message in chat section
-                }
+                if (obj.error === 'OFFLINE') { return; }
                 return void UI.alert(Messages.error);
             }
             common.setTeamChat(obj.channel);

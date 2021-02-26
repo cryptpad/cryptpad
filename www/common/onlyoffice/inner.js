@@ -1376,7 +1376,7 @@ define([
                                 var unsaved = APP.unsavedChanges;
                                 delete APP.unsavedChanges;
                                 rtChannel.sendMsg(unsaved, null, function (err, hash) {
-                                    if (err) { return void UI.warn(Messages.error); } // XXX Better error message?
+                                    if (err) { return void UI.alert(Messages.oo_lostEdits); }
                                     // This is supposed to be a "send" function to tell our OO
                                     // to unlock the cell. We use this to know that the patch was
                                     // correctly sent so that we can apply it to our OO too.
