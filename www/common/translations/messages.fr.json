@@ -1233,5 +1233,8 @@
     "admin_cat_performance": "Performance",
     "redo": "Rétablir",
     "undo": "Annuler",
-    "addOptionalPassword": "Ajouter un mot de passe (optionnel)"
+    "addOptionalPassword": "Ajouter un mot de passe (optionnel)",
+    "fm_cantUploadHere": "Impossible d'importer un fichier ici",
+    "importError": "Impossible d'importer (mauvais format)",
+    "oo_lostEdits": "Vos récentes modifications non sauvegardées n'ont pas pu être récupérées après la synchronisation du nouveau contenu."
 }
