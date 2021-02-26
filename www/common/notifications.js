@@ -86,9 +86,9 @@ define([
         var content = data.content;
         var msg = content.msg;
         var type = Hash.parsePadUrl(msg.content.href).type;
-        var key = type === 'drive' ? 'notification_folderShared' :
-            (type === 'file' ? 'notification_fileShared' :
-                'notification_padShared');
+        var key = type === 'drive' ? 'notification_folderShared' : // Msg.notification_folderSharedTeam
+            (type === 'file' ? 'notification_fileShared' :  // Msg.notification_fileSharedTeam
+                'notification_padShared'); // Msg.notification_padSharedTeam
 
         var teamNotification = /^team-/.test(data.type) && Number(data.type.slice(5));
         var teamName = '';
@@ -220,7 +220,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
         content.getFormatText = function() {
-            return Messages._getKey('owner_request', [name, title]);
+            return Messages._getKey('owner_request', [name, title]); // Msg.owner_request_accepted, .owner_request_declined
         };
 
         // Check authenticity
@@ -260,7 +260,7 @@ define([
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
-        var key = 'owner_removed' + (msg.content.pending ? 'Pending' : '');
+        var key = 'owner_removed' + (msg.content.pending ? 'Pending' : ''); // Msg.owner_removed, owner_removedPending
         content.getFormatText = function() {
             return Messages._getKey(key, [name, title]);
         };
@@ -311,7 +311,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name'])  || '') ||
             Util.fixHTML(Util.find(msg, ['content', 'teamName']));
-        var key = 'team_' + (msg.content.answer ? 'accept' : 'decline') + 'Invitation';
+        var key = 'team_' + (msg.content.answer ? 'accept' : 'decline') + 'Invitation'; // Msg.team_acceptInvitation, team_declineInvitation
         content.getFormatText = function() {
             return Messages._getKey(key, [name, teamName]);
         };
