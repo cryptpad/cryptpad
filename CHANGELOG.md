@@ -84,6 +84,11 @@ Otherwise, to update from 4.1.0 to 4.2.0:
   * add support for strict mode
     * supports undo/redo
       * [#195](https://github.com/xwiki-labs/cryptpad/issues/195)
+* fix kanban import
+* file upload
+  * warn before attempting to upload a file that is too large
+    * [#682](https://github.com/xwiki-labs/cryptpad/issues/682)
+  * disallow upload outside of the documents section of drives
 
 # 4.1.0 (B)
 
