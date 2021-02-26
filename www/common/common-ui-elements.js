@@ -35,9 +35,9 @@ define([
 
     UIElements.prettySize = function (bytes) {
         var kB = Util.bytesToKilobytes(bytes);
-        if (kB < 1024) { return kB + Messages.KB; }
+        if (kB < 1024) { return kB + Messages.KB; } // XXX replace with Msg.formattedKB ?
         var mB = Util.bytesToMegabytes(bytes);
-        return mB + Messages.MB;
+        return mB + Messages.MB; // XXX replace with Msg.formattedMB
     };
 
     UIElements.updateTags = function (common, hrefs) {
