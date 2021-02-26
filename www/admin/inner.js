@@ -273,7 +273,7 @@ define([
         return $div;
     };
 
-    var getPrettySize = function (bytes) {
+    var getPrettySize = function (bytes) { // XXX duplicate of UIElements.prettySize ?
         var unit = Util.magnitudeOfBytes(bytes);
         var value = unit === 'GB' ? Util.bytesToGigabytes(bytes) : Util.bytesToMegabytes(bytes);
         return unit === 'GB' ? Messages._getKey('formattedGB', [value])

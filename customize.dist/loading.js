@@ -25,7 +25,7 @@ define([
     ].join('');
     var built = false;
 
-    var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
+    var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end']; // Msg.loading_state_0, loading_state_1, loading_state_2, loading_state_3, loading_state_4, loading_state_5
     var current, progress;
     var makeList = function (data) {
         var c = types.indexOf(data.type);

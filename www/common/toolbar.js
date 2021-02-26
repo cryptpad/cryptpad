@@ -940,9 +940,9 @@ MessengerUI, Messages) {
         var todo = function (e, overLimit) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
-                var key = 'pinLimitReachedAlert';
+                var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
                 if (!ApiConfig.allowSubscriptions) {
-                    key = 'pinLimitReachedAlertNoAccounts';
+                    key = 'pinLimitReachedAlertNoAccounts'; // Msg.pinLimitReachedAlertNoAccounts
                 }
                 $limit.show().click(function () {
                     UI.alert(Messages._getKey(key, [encodeURIComponent(l.hostname)]), null, true);

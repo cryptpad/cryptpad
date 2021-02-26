@@ -54,7 +54,6 @@
     "colorButtonTitle": "Ändra textfärgen i presentationsläge",
     "useTemplateCancel": "Starta tomt (Esc)",
     "pinLimitReachedAlert": "Du har nått din lagringsgräns. Nya dokument kommer inte lagras i din CryptDrive.<br>Du kan antingen ta bort dokument från din CryptDrive eller <a href=\"https://accounts.cryptpad.fr/#!on={0}\" target=\"_blank\">eller prenumerera på premium</a> för att öka din lagringsgräns.",
-    "lag": "Fördröjning",
     "anonymousStoreDisabled": "Administratören för denna CryptPad-instans har avaktiverat anonyma användare. Du måste logga in för att kunna använda CryptDrive.",
     "common_connectionLost": "<b>Serveranslutning tappad</b><br>Du är nu i skrivskyddat läge tills anslutningen är tillbaka.",
     "button_newcode": "Nytt kod-dokument",

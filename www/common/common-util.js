@@ -272,7 +272,7 @@
         else if (bytes >= oneMegabyte) { return 'MB'; }
     };
 
-    Util.getPrettySize = function (bytes, Messages) {
+    Util.getPrettySize = function (bytes, Messages) { // XXX not used anywhere?
         var unit = Util.magnitudeOfBytes(bytes);
         if (unit === 'GB') {
             return Messages._getKey('formattedGB', [Util.bytesToGigabytes(bytes)]);

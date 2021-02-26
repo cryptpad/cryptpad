@@ -35,9 +35,9 @@ define([
 
     UIElements.prettySize = function (bytes) {
         var kB = Util.bytesToKilobytes(bytes);
-        if (kB < 1024) { return kB + Messages.KB; }
+        if (kB < 1024) { return kB + Messages.KB; } // XXX replace with Msg.formattedKB ?
         var mB = Util.bytesToMegabytes(bytes);
-        return mB + Messages.MB;
+        return mB + Messages.MB; // XXX replace with Msg.formattedMB
     };
 
     UIElements.updateTags = function (common, hrefs) {
@@ -911,18 +911,22 @@ define([
         };
         var actions = {
             'bold': {
+                // Msg.mdToolbar_bold
                 expr: '**{0}**',
                 icon: 'fa-bold'
             },
             'italic': {
+                // Msg.mdToolbar_italic
                 expr: '_{0}_',
                 icon: 'fa-italic'
             },
             'strikethrough': {
+                // Msg.mdToolbar_strikethrough
                 expr: '~~{0}~~',
                 icon: 'fa-strikethrough'
             },
             'heading': {
+                // Msg.mdToolbar_heading
                 apply: function (str) {
                     return '\n'+clean(str).split('\n').map(function (line) {
                         return '# '+line;
@@ -931,10 +935,12 @@ define([
                 icon: 'fa-header'
             },
             'link': {
+                // Msg.mdToolbar_link
                 expr: '[{0}](http://)',
                 icon: 'fa-link'
             },
             'quote': {
+                // Msg.mdToolbar_quote
                 apply: function (str) {
                     return '\n\n'+str.split('\n').map(function (line) {
                         return '> '+line;
@@ -943,6 +949,7 @@ define([
                 icon: 'fa-quote-right'
             },
             'nlist': {
+                // Msg.mdToolbar_nlist
                 apply: function (str) {
                     return '\n'+clean(str).split('\n').map(function (line) {
                         return '1. '+line;
@@ -951,6 +958,7 @@ define([
                 icon: 'fa-list-ol'
             },
             'list': {
+                // Msg.mdToolbar_list
                 apply: function (str) {
                     return '\n'+clean(str).split('\n').map(function (line) {
                         return '* '+line;
@@ -959,6 +967,7 @@ define([
                 icon: 'fa-list-ul'
             },
             'check': {
+                // Msg.mdToolbar_check
                 apply: function (str) {
                     return '\n' + clean(str).split('\n').map(function (line) {
                         return '* [ ] ' + line;
@@ -967,6 +976,7 @@ define([
                 icon: 'fa-check-square-o'
             },
             'code': {
+                // Msg.mdToolbar_code
                 apply: function (str) {
                     if (str.indexOf('\n') !== -1) {
                         return '\n```\n' + clean(str) + '\n```\n';
@@ -976,6 +986,7 @@ define([
                 icon: 'fa-code'
             },
             'toc': {
+                // Msg.mdToolbar_toc
                 expr: '[TOC]',
                 icon: 'fa-newspaper-o'
             }
