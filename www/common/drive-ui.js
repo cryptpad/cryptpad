@@ -580,7 +580,7 @@ define([
         APP.closed = false;
         APP.toolbar = driveConfig.toolbar;
 
-        var $readOnly = $(h('div#cp-app-drive-edition-state.cp-app-drive-content-info-box', Messages.readonly));
+        var $readOnly = $(h('div.cp-banner.cp-banner-info.cp-app-drive-content-info-box', Messages.readonly));
 
         var updateObject = driveConfig.updateObject;
         var updateSharedFolders = driveConfig.updateSharedFolders;

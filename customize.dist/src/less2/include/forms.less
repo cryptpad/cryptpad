@@ -262,4 +262,21 @@
             }
         }
     }
+    .cp-banner {
+        height: @variables_bar-height;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: default;
+        &.cp-banner-danger {
+            background-color: @cp_drive-warnbox-bg;
+            color: @cp_drive-warnbox-fg;
+        }
+        &.cp-banner-info {
+            background-color: @cp_drive-infobox-bg;
+            color: @cp_drive-infobox-fg;
+        }
+    }
 }

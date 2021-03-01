@@ -198,7 +198,7 @@ define([
     var showCategories = function (cat) {
         hideCategories();
         cat.forEach(function (c) {
-            APP.$rightside.find('.'+c).show();
+            APP.$rightside.find('.'+c).css('display', '');
         });
     };
     var createLeftSide = APP.createLeftSide = function (common, team, teamAdmin) {
@@ -586,7 +586,7 @@ define([
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),
                 h('div#cp-app-drive-content-container', [
-                    h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
+                    h('div#cp-app-drive-connection-state.cp-banner.cp-banner-danger', {style: "display: none;"}, Messages.disconnected),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
             ])
@@ -953,10 +953,11 @@ define([
 
     makeBlock('offline', function (common, cb, $div) {
         $div.addClass('cp-offline');
-        cb(h('div.alert.alert-danger', Messages.disconnected));
+        cb(h('div.cp-banner.cp-banner-danger', Messages.disconnected));
     });
 
-    makeBlock('chat', function (common, cb) {
+    makeBlock('chat', function (common, cb, $div) {
+        $div.addClass('cp-online');
         var container = h('div#cp-app-contacts-container.cp-app-contacts-inapp');
         var content = [container];
         APP.module.execCommand('OPEN_TEAM_CHAT', {
