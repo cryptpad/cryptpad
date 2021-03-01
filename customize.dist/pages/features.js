@@ -1,13 +1,13 @@
 define([
     'jquery',
     '/common/hyperscript.js',
-    '/common/common-util.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
     '/customize/pages.js',
     '/api/config',
-], function ($, h, Util, Msg, AppConfig, LocalStore, Pages, Config) {
+    '/common/common-ui-elements.js',
+], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements) {
     var accounts = {
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
         upgradeURL: AppConfig.upgradeURL
@@ -56,7 +56,7 @@ define([
         };
         SPECIAL_GROUP_ITEMS.storage1 = function (f) {
             return groupItemTemplate(
-                Msg._getKey('features_f_' + f, [Util.getPrettySize(Config.defaultStorageLimit, Msg)]), // .features_f_storage1
+                Msg._getKey('features_f_' + f, [UIElements.prettySize(Config.defaultStorageLimit)]), // .features_f_storage1
                 Msg['features_f_' + f + '_note'] // .features_f_storage1_note
             );
         };

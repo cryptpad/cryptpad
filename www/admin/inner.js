@@ -8,6 +8,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-signing-keys.js',
@@ -26,6 +27,7 @@ define([
     h,
     Messages,
     UI,
+    UIElements,
     Util,
     Hash,
     Keys,
@@ -273,12 +275,7 @@ define([
         return $div;
     };
 
-    var getPrettySize = function (bytes) { // XXX duplicate of UIElements.prettySize ?
-        var unit = Util.magnitudeOfBytes(bytes);
-        var value = unit === 'GB' ? Util.bytesToGigabytes(bytes) : Util.bytesToMegabytes(bytes);
-        return unit === 'GB' ? Messages._getKey('formattedGB', [value])
-                             : Messages._getKey('formattedMB', [value]);
-    };
+    var getPrettySize = UIElements.prettySize;
 
     create['defaultlimit'] = function () {
         var key = 'defaultlimit';
