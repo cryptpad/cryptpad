@@ -1233,5 +1233,8 @@
     "pad_settings_info": "Standardeinstellungen für dieses Dokument. Sie werden angewendet, wenn neue Benutzer dieses Dokument aufrufen.",
     "admin_getquotaHint": "Überprüfe anhand des öffentlichen Schlüssels die Gesamtgröße aller Elemente, die der Quota eines Benutzers oder Teams angerechnet werden.",
     "admin_getquotaTitle": "Speicherbelegung von Accounts überprüfen",
-    "addOptionalPassword": "Passwort hinzufügen (optional)"
+    "addOptionalPassword": "Passwort hinzufügen (optional)",
+    "oo_lostEdits": "Leider konnten deine letzten ungespeicherten Bearbeitungen nach dem Synchronisieren neuer Inhalte nicht wiederhergestellt werden.",
+    "fm_cantUploadHere": "Hochladen hier nicht möglich",
+    "importError": "Import fehlgeschlagen (falsches Format)"
 }
