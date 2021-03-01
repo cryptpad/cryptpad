@@ -55,7 +55,7 @@ define([
     assert(function (cb) {
         console.log(trimmedSafe);
         checkAvailability(trimmedSafe, cb);
-    }, _alert("Sandbox domain is not available")); // XXX Blocked by CSP. try loading it via sframe ?
+    }, _alert("Sandbox domain is not available")); // FIXME Blocked by CSP. try loading it via sframe ?
 
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
