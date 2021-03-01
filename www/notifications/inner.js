@@ -32,16 +32,16 @@ define([
     var sFrameChan;
 
     var categories = {
-        'all': [
+        'all': [ // Msg.notifications_cat_all
             'cp-notifications-all',
         ],
-        'friends': [
+        'friends': [ // Msg.notifications_cat_friends
             'cp-notifications-friends',
         ],
-        'pads': [
+        'pads': [ // Msg.notifications_cat_pads
             'cp-notifications-pads',
         ],
-        'archived': [
+        'archived': [ // Msg.notifications_cat_archived
             'cp-notifications-archived',
         ],
     };

@@ -44,26 +44,26 @@ define([
         var SPECIAL_GROUP_ITEMS = {};
         SPECIAL_GROUP_ITEMS.storage0 = function (f) {
             return groupItemTemplate(
-                Msg['features_f_' + f],
-                Msg._getKey('features_f_' + f + '_note', [Config.inactiveTime])
+                Msg['features_f_' + f], // .features_f_storage0
+                Msg._getKey('features_f_' + f + '_note', [Config.inactiveTime]) // .features_f_storage0_note
             );
         };
         SPECIAL_GROUP_ITEMS.file1 = function (f) {
             return groupItemTemplate(
-                Msg['features_f_' + f],
-                Msg._getKey('features_f_' + f + '_note', [Config.maxUploadSize / 1024 / 1024])
+                Msg['features_f_' + f], // .features_f_file1
+                Msg._getKey('features_f_' + f + '_note', [Config.maxUploadSize / 1024 / 1024]) // .features_f_file1_note
             );
         };
         SPECIAL_GROUP_ITEMS.storage1 = function (f) {
             return groupItemTemplate(
-                Msg._getKey('features_f_' + f, [Util.getPrettySize(Config.defaultStorageLimit, Msg)]),
-                Msg['features_f_' + f + '_note']
+                Msg._getKey('features_f_' + f, [Util.getPrettySize(Config.defaultStorageLimit, Msg)]), // .features_f_storage1
+                Msg['features_f_' + f + '_note'] // .features_f_storage1_note
             );
         };
         SPECIAL_GROUP_ITEMS.storage2 = function (f) {
             return groupItemTemplate(
-                Msg['features_f_' + f],
-                Msg._getKey('features_f_' + f + '_note', [Config.premiumUploadSize / 1024 / 1024])
+                Msg['features_f_' + f], // .features_f_storage2
+                Msg._getKey('features_f_' + f + '_note', [Config.premiumUploadSize / 1024 / 1024]) // .features_f_storage2_note
             );
         };
 
@@ -81,7 +81,13 @@ define([
                         h('div.text-center', '0€'),
                         h('div.text-center', Msg.features_noData),
                     ]),
-                    h('ul.list-group.list-group-flush', ['apps', 'file0', 'core', 'cryptdrive0', 'storage0'].map(groupItem)),
+                    h('ul.list-group.list-group-flush', [
+                        'apps',
+                        'file0', // Msg.features_f_file0, .features_f_file0_note
+                        'core', // Msg.features_f_core, Msg.features_f_core_note
+                        'cryptdrive0', // Msg.features_f_cryptdrive0, .features_f_cryptdrive0_note
+                        'storage0'
+                    ].map(groupItem)),
                 ]),
             ]);
 
@@ -95,7 +101,14 @@ define([
                         h('div.text-center', '0€'),
                         h('div.text-center', Msg.features_noData),
                     ]),
-                    h('ul.list-group.list-group-flush', ['anon', 'social', 'file1', 'cryptdrive1', 'devices', 'storage1'].map(groupItem)),
+                    h('ul.list-group.list-group-flush', [
+                        'anon', // Msg.features_f_anon, .features_f_anon_note
+                        'social', // Msg.features_f_social, .features_f_social_note
+                        'file1',
+                        'cryptdrive1', // Msg.features_f_cryptdrive1, .features_f_cryptdrive1_note
+                        'devices', // Msg.features_f_devices, .features_f_devices_note
+                        'storage1' // Msg.features_f_storage1, .features_f_storage1_note
+                    ].map(groupItem)),
                     h('div.card-body',[
                         h('div.cp-features-register#cp-features-register', [
                             h('a', {
@@ -118,7 +131,12 @@ define([
                         }, Msg._getKey('features_pricing', ['5', '10', '15']))),
                         h('div.text-center', Msg.features_emailRequired),
                     ]),
-                    h('ul.list-group.list-group-flush', ['reg', 'storage2', 'support', 'supporter'].map(groupItem)),
+                    h('ul.list-group.list-group-flush', [
+                        'reg', // Msg.features_f_reg, .features_f_reg_note
+                        'storage2',
+                        'support', // Msg.features_f_support, .features_f_support_note
+                        'supporter' // Msg.features_f_supporter, .features_f_supporter_note
+                    ].map(groupItem)),
                     h('div.card-body',[
                         h('div.cp-features-register#cp-features-subscribe', [
                             premiumButton

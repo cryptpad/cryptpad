@@ -46,7 +46,7 @@ define([
     var sframeChan;
 
     var categories = {
-        'account': [
+        'account': [ // Msg.settings_cat_account
             'cp-settings-own-drive',
             'cp-settings-info-block',
             'cp-settings-displayname',
@@ -55,14 +55,14 @@ define([
             'cp-settings-change-password',
             'cp-settings-delete'
         ],
-        'security': [
+        'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
             'cp-settings-autostore',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
             'cp-settings-cache',
         ],
-        'style': [
+        'style': [ // Msg.settings_cat_style
             'cp-settings-colortheme',
             'cp-settings-custom-theme',
         ],
@@ -75,24 +75,24 @@ define([
             'cp-settings-trim-history'
             //'cp-settings-drive-reset'
         ],
-        'cursor': [
+        'cursor': [ // Msg.settings_cat_cursor
             'cp-settings-cursor-color',
             'cp-settings-cursor-share',
             'cp-settings-cursor-show',
         ],
-        'pad': [
+        'pad': [ // Msg.settings_cat_pad
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
         ],
-        'code': [
+        'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',
             'cp-settings-code-indent-type',
             'cp-settings-code-brackets',
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
         ],
-        'kanban': [
+        'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
         ],
         'subscription': {
@@ -364,7 +364,7 @@ define([
         return $div;
     };
 
-    makeBlock('cache', function (cb) {
+    makeBlock('cache', function (cb) { // Msg.settings_cacheHint, .settings_cacheTitle
         var store = window.cryptpadStore;
 
         var $cbox = $(UI.createCheckbox('cp-settings-cache',
@@ -412,10 +412,15 @@ define([
         ]);
     }, true);
 
-    makeBlock('colortheme', function (cb) {
+    makeBlock('colortheme', function (cb) { // Msg.settings_colorthemeHint .settings_colorthemeTitle
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
         var os = window.cryptpadStore.store['colortheme_default'] || 'light';
-        var values = ['default', 'light', 'dark'/*, 'custom'*/];
+        var values = [
+            'default', // Msg.settings_colortheme_default
+            'light', // Msg.settings_colortheme_light
+            'dark', // Msg.settings_colortheme_dark
+            /* 'custom'*/ // Msg.settings_colortheme_custom
+        ];
 
         var defaultTheme = Messages['settings_colortheme_'+os];
         var opts = h('div.cp-settings-radio-container', [
@@ -626,7 +631,7 @@ define([
         return $div;
     };
 
-    makeBlock('own-drive', function(cb, $div) {
+    makeBlock('own-drive', function(cb, $div) { // Msg.settings_ownDriveHint, .settings_ownDriveTitle
         if (privateData.isDriveOwned || !common.isLoggedIn()) {
             return void cb(false);
         }
@@ -681,7 +686,7 @@ define([
         cb(form);
     }, true);
 
-    makeBlock('mediatag-size', function(cb) {
+    makeBlock('mediatag-size', function(cb) { // Msg.settings_mediatagSizeHint, .settings_mediatagSizeTitle
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input-block',
         });
@@ -735,7 +740,7 @@ define([
 
     // Security
 
-    makeBlock('safe-links', function(cb) {
+    makeBlock('safe-links', function(cb) { // Msg.settings_safeLinksTitle
 
         var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
             Messages.settings_safeLinksCheckbox,
@@ -1059,7 +1064,7 @@ define([
         $div.find('#cp-settings-trim-container').remove();
         cb(content);
     };
-    makeBlock('trim-history', function(cb, $div) {
+    makeBlock('trim-history', function(cb, $div) { // Msg.settings_trimHistoryHint, .settings_trimHistoryTitle
         if (!common.isLoggedIn()) { return void cb(false); }
         redrawTrimHistory(cb, $div);
     }, true);
@@ -1295,7 +1300,7 @@ define([
         return $div;
     };
 
-    makeBlock('pad-notif', function(cb) {
+    makeBlock('pad-notif', function(cb) { // Msg.settings_padNotifHint, .settings_padNotifTitle
         var $cbox = $(UI.createCheckbox('cp-settings-pad-notif',
             Messages.settings_padNotifCheckbox,
             false, { label: { class: 'noTitle' } }));
@@ -1487,7 +1492,7 @@ define([
     };
 
 
-    makeBlock('kanban-tags', function(cb) {
+    makeBlock('kanban-tags', function(cb) { // Msg.settings_kanbanTagsHint, .settings_kanbanTagsTitle
 
         var opt1 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-and',
             Messages.settings_kanbanTagsAnd, false, {

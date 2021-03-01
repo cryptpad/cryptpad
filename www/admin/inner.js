@@ -40,20 +40,20 @@ define([
     var sFrameChan;
 
     var categories = {
-        'general': [
+        'general': [ // Msg.admin_cat_general
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
             'cp-admin-archive',
             'cp-admin-unarchive',
             // 'cp-admin-registration',
         ],
-        'quota': [
+        'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
             'cp-admin-getquota',
             'cp-admin-getlimits',
         ],
-        'stats': [
+        'stats': [ // Msg.admin_cat_stats
             'cp-admin-refresh-stats',
             'cp-admin-active-sessions',
             'cp-admin-active-pads',
@@ -61,11 +61,11 @@ define([
             'cp-admin-registered',
             'cp-admin-disk-usage',
         ],
-        'support': [
+        'support': [ // Msg.admin_cat_support
             'cp-admin-support-list',
             'cp-admin-support-init'
         ],
-        'performance': [
+        'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
             'cp-admin-performance-profiling',
         ]
@@ -73,7 +73,7 @@ define([
 
     var create = {};
 
-    var makeBlock = function (key, addButton) {
+    var makeBlock = function (key, addButton) { // Title, Hint, maybeButton
         // Convert to camlCase for translation keys
         var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 
@@ -90,7 +90,7 @@ define([
     };
     create['update-limit'] = function () {
         var key = 'update-limit';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_updateLimitHint, .admin_updateLimitTitle, .admin_updateLimitButton
         $div.find('button').click(function () {
             sFrameChan.query('Q_UPDATE_LIMIT', null, function (e, res) {
                 if (e || (res && res.error)) { return void console.error(e || res.error); }
@@ -101,7 +101,7 @@ define([
     };
     create['flush-cache'] = function () {
         var key = 'flush-cache';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         var called = false;
         $div.find('button').click(function () {
             if (called) { return; }
@@ -225,14 +225,14 @@ define([
 
     create['archive'] = function () {
         var key = 'archive';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_archiveHint, .admin_archiveTitle, .admin_archiveButton
         var $button = $div.find('button');
         archiveForm(true, $div, $button);
         return $div;
     };
     create['unarchive'] = function () {
         var key = 'unarchive';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_unarchiveHint, .admin_unarchiveTitle, .admin_unarchiveButton
         var $button = $div.find('button');
         archiveForm(false, $div, $button);
         return $div;
@@ -240,7 +240,7 @@ define([
 
     create['registration'] = function () {
         var key = 'registration';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
         var $button = $div.find('button');
         var state = APP.instanceStatus.restrictRegistration;
         if (state) {
@@ -282,7 +282,7 @@ define([
 
     create['defaultlimit'] = function () {
         var key = 'defaultlimit';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
         var _limit = APP.instanceStatus.defaultStorageLimit;
         var _limitMB = Util.bytesToMegabytes(_limit);
         var limit = getPrettySize(_limit);
@@ -322,7 +322,7 @@ define([
     };
     create['getlimits'] = function () {
         var key = 'getlimits';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_getlimitsHint, .admin_getlimitsTitle
         APP.refreshLimits = function () {
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'GET_LIMITS',
@@ -385,7 +385,7 @@ define([
 
     create['setlimit'] = function () {
         var key = 'setlimit';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_setlimitHint, .admin_setlimitTitle
 
         var user = h('input.cp-setlimit-key');
         var $key = $(user);
@@ -471,7 +471,7 @@ define([
 
     create['getquota'] = function () {
         var key = 'getquota';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_getquotaHint, .admin_getquotaTitle, .admin_getquotaButton
 
         var input = h('input#cp-admin-getquota', {
             type: 'text'
@@ -521,7 +521,7 @@ define([
 
     create['active-sessions'] = function () {
         var key = 'active-sessions';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_activeSessionsHint, .admin_activeSessionsTitle
         var onRefresh = function () {
             $div.find('pre').remove();
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -539,7 +539,7 @@ define([
     };
     create['active-pads'] = function () {
         var key = 'active-pads';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_activePadsHint, .admin_activePadsTitle
         var onRefresh = function () {
             $div.find('pre').remove();
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -556,7 +556,7 @@ define([
     };
     create['open-files'] = function () {
         var key = 'open-files';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_openFilesHint, .admin_openFilesTitle
         var onRefresh = function () {
             $div.find('pre').remove();
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -573,7 +573,7 @@ define([
     };
     create['registered'] = function () {
         var key = 'registered';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_registeredHint, .admin_registeredTitle
         var onRefresh = function () {
             $div.find('pre').remove();
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -590,7 +590,7 @@ define([
     };
     create['disk-usage'] = function () {
         var key = 'disk-usage';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
         var called = false;
         $div.find('button').click(function () {
             $div.find('button').hide();
@@ -628,7 +628,7 @@ define([
     var supportKey = ApiConfig.supportMailbox;
     create['support-list'] = function () {
         if (!supportKey || !APP.privateKey) { return; }
-        var $container = makeBlock('support-list');
+        var $container = makeBlock('support-list'); // Msg.admin_supportListHint, .admin_supportListTitle
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
         var catContainer = h('div.cp-dropdown-container');
@@ -893,7 +893,7 @@ define([
     };
 
     create['support-init'] = function () {
-        var $div = makeBlock('support-init');
+        var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
         if (!supportKey) {
             $div.append(h('p', Messages.admin_supportInitHelp));
             return $div;
@@ -945,7 +945,7 @@ define([
     };
 
     create['performance-profiling'] = function () {
-        var $div = makeBlock('performance-profiling');
+        var $div = makeBlock('performance-profiling'); // Msg.admin_performanceProfilingHint, .admin_performanceProfilingTitle
 
         var onRefresh = function () {
             var body = h('tbody');

@@ -124,8 +124,13 @@ define([
     };
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
-        var categories = ['account', 'data', 'bug', 'other'];
-        if (all) { categories.push('all'); }
+        var categories = [
+            'account', // Msg.support_cat_account
+            'data', // Msg.support_cat_data
+            'bug', // Msg.support_cat_bug
+            'other' // Msg.support_cat_other
+        ];
+        if (all) { categories.push('all'); } // Msg.support_cat_all
         categories = categories.map(function (key) {
             return {
                 tag: 'a',
