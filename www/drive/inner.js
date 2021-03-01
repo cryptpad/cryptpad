@@ -139,6 +139,9 @@ define([
         var folders = {};
         var readOnly;
 
+        var startOnline = false;
+        var onReco;
+
         nThen(function (waitFor) {
             $(waitFor(function () {
                 UI.addLoadingScreen();
@@ -148,6 +151,10 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
+            onReco = common.getSframeChannel().on('EV_NETWORK_RECONNECT', function () {
+                startOnline = true;
+            });
+
             $('#cp-app-drive-connection-state').text(Messages.disconnected);
             var privReady = Util.once(waitFor());
             var metadataMgr = common.getMetadataMgr();
@@ -278,7 +285,7 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
-            APP.online = !privateData.offline;
+            APP.online = startOnline || !privateData.offline;
             var drive = DriveUI.create(common, {
                 $limit: usageBar && usageBar.$container,
                 proxy: proxy,
@@ -309,6 +316,7 @@ define([
             sframeChan.on('EV_NETWORK_DISCONNECT', function () {
                 onDisconnect();
             });
+            onReco.stop();
             sframeChan.on('EV_NETWORK_RECONNECT', function () {
                 onReconnect();
             });
