@@ -76,7 +76,8 @@ var grep = function (pattern, cb) {
             return void cb(err);
         }
         if (/data\-localization/.test(stdout)) {
-            return cb(void 0, true, "DATA_LOCALIZATION", stdout);
+            return cb(void 0, false);
+            //return cb(void 0, true, "DATA_LOCALIZATION", stdout);
         }
         if (/(Messages|Msg|messages)\./.test(stdout) || /(footLink|footerCol)/.test(stdout)) {
             return cb(void 0, false);
