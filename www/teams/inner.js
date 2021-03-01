@@ -148,37 +148,37 @@ define([
     };
 
     var mainCategories = {
-        'list': [
+        'list': [ // Msg.team_cat_list
             'cp-team-list',
         ],
         'create': [
             'cp-team-create',
         ],
-        'general': [
+        'general': [ // Msg.team_cat_general
             'cp-team-info',
         ],
-        'link': [
+        'link': [ // Msg.team_cat_link
             'cp-team-link',
         ],
     };
     var teamCategories = {
-        'back': {
+        'back': { // Msg.team_cat_back
             onClick: function (common) {
                 closeTeam(common);
             }
         },
-        'drive': [
+        'drive': [ // Msg.team_cat_drive
             'cp-team-drive'
         ],
-        'members': [
+        'members': [ // Msg.team_cat_members
             'cp-team-offline',
             'cp-team-roster'
         ],
-        'chat': [
+        'chat': [ // Msg.team_cat_chat
             'cp-team-offline',
             'cp-team-chat'
         ],
-        'admin': [
+        'admin': [ // Msg.team_cat_admin
             'cp-team-offline',
             'cp-team-edpublic',
             'cp-team-name',
@@ -996,7 +996,7 @@ define([
         cb(content);
     });
 
-    makeBlock('name', function (common, cb) {
+    makeBlock('name', function (common, cb) { // Msg.team_nameHint, .team_nameTitle
         var $inputBlock = $('<div>', {'class': 'cp-sidebarlayout-input-block'});
         var $input = $('<input>', {
             'type': 'text',
@@ -1055,7 +1055,7 @@ define([
         });
     }, true);
 
-    makeBlock('avatar', function (common, cb) {
+    makeBlock('avatar', function (common, cb) { // Msg.team_avatarHint, .team_avatarTitle
         // Upload
         var avatar = h('div.cp-team-avatar.cp-avatar');
         var $avatar = $(avatar);
@@ -1110,7 +1110,7 @@ define([
         });
     }, true);
 
-    makeBlock('export', function (common, cb) {
+    makeBlock('export', function (common, cb) { // Msg.team_exportHint, .team_exportTitle
         // Backup all the pads
         var sframeChan = common.getSframeChannel();
         var privateData = common.getMetadataMgr().getPrivateData();
@@ -1152,7 +1152,7 @@ define([
         cb(button);
     }, true);
 
-    makeBlock('delete', function (common, cb, $div) {
+    makeBlock('delete', function (common, cb, $div) { // Msg.team_deleteHint, .team_deleteTitle
         $div.addClass('cp-online');
         var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();

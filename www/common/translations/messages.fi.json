@@ -917,7 +917,7 @@
     "support_formContentError": "Virhe: sisältö on tyhjä",
     "support_formTitleError": "Virhe: otsikko on tyhjä",
     "support_formButton": "Lähetä",
-    "support_formHint": "Tällä lomakkeella voit luoda uuden palvelupyynnön. Käytä sitä ottaaksesi ylläpitäjiin yhteyttä ongelmatilanteissa tai kysyäksesi kysymyksiä turvallisella tavalla. Älä luo uutta palvelupyyntöä, jos olet jo luonut palvelupyynnön samasta ongelmasta, vaan käytä vastauspainiketta antaaksesi lisätietoja.",
+    "support_formHint": "Käytä tätä lomaketta ottaaksesi ylläpitäjiin yhteyttä ongelmatilanteissa tai kysyäksesi kysymyksiä turvallisella tavalla. <br>Joihinkin ongelmiin ja kysymyksiin voi löytyä vastaus <a href=\"https://docs.cryptpad.fr/en/user_guide/index.html\" rel=\"noopener noreferrer\" target=\"_blank\">CryptPad-käyttäjäoppaasta (englanniksi)</a>. Ethän luo uusia tukipyyntöjä, jos sinulla on jo samaan ongelmaan liittyvä avoin tukipyyntö. Kommentoi sen sijaan alkuperäistä tukipyyntöäsi.",
     "support_formTitle": "Uusi palvelupyyntö",
     "support_cat_new": "Uusi palvelupyyntö",
     "support_disabledHint": "Tätä CryptPad-instanssia ei ole konfiguroitu tukilomaketta varten.",
