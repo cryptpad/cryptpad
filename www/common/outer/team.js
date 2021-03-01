@@ -126,6 +126,7 @@ define([
         team.proxy = {};
         team.stopped = true;
         delete ctx.teams[teamId];
+        delete ctx.cache[teamId];
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
@@ -327,7 +328,6 @@ define([
         nThen(function (waitFor) {
             // Load the shared folders
             ctx.teams[id] = team;
-            delete ctx.cache[id];
             registerChangeEvents(ctx, team, proxy);
             var network = ctx.store.network || ctx.store.networkPromise;
             SF.loadSharedFolders(ctx.Store, network, team,
