@@ -1568,6 +1568,7 @@ define([
             .appendTo(APP.$leftside);
         APP.$usage = $('<div>', { 'class': 'usage' }).appendTo(APP.$leftside);
         var active = privateData.category || 'account';
+        if (!categories[active]) { active = 'account'; }
         Object.keys(categories).forEach(function(key) {
             var $category = $('<div>', {
                 'class': 'cp-sidebarlayout-category',
