@@ -2687,7 +2687,8 @@ define([
 
                     // every user object should have a persistent, random number
                     if (typeof(proxy.loginToken) !== 'number') {
-                        proxy[Constants.tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+                        proxy[Constants.tokenKey] = store.data.localToken ||
+                                    Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                     }
                     returned[Constants.tokenKey] = proxy[Constants.tokenKey];
 
@@ -2848,11 +2849,14 @@ define([
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 var drive = rt.proxy.drive;
+                /*
+                // XXX deprecating localStorage migration
                 // Creating a new anon drive: import anon pads from localStorage
                 if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
                     && !drive['filesData']) {
                     drive[Constants.oldStorageKey] = [];
                 }
+                */
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 if (store.manager) {
                     // If a cache is loading, make sure it is complete before calling onReady
