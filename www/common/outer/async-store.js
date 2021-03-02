@@ -741,6 +741,7 @@ define([
 
         Store.deleteAccount = function (clientId, data, cb) {
             var edPublic = store.proxy.edPublic;
+            var removeData = data && data.removeData;
             Store.anonRpcMsg(clientId, {
                 msg: 'GET_METADATA',
                 data: store.driveChannel
@@ -769,8 +770,11 @@ define([
                             channel: store.driveChannel,
                             force: true
                         }, waitFor());
+                    }).nThen(function (waitFor) {
+                        if (!removeData) { return; }
+                        // Delete the block. Don't abort if it fails, it doesn't leak any data.
+                        store.rpc.removeLoginBlock(removeData, waitFor());
                     }).nThen(function () {
-                        // TODO delete block
                         // Log out current worker
                         postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
                         store.network.disconnect();

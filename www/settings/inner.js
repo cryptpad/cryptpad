@@ -469,63 +469,64 @@ define([
         });
     }, true);
 
-    create['delete'] = function() {
-        if (!common.isLoggedIn()) { return; }
-        var $div = $('<div>', { 'class': 'cp-settings-delete cp-sidebarlayout-element' });
+    makeBlock('delete', function(cb) { // Msg.settings_deleteHint, .settings_deleteTitle
+        if (!common.isLoggedIn()) { return cb(false); }
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_deleteTitle).appendTo($div);
+        var button = h('button.btn.btn-danger', Messages.settings_deleteButton);
+        var form = h('div', [
+            UI.passwordInput({
+                id: 'cp-settings-delete-account',
+                placeholder: Messages.settings_changePasswordCurrent
+            }, true),
+            button
+        ]);
+        var $form = $(form);
+        var $button = $(button);
+        var spinner = UI.makeSpinner($form);
 
-        $('<span>', { 'class': 'cp-sidebarlayout-description' })
-            .append(Messages.settings_deleteHint).appendTo($div);
-
-        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
-        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
-
-        var $button = $('<button>', { 'id': 'cp-settings-delete', 'class': 'btn btn-danger' })
-            .text(Messages.settings_deleteButton).appendTo($div);
-
-        $button.click(function() {
-            $spinner.show();
-            UI.confirm(Messages.settings_deleteConfirm, function(yes) {
-                if (!yes) { return void $spinner.hide(); }
-                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function(err, data) {
-                    // Owned drive
-                    if (data.state === true) {
-                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
-                        UI.alert(Messages.settings_deleted, function() {
-                            common.gotoURL('/');
-                        });
-                        $ok.show();
-                        $spinner.hide();
-                        return;
+        UI.confirmButton(button, {
+            classes: 'btn-danger'
+        }, function() {
+            $button.prop('disabled', 'disabled');
+            spinner.spin();
+            var password = $form.find('#cp-settings-delete-account').val();
+            if (!password) {
+                return void UI.warn(Messages.error);
+            }
+            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
+                password: password
+            }, function(err, data) {
+                if (data && data.error) {
+                    spinner.hide();
+                    $button.prop('disabled', '');
+                    if (data.error === 'INVALID_PASSWORD') {
+                        return void UI.warn(Messages.drive_sfPasswordError);
                     }
-                    // Not owned drive
-                    var msg = h('div.cp-app-settings-delete-alert', [
-                        h('p', Messages.settings_deleteModal),
-                        h('pre', JSON.stringify(data, 0, 2))
-                    ]);
-                    UI.alert(msg);
-                    $spinner.hide();
-                });
+                    console.error(data.error);
+                    return void UI.warn(Messages.error);
+                }
+                // Owned drive
+                if (data.state === true) {
+                    sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
+                    UI.alert(Messages.settings_deleted, function() {
+                        common.gotoURL('/');
+                    });
+                    spinner.done();
+                    return;
+                }
+                // Not owned drive
+                var msg = h('div.cp-app-settings-delete-alert', [
+                    h('p', Messages.settings_deleteModal),
+                    h('pre', JSON.stringify(data, 0, 2))
+                ]);
+                UI.alert(msg);
+                spinner.done();
+                $button.prop('disabled', '');
             });
-            // TODO
-            /*
-            UI.confirm("Are you sure?", function (yes) {
-                // Logout everywhere
-                // Disconnect other tabs
-                // Remove owned pads
-                // Remove owned drive
-                // Remove pinstore
-                // Alert: "Account deleted", press OK to be redirected to the home page
-                $spinner.hide();
-            });*/
         });
 
-        $spinner.hide().appendTo($div);
-        $ok.hide().appendTo($div);
-
-        return $div;
-    };
+        cb(form);
+    }, true);
 
     create['change-password'] = function() {
         if (!common.isLoggedIn()) { return; }
