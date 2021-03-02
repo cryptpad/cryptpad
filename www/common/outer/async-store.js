@@ -2848,9 +2848,9 @@ define([
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
-                var drive = rt.proxy.drive;
                 /*
                 // XXX deprecating localStorage migration
+                var drive = rt.proxy.drive;
                 // Creating a new anon drive: import anon pads from localStorage
                 if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
                     && !drive['filesData']) {
