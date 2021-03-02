@@ -14,7 +14,7 @@ The `scripts` directory now includes a script to identify unused translations. W
 
 CryptPad.fr now stores more than a terabyte of data, making it quite intensive to run the scripts to remove inactive files from the disk. To help alleviate this strain we've moved the code responsible for deleting files that have been archived for longer than the configured retention period into its own script (`./scripts/evict-archived.js`). For the moment this script is not integrated into the server and will not automatically run in the background as the main eviction script does. It's recommended that you run it manually if you find you are low on disk space.
 
-Since early in the pandemic we've been serving a custom home page on CryptPad.fr to inform users that we've increased the amount of storage provided for free. This was originally intended as a temperary measure, but since almost a year has passed we figured it was about time we integrate this custom code into the platform itself. Admins can now add customized HTML in `customize/application_config.js` by defining an `AppConfig.homeNotice` attribute like so: `AppConfig.homeNotice = "<b>pewpew</b>";`.
+Since early in the pandemic we've been serving a custom home page on CryptPad.fr to inform users that we've increased the amount of storage provided for free. This was originally intended as a temporary measure, but since almost a year has passed we figured it was about time we integrate this custom code into the platform itself. Admins can now add a custom note to the home page, using customized HTML in `customize/application_config.js`. To do this, define an `AppConfig.homeNotice` attribute like so: `AppConfig.homeNotice = "<b>pewpew</b>";`.
 
 To update from 4.1.0 to 4.2.0:
 
