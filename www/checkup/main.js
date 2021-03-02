@@ -11,12 +11,15 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/pinpad.js',
-
+    '/common/outer/network-config.js',
+    '/bower_components/netflux-websocket/netflux-client.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/pages/page-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
-            nThen, SFCommonO, Login, Hash, Util, Pinpad) {
+            nThen, SFCommonO, Login, Hash, Util, Pinpad,
+            NetConfig, Netflux) {
     var assert = Assertions();
 
     var trimSlashes = function (s) {
@@ -77,7 +80,28 @@ define([
         });
     }, _alert("Sandbox domain is not available"));
 
-    // Write/ready access to /block/
+    // Test Websocket
+    var evWSError = Util.mkEvent(true);
+    assert(function (cb) {
+        var ws = new WebSocket(NetConfig.getWebsocketURL());
+        var to = setTimeout(function () {
+            console.error('Websocket TIMEOUT');
+            evWSError.fire();
+            cb('TIMEOUT (5 seconds)');
+        }, 5000);
+        ws.onopen = function () {
+            clearTimeout(to);
+            cb(true);
+        };
+        ws.onerror = function (err) {
+            clearTimeout(to);
+            console.error('Websocket error', err);
+            evWSError.fire();
+            cb('WebSocket error: check your console');
+        };
+    }, _alert("Websocket is not available"));
+
+    // Test login block
     assert(function (cb) {
         var bytes = new Uint8Array(Login.requiredBytes);
 
@@ -101,6 +125,11 @@ define([
                 exists = true;
             }));
         }).nThen(function (waitFor) {
+            // If WebSockets aren't working, don't wait forever here
+            evWSError.reg(function () {
+                waitFor.abort();
+                cb("No WebSocket (test number 6)");
+            });
             // Create proxy
             Login.loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) {
@@ -167,7 +196,7 @@ define([
             cb(true);
         });
 
-    }, _alert("Login Block is not working (write/read/remove)"));
+    }, _alert("Login block is not working (write/read/remove)"));
 
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
@@ -185,6 +214,8 @@ define([
         ]);
     };
 
+    var completed = 0;
+    var $progress = $('#cp-progress');
     assert.run(function (state) {
         var errors = state.errors;
         var failed = errors.length;
@@ -206,6 +237,17 @@ define([
             h('div.failures', errors.map(failureReport)),
         ]);
 
+        $progress.remove();
         $('body').prepend(report);
+    }, function (i, total) {
+        console.log('test '+ i +' completed');
+        completed++;
+        Messages.assert_numberOfTestsCompleted = "{0} / {1} tests completed.";
+        $progress.html('').append(h('div.report.pending.summary', [
+            h('p', [
+                h('i.fa.fa-spinner.fa-pulse'),
+                h('span', Messages._getKey('assert_numberOfTestsCompleted', [completed, total]))
+            ])
+        ]));
     });
 });
