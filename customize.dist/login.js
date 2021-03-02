@@ -22,6 +22,7 @@ define([
             Feedback, LocalStore, Messages, nThen, Block, Hash) {
     var Exports = {
         Cred: Cred,
+        Block: Block,
         // this is depended on by non-customizable files
         // be careful when modifying login.js
         requiredBytes: 192,
@@ -92,7 +93,7 @@ define([
     };
 
 
-    var loginOptionsFromBlock = function (blockInfo) {
+    var loginOptionsFromBlock = Exports.loginOptionsFromBlock = function (blockInfo) {
         var opt = {};
         var parsed = Hash.getSecrets('pad', blockInfo.User_hash);
         opt.channelHex = parsed.channel;
@@ -102,7 +103,7 @@ define([
         return opt;
     };
 
-    var loadUserObject = function (opt, cb) {
+    var loadUserObject = Exports.loadUserObject = function (opt, cb) {
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
