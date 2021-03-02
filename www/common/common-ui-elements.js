@@ -1092,29 +1092,30 @@ define([
         return e;
     };
 
-    UIElements.createHelpMenu = function (common, categories) {
+    UIElements.createHelpMenu = function (common /*, categories */) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
 
-        var elements = [];
-        if (Messages.help && Messages.help.generic) {
-            Object.keys(Messages.help.generic).forEach(function (el) {
-                elements.push(setHTML(h('li'), Messages.help.generic[el]));
-            });
-        }
-        if (categories) {
-            categories.forEach(function (cat) {
-                var msgs = Messages.help[cat];
-                if (msgs) {
-                    Object.keys(msgs).forEach(function (el) {
-                        elements.push(setHTML(h('li'), msgs[el]));
-                    });
-                }
-            });
+
+        var apps = {
+            pad: 'richtext',
+            code: 'code',
+            slide: 'slides',
+            sheet: 'sheets',
+            poll: 'poll',
+            kanban: 'kanban',
+            whiteboard: 'whiteboard',
+        };
+
+        var href = "https://docs.cryptpad.fr/en/user_guide/applications.html";
+        if (apps[type]) {
+            href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
 
+        var content = setHTML(h('p'), Messages.help.generic.more);
+        $(content).find('a').attr('href', href);
+
         var text = h('p.cp-help-text', [
-            h('h1', Messages.help.title),
-            h('ul', elements)
+            content
         ]);
 
         common.fixLinks(text);
