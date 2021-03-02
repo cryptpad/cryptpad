@@ -12,14 +12,13 @@ define([
     '/common/common-util.js',
     '/common/pinpad.js',
     '/common/outer/network-config.js',
-    '/bower_components/netflux-websocket/netflux-client.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/pages/page-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Netflux) {
+            NetConfig) {
     var assert = Assertions();
 
     var trimSlashes = function (s) {
@@ -69,7 +68,7 @@ define([
             DomReady.onReady(waitFor());
         }).nThen(function (waitFor) {
             to = setTimeout(function () {
-                console.error('TIMEOUT loading iframe on the safe domain')
+                console.error('TIMEOUT loading iframe on the safe domain');
                 cb(false);
             }, 5000);
             SFCommonO.initIframe(waitFor);
@@ -120,7 +119,7 @@ define([
         var RT, rpc, exists;
 
         nThen(function (waitFor) {
-            Util.fetch(blockUrl, waitFor(function (err, block) {
+            Util.fetch(blockUrl, waitFor(function (err) {
                 if (err) { return; } // No block found
                 exists = true;
             }));
@@ -167,7 +166,7 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Read block
-            Util.fetch(blockUrl, waitFor(function (e, block) {
+            Util.fetch(blockUrl, waitFor(function (e) {
                 if (e) {
                     waitFor.abort();
                     console.error("Can't read login block", e);
