@@ -269,9 +269,8 @@
 
     Util.magnitudeOfBytes = function (bytes) {
         if (bytes >= oneGigabyte) { return 'GB'; }
-        // smallest supported format is MB to preserve existing behaviour
-        else /* if (bytes >= oneMegabyte) */ { return 'MB'; }
-        //else { return 'KB'; }
+        else if (bytes >= oneMegabyte) { return 'MB'; }
+        else { return 'KB'; }
     };
 
     // given a path, asynchronously return an arraybuffer
