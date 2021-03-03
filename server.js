@@ -162,6 +162,8 @@ app.use(function (req, res, next) {
         return void res.end();
     }
 
+    if (/^\/api\/config/.test(req.url)) { return void next(); }
+
     setHeaders(req, res);
     if (/[\?\&]ver=[^\/]+$/.test(req.url)) { res.setHeader("Cache-Control", "max-age=31536000"); }
     else { res.setHeader("Cache-Control", "no-cache"); }
