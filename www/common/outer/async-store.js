@@ -2632,6 +2632,7 @@ define([
                     progress: 0
                 });
             }).nThen(function (waitFor) {
+                if (typeof(proxy.version) === "undefined") { proxy.version = 11; }
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
                         type: 'migrate',
