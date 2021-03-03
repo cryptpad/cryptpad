@@ -1378,6 +1378,14 @@ define([
             // Secure modal
             var SecureModal = {};
             // Create or display the iframe and modal
+            var getPropChannels = function () {
+                var channels = {};
+                if (cfg.getPropChannels) {
+                    channels = Utils.Util.clone(cfg.getPropChannels());
+                }
+                channels.channel = secret.channel;
+                return channels;
+            };
             var initSecureModal = function (type, cfg, cb) {
                 cfg.modal = type;
                 SecureModal.cb = cb;
@@ -1397,7 +1405,8 @@ define([
                         app: parsed.type,
                         hashes: hashes,
                         password: password,
-                        isTemplate: isTemplate
+                        isTemplate: isTemplate,
+                        getPropChannels: getPropChannels
                     };
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {

@@ -836,12 +836,7 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    common.isPadStored(function (err, data) {
-                        if (!data) {
-                            return void UI.alert(Messages.autostore_notAvailable);
-                        }
-                        sframeChan.event('EV_PROPERTIES_OPEN');
-                    });
+                    sframeChan.event('EV_PROPERTIES_OPEN');
                 });
                 break;
             case 'save': // OnlyOffice save
