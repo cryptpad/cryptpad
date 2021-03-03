@@ -1117,7 +1117,6 @@ define([
 
         var closeButton = h('span.cp-help-close.fa.fa-times');
         var $toolbarButton = common.createButton('', true, {
-            title: Messages.hide_help_button,
             text: Messages.help_button,
             name: 'help'
         }).addClass('cp-toolbar-button-active');
@@ -1126,28 +1125,12 @@ define([
             text
         ]);
 
+        $toolbarButton.attr('title', Messages.show_help_button);
+
         var toggleHelp = function (forceClose) {
-            if ($(help).hasClass('cp-help-hidden')) {
-                if (forceClose) { return; }
-                common.setAttribute(['hideHelp', type], false);
-                $toolbarButton.addClass('cp-toolbar-button-active');
-                $toolbarButton.attr('title', Messages.hide_help_button);
-                return void $(help).removeClass('cp-help-hidden');
-            }
             $toolbarButton.removeClass('cp-toolbar-button-active');
-            $toolbarButton.attr('title', Messages.show_help_button);
             $(help).addClass('cp-help-hidden');
             common.setAttribute(['hideHelp', type], true);
-        };
-
-        var showMore = function () {
-            $(text).addClass("cp-help-small");
-            var $dot = $('<span>').text('...').appendTo($(text).find('h1'));
-            $(text).click(function () {
-                $(text).removeClass('cp-help-small');
-                $(text).off('click');
-                $dot.remove();
-            });
         };
 
         $(closeButton).click(function (e) {
@@ -1155,16 +1138,12 @@ define([
             toggleHelp(true);
         });
         $toolbarButton.click(function () {
-            toggleHelp();
+            common.openUnsafeURL(href);
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
-            //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
-            if (val === true) { return void toggleHelp(true); }
-            // Note: Help is always hidden by default now, to avoid displaying to many things in the UI
-            // This is why we have (true || ...)
-            if (!val && (true || $(window).height() < 800 || $(window).width() < 800)) {
-                return void showMore();
+            if (val === true || $(window).height() < 800 || $(window).width() < 800) {
+                toggleHelp(true);
             }
         });
 
