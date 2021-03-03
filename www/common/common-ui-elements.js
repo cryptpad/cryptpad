@@ -1724,21 +1724,7 @@ define([
                 },
             });
         }
-/*
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Common.openUnsafeURL(AppConfig.surveyURL);
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
-*/
+
         options.push({
             tag: 'a',
             attributes: {
@@ -1791,6 +1777,20 @@ define([
                 content: h('span', Messages.crowdfunding_button2),
                 action: function () {
                     Common.openUnsafeURL(priv.accounts.donateURL);
+                },
+            });
+        }
+
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Common.openUnsafeURL(AppConfig.surveyURL);
+                    Feedback.send('SURVEY_CLICKED');
                 },
             });
         }
