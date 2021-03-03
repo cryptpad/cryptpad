@@ -119,6 +119,7 @@ define([
                     return;
                 }
                 if (msg.type !== 'TICKET') { return; }
+                $ticket.removeClass('cp-support-list-closed');
 
                 if (!$ticket.length) {
                     $ticket = APP.support.makeTicket($div, content, function () {
