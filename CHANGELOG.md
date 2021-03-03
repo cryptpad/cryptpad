@@ -19,7 +19,7 @@ Since early in the pandemic we've been serving a custom home page on CryptPad.fr
 To update from 4.1.0 to 4.2.0:
 
 1. Stop your server
-2. Get the latest code from the 4.1.0 tag (`git fetch origin && git checkout 4.1.0`, or just `git pull origin main`)
+2. Get the latest code from the 4.2.0 tag (`git fetch origin && git checkout 4.2.0`, or just `git pull origin main`)
 3. Install the latest dependencies with `bower update` and `npm i`
 4. Restart your server
 
