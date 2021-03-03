@@ -2849,7 +2849,7 @@ define([
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 /*
-                // XXX deprecating localStorage migration
+                // deprecating localStorage migration as of 4.2.0
                 var drive = rt.proxy.drive;
                 // Creating a new anon drive: import anon pads from localStorage
                 if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
