@@ -103,6 +103,7 @@ define([
                             feedbackAllowed: Utils.Feedback.state,
                             hashes: config.data.hashes,
                             password: config.data.password,
+                            propChannels: config.data.getPropChannels(),
                             isTemplate: isTemplate,
                             file: config.data.file,
                             secureIframe: true,

@@ -107,6 +107,9 @@ var setHeaders = (function () {
                 "Cross-Origin-Embedder-Policy": 'require-corp',
             });
 
+            // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
+            // when duplicated by NGINX in production environments
+            if (/^\/api\/config/.test(req.url)) { return; }
             // targeted CSP, generic policies, maybe custom headers
             const h = [
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,

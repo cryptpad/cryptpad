@@ -487,7 +487,7 @@ define([
         $button.click(function() {
             $spinner.show();
             UI.confirm(Messages.settings_deleteConfirm, function(yes) {
-                if (!yes) { return; }
+                if (!yes) { return void $spinner.hide(); }
                 sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function(err, data) {
                     // Owned drive
                     if (data.state === true) {
@@ -1568,6 +1568,7 @@ define([
             .appendTo(APP.$leftside);
         APP.$usage = $('<div>', { 'class': 'usage' }).appendTo(APP.$leftside);
         var active = privateData.category || 'account';
+        if (!categories[active]) { active = 'account'; }
         Object.keys(categories).forEach(function(key) {
             var $category = $('<div>', {
                 'class': 'cp-sidebarlayout-category',
