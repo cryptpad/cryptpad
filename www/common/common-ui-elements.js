@@ -1127,7 +1127,7 @@ define([
 
         $toolbarButton.attr('title', Messages.show_help_button);
 
-        var toggleHelp = function (forceClose) {
+        var toggleHelp = function () {
             $toolbarButton.removeClass('cp-toolbar-button-active');
             $(help).addClass('cp-help-hidden');
             common.setAttribute(['hideHelp', type], true);
