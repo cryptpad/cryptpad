@@ -1146,18 +1146,10 @@ define([
                 obj.userObject.setHref(channel, null, href);
             });
 
-            // Pads owned by us ("us" can be a user or a team) that are not in our "main" drive
-            // (meaning they are stored in a shared folder) must be added to the "main" drive.
-            // This is to make sure owners always have control over owned data.
-            var edPublic = data.teamId ?
-                    Util.find(store.proxy, ['teams', data.teamId, 'keys', 'edPublic']) :
-                    store.proxy.edPublic;
-            var ownedByMe = Array.isArray(owners) && owners.indexOf(edPublic) !== -1;
-
             // Add the pad if it does not exist in our drive
             if (!contains) { // || (ownedByMe && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
-                if (autoStore !== 1 && !data.forceSave && !data.path) {// && !ownedByMe) {
+                if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         autoStore: autoStore
