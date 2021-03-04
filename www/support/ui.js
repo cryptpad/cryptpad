@@ -371,8 +371,8 @@ define([
         var pre = h('pre.cp-support-message-content');
         var $pre = $(pre);
         var more;
-        if (content.message.length >= 3000) {
-            displayed = content.message.slice(0, 3000) + '...';
+        if (content.message.length >= 2000) {
+            displayed = content.message.slice(0, 2000) + '...';
             var expand = h('button.btn.btn-secondary', Messages.admin_support_open);
             var collapse = h('button.btn.btn-secondary', Messages.admin_support_collapse);
             var $collapse = $(collapse).hide();
