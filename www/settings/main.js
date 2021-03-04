@@ -67,7 +67,7 @@ define([
                 Cryptpad.mergeAnonDrive(cb);
             });
             sframeChan.on('Q_SETTINGS_DELETE_ACCOUNT', function (data, cb) {
-                Cryptpad.deleteAccount(cb);
+                Cryptpad.deleteAccount(data, cb);
             });
             sframeChan.on('Q_COLORTHEME_CHANGE', function (data, cb) {
                 localStorage['CRYPTPAD_STORE|colortheme'] = data.theme;

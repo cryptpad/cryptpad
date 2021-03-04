@@ -528,8 +528,6 @@ define([
                                         if (!proxy[Constants.displayNameKey]) {
                                             proxy[Constants.displayNameKey] = uname;
                                         }
-                                        LocalStore.eraseTempSessionValues();
-
 
                                         if (result.blockHash) {
                                             LocalStore.setBlockHash(result.blockHash);
