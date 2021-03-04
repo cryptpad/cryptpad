@@ -585,6 +585,8 @@ define([
                         var hjson = normalize(JSON.parse(newContentStr));
                         evCursorUpdate.fire(data, hjson);
                     });
+                } else {
+                    common.getMetadataMgr().setDegraded(false);
                 }
 
                 UI.removeLoadingScreen(emitResize);

@@ -216,11 +216,11 @@ MessengerUI, Messages) {
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
             numberOfViewUsers = '?';
-        }
-
-        if (metadataMgr.isDegraded()) {
+        } else if (metadataMgr.isDegraded()) {
             numberOfEditUsers = Math.max(metadataMgr.getChannelMembers().length - 1, 0);
             numberOfViewUsers = '';
+            Messages.toolbar_degraded = "Too many editors are present in the pad. The userlist has been disabled to improve performances"; // XXX
+            $('<em>').text(Messages.toolbar_degraded).appendTo($editUsersList);
         }
 
         // Update the buttons
@@ -231,11 +231,7 @@ MessengerUI, Messages) {
 
         if (!online) { return; }
 
-        if (metadataMgr.isDegraded()) {
-            Messages.toolbar_degraded = "Too many editors are present in the pad. The userlist has been disabled to improve performances"; // XXX
-            $('<em>').text(Messages.toolbar_degraded).appendTo($editUsersList);
-            return;
-        }
+        if (metadataMgr.isDegraded()) { return; }
 
         // Display the userlist
 

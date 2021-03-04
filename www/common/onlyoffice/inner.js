@@ -2200,6 +2200,7 @@ define([
 
         config.onInit = function (info) {
             var privateData = metadataMgr.getPrivateData();
+            metadataMgr.setDegraded(false); // FIXME degraded moded unsupported (no cursor channel)
 
             readOnly = privateData.readOnly;
 
