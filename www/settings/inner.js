@@ -485,14 +485,15 @@ define([
         var spinner = UI.makeSpinner($form);
 
         UI.confirmButton(button, {
-            classes: 'btn-danger'
+            classes: 'btn-danger',
+            multiple: true
         }, function() {
             $button.prop('disabled', 'disabled');
-            spinner.spin();
             var password = $form.find('#cp-settings-delete-account').val();
             if (!password) {
                 return void UI.warn(Messages.error);
             }
+            spinner.spin();
             sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
                 password: password
             }, function(err, data) {
@@ -520,7 +521,7 @@ define([
                     h('pre', JSON.stringify(data, 0, 2))
                 ]);
                 UI.alert(msg);
-                spinner.done();
+                spinner.hide();
                 $button.prop('disabled', '');
             });
         });
