@@ -1436,7 +1436,7 @@ define([
             */
 
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
-                cb('NO');
+                return void cb();
             };
             APP.AddImage = function(cb1, cb2) {
                 APP.AddImageSuccessCallback = cb1;
