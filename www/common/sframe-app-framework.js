@@ -579,7 +579,7 @@ define([
                 common.openPadChat(onLocal);
                 if (!readOnly && cursorGetter) {
                     common.openCursorChannel(onLocal);
-                    cursor = common.createCursor();
+                    cursor = common.createCursor(onLocal);
                     cursor.onCursorUpdate(function (data) {
                         var newContentStr = cpNfInner.chainpad.getUserDoc();
                         var hjson = normalize(JSON.parse(newContentStr));

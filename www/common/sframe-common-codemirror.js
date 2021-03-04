@@ -530,6 +530,9 @@ define([
             }
         };
         exp.setRemoteCursor = function (data) {
+            if (data.reset) {
+                return void exp.removeCursors();
+            }
             if (data.leave) {
                 $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {
                     var id = $(el).attr('id');

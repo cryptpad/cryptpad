@@ -1482,17 +1482,6 @@ define([
             }
         };
 
-        // Cursor
-        Store.cursor = {
-            execCommand: function (clientId, data, cb) {
-                // The cursor module can only be used when the store is ready
-                onReadyEvt.reg(function () {
-                    if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
-                    store.cursor.execCommand(clientId, data, cb);
-                });
-            }
-        };
-
         // Mailbox
         Store.mailbox = {
             execCommand: function (clientId, data, cb) {
@@ -2335,7 +2324,7 @@ define([
                 store.messenger.leavePad(chanId);
             } catch (e) { console.error(e); }
             try {
-                store.cursor.leavePad(chanId);
+                store.modules['cursor'].leavePad(chanId);
             } catch (e) { console.error(e); }
             try {
                 store.onlyoffice.leavePad(chanId);
@@ -2357,9 +2346,6 @@ define([
             if (driveIdx !== -1) {
                 driveEventClients.splice(driveIdx, 1);
             }
-            try {
-                store.cursor.removeClient(clientId);
-            } catch (e) { console.error(e); }
             try {
                 store.onlyoffice.removeClient(clientId);
             } catch (e) { console.error(e); }
@@ -2499,17 +2485,6 @@ define([
             });
         };
 */
-        var loadCursor = function () {
-            store.cursor = Cursor.init(store, function (ev, data, clients) {
-                clients.forEach(function (cId) {
-                    postMessage(cId, 'CURSOR_EVENT', {
-                        ev: ev,
-                        data: data
-                    });
-                });
-            });
-        };
-
         var loadOnlyOffice = function () {
             store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
                 clients.forEach(function (cId) {
@@ -2656,7 +2631,7 @@ define([
                     };
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
-                loadCursor();
+                loadUniversal(Cursor, 'cursor', waitFor);
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];

@@ -1247,6 +1247,16 @@ define([
         });
         framework.onCursorUpdate(function (data) {
             if (!data) { return; }
+            if (data.reset) {
+                Object.keys(remoteCursors).forEach(function (id) {
+                    if (remoteCursors[id].clear) {
+                        remoteCursors[id].clear();
+                    }
+                    delete remoteCursors[id];
+                });
+                return;
+            }
+
             var id = data.id;
 
             // Clear existing cursor

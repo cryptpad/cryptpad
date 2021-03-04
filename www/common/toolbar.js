@@ -167,6 +167,7 @@ MessengerUI, Messages) {
         var $userlistContent = toolbar.userlistContent;
 
         var metadataMgr = config.metadataMgr;
+
         var online = !forceOffline && metadataMgr.isConnected();
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
@@ -217,13 +218,25 @@ MessengerUI, Messages) {
             numberOfViewUsers = '?';
         }
 
+        if (metadataMgr.isDegraded()) {
+            numberOfEditUsers = Math.max(metadataMgr.getChannelMembers().length - 1, 0);
+            numberOfViewUsers = '';
+        }
+
         // Update the buttons
         var fa_editusers = '<span class="fa fa-users"></span>';
-        var fa_viewusers = '<span class="fa fa-eye"></span>';
+        var fa_viewusers = numberOfViewUsers === '' ? '' : '<span class="fa fa-eye"></span>';
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
         if (!online) { return; }
+
+        if (metadataMgr.isDegraded()) {
+            Messages.toolbar_degraded = "Too many editors are present in the pad. The userlist has been disabled to improve performances"; // XXX
+            $('<em>').text(Messages.toolbar_degraded).appendTo($editUsersList);
+            return;
+        }
+
         // Display the userlist
 
         // Editors
