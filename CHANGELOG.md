@@ -19,7 +19,7 @@ Since early in the pandemic we've been serving a custom home page on CryptPad.fr
 To update from 4.1.0 to 4.2.0:
 
 1. Stop your server
-2. Get the latest code from the 4.1.0 tag (`git fetch origin && git checkout 4.1.0`, or just `git pull origin main`)
+2. Get the latest code from the 4.2.0 tag (`git fetch origin && git checkout 4.2.0`, or just `git pull origin main`)
 3. Install the latest dependencies with `bower update` and `npm i`
 4. Restart your server
 
@@ -35,6 +35,7 @@ To update from 4.1.0 to 4.2.0:
 * Server administrators can now refresh the _performance_ table on the admin panel without reloading the page.
 * We've begun working on a _checkup_ page for CryptPad to help administrators identify and fix common misconfigurations of the platform. It's still in a very basic state, but we hope to to make it a core part of the server installation guide that is under development.
 * The kanban app now supports import like the rest of our apps and rejects content of any file-type other than JSON.
+* We've dropped support for a very old migration that handled user accounts that had not been accessed fo several years. This should make everyone else's account slightly faster.
 
 ## Bug fixes
 
@@ -55,10 +56,12 @@ To update from 4.1.0 to 4.2.0:
 * The client will now check whether a file is larger than is allowed by the server before attempting to upload it, rather failing only when the server rejects the upload.
 * The drive no longer allows files to be dragged and dropped into locations other than the "Documents" section, as it did not make sense for files to be displayed anywhere else.
 * We identified and fixed a number of issues which caused shared folders that were protected with access lists to fail to load due to race conditions between loading the document and authenticating with the server as a user or member of a team. This could also result in a loss of access to documents stored exclusively in those shared folders.
+* There was a similar race condition that could occur when registering an account that could cause some parts of the UI to get stuck offline.
 * We've fixed a number of server issues:
   1. A change in a function signature in late December caused the upload of unowned files to fail to complete.
   2. Messages sent via websocket are no longer broadcast to other members of a session until they have been validated by the server and stored on the disk. This was not a security issue as clients validate messages anyway, however, it could cause inconsistencies in documents when some members of a session incorrectly believed that a message had been saved.
   3. A subtle race condition in very specific circumstances could cause the server's in-memory index for a given session to become incorrect. This could cause one or two messages to be omitted when requesting the most recent history. We observed this in practice when some clients did not realize they had been kicked from a team. This is unlikely to have affected anyone in practice because it only occurred when reconnecting using cached messages for the document which records team membership, and this functionality is only being introduced in this release.
+  4. Several HTTP headers were set by both our example NGINX configuration and the NodeJS server which is proxied by NGINX for a particular resource. The duplication of certain headers caused unexpected behaviour in Chrome-based browsers, so we've updated the Node process to avoid conflicting.
 * We spent a lot of time improving our integration of OnlyOffice's sheet editor:
   * The editor is now initialized with your CryptPad account's preferred language.
   * We realized that our peer-to-peer locking system (which replaces the server-based system provided by OnlyOffice's document server) did not correctly handle multiple locks per user. This caused errors when filtering and sorting columns. We've improved our locking system so these features should now work as expected, but old clients will not understand the new format. As mentioned in the "Update notes" section, admins must follow the recommended update steps to ensure that all clients correctly update to the latest version.
