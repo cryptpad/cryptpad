@@ -836,12 +836,7 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    common.isPadStored(function (err, data) {
-                        if (!data) {
-                            return void UI.alert(Messages.autostore_notAvailable);
-                        }
-                        sframeChan.event('EV_PROPERTIES_OPEN');
-                    });
+                    sframeChan.event('EV_PROPERTIES_OPEN');
                 });
                 break;
             case 'save': // OnlyOffice save
@@ -1092,36 +1087,36 @@ define([
         return e;
     };
 
-    UIElements.createHelpMenu = function (common, categories) {
+    UIElements.createHelpMenu = function (common /*, categories */) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
 
-        var elements = [];
-        if (Messages.help && Messages.help.generic) {
-            Object.keys(Messages.help.generic).forEach(function (el) {
-                elements.push(setHTML(h('li'), Messages.help.generic[el]));
-            });
-        }
-        if (categories) {
-            categories.forEach(function (cat) {
-                var msgs = Messages.help[cat];
-                if (msgs) {
-                    Object.keys(msgs).forEach(function (el) {
-                        elements.push(setHTML(h('li'), msgs[el]));
-                    });
-                }
-            });
+
+        var apps = {
+            pad: 'richtext',
+            code: 'code',
+            slide: 'slides',
+            sheet: 'sheets',
+            poll: 'poll',
+            kanban: 'kanban',
+            whiteboard: 'whiteboard',
+        };
+
+        var href = "https://docs.cryptpad.fr/en/user_guide/applications.html";
+        if (apps[type]) {
+            href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
 
+        var content = setHTML(h('p'), Messages.help.generic.more);
+        $(content).find('a').attr('href', href);
+
         var text = h('p.cp-help-text', [
-            h('h1', Messages.help.title),
-            h('ul', elements)
+            content
         ]);
 
         common.fixLinks(text);
 
         var closeButton = h('span.cp-help-close.fa.fa-times');
         var $toolbarButton = common.createButton('', true, {
-            title: Messages.hide_help_button,
             text: Messages.help_button,
             name: 'help'
         }).addClass('cp-toolbar-button-active');
@@ -1130,28 +1125,12 @@ define([
             text
         ]);
 
-        var toggleHelp = function (forceClose) {
-            if ($(help).hasClass('cp-help-hidden')) {
-                if (forceClose) { return; }
-                common.setAttribute(['hideHelp', type], false);
-                $toolbarButton.addClass('cp-toolbar-button-active');
-                $toolbarButton.attr('title', Messages.hide_help_button);
-                return void $(help).removeClass('cp-help-hidden');
-            }
+        $toolbarButton.attr('title', Messages.show_help_button);
+
+        var toggleHelp = function () {
             $toolbarButton.removeClass('cp-toolbar-button-active');
-            $toolbarButton.attr('title', Messages.show_help_button);
             $(help).addClass('cp-help-hidden');
             common.setAttribute(['hideHelp', type], true);
-        };
-
-        var showMore = function () {
-            $(text).addClass("cp-help-small");
-            var $dot = $('<span>').text('...').appendTo($(text).find('h1'));
-            $(text).click(function () {
-                $(text).removeClass('cp-help-small');
-                $(text).off('click');
-                $dot.remove();
-            });
         };
 
         $(closeButton).click(function (e) {
@@ -1159,16 +1138,12 @@ define([
             toggleHelp(true);
         });
         $toolbarButton.click(function () {
-            toggleHelp();
+            common.openUnsafeURL(href);
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
-            //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
-            if (val === true) { return void toggleHelp(true); }
-            // Note: Help is always hidden by default now, to avoid displaying to many things in the UI
-            // This is why we have (true || ...)
-            if (!val && (true || $(window).height() < 800 || $(window).width() < 800)) {
-                return void showMore();
+            if (val === true || $(window).height() < 800 || $(window).width() < 800) {
+                toggleHelp(true);
             }
         });
 
@@ -1724,21 +1699,7 @@ define([
                 },
             });
         }
-/*
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Common.openUnsafeURL(AppConfig.surveyURL);
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
-*/
+
         options.push({
             tag: 'a',
             attributes: {
@@ -1791,6 +1752,20 @@ define([
                 content: h('span', Messages.crowdfunding_button2),
                 action: function () {
                     Common.openUnsafeURL(priv.accounts.donateURL);
+                },
+            });
+        }
+
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Common.openUnsafeURL(AppConfig.surveyURL);
+                    Feedback.send('SURVEY_CLICKED');
                 },
             });
         }

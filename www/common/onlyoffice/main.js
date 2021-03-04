@@ -26,6 +26,10 @@ define([
             obj.ooVersionHash = version;
             obj.ooForceVersion = localStorage.CryptPad_ooVersion || "";
         };
+        var channels = {};
+        var getPropChannels = function () {
+            return channels;
+        };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
                 var chanId = Utils.Hash.hrefToHexChannelId(data.url);
@@ -38,14 +42,17 @@ define([
                 Cryptpad.pinPads([chanId], function (e) {
                     if (e) { return void cb(e); }
                     Cryptpad.setPadAttribute('lastVersion', data.url, cb);
+                    channels.lastVersion = data.url;
                 });
                 Cryptpad.setPadAttribute('lastCpHash', data.hash, cb);
+                channels.lastCpHash = data.hash;
             });
             sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
                 Cryptpad.getPadAttribute('rtChannel', function (err, res) {
                     // If already stored, don't pin it again
                     if (res && res === data.channel) { return; }
                     Cryptpad.pinPads([data.channel], function () {
+                        channels.rtChannel = data.channel;
                         Cryptpad.setPadAttribute('rtChannel', data.channel, function () {});
                     });
                 });
@@ -144,6 +151,7 @@ define([
             useCreationScreen: true,
             addData: addData,
             addRpc: addRpc,
+            getPropChannels: getPropChannels,
             messaging: true
         });
     });

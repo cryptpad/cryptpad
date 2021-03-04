@@ -52,6 +52,11 @@ define([
                 });
                 return ret;
             }).filter(Boolean);
+
+            // "dest" is the recipient that is not the admin support mailbox.
+            // In the support page, make sure dest is always ourselves.
+            dest.channel = privateData.support;
+            dest.curvePublic = user.curvePublic;
         }
 
         // Send the message to the admin mailbox and to the user mailbox

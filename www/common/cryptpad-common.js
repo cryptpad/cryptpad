@@ -2308,6 +2308,7 @@ define([
 
 
             var channelIsReady = waitFor();
+            updateLocalVersion();
 
             var msgEv = Util.mkEvent();
             var postMsg, worker;
@@ -2541,7 +2542,6 @@ define([
                 AppConfig.afterLogin(common, waitFor());
             }
         }).nThen(function () {
-            updateLocalVersion();
             f(void 0, env);
             if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
         });

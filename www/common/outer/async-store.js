@@ -1150,18 +1150,10 @@ define([
                 obj.userObject.setHref(channel, null, href);
             });
 
-            // Pads owned by us ("us" can be a user or a team) that are not in our "main" drive
-            // (meaning they are stored in a shared folder) must be added to the "main" drive.
-            // This is to make sure owners always have control over owned data.
-            var edPublic = data.teamId ?
-                    Util.find(store.proxy, ['teams', data.teamId, 'keys', 'edPublic']) :
-                    store.proxy.edPublic;
-            var ownedByMe = Array.isArray(owners) && owners.indexOf(edPublic) !== -1;
-
             // Add the pad if it does not exist in our drive
             if (!contains) { // || (ownedByMe && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
-                if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
+                if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         autoStore: autoStore
@@ -2644,6 +2636,7 @@ define([
                     progress: 0
                 });
             }).nThen(function (waitFor) {
+                if (typeof(proxy.version) === "undefined") { proxy.version = 11; }
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
                         type: 'migrate',
@@ -2691,7 +2684,8 @@ define([
 
                     // every user object should have a persistent, random number
                     if (typeof(proxy.loginToken) !== 'number') {
-                        proxy[Constants.tokenKey] = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+                        proxy[Constants.tokenKey] = store.data.localToken ||
+                                    Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                     }
                     returned[Constants.tokenKey] = proxy[Constants.tokenKey];
 
@@ -2851,12 +2845,15 @@ define([
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
+                /*
+                // deprecating localStorage migration as of 4.2.0
                 var drive = rt.proxy.drive;
                 // Creating a new anon drive: import anon pads from localStorage
                 if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
                     && !drive['filesData']) {
                     drive[Constants.oldStorageKey] = [];
                 }
+                */
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 if (store.manager) {
                     // If a cache is loading, make sure it is complete before calling onReady
