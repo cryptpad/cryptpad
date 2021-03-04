@@ -15,7 +15,7 @@ define(['json.sortify'], function (Sortify) {
         var priv = {};
         var dirty = true;
         var history = false;
-        var degraded = true;
+        var degraded = 1; // truthy value but not true: we don't know yet if we're degraded
         var changeHandlers = [];
         var lazyChangeHandlers = [];
         var titleChangeHandlers = [];
