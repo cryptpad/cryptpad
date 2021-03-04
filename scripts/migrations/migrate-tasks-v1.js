@@ -15,7 +15,7 @@ nThen(function (w) {
     }));
 }).nThen(function (w) {
     FileStorage.create(config, w(function (err, _store) {
-	if (err) { throw err; }
+        if (err) { throw err; }
         config.store = _store;
     }));
 }).nThen(function (w) {
