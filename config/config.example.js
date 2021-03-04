@@ -45,6 +45,14 @@ module.exports = {
  *  In such a case this should be also handled by NGINX, as documented in
  *  cryptpad/docs/example.nginx.conf (see the $main_domain variable)
  *
+ *  Note: you may provide multiple origins for the purpose of accessing
+ *  a development instance via different URLs, like so:
+ *  httpUnsafeOrigin: 'http://127.0.0.1:3000/ http://localhost:3000/',
+ *
+ *  Such configuration is not recommended for production instances,
+ *  as the development team does not actively test such configuration
+ *  and it may have unintended consequences in practice.
+ *
  */
     httpUnsafeOrigin: 'http://localhost:3000/',
 
@@ -294,6 +302,8 @@ module.exports = {
      *  fully uploaded. Set its location here.
      */
     blobStagingPath: './data/blobstage',
+
+    decreePath: './data/decrees',
 
     /* CryptPad supports logging events directly to the disk in a 'logs' directory
      * Set its location here, or set it to false (or nothing) if you'd rather not log
