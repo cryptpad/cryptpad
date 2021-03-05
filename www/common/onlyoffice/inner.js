@@ -1371,6 +1371,7 @@ define([
                             } catch (e) {}
                         } else {
                             setEditable(true);
+                            deleteOfflineLocks();
                             handleNewLocks({}, content.locks);
                             if (APP.unsavedChanges) {
                                 var unsaved = APP.unsavedChanges;
