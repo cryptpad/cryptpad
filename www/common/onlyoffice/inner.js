@@ -1457,6 +1457,25 @@ define([
 
                     // Add image to the list
                     var mediasSources = getMediasSources();
+
+                    // Check if name already exists
+                    var getUniqueName = function (name, mediasSources) {
+                        var get = function () {
+                            var s = name.split('.');
+                            if (s.length > 1) {
+                                s[s.length - 2] = s[s.length - 2] + '-' + Util.uid();
+                                name = s.join('.');
+                            } else {
+                                name += '-'+ Util.uid();
+                            }
+                        };
+                        while (mediasSources[name]) { get(); }
+                        return name;
+                    };
+                    if (mediasSources[name]) {
+                        name = getUniqueName(name, mediasSources);
+                        data.name = name;
+                    }
                     mediasSources[name] = data;
                     APP.onLocal();
 
