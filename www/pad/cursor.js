@@ -122,6 +122,9 @@ define([
         };
 
         exp.onCursorUpdate = function (data, hjson) {
+            if (data.reset) {
+                return void exp.removeCursors(inner);
+            }
             if (data.leave) {
                 if (data.id.length === 32) {
                     Object.keys(cursors).forEach(function (id) {

@@ -6,6 +6,8 @@ define([
 ], function (Util, Constants, Messages, Crypto) {
     var Cursor = {};
 
+    var DEGRADED = 3; // XXX Number of users before switching to degraded mode
+
     var convertToUint8 = function (obj) {
         var l = Object.keys(obj).length;
         var u = new Uint8Array(l);
@@ -21,6 +23,7 @@ define([
         if (!client || !client.cursor) { return; }
         var chan = ctx.channels[client.channel];
         if (!chan) { return; }
+        if (chan.degraded) { return; }
         if (!chan.sendMsg) { return; } // Store not synced yet, we're running with the cache
         var data = {
             id: client.id,
@@ -34,6 +37,7 @@ define([
 
     // Send all our cursors data when someone remote joins the channel
     var sendOurCursors = function (ctx, chan) {
+        if (chan.degraded) { return; }
         chan.clients.forEach(function (c) {
             var client = ctx.clients[c];
             if (!client) { return; }
@@ -77,6 +81,7 @@ define([
             // ==> Send the cursor position of the other tabs
             chan.clients.forEach(function (cl) {
                 var clientObj = ctx.clients[cl];
+                if (chan.degraded) { return; }
                 if (!clientObj) { return; }
                 ctx.emit('MESSAGE', {
                     id: clientObj.id,
@@ -90,6 +95,11 @@ define([
             return void cb();
         }
 
+        var updateDegraded = function (ctx, wc, chan) {
+            var m = wc.members;
+            chan.degraded = (m.length-1) >= DEGRADED;
+            ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
+        };
         var onOpen = function (wc) {
 
             ctx.channels[channel] = ctx.channels[channel] || {};
@@ -113,11 +123,14 @@ define([
 
             wc.on('join', function () {
                 sendOurCursors(ctx, chan);
+                updateDegraded(ctx, wc, chan);
             });
             wc.on('leave', function (peer) {
                 ctx.emit('MESSAGE', {leave: true, id: peer}, chan.clients);
+                updateDegraded(ctx, wc, chan);
             });
             wc.on('message', function (cryptMsg) {
+                if (chan.degraded) { return; }
                 var msg = chan.encryptor.decrypt(cryptMsg, secret.keys && secret.keys.validateKey);
                 var parsed;
                 try {
@@ -128,6 +141,7 @@ define([
                     ctx.emit('MESSAGE', parsed, chan.clients);
                 } catch (e) { console.error(e); }
             });
+
 
             chan.wc = wc;
             chan.sendMsg = function (msg, cb) {
@@ -144,6 +158,8 @@ define([
             chan.clients = [client];
             first = false;
             cb();
+
+            updateDegraded(ctx, wc, chan);
         };
 
         network.join(channel).then(onOpen, function (err) {
@@ -223,10 +239,10 @@ define([
         delete ctx.clients[clientId];
     };
 
-    Cursor.init = function (store, emit) {
+    Cursor.init = function (cfg, waitFor, emit) {
         var cursor = {};
         var ctx = {
-            store: store,
+            store: cfg.store,
             emit: emit,
             channels: {},
             clients: {}

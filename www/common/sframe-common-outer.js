@@ -1613,19 +1613,16 @@ define([
             }
 
             sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
-                Cryptpad.cursor.execCommand({
-                    cmd: 'INIT_CURSOR',
+                Cryptpad.universal.execCommand({
+                    type: 'cursor',
                     data: {
-                        channel: data,
-                        secret: secret
+                        cmd: 'INIT_CURSOR',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
                     }
                 }, cb);
-            });
-            Cryptpad.cursor.onEvent.reg(function (data) {
-                sframeChan.event('EV_CURSOR_EVENT', data);
-            });
-            sframeChan.on('Q_CURSOR_COMMAND', function (data, cb) {
-                Cryptpad.cursor.execCommand(data, cb);
             });
 
             Cryptpad.onTimeoutEvent.reg(function () {

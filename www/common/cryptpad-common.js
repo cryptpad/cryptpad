@@ -1026,13 +1026,6 @@ define([
     };
     onlyoffice.onEvent = Util.mkEvent();
 
-    // Cursor
-    var cursor = common.cursor = {};
-    cursor.execCommand = function (data, cb) {
-        postMessage("CURSOR_COMMAND", data, cb);
-    };
-    cursor.onEvent = Util.mkEvent();
-
     // Mailbox
     var mailbox = common.mailbox = {};
     mailbox.execCommand = function (data, cb) {
@@ -2138,8 +2131,6 @@ define([
         },
         // OnlyOffice
         OO_EVENT: common.onlyoffice.onEvent.fire,
-        // Cursor
-        CURSOR_EVENT: common.cursor.onEvent.fire,
         // Mailbox
         MAILBOX_EVENT: common.mailbox.onEvent.fire,
         // Universal
