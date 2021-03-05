@@ -428,6 +428,11 @@ define([
             if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e, defaultOptions]); }
             handleFileState.inProgress = true;
 
+            var type = file.type;
+            if (!file.type && /\.md$/.test(file.name)) {
+                type = "text/markdown";
+            }
+
             var thumb;
             var file_arraybuffer;
             var name = file.name;
@@ -438,7 +443,7 @@ define([
                 if (!abort) {
                     var metadata = {
                         name: name,
-                        type: file.type,
+                        type: type,
                     };
                     if (thumb) { metadata.thumbnail = thumb; }
                     queue.push({
