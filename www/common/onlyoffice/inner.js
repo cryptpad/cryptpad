@@ -898,7 +898,7 @@ define([
                 var nId = id.slice(0,32);
                 if (users.indexOf(nId) === -1) {
                     // Offline locks: support old format
-                    var l = typeof(locks[id]) === "object" ? getUserLock(id) : [locks[id]];
+                    var l = (locks[id] && !locks[id].block) ? getUserLock(id) : [locks[id]];
                     ooChannel.send({
                         type: "releaseLock",
                         locks: l
