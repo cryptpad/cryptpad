@@ -222,6 +222,7 @@ define([
                 } catch (e) { console.error(e); }
 
                 Cryptpad.ready(waitFor(), {
+                    noDrive: cfg.noDrive,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
                     currentPad: currentPad
@@ -486,6 +487,7 @@ define([
                     }
                     // Not a file, so we can use `isNewChannel`
                     Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
+                        alert('ko');
                         if (isNew && expire && expire < (+new Date())) {
                             sframeChan.event("EV_EXPIRED_ERROR");
                             waitFor.abort();

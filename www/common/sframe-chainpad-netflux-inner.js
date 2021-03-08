@@ -152,6 +152,7 @@ define([
             cb('OK');
         });
         sframeChan.on('EV_RT_READY', function () {
+            console.error('INNER READY');
             if (isReady) { return; }
             if (updateLoadingProgress) {
                 updateLoadingProgress({

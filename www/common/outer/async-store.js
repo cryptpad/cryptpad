@@ -547,6 +547,7 @@ define([
         //////////////////////////////////////////////////////////////////
 
         var getAllStores = Store.getAllStores = function () {
+            if (!store.proxy) { return []; }
             var stores = [store];
             var teamModule = store.modules['team'];
             if (teamModule) {
@@ -568,7 +569,7 @@ define([
                          getColor().toString(16);
         };
         var getUserColor = function () {
-            var color = Util.find(store.proxy, ['settings', 'general', 'cursor', 'color']);
+            var color = Util.find(store, ['proxy', 'settings', 'general', 'cursor', 'color']);
             if (!color) {
                 color = getRandomColor();
                 Store.setAttribute(null, {
@@ -581,33 +582,34 @@ define([
 
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, app, cb) {
-            var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
+            var proxy = store.proxy || {};
+            var disableThumbnails = Util.find(proxy, ['settings', 'general', 'disableThumbnails']);
             var teams = (store.modules['team'] && store.modules['team'].getTeamsData(app)) || {};
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
-                    name: store.proxy[Constants.displayNameKey] || "",
-                    uid: store.proxy.uid,
-                    avatar: Util.find(store.proxy, ['profile', 'avatar']),
-                    profile: Util.find(store.proxy, ['profile', 'view']),
+                    name: proxy[Constants.displayNameKey] || "",
+                    uid: proxy.uid,
+                    avatar: Util.find(proxy, ['profile', 'avatar']),
+                    profile: Util.find(proxy, ['profile', 'view']),
                     color: getUserColor(),
-                    notifications: Util.find(store.proxy, ['mailboxes', 'notifications', 'channel']),
-                    curvePublic: store.proxy.curvePublic,
+                    notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
+                    curvePublic: proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
                     clientId: clientId,
-                    edPublic: store.proxy.edPublic,
-                    friends: store.proxy.friends || {},
-                    settings: store.proxy.settings,
+                    edPublic: proxy.edPublic,
+                    friends: proxy.friends || {},
+                    settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
-                    support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
+                    support: Util.find(proxy, ['mailboxes', 'support', 'channel']),
                     driveChannel: store.driveChannel,
-                    pendingFriends: store.proxy.friends_pending || {},
-                    supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
-                    accountName: store.proxy.login_name || '',
-                    offline: store.offline,
+                    pendingFriends: proxy.friends_pending || {},
+                    supportPrivateKey: Util.find(proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
+                    accountName: proxy.login_name || '',
+                    offline: store.proxy && store.offline,
                     teams: teams,
                     plan: account.plan
                 }
@@ -1632,6 +1634,7 @@ define([
         };
 
         Store.joinPad = function (clientId, data) {
+            console.error('JOINPAD');
             if (data.versionHash) {
                 return void getVersionHash(clientId, data);
             }
@@ -1708,6 +1711,7 @@ define([
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
+console.warn(pad);
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
@@ -1768,8 +1772,10 @@ define([
                 channel: data.channel,
                 metadata: data.metadata,
                 network: store.network || store.networkPromise,
+                websocketURL: NetConfig.getWebsocketURL(),
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
+console.warn('CONNECT');
                     channel.sendMessage = function (msg, cId, cb) {
                         // Send to server
                         sendMessage(msg, function (err) {
@@ -2636,7 +2642,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                store.modules['team'].onReady(waitFor);
+                if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
@@ -2748,6 +2754,11 @@ define([
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
 
+            var lock = false;
+            if (!data.userHash && !data.anonHash) {
+                lock = true;
+            }
+
             var updateProgress = function (data) {
                 data.type = 'drive';
                 postMessage(clientId, 'LOADING_DRIVE', data);
@@ -2767,6 +2778,7 @@ define([
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
+                lock: lock,
                 updateProgress: updateProgress,
                 classic: true,
             };
@@ -2914,6 +2926,7 @@ define([
          */
         var initialized = false;
 
+        var noDrive = [];
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
 
@@ -2948,13 +2961,24 @@ define([
                 Cache.disable();
             }
 
-            initialized = true;
             postMessage = function (clientId, cmd, d, cb) {
                 data.query(clientId, cmd, d, cb);
             };
             broadcast = function (excludes, cmd, d, cb) {
                 data.broadcast(excludes, cmd, d, cb);
             };
+
+            // First tab, no user hash, no anon hash and this app doesn't need a drive
+            // ==> don't create a drive
+            if (data.noDrive && !data.userHash && !data.anonHash) {
+                noDrive.push(clientId);
+                // XXX We need a network before initAnonRpc...
+                return void initAnonRpc(null, null, function () {
+                    callback({});
+                });
+            }
+
+            initialized = true;
 
             store.data = data;
             connect(clientId, data, function (ret) {

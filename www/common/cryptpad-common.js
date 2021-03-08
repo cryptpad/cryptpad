@@ -499,6 +499,7 @@ define([
             var isNew = function () {
                 error = undefined;
                 postMessage('IS_NEW_CHANNEL', {channel: channel}, function (obj) {
+                    console.error(obj);
                     if (obj && obj.error) { error = obj.error; }
                     if (!obj) { error = "INVALID_RESPONSE"; }
 
@@ -2271,8 +2272,9 @@ define([
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
                 cache: rdyCfg.cache,
+                noDrive: rdyCfg.noDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
-                driveEvents: true //rdyCfg.driveEvents // Boolean
+                driveEvents: !rdyCfg.noDrive //rdyCfg.driveEvents // Boolean
             };
             common.userHash = userHash;
 
