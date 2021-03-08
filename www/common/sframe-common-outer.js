@@ -1741,7 +1741,7 @@ define([
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
-                    versionHash: parsed.hashData && parsed.hashData.versionHash,
+                    versionHash: cfg.type !== 'oo' && parsed.hashData && parsed.hashData.versionHash,
                     padRpc: Cryptpad.padRpc,
                     validateKey: secret.keys.validateKey || undefined,
                     isNewHash: isNewHash,

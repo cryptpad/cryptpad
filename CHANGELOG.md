@@ -1,3 +1,15 @@
+# 4.2.1
+
+This minor release addresses a few bugs discovered after deploying 4.2.0:
+
+* The 4.2.0 release included major improvements to the sheet application. This introduced breaking changes to the "lock" system in the application. Existing spreadsheets (before 4.2.0) that were closed by a user without "unlocking" all cells first became impossible to open after the 4.2.0 changes. This has been fixed.
+* Team owners can now properly upload a team avatar.
+* We've improved the file upload script to better recognize markdown files.
+* We've fixed a few issues resulting in an error screen:
+  * New users were unable to create a drive without registering first.
+  * Snapshots in the sheet application couldn't be loaded.
+  * Loading an existing drive as an unregistered user could fail.
+
 # 4.2.0 (C)
 
 ## Goals
