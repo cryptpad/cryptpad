@@ -26,13 +26,14 @@ define([
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
-             Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
+             Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
@@ -588,8 +589,8 @@ define([
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
-                    name: proxy[Constants.displayNameKey] || "",
-                    uid: proxy.uid,
+                    name: proxy[Constants.displayNameKey] || store.noDriveName || "",
+                    uid: proxy.uid || Hash.createChannelId(), // Random uid in nodrive mode
                     avatar: Util.find(proxy, ['profile', 'avatar']),
                     profile: Util.find(proxy, ['profile', 'view']),
                     color: getUserColor(),
@@ -855,6 +856,10 @@ define([
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
+            if (!store.proxy) {
+                store.noDriveName = value;
+                return void cb();
+            }
             if (store.modules['profile']) {
                 store.modules['profile'].setName(value);
             }
@@ -1446,6 +1451,8 @@ define([
                 };
                 // Teams support offline/cache mode
                 if (obj.type === "team") { return void todo(); }
+                // If we're in "noDrive" mode
+                if (!store.proxy) { return void todo(); }
                 // Other modules should wait for the ready event
                 onReadyEvt.reg(todo);
             }
@@ -1634,7 +1641,6 @@ define([
         };
 
         Store.joinPad = function (clientId, data) {
-            console.error('JOINPAD');
             if (data.versionHash) {
                 return void getVersionHash(clientId, data);
             }
@@ -1711,11 +1717,14 @@ define([
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
-console.warn(pad);
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
+                    }
+                    if (!store.proxy) {
+                        postMessage(clientId, "PAD_READY", pad.noCache);
+                        return;
                     }
                     onReadyEvt.reg(function () {
                         postMessage(clientId, "PAD_READY", pad.noCache);
@@ -1775,7 +1784,6 @@ console.warn(pad);
                 websocketURL: NetConfig.getWebsocketURL(),
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
-console.warn('CONNECT');
                     channel.sendMessage = function (msg, cId, cb) {
                         // Send to server
                         sendMessage(msg, function (err) {
@@ -2754,11 +2762,6 @@ console.warn('CONNECT');
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
 
-            var lock = false;
-            if (!data.userHash && !data.anonHash) {
-                lock = true;
-            }
-
             var updateProgress = function (data) {
                 data.type = 'drive';
                 postMessage(clientId, 'LOADING_DRIVE', data);
@@ -2770,6 +2773,7 @@ console.warn('CONNECT');
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),
+                network: store.network,
                 channel: secret.channel,
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
@@ -2778,7 +2782,6 @@ console.warn('CONNECT');
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
-                lock: lock,
                 updateProgress: updateProgress,
                 classic: true,
             };
@@ -2926,7 +2929,50 @@ console.warn('CONNECT');
          */
         var initialized = false;
 
-        var noDrive = [];
+        // If we load CryptPad for the first time from an existing pad, don't create a
+        // drive automatically.
+        var onNoDrive = function (clientId, cb) {
+            var andThen = function () {
+                // To be able to use all the features inside the pad, we need to
+                // initialize the chat (messenger) and the cursor modules.
+                loadUniversal(Cursor, 'cursor', function () {});
+                loadUniversal(Messenger, 'messenger', function () {});
+                store.messenger = store.modules['messenger'];
+
+                // And now we're ready
+                initAnonRpc(null, null, function () {
+                    cb({});
+                });
+            };
+
+            // We need an anonymous RPC to be able to check if the pad exists and to get
+            // its metadata, so we have to create a network first.
+            if (!store.network) {
+                var wsUrl = NetConfig.getWebsocketURL();
+                return void Netflux.connect(wsUrl).then(function (network) {
+                    store.network = network;
+                    // We need to know the HistoryKeeper ID to initialize the anon RPC
+                    // Join a basic ephemeral channel, get the ID and leave it instantly
+                    network.join('0000000000000000000000000000000000').then(function (wc) {
+                        var hk;
+                        wc.members.forEach(function (p) { if (p.length === 16) { hk = p; } });
+                        network.historyKeeper = hk;
+                        wc.leave();
+
+                        andThen();
+                    }, function (err) {
+                        console.error(err);
+                        cb({error: 'GET_HK'});
+                    });
+                }, function (err) {
+                    console.error(err);
+                    cb({error: 'OFFLINE'});
+                });
+            }
+            andThen();
+        };
+
+
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
 
@@ -2961,20 +3007,28 @@ console.warn('CONNECT');
                 Cache.disable();
             }
 
-            postMessage = function (clientId, cmd, d, cb) {
-                data.query(clientId, cmd, d, cb);
-            };
-            broadcast = function (excludes, cmd, d, cb) {
-                data.broadcast(excludes, cmd, d, cb);
-            };
+            if (data.query && data.broadcast) {
+                postMessage = function (clientId, cmd, d, cb) {
+                    data.query(clientId, cmd, d, cb);
+                };
+                broadcast = function (excludes, cmd, d, cb) {
+                    data.broadcast(excludes, cmd, d, cb);
+                };
+            }
 
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
             if (data.noDrive && !data.userHash && !data.anonHash) {
-                noDrive.push(clientId);
-                // XXX We need a network before initAnonRpc...
-                return void initAnonRpc(null, null, function () {
-                    callback({});
+                return void onNoDrive(clientId, function (obj) {
+                    if (obj && obj.error) {
+                        // if we can't properly initialize the noDrive mode, use normal mode
+                        if (obj.error === 'GET_HK') {
+                            data.noDrive = false;
+                            Store.init(clientId, data, _callback);
+                            return;
+                        }
+                    }
+                    callback(obj);
                 });
             }
 

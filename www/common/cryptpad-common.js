@@ -499,7 +499,6 @@ define([
             var isNew = function () {
                 error = undefined;
                 postMessage('IS_NEW_CHANNEL', {channel: channel}, function (obj) {
-                    console.error(obj);
                     if (obj && obj.error) { error = obj.error; }
                     if (!obj) { error = "INVALID_RESPONSE"; }
 

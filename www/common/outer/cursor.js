@@ -180,9 +180,10 @@ define([
     var updateCursor = function (ctx, data, client, cb) {
         var c = ctx.clients[client];
         if (!c) { return void cb({error: 'NO_CLIENT'}); }
-        data.color = Util.find(ctx.store.proxy, ['settings', 'general', 'cursor', 'color']);
-        data.name = ctx.store.proxy[Constants.displayNameKey] || Messages.anonymous;
-        data.avatar = Util.find(ctx.store.proxy, ['profile', 'avatar']);
+        var proxy = ctx.store.proxy || {};
+        data.color = Util.find(proxy, ['settings', 'general', 'cursor', 'color']);
+        data.name = proxy[Constants.displayNameKey] || ctx.store.noDriveName || Messages.anonymous;
+        data.avatar = Util.find(proxy, ['profile', 'avatar']);
         c.cursor = data;
         sendMyCursor(ctx, client);
         cb();
@@ -241,6 +242,12 @@ define([
 
     Cursor.init = function (cfg, waitFor, emit) {
         var cursor = {};
+
+        // Already initialized by a "noDrive" tab?
+        if (cfg.store && cfg.store.modules && cfg.store.modules['cursor']) {
+            return cfg.store.modules['cursor'];
+        }
+
         var ctx = {
             store: cfg.store,
             emit: emit,
