@@ -15,7 +15,7 @@
     display: flex;
     flex-flow: column;
 
-    .cp-admin-setlimit-form {
+    .cp-admin-setlimit-form, .cp-admin-broadcast-form {
         label {
             font-weight: normal !important;
         }
@@ -199,5 +199,30 @@
         }
     }
 
+    .cp-admin-broadcast-form {
+        margin-top: 30px;
+        & > button:last-child {
+            margin-top: 30px !important;
+        }
+        .cp-broadcast-container {
+            display: flex;
+            flex-flow: column;
+        }
+        .cp-broadcast-lang {
+            margin: 30px;
+            margin-bottom: 0;
+            display: flex;
+            flex-flow: column;
+            align-items: baseline;
+            .cp-checkmark {
+                margin: 5px 0;
+            }
+        }
+        div.cp-broadcast-languages {
+            & > label.cp-checkmark:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
+    }
 }
 

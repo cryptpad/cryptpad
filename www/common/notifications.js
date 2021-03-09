@@ -406,6 +406,87 @@ define([
         }
     };
 
+    Messages.broadcast_newSurvey = "A new survey is available."; // XXX
+    handlers['BROADCAST_SURVEY'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            return Messages.broadcast_newSurvey;
+        };
+        content.handler = function () {
+            common.openUnsafeURL(msg.url);
+            // XXX dismiss on click?
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    Messages.broadcast_newMaintenance = "A maintenance is planned between <b>{0}</b> and <b>{1}</b>"; // XXX
+    handlers['BROADCAST_MAINTENANCE'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            return Messages._getKey('broadcast_newMaintenance', [
+                new Date(msg.start).toLocaleString(),
+                new Date(msg.end).toLocaleString(),
+            ]);
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    Messages.broadcast_newVersion = "A new version is available. Reload the page to discover the new features!"; // XXX
+    handlers['BROADCAST_VERSION'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.broadcast_newVersion;
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    Messages.broadcast_newCustom = "Message from the administrators"; // XXX
+    handlers['BROADCAST_CUSTOM'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        var text = msg.content;
+        var defaultL = msg.defaultLanguage;
+        // Check if our language is available
+        var toShow = text[Messages._languageUsed];
+        // Otherwise, fallback to the default language if it exists
+        if (!toShow && defaultL) { toShow = text[defaultL]; }
+        // No translation available, dismiss
+        if (!toShow) { defaultDismiss(common, data)(); }
+
+        var slice = toShow.length > 500;
+        toShow = Util.fixHTML(toShow);
+
+        content.getFormatText = function () {
+            // XXX Add a title to custom messages? Or use a generic key in the notification and only display the text in the alert?
+            if (slice) {
+                return toShow.slice(0, 500) + '...';
+            }
+            return toShow;
+        };
+        if (slice) {
+            content.handler = function () {
+                // XXX Allow markdown (sanitized)?
+                var content = h('div', [
+                    h('h4', Messages.broadcast_newCustom),
+                    h('div', toShow)
+                ]);
+                UI.alert(content);
+                // XXX Dismiss on click?
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
     return {

@@ -14,6 +14,9 @@ define([
     '/common/common-signing-keys.js',
     '/support/ui.js',
 
+    '/lib/datepicker/flatpickr.js',
+
+    'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/admin/app-admin.less',
@@ -31,7 +34,8 @@ define([
     Util,
     Hash,
     Keys,
-    Support
+    Support,
+    Flatpickr
     )
 {
     var APP = {
@@ -66,6 +70,9 @@ define([
         'support': [ // Msg.admin_cat_support
             'cp-admin-support-list',
             'cp-admin-support-init'
+        ],
+        'broadcast': [ // Msg.admin_cat_support
+            'cp-admin-broadcast'
         ],
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
@@ -930,6 +937,279 @@ define([
         return;
     };
 
+    // Messages.admin_cat_broadcast // XXX
+    // Messages.admin_broadcastHint // XXX
+    // Messages.admin_broadcastTitle // XXX
+    Messages.broadcast_maintenance = 'maintenance';// XXX
+    Messages.broadcast_survey = 'survey'; // XXX
+    Messages.broadcast_version = 'version'; // XXX
+    Messages.broadcast_custom = 'custom'; // XXX
+    Messages.broadcast_newVersionReload = 'Force a worker reload on all clients'; // XXX
+    Messages.broadcast_surveyURL = 'Survey URL';
+    Messages.broadcast_translations = 'Translations';
+    Messages.broadcast_defaultLanguage = 'Default language';
+    Messages.broadcast_start = 'Start time';
+    Messages.broadcast_end = 'End time';
+
+    var getBroadcastForm = function ($form, key) {
+        $form.empty();
+
+        var getData = function () {
+            return false;
+        };
+        var reset = function () {};
+
+        var button = h('button.btn.btn-primary', Messages.support_formButton);
+        var $button = $(button);
+
+        var send = function () {
+            var data = getData();
+            if (data === false) { return void UI.warn(Messages.error); }
+            $button.prop('disabled', 'disabled');
+            common.mailbox.sendTo('BROADCAST_'+key.toUpperCase(), data, {}, function (err) {
+                $button.prop('disabled', '');
+                if (err) { return UI.warn(Messages.error); }
+                reset();
+                UI.log(Messages.saved);
+            });
+        };
+        $button.click(function () {
+            send();
+        });
+
+        if (key === 'custom') {
+            (function () {
+                var container = h('div.cp-broadcast-container');
+                var $container = $(container);
+                var languages = Messages._languages;
+                var keys = Object.keys(languages).sort();
+
+                var onPreview = function (l) {
+// XXX
+                };
+
+                var reorder = function () {
+                    $container.find('.cp-broadcast-lang').each(function (i, el) {
+                        var $el = $(el);
+                        var l = $el.attr('data-lang');
+                        $el.css('order', keys.indexOf(l));
+                    });
+                };
+                var removeLang = function (l) {
+                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+                };
+                var addLang = function (l) {
+                    if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
+                    var preview = h('button.btn.btn-secondary', Messages.share_linkOpen);
+                    $(preview).click(function () {
+                        onPreview(l);
+                    });
+                    var bcastDefault = Messages.broadcast_defaultLanguage;
+                    $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
+                        h('h4', languages[l]),
+                        h('label', Messages.kanban_body),
+                        h('textarea'),
+                        UI.createRadio('broadcastDefault', null, bcastDefault, false, {
+                            'data-lang': l,
+                            label: {class: 'noTitle'}
+                        }),
+                        preview
+                    ]));
+                    reorder();
+                };
+
+
+                var boxes = keys.map(function (l) {
+                    var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
+                        languages[l], false, { label: { class: 'noTitle' } }));
+                    var $check = $cbox.find('input').on('change', function () {
+                        var c = $check.is(':checked');
+                        if (c) { return void addLang(l); }
+                        removeLang(l);
+                    });
+                    if (l === 'en') {
+                        setTimeout(function () {
+                            $check.click();
+                        });
+                    }
+                    return $cbox[0];
+                });
+
+                getData = function () {
+                    var map = {};
+                    var defaultLanguage;
+                    var error = false;
+                    $container.find('.cp-broadcast-lang').each(function (i, el) {
+                        var $el = $(el);
+                        var l = $el.attr('data-lang');
+                        if (!l) { error = true; return; }
+                        var text = $el.find('textarea').val();
+                        if (!text.trim()) { error = true; return; }
+                        if ($el.find('.cp-checkmark input').is(':checked')) {
+                            defaultLanguage = l;
+                        }
+                        map[l] = text;
+                    });
+                    if (!Object.keys(map).length) {
+                        console.error('You must select at least one language');
+                        return false;
+                    }
+                    if (error) {
+                        console.error('One of the selected languages has no data');
+                        return false;
+                    }
+                    return {
+                        defaultLanguage: defaultLanguage,
+                        content: map
+                    };
+                };
+                reset = function () {
+                    $container.find('.cp-broadcast-lang textarea').each(function (i, el) {
+                        $(el).val('');
+                    });
+                };
+                $form.append([
+                    h('label', Messages.broadcast_translations),
+                    h('div.cp-broadcast-languages', boxes),
+                    container,
+                    button
+                ]);
+            })();
+            return;
+        }
+        if (key === 'maintenance') {
+            (function () {
+                var start = h('input');
+                var end = h('input');
+                var $start = $(start);
+                var $end = $(end);
+
+                var endPickr = Flatpickr(end, {
+                    enableTime: true,
+                    minDate: new Date()
+                });
+                Flatpickr(start, {
+                    enableTime: true,
+                    minDate: new Date(),
+                    onChange: function () {
+                        endPickr.set('minDate', new Date($start.val()));
+                    }
+                });
+                getData = function () {
+                    var start = +new Date($start.val());
+                    var end = +new Date($start.val());
+                    if (isNaN(start) || isNaN(end)) {
+                        console.error('Invalid dates');
+                        return false;
+                    }
+                    return {
+                        start: start,
+                        end: end
+                    };
+                };
+                reset = function () {
+                    $start.val('');
+                    $end.val('');
+                };
+                $form.append([
+                    h('label', Messages.broadcast_start),
+                    start,
+                    h('label', Messages.broadcast_end),
+                    end,
+                    h('br'),
+                    button
+                ]);
+            })();
+            return;
+        }
+        if (key === 'version') {
+            (function () {
+                var $cbox = $(UI.createCheckbox('cp-admin-version-reload',
+                    Messages.broadcast_newVersionReload,
+                    false, { label: { class: 'noTitle' } }));
+                var $checkbox = $cbox.find('input');
+                getData = function () {
+                    return {
+                        reload: $checkbox.is(':checked')
+                    };
+                };
+                reset = function () {
+                    $checkbox[0].checked = false;
+                };
+                $form.append([
+                    $cbox[0],
+                    h('br'),
+                    button
+                ]);
+            })();
+            return;
+        }
+        if (key === 'survey') {
+            (function () {
+                var label = h('label', Messages.broadcast_surveyURL);
+                var input = h('input');
+                var $input = $(input);
+                getData = function () {
+                    var url = $input.val();
+                    if (!Util.isValidURL(url)) {
+                        console.error('Invalid URL');
+                        return false;
+                    }
+                    return {
+                        url: url
+                    };
+                };
+                reset = function () {
+                    $input.val('');
+                };
+                $form.append([
+                    label,
+                    input,
+                    h('br'),
+                    button
+                ]);
+            })();
+            return;
+        }
+
+    };
+    create['broadcast'] = function () {
+        var key = 'broadcast';
+        var $div = makeBlock(key);
+
+        var form = h('div.cp-admin-broadcast-form')
+        var $select = $(h('div.cp-dropdown-container')).appendTo($div);
+        var $form = $(form).appendTo($div);
+
+        var categories = [
+            'maintenance',
+            'survey',
+            'version',
+            'custom'
+        ];
+        categories = categories.map(function (key) {
+            return {
+                tag: 'a',
+                content: h('span', Messages['broadcast_'+key]),
+                action: function () {
+                    getBroadcastForm($form, key);
+                }
+            };
+        });
+        var dropdownCfg = {
+            text: Messages.support_category,
+            angleDown: 1,
+            options: categories,
+            container: $select,
+            isSelect: true
+        };
+        UIElements.createDropdown(dropdownCfg);
+
+
+        return $div;
+    };
+
+
     var onRefreshPerformance = Util.mkEvent();
 
     create['refresh-performance'] = function () {
@@ -1010,6 +1290,7 @@ define([
         stats: 'fa fa-line-chart',
         quota: 'fa fa-hdd-o',
         support: 'fa fa-life-ring',
+        broadcast: 'fa fa-bullhorn',
         performance: 'fa fa-heartbeat',
     };
 

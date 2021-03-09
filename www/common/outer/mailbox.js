@@ -1,4 +1,5 @@
 define([
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
@@ -7,16 +8,19 @@ define([
     '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
+], function (Config, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
         'notifications',
         'supportadmin',
-        'support'
+        'support',
+        'broadcast'
     ];
     var BLOCKING_TYPES = [
     ];
+
+    var BROADCAST_CHAN = '00000000000000000000000000000000';
 
     var initializeMailboxes = function (ctx, mailboxes) {
         if (!mailboxes['notifications']) {
@@ -38,6 +42,16 @@ define([
             ctx.pinPads([mailboxes.support.channel], function (res) {
                 if (res.error) { console.error(res); }
             });
+        }
+        if (!mailboxes['broadcast']) {
+            mailboxes.broadcast = {
+                channel: BROADCAST_CHAN,
+                lastKnownHash: '', // XXX load /api/brooadcast to set this hash
+                decrypted: true,
+                viewed: []
+            };
+        } else {
+            // XXX update lastKnownHash from /api/broadcast
         }
     };
 
@@ -80,33 +94,49 @@ proxy.mailboxes = {
 
     // Send a message to someone else
     var sendTo = Mailbox.sendTo = function (ctx, type, msg, user, _cb) {
+        user = user || {};
         var cb = _cb || function (obj) {
             if (obj && obj.error) {
                 console.error(obj.error);
             }
         };
+
         if (!Crypto.Mailbox) {
             return void cb({error: "chainpad-crypto is outdated and doesn't support mailboxes."});
         }
-        var keys = getMyKeys(ctx);
-        if (!keys) { return void cb({error: "missing asymmetric encryption keys"}); }
-        if (!user || !user.channel || !user.curvePublic) { return void cb({error: "no notification channel"}); }
 
         var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc', ]);
         if (!anonRpc) { return void cb({error: "anonymous rpc session not ready"}); }
 
-        var crypto = Crypto.Mailbox.createEncryptor(keys);
-
-        // Always send your data
-        if (typeof(msg) === "object" && !msg.user) {
-            var myData = Messaging.createData(ctx.store.proxy, false);
-            msg.user = myData;
-        }
-
-        var text = JSON.stringify({
+        // Broadcast mailbox doesn't use encryption. Sending messages there is restricted
+        // to admins in the server directly
+        var crypto = { encrypt: function (x) { return x; } };
+        var channel = BROADCAST_CHAN;
+        var obj = {
+            uid: Util.uid(), // add uid at the beginning to have a unique server hash
             type: type,
             content: msg
-        });
+        };
+
+        if (!/^BROADCAST/.test(type)) {
+            var keys = getMyKeys(ctx);
+            if (!keys) { return void cb({error: "missing asymmetric encryption keys"}); }
+            if (!user || !user.channel || !user.curvePublic) { return void cb({error: "no notification channel"}); }
+            channel = user.channel;
+            crypto = Crypto.Mailbox.createEncryptor(keys);
+
+            // Always send your data
+            if (typeof(msg) === "object" && !msg.user) {
+                var myData = Messaging.createData(ctx.store.proxy, false);
+                msg.user = myData;
+            }
+            obj = {
+                type: type,
+                content: msg
+            };
+        }
+
+        var text = JSON.stringify(obj);
         var ciphertext = crypto.encrypt(text, user.curvePublic);
 
         // If we've sent this message to one of our teams' mailbox, we may want to "dismiss" it
@@ -121,7 +151,7 @@ proxy.mailboxes = {
         }
 
         anonRpc.send("WRITE_PRIVATE_MESSAGE", [
-            user.channel,
+            channel,
             ciphertext
         ], function (err /*, response */) {
             if (err) {
@@ -239,8 +269,11 @@ proxy.mailboxes = {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
         }
         var keys = m.keys || getMyKeys(ctx);
-        if (!keys) { return void console.error("missing asymmetric encryption keys"); }
-        var crypto = Crypto.Mailbox.createEncryptor(keys);
+        if (!keys && !m.decrypted) { return void console.error("missing asymmetric encryption keys"); }
+        var crypto = m.decrypted ? {
+            encrypt: function (x) { return x; },
+            decrypt: function (x) { return x; }
+        } : Crypto.Mailbox.createEncryptor(keys);
         box.encryptor = crypto;
         var cfg = {
             network: ctx.store.network,

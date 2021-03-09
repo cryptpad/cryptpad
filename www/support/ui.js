@@ -445,6 +445,9 @@ define([
         };
         ctx.FM = common.createFileManager(fmConfig);
 
+        ui.send = function (id, type, data, dest) {
+            return send(ctx, id, type, data, dest);
+        };
         ui.sendForm = function (id, form, dest) {
             return sendForm(ctx, id, form, dest);
         };
