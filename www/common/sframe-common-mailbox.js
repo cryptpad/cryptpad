@@ -142,7 +142,7 @@ define([
             removeFromHistory(data.type, data.hash);
         };
 
-        var onMessage = function (data, cb) {
+        var onMessage = mailbox.onMessage = function (data, cb) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
             pushMessage(data);
             if (data.content && typeof (data.content.getFormatText) === "function") {
@@ -160,6 +160,11 @@ define([
                 hash: data.content.hash,
                 type: data.type
             };
+            if (/^LOCAL|/.test(dataObj.hash)) {
+                onViewed(dataObj);
+                cb();
+                return;
+            }
             execCommand('DISMISS', dataObj, function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 onViewed(dataObj);

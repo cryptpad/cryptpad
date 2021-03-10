@@ -454,8 +454,9 @@ define([
         var msg = content.msg.content;
         var text = msg.content;
         var defaultL = msg.defaultLanguage;
+        var myLang = data.lang || Messages._languageUsed;
         // Check if our language is available
-        var toShow = text[Messages._languageUsed];
+        var toShow = text[myLang];
         // Otherwise, fallback to the default language if it exists
         if (!toShow && defaultL) { toShow = text[defaultL]; }
         // No translation available, dismiss

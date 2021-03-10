@@ -973,9 +973,35 @@ define([
                 UI.log(Messages.saved);
             });
         };
+
         $button.click(function () {
             send();
         });
+
+        var onPreview = function (l) {
+            var data = getData();
+            if (data === false) { return void UI.warn(Messages.error); }
+            var msg = {
+                uid: Util.uid(),
+                type: 'BROADCAST_'+key.toUpperCase(),
+                content: data
+            };
+            common.mailbox.onMessage({
+                lang: l,
+                type: 'broadcast',
+                content: {
+                    msg: msg,
+                    hash: 'LOCAL|' + JSON.stringify(msg).slice(0,58)
+                }
+            }, function () {
+                UI.log(Messages.saved);
+            });
+        };
+        var preview = h('button.cp-broadcast-preview.btn.btn-secondary', Messages.share_linkOpen);
+        $(preview).click(function () {
+            onPreview();
+        });
+
 
         if (key === 'custom') {
             (function () {
@@ -983,10 +1009,6 @@ define([
                 var $container = $(container);
                 var languages = Messages._languages;
                 var keys = Object.keys(languages).sort();
-
-                var onPreview = function (l) {
-// XXX
-                };
 
                 var reorder = function () {
                     $container.find('.cp-broadcast-lang').each(function (i, el) {
@@ -1117,7 +1139,8 @@ define([
                     h('label', Messages.broadcast_end),
                     end,
                     h('br'),
-                    button
+                    button,
+                    preview
                 ]);
             })();
             return;
@@ -1139,7 +1162,8 @@ define([
                 $form.append([
                     $cbox[0],
                     h('br'),
-                    button
+                    button,
+                    preview
                 ]);
             })();
             return;
@@ -1166,7 +1190,8 @@ define([
                     label,
                     input,
                     h('br'),
-                    button
+                    button,
+                    preview
                 ]);
             })();
             return;
