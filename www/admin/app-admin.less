@@ -226,6 +226,30 @@
         .cp-broadcast-preview {
             vertical-align: bottom !important;
         }
+        .cp-broadcast-delete {
+            width: 100%;
+            min-width: 600px;
+            .cp-notification {
+                display: flex;
+                align-items: center;
+                .cp-avatar, .cp-broadcast, .cp-notification-dismiss {
+                    display: none;
+                }
+                p {
+                    margin: 0 !important;
+                }
+                .cp-notification-content {
+                    width: 100%;
+                    padding: 10px;
+                }
+                .cp-clickable {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: @cp_dropdown-bg-hover;
+                    }
+                }
+            }
+        }
     }
 }
 

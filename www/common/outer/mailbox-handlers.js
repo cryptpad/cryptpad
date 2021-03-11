@@ -686,6 +686,71 @@ define([
     };
 
 
+    // Broadcast
+    var broadcasts = {};
+    handlers['BROADCAST_MAINTENANCE'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        if (content.end < (+new Date())) {
+            // Expired maintenance: dismiss
+            return void cb(true);
+        }
+        var uid = msg.uid;
+        broadcasts[uid] = {
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false);
+    };
+    handlers['BROADCAST_VERSION'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        if (!box.ready) {
+            // This is an old version message: dismiss
+            return void cb(true);
+        }
+        if (content.reload) {
+            // We're going to force a disconnect, dismiss
+            // XXX
+            return void cb(true);
+        }
+        var uid = msg.uid;
+        broadcasts[uid] = {
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false);
+    };
+    handlers['BROADCAST_SURVEY'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var uid = msg.uid;
+        broadcasts[uid] = {
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false);
+    };
+    handlers['BROADCAST_CUSTOM'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var uid = msg.uid;
+        broadcasts[uid] = {
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false);
+    };
+    handlers['BROADCAST_DELETE'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var uid = content.uid; // uid of the message to delete
+        if (!broadcasts[uid]) {
+            // We don't have this message in memory, nothing to delete
+            return void cb(true);
+        }
+        cb(false, broadcasts[uid]);
+        delete broadcasts[uid];
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**

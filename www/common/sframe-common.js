@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/bower_components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
@@ -26,6 +27,7 @@ define([
     '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
+    ApiConfig,
     nThen,
     Messages,
     CpNfInner,
@@ -701,6 +703,12 @@ define([
                 if (e.which === 83) { return void e.preventDefault(); }
             }
         });
+    };
+
+    funcs.isAdmin = function () {
+        var privateData = ctx.metadataMgr.getPrivateData();
+        return privateData.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                ApiConfig.adminKeys.indexOf(privateData.edPublic) !== -1;
     };
 
     funcs.mailbox = {};

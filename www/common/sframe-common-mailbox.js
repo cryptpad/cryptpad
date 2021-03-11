@@ -1,13 +1,16 @@
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/hyperscript.js',
+    '/common/clipboard.js',
     '/customize/messages.js',
-], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages) {
+], function ($, ApiConfig, Util, Hash, UI, UIElements, Notifications, h,
+    Clipboard, Messages) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -56,7 +59,24 @@ define([
             var notif;
             var avatar;
             var userData = Util.find(data, ['content', 'msg', 'content', 'user']);
-            if (userData && typeof(userData) === "object" && userData.profile) {
+
+            if (Util.find(data, ['content', 'msg', 'type']) === 'BROADCAST_DELETE') {
+                return;
+            }
+            if (data.type === 'broadcast') {
+                var urlArgs = Util.find(ApiConfig, ['requireConf', 'urlArgs']) || '';
+                var adminCls = Common.isAdmin() ? '.admin' : '';
+                avatar = h('span.cp-broadcast'+adminCls, h('img', {
+                    src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                    title: adminCls ? 'Copy UID' : '' // XXX
+                }));
+                if (adminCls) {
+                    $(avatar).click(function () {
+                        var success = Clipboard.copy(Util.find(data, ['content', 'msg', 'uid']));
+                        if (success) { UI.log(Messages.shareSuccess); }
+                    });
+                }
+            } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
                 $(avatar).click(function (e) {
@@ -160,7 +180,7 @@ define([
                 hash: data.content.hash,
                 type: data.type
             };
-            if (/^LOCAL|/.test(dataObj.hash)) {
+            if (/^LOCAL\|/.test(dataObj.hash)) {
                 onViewed(dataObj);
                 cb();
                 return;
@@ -188,7 +208,7 @@ define([
                     cfg.onViewed(data);
                 });
             }
-            if (typeof(cfg.onMessage) === "function") {
+            if (typeof(cfg.onMessage) === "function" && !cfg.history) {
                 onMessageHandlers.push(function (data, el) {
                     var type = data.type;
                     if (types.indexOf(type) === -1 && !(teams && /^team-/.test(type))) { return; }
@@ -203,6 +223,13 @@ define([
                         content: data
                     }, cfg.onMessage);
                 });
+            });
+        };
+
+        mailbox.reset = function (type, cb) {
+            if (!type) { return; }
+            execCommand('RESET', type, function (obj) {
+                cb(obj);
             });
         };
 

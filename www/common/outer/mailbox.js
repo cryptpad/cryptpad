@@ -464,6 +464,21 @@ proxy.mailboxes = {
         });
     };
 
+    var resetBox = function (ctx, cId, type, cb) {
+        var box = ctx.mailboxes && ctx.mailboxes[type];
+        if (!box) { return void cb({error: 'ENOENT'}); }
+
+        console.log(box);
+        if (type === 'broadcast') {
+            box.viewed = [];
+            box.lastKnownHash = ''; // XXX Use api/broadcast
+            return void cb();
+        }
+
+        box.lastKnownHash = '';
+        box.viewed = [];
+    };
+
     var subscribe = function (ctx, data, cId, cb) {
         // Get existing notifications
         Object.keys(ctx.boxes).forEach(function (type) {
@@ -491,19 +506,21 @@ proxy.mailboxes = {
     Mailbox.init = function (cfg, waitFor, emit) {
         var mailbox = {};
         var store = cfg.store;
+        var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
+
         var ctx = {
             Store: cfg.Store,
             store: store,
             pinPads: cfg.pinPads,
             updateMetadata: cfg.updateMetadata,
             updateDrive: cfg.updateDrive,
+            mailboxes: mailboxes,
             emit: emit,
             clients: [],
             boxes: {},
             req: {}
         };
 
-        var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
 
         initializeMailboxes(ctx, mailboxes);
         initializeHistory(ctx);
@@ -579,6 +596,9 @@ proxy.mailboxes = {
             }
             if (cmd === 'LOAD_HISTORY') {
                 return void loadHistory(ctx, clientId, data, cb);
+            }
+            if (cmd === 'RESET') {
+                return void resetBox(ctx, clientId, data, cb);
             }
         };
 

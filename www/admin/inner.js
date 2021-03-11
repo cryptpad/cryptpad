@@ -944,12 +944,17 @@ define([
     Messages.broadcast_survey = 'survey'; // XXX
     Messages.broadcast_version = 'version'; // XXX
     Messages.broadcast_custom = 'custom'; // XXX
+    Messages.broadcast_delete = 'delete'; // XXX
     Messages.broadcast_newVersionReload = 'Force a worker reload on all clients'; // XXX
     Messages.broadcast_surveyURL = 'Survey URL';
     Messages.broadcast_translations = 'Translations';
-    Messages.broadcast_defaultLanguage = 'Default language';
+    Messages.broadcast_defaultLanguage = 'Fallback to this language (optional)';
     Messages.broadcast_start = 'Start time';
     Messages.broadcast_end = 'End time';
+    Messages.broadcast_preview = "Preview in a fake notification";
+    Messages.broadcast_setLKH = "Mark as latest";
+    Messages.broadcast_deleteBtn = "Delete for all";
+    Messages.broadcast_reset = "Reset my visible messages";
 
     var getBroadcastForm = function ($form, key) {
         $form.empty();
@@ -966,6 +971,7 @@ define([
             var data = getData();
             if (data === false) { return void UI.warn(Messages.error); }
             $button.prop('disabled', 'disabled');
+            data.time = +new Date();
             common.mailbox.sendTo('BROADCAST_'+key.toUpperCase(), data, {}, function (err) {
                 $button.prop('disabled', '');
                 if (err) { return UI.warn(Messages.error); }
@@ -997,7 +1003,7 @@ define([
                 UI.log(Messages.saved);
             });
         };
-        var preview = h('button.cp-broadcast-preview.btn.btn-secondary', Messages.share_linkOpen);
+        var preview = h('button.cp-broadcast-preview.btn.btn-secondary', Messages.broadcast_preview);
         $(preview).click(function () {
             onPreview();
         });
@@ -1022,7 +1028,7 @@ define([
                 };
                 var addLang = function (l) {
                     if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
-                    var preview = h('button.btn.btn-secondary', Messages.share_linkOpen);
+                    var preview = h('button.btn.btn-secondary', Messages.broadcast_preview);
                     $(preview).click(function () {
                         onPreview(l);
                     });
@@ -1197,12 +1203,74 @@ define([
             return;
         }
 
+        if (key === 'delete') {
+            (function () {
+                var table = h('table.cp-broadcast-delete');
+                var $table = $(table);
+                common.mailbox.subscribe(["broadcast"], {
+                    onMessage: function (data, el) {
+                        if (Util.find(data, ['content', 'msg', 'type']) === 'BROADCAST_DELETE') {
+                            var _uid = Util.find(data, ['content', 'msg', 'content', 'uid']);
+                            var $button = $table.find('[data-uid="'+_uid+'"] td.delete button');
+                            $button.prop('disabled', 'disabled').text(Messages.deleted);
+                            return;
+                        }
+                        var uid = Util.find(data, ['content', 'msg', 'uid']);
+                        var time = Util.find(data, ['content', 'msg', 'content', 'time']);
+                        var setLKHBtn = h('button.btn.btn-secondary', Messages.broadcast_setLKH);
+                        var deleteBtn = h('button.btn.btn-danger', Messages.broadcast_deleteBtn);
+                        $(setLKHBtn).click(function () {
+                            // XXX
+                        });
+                        var tr = h('tr', { 'data-uid': uid }, [
+                            h('td', 'ID: '+uid),
+                            h('td', new Date(time || 0).toLocaleString()),
+                            h('td', el),
+                            h('td', setLKHBtn),
+                            h('td.delete', deleteBtn),
+                        ]);
+
+                        UI.confirmButton(deleteBtn, {
+                            classes: 'btn-danger',
+                            multiple: true
+                        }, function () {
+                            getData = function () {
+                                if (!uid) { return false; }
+                                return { uid: uid };
+                            };
+                            reset = function () {
+                                $(deleteBtn).prop('disabled', 'disabled').text(Messages.deleted);
+                            };
+                            send();
+                        });
+
+                        $table.append(tr);
+                    },
+                    history: true // won't receive new messages: not a "subscription"
+                });
+
+                var resetMine = h('button.btn.btn-primary', Messages.broadcast_reset);
+                UI.confirmButton(resetMine, {}, function () {
+                    common.mailbox.reset('broadcast', function () {
+                    // XXX
+                        console.error(arguments);
+                    });
+                });
+
+                $form.append([
+                    resetMine,
+                    table
+                ]);
+            })();
+            return;
+        }
+
     };
     create['broadcast'] = function () {
         var key = 'broadcast';
         var $div = makeBlock(key);
 
-        var form = h('div.cp-admin-broadcast-form')
+        var form = h('div.cp-admin-broadcast-form');
         var $select = $(h('div.cp-dropdown-container')).appendTo($div);
         var $form = $(form).appendTo($div);
 
@@ -1210,7 +1278,8 @@ define([
             'maintenance',
             'survey',
             'version',
-            'custom'
+            'custom',
+            'delete'
         ];
         categories = categories.map(function (key) {
             return {
@@ -1400,8 +1469,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.adminPage || 'Administration');
 
-        if (!privateData.edPublic || !ApiConfig.adminKeys || !Array.isArray(ApiConfig.adminKeys)
-            || ApiConfig.adminKeys.indexOf(privateData.edPublic) === -1) {
+        if (!common.isAdmin()) {
             return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
         }
 

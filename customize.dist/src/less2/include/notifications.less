@@ -17,6 +17,19 @@
         .cp-notification {
             min-height: @notif-height;
             display: flex;
+            .cp-broadcast {
+                display: flex;
+                img {
+                    width: 30px;
+                }
+                padding: 0 5px;
+                &.admin {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: @cp_dropdown-bg-hover;
+                    }
+                }
+            }
             .cp-avatar {
                 .avatar_main(30px);
                 padding: 0 5px;
