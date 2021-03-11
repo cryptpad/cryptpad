@@ -3067,7 +3067,7 @@ define([
                 'class': 'cp-app-drive-element-row cp-app-drive-new-ghost'
             }).prepend($addIcon.clone()).appendTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
-                .text(Messages.fm_newFile));
+                .text(Messages.fm_newButton));
             $element.click(function () {
                 var modal = UI.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
