@@ -711,8 +711,8 @@ define([
         }
         if (content.reload) {
             // We're going to force a disconnect, dismiss
-            // XXX
-            return void cb(true);
+            ctx.Store.newVersionReload();
+            return; // This message will be removed when reloading the worker
         }
         var uid = msg.uid;
         broadcasts[uid] = {

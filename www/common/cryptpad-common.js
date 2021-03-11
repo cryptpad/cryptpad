@@ -2129,6 +2129,10 @@ define([
                 common.onNetworkReconnect.fire(data);
             });
         },
+        FORCE_RELOAD: function () {
+            // XXX not used
+            common.onNewVersionReconnect.fire();
+        },
         // OnlyOffice
         OO_EVENT: common.onlyoffice.onEvent.fire,
         // Mailbox

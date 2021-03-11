@@ -2990,6 +2990,20 @@ define([
             });
         };
 
+        Store.newVersionReload = function () {
+            broadcast([], "NETWORK_RECONNECT");
+
+            /* // XXX NETWORK_RECONNECT only works when a manual /api/config is used
+            // XXX The following code disconnect all tabs and asks for a page reload BUT
+            // if the urlArgs has not changed, new tabs will stay on the same DISCONNECTED worker
+            // XXX One solution is to change the FRESH mode token before sending the newVersion message
+            Store.disconnect();
+            broadcast([], "FORCE_RELOAD");
+            if (self.CP_closeWorker) {
+                setTimeout(self.CP_closeWorker, 200);
+            }
+            */
+        };
         Store.disconnect = function () {
             if (self.accountDeletion) { return; }
             if (!store.network) { return; }

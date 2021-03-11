@@ -9,6 +9,20 @@ localStorage = {
 
 self.tabs = {};
 
+// XXX Not used for now
+self.CP_closeWorker = function () {
+    Object.keys(self.tabs).forEach(function (id) {
+        var obj = self.tabs[id];
+        if (obj.port) { return; }
+        console.error(id);
+        try {
+            obj.port.close();
+        } catch (e) {
+            console.error(e);
+        }
+    });
+};
+
 var postMsg = function (client, data) {
     client.port.postMessage(data);
 };
