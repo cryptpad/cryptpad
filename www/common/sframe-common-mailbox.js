@@ -7,10 +7,8 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/hyperscript.js',
-    '/common/clipboard.js',
     '/customize/messages.js',
-], function ($, ApiConfig, Util, Hash, UI, UIElements, Notifications, h,
-    Clipboard, Messages) {
+], function ($, ApiConfig, Util, Hash, UI, UIElements, Notifications, h, Messages) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -65,17 +63,9 @@ define([
             }
             if (data.type === 'broadcast') {
                 var urlArgs = Util.find(ApiConfig, ['requireConf', 'urlArgs']) || '';
-                var adminCls = Common.isAdmin() ? '.admin' : '';
-                avatar = h('span.cp-broadcast'+adminCls, h('img', {
+                avatar = h('span.cp-broadcast', h('img', {
                     src: '/customize/CryptPad_logo.svg?' + urlArgs,
-                    title: adminCls ? 'Copy UID' : '' // XXX
                 }));
-                if (adminCls) {
-                    $(avatar).click(function () {
-                        var success = Clipboard.copy(Util.find(data, ['content', 'msg', 'uid']));
-                        if (success) { UI.log(Messages.shareSuccess); }
-                    });
-                }
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
