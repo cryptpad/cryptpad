@@ -1170,7 +1170,7 @@ define([
                 // Extract form data
                 getData = function () {
                     var start = +new Date($start.val());
-                    var end = +new Date($start.val());
+                    var end = +new Date($end.val());
                     if (isNaN(start) || isNaN(end)) {
                         console.error('Invalid dates');
                         return false;
