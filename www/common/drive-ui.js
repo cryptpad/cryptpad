@@ -3074,7 +3074,7 @@ define([
                     $body: $('body')
                 });
                 var $modal = modal.$modal;
-                var $title = $('<h3>').text(Messages.fm_newFile);
+                var $title = $('<h3>').html("<i class='fa fa-plus'></i> " + Messages.fm_newButton);
                 var $description = $('<p>').text(Messages.fm_newButtonTitle);
                 $modal.find('.cp-modal').append($title);
                 $modal.find('.cp-modal').append($description);
