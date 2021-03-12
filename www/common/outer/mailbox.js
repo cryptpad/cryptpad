@@ -299,6 +299,7 @@ proxy.mailboxes = {
                 sendMessage(msg, function (err, hash) {
                     if (err) { return void console.error(err); }
                     box.history.push(hash);
+                    _msg.ctime = +new Date();
                     box.content[hash] = _msg;
                     var message = {
                         msg: _msg,
@@ -314,9 +315,10 @@ proxy.mailboxes = {
             box.queue = [];
         };
         var lastReceivedHash; // Don't send a duplicate of the last known hash on reconnect
-        box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
+        box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author, data) {
             if (hash === m.lastKnownHash) { return; }
             if (hash === lastReceivedHash) { return; }
+            var time = data && data.time;
             lastReceivedHash = hash;
             try {
                 msg = JSON.parse(msg);
@@ -362,6 +364,7 @@ proxy.mailboxes = {
                         });
                         return;
                     }
+                    msg.ctime = time || 0;
                     box.content[hash] = msg;
                     showMessage(ctx, type, message, null, function (obj) {
                         if (!obj || !obj.msg || !notify) { return; }

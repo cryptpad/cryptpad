@@ -73,7 +73,9 @@ define([
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
                 });
             }
+            var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
             notif = h('div.cp-notification', {
+                style: 'order:'+order+';',
                 'data-hash': data.content.hash
             }, [
                 avatar,
