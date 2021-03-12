@@ -939,7 +939,7 @@ define([
         return;
     };
 
-    Messages.admin_cat_broadcast = "Broadcast" // XXX
+    Messages.admin_cat_broadcast = "Broadcast"; // XXX
     // Messages.admin_broadcastHint // XXX
     // Messages.admin_broadcastTitle // XXX
     Messages.broadcast_maintenance = 'maintenance';// XXX
@@ -1062,7 +1062,7 @@ define([
                     var radio = UI.createRadio('broadcastDefault', null, bcastDefault, first, {
                         'data-lang': l,
                         label: {class: 'noTitle'}
-                    })
+                    });
                     $(radio).find('input').on('change', function () {
                         if ($(this).is(':checked')) { $noFallbackBtn.css('visibility', ''); }
                     });
@@ -1288,7 +1288,6 @@ define([
 
                     // Make the line
                     var uid = Util.find(data, ['content', 'msg', 'uid']);
-                    var hash = Util.find(data, ['content', 'hash']);
                     var time = Util.find(data, ['content', 'msg', 'content', 'time']);
                     var deleteBtn = h('button.btn.btn-danger', Messages.broadcast_deleteBtn);
                     var tr = h('tr', { 'data-uid': uid }, [
