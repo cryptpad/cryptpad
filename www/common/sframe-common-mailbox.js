@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -8,7 +7,7 @@ define([
     '/common/notifications.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-], function ($, ApiConfig, Util, Hash, UI, UIElements, Notifications, h, Messages) {
+], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -62,10 +61,10 @@ define([
                 return;
             }
             if (data.type === 'broadcast') {
-                var urlArgs = Util.find(ApiConfig, ['requireConf', 'urlArgs']) || '';
-                avatar = h('span.cp-broadcast', h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs,
-                }));
+                avatar = h('i.fa.fa-bullhorn.cp-broadcast');
+                if (/^LOCAL\|/.test(data.content.hash)) {
+                    $(avatar).addClass('preview');
+                }
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);

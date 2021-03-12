@@ -74,7 +74,8 @@ define([
             'cp-admin-support-init'
         ],
         'broadcast': [ // Msg.admin_cat_support
-            'cp-admin-broadcast'
+            'cp-admin-broadcast-delete',
+            'cp-admin-broadcast',
         ],
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
@@ -942,6 +943,10 @@ define([
     Messages.admin_cat_broadcast = "Broadcast"; // XXX
     // Messages.admin_broadcastHint // XXX
     // Messages.admin_broadcastTitle // XXX
+
+    //Messages.admin_broadcastDeleteHint // XXX
+    //Messages.admin_broadcastDeleteTitle // XXX
+
     Messages.broadcast_new = "New message";
     Messages.broadcast_maintenance = 'maintenance';// XXX
     Messages.broadcast_survey = 'survey'; // XXX
@@ -961,6 +966,7 @@ define([
     Messages.broadcast_empty = "No active message";
     Messages.broadcast_noFallback = "Don't fallback to a default language";
 
+    var onRefreshBroadcast = Util.mkEvent();
     var getBroadcastForm = function ($form, key) {
         $form.empty();
 
@@ -991,6 +997,7 @@ define([
 
                 // Clear the UI
                 reset();
+                onRefreshBroadcast.fire();
 
                 // Only print success if there is no callback
                 if (!_cb) { UI.log(Messages.saved); }
@@ -1048,7 +1055,6 @@ define([
                 var $noFallbackBtn = $(noFallbackBtn);
                 var checkFallbackBtn = function () {
                     var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
-                    console.error(hasDefault);
                     if (hasDefault) {
                         $noFallbackBtn.css('visibility', '');
                     } else {
@@ -1364,7 +1370,7 @@ define([
                                 return;
                             }
                             // On success, reload the "delete" tab
-                            getBroadcastForm($form, key);
+                            onRefreshBroadcast.fire();
                         });
                     });
                 });
@@ -1392,7 +1398,6 @@ define([
             'survey',
             'version',
             'custom',
-            'delete'
         ];
 
         // The "version" message only works if the instance is using a manual /api/config
@@ -1422,6 +1427,20 @@ define([
 
         return $div;
     };
+
+    create['broadcast-delete'] = function () {
+        var key = 'broadcast-delete';
+        var $div = makeBlock(key);
+
+        var form = h('div.cp-admin-broadcast-form');
+        var $form = $(form).appendTo($div);
+        getBroadcastForm($form, 'delete');
+        onRefreshBroadcast.reg(function () {
+            getBroadcastForm($form, 'delete');
+        });
+        return $div;
+    };
+
 
 
     var onRefreshPerformance = Util.mkEvent();

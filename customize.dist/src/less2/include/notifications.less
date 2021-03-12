@@ -19,10 +19,13 @@
             display: flex;
             .cp-broadcast {
                 display: flex;
-                img {
-                    width: 30px;
-                }
+                font-size: 30px;
+                align-items: center;
                 padding: 0 5px;
+                color: @cp_dropdown-fg;
+                &.preview {
+                    color: red; // XXX
+                }
             }
             .cp-avatar {
                 .avatar_main(30px);
