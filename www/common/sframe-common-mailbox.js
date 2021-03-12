@@ -42,10 +42,10 @@ define([
                 type: type,
                 msg: content,
                 user: user
-            }, function (err, obj) {
-                cb(err || (obj && obj.error), obj);
-                if (err || (obj && obj.error)) {
-                    return void console.error(err || obj.error);
+            }, function (obj) {
+                cb(obj && obj.error, obj);
+                if (obj && obj.error) {
+                    return void console.error(obj.error);
                 }
             });
         };
@@ -223,13 +223,6 @@ define([
                         content: data
                     }, cfg.onMessage);
                 });
-            });
-        };
-
-        mailbox.reset = function (type, cb) {
-            if (!type) { return; }
-            execCommand('RESET', type, function (obj) {
-                cb(obj);
             });
         };
 

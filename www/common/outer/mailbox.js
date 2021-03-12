@@ -1,5 +1,6 @@
 define([
     '/api/config',
+    '/api/broadcast',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
@@ -8,7 +9,7 @@ define([
     '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Config, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
+], function (Config, BCast, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
@@ -46,12 +47,10 @@ define([
         if (!mailboxes['broadcast']) {
             mailboxes.broadcast = {
                 channel: BROADCAST_CHAN,
-                lastKnownHash: '', // XXX load /api/brooadcast to set this hash
+                lastKnownHash: BCast.lastBroadcastHash,
                 decrypted: true,
                 viewed: []
             };
-        } else {
-            // XXX update lastKnownHash from /api/broadcast
         }
     };
 
@@ -159,7 +158,9 @@ proxy.mailboxes = {
                     error: err,
                 });
             }
-            return void cb();
+            return void cb({
+                hash: ciphertext.slice(0,64)
+            });
         });
     };
 
@@ -331,7 +332,22 @@ proxy.mailboxes = {
                     hash: hash
                 };
                 var notify = box.ready;
-                Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
+                Handlers.add(ctx, box, message, function (dismissed, toDismiss, setAsLKH) {
+                    if (setAsLKH) {
+                        // Update LKH
+                        box.data.lastKnownHash = hash;
+                        box.data.viewed = [];
+
+                        // Make sure we remove data about dismissed messages
+                        Realtime.whenRealtimeSyncs(ctx.store.realtime, function () {
+                            Object.keys(box.content).forEach(function (h) {
+                                Handlers.remove(ctx, box, box.content[h], h);
+                                delete box.content[h];
+                                hideMessage(ctx, type, h, ctx.clients);
+                            });
+                        });
+                        return;
+                    }
                     if (toDismiss) { // List of other messages to remove
                         dismiss(ctx, toDismiss, '', function () {
                             console.log('Notification handled automatically');
@@ -422,12 +438,16 @@ proxy.mailboxes = {
             if (type === 'HISTORY_RANGE') {
                 if (!Array.isArray(_msg)) { return; }
                 var message;
-                try {
-                    var decrypted = box.encryptor.decrypt(_msg[4]);
-                    message = JSON.parse(decrypted.content);
-                    message.author = decrypted.author;
-                } catch (e) {
-                    console.log(e);
+                if (req.box.type === 'broadcast') {
+                    message = Util.tryParse(_msg[4]);
+                } else {
+                    try {
+                        var decrypted = box.encryptor.decrypt(_msg[4]);
+                        message = JSON.parse(decrypted.content);
+                        message.author = decrypted.author;
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
                 ctx.emit('HISTORY', {
                     txid: txid,
@@ -453,6 +473,13 @@ proxy.mailboxes = {
                 txid: data.txid
             }
         ];
+        if (data.type === 'broadcast') {
+            msg = [ 'GET_HISTORY_RANGE', box.channel, {
+                    to: data.lastKnownHash,
+                    txid: data.txid
+                }
+            ];
+        }
         ctx.req[data.txid] = {
             cId: clientId,
             box: box
@@ -462,21 +489,6 @@ proxy.mailboxes = {
         }, function (err) {
             console.error(err);
         });
-    };
-
-    var resetBox = function (ctx, cId, type, cb) {
-        var box = ctx.mailboxes && ctx.mailboxes[type];
-        if (!box) { return void cb({error: 'ENOENT'}); }
-
-        console.log(box);
-        if (type === 'broadcast') {
-            box.viewed = [];
-            box.lastKnownHash = ''; // XXX Use api/broadcast
-            return void cb();
-        }
-
-        box.lastKnownHash = '';
-        box.viewed = [];
     };
 
     var subscribe = function (ctx, data, cId, cb) {
@@ -520,7 +532,6 @@ proxy.mailboxes = {
             boxes: {},
             req: {}
         };
-
 
         initializeMailboxes(ctx, mailboxes);
         initializeHistory(ctx);
@@ -596,9 +607,6 @@ proxy.mailboxes = {
             }
             if (cmd === 'LOAD_HISTORY') {
                 return void loadHistory(ctx, clientId, data, cb);
-            }
-            if (cmd === 'RESET') {
-                return void resetBox(ctx, clientId, data, cb);
             }
         };
 

@@ -742,12 +742,21 @@ define([
     handlers['BROADCAST_DELETE'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
+
+        // If this is a "clear all" message, empty the box and update lkh
+        if (content.all) {
+            // 3rd argument of callback: clear the mailbox
+            return void cb(null, null, true);
+        }
+
         var uid = content.uid; // uid of the message to delete
         if (!broadcasts[uid]) {
             // We don't have this message in memory, nothing to delete
             return void cb(true);
         }
-        cb(false, broadcasts[uid]);
+
+        // We have the message in memory, remove it and don't keep the DELETE msg
+        cb(true, broadcasts[uid]);
         delete broadcasts[uid];
     };
 

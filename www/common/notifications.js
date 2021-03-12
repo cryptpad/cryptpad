@@ -460,7 +460,7 @@ define([
         // Otherwise, fallback to the default language if it exists
         if (!toShow && defaultL) { toShow = text[defaultL]; }
         // No translation available, dismiss
-        if (!toShow) { defaultDismiss(common, data)(); }
+        if (!toShow) { return defaultDismiss(common, data)(); }
 
         var slice = toShow.length > 500;
         toShow = Util.fixHTML(toShow);
@@ -492,6 +492,7 @@ define([
 
     return {
         add: function(common, data) {
+            console.log(data);
             var type = data.content.msg.type;
 
             if (handlers[type]) {
