@@ -1328,7 +1328,7 @@ define([
 
         // Button
         var $button = $('<button>', {
-            'class': ''
+            'class': config.buttonCls || ''
         }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
         if (config.caretDown) {
             $('<span>', {

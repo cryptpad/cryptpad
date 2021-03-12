@@ -942,6 +942,7 @@ define([
     Messages.admin_cat_broadcast = "Broadcast"; // XXX
     // Messages.admin_broadcastHint // XXX
     // Messages.admin_broadcastTitle // XXX
+    Messages.broadcast_new = "New message";
     Messages.broadcast_maintenance = 'maintenance';// XXX
     Messages.broadcast_survey = 'survey'; // XXX
     Messages.broadcast_version = 'version'; // XXX
@@ -1041,14 +1042,25 @@ define([
                         $el.css('order', keys.indexOf(l));
                     });
                 };
-                // Remove a textarea
-                var removeLang = function (l) {
-                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
-                };
 
                 var noFallbackBtn = h('button.btn.btn-secondary.cp-broadcast-preview',
                                         Messages.broadcast_noFallback);
                 var $noFallbackBtn = $(noFallbackBtn);
+                var checkFallbackBtn = function () {
+                    var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
+                    console.error(hasDefault);
+                    if (hasDefault) {
+                        $noFallbackBtn.css('visibility', '');
+                    } else {
+                        $noFallbackBtn.css('visibility', 'hidden');
+                    }
+                };
+
+                // Remove a textarea
+                var removeLang = function (l) {
+                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+                    checkFallbackBtn();
+                };
 
                 // Add a textarea
                 var addLang = function (l) {
@@ -1064,7 +1076,7 @@ define([
                         label: {class: 'noTitle'}
                     });
                     $(radio).find('input').on('change', function () {
-                        if ($(this).is(':checked')) { $noFallbackBtn.css('visibility', ''); }
+                        checkFallbackBtn();
                     });
                     $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
                         h('h4', languages[l]),
@@ -1073,6 +1085,7 @@ define([
                         radio,
                         preview
                     ]));
+                    checkFallbackBtn();
                     reorder();
                 };
 
@@ -1397,11 +1410,12 @@ define([
             };
         });
         var dropdownCfg = {
-            text: Messages.support_category,
+            text: Messages.broadcast_new,
             angleDown: 1,
             options: categories,
             container: $select,
-            isSelect: true
+            isSelect: true,
+            buttonCls: 'btn btn-default'
         };
         UIElements.createDropdown(dropdownCfg);
 

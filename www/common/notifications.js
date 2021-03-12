@@ -462,13 +462,13 @@ define([
         // No translation available, dismiss
         if (!toShow) { return defaultDismiss(common, data)(); }
 
-        var slice = toShow.length > 500;
+        var slice = toShow.length > 200;
         toShow = Util.fixHTML(toShow);
 
         content.getFormatText = function () {
             // XXX Add a title to custom messages? Or use a generic key in the notification and only display the text in the alert?
             if (slice) {
-                return toShow.slice(0, 500) + '...';
+                return toShow.slice(0, 200) + '...';
             }
             return toShow;
         };
