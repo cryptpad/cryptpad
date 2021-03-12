@@ -1487,7 +1487,6 @@ define([
             execCommand: function (clientId, data, cb) {
                 // The mailbox can only be used when the store is ready
                 onReadyEvt.reg(function () {
-                    if (!store.loggedIn) { return void cb(); }
                     if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
                     store.mailbox.execCommand(clientId, data, cb);
                 });
@@ -2497,9 +2496,6 @@ define([
         };
 
         var loadMailbox = function (waitFor) {
-            if (!store.loggedIn || !store.proxy.edPublic) {
-                return;
-            }
             store.mailbox = Mailbox.init({
                 Store: Store,
                 store: store,
@@ -2636,7 +2632,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                store.modules['team'].onReady(waitFor);
+                if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {

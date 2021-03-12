@@ -24,7 +24,7 @@ define([
     var BROADCAST_CHAN = '00000000000000000000000000000000';
 
     var initializeMailboxes = function (ctx, mailboxes) {
-        if (!mailboxes['notifications']) {
+        if (!mailboxes['notifications'] && ctx.loggedIn) {
             mailboxes.notifications = {
                 channel: Hash.createChannelId(),
                 lastKnownHash: '',
@@ -34,7 +34,7 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
-        if (!mailboxes['support']) {
+        if (!mailboxes['support'] && ctx.loggedIn) {
             mailboxes.support = {
                 channel: Hash.createChannelId(),
                 lastKnownHash: '',
@@ -533,11 +533,14 @@ proxy.mailboxes = {
             emit: emit,
             clients: [],
             boxes: {},
-            req: {}
+            req: {},
+            loggedIn: store.loggedIn && store.proxy.edPublic
         };
 
         initializeMailboxes(ctx, mailboxes);
-        initializeHistory(ctx);
+        if (ctx.loggedIn) {
+            initializeHistory(ctx);
+        }
 
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
@@ -554,18 +557,20 @@ proxy.mailboxes = {
             }
         });
 
-        Object.keys(store.proxy.teams || {}).forEach(function (teamId) {
-            var team = store.proxy.teams[teamId];
-            if (!team) { return; }
-            var teamMailbox = team.keys.mailbox || {};
-            if (!teamMailbox.channel) { return; }
-            var opts = {
-                owners: [Util.find(team, ['keys', 'drive', 'edPublic'])]
-            };
-            openChannel(ctx, 'team-'+teamId, teamMailbox, function () {
-                //console.log('Mailbox team', teamId);
-            }, opts);
-        });
+        if (ctx.loggedIn) {
+            Object.keys(store.proxy.teams || {}).forEach(function (teamId) {
+                var team = store.proxy.teams[teamId];
+                if (!team) { return; }
+                var teamMailbox = team.keys.mailbox || {};
+                if (!teamMailbox.channel) { return; }
+                var opts = {
+                    owners: [Util.find(team, ['keys', 'drive', 'edPublic'])]
+                };
+                openChannel(ctx, 'team-'+teamId, teamMailbox, function () {
+                    //console.log('Mailbox team', teamId);
+                }, opts);
+            });
+        }
 
         mailbox.post = function (box, type, content) {
             var b = ctx.boxes[box];
@@ -590,6 +595,7 @@ proxy.mailboxes = {
         };
 
         mailbox.sendTo = function (type, msg, user, cb) {
+            if (!ctx.loggedIn) { return void cb({error:'NOT_LOGGED_IN'}); }
             sendTo(ctx, type, msg, user, cb);
         };
 
