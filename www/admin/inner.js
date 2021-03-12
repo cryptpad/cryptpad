@@ -958,6 +958,7 @@ define([
     Messages.broadcast_clear = "Clear all for everybody";
     Messages.expired = "Expired";
     Messages.broadcast_empty = "No active message";
+    Messages.broadcast_noFallback = "Don't fallback to a default language";
 
     var getBroadcastForm = function ($form, key) {
         $form.empty();
@@ -1044,6 +1045,11 @@ define([
                 var removeLang = function (l) {
                     $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
                 };
+
+                var noFallbackBtn = h('button.btn.btn-secondary.cp-broadcast-preview',
+                                        Messages.broadcast_noFallback);
+                var $noFallbackBtn = $(noFallbackBtn);
+
                 // Add a textarea
                 var addLang = function (l) {
                     if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
@@ -1052,16 +1058,19 @@ define([
                         onPreview(l);
                     });
                     var bcastDefault = Messages.broadcast_defaultLanguage;
-                    // XXX 
-                    //var first = !$container.find('.cp-broadcast-lang').length;
+                    var first = !$container.find('.cp-broadcast-lang').length;
+                    var radio = UI.createRadio('broadcastDefault', null, bcastDefault, first, {
+                        'data-lang': l,
+                        label: {class: 'noTitle'}
+                    })
+                    $(radio).find('input').on('change', function () {
+                        if ($(this).is(':checked')) { $noFallbackBtn.css('visibility', ''); }
+                    });
                     $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
                         h('h4', languages[l]),
                         h('label', Messages.kanban_body),
                         h('textarea'),
-                        UI.createRadio('broadcastDefault', null, bcastDefault, false, {
-                            'data-lang': l,
-                            label: {class: 'noTitle'}
-                        }),
+                        radio,
                         preview
                     ]));
                     reorder();
@@ -1119,12 +1128,20 @@ define([
                         $(el).val('');
                     });
                 };
+
+                // "Don't fallback to a default language" button
+                $noFallbackBtn.click(function () {
+                    $container.find('.cp-checkmark input').prop('checked', false);
+                    $noFallbackBtn.css('visibility', 'hidden');
+                });
+
                 // Make the form
                 $form.append([
                     h('label', Messages.broadcast_translations),
                     h('div.cp-broadcast-languages', boxes),
                     container,
-                    button
+                    button,
+                    noFallbackBtn
                 ]);
             })();
             return;
