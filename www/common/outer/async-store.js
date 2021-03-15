@@ -2636,7 +2636,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                store.modules['team'].onReady(waitFor);
+                if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {

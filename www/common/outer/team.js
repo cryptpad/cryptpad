@@ -1046,6 +1046,7 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (team.offline) { return void cb({error: 'OFFLINE'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        if (data.metadata) { delete data.metadata.offline; }
         team.roster.metadata(data.metadata, function (err) {
             if (err) { return void cb({error: err}); }
             var localTeam = ctx.store.proxy.teams[teamId];
