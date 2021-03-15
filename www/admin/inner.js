@@ -995,12 +995,14 @@ define([
                     return UI.warn(Messages.error);
                 }
 
-                // Clear the UI
-                reset();
-                onRefreshBroadcast.fire();
 
                 // Only print success if there is no callback
-                if (!_cb) { UI.log(Messages.saved); }
+                if (!_cb) {
+                    UI.log(Messages.saved);
+                    // Clear the UI
+                    reset();
+                    onRefreshBroadcast.fire();
+                }
             });
         };
 
