@@ -281,7 +281,7 @@ proxy.mailboxes = {
             channel: m.channel,
             noChainPad: true,
             crypto: crypto,
-            owners: opts.owners || [ctx.store.proxy.edPublic],
+            owners: type === 'broadcast' ? [] : (opts.owners || [ctx.store.proxy.edPublic]),
             lastKnownHash: m.lastKnownHash
         };
         cfg.onConnectionChange = function () {}; // Allow reconnections in chainpad-netflux
