@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TRIMMEAN Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>TRIMMEAN Function</h1>
+			<p>The <b>TRIMMEAN</b> function is one of the statistical functions. It is used to return the mean of the interior of a data set. <b>TRIMMEAN</b> calculates the mean taken by excluding a percentage of data points from the top and bottom tails of a data set.</p>
+			<p>The <b>TRIMMEAN</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>TRIMMEAN(array, percent)</em></b></p> 
+            <p><em>where</em></p>
+            <p style="text-indent: 50px;"><b><em>array</em></b> is the range of numeric values to trim and average.</p>
+            <p style="text-indent: 50px;"><b><em>percent</em></b> is a total percent of data points to exclude from the calculation. A numeric value greater than or equal to 0 but less than 1. The number of excluded data points is rounded down to the nearest multiple of 2. E.g., if <b><em>array</em></b> contains 30 values and <b><em>percent</em></b> is 0.1, 10 percent of 30 points is 3. This value is rounded down to 2, so 1 point is trimmed from each tail of the data set: 1 from the top and 1 from the bottom of the set. </p>
+            <p>The values can be entered manually or included into the cell you make reference to.</p>
+			<p>To apply the <b>TRIMMEAN</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Statistical</b> function group from the list,</li>
+			<li>click the <b>TRIMMEAN</b> function,</li>
+			<li>enter the required arguments separating by commas or select a range of cells with the mouse,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="TRIMMEAN Function" src="../images/trimmean.png" /></p>
+		</div>
+	</body>
+</html>

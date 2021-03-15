@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction LIEN_HYPERTEXTE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction LIEN_HYPERTEXTE</h1>
+			<p>La fonction <b>LIEN_HYPERTEXTE</b> est l'une des fonctions de recherche et de référence. Elle est utilisée pour créer un raccourci qui saute à un autre emplacement dans le classeur actuel ou ouvre un document stocké sur un serveur réseau, un intranet ou internet.</p>
+			<p>La syntaxe de la fonction <b>LIEN_HYPERTEXTE</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>LIEN_HYPERTEXTE(emplacement_lien, [nom_convivial])</em></b></p> 
+			<p><em>où</em></p> 
+				<p style="text-indent: 50px;"><b><em>emplacement_lien</em></b> est le chemin d'accès et le nom du fichier au document à ouvrir. <span class="onlineDocumentFeatures">Dans la <em>version en ligne</em>, le chemin peut être une adresse URL seulement.</span> <b><em>emplacement_lien</em></b> peut également faire référence à un certain endroit dans le classeur actuel, par exemple, à une certaine cellule ou à une plage nommée. La valeur peut être spécifiée sous la forme d'une chaîne de texte jointe aux guillemets ou d'une référence à une cellule contenant le lien sous la forme d'une chaîne de texte.</p> 
+				<p style="text-indent: 50px;"><b><em>nom_convivial</em></b> est un texte affiché dans la cellule. C'est un argument facultatif. Si elle est omise, la valeur <b><em>nom_convivial</em></b> est affichée dans la cellule.</p>
+				
+			<p>Pour appliquer la fonction <b>LIEN_HYPERTEXTE</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Recherche et référence</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>LIEN_HYPERTEXTE</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+            <p>Pour ouvrir le lien, cliquez dessus. Pour sélectionner une cellule qui contient un lien sans ouvrir le lien, cliquez et maintenez le bouton de la souris enfoncé.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction LIEN_HYPERTEXTE" src="../images/hyperlinkfunction.png" /></p>
+		</div>
+	</body>
+</html>

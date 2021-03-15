@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte ecuación</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert equations and mathematical symbols." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte ecuación</h1>
+            <p>El Editor de Documentos le permite crear ecuaciones usando las plantillas predeterminadas, editarlas, añadir caracteres especiales (incluyendo operaciones matemáticas, letras Griegas, acentos, etc).</p>
+            <h3>Añadir una ecuación nueva</h3>
+            <p>Para añadir una ecuación nueva de la galería,</p>
+			<ol>
+				<li>coloque cursor en la línea necesaria,</li>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+				<li>pulse la flecha de al lado de el <img alt="Icono ecuación" src="../images/insertequationicon.png" /> icono <b>Insertar ecuación</b>  en la barra de herramientas superior,</li>
+				<li>seleccione una categoría de ecuación en la lista desplegable. Aquí están las categorías disponibles: <em>Símbolos</em>, <em>Fracciones</em>, <em>Scripts</em>, <em>Radicales</em>, <em>Integrales</em>, <em>Operadores grandes</em>, <em>Paréntesis</em>, <em>Funciones</em>, <em>Acentos</em>, <em>Límites y logaritmos</em>, <em>Operadores</em>, <em>Matrices</em>,</li>
+                <li>haga clic sobre un símbolo/ecuación en el conjunto de plantillas correspondiente.</li>
+			</ol>
+            <p>La casilla de símbolo/ecuación seleccionada se insertará en la posición del cursor. Si la línea seleccionada está vacía, la ecuación se centrará. Para alinear la ecuación a la derecha o a la izquierda, haga clic en la casilla de ecuación y use el icono <img alt="Icono alinear a la izquierda" src="../images/alignleft.png" /> o <img alt="Icono alinear a la derecha" src="../images/alignright.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p><img alt="Ecuación insertada" src="../images/insertedequation.png" /><p>Cada plantilla de ecuación representa un conjunto de huecos. Un hueco es una posición para cada elemento que está presente en la ecuación. Un hueco vacío (también llamado marcador) tiene un contorno punteado <img alt="Marcador de Ecuaciones" src="../images/equationplaceholder.png" />. Necesita rellenar todos los marcadores especificando los valores necesarios.</p>
+            <p class="note"><b>Nota</b>: para crear una ecuación, también puede usar el atajo de teclado <b>Alt + =</b>.</p>
+            <h3>Introduzca valores</h3>
+            <p>El <b>Punto de inserción</b> especifica dónde aparecerá el próximo carácter. Para posicionar el punto de inserción de forma precisa, haga clic en el marcador y use las flechas del teclado para mover el punto de inserción un carácter a la izquierda/derecha o una línea arriba/abajo.</p>
+            <p>Si necesita crear un nuevo marcador debajo del hueco con el punto de inserción dentro de las plantillas seleccionadas, presione <b>Enter</b>.</p><img alt="Ecuación editada" src="../images/newslot.png" /><p>Una vez que el punto de inserción está posicionado, puede rellenar el marcador:<ul>
+                <li>introduzca el valor numérico/literal deseado usando el teclado,</li>
+                <li>Inserte un carácter especial usando la paleta de <b>Símbolos</b> del menú de <img alt="Icono ecuación" src="../images/insertequationicon.png" /> <b>Ecuación</b> en la pestaña de <b>Insertar</b> en la barra de herramientas superior,</li>
+                <li>añada otra plantilla de ecuación de la paleta para crear una ecuación compleja. El tamaño de la ecuación primaria se ajustará de manera automática para cuadrar el contenido. El tamaño de los elementos de la ecuación depende del tamaño del marcador de ecuación primaria, pero no puede ser más pequeño que el tamaño del sub-subíndice.</li>                
+            </ul>
+            </p>
+            <p><img alt="Ecuación editada" src="../images/nestedfraction.png" /></p>
+            <p>Para añadir nuevos elementos de ecuaciones, también puedes usar las <b>opciones del menú contextual</b>:</p>
+            <ul>
+                <li>Para añadir un argumento nuevo que vaya antes o después de la ecuación existente dentro de <em>Corchetes</em>, puede hacer clic derecho en el argumento existente y seleccionar la opción <b>Insertar argumento después/antes</b> del menú.</li>
+                <li>Para añadir una ecuación nueva dentro de <em>Casos</em> con varias condiciones del grupo de <em>Corchetes</em> (o ecuaciones de otro tipo, si ya has añadido marcadores nuevos presionando <b>Enter</b>), puede hacer clic derecho en un marcador vacío o rellenarlo con una ecuación y seleccionar la opción <b>Insertar ecuación antes/después</b> del menú.</li>
+                <li>Para añadir una nueva fila o columna en una <em>Matriz</em>, puede hacer clic derecho en un marcador, selecciona la opción <b>Insertar</b> del menú, luego seleccione <b>Fila arriba/abajo</b> o <b>Columna izquierda/derecha</b>.</li>
+            </ul>
+            <p class="note"><b>Nota</b>: actualmente, las ecuaciones no pueden añadirse usando el formato linear, por ejemplo, <b>\sqrt(4&amp;x^3)</b>.</p>
+            <p>Cuando introduzca los valores de las expresiones matemáticas, no tiene que usar el <b>Espaciador</b> ya que los espacios entre caracteres y signos de las operaciones se ajustan de forma automática.</p>
+            <p>Si la ecuación es demasiado larga y no entra en una sola línea, el salto de línea ocurre de forma automática mientras escribe. También puede insertar un salto de línea en una posición específica haciendo clic derecho en un operador matemático y seleccionando la opción de <b>Insertar salto manual</b> desde el menú. El operador seleccionado empezará una línea nueva. Una vez que el salto de línea manual se añada, puede presionar la tecla <b>Tab</b> para alinear la nueva línea a cualquier operador matemático de la línea anterior. Para borrar el salto de línea manual que has añadido, haga clic derecho en el operador matemático que empieza una nueva línea y seleccione la opción <b>Borrar salto manual</b>.</p>
+            <h3>Formatear ecuaciones</h3>
+            <p>Para aumentar o disminuir el <b>tamaño de letra</b> de la ecuación, haga clic en cualquier sitio del cuadro de la ecuación y use los botones <img alt="Aumentar tamaño de letra" src="../images/larger.png" /> y <img alt="Reducir tamaño de letra" src="../images/smaller.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior o seleccione el tamaño de letra necesario de la lista. Todos los elementos de la ecuación cambiarán de forma correspondiente.</p>
+            <p>Las letras dentro de la ecuación se pondrán en cursiva de manera predeterminada. Si es necesario, puede cambiar el <b>estilo de letra</b> (<em>negrita, cursiva, tachado</em>) o <b>color</b> para toda la ecuación o cualquiera de sus partes. El estilo <em>subrayado</em> se puede aplicar a la ecuación entera, no solo a caracteres individuales. Seleccione las partes de la ecuación necesaria haciendo clic y arrastrándolas. La parte seleccionada se destacarán en azul. Luego, usa los botones necesarios en la pestaña de <b>Inicio</b> en la barra de herramientas superior para formatear la selección. Por ejemplo, puedes eliminar el formato de cursiva para palabras ordinarias que no son variables o constantes.</p><img alt="Ecuación editada" src="../images/formatastext.png" /><p>Para añadir nuevos elementos de ecuaciones, también puede usar las <b>opciones del menú contextual</b>:</p>
+            <ul><li>Para cambiar el formato de <em>Fracciones</em>, puede hacer clic derecho en una fracción y seleccionar la opción de<b> Cambiar a fracción desigual/linear/acumulada</b> del menú (las opciones disponibles varían dependiendo en el tipo de fracción seleccionada). <!--The <b>Remove/Add fraction bar</b> option is also available for stacked fractions.--></li>
+                <li>Para cambiar la posición de los <em>Scripts</em> en relación con el texto, puede hacer clic derecho en la ecuación que incluye scripts y seleccionar la opción de <b>Scripts antes/después</b> del texto del menú.</li>
+                <li>Para cambiar el tamaño del argumento a <em>Scripts, Radicales, Integrales, Operadores grandes, Límites y Logaritmos, Operadores</em> así como por encima braces/abajo braces y plantillas con símbolos agrupados del grupo de <em>Acentos</em>, puede hacer clic derecho en el argumento que quiere cambiar y seleccionar la opción <b>Aumentar/Reducir el tamaño</b> de los argumentos del menú.</li>
+                <li>Para especificar si un marcador vacío debe mostrarse o no para una <em>Radical,</em> puede hacer clic derecho en la radical y seleccionar la opción <b>Mostrar/Esconder grado</b> del menú.</li>
+                <li>Para especificar si una marcador de límite vacío debe mostrarse o no para una <em>Integral</em> o <em>Operador Grande</em>, puede hacer clic derecho en la ecuación y seleccionar la opción de <b>Mostrar/Esconder límite de arriba/abajo</b> del menú.</li>
+                <li>Para cambiar los límites de posición en relación con las señales integrales y de operador para <em>Integrales</em> o <em>Operadores Grandes</em>, puede hacer clic derecho en la ecuación y seleccionar la opción de <b>Cambiar límites de localización</b> del menú. Los límites pueden mostrase a la derecha de la señal del operador (como subíndices y superíndices) o directamente encima o abajo de la señal de operador.</li>
+                <li>Para cambiar la posición de los límites relacionados al texto para <em>Límites y Logaritmos</em> y las plantillas con caracteres agrupados del grupo de <em>Acentos</em>, puede hacer clic derecho en la ecuación y seleccionar la opción de <b>Límite encima/debajo del texto</b> del menú.</li>
+                <li>Para elegir cual de los <em>Corchetes</em> debe mostrarse, puede hacer clic derecho en la expresión y seleccionar la opción de <b>Mostrar/Ocultar corchetes abiertos/cerrados</b> del menú.</li>
+                <li>Para controlar el tamaño de los <em>Corchetes</em>, puede hacer clic derecho en la expresión de dentro. La opción <b>Expandir corchetes</b> se selecciona por defecto, para que los corchetes puedan expandirse de acuerdo a la expresión dentro de estos, pero puedes de seleccionar esta opción para prevenir que los corchetes se extiendan. Cuando esta opción está activada, también puede usar la opción <b>Combine corchetes a la altura del argumento</b></li>
+                <li>Para cambiar la posición de los caracteres relacionados al texto para encima de braces/debajo de braces o encima de barras/ debajo de barras del grupo de <em>Acentos</em>, puede hacer clic derecho en la plantilla y seleccionar la opción de <b>Gráfico/Barras encima/debajo del texto</b> del menú.</li>
+                <li>Para elegir qué bordes deben mostrarse para una <em>Fórmula en caja</em> del grupo de <em>Acentos</em>, puede hacer clic derecho en la ecuación y seleccionar la opción de <b>Propiedades de bordes</b> del menú, luego selecciona <b>Mostrar/Ocultar borde de Arriba/abajo/izquierda/derecha</b> o <b>Añadir/Ocultar línea horizontal/vertical/diagonal</b>.</li>
+                <li>Para especificar si un marcador vacío debe mostrarse o no para una <em>Matriz</em> puede hacer clic derecho en la radical y seleccionar la opción <b>Mostrar/Esconder grado</b> del menú.</li>
+            </ul>
+            <p>Para añadir nuevos elementos de ecuaciones, también puede usar las <b>opciones del menú contextual</b>:</p>
+            <ul>
+                <li>Para añadir una ecuación nueva dentro de <em>Casos</em> con varias condiciones del grupo de <em>Corchetes</em> (o ecuaciones de otro tipo, si ya ha añadido marcadores nuevos presionando <b>Enter</b>), puede hacer clic derecho en una ecuación, seleccionar la opción <b>Alinear</b> del menú, y después seleccionar el tipo de alineamiento: <b>Arriba</b>, <b>Centro</b>, o <b>Abajo</b></li>
+                <li>Para alinear un <em>Matriz</em> de forma vertical, puede hacer clic derecho en la matriz, seleccionar la opción de <b>Alineamiento de Matriz</b> del menú, y luego seleccione el tipo de alineación: <b>Arriba</b>, <b>Centro</b>, o <b>Abajo</b></li>
+                <li>Para alinear elementos dentro de una <em>Matriz</em> de columna horizontal, puede hacer clic derecho en un marcador dentro de la columna, seleccione la opción de <b>Alineamiento de Columna</b> del menú, luego seleccione el tipo de alineamiento: <b>Izquierdo</b> , <b>Centro</b>, o <b>Derecho</b> .</li>
+            </ul>
+            <h3>Borre elementos de la ecuación</h3>
+            <p>Para borrar una parte de la ecuación, seleccione la parte que quiere eliminar arrastrando el ratón o presionando la tecla de <b>Cambiar</b> y usando los botones de flechas, luego presione la tecla de <b>Borrar</b> en el teclado.</p>
+            <p>Un hueco solo se puede borrar junto con la plantilla a la que pertenece.</p>
+            <p>Para borrar la ecuación entera, selecciónala de forma completa arrastrando el ratón sobre ella o haz clic dos veces en el cuadro de la ecuación y presione la tecla <b>Borrar</b> en el teclado.</p><img alt="Borrar ecuación" src="../images/deleteequation.png" /><p>Para añadir nuevos elementos de ecuaciones, también puede usar las <b>opciones del menú contextual</b>:</p>
+            <ul>
+                <li>Para borrar una <em>Radical</em>, puede hacer clic derecho en esta y seleccionar la opción <b>Borrar radical</b> en el menú.</li>
+                <li>Para borrar un <em>Subíndice</em> y/o <em>Superíndice</em>, puede hacer clic derecho en la expresión que la contiene y seleccionar la opción <b>Borrar subíndice/superíndice</b> del menú. Si la expresión contiene scripts que van antes que el texto, la opción <b>Borrar scripts</b> se encuentra disponible.</li>
+                <li>Para borrar los <em>Corchetes</em>, puede hacer clic derecho en la expresión dentro de esta y seleccionar la opción <b>Borrar caracteres adjuntos</b> o <b>Borrar caracteres y separadores adjuntos</b> del menú.</li>
+                <li>Si la expresión dentro de los <em>Corchetes</em> incluye más de un argumento, puede hacer clic derecho en al argumento que quiere borrar y seleccionar la opción <b>Borrar argumento</b> del menú.</li>
+                <li>Si los <em>Corchetes</em> contienen más de una ecuación (por ejemplo <em>Casos</em> con varias condiciones), puede hacer clic derecho en la ecuación que quiere borrar y seleccionar la opción de <b>Borrar ecuación</b> del menú. Esta opción también está disponible para ecuaciones de otro tipo si previamente has añadido nuevos marcadores presionando <b>Enter</b>.</li>
+                <li>Para borrar un <em>Límite</em>, puede hacer clic derecho en este y seleccionar la opción de <b>Borrar límite</b> del menú.</li>
+                <li>Para borrar un <em>Acento</em>, puede hacer clic derecho en este y seleccionar la opción de <b>Borrar símbolo de acento</b>, <b>Borrar gráfico</b> o <b>Borrar barras</b> del menú (las opciones disponibles dependen del acento seleccionado).</li>
+                <li>Para borrar una fila o columna de una <em>Matriz</em>, puede hacer clic derecho en el marcador dentro de una columna/fila que quiera borrar, seleccionar la opción <b>Borrar</b> del menú, y luego seleccionar <b>Borrar Fila/Columna</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

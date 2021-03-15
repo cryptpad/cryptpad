@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Añada hiperenlaces</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Añada hiperenlaces</h1>
+			<p>Para añadir un hiperenlace,</p>
+			<ol>
+				<li>posicione el cursor en un lugar  donde un hiperenlace se añadirá,</li>
+                <li>cambie a la pestaña <b>Insertar</b> o <b>Referencias</b> en la barra de herramientas superior,</li>
+				<li>Pulse haga clic en el icono <img alt="Icono hiperenlace" src="../images/addhyperlink.png" /> <b>Hiperenlace</b>en la barra de herramientas superior,</li>
+				<li>luego, verá la ventana <b>Configuración de hiperenlace</b>, donde podrá especificar los parámetros de hiperenlace:<ul>
+                        <li>Seleccione el tipo de enlace que desee insertar:<p>Use la opción <b>Enlace externo</b> e introduzca una URL en el formato <em>http://www.example.com</em> en el campo de debajo a <b>Enlace a</b> si usted necesita añadir un hiperenlace que le lleva a una página web externa.</p>
+                            <p><img alt="Ventana de Ajustes del Hiperenlace" src="../images/hyperlinkwindow.png" /></p>
+                            <p>Use la opción <b>Colocar en el Documento</b> y seleccione uno de los <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">encabezados</a> existentes en el texto del documento, o uno de los <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">marcadores</a> previamente añadidos si necesita un hiperenlace hacia un lugar determinado dentro del mismo documento.</p>
+                            <p><img alt="Ventana de Ajustes del Hiperenlace" src="../images/hyperlinkwindow1.png" /></p>
+                        </li>
+                        <li><b>Mostrar</b> - introduzca un texto en el cual podrá hacer clic y le dirigirá a la dirección especificada en el campo de arriba.</li>
+                        <li><b>Información en pantalla</b> - introduzca un texto que se hará visible en una ventana emergente y le proporciona una nota breve o una etiqueta que pertenece al enlace.</li>
+                    </ul>
+				</li>
+				<li>Haga clic en el botón <b>OK</b>.</li>
+			</ol>
+            <p>Para añadir un hiperenlace, usted también puede usar la combinación de teclas <b><b><b>Ctrl+K</b> </b></b>o hacer clic con el botón derecho del ratón en la posición donde se insertará el hiperenlace y seleccionar la opción <b>Hiperenlace</b> en el menú contextual.</p>
+			<p class="note"><b>Nota</b>: también es posible seleccionar un caracter, palabra, combinación de palabras o pasaje de texto con el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">usando el teclado</a> y luego abrir la ventana de <b>Ajustes del Hiperenlace</b> como se describe arriba. En este caso, el campo de <b>Mostrar</b> será completado con el fragmento de texto que haya seleccionado.</p>
+			<p>Si mantiene el cursor encima del hiperenlace añadido, aparecerá la Información en pantalla con el texto que ha especificado. Puede seguir el enlace pulsando el tecla <b>CTRL</b> y haciendo clic en el enlace en su documento.</p>
+			<p>Para editar o eliminar el hiperenlace añadido, púlselo con el botón secundario del ratón, seleccione la opción <b>Hiperenlace</b> y después haga clic en la acción usted quiera realizar - <b>Editar hiperenlace</b> or <b>Eliminar hiperenlace</b>.</p>
+		</div>
+	</body>
+</html>

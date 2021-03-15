@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formatierungszeichen ein-/ausblenden</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Show or hide nonprinting characters while formatting text, creating tables, and editing documents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Formatierungszeichen ein-/ausblenden</h1>
+			<p>Die Formatierungszeichen helfen Ihnen bei der Bearbeitung eines Dokuments. Sie zeigen das Vorhandensein verschiedener Formatierungen an, aber sie werden nicht mit dem Dokument gedruckt, auch wenn sie auf dem Bildschirm angezeigt werden.</p>
+			<p>Um Formatierungszeichen ein- bzw. auszublenden, klicken Sie auf das Symbol <b>Formatierungszeichen</b> <img alt="Formatierungszeichen" src="../images/nonprintingcharacters.png" /> in der Registerkarte <b>Start</b>.</p>
+			<p>Die Formatierungszeichen:</p>
+			<table>
+				<tr>
+					<td>Leerzeichen</td>
+					<td><img alt="Leerzeichen" src="../images/space.png" /></td>
+					<td>Wird eingefügt, wenn Sie die <b>Leertaste</b> drücken. Dieses Zeichen zeigt einen Zwischenraum zwischen den Zeichen an.</td>
+				</tr>
+				<tr>
+					<td>Tabulatoren</td>
+					<td><img alt="Tabulator" src="../images/tab.png" /></td>
+					<td>Wird eingefügt, wenn Sie die <b>Tabulatortaste</b> drücken. Dudurch wird der Cursor zur nächsten Tabulatormarke bewegt.</td>
+				</tr>
+				<tr>
+					<td>Absatzzeichen (d.h. harter Zeilenumbruch)</td>
+					<td><img alt="Harter Zeilenumbruch" src="../images/hard.png" /></td>
+					<td>Wird eingefügt, wenn Sie die <b>Eingabetaste</b> drücken. Dadurch wird der aktuelle Absatz beendet und ein Abstand zum folgenden Absatz eingefügt. Das Zeichen enthält Informationen zur Absatzformatierung.</td>
+				</tr>
+				<tr>
+					<td>Zeilenumbruch (d.h. weicher Zeilenumbruch)</td>
+					<td><img alt="Weicher Zeilenumbruch" src="../images/soft.png" /></td>
+					<td>Wird eingefügt, wenn Sie die Tastenkombination <b>UMSCHALT+ENTER</b> verwenden. Dadurch wird die aktuelle Zeile umgebrochen und die folgenden Zeilen werden ohne zusätzlichen Zwischenabstand angefügt. Weiche Zeilenumbrüche werden hauptsächlich in Überschriften und Titeln verwendet.</td>
+				</tr>
+				<tr>
+					<td>Geschütztes Leerzeichen</td>
+					<td><img alt="Geschütztes Leerzeichen" src="../images/nonbreakspace.png" /></td>
+					<td>Wird eingefügt, wenn Sie die Tastenkombination <b>STRG+UMSCHALT+LEERTASTE</b> verwenden. Es erzeugt ein Leerzeichen zwischen Zeichen, die nicht als Beginn einer neuen Zeile verwendet werden können.</td>
+				</tr>
+				<tr>
+					<td>Seitenumbruch</td>
+					<td><img alt="Seitenumbruch" src="../images/pagebreak.png" /></td>
+					<td>Wird eingefügt, wenn Sie das Symbol <img alt="Umbrüche" src="../images/pagebreak1.png" /> <b>Umbrüche</b> in der oberen Symbolleiste auf den Registerkarten <b>Einfügen</b> oder <b>Layout</b> anklicken und die Option <b>Seitenumbruch einfügen</b> auswählen oder im Rechtsklickmenü oder im Fenster mit den erweiterten Einstellungen die Option <b>Seitenumbruch vorher</b> auswählen.</td>
+				</tr>
+				<tr>
+					<td>Abschnittsumbrüche</td>
+					<td><img alt="Abschnittsumbruch" src="../images/sectionbreak.png" /></td>
+					<td>Wird eingefügt, wenn Sie das Symbol <img alt="Umbrüche" src="../images/pagebreak1.png" /> <b>Umbrüche</b> in der oberen Symbolleiste auf den Registerkarten <b>Einfügen</b> oder <b>Layout</b> anklicken und eine der Optionen im Untermenü <b>Abschnittsumbruch einfügen</b> auswählen (die Anzeige für den jeweiligen Umbruch unterscheidet sich je nachdem, welche Option ausgewählt ist): Nächste Seite, Fortlaufend, Gerade Seite, Ungerade Seite).</td>
+				</tr>
+                <tr>
+                    <td>Spaltenumbrüche</td>
+                    <td><img alt="Spaltenumbruch" src="../images/columnbreak.png" /></td>
+                    <td>Wird eingefügt, wenn Sie das Symbol <img alt="Umbrüche" src="../images/pagebreak1.png" /> <b>Umbrüche</b> in der oberen Symbolleiste auf den Registerkarten <b>Einfügen</b> oder <b>Layout</b> anklicken und die Option <b>Spaltenumbruch einfügen</b> auswählen.</td>
+                </tr>
+				<tr>
+					<td>Markierungen für das Zell- und Zeilenende in Tabellen</td>
+					<td><img alt="Markierungen in Tabellen" src="../images/cellrow.png" /></td>
+					<td>Diese Markierungen enthalten die Formatierungscodes für die jeweilige Zelle bzw. Zeile.</td>
+				</tr>
+				<tr>
+					<td>Kleines schwarzes Quadrat am Seitenrand links von einem Absatz</td>
+					<td><img alt="Schwarzes Quadrat" src="../images/square.png" /></td>
+					<td>Zeigt an, dass mindestens eine der Absatzoptionen angewendet wurde, z.B. <b>Zeilen zusammenhalten</b>, <b>Seitenumbruch oberhalb</b>.</td>
+				</tr>
+				<tr>
+					<td>Anker</td>
+					<td><img alt="Anker" src="../images/anchor.png" /></td>
+					<td>Zeigt die Position von schwebenden Objekten an (Objekte deren Position nicht auf der Seite <b>Fixiert</b> ist), z.B. von Bildern, AutoFormen, Diagrammen. Um den Anker sichtbar zu machen, wählen Sie einfach ein beliebiges Objekt aus.</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

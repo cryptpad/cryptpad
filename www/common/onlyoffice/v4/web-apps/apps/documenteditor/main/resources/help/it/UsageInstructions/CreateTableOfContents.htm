@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create a Table of Contents</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Create a Table of Contents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Create a Table of Contents</h1>
+            <p>A table of contents contains a list of all chapters (sections etc.) in a document and displays the numbers of the pages where each chapter is started. This allows to easily navigate through a multi-page document quickly switching to the necessary part of the text. The table of contents is generated automatically on the base of the document headings formatted using built-in styles. This makes it easy to update the created table of contents without the necessity to edit headings and change page numbers manually if the document text has been changed.</p>
+			<h3>Define the heading structure</h3>
+            <p><b>Format headings</b></p>
+            <p>First of all, format headings in you document using one of the predefined styles. To do that,</p>
+            <ol>
+                <li>Select the text you want to include into the table of contents.</li>
+                <li>Open the style menu on the right side of the <b>Home</b> tab at the top toolbar.</li>
+                <li>Click the style you want to apply. By default, you can use the <em>Heading 1 - Heading 9</em> styles.
+                <p class="note"><b>Note</b>: if you want to use other styles (e.g. <em>Title</em>, <em>Subtitle</em> etc.) to format headings that will be included into the table of contents, you will need to adjust the table of contents settings first (see the corresponding section below). To learn more about available formatting styles, you can refer to <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">this page</a>.</p>
+                </li>
+            </ol>
+            <p id="navigation"><b>Manage headings</b></p>
+            <p>Once the headings are formatted, you can click the <img alt="Navigation icon" src="../images/navigationicon.png" /> <b>Navigation</b> icon at the left sidebar to open the panel that displays the list of all headings with corresponding nesting levels. This panel allows to easily navigate between headings in the document text as well as manage the heading structure.</p>
+            <p>Right-click on a heading in the list and use one of the available options from the menu:</p>
+            <p><img alt="Navigation panel" src="../images/navigationpanel.png" /></p>
+            <ul>
+                <li><b>Promote</b> - to move the currently selected heading up to the higher level in the hierarchical structure, e.g. change it from <em>Heading 2</em> to <em>Heading 1</em>.</li>
+                <li><b>Demote</b> - to move the currently selected heading down to the lower level in the hierarchical structure, e.g. change it from <em>Heading 1</em> to <em>Heading 2</em>.</li>
+                <li><b>New heading before</b> - to add a new empty heading of the same level before the currently selected one.</li>
+                <li><b>New heading after</b> - to add a new empty heading of the same level after the currently selected one.</li>
+                <li><b>New subheading</b> - to add a new empty subheading (i.e. a heading with lower level) after the currently selected heading.
+                <p>When the heading or subheading is added, click on the added empty heading in the list and type in your own text. This can be done both in the document text and on the <b>Navigation</b> panel itself.</p>
+                </li>
+                <li><b>Select content</b> - to select the text below the current heading in the document (including the text related to all subheadings of this heading).</li>
+                <li><b>Expand all</b> - to expand all levels of headings at the <b>Navigation</b> panel.</li>
+                <li><b>Collapse all</b> - to collapse all levels of headings, excepting <em>level 1</em>, at the <b>Navigation</b> panel.</li>
+                <li><b>Expand to level</b> - to expand the heading structure to the selected level. E.g. if you select <em>level 3</em>, then levels 1, 2 and 3 will be expanded, while level 4 and all lower levels will be collapsed.</li>
+            </ul>
+            <p>To manually expand or collapse separate heading levels, use the arrows to the left of the headings.</p>
+            <p>To close the <b>Navigation</b> panel, click the <img alt="Navigation icon" src="../images/navigationicon.png" /> <b>Navigation</b> icon at the left sidebar once again.</p>
+            <h3>Insert a Table of Contents into the document</h3>
+            <p>To insert a table of contents into your document:</p>
+            <ol>
+                <li>Position the insertion point where you want to add the table of contents.</li>
+                <li>Switch to the <b>References</b> tab of the top toolbar.</li>
+                <li>Click the <img alt="Table of Contents icon" src="../images/tocicon.png" /> <b>Table of Contents</b> icon at the top toolbar, or<br />
+                click the arrow next to this icon and select the necessary layout option from the menu. You can select the table of contents that displays headings, page numbers and leaders, or headings only.
+                <p><img alt="Table of Contents options" src="../images/tociconmenu.png" /></p>
+                    <p class="note"><b>Note</b>: the table of content appearance can be adjusted later via the table of contents settings.</p>
+                </li>
+            </ol>
+            <p>The table of contents will be added at the current cursor position. To change the position of the table of contents, you can select the table of contents field (content control) and simply drag it to the desired place. To do that, click the <img alt="Table of Contents content control button" src="../images/toccontentcontrol.png" /> button in the upper left corner of the table of contents field and drag it without releasing the mouse button to another position in the document text.</p>
+            <p><img alt="Moving the table of contents" src="../images/tocmove.png" /></p>
+            <p>To navigate between headings, press the <b>Ctrl</b> key and click the necessary heading within the table of contents field. You will go to the corresponding page.</p>
+            <h3>Adjust the created Table of Contents</h3>
+            <p><b>Refresh the Table of Contents</b></p>
+            <p>After the table of contents is created, you may continue editing your text by adding new chapters, changing their order, removing some paragraphs, or expanding the text related to a heading so that the page numbers that correspond to the preceding or subsequent section may change. In this case, use the <b>Refresh</b> option to automatically apply all changes to the table of contents.</p>
+            <p>Click the arrow next to the <img alt="Refresh icon" src="../images/tocrefreshicon.png" /> <b>Refresh</b> icon at the <b>References</b> tab of the top toolbar and select the necessary option from the menu:</p>
+            <ul>
+                <li><b>Refresh entire table</b> - to add the headings that you added to the document, remove the ones you deleted from the document, update the edited (renamed) headings as well as update page numbers.</li>
+                <li><b>Refresh page numbers only</b> - to update page numbers without applying changes to the headings.</li>
+            </ul>
+            <p>Alternatively, you can select the table of contents in the document text and click the <img alt="Refresh icon" src="../images/tocrefreshiconcc.png" /> <b>Refresh</b> icon at the top of the table of contents field to display the above mentioned options.</p>
+            <p><img alt="Refreshing the table of contents" src="../images/tocrefreshcc.png" /></p>
+            <p>It's also possible to right-click anywhere within the table of contents and use the corresponding options from the contextual menu.</p>
+            <p><img alt="Contextual menu" src="../images/tocrefreshcontextual.png" /></p>
+            <p><b>Adjust the Table of Contents settings</b></p>
+            <p>To open the table of contents settings, you can proceed in the following ways:</p>
+            <ul>
+                <li>Click the arrow next to the <img alt="Table of Contents icon" src="../images/tocicon.png" /> <b>Table of Contents</b> icon at the top toolbar and select the <b>Settings</b> option from the menu.</li>
+                <li>Select the table of contents in the document text, click the arrow next to the table of contents field title and select the <b>Settings</b> option from the menu.
+                <p><img alt="Table of Contents options" src="../images/tocsettingscc.png" /></p>    
+                </li>
+                <li>Right-click anywhere within the table of contents and use the <b>Table of contents settings</b> option from the contextual menu.</li>
+            </ul>
+            <p>A new window will open where you can adjust the following settings:</p>
+            <p><img alt="Table of Contents settings window" src="../images/tocsettingswindow.png" /></p> 
+            <ul>
+                <li><b>Show page numbers</b> - this option allows to choose if you want to display page numbers or not.</li>
+                <li><b>Right align page numbers</b> - this option allows to choose if you want to align page numbers by the right side of the page or not.</li>
+                <li><b>Leader</b> - this option allows to choose the leader type you want to use. A leader is a line of characters (dots or hyphens) that fills the space between a heading and a corresponding page number. It's also possible to select the <b>None</b> option if you do not want to use leaders.</li>
+                <li><b>Format Table of Contents as links</b> - this option is checked by default. If you uncheck it, you will not be able to switch to the necessary chapter by pressing <b>Ctrl</b> and clicking the corresponding heading.</li>
+                <li><b>Build table of contents from</b> - this section allows to specify the necessary number of outline levels as well as the default styles that will be used to create the table of contents. Check the necessary radio button:
+                <ul>
+                    <li><b>Outline levels</b> - when this option is selected, you will be able to adjust the number of hierarchical levels used in the table of contents. Click the arrows in the <b>Levels</b> field to decrease or increase the number of levels (the values from 1 to 9 are available). E.g., if you select the value of 3, headings that have levels  4 - 9 will not be included into the table of contents.
+                    </li>
+                    <li><b>Selected styles</b> - when this option is selected, you can specify additional styles that can be used to build the table of contents and assign a corresponding outline level to each of them. Specify the desired level value in the field to the right of the style. Once you save the settings, you will be able to use this style when creating the table of contents.
+                    <p><img alt="Table of Contents settings window" src="../images/tocsettingswindow2.png" /></p>
+                    </li>
+                </ul>
+                </li>
+                <li><b>Styles</b> - this options allows to select the desired appearance of the table of contents. Select the necessary style from the drop-down list.  The preview field above displays how the table of contents should look like.
+                <p>The following four default styles are available: <em>Simple</em>, <em>Standard</em>, <em>Modern</em>, <em>Classic</em>. The <em>Current</em> option is used if you customize the table of contents style.</p>
+                </li>
+            </ul>
+            <p>Click the <b>OK</b> button within the settings window to apply the changes.</p>
+            <p><b>Customize the Table of Contents style</b></p>
+            <p>After you apply one of the default table of contents styles within the <b>Table of Contents</b> settings window, you can additionally modify this style so that the text within the table of contents field looks like you need.</p>
+            <ol>
+                <li>Select the text within the table of contents field, e.g. pressing the <img alt="Table of Contents content control button" src="../images/toccontentcontrol.png" /> button in the upper left corner of the table of contents content control.</li>
+                <li>Format table of contents items changing their font type, size, color or applying the font decoration styles.</li>
+                <li>Consequently update styles for items of each level. To update the style, right-click the formatted item, select the <b>Formatting as Style</b> option from the contextual menu and click the <b>Update toc N style</b> option (<em>toc 2</em> style corresponds to items that have <em>level 2</em>, <em>toc 3</em> style corresponds to items with <em>level 3</em> and so on).
+                    <p><img alt="Update Table of Contents style" src="../images/toccustomize.png" /></p>
+                </li>
+                <li>Refresh the table of contents.</li>
+            </ol>
+            <p><b>Remove the Table of Contents</b></p>
+            <p>To remove the table of contents from the document:</p>
+            <ul>
+                <li>click the arrow next to the <img alt="Table of Contents icon" src="../images/tocicon.png" /> <b>Table of Contents</b> icon at the top toolbar and use the <b>Remove table of contents</b> option,</li>
+                <li>or click the arrow next to the table of contents content control title and use the <b>Remove table of contents</b> option.</li>
+            </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Funzione DAYS360</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Funzione DAYS360</h1>
+			<p>La funzione <b>DAYS360</b> è una delle funzioni della categoria Data e ora. Si usa per restituire il numero di giorni tra due date (data di inzio e data di fine) basato sull'anno di 360 giorni usando uno di metodi di calcolo (US o Europeo).</p>
+			<p>La sintassi della funzione <b>DAYS360</b> è:</p> 
+			<p style="text-indent: 150px;"><b><em>DAYS360(start-date, end-date [,method-flag])</em></b></p> 
+			<p><em>dove</em></p> 
+			<p style="text-indent: 50px;"><b><em>start-date</em></b> e <b><em>end-date</em></b> sono due date tra quali desiderate calcolare il numero di giorni.</p>
+			<p style="text-indent: 50px;"><b><em>method-flag</em></b> è un valore logico opzionale: <b>TRUE</b> o <b>FALSE</b>. Se <b>TRUE</b>, il calcolo viene effettuato usando il metodo europeo, secondo il quale la data di inizio e la data di fine che avrà luogo il 31 di un mese sarà uguale al 30 dello stesso mese.<br />
+				Se l'argomento inserito è <b>FALSE</b> o assente, il calcolo viene effettuato usando il metodo US, secondo il quale se la data di inizio è l'ultimo giorno del mese, essa sarà uguale al 30 dello stesso mese. Se la data di fine è l'ultimo giorno di un mese e la data di inizio è prima del 30 di un mese, la data di fine sarà uguale al 1 del mese successivo. Altrimenti la data di fine sarà uguale al 30 dello stesso mese.
+			</p> 
+			<p>Per applicare la funzione <b>DAYS360</b>,</p>
+			<ol>
+			<li>selezionate la cella dove desiderate visualizzare il risultato,</li>
+			<li>cliccate sull'icona <b>Inserisci funzione</b> <img alt="Inserisci funzione" src="../images/insertfunction.png" /> sulla barra degli strumenti superiore,
+				<br />o cliccate con il tasto destro del mouse sulla cella scelta e selezionate l'opzione <b>Inserisci funzione</b> dal menu contestuale,
+				<br />o cliccate sull'icona <img alt="Funzione" src="../images/function.png" /> prima della barra della formula,
+			</li>
+			<li>selezionate il gruppo di funzioni <b>Data e ora</b> dall'elenco,</li>
+			<li>cliccate sulla funzione  <b>DAYS360</b>,</li>
+			<li>inserite gli argomenti richiesti separati da virgola,</li>
+			<li>premete il tasto <b>Enter</b>.</li>
+			</ol>
+			<p>Il risultato sarà visualizzato nella cella scelta.</p>
+			<p style="text-indent: 150px;"><img alt="Funzione DAYS360" src="../images/days360.png" /></p>
+		</div>
+	</body>
+</html>
