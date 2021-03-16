@@ -967,20 +967,393 @@ define([
     Messages.broadcast_noFallback = "Don't fallback to a default language";
 
     var onRefreshBroadcast = Util.mkEvent();
+    var broadcast = {
+        getData: function () { return false; },
+        reset: function () {},
+        handlers: {}
+    };
+    broadcast.handlers.custom = function ($form, button, send, preview, onPreview) {
+        // Custom message
+        var container = h('div.cp-broadcast-container');
+        var $container = $(container);
+        var languages = Messages._languages;
+        var keys = Object.keys(languages).sort();
+
+        // Always keep the textarea ordered by language code
+        var reorder = function () {
+            $container.find('.cp-broadcast-lang').each(function (i, el) {
+                var $el = $(el);
+                var l = $el.attr('data-lang');
+                $el.css('order', keys.indexOf(l));
+            });
+        };
+
+        var noFallbackBtn = h('button.btn.btn-secondary.cp-broadcast-preview',
+                                Messages.broadcast_noFallback);
+        var $noFallbackBtn = $(noFallbackBtn);
+        var checkFallbackBtn = function () {
+            var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
+            if (hasDefault) {
+                $noFallbackBtn.css('visibility', '');
+            } else {
+                $noFallbackBtn.css('visibility', 'hidden');
+            }
+        };
+
+        // Remove a textarea
+        var removeLang = function (l) {
+            $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+            checkFallbackBtn();
+        };
+
+        // Add a textarea
+        var addLang = function (l) {
+            if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
+            var preview = h('button.btn.btn-secondary', Messages.broadcast_preview);
+            $(preview).click(function () {
+                onPreview(l);
+            });
+            var bcastDefault = Messages.broadcast_defaultLanguage;
+            var first = !$container.find('.cp-broadcast-lang').length;
+            var radio = UI.createRadio('broadcastDefault', null, bcastDefault, first, {
+                'data-lang': l,
+                label: {class: 'noTitle'}
+            });
+            $(radio).find('input').on('change', function () {
+                checkFallbackBtn();
+            });
+            $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
+                h('h4', languages[l]),
+                h('label', Messages.kanban_body),
+                h('textarea'),
+                radio,
+                preview
+            ]));
+            checkFallbackBtn();
+            reorder();
+        };
+
+        // Checkboxes to select translations
+        var boxes = keys.map(function (l) {
+            var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
+                languages[l], false, { label: { class: 'noTitle' } }));
+            var $check = $cbox.find('input').on('change', function () {
+                var c = $check.is(':checked');
+                if (c) { return void addLang(l); }
+                removeLang(l);
+            });
+            if (l === 'en') {
+                setTimeout(function () {
+                    $check.click();
+                });
+            }
+            return $cbox[0];
+        });
+
+        // Extract form data
+        broadcast.getData = function () {
+            var map = {};
+            var defaultLanguage;
+            var error = false;
+            $container.find('.cp-broadcast-lang').each(function (i, el) {
+                var $el = $(el);
+                var l = $el.attr('data-lang');
+                if (!l) { error = true; return; }
+                var text = $el.find('textarea').val();
+                if (!text.trim()) { error = true; return; }
+                if ($el.find('.cp-checkmark input').is(':checked')) {
+                    defaultLanguage = l;
+                }
+                map[l] = text;
+            });
+            if (!Object.keys(map).length) {
+                console.error('You must select at least one language');
+                return false;
+            }
+            if (error) {
+                console.error('One of the selected languages has no data');
+                return false;
+            }
+            return {
+                defaultLanguage: defaultLanguage,
+                content: map
+            };
+        };
+        // Clear all the textarea when sent
+        broadcast.reset = function () {
+            $container.find('.cp-broadcast-lang textarea').each(function (i, el) {
+                $(el).val('');
+            });
+        };
+
+        // "Don't fallback to a default language" button
+        $noFallbackBtn.click(function () {
+            $container.find('.cp-checkmark input').prop('checked', false);
+            $noFallbackBtn.css('visibility', 'hidden');
+        });
+
+        // Make the form
+        $form.append([
+            h('label', Messages.broadcast_translations),
+            h('div.cp-broadcast-languages', boxes),
+            container,
+            h('div.cp-broadcast-form-submit', [
+                noFallbackBtn,
+                h('br'),
+                button
+            ])
+        ]);
+    };
+    broadcast.handlers.maintenance = function ($form, button, send, preview) {
+        // Maintenance message
+
+        // Start and end date pickers
+        var start = h('input');
+        var end = h('input');
+        var $start = $(start);
+        var $end = $(end);
+        var endPickr = Flatpickr(end, {
+            enableTime: true,
+            minDate: new Date()
+        });
+        Flatpickr(start, {
+            enableTime: true,
+            minDate: new Date(),
+            onChange: function () {
+                endPickr.set('minDate', new Date($start.val()));
+            }
+        });
+
+        // Extract form data
+        broadcast.getData = function () {
+            var start = +new Date($start.val());
+            var end = +new Date($end.val());
+            if (isNaN(start) || isNaN(end)) {
+                console.error('Invalid dates');
+                return false;
+            }
+            return {
+                start: start,
+                end: end
+            };
+        };
+
+        // Clear when sent
+        broadcast.reset = function () {
+            $start.val('');
+            $end.val('');
+        };
+        $form.append([
+            h('label', Messages.broadcast_start),
+            start,
+            h('label', Messages.broadcast_end),
+            end,
+            h('br'),
+            h('div.cp-broadcast-form-submit', [
+                button,
+                preview
+            ])
+        ]);
+
+    };
+    broadcast.handlers.version = function ($form, button, send, preview) {
+        // New version available message
+
+        // This checkbox can be used to trigger a fake "reconnect" event on the clients
+        // so that they can check api/config and reload the worker in case of a new version
+        var $cbox = $(UI.createCheckbox('cp-admin-version-reload',
+            Messages.broadcast_newVersionReload,
+            false, { label: { class: 'noTitle' } }));
+        var $checkbox = $cbox.find('input');
+
+        // Extract the data and make the form
+        broadcast.getData = function () {
+            return {
+                reload: $checkbox.is(':checked')
+            };
+        };
+        broadcast.reset = function () {
+            $checkbox[0].checked = false;
+        };
+        $form.append([
+            $cbox[0],
+            h('br'),
+            h('div.cp-broadcast-form-submit', [
+                button,
+                preview
+            ])
+        ]);
+    };
+    broadcast.handlers.survey = function ($form, button, send, preview) {
+        // New survey message
+        // TODO send different URLs for other languages?
+        var label = h('label', Messages.broadcast_surveyURL);
+        var input = h('input');
+        var $input = $(input);
+        broadcast.getData = function () {
+            var url = $input.val();
+            if (!Util.isValidURL(url)) {
+                console.error('Invalid URL');
+                return false;
+            }
+            return {
+                url: url
+            };
+        };
+        broadcast.reset = function () {
+            $input.val('');
+        };
+        $(button).off('click').click(function () {
+            var data = broadcast.getData();
+            var val = $input.val() || '';
+
+            // Invalid url: abort
+            // NOTE: empty strings are allowed to remove a surveyURL from the decrees
+            // XXX usability...
+            if (!data && val) { return void UI.warn(Messages.error); }
+
+            var url = data ? data.url : val;
+
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_SURVEY_URL', [url]]
+            }, function (e) {
+                if (e) {
+                    UI.warn(Messages.error); console.error(e);
+                    return;
+                }
+                if (!url) { return; }
+                send();
+            });
+
+        });
+        $form.append([
+            label,
+            input,
+            h('br'),
+            h('div.cp-broadcast-form-submit', [
+                button,
+                preview
+            ])
+        ]);
+    };
+    broadcast.handlers.delete = function ($form, button, send) {
+        require(['/api/broadcast?'+ (+new Date())], function (BCast) {
+
+        // Always display the messages from the instance "lastBroadcastHash"
+        var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+        common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+            var table = h('table.cp-broadcast-delete');
+            var $table = $(table);
+
+            // Empty history
+            if (!msgs.length) {
+                $table.append(h('tr.empty', h('td', Messages.broadcast_empty)));
+            }
+
+            // Build the table
+            msgs.forEach(function (data) {
+                var el = common.mailbox.createElement(data);
+                var t = Util.find(data, ['content', 'msg', 'type']);
+
+                // A "DELETE" message is here to disable a previous line
+                if (t === 'BROADCAST_DELETE') {
+                    var _uid = Util.find(data, ['content', 'msg', 'content', 'uid']);
+                    var $button = $table.find('[data-uid="'+_uid+'"] td.delete button');
+                    $button.prop('disabled', 'disabled').text(Messages.deleted);
+                    return;
+                }
+
+                // Make the line
+                var uid = Util.find(data, ['content', 'msg', 'uid']);
+                var time = Util.find(data, ['content', 'msg', 'content', 'time']);
+                var deleteBtn = h('button.btn.btn-danger', Messages.broadcast_deleteBtn);
+                var tr = h('tr', { 'data-uid': uid }, [
+                    h('td', 'ID: '+uid),
+                    h('td', new Date(time || 0).toLocaleString()),
+                    h('td', el),
+                    h('td.delete', deleteBtn),
+                ]);
+
+                // Auto-expire maintenance and survey messages
+                if (t === 'BROADCAST_MAINTENANCE') {
+                    var end = Util.find(data, ['content', 'msg', 'content', 'end']);
+                    if (end < +new Date()) {
+                        $(deleteBtn).prop('disabled', 'disabled').text(Messages.expired);
+                    }
+                }
+                if (t === 'BROADCAST_VERSION') {
+                    $(deleteBtn).prop('disabled', 'disabled').text(Messages.expired);
+                }
+
+                // "Delete this message" button
+                UI.confirmButton(deleteBtn, {
+                    classes: 'btn-danger',
+                    multiple: true
+                }, function () {
+                    broadcast.getData = function () {
+                        if (!uid) { return false; }
+                        return { uid: uid };
+                    };
+                    broadcast.reset = function () {
+                        $(deleteBtn).prop('disabled', 'disabled').text(Messages.deleted);
+                    };
+                    send();
+                });
+
+                $table.append(tr);
+            });
+
+            // Clear all button: remove all the messages and bump lastBroadcastHash
+            var clearAll = h('button.btn.btn-danger', Messages.broadcast_clear);
+            UI.confirmButton(clearAll, {
+                classes: 'btn-danger',
+                multiple: true
+            }, function () {
+                broadcast.getData = function () {
+                    return { all: true };
+                };
+                broadcast.reset = function () {};
+
+                // Send a message to all users telling them to wipe the broadcast mailbox
+                // and on success, send an admin decree to update /api/broadcast
+                send(function (err, obj) {
+                    if (err) { return; }
+                    if (!obj || !obj.hash) { return; }
+                    /*
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_LAST_BROADCAST_HASH', [obj.hash]]
+                    }, function (e) {
+                        if (e) {
+                            UI.warn(Messages.error); console.error(e);
+                            return;
+                        }
+                        // On success, reload the "delete" tab
+                        onRefreshBroadcast.fire();
+                    });
+                    */
+                });
+            });
+
+            $form.append([
+                table,
+                msgs.length ? clearAll : undefined
+            ]);
+        });
+        });
+
+    };
+
     var getBroadcastForm = function ($form, key) {
         $form.empty();
-
-        var getData = function () {
-            return false;
-        };
-        var reset = function () {};
 
         var button = h('button.btn.btn-primary', Messages.support_formButton);
         var $button = $(button);
 
         var send = function (_cb) {
             var cb = Util.once(_cb || function () {});
-            var data = getData();
+            var data = broadcast.getData();
             if (data === false) {
                 cb('NODATA');
                 return void UI.warn(Messages.error);
@@ -995,12 +1368,23 @@ define([
                     return UI.warn(Messages.error);
                 }
 
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_LAST_BROADCAST_HASH', [data.hash]]
+                }, function (e) {
+                    if (e) {
+                        UI.warn(Messages.error); console.error(e);
+                        return;
+                    }
+                    // On success, reload the "delete" tab
+                    onRefreshBroadcast.fire();
+                });
 
                 // Only print success if there is no callback
                 if (!_cb) {
                     UI.log(Messages.saved);
                     // Clear the UI
-                    reset();
+                    broadcast.reset();
                     onRefreshBroadcast.fire();
                 }
             });
@@ -1011,7 +1395,7 @@ define([
         });
 
         var onPreview = function (l) {
-            var data = getData();
+            var data = broadcast.getData();
             if (data === false) { return void UI.warn(Messages.error); }
             var msg = {
                 uid: Util.uid(),
@@ -1035,391 +1419,9 @@ define([
         });
 
 
-        if (key === 'custom') {
-            (function () {
-                // Custom message
-                var container = h('div.cp-broadcast-container');
-                var $container = $(container);
-                var languages = Messages._languages;
-                var keys = Object.keys(languages).sort();
-
-                // Always keep the textarea ordered by language code
-                var reorder = function () {
-                    $container.find('.cp-broadcast-lang').each(function (i, el) {
-                        var $el = $(el);
-                        var l = $el.attr('data-lang');
-                        $el.css('order', keys.indexOf(l));
-                    });
-                };
-
-                var noFallbackBtn = h('button.btn.btn-secondary.cp-broadcast-preview',
-                                        Messages.broadcast_noFallback);
-                var $noFallbackBtn = $(noFallbackBtn);
-                var checkFallbackBtn = function () {
-                    var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
-                    if (hasDefault) {
-                        $noFallbackBtn.css('visibility', '');
-                    } else {
-                        $noFallbackBtn.css('visibility', 'hidden');
-                    }
-                };
-
-                // Remove a textarea
-                var removeLang = function (l) {
-                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
-                    checkFallbackBtn();
-                };
-
-                // Add a textarea
-                var addLang = function (l) {
-                    if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
-                    var preview = h('button.btn.btn-secondary', Messages.broadcast_preview);
-                    $(preview).click(function () {
-                        onPreview(l);
-                    });
-                    var bcastDefault = Messages.broadcast_defaultLanguage;
-                    var first = !$container.find('.cp-broadcast-lang').length;
-                    var radio = UI.createRadio('broadcastDefault', null, bcastDefault, first, {
-                        'data-lang': l,
-                        label: {class: 'noTitle'}
-                    });
-                    $(radio).find('input').on('change', function () {
-                        checkFallbackBtn();
-                    });
-                    $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
-                        h('h4', languages[l]),
-                        h('label', Messages.kanban_body),
-                        h('textarea'),
-                        radio,
-                        preview
-                    ]));
-                    checkFallbackBtn();
-                    reorder();
-                };
-
-                // Checkboxes to select translations
-                var boxes = keys.map(function (l) {
-                    var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
-                        languages[l], false, { label: { class: 'noTitle' } }));
-                    var $check = $cbox.find('input').on('change', function () {
-                        var c = $check.is(':checked');
-                        if (c) { return void addLang(l); }
-                        removeLang(l);
-                    });
-                    if (l === 'en') {
-                        setTimeout(function () {
-                            $check.click();
-                        });
-                    }
-                    return $cbox[0];
-                });
-
-                // Extract form data
-                getData = function () {
-                    var map = {};
-                    var defaultLanguage;
-                    var error = false;
-                    $container.find('.cp-broadcast-lang').each(function (i, el) {
-                        var $el = $(el);
-                        var l = $el.attr('data-lang');
-                        if (!l) { error = true; return; }
-                        var text = $el.find('textarea').val();
-                        if (!text.trim()) { error = true; return; }
-                        if ($el.find('.cp-checkmark input').is(':checked')) {
-                            defaultLanguage = l;
-                        }
-                        map[l] = text;
-                    });
-                    if (!Object.keys(map).length) {
-                        console.error('You must select at least one language');
-                        return false;
-                    }
-                    if (error) {
-                        console.error('One of the selected languages has no data');
-                        return false;
-                    }
-                    return {
-                        defaultLanguage: defaultLanguage,
-                        content: map
-                    };
-                };
-                // Clear all the textarea when sent
-                reset = function () {
-                    $container.find('.cp-broadcast-lang textarea').each(function (i, el) {
-                        $(el).val('');
-                    });
-                };
-
-                // "Don't fallback to a default language" button
-                $noFallbackBtn.click(function () {
-                    $container.find('.cp-checkmark input').prop('checked', false);
-                    $noFallbackBtn.css('visibility', 'hidden');
-                });
-
-                // Make the form
-                $form.append([
-                    h('label', Messages.broadcast_translations),
-                    h('div.cp-broadcast-languages', boxes),
-                    container,
-                    h('div.cp-broadcast-form-submit', [
-                        noFallbackBtn,
-                        h('br'),
-                        button
-                    ])
-                ]);
-            })();
-            return;
-        }
-        if (key === 'maintenance') {
-            (function () {
-                // Maintenance message
-
-                // Start and end date pickers
-                var start = h('input');
-                var end = h('input');
-                var $start = $(start);
-                var $end = $(end);
-                var endPickr = Flatpickr(end, {
-                    enableTime: true,
-                    minDate: new Date()
-                });
-                Flatpickr(start, {
-                    enableTime: true,
-                    minDate: new Date(),
-                    onChange: function () {
-                        endPickr.set('minDate', new Date($start.val()));
-                    }
-                });
-
-                // Extract form data
-                getData = function () {
-                    var start = +new Date($start.val());
-                    var end = +new Date($end.val());
-                    if (isNaN(start) || isNaN(end)) {
-                        console.error('Invalid dates');
-                        return false;
-                    }
-                    return {
-                        start: start,
-                        end: end
-                    };
-                };
-
-                // Clear when sent
-                reset = function () {
-                    $start.val('');
-                    $end.val('');
-                };
-                $form.append([
-                    h('label', Messages.broadcast_start),
-                    start,
-                    h('label', Messages.broadcast_end),
-                    end,
-                    h('br'),
-                    h('div.cp-broadcast-form-submit', [
-                        button,
-                        preview
-                    ])
-                ]);
-            })();
-            return;
-        }
-        if (key === 'version') {
-            (function () {
-                // New version available message
-
-                // This checkbox can be used to trigger a fake "reconnect" event on the clients
-                // so that they can check api/config and reload the worker in case of a new version
-                var $cbox = $(UI.createCheckbox('cp-admin-version-reload',
-                    Messages.broadcast_newVersionReload,
-                    false, { label: { class: 'noTitle' } }));
-                var $checkbox = $cbox.find('input');
-
-                // Extract the data and make the form
-                getData = function () {
-                    return {
-                        reload: $checkbox.is(':checked')
-                    };
-                };
-                reset = function () {
-                    $checkbox[0].checked = false;
-                };
-                $form.append([
-                    $cbox[0],
-                    h('br'),
-                    h('div.cp-broadcast-form-submit', [
-                        button,
-                        preview
-                    ])
-                ]);
-            })();
-            return;
-        }
-        if (key === 'survey') {
-            (function () {
-                // New survey message
-                // TODO send different URLs for other languages?
-                var label = h('label', Messages.broadcast_surveyURL);
-                var input = h('input');
-                var $input = $(input);
-                getData = function () {
-                    var url = $input.val();
-                    if (!Util.isValidURL(url)) {
-                        console.error('Invalid URL');
-                        return false;
-                    }
-                    return {
-                        url: url
-                    };
-                };
-                reset = function () {
-                    $input.val('');
-                };
-                $(button).off('click').click(function () {
-                    var data = getData();
-                    var val = $input.val() || '';
-
-                    // Invalid url: abort
-                    // NOTE: empty strings are allowed to remove a surveyURL from the decrees
-                    // XXX usability...
-                    if (!data && val) { return void UI.warn(Messages.error); }
-
-                    var url = data ? data.url : val;
-
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_SURVEY_URL', [url]]
-                    }, function (e) {
-                        console.error(e);
-                        if (e) {
-                            UI.warn(Messages.error); console.error(e);
-                            return;
-                        }
-                        if (!url) { return; }
-                        send();
-                    });
-
-                });
-                $form.append([
-                    label,
-                    input,
-                    h('br'),
-                    h('div.cp-broadcast-form-submit', [
-                        button,
-                        preview
-                    ])
-                ]);
-            })();
-            return;
-        }
-
-        if (key === 'delete') {
-            // Delete form
-            require(['/api/broadcast?'+ (+new Date())], function (BCast) {
-
-            // Always display the messages from the instance "lastBroadcastHash"
-            var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
-            common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
-                var table = h('table.cp-broadcast-delete');
-                var $table = $(table);
-
-                // Empty history
-                if (!msgs.length) {
-                    $table.append(h('tr.empty', h('td', Messages.broadcast_empty)));
-                }
-
-                // Build the table
-                msgs.forEach(function (data) {
-                    var el = common.mailbox.createElement(data);
-                    var t = Util.find(data, ['content', 'msg', 'type']);
-
-                    // A "DELETE" message is here to disable a previous line
-                    if (t === 'BROADCAST_DELETE') {
-                        var _uid = Util.find(data, ['content', 'msg', 'content', 'uid']);
-                        var $button = $table.find('[data-uid="'+_uid+'"] td.delete button');
-                        $button.prop('disabled', 'disabled').text(Messages.deleted);
-                        return;
-                    }
-
-                    // Make the line
-                    var uid = Util.find(data, ['content', 'msg', 'uid']);
-                    var time = Util.find(data, ['content', 'msg', 'content', 'time']);
-                    var deleteBtn = h('button.btn.btn-danger', Messages.broadcast_deleteBtn);
-                    var tr = h('tr', { 'data-uid': uid }, [
-                        h('td', 'ID: '+uid),
-                        h('td', new Date(time || 0).toLocaleString()),
-                        h('td', el),
-                        h('td.delete', deleteBtn),
-                    ]);
-
-                    // Auto-expire maintenance and survey messages
-                    if (t === 'BROADCAST_MAINTENANCE') {
-                        var end = Util.find(data, ['content', 'msg', 'content', 'end']);
-                        if (end < +new Date()) {
-                            $(deleteBtn).prop('disabled', 'disabled').text(Messages.expired);
-                        }
-                    }
-                    if (t === 'BROADCAST_VERSION') {
-                        $(deleteBtn).prop('disabled', 'disabled').text(Messages.expired);
-                    }
-
-                    // "Delete this message" button
-                    UI.confirmButton(deleteBtn, {
-                        classes: 'btn-danger',
-                        multiple: true
-                    }, function () {
-                        getData = function () {
-                            if (!uid) { return false; }
-                            return { uid: uid };
-                        };
-                        reset = function () {
-                            $(deleteBtn).prop('disabled', 'disabled').text(Messages.deleted);
-                        };
-                        send();
-                    });
-
-                    $table.append(tr);
-                });
-
-                // Clear all button: remove all the messages and bump lastBroadcastHash
-                var clearAll = h('button.btn.btn-danger', Messages.broadcast_clear);
-                UI.confirmButton(clearAll, {
-                    classes: 'btn-danger',
-                    multiple: true
-                }, function () {
-                    getData = function () {
-                        return { all: true };
-                    };
-                    reset = function () {};
-
-                    // Send a message to all users telling them to wipe the broadcast mailbox
-                    // and on success, send an admin decree to update /api/broadcast
-                    send(function (err, obj) {
-                        if (err) { return; }
-                        if (!obj || !obj.hash) { return; }
-                        sFrameChan.query('Q_ADMIN_RPC', {
-                            cmd: 'ADMIN_DECREE',
-                            data: ['SET_LAST_BROADCAST_HASH', [obj.hash]]
-                        }, function (e) {
-                            if (e) {
-                                UI.warn(Messages.error); console.error(e);
-                                return;
-                            }
-                            // On success, reload the "delete" tab
-                            onRefreshBroadcast.fire();
-                        });
-                    });
-                });
-
-                $form.append([
-                    table,
-                    msgs.length ? clearAll : undefined
-                ]);
-            });
-            });
-            return;
-        }
-
+        var handler = broadcast.handlers[key];
+        if (!handler) { return; } // XXX
+        handler($form, button, send, preview, onPreview);
     };
     create['broadcast'] = function () {
         var key = 'broadcast';
