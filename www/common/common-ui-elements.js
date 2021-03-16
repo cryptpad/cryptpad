@@ -1758,7 +1758,7 @@ define([
 
         // XXX Admin panel overrides AppConfig
         // If you set "" in the admin panel, it will remove the AppConfig survey
-        var surveyURL = typeof(ApiConfig.surveyURL) !== "undefined" ? ApiConfig.surveyURL
+        var surveyURL = typeof(Config.surveyURL) !== "undefined" ? Config.surveyURL
                                         : AppConfig.surveyURL;
         if (surveyURL) {
             options.push({
