@@ -477,7 +477,7 @@ define([
                 // XXX Allow markdown (sanitized)?
                 var content = h('div', [
                     h('h4', Messages.broadcast_newCustom),
-                    h('div', toShow)
+                    h('div.cp-admin-message', toShow)
                 ]);
                 UI.alert(content);
                 // XXX Dismiss on click?
