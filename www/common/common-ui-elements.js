@@ -1756,7 +1756,11 @@ define([
             });
         }
 
-        if (AppConfig.surveyURL) {
+        // XXX Admin panel overrides AppConfig
+        // If you set "" in the admin panel, it will remove the AppConfig survey
+        var surveyURL = typeof(ApiConfig.surveyURL) !== "undefined" ? ApiConfig.surveyURL
+                                        : AppConfig.surveyURL;
+        if (surveyURL) {
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1764,7 +1768,7 @@ define([
                 },
                 content: h('span', Messages.survey),
                 action: function () {
-                    Common.openUnsafeURL(AppConfig.surveyURL);
+                    Common.openUnsafeURL(surveyURL);
                     Feedback.send('SURVEY_CLICKED');
                 },
             });

@@ -2988,18 +2988,6 @@ define([
 
         Store.newVersionReload = function () {
             broadcast([], "NETWORK_RECONNECT");
-
-            /* // XXX NETWORK_RECONNECT only works when a manual /api/config is used
-            // XXX The following code disconnect all tabs and asks for a page reload BUT
-            // if the urlArgs has not changed, new tabs will stay on the same DISCONNECTED worker
-            // XXX ==> we should probably keep NETWORK_RECONNECT but keep this "version reload" only for us
-            //         because other instances have to reload the server when a new version is deployed
-            Store.disconnect();
-            broadcast([], "FORCE_RELOAD");
-            if (self.CP_closeWorker) {
-                setTimeout(self.CP_closeWorker, 200);
-            }
-            */
         };
         Store.disconnect = function () {
             if (self.accountDeletion) { return; }

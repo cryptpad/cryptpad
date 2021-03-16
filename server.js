@@ -278,7 +278,8 @@ var serveBroadcast = (function () {
         return [
             'define(function(){',
             'return ' + JSON.stringify({
-                lastBroadcastHash: Env.lastBroadcastHash
+                lastBroadcastHash: Env.lastBroadcastHash,
+                surveyURL: Env.surveyURL
             }, null, '\t'),
             '});'
         ].join(';\n')

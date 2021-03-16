@@ -1275,6 +1275,31 @@ define([
                 reset = function () {
                     $input.val('');
                 };
+                $(button).off('click').click(function () {
+                    var data = getData();
+                    var val = $input.val() || '';
+
+                    // Invalid url: abort
+                    // NOTE: empty strings are allowed to remove a surveyURL from the decrees
+                    // XXX usability...
+                    if (!data && val) { return void UI.warn(Messages.error); }
+
+                    var url = data ? data.url : val;
+
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_SURVEY_URL', [url]]
+                    }, function (e) {
+                        console.error(e);
+                        if (e) {
+                            UI.warn(Messages.error); console.error(e);
+                            return;
+                        }
+                        if (!url) { return; }
+                        send();
+                    });
+
+                });
                 $form.append([
                     label,
                     input,

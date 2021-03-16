@@ -46,7 +46,7 @@ define([
         }
 
         // XXX Debugging code to remove deprecated dev data
-        if (mailboxes.broadcast && mailboxes.broacast.channel && mailboxes.broadcast.channel.length === 32) {
+        if (mailboxes.broadcast && mailboxes.broadcast.channel && mailboxes.broadcast.channel.length === 32) {
             delete mailboxes['broadcast'];
         }
 
