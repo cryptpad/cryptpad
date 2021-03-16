@@ -201,8 +201,11 @@
 
     .cp-admin-broadcast-form {
         margin-top: 30px;
-        & > button:last-child {
-            margin-top: 30px !important;
+        .cp-broadcast-form-submit {
+            margin-top: 30px;
+            button {
+                margin-bottom: 10px !important;
+            }
         }
         .cp-broadcast-container {
             display: flex;
@@ -230,7 +233,20 @@
             width: 100%;
             min-width: 600px;
             .empty {
-                font-style: italic;
+                background-color: transparent;
+            }
+            tbody {
+                tr {
+                    background-color: @cp_support-msg-bg;
+                    border-bottom: 5px solid @cp_sidebar-right-bg;
+                    padding: 5px;
+                    td {
+                        padding: 5px;
+                        button {
+                            margin: 0 !important;
+                        }
+                    }
+                }
             }
             .cp-notification {
                 display: flex;

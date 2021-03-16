@@ -1161,8 +1161,11 @@ define([
                     h('label', Messages.broadcast_translations),
                     h('div.cp-broadcast-languages', boxes),
                     container,
-                    button,
-                    noFallbackBtn
+                    h('div.cp-broadcast-form-submit', [
+                        noFallbackBtn,
+                        h('br'),
+                        button
+                    ])
                 ]);
             })();
             return;
@@ -1213,8 +1216,10 @@ define([
                     h('label', Messages.broadcast_end),
                     end,
                     h('br'),
-                    button,
-                    preview
+                    h('div.cp-broadcast-form-submit', [
+                        button,
+                        preview
+                    ])
                 ]);
             })();
             return;
@@ -1242,8 +1247,10 @@ define([
                 $form.append([
                     $cbox[0],
                     h('br'),
-                    button,
-                    preview
+                    h('div.cp-broadcast-form-submit', [
+                        button,
+                        preview
+                    ])
                 ]);
             })();
             return;
@@ -1272,8 +1279,10 @@ define([
                     label,
                     input,
                     h('br'),
-                    button,
-                    preview
+                    h('div.cp-broadcast-form-submit', [
+                        button,
+                        preview
+                    ])
                 ]);
             })();
             return;
@@ -1291,7 +1300,7 @@ define([
 
                 // Empty history
                 if (!msgs.length) {
-                    $table.append(h('tr', h('td.empty', Messages.broadcast_empty)));
+                    $table.append(h('tr.empty', h('td', Messages.broadcast_empty)));
                 }
 
                 // Build the table
