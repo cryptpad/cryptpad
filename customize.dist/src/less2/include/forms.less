@@ -284,6 +284,42 @@
     body {
         .flatpickr-calendar {
             background: @cp_flatpickr-bg;
+            color: @cryptpad_text_col;
+            .flatpickr-months {
+                .flatpickr-month, .flatpickr-months, .flatpickr-next-month,  .flatpickr-prev-month {
+                    color: @cryptpad_text_col;
+                    fill: @cryptpad_text_col;
+                }
+                .flatpickr-current-month {
+                    span.cur-month:hover {
+                        background: fade(@cryptpad_text_col, 25%); // XXX hover on current month?
+                      }
+                    .numInputWrapper span.arrowUp:after {
+                        border-bottom-color: @cryptpad_text_col;
+                    }
+                    .numInputWrapper span.arrowDown:after {
+                        border-top-color: @cryptpad_text_col;
+                    }
+                }
+            }
+            .flatpickr-innerContainer {
+                .flatpickr-weekdays {
+                    span.flatpickr-weekday {
+                        color: @cryptpad_text_col;
+                    }
+                }
+                .flatpickr-days {
+                    .flatpickr-day {
+                        color: @cryptpad_text_col;
+                        &:hover {
+                            background-color: fade(@cryptpad_text_col, 25%);
+                        }
+                    }
+                    .flatpickr-disabled {
+                        color: fade(@cryptpad_text_col, 25%);
+                    }
+                }
+            }
         }
     }
 }
