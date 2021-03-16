@@ -21,7 +21,7 @@ define([
     var BLOCKING_TYPES = [
     ];
 
-    var BROADCAST_CHAN = '00000000000000000000000000000000';
+    var BROADCAST_CHAN = '000000000000000000000000000000000'; // Admin channel, 33 characters
 
     var initializeMailboxes = function (ctx, mailboxes) {
         if (!mailboxes['notifications'] && ctx.loggedIn) {
@@ -44,6 +44,12 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
+
+        // XXX Debugging code to remove deprecated dev data
+        if (mailboxes.broadcast && mailboxes.broacast.channel && mailboxes.broadcast.channel.length === 32) {
+            delete mailboxes['broadcast'];
+        }
+
         if (!mailboxes['broadcast']) {
             mailboxes.broadcast = {
                 channel: BROADCAST_CHAN,
