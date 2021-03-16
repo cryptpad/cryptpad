@@ -1300,7 +1300,7 @@ define([
 
                 // Empty history
                 if (!msgs.length) {
-                    $table.append(h('tr', h('td.empty', Messages.broadcast_empty)));
+                    $table.append(h('tr.empty', h('td', Messages.broadcast_empty)));
                 }
 
                 // Build the table
