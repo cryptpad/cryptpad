@@ -580,53 +580,7 @@
     "four04_pageNotFound": "We couldn't find the page you were looking for.",
     "header_logoTitle": "Go to your CryptDrive",
     "header_homeTitle": "Go to CryptPad homepage",
-    "help": {
-        "title": "Getting started",
-        "generic": {
-            "more": "Learn more about how CryptPad can work for you by reading our <a href=\"https://docs.cryptpad.fr\" target=\"_blank\" rel=\"noopener noreferrer\">Documentation</a>.",
-            "share": "Share this document with the  <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> button, and manage access rights with <i class=\"fa fa-unlock-alt\"></i> <b>Access</b>.",
-            "save": "All your changes are synced automatically so you never need to save"
-        },
-        "text": {
-            "formatting": "Show/hide the text toolbar with the <i class=\"fa fa-wrench\"></i> <b>Tools</b> button.",
-            "embed": "Insert an image from your CryptDrive or computer with the <i class=\"fa fa-image\"></i> <b>Insert</b> button (logged in users).",
-            "history": "You can use <em>history</em> <span class=\"fa fa-history\"></span> to view or restore previous versions"
-        },
-        "pad": {
-            "export": "You can export the content as PDF using the <span class=\"fa fa-print\"></span> button in the text formatting toolbar"
-        },
-        "code": {
-            "modes": "Use the <span class=\"cptools cptools-palette\"></span> <b>Theme</b> menu to choose an editor theme and syntax highlighting."
-        },
-        "beta": {
-            "warning": "This editor is still <strong>experimental</strong>, you can report bugs on <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">our issue tracker</a>"
-        },
-        "oo": {
-            "access": "Access is restricted to registered users, collaborators will need to log in"
-        },
-        "slide": {
-            "markdown": "Write slides in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> and separate them with a line containing <code>---</code>",
-            "present": "Start the presentation using the <span class=\"fa fa-play-circle\"></span> button",
-            "settings": "Use the <span class=\"cptools cptools-palette\"></span> <b>Theme</b> menu to change slide colors and <span class=\"fa fa-cog\"></span> <b>Options</b> (background, transitions, page numbers, etc.).",
-            "colors": "Change the text and background colors using the <span class=\"fa fa-i-cursor\"></span> and <span class=\"fa fa-square\"></span> buttons"
-        },
-        "poll": {
-            "decisions": "Make decisions in private among trusted contacts",
-            "options": "Propose options, and express your preferences",
-            "choices": "Click cells in your column to cycle through yes (<strong>✔</strong>), maybe (<strong>~</strong>), or no (<strong>✖</strong>)",
-            "submit": "Click <strong>submit</strong> to make your choices visible to others"
-        },
-        "whiteboard": {
-            "colors": "Double-click colors to modify your palette",
-            "mode": "Switch to <span class=\"fa fa-arrows\"></span> Select mode to move and transform strokes.",
-            "embed": "Embed images from your CryptDrive or computer with <span class=\"fa fa-image\"></span> <b>Insert</b>. Export the canvas as PNG to your CryptDrive with <b><span class=\"fa fa-file-o\"></span> File > <span class=\"fa fa-file-image-o\"></span> Save as image</b> or to your computer with <b><span class=\"fa fa-file-o\"></span> File > <span class=\"fa fa-download\"></span> Export</b>."
-        },
-        "kanban": {
-            "add": "Add new cards and boards by clicking the <span class=\"fa fa-plus\"></span> buttons",
-            "task": "Move items by dragging and dropping, drag to the <span class=\"fa fa-trash\"></span> trash to delete",
-            "color": "Edit titles, content, tags, and colors by clicking on the <span class=\"fa fa-pencil\"></span> button next to card and board titles"
-        }
-    },
+    "help_genericMore": "Learn more about how CryptPad can work for you by reading our <a>Documentation</a>.",
     "driveReadmeTitle": "What is CryptPad?",
     "readme_welcome": "Welcome to CryptPad !",
     "readme_p1": "Welcome to CryptPad, this is where you can take note of things alone and with contacts.",

@@ -565,53 +565,7 @@
     "four04_pageNotFound": "Nous n'avons pas trouvé la page que vous cherchez.",
     "header_logoTitle": "Retourner vers votre CryptDrive",
     "header_homeTitle": "Aller sur la page d'accueil",
-    "help": {
-        "title": "Pour bien démarrer",
-        "generic": {
-            "more": "Découvrez toutes les fonctionalités de CryptPad en lisant la <a href=\"https://docs.cryptpad.fr\" target=\"_blank\" rel=\"noopener noreferrer\">Documentation</a>.",
-            "share": "Partagez ce document avec le bouton <i class=\"fa fa-shhare-alt\"></i> <b>Partager</b> et gérez les droits d'accès avec le bouton <i class=\"fa fa-unlock-alt\"></i> <b>Accès</b>.",
-            "save": "Tous les changements effectués sont enregistrés automatiquement"
-        },
-        "text": {
-            "formatting": "Affichez ou cachez la barre d'outils texte avec le bouton <i class=\"fa fa-wrench\"></i> <b>Outils</b>.",
-            "embed": "Insérez une image de votre CryptDrive ou de votre ordinateur avec le bouton <i class=\"fa fa-image\"></i> <b>Insérer</b> (utilisateurs connectés à leur compte).",
-            "history": "Vous pouvez utiliser <em>l'historique</em> <span class=\"fa fa-history\"></span> pour voir ou restaurer les versions précédentes du pad"
-        },
-        "pad": {
-            "export": "Vous pouvez exporter le contenu en tant que PDF avec le bouton <span class=\"fa fa-print\"></span> de la barre d'outils de mise en forme du texte"
-        },
-        "code": {
-            "modes": "Changez le thème de couleur et la coloration syntaxique avec le menu <span class=\"cptools cptools-palette\"></span> <b>Thème</b>."
-        },
-        "beta": {
-            "warning": "Cet éditeur est encore <strong>expérimental</strong>, vous pouvez signaler tout problème rencontré sur <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">GitHub</a>"
-        },
-        "oo": {
-            "access": "L'accès à cette application est restreint aux utilisateurs enregistrés"
-        },
-        "slide": {
-            "markdown": "Rédigez vos slides en <a href=\"http://www.markdowntutorial.com/\">Markdown</a> et séparez les avec une ligne contenant <code>---</code>",
-            "present": "Démarrez la présentation en utilisant le bouton <span class=\"fa fa-play-circle\"></span>",
-            "settings": "Changez les couleurs de la présentation et autres <span class=\"fa fa-cog\"></span> <b>Options</b> (image de fond, transitions, numéro de pages, etc.) avec le menu <span class=\"cptools cptools-palette\"></span> <b>Thème</b>.",
-            "colors": "Modifiez la couleur du texte ou du fond en utilisant les boutons <span class=\"fa fa-i-cursor\"></span> et <span class=\"fa fa-square\"></span>"
-        },
-        "poll": {
-            "decisions": "Prenez des décisions en privé avec des personnes de confiance",
-            "options": "Proposez des options et exprimez vos préférences",
-            "choices": "Cliquez sur les cellules de votre colonne pour modifier leur valeur entre oui (<strong>✔</strong>), peut-être (<strong>~</strong>) ou non (<strong>✖</strong>)",
-            "submit": "Cliquez sur <strong>Ajouter</strong> pour rendre vos choix visibles aux autres"
-        },
-        "whiteboard": {
-            "colors": "Double-cliquez sur les couleurs pour changer la palette",
-            "mode": "Le mode <span class=\"fa fa-arrows\"></span> Sélection permet de déplacer et transformer des éléments du dessin.",
-            "embed": "Insérez des images de votre CryptDrive ou ordinateur avec <span class=\"fa fa-image\"></span> <b>Insérer</b>. Exportez le dessin vers votre CryptDrive avec <b><span class=\"fa fa-file-o\"></span> Fichier > <span class=\"fa fa-file-image-o\"></span> Sauvegarder image</b> ou vers votre ordinateur avec <b><span class=\"fa fa-file-o\"></span> Fichier > <span class=\"fa fa-download\"></span> Exporter</b>."
-        },
-        "kanban": {
-            "add": "Ajoutez des cartes et tableaux en cliquant sur les boutons <span class=\"fa fa-plus\"></span>",
-            "task": "Déplacez les éléments en les faisant glisser, déposez-les dans la <span class=\"fa fa-trash\"></span> corbeille pour les effacer",
-            "color": "Modifiez les titres, contenus, mots-clés, et couleurs en cliquant sur le bouton <span class=\"fa fa-pencil\"></span> à côté du titre des tableaux et des cartes"
-        }
-    },
+    "help_genericMore": "Découvrez toutes les fonctionalités de CryptPad en lisant la <a>Documentation</a>.",
     "driveReadmeTitle": "Qu'est-ce que CryptPad ?",
     "readme_welcome": "Bienvenue dans CryptPad !",
     "readme_p1": "Bienvenue dans CryptPad, le lieu où vous pouvez prendre des notes seul ou avec des contacts.",
