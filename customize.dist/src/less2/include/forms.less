@@ -169,7 +169,7 @@
             &:hover, &:not(:disabled):active, &:focus {
                 border-color: @cryptpad_text_col;
                 color: @cryptpad_text_col;
-                background-color: fade(@cryptpad_text_col, 25%);
+                background-color: fade(@cryptpad_text_col, 10%);
             }
         }
 
@@ -285,14 +285,25 @@
         .flatpickr-calendar {
             background: @cp_flatpickr-bg;
             color: @cryptpad_text_col;
+            border-radius: 0;
+            box-shadow: @variables_shadow;
+            -webkit-box-shadow: @variables_shadow;
+            &.arrowTop::before, &.arrowTop::after {
+                border-bottom: 0;
+            }
             .flatpickr-months {
                 .flatpickr-month, .flatpickr-months, .flatpickr-next-month,  .flatpickr-prev-month {
                     color: @cryptpad_text_col;
                     fill: @cryptpad_text_col;
+                    &:hover {
+                        svg {
+                            fill: @cryptpad_text_col;
+                        }
+                    }
                 }
                 .flatpickr-current-month {
                     span.cur-month:hover {
-                        background: fade(@cryptpad_text_col, 25%); // XXX hover on current month?
+                        background: fade(@cryptpad_text_col, 10%);
                       }
                     .numInputWrapper span.arrowUp:after {
                         border-bottom-color: @cryptpad_text_col;
@@ -303,20 +314,52 @@
                 }
             }
             .flatpickr-innerContainer {
+                border-bottom: 0;
                 .flatpickr-weekdays {
                     span.flatpickr-weekday {
                         color: @cryptpad_text_col;
                     }
                 }
                 .flatpickr-days {
+                    border-left: 0;
+                    border-right: 0;
                     .flatpickr-day {
                         color: @cryptpad_text_col;
                         &:hover {
-                            background-color: fade(@cryptpad_text_col, 25%);
+                            background-color: fade(@cryptpad_text_col, 10%);
+                            border: 0;
+                        }
+                        &.selected {
+                            background: @cp_flatpickr-highlight;
+                            color: @cp_flatpickr-highlight-text;
+                            border: 0;
                         }
                     }
                     .flatpickr-disabled {
-                        color: fade(@cryptpad_text_col, 25%);
+                        color: fade(@cryptpad_text_col, 20%);
+                    }
+                }
+            }
+            .flatpickr-time {
+                border-top: none;
+                .flatpickr-time-separator,  .flatpickr-am-pm {
+                    color: @cryptpad_text_col;
+                }
+                .flatpickr-am-pm {
+                    &:hover {
+                        background-color: fade(@cryptpad_text_col, 10%);
+                    }
+                }
+                .numInputWrapper {
+                    .numInput, .arrowUp, .arrowDown {
+                        color: @cryptpad_text_col;
+                        &:hover, &:focus {
+                            background-color: fade(@cryptpad_text_col, 10%);
+                        }
+                    }
+                    span.arrowDown::after, span.arrowUp::after {
+                        border-top-color: @cryptpad_text_col;
+                        border-bottom-color: @cryptpad_text_col;
                     }
                 }
             }
