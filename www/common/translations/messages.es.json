@@ -600,53 +600,7 @@
     "features_f_subscribe": "Suscríbase a premium",
     "features_f_subscribe_note": "Primero debe iniciar sesión en CryptPad",
     "four04_pageNotFound": "No pudimos encontrar la página que estabas buscando.",
-    "help": {
-        "title": "Empezando",
-        "generic": {
-            "more": "Obtenga más información sobre cómo CryptPad puede funcionar para usted leyendo nuestras <a href=\"/faq.html\" target=\"_blank\"> Preguntas frecuentes </a>",
-            "share": "Use el menú para compartir (<span class = \"fa fa-share-alt\"> </span>) para generar un enlace para que los colaboradores puedan ver o editar este pad",
-            "save": "Todos sus cambios se sincronizan automáticamente para que nunca necesite guardar"
-        },
-        "text": {
-            "formatting": "Puede mostrar u ocultar la barra de herramientas de formato de texto haciendo clic en los botones <span class = \"fa fa-caret-down\"> </span> o <span class = \"fa fa-caret-up\"> </span>",
-            "embed": "Los usuarios registrados pueden incrustar una imagen o un archivo almacenado en su CryptDrive usando <span class = \"fa fa-image\"> </span>",
-            "history": "Puede usar <em> historial </em> <span class = \"fa fa-history\"> </span> para ver o restaurar versiones anteriores"
-        },
-        "pad": {
-            "export": "Puede exportar el contenido como PDF utilizando el botón <span class = \"fa fa-print\"> </span> en la barra de herramientas de formato de texto"
-        },
-        "code": {
-            "modes": "Use los menús desplegables en el submenú <span class = \"fa fa-ellipsis-h\"> </span> para cambiar los modos de resaltado de sintaxis o temas de color"
-        },
-        "beta": {
-            "warning": "Este editor sigue siendo <strong> experimental </strong>, puede informar errores en <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\"> nuestro rastreador de problemas </a>"
-        },
-        "oo": {
-            "access": "El acceso está restringido a usuarios registrados, los colaboradores deberán iniciar sesión"
-        },
-        "slide": {
-            "markdown": "Escriba diapositivas en <a href=\"http://www.markdowntutorial.com/\"> Reducción </a> y sepárelas con una línea que contenga <code> --- </code>",
-            "present": "Comenzar la presentación usando el <span class=\"fa fa-play-circle\"></span> botón",
-            "colors": "Cambia el texto y el color de fondo usando el <span class=\"fa fa-i-cursor\"></span> y <span class=\"fa fa-square\"></span> botones",
-            "settings": "Configura las diapositivas (fondo, transiciones, números de página, etc.) con el botón <span class=\"fa fa-cog\"></span> en el submenú <span class=\"fa fa-ellipsis-h\"></span>"
-        },
-        "poll": {
-            "decisions": "Crea decisiones en privado entre contactos de confianza",
-            "options": "Proponga opciones y exprese sus preferencias",
-            "choices": "Haga clic en las celdas de su columna para recorrer sí (<strong> ✔ </strong>), tal vez (<strong> ~ </strong>) o no (<strong> ✖ </strong>)",
-            "submit": "Haga clic en <strong> enviar </strong> para que otras personas puedan ver sus opciones"
-        },
-        "whiteboard": {
-            "colors": "Haga doble clic en los colores para modificar su paleta",
-            "mode": "Deshabilite el modo de dibujo para arrastrar y estirar trazos",
-            "embed": "Incrusta imágenes de tu disco <span class=\"fa fa-file-image-o\"></span> o de tu CryptDrive <span class=\"fa fa-image\"></span> y expórtalas como PNG a tu disco <span class=\"fa fa-download\"></span> o a tu CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
-        },
-        "kanban": {
-            "add": "Añada nuevas fichas y cuadros usando el botón <span class=\"fa fa-plus\"></span>",
-            "task": "Mover objetos arrastrándolos y soltándolos, arrastrándolo <span class=\"fa fa-trash\"></span> al basurero para borarlo",
-            "color": "Cambie los colores haciendo clic en la parte coloreada junto a los títulos de los tableros"
-        }
-    },
+    "help_genericMore": "Obtenga más información sobre cómo CryptPad puede funcionar para usted leyendo nuestras <a> Preguntas frecuentes </a>",
     "storageStatus": "Almacenamiento:<br /><b>{0}</b> usado de <b>{1}</b>",
     "settings_cursorColorTitle": "Color de puntero",
     "mdToolbar_button": "Mostrar u ocultar la barra de herramientas de Markdown",

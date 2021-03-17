@@ -421,53 +421,7 @@
     "home_host": "Questa è un'istanza di CryptPad gestita indipendentemente dalla community. Il suo codice sorgente è disponibile <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">su GitHub</a>.",
     "policy_choices_open": "Il nostro codice sorgente è open source, così hai sempre la possibilità di ospitare la tua personale istanza di CryptPad.",
     "features_f_file0": "Apri i file",
-    "help": {
-        "slide": {
-            "markdown": "Scrivi diapositive in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> e separale con una linea contenente <code>---</code>",
-            "present": "Inizia la presentazione usando il pulsante <span class=\"fa fa-play-circle\"></span>",
-            "colors": "Cambia i colori di testo e sfondo usando i pulsanti <span class=\"fa fa-i-cursor\"></span> e <span class=\"fa fa-square\"></span>",
-            "settings": "Modifica le impostazioni delle diapositive (sfondo, transizioni, numeri di pagina ecc.) con il pulsante <span class=\"fa fa-cog\"></span> nel sottomenu <span class=\"fa fa-ellipsis-h\"></span>"
-        },
-        "pad": {
-            "export": "Puoi esportare il contenuto come PDF usando il pulsante <span class=\"fa fa-print\"></span> nella barra degli strumenti di formattazione"
-        },
-        "text": {
-            "history": "Puoi usare <em>la cronologia</em> <span class=\"fa fa-history\"></span> per vedere o ripristinare le versioni precedenti",
-            "embed": "Gli utenti registrati possono incorporare un'immagine o un file salvato nel loro CryptDrive usando <span class=\"fa fa-image\"></span>",
-            "formatting": "Puoi visualizzare o nascondere la barra degli strumenti di formattazione cliccando i pulsanti <span class=\"fa fa-caret-down\"></span> o <span class=\"fa fa-caret-up\"></span>"
-        },
-        "generic": {
-            "save": "Tutte le tue modifiche sono sincronizzate automaticamente, quindi non hai bisogno di salvare",
-            "share": "Usa il menu condividi (<span class=\"fa fa-shhare-alt\"></span>) per generare un link che permetta ai tuoi collaboratori di vedere o modificare questo pad",
-            "more": "Impara di più su cosa può fare CryptPad per te leggendo le nostre <a href=\"/faq.html\" target=\"_blank\">FAQ</a>"
-        },
-        "title": "Cominciamo",
-        "oo": {
-            "access": "L'accesso è riservato agli utenti registrati, i collaboratori devono accedere"
-        },
-        "whiteboard": {
-            "colors": "Fai doppio clic sui colori per modificare la tua palette",
-            "mode": "Disabilita la modalità disegno per trascinare e ridimensionare i tratti",
-            "embed": "Incorpora immagini dal tuo disco <span class=\"fa fa-file-image-o\"></span> o dal tuo CryptDrive <span class=\"fa fa-image\"></span> ed esportale come PNG nel tuo disco <span class=\"fa fa-download\"></span> o nel tuo CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
-        },
-        "poll": {
-            "submit": "Clicca <strong>invia</strong> per rendere le tue scelte visibili agli altri",
-            "choices": "Clicca sulle celle nella tua colonna per scorrere tra sì (<strong>✔</strong>), forse (<strong>~</strong>), o no (<strong>✖</strong>)",
-            "decisions": "Prendi decisioni in privato tra contatti fidati",
-            "options": "Proponi opzioni ed esprimi le tue preferenze"
-        },
-        "kanban": {
-            "task": "Sposta gli elementi trascinandoli e rilasciandoli, trascina nel <span class=\"fa fa-trash\"></span> cestino per eliminare",
-            "add": "Aggiungi nuove schede e liste cliccando il pulsante <span class=\"fa fa-plus\"></span>",
-            "color": "Modifica titoli, contenuti, tag, e colori cliccando il pulsante <span class=\"fa fa-pencil\"></span> vicino al titolo della scheda o della lista"
-        },
-        "code": {
-            "modes": "Usa i menu a tendina nel sottomenu <span class=\"fa fa-ellipsis-h\"></span> per cambiare l'evidenziazione sintattica o i colori dei temi"
-        },
-        "beta": {
-            "warning": "Questo editor è ancora <strong>sperimentale</strong>, puoi segnalare bug nel <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">nostro sistema di tracciatura problemi</a>"
-        }
-    },
+    "help_genericMore": "Impara di più su cosa può fare CryptPad per te leggendo le nostre <a>FAQ</a>",
     "readme_cat3_l1": "Con l'editor di codice di CryptPad, puoi collaborare su linguaggi di programmazione come Javascript e linguaggi di markdown come HTML o Markdown",
     "settings_codeSpellcheckLabel": "Abilita il controllo ortografico nell'editor di codice",
     "team_inviteLinkError": "Si è verificato un errore durante la creazione del link.",
