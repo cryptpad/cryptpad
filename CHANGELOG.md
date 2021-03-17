@@ -33,6 +33,9 @@
   * oo rebuild
 * translations
   * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
+* CKEditor
+  * cursor jump when clicking on a comment bubble
+
 
 # 4.2.1
 
