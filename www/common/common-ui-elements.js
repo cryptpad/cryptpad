@@ -1106,7 +1106,8 @@ define([
             href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
 
-        var content = setHTML(h('p'), Messages.help.generic.more);
+        Messages.help_genericMore = Messages.help_genericMore || "Learn more about how CryptPad can work for you by reading our <a>Documentation</a>."; // XXX
+        var content = setHTML(h('p'), Messages.help_genericMore);
         $(content).find('a').attr({
             href: href,
             target: '_blank',
