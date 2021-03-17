@@ -31,6 +31,7 @@
   * getPropChannels
     * pinning?
   * oo rebuild
+  * OnlyOffice v6.2
 * translations
   * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
 * CKEditor
