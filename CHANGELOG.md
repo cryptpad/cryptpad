@@ -1,3 +1,39 @@
+# Pending
+
+* PRs
+  * comment config.js about supporting multiple domains in httpUnsafeOrigin
+  * add decreePath
+  * explicitly pass archivePath when initializing stores
+  * fix incorrect API in `scripts/migrations/migrate-tasks-v1.js`
+* login/register
+  * delete login block when deleting account
+  * more careful checks when changing user password
+* checkup page
+  * fixed typo
+  * progress bar
+  * test
+    * websockets
+    * sandbox CSP
+    * login block
+* admin page
+  * support responses to closed tickets
+  * collapse very long messages
+* open properties menu for pads that aren't stored in your drive
+* help menu that only links to docs
+  * remove unused (nested) keys
+* display survey URL
+* support 'KB' in Util.magnitudeOfBytes
+* degraded mode
+  * decide on a number
+* sheets
+  * fix naming collisions between images in spreadsheets
+  * degraded mode not supported
+  * getPropChannels
+    * pinning?
+  * oo rebuild
+* translations
+  * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
+
 # 4.2.1
 
 This minor release addresses a few bugs discovered after deploying 4.2.0:
