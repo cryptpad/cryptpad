@@ -1107,7 +1107,11 @@ define([
         }
 
         var content = setHTML(h('p'), Messages.help.generic.more);
-        $(content).find('a').attr('href', href);
+        $(content).find('a').attr({
+            href: href,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+        });
 
         var text = h('p.cp-help-text', [
             content
