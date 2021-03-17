@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>WENNFEHLER-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>WENNFEHLER-Funktion</h1>
+			<p>Die Funktion <b>WENNFEHLER</b> gehört zur Gruppe der logischen Funktionen. Sie wird verwendet, um zu überprüfen, ob im ersten Argument der Formel ein Fehler aufgetreten ist. Liegt kein Fehler vor, gibt die Funktion das Ergebnis der Formel aus. Im Falle eines Fehlers gibt die Formel den von Ihnen festgelegten Wert_falls_Fehler wieder.</p>
+			<p>Die Formelsyntax der Funktion <b>WENNFEHLER</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>WENNFEHLER(Wert;Wert_falls_Fehler)</em></b></p> 
+			<p><b><em>Wert</em></b> und <b><em>Wert_falls_Fehler</em></b> werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>WENNFEHLER</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Logisch</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>WENNFEHLER</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p><em>Beispiel:</em></p>
+			<p>Es gibt 2 Argumente: <em>Wert</em> = <b>A1/B1</b>, <em>Wert_falls_Fehler</em> = <b>„Fehler&quot;</b>; <b>A1</b> ist gleich <b>12</b> und <b>B1</b> ist gleich <b>3</b>. Die Formel im ersten Argument hat keinen Fehler. Also gibt die Funktion das Ergebnis der Berechnung zurück.</p>
+			<p style="text-indent: 150px;"><img alt="WENNFEHLER-Funktion: Kein Fehler" src="../images/noerror.png" /></p>
+			<p>Ändert man <b>B1</b> von <b>3</b> zu <b>0</b>, gibt die Funktion <b>Fehler</b> zurück, da es nicht möglich ist durch Null zu teilen.</p>
+			<p style="text-indent: 150px;"><img alt="WENNFEHLER-Funktion: Fehler" src="../images/iferror.png" /></p>
+		</div>
+	</body>
+</html>

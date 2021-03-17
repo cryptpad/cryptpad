@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pestaña de Extensiones</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Document Editor user interface - Plugins tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Pestaña de Extensiones</h1>
+            <p>La pestaña de <b>Extensiones</b> permite acceso a características de edición avanzadas usando componentes disponibles de terceros. Aquí también puede utilizar macros para simplificar las operaciones rutinarias.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Editor de documentos en línea:</p>
+                <p><img alt="Pestaña de Extensiones" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Editor de documentos de escritorio:</p>
+                <p><img alt="Pestaña de Extensiones" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">El botón <b>Ajustes</b> permite abrir la ventana donde puede ver y administrador todas las extensiones instaladas y añadir las suyas propias.</p>
+            <p>El botón <b>Macros</b> permite abrir la ventana donde puede crear sus propias macros y ejecutarlas. Para aprender más sobre los plugins refiérase a nuestra <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">Documentación de API</a>.</p>
+            <p>Actualmente, los siguientes plugins están disponibles por defecto:</p>		
+            <ul>
+                <li><b>ArteClip</b> permite añadir imágenes de la colección de arteclip a su documento,</li>
+                <li><b>Resaltar código</b> permite resaltar la sintaxis del código, seleccionando el idioma, el estilo y el color de fondo necesarios,</li>
+                <li><b>OCR</b> permite reconocer el texto incluido en una imagen e insertarlo en el texto de un documento,</li>
+                <li><b>Editor de Fotos</b> permite editar imágenes: cortar, cambiar tamaño, usar efectos etc.</li>
+                <li class="onlineDocumentFeatures"><b>Discurso</b> permite convertir el texto seleccionado en un discurso,</li>
+                <li><b>Tabla de símbolos</b> permite introducir símbolos especiales en su texto,</li>
+                <li>El <b>Diccionario de sinónimos</b> permite buscar tanto sinónimos como antónimos de una palabra y reemplazar esta palabra por la seleccionada,</li>
+                <li><b>Traductor</b> permite traducir el texto seleccionado a otros idiomas,
+                    <p class="note"><b>Nota</b>: este complemento no funciona en Internet Explorer.</p>
+                </li>
+                <li><b>YouTube</b> permite incorporar vídeos en su documento.</li>
+            </ul>
+            <p class="onlineDocumentFeatures">Los plugins <b>Wordpress</b> y <b>EasyBib</b> pueden usarse si conecta los servicios correspondientes en la configuración de su portal. Puede utilizar las siguientes instrucciones <a target="_blank" href="https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx" onclick="onhyperlinkclick(this)">para la versión de servidor</a> o <a target="_blank" href="https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx" onclick="onhyperlinkclick(this)">para la versión SaaS</a>.</p>
+            <p>Para aprender más sobre plugins, por favor, lea nuestra <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">Documentación API</a>. Todos los ejemplos de puglin existentes y de acceso libre están disponibles en <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a></p>
+		</div>
+	</body>
+</html>

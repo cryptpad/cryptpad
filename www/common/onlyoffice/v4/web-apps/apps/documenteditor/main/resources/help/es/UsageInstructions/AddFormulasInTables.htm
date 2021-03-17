@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Usar fórmulas en tablas</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert formulas into the table cells to perform simple calculations on data" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Usar fórmulas en tablas</h1>
+            <h3>Insertar una fórmula</h3>
+			<p>Puede realizar cálculos simples a partir de los datos de las celdas de la tabla añadiendo fórmulas. Para insertar una fórmula en una celda de tabla,</p>
+			<ol>
+				<li>coloque el cursor dentro de la celda en la que desea visualizar el resultado,</li>
+                <li>haga clic en el botón <b>Añadir fórmula</b> en la barra lateral derecha,</li>
+				<li>en la ventana <b>Ajustes de fórmula</b> que se abre, introduzca la fórmula deseada en el campo <b>Fórmula</b>.<p>Puede introducir manualmente la fórmula deseada utilizando los operadores matemáticos comunes (+, -, *, /), por ejemplo <em>=A1*B2</em> o usar la lista desplegable <b>Función pegar</b> para seleccionar una de las funciones integradas, por ejemplo <em>=PRODUCT(A1,B2)</em>.</p>
+                <p><img alt="Añadir fórmula" src="../images/formula_settings.png" /></p>					
+				</li>
+                <li>especificar manualmente los argumentos necesarios entre paréntesis en el campo <b>Fórmula</b>. Si la función necesita varios argumentos, tienen que ir separados por comas.</li>
+                <li>use la lista desplegable <b>Formato de número</b> si desea mostrar el resultado en un formato de número determinado,</li>
+				<li>haga clic en <b>OK</b>.</li>
+			</ol>
+            <p>El resultado se mostrará en la celda elegida.</p>
+            <p>Para editar la fórmula añadida, seleccione el resultado en la celda y haga clic en el botón <b>Añadir fórmula</b> en la barra lateral derecha, efectúe los cambios necesarios en la ventana <b>Ajustes de fórmula</b> y haga clic en <b>OK</b>.</p>
+            <hr />
+            <h3>Añadir referencias a celdas</h3>
+            <p>Puede usar los siguientes argumentos para añadir rápidamente referencias a los intervalos de celdas:</p>
+            <ul>
+                <li><b>ARRIBA</b> - una referencia a todas las celdas en la columna de arriba de la celda seleccionada</li>
+                <li><b>IZQUIERDA</b> - una referencia a todas las celdas de la fila a la izquierda de la celda seleccionada</li>
+                <li><b>ABAJO</b> - una referencia a todas las celdas de la columna situada debajo de la celda seleccionada</li>
+                <li><b>DERECHA</b> - una referencia a todas las celdas de la fila a la derecha de la celda seleccionada</li>
+            </ul>
+            <p>Estos argumentos se pueden utilizar con las funciones PROMEDIO, CONTAR, MAX, MIN, PRODUCTO, SUMA.</p>
+            <p>También puede introducir manualmente referencias a una celda determinada (por ejemplo, <em>A1</em>) o a un intervalo de celdas (por ejemplo, <em>A1:B3</em>).</p>
+            <h3>Usar marcadores</h3>
+            <p>Si ha añadido algunos <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">marcadores</a> a ciertas celdas de su tabla, puede usarlos como argumentos al introducir fórmulas.</p>
+            <p>En la ventana <b>Ajustes de fórmula</b> sitúe el cursor entre paréntesis en el campo de entrada <b>Fórmula</b> donde desea que se añada el argumento y use la lista desplegable <b>Pegar marcador</b> para seleccionar uno de los marcadores añadidos anteriormente.</p>
+            <h3>Actualizar resultados de fórmula</h3>
+            <p>Si modifica algunos valores en las celdas de la tabla, necesitará actualizar manualmente los resultados de la fórmula:</p>
+            <ul>
+                <li>Para actualizar un resultado de fórmula individual, seleccione el resultado deseado y pulse <b>F9</b> o haga clic con el botón derecho del ratón en el resultado y utilice la opción <b>Actualizar campo</b> del menú.</li>
+                <li>Para actualizar varios resultados de fórmula, seleccione las celdas correspondientes o toda la tabla y pulse <b>F9</b>.</li>
+            </ul>
+            <hr />
+            <h3>Funciones integradas</h3>
+            <p>Puede utilizar las siguientes funciones matemáticas, de estadística y lógicas:</p>
+            <table>
+                <tr>
+                    <td width="20%"><b>Categoría</b></td>
+                    <td width="20%"><b>Función</b></td>
+                    <td width="35%"><b>Descripción</b></td>
+                    <td width="25%"><b>Ejemplo</b></td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>ABS(x)</td>
+                    <td>La función se utiliza para devolver el valor absoluto de un número.</td>
+                    <td>=ABS(-10)<br />Devuelve 10</td>
+                </tr>
+                <tr>
+                    <td>Lógica</td>
+                    <td>Y(lógico1, lógico2, ...)</td>
+                    <td>La función se utiliza para verificar si el valor lógico introducido es VERDADERO o FALSO. La función devuelve 1 (VERDADERO) si todos los argumentos son VERDADEROS.</td>
+                    <td>=Y(1&gt;0,1&gt;3)<br />Devuelve 0</td>
+                </tr>
+                <tr>
+                    <td>Estadísticas</td>
+                    <td>PROMEDIO(lista-argumento)</td>
+                    <td>La función se utiliza para analizar el intervalo de datos y encontrar el valor medio.</td>
+                    <td>=PROMEDIO(4,10)<br />Devuelve 7</td>
+                </tr>
+                <tr>
+                    <td>Estadísticas</td>
+                    <td>CONTAR(lista-argumento)</td>
+                    <td>La función se utiliza para contar el número de celdas seleccionadas que contienen números, ignorando las celdas vacías o las que contienen texto.</td>
+                    <td>=CONTAR(A1:B3)<br />Devuelve 6</td>
+                </tr>
+                <tr>
+                    <td>Lógica</td>
+                    <td>DEFINIDO()</td>
+                    <td>La función evalúa si se ha definido un valor en la celda. La función devuelve 1 si el valor está definido y calculado sin errores y 0 si el valor no está definido o calculado con un error.</td>
+                    <td>=DEFINIDO(A1)</td>
+                </tr>
+                <tr>
+                    <td>Lógica</td>
+                    <td>FALSO()</td>
+                    <td>La función devuelve 0 (FALSO) y <b>no</b> requiere ningún argumento.</td>
+                    <td>=FALSO<br />Devuelve 0</td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>ENTERO(x)</td>
+                    <td>La función se utiliza para analizar y devolver la parte entera del número especificado.</td>
+                    <td>=ENTERO(2.5)<br />Devuelve 2</td>
+                </tr>
+                <tr>
+                    <td>Estadísticas</td>
+                    <td>MAX(número1, número2, ...)</td>
+                    <td>La función se utiliza para analizar el intervalo de datos y encontrar el número más grande.</td>
+                    <td>=MAX(15,18,6)<br />Devuelve 18</td>
+                </tr>
+                <tr>
+                    <td>Estadísticas</td>
+                    <td>MIN(número1, número2, ...)</td>
+                    <td>La función se utiliza para analizar el intervalo de datos y encontrar el número más pequeño.</td>
+                    <td>=MIN(15,18,6)<br />Devuelve 6</td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>RESIDUO(x, y)</td>
+                    <td>La función se utiliza para devolver el residuo después de la división de un número por el divisor especificado.</td>
+                    <td>=RESIDUO(6,3)<br />Devuelve 0</td>
+                </tr>
+                <tr>
+                    <td>Lógica</td>
+                    <td>NO(lógico)</td>
+                    <td>La función se utiliza para verificar si el valor lógico introducido es VERDADERO o FALSO. La función devuelve 1 (VERDADERO) si el argumento es FALSO y 0 (FALSO) si el argumento es VERDADERO.</td>
+                    <td>=NO(2&lt;5)<br />Devuelve 0</td>
+                </tr>
+                <tr>
+                    <td>Lógica</td>
+                    <td>O(lógico1, lógico2, ...)</td>
+                    <td>La función se utiliza para verificar si el valor lógico introducido es VERDADERO o FALSO. La función devuelve 0 (FALSO) si todos los argumentos son FALSOS.</td>
+                    <td>=O(1&gt;0,1&gt;3)<br />Devuelve 1</td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>PRODUCTO(número1, número2, ...)</td>
+                    <td>La función se utiliza para multiplicar todos los números en el intervalo de celdas seleccionado y devuelve el producto.</td>
+                    <td>=PRODUCTO(2,5)<br />Devuelve 10</td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>REDONDEAR(x, núm_dígitos)</td>
+                    <td>La función se utiliza para redondear el número hasta el número de dígitos deseado.</td>
+                    <td>=REDONDEAR(2.25,1)<br />Devuelve 2.3</td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>SIGNO(x)</td>
+                    <td>La función se utiliza para devolver el signo de un número. Si el número es positivo la función devolverá <b>1</b>. Si el número es negativo la función devolverá <b>-1</b>. Si el número vale <b>0</b>, la función devolverá <b>0</b>.</td>
+                    <td>=SIGNO(-12)<br />Devuelve -1</td>
+                </tr>
+                <tr>
+                    <td>Matemáticas</td>
+                    <td>SUMA(número1, número2, ...)</td>
+                    <td>La función se utiliza para sumar todos los números en el intervalo de celdas seleccionado y devuelve el resultado.</td>
+                    <td>=SUMA(5,3,2)<br />Devuelve 10</td>
+                </tr>
+                <tr>
+                    <td>Lógica</td>
+                    <td>VERDADERO()</td>
+                    <td>La función devuelve 1 (VERDADERO) y <b>no</b> requiere ningún argumento.</td>
+                    <td>=VERDADERO<br />Devuelve 1</td>
+                </tr>
+            </table>             
+		</div>
+	</body>
+</html>

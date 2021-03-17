@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction JOINDRE.TEXTE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction JOINDRE.TEXTE</h1>
+			<p>La fonction <b>JOINDRE.TEXTE</b> est l'une des fonctions de texte et de données. Elle est utilisée pour combiner le texte de plusieurs plages et/ou chaînes, et inclut un délimiteur que vous spécifiez entre chaque valeur de texte qui sera combinée. Si le délimiteur est une chaîne de texte vide, cette fonction concaténera les plages. Cette fonction est similaire à la fonction <b>CONCAT</b>, mais la différence est que la fonction <b>CONCAT</b> ne peut pas accepter un délimiteur.</p>
+			<p>La syntaxe de la fonction <b>JOINDRE.TEXTE</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>JOINDRE.TEXTE(delimiter, ignore_empty, text1 [, text2], …)</em></b></p> 
+			<p>où</p>
+            <p style="text-indent: 50px;"><b><em>delimiter</em></b> est le délimiteur à insérer entre les valeurs de texte. Peut être spécifié comme une chaîne de texte entre guillemets (par exemple <b>","</b> (virgule), <b>" "</b> (espace), <b>"\"</b> (barre oblique inverse), etc.) ou comme référence à une cellule ou plage de cellules.</p>
+            <p style="text-indent: 50px;"><b><em>ignore_empty</em></b> est une valeur logique qui spécifie si les cellules vides doivent être ignorées. Lorsque la valeur est définie sur TRUE (VRAI), les cellules vides sont ignorées.
+</p>
+            <p style="text-indent: 50px;"><b><em>text1(2)</em></b> peut accepter jusqu'à 252 valeurs de données. Chaque valeur peut être une chaîne de texte ou une référence à une plage de cellules.</p>
+            <p>Pour appliquer la fonction <b>JOINDRE.TEXTE</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Texte et données</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>JOINDRE.TEXTE</b>,</li>
+			<li>insérez les arguments requis en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction JOINDRE.TEXTE" src="../images/textjoin.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert content controls</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert content controls to create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insert content controls</h1>
+            <p>Content controls are objects containing different types of contents, such as text, objects etc. Depending on the selected content control type, you can create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted etc.</p>
+            <p class="note"><b>Note</b>: the possibility to add new content controls is available in the <b>paid</b> version only. In the open source version, you can edit existing content controls, as well as copy and paste them.</p>
+            <p>Currently, you can add the following types of content controls: <em>Plain Text</em>, <em>Rich Text</em>, <em>Picture</em>, <em>Combo box</em>, <em>Drop-down list</em>, <em>Date</em>, <em>Check box</em>.</p>
+            <ul>
+                <li><em>Plain Text</em> is an object containing text that can be formatted. Plain text content controls cannot contain more than one paragraph.</li>
+                <li><em>Rich Text</em> is an object containing text that can be formatted. Rich text content controls can contain several paragraphs, lists, and objects (images, shapes, tables etc.).</li>
+                <li><em>Picture</em> is an object containing a single image.</li>
+                <li><em>Combo box</em> is an object containing a drop-down list with a set of choices. It allows to choose one of the predefined values from the list and edit the selected value if necessary.</li>
+                <li><em>Drop-down list</em> is an object containing a drop-down list with a set of choices. It allows to choose one of the predefined values from the list. The selected value cannot be edited.</li>
+                <li><em>Date</em> is an object containing a calendar that allows to choose a date.</li>
+                <li><em>Check box</em> is an object that allows to display two states: check box is selected and check box is cleared.</li>
+            </ul>
+            <h3>Adding content controls</h3>
+            <h5>Create a new Plain Text content control</h5>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added,<br />or select a text passage you want to become the control contents.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Plain Text</b> option from the menu.</li>
+            </ol>
+            <p>The control will be inserted at the insertion point within a line of the existing text. Replace the default text within the control ("Your text here") with your own one: select the default text, and type in a new text or copy a text passage from anywhere and paste it into the content control. Plain text content controls do not allow adding line breaks and cannot contain other objects such as images, tables etc.</p>
+            <p><img alt="New plain text content control" src="../images/addedcontentcontrol.png" /></p>
+            <h5>Create a new Rich Text content control</h5>
+            <ol>
+                <li>position the insertion point at the end of a paragraph after which you want the control to be added,<br />or select one or more of the existing paragraphs you want to become the control contents.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Rich Text</b> option from the menu.</li>
+            </ol>
+            <p>The control will be inserted in a new paragraph. Replace the default text within the control ("Your text here") with your own one: select the default text, and type in a new text or copy a text passage from anywhere and paste it into the content control. Rich text content controls allow adding line breaks, i.e. can contain multiple paragraphs as well as some objects, such as images, tables, other content controls etc.</p>
+            <p><img alt="Rich text content control" src="../images/richtextcontentcontrol.png" /></p>
+            <h5>Create a new Picture content control</h5>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Picture</b> option from the menu - the control will be inserted at the insertion point.</li>
+                <li>click the <img alt="Insert image icon" src="../images/image_settings_icon.png" /> image icon in the button above the content control border - a standard file selection window will open. Choose an image stored on your computer and click <b>Open</b>.</li>
+            </ol>
+            <p>The selected image will be displayed within the content control. To replace the image, click the <img alt="Insert image icon" src="../images/image_settings_icon.png" /> image icon in the button above the content control border and select another image.</p>
+            <p><img alt="New picture content control" src="../images/picturecontentcontrol.png" /></p>
+            <h5>Create a new Combo box or Drop-down list content control</h5>
+            <p>The <em>Combo box</em> and <em>Drop-down list</em> content controls contain a drop-down list with a set of choices. They can be created in nearly the same way. The main difference between them is that the selected value in the drop-down list cannot be edited, while the selected value in the combo box can be replaced with your own one.</p>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Combo box</b> or <b>Drop-down list</b> option from the menu - the control will be inserted at the insertion point.</li>
+                <li>right-click the added control and choose the <b>Content control settings</b> option from the contextual menu.</li>
+                <li>in the the <b>Content Control Settings</b> window that opens switch to the <b>Combo box</b> or <b>Drop-down list</b> tab, depending on the selected content control type.
+                <p><img alt="Combo box settings window" src="../images/comboboxsettings.png" /></p>
+                </li>
+                <li>
+                    to add a new list item, click the <b>Add</b> button and fill in the available fields in the window that opens:
+                    <p><img alt="Combo box - adding value" src="../images/comboboxaddvalue.png" /></p>
+                    <ol>
+                        <li>specify the necessary text in the <b>Display name</b> field, e.g. <em>Yes</em>, <em>No</em>, <em>Other</em>. This text will be displayed in the content control within the document.</li>
+                        <li>by default, the text in the <b>Value</b> field corresponds to the one entered in the <b>Display name</b> field. If you want to edit the text in the <b>Value</b> field, note that the entered value must be unique for each item. </li>
+                        <li>click the <b>OK</b> button.</li>
+                    </ol>
+                </li>
+                <li>you can edit or delete the list items by using the <b>Edit</b> or <b>Delete</b> buttons on the right or change the item order using the <b>Up</b> and <b>Down</b> button.</li>
+                <li>when all the necessary choices are set, click the <b>OK</b> button to save the settings and close the window.</li>
+            </ol>
+            <p><img alt="New combo box content control" src="../images/comboboxcontentcontrol.png" /></p>
+            <p>You can click the arrow button in the right part of the added <b>Combo box</b> or <b>Drop-down list</b> content control to open the item list and choose the necessary one. Once the necessary item is selected from the <b>Combo box</b>, you can edit the displayed text replacing it with your own one entirely or partially. The <b>Drop-down list</b> does not allow to edit the selected item.</p>
+            <p><img alt="Combo box content control" src="../images/comboboxcontentcontrol2.png" /></p>
+            <h5>Create a new Date content control</h5>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Date</b> option from the menu - the control with the current date will be inserted at the insertion point.</li>
+                <li>right-click the added control and choose the <b>Content control settings</b> option from the contextual menu.</li>
+                <li>
+                    in the the <b>Content Control Settings</b> window that opens switch to the <b>Date format</b> tab.
+                    <p><img alt="Date settings window" src="../images/datesettings.png" /></p>
+                </li>
+                <li>choose the necessary <b>Language</b> and select the necessary date format in the <b>Display the date like this</b> list.</li>
+                <li>click the <b>OK</b> button to save the settings and close the window.</li>
+            </ol>
+            <p><img alt="New date content control" src="../images/datecontentcontrol.png" /></p>
+            <p>You can click the arrow button in the right part of the added <b>Date</b> content control to open the calendar and choose the necessary date.</p>
+            <p><img alt="Date content control" src="../images/datecontentcontrol2.png" /></p>
+            <h5>Create a new Check box content control</h5>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Check box</b> option from the menu - the control will be inserted at the insertion point.</li>
+                <li>right-click the added control and choose the <b>Content control settings</b> option from the contextual menu.</li>
+                <li>
+                    in the the <b>Content Control Settings</b> window that opens switch to the <b>Check box</b> tab.
+                    <p><img alt="Check box settings window" src="../images/checkboxsettings.png" /></p>
+                </li>
+                <li>click the <b>Checked symbol</b> button to specify the necessary symbol for the selected check box or the <b>Unchecked symbol</b> to select how the cleared check box should look like. The <b>Symbol</b> window will open. To learn more on how to work with symbols, you can refer to <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">this article</a>.</li>
+                <li>when the symbols are specified, click the <b>OK</b> button to save the settings and close the window.</li>
+            </ol>
+            <p>The added check box is displayed in the unchecked mode.</p>
+            <p><img alt="New Check box content control" src="../images/checkboxcontentcontrol.png" /></p>
+            <p>If you click the added check box it will be checked with the symbol selected in the <b>Checked symbol</b> list.</p>
+            <p><img alt="Check box content control" src="../images/checkboxcontentcontrol2.png" /></p>
+            
+            <p class="note"><b>Note</b>: The content control border is visible when the control is selected only. The borders do not appear on a printed version.</p>
+
+            <h3>Moving content controls</h3>
+            <p>Controls can be <b>moved</b> to another place in the document: click the button to the left of the control border to select the control and drag it without releasing the mouse button to another position in the document text.</p>
+            <p><img alt="Moving content control" src="../images/movecontentcontrol.png" /></p>
+            <p>You can also <b>copy and paste</b> content controls: select the necessary control and use the <b>Ctrl+C/Ctrl+V</b> key combinations.</p>
+            
+            <h3>Editing plain text and rich text content controls</h3>
+            <p>Text within the plain text and rich text content controls can be formatted using the icons on the top toolbar: you can adjust the <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">font type, size, color</a>, apply <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">decoration styles</a> and <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">formatting presets</a>. It's also possible to use the <b>Paragraph - Advanced settings</b> window accessible from the contextual menu or from the right sidebar to change the text properties. Text within rich text content controls can be formatted like a regular text of the document, i.e. you can set <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">line spacing</a>, change <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">paragraph indents</a>, adjust <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">tab stops</a>.</p>
+            
+            <h3>Changing content control settings</h3>
+            <p>No matter which type of content controls is selected, you can change the content control settings in the <b>General</b> and <b>Locking</b> sections of the <b>Content Control Settings</b> window.</p>
+            <p>To open the content control settings, you can proceed in the following ways:</p>
+            <ul>
+                <li>Select the necessary content control, click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon at the top toolbar and select the <b>Control Settings</b> option from the menu.</li>
+                <li>Right-click anywhere within the content control and use the <b>Content control settings</b> option from the contextual menu.</li>
+            </ul>
+            <p>A new window will open. At the <b>General</b> tab, you can adjust the following settings:</p>
+            <p><img alt="Content Control settings window - General" src="../images/ccsettingswindow.png" /></p>
+            <ul>
+                <li>Specify the content control <b>Title</b> or <b>Tag</b> in the corresponding fields. The title will be displayed when the control is selected in the document. Tags are used to identify content controls so that you can make reference to them in your code. </li>
+                <li>Choose if you want to display the content control with a <b>Bounding box</b> or not. Use the <b>None</b> option to display the control without the bounding box. If you select the <b>Bounding box</b> option, you can choose this box <b>Color</b> using the field below. Click the <b>Apply to All</b> button to apply the specified <b>Appearance</b> settings to all the content controls in the document.</li>
+            </ul>
+            <p>At the <b>Locking</b> tab, you can protect the content control from being deleted or edited using the following settings:</p>
+            <p><img alt="Content Control settings window - Locking" src="../images/ccsettingswindow2.png" /></p>
+                <ul>
+                    <li><b>Content control cannot be deleted</b> - check this box to protect the content control from being deleted.</li>
+                    <li><b>Contents cannot be edited</b> - check this box to protect the contents of the content control from being edited.</li>
+                </ul>  
+            <p>For certain types of content controls, the third tab is also available that contains the settings specific for the selected content control type only: <em>Combo box</em>, <em>Drop-down list</em>, <em>Date</em>, <em>Check box</em>. These settings are described above in the sections about adding the corresponding content controls.</p>          
+            <p>Click the <b>OK</b> button within the settings window to apply the changes.</p>
+            <p>It's also possible to highlight content controls with a certain color. To highlight controls with a color:</p>
+            <ol>
+                <li>Click the button to the left of the control border to select the control,</li>
+                <li>Click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon at the top toolbar,</li>
+                <li>Select the <b>Highlight Settings</b> option from the menu,</li>
+                <li>Select the necessary color on the available palettes: <b>Theme Colors</b>, <b>Standard Colors</b> or specify a new <b>Custom Color</b>. To remove previously applied color highlighting, use the <b>No highlighting</b> option.</li>
+            </ol>
+            <p>The selected highlight options will be applied to all the content controls in the document.</p>
+            <h3>Removing content controls</h3>
+            <p>To remove a control and leave all its contents, click the content control to select it, then proceed in one of the following ways:</p>
+            <ul>
+                <li>Click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon at the top toolbar and select the <b>Remove content control</b> option from the menu.</li>
+                <li>Right-click the content control and use the <b>Remove content control</b> option from the contextual menu.</li>
+            </ul>
+            <p>To remove a control and all its contents, select the necessary control and press the <b>Delete</b> key on the keyboard.</p>
+                        
+		</div>
+	</body>
+</html>

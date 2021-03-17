@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inhaltsverzeichnis erstellen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Create a Table of Contents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inhaltsverzeichnis erstellen</h1>
+            <p>Ein Inhaltsverzeichnis enthält eine Liste aller Kapitel (Abschnitte usw.) in einem Dokument und zeigt die jeweilige Seitennummer an, auf der ein Kapitel beginnt. Mithilfe eines Inhaltsverzeichnisses können Sie leicht durch ein mehrseitiges Dokument navigieren und schnell zu gewünschten Textstellen wechseln. Das Inhaltsverzeichnis wird automatisch basierend auf mit vordefinierten Stilen formatierten Dokumentüberschriften generiert. So können Sie Ihr Inhaltsverzeichnis bequem aktualisieren wenn der Text im Dokument geändert wurde, ohne dass Sie Überschriften bearbeiten und Seitenzahlen manuell ändern müssen.</p>
+			<h3>Überschriftenstruktur festlegen</h3>
+            <p><b>Überschriften formatieren</b></p>
+            <p>Formatieren Sie zunächst alle Überschriften in Ihrem Dokument mit einer der Stilvorlagen. Überschriften formatieren:</p>
+            <ol>
+                <li>Wählen Sie den Text aus, den Sie in das Inhaltsverzeichnis aufnehmen wollen.</li>
+                <li>Öffnen Sie rechts in der Registerkarte <b>Start</b> das Menü mit den Stilvorlagen.</li>
+                <li>Klicken Sie auf den gewünschten Stil. Standardmäßig können Sie die Stile <em>Überschrift 1 - Überschrift 9</em> nutzen.<p class="note"><b>Hinweis</b>: wenn Sie einen anderen Stil verwenden (z.B. <em>Titel</em>, <em>Untertitel</em> etc.), um Überschriften zu formatieren, die im Inhaltsverzeichnis angezeigt werden sollen, müssen Sie zunächst die Einstellungen für das Inhaltsverzeichnis anpassen (wie im nachfolgenden Absatz beschrieben). Weitere Informationen zu verfügbaren Formatvorlagen finden Sie auf <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</p>
+                </li>
+            </ol>
+            <p id="navigation"><b>Überschriften verwalten</b></p>
+            <p>Wenn Sie die Überschriften formatiert haben, können Sie in der linken Seitenleiste auf <img alt="Navigation" src="../images/navigationicon.png" /> <b>Navigation</b> klicken, um das Fenster mit den Überschriften mit den entsprechenden Verschachtelungsebenen zu öffnen. Dieser Bereich ermöglicht die einfache Navigation zwischen Überschriften im Dokumenttext sowie die Verwaltung der Überschriftenstruktur</p>
+            <p>Klicken Sie mit der rechten Maustaste auf eine Überschrift in der Liste und verwenden Sie eine der verfügbaren Optionen aus dem Menü:</p>
+            <p><img alt="Navigationsleiste" src="../images/navigationpanel.png" /></p>
+            <ul>
+                <li><b>Heraufstufen</b> - um die aktuell ausgewählte Überschrift in der hierarchischen Struktur auf die höhere Ebene zu verschieben, z. B. von <em>Überschrift2</em> auf <em>Überschrift1</em>.</li>
+                <li><b>Herabstufen</b> - um die aktuell ausgewählte Überschrift in der hierarchischen Struktur auf die niedrigere Ebene zu verschieben, z. B. von <em>Überschrift1</em> auf <em>Überschrift2</em>.</li>
+                <li><b>Neue Überschrift davor</b> - um eine neue leere Überschrift derselben Ebene vor der aktuell ausgewählten hinzuzufügen.</li>
+                <li><b>Neue Überschrift dahinter</b> - um eine neue leere Überschrift derselben Ebene hinter der aktuell ausgewählten hinzuzufügen.</li>
+                <li><b>Neue Zwischenüberschrift</b> - um eine neue leere Neue Zwischenüberschrift (z.B. eine Überschrift auf einer niedrigeren Ebene) hinter der aktuell ausgewählten hinzuzufügen.<p>Wenn die Überschrift oder Zwischenüberschrift hinzugefügt wurde, klicken Sie auf die hinzugefügte leere Überschrift in der Liste und geben Sie Ihren eigenen Text ein. Das kann sowohl im Dokumenttext als auch in der <b>Navigationsleiste</b> selbst erfolgen.</p>
+                </li>
+                <li><b>Inhalt auswählen</b> - um den Text unterhalb der aktuellen Überschrift im Dokument auszuwählen (einschließlich des Textes für alle Zwischenüberschriften dieser Überschrift).</li>
+                <li><b>Alle erweitern</b> - um alle Überschriften-Ebenen in der <b>Navigationsleiste</b> zu erweitern.</li>
+                <li><b>Alle ausblenden</b> - um alle Überschriften-Ebenen außer <em>Ebene 1</em> in der <b>Navigationsleiste</b> auszublenden.</li>
+                <li><b>Erweitern auf Ebene</b> - um die Überschriftenstruktur auf die ausgewählte Ebene zu erweitern. Wenn Sie z. B. <em>Ebene 3</em> wählen, werden die Level 1, 2 und 3 erweitert, während Level 4 und alle niedrigeren Level ausgeblendet werden.</li>
+            </ul>
+            <p>Um separate Überschriftenebenen manuell zu erweitern oder auszublenden, verwenden Sie die Pfeile links von den Überschriften.</p>
+            <p>Um die <b>Navigationsleiste</b> zu schließen, klicken Sie in der linken Seitenleiste erneut auf <img alt="Navigation" src="../images/navigationicon.png" /> <b>Navigation</b>.</p>
+            <h3>Inhaltsverzeichnis in Ihr aktuelles Dokument einfügen</h3>
+            <p>Ein Inhaltsverzeichnis in Ihr aktuelles Dokument einfügen:</p>
+            <ol>
+                <li>Platzieren Sie die Einfügemarke an der Stelle, an der Sie ein Inhaltsverzeichnis hinzufügen möchten.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Referenzen</b>.</li>
+                <li>Klicken Sie auf das Symbol <img alt="Inhaltsverzeichnis" src="../images/tocicon.png" /> <b>Inhaltsverzeichnis</b> in der oberen Symbolleiste oder<br /> klicken Sie auf das Pfeilsymbol neben diesem Symbol und wählen Sie die gewünschte Layout-Option aus dem Menü aus. Sie haben die Wahl zwischen einem Inhaltsverzeichnis, das Überschriften, Seitenzahlen und Leader anzeigt oder nur Überschriften.<p><img alt="Inhaltsverzeichnis - Optionen" src="../images/tociconmenu.png" /></p>
+                    <p class="note"><b>Hinweis</b>: Die Formatierung des Inhaltsverzeichnisses kann später über die Einstellungen des Inhaltsverzeichnisses angepasst werden.</p>
+                </li>
+            </ol>
+            <p>Das Inhaltsverzeichnis wird an der aktuellen Cursorposition eingefügt. Um die Position des Inhaltsverzeichnisses zu ändern, können Sie das Inhaltsverzeichnis auswählen (Steuerelement) und einfach an die gewünschte Position ziehen. Klicken Sie dazu auf die Schaltfläche <img alt="Inhaltsverzeichnis - Steuerelement" src="../images/toccontentcontrol.png" />, in der oberen linken Ecke des Inhaltsverzeichnisses und ziehen Sie es mit gedrückter Maustaste an die gewünschte Position.</p>
+            <p><img alt="Inhaltsverzeichnis verschieben" src="../images/tocmove.png" /></p>
+            <p>Um zwischen den Überschriften zu navigieren, drücken Sie die Taste <b>STRG</b> auf Ihrer Tastatur und klicken Sie dann auf die gewünschte Überschrift im Inhaltsverzeichnis. Sie wechseln automatisch auf die entsprechende Seite.</p>
+            <h3>Inhaltsverzeichnis anpassen</h3>
+            <p><b>Inhaltsverzeichnis aktualisieren</b></p>
+            <p>Nach dem Erstellen des Inhaltsverzeichnisses, können Sie Ihren Text weiter bearbeiten und beispielsweise neue Kapitel hinzufügen, die Reihenfolge ändern, Absätze entfernen oder den Text für eine Überschrift erweitern. Durch solche Vorgänge ändern sich die Seitenzahlen. Über die Option <b>Aktualisieren</b> übernehmen Sie alle Änderungen in Ihrem Inhaltsverzeichnis.</p>
+            <p>Klicken Sie auf der Registerkarte <b>Referenzen</b> in der oberen Symbolleiste auf den Pfeil neben dem Symbol <img alt="Aktualisieren" src="../images/tocrefreshicon.png" /> <b>Aktualisieren</b> und wählen Sie die gewünschte Option aus dem Menü aus.</p>
+            <ul>
+                <li><b>Gesamtes Verzeichnis aktualisieren</b> - die von Ihnen eingefügten Überschriften werden dem Verzeichnis hinzugefügt, gelöschte Überschriften werden entfernt, bearbeitete (umbenannte) Überschriften sowie Seitenzahlen werden aktualisiert.</li>
+                <li><b>Nur Seitenzahlen aktualisieren</b> - nur die Seitenzahlen werden aktualisiert, Änderungen an Überschriften werden nicht übernommen.</li>
+            </ul>
+            <p>Alternativ können Sie das Inhaltsverzeichnis direkt im Dokument auswählen, wählen Sie dann oben im Verzeichnis das Symbol <img alt="Aktualisieren" src="../images/tocrefreshiconcc.png" /> <b>Aktualisieren</b> aus, um die zuvor beschriebenen Optionen anzuzeigen.</p>
+            <p><img alt="Inhaltsverzeichnis aktualisieren" src="../images/tocrefreshcc.png" /></p>
+            <p>Sie können auch einfach mit der rechten Maustaste an eine beliebige Stelle im Inhaltsverzeichnis klicken und die gewünschte Option aus dem Kontextmenü auswählen.</p>
+            <p><img alt="Kontextmenü" src="../images/tocrefreshcontextual.png" /></p>
+            <p><b>Einstellungen für das Inhaltsverzeichnis anpassen</b></p>
+            <p>Zum Öffnen der Einstellungen für das Inhaltsverzeichnis, gehen Sie vor wie folgt:</p>
+            <ul>
+                <li>Klicken Sie auf den Pfeil neben <img alt="Inhaltsverzeichnis" src="../images/tocicon.png" /> <b>Inhaltsverzeichnis</b> in der oberen Symbolleiste und wählen Sie die Option <b>Einstellungen</b> aus dem Menü aus.</li>
+                <li>Wählen Sie das Inhaltsverzeichnis aus, klicken Sie auf den Pfeil und wählen Sie die Option <b>Einstellungen</b> aus dem Menü aus.<p><img alt="Inhaltsverzeichnis - Optionen" src="../images/tocsettingscc.png" /></p>    
+                </li>
+                <li>Klicken Sie mit der rechten Maustaste an eine beliebige Stelle im Inhaltsverzeichnis und wählen sie die Option <b>Inhaltsverzeichnis - Einstellungen</b> aus dem Kontextmenü aus.</li>
+            </ul>
+            <p>Im sich nun öffnenden Fenstern können Sie die folgenden Parameter festlegen:</p>
+            <p><img alt="Fenstern Inhaltsverzeichnis - Einstellungen" src="../images/tocsettingswindow.png" /></p> 
+            <ul>
+                <li><b>Seitenzahlen anzeigen</b> - mit dieser Option wählen Sie aus, ob Seitenzahlen angezeigt werden sollen oder nicht.</li>
+                <li><b>Seitenzahlen rechtsbündig ausrichten</b> - mit dieser Option legen Sie fest, ob die Seitenzahlen am rechten Seitenrand ausgerichtet werden sollen oder nicht.</li>
+                <li><b>Leader</b> - mit dieser Option können Sie die Art des Leaders auswählen, den Sie verwenden möchten. Ein Leader ist eine Reihe von Zeichen (Punkte oder Trennzeichen), die den Abstand zwischen einer Überschrift und der entsprechenden Seitenzahl ausfüllen. Wenn Sie keinen Leader nutzen wollen, wählen Sie die Option <b>Keinen</b>.</li>
+                <li><b>Einträge Inhaltsverzeichnis als Links formatieren</b> - diese Option ist standardmäßig aktiviert. Wenn Sie das Kontrollkästchen deaktivieren, können Sie nicht länger in ein gewünschtes Kapitel wechseln, indem Sie die Taste <b>STRG</b> drücken und die entsprechende Überschrift anklicken.</li>
+                <li><b>Inhaltsverzeichnis erstellen aus</b> - In diesem Abschnitt können Sie die erforderliche Anzahl von Gliederungsebenen sowie die Standardstile angeben, die zum Erstellen des Inhaltsverzeichnisses verwendet werden sollen. Aktivieren Sie das erforderliche Optionsfeld:<ul>
+                    <li><b>Gliederungsebenen</b> - ist diese Option ausgewählt, können Sie die Anzahl der hierarchischen Ebenen anpassen, die im Inhaltsverzeichnis verwendet werden. Klicken Sie auf die Pfeile im Feld <b>Ebenen</b>, um die Anzahl der Ebenen zu verringern oder zu erhöhen (es sind die Werte 1 bis 9 verfügbar). Wenn Sie z. B. den Wert 3 auswählen, werden Überschriften der Ebenen 4 - 9 nicht in das Inhaltsverzeichnis aufgenommen.</li>
+                    <li><b>Ausgewählte Stile</b> - ist diese Option ausgewählt, können Sie zusätzliche Stile angeben, die zum Erstellen des Inhaltsverzeichnisses verwendet werden können, und ihnen eine entsprechende Gliederungsebene zuweisen. Geben Sie die gewünschte Ebene in das Feld rechts neben dem Stil ein. Sobald Sie die Einstellungen gespeichert haben, können Sie diesen Stil zum Erstellen des Inhaltsverzeichnisses verwenden.<p><img alt="Fenstern Inhaltsverzeichnis - Einstellungen" src="../images/tocsettingswindow2.png" /></p>
+                    </li>
+                </ul>
+                </li>
+                <li><b>Stile</b> - mit dieser Option wählen Sie ein Inhaltsverzeichnis in dem von Ihnen gewünschte Stil aus einer Liste mit Vorlagen aus. Wählen Sie den gewünschten Stil aus der Dropdown-Liste aus: Im Feld Vorschau sehen Sie wie das Inhaltsverzeichnis mit dem gewählten Stil aussehen würde.<p>Die folgenden vier Standardstile sind verfügbar: <em>Einfach</em>, <em>Standard</em>, <em>Modern</em>, <em>Klassisch</em>. Mit der Option <em>Aktuell</em> können Sie den Stil des Inhaltsverzeichnisses nach Ihren eigenen Wünschen anpassen.</p>
+                </li>
+            </ul>
+            <p>Klicken Sie im Fenster Einstellungen auf <b>OK</b>, um die Änderungen zu bestätigen.</p>
+            <p><b>Stil des Inhaltsverzeichnisses anpassen</b></p>
+            <p>Nachdem Sie eine der Standardvorlagen für Verzeichnisstile Fenster <b>Inhaltsverzeichnis - Einstellungen</b> angewendet haben, können Sie diesen Stil auch ändern, sodass der Text im Feld Inhaltsverzeichnis Ihren Wünschen entsprechend formatiert ist.</p>
+            <ol>
+                <li>Wählen Sie den Text innerhalb des Inhaltsverzeichnisfelds aus, z. B. indem Sie im Steuerungskasten für das Inhaltsverzeichnis auf die Schaltfläche <img alt="Inhaltsverzeichnis - Steuerelement" src="../images/toccontentcontrol.png" /> klicken.</li>
+                <li>Sie können die Elemente des Inhaltsverzeichnisses wie gewohnt formatieren und z. B. Schriftart, Größe, Farbe oder den Stile für die Schriftgestaltung ändern.</li>
+                <li>Aktualisieren Sie entsprechend die Stile für die Elemente jeder Ebene. Um den Stil zu aktualisieren, klicken Sie mit der rechten Maustaste auf das formatierte Element, wählen Sie im Kontextmenü die Option <b>Formatierung als Stil</b> aus und klicken Sie auf die Option <b>toc N Stil aktualisieren</b> (Stil <em>toc 2</em> entspricht Elementen der <em>Ebene 2</em>, Stil <em>toc 3</em> entspricht Elementen der <em>Ebene 3</em> usw.).<p><img alt="Stili des Inhaltsverzeichnisses aktualisieren" src="../images/toccustomize.png" /></p>
+                </li>
+                <li>Inhaltsverzeichnis aktualisieren</li>
+            </ol>
+            <p><b>Inhaltsverzeichnis entfernen</b></p>
+            <p>Inhaltsverzeichnis aus dem Dokument entfernen:</p>
+            <ul>
+                <li>Klicken Sie auf den Pfeil neben <img alt="Inhaltsverzeichnis" src="../images/tocicon.png" /> <b>Inhaltsverzeichnis</b> in der oberen Symbolleiste und wählen Sie die Option <b>Inhaltsverzeichnis entfernen</b> aus dem Menü aus,</li>
+                <li>oder klicken Sie auf den Pfeil neben dem Steuerelement Inhaltsverzeichnis und wählen Sie die Option <b>Inhaltsverzeichnis entfernen</b> aus.</li>
+            </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aggiungere segnalibri</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="I segnalibri consentono di passare rapidamente a una determinata posizione nel documento corrente o di aggiungere un collegamento a questa posizione all'interno del documento." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aggiungere segnalibri</h1>
+            <p>I segnalibri consentono di passare rapidamente a una determinata posizione nel documento corrente o di aggiungere un collegamento a questa posizione all'interno del documento.</p>
+			<p>Per aggiungere un segnalibro all'interno di un documento:</p>
+			<ol>
+                <li>specificare il punto in cui si desidera aggiungere il segnalibro:
+                <ul>
+                    <li>posizionare il cursore del mouse all'inizio del passaggio di testo necessario, o</li>
+                    <li>selezionare il passaggio di testo necessario,</li>
+                </ul>
+                </li>
+                <li>passare alla scheda <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+                <li>fare clic sull'icona <img alt="Icona Segnalibro " src="../images/bookmark.png" /> <b>Segnalibro</b> nella barra degli strumenti superiore,</li>
+				<li>nella finestra <b>Segnalibri</b> che si apre, inserire il <b>Nome segnalibro</b> e fare clic sul pulsante <b>Aggiungi</b> - verrà aggiunto un segnalibro all'elenco dei segnalibri visualizzato di seguito,
+                    <p class="note"><b>Nota</b>: il nome del segnalibro dovrebbe iniziare preferibilmente con una lettera, ma può anche contenere numeri. Il nome del segnalibro non può contenere spazi, ma può includere il carattere di sottolineatura  "_".</p>
+                    <p><img alt="Segnalibri" src="../images/bookmark_window.png" /></p>
+                </li>
+			</ol>
+            <p>Per passare a uno dei segnalibri aggiunti all'interno del testo del documento:</p>
+            <ol>
+                <li>fare click sull’icona <img alt="Icona Segnalibro" src="../images/bookmark.png" /> <b>Segnalibro</b> nella scheda <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+                <li>nella finestra <b>Segnalibri</b> che si apre, selezionare il segnalibro a cui si desidera passare. Per trovare facilmente il segnalibro necessario nell'elenco è possibile ordinare l'elenco per <b>Nome</b> o per <b>Posizione</b> di un segnalibro all'interno del testo del documento,</li>
+                <li>selezionare l'opzione <b>Segnalibri nascosti</b> per visualizzare i segnalibri nascosti nell'elenco (cioè i segnalibri creati automaticamente dal programma quando si aggiungono riferimenti a una determinata parte del documento. Ad esempio, se si crea un collegamento ipertestuale a un determinato titolo all'interno del documento, l'editor di documenti crea automaticamente un segnalibro nascosto alla destinazione di questo collegamento).</li>
+                <li>clicca sul pulsante <b>Vai a</b> - il cursore sarà posizionato nella posizione all'interno del documento in cui è stato aggiunto il segnalibro selezionato, o verrà selezionato il passaggio di testo corrispondente,</li>
+                <li>
+                    fare clic sul pulsante <b>Ottieni collegamento</b> - si aprirà una nuova finestra in cui è possibile premere il pulsante <b>Copia</b> per copiare il collegamento al file che specifica la posizione del segnalibro nel documento. Quando si incolla questo collegamento in una barra degli indirizzi del browser e si preme INVIO, il documento verrà aperto nella posizione in cui è stato aggiunto il segnalibro selezionato.
+                    <p><img alt="Segnalibri" src="../images/bookmark_window2.png" /></p>
+                    <p class="note"><b>Nota</b>:  Se si desidera condividere questo collegamento con altri utenti, è inoltre necessario fornire i diritti di accesso corrispondenti al file per determinati utenti utilizzando l'opzione <b>Condivisione</b> nella scheda <b>Collaborazione</b>.</p>                    
+                </li>
+                <li>fare clic sul pulsante <b>Chiudi</b> per chiudere la finestra.</li>
+            </ol>
+            <p>Per eliminare un segnalibro, selezionarlo nell'elenco dei segnalibri e utilizzare il pulsante <b>Elimina</b>.</p>
+            <p>Per scoprire come utilizzare i segnalibri durante la creazione di collegamenti, fare riferimento alla sezione <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)"> Aggiungere collegamenti ipertestuali</a>.</p>
+
+		</div>
+	</body>
+</html>

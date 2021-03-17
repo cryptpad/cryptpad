@@ -59,9 +59,9 @@ define([
 
     var CHECKPOINT_INTERVAL = 100;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 3;
+    var NEW_VERSION = 4;
     var PENDING_TIMEOUT = 30000;
-    var CURRENT_VERSION = 'v2b';
+    var CURRENT_VERSION = 'v4';
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
@@ -2482,7 +2482,8 @@ define([
                     $(APP.helpMenu.menu).after(msg);
                     readOnly = true;
                 }
-            } else if (content && content.version === 2) {
+            } else if (content && content.version <= 3) { // V2 or V3
+                version = 'v2b/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Muestre/oculte caracteres no imprimibles</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Show or hide nonprinting characters while formatting text, creating tables, and editing documents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Muestre/oculte caracteres no imprimibles</h1>
+			<p>Los caracteres no imprimibles le ayuda a editar un documento. Indican la presencia de diferentes tipos de formato, pero no se imprimen con el documento si no que solo se muestran en la pantalla.</p>
+			<p>Para ocultar o mostrar caracteres no imprimibles, pulse el icono <b>Caracteres no imprimibles</b>  en la barra de herramientas superior.</p>
+			<p>Aquí están los caracteres no imprimibles:</p>
+			<table>
+				<tr>
+					<td>Espacios</td>
+					<td><img alt="Espacios" src="../images/space.png" /></td>
+					<td>Se insertarán si pulsa la tecla <b>Spacebar</b> en el teclado. Crea espacio entre caracteres.</td>
+				</tr>
+				<tr>
+					<td>Tabulación</td>
+					<td><img alt="Tabulacion" src="../images/tab.png" /></td>
+					<td>Se insertarán si pulsa la tecla <b>Tab</b>. Se usa para mover el cursor hasta el próximo punto de tabulación.</td>
+				</tr>
+				<tr>
+					<td>Marcas de párrafo (retorno)</td>
+					<td><img alt="Retorno" src="../images/hard.png" /></td>
+					<td>Se insertarán si pulsa la tecla <b>Enter</b>. Termina un párrafo y añade espacio después. Contiene información sobre el formato del párrafo.</td>
+				</tr>
+				<tr>
+					<td>Saltos de línea</td>
+					<td><img alt="Saltos de línea" src="../images/soft.png" /></td>
+					<td>Se insertarán si pulsa la combinación de las teclas <b>Shift+Enter</b>. Rompe la línea actual y pone líneas de texto muy juntas. El regreso se usa principalmente en títulos y encabezados.</td>
+				</tr>
+				<tr>
+					<td>Espacios de no separación</td>
+					<td><img alt="Espacios de no separación" src="../images/nonbreakspace.png" /></td>
+					<td>Se insertarán si pulsa la combinación de las teclas <b>Ctrl+Shift+Spacebar</b>. Crea espacio entre caracteres que no puede ser usado para empezar una línea nueva.</td>
+				</tr>
+				<tr>
+					<td>Saltos de página</td>
+					<td><img alt="Saltos de página" src="../images/pagebreak.png" /></td>
+					<td>Se insertarán si pulsa el icono <b>salto de página</b> <img alt="Icono de saltos" src="../images/pagebreak1.png" /> en la pestaña <b>Insertar</b> o <b>Diseño</b> en la barra de herramientas superior, y después selecciona la opción <b>Insertar salto de página</b> opción, o si selecciona la opción <b>Salto de página antes</b> en el menú contextual o en la ventana de ajustes avanzados.</td>
+				</tr>
+				<tr>
+					<td>Saltos de sección</td>
+					<td><img alt="Saltos de sección" src="../images/sectionbreak.png" /></td>
+					<td>Se insertarán si pulsa el icono <b>salto de página</b> <img alt="Breaks icon" src="../images/pagebreak1.png" /> en la pestaña <b>Insertar</b> o <b>Diseño</b> en la barra de herramientas superior, y luego selecciona una de las opciones del submenú de <b>Insertar saltos de sección</b> (el indicador de saltos de sección difiere dependiendo de qué opción ha seleccionado: Página siguiente, Página continua, Página par o Página impar).</td>
+				</tr>
+                <tr>
+                    <td>Saltos de columna</td>
+                    <td><img alt="Salto de columna" src="../images/columnbreak.png" /></td>
+                    <td>Se insertarán si pulsa el icono <img alt="Icono de saltos" src="../images/pagebreak1.png" /> <b>salto de página</b> en la pestaña <b>Insertar</b> o <b>Diseño</b> en la barra de herramientas superior, y luego selecciona una de las opciones de <b>Insertar saltos de sección</b>.</td>
+                </tr>
+				<tr>
+					<td>Marcadores de fin de celda y fin de fila en tablas</td>
+					<td><img alt="Marcadores de tablas" src="../images/cellrow.png" /></td>
+					<td>Estos marcadores contienen códigos de formato para la celda y la fila individual.</td>
+				</tr>
+				<tr>
+					<td>Un cuadrado negro y pequeño en el margen a la izquierda del párrafo</td>
+					<td><img alt="Cuadrado negro" src="../images/square.png" /></td>
+					<td>Indica que por lo menos una de las opciones de párrafo ha sido aplicada, por ejemplo: <b>Mantener líneas juntas</b>, <b>Salto de página antes</b>.</td>
+				</tr>
+				<tr>
+					<td>Símbolo de ancla</td>
+					<td><img alt="Anchor symbol" src="../images/anchor.png" /></td>
+					<td>Indica la posición de objetos flotantes (objetos de todos estilos de ajuste excepto <b>En línea</b>), por ejemplo: imágenes, autoformas, gráficos. Usted tiene que seleccionar un objeto para ver su ancla.</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

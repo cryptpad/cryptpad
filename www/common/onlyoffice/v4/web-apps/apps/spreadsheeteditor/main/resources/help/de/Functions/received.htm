@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>AUSZAHLUNG-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>AUSZAHLUNG-Funktion</h1>
+			<p>Die Funktion <b>AUSZAHLUNG</b> gehört zur Gruppe der Finanzmathematischen Funktionen. Sie gibt den Auszahlungsbetrag eines voll investierten Wertpapiers am Fälligkeitstermin zurück.</p>
+			<p>Die Formelsyntax der Funktion <b>AUSZAHLUNG</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>AUSZAHLUNG(Abrechnung;Fälligkeit;Anlage;Disagio;[Basis])</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+				<p style="text-indent: 50px;"><b><em>Abrechnung</em></b> ist der Abrechnungstermin des Wertpapierkaufs.</p> 
+				<p style="text-indent: 50px;"><b><em>Fälligkeit</em></b> ist der Fälligkeitstermin des Wertpapiers.</p> 
+				<p style="text-indent: 50px;"><b><em>Anlage</em></b> ist der Betrag, der in dem Wertpapier angelegt werden soll.</p> 
+				<p style="text-indent: 50px;"><b><em>Disagio</em></b> ist der Abschlag (Disagio) des Wertpapiers.</p>
+            <p style="text-indent: 50px;"><b><em>Basis</em></b> ist die zu verwendende Jahresbasis. Ein nummerischer Wert, größer oder gleich 0 und kleiner oder gleich 4. Dieses Argument ist optional. Mögliche Basiswerte:</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Basis</b></td>
+                    <td><b>Datumssystem</b></td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>US (NASD) 30/360</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Tatsächlich/tatsächlich</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Tatsächlich/360</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Tatsächlich/365</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Europäisch 30/360</td>
+                </tr>
+            </table>
+			<p class="note"><b>Hinweis:</b> Daten müssen mit der Funktion DATUM eingegeben werden.</p>
+			<p>Die Argumente werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>AUSZAHLUNG</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Finanzmathematische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>AUSZAHLUNG</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="AUSZAHLUNG-Funktion" src="../images/received.png" /></p>
+		</div>
+	</body>
+</html>

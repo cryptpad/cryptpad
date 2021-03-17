@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction FORMULETEXTE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction FORMULETEXTE</h1>
+			<p>La fonction <b>FORMULETEXTE</b> est l'une des fonctions de recherche et de référence. Elle est utilisée pour renvoyer une formule en tant que chaîne (c'est-à-dire la chaîne de texte affichée dans la barre de formule si vous sélectionnez la cellule contenant la formule).</p>
+			<p>La syntaxe de la fonction <b>FORMULETEXTE</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>FORMULETEXTE(référence)</em></b></p> 
+			<p><b><em>référence</em></b> est une référence à une cellule initiale ou à une plage de cellules.</p>
+            <p>Si la plage de cellules référencée contient plusieurs formules, la fonction  renvoie la valeur de la cellule supérieure gauche de cette plage. Si la cellule référencée ne contient pas de formule, la fonction  renvoie la valeur d'erreur <b>N/A</b>.</p>
+			<p>Pour appliquer la fonction <b>FORMULETEXTE</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Recherche et référence</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>FORMULETEXTE</b>,</li>
+			<li>saisissez l'argument requis,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction FORMULETEXTE" src="../images/formulatext.png" /></p>
+		</div>
+	</body>
+</html>

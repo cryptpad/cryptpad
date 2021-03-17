@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formatvorlagen anwenden</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Apply formatting styles: normal, heading, quote, list, etc." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Formatvorlagen anwenden</h1>
+            <p>Jede Formatvorlage besteht aus einer Reihe vordefinierter Formatierungsoptionen: (Schriftgröße, Farbe, Zeilenabstand, Ausrichtung usw.). Mit den Vorlagen können Sie verschiedene Segmente des Dokuments schnell formatieren (Überschriften, Zwischenüberschriften, Listen, normaler Text, Zitate) und müssen nicht jedes Mal mehrere Formatierungsoptionen einzeln anwenden. Gleichzeitig stellen Sie auf diese Weise auch ein einheitliches Erscheinungsbild für das gesamte Dokument sicher. Eine Vorlage kann immer nur bis zum Ende eines Absatzes angewendet werden.</p>
+			<h3>Standardstile verwenden:</h3>
+            <p>Verfügbaren Textformatvorlagen anwenden:</p>
+			<ol>
+				<li>Positionieren Sie den Cursor im gewünschten Abschnitt bzw. wählen Sie mehrere Absätze aus, auf die Sie eine Formatvorlage anwenden möchten.</li>
+				<li>Wählen Sie eine gewünschte Vorlage rechts in der Registerkarte <b>Start</b> aus.</li>
+			</ol>
+			<p>Die folgenden Formatvorlagen sind verfügbar: Standard, Kein Leerraum, Überschrift 1-9, Titel, Untertitel, Zitat, intensives Zitat, Listenabsatz.</p>
+			<p><img alt="Formatvorlagen" src="../images/formattingpresets.png" /></p>
+            <h3>Vorhandene Formatierungen bearbeiten und neue erstellen</h3>
+            <p><b>Eine vorhandene Formatierung ändern</b></p>
+            <ol>
+                <li>Wenden Sie die gewünschte Formatierung auf einen Absatz an.</li>
+                <li>Markieren Sie den entsprechenden Absatz und ändern Sie alle benötigten Formatierungsparameter.</li>
+                <li>Speichern Sie die vorgenommenen Änderungen:<ul>
+                    <li>Klicken Sie mit der rechten Maustaste auf den editierten Text, wählen Sie die Option <b>Formatierung als Vorlage</b> und klicken Sie dann auf die Option <b>„Stilname“ aktualisieren</b> (der „Stilname“ entspricht dem Namen der Vorlagen, die Sie in Schritt 1 angewendet haben) oder</li>
+                    <li>wählen Sie die bearbeitete Textstelle mit der Maus aus, ziehen Sie die Stilgalerie herunter, klicken Sie mit der rechten Maustaste auf die Formatvorlage, die Sie ändern möchten und wählen Sie die Option <b>Aus Auswahl aktualisieren</b>.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>Wenn eine Formatvorlage geändert wird, werden alle Absätze innerhalb eines Dokuments entsprechend geändert, die mit dieser Vorlage formatiert worden sind.</p>
+            <p><b>Erstellen einer neuen Vorlage:</b></p>
+            <ol>
+                <li>Formatieren Sie einen Textabschnitt nach Ihrem Belieben.</li>
+                <li>Wählen Sie eine geeignete Methode um den Stil als Vorlage zu speichern:<ul>
+                        <li>Klicken Sie mit der rechten Maustaste auf den editierten Text, wählen Sie die Option <b>Formatierung als Vorlage</b> und klicken Sie dann auf die Option <b>Neue Vorlage erstellen</b> oder</li>
+                        <li>wählen Sie die bearbeitete Textstelle mit der Maus aus, ziehen Sie die Stilgalerie herunter, klicken Sie auf die Option <b>Auswahl als neue Vorlage übernehmen</b>.</li>
+                    </ul>
+                </li>
+                <li>Legen Sie die Parameter im Fenster <b>Neue Vorlage erstellen</b> fest:<p><img alt="Fenster neue Vorlage erstellen" src="../images/createnewstylewindow.png" /></p>
+                <ul>
+                    <li>Geben Sie den Namen der neuen Formatvorlage in das dafür vorgesehene Texteingabefeld ein.</li>
+                    <li>Wählen Sie den gewünschten Stil für den folgenden Absatz aus der Liste <b>Nächsten Absatz formatieren</b>.</li>
+                    <li>Klicken Sie auf <b>OK</b>.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>Die neue Stilvorlage wird der Stilgalerie hinzugefügt.</p>
+            <p><b>Benutzerdefinierten Vorlagen verwalten:</b></p>
+            <ul>
+                <li>Um die Standardeinstellungen einer bestimmten geänderten Formatvorlage wiederherzustellen, klicken Sie mit der rechten Maustaste auf die Vorlage, die Sie wiederherstellen möchten und wählen Sie die Option <b>Standard wiederherstellen</b></li>
+                <li>Um die Standardeinstellungen aller Formatvorlage wiederherzustellen, die Sie geändert haben, klicken Sie mit der rechten Maustaste auf eine Standardvorlage in der Stilgalerie und wählen Sie die Option <b>Ale Standardvorlagen wiederherstellen</b><p><img alt="Menü bearbeitete Vorlagen" src="../images/editedstylemenu.png" /></p>
+                </li>
+                <li>Um eine der neu erstellten Vorlagen zu löschen, klicken Sie mit der rechten Maustaste auf den entsprechenden Stil und wählen Sie die Option <b>Formatvorlage löschen</b>.</li>
+                <li>Um alle neu erstellten Vorlagen zu löschen, klicken Sie mit der rechten Maustaste auf eine beliebige neu erstellte Vorlage und wählen Sie die Option <b>Alle benutzerdefinierten Vorlagen löschen</b>.<p><img alt="Menü benutzerdefinierte Vorlagen" src="../images/customstylemenu.png" /></p>
+                </li>
+            </ul>
+		</div>
+	</body>
+</html>

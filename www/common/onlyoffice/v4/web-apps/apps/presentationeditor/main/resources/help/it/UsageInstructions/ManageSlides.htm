@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Manage slides</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add new blank slides, duplicate, move or delete them" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Manage slides</h1>
+			<p>By default, a newly created presentation has one blank <em>Title Slide</em>. You can create new slides, copy a slide to be able to paste it to another place in the slide list, duplicate slides, move slides to change their order in the slide list, delete unnecessary slides, mark some slides as hidden. </p>
+			<p><b>To create a new <em>Title and Content</em> slide:</b></p>
+			<ul>
+				<li>click the <img alt="Add Slide icon" src="../images/addslide.png" /> <b>Add Slide</b> icon at the <b>Home</b> or <b>Insert</b> tab of the top toolbar, or</li>
+				<li>right-click any slide in the list and select the <b>New Slide</b> option from the contextual menu, or</li>
+                <li>press the <b>Ctrl+M</b> key combination.</li>
+			</ul>
+            <p><b>To create a new slide with a different layout:</b></p>
+            <ol>
+                <li>click the arrow next to the <img alt="Add Slide icon" src="../images/addslide.png" /> <b>Add Slide</b> icon at the <b>Home</b> or <b>Insert</b> tab of the top toolbar,</li>
+                <li>
+                    select a slide with the necessary layout from the menu.
+                    <p class="note"><b>Note</b>: you can change the layout of the added slide anytime. For additional information on how to do that refer to the <a href="../UsageInstructions/SetSlideParameters.htm#changelayout" onclick="onhyperlinkclick(this)">Set slide parameters</a> section.</p>
+                </li>
+            </ol>
+			<p>A new slide will be inserted after the selected one in the list of the existing slides on the left.</p>
+			<p><b>To duplicate a slide:</b></p>
+			<ol>
+				<li>right-click the necessary slide in the list of the existing slides on the left,</li>
+				<li>select the <b>Duplicate Slide</b> option from the contextual menu.</li>
+			</ol>
+			<p>The duplicated slide will be inserted after the selected one in the slide list.</p>
+			<p><b>To copy a slide:</b></p>
+			<ol>
+				<li>in the list of the existing slides on the left, select the slide you need to copy,</li>
+				<li>press the <b>Ctrl+C</b> key combination,</li>
+				<li>in the slide list, select the slide that the copied one should be pasted after,</li>
+				<li>press the <b>Ctrl+V</b> key combination.</li>
+			</ol>
+			<p><b>To move an existing slide:</b></p>
+			<ol>
+				<li>left-click the necessary slide in the list of the existing slides on the left,</li>
+				<li>without releasing the mouse button, drag it to the necessary place in the list (a horizontal line indicates a new location).</li>
+			</ol>
+			<p><b>To delete an unnecessary slide:</b></p>
+			<ol>
+				<li>right-click the slide you want to delete in the list of the existing slides on the left,</li>
+				<li>select the <b>Delete Slide</b> option from the contextual menu.</li>
+			</ol>
+            <p><b>To mark a slide as hidden:</b></p>
+            <ol>
+                <li>right-click the slide you want to hide in the list of the existing slides on the left,</li>
+                <li>select the <b>Hide Slide</b> option from the contextual menu.</li>
+            </ol>
+            <p>The number that corresponds to the hidden slide in the slide list on the left will be crossed out. To display the hidden slide as a regular one in the slide list, click the <b>Hide Slide</b> option once again.</p>
+            <p><img alt="Hidden slide" src="../images/hidden_slide.png" /></p>
+            <p class="note"><b>Note</b>: use this option if you do not want to demonstrate some slides to your audience, but want to be able to access them if necessary. If you start the slideshow in the <a href="../UsageInstructions/PreviewPresentation.htm#presenter" onclick="onhyperlinkclick(this)"><b>Presenter</b> mode</a>, you can see all the existing slides in the list on the left, while hidden slides numbers are crossed out. If you wish to show a slide marked as hidden to others, just click it in the slide list on the left - the slide will be displayed.</p>
+            <p><b>To select all the existing slides at once:</b></p>
+			<ol>
+				<li>right-click any slide in the list of the existing slides on the left,</li>
+				<li>select the <b>Select All</b> option from the contextual menu.</li>
+			</ol>
+			<p><b>To select several slides:</b></p>
+			<ol>
+				<li>hold down the <b>Ctrl</b> key,</li>
+				<li>select the necessary slides left-clicking them in the list of the existing slides on the left.</li>
+			</ol>
+            <p class="note"><b>Note</b>: all the key combinations that can be used to manage slides are listed at the <a href="../HelpfulHints/KeyboardShortcuts.htm#manageslides" onclick="onhyperlinkclick(this)">Keyboard Shortcuts</a> page.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Copie/pegue datos, deshaga/rehaga sus acciones</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the presentation: copy, paste, undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Copie/pegue datos, deshaga/rehaga sus acciones</h1>
+            <h3>Use operaciones de portapapeles básico</h3>
+			<p>Para cortar, copiar y pegar los objetos seleccionados (diapositivas, párrafos de texto, autoformas) en su presentación o deshacer y reahecer sus acciones, use las opciones correspondientes del menú contextual, o los atajos de teclado, o los iconos correspondientes en la barra de herramientas superior:</p>
+            <ul>
+                <li><b>Cortar</b> – seleccione un objeto y use la opción <b>Cortar</b> del menú contextual para borrar lo que ha seleccionado y enviarlo al portapapeles de su ordenador. <span class="onlineDocumentFeatures">Los datos eliminados pueden insertarse mas tarde a otro lugar de la misma presentación.</span></li>
+                <li><b>Copiar</b> – seleccione un objeto y use la opción <b>Copiar</b> del menú contextual o el icono <img alt="Icono copiar" src="../images/copy.png" /> <b>Copiar</b> en la barra de herramientas superior para copiarlo al portapapeles de su ordenador. <span class="onlineDocumentFeatures">El objeto copiado se puede copiar más adelante en otra parte de la misma presentación.</span></li>
+                <li><b>Pegar</b> – encuentre un lugar en su presentación donde quiera pegar el objeto anteriormente copiado y use la opción <b>Pegar</b> del menú contextual o el icono <img alt="Icono pegar" src="../images/paste.png" /> <b>Pegar</b> en la barra de herramientas superior. El objeto se insertará en la posición actual  de la posición del cursor. <span class="onlineDocumentFeatures">El objeto se puede copiar previamente de la misma presentación.</span></li>
+            </ul>    
+            <p><span class="onlineDocumentFeatures">En la <em>versión en línea</em>, las siguientes combinaciones de teclas solo se usan para copiar o pegar datos desde/hacia otro presentación o algún otro programa,</span> <span class="desktopDocumentFeatures">en la <em>versión de escritorio</em>, tanto los botones/menú correspondientes como las opciones de menú y combinaciones de teclas se pueden usar para cualquier operación de copiar/pegar:</span></p>
+                    <ul>
+                        <li>La combinación de las teclas <b>Ctrl+C</b> para copiar;</li>
+                        <li>La combinación de las teclas <b>Ctrl+V</b> para pegar;</li>
+                        <li>La combinación de las teclas <b>Ctrl+X</b> para cortar.</li>
+                    </ul>
+            <h3>Use la característica de Pegar Especial</h3>
+            <p>Una vez que el texto copiado se ha pegado, el <img alt="Pegado Especial" src="../images/pastespecialbutton.png" /> botón de <b>Pegado Especial</b> aparece al lado del pasaje/objeto del texto insertado. Haga clic en el botón para seleccionar la opción de pegado necesaria.</p>
+            <p>Para pegar pasajes de texto las siguientes opciones están disponibles:</p>
+            <ul>
+                <li><em>Usar tema de destino</em> - permite aplicar el formato especificado por el tema de la presentación actual. Esta opción se selecciona por defecto.</li>
+                <li><em>Mantener formato de origen</em> - permite mantener el formato de origen del texto copiado.</li>
+                <li><em>Imagen</em> - permite pegar el texto como imagen para que no pueda ser editado.</li>
+                <li><em>Mantener solo el texto</em> - permite pegar el texto sin su formato original.</li>
+            </ul>
+            <p><img alt="Opciones de pegado" src="../images/pastespecial.png" /></p>
+            <p>Al pegar objetos (formas automáticas, gráficos, tablas) están disponibles las siguientes opciones:</p>
+            <ul>
+                <li><em>Usar tema de destino</em> - permite aplicar el formato especificado por el tema de la presentación actual. Esta opción se selecciona por defecto.</li>
+                <li><em>Imagen</em> - permite pegar el texto como imagen para que no pueda ser editado.</li>
+            </ul>
+            <h3>Usar las operaciones Deshacer/Rehacer</h3>
+            <p>Para realizar las operaciones de deshacer/rehacer, use los iconos correspondientes en la parte izquierda de la cabecera del editor o los atajos de teclado:</p>
+            <ul>
+                <li><b>Deshacer</b> – use el icono <img alt="Icono deshacer" src="../images/undo.png" /> <b>Deshacer</b> para deshacer la última operación que realizó.</li>
+                <li><b>Rehacer</b> – use el icono <img alt="Icono rehacer" src="../images/redo.png" /> <b>Rehacer</b>  para rehacer la última operación que realizó.<p>Usted también puede usar la combinación de las teclas <b>Ctrl+Z</b> para desahecer una acción o <b>Ctrl+Y</b> para rehacerla.</p>
+                </li>
+            </ul>
+            <p class="note"><b>Nota</b>: cuando co-edita una presentación en modo <b>Rápido</b> la posibilidad de <b>Rehacer</b> la última operación que se deshizo no está disponible.</p>
+			
+		</div>
+	</body>
+</html>
