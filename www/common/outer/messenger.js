@@ -213,7 +213,7 @@ define([
         if (parsed[0] !== Types.mapId) { return; } // Don't send your key if it's already an ACK
 
         // Answer with your own key
-        var proxy = ctx.store.proxy;
+        var proxy = ctx.store.proxy || {};
         var myData = createData(proxy);
         delete myData.channel;
         var rMsg = [Types.mapIdAck, myData, channel.wc.myID];
@@ -662,7 +662,7 @@ define([
         if (channel.onUserlistUpdate) {
             channel.onUserlistUpdate();
         }
-        var proxy = ctx.store.proxy;
+        var proxy = ctx.store.proxy || {};
         var online = channel.wc.members.some(function (nId) {
             if (nId === ctx.store.network.historyKeeper) { return; }
             var data = channel.mapId[nId] || undefined;
@@ -673,7 +673,7 @@ define([
     };
 
     var getMyInfo = function (ctx, cb) {
-        var proxy = ctx.store.proxy;
+        var proxy = ctx.store.proxy || {};
         cb({
             curvePublic: proxy.curvePublic,
             displayName: proxy[Constants.displayNameKey]
@@ -948,6 +948,14 @@ define([
     Msg.init = function (cfg, waitFor, emit) {
         var messenger = {};
         var store = cfg.store;
+
+        // Already initialized by a "noDrive" tab
+        // If this one is a normal tab, add the missing listener if we can
+        if (store.messenger) {
+            store.messenger.addListener();
+            return store.messenger;
+        }
+
         if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
         var ctx = {
             store: store,
@@ -961,9 +969,14 @@ define([
             range_requests: {}
         };
 
-        store.proxy.on('change', ['mutedUsers'], function () {
-            ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
-        });
+        messenger.addListener = function () {
+            if (store.proxy) {
+                store.proxy.on('change', ['mutedUsers'], function () {
+                    ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
+                });
+            }
+        };
+        messenger.addListener();
 
         ctx.store.network.on('message', function(msg, sender) {
             onDirectMessage(ctx, msg, sender);

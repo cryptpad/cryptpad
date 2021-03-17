@@ -222,6 +222,7 @@ define([
                 } catch (e) { console.error(e); }
 
                 Cryptpad.ready(waitFor(), {
+                    noDrive: cfg.noDrive,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
                     currentPad: currentPad

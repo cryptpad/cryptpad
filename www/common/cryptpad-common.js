@@ -2271,8 +2271,9 @@ define([
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
                 cache: rdyCfg.cache,
+                noDrive: rdyCfg.noDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
-                driveEvents: true //rdyCfg.driveEvents // Boolean
+                driveEvents: !rdyCfg.noDrive //rdyCfg.driveEvents // Boolean
             };
             common.userHash = userHash;
 
