@@ -30,6 +30,7 @@ define([
             cursor: client.cursor
         };
         chan.sendMsg(JSON.stringify(data));
+        console.error(data);
         ctx.emit('MESSAGE', data, chan.clients.filter(function (cl) {
             return cl !== clientId;
         }));
