@@ -1405,6 +1405,8 @@ define([
                     framework._.sfCommon.getSframeChannel().event('EV_SHARE_OPEN', data);
                 };
 
+                var CKEDITOR = window.CKEDITOR;
+
                 // remove selected formatting with ctrl-space
                 editor.addCommand('deformat', {
                     exec: function (edt) {
