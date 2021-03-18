@@ -43,7 +43,11 @@ define([
     }, _alert('Sandbox configuration: httpUnsafeOrigin !== httpSafeOrigin'));
 
     assert(function (cb) {
-        cb((window.location.origin + '/') === ApiConfig.httpUnsafeOrigin);
+        var origin = window.location.origin;
+        return void cb([
+            origin,
+            origin + '/'
+        ].indexOf(ApiConfig.httpUnsafeOrigin) !== -1);
     }, _alert('Sandbox configuration: loading via httpUnsafeOrigin'));
 
 
