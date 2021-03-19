@@ -1188,5 +1188,6 @@
     "addOptionalPassword": "Ajouter un mot de passe (optionnel)",
     "fm_cantUploadHere": "Impossible d'importer un fichier ici",
     "importError": "Impossible d'importer (mauvais format)",
-    "oo_lostEdits": "Vos récentes modifications non sauvegardées n'ont pas pu être récupérées après la synchronisation du nouveau contenu."
+    "oo_lostEdits": "Vos récentes modifications non sauvegardées n'ont pas pu être récupérées après la synchronisation du nouveau contenu.",
+    "toolbar_degraded": "Au moins {0} éditeurs sont actuellement connectés à ce document. La liste des utilisateurs et le chat sont désactivés pour améliorer les performances."
 }
