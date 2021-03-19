@@ -586,11 +586,14 @@ define([
             var proxy = store.proxy || {};
             var disableThumbnails = Util.find(proxy, ['settings', 'general', 'disableThumbnails']);
             var teams = (store.modules['team'] && store.modules['team'].getTeamsData(app)) || {};
+            if (!proxy.uid) {
+                store.noDriveUid = store.noDriveUid || Hash.createChannelId();
+            }
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
                     name: proxy[Constants.displayNameKey] || store.noDriveName || "",
-                    uid: proxy.uid || Hash.createChannelId(), // Random uid in nodrive mode
+                    uid: proxy.uid || store.noDriveUid, // Random uid in nodrive mode
                     avatar: Util.find(proxy, ['profile', 'avatar']),
                     profile: Util.find(proxy, ['profile', 'view']),
                     color: getUserColor(),
@@ -858,6 +861,7 @@ define([
         Store.setDisplayName = function (clientId, value, cb) {
             if (!store.proxy) {
                 store.noDriveName = value;
+                broadcast([clientId], "UPDATE_METADATA");
                 return void cb();
             }
             if (store.modules['profile']) {
@@ -2836,7 +2840,10 @@ define([
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 if (!rt.proxy[Constants.displayNameKey] && store.noDriveName) {
-                    store.proxy[Constants.displayNameKey] = store.noDriveName;
+                    rt.proxy[Constants.displayNameKey] = store.noDriveName;
+                }
+                if (!rt.proxy.uid && store.noDriveUid) {
+                    rt.proxy.uid = store.noDriveUid;
                 }
                 /*
                 // deprecating localStorage migration as of 4.2.0

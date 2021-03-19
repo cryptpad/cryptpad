@@ -44,6 +44,7 @@ define([
             meta.debugDrive = drive;
         };
         SFCommonO.start({
+            noDrive: true,
             addData:addData
         });
     });
