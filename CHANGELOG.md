@@ -36,6 +36,10 @@
   * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
 * CKEditor
   * cursor jump when clicking on a comment bubble
+  * keybindings for common styles
+* nodrive
+  * load anonymous accounts without creating a drive
+  * faster load time, less junk on the server
 
 
 # 4.2.1
