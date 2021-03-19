@@ -8,7 +8,6 @@ define([
     var Cursor = {};
 
     var DEGRADED = AppConfig.degradedLimit || 8;
-console.log(DEGRADED);
 
     var convertToUint8 = function (obj) {
         var l = Object.keys(obj).length;
