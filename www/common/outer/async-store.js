@@ -2835,6 +2835,9 @@ define([
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
+                if (!rt.proxy[Constants.displayNameKey] && store.noDriveName) {
+                    store.proxy[Constants.displayNameKey] = store.noDriveName;
+                }
                 /*
                 // deprecating localStorage migration as of 4.2.0
                 var drive = rt.proxy.drive;
@@ -2950,7 +2953,13 @@ define([
             if (!store.network) {
                 var wsUrl = NetConfig.getWebsocketURL();
                 return void Netflux.connect(wsUrl).then(function (network) {
-                    store.network = network;
+                    // If we already haave a network (race condition), use the
+                    // existing one and forget this one
+                    if (!store.network) { store.network = network; }
+                    else {
+                        network.disconnect();
+                        network = store.network;
+                    }
                     // We need to know the HistoryKeeper ID to initialize the anon RPC
                     // Join a basic ephemeral channel, get the ID and leave it instantly
                     network.join('0000000000000000000000000000000000').then(function (wc) {

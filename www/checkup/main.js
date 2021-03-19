@@ -43,7 +43,12 @@ define([
     }, _alert('Sandbox configuration: httpUnsafeOrigin !== httpSafeOrigin'));
 
     assert(function (cb) {
-        cb((window.location.origin + '/') === ApiConfig.httpUnsafeOrigin);
+        cb(trimmedSafe === ApiConfig.httpSafeOrigin);
+    }, "httpSafeOrigin must not have a trailing slash");
+
+    assert(function (cb) {
+        var origin = window.location.origin;
+        return void cb(ApiConfig.httpUnsafeOrigin === origin);
     }, _alert('Sandbox configuration: loading via httpUnsafeOrigin'));
 
 

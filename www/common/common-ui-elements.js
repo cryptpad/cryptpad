@@ -1536,7 +1536,7 @@ define([
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
 
-        var faqLine = template(Messages.help.generic.more, Pages.docsLink);
+        var faqLine = template(Messages.help_genericMore, Pages.docsLink);
 
         var content = h('div.cp-info-menu-container', [
             h('div.logo-block', [

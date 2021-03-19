@@ -1292,13 +1292,15 @@ define([
                                   '#title-user-name { display: none !important; }' +
            (supportsXLSX() ? '' : '#slot-btn-dt-print { display: none !important; }') +
                                   // New OO:
-                                  '#asc-gen566 { display: none !important; }' + // Insert image from url
+                                  '#asc-gen257 { display: none !important; }' + // Insert image from url
                                   'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
                                   '#slot-btn-insequation { display: none !important; }' + // Insert equation
                                   //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
                                   '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                                   '#panel-info { display: none !important; }' + // Same but content
                                   '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
+                                  '#asc-gen1839 { display: none !important; }' + // Image context menu: replace with url
+                                  '#asc-gen5883 { display: none !important; }' + // Rightside image menu: replace with url
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   'div.btn-users.dropdown-toggle { display: none; !important }';
