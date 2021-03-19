@@ -32,11 +32,15 @@
     * pinning?
   * oo rebuild
   * OnlyOffice v6.2
+  * some buttons that we were hiding have new ids and needed to be hidden again
 * translations
   * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
 * CKEditor
   * cursor jump when clicking on a comment bubble
   * keybindings for common styles
+    * test if this affects scroll position (it shouldn't)
+    * check that CTRL-space doesn't mess with anything and that it is what Google uses
+    * test on Mac
 * nodrive
   * load anonymous accounts without creating a drive
   * faster load time, less junk on the server
