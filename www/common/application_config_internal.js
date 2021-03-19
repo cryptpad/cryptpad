@@ -190,5 +190,13 @@ define(function() {
     // but this number depends on the network and CPU performances of each user's device.
     config.degradedLimit = 8;
 
+    // In "legacy" mode, one-time users were always creating an "anonymous" drive when visiting CryptPad
+    // in which they could store their pads. The new "driveless" mode allow users to open an existing
+    // pad without creating a drive in the background. The drive will only be created if they visit
+    // a different page (Drive, Settings, etc.) or try to create a new pad themselves. You can disable
+    // the driveless mode by changing the following value to "false"
+    config.allowDrivelessMode = true;
+    config.allowDrivelessMode = true;
+
     return config;
 });
