@@ -50,6 +50,12 @@ define([
         });
     };
 
+    var updateDegraded = function (ctx, wc, chan) {
+        var m = wc.members;
+        chan.degraded = (m.length-1) >= DEGRADED;
+        ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
+    };
+
     var initCursor = function (ctx, obj, client, cb) {
         var channel = obj.channel;
         var secret = obj.secret;
@@ -92,14 +98,10 @@ define([
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
+            updateDegraded(ctx, chan.wc, chan);
             return void cb();
         }
 
-        var updateDegraded = function (ctx, wc, chan) {
-            var m = wc.members;
-            chan.degraded = (m.length-1) >= DEGRADED;
-            ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
-        };
         var onOpen = function (wc) {
 
             ctx.channels[channel] = ctx.channels[channel] || {};
