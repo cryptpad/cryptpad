@@ -223,7 +223,7 @@
     "canvas_opacity": "Opacidad",
     "settings_publicSigningKey": "Clave de Firma Pública",
     "historyButton": "Mostrar el historial del documento",
-    "history_next": "Ir a la versión anterior",
+    "history_next": "Siguiente versión",
     "history_prev": "Ir a la versión posterior",
     "history_closeTitle": "Cerrar el historial",
     "history_restoreTitle": "Restaurar la versión seleccionada del documento",
@@ -269,7 +269,7 @@
     "fm_info_trash": "Vacía tu papelera para liberar espacio en tu CryptDrive.",
     "upload_mustLogin": "Tienes que estar conectado para subir archivos",
     "uploadButton": "Subir",
-    "uploadButtonTitle": "Subir un archivo a la carpeta",
+    "uploadButtonTitle": "Subir un archivo a tu CryptDrive",
     "filePickerButton": "Incrustar un archivo",
     "filePicker_close": "Cerrar",
     "filePicker_description": "Elige un archivo de tu CryptDrive para incrustarlo o sube uno nuevo",
@@ -350,7 +350,7 @@
     "errorCopy": " Aún puedes acceder al contenido presionando <em>Esc</em>.<br>Una vez que cierres esta ventana no te será posible acceder a ella nuevamente.",
     "errorRedirectToHome": "Presiona<em>Esc</em>para ser redirigido a tu Cryptdrive.",
     "newVersionError": "Una nueva versión de CryptPad está disponible.<br><a href='#'>Recargar</a> para usar la nueva versión,  o presiona escape para acceder a tu contenido en <b>modo offline</>.",
-    "deletedFromServer": "Nota borrada desde el servidor",
+    "deletedFromServer": "Nota borrada",
     "mustLogin": "Debes haber ingresado a tu cuenta para acceder a esta página",
     "disabledApp": "Esta nota ha sido eliminada por inactividad. Presione Esc para crear una nueva nota.",
     "initializing": "Iniciando...",
@@ -451,7 +451,7 @@
     "settings_cat_cursor": "Cursor",
     "settings_cat_pad": "Texto enriquecido",
     "settings_cat_subscription": "Suscripción",
-    "settings_backupHint": "Respalde o recupere todo sus contenido ne CryptDrive. No tendrán el contenido de sus archivos, solo las llaves para acceder a ellos.",
+    "settings_backupHint": "Respalde o recupere todo sus contenido en CryptDrive. No tendrán el contenido de sus archivos, solo las llaves para acceder a ellos.",
     "settings_backupHint2": "Descargue el contenido actual de sus notas. Las notas serán descargadas en un formato de leíble si el formato esta disponible.",
     "settings_backup2": "Descargar mi CryptDrive",
     "settings_backup2Confirm": "Esto descargara todas las notas y archivos desde su CryptDrive. Si desea continuar, elija un nombre y presione OK",
@@ -603,5 +603,6 @@
     "settings_cursorColorTitle": "Color de puntero",
     "mdToolbar_button": "Mostrar u ocultar la barra de herramientas de Markdown",
     "creation_404": "Esta almohadilla ya no existe. Utilice el siguiente formulario para crear un nuevo pad.",
-    "creation_owned1": "Un pad <b>propio</b> puede ser eliminado del servidor cuando el propietario lo desee. Al eliminar un pad propio se elimina de los CryptDrives de otros usuarios."
+    "creation_owned1": "Un pad <b>propio</b> puede ser eliminado del servidor cuando el propietario lo desee. Al eliminar un pad propio se elimina de los CryptDrives de otros usuarios.",
+    "settings_padNotifTitle": "Notificaciones de comentarios"
 }

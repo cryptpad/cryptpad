@@ -257,7 +257,7 @@
     "fm_sharedFolderName": "Shared folder",
     "fm_searchPlaceholder": "Search...",
     "fm_newButton": "New",
-    "fm_newButtonTitle": "Create a new pad or folder, import a file in the current folder",
+    "fm_newButtonTitle": "Create a new document or folder, import a file in the current folder.",
     "fm_newFolder": "New folder",
     "fm_newFile": "New pad",
     "fm_morePads": "More",
@@ -618,7 +618,7 @@
     "creation_noOwner": "No owner",
     "creation_expiration": "Expiration date",
     "creation_passwordValue": "Password",
-    "creation_newPadModalDescription": "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
+    "creation_newPadModalDescription": "Click on a document type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
     "password_info": "The pad you're trying to open no longer exist or is protected with a password. Enter the correct password to access its content.",
     "password_error": "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.",
     "password_placeholder": "Type the password here...",
@@ -1188,5 +1188,6 @@
     "addOptionalPassword": "Add a password (optional)",
     "importError": "Failed to import (wrong format)",
     "fm_cantUploadHere": "Can't upload a file here",
-    "oo_lostEdits": "Unfortunately your recent unsaved edits could not be recovered after synchronising new content."
+    "oo_lostEdits": "Unfortunately your recent unsaved edits could not be recovered after synchronising new content.",
+    "toolbar_degraded": "Over {0} editors are currently present in this document. The user list and chat are disabled to improve performance."
 }
