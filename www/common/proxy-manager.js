@@ -868,7 +868,6 @@ define([
                     if (fId && Env.folders[fId] && Env.folders[fId].deleting) {
                         delete Env.folders[fId].deleting;
                     }
-                    console.error(obj.error, chan);
                     Feedback.send('ERROR_DELETING_OWNED_PAD=' + chan + '|' + obj.error, true);
                     return void cb();
                 }
@@ -879,6 +878,11 @@ define([
                 // If the pad was a shared folder, delete it too and leave it
                 if (fId) {
                     ids.push(fId);
+                }
+
+                if (!ids.length) {
+                    toDelete = undefined;
+                    return void cb();
                 }
 
                 ids.forEach(function (id) {
@@ -912,8 +916,13 @@ define([
                 });
             });
         }).nThen(function () {
-            // Remove deleted pads from the drive
-            _delete(Env, { resolved: toDelete }, cb);
+            if (!toDelete) {
+                // Nothing to delete
+                cb();
+            } else {
+                // Remove deleted pads from the drive
+                _delete(Env, { resolved: toDelete }, cb);
+            }
             // If we were using the access modal, send a refresh command
             if (data.channel) {
                 Env.Store.refreshDriveUI();

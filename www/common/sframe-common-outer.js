@@ -1407,6 +1407,7 @@ define([
                     };
                     config.data = {
                         app: parsed.type,
+                        channel: secret.channel,
                         hashes: hashes,
                         password: password,
                         isTemplate: isTemplate,

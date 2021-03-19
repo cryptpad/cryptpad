@@ -331,6 +331,8 @@ define([
                 teamId = data.teamId;
             }
 
+            // XXX CLEAR CACHE
+
             if (channel === store.driveChannel && !force) {
                 return void cb({error: 'User drive removal blocked!'});
             }
