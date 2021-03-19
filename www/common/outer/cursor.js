@@ -2,11 +2,13 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Constants, Messages, Crypto) {
+], function (Util, Constants, Messages, AppConfig, Crypto) {
     var Cursor = {};
 
-    var DEGRADED = 3; // XXX Number of users before switching to degraded mode
+    var DEGRADED = AppConfig.degradedLimit || 8;
+console.log(DEGRADED);
 
     var convertToUint8 = function (obj) {
         var l = Object.keys(obj).length;
