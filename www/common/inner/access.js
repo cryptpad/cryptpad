@@ -25,10 +25,12 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
 
-        var channel = data.channel;
+        var priv = metadataMgr.getPrivateData();
+        var channel = data.channel || priv.channel;
         var owners = data.owners || [];
         var pending_owners = data.pending_owners || [];
         var teamOwner = data.teamId;
+        var title = opts.title;
 
         opts = opts || {};
         var redrawAll = function () {};
@@ -115,7 +117,7 @@ define([
                     if (!friend) { return; }
                     common.mailbox.sendTo("RM_OWNER", {
                         channel: channel,
-                        title: data.title,
+                        title: data.title || title,
                         pending: pending
                     }, {
                         channel: friend.notifications,
@@ -271,7 +273,7 @@ define([
                                 href: data.href || data.rohref,
                                 password: data.password,
                                 path: isTemplate ? ['template'] : undefined,
-                                title: data.title || '',
+                                title: data.title || title || "",
                                 teamId: obj.id
                             }, waitFor(function (err) {
                                 if (err) { return void console.error(err); }
@@ -320,6 +322,12 @@ define([
                     }));
                 }
             }).nThen(function (waitFor) {
+                var href = data.href;
+                var hashes = priv.hashes || {};
+                var bestHash = hashes.editHash || hashes.viewHash || hashes.fileHash;
+                if (data.fakeHref) {
+                    href = Hash.hashToHref(bestHash, priv.app);
+                }
                 sel.forEach(function (el) {
                     var curve = $(el).attr('data-curve');
                     if (curve === user.curvePublic) { return; }
@@ -327,9 +335,9 @@ define([
                     if (!friend) { return; }
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,
-                        href: data.href,
-                        password: data.password,
-                        title: data.title
+                        href: href,
+                        password: data.password || priv.password,
+                        title: data.title || title
                     }, {
                         channel: friend.notifications,
                         curvePublic: friend.curvePublic
@@ -398,7 +406,8 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
 
-        var channel = data.channel;
+        var priv = metadataMgr.getPrivateData();
+        var channel = data.channel || priv.channel;
         var owners = data.owners || [];
         var restricted = data.restricted || false;
         var allowed = data.allowed || [];
