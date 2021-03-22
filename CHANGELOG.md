@@ -15,6 +15,8 @@
     * websockets
     * sandbox CSP
     * login block
+  * recommend against trailing slashes for configured domains
+    * remove slashes in server.js anyway
 * admin page
   * support responses to closed tickets
   * collapse very long messages
@@ -24,7 +26,9 @@
 * display survey URL
 * support 'KB' in Util.magnitudeOfBytes
 * degraded mode
-  * decide on a number
+  * decide on a number: 8
+  * provide an easy way to change it (application_config.js)
+  * inform users what the limit is (when degraded mode "kicks in")
 * sheets
   * fix naming collisions between images in spreadsheets
   * degraded mode not supported
@@ -44,6 +48,16 @@
 * nodrive
   * load anonymous accounts without creating a drive
   * faster load time, less junk on the server
+  * `AppConfig.allowDrivelessMode`
+  * cursor color is randomly generated each time and doesn't persist after creating a drive
+* secure iframe now always knows the channel of the related document
+  * more consistent API with other APPs
+* debug app doesn't create a drive
+* implement/fix ability to destroy pads whether they exist in your drive or not
+
+
+* Known issues
+  * change password for documents in your drive when you don't have the most recent password (multi-owner pads)
 
 
 # 4.2.1
