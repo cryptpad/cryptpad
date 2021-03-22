@@ -467,7 +467,7 @@ define([
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
-                    Cryptpad.getPadAttribute('title', w(function (err, data) {
+                    Cryptpad.getPadAttribute('channel', w(function (err, data) {
                         stored = (!err && typeof (data) === "string");
                     }));
                     Cryptpad.getPadAttribute('password', w(function (err, val) {
@@ -476,6 +476,11 @@ define([
                 }).nThen(function (w) {
                     if (!password && !stored && newPadPassword) {
                         passwordCfg.value = newPadPassword;
+                    }
+
+                    // Pad not stored && password required: always ask for the password
+                    if (!stored && parsed.hashData.password) {
+                        return void askPassword(true, passwordCfg);
                     }
 
                     if (parsed.type === "file") {
@@ -502,10 +507,6 @@ define([
                             sframeChan.event("EV_PAD_PASSWORD_ERROR");
                             waitFor.abort();
                             return;
-                        }
-                        if (!stored && !parsed.hashData.password) {
-                            // We've received a link without /p/ and it doesn't work without a password: abort
-                            return void todo();
                         }
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);
