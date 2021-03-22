@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tabellenblätter verwalten</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Manage sheets in Spreadsheet Editor: insert, delete, rename, copy and move." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Tabellenblätter verwalten</h1>
+			<p>Standardmäßig hat eine erstellte Tabelle drei Blätter. Am einfachsten lassen sich neue Blätter hinzufügen, indem Sie auf Symbol <img alt="Plus (Neues Blatt)" src="../images/plus.png" /> rechts neben den Schaltflächen <b>Blattnavigation</b> in der linken unteren Ecke klicken.</p>
+			<p>Alternativ können Sie ein <b>neues Blatt hinzufügen</b> wie folgt:</p>
+			<ol>
+			<li>Klicken Sie mit der rechten Maustaste auf das Tabellenblatt, nach dem Sie ein neues einfügen möchten.</li>
+			<li>Wählen Sie die Option <b>Einfügen</b> im Rechtsklickmenü.</li>
+			</ol>
+			<p>Ein neues Blatt wird nach dem gewählten Blatt eingefügt.</p>
+			<p>Um <b>das gewünschte Blatt zu aktivieren</b>, nutzen Sie die Blattregisterkarten in der linken unteren Ecke jeder Tabelle.</p>
+			<p class="note"><b>Hinweis</b>: Wenn Sie mehrere Blätter haben, können Sie über die Schaltflächen für die <b>Blattnavigation</b> in der linken unteren Ecke navigieren, um das benötigte Blatt zu finden.</p>
+			<p><b>Ein überflüssiges Blatt löschen:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Registerkarte des Blattes, das Sie entfernen möchten.</li>
+				<li>Wählen Sie die Option <b>Löschen</b> im Rechtsklickmenü.</li>
+			</ol>
+			<p>Das gewählte Blatt wird aus der aktuellen Tabelle entfernt.</p>
+			<p><b>Ein vorhandenes Blatt umbenennen:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Registerkarte des Blattes, das Sie umbenennen möchten.</li>
+				<li>Wählen Sie die Option <b>Umbenennen</b> im Rechtsklickmenü.</li>
+				<li>Geben Sie den <b>Blatttitel</b> in das Dialogfeld ein und klicken Sie auf <b>OK</b>.</li>
+			</ol>
+			<p>Der Titel des gewählten Blatts wird geändert.</p>
+			<p><b>Ein vorhandenes Blatt kopieren:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Registerkarte des Blattes, das Sie kopieren möchten.</li>
+				<li>Wählen Sie die Option <b>Kopieren</b> im Rechtsklickmenü.</li>
+				<li>Wählen Sie das Blatt, vor dem Sie das kopierte Blatt einfügen möchten, oder nutzen Sie die Option <b>Zum Ende kopieren</b>, um das kopierte Blatt nach allen vorhandenen Blättern einzufügen.</li>
+				<li>Klicken Sie auf <b>OK</b>.</li>
+			</ol>
+			<p>Das gewählte Blatt wird kopiert und an der gewählten Stelle untergebracht.</p>
+			<p><b>Ein vorhandene Blatt verschieben:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Registerkarte des Blattes, das Sie verschieben möchten.</li>
+				<li>Wählen Sie die Option <b>Verschieben</b> im Rechtsklickmenü.</li>
+				<li>Wählen Sie das Blatt, vor dem Sie das gewählte Blatt einfügen möchten, oder nutzen Sie die Option <b>Zum Ende verschieben</b>, um das gewählte Blatt nach allen vorhandenen Blättern einzufügen.</li>
+				<li>Klicken Sie auf <b>OK</b>.</li>
+			</ol>
+			<p>Sie können das erforderliche Blatt auch mit dem Mauszeiger <b>ziehen</b> und an der gewünschten Position <b>loslassen</b>. Das gewählte Blatt wird verschoben.</p>
+			<p>Wenn Sie mit mehreren Blättern arbeiten, können Sie die Blätter, die aktuell nicht benötigt werden, ausblenden, um die Arbeit übersichtlicher zu gestalten. Blätter ausblenden:</p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Registerkarte des Blattes, das Sie ausblenden möchten.</li>
+				<li>Wählen Sie die Option <b>Ausblenden</b> im Rechtsklickmenü.</li>
+			</ol>
+			<p><b>Um die ausgeblendete Blattregisterkarte einzublenden</b>, klicken Sie mit der rechten Maustaste auf eine beliebige Registerkarte, öffnen Sie die Liste <b>Ausgeblendet</b> und wählen Sie die Blattregisterkarte aus, die Sie wieder einblenden möchten.</p>
+			<p>Um die Blätter zu unterscheiden, können Sie den Blattregistern <b>unterschiedliche Farben zuweisen</b>. Gehen Sie dazu vor wie folgt:</p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Registerkarte des Blattes, das Sie farblich absetzen möchten.</li>
+                <li>Wählen Sie die Option <b>Registerfarbe</b> im Rechtsklickmenü.</li>
+				<li>Wählen Sie eine beliebige Farbe auf den verfügbaren Paletten aus.<p><img alt="Palette" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Designfarben</b> - die Farben, die dem gewählten Farbschema der Tabelle entsprechen.</li>
+						<li><b>Standardfarben</b> - die voreingestellten Standardfarben.</li>
+						<li><b>Benutzerdefinierte Farbe</b> - klicken Sie auf diese Option, wenn Ihre gewünschte Farbe nicht in der Palette mit verfügbaren Farben enthalten ist. Wählen Sie den gewünschten Farbbereich mit dem vertikalen Schieberegler aus und legen Sie dann die gewünschte Farbe fest, indem Sie den Farbwähler innerhalb des großen quadratischen Farbfelds an die gewünschte Position ziehen. Sobald Sie eine Farbe mit dem Farbwähler bestimmt haben, werden die entsprechenden RGB- und sRGB-Farbwerte in den Feldern auf der rechten Seite angezeigt. Sie können auch anhand des RGB-Farbmodells eine Farbe bestimmen, geben Sie die gewünschten nummerischen Werte in den Feldern <b>R</b>, <b>G</b>, <b>B</b> (Rot, Grün, Blau) ein oder den sRGB-Hexadezimalcode in das Feld mit dem <b>#</b>-Zeichen. Die gewählte Farbe wird im Vorschaufeld <b>Neu</b> angezeigt. Wenn das Objekt vorher mit einer benutzerdefinierten Farbe gefüllt war, wird diese Farbe im Feld <b>Aktuell</b> angezeigt, so dass Sie die Originalfarbe und die Zielfarbe vergleichen könnten. Wenn Sie die Farbe festgelegt haben, klicken Sie auf <b>Hinzufügen</b>.<p><img alt="Palette - Benutzerdefinierte Farbe" src="../images/palette_custom.png" /></p>
+						<p>Die benutzerdefinierte Farbe wird auf die Daten angewandt und zur Palette <b>Benutzerdefinierte Farbe</b> hinzugefügt.</p>
+						</li>
+						</ul>
+					</li>
+			</ol>
+		</div>
+	</body>
+</html>

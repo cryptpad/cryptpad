@@ -107,6 +107,17 @@ define([
         // If we try to load an existing shared folder (isNew === false) but this folder
         // doesn't exist in the database, abort and cb
         nThen(function (waitFor) {
+            // If we're in onCacheReady, make sure we have a cache for this shared folder
+            if (config.cache) {
+                Cache.getChannelCache(secret.channel, waitFor(function (err) {
+                    if (err === "EINVAL") { // Cache not found
+                        waitFor.abort();
+                        store.manager.restrictedProxy(id, secret.channel);
+                        return void cb(null);
+                    }
+                }));
+            }
+        }).nThen(function (waitFor) {
             isNewChannel(null, { channel: secret.channel }, waitFor(function (obj) {
                 if (obj.isNew && !isNew) {
                     store.manager.deprecateProxy(id, secret.channel);
@@ -179,7 +190,8 @@ define([
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners
-                }
+                },
+                onRejected: config.Store && config.Store.onRejected
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
             rt.proxy.on('cacheready', function () {
@@ -246,8 +258,6 @@ define([
                         return void cb();
                     }
                     if (info.error === "ERESTRICTED" ) {
-                        // This shouldn't happen: allow list are disabled for shared folders
-                        // but call "cb" to make sure we won't block the initial "waitFor"
                         sf.teams.forEach(function (obj) {
                             obj.store.manager.restrictedProxy(obj.id, secret.channel);
                         });
@@ -326,6 +336,7 @@ define([
                     network: network,
                     store: s,
                     updatePassword: true,
+                    Store: Store,
                     isNewChannel: Store.isNewChannel
                 }, sfId, sf, waitFor());
                 if (!s.rpc) { return; }
@@ -344,7 +355,7 @@ define([
         - userObject: userObject associated to the main drive
         - handler: a function (sfid, rt) called for each shared folder loaded
     */
-    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor, progress) {
+    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor, progress, cache) {
         var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
         var steps = Object.keys(shared).length;
         var i = 1;
@@ -356,6 +367,8 @@ define([
                 SF.load({
                     network: network,
                     store: store,
+                    Store: Store,
+                    cache: cache,
                     isNewChannel: Store.isNewChannel
                 }, id, sf, waitFor(function () {
                     progress({

@@ -888,9 +888,16 @@ define([
                             });
                         }
 
+                        var href = data.href;
+                        var hashes = priv.hashes || {};
+                        var bestHash = hashes.editHash || hashes.viewHash || hashes.fileHash;
+                        if (data.fakeHref) {
+                            href = Hash.hashToHref(bestHash, priv.app);
+                        }
                         sframeChan.query(q, {
                             teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                            href: data.href,
+                            href: href,
+                            oldPassword: priv.password,
                             password: newPass
                         }, function (err, data) {
                             $(passwordOk).text(Messages.properties_changePasswordButton);
@@ -956,7 +963,7 @@ define([
                     spinner.spin();
                     sframeChan.query('Q_DELETE_OWNED', {
                         teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                        channel: data.channel
+                        channel: data.channel || priv.channel
                     }, function (err, obj) {
                         spinner.done();
                         UI.findCancelButton().click();
@@ -1053,6 +1060,7 @@ define([
                             spinner.hide();
                             var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
                                                                           : Messages.error;
+                            console.error(err);
                             return void UI.warn(text);
                         }
                         spinner.done();

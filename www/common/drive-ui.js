@@ -580,7 +580,7 @@ define([
         APP.closed = false;
         APP.toolbar = driveConfig.toolbar;
 
-        var $readOnly = $(h('div#cp-app-drive-edition-state.cp-app-drive-content-info-box', Messages.readonly));
+        var $readOnly = $(h('div.cp-banner.cp-banner-info.cp-app-drive-content-info-box', Messages.readonly));
 
         var updateObject = driveConfig.updateObject;
         var updateSharedFolders = driveConfig.updateSharedFolders;
@@ -1775,6 +1775,13 @@ define([
                 target: e.target,
                 path: findDropPath(e.target)
             };
+
+            // Make sure we can only upload files in the Documents tree
+            var p = ev.path;
+            if (!Array.isArray(p) || !p.length || p[0] !== ROOT) {
+                return void UI.warn(Messages.fm_cantUploadHere);
+            }
+
             APP.FM.onFileDrop(file, ev);
         };
         var onDrop = function (ev) {
@@ -3060,14 +3067,14 @@ define([
                 'class': 'cp-app-drive-element-row cp-app-drive-new-ghost'
             }).prepend($addIcon.clone()).appendTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
-                .text(Messages.fm_newFile));
+                .text(Messages.fm_newButton));
             $element.click(function () {
                 var modal = UI.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
                     $body: $('body')
                 });
                 var $modal = modal.$modal;
-                var $title = $('<h3>').text(Messages.fm_newFile);
+                var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
                 var $description = $('<p>').text(Messages.fm_newButtonTitle);
                 $modal.find('.cp-modal').append($title);
                 $modal.find('.cp-modal').append($description);

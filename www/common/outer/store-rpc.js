@@ -67,8 +67,6 @@ define([
             ANON_GET_PREVIEW_CONTENT: Store.anonGetPreviewContent,
             // OnlyOffice
             OO_COMMAND: Store.onlyoffice.execCommand,
-            // Cursor
-            CURSOR_COMMAND: Store.cursor.execCommand,
             // Mailbox
             MAILBOX_COMMAND: Store.mailbox.execCommand,
             // Universal

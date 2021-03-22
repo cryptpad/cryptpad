@@ -13,7 +13,7 @@ var ignoreLines = function (source, pattern) {
 };
 
 var GENERATED_PATTERNS = [
-   /(admin|settings)_.*(Hint|Title|Button)/,
+   /(team|admin|settings|support)_.*(Hint|Title|Button)/,
    /settings_colortheme/,
    /loading_(state|drive|pad)_/,
    /(admin|notifications|support|team|settings)_cat_/,
@@ -28,7 +28,11 @@ var isPossiblyGenerated = function (key) {
 var grep = function (pattern, cb) {
     var exclude = [
         'www/common/translations/*',
-        'www/common/onlyoffice/*',
+        'www/common/onlyoffice/v1/*',
+        'www/common/onlyoffice/v2b*',
+        'www/common/onlyoffice/v4*',
+        'www/common/onlyoffice/x2t/*',
+        //'www/common/onlyoffice/build/*',
         'www/lib/*',
         'www/common/pdfjs/*',
         '*.css',
@@ -73,9 +77,10 @@ var grep = function (pattern, cb) {
             return void cb(err);
         }
         if (/data\-localization/.test(stdout)) {
-            return cb(void 0, true, "DATA_LOCALIZATION", stdout);
+            return cb(void 0, false);
+            //return cb(void 0, true, "DATA_LOCALIZATION", stdout);
         }
-        if (/(Messages|Msg|messages)\./.test(stdout)) {
+        if (/(Messages|Msg|messages)\./.test(stdout) || /(footLink|footerCol)/.test(stdout)) {
             return cb(void 0, false);
         }
 

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>FTEST-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>FTEST-Funktion</h1>
+			<p>Die Funktion <b>FTEST</b> gehört zur Gruppe der statistischen Funktionen. Sie gibt die Teststatistik eines F-Tests zurück. Ein F-Test berechnet die zweiseitige Wahrscheinlichkeit, dass sich die Varianzen von <b><em>Matrix1</em></b> und <b><em>Matrix2</em></b> nicht signifikant unterscheiden. Mit dieser Funktion können Sie feststellen, ob zwei Stichproben unterschiedliche Varianzen haben.</p>
+			<p>Die Formelsyntax der Funktion <b>FTEST</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>FTEST(Matrix1;Matrix2)</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>Matrix1</em></b> ist die erste Matrix oder der erste Wertebereich.</p>
+			<p style="text-indent: 50px;"><b><em>Matrix2</em></b> ist die zweite Matrix oder der zweite Wertebereich.</p>
+			<p>Die Werte werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen. Text, Wahrheitswerte oder leere Zellen werden ignoriert. Zellen, die den Wert 0 enthalten, werden dagegen berücksichtigt. Enthält eines der Argumente weniger als 2 Datenpunkte, oder ist die Varianz eines Wertebereichs gleich 0, gibt die Funktion den Fehlerwert #DIV/0! zurück.</p>
+ 			<p>Anwendung der Funktion <b>FTEST</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie in einer gewählten Zelle mit der rechten Maustaste und wählen Sie die Option <b>Funktion einfügen</b> aus dem Menü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Statistische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>FTEST</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="FTEST-Funktion" src="../images/ftest.png" /></p>
+		</div>
+	</body>
+</html>

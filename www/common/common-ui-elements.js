@@ -34,10 +34,14 @@ define([
     };
 
     UIElements.prettySize = function (bytes) {
-        var kB = Util.bytesToKilobytes(bytes);
-        if (kB < 1024) { return kB + Messages.KB; }
-        var mB = Util.bytesToMegabytes(bytes);
-        return mB + Messages.MB;
+        var unit = Util.magnitudeOfBytes(bytes);
+        if (unit === 'GB') {
+            return Messages._getKey('formattedGB', [ Util.bytesToGigabytes(bytes)]);
+        } else if (unit === 'MB') {
+            return Messages._getKey('formattedMB', [ Util.bytesToMegabytes(bytes)]);
+        } else {
+            return Messages._getKey('formattedKB', [ Util.bytesToKilobytes(bytes)]);
+        }
     };
 
     UIElements.updateTags = function (common, hrefs) {
@@ -832,12 +836,7 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    common.isPadStored(function (err, data) {
-                        if (!data) {
-                            return void UI.alert(Messages.autostore_notAvailable);
-                        }
-                        sframeChan.event('EV_PROPERTIES_OPEN');
-                    });
+                    sframeChan.event('EV_PROPERTIES_OPEN');
                 });
                 break;
             case 'save': // OnlyOffice save
@@ -911,18 +910,22 @@ define([
         };
         var actions = {
             'bold': {
+                // Msg.mdToolbar_bold
                 expr: '**{0}**',
                 icon: 'fa-bold'
             },
             'italic': {
+                // Msg.mdToolbar_italic
                 expr: '_{0}_',
                 icon: 'fa-italic'
             },
             'strikethrough': {
+                // Msg.mdToolbar_strikethrough
                 expr: '~~{0}~~',
                 icon: 'fa-strikethrough'
             },
             'heading': {
+                // Msg.mdToolbar_heading
                 apply: function (str) {
                     return '\n'+clean(str).split('\n').map(function (line) {
                         return '# '+line;
@@ -931,10 +934,12 @@ define([
                 icon: 'fa-header'
             },
             'link': {
+                // Msg.mdToolbar_link
                 expr: '[{0}](http://)',
                 icon: 'fa-link'
             },
             'quote': {
+                // Msg.mdToolbar_quote
                 apply: function (str) {
                     return '\n\n'+str.split('\n').map(function (line) {
                         return '> '+line;
@@ -943,6 +948,7 @@ define([
                 icon: 'fa-quote-right'
             },
             'nlist': {
+                // Msg.mdToolbar_nlist
                 apply: function (str) {
                     return '\n'+clean(str).split('\n').map(function (line) {
                         return '1. '+line;
@@ -951,6 +957,7 @@ define([
                 icon: 'fa-list-ol'
             },
             'list': {
+                // Msg.mdToolbar_list
                 apply: function (str) {
                     return '\n'+clean(str).split('\n').map(function (line) {
                         return '* '+line;
@@ -959,6 +966,7 @@ define([
                 icon: 'fa-list-ul'
             },
             'check': {
+                // Msg.mdToolbar_check
                 apply: function (str) {
                     return '\n' + clean(str).split('\n').map(function (line) {
                         return '* [ ] ' + line;
@@ -967,6 +975,7 @@ define([
                 icon: 'fa-check-square-o'
             },
             'code': {
+                // Msg.mdToolbar_code
                 apply: function (str) {
                     if (str.indexOf('\n') !== -1) {
                         return '\n```\n' + clean(str) + '\n```\n';
@@ -976,6 +985,7 @@ define([
                 icon: 'fa-code'
             },
             'toc': {
+                // Msg.mdToolbar_toc
                 expr: '[TOC]',
                 icon: 'fa-newspaper-o'
             }
@@ -1077,36 +1087,40 @@ define([
         return e;
     };
 
-    UIElements.createHelpMenu = function (common, categories) {
+    UIElements.createHelpMenu = function (common /*, categories */) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
 
-        var elements = [];
-        if (Messages.help && Messages.help.generic) {
-            Object.keys(Messages.help.generic).forEach(function (el) {
-                elements.push(setHTML(h('li'), Messages.help.generic[el]));
-            });
-        }
-        if (categories) {
-            categories.forEach(function (cat) {
-                var msgs = Messages.help[cat];
-                if (msgs) {
-                    Object.keys(msgs).forEach(function (el) {
-                        elements.push(setHTML(h('li'), msgs[el]));
-                    });
-                }
-            });
+
+        var apps = {
+            pad: 'richtext',
+            code: 'code',
+            slide: 'slides',
+            sheet: 'sheets',
+            poll: 'poll',
+            kanban: 'kanban',
+            whiteboard: 'whiteboard',
+        };
+
+        var href = "https://docs.cryptpad.fr/en/user_guide/applications.html";
+        if (apps[type]) {
+            href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
 
+        var content = setHTML(h('p'), Messages.help_genericMore);
+        $(content).find('a').attr({
+            href: href,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+        });
+
         var text = h('p.cp-help-text', [
-            h('h1', Messages.help.title),
-            h('ul', elements)
+            content
         ]);
 
         common.fixLinks(text);
 
         var closeButton = h('span.cp-help-close.fa.fa-times');
         var $toolbarButton = common.createButton('', true, {
-            title: Messages.hide_help_button,
             text: Messages.help_button,
             name: 'help'
         }).addClass('cp-toolbar-button-active');
@@ -1115,28 +1129,12 @@ define([
             text
         ]);
 
-        var toggleHelp = function (forceClose) {
-            if ($(help).hasClass('cp-help-hidden')) {
-                if (forceClose) { return; }
-                common.setAttribute(['hideHelp', type], false);
-                $toolbarButton.addClass('cp-toolbar-button-active');
-                $toolbarButton.attr('title', Messages.hide_help_button);
-                return void $(help).removeClass('cp-help-hidden');
-            }
+        $toolbarButton.attr('title', Messages.show_help_button);
+
+        var toggleHelp = function () {
             $toolbarButton.removeClass('cp-toolbar-button-active');
-            $toolbarButton.attr('title', Messages.show_help_button);
             $(help).addClass('cp-help-hidden');
             common.setAttribute(['hideHelp', type], true);
-        };
-
-        var showMore = function () {
-            $(text).addClass("cp-help-small");
-            var $dot = $('<span>').text('...').appendTo($(text).find('h1'));
-            $(text).click(function () {
-                $(text).removeClass('cp-help-small');
-                $(text).off('click');
-                $dot.remove();
-            });
         };
 
         $(closeButton).click(function (e) {
@@ -1144,16 +1142,12 @@ define([
             toggleHelp(true);
         });
         $toolbarButton.click(function () {
-            toggleHelp();
+            common.openUnsafeURL(href);
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
-            //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
-            if (val === true) { return void toggleHelp(true); }
-            // Note: Help is always hidden by default now, to avoid displaying to many things in the UI
-            // This is why we have (true || ...)
-            if (!val && (true || $(window).height() < 800 || $(window).width() < 800)) {
-                return void showMore();
+            if (val === true || $(window).height() < 800 || $(window).width() < 800) {
+                toggleHelp(true);
             }
         });
 
@@ -1542,7 +1536,7 @@ define([
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
 
-        var faqLine = template(Messages.help.generic.more, Pages.docsLink);
+        var faqLine = template(Messages.help_genericMore, Pages.docsLink);
 
         var content = h('div.cp-info-menu-container', [
             h('div.logo-block', [
@@ -1557,6 +1551,8 @@ define([
             privacyLine,
             faqLine,
         ]);
+
+        $(content).find('a').attr('target', '_blank');
 
         var buttons = [
             {
@@ -1709,21 +1705,7 @@ define([
                 },
             });
         }
-/*
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Common.openUnsafeURL(AppConfig.surveyURL);
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
-*/
+
         options.push({
             tag: 'a',
             attributes: {
@@ -1776,6 +1758,20 @@ define([
                 content: h('span', Messages.crowdfunding_button2),
                 action: function () {
                     Common.openUnsafeURL(priv.accounts.donateURL);
+                },
+            });
+        }
+
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Common.openUnsafeURL(AppConfig.surveyURL);
+                    Feedback.send('SURVEY_CLICKED');
                 },
             });
         }
@@ -1946,7 +1942,8 @@ define([
             $body: $('body')
         });
         var $modal = modal.$modal;
-        var $title = $('<h3>').text(Messages.fm_newFile);
+        var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
+
         var $description = $('<p>').html(Messages.creation_newPadModalDescription);
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);

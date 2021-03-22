@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Alinee y arregle objetos en una página</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Align and arrange text boxes, autoshapes, images and charts on a page." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Alinee y arregle objetos en una página</h1>
+			<p>Los <b>bloques de texto</b> o <b>autoformas, gráficos e imágenes</b> añadidos, pueden ser alineados, agrupados y ordenados en una página. Para realizar una de estas acciones, primero seleccione un objeto o varios objetos en la página. Para seleccionar varios objetos, mantenga apretada la tecla <b>Ctrl</b> y haga clic sobre los objetos necesarios. Para seleccionar un cuadro de texto, haga clic en su borde y no en el texto. Después, puede usar o los iconos de la barra de herramientas superior de <b>Formato</b> que se describen más abajo o las opciones análogas del menú contextual.</p>
+			<h3>Alinear objetos</h3>
+            <p>Para <b>alinear</b> <em>dos o más</em> objetos seleccionados,</p>
+			    <ol>
+                    <li>Haga clic en el icono <img alt="Icono Alinear" src="../images/align_toptoolbar.png" /> <b>Alinear</b> en la pestaña <b>Diseño</b> de la barra de herramientas superior y seleccione una de las siguientes opciones:<ul>
+                            <li><b>Alinear a página</b> para alinear objetos en relación con los bordes de la página,</li>
+                            <li><b>Alinear a márgenes</b> para alinear objetos en relación con los márgenes de la página,</li>
+                            <li><b>Alinear objetos seleccionados</b> (esta opción se selecciona de forma predeterminada) para alinear objetos entre sí,</li>
+                        </ul>
+                    </li>
+                    <li>Haga clic de nuevo en el icono <img alt="Icono Alinear" src="../images/align_toptoolbar.png" /> <b>Alinear</b> y seleccione el tipo de alineación que desee de la lista:<ul>
+                            <li><b>Alinear a la izquierda</b> <img alt="Icono alinear a la izquierda" src="../images/alignobjectleft.png" /> - para alinear los objetos horizontalmente por el borde izquierdo del objeto situado más a la izquierda/el borde izquierdo de la página/el margen izquierdo de la página,</li>
+                            <li><b>Alinear al centro</b> <img alt="Icono alinear al centro" src="../images/alignobjectcenter.png" /> - para alinear los objetos horizontalmente por sus centros/centro de la página/centro del espacio entre los márgenes izquierdo y derecho de la página,</li>
+                            <li><b>Alinear a la derecha</b> <img alt="Icono alinear a la derecha" src="../images/alignobjectright.png" /> - para alinear los objetos horizontalmente por el borde derecho del objeto situado más a la derecha / borde derecho de la página / margen derecho de la página,</li>
+                            <li><b>Alinear arriba</b> <img alt="Icono Alinear arriba" src="../images/alignobjecttop.png" /> - para alinear los objetos verticalmente por el borde superior del objeto situado más arriba/en el borde superior de la página/en el margen superior de la página,</li>
+                            <li><b>Alinear al medio </b> <img alt="Icono Alinear al medio" src="../images/alignobjectmiddle.png" /> - para alinear los objetos verticalmente por sus centros/mitad de la página/mitad del espacio entre los márgenes superior e inferior de la página,</li>
+                            <li><b>Alinear abajo</b> <img alt="Icono Alinear abajo" src="../images/alignobjectbottom.png" /> - para alinear los objetos verticalmente por el borde inferior del objeto situado más abajo/borde inferior de la página/borde inferior de la página.</li>
+                        </ul>
+                    </li>
+                </ol>
+            <p>Como alternativa, puede hacer clic con el botón derecho en los objetos seleccionados, elegir la opción <b> Alinear</b> en el menú contextual y utilizar una de las opciones de alineación disponibles.</p>
+            <p>Si desea alinear un solo objeto, puede alinearlo en relación a los bordes de la página o a los márgenes de la página. La opción <b>Alinear a margen</b> se encuentra seleccionada por defecto en este caso.</p>
+            <h3>Distribuir objetos</h3>
+            <p>Para <b>distribuir</b> <em>tres o más </em> objetos seleccionados de forma horizontal o vertical de tal forma que aparezca la misma distancia entre ellos,</p>
+            <ol>
+                <li>Haga clic en el icono <img alt="Icono Alinear" src="../images/align_toptoolbar.png" /> <b>Alinear</b> en la pestaña <b>Diseño</b> de la barra de herramientas superior y seleccione una de las siguientes opciones:<ul>
+                        <li><b>Alinear a página</b> para distribuir objetos entre los bordes de la página,</li>
+                        <li><b>Alinear a márgenes</b> para distribuir objetos entre los márgenes de la página,</li>
+                        <li><b>Alinear objetos seleccionados</b> (esta opción se selecciona de forma predeterminada) para distribuir objetos entre dos objetos seleccionados situados en la parte más alejada,</li>
+                    </ul>
+                </li>
+                <li>Haga clic de nuevo en el icono <img alt="Icono Alinear" src="../images/align_toptoolbar.png" /> <b>Alinear</b> y seleccione el tipo de distribución que desee de la lista:<ul>
+                        <li><b>Distribuir horizontalmente</b> <img alt="Icono distribuir horizontalmente" src="../images/distributehorizontally.png" /> - para distribuir los objetos uniformemente entre los objetos seleccionados situados en el extremo izquierdo y en el extremo derecho/los bordes izquierdo y derecho de la página/los márgenes izquierdo y derecho de la página<!--to align the selected objects by their centers (from right to left edges) to the horizontal center of the page-->.</li>
+                        <li><b>Distribuir verticalmente</b> <img alt="Icono distribuir verticalmente" src="../images/distributevertically.png" /> - Distribuir verticalmente - para distribuir los objetos uniformemente entre los objetos situados en el extremo superior e inferior de la página/en los bordes superior e inferior de los márgenes de la página/en la parte superior e inferior de la página<!--to align the selected objects by their centers (from top to bottom edges) to the vertical center of the page-->.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Como alternativa, puede hacer clic con el botón derecho en los objetos seleccionados, elegir la opción <b> Alinear</b> en el menú contextual y utilizar una de las opciones de distribución disponibles.</p>
+            <p class="note"><b>Nota</b>: las opciones de distribución no están disponibles si selecciona menos de tres objetos.</p>
+            <h3>Agrupar objetos</h3>
+            <p>Para <b>agrupar</b> <em>dos o más</em> objetos seleccionados o <b>desagruparlos</b>, haga clic en la flecha situada junto al icono <img alt="Icono Agrupar" src="../images/group_toptoolbar.png" /> <b>Grupo</b> en la pestaña <b>Diseño</b> de la barra de herramientas superior y seleccione la opción deseada de la lista:</p>
+            <ul>
+                <li><b>Agrupar</b>  - para unir varios objetos al grupo para que sea posible girarlos, desplazarlos, cambiar el tamaño y formato, alinearlos, arreglarlos, copiarlos y pegarlos como si fuera un solo objeto.</li>
+                <li><b>Desagrupar</b> <img alt="Icono Desagrupar" src="../images/ungroup.png" /> - para desagrupar el grupo de los objetos previamente seleccionados.</li>
+            </ul>
+            <p>De forma alternativa, puede hacer clic derecho en los objetos seleccionados, elegir la opción de <b>Organizar</b> del menú contextual y luego usar la opción de <b>Agrupar</b> o <b>des-agrupar</b>.</p>
+            <p class="note"><b>Nota</b>: la opción <b>Grupo</b> no está disponible si selecciona menos de dos objetos. La opción <b>Desagrupar</b> solo está disponible cuando se selecciona un grupo de objetos previamente unidos.</p>
+            <h3>Organizar objetos</h3>
+            <p>Para <b>organizar</b> objetos (por ejemplo cambiar su orden cuando unos objetos sobreponen uno al otro), pulse los <img alt="Icono Traer adelante" src="../images/bringforward_toptoolbar.png" /> iconos <b>Adelantar</b> y <img alt="Icono Enviar atrás" src="../images/sendbackward_toptoolbar.png" />  <b>Mandar atrás</b> en la barra de herramientas superior de <b>Formato</b> y seleccione el tipo de disposición necesaria en la lista:</p>
+			<p>Para mover el (los) objeto(s) seleccionado(s) hacia delante, haga clic en el <img alt="Icono Traer adelante" src="../images/bringforward_toptoolbar.png" /> icono <b>Mover hacia delante</b> en la barra de herramientas superior de <b>Formato</b> y seleccione el tipo de organización necesaria de la lista:</p>
+            <ul>
+                <li><b>Traer al frente</b> <img alt="Icono Traer al frente" src="../images/bringtofront.png" /> - para desplazar el objeto (o varios objetos) delante de los otros,</li>
+                <li><b>Traer adelante</b> <img alt="Icono Traer adelante" src="../images/bringforward.png" /> - para desplazar el objeto (o varios objetos) en un punto hacia delante de otros objetos.</li>
+            </ul>
+            <p>Para mover el (los) objeto(s) seleccionado(s) hacia detrás, haga clic en la flecha de al lado del <img alt="Icono Enviar atrás" src="../images/sendbackward_toptoolbar.png" /> icono <b>Mover hacia detrás</b> en la pestaña <b>Formato</b> en la barra de herramientas superior y seleccione el tipo de organización necesaria en la lista:</p>
+            <ul>
+                <li><b>Enviar al fondo</b>  <img alt="Icono Enviar al fondo" src="../images/sendtoback.png" />- para desplazar el objeto (o varios objetos) detrás de los otros,</li>
+                <li><b>Enviar atrás</b> <img alt="Icono Enviar atrás" src="../images/sendbackward.png" /> - para desplazar el objeto (o varios objetos) en un punto hacia atrás de otros objetos.</li>
+            </ul>
+            <p>Como alternativa, puede hacer clic con el botón derecho en los objetos seleccionados, seleccionar la opción <b> Organizar</b> en el menú contextual y utilizar una de las opciones de organización disponibles.</p>
+		</div>
+	</body>
+</html>

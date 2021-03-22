@@ -52,6 +52,11 @@ define([
                 });
                 return ret;
             }).filter(Boolean);
+
+            // "dest" is the recipient that is not the admin support mailbox.
+            // In the support page, make sure dest is always ourselves.
+            dest.channel = privateData.support;
+            dest.curvePublic = user.curvePublic;
         }
 
         // Send the message to the admin mailbox and to the user mailbox
@@ -124,8 +129,13 @@ define([
     };
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
-        var categories = ['account', 'data', 'bug', 'other'];
-        if (all) { categories.push('all'); }
+        var categories = [
+            'account', // Msg.support_cat_account
+            'data', // Msg.support_cat_data
+            'bug', // Msg.support_cat_bug
+            'other' // Msg.support_cat_other
+        ];
+        if (all) { categories.push('all'); } // Msg.support_cat_all
         categories = categories.map(function (key) {
             return {
                 tag: 'a',
@@ -357,6 +367,29 @@ define([
             ]);
         });
 
+        var displayed = content.message;
+        var pre = h('pre.cp-support-message-content');
+        var $pre = $(pre);
+        var more;
+        if (content.message.length >= 2000) {
+            displayed = content.message.slice(0, 2000) + '...';
+            var expand = h('button.btn.btn-secondary', Messages.admin_support_open);
+            var collapse = h('button.btn.btn-secondary', Messages.admin_support_collapse);
+            var $collapse = $(collapse).hide();
+            var $expand = $(expand).click(function () {
+                $pre.text(content.message);
+                $expand.hide();
+                $collapse.show();
+            });
+            $collapse.click(function () {
+                $pre.text(displayed);
+                $collapse.hide();
+                $expand.show();
+            });
+            more = h('div', [expand, collapse]);
+        }
+        $pre.text(displayed);
+
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
         var premiumClass = (fromPremium && !fromAdmin? '.cp-support-frompremium': '');
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
@@ -367,7 +400,8 @@ define([
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
             ]),
-            h('pre.cp-support-message-content', content.message),
+            pre,
+            more,
             h('div.cp-support-attachments', attachments),
             isAdmin ? userData : undefined,
         ]);

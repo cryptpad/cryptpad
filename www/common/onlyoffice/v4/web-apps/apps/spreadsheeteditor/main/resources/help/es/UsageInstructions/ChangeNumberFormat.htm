@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cambie el formato de un número</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the number format to display the numbers in the most convenient way" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Cambie el formato de un número</h1>
+            <h3>Aplicar el formato de un número</h3>
+			<p>Usted puede cambiar el formato de un número; por ejemplo, el aspecto de los números introducidos en la hoja de cálculo. Para hacerlo,</p>
+			<ol>
+				<li>seleccione una celda, un rango de celdas usando el ratón o toda la hoja de cálculo pulsando la combinación de las teclas <b>Ctrl+A</b>,<p class="note"><b>Nota</b>: también puede seleccionar varias celdas o rangos de celdas no adyacentes pulsando la combinación de las teclas <b>Ctrl</b> mientras selecciona las celdas/rangos con el ratón.</p>
+                </li>
+				<li>Despliegue la lista <b>Formato de número</b> <img alt="Botón Formato general" src="../images/generalformat.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccione el formato de número deseado:<ul>
+						<li><b>General</b> - se usa para mostrar datos introducidos como números sin formato de un modo compacto sin ningún signo adicional,</li>
+						<li><b>Número</b> - se usa para mostrar los números con 0-30 dígitos después de un punto decimal donde un separador de miles se añade entre cada grupo de tres dígitos antes del punto decimal,</li><!--<li><b>Integer</b> - is used to display the numbers as an integer,</li>--><li><b>Exponencial</b> - se usa para mantener cortos a los números convirtiéndoles en una cadena de tipo <em>d.dddE+ddd</em> o <em>d.dddE-ddd</em> donde cada <em>d</em> es un dígito del 0 a 9,</li>
+                        <li><b>Financiero</b> - se usa para mostrar valores monetarios con el símbolo de moneda por defecto y dos sitios de decimales. Para usar otro símbolo de moneda u otro número para los sitios decimales, sigue las <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">instrucciones de más abajo</a>. A diferencia del formato <b>Moneda</b>, el formato <b>Financiero</b> alinea los símbolos de moneda a la parte izquierda de la celda, representa a los valores cero como un guión y los valores negativos de muestran en paréntesis.<p><img alt="Formatos de números de contabilidad y moneda" src="../images/accounting_currency.png" /></p>
+                            <p class="note"><b>Nota</b>: para poder aplicar de forma rápida el formato <b>Financiero</b> a los datos seleccionados, también puede hacer clic en el icono <img alt="Icono Estilo financiero" src="../images/accountingstyle.png" /> <b>Estilo financiero</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccionar el símbolo de moneda necesario: uno de los símbolos de moneda siguientes: <b>&#36;</b> Dolar, <b>&amp;euro;</b> Euro, <b>&amp;libra</b> Libra, <b>₽</b> Rublo, <b>&amp;yen</b> Yen.</p>
+                        </li>
+                        <li><b>Moneda</b> - se usa para mostrar valores monetarios con los símbolos de moneda por defecto y dos lugares de decimales. Para usar otro símbolo de moneda u otro número para los sitios decimales, sigue las <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">instrucciones de más abajo</a>. A diferencia del formato <b>Financiero</b>, en el formato <b>Moneda</b> el símbolo de moneda se coloca antes del primer dígito, los valores negativos se muestran con el signo negativo (-).</li>
+						<li><b>Fecha</b> - se usa para mostrar fechas<!--. You can select one of the following date formats: <em>MM-dd-yy</em>, <em>MM-dd-yyyy</em>, <em>dd-MM-yy</em>, <em>dd-MM-yyyy</em>, <em>dd-MMM-yyyy</em>, <em>dd-MMM</em>, <em>MMM-yy</em>-->,</li>
+						<li><b>Hora</b> - se usa para mostrar la hora<!--. You can select one of the following time formats: <em>HH:mm</em>, <em>HH:MM:ss</em>, <em>hh:mm tt</em>, <em>hh:mm:ss tt</em>, <em>[h]:mm:ss</em>-->,</li>
+						<li><b>Porcentaje</b> - se usa para mostrar datos como un porcentaje acompañado por el signo <b>%</b>,<p class="note"><b>Nota</b>: para aplicar de forma rápida el formato porcentual a sus datos, también puede usar el icono <b>Estilo porcentaje</b> <img alt="Icono Estilo porcentaje" src="../images/percentstyle.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+						</li>
+                        <li><b>Fracción</b> - se usa para mostrar los números como fracciones comunes en vez de en decimales.</li>
+						<li><b>Texto</b> - se usa para mostrar los valores numéricos como texto simple y con la mejor precisión posible.</li>
+                        <li><b>Más formatos</b> - se usa para personalizar los formatos de números ya aplicados especificando parámetros adicionales (vea la descripción de más abajo).</li>
+					</ul>
+				</li>
+				<li>cambie el número de posiciones decimales, si es necesario:<ul>
+				        <li>use el icono <b>Aumentar decimales</b> <img alt="Icono Aumentar decimales" src="../images/increasedecimal.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrar más dígitos después del punto decimal,</li>
+				        <li>use el icono <b>Disminuir decimales</b> <img alt="Icono Disminuir decimales" src="../images/decreasedecimal.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrar menos dígitos después del punto decimal.</li>
+				    </ul>
+				 </li>
+			</ol>
+            <h3 id="customize">Personalice el formato de los números</h3>
+            <p>Usted puede personalizar el formato de los números que ha añadido de la siguiente manera:</p>
+			<ol>
+                <li>seleccione las celdas donde quiere personalizar el formato de los números para,</li>
+                <li>desplegar la lista <img alt="Botón Formato general" src="../images/generalformat.png" /> <b>Formato de número</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior,</li>
+                <li>seleccione la opción <b>Más formatos</b>,</li>
+                <li>en la ventana de <b>Formato de número</b> que se abre, ajuste los parámetros disponibles. Las opciones cambian dependiendo del formato de número que se usa en las celdas seleccionadas. Puede usar la lista de <b>Categoría</b> para cambiar el formato del número.<p><img alt="Ventana de formato de número" src="../images/numberformatwindow.png" /></p>  
+                <ul>
+                    <li>para el formato de <b>Número</b>, puede ajustar el número de puntos <b>Decimales</b>, especificar si quiere <b>Usar 1000 separadores</b> o no y elegir uno de los <b>Formatos</b> disponibles para mostrar valores negativos.</li>
+                    <li>para los formatos <b>Científico</b> y <b>Porcentaje</b>, puede ajustar el número de puntos <b>Decimales</b>.</li>
+                    <li>para los formatos de <b>Financiero</b> y <b>Moneda</b>, puede ajustar el número de puntos <b>Decimales</b>, elegir uno de los <b>Símbolos</b> de moneda disponibles y uno de los <b>Formatos</b> disponibles para mostrar valores negativos.</li>
+                    <li>para el formato de <b>Fecha</b>, puede seleccionar uno de los formatos de fecha disponibles: <em>15/4</em>, <em>15/4/06</em>, <em>15/04/06</em>, <em>15/4/2006</em>, <em>15/4/06 0:00</em>, <em>15/4/06 12:00 AM</em>, <em>a</em>, <em>abril 15 2006</em>, <em>15-abr.</em>, <em>15-abr.-06</em>, <em>abr.-06</em>, <em>abril-06</em>, <em>a-06</em>, <em>06-abr.</em>, <em>15-abr.-2006</em>, <em>2006-abr.-15</em>, <em>06-abr.-15</em>, <em>15/abr.</em>, <em>15/abr./06</em>, <em>abr./06</em>, <em>abril/06</em>, <em>a/06</em>, <em>06/abr.</em>, <em>15/abr./2006</em>, <em>2006/abr./15</em>, <em>06/abr./15</em>, <em>15 abr.</em>, <em>15 abr. 06</em>, <em>abr. 06</em>, <em>abril 06</em>, <em>a 06</em>, <em>06 abr.</em>, <em>15 abr. 2006</em>, <em>2006 abr. 15</em>, <em>06 abr. 15</em>, <em>06/4/15</em>, <em>06/04/15</em>, <em>2006/4/15</em>.</li>
+                    <li>para el formato de <b>Tiempo</b>, puede seleccionar uno de los formatos de tiempo disponibles: <em>12:48:58 PM</em>, <em>12:48</em>, <em>12:48 PM</em>, <em>12:48:58</em>, <em>48:57.6</em>, <em>36:48:58</em>.</li>
+                    <li>para el formato de <b>Fracción</b>, puede seleccionar uno de los formatos disponibles: <em>Hasta un dígito (1/3)</em>, <em>Hasta dos dígitos (12/25)</em>, <em>Hasta tres dígitos (131/135)</em>, <em>Como mitades (1/2)</em>, <em>Como cuartos (2/4)</em>, <em>Como octavos (4/8)</em>, <em>Como dieciseisavos (8/16)</em>, <em>Como décimas (5/10)</em> , <em>As centésimas (50/100)</em>.</li>
+                </ul>
+                </li>
+                <li>haga clic en el botón <b>OK</b> para confirmar sus cambios.</li>
+            </ol>
+		</div>
+	</body>
+</html>

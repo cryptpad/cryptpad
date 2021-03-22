@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Diagramm einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a chart to your spreadsheet and adjust its position, size and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Diagramm einfügen</h1>
+            <h3>Diagramm einfügen</h3>
+			<p>Ein Diagramm einfügen:</p>
+			<ol>
+				<li>Wählen Sie den Zellenbereich aus, der die Daten enthält, die für das Diagramm verwendet werden sollen.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Diagramm" src="../images/chart.png" /> <b>Diagramm</b>.</li>
+                <li>Wählen Sie den gewünschten <b>Diagrammtyp</b> aus: Säule, Linie, Kreis, Balken, Fläche, Punkt (XY) oder Strich.<p class="note"><b>Hinweis</b>: Die Diagrammtypen <b>Säule</b>, <b>Linie</b>, <b>Kreis</b> und <b>Balken</b> stehen auch im 3D-Format zur Verfügung.</p>
+                </li>
+            </ol>
+            <p>Das Diagramm wird in das aktuelle Tabellenblatt eingefügt.</p>
+            <h3>Diagrammeinstellungen anpassen</h3>
+            <p>Sie können die folgenden Diagrammeigenschaften ändern: Diagrammtyp ändern:</p>
+            <ol>
+                <li>wählen Sie das Diagramm mit der Maus aus</li>
+                <li>Klicken Sie auf das Symbol <b>Diagrammeinstellungen</b> <img alt="Diagrammeinstellungen" src="../images/chartsettingsicon.png" /> in der rechten Menüleiste<p><img alt="Dialogfenster Diagrammeinstellungen rechte Seitenleiste" src="../images/chartsettings.png" /></p>
+                </li>
+                <li>Öffnen Sie die Menüliste <b>Typ</b> und wählen Sie den gewünschten Diagrammtyp aus.</li>
+                <li>Öffnen Sie die Menüliste <b>Stil</b> und wählen Sie den gewünschten Diagrammstil aus.</li>
+            </ol>
+            <p>Das Diagramm wird entsprechend geändert. Wenn Sie die für das Diagramm verwendeten Daten ändern wollen,</p>
+            <ol>
+                <li>klicken Sie in der rechten Seitenleiste auf <b>Erweiterte Einstellungen anzeigen</b> oder wählen Sie im Rechtsklickmenü die Option <b>Diagramme - Erweiterte Einstellungen</b> oder machen Sie einen Doppelklick auf das Diagramm.</li>
+                <li>Im nun geöffneten Fenster <b>Diagramme - Erweiterte Einstellungen</b> können Sie alle gewünschten Änderungen durchführen.</li>
+                <li>Klicken Sie auf <b>OK</b>, um die Änderungen auszuführen und das Fenster schließt sich.</li>
+            </ol>   
+            <p>Die Beschreibung der Diagrammeinstellungen kann über das Fenster <b>Diagramm - Erweiterte Einstellungen</b> geändert werden.</p>
+					<p>Auf der Registerkarte <b>Diagrammtyp und Daten</b> können Sie den Diagrammtyp sowie die Daten ändern, die Sie zum Erstellen eines Diagramms verwenden möchten.</p>
+						<ul>
+							<li><b>Diagrammtyp</b> ändern - wählen Sie eine der verfügbaren Optionen aus: Säule, Linie, Kreis, Balken, Fläche, Punkt (XY) oder Strich.</li>
+							<li>Überprüfen Sie den ausgewählten <b>Datenbereich</b> und ändern Sie diesen ggf. durch Anklicken der Schaltfläche <b>Daten auswählen</b>; geben Sie den gewünschten Datenbereich im folgenden Format ein: <em>Sheet1!A1:B4</em>.</li>
+							<li>Wählen Sie aus, wie die Daten angeordnet werden sollen. Für die <b>Datenreihen</b> die auf die X-Achse angewendet werden sollen, können Sie wählen zwischen: Datenreihen <b>in Zeilen</b> oder <b>in Spalten</b>.</li> 
+						</ul>
+						<p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chartwindow.png" /></p>
+
+						<p>Auf der Registerkarte <b>Layout</b> können Sie das Layout von Diagrammelementen ändern.</p>
+							<ul>
+								<li>Wählen Sie die gewünschte Position der <b>Diagrammbezeichnung</b> aus der Dropdown-Liste aus:<ul>
+									<li><b>Keine</b> - es wird keine Diagrammbezeichnung angezeigt.</li> 
+									<li><b>Überlagerung</b> - der Titel wird zentriert und im Diagrammbereich angezeigt.</li> 
+									<li><b>Keine Überlagerung</b> - der Titel wird über dem Diagramm angezeigt.</li>
+									</ul></li>
+								<li>Wählen Sie die gewünschte Position der <b>Legende</b> aus der Menüliste aus:<ul>
+                                        <li><b>Keine</b> - es wird keine Legende angezeigt</li>
+                                        <li><b>Unten</b> - die Legende wird unterhalb des Diagramms angezeigt</li>
+                                        <li><b>Oben</b> - die Legende wird oberhalb des Diagramms angezeigt</li>
+                                        <li><b>Rechts</b> - die Legende wird rechts vom Diagramm angezeigt</li>
+                                        <li><b>Links</b> - die Legende wird links vom Diagramm angezeigt</li>
+                                        <li><b>Überlappung links</b> - die Legende wird im linken Diagrammbereich mittig dargestellt</li>
+                                        <li><b>Überlappung rechts</b> - die Legende wird im rechten Diagrammbereich mittig dargestellt</li>
+                                    </ul>
+								</li>
+								<li>Legen Sie <b>Datenbeschriftungen</b> fest (Titel für genaue Werte von Datenpunkten):<br /><ul>
+                                        <li>Wählen Sie die gewünschte Position der <b>Datenbeschriftungen</b> aus der Menüliste aus: Die verfügbaren Optionen variieren je nach Diagrammtyp.<ul>
+                                                <li>Für <b>Säulen-/Balkendiagramme</b> haben Sie die folgenden Optionen: <b>Keine</b>, <b>zentriert</b>, <b>unterer Innenbereich</b>, <b>oberer Innenbereich</b>, <b>oberer Außenbereich</b>.</li>
+                                                <li>Für <b>Linien-/Punktdiagramme (XY)/Strichdarstellungen</b> haben Sie die folgenden Optionen: <b>Keine</b>, <b>zentriert</b>, <b>links</b>, <b>rechts</b>, <b>oben</b>, <b>unten</b>.</li>
+                                                <li>Für <b>Kreisdiagramme</b> stehen Ihnen folgende Optionen zur Verfügung: <b>Keine</b>, <b>zentriert</b>, <b>an Breite anpassen</b>, <b>oberer Innenbereich</b>, <b>oberer Außenbereich</b>.</li>
+                                                <li>Für <b>Flächendiagramme</b> sowie für <b>3D-Diagramme</b>, <b>Säulen-</b> <b>Linien-</b> und <b>Balkendiagramme</b>, stehen Ihnen folgende Optionen zur Verfügung: <b>Keine</b>, <b>zentriert</b>.</li>
+                                            </ul>
+                                        </li>
+                                        <li>Wählen Sie die Daten aus, für die Sie eine Bezeichnung erstellen möchten, indem Sie die entsprechenden Felder markieren: <b>Reihenname</b>, <b>Kategorienname</b>, <b>Wert</b>.</li>									
+										<li>Geben Sie das Zeichen (Komma, Semikolon etc.) in das Feld <b>Trennzeichen Datenbeschriftung</b> ein, dass Sie zum Trennen der Beschriftungen verwenden möchten.</li>
+									</ul>
+								</li>
+                                <li><b>Linien</b> - Einstellen der Linienart für <b>Liniendiagramme/Punktdiagramme (XY)</b>. Die folgenden Optionen stehen Ihnen zur Verfügung: <b>Gerade</b>, um gerade Linien zwischen Datenpunkten zu verwenden, <b>glatt</b> um glatte Kurven zwischen Datenpunkten zu verwenden oder <b>keine</b>, um keine Linien anzuzeigen.</li>
+                                <li><b>Markierungen</b> - über diese Funktion können Sie festlegen, ob die Marker für <b>Liniendiagramme/ Punktdiagramme (XY)</b> angezeigt werden sollen (Kontrollkästchen aktiviert) oder nicht (Kontrollkästchen deaktiviert).<p class="note"><b>Hinweis</b>: Die Optionen <b>Linien</b> und <b>Marker</b> stehen nur für <b>Liniendiagramme</b> und <b>Punktdiagramm (XY)</b> zur Verfügung.</p>
+                                </li>
+                                <li>Im Abschnitt <b>Achseneinstellungen</b> können Sie auswählen, ob die <b>horizontalen/vertikalen Achsen</b> angezeigt werden sollen oder nicht. Wählen Sie dazu einfach <b>einblenden</b> oder <b>ausblenden</b> aus der Menüliste aus. Außerdem können Sie auch die Parameter für <b>horizontale/vertikale Achsenbeschriftung</b> festlegen:<ul>
+                                        <li>Legen Sie fest, ob der <b>horizontale Achsentitel</b> angezeigt werden soll oder nicht. Wählen Sie dazu einfach die entsprechende Option aus der Menüliste aus:<ul>
+                                                <li><b>Keinen</b> - der Titel der horizontalen Achse wird nicht angezeigt.</li>
+                                                <li><b>Keine Überlappung</b> - der Titel wird oberhalb der horizontalen Achse angezeigt.</li>
+                                            </ul>
+                                        </li>
+                                        <li>Wählen Sie die gewünschte Position des <b>vertikalen Achsentitels</b> aus der Menüliste aus:<ul>
+                                                <li><b>Keinen</b> - der Titel der vertikalen Achse wird nicht angezeigt.</li>
+                                                <li><b>Gedreht</b> - der Titel wird links von der vertikalen Achse von unten nach oben angezeigt.</li>
+                                                <li><b>Horizontal</b> - der Titel wird links von der vertikalen Achse von links nach rechts angezeigt.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Im Abschnitt <b>Gitternetzlinien</b>, können Sie festlegen, welche der <b>horizontalen/vertikalen Gitternetzlinien</b> angezeigt werden sollen. Wählen Sie dazu einfach die entsprechende Option aus der Menüliste aus: <b>Hauptgitternetz</b>, <b>Hilfsgitternetz</b> oder <b>Alle</b>. Wenn Sie alle Gitternetzlinien ausblenden wollen, wählen Sie die Option <b>Keine</b>.<p class="note"><b>Hinweis</b>: Die Abschnitte <b>Achseneinstellungen</b> und <b>Gitternetzlinien</b> sind für <b>Kreisdiagramme</b> deaktiviert, da bei diesem Diagrammtyp keine Achsen oder Gitternetze vorhanden sind.</p>
+                                </li>
+							</ul>
+
+							<p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chartwindow1.png" /></p>
+
+                    <p class="note"><b>Hinweis</b>: Die Registerkarte <b>vertikale/horizontale Achsen</b> ist für <b>Kreisdiagramme</b> deaktiviert, da bei diesem Diagrammtyp keine Achsen vorhanden sind.</p>
+                    <p>Auf der Registerkarte <b>Vertikale Achse</b> können Sie die Parameter der vertikalen Achse ändern, die auch als Werteachse oder Y-Achse bezeichnet wird und die numerische Werte anzeigt. Beachten Sie, dass bei <b>Balkendiagrammen</b> die vertikale Achse die Rubrikenachse ist, an der die Textbeschriftungen anzeigt werden, daher entsprechen in diesem Fall die Optionen in der Registerkarte <b>Vertikale Achse</b> den im nächsten Abschnitt beschriebenen Optionen. Für <b>Punktdiagramme (XY)</b> sind beide Achsen Wertachsen.</p>
+                    <ul>
+                        <li>Im Abschnitt <b>Achsenoptionen</b> können die folgenden Parameter festgelegt werden:<ul>
+                                <li><b>Mindestwert</b> - der niedrigste Wert, der am Anfang der vertikalen Achse angezeigt wird. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Mindestwert automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Festlegen</b> aus der Menüliste auswählen und den gewünschten Wert in das dafür vorgesehene Feld eingeben.</li>
+                                <li><b>Höchstwert</b> - der höchste Wert, der am Ende der vertikalen Achse angezeigt wird. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Höchstwert automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Festlegen</b> aus der Menüliste auswählen und den gewünschten Wert in das dafür vorgesehene Feld eingeben.</li>
+                                <li><b>Schnittstelle</b> - bestimmt den Punkt auf der vertikalen Achse, an dem die horizontale Achse die vertikale Achse kreuzt. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Wert für die Schnittstelle automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Wert</b> aus der Menüliste auswählen und einen anderen Wert in das dafür vorgesehene Feld eingeben oder Sie legen den Achsenschnittpunkt am <b>Mindest-/Höchstwert</b> auf der vertikalen Achse fest.</li>
+                                <li><b>Einheiten anzeigen</b> - Festlegung der numerischen Werte, die auf der vertikalen Achse angezeigt werden sollen. Diese Option kann nützlich sein, wenn Sie mit großen Zahlen arbeiten und die Werte auf der Achse kompakter und lesbarer anzeigen wollen (Sie können z.B. 50.000 als 50 anzeigen, indem Sie die Anzeigeeinheit <b>in Tausendern</b> auswählen). Wählen Sie die gewünschten Einheiten aus der Menüliste aus: <b>In Hundertern</b>, <b>in Tausendern</b>, <b>10 000</b>, <b>100 000</b>, <b>in Millionen</b>, <b>10.000.000</b>, <b>100.000.000</b>, <b>in Milliarden</b>, <b>in Trillionen</b>, oder Sie wählen die Option <b>Keine</b>, um zu den Standardeinheiten zurückzukehren.</li>
+                                <li><b>Werte in umgekehrter Reihenfolge</b> - die Werte werden in absteigender Reihenfolge angezeigt. Wenn das Kontrollkästchen deaktiviert ist, wird der niedrigste Wert unten und der höchste Wert oben auf der Achse angezeigt. Wenn das Kontrollkästchen aktiviert ist, werden die Werte in absteigender Reihenfolge angezeigt.</li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Skalierung</b> können Sie die Darstellung von Teilstrichen auf der vertikalen Achse anpassen. Die größeren Teilstriche bilden die Hauptintervalle der Skalenteilung und dienen der Darstellung von nummerischen Werten. Kleine Teilstriche bilden Hilfsintervalle und haben keine Beschriftungen. Skalenstriche legen auch fest, an welcher Stelle Gitterlinien angezeigt werden können, sofern die entsprechende Option in der Registerkarte <b>Layout</b> aktiviert ist. In der Menüliste für <b>Hauptintervalle/Hilfsintervalle</b> stehen folgende Optionen für die Positionierung zur Verfügung:<ul>
+                                <li><b>Keine</b> - es werden keine Skalenstriche angezeigt.</li>
+                                <li><b>Beidseitig</b> - auf beiden Seiten der Achse werden Skalenstriche angezeigt.</li>
+                                <li><b>Innen</b> - die Skalenstriche werden auf der Innenseite der Achse angezeigt.</li>
+                                <li><b>Außen</b> - die Skalenstriche werden auf der Außenseite der Achse angezeigt.</li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Beschriftungsoptionen</b> können Sie die Darstellung von Hauptintervallen, die Werte anzeigen, anpassen. Um die <b>Anzeigeposition</b> in Bezug auf die vertikale Achse festzulegen, wählen Sie die gewünschte Option aus der Menüliste aus:<ul>
+                                <li><b>Keine</b> - es werden keine Skalenbeschriftungen angezeigt.</li>
+                                <li><b>Tief</b> - die Skalenbeschriftung wird links vom Diagrammbereich angezeigt.</li>
+                                <li><b>Hoch</b> - die Skalenbeschriftung wird rechts vom Diagrammbereich angezeigt.</li>
+                                <li><b>Neben der Achse</b> - die Skalenbeschriftung wird neben der Achse angezeigt.</li>
+                            </ul>
+                        </li>
+                    </ul>
+							<p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chartwindow2.png" /></p>
+						
+                    <p>Auf der Registerkarte <b>Horizontale Achse</b> können Sie die Parameter der horizontalen Achse ändern, die auch als Werteachse oder X-Achse bezeichnet wird und die Textbeschriftungen anzeigt. Beachten Sie, dass bei <b>Balkendiagrammen</b> die horizontale Achse die Rubrikenachse ist an der die nummerischen Werte anzeigt werden, daher entsprechen in diesem Fall die Optionen in der Registerkarte <b>Horizontale Achse</b> den im nächsten Abschnitt beschriebenen Optionen. Für <b>Punktdiagramme (XY)</b> sind beide Achsen Wertachsen.</p>
+                    <ul>
+                        <li>Im Abschnitt <b>Achsenoptionen</b> können die folgenden Parameter festgelegt werden:<ul>
+                                <li><b>Schnittstelle</b> - bestimmt den Punkt auf der horizontalen Achse, an dem die vertikale Achse die horizontale Achse kreuzt. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Wert für die Schnittstelle automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Wert</b> aus der Menüliste auswählen und einen anderen Wert in das dafür vorgesehene Feld eingeben oder Sie legen den Achsenschnittpunkt am <b>Mindest-/Höchstwert</b> (der Wert, welcher der ersten und letzten Kategorie entspricht) auf der horizontalen Achse fest.</li>
+                                <li><b>Achsenposition</b> - legt fest, wo die Achsenbeschriftungen positioniert werden sollen: <b>An den Skalenstrichen</b> oder <b>Zwischen den Skalenstrichen</b>.</li>
+                                <li><b>Werte in umgekehrter Reihenfolge</b> - die Kategorien werden in umgekehrter Reihenfolge angezeigt. Wenn das Kästchen deaktiviert ist, werden die Kategorien von links nach rechts angezeigt. Wenn das Kontrollkästchen aktiviert ist, werden die Kategorien von rechts nach links angezeigt.</li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Skalierung</b> können Sie die Darstellung von Teilstrichen auf der horizontalen Skala anpassen. Die größeren Teilstriche bilden die Hauptintervalle der Skalenteilung und dienen der Darstellung von Kategorien. Kleine Teilstriche werden zwischen den Hauptintervallen eingefügt und bilden Hilfsintervalle ohne Beschriftungen. Skalenstriche legen auch fest, an welcher Stelle Gitterlinien angezeigt werden können, sofern die entsprechende Option in der Registerkarte <b>Layout</b> aktiviert ist. Sie können die folgenden Parameter für die Skalenstriche anpassen:<ul>
+                                <li><b>Hauptintervalle/Hilfsintervalle</b> - legt fest wo die Teilstriche positioniert werden sollen, dazu stehen Ihnen folgende Optionen zur Verfügung: <b>Keine</b> - es werden keine Skalenstriche angezeigt, <b>Beidseitig</b> - auf beiden Seiten der Achse werden Skalenstriche angezeigt, <b>Innen</b> - die Skalenstriche werden auf der Innenseite der Achse angezeigt, <b>Außen</b> - die Skalenstriche werden auf der Außenseite der Achse angezeigt.</li>
+                                <li><b>Intervalle zwischen Teilstrichen</b> - legt fest, wie viele Kategorien zwischen zwei benachbarten Teilstrichen angezeigt werden sollen.</li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Beschriftungsoptionen</b> können Sie die Darstellung von Beschriftungen für Kategorien anpassen.<ul>
+                                <li><b>Beschriftungsposition</b> - legt fest, wo die Beschriftungen in Bezug auf die horizontale Achse positioniert werden sollen: Wählen Sie die gewünschte Position aus der Dropdown-Liste aus: <b>Keine</b> - es wird keine Achsenbeschriftung angezeigt, <b>Tief</b> - die Kategorien werden im unteren Diagrammbereich angezeigt, <b>Hoch</b> - die Kategorien werden im oberen Diagrammbereich angezeigt, <b>Neben der Achse</b> - die Kategorien werden neben der Achse angezeigt.</li>
+                                <li><b>Abstand Achsenbeschriftung</b> - legt fest, wie dicht die Achsenbeschriftung an der Achse positioniert wird. Sie können den gewünschten Wert im dafür vorgesehenen Eingabefeld festlegen. Je höher der eingegebene Wert, desto größer der Abstand zwischen der Achse und der Achsenbeschriftung.</li>
+                                <li><b>Intervalle zwischen Achsenbeschriftungen</b> - legt fest, wie viele Kategorien auf der Achse angezeigt werden sollen. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall werden alle Kategorien auf der Achse angezeigt. Alternativ können Sie die Option <b>Manuell</b> aus der Menüliste auswählen und den gewünschten Wert in das dafür vorgesehene Feld eingeben. Geben Sie zum Beispiel die Zahl 2 an, dann wird jede zweite Kategorie auf der Achse angezeigt usw.</li>
+                            </ul>
+                        </li>
+                    </ul>
+					<p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chartwindow3.png" /></p>
+            <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in dem Diagramm enthalten sind.</p>
+            <p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chartwindow4.png" /></p>
+            				
+            <h3>Diagrammelemente bearbeiten</h3>
+            <p>Um den <b>Diagrammtitel</b> zu bearbeiten, wählen Sie den Standardtext mit der Maus aus und geben Sie stattdessen Ihren eigenen Text ein.</p>
+            <p>Um die Schriftformatierung innerhalb von Textelementen, wie beispielsweise Diagrammtitel, Achsentitel, Legendeneinträge, Datenbeschriftungen etc. zu ändern, wählen Sie das gewünschte Textelement durch Klicken mit der linken Maustaste aus. Wechseln Sie in die Registerkarte <b>Start</b> und nutzen Sie die in der Menüleiste angezeigten Symbole, um <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">Schriftart, Schriftform, Schriftgröße oder Schriftfarbe</a> zu bearbeiten.</p>
+            <p>Um ein Diagrammelement zu löschen, wählen Sie es mit der linken Maustaste aus und drücken Sie die Taste <b>Entfernen</b> auf Ihrer Tastatur.</p>
+            <p>Sie haben die Möglichkeit 3D-Diagramme mithilfe der Maus zu drehen. Klicken Sie mit der linken Maustaste in den Diagrammbereich und halten Sie die Maustaste gedrückt. Um die 3D-Diagrammausrichtung zu ändern, ziehen Sie den Mauszeiger in die gewünschte Richtung ohne die Maustaste loszulassen.</p>
+            <p><img alt="3D-Diagramm" src="../images/3dchart.png" /></p>
+            <p>Wenn das Diagramm ausgewählt ist, ist rechts auch das Symbol <b>Formeinstellungen</b> <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" /> verfügbar, da eine Form als Hintergrund für das Diagramm verwendet wird. Klicken Sie auf dieses Symbol, um die Registerkarte <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Formeinstellungen</a> in der rechten Seitenleiste zu öffnen und passen Sie <b>Füllung</b> und <b>Linienstärke</b> der Form an. Beachten Sie, dass Sie den Formtyp nicht ändern können.</p>
+            <p>Wenn Sie ein Diagramm hinzugefügt haben, können Sie <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">Größe und Position beliebig ändern</a>.</p>
+            <p>Um das eingefügte Diagramm zu löschen, klicken Sie darauf und drücken Sie die Taste <b>ENTF</b>.</p>
+            
+            <h3>Sparklines bearbeiten</h3>
+            <p>Eine Sparkline ist ein kleines Diagramm im Hintergrund einer Zelle. Mit Hilfe von Sparklines lassen sich Informationen für einzelne Zeilen oder Spalten in großen Datensätzen visuell darstellen. Dies erleichtert das Anzeigen von Trends in mehreren Datenreihen.</p>
+            <p>Wenn Ihre Tabelle vorhandene Sparklines enthält, die mit einer anderen Anwendung erstellt wurden, können Sie die Eigenschaften der Sparklines ändern. Wählen Sie dazu die Zelle mit der Sparkline mit der Maus aus und klicken Sie in der rechten Menüleiste auf das Symbol <b>Diagrammeinstellungen</b> <img alt="Diagrammeinstellungen" src="../images/chartsettingsicon.png" />. Wenn die ausgewählte Sparkline Teil einer Sparkline-Gruppe ist, werden die Änderungen auf alle Sparklines in der entsprechenden Gruppe angewendet.</p>
+            <p><img alt="Dialogfenster Diagrammeinstellungen rechte Seitenleiste" src="../images/right_sparkline.png" /></p>
+            <ul>
+                <li>Wählen Sie in der Menüliste <b>Typ</b> eine der verfügbaren Sparklines aus:<ul>
+                    <li><b>Säule</b> - dieser Typ ähnelt einem regulären <b>Säulendiagramm</b>.</li>
+                    <li><b>Linie</b> - dieser Typ ähnelt einem regulären <b>Liniendiagramm</b>.</li>
+                    <li><b>Gewinn/Verlust</b> - dieser Typ eignet sich zum Darstellen von Daten, die sowohl positive als auch negative Werte enthalten.</li>
+                </ul>
+                </li>
+                <li>Im Abschnitt <b>Stil</b> haben Sie folgende Optionen:<ul>
+                    <li>Öffnen Sie die Menüliste mit den <b>Stilvorlagen</b> und wählen Sie den gewünschten Stil aus.</li>
+                    <li>Wählen Sie die gewünschte <b>Farbe</b> für die Sparkline aus.</li>
+                    <li>Wählen Sie die gewünschte <b>Linienstärke</b> (nur verfügbar für den Typ <b>Linie</b>).</li>
+                </ul>
+                </li>
+                <li>Im Abschnitt <b>Anzeigen</b> können Sie die Elemente der Sparkline auswählen, die Sie hervorheben wollen. Aktivieren Sie das Kontrollkästchen links neben dem Element das Sie hervorheben wollen und wählen Sie die gewünschte Farbe aus, indem Sie auf das farbige Feld klicken:<ul>
+                    <li><b>Höchstpunkt</b> - die höchsten Datenpunkte der ausgewählten Sparklinegruppe hervorheben.</li>
+                    <li><b>Tiefpunkt</b> - den niedrigsten Datenpunkte der ausgewählten Sparklinegruppe hervorheben.</li>
+                    <li><b>Negative Punkte</b> - die negativen Datenpunkte der ausgewählten Sparklinegruppe in einer anderen Farbe hervorheben.</li>
+                    <li><b>Erster/Letzer Punkt</b> - um den ersten/letzen Datenpunkt der Sparkline hervorzuheben.</li>
+                    <li><b>Datenpunkte</b> (nur verfügbar für den Typ <b>Line</b>) - um alle Datenpunkte hervorzuheben.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>Klicken Sie in der rechten Seitenleiste auf den Link <b>Erweiterte Einstellungen anzeigen</b> um das Fenster <b>Sparkline - Erweiterte Einstellungen</b> zu öffnen.</p>
+            <p><img alt="Sparkline- Erweiterte Einstellungen" src="../images/sparklinewindow.png" /></p>
+            <p>In der Gruppe <b>Typ und Daten</b> können Sie <b>Typ</b> und <b>Stil</b> der Sparkline ändern und die Anzeigeeinstellungen für <b>verborgene und leere Zellen festlegen</b>:</p>
+            <ul>
+                <li><b>Leere Zellen anzeigen als</b> - mit dieser Option können Sie steuern, wie Sparklines angezeigt werden, wenn ein gewählter Datenbereich leere Zellen enthält. Wählen Sie die gewünschte Option aus der Liste aus:<ul>
+                    <li><b>Lücken</b> - um die Sparkline mit Lücken anstelle von fehlenden Daten anzuzeigen.</li>
+                    <li><b>Null</b> - um die Sparkline so anzuzeigen, als wäre der Wert in einer leeren Zelle Null.</li>
+                    <li><b>Datenpunkte mit Linie verbinden</b> (nur verfügbar für den Typ <b>Linie</b>) - um leere Zellen zu ignorieren und eine Verbindungslinie zwischen Datenpunkten anzuzeigen.</li>
+                </ul>
+                </li>
+                <li><b>Daten in ausgeblendeten Zeilen und Spalten anzeigen</b> - aktivieren Sie dieses Kontrollkästchen, wenn Sie Werte aus verborgenen Zellen in Sparklines einfügen möchten.</li>
+            </ul>
+            <p><img alt="Sparkline- Erweiterte Einstellungen" src="../images/sparklinewindow2.png" /></p>
+            <p>In der Gruppe <b>Achsenoptionen</b> können Sie die folgenden Parameter für die <b>horizontalen/vertikalen Achsen</b> festlegen:</p>
+            <ul>
+                <li>Im Abschnitt <b>Horizontale Achsen</b> sind die folgenden Parameter verfügbar:<ul>
+                        <li><b>Achsen anzeigen</b> - aktivieren Sie dieses Kontrollkästchen, um die horizontale Achse anzuzeigen. Wenn die Quelldaten negative Werte enthalten, können sie mit dieser Option anschaulicher dargestellt werden.</li>
+                        <li><b>Umgekehrte Reihenfolge</b> - aktivieren Sie dieses Kontrollkästchen, um Daten in umgekehrter Reihenfolge anzuzeigen.</li>
+                    </ul>
+                </li>
+                <li>Im Abschnitt <b>Vertikale Achsen</b> sind die folgenden Parameter verfügbar:<ul>
+                        <li><b>Höchst-/Tiefpunkte</b><ul>
+                            <li><b>Für jeden Wert automatisch</b> - diese Option ist standardmäßig ausgewählt. Ermöglicht die Verwendung eigener Höchst-/Tiefpunkte für jede Sparkline. Die Höchst-/Tiefpunkte werden aus den separaten Datenreihen entnommen, die zum Zeichnen jeder Sparkline verwendet werden. Der Höchstpunkt für jede Sparkline wird oben auf der Zelle und der Tiefpunkt unten angegeben.<p><img alt="Für jeden Wert automatisch" src="../images/autoforeach.png" /></p>
+                            </li>
+                            <li><b>Für alle gleich</b> - diese Option ermöglicht es, den gleichen Höchst-/Tiefpunkte Wert für die gesamte Sparkline-Gruppe zu verwenden. Die Höchst-/Tiefpunkte werden dem gesamten Datenbereich entnommen, der zum Zeichnen der Sparkline-Gruppe verwendet wird. Die Höchst-/Tiefpunkte für jede Sparkline werden relativ zum höchsten / niedrigsten Wert innerhalb des Bereichs skaliert. Wenn Sie diese Option auswählen, ist es einfacher, mehrere Sparklines zu vergleichen.<p><img alt="Für alle gleich" src="../images/sameforall.png" /></p>
+                            </li>
+                            <li><b>Festgelegt</b> - mit dieser Option können Sie einen benutzerdefinierten Höchst-/Tiefpunkte festlegen. Die Werte, die niedriger oder höher als die angegebenen Werte sind, werden in den Sparklines nicht angezeigt.</li>
+                        </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            
+		</div>
+	</body>
+</html>

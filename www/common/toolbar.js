@@ -167,6 +167,7 @@ MessengerUI, Messages) {
         var $userlistContent = toolbar.userlistContent;
 
         var metadataMgr = config.metadataMgr;
+
         var online = !forceOffline && metadataMgr.isConnected();
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
@@ -211,19 +212,27 @@ MessengerUI, Messages) {
         var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
                                 .appendTo($editUsers);
 
+        var degradedLimit = Config.degradedLimit || 8;
         if (!online) {
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
             numberOfViewUsers = '?';
+        } else if (metadataMgr.isDegraded() === true) {
+            numberOfEditUsers = Math.max(metadataMgr.getChannelMembers().length - 1, 0);
+            numberOfViewUsers = '';
+            $('<em>').text(Messages._getKey('toolbar_degraded', [degradedLimit])).appendTo($editUsersList);
         }
 
         // Update the buttons
         var fa_editusers = '<span class="fa fa-users"></span>';
-        var fa_viewusers = '<span class="fa fa-eye"></span>';
+        var fa_viewusers = numberOfViewUsers === '' ? '' : '<span class="fa fa-eye"></span>';
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
         if (!online) { return; }
+
+        if (metadataMgr.isDegraded() === true) { return; }
+
         // Display the userlist
 
         // Editors
@@ -940,9 +949,9 @@ MessengerUI, Messages) {
         var todo = function (e, overLimit) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
-                var key = 'pinLimitReachedAlert';
+                var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
                 if (!ApiConfig.allowSubscriptions) {
-                    key = 'pinLimitReachedAlertNoAccounts';
+                    key = 'pinLimitReachedAlertNoAccounts'; // Msg.pinLimitReachedAlertNoAccounts
                 }
                 $limit.show().click(function () {
                     UI.alert(Messages._getKey(key, [encodeURIComponent(l.hostname)]), null, true);

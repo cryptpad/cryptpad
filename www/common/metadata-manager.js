@@ -15,6 +15,7 @@ define(['json.sortify'], function (Sortify) {
         var priv = {};
         var dirty = true;
         var history = false;
+        var degraded = 1; // truthy value but not true: we don't know yet if we're degraded
         var changeHandlers = [];
         var lazyChangeHandlers = [];
         var titleChangeHandlers = [];
@@ -64,7 +65,7 @@ define(['json.sortify'], function (Sortify) {
                 if (members.indexOf(x) === -1 && !history) { return; }
                 mdo[x] = metadataObj.users[x];
             });
-            if (!priv.readOnly) {
+            if (!priv.readOnly && !degraded) {
                 mdo[meta.user.netfluxId] = meta.user;
             }
             metadataObj.users = mdo;
@@ -176,6 +177,10 @@ define(['json.sortify'], function (Sortify) {
             getMetadataLazy: function () {
                 return metadataLazyObj;
             },
+            setDegraded: function (bool) {
+                degraded = bool;
+            },
+            isDegraded: function () { return degraded; },
             onTitleChange: function (f) { titleChangeHandlers.push(f); },
             onChange: function (f) { changeHandlers.push(f); },
             onChangeLazy: function (f) { lazyChangeHandlers.push(f); },

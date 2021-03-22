@@ -1313,6 +1313,7 @@ define([
         }).nThen(function (/* waitFor */) {
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
+            metadataMgr.setDegraded(false); // FIXME degarded mode unsupported (no cursor channel)
 
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
             APP.loggedIn = common.isLoggedIn();

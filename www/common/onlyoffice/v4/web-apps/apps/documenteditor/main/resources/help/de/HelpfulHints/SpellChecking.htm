@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rechtschreibprüfung</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Spell check the text in your language while editing a document" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Rechtschreibprüfung</h1>
+			<p>Der <b>Dokumenteneditor</b> bietet Ihnen die Möglichkeit, die Rechtschreibung Ihres Textes in einer bestimmten Sprache zu überprüfen und Fehler während der Bearbeitung zu korrigieren.</p>
+			<p>Wählen Sie zunächst die <b>Sprache</b> für Ihr Dokument aus. Klicken Sie in der Statusleiste auf das Symbol <img alt="Dokumentsprache festlegen" src="../images/document_language.png" /> <b>Rechtschreibprüfung</b>. Wählen Sie nun im angezeigten Fenster die gewünschte Sprache und klicken Sie auf <b>OK</b>. Die ausgewählte Sprache wird auf das gesamte Dokument angewandt.</p>
+			<p><img alt="Fenster Dokumentsprache festlegen" src="../images/document_language_window.png" /></p>
+			<p>Um für einen Abschnitt im Dokument eine <b>andere Sprache auszuwählen</b>, markieren Sie den entsprechenden Abschnitt mit der Maus und klicken Sie anschließend auf das <img alt="Rechtschreibprüfung - Sprachenauswahl" src="../images/spellchecking_language.png" /> Menü in der Statusleiste.</p>
+			<p>Rechtschreibprüfung <b>aktivieren</b>:</p>
+            <ul>
+                <li>klicken Sie in der Statusleiste auf das Symbol <img alt="Rechtschreibprüfung deaktiviert" src="../images/spellcheckdeactivated.png" /> <b>Rechtschreibprüfung</b> oder</li>
+                <li>öffnen Sie in der oberen Symbolleiste die Registerkarte <b>Datei</b> und wählen Sie die Option <b>erweiterte Einstellungen...</b>, setzen Sie das Häkchen in der Box <b>Rechtschreibprüfung aktivieren</b> und klicken Sie auf <b>Übernehmen</b>.</li>
+            </ul>
+            <p>Falsch geschriebene Wörter werden mit einer roten Linie unterstrichen.</p>
+			<p>Klicken Sie mit der rechten Maustaste auf das entsprechende Wort, um das Kontextmenü zu aktivieren, und:</p>
+			<ul>
+			<li>wählen Sie eine der verfügbaren Varianten aus, um das falsch geschriebene Wort durch die korrekte Rechtschreibung zu ersetzen. Wenn zu viel Möglichkeiten vorliegen, wird die Option <b>Weitere...</b> im Menü angezeigt;</li>
+			<li>wählen Sie die Option <b>Ignorieren</b>, um ein Wort zu überspringen und die rote Linie auszublenden oder <b>Alle ignorieren</b>, um ein bestimmtes Fehlerergebnis für den gesamten Text zu überspringen;</li>
+			<li>wählen Sie für dieses Wort eine andere Sprache.</li>
+			</ul>  
+            <p><img alt="Rechtschreibprüfung" src="../images/spellchecking.png" /></p>
+            <p>Rechtschreibprüfung <b>deaktivieren</b>:</p>
+            <ul>
+                <li>klicken Sie in der Statusleiste auf das Symbol <img alt="Rechtschreibprüfung aktiviert" src="../images/spellcheckactivated.png" /> <b>Rechtschreibprüfung</b> oder</li>
+                <li>öffnen Sie in der oberen Symbolleiste die Registerkarte <b>Datei</b> und wählen Sie die Option <b>erweiterte Einstellungen...</b>, entfernen Sie das Häkchen in der Box <b>Rechtschreibprüfung aktivieren</b> und klicken Sie auf <b>Übernehmen</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

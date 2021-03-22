@@ -221,7 +221,11 @@ define([
                     }
                 } catch (e) { console.error(e); }
 
+                // NOTE: Driveless mode should only work for existing pads, but we can't check that
+                // before creating the worker because we need the anon RPC to do so.
+                // We're only going to check if a hash exists in the URL or not.
                 Cryptpad.ready(waitFor(), {
+                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
                     currentPad: currentPad
@@ -845,7 +849,7 @@ define([
                     var metadata = data.metadata;
                     var add = data.add;
                     var _secret = secret;
-                    if (metadata && (metadata.href || metadata.roHref)) {
+                    if (metadata && (metadata.href || metadata.roHref) && !metadata.fakeHref) {
                         var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
                         _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
                     }
@@ -855,7 +859,7 @@ define([
                     var crypto = Crypto.createEncryptor(_secret.keys);
                     nThen(function (waitFor) {
                         // If we already have metadata, use it, otherwise, try to get it
-                        if (metadata) { return; }
+                        if (metadata && metadata.owners) { return; }
 
                         Cryptpad.getPadMetadata({
                             channel: secret.channel
@@ -1378,6 +1382,14 @@ define([
             // Secure modal
             var SecureModal = {};
             // Create or display the iframe and modal
+            var getPropChannels = function () {
+                var channels = {};
+                if (cfg.getPropChannels) {
+                    channels = Utils.Util.clone(cfg.getPropChannels());
+                }
+                channels.channel = secret.channel;
+                return channels;
+            };
             var initSecureModal = function (type, cfg, cb) {
                 cfg.modal = type;
                 SecureModal.cb = cb;
@@ -1395,9 +1407,11 @@ define([
                     };
                     config.data = {
                         app: parsed.type,
+                        channel: secret.channel,
                         hashes: hashes,
                         password: password,
-                        isTemplate: isTemplate
+                        isTemplate: isTemplate,
+                        getPropChannels: getPropChannels
                     };
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {
@@ -1604,19 +1618,16 @@ define([
             }
 
             sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
-                Cryptpad.cursor.execCommand({
-                    cmd: 'INIT_CURSOR',
+                Cryptpad.universal.execCommand({
+                    type: 'cursor',
                     data: {
-                        channel: data,
-                        secret: secret
+                        cmd: 'INIT_CURSOR',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
                     }
                 }, cb);
-            });
-            Cryptpad.cursor.onEvent.reg(function (data) {
-                sframeChan.event('EV_CURSOR_EVENT', data);
-            });
-            sframeChan.on('Q_CURSOR_COMMAND', function (data, cb) {
-                Cryptpad.cursor.execCommand(data, cb);
             });
 
             Cryptpad.onTimeoutEvent.reg(function () {
@@ -1735,7 +1746,7 @@ define([
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
-                    versionHash: parsed.hashData && parsed.hashData.versionHash,
+                    versionHash: cfg.type !== 'oo' && parsed.hashData && parsed.hashData.versionHash,
                     padRpc: Cryptpad.padRpc,
                     validateKey: secret.keys.validateKey || undefined,
                     isNewHash: isNewHash,

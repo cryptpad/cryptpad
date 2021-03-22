@@ -3,27 +3,12 @@ define([
 ], function (Util) {
     var module = {};
 
-    module.create = function (Common) {
+    module.create = function (Common, onLocal) {
         var exp = {};
-        var sframeChan = Common.getSframeChannel();
         var metadataMgr = Common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var share = Util.find(privateData, ['settings', 'general', 'cursor', 'share']);
         var show = Util.find(privateData, ['settings', 'general', 'cursor', 'show']);
-
-        var execCommand = function (cmd, data, cb) {
-            sframeChan.query('Q_CURSOR_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
-                if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
-                cb(void 0, obj);
-            });
-        };
-
-        exp.updateCursor = function (obj) {
-            if (share === false) { return; }
-            execCommand('UPDATE', obj, function (err) {
-                if (err) { console.error(err); }
-            });
-        };
 
         var messageHandlers = [];
         exp.onCursorUpdate = function (handler) {
@@ -40,15 +25,47 @@ define([
             });
         };
 
+        var onDegraded = function (data) {
+            if (data.degraded) {
+                // Enter degraded mode
+                onMessage({
+                    reset: true
+                });
+                metadataMgr.setDegraded(true);
+                return void metadataMgr.refresh();
+            }
 
-        sframeChan.on('EV_CURSOR_EVENT', function (obj) {
+            setTimeout(function () {
+                metadataMgr.setDegraded(false);
+                metadataMgr.refresh();
+                setTimeout(onLocal);
+            });
+        };
+
+        var onEvent = function (obj) {
             var cmd = obj.ev;
             var data = obj.data;
+            if (cmd === 'DEGRADED') {
+                onDegraded(data);
+                return;
+            }
             if (cmd === 'MESSAGE') {
                 onMessage(data);
                 return;
             }
+        };
+
+        var module = Common.makeUniversal('cursor', {
+            onEvent: onEvent
         });
+        var execCommand = module.execCommand;
+
+        exp.updateCursor = function (obj) {
+            if (share === false) { return; }
+            execCommand('UPDATE', obj, function (err) {
+                if (err) { console.error(err); }
+            });
+        };
 
         return exp;
     };

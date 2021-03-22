@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Fonction TENDANCE</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Fonction TENDANCE</h1>
+        <p>La fonction <b>TENDANCE</b> est l'une des fonctions statistiques. La fonction <b>TENDANCE</b> renvoie des valeurs par rapport à une tendance linéaire. Elle s'adapte à une ligne droite à l'aide de la méthode des moindres carrés).</p>
+        <p>La syntaxe de la fonction <b>TENDANCE</b> est comme suit:</p>
+        <p style="text-indent: 150px;"><b><em>= TENDANCE (known_y, [known_x], [new_x], [constante])</em></b></p>
+        <p>où:</p>
+        <p><b>y_connus </b>représente l'ensemble des valeurs y que vous connaissez déjà dans la relation y = mx + b.</p>
+        <p><b>x_connus</b> représente l'ensemble facultatif de valeurs x que vous connaissez éventuellement dans la relation y = mx + b.</p>
+        <p><b>x_nouveaux</b> représente l'ensemble facultatif de variables x pour lesquelles vous voulez renvoyer les valeurs y correspondantes.</p>
+        <p><b>constante</b> représente un argument facultatif. C'est une valeur VRAI ou FAUX où si l'argument constante est VRAI ou omis, la constante b est calculée normalement, et si l'argument constante est FAUX, b est égal à 0 (zéro) dans l'équation <em>y = mx + b</em> et les valeurs m sont ajustées de façon à ce que y = mx.
+        </p>
+
+        <p>Pour utiliser la fonction <b>TENDANCE</b>,</p>
+        <ol>
+            <li>sélectionnez la cellule où vous voulez afficher le résultat,</li>
+            <li>
+                appuyez sur l'icône <b>Insérer une fonction</b> <img alt="L'icône Insérer fonction" src="../images/insertfunction.png" /> de la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule et choisissez l'option <b>Insérer une fonction</b> dans le menu, <br />ou cliquez sur l'icône <img alt="L'icône Fonction" src="../images/function.png" /> de la barre de formule,
+            </li>
+            <li>sélectionnez le groupe de fonctions <b>Statistiques</b> dans la liste,</li>
+            <li>appuyez sur la fonction <b>TENDANCE</b>,</li>
+            <li>saisissez l'argument approprié et</li>
+            <li>appuyez sur la touche <b>Entrée</b>.</li>
+        </ol>
+        <p>Le résultat s'affiche dans la cellule choisie.</p>
+        <p style="text-indent: 150px;"><img alt="Fonction TENDANCE" src="../images/trend.png" /></p>
+    </div>
+</body>
+</html>

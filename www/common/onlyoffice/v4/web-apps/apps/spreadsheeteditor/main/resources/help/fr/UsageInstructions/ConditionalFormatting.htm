@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>La mise en forme conditionnelle</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="La mise en forme conditionnelle permet d'appliquer des différents styles de mise en forme (couleur, police, décoration, dégradé) des cellules pour organiser les données dans une feuille de calcul: mettre en surbrillance ou trier et afficher les données selon les critères définis." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>La mise en forme conditionnelle</h1>
+            <p  class="note"><b>Remarque</b>: Les utilisateurs ONLYOFFICE Spreadsheet Editor ne peuvent pas actuellement s'en servir pour créer et modifier les règles de mise en forme conditionnelle.</p>
+			<p><b>La mise en forme conditionnelle</b> permet d'appliquer des différents types de style de formatage (couleur, police, décoration, dégradé) des cellules pour travailler avec les données en tableaux: mettre en surbrillance, trier les données et les afficher selon un ou plusieurs critère(s). On établit les critères suivant quelques types de règles. Les utilisateurs ONLYOFFICE Spreadsheet Editor ne peuvent pas actuellement s'en servir pour créer et modifier les règles de mise en forme conditionnelle.</p>
+			<p>ONLYOFFICE Spreadsheet Editor offre les règles suivantes dans la mode Affichage: <b>valeur de la cellule (+formule)</b>, les valeurs <b>premières / dernières et au-dessus / en-dessous de la moyenne</b>, valeurs <b>uniques</b> ou <b>doublons</b>, <b>jeux d'icônes, barres de données,</b> <b>dégradés (nuances de couleurs)</b> et les règles <b>basées sur une formule</b>.</p>
+            <ul>
+				<li><b>Valeur de la cellule </b>s'utilise pour trouver les nombres, les dates ou le texte dans une feuille de calcul. Par exemple, on veut voir les ventes du mois en cours (coloré en rose), les produits dénommés &ldquo;Grain&rdquo; (coloré en jaune) et les produits dont les ventes représentent à moins de $500 (coloré en bleu).
+                    <p><img alt="Valeur de la cellule" src="../images/conditionalformatting/cellvalue.png" /></p>
+                </li>
+				<li><b>Cellule avec formule</b> s'utilise pour afficher les nombres ou le texte qui changent de façon dynamique dans une feuille de calcul. Par exemple, on veut trouver les produits dénommés: &ldquo;Grain&rdquo;, &ldquo;Produce&rdquo; ou &ldquo;Dairy&rdquo; (coloré en jaune) ou les produits dont les ventes représentent entre $ 100 à $500 (coloré en bleu).
+                    <p><img alt="Cellule avec formule" src="../images/conditionalformatting/cellvalueformula.gif" /></p>
+                </li>
+                <li><b>Valeurs premières / dernières et au-dessus / en-dessous de la moyenne</b> s'utilise pour trouver et afficher les cellules qui contiennent des valeurs extrêmes et les cellules en fonction de leur position par rapport à la moyenne. Par exemple, on veut voir les valeurs les plus élevées pour les villes que vous avez visité (coloré en orange), les villes les plus visitées au-dessus de la moyenne et les valeurs les plus bas parmi les villes où les livres sont moins vendus.
+                    <p><img alt="Valeurs premières / dernières et Au-dessus / En-dessous de la moyenne" src="../images/conditionalformatting/topbottomvalue.png" /></p>
+                </li>
+                <li><b>Unique / Doublons</b> s'utilise pour afficher les cellules contenant des doublons et la plage de cellules spécifiée. Par exemple, on veut voir les doublons de contact. Accédez à la liste déroulante. Le nombre de doublons s'affiche à la droite du nom de contact. Pour afficher seulement la liste de doublons, activez la case à cocher.
+                    <p><img alt="Unique et doublons" src="../images/conditionalformatting/uniqueduplicates.gif" /></p>
+                </li>
+				<li><b><b>Jeux d'icône</b></b> s'utilise pour afficher l'icône pour la cellule répondant aux critères définis. Spreadsheet Editor vous offre plusieurs jeux d'icône. Les exemples exposés ci-dessous montrent les jeux d'icône les plus courantes dans la mise en forme conditionnelle. 
+                    <ul>
+                        <li>Les cellules sont mis en forme en utilisant les flèches appropriées au lieu des nombres et pourcentage pour affichez votre chiffre d'affaires dans la colonne &ldquo;Status&rdquo; et son évolution dans la colonne &ldquo;Trend&rdquo;.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsetrevenue.png" /></p>
+                        </li>
+                        <li>L'outil de mise en forme conditionnelle affiche les icônes appropriés au lieux des nombres de 1 à 5 selon la légende en haut pour chaque élément sur la liste de classement.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsetbikerating.png" /></p>
+                        </li>
+                        <li>Il ne faut pas calculer manuellement et comparer les indicateurs mensuels d'évolution du chiffre d'affaires car ce fait est illustré par les flèches rouges ou verts dans les cellules mises en forme.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsettrends.png" /></p>
+                        </li>
+                        <li>Profitez des échelles de couleur (rouge, jaune, vert) pour visualiser l'évolution des ventes.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsettrafficlights.png" /></p>
+                        </li>
+                    </ul>                
+                </li>
+                <li>
+                    <b>Barres de données</b> s'utilise pour comparer les valeurs sous la forme d'un diagramme à barres. Par exemple, comparez l'altitude des sommets en affichant les valeurs par défaut en mètres (la barre verte) et les mêmes valeurs en pourcentage entre 0 et 100 (la barre jaune); rang-centile s'il y a des valeurs aberrantes (la barre bleu claire); les barres seulement au lieu de nombres (la barre bleu); analyse de donnés à deux colonnes pour voir les nombres aussi que les barres (la barre rouge).
+                    <p><img alt="Barres de données" src="../images/conditionalformatting/databars.png" /></p>
+                </li>
+                <li>
+                    <b>Dégradés</b> ou nuances de couleurs s'utilise pour visualiser les données grâce à des dégradés de couleurs en fonction de la distribution des valeurs. Toutes les colonnes de &ldquo;Dairy&rdquo; à &ldquo;Beverage&rdquo; comportent un dégradé bicolore jaune et rouge; la colonne &ldquo;Total Sales&rdquo; comporte un dégradé tricolore, du fond moins foncé rouge pour les valeurs les plus faibles et au fond plus foncé bleu pour les valeurs les plus élevées.
+                    <p><img alt="Dégradés" src="../images/conditionalformatting/gradient.png" /></p>
+                </li>
+                <li>
+                    <b>Mise en forme basé sur une formule</b> utilise plusieurs formules pour filtrer des données en fonction de vos besoins spécifiques. Par exemple, vous pouvez affecter un fond aux lignes en alternance,
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/shading.png" /></p>
+                    <p>comparer à la valeur de référence (ici c'est $55) et démontrer que celle-ci est au-dessus (vert) ou au-dessous (rouge),</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/comparison.png" /></p>
+                    <p>appliquer la mise en forme aux lignes répondant aux critères que vous spécifiez (voir des objectifs à réaliser ce mois-ci, dans le cas d'espèce c'est octobre)</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/shaderows.png" /></p>
+                    <p>ou mette en forme seulement les lignes uniques.</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/shadeunique.png" /></p>
+                </li>
+			</ul>
+			<p class="note"><b>Veuillez noter</b> que ce guide comprend des informations graphiques du manuel Microsoft Office  <a href="https://download.microsoft.com/download/e/4/0/e4089f75-cdb0-4658-9d34-bfa3f7b48815/Conditional%20Formatting%20examples.xlsx" onclick="onhyperlinkclick(this)">La mise en forme conditionnelle: exemples et instructions</a> . Téléchargez ce manuel et ouvrez-le avec Spreadsheet Editor pour essayer ces règles de visualisation.</p>
+			
+		</div>
+	</body>
+</html>

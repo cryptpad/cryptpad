@@ -232,17 +232,6 @@ define([
         };
         postMessage("MIGRATE_ANON_DRIVE", data, cb);
     };
-    // Settings
-    common.deleteAccount = function (cb) {
-        postMessage("DELETE_ACCOUNT", null, function (obj) {
-            if (obj.state) {
-                Feedback.send('DELETE_ACCOUNT_AUTOMATIC');
-            } else {
-                Feedback.send('DELETE_ACCOUNT_MANUAL');
-            }
-            cb(obj);
-        });
-    };
     // Drive
     common.userObjectCommand = function (data, cb) {
         postMessage("DRIVE_USEROBJECT", data, cb);
@@ -1037,13 +1026,6 @@ define([
     };
     onlyoffice.onEvent = Util.mkEvent();
 
-    // Cursor
-    var cursor = common.cursor = {};
-    cursor.execCommand = function (data, cb) {
-        postMessage("CURSOR_COMMAND", data, cb);
-    };
-    cursor.onEvent = Util.mkEvent();
-
     // Mailbox
     var mailbox = common.mailbox = {};
     mailbox.execCommand = function (data, cb) {
@@ -1113,6 +1095,7 @@ define([
 
     common.changePadPassword = function (Crypt, Crypto, data, cb) {
         var href = data.href;
+        var oldPassword = data.oldPassword;
         var newPassword = data.password;
         var teamId = data.teamId;
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
@@ -1141,7 +1124,9 @@ define([
 
         var isSharedFolder = parsed.type === 'drive';
 
-        var optsGet = {};
+        var optsGet = {
+            password: oldPassword
+        };
         var optsPut = {
             password: newPassword,
             metadata: {},
@@ -1151,7 +1136,7 @@ define([
         var cryptgetVal;
 
         Nthen(function (waitFor) {
-            if (parsed.hashData && parsed.hashData.password) {
+            if (parsed.hashData && parsed.hashData.password && !oldPassword) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
                     optsGet.password = password;
                 }), href);
@@ -1436,6 +1421,7 @@ define([
     common.changeOOPassword = function (data, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var href = data.href;
+        var oldPassword = data.oldPassword;
         var newPassword = data.password;
         var teamId = data.teamId;
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
@@ -1470,12 +1456,16 @@ define([
                 validateKey: newSecret.keys.validateKey
             },
         };
-        var optsGet = {};
+        var optsGet = {
+            password: oldPassword
+        };
 
         Nthen(function (waitFor) {
             common.getPadAttribute('', waitFor(function (err, _data) {
                 padData = _data;
-                optsGet.password = padData.password;
+                if (!oldPassword) {
+                    optsGet.password = padData.password;
+                }
             }), href);
             common.getAccessKeys(waitFor(function (keys) {
                 optsGet.accessKeys = keys;
@@ -1674,6 +1664,79 @@ define([
     };
 
 
+    var getBlockKeys = function (data, cb) {
+        var accountName = LocalStore.getAccountName();
+        var password = data.password;
+        var Cred, Block, Login;
+        var blockKeys;
+
+        var hash = LocalStore.getUserHash();
+        if (!hash) { return void cb({ error: 'E_NOT_LOGGED_IN' }); }
+        var blockHash = LocalStore.getBlockHash();
+
+        Nthen(function (waitFor) {
+            require([
+                '/common/common-credential.js',
+                '/common/outer/login-block.js',
+                '/customize/login.js'
+            ], waitFor(function (_Cred, _Block, _Login) {
+                Cred = _Cred;
+                Block = _Block;
+                Login = _Login;
+            }));
+        }).nThen(function (waitFor) {
+            // confirm that the provided password is correct
+            Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes,
+                                      waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                blockKeys = allocated.blockKeys;
+                if (blockHash) {
+                    if (blockHash !== allocated.blockHash) {
+                        // incorrect password
+                        console.log("provided password did not yield the correct blockHash");
+                        waitFor.abort();
+                        return void cb({ error: 'INVALID_PASSWORD', });
+                    }
+                } else {
+                    // otherwise they're a legacy user, and we should check against the User_hash
+                    if (hash !== allocated.userHash) {
+                        // incorrect password
+                        console.log("provided password did not yield the correct userHash");
+                        waitFor.abort();
+                        return void cb({ error: 'INVALID_PASSWORD', });
+                    }
+                }
+            }));
+        }).nThen(function () {
+            cb({
+                Cred: Cred,
+                Block: Block,
+                Login: Login,
+                blockKeys: blockKeys
+            });
+        });
+    };
+    common.deleteAccount = function (data, cb) {
+        data = data || {};
+
+        // Confirm that the provided password is corrct and get the block keys
+        getBlockKeys(data, function (obj) {
+            if (obj && obj.error) { return void cb(obj); }
+            var blockKeys = obj.blockKeys;
+            var removeData = obj.Block.remove(blockKeys);
+
+            postMessage("DELETE_ACCOUNT", {
+                removeData: removeData
+            }, function (obj) {
+                if (obj.state) {
+                    Feedback.send('DELETE_ACCOUNT_AUTOMATIC');
+                } else {
+                    Feedback.send('DELETE_ACCOUNT_MANUAL');
+                }
+                cb(obj);
+            });
+        });
+    };
     common.changeUserPassword = function (Crypt, edPublic, data, cb) {
         if (!edPublic) {
             return void cb({
@@ -1699,40 +1762,15 @@ define([
 
         var Cred, Block, Login;
         Nthen(function (waitFor) {
-            require([
-                '/common/common-credential.js',
-                '/common/outer/login-block.js',
-                '/customize/login.js'
-            ], waitFor(function (_Cred, _Block, _Login) {
-                Cred = _Cred;
-                Block = _Block;
-                Login = _Login;
-            }));
-        }).nThen(function (waitFor) {
-            // confirm that the provided password is correct
-            Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes, waitFor(function (bytes) {
-                var allocated = Login.allocateBytes(bytes);
-                oldBlockKeys = allocated.blockKeys;
-                if (blockHash) {
-                    if (blockHash !== allocated.blockHash) {
-                        console.log("provided password did not yield the correct blockHash");
-                        // incorrect password probably
-                        waitFor.abort();
-                        return void cb({
-                            error: 'INVALID_PASSWORD',
-                        });
-                    }
-                    // the user has already created a block, so you should compare against that
-                } else {
-                    // otherwise they're a legacy user, and we should check against the User_hash
-                    if (hash !== allocated.userHash) {
-                        console.log("provided password did not yield the correct userHash");
-                        waitFor.abort();
-                        return void cb({
-                            error: 'INVALID_PASSWORD',
-                        });
-                    }
+            getBlockKeys(data, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
                 }
+                oldBlockKeys = obj.blockKeys;
+                Cred = obj.Cred;
+                Login = obj.Login;
+                Block = obj.Block;
             }));
         }).nThen(function (waitFor) {
             // Check if our drive is already owned
@@ -2101,8 +2139,6 @@ define([
         },
         // OnlyOffice
         OO_EVENT: common.onlyoffice.onEvent.fire,
-        // Cursor
-        CURSOR_EVENT: common.cursor.onEvent.fire,
         // Mailbox
         MAILBOX_EVENT: common.mailbox.onEvent.fire,
         // Universal
@@ -2243,8 +2279,9 @@ define([
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
                 cache: rdyCfg.cache,
+                noDrive: rdyCfg.noDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
-                driveEvents: true //rdyCfg.driveEvents // Boolean
+                driveEvents: !rdyCfg.noDrive //rdyCfg.driveEvents // Boolean
             };
             common.userHash = userHash;
 
@@ -2271,6 +2308,7 @@ define([
 
 
             var channelIsReady = waitFor();
+            updateLocalVersion();
 
             var msgEv = Util.mkEvent();
             var postMsg, worker;
@@ -2504,7 +2542,6 @@ define([
                 AppConfig.afterLogin(common, waitFor());
             }
         }).nThen(function () {
-            updateLocalVersion();
             f(void 0, env);
             if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
         });

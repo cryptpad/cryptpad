@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Applicare stili di decorazione dei caratteri</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Apply font decoration styles: increment/decrement values, bold, italic, underline, strikeout, superscript/subscript" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Applicare stili di decorazione dei caratteri</h1>
+        <p>È possibile applicare vari stili di decorazione dei caratteri utilizzando le icone corrispondenti situate nella scheda <b>Home</b> della barra degli strumenti superiore.</p>
+        <p class="note"><b>Nota</b>: nel caso in cui si desidera applicare la formattazione al testo già presente nel documento, selezionarlo con il mouse o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">utilizzando la tastiera</a> e applicare la formattazione.</p>
+        <table>
+            <tr>
+                <td>Grassetto</td>
+                <td><img alt="Grassetto" src="../images/bold.png" /></td>
+                <td>Viene utilizzato per rendere grassetto il carattere dandogli più peso.</td>
+            </tr>
+            <tr>
+                <td>Corsivo</td>
+                <td><img alt="Corsivo" src="../images/italic.png" /></td>
+                <td>Viene utilizzato per rendere il carattere in corsivo dandogli un po' d’inclinazione sul lato destro.</td>
+            </tr>
+            <tr>
+                <td>Sottolineato</td>
+                <td><img alt="Sottolineato" src="../images/underline.png" /></td>
+                <td>Viene utilizzato per rendere il testo sottolineato con la linea che va sotto le lettere.</td>
+            </tr>
+            <tr>
+                <td>Barrato</td>
+                <td><img alt="Barrato" src="../images/strike.png" /></td>
+                <td>Viene utilizzato per rendere il testo barrato con la linea che attraversa le lettere.</td>
+            </tr>
+            <tr>
+                <td>Apice</td>
+                <td><img alt="Apice" src="../images/sup.png" /></td>
+                <td>Viene utilizzato per rendere il testo più piccolo e posizionarlo nella parte superiore della riga di testo, ad esempio come nelle frazioni.</td>
+            </tr>
+            <tr>
+                <td>Pedice</td>
+                <td><img alt="Pedice" src="../images/sub.png" /></td>
+                <td>Viene utilizzato per rendere il testo più piccolo e posizionarlo nella parte  inferiore della riga di testo, ad esempio come nelle formule chimiche.</td>
+            </tr>
+        </table>
+        <p>Per accedere alle impostazioni avanzate del carattere, fai clic con il pulsante destro del mouse e seleziona l'opzione <b>Impostazioni avanzate del paragrafo</b> dal menu o utilizza il collegamento <b>Mostra impostazioni avanzate</b> nella barra laterale destra.  Quindi si aprirà la finestra <b>Paragrafo - Impostazioni avanzate</b> in cui è necessario passare alla scheda <b>Carattere</b>.</p>
+        <p>Qui è possibile utilizzare i seguenti stili e impostazioni di decorazione dei caratteri:</p>
+        <ul>
+            <li><b>Barrato</b> viene utilizzato per rendere il testo barrato con la linea che attraversa le lettere.</li>
+            <li><b>Barrato doppio</b> viene utilizzata per rendere il testo barrato con la doppia linea che attraversa le lettere.</li>
+            <li><b>Apice</b> viene utilizzato per rendere il testo più piccolo e posizionarlo nella parte superiore della riga di testo, ad esempio come nelle frazioni.</li>
+            <li><b>Pedice</b> viene utilizzato per rendere il testo più piccolo e posizionarlo nella parte  inferiore della riga di testo, ad esempio come nelle formule chimiche.</li>
+            <li><b>Minuscole</b> viene utilizzato per rendere tutte le lettere minuscole.</li>
+            <li><b>Maiuscole</b> viene utilizzato per rendere tutte le lettere maiuscole.</li>
+            <li><b>Spaziatura</b> viene utilizzata per impostare lo spazio tra i caratteri. Aumentare il valore predefinito per applicare la spaziatura <b>Estesa</b> o diminuire il valore predefinito per applicare la spaziatura <b>Condensata</b>. Utilizzare i pulsanti freccia o immettere il valore necessario nella casella.</li>
+            <li>
+                <b>Posizione</b> viene utilizzata per impostare la posizione dei caratteri (offset verticale) nella riga. Aumentare il valore predefinito per spostare i caratteri verso l'alto o diminuire il valore predefinito per spostare i caratteri verso il basso. Utilizzare i pulsanti freccia o immettere il valore necessario nella casella.
+                <p>Tutte le modifiche verranno visualizzate nel campo di anteprima sottostante.</p>
+            </li>
+        </ul>
+        <p><img alt="Paragrafo - Impostazioni avanzate - - Carattere" src="../images/paradvsettings_font.png" /></p>
+    </div>
+</body>
+</html>

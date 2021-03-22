@@ -62,7 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.1.0";
+    Pages.versionString = "v4.3.0";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
@@ -92,6 +92,7 @@ define([
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
                     footerCol('footer_aboutUs', [
+                        footLink('https://blog.cryptpad.fr/', 'blog'),
                         footLink('/contact.html', 'contact'),
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
@@ -152,10 +153,9 @@ define([
             ]),
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
-                h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
                 h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
             ].concat(rightLinks))
         );
     };

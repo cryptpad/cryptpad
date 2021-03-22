@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vorschau einer Präsentation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Preview your presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Vorschau einer Präsentation</h1>
+            <h3>Vorschau beginnen</h3>
+			<p>Bildschirmpräsentation der aktuellen Präsentation:</p>
+            <ul>
+                <li>Klicken Sie in der Registerkarte <b>Start</b> oder links in der Statusleiste auf das Symbol <b>Bildschirmpräsentation</b> <img alt="Bildschirmpräsentation" src="../images/startpreview.png" /> oder</li>
+                <li>wählen Sie in der Folienliste links eine bestimmte Folie aus, klicken Sie diese mit der rechten Maustaste an und wählen Sie die Option <b>Bildschirmpräsentation starten</b> im Kontextmenü aus.</li>
+            </ul>
+            <p>Die Bildschirmpräsentation wird ab der aktuellen Folie gestartet.</p>
+            <p>Klicken Sie alternativ in der Registerkarte <b>Start</b> auf das Symbol <b>Bildschirmpräsentation</b> <img alt="Bildschirmpräsentation" src="../images/startpreview.png" /> und wählen Sie eine der verfügbaren Optionen:</p>
+            <ul>
+                <li><b>Von Beginn an</b> - die Bildschirmpräsentation aber der ersten Folie starten</li>
+                <li><b>Ab aktueller Folie</b> - die Bildschirmpräsentation beginnt bei der aktuellen Folie</li>
+                <li><b>Referentenansicht</b> - die Präsentation wird in der <b>Referentenansicht</b> gestartet, die Zielgruppe sieht die Präsentation auf einem Bildschirm im Vollbildmodus und auf dem anderen Bildschirm wird die „Sprecheransicht“ mit den Notizen angezeigt.</li>
+                <li><b>Einstellungen anzeigen</b> - ein Einstellungsfenster wird geöffnet, in dem sich eine Sonderoption einstellen lässt: <b>Dauerschleife, bis zum Drücken der Taste „ESC“</b>. Aktivieren Sie diese Option bei Bedarf und klicken Sie auf <b>OK</b>. Wenn Sie diese Option aktivieren, wird die Präsentation angezeigt, bis Sie die Taste <b>Escape</b> auf Ihrer Tastatur drücken, d.h., wenn die letzte Folie der Präsentation erreicht ist, beginnt die Bildschirmpräsentation wieder bei der ersten Folie usw. Wenn Sie diese Option deaktivieren, erscheint nach der letzten Folie ein schwarzer Bildschirm, der Sie darüber informiert, dass die Präsentation beendet ist und Sie die <b>Vorschau</b> verlassen können.<p><img alt="Fenster Anzeigeeinstellungen" src="../images/showsettings.png" /></p>
+                </li>
+            </ul>
+            <h3>Vorschaumodus</h3>
+            <p>Im <b>Vorschaumodus</b> stehen Ihnen folgende Steuerelemente in der unteren linken Ecke zur Verfügung:</p>
+            <p><img alt="Steuerelemente für die Vorschau" src="../images/preview_mode.png" /></p>
+            <ul>
+                <li><b>Vorherige Folie</b> <img alt="Vorherige Folie" src="../images/previousslide.png" /> - zur vorherigen Folie zurückkehren.</li>
+                <li><b>Bildschirmpräsentation pausieren</b> <img alt="Bildschirmpräsentation pausieren" src="../images/pausepresentation.png" /> - die Vorschau wird angehalten. Wird diese Schaltfläche angeklickt, wandelt sich der Cursor zu <img alt="Bildschirmpräsentation fortsetzen" src="../images/startpresentation.png" />.</li>
+                <li><b>Bildschirmpräsentation fortsetzen</b> <img alt="Bildschirmpräsentation fortsetzen" src="../images/startpresentation.png" /> - die Vorschau wird fortgesetzt. Wird diese Schaltfläche angeklickt, wandelt sich der Cursor zu <img alt="Bildschirmpräsentation pausieren" src="../images/pausepresentation.png" />.</li>
+                <li><b>Nächste Folie</b> <img alt="Nächste Folie" src="../images/nextslide.png" /> - wechseln Sie in die nächste Folie.</li>
+                <li><b>Foliennummer</b> - Anzeige der aktuellen Foliennummer sowie der Gesamtzahl von Folien in der Präsentation. Um im Vorschaumodus zu einer bestimmten Folie überzugehen, klicken Sie auf die <b>angezeigte Foliennummer</b>, geben Sie die gewünschte Foliennummer in das geöffnete Fenster ein und drücken Sie die <b>Eingabetaste</b>.</li>
+                <li>Über die Schaltfläche <b>Vollbildmodus</b> <img alt="Vollbild" src="../images/fullscreen.png" /> können Sie in die Vollbildansicht wechseln.</li>
+                <li>Über die Schaltfläche <b>Vollbildmodus verlassen</b> <img alt="Vollbildmodus verlassen" src="../images/exitfullscreen.png" /> können Sie die Vollbildansicht verlassen.</li>
+                <li>Über die Schaltfläche <b>Bildschirmpräsentation beenden</b> <img alt="Bildschirmpräsentation beenden" src="../images/closepreview.png" /> können Sie den Präsentationsmodus verlassen.</li>
+            </ul>
+			<p>Alternativ können Sie im Präsentationsmodus auch mit den <a href="../HelpfulHints/KeyboardShortcuts.htm#preview" onclick="onhyperlinkclick(this)">Tastenkombinationen</a> zwischen den Folien wechseln.</p>
+            <h3 id="presenter">Referentenansicht</h3>
+            <p><b>Referentenansicht</b> - die Präsentation wird auf einem Bildschirm im Vollbildmodus angezeigt und auf dem anderen Bildschirm wird die „Sprecheransicht“ mit den Notizen wiedergegeben. Die Notizen für jede Folie werden unter dem Folienvorschaubereich angezeigt.</p>
+            <p>Nutzen Sie die Tasten <img alt="Vorherige Folie" src="../images/previousslide.png" /> und <img alt="Nächste Folie" src="../images/nextslide.png" /> oder klicken Sie im linken Seitenbereich auf die entsprechende Folie in der Liste. Foliennummer von ausgeblendeten Folien sind in der Liste durchgestrichen. Wenn Sie anderen eine ausgeblendete Folie zeigen möchten, klicken Sie in der Folienliste mit der Maus auf die Folie - die Folie wird angezeigt.</p>
+            <p>Die folgenden Steuerelemente stehen Ihnen unterhalb des Folienvorschaubereichs zur Verfügung:</p>
+            <p><img alt="Steuerelemente Präsentationsmodus" src="../images/presenter_mode.png" /></p>
+            <ul>
+                <li><b>Timer</b> - zeigt die seit Beginn der Präsentation vergangene Zeit im Format <em>hh.mm.ss</em> an.</li>
+                <li><b>Bildschirmpräsentation pausieren</b> <img alt="Bildschirmpräsentation pausieren" src="../images/pausepresentation.png" /> - die Vorschau wird angehalten. Wird diese Schaltfläche angeklickt, wandelt sich der Cursor zu <img alt="Bildschirmpräsentation fortsetzen" src="../images/startpresentation.png" />.</li>
+                <li><b>Bildschirmpräsentation fortsetzen</b> <img alt="Bildschirmpräsentation fortsetzen" src="../images/startpresentation.png" /> - die Vorschau wird fortgesetzt. Wird diese Schaltfläche angeklickt, wandelt sich der Cursor zu <img alt="Bildschirmpräsentation pausieren" src="../images/pausepresentation.png" />.</li>
+                <li><b>Zurücksetzen</b> - Timer auf Null zurücksetzen.</li>
+                <li><b>Vorherige Folie</b> <img alt="Vorherige Folie" src="../images/previousslide.png" /> - zur vorherigen Folie zurückkehren.</li>
+                <li><b>Nächste Folie</b> <img alt="Nächste Folie" src="../images/nextslide.png" /> - wechseln Sie in die nächste Folie.</li>
+                <li><b>Foliennummer</b> - Anzeige der aktuellen Foliennummer sowie der Gesamtzahl von Folien in der Präsentation.</li>
+                <li><b>Pointer</b> <img alt="Pointer" src="../images/pointer.png" /> - Ausgewählte Elemente während der Präsentation hervorheben. Wenn diese Option aktiviert ist, sieht der Cursor aus wie folgt: <img alt="Pointer" src="../images/pointer_enabled.png" />. Um auf bestimmte Objekte zu zeigen, bewegen Sie den Mauszeiger über den Vorschaubereich der Folie und bewegen Sie den Pointer über die Folie. Der Pointer wird wie folgt angezeigt: <img alt="Pointer" src="../images/pointer_screen.png" />. Um diese Option zu deaktivieren, klicken Sie erneut auf <img alt="Pointer" src="../images/pointer_enabled.png" />.</li>
+                <li><b>Bildschirmpräsentation beenden</b> - <b>Präsentationsmodus</b> verlassen.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

@@ -491,13 +491,13 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         if (!config.network) { return void cb("EXPECTED_NETWORK"); }
         if (!config.channel || typeof(config.channel) !== 'string' || config.channel.length !== 32) { return void cb("EXPECTED_CHANNEL"); }
         if (!config.keys || typeof(config.keys) !== 'object') { return void cb("EXPECTED_CRYPTO_KEYS"); }
-        if (!config.anon_rpc) { return void cb("EXPECTED_ANON_RPC"); }
+        if (!config.store) { return void cb("EXPECTED_STORE"); }
 
 
         var response = Util.response(function (label, info) {
             console.error('ROSTER_RESPONSE__' + label, info);
         });
-        var anon_rpc = config.anon_rpc;
+        var store = config.store;
         var keys = config.keys;
         var me = keys.myCurvePublic;
         var channel = config.channel;
@@ -571,6 +571,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             }
         };
         var ready = false;
+        var onCacheReady = function () {
+            if (!config.onCacheReady) { return; }
+            config.onCacheReady(roster);
+        };
         var onReady = function (info) {
             //console.log("READY");
             webChannel = info;
@@ -670,9 +674,18 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             }, delay);
         };
 
+        var isCacheCheckpoint = function (msg, author) {
+            var parsed = Util.tryParse(msg);
+            if (parsed[0] !== 'CHECKPOINT') { return false; }
+            var changed = simulate(parsed, author, ref);
+            return changed;
+        };
+
         var metadata, crypto;
         var send = function (msg, cb) {
             if (!isReady()) { return void cb("NOT_READY"); }
+            var anon_rpc = store.anon_rpc;
+            if (!anon_rpc) { return void cb("ANON_RPC_NOT_READY"); }
 
             var changed = false;
             try {
@@ -816,7 +829,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
 
         nThen(function (w) {
             // get metadata so we know the owners and validateKey
-            anon_rpc.send('GET_METADATA', channel, function (err, data) {
+            if (!store.anon_rpc) { return; }
+            store.anon_rpc.send('GET_METADATA', channel, function (err, data) {
                 if (err) {
                     w.abort();
                     return void console.error(err);
@@ -826,6 +840,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         }).nThen(function (w) {
             if (!config.keys.teamEdPublic && metadata && metadata.validateKey) {
                 config.keys.teamEdPublic = metadata.validateKey;
+            }
+            if (!config.keys.teamEdPublic) {
+                w.abort();
+                return void cb("NO_VALIDATE_KEY");
             }
 
             try {
@@ -853,6 +871,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
                 validateKey: config.keys.teamEdPublic,
 
                 owners: config.owners,
+
+                Cache: config.Cache,
+                isCacheCheckpoint: isCacheCheckpoint,
+                onCacheReady: onCacheReady,
 
                 onChannelError: onChannelError,
                 onReady: onReady,

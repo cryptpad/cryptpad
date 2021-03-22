@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "4.1.0",
+  "version": "4.3.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -39,11 +39,13 @@
     "dev": "DEV=1 node server.js",
     "fresh": "FRESH=1 node server.js",
     "offline": "FRESH=1 OFFLINE=1 node server.js",
+    "offlinedev": "DEV=1 OFFLINE=1 node server.js",
     "package": "PACKAGE=1 node server.js",
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
     "lint:server": "jshint --config .jshintrc lib",
     "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint:translations": "node ./scripts/unused-translations.js",
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
     "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;",

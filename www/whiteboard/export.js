@@ -14,8 +14,29 @@ define([
         var canvas = new Fabric.Canvas(canvas_node);
         var content = userDoc.content;
         canvas.loadFromJSON(content, function () {
+
+            var w = 0;
+            var h = 0;
+            var MAX = 8192;
+            canvas.forEachObject(function (obj) {
+                var c = obj.getCoords();
+                Object.keys(c).forEach(function (k) {
+                    if (c[k].x > w) { w = c[k].x + 1; }
+                    if (c[k].y > h) { h = c[k].y + 1; }
+                });
+            });
+            w = Math.min(w, MAX);
+            h = Math.min(h, MAX);
+            canvas.setWidth(w);
+            canvas.setHeight(h);
+            canvas.calcOffset();
+
+            module.ext = '.png';
+            canvas_node.toBlob(cb);
+            /*
             module.ext = '.svg';
-            cb(canvas.toSVG());
+            cb(new Blob([canvas.toSVG()], {type: 'image/svg+xml'}));
+            */
         });
     };
 

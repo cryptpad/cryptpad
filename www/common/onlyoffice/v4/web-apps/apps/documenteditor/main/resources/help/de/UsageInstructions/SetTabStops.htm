@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tabstopps setzen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Set tab stops" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Tabstopps setzen</h1>
+			<p>Es ist möglich die Tabstopps im Dokumenteneditor zu verändern, d.h., zu ändern, an welche Position die Schreibmarke vorrückt, wenn Sie die <b>Tabulatortaste</b> auf Ihrer Tastatur drücken.</p>
+			<p>Um die Tabstopps festzulegen, können Sie das horizontale Lineal nutzen:</p>
+			<ol>
+			    <li>Klicken Sie zum Auswählen des gewünschten Tabstopps auf das Symbol <img alt="Linksbündiger Tabstopp" src="../images/tabstopleft.png" /> in der oberen linken Ecke des Arbeitsbereichs. Folgende Tabstopparten sind verfügbar:<ul>
+			            <li><b>Linksbündig</b> <img alt="Linksbündiger Tabstopp" src="../images/tabstopleft.png" /> - der Text wird ab der Position des Tabstopps linksbündig ausgerichtet; d.h. der Text verschiebt sich bei der Eingabe nach rechts. Ein solcher Tabstopp wird auf dem horizontalen Lineal durch die Markierung <img alt="Markierung linksbündiger Tabstopp" src="../images/tabstopleft_marker.png" /> angezeigt.</li>
+			            <li><b>Zentriert</b> <img alt="Zentrierter Tabstopp" src="../images/tabstopcenter.png" /> - der Text wird an der Tabstoppposition zentriert. Ein solcher Tabstopp wird auf dem horizontalen Lineal durch die Markierung <img alt="Markierung zentrierter Tabstopp" src="../images/tabstopcenter_marker.png" /> angezeigt.</li>
+			            <li><b>Rechtsbündig</b> <img alt="Rechtsbündiger Tabstopp" src="../images/tabstopright.png" /> - der Text wird ab der Position des Tabstopps rechtsbündig ausgerichtet; d.h. der Text verschiebt sich bei der Eingabe nach links, also rückwärts. Ein solcher Tabstopp wird auf dem horizontalen Lineal durch die Markierung <img alt="Markierung rechtsbündiger Tabstopp" src="../images/tabstopright_marker.png" /> angezeigt.</li>
+			        </ul>
+			    </li>
+			    <li>Klicken Sie an der unteren Kante des Lineals auf die Position, an der Sie einen Tabstopp setzen möchten. Ziehen Sie die Markierung nach links oder rechts, um die Position zu ändern. Um den hinzugefügten Tabstopp zu entfernen, ziehen Sie die Markierung aus dem Lineal.<p><img alt="Horizontales Lineal mit den hinzugefügten Tabstopps" src="../images/tabstops_ruler.png" /></p>
+			    </li>			
+			</ol>
+			<hr />
+			<p>Sie können Ihre Tabstopps auch über das Fenster Absatzeigenschaften anpassen. Klicken Sie die rechte Maustaste und wählen Sie die Option <b>Erweiterte Absatzeinstellungen</b> im Kontextmenü aus oder nutzen Sie die Verknüpfung <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste, und wechseln Sie im geöffneten Fenster <b>Absatz - Erweiterte Einstellungen</b> in das Dialogfenster <b>Tabulator</b>.</p><img alt="Absatzeigenschaften - Registerkarte Tabulator" src="../images/paradvsettings_tab.png" /><p>Sie können die folgende Parameter festlegen:</p>
+			<ul>
+			    <li><b>Tabulatorposition</b> - Festlegen von benutzerdefinierten Tabstopps. Geben Sie den gewünschten Wert in das angezeigte Feld ein, über die Pfeiltasten können Sie den Wert präzise anpassen, klicken Sie anschließend auf <b>Festlegen</b>. Ihre benutzerdefinierte Tabulatorposition wird der Liste im unteren Feld hinzugefügt. Wenn Sie zuvor Tabstopps mithilfe des Lineals hinzugefügt haben, werden alle diese Tabulatorpositionen ebenfalls in der Liste angezeigt.</li>
+			    <li>Die Standardeinstellung für <b>Tabulatoren</b> ist auf 1,25 cm festgelegt. Sie können den Wert verkleinern oder vergrößern, nutzen Sie dafür die Pfeiltasten oder geben Sie den gewünschten Wert in das dafür vorgesehene Feld ein.</li>
+			    <li><b>Ausrichtung</b> - legt den gewünschten Ausrichtungstyp für jede der Tabulatorpositionen in der obigen Liste fest. Wählen Sie die gewünschte Tabulatorposition in der Liste aus, wählen Sie die Option <b>Linksbündig</b>, <b>Zentriert</b> oder <b>Rechtsbündig</b> aus der Menüliste aus und klicken sie anschließend auf <b>Festlegen</b>.</li>
+                <li><b>Leader</b> - ermöglicht die Auswahl eines Zeichens, um für jede Tab-Position einen Leader zu erstellen. Ein Leader ist eine Reihe von Zeichen (Punkte oder Trennzeichen), die den Abstand zwischen den Registerkarten ausfüllen. Wählen Sie die gewünschte Tabulatorposition in der Liste aus, wählen Sie die Art des Leaders aus der Menüliste aus und klicken sie anschließend auf <b>Festlegen</b>.<p>Um Tabstopps aus der Liste zu löschen, wählen Sie einen Tabstopp und drücken Sie <b>Entfernen</b> oder <b>Alle entfernen</b>.</p>
+                </li>
+			</ul>			
+		</div>
+	</body>
+</html>

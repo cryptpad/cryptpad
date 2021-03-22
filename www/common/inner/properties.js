@@ -18,6 +18,16 @@ define([
         opts = opts || {};
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
+        data = Util.clone(data);
+
+        var privateData = common.getMetadataMgr().getPrivateData();
+        if (privateData.propChannels) {
+            var p = privateData.propChannels;
+            data.channel = data.channel || p.channel;
+            data.rtChannel = data.rtChannel || p.rtChannel;
+            data.lastVersion = data.lastVersion || p.lastVersion;
+            data.lastCpHash = data.lastCpHash || p.lastCpHash;
+        }
 
         if (data.channel) {
             $('<label>', { 'for': 'cp-app-prop-id'}).text(Messages.documentID).appendTo($d);
@@ -26,18 +36,20 @@ define([
             }));
         }
 
-        if (data.href) {
-            $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
-            $d.append(UI.dialog.selectable(data.href, {
-                id: 'cp-app-prop-link',
-            }));
-        }
+        if (!data.fakeHref) {
+            if (data.href) {
+                $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
+                $d.append(UI.dialog.selectable(data.href, {
+                    id: 'cp-app-prop-link',
+                }));
+            }
 
-        if (data.roHref && !opts.noReadOnly) {
-            $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
-            $d.append(UI.dialog.selectable(data.roHref, {
-                id: 'cp-app-prop-rolink',
-            }));
+            if (data.roHref && !opts.noReadOnly) {
+                $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
+                $d.append(UI.dialog.selectable(data.roHref, {
+                    id: 'cp-app-prop-rolink',
+                }));
+            }
         }
 
         if (data.tags && Array.isArray(data.tags)) {
@@ -54,7 +66,6 @@ define([
 
         if (!common.isLoggedIn()) { return void cb(void 0, $d); }
 
-        var privateData = common.getMetadataMgr().getPrivateData();
         if (privateData.offline) { return void cb(void 0, $d); }
 
         // File and history size...
@@ -179,6 +190,7 @@ define([
     Properties.getPropertiesModal = function (common, opts, cb) {
         cb = cb || function () {};
         opts = opts || {};
+        opts.access = true;
         var tabs = [{
             getTab: getPadProperties,
             title: Messages.fc_prop,

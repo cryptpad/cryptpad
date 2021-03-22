@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEXTVERKETTEN-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>TEXTVERKETTEN-Funktion</h1>
+			<p>Die Funktion <b>TEXTVERKETTEN</b> gehört zur Gruppe der Text- und Datenfunktionen. Sie kombiniert den Text aus mehreren Bereichen und/oder Zeichenfolgen und fügt zwischen jedem zu kombinierenden Textwert ein von Ihnen angegebenes Trennzeichen ein. Wenn das Trennzeichen eine leere Textzeichenfolge ist, verkettet diese Funktion effektiv die Bereiche. Diese Funktion ähnelt der Funktion <b>TEXTKETTE</b>, unterscheidet sich aber dadurch, dass die Funktion <b>TEXTKETTE</b> kein Trennzeichen akzeptiert.</p>
+			<p>Die Formelsyntax der Funktion <b>TEXTVERKETTEN</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>TEXTVERKETTEN(Trennzeichen; Leer_ignorieren; Text1; [Text2]; …)</em></b></p> 
+			<p>Dabei gilt:</p>
+            <p style="text-indent: 50px;"><b><em>Trennzeichen</em></b> ist das Trennzeichen, welches zwischen den Textwerten eingefügt werden soll. Die Angabe kann als eine Textzeichenfolge erfolgen, in doppelten Anführungszeichen (z.B. <b>&quot;,&quot;</b> (Komma), <b>&quot; &quot;</b> (Leerzeichen), <b>&quot;\&quot;</b> (Backslash) etc.) oder als Verweis auf eine Zelle oder einen Zellbereich.</p>
+            <p style="text-indent: 50px;"><b><em>Leer_ignorieren</em></b> ist ein Wahrheitswert, der festlegt ob leere Zellen ignoriert werden sollen. Wird der Wert mit WAHR angegeben, werden leere Zellen ignoriert.</p>
+            <p style="text-indent: 50px;"><b><em>Text1/2/...</em></b> ist das zu verkettende Textelement, das bis zu 252 Datenwerte umfassen kann. Jeder Wert kann eine Textzeichenfolge oder ein Array von Zeichenfolgen, z. B. ein Zellbereich.</p>
+            <p>Anwendung der Funktion <b>TEXTVERKETTEN</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Text und Daten</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>TEXTVERKETTEN</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="TEXTVERKETTEN-Funktion" src="../images/textjoin.png" /></p>
+		</div>
+	</body>
+</html>

@@ -33,7 +33,7 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
         var $body = $('body');
-    var displayed;
+        var displayed;
 
         var hideIframe = function () {
             if (!displayed) { return; }

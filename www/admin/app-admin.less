@@ -107,6 +107,16 @@
                 background-color: @cp_admin-premium-bg;
             }
         }
+        &.cp-support-list-closed {
+            .cp-support-list-actions {
+                .cp-support-answer {
+                    display: inline !important;
+                }
+            }
+            .cp-support-form-container {
+                display: block !important;
+            }
+        }
     }
 
     .cp-support-list-ticket:not(.cp-support-list-closed) {
@@ -119,6 +129,12 @@
         .cp-support-list-message {
             .cp-support-showdata {
                 background-color: lighten(@cp_admin-last-bg, 5%);
+            }
+            .cp-support-attachments {
+                a {
+                    color: @cryptpad_color_link;
+                    text-decoration: underline;
+                }
             }
             &:last-child:not(.cp-support-fromadmin)  {
                 color: @cp_admin-last-fg;

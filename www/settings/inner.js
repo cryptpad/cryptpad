@@ -46,7 +46,7 @@ define([
     var sframeChan;
 
     var categories = {
-        'account': [
+        'account': [ // Msg.settings_cat_account
             'cp-settings-own-drive',
             'cp-settings-info-block',
             'cp-settings-displayname',
@@ -55,14 +55,14 @@ define([
             'cp-settings-change-password',
             'cp-settings-delete'
         ],
-        'security': [
+        'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
             'cp-settings-autostore',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
             'cp-settings-cache',
         ],
-        'style': [
+        'style': [ // Msg.settings_cat_style
             'cp-settings-colortheme',
             'cp-settings-custom-theme',
         ],
@@ -75,24 +75,24 @@ define([
             'cp-settings-trim-history'
             //'cp-settings-drive-reset'
         ],
-        'cursor': [
+        'cursor': [ // Msg.settings_cat_cursor
             'cp-settings-cursor-color',
             'cp-settings-cursor-share',
             'cp-settings-cursor-show',
         ],
-        'pad': [
+        'pad': [ // Msg.settings_cat_pad
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
         ],
-        'code': [
+        'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',
             'cp-settings-code-indent-type',
             'cp-settings-code-brackets',
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
         ],
-        'kanban': [
+        'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
         ],
         'subscription': {
@@ -364,7 +364,7 @@ define([
         return $div;
     };
 
-    makeBlock('cache', function (cb) {
+    makeBlock('cache', function (cb) { // Msg.settings_cacheHint, .settings_cacheTitle
         var store = window.cryptpadStore;
 
         var $cbox = $(UI.createCheckbox('cp-settings-cache',
@@ -412,10 +412,15 @@ define([
         ]);
     }, true);
 
-    makeBlock('colortheme', function (cb) {
+    makeBlock('colortheme', function (cb) { // Msg.settings_colorthemeHint .settings_colorthemeTitle
         var theme = window.cryptpadStore.store['colortheme'] || 'default';
         var os = window.cryptpadStore.store['colortheme_default'] || 'light';
-        var values = ['default', 'light', 'dark'/*, 'custom'*/];
+        var values = [
+            'default', // Msg.settings_colortheme_default
+            'light', // Msg.settings_colortheme_light
+            'dark', // Msg.settings_colortheme_dark
+            /* 'custom'*/ // Msg.settings_colortheme_custom
+        ];
 
         var defaultTheme = Messages['settings_colortheme_'+os];
         var opts = h('div.cp-settings-radio-container', [
@@ -464,63 +469,65 @@ define([
         });
     }, true);
 
-    create['delete'] = function() {
-        if (!common.isLoggedIn()) { return; }
-        var $div = $('<div>', { 'class': 'cp-settings-delete cp-sidebarlayout-element' });
+    makeBlock('delete', function(cb) { // Msg.settings_deleteHint, .settings_deleteTitle
+        if (!common.isLoggedIn()) { return cb(false); }
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_deleteTitle).appendTo($div);
+        var button = h('button.btn.btn-danger', Messages.settings_deleteButton);
+        var form = h('div', [
+            UI.passwordInput({
+                id: 'cp-settings-delete-account',
+                placeholder: Messages.settings_changePasswordCurrent
+            }, true),
+            button
+        ]);
+        var $form = $(form);
+        var $button = $(button);
+        var spinner = UI.makeSpinner($form);
 
-        $('<span>', { 'class': 'cp-sidebarlayout-description' })
-            .append(Messages.settings_deleteHint).appendTo($div);
-
-        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
-        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
-
-        var $button = $('<button>', { 'id': 'cp-settings-delete', 'class': 'btn btn-danger' })
-            .text(Messages.settings_deleteButton).appendTo($div);
-
-        $button.click(function() {
-            $spinner.show();
-            UI.confirm(Messages.settings_deleteConfirm, function(yes) {
-                if (!yes) { return; }
-                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function(err, data) {
-                    // Owned drive
-                    if (data.state === true) {
-                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
-                        UI.alert(Messages.settings_deleted, function() {
-                            common.gotoURL('/');
-                        });
-                        $ok.show();
-                        $spinner.hide();
-                        return;
+        UI.confirmButton(button, {
+            classes: 'btn-danger',
+            multiple: true
+        }, function() {
+            $button.prop('disabled', 'disabled');
+            var password = $form.find('#cp-settings-delete-account').val();
+            if (!password) {
+                return void UI.warn(Messages.error);
+            }
+            spinner.spin();
+            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
+                password: password
+            }, function(err, data) {
+                if (data && data.error) {
+                    spinner.hide();
+                    $button.prop('disabled', '');
+                    if (data.error === 'INVALID_PASSWORD') {
+                        return void UI.warn(Messages.drive_sfPasswordError);
                     }
-                    // Not owned drive
-                    var msg = h('div.cp-app-settings-delete-alert', [
-                        h('p', Messages.settings_deleteModal),
-                        h('pre', JSON.stringify(data, 0, 2))
-                    ]);
-                    UI.alert(msg);
-                    $spinner.hide();
-                });
+                    console.error(data.error);
+                    return void UI.warn(Messages.error);
+                }
+                // Owned drive
+                if (data.state === true) {
+                    sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
+                    UI.alert(Messages.settings_deleted, function() {
+                        common.gotoURL('/');
+                    });
+                    spinner.done();
+                    return;
+                }
+                // Not owned drive
+                var msg = h('div.cp-app-settings-delete-alert', [
+                    h('p', Messages.settings_deleteModal),
+                    h('pre', JSON.stringify(data, 0, 2))
+                ]);
+                UI.alert(msg);
+                spinner.hide();
+                $button.prop('disabled', '');
             });
-            // TODO
-            /*
-            UI.confirm("Are you sure?", function (yes) {
-                // Logout everywhere
-                // Disconnect other tabs
-                // Remove owned pads
-                // Remove owned drive
-                // Remove pinstore
-                // Alert: "Account deleted", press OK to be redirected to the home page
-                $spinner.hide();
-            });*/
         });
 
-        $spinner.hide().appendTo($div);
-        $ok.hide().appendTo($div);
-
-        return $div;
-    };
+        cb(form);
+    }, true);
 
     create['change-password'] = function() {
         if (!common.isLoggedIn()) { return; }
@@ -626,7 +633,7 @@ define([
         return $div;
     };
 
-    makeBlock('own-drive', function(cb, $div) {
+    makeBlock('own-drive', function(cb, $div) { // Msg.settings_ownDriveHint, .settings_ownDriveTitle
         if (privateData.isDriveOwned || !common.isLoggedIn()) {
             return void cb(false);
         }
@@ -681,7 +688,7 @@ define([
         cb(form);
     }, true);
 
-    makeBlock('mediatag-size', function(cb) {
+    makeBlock('mediatag-size', function(cb) { // Msg.settings_mediatagSizeHint, .settings_mediatagSizeTitle
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input-block',
         });
@@ -735,7 +742,7 @@ define([
 
     // Security
 
-    makeBlock('safe-links', function(cb) {
+    makeBlock('safe-links', function(cb) { // Msg.settings_safeLinksTitle
 
         var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
             Messages.settings_safeLinksCheckbox,
@@ -1059,7 +1066,7 @@ define([
         $div.find('#cp-settings-trim-container').remove();
         cb(content);
     };
-    makeBlock('trim-history', function(cb, $div) {
+    makeBlock('trim-history', function(cb, $div) { // Msg.settings_trimHistoryHint, .settings_trimHistoryTitle
         if (!common.isLoggedIn()) { return void cb(false); }
         redrawTrimHistory(cb, $div);
     }, true);
@@ -1295,7 +1302,7 @@ define([
         return $div;
     };
 
-    makeBlock('pad-notif', function(cb) {
+    makeBlock('pad-notif', function(cb) { // Msg.settings_padNotifHint, .settings_padNotifTitle
         var $cbox = $(UI.createCheckbox('cp-settings-pad-notif',
             Messages.settings_padNotifCheckbox,
             false, { label: { class: 'noTitle' } }));
@@ -1487,7 +1494,7 @@ define([
     };
 
 
-    makeBlock('kanban-tags', function(cb) {
+    makeBlock('kanban-tags', function(cb) { // Msg.settings_kanbanTagsHint, .settings_kanbanTagsTitle
 
         var opt1 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-and',
             Messages.settings_kanbanTagsAnd, false, {
@@ -1563,6 +1570,7 @@ define([
             .appendTo(APP.$leftside);
         APP.$usage = $('<div>', { 'class': 'usage' }).appendTo(APP.$leftside);
         var active = privateData.category || 'account';
+        if (!categories[active]) { active = 'account'; }
         Object.keys(categories).forEach(function(key) {
             var $category = $('<div>', {
                 'class': 'cp-sidebarlayout-category',

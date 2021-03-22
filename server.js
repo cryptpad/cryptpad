@@ -16,15 +16,19 @@ var Env = require("./lib/env").create(config);
 
 var app = Express();
 
+var canonicalizeOrigin = function (s) {
+    return (s || '').trim().replace(/\/+$/, '');
+};
+
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin'
     if (typeof(config.httpUnsafeOrigin) !== 'string') {
         throw new Error("No 'httpUnsafeOrigin' provided");
     }
 
-    config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim();
+    config.httpUnsafeOrigin = canonicalizeOrigin(config.httpUnsafeOrigin);
     if (typeof(config.httpSafeOrigin) === 'string') {
-        config.httpSafeOrigin = config.httpSafeOrigin.trim().replace(/\/$/, '');
+        config.httpSafeOrigin = canonicalizeOrigin(config.httpSafeOrigin);
     }
 
     // fall back to listening on a local address
@@ -107,6 +111,9 @@ var setHeaders = (function () {
                 "Cross-Origin-Embedder-Policy": 'require-corp',
             });
 
+            // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
+            // when duplicated by NGINX in production environments
+            if (/^\/api\/config/.test(req.url)) { return; }
             // targeted CSP, generic policies, maybe custom headers
             const h = [
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,

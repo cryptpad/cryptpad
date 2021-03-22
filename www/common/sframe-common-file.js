@@ -124,6 +124,18 @@ define([
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
 
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var l = privateData.plan ? ApiConfig.premiumUploadSize : false;
+            l = l || ApiConfig.maxUploadSize || "?";
+            var maxSizeStr = Util.bytesToMegabytes(l);
+            if (blob && blob.byteLength && typeof(l) === "number" && blob.byteLength > l) {
+                $pv.text(Messages.error);
+                queue.inProgress = false;
+                queue.next();
+                return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
+            }
+
+
             /**
              * Update progress in the download panel, for uploading a file
              * @param {number} progressValue Progression of download, between 0 and 100
@@ -167,10 +179,6 @@ define([
                 if (config.onError) { config.onError(e); }
 
                 if (e === 'TOO_LARGE') {
-                    var privateData = common.getMetadataMgr().getPrivateData();
-                    var l = privateData.plan ? ApiConfig.premiumUploadSize : false;
-                    l = l || ApiConfig.maxUploadSize || '?';
-                    var maxSizeStr = Util.bytesToMegabytes(l);
                     $pv.text(Messages.error);
                     return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
                 }
@@ -420,6 +428,11 @@ define([
             if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e, defaultOptions]); }
             handleFileState.inProgress = true;
 
+            var type = file.type;
+            if (!file.type && /\.md$/.test(file.name)) {
+                type = "text/markdown";
+            }
+
             var thumb;
             var file_arraybuffer;
             var name = file.name;
@@ -430,7 +443,7 @@ define([
                 if (!abort) {
                     var metadata = {
                         name: name,
-                        type: file.type,
+                        type: type,
                     };
                     if (thumb) { metadata.thumbnail = thumb; }
                     queue.push({

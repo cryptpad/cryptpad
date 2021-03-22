@@ -11,57 +11,19 @@ define([
     '/common/flat-dom.js',
     '/common/media-tag.js',
     '/common/outer/login-block.js',
+    '/api/config',
+    '/assert/assertions.js',
+    '/common/hyperscript.js',
+    '/customize/messages.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-assert.less',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
 
-    var assertions = 0;
-    var failed = false;
-    var failedOn;
-    var failMessages = [];
-
-    var ASSERTS = [];
-    var runASSERTS = function (cb) {
-        var count = ASSERTS.length;
-        var successes = 0;
-
-        var done = function (err) {
-            count--;
-            if (err) { failMessages.push(err); }
-            else { successes++; }
-            if (count === 0) { cb(); }
-        };
-
-        ASSERTS.forEach(function (f, index) {
-            f(function (err) {
-                //console.log("test " + index);
-                done(err, index);
-            }, index);
-        });
-    };
-
-    var assert = function (test, msg) {
-        ASSERTS.push(function (cb, i) {
-            test(function (result) {
-                if (result === true) {
-                    assertions++;
-                    cb();
-                } else {
-                    failed = true;
-                    failedOn = assertions;
-                    cb({
-                        test: i,
-                        message: msg,
-                        output: result,
-                    });
-                }
-            });
-        });
-    };
+    var assert = Assertions();
 
     var HJSON_list = [
         '["DIV",{"id":"target"},[["P",{"class":" alice bob charlie has.dot","id":"bang"},["pewpewpew"]]]]',
@@ -536,69 +498,27 @@ define([
         cb(dom.outerHTML === bodyText);
     });
 
-    var swap = function (str, dict) {
-        return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
-            return typeof dict[key] !== 'undefined'? dict[key] : all;
-        });
-    };
+    assert.run(function (state) {
+        var errors = state.errors;
+        var failed = errors.length;
 
-    var multiline = function (f) {
-        var str;
-        f.toString().replace(/\/\*([\s\S]*)\*\//g, function (all, out) {
-            str = out;
-        });
-        return str || '';
-        };
+        Messages.assert_numberOfTestsPassed = "{0} / {1} tests passed.";
 
-        var formatFailures = function () {
-        var template = multiline(function () { /*
-<p class="error">
-Failed on test number {{test}} with error message:
-"{{message}}"
-
-</p>
-<p>
-The test returned:
-{{output}}
-</p>
-
-<br>
-
-*/});
-        return failMessages.map(function (obj) {
-            console.log(obj);
-            return swap(template, obj);
-        }).join("\n");
-    };
-
-    runASSERTS(function () {
-        $("body").html(function (i, val) {
-            var dict = {
-                previous: val,
-                totalAssertions: ASSERTS.length,
-                passedAssertions: assertions,
-                plural: (assertions === 1? '' : 's'),
-                failMessages: formatFailures()
-            };
-
-        var SUCCESS = swap(multiline(function(){/*
-<div class="report">{{passedAssertions}} / {{totalAssertions}} test{{plural}} passed.
-
-{{failMessages}}
-
-</div>
-
-
-{{previous}}
-        */}), dict);
-
-            var report = SUCCESS;
-
-            return report;
-        });
-
-        var $report = $('.report');
-        $report.addClass(failed?'failure':'success');
+        var statusClass = failed? 'failure': 'success';
+        $('body').prepend(h('div.report.' + statusClass, [
+            Messages._getKey('assert_numberOfTestsPassed', [
+                state.passed,
+                state.total
+            ]),
+            h('div.failures', errors.map(function (obj) {
+                return h('p.error', [
+                    h('p', "Test number: " + obj.test),
+                    h('p', "Error message: " + obj.message),
+                    h('p', "Returned value: " + obj.output),
+                    h('br'),
+                ]);
+            })),
+        ]));
 
         if (failed) {
             Test.failed();

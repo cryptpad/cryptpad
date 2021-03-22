@@ -1054,14 +1054,13 @@ define([
 
         if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
-        } else {
-            framework.setFileImporter({}, function (content /*, file */) {
-                var parsed;
-                try { parsed = JSON.parse(content); }
-                catch (e) { return void console.error(e); }
-                return { content: parsed };
-            });
         }
+        framework.setFileImporter({accept: ['.json', 'application/json']}, function (content /*, file */) {
+            var parsed;
+            try { parsed = JSON.parse(content); }
+            catch (e) { return void console.error(e); }
+            return { content: parsed };
+        });
 
         framework.setFileExporter('.json', function () {
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
@@ -1248,6 +1247,16 @@ define([
         });
         framework.onCursorUpdate(function (data) {
             if (!data) { return; }
+            if (data.reset) {
+                Object.keys(remoteCursors).forEach(function (id) {
+                    if (remoteCursors[id].clear) {
+                        remoteCursors[id].clear();
+                    }
+                    delete remoteCursors[id];
+                });
+                return;
+            }
+
             var id = data.id;
 
             // Clear existing cursor

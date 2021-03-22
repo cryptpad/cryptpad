@@ -24,6 +24,21 @@
 
     .export_main();
 
+    &:not(.cp-app-team-offline) {
+        .cp-offline {
+            display: none !important;
+        }
+    }
+    &.cp-app-team-offline {
+        .cp-online {
+            display: none !important;
+        }
+        .cp-online-alt {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    }
+
     #cp-sidebarlayout-container {
         @media screen and (max-width: 900px) {
             .cp-app-drive-toolbar-leftside {
@@ -255,6 +270,15 @@
             i.fa.fa-spin.fa-spinner {
                 margin-right: 10px;
             }
+        }
+        div#cp-sidebarlayout-rightside .cp-team-offline {
+            // Compensate #cp-sidebarlayout-rightside padding
+            margin-top: -5px;
+            margin-right: -20px;
+            margin-left: -20px;
+        }
+        div#cp-sidebarlayout-rightside.cp-rightside-drive .cp-team-offline {
+            margin: 0;
         }
     }
 

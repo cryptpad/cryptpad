@@ -289,16 +289,8 @@
     Util.magnitudeOfBytes = function (bytes) {
         if (bytes >= oneGigabyte) { return 'GB'; }
         else if (bytes >= oneMegabyte) { return 'MB'; }
+        else { return 'KB'; }
     };
-
-    Util.getPrettySize = function (bytes, Messages) {
-        var unit = Util.magnitudeOfBytes(bytes);
-        if (unit === 'GB') {
-            return Messages._getKey('formattedGB', [Util.bytesToGigabytes(bytes)]);
-        }
-        return Messages._getKey('formattedMB', [Util.bytesToMegabytes(bytes)]);
-    };
-
 
     // given a path, asynchronously return an arraybuffer
     var getCacheKey = function (src) {

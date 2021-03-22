@@ -11,6 +11,7 @@ www/common/onlyoffice/web-apps
 www/common/onlyoffice/x2t
 www/common/onlyoffice/v1
 www/common/onlyoffice/v2*
+www/common/onlyoffice/v4
 
 server.js
 www/common/old-media-tag.js
