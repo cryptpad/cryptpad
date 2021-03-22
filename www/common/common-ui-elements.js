@@ -2587,7 +2587,7 @@ define([
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
 
         var info = h('p.cp-password-info', Messages.password_info);
-        var info_loaded = h('p.cp-password-info', Messages.password_info_loaded);
+        var info_loaded = h('p.cp-password-info', Messages.errorCopy);
 
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var $password = $(password);
