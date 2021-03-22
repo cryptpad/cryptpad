@@ -2947,6 +2947,13 @@ define([
          */
         var initialized = false;
 
+        // Are we still in noDrive mode?
+        Store.hasDrive = function (clientId, data, cb) {
+            cb({
+                state: Boolean(store.proxy)
+            });
+        };
+
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
         var onNoDrive = function (clientId, cb) {

@@ -2518,6 +2518,23 @@ define([
             };
             // XXX if you're in noDrive mode, check if an FS_hash is added and reload if that's the case
             // Listen for login/logout in other tabs
+            if (rdyCfg.noDrive && !localStorage[Constants.fileHashKey]) {
+                window.addEventListener('storage', function (e) {
+                    if (e.key !== Constants.fileHashKey) { return; }
+                    // New entry added to FS_hash: drive created in another tab, reload
+                    var o = e.oldValue;
+                    var n = e.newValue;
+                    if (!o && n) {
+                        postMessage('HAS_DRIVE', null, function(obj) {
+                            // If we're still in noDrive mode, reload
+                            if (!obj.state) {
+                                LocalStore.loginReload();
+                            }
+                            // Otherwise this worker is connected, nothing to do
+                        });
+                    }
+                });
+            }
             window.addEventListener('storage', function (e) {
                 if (e.key !== Constants.userHashKey) { return; }
                 var o = e.oldValue;
