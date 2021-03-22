@@ -481,10 +481,20 @@ define([
         });
     };
 
+    common.isNewChannel = function (href, password, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var channel = Hash.hrefToHexChannelId(href, password);
+        postMessage('IS_NEW_CHANNEL', {channel: channel}, function (obj) {
+            var error = obj && obj.error;
+            if (error) { return void cb(error); }
+            if (!obj) { return void cb('ERROR'); }
+            cb (null, obj.isNew);
+        }, {timeout: -1});
+    };
     // This function is used when we want to open a pad. We first need
     // to check if it exists. With the cached drive, we need to wait for
     // the network to be available before we can continue.
-    common.isNewChannel = function (href, password, _cb) {
+    common.hasChannelHistory = function (href, password, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var channel = Hash.hrefToHexChannelId(href, password);
         var error;
@@ -2506,6 +2516,7 @@ define([
                 }
                 if (parsedNew.hashData) { oldHref = newHref; }
             };
+            // XXX if you're in noDrive mode, check if an FS_hash is added and reload if that's the case
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
                 if (e.key !== Constants.userHashKey) { return; }
