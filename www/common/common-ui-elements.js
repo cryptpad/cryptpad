@@ -1552,6 +1552,8 @@ define([
             faqLine,
         ]);
 
+        $(content).find('a').attr('target', '_blank');
+
         var buttons = [
             {
                 className: 'primary',

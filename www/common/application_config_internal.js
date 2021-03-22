@@ -179,5 +179,24 @@ define(function() {
     // You can change the value here.
     // config.maxOwnedTeams = 5;
 
+    // The userlist displayed in collaborative documents is stored alongside the document data.
+    // Everytime someone with edit rights joins a document or modify their user data (display
+    // name, avatar, color, etc.), they update the "userlist" part of the document. When too many
+    // editors are in the same document, all these changes increase the risks of conflicts which
+    // require CPU time to solve. A "degraded" mode can now be set when a certain number of editors
+    // are in a document at the same time. This mode disables the userlist, the chat and the
+    // position of other users' cursor. You can configure the number of user from which the session
+    // will enter into degraded mode. A big number may result in collaborative edition being broken,
+    // but this number depends on the network and CPU performances of each user's device.
+    config.degradedLimit = 8;
+
+    // In "legacy" mode, one-time users were always creating an "anonymous" drive when visiting CryptPad
+    // in which they could store their pads. The new "driveless" mode allow users to open an existing
+    // pad without creating a drive in the background. The drive will only be created if they visit
+    // a different page (Drive, Settings, etc.) or try to create a new pad themselves. You can disable
+    // the driveless mode by changing the following value to "false"
+    config.allowDrivelessMode = true;
+    config.allowDrivelessMode = true;
+
     return config;
 });

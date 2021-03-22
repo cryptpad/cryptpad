@@ -54,7 +54,7 @@ module.exports = {
  *  and it may have unintended consequences in practice.
  *
  */
-    httpUnsafeOrigin: 'http://localhost:3000/',
+    httpUnsafeOrigin: 'http://localhost:3000',
 
 /*  httpSafeOrigin is the URL that is used for the 'sandbox' described above.
  *  If you're testing or developing with CryptPad on your local machine then

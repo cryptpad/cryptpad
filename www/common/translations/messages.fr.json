@@ -254,7 +254,7 @@
     "fm_sharedFolderName": "Dossier partagé",
     "fm_searchPlaceholder": "Rechercher...",
     "fm_newButton": "Nouveau",
-    "fm_newButtonTitle": "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant",
+    "fm_newButtonTitle": "Créer un nouveau document ou un dossier, importer un fichier dans le dossier actuel.",
     "fm_newFolder": "Nouveau dossier",
     "fm_newFile": "Nouveau pad",
     "fm_folder": "Dossier",
@@ -603,7 +603,7 @@
     "creation_noOwner": "Pas de propriétaire",
     "creation_expiration": "Date d'expiration",
     "creation_passwordValue": "Mot de passe",
-    "creation_newPadModalDescription": "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.",
+    "creation_newPadModalDescription": "Cliquer sur le type de document à créer. Vous pouvez aussi utiliser les touches <b>Tab</b> pour sélectionner un type et <b>Entrée</b> pour valider.",
     "password_info": "Le pad auquel vous essayez d'accéder n'existe plus ou est protégé par un mot de passe. Entrez le bon mot de passe pour accéder à son contenu.",
     "password_error": "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit le mot de passe est faux, soit le pad a été supprimé du serveur.",
     "password_placeholder": "Tapez le mot de passe ici...",
@@ -1188,5 +1188,6 @@
     "addOptionalPassword": "Ajouter un mot de passe (optionnel)",
     "fm_cantUploadHere": "Impossible d'importer un fichier ici",
     "importError": "Impossible d'importer (mauvais format)",
-    "oo_lostEdits": "Vos récentes modifications non sauvegardées n'ont pas pu être récupérées après la synchronisation du nouveau contenu."
+    "oo_lostEdits": "Vos récentes modifications non sauvegardées n'ont pas pu être récupérées après la synchronisation du nouveau contenu.",
+    "toolbar_degraded": "Au moins {0} éditeurs sont actuellement connectés à ce document. La liste des utilisateurs et le chat sont désactivés pour améliorer les performances."
 }

@@ -250,7 +250,7 @@
     "fm_sharedFolderName": "Geteilter Ordner",
     "fm_searchPlaceholder": "Suchen...",
     "fm_newButton": "Neu",
-    "fm_newButtonTitle": "Ein neues Pad oder Ordner erstellen, oder eine Datei in den aktuellen Ordner importieren",
+    "fm_newButtonTitle": "Erstelle ein neues Dokument oder einen neuen Ordner, importiere eine Datei in den aktuellen Ordner.",
     "fm_newFolder": "Neuer Ordner",
     "fm_newFile": "Neues Pad",
     "fm_folder": "Ordner",
@@ -596,7 +596,7 @@
     "creation_noOwner": "Kein Eigentümer",
     "creation_expiration": "Ablaufdatum",
     "creation_passwordValue": "Passwort",
-    "creation_newPadModalDescription": "Klicke auf einen Pad-Typ, um das entsprechende Pad zu erstellen. Du kannst auch die <b>Tab</b>-Taste für die Auswahl und die <b>Enter</b>-Taste zum Bestätigen benutzen.",
+    "creation_newPadModalDescription": "Klicke auf einen Dokument-Typ, um das entsprechende Dokument zu erstellen. Du kannst auch die <b>Tab</b>-Taste für die Auswahl und die <b>Enter</b>-Taste zum Bestätigen benutzen.",
     "password_info": "Das Pad, das du öffnen möchtest, existiert nicht mehr oder ist mit einem Passwort geschützt. Gib das richtige Passwort ein, um den Inhalt anzuzeigen.",
     "password_error": "Pad nicht gefunden!<br>Dieser Fehler kann zwei Ursachen haben: Entweder ist das Passwort ungültig oder das Pad wurde vom Server gelöscht.",
     "password_placeholder": "Gib das Passwort hier ein...",
@@ -1188,5 +1188,6 @@
     "addOptionalPassword": "Passwort hinzufügen (optional)",
     "oo_lostEdits": "Leider konnten deine letzten ungespeicherten Bearbeitungen nach dem Synchronisieren neuer Inhalte nicht wiederhergestellt werden.",
     "fm_cantUploadHere": "Hochladen hier nicht möglich",
-    "importError": "Import fehlgeschlagen (falsches Format)"
+    "importError": "Import fehlgeschlagen (falsches Format)",
+    "toolbar_degraded": "Derzeit bearbeiten über {0} Benutzer dieses Dokument. Die Benutzerliste und der Chat wurden deaktiviert, um die Performance zu verbessern."
 }

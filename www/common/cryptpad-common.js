@@ -1095,6 +1095,7 @@ define([
 
     common.changePadPassword = function (Crypt, Crypto, data, cb) {
         var href = data.href;
+        var oldPassword = data.oldPassword;
         var newPassword = data.password;
         var teamId = data.teamId;
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
@@ -1123,7 +1124,9 @@ define([
 
         var isSharedFolder = parsed.type === 'drive';
 
-        var optsGet = {};
+        var optsGet = {
+            password: oldPassword
+        };
         var optsPut = {
             password: newPassword,
             metadata: {},
@@ -1133,7 +1136,7 @@ define([
         var cryptgetVal;
 
         Nthen(function (waitFor) {
-            if (parsed.hashData && parsed.hashData.password) {
+            if (parsed.hashData && parsed.hashData.password && !oldPassword) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
                     optsGet.password = password;
                 }), href);
@@ -1418,6 +1421,7 @@ define([
     common.changeOOPassword = function (data, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var href = data.href;
+        var oldPassword = data.oldPassword;
         var newPassword = data.password;
         var teamId = data.teamId;
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
@@ -1452,12 +1456,16 @@ define([
                 validateKey: newSecret.keys.validateKey
             },
         };
-        var optsGet = {};
+        var optsGet = {
+            password: oldPassword
+        };
 
         Nthen(function (waitFor) {
             common.getPadAttribute('', waitFor(function (err, _data) {
                 padData = _data;
-                optsGet.password = padData.password;
+                if (!oldPassword) {
+                    optsGet.password = padData.password;
+                }
             }), href);
             common.getAccessKeys(waitFor(function (keys) {
                 optsGet.accessKeys = keys;
