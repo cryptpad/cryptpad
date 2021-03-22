@@ -941,7 +941,6 @@ define([
                                 _href = Hash.hashToHref(newHash, parsed.type);
                             }
 
-                            var reload = false;
                             // Trigger a page reload if the href didn't change
                             if (_href === href) { _href = undefined; }
 

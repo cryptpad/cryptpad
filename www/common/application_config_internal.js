@@ -196,7 +196,6 @@ define(function() {
     // a different page (Drive, Settings, etc.) or try to create a new pad themselves. You can disable
     // the driveless mode by changing the following value to "false"
     config.allowDrivelessMode = true;
-    config.allowDrivelessMode = true;
 
     return config;
 });
