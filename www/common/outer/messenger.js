@@ -537,10 +537,9 @@ define([
             if (peer === hk) { return; }
             if (channel.readOnly) { return; }
 
-            // XXX review
             // Sending myData is used to build a "mapId" object which links
             // netflux IDs to a curvePublic/uid. We use this map in friend chat
-            // to detect is the other user is online and we also use it in team chat
+            // to detect if the other user is online and we also use it in team chat
             // to show if other team members are online (in the roster section).
             // It is not needed in the pad chat for now and only causes useless
             // network usage.
