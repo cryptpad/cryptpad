@@ -212,6 +212,7 @@ MessengerUI, Messages) {
         var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
                                 .appendTo($editUsers);
 
+        var degradedLimit = Config.degradedLimit || 8;
         if (!online) {
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
@@ -219,8 +220,7 @@ MessengerUI, Messages) {
         } else if (metadataMgr.isDegraded() === true) {
             numberOfEditUsers = Math.max(metadataMgr.getChannelMembers().length - 1, 0);
             numberOfViewUsers = '';
-            Messages.toolbar_degraded = "Too many editors are present in the pad. The userlist has been disabled to improve performances"; // XXX
-            $('<em>').text(Messages.toolbar_degraded).appendTo($editUsersList);
+            $('<em>').text(Messages._getKey('toolbar_degraded', [degradedLimit])).appendTo($editUsersList);
         }
 
         // Update the buttons

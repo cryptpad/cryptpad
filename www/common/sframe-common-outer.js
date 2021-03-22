@@ -221,8 +221,11 @@ define([
                     }
                 } catch (e) { console.error(e); }
 
+                // NOTE: Driveless mode should only work for existing pads, but we can't check that
+                // before creating the worker because we need the anon RPC to do so.
+                // We're only going to check if a hash exists in the URL or not.
                 Cryptpad.ready(waitFor(), {
-                    noDrive: cfg.noDrive,
+                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
                     currentPad: currentPad
@@ -1404,6 +1407,7 @@ define([
                     };
                     config.data = {
                         app: parsed.type,
+                        channel: secret.channel,
                         hashes: hashes,
                         password: password,
                         isTemplate: isTemplate,
