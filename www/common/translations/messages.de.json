@@ -1188,5 +1188,6 @@
     "addOptionalPassword": "Passwort hinzufügen (optional)",
     "oo_lostEdits": "Leider konnten deine letzten ungespeicherten Bearbeitungen nach dem Synchronisieren neuer Inhalte nicht wiederhergestellt werden.",
     "fm_cantUploadHere": "Hochladen hier nicht möglich",
-    "importError": "Import fehlgeschlagen (falsches Format)"
+    "importError": "Import fehlgeschlagen (falsches Format)",
+    "toolbar_degraded": "Derzeit bearbeiten über {0} Benutzer dieses Dokument. Die Benutzerliste und der Chat wurden deaktiviert, um die Performance zu verbessern."
 }
