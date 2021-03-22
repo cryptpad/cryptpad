@@ -162,7 +162,7 @@ define(function() {
     // making it much faster to open new tabs.
     config.disableWorkers = false;
 
-    config.surveyURL = "https://survey.cryptpad.fr/index.php/672782";
+    //config.surveyURL = "";
 
     // Teams are always loaded during the initial loading screen (for the first tab only if
     // SharedWorkers are available). Allowing users to be members of multiple teams can
