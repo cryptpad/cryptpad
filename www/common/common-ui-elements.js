@@ -2551,6 +2551,10 @@ define([
         } else if (err.type === 'EDELETED') {
             if (priv.burnAfterReading) { return void cb(); }
 
+            if (autoStoreModal[priv.channel]) {
+                autoStoreModal[priv.channel].delete();
+                delete autoStoreModal[priv.channel];
+            }
             // View users have the wrong seed, thay can't retireve access directly
             // Version 1 hashes don't support passwords
             if (!priv.readOnly && !priv.oldVersionHash) {
