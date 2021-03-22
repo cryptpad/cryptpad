@@ -1435,7 +1435,6 @@ define([
         var oldMetadata;
         var oldRtChannel;
         var privateData;
-        var padData;
 
         var newSecret;
         if (parsed.hashData.version >= 2) {
@@ -1462,9 +1461,8 @@ define([
 
         Nthen(function (waitFor) {
             common.getPadAttribute('', waitFor(function (err, _data) {
-                padData = _data;
-                if (!oldPassword) {
-                    optsGet.password = padData.password;
+                if (!oldPassword && _data) {
+                    optsGet.password = _data.password;
                 }
             }), href);
             common.getAccessKeys(waitFor(function (keys) {
@@ -1472,7 +1470,7 @@ define([
                 optsPut.accessKeys = keys;
             }));
         }).nThen(function (waitFor) {
-            oldSecret = Hash.getSecrets(parsed.type, parsed.hash, padData.password);
+            oldSecret = Hash.getSecrets(parsed.type, parsed.hash, optsGet.password);
 
             require([
                 '/common/cryptget.js',

@@ -894,6 +894,7 @@ define([
                         if (data.fakeHref) {
                             href = Hash.hashToHref(bestHash, priv.app);
                         }
+                        var isNotStored = Boolean(data.fakeHref);
                         sframeChan.query(q, {
                             teamId: typeof(owned) !== "boolean" ? owned : undefined,
                             href: href,
@@ -931,22 +932,27 @@ define([
                             // Pad password changed: update the href
                             // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
                             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-                            var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
+                            if (isNotStored) { useUnsafe = true; }
+                            var _href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
                             if (useUnsafe !== true) {
-                                var newParsed = Hash.parsePadUrl(href);
+                                var newParsed = Hash.parsePadUrl(_href);
                                 var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
                                 var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
-                                href = Hash.hashToHref(newHash, parsed.type);
+                                _href = Hash.hashToHref(newHash, parsed.type);
                             }
+
+                            var reload = false;
+                            // Trigger a page reload if the href didn't change
+                            if (_href === href) { _href = undefined; }
 
                             if (data.warning) {
                                 return void UI.alert(Messages.properties_passwordWarning, function () {
-                                    common.gotoURL(href);
+                                    common.gotoURL(_href);
                                 }, {force: true});
                             }
                             return void UI.alert(Messages.properties_passwordSuccess, function () {
                                 if (!isSharedFolder) {
-                                    common.gotoURL(href);
+                                    common.gotoURL(_href);
                                 }
                             }, {force: true});
                         });
