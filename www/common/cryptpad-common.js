@@ -1192,7 +1192,6 @@ define([
                 } else if (mailbox && typeof(mailbox) === "object") {
                     m = {};
                     Object.keys(mailbox).forEach(function (ed) {
-                        console.log(mailbox[ed]);
                         try {
                             m[ed] = newCrypto.encrypt(oldCrypto.decrypt(mailbox[ed], true, true));
                         } catch (e) {
@@ -1227,6 +1226,7 @@ define([
                     cryptgetVal = JSON.stringify(parsed);
                 }
             }), optsGet);
+            Cache.clearChannel(newSecret.channel, waitFor());
         }).nThen(function (waitFor) {
             optsPut.metadata.restricted = oldMetadata.restricted;
             optsPut.metadata.allowed = oldMetadata.allowed;
@@ -1608,6 +1608,7 @@ define([
                     }
                 }));
             }));
+            Cache.clearChannel(newSecret.channel, waitFor());
         }).nThen(function (waitFor) {
             // The new rt channel is ready
             // The blob uses its own encryption and doesn't need to be reencrypted
