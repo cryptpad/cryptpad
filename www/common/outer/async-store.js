@@ -2622,22 +2622,28 @@ define([
         // "cb" is wrapped in Util.once() and may have already been called
         // if we have a local cache
         var onReady = function (clientId, returned, cb) {
-            console.error('READY');
             store.ready = true;
             var proxy = store.proxy;
             var manager = store.manager;
             var userObject = store.userObject;
 
             nThen(function (waitFor) {
-                if (manager) { return; }
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
-                onCacheReady(clientId, waitFor());
-                manager = store.manager;
-                userObject = store.userObject;
-            }).nThen(function (waitFor) {
+
+                // Call onCacheReady if the manager is not yet defined
+                if (!manager) {
+                    onCacheReady(clientId, waitFor());
+                    manager = store.manager;
+                    userObject = store.userObject;
+                }
+
+                // Initialize RPC in parallel of onCacheReady in case a shared folder
+                // is RESTRICTED and requires RPC authentication
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+
+                // Update loading progress
                 postMessage(clientId, 'LOADING_DRIVE', {
                     type: 'migrate',
                     progress: 0
