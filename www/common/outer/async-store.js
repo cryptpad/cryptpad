@@ -1732,13 +1732,11 @@ define([
                     postMessage(clientId, "PAD_CACHE");
                 },
                 onCacheReady: function () {
-                    channel.hasCache = true;
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
-                    channel.ready = true;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
