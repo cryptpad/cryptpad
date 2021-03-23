@@ -319,6 +319,7 @@ define([
             });
         };
 
+        var myDeletions = {};
         Store.removeOwnedChannel = function (clientId, data, cb) {
             // "data" used to be a string (channelID), now it can also be an object
             // data.force tells us we can safely remove the drive ID
@@ -331,8 +332,6 @@ define([
                 teamId = data.teamId;
             }
 
-            // XXX CLEAR CACHE
-
             if (channel === store.driveChannel && !force) {
                 return void cb({error: 'User drive removal blocked!'});
             }
@@ -341,7 +340,11 @@ define([
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
+            // If this channel is loaded, remember that we deleted it ourselves
+            if (Store.channels[channel]) { myDeletions[channel] = true; }
+
             s.rpc.removeOwnedChannel(channel, function (err) {
+                if (err) { delete myDeletions[channel]; }
                 cb({error:err});
             });
         };
@@ -1708,6 +1711,11 @@ define([
                 return;
             }
             var onError = function (err) {
+                // If it's a deletion started from this worker, different UI message
+                if (err && err.type === "EDELETED" && myDeletions[data.channel]) {
+                    delete myDeletions[channel];
+                    err.ownDeletion = true;
+                }
                 channel.bcast("PAD_ERROR", err);
 
                 if (err && err.type === "EDELETED" && Cache && Cache.clearChannel) {
