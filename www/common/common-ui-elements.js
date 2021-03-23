@@ -1552,6 +1552,8 @@ define([
             faqLine,
         ]);
 
+        $(content).find('a').attr('target', '_blank');
+
         var buttons = [
             {
                 className: 'primary',
@@ -2538,6 +2540,7 @@ define([
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+        var sframeChan = common.getSframeChannel();
         var msg = err.type;
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
@@ -2547,10 +2550,29 @@ define([
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'EDELETED') {
             if (priv.burnAfterReading) { return void cb(); }
+
+            if (autoStoreModal[priv.channel]) {
+                autoStoreModal[priv.channel].delete();
+                delete autoStoreModal[priv.channel];
+            }
+            // View users have the wrong seed, thay can't retireve access directly
+            // Version 1 hashes don't support passwords
+            if (!priv.readOnly && !priv.oldVersionHash) {
+                sframeChan.event('EV_SHARE_OPEN', {hidden: true}); // Close share modal
+                UIElements.displayPasswordPrompt(common, {
+                    fromServerError: true,
+                    loaded: err.loaded,
+                });
+                if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
+                (cb || function () {})();
+                return;
+            }
+
             msg = Messages.deletedError;
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
+
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'ERESTRICTED') {
             msg = Messages.restrictedError;
@@ -2559,7 +2581,6 @@ define([
             msg = Messages.oo_deletedVersion;
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         }
-        var sframeChan = common.getSframeChannel();
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
         UI.errorLoadingScreen(msg, Boolean(err.loaded), Boolean(err.loaded));
         (cb || function () {})();
@@ -2568,7 +2589,10 @@ define([
     UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+
         var info = h('p.cp-password-info', Messages.password_info);
+        var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);
+
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var $password = $(password);
         var button = h('button.btn.btn-primary', Messages.password_submit);
@@ -2580,6 +2604,21 @@ define([
 
         var submit = function () {
             var value = $password.find('.cp-password-input').val();
+
+            // Password-prompt called from UIElements.onServerError
+            if (cfg.fromServerError) {
+                common.getSframeChannel().query('Q_PASSWORD_CHECK', value, function (err, obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    // On success, outer will reload the page: this is a wrong password
+                    UIElements.displayPasswordPrompt(common, cfg, true);
+                });
+                return;
+            }
+
+            // Initial load
             UI.addLoadingScreen({newProgress: true});
             if (window.CryptPad_updateLoadingProgress) {
                 window.CryptPad_updateLoadingProgress({
@@ -2593,6 +2632,8 @@ define([
                 }
             });
         };
+
+
         $password.find('.cp-password-input').on('keydown', function (e) { if (e.which === 13) { submit(); } });
         $(button).on('click', function () { submit(); });
 
@@ -2600,12 +2641,13 @@ define([
         var block = h('div#cp-loading-password-prompt', [
             error,
             info,
+            cfg.loaded ? info_loaded : undefined,
             h('p.cp-password-form', [
                 password,
                 button
-            ])
+            ]),
         ]);
-        UI.errorLoadingScreen(block);
+        UI.errorLoadingScreen(block, Boolean(cfg.loaded), Boolean(cfg.loaded));
 
         $password.find('.cp-password-input').focus();
     };
