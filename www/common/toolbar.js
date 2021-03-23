@@ -1384,6 +1384,7 @@ MessengerUI, Messages) {
             toolbar.isErrorState = true;
             toolbar.connected = false;
             updateUserList(toolbar, config, true);
+            toolbar.title.toggleClass('cp-toolbar-unsync', true); // "read only" next to the title
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }
