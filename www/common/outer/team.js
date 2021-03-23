@@ -187,7 +187,7 @@ define([
                 team.rpc = call;
                 team.onRpcReadyEvt.fire();
                 cb();
-            });
+            }, Cache);
         });
     };
 
