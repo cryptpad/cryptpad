@@ -50,6 +50,7 @@
   * faster load time, less junk on the server
   * `AppConfig.allowDrivelessMode`
   * cursor color is randomly generated each time and doesn't persist after creating a drive
+  * only affects framework apps for now
 * secure iframe now always knows the channel of the related document
   * more consistent API with other APPs
 * debug app doesn't create a drive
