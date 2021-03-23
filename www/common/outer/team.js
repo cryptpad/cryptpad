@@ -547,6 +547,14 @@ define([
                 store: ctx.store,
                 lastKnownHash: rosterData.lastKnownHash,
                 onCacheReady: function (_roster) {
+                    if (!cache) { return; }
+                    console.error('Corrupted roster cache, cant load this team offline', teamData);
+                    if (_roster && _roster.error === "CORRUPTED") {
+                        if (lm && typeof(lm.stop) === "function") { lm.stop(); }
+                        waitFor.abort();
+                        cb({error: 'CACHE_CORRUPTED_ROSTER'});
+                        return;
+                    }
                     roster = _roster;
                     cacheRdy.roster = true;
                     cacheRdy.check();
