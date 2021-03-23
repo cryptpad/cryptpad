@@ -2537,6 +2537,7 @@ define([
         $creation.focus();
     };
 
+    var autoStoreModal = {};
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
@@ -2740,7 +2741,6 @@ define([
     };
 
     var storePopupState = false;
-    var autoStoreModal = {};
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;

@@ -1687,8 +1687,6 @@ define([
             sframeChan.on('Q_PASSWORD_CHECK', function (pw, cb) {
                 Cryptpad.isNewChannel(currentPad.href, pw, function (e, isNew) {
                     if (isNew === false) {
-                        var channel = Utils.Hash.hrefToHexChannelId(currentPad.href, pw);
-
                         nThen(function (w) {
                             // If the pad is stored, update its data
                             var _secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, pw);
