@@ -1449,6 +1449,29 @@ define([
             };
             */
 
+            APP.getUserColor = function (userId) {
+                var hex;
+                Object.keys(content.ids || {}).some(function (k) {
+                    var u = content.ids[k];
+                    if (Number(u.ooid) === Number(userId)) {
+                        var md = common.getMetadataMgr().getMetadataLazy();
+                        if (md && md.users && md.users[u.netflux]) {
+                            hex = md.users[u.netflux].color;
+                        }
+                        return true;
+                    }
+                });
+                if (hex) {
+                    var rgb = Util.hexToRGB(hex);
+                    return {
+                        r: rgb[0],
+                        g: rgb[1],
+                        b: rgb[2],
+                        a: 255
+                    };
+                }
+            };
+
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
                 return void cb();
             };
@@ -2260,6 +2283,7 @@ define([
                 $contentContainer: $('#cp-app-oo-container')
             };
             toolbar = APP.toolbar = Toolbar.create(configTb);
+            toolbar.showColors();
             Title.setToolbar(toolbar);
 
             if (window.CP_DEV_MODE) {
