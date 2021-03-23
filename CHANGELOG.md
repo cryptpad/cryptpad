@@ -1,65 +1,35 @@
-# Pending
+# 4.3.0 (D)
 
-* PRs
-  * comment config.js about supporting multiple domains in httpUnsafeOrigin
-  * add decreePath
-  * explicitly pass archivePath when initializing stores
-  * fix incorrect API in `scripts/migrations/migrate-tasks-v1.js`
-* login/register
-  * delete login block when deleting account
-  * more careful checks when changing user password
-* checkup page
-  * fixed typo
-  * progress bar
-  * test
-    * websockets
-    * sandbox CSP
-    * login block
-  * recommend against trailing slashes for configured domains
-    * remove slashes in server.js anyway
-* admin page
-  * support responses to closed tickets
-  * collapse very long messages
-* open properties menu for pads that aren't stored in your drive
-* help menu that only links to docs
-  * remove unused (nested) keys
-* display survey URL
-* support 'KB' in Util.magnitudeOfBytes
-* degraded mode
-  * decide on a number: 8
-  * provide an easy way to change it (application_config.js)
-  * inform users what the limit is (when degraded mode "kicks in")
-* sheets
-  * fix naming collisions between images in spreadsheets
-  * degraded mode not supported
-  * getPropChannels
-    * pinning?
-  * oo rebuild
-  * OnlyOffice v6.2
-  * some buttons that we were hiding have new ids and needed to be hidden again
-* translations
-  * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
-* CKEditor
-  * cursor jump when clicking on a comment bubble
-  * keybindings for common styles
-    * test if this affects scroll position (it shouldn't)
-    * check that CTRL-space doesn't mess with anything and that it is what Google uses
-    * test on Mac
-* nodrive
-  * load anonymous accounts without creating a drive
-  * faster load time, less junk on the server
-  * `AppConfig.allowDrivelessMode`
-  * cursor color is randomly generated each time and doesn't persist after creating a drive
-  * only affects framework apps for now
-* secure iframe now always knows the channel of the related document
-  * more consistent API with other APPs
-* debug app doesn't create a drive
-* implement/fix ability to destroy pads whether they exist in your drive or not
+## Goals
 
+This release is a continuation of our recent efforts to stabilize the platform, fixing small bugs and inconsistencies that we missed when developing larger features. In the meantime we've received reports of the platform performing poorly under various unusual circumstances, so we've developed some targeted fixes to both improve user experience and decrease the load on our server.
 
-* Known issues
-  * change password for documents in your drive when you don't have the most recent password (multi-owner pads)
+## Update notes
 
+## Features
+
+* We're introducing a "degraded mode" for most of our editors (not polls or sheets). Whenever the document is being edited by a relatively large number of users a number of non-essential features will be disabled in order to save computing power on client devices. The user-list will stop being updated as users join and leave, users cursors will stop being displayed, and the chat will be disabled. Sessions will enter this mode when 8 or more editors are present. This threshold can be configured via `customize/application_config.js` by setting a `degradedLimit` attribute.
+* CryptPad was recently used to distribute some high-profile documents. For the first time we were able to observe our server supporting more than 1000 concurrent viewers in a single pad and around 350000 unique visitors over the course of a few days. While the distributed document incurred very little load, each visitor created a drive for themself the first time they visited, most of which were presumably abandoned as these users did not return to create or edit their own documents. Such users that directly load an existing document without having previously visited the platform will no longer create a drive unless they explicitly visit a page which requires it. This behaviour is supported in most of our editors except sheets and polls. This should result in faster load times for new users, but just in case it causes any issues we've made it easy to disable. Instance admins can disable "no-drive mode" via `customize/application_config.js` by setting `allowDrivelessMode` to `false`.
+* We've updated our sheet editor to use OnlyOffice 6.2, which includes support for pivot tables, among a range of other improvements.
+* Our rich text editor now features some keyboard shortcuts to apply some commonly used styles:
+  * heading size 1-6: ctrl+alt+1-6
+  * "div": ctrl+alt+8
+  * "preformatted": ctrl+alt+9
+  * paragraph: ctrl+alt+0
+  * remove styles from selection: ctrl+space
+* We've removed a large number of strings that were included in the "Getting started" box that was displayed to new users in each of our editors. Instead, this box simply contains a link to the relevant page in our documentation. Our intent is to both simplify the interface for newcomers and reduce the number of strings that require translation.
+* We've continued to progress on our "checkup page" which performs some routine checks to see whether the host instance is correctly configured. While its hints are not especially helpful for admins without reading the code to understand what they are testing, they do detect a fairly wide range of issues and have already helped us to identify some inconsistencies in our recommended configuration. We plan to link directly from this page to the relevant sections of a configuration guide an in upcoming release.
+* The admin support ticket interface has been updated to collapse very long messages in response to some ticket threads submitted in the last few weeks. We also found that sometimes we needed more information after a ticket had been closed, so we added the ability to closed tickets.
+* Some time ago we removed the "Survey link" option from the user admin dropdown menu (found in the top-right corner of the page). This release re-enables it for instances that explicitly provide a link to a survey, however, we no longer provide a link to a survey by default.
+
+## Bug fixes
+
+* We finally reviewed and merged a number of pull-requests that had been pending for some time. Collectively, they fixed some configuration issues and type errors in some of our older scripts.
+* Sheets can now contain multiple images with the same name, whereas before they would conflict and one would be displayed multiple times.
+* A recent change in our code to conditionally display size measurements in different magnitudes (GB, MB) removed support for Kilobytes (KB). This release restores the previous behaviour.
+* We believe we've identified and corrected an issue that caused the rich text editor to scroll to the top of the document when the button to add a comment was clicked.
+* We recently made it such that documents owned by a particular user would not be automatically re-added to that user's drive when they viewed them. This change revealed a number of odd cases where various commands (destroy, add password, get document size, etc.) did not work as expected unless the document was first added to their drive. We reviewed many of these features and corrected the underlying issues that caused these commands to fail.
+* We performed a similar review of various commands related to user accounts and identified a number of issues that caused account deletion to fail.
 
 # 4.2.1
 
