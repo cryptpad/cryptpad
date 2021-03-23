@@ -452,7 +452,7 @@ define([
                     account.note = obj.note;
                     cb(obj);
                 });
-            });
+            }, Cache);
         };
 
         //////////////////////////////////////////////////////////////////
@@ -1710,6 +1710,10 @@ define([
             var onError = function (err) {
                 channel.bcast("PAD_ERROR", err);
 
+                if (err && err.type === "EDELETED" && Cache && Cache.clearChannel) {
+                    Cache.clearChannel(data.channel);
+                }
+
                 // If this is a DELETED, EXPIRED or RESTRICTED pad, leave the channel
                 if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
                 Store.leavePad(null, data, function () {});
@@ -1720,11 +1724,13 @@ define([
                     postMessage(clientId, "PAD_CACHE");
                 },
                 onCacheReady: function () {
+                    channel.hasCache = true;
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
+                    channel.ready = true;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
@@ -2940,6 +2946,13 @@ define([
          *   - requestLogin
          */
         var initialized = false;
+
+        // Are we still in noDrive mode?
+        Store.hasDrive = function (clientId, data, cb) {
+            cb({
+                state: Boolean(store.proxy)
+            });
+        };
 
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.

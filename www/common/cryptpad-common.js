@@ -481,10 +481,20 @@ define([
         });
     };
 
+    common.isNewChannel = function (href, password, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var channel = Hash.hrefToHexChannelId(href, password);
+        postMessage('IS_NEW_CHANNEL', {channel: channel}, function (obj) {
+            var error = obj && obj.error;
+            if (error) { return void cb(error); }
+            if (!obj) { return void cb('ERROR'); }
+            cb (null, obj.isNew);
+        }, {timeout: -1});
+    };
     // This function is used when we want to open a pad. We first need
     // to check if it exists. With the cached drive, we need to wait for
     // the network to be available before we can continue.
-    common.isNewChannel = function (href, password, _cb) {
+    common.hasChannelHistory = function (href, password, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var channel = Hash.hrefToHexChannelId(href, password);
         var error;
@@ -1182,7 +1192,6 @@ define([
                 } else if (mailbox && typeof(mailbox) === "object") {
                     m = {};
                     Object.keys(mailbox).forEach(function (ed) {
-                        console.log(mailbox[ed]);
                         try {
                             m[ed] = newCrypto.encrypt(oldCrypto.decrypt(mailbox[ed], true, true));
                         } catch (e) {
@@ -1217,6 +1226,7 @@ define([
                     cryptgetVal = JSON.stringify(parsed);
                 }
             }), optsGet);
+            Cache.clearChannel(newSecret.channel, waitFor());
         }).nThen(function (waitFor) {
             optsPut.metadata.restricted = oldMetadata.restricted;
             optsPut.metadata.allowed = oldMetadata.allowed;
@@ -1598,6 +1608,7 @@ define([
                     }
                 }));
             }));
+            Cache.clearChannel(newSecret.channel, waitFor());
         }).nThen(function (waitFor) {
             // The new rt channel is ready
             // The blob uses its own encryption and doesn't need to be reencrypted
@@ -2506,7 +2517,25 @@ define([
                 }
                 if (parsedNew.hashData) { oldHref = newHref; }
             };
+            // XXX if you're in noDrive mode, check if an FS_hash is added and reload if that's the case
             // Listen for login/logout in other tabs
+            if (rdyCfg.noDrive && !localStorage[Constants.fileHashKey]) {
+                window.addEventListener('storage', function (e) {
+                    if (e.key !== Constants.fileHashKey) { return; }
+                    // New entry added to FS_hash: drive created in another tab, reload
+                    var o = e.oldValue;
+                    var n = e.newValue;
+                    if (!o && n) {
+                        postMessage('HAS_DRIVE', null, function(obj) {
+                            // If we're still in noDrive mode, reload
+                            if (!obj.state) {
+                                LocalStore.loginReload();
+                            }
+                            // Otherwise this worker is connected, nothing to do
+                        });
+                    }
+                });
+            }
             window.addEventListener('storage', function (e) {
                 if (e.key !== Constants.userHashKey) { return; }
                 var o = e.oldValue;

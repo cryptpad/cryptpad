@@ -89,9 +89,10 @@ define([
         };
 
         // Access modal
-        create['access'] = function () {
+        create['access'] = function (data) {
             require(['/common/inner/access.js'], function (Access) {
                 Access.getAccessModal(common, {
+                    title: data.title,
                     onClose: function () {
                         hideIframe();
                     }

@@ -565,7 +565,12 @@ MessengerUI, Messages) {
             h('span.cp-button-name', Messages.accessButton)
         ]));
         $accessBlock.click(function () { 
-            Common.getSframeChannel().event('EV_ACCESS_OPEN');
+            var title = (config.title && config.title.getTitle && config.title.getTitle())
+                        || (config.title && config.title.defaultName)
+                        || "";
+            Common.getSframeChannel().event('EV_ACCESS_OPEN', {
+                title: title
+            });
         });
 
         toolbar.$bottomM.append($accessBlock);
