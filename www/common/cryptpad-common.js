@@ -2517,8 +2517,7 @@ define([
                 }
                 if (parsedNew.hashData) { oldHref = newHref; }
             };
-            // XXX if you're in noDrive mode, check if an FS_hash is added and reload if that's the case
-            // Listen for login/logout in other tabs
+            // If you're in noDrive mode, check if an FS_hash is added and reload if that's the case
             if (rdyCfg.noDrive && !localStorage[Constants.fileHashKey]) {
                 window.addEventListener('storage', function (e) {
                     if (e.key !== Constants.fileHashKey) { return; }
@@ -2536,6 +2535,7 @@ define([
                     }
                 });
             }
+            // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
                 if (e.key !== Constants.userHashKey) { return; }
                 var o = e.oldValue;
