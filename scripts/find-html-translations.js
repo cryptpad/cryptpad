@@ -5,7 +5,7 @@ var simpleTags = [
     '<br />',
 ];
 
-['a', 'b', 'em', 'p'].forEach(function (tag) {
+['a', 'b', 'em', 'p', 'i'].forEach(function (tag) {
     simpleTags.push('<' + tag + '>');
     simpleTags.push('</' + tag + '>');
 });
