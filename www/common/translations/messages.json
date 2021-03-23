@@ -619,7 +619,7 @@
     "creation_expiration": "Expiration date",
     "creation_passwordValue": "Password",
     "creation_newPadModalDescription": "Click on a document type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
-    "password_info": "The document you are trying to open no longer exist or is protected with a new password. Enter the correct password to access the content.",
+    "password_info": "The document you are trying to open no longer exists or is protected with a new password. Enter the correct password to access the content.",
     "password_error": "Document not found<br>This error can be caused by two factors: either the password is invalid, or the document has been destroyed.",
     "password_placeholder": "Type the password here...",
     "password_submit": "Submit",
