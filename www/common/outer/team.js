@@ -187,7 +187,7 @@ define([
                 team.rpc = call;
                 team.onRpcReadyEvt.fire();
                 cb();
-            });
+            }, Cache);
         });
     };
 
@@ -351,10 +351,9 @@ define([
         var team;
         if (!ctx.store.proxy.teams[id]) { return; }
         nThen(function (waitFor) {
-            if (ctx.cache[id]) { return; }
             onCacheReady(ctx, id, lm, roster, keys, cId, waitFor());
-        }).nThen(function (waitFor) {
-            team = ctx.teams[id];
+            team = ctx.teams[id] || ctx.cache[id];
+
             // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
             initRpc(ctx, team, keys.drive, waitFor(function () {}));
@@ -547,6 +546,14 @@ define([
                 store: ctx.store,
                 lastKnownHash: rosterData.lastKnownHash,
                 onCacheReady: function (_roster) {
+                    if (!cache) { return; }
+                    console.error('Corrupted roster cache, cant load this team offline', teamData);
+                    if (_roster && _roster.error === "CORRUPTED") {
+                        if (lm && typeof(lm.stop) === "function") { lm.stop(); }
+                        waitFor.abort();
+                        cb({error: 'CACHE_CORRUPTED_ROSTER'});
+                        return;
+                    }
                     roster = _roster;
                     cacheRdy.roster = true;
                     cacheRdy.check();

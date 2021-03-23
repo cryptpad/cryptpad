@@ -213,10 +213,6 @@ define([
                     evStart.reg(function () { toolbar.forgotten(); });
                     break;
                 }
-                case STATE.FORBIDDEN: {
-                    evStart.reg(function () { toolbar.deleted(); });
-                    break;
-                }
                 case STATE.DELETED: {
                     evStart.reg(function () { toolbar.deleted(); });
                     break;

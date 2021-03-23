@@ -573,6 +573,14 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         var ready = false;
         var onCacheReady = function () {
             if (!config.onCacheReady) { return; }
+            var state = ref.state;
+            if (!Object.keys(state.members || {}).length) {
+                // No member, corrupted cache
+                try {
+                    ref.internal.cpNetflux.resetCache();
+                } catch (e) { console.error(e); }
+                return void config.onCacheReady({error: "CORRUPTED"});
+            }
             config.onCacheReady(roster);
         };
         var onReady = function (info) {

@@ -162,7 +162,7 @@ define(function() {
     // making it much faster to open new tabs.
     config.disableWorkers = false;
 
-    config.surveyURL = "https://survey.cryptpad.fr/index.php/672782";
+    //config.surveyURL = "";
 
     // Teams are always loaded during the initial loading screen (for the first tab only if
     // SharedWorkers are available). Allowing users to be members of multiple teams can
@@ -195,7 +195,6 @@ define(function() {
     // pad without creating a drive in the background. The drive will only be created if they visit
     // a different page (Drive, Settings, etc.) or try to create a new pad themselves. You can disable
     // the driveless mode by changing the following value to "false"
-    config.allowDrivelessMode = true;
     config.allowDrivelessMode = true;
 
     return config;

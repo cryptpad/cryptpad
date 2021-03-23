@@ -70,7 +70,8 @@ define([
             if ($uname.val()) {
                 localStorage.login_user = $uname.val();
             }
-            window.location.href = '/register/';
+            var hash = (window.location.hash || '').replace(/\/login\//, '/register/');
+            window.location.href = '/register/' + hash;
         });
 
         Test(function (t) {
