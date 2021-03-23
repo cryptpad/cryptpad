@@ -213,7 +213,11 @@ MessengerUI, Messages) {
                                 .appendTo($editUsers);
 
         var degradedLimit = Config.degradedLimit || 8;
-        if (!online) {
+        if (toolbar.isDeleted) {
+            $('<em>').text(Messages.deletedFromServer).appendTo($editUsersList);
+            numberOfEditUsers = '?';
+            numberOfViewUsers = '?';
+        } else if (!online) {
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
             numberOfViewUsers = '?';
@@ -229,7 +233,7 @@ MessengerUI, Messages) {
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
-        if (!online) { return; }
+        if (!online || toolbar.isDeleted) { return; }
 
         if (metadataMgr.isDegraded() === true) { return; }
 
@@ -1383,6 +1387,7 @@ MessengerUI, Messages) {
         toolbar.deleted = function (/*userId*/) {
             toolbar.isErrorState = true;
             toolbar.connected = false;
+            toolbar.isDeleted = true;
             updateUserList(toolbar, config, true);
             toolbar.title.toggleClass('cp-toolbar-unsync', true); // "read only" next to the title
             if (toolbar.spinner) {
