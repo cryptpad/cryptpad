@@ -788,6 +788,7 @@ define([
             var i = 1;
             var p = Object.keys(content.ids || {}).map(function (id) {
                 var nId = id.slice(0,32);
+                if (!users[nId]) { return; }
                 var ooId = content.ids[id].ooid;
                 var idx = content.ids[id].index;
                 if (!ooId || ooId === myOOId) { return; }
@@ -2571,11 +2572,40 @@ define([
                 initializing = false;
                 common.openPadChat(APP.onLocal);
 
+
                 if (!readOnly) {
+                    var cursors = {};
                     common.openCursorChannel(APP.onLocal);
                     cursor = common.createCursor(APP.onLocal);
                     cursor.onCursorUpdate(function (data) {
+                        // Leaving user
+                        if (data && data.leave && data.id) {
+                            // When a netflux user leaves, remove all their cursors
+                            Object.keys(cursors).forEach(function (ooid) {
+                                var d = cursors[ooid];
+                                if (d !== data.id) { return; } // Only continue for the leaving user
+                                // Remove from OO UI
+                                ooChannel.send({
+                                    type: "cursor",
+                                    messages: [{
+                                        cursor: "10;AgAAADIAAAAAAA==",
+                                        time: +new Date(),
+                                        user: ooid,
+                                        useridoriginal: String(ooid).slice(0,-1),
+                                    }]
+                                });
+                                // Remove from memory
+                                delete cursors[ooid];
+                            });
+                            handleNewIds({}, content.ids);
+                        }
+
+                        // Cursor update
                         if (!data || !data.cursor) { return; }
+                        // Store the new cursor in memory for this user, with their netflux ID
+                        var ooid = Util.find(data.cursor, ['messages', 0, 'user'])
+                        if (ooid) { cursors[ooid] = data.id.slice(0,32); }
+                        // Update cursor in the UI
                         ooChannel.send(data.cursor);
                     });
                 }
