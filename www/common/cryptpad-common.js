@@ -2028,7 +2028,7 @@ define([
         });
     };
 
-
+    var launchedWithNoDrive = false;
     var provideFeedback = function () {
         if (typeof(window.Proxy) === 'undefined') {
             Feedback.send("NO_PROXIES");
@@ -2064,6 +2064,9 @@ define([
         }
         if (!common.hasCSSVariables()) {
             Feedback.send('NO_CSS_VARIABLES');
+        }
+        if (launchedWithNoDrive) {
+            Feedback.send('NO_DRIVE');
         }
 
         Feedback.reportScreenDimensions();
@@ -2293,6 +2296,10 @@ define([
                 driveEvents: !rdyCfg.noDrive //rdyCfg.driveEvents // Boolean
             };
             common.userHash = userHash;
+
+            if (rdyCfg.noDrive) {
+                launchedWithNoDrive = true;
+            }
 
             // FIXME Backward compatibility
             if (sessionStorage.newPadFileData) {
