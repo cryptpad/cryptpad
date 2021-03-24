@@ -1089,7 +1089,7 @@ define([
                 changes: parseChanges(obj.changes),
                 changesIndex: ooChannel.cpIndex || 0,
                 locks: getUserLock(getId()),
-                excelAdditionalInfo: null
+                excelAdditionalInfo: obj.excelAdditionalInfo
             }, null, function (err, hash) {
                 if (err) {
                     return void console.error(err);
@@ -1163,6 +1163,17 @@ define([
                                     }, true);
                                 }
                             }
+                            break;
+                        case "cursor":
+                            cursor.updateCursor({
+                                type: "cursor",
+                                messages: [{
+                                    cursor: obj.cursor,
+                                    time: +new Date(),
+                                    user: myUniqueOOId,
+                                    useridoriginal: myOOId
+                                }]
+                            });
                             break;
                         case "getLock":
                             handleLock(obj, send);
@@ -1438,6 +1449,29 @@ define([
             };
             */
 
+            APP.getUserColor = function (userId) {
+                var hex;
+                Object.keys(content.ids || {}).some(function (k) {
+                    var u = content.ids[k];
+                    if (Number(u.ooid) === Number(userId)) {
+                        var md = common.getMetadataMgr().getMetadataLazy();
+                        if (md && md.users && md.users[u.netflux]) {
+                            hex = md.users[u.netflux].color;
+                        }
+                        return true;
+                    }
+                });
+                if (hex) {
+                    var rgb = Util.hexToRGB(hex);
+                    return {
+                        r: rgb[0],
+                        g: rgb[1],
+                        b: rgb[2],
+                        a: 255
+                    };
+                }
+            };
+
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
                 return void cb();
             };
@@ -1500,6 +1534,12 @@ define([
 
             APP.loadingImage = 0;
             APP.getImageURL = function(name, callback) {
+                if (name && /^data:image/.test(name)) {
+                    var b = Util.dataURIToBlob(name);
+                    var url = URL.createObjectURL(blob);
+                    return void callback(url);
+                }
+
                 var mediasSources = getMediasSources();
                 var data = mediasSources[name];
 
@@ -2243,6 +2283,7 @@ define([
                 $contentContainer: $('#cp-app-oo-container')
             };
             toolbar = APP.toolbar = Toolbar.create(configTb);
+            toolbar.showColors();
             Title.setToolbar(toolbar);
 
             if (window.CP_DEV_MODE) {
@@ -2529,6 +2570,15 @@ define([
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
                 common.openPadChat(APP.onLocal);
+
+                if (!readOnly) {
+                    common.openCursorChannel(APP.onLocal);
+                    cursor = common.createCursor(APP.onLocal);
+                    cursor.onCursorUpdate(function (data) {
+                        if (!data || !data.cursor) { return; }
+                        ooChannel.send(data.cursor);
+                    });
+                }
 
                 if (APP.startWithTemplate) {
                     var template = APP.startWithTemplate;
