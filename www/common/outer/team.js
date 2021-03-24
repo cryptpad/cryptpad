@@ -187,7 +187,7 @@ define([
                 team.rpc = call;
                 team.onRpcReadyEvt.fire();
                 cb();
-            });
+            }, Cache);
         });
     };
 
@@ -351,10 +351,9 @@ define([
         var team;
         if (!ctx.store.proxy.teams[id]) { return; }
         nThen(function (waitFor) {
-            if (ctx.cache[id]) { return; }
             onCacheReady(ctx, id, lm, roster, keys, cId, waitFor());
-        }).nThen(function (waitFor) {
-            team = ctx.teams[id];
+            team = ctx.teams[id] || ctx.cache[id];
+
             // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
             initRpc(ctx, team, keys.drive, waitFor(function () {}));
