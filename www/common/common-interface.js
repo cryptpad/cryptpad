@@ -1257,10 +1257,13 @@ define([
             Messages.dontShowAgain
         ]);
 
+        var footerSel = 'div.cp-corner-footer';
         var popup = h('div.cp-corner-container', [
             setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
-            setHTML(h('div.cp-corner-footer'), footer),
+            (typeof(footer) === 'string'?
+                setHTML(h(footerSel), footer):
+                h(footerSel, footer)),
             opts.dontShowAgain ? dontShowAgain : undefined
         ]);
 

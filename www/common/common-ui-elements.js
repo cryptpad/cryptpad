@@ -714,8 +714,14 @@ define([
                                         callback(err);
                                         return void UI.warn(Messages.fm_forbidden);
                                     }
-                                    var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                                    var msg = common.fixLinks($('<div>').html(cMsg));
+                                    var msg;
+                                    if (common.isLoggedIn()) {
+                                        msg = Pages.setHTML(h('div'), Messages.movedToTrash);
+                                        $(msg).find('a').attr('href', '/drive/');
+                                        common.fixLinks(msg);
+                                    } else {
+                                        msg = h('div', Messages.deleted);
+                                    }
                                     UI.alert(msg);
                                     callback();
                                     return;
@@ -2715,7 +2721,7 @@ define([
                 common.openURL(priv.accounts.donateURL);
                 Feedback.send('CROWDFUNDING_YES');
             });
-            $(modal.popup).find('a').click(function (e) {
+            $(modal.popup).find('a').click(function (e) { // XXX do we really need both a link and a button? (the link is the less popular option)
                 e.stopPropagation();
                 e.preventDefault();
                 modal.delete();
@@ -2761,7 +2767,7 @@ define([
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
                           Messages.autostore_pad;
         var text = Messages._getKey('autostore_notstored', [typeMsg]);
-        var footer = Messages.autostore_settings;
+        var footer = Pages.setHTML(h('span'), Messages.autostore_settings);
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);

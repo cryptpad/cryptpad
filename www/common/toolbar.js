@@ -11,8 +11,9 @@ define([
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
+    '/customize/pages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, MT, h,
-MessengerUI, Messages) {
+MessengerUI, Messages, Pages) {
     var Common;
 
     var Bar = {
@@ -958,15 +959,24 @@ MessengerUI, Messages) {
         var todo = function (e, overLimit) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
-                var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
-                if (!ApiConfig.allowSubscriptions) {
-                    key = 'pinLimitReachedAlertNoAccounts'; // Msg.pinLimitReachedAlertNoAccounts
-                }
                 $limit.show().click(function () {
-                    UI.alert(Messages._getKey(key, [encodeURIComponent(l.hostname)]), null, true);
+                    if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
+                        var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
+                        var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
+                        $(msg).find('a').attr({
+                            target: '_blank',
+                            href: Config.upgradeURL,
+                        });
+
+                        UI.alert(msg);
+                    } else {
+                        UI.alert(Messages.pinLimitReachedAlertNoAccounts);
+                    }
                 });
             }
         };
+        //todo(void 0, true);
+
         Common.isOverPinLimit(todo);
 
         return $limit;

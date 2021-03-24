@@ -168,6 +168,11 @@ define([
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true); // Msg.support_formHint, .support_formTitle, .support_formButton
+        $div.find('a').attr({
+            rel: 'noopener noreferrer',
+            target: '_blank',
+            href: 'https://docs.cryptpad.fr/en/user_guide/index.html',
+        });
 
         var form = APP.support.makeForm();
 

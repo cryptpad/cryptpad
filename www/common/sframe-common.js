@@ -16,6 +16,7 @@ define([
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
+    '/customize/pages.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -23,7 +24,8 @@ define([
     '/common/common-interface.js',
     '/common/common-feedback.js',
     '/common/common-language.js',
-    '/bower_components/localforage/dist/localforage.min.js'
+    '/bower_components/localforage/dist/localforage.min.js',
+    '/common/hyperscript.js',
 ], function (
     $,
     nThen,
@@ -41,6 +43,7 @@ define([
     MT,
     MetadataMgr,
     AppConfig,
+    Pages,
     CommonRealtime,
     Util,
     Hash,
@@ -48,7 +51,8 @@ define([
     UI,
     Feedback,
     Language,
-    localForage
+    localForage,
+    h
 ) {
     // Chainpad Netflux Inner
     var funcs = {};
@@ -765,7 +769,14 @@ define([
             UI.addTooltips();
 
             ctx.sframeChan.on("EV_PAD_NODATA", function () {
-                UI.errorLoadingScreen(Messages.safeLinks_error);
+                var error = Pages.setHTML(h('span'), Messages.safeLinks_error);
+                var i = error.querySelector('i');
+                if (i) { i.classList = 'fa fa-shhare-alt'; }
+                var a = error.querySelector('a');
+                if (a) {
+                    a.setAttribute('href', "https://docs.cryptpad.fr/en/user_guide/user_account.html#confidentiality");
+                }
+                UI.errorLoadingScreen(error);
             });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD", function (cfg) {

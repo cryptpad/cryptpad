@@ -3,6 +3,9 @@ var EN = require("../www/common/translations/messages.json");
 var simpleTags = [
     '<br>',
     '<br />',
+    '<br/>',
+    '<a href="/login/">', // XXX
+    '<a href="/register/">', // XXX
 ];
 
 ['a', 'b', 'em', 'p', 'i'].forEach(function (tag) {

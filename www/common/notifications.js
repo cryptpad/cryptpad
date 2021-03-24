@@ -7,7 +7,8 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages) {
+    '/customize/pages.js',
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages) {
 
     var handlers = {};
 
@@ -395,7 +396,10 @@ define([
     handlers['SAFE_LINKS_DEFAULT'] = function (common, data) {
         var content = data.content;
         content.getFormatText = function () {
-            return Messages.settings_safeLinkDefault;
+            var msg = Pages.setHTML(h('span'), Messages.settings_safeLinkDefault);
+            var i = msg.querySelector('i');
+            if (i) { i.classList = 'fa fa-shhare-alt'; }
+            return msg.innerHTML;
         };
 
         content.handler = function () {

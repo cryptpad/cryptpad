@@ -9,6 +9,12 @@ define([
     return function () {
         var urlArgs = Config.requireConf.urlArgs;
 
+        var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
+        $(tos).find('a').attr({
+            href: '/terms.html',
+            tabindex: '-1',
+        });
+
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
@@ -47,7 +53,7 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
                         h('div.checkbox-container', [
-                            $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
+                            tos,
                         ]),
                         h('button#register', Msg.login_register)
                     ])

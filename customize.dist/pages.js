@@ -12,6 +12,16 @@ define([
         return e;
     };
 
+    Pages.externalLink = function (el, href) {
+        if (!el) { return el; }
+        el.setAttribute("rel", "noopener noreferrer");
+        el.setAttribute("target", "_blank");
+        if (typeof(href) === 'string') {
+            el.setAttribute("href", href);
+        }
+        return el;
+    };
+
     var languageSelector = function () {
         var options = [];
         var languages = Msg._languages;
