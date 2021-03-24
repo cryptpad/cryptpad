@@ -117,7 +117,7 @@ var setHeaders = (function () {
             // targeted CSP, generic policies, maybe custom headers
             const h = [
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
-                    /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
+                    /^\/(sheet|presentation|doc)\/inner\.html.*/,
                 ].some((regex) => {
                     return regex.test(req.url);
                 }) ? padHeaders : headers;

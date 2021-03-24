@@ -231,7 +231,7 @@ define([
             var title = common.getMetadataMgr().getMetadataLazy().title;
             var file = {};
             switch(type) {
-                case 'oodoc':
+                case 'doc':
                     file.type = 'docx';
                     file.title = title + '.docx' || 'document.docx';
                     file.doc = 'text';
@@ -241,7 +241,7 @@ define([
                     file.title = title + '.xlsx' || 'spreadsheet.xlsx';
                     file.doc = 'spreadsheet';
                     break;
-                case 'ooslide':
+                case 'presentation':
                     file.type = 'pptx';
                     file.title = title + '.pptx' || 'presentation.pptx';
                     file.doc = 'presentation';
@@ -557,10 +557,10 @@ define([
                 case 'sheet' :
                     newText = EmptyCell(useNewDefault);
                     break;
-                case 'oodoc':
+                case 'doc':
                     newText = EmptyDoc();
                     break;
-                case 'ooslide':
+                case 'presentation':
                     newText = EmptySlide();
                     break;
                 default:
@@ -1816,10 +1816,10 @@ define([
             if (type === "sheet" && extension !== 'xlsx') {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
                 filename += '.xlsx';
-            } else if (type === "ooslide" && extension !== "pptx") {
+            } else if (type === "presentation" && extension !== "pptx") {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'pptx');
                 filename += '.pptx';
-            } else if (type === "oodoc" && extension !== "docx") {
+            } else if (type === "doc" && extension !== "docx") {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'docx');
                 filename += '.docx';
             }
@@ -1843,9 +1843,9 @@ define([
             var ext = ['.xlsx', '.ods', '.bin', '.csv', '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
-            if (type==="ooslide") {
+            if (type==="presentation") {
                 ext = ['.pptx', /*'.odp',*/ '.bin'];
-            } else if (type==="oodoc") {
+            } else if (type==="doc") {
                 ext = ['.docx', /*'.odt',*/ '.bin'];
             }
 
@@ -2068,10 +2068,10 @@ define([
                 case 'sheet' :
                     newText = EmptyCell(useNewDefault);
                     break;
-                case 'oodoc':
+                case 'doc':
                     newText = EmptyDoc();
                     break;
-                case 'ooslide':
+                case 'presentation':
                     newText = EmptySlide();
                     break;
                 default:
@@ -2431,9 +2431,9 @@ define([
 
             var type = privateData.ooType;
             var accept = [".bin", ".ods", ".xlsx"];
-            if (type === "ooslide") {
+            if (type === "presentation") {
                 accept = ['.bin', '.odp', '.pptx'];
-            } else if (type === "oodoc") {
+            } else if (type === "doc") {
                 accept = ['.bin', '.odt', '.docx'];
             }
             if (!supportsXLSX()) {
