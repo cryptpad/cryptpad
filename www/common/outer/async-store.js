@@ -3068,14 +3068,19 @@ define([
                         if (obj.error === 'GET_HK') {
                             data.noDrive = false;
                             Store.init(clientId, data, _callback);
+                            Feedback.send("NO_DRIVE_ERROR", true);
                             return;
                         }
                     }
+                    Feedback.send("NO_DRIVE", true);
                     callback(obj);
                 });
             }
 
             initialized = true;
+            if (store.noDriveUid) {
+                Feedback.send('NO_DRIVE_CONVERSION', true);
+            }
 
             store.data = data;
             connect(clientId, data, function (ret) {

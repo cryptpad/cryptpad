@@ -2028,7 +2028,6 @@ define([
         });
     };
 
-
     var provideFeedback = function () {
         if (typeof(window.Proxy) === 'undefined') {
             Feedback.send("NO_PROXIES");
@@ -2065,7 +2064,6 @@ define([
         if (!common.hasCSSVariables()) {
             Feedback.send('NO_CSS_VARIABLES');
         }
-
         Feedback.reportScreenDimensions();
         Feedback.reportLanguage();
     };
