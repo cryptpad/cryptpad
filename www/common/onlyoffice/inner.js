@@ -1293,15 +1293,28 @@ define([
                                   '#title-user-name { display: none !important; }' +
            (supportsXLSX() ? '' : '#slot-btn-dt-print { display: none !important; }') +
                                   // New OO:
-                                  '#asc-gen257 { display: none !important; }' + // Insert image from url
                                   'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
                                   '#slot-btn-insequation { display: none !important; }' + // Insert equation
+                                  '#asc-gen125 { display: none !important; }' + // Disable presenter mode
                                   //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
                                   '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                                   '#panel-info { display: none !important; }' + // Same but content
                                   '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
+
+                                  '#asc-gen257 { display: none !important; }' + // Insert image from url
                                   '#asc-gen1839 { display: none !important; }' + // Image context menu: replace with url
                                   '#asc-gen5883 { display: none !important; }' + // Rightside image menu: replace with url
+
+                                  '#asc-gen1211 { display: none !important; }' + // Slide Image context menu: replace with url
+                                  '#asc-gen3880 { display: none !important; }' + // Rightside slide image menu: replace with url
+                                  '#asc-gen2218 { display: none !important; }' + // Rightside slide menu: fill slide with image url
+                                  '#asc-gen849 { display: none !important; }' + // Toolbar slide: insert image from url
+                                  '#asc-gen857 { display: none !important; }' + // Toolbar slide: insert image from url (insert tab)
+
+                                  '#asc-gen180 { display: none !important; }' + // Doc Insert image from url
+                                  '#asc-gen1760 { display: none !important; }' + // Doc Image context menu: replace with url
+                                  '#asc-gen3319 { display: none !important; }' + // Doc Rightside image menu: replace with url
+
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   'div.btn-users.dropdown-toggle { display: none; !important }';
@@ -1536,6 +1549,7 @@ define([
             APP.loadingImage = 0;
             APP.getImageURL = function(name, callback) {
                 if (name && /^data:image/.test(name)) {
+                    return void callback('');
                     var b = Util.dataURIToBlob(name);
                     var url = URL.createObjectURL(blob);
                     return void callback(url);
