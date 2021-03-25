@@ -263,6 +263,9 @@ define([
             i = i || 0;
             var idx = sortCpIndex(hashes);
             var lastIndex = idx[idx.length - 1 - i];
+            if (typeof(lastIndex) === "undefined" || !hashes[lastIndex]) {
+                return {};
+            }
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
         };
