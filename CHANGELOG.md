@@ -6,6 +6,15 @@ This release is a continuation of our recent efforts to stabilize the platform, 
 
 ## Update notes
 
+This release should be fairly simple for admins.
+
+To update from 4.2.1 to 4.3.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
 ## Features
 
 * We're introducing a "degraded mode" for most of our editors (all except polls and sheets). This follows reports we received that CryptPad performed poorly in settings where a relatively large number of users with *edit* rights were connected simultaneously. To alleviate this, some non-essential features will be disabled when a number of concurrent editors is reached, in order to save computing power on client devices. The user-list will stop being updated as users join and leave, users cursors will stop being displayed, and the chat will not be disabled. Sessions will enter this mode when 8 or more editors are present. This threshold can be configured via `customize/application_config.js` by setting a `degradedLimit` attribute.
