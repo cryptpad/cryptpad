@@ -1332,8 +1332,8 @@ define([
                         var css = // Old OO
                                   //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   //'#fm-btn-save { display: none !important; }' +
-                                  '#panel-settings-general tr.autosave { display: none !important; }' +
-                                  '#panel-settings-general tr.coauth { display: none !important; }' +
+                                  //'#panel-settings-general tr.autosave { display: none !important; }' +
+                                  //'#panel-settings-general tr.coauth { display: none !important; }' +
                                   //'#header { display: none !important; }' +
                                   '#title-doc-name { display: none !important; }' +
                                   '#title-user-name { display: none !important; }' +
@@ -1361,6 +1361,8 @@ define([
                                   '#asc-gen1760 { display: none !important; }' + // Doc Image context menu: replace with url
                                   '#asc-gen3319 { display: none !important; }' + // Doc Rightside image menu: replace with url
 
+                                  '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
+                                  '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   'div.btn-users.dropdown-toggle { display: none; !important }';
