@@ -807,11 +807,11 @@
             isSafari_mobile = !isIE && !isChrome && check(/safari/) && (navigator.maxTouchPoints>0);
 
         path += app + "/";
-        path += (config.type === "mobile" || isSafari_mobile)
+        path += "main"; /* (config.type === "mobile" || isSafari_mobile)
             ? "mobile"
             : config.type === "embedded"
                 ? "embed"
-                : "main";
+                : "main"; */
 
         var index = "/index.html";
         if (config.editorConfig) {
