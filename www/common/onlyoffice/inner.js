@@ -835,16 +835,44 @@ define([
         };
 
         // Get all existing locks
-        var getUserLock = function (id) {
+        var getUserLock = function (id, forceArray) {
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            content.locks = content.locks || {};
             var l = content.locks[id] || {};
-            return Object.keys(l).map(function (uid) { return l[uid]; });
+            if (type === "sheet" || forceArray) {
+                return Object.keys(l).map(function (uid) { return l[uid]; });
+            }
+            var res = {};
+            Object.keys(l).forEach(function (uid) {
+                res[uid] = l[uid];
+            });
+            return res;
         };
         var getLock = function () {
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             var locks = [];
-            Object.keys(content.locks).forEach(function (id) {
-                Array.prototype.push.apply(locks, getUserLock(id));
+            if (type === "sheet") {
+                Object.keys(content.locks || {}).forEach(function (id) {
+                    Array.prototype.push.apply(locks, getUserLock(id));
+                });
+                return locks;
+            }
+            locks = {};
+            Object.keys(content.locks || {}).forEach(function (id) {
+                Util.extend(locks, getUserLock(id));
             });
             return locks;
+        };
+
+        var locksArrayToObject = function (arr) {
+            var l = {};
+            if (!Array.isArray(arr)) { return l; }
+            arr.forEach(function (lock) {
+                var uid = lock.block;
+                if (!uid) { return; }
+                l[uid] = lock;
+            });
+            return l;
         };
 
         // Update the userlist in onlyoffice
@@ -991,6 +1019,8 @@ define([
                 }, 50);
                 return;
             }
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+
             content.locks = content.locks || {};
             // Send the lock to other users
             var msg = {
@@ -1000,8 +1030,13 @@ define([
             };
             var myId = getId();
             content.locks[myId] = content.locks[myId] || {};
-            var uid = Util.uid();
-            content.locks[myId][uid] = msg;
+            var b = obj.block && obj.block[0];
+            if (type === "sheet") {
+                var uid = Util.uid();
+                content.locks[myId][uid] = msg;
+            } else {
+                if (typeof(b) === "string") { content.locks[myId][b] = msg; }
+            }
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
@@ -1092,7 +1127,7 @@ define([
                 type: "saveChanges",
                 changes: parseChanges(obj.changes),
                 changesIndex: ooChannel.cpIndex || 0,
-                locks: getUserLock(getId()),
+                locks: getUserLock(getId(), true),
                 excelAdditionalInfo: obj.excelAdditionalInfo
             }, null, function (err, hash) {
                 if (err) {
@@ -1128,6 +1163,7 @@ define([
         var makeChannel = function () {
             var msgEv = Util.mkEvent();
             var iframe = $('#cp-app-oo-editor > iframe')[0].contentWindow;
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             window.addEventListener('message', function (msg) {
                 if (msg.source !== iframe) { return; }
                 msgEv.fire(msg);
@@ -1139,7 +1175,11 @@ define([
                 APP.chan = chan;
 
                 var send = ooChannel.send = function (obj, force) {
-                    if (APP.onStrictSaveChanges && !force) { return; } // can't push to OO before reloading cp
+                    // can't push to OO before reloading cp
+                    if (APP.onStrictSaveChanges && !force) { return; }
+                    // We only need to release locks for sheets
+                    if (type !== "sheet" && obj.type === "releaseLock") { return; }
+
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
                 };
@@ -1189,12 +1229,14 @@ define([
                         case "saveChanges":
                             // If we have unsaved data before reloading for a checkpoint...
                             if (APP.onStrictSaveChanges) {
+                                delete APP.unsavedLocks;
                                 APP.unsavedChanges = {
                                     type: "saveChanges",
                                     changes: parseChanges(obj.changes),
                                     changesIndex: ooChannel.cpIndex || 0,
-                                    locks: getUserLock(getId()),
-                                    excelAdditionalInfo: null
+                                    locks: type === "sheet" ? [] : APP.unsavedLocks,
+                                    excelAdditionalInfo: null,
+                                    recover: true
                                 };
                                 APP.onStrictSaveChanges();
                                 return;
@@ -1248,6 +1290,7 @@ define([
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = !APP.history && (APP.migrate);
+            var type = common.getMetadataMgr().getPrivateData().ooType;
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -2145,7 +2188,8 @@ define([
         var setStrictEditing = function () {
             if (APP.isFast) { return; }
             var editor = getEditor();
-            var editing = editor.asc_isDocumentModified();
+            var isModified = editor.asc_isDocumentModified || editor.isDocumentModified;
+            var editing = isModified();
             if (editing) {
                 evOnPatch.fire();
             } else {
@@ -2670,6 +2714,8 @@ define([
 
             var wasMigrating = content.migration;
 
+            var myLocks = getUserLock(getId(), true);
+
             content = json.content;
 
             if (content.saveLock && wasLocked !== content.saveLock) {
@@ -2695,8 +2741,12 @@ define([
                             checkNewCheckpoint();
                         });
                     };
-                    if (editor.asc_isDocumentModified()) {
+                    var isModified = editor.asc_isDocumentModified || function () {
+                        return editor.isDocumentModify;
+                    };
+                    if (isModified()) {
                         setEditable(false);
+                        APP.unsavedLocks = myLocks;
                         APP.onStrictSaveChanges = function () {
                             reload();
                             delete APP.onStrictSaveChanges;
