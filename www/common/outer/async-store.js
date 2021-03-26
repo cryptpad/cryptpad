@@ -652,6 +652,7 @@ define([
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
+            if (data.readme) { pad.readme = 1; }
 
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
@@ -839,6 +840,7 @@ define([
                         channel: channel,
                         title: data.driveReadmeTitle,
                         owners: [ store.proxy.edPublic ],
+                        readme: true
                     };
                     Store.addPad(clientId, fileData, cb);
                 }, {
@@ -1155,6 +1157,12 @@ define([
                     pad.owners = owners;
                 }
                 pad.expire = expire;
+
+                if (pad.readme) {
+                    delete pad.readme;
+                    Feedback.send('OPEN_README');
+                }
+
                 if (h.mode === 'view') { return; }
 
                 // If we only have rohref, it means we have a stronger href
