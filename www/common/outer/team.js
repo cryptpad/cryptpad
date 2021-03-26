@@ -691,10 +691,12 @@ define([
                 keys: rosterKeys,
                 store: ctx.store,
                 lastKnownHash: void 0,
+                newTeam: true,
                 Cache: Cache
             }, waitFor(function (err, _roster) {
                 if (err) {
                     waitFor.abort();
+                    console.error(err);
                     return void cb({error: 'ROSTER_ERROR'});
                 }
                 roster = _roster;

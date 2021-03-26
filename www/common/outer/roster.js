@@ -503,6 +503,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         var channel = config.channel;
         var lastKnownHash = config.lastKnownHash || -1;
 
+        if (config.newTeam) { // XXX
+            lastKnownHash = undefined;
+        }
+
         var ref = {
             state: {
                 members: { },
