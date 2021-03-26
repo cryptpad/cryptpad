@@ -2484,6 +2484,9 @@ define([
                             data = data.returned;
                         }
 
+                        if (data.loggedIn) {
+                            window.CP_logged_in = true;
+                        }
                         if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
                         initialized = true;

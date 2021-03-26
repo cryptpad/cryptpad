@@ -2815,7 +2815,9 @@ define([
             store.onRpcReadyEvt = Util.mkEvent(true);
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
-            var returned = {};
+            var returned = {
+                loggedIn: Boolean(data.userHash)
+            };
             rt.proxy.on('create', function (info) {
                 store.realtime = info.realtime;
                 store.network = info.network;
