@@ -7,7 +7,10 @@ define([
 
     var onLinkClicked = function (e, inner) {
         var $target = $(e.target);
-        if (!$target.is('a')) { return; }
+        if (!$target.is('a')) {
+            $target = $target.closest('a');
+            if (!$target.length) { return; }
+        }
         var href = $target.attr('href');
         if (!href) { return; }
         var $inner = $(inner);
@@ -66,7 +69,7 @@ define([
             // Bubble to open the link in a new tab
             $inner.click(function (e) {
                 removeClickedLink($inner);
-                if (e.target.nodeName.toUpperCase() === 'A') {
+                if (e.target.nodeName.toUpperCase() === 'A' || $(e.target).closest('a').length) {
                     return void onLinkClicked(e, inner);
                 }
             });
