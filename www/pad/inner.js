@@ -908,7 +908,7 @@ define([
                 $(a).click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (!obj.el || UIElements.isVisible(obj.el, $inner)) { return; }
+                    if (!obj.el || UIElements.isVisible(obj.el, $contentContainer)) { return; }
                     obj.el.scrollIntoView();
                 });
                 a.innerHTML = title;
