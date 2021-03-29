@@ -369,7 +369,8 @@ define([
             content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
-                index: ev.index
+                index: ev.index,
+                version: NEW_VERSION
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
             content.locks = {};
@@ -596,7 +597,13 @@ define([
                 if (arrayBuffer) {
                     var u8 = new Uint8Array(arrayBuffer);
                     FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                        if (err) { return void console.error(err); }
+                        if (err) {
+                            if (err === "DECRYPTION_ERROR") {
+                                console.warn(err);
+                                return void onCpError(err);
+                            }
+                            return void console.error(err);
+                        }
                         var blob = new Blob([decrypted.content], {type: 'plain/text'});
                         if (cb) {
                             return cb(blob, getFileType());
