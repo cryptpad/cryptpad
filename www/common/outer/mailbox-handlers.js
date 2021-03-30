@@ -697,6 +697,7 @@ define([
     var activeSurvey;
     handlers['BROADCAST_SURVEY'] = function (ctx, box, data, cb) {
         var msg = data.msg;
+        var content = msg.content;
         var uid = msg.uid;
         var old = activeSurvey;
         activeSurvey = {
@@ -704,7 +705,8 @@ define([
             hash: data.hash
         };
         ctx.Store.onSurveyUpdate(uid);
-        cb(false, old);
+        var dismiss = !content.url;
+        cb(dismiss, old);
     };
     var activeCustom
     handlers['BROADCAST_CUSTOM'] = function (ctx, box, data, cb) {

@@ -1381,6 +1381,14 @@ define([
         });
         refresh();
 
+        Common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "MAINTENANCE") { return; }
+                refresh();
+            }
+        });
+
         return $div;
     };
     create['survey'] = function () {
@@ -1435,7 +1443,9 @@ define([
                         return;
                     }
                     // Maintenance applied, send notification
-                    common.mailbox.sendTo('BROADCAST_SURVEY', {}, {}, function (err, data) {
+                    common.mailbox.sendTo('BROADCAST_SURVEY', {
+                        url: data
+                    }, {}, function (err, data) {
                         refresh();
                         checkLastBroadcastHash();
                     });
@@ -1464,6 +1474,14 @@ define([
             ]);
         });
         refresh();
+
+        Common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "SURVEY") { return; }
+                refresh();
+            }
+        });
 
         return $div;
     };
