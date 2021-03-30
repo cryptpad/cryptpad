@@ -690,74 +690,47 @@ define([
     var broadcasts = {};
     handlers['BROADCAST_MAINTENANCE'] = function (ctx, box, data, cb) {
         var msg = data.msg;
-        var content = msg.content;
-        if (content.end < (+new Date())) {
-            // Expired maintenance: dismiss
-            return void cb(true);
-        }
         var uid = msg.uid;
-        broadcasts[uid] = {
-            type: box.type,
-            hash: data.hash
-        };
-        cb(false);
+        ctx.Store.onMaintenanceUpdate(uid);
+        cb(true);
     };
-    handlers['BROADCAST_VERSION'] = function (ctx, box, data, cb) {
-        var msg = data.msg;
-        var content = msg.content;
-        if (!box.ready) {
-            // This is an old version message: dismiss
-            return void cb(true);
-        }
-        if (content.reload) {
-            // We're going to force a disconnect, dismiss
-            ctx.Store.newVersionReload();
-            return; // This message will be removed when reloading the worker
-        }
-        var uid = msg.uid;
-        broadcasts[uid] = {
-            type: box.type,
-            hash: data.hash
-        };
-        cb(false);
-    };
+    var activeSurvey;
     handlers['BROADCAST_SURVEY'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var uid = msg.uid;
-        broadcasts[uid] = {
+        var old = activeSurvey;
+        activeSurvey = {
             type: box.type,
             hash: data.hash
         };
-        cb(false);
+        ctx.Store.onSurveyUpdate(uid);
+        cb(false, old);
     };
+    var activeCustom
     handlers['BROADCAST_CUSTOM'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var uid = msg.uid;
-        broadcasts[uid] = {
+        var old = activeCustom;
+        activeCustom = {
+            uid: uid,
             type: box.type,
             hash: data.hash
         };
-        cb(false);
+        cb(false, old);
     };
     handlers['BROADCAST_DELETE'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
 
-        // If this is a "clear all" message, empty the box and update lkh
-        if (content.all) {
-            // 3rd argument of callback: clear the mailbox
-            return void cb(null, null, true);
-        }
-
         var uid = content.uid; // uid of the message to delete
-        if (!broadcasts[uid]) {
-            // We don't have this message in memory, nothing to delete
-            return void cb(true);
+        if (activeCustom && activeCustom.uid === uid) {
+            // We have the message in memory, remove it and don't keep the DELETE msg
+            cb(true, activeCustom);
+            activeCustom = undefined;
+            return;
         }
-
-        // We have the message in memory, remove it and don't keep the DELETE msg
-        cb(true, broadcasts[uid]);
-        delete broadcasts[uid];
+        // We don't have this message in memory, nothing to delete
+        cb(true);
     };
 
     return {

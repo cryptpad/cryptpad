@@ -422,32 +422,6 @@ define([
         }
     };
 
-    Messages.broadcast_newMaintenance = "A maintenance is planned between <b>{0}</b> and <b>{1}</b>"; // XXX
-    handlers['BROADCAST_MAINTENANCE'] = function (common, data) {
-        var content = data.content;
-        var msg = content.msg.content;
-        content.getFormatText = function () {
-            return Messages._getKey('broadcast_newMaintenance', [
-                new Date(msg.start).toLocaleString(),
-                new Date(msg.end).toLocaleString(),
-            ]);
-        };
-        if (!content.archived) {
-            content.dismissHandler = defaultDismiss(common, data);
-        }
-    };
-
-    Messages.broadcast_newVersion = "A new version is available. Reload the page to discover the new features!"; // XXX
-    handlers['BROADCAST_VERSION'] = function (common, data) {
-        var content = data.content;
-        content.getFormatText = function () {
-            return Messages.broadcast_newVersion;
-        };
-        if (!content.archived) {
-            content.dismissHandler = defaultDismiss(common, data);
-        }
-    };
-
     Messages.broadcast_newCustom = "Message from the administrators"; // XXX
     handlers['BROADCAST_CUSTOM'] = function (common, data) {
         var content = data.content;

@@ -279,11 +279,16 @@ var serveBroadcast = (function () {
     };
 
     var template = function (host) {
+        var maintenance = Env.maintenance;
+        if (maintenance && maintenance.end && maintenance.end < (+new Date())) {
+            maintenance = undefined;
+        }
         return [
             'define(function(){',
             'return ' + JSON.stringify({
                 lastBroadcastHash: Env.lastBroadcastHash,
-                surveyURL: Env.surveyURL
+                surveyURL: Env.surveyURL,
+                maintenance: maintenance
             }, null, '\t'),
             '});'
         ].join(';\n')

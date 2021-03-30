@@ -626,6 +626,33 @@ define([
             cb(JSON.parse(JSON.stringify(metadata)));
         };
 
+        Store.onMaintenanceUpdate = function (uid) {
+            // use uid in /api/broadcast so that all connected users will use the same cached
+            // version on the server
+            require(['/api/broadcast?'+uid], function (Broadcast) {
+                broadcast([], 'UNIVERSAL_EVENT', {
+                    type: 'broadcast',
+                    data: {
+                        ev: 'MAINTENANCE',
+                        data: Broadcast.maintenance
+                    }
+                });
+            });
+        };
+        Store.onSurveyUpdate = function (uid) {
+            // use uid in /api/broadcast so that all connected users will use the same cached
+            // version on the server
+            require(['/api/broadcast?'+uid], function (Broadcast) {
+                broadcast([], 'UNIVERSAL_EVENT', {
+                    type: 'broadcast',
+                    data: {
+                        ev: 'SURVEY',
+                        data: Broadcast.surveyURL
+                    }
+                });
+            });
+        };
+
         var makePad = function (href, roHref, title) {
             var now = +new Date();
             return {

@@ -219,8 +219,8 @@ define([
 
         var historyState = false;
         var onHistory = function () {};
-        mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
-            if (historyState) { return void cb("ALREADY_CALLED"); }
+    mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
+            if (type !== "broadcast" && historyState) { return void cb("ALREADY_CALLED"); }
             historyState = true;
             var txid = Util.uid();
             execCommand('LOAD_HISTORY', {

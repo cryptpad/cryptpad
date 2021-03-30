@@ -400,7 +400,7 @@
 
         button {
             .toolbar_button;
-            &.cp-notifications-bell {
+            &.cp-notifications-bell, &.cp-maintenance-wrench {
                 color: @cryptpad_text_col;
             }
         }
@@ -506,7 +506,7 @@
                 }
                 .cp-toolbar-user {
                     height: @toolbar_line-height;
-                    .cp-toolbar-notifications {
+                    .cp-toolbar-notifications, .cp-toolbar-maintenance {
                         height: @toolbar_line-height;
                         width: @toolbar_line-height;
                         margin-left: 0;
@@ -709,7 +709,7 @@
                 height: 43px;
             }
         }
-        .cp-toolbar-link, .cp-toolbar-notifications {
+        .cp-toolbar-link, .cp-toolbar-notifications, .cp-toolbar-maintenance {
             line-height: @toolbar_top-height;
             width: @toolbar_top-height;
             height: @toolbar_top-height;
@@ -717,7 +717,7 @@
             box-sizing: border-box;
             display: inline-block;
         }
-        .cp-toolbar-notifications {
+        .cp-toolbar-notifications, .cp-toolbar-maintenance {
             text-align: center;
             font-size: 32px;
             margin-left: 10px;

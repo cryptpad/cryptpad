@@ -1,6 +1,7 @@
 define([
     'jquery',
     '/api/config',
+    '/api/broadcast',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-language.js',
@@ -17,7 +18,7 @@ define([
     '/common/visible.js',
 
     'css!/customize/fonts/cptools/style.css',
-], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
+], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
              Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
@@ -1762,23 +1763,20 @@ define([
             });
         }
 
-        // XXX Admin panel overrides AppConfig
         // If you set "" in the admin panel, it will remove the AppConfig survey
-        var surveyURL = typeof(Config.surveyURL) !== "undefined" ? Config.surveyURL
+        var surveyURL = typeof(Broadcast.surveyURL) !== "undefined" ? Broadcast.surveyURL
                                         : AppConfig.surveyURL;
-        if (surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Common.openUnsafeURL(surveyURL);
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-toolbar-survey fa fa-graduation-cap'
+            },
+            content: h('span', Messages.survey),
+            action: function () {
+                Common.openUnsafeURL(surveyURL);
+                Feedback.send('SURVEY_CLICKED');
+            },
+        });
 
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
@@ -1844,6 +1842,24 @@ define([
             common: Common
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
+
+        var $survey = $userAdmin.find('.cp-toolbar-survey');
+        if (!surveyURL) { $survey.hide(); }
+        Common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "SURVEY") { return; }
+                var url = obj.data;
+                if (url === surveyURL) { return; }
+                if (url && !Util.isValidURL(url)) { return; }
+                surveyURL = url;
+                if (!url) {
+                    $survey.hide();
+                    return;
+                }
+                $survey.show();
+            }
+        });
 
         /*
         // Uncomment these lines to have a language selector in the admin menu
