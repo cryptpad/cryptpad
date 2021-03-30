@@ -644,6 +644,10 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             '/' + curvePublic.replace(/\//g, '-') + '/';
     };
 
+    Hash.isValidChannel = function (channelId) {
+        return /^[a-zA-Z0-9]{32,48}$/.test(channelId);
+    };
+
     Hash.isValidHref = function (href) {
         // Non-empty href?
         if (!href) { return; }

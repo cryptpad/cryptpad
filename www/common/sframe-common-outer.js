@@ -37,6 +37,7 @@ define([
         var $i = $('<iframe>').attr('id', 'sbox-iframe').attr('src',
             ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
+        $i.attr('allowfullscreen', 'true');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -78,7 +79,7 @@ define([
         };
         var AppConfig;
         var Test;
-        var password, newPadPassword;
+        var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
 
@@ -221,7 +222,11 @@ define([
                     }
                 } catch (e) { console.error(e); }
 
+                // NOTE: Driveless mode should only work for existing pads, but we can't check that
+                // before creating the worker because we need the anon RPC to do so.
+                // We're only going to check if a hash exists in the URL or not.
                 Cryptpad.ready(waitFor(), {
+                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
                     currentPad: currentPad
@@ -308,6 +313,7 @@ define([
                                 newPadPassword = Crypto.decrypt(newPad.pw, uKey);
                             } catch (e) { console.error(e); }
                         }
+                        if (newPad.f) { newPadPasswordForce = 1; }
                         if (newPad.d) {
                             Cryptpad.fromFileData = newPad.d;
                             var _parsed1 = Utils.Hash.parsePadUrl(Cryptpad.fromFileData.href);
@@ -315,6 +321,7 @@ define([
                                 delete Cryptpad.fromFileData;
                             }
                         }
+
                     } catch (e) {
                         console.error(e, parsed.hashData.newPadOpts);
                     }
@@ -345,7 +352,7 @@ define([
                 }
 
                 // We now need to check if there is a password and if we know the correct password.
-                // We'll use getFileSize and isNewChannel to detect incorrect passwords.
+                // We'll use getFileSize and hasChannelHistory to detect incorrect passwords.
 
                 // First we'll get the password value from our drive (getPadAttribute), and we'll check
                 // if the channel is valid. If the pad is not stored in our drive, we'll test with an
@@ -393,15 +400,15 @@ define([
                             }
                         };
                         if (parsed.type === "file") {
-                            // `isNewChannel` doesn't work for files (not a channel)
+                            // `hasChannelHistory` doesn't work for files (not a channel)
                             // `getFileSize` is not adapted to channels because of metadata
                             Cryptpad.getFileSize(currentPad.href, password, function (e, size) {
                                 next(e, size === 0);
                             });
                             return;
                         }
-                        // Not a file, so we can use `isNewChannel`
-                        Cryptpad.isNewChannel(currentPad.href, password, next);
+                        // Not a file, so we can use `hasChannelHistory`
+                        Cryptpad.hasChannelHistory(currentPad.href, password, next);
                     });
                     sframeChan.event("EV_PAD_PASSWORD", cfg);
                 };
@@ -463,19 +470,32 @@ define([
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
-                    Cryptpad.getPadAttribute('title', w(function (err, data) {
+                    Cryptpad.getPadAttribute('channel', w(function (err, data) {
                         stored = (!err && typeof (data) === "string");
                     }));
                     Cryptpad.getPadAttribute('password', w(function (err, val) {
                         password = val;
                     }), parsed.getUrl());
                 }).nThen(function (w) {
+                    // If we've already tested this password and this is a redirect, force
+                    if (typeof(newPadPassword) !== "undefined" && newPadPasswordForce) {
+                        password = newPadPassword;
+                        return void todo();
+                    }
+
+                    // If the pad is not stored and we have a newPadPassword, it probably
+                    // comes from a notification: password prompt pre-filled
                     if (!password && !stored && newPadPassword) {
                         passwordCfg.value = newPadPassword;
                     }
 
+                    // Pad not stored && password required: always ask for the password
+                    if (!stored && parsed.hashData.password && !newPadPasswordForce) {
+                        return void askPassword(true, passwordCfg);
+                    }
+
                     if (parsed.type === "file") {
-                        // `isNewChannel` doesn't work for files (not a channel)
+                        // `hasChannelHistory` doesn't work for files (not a channel)
                         // `getFileSize` is not adapted to channels because of metadata
                         Cryptpad.getFileSize(currentPad.href, password, w(function (e, size) {
                             if (size !== 0) { return void todo(); }
@@ -484,8 +504,8 @@ define([
                         }));
                         return;
                     }
-                    // Not a file, so we can use `isNewChannel`
-                    Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
+                    // Not a file, so we can use `hasChannelHistory`
+                    Cryptpad.hasChannelHistory(currentPad.href, password, w(function(e, isNew) {
                         if (isNew && expire && expire < (+new Date())) {
                             sframeChan.event("EV_EXPIRED_ERROR");
                             waitFor.abort();
@@ -498,10 +518,6 @@ define([
                             sframeChan.event("EV_PAD_PASSWORD_ERROR");
                             waitFor.abort();
                             return;
-                        }
-                        if (!stored && !parsed.hashData.password) {
-                            // We've received a link without /p/ and it doesn't work without a password: abort
-                            return void todo();
                         }
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);
@@ -536,8 +552,7 @@ define([
 
             if (realtime) {
                 // TODO we probably don't need to check again for password-protected pads
-                // (we use isNewChannel to test the password...)
-                Cryptpad.isNewChannel(currentPad.href, password, waitFor(function (e, isNew) {
+                Cryptpad.hasChannelHistory(currentPad.href, password, waitFor(function (e, isNew) {
                     if (e) { return console.error(e); }
                     isNewFile = Boolean(isNew);
                 }));
@@ -603,6 +618,7 @@ define([
                         feedbackAllowed: Utils.Feedback.state,
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         notifications: notifs,
                         accounts: {
@@ -1403,6 +1419,7 @@ define([
                     };
                     config.data = {
                         app: parsed.type,
+                        channel: secret.channel,
                         hashes: hashes,
                         password: password,
                         isTemplate: isTemplate,
@@ -1668,6 +1685,43 @@ define([
                 });
             });
 
+            sframeChan.on('Q_PASSWORD_CHECK', function (pw, cb) {
+                Cryptpad.isNewChannel(currentPad.href, pw, function (e, isNew) {
+                    if (isNew === false) {
+                        nThen(function (w) {
+                            // If the pad is stored, update its data
+                            var _secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, pw);
+                            var chan = _secret.channel;
+                            var editH = Utils.Hash.getEditHashFromKeys(_secret);
+                            var viewH = Utils.Hash.getViewHashFromKeys(_secret);
+                            var href = Utils.Hash.hashToHref(editH, parsed.type);
+                            var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
+                            Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
+                            Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
+                            Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
+                            Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
+                        }).nThen(function () {
+                            // Get redirect URL
+                            var uHash = Utils.LocalStore.getUserHash();
+                            var uSecret = Utils.Hash.getSecrets('drive', uHash);
+                            var uKey = uSecret.keys.cryptKey;
+                            var url = Utils.Hash.getNewPadURL(currentPad.href, {
+                                pw: Crypto.encrypt(pw, uKey),
+                                f: 1
+                            });
+                            // redirect
+                            window.location.href = url;
+                            document.location.reload();
+                        });
+
+                        return;
+                    }
+                    cb({
+                        error: e
+                    });
+                });
+            });
+
             if (cfg.messaging) {
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
                     Cryptpad.universal.execCommand({
@@ -1741,7 +1795,7 @@ define([
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
-                    versionHash: parsed.hashData && parsed.hashData.versionHash,
+                    versionHash: cfg.type !== 'oo' && parsed.hashData && parsed.hashData.versionHash,
                     padRpc: Cryptpad.padRpc,
                     validateKey: secret.keys.validateKey || undefined,
                     isNewHash: isNewHash,

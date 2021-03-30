@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Save/download/print your document</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, download and print your documents in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Save/<span class="onlineDocumentFeatures">download/</span>print your document</h1>
+            <h3>Saving</h3>
+            <p class="onlineDocumentFeatures">By default, online <b>Document Editor</b> automatically saves your file each 2 seconds when you work on it preventing your data loss in case of the unexpected program closing. If you co-edit the file in the <b>Fast</b> mode, the timer requests for updates 25 times a second and saves the changes if they have been made. When the file is being co-edited in the <b>Strict</b> mode, changes are automatically saved at 10-minute intervals. If you need, you can easily select the preferred co-editing mode or disable the <b>Autosave</b> feature on the <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Advanced Settings</a> page.</p>
+			<p>To save your current document manually in the current format and location,</p>
+			<ul>
+				<li>press the <b>Save</b> <img alt="Save icon" src="../images/save.png" /> icon in the left part of the editor header, or</li>
+				<li>use the <b>Ctrl+S</b> key combination, or</li>
+				<li>click the <b>File</b> tab of the top toolbar and select the <b>Save</b> option.</li>
+			</ul>
+            <p class="note desktopDocumentFeatures"><b>Note</b>: in the <em>desktop version</em>, to prevent data loss in case of the unexpected program closing you can turn on the <b>Autorecover</b> option at the <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Advanced Settings</a> page. </p>
+            <div class="desktopDocumentFeatures">
+                <p>In the <em>desktop version</em>, you can save the document with another name, in a new location or format,</p>
+                <ol>
+                    <li>click the <b>File</b> tab of the top toolbar,</li>
+                    <li>select the <b>Save as...</b> option,</li>
+                    <li>choose one of the available formats depending on your needs: DOCX, ODT, RTF, TXT, PDF, PDFA. You can also choose the <b>Document template</b> (DOTX or OTT) option.</li>
+                </ol>
+            </div>
+			<div class="onlineDocumentFeatures">
+            <h3>Downloading</h3>
+			<p>In the <em>online version</em>, you can download the resulting document onto your computer hard disk drive,</p>
+			<ol>
+				<li>click the <b>File</b> tab of the top toolbar,</li>
+				<li>select the <b>Download as...</b> option,</li>
+				<li>choose one of the available formats depending on your needs: DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML.</li>
+			</ol>
+                <h3>Saving a copy</h3>
+                <p>In the <em>online version</em>, you can save a copy of the file on your portal,</p>
+                <ol>
+                    <li>click the <b>File</b> tab of the top toolbar,</li>
+                    <li>select the <b>Save Copy as...</b> option,</li>
+                    <li>choose one of the available formats depending on your needs: DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML,</li>
+                    <li>select a location of the file on the portal and press <b>Save</b>.</li>
+                </ol>
+			</div>
+            <h3 id="print">Printing</h3>
+			<p>To print out the current document,</p>
+			<ul>
+				<li>click the <b>Print</b> <img alt="Print icon" src="../images/print.png" /> icon in the left part of the editor header, or</li>
+				<li>use the <b>Ctrl+P</b> key combination, or</li>
+				<li>click the <b>File</b> tab of the top toolbar and select the <b>Print</b> option.</li>
+			</ul>
+            <p>It's also possible to print a selected text passage using the <b>Print Selection</b> option from the contextual menu.</p>
+			<p><span class="desktopDocumentFeatures">In the <em>desktop version</em>, the file will be printed directly.</span><span class="onlineDocumentFeatures">In the <em>online version</em>, a PDF file will be generated on the basis of the document. You can open and print it out, or save onto your computer hard disk drive or removable medium to print it out later. Some browsers (e.g. Chrome and Opera) support direct printing.</span></p>
+		</div>
+	</body>
+</html>

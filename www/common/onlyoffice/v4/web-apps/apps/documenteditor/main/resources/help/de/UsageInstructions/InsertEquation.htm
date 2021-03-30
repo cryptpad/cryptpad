@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formeln einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert equations and mathematical symbols." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Formeln einfügen</h1>
+            <p>Mit dem <b>Dokumenteneditor</b> können Sie Formeln mithilfe der integrierten Vorlagen erstellen, sie bearbeiten, Sonderzeichen einfügen (einschließlich mathematischer Operatoren, griechischer Buchstaben, Akzente usw.).</p>
+            <h3>Eine neue Formel einfügen</h3>
+            <p>Eine Formel aus den Vorlagen einfügen:</p>
+			<ol>
+				<li>Positionieren Sie den Mauszeiger an der gewünschten Stelle.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Formel" src="../images/insertequationicon.png" /> <b>Formel</b>.</li>
+				<li>Wählen Sie im geöffneten Listenmenü die gewünschte Option: Derzeit sind die folgenden Kategorien verfügbar: <em>Symbole</em>, <em>Brüche</em>, <em>Skripte</em>, <em>Wurzeln</em>, <em>Integrale</em>, <em>Große Operatoren</em>, <em>Klammern</em>, <em>Funktionen</em>, <em>Akzente</em>, <em>Grenzwerte und Logarithmen</em>, <em>Operators</em>, <em>Matrizen</em>.</li>
+                <li>Klicken Sie im entsprechenden Vorlagensatz auf das gewünschte Symbol/die gewünschte Gleichung.</li>
+			</ol>
+            <p>Das ausgewählte Symbol/die ausgewählte Formel wird an der aktuellen Cursorposition eingefügt. Wenn die ausgewählte Zeile leer ist, wird die Gleichung zentriert. Um die Formel links- oder rechtsbündig auszurichten, klicken Sie auf der Registerkarte <b>Start</b> auf <img alt="Linksbündig ausrichten" src="../images/alignleft.png" /> oder <img alt="Rechtsbündig ausrichten" src="../images/alignright.png" />.</p><img alt="Formel einfügen" src="../images/insertedequation.png" /><p>Jede Formelvorlage steht für eine Reihe von Slots. Ein Slot für jedes Element, aus dem die Gleichung besteht Ein leerer Slot (auch Platzhalter genannt) hat eine gepunktete Linie <img alt="Platzhalter" src="../images/equationplaceholder.png" /> Setzen Sie in alle Platzhalter die gewünschten Werte ein.</p>
+            <p class="note"><b>Hinweis</b>: Um eine Gleichung zu erstellen, können Sie auch die Tastenkombination <b>Alt + =</b> verwenden.</p>
+            <h3>Werte eingeben</h3>
+            <p>Der <b>Einfügepunkt</b> zeigt an, an welcher Stelle das nächste Zeichen erscheint, das Sie eingeben. Um den Cursor präzise zu positionieren, klicken Sie in einen Platzhalter und verschieben Sie den Einfügepunkt mithilfe der Tastaturpfeile um ein Zeichen nach links/rechts oder eine Zeile nach oben/unten.</p>
+            <p>Wenn Sie unter dem Slot einen neuen Platzhalter erstellen wollen, positionieren Sie den Cursor in der ausgwählten Vorlage und drücken Sie die <b>Eingabetaste</b>.</p><img alt="Bearbeitete Formel" src="../images/newslot.png" /><p>Wenn Sie den Einfügepunkt positioniert haben, können Sie die Werte in den Platzhaltern einfügen:<ul>
+                <li>Geben Sie geben Sie den gewünschten numerischen/literalen Wert über die Tastatur ein.</li>
+                <li>Wechseln Sie zum Einfügen von Sonderzeichen in die Registerkarte <b>Einfügen</b> und wählen Sie im Menü <img alt="Formel" src="../images/insertequationicon.png" /> <b>Formel</b> das gewünschte Zeichen aus der Palette mit den <b>Symbolen</b> aus.</li>
+                <li>Fügen Sie eine weitere Vorlage aus der Palette hinzu, um eine komplexe verschachtelte Gleichung zu erstellen. Die Größe der primären Formel wird automatisch an den Inhalt angepasst. Die Größe der verschachtelten Gleichungselemente hängt von der Platzhaltergröße der primären Gleichung ab, sie darf jedoch nicht kleiner sein als die Vorlage für tiefgestellte Zeichen.</li>                
+            </ul>
+            </p>
+            <p><img alt="Bearbeitete Formel" src="../images/nestedfraction.png" /></p>
+            <p>Alternativ können Sie auch über das <b>Rechtsklickmenü</b> neue Elemente in Ihre Formel einfügen:</p>
+            <ul>
+                <li>Um ein neues Argument vor oder nach einem vorhandenen Argument einzufügen, das in <em>Klammern</em> steht, klicken Sie mit der rechten Maustaste auf das vorhandene Argument und wählen Sie die Option <b>Argument vorher/nachher</b> einfügen.</li>
+                <li>Um in <em>Fällen</em> mit mehreren Bedingungen eine neue Formel aus der Gruppe <em>Klammern</em> hinzuzufügen (oder eine beliebige andere Formel, wenn Sie zuvor über die <b>Eingabetaste</b> einen neuen Platzhalter eingefügt haben), klicken Sie mit der rechten Maustaste auf einen leeren Platzhalter oder eine im Platzhalter eingegebene Gleichung und wählen Sie <b>Formel vorher/nachher einfügen</b> aus dem Menü aus.</li>
+                <li>Um in einer <em>Matrix</em> eine neue Zeile oder Spalte einzugeben, wählen Sie die Option <b>Einfügen</b> aus dem Menü, und klicken Sie dann auf <b>Zeile oberhalb/unterhalb</b> oder <b>Spalte links/rechts</b>.</li>
+            </ul>
+            <p class="note"><b>Hinweis</b>: aktuell ist es nicht möglich Gleichungen im linearen Format einzugeben werden, d.h. <b>\sqrt(4&amp;x^3)</b>.</p>
+            <p>Wenn Sie die Werte der mathematischen Ausdrücke eingeben, ist es nicht notwendig die <b>Leertaste</b> zu verwenden, da die Leerzeichen zwischen den Zeichen und Werten automatisch gesetzt werden.</p>
+            <p>Wenn die Formel zu lang ist und nicht in eine einzelnen Zeile passt, wird während der Eingabe automatisch ein Zeilenumbruch ausgeführt. Bei Bedarf können Sie auch manuell einen Zeilenumbruch an einer bestimmten Position einfügen. Klicken sie dazu mit der rechten Maustaste auf einen der Platzhalter und wählen Sie im Menü die Option <b>manuellen Umbruch einfügen</b> aus. Der ausgewählte Platzhalter wird in die nächste Zeile verschoben. Wenn Sie einen manuellen Zeilenumbruch eingefügt haben können Sie die neue Zeile mithilfe der <b>Tab-</b> Taste an die mathematischen Operatoren der vorherigen Zeile anpassen und die Zeile entsprechend ausrichten. Um einen manuell hinzugefügten Zeilenumbruch zu entfernen, klicken Sie mit der rechten Maustaste auf den Platzhalter der die neue Zeile einleitet und wählen Sie die Option <b>manuellen Umbruch entfernen</b>.</p>
+            <h3>Formeln formatieren</h3>
+            <p>Um die <b>Schriftgröße</b> der Formel zu verkleinern oder zu vergrößern, klicken Sie an eine beliebige Stelle im Formelfeld und verwenden Sie die Schaltflächen <img alt="Schrift vergrößern" src="../images/larger.png" /> und <img alt="Schrift verkleinern" src="../images/smaller.png" /> in der Registerkarte <b>Start</b> oder wählen Sie die gewünschte Schriftgröße aus der Liste aus. Alle Elemente in der Formel werden entsprechend angepasst.</p>
+            <p>Die Buchstaben innerhalb der Formel werden standardmäßig kursiv gestellt. Bei Bedarf können Sie <b>Schriftart</b> (<em>fett, kursiv, durchgestrichen</em>) oder <b>Schriftfarbe</b> für die gesamte Formel oder Teile davon ändern. <em>Unterstreichen</em> ist nur für die gesamte Formel nötig und nicht für einzelne Zeichen. Wählen Sie den gewünschten Teil der Formel durch anklicken und ziehen aus. Der ausgewählte Teil wird blau markiert. Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Start</b>, um die Auswahl zu formatieren. Sie können zum Beispiel das Kursivformat für gewöhnliche Wörter entfernen, die keine Variablen oder Konstanten darstellen.</p><img alt="Bearbeitete Formel" src="../images/formatastext.png" /><p>Einige Elemente aus der Formel lassen sich auch über das <b>Rechtsklickmenü</b> ändern:</p>
+            <ul><li>Um das Format von <em>Brüchen</em> zu ändern, klicken Sie mit der rechten Maustaste auf einen Bruch und wählen Sie im Menü die Option <b>in schrägen/linearen/gestapelten Bruch ändern</b> (die verfügbaren Optionen hängen vom ausgewählten Bruchtyp ab). <!--The <b>Remove/Add fraction bar</b> option is also available for stacked fractions.--></li>
+                <li>Um die Position der <em>Skripte</em> in Bezug auf Text zu ändern, klicken Sie mit der rechten Maustaste auf die Formel, die Skripte enthält und wählen Sie die Option <b>Skripte vor/nach Text</b> aus dem Menü aus.</li>
+                <li>Um die Größe der Argumente für <em>Skripte, Wurzeln, Integrale, Große Operatoren, Grenzwerte und Logarithmen und Operatoren</em> sowie für über- und untergeordnete Klammern und Vorlagen mit Gruppierungszeichen aus der Gruppe <em>Akzente</em> zu ändern, klicken Sie mit der rechten Maustaste auf das Argument, das Sie ändern wollen und wählen Sie die Option <b>Argumentgröße vergrößern/verkleinern</b> aus dem Menü aus.</li>
+                <li>Um festzulegen, ob ein leerer Grad-Platzhalter für eine <em>Wurzel</em> angezeigt werden soll oder nicht, klicken Sie mit der rechten Maustaste auf die Wurzel und wählen Sie die Option <b>Grad anzeigen/ausblenden</b> aus dem Menü aus.</li>
+                <li>Um festzulegen, ob ein leerer Grenzwert-Platzhalter für ein <em>Integral</em> oder für <em>Große Operatoren</em> angezeigt werden soll oder nicht, klicken Sie mit der rechten Maustaste auf die Gleichung und wählen Sie im Menü die Option <b>oberen/unteren Grenzwert anzeigen/ausblenden</b> aus.</li>
+                <li>Um die Position der Grenzwerte in Bezug auf das Integral oder einen Operator für <em>Integrale</em> oder einen <em>großen Operator</em> zu ändern, klicken Sie mit der rechten Maustaste auf die Formel und wählen Sie die Option <b>Position des Grenzwertes ändern</b> aus dem Menü aus. Die Grenzwerte können rechts neben dem Operatorzeichen (als tiefgestellte und hochgestellte Zeichen) oder direkt über und unter dem Operatorzeichen angezeigt werden.</li>
+                <li>Um die Positionen der Grenzwerte für <em>Grenzwerte und Logarithmen</em> und Vorlagen mit Gruppierungszeichen aus der Gruppe <em>Akzente</em>, klicken Sie mit der rechten Maustaste auf die Formel und wählen Sie die Option <b>Grenzwert über/unter Text</b> aus dem Menü aus.</li>
+                <li>Um festzulegen, welche <em>Klammern</em> angezeigt werden sollen, klicken Sie mit der rechten Maustaste auf den darin enthaltenen Ausdruck und wählen Sie die Option <b>öffnende/schließende Klammer anzeigen/verbergen</b> aus dem Menü aus.</li>
+                <li>Um die Größe der <em>Klammern</em> zu ändern, klicken Sie mit der rechten Maustaste auf den darin enthaltenen Ausdruck. Standardmäßig ist die Option <b>Klammern ausdehnen</b> aktiviert, so dass die Klammern an den eingegebenen Ausdruck angepasst werden. Sie können diese Option jedoch deaktivieren und die Klammern werden nicht mehr ausgedehnt. Wenn die Option aktiviert ist, können Sie auch die Option <b>Klammern an Argumenthöhe anpassen</b> verwenden.</li>
+                <li>Um die Position der Zeichen in Bezug auf Text für Klammern (über dem Text/unter dem Text) oder Überstriche/Unterstriche aus der Gruppe <em>Akzente</em> zu ändern, klicken Sie mit der rechten Maustaste auf die Vorlage und wählen Sie die Option <b>Überstrich/Unterstrich über/unter Text</b> aus dem Menü aus.</li>
+                <li>Um festzulegen, welche Rahmen für die <em>Box-Formel</em> aus der Gruppe <em>Akzente</em> angezeigt werden sollen, klicken Sie mit der rechten Maustaste auf die Formel, klicken Sie im Menü auf die Option <b>Umrandungen</b> und legen Sie die Parameter <b>Einblenden/Ausblenden oberer/unterer/rechter/linker Rand</b> oder <b>Hinzufügen/Verbergen horizontale/vertikale/diagonale Grenzlinie</b> fest.</li>
+                <li>Um festzulegen, ob ein leerer Platzhalter für eine <em>Matrix</em> angezeigt werden soll oder nicht, klicken Sie mit der rechten Maustaste darauf und wählen Sie die Option <b>Platzhalter einblenden/ausblenden</b> aus dem Menü aus.</li>
+            </ul>
+            <p>Einige Elemente aus der Formel lassen sich auch über das <b>Rechtsklickmenü</b> ausrichten:</p>
+            <ul>
+                <li>Um Formeln in <em>Fällen</em> mit mehreren Bedingungen aus der Gruppe <em>Klammern</em> auszurichten (oder beliebige andere Formeln, wenn Sie zuvor über die <b>Eingabetaste</b> einen neuen Platzhalter eingefügt haben), klicken Sie mit der rechten Maustaste auf eine Gleichung, wählen Sie die Option <b>Ausrichten</b> im Menü aus und legen Sie den Ausrichtungstyp fest: <b>Oben</b>, <b>Zentriert</b> oder <b>Unten</b>.</li>
+                <li>Um eine <em>Matrix</em> vertikal auszurichten, klicken Sie mit der rechten Maustaste auf die Matrix, wählen Sie die Option <b>Matrixausrichtung</b> aus dem Menü aus und legen Sie den Ausrichtungstyp fest: <b>Oben</b>, <b>Zentriert</b> oder <b>Unten</b>.</li>
+                <li>Um Elemente in einer <em>Matrix</em>-Spalte vertikal auszurichten, klicken Sie mit der rechten Maustaste auf einen Platzhalter in der Spalte, wählen Sie die Option <b>Spaltenausrichtung</b> aus dem Menü aus und legen Sie den Ausrichtungstyp fest: <b>Links</b>, <b>Zentriert</b> oder <b>Rechts</b>.</li>
+            </ul>
+            <h3>Formelelemente löschen</h3>
+            <p>Um Teile einer Formel zu löschen, wählen Sie den Teil den Sie löschen wollen mit der Maus aus oder halten Sie die <b>Umschalttaste</b> gedrückt, und drücken sie dann auf Ihrer Tastatur auf <b>ENTF</b>.</p>
+            <p>Ein Slot kann nur zusammen mit der zugehörigen Vorlage gelöscht werden.</p>
+            <p>Um die gesamte Formel zu löschen, wählen Sie diese aus, entweder durch Markieren mit der Maus oder durch einen Doppelklick auf das Formelfeld und drücken Sie dann auf die Taste <b>ENTF</b> auf Ihrer Tastatur.</p><img alt="Formel löschen" src="../images/deleteequation.png" /><p>Einige Elemente aus der Formel lassen sich auch über das <b>Rechtsklickmenü</b> löschen:</p>
+            <ul>
+                <li>Um eine <em>Wurzel</em> zu löschen, klicken Sie diese mit der rechten Maustaste an und wählen Sie die Option <b>Wurzel löschen</b> im Menü aus.</li>
+                <li>Um ein <em>tiefgestelltes Zeichen</em> bzw. ein <em>hochgestelltes Zeichen</em> zu löschen, klicken sie mit der rechten Maustaste auf das entsprechende Element und wählen Sie die Option <b>hochgestelltes/tiefgestelltes Zeichen entfernen</b> im Menü aus. Wenn der Ausdruck Skripte mit Vorrang vor dem Text enthält, ist die Option <b>Skripte entfernen</b> verfügbar.</li>
+                <li>Um <em>Klammern</em> zu entfernen, klicken Sie mit der rechten Maustaste auf den darin enthaltenen Ausdruck und wählen Sie die Option <b>umschließende Zeichen entfernen</b> oder die Option <b>Umschließende Zeichen und Trennzeichen entfernen</b> im Menü aus.</li>
+                <li>Wenn ein Ausdruck in <em>Klammern</em> mehr als ein Argument enthält, klicken Sie mit der rechten Maustaste auf das Argument das Sie löschen wollen und wählen Sie die Option <b>Argument löschen</b> im Menü aus.</li>
+                <li>Wenn <em>Klammern</em> mehr als eine Formel umschließen (in <em>Fällen</em> mit mehreren Bedingungen), klicken Sie mit der rechten Maustaste auf die Formel die Sie löschen wollen und wählen Sie die Option <b>Formel löschen</b> im Menü aus. Diese Option ist auch für andere Formelarten verfügbar, wenn Sie zuvor über die <b>Eingabetaste</b> neue Platzhalter hinzugefügt haben.</li>
+                <li>Um einen <em>Grenzwert</em> zu löschen, klicken Sie diesen mit der rechten Maustaste an und wählen Sie die Option <b>Grenzwert entfernen</b> im Menü aus.</li>
+                <li>Um einen <em>Akzent</em> zu löschen, klicken Sie diesen mit der rechten Maustaste an und wählen Sie im Menü die Option <b>Akzentzeichen entfernen</b>, <b>Überstrich entfernen</b> oder <b>Unterstrich entfernen</b> (die verfügbaren Optionen hängen vom ausgewählten Akzent ab).</li>
+                <li>Um eine Zeile bzw. Spalte in einer <em>Matrix</em> zu löschen, klicken Sie mit der rechten Maustaste auf den Platzhalter in der entsprechenden Zeile/Spalte, wählen Sie im Menü die Option <b>Entfernen</b> und wählen Sie dann <b>Zeile/Spalte entfernen</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

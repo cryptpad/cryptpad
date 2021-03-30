@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Zellen verbinden</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Merge some cells into one and split the previously merged cell" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Zellen verbinden</h1>
+			<p>Sie können zwei oder mehrere benachbarte Zellen in eine Zelle zusammenführen. Zellen verbinden:</p>
+			<ol>
+			<li>Wählen Sie zwei Zellen oder eine Reihe von Zellen mit der Maus aus.<p class="note"><b>Hinweis</b>: Die gewählten Zellen <b>MÜSSEN</b> nebeneinander liegen.</p>
+			</li>
+			<li>Klicken Sie auf das Symbol <b>Verbinden</b> <img alt="Verbinden" src="../images/merge.png" /> auf der Registerkarte <b>Start</b> in der oberen Symbolleiste und wählen Sie eine der verfügbaren Optionen:<p class="note"><b>Hinweis</b>: Nur die Daten in der oberen linken Zelle des gewählten Bereichs bleiben in der vereinigten Zelle erhalten. Die Daten aus den anderen Zellen des gewählten Bereichs werden verworfen.</p>
+			<ul>
+			<li>Wenn Sie die Option <b>Verbinden und zentrieren</b> wählen, werden die Zellen aus dem gewählten Bereich zusammengeführt und die Daten in den vereinigten Zellen werden zentriert.</li>
+			<li>Wenn Sie die Option <b>Verbinden über</b> wählen, werden die Zellen jeder Zeile aus dem gewählten Bereich vereinigt und die Daten werden am linken Rand der zusammengeführten Zellen ausgerichtet.</li>
+			<li>Wenn Sie die Option <b>Zellen verbinden</b> wählen, werden die Zellen aus dem gewählten Bereich vereinigt und die Daten werden vertikal am unteren Rand und horizontal am linken Rand ausgerichtet.</li>
+			</ul>
+			</li>
+			</ol>
+			<p>Um eine vorher vereinigte Zelle zu spalten, wählen Sie die Option <b>Zellverbund aufheben</b> in der Menüliste <b>Zellen verbinden</b>. Die Daten der zusammengeführten Zelle werden in der oberen linken Zelle angezeigt.</p>
+		</div>
+	</body>
+</html>

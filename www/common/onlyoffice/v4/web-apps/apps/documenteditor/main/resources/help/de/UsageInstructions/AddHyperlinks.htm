@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hyperlink einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Hyperlink einfügen</h1>
+			<p>Einfügen eines Hyperlinks:</p>
+			<ol>
+				<li>Platzieren Sie Ihren Mauszeiger an der Position wo der Hyperlink eingefügt werden soll.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b> oder <b>Verweise</b>.</li>
+				<li>Klicken Sie auf das Symbol <img alt="Hyperlink" src="../images/addhyperlink.png" /> <b>Hyperlink</b> in der oberen Symbolleiste.</li>
+				<li>Im sich nun öffnenden Fenster <b>Einstellungen Hyperlink</b> können Sie die Parameter für den Hyperlink festlegen:<ul>
+                        <li>Wählen Sie den gewünschten Linktyp aus:<p>Wenn Sie einen Hyperlink einfügen möchten, der auf eine externe Website verweist, wählen Sie <b>Website</b> und geben Sie eine URL im Format <em>http://www.example.com</em> in das Feld <b>Link zu</b> ein.</p>
+                            <p><img alt="Fenster Einstellungen Hyperlink" src="../images/hyperlinkwindow.png" /></p>
+                            <p>Wenn Sie einen Hyperlink einfügen möchten, der zu einer bestimmten Stelle im gleichen Dokument führt, dann wählen Sie die Option <b>In Dokument einfügen</b>, wählen Sie dann eine der vorhandenen <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">Überschriften</a> im Dokumenttext oder eines der zuvor hinzugefügten <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">Lesezeichen</a> aus.</p>
+                            <p><img alt="Fenster Einstellungen Hyperlink" src="../images/hyperlinkwindow1.png" /></p>
+                        </li>
+                        <li><b>Angezeigter Text</b> - geben Sie den klickbaren Text ein, der zu der im oberen Feld angegebenen Webadresse führt.</li>
+                        <li><b>Infobox</b> - geben Sie einen Text ein, der in einem Dialogfenster angezeigt wird und den Nutzer über den Inhalt des Verweises informiert.</li>
+                    </ul>
+				</li>
+				<li>Klicken Sie auf <b>OK</b>.</li>
+			</ol>
+            <p>Um einen Hyperlink einzufügen können Sie auch die Tastenkombination <b>STRG+K</b> nutzen oder klicken Sie mit der rechten Maustaste an die Stelle an der Sie den Hyperlink einfügen möchten und wählen Sie die Option <b>Hyperlink</b> im Rechtsklickmenü aus.</p>
+			<p class="note"><b>Hinweis</b>: Es ist auch möglich, ein Zeichen, Wort, eine Wortverbindung oder einen Textabschnitt mit der Maus oder über die <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">Tastatur</a> auszuwählen. Öffnen Sie anschließend das Menü für die <b>Hyperlink-Einstellungen</b> wie zuvor beschrieben. In diesem Fall erscheint im Feld <b>Angezeigter Text</b> der ausgewählte Textabschnitt.</p>
+			<p>Wenn Sie den Mauszeiger über den eingefügten Hyperlink bewegen, wird der von Ihnen im Feld QuickInfo eingebene Text angezeigt. Sie können dem Link folgen, indem Sie die Taste <b>STRG</b> drücken und dann auf den Link in Ihrem Dokument klicken.</p>
+			<p>Um den hinzugefügten Hyperlink zu bearbeiten oder zu entfernen, klicken Sie mit der rechten Maustaste auf den Link, wählen Sie dann das Optionsmenü für den <b>Hyperlink</b> aus und klicken Sie anschließend auf <b>Hyperlink bearbeiten</b> oder <b>Hyperlink entfernen</b>.</p>
+		</div>
+	</body>
+</html>

@@ -16,15 +16,19 @@ var Env = require("./lib/env").create(config);
 
 var app = Express();
 
+var canonicalizeOrigin = function (s) {
+    return (s || '').trim().replace(/\/+$/, '');
+};
+
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin'
     if (typeof(config.httpUnsafeOrigin) !== 'string') {
         throw new Error("No 'httpUnsafeOrigin' provided");
     }
 
-    config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim();
+    config.httpUnsafeOrigin = canonicalizeOrigin(config.httpUnsafeOrigin);
     if (typeof(config.httpSafeOrigin) === 'string') {
-        config.httpSafeOrigin = config.httpSafeOrigin.trim().replace(/\/$/, '');
+        config.httpSafeOrigin = canonicalizeOrigin(config.httpSafeOrigin);
     }
 
     // fall back to listening on a local address
@@ -114,7 +118,7 @@ var setHeaders = (function () {
             // targeted CSP, generic policies, maybe custom headers
             const h = [
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
-                    /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
+                    /^\/(sheet|presentation|doc)\/inner\.html.*/,
                 ].some((regex) => {
                     return regex.test(req.url);
                 }) ? padHeaders : headers;

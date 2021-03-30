@@ -156,7 +156,6 @@
     "cancel": "Keskeytä",
     "cancelButton": "Keskeytä (Esc)",
     "show_help_button": "Näytä ohje",
-    "hide_help_button": "Piilota ohje",
     "help_button": "Ohje",
     "historyText": "Historia",
     "historyButton": "Näytä asiakirjan historia",
@@ -419,7 +418,6 @@
     "settings_deleteHint": "Käyttäjätilin poisto on pysyvä toimenpide. CryptDrivesi ja lista padeistasi poistetaan palvelimelta. Loput padeistasi poistetaan 90 päivän kuluttua, jos kukaan muu ei ole tallentanut niitä omaan CryptDriveensa.",
     "settings_deleteButton": "Poista käyttäjätilisi",
     "settings_deleteModal": "Jaa seuraavat tiedot CryptPad-instanssisi ylläpitäjän kanssa poistaaksesi tietosi palvelimelta.",
-    "settings_deleteConfirm": "Napsauttamalla OK käyttäjätilisi poistetaan pysyvästi. Oletko varma?",
     "settings_deleted": "Käyttäjätilisi on nyt poistettu. Napsauta OK siirtyäksesi kotisivulle.",
     "settings_anonymous": "Et ole kirjautunut sisään. Nämä asetukset koskevat vain tätä selainta.",
     "settings_publicSigningKey": "Julkinen salausavain",
@@ -733,53 +731,7 @@
     "four04_pageNotFound": "Etsimääsi sivua ei löytynyt.",
     "header_logoTitle": "Siirry CryptDriveesi",
     "header_homeTitle": "Siirry CryptPad-kotisivulle",
-    "help": {
-        "title": "Näin pääset alkuun",
-        "generic": {
-            "more": "Tutustu CryptPadin toimintaan ja ominaisuuksiin <a href=\"https://docs.cryptpad.fr\" target=\"_blank\" rel=\"noopener noreferrer\">dokumentaatiosivuillamme</a>.",
-            "share": "Jaa tämä asiakirja <i class=\"fa fa-shhare-alt\"></i> <b>Jaa</b>-painikkeella ja hallitse käyttöoikeuksia <i class=\"fa fa-unlock-alt\"></i> <b>Käyttöoikeudet</b>-painikkeella.",
-            "save": "Kaikki tekemäsi muutokset synkronoidaan automaattisesti, joten sinun ei tarvitse koskaan tallentaa"
-        },
-        "text": {
-            "formatting": "Näytä tai piilota tekstityökalupalkki <i class=\"fa fa-wrench\"></i> <b>Työkalut</b>-painikkeella.",
-            "embed": "Upota kuvatiedosto CryptDrivestasi tai tietokoneeltasi <i class=\"fa fa-image\"></i> <b>Upota</b>-painikkeella (vain rekisteröityneille käyttäjille).",
-            "history": "Voit käyttää <em>historiaa</em> <span class=\"fa fa-history\"></span> katsellaksesi tai palauttaaksesi aiempia versioita"
-        },
-        "pad": {
-            "export": "Voit viedä sisältösi PDF-tiedostoon Tekstin muotoilu-työkalupalkin <span class=\"fa fa-print\"></span> -painikkeella"
-        },
-        "code": {
-            "modes": "Käytä <span class=\"cptools cptools-palette\"></span> <b>Teema</b> -valikkoa valitaksesi editorin teeman ja syntaksin korostustilan."
-        },
-        "beta": {
-            "warning": "Tämä editori on edelleen <strong>koekäytössä</strong>, voit ilmoittaa löytämäsi bugit <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">asianhallintajärjestelmäämme</a>"
-        },
-        "oo": {
-            "access": "Käyttö on rajattu ainoastaan rekisteröityneille käyttäjille, yhteistyökumppanien tulee kirjautua sisään"
-        },
-        "slide": {
-            "markdown": "Kirjoita diat <a href=\"http://www.markdowntutorial.com/\">Markdown-kielellä</a> ja erota ne toisistaan <code>---</code> -rivillä",
-            "present": "Aloita esitys <span class=\"fa fa-play-circle\"></span> -painikkeella",
-            "settings": "Käytä <span class=\"cptools cptools-palette\"></span> <b>Teema</b>-valikkoa vaihtaaksesi diavärejä ja <span class=\"fa fa-cog\"></span> <b>Asetukset</b> vaihtaaksesi taustakuvaa, siirtymiä, sivunumeroita jne.",
-            "colors": "Vaihda tekstin ja taustan väriä <span class=\"fa fa-i-cursor\"></span> ja <span class=\"fa fa-square\"></span> -painikkeilla"
-        },
-        "poll": {
-            "decisions": "Tee päätöksiä luotettujen yhteystietojen kanssa",
-            "options": "Ehdota vaihtoehtoja ja tuo ilmi mielipiteesi",
-            "choices": "Napsauta sarakkeesi soluja valitaksesi kyllä- (<strong>✔</strong>), ehkä- (<strong>~</strong>), tai ei (<strong>✖</strong>) -vaihtoehdon",
-            "submit": "Napsauta <strong>Lähetä</strong> tehdäksesi valintasi näkyviksi muille"
-        },
-        "whiteboard": {
-            "colors": "Kaksoisnapsauta värejä muokataksesi väripalettiasi",
-            "mode": "Siirry <span class=\"fa fa-arrows\"></span> valintatilaan siirtääksesi ja muuttaaksesi viivoja.",
-            "embed": "Upota kuvia CryptDrivestasi tai tietokoneeltasi <span class=\"fa fa-file-image-o\"></span> <b>Lisää</b>-toiminnolla.  Vie kangas PNG-tiedostomuodossa CryptDriveesi <b><span class=\"fa fa-file-o\"></span> Tiedosto > <span class=\"fa fa-file-image-o\"></span> Tallenna kuvatiedostona</b> tai omalle tiedokoneellesi <b><span class=\"fa fa-file-o\"></span> Tiedosto > <span class=\"fa fa-download\"></span> Vie</b>."
-        },
-        "kanban": {
-            "add": "Lisää uusia kortteja ja tauluja <span class=\"fa fa-plus\"></span> -painikkeella",
-            "task": "Siirrä kohtia raahaamalla ja pudottamalla, raahaa <span class=\"fa fa-trash\"></span> roskakoriin poistaaksesi",
-            "color": "Muokkaa otsikoita, sisältöä, tunnisteita ja värejä korttien ja taulujen otsikoiden vieressä olevalla <span class=\"fa fa-pencil\"></span> -painikkeella"
-        }
-    },
+    "help_genericMore": "Tutustu CryptPadin toimintaan ja ominaisuuksiin <a>dokumentaatiosivuillamme</a>.",
     "driveReadmeTitle": "Mikä on CryptPad?",
     "readme_welcome": "Tervetuloa CryptPadiin!",
     "readme_p1": "Tervetuloa CryptPadiin, täällä voit tehdä muistiinpanoja yksin tai yhteystietojesi kanssa.",

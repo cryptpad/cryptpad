@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction PRIX.PCOUPON.IRREG</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Fonction PRIX.PCOUPON.IRREG</h1>
+            <p>La fonction <b>PRIX.PCOUPON.IRREG</b> est l'une des fonctions financières. Elle est utilisée pour calculer le prix par valeur nominale de 100$ pour un titre qui paie des intérêts périodiques mais qui a une première période impaire (elle est plus courte ou plus longue que les autres périodes).</p>
+            <p>La syntaxe de la fonction <b>PRIX.PCOUPON.IRREG</b> est :</p>
+            <p style="text-indent: 150px;"><b><em>PRIX.PCOUPON.IRREG(settlement, maturity, issue, first-coupon, rate, yld, redemption, frequency[, [basis]])</em></b></p>
+            <p><em>où</em></p>
+            <p style="text-indent: 50px;"><b><em>settlement</em></b> est la date à laquelle le titre est acheté.</p>
+            <p style="text-indent: 50px;"><b><em>maturity</em></b> est la date d'expiration du titre.</p>
+            <p style="text-indent: 50px;"><b><em>issue</em></b> est la date d'émission du titre.</p>
+            <p style="text-indent: 50px;"><b><em>first-coupon</em></b> est la date du premier coupon. Cette date doit être postérieure à la date de règlement mais antérieure à la date d'échéance.</p>
+            <p style="text-indent: 50px;"><b><em>rate</em></b> est le taux d'intérêt du titre.</p>
+            <p style="text-indent: 50px;"><b><em>yld</em></b> est le rendement annuel du titre.</p>
+            <p style="text-indent: 50px;"><b><em>redemption</em></b> correspond à la valeur de rachat du titre, par tranche de 100$ de valeur nominale.</p>
+            <p style="text-indent: 50px;"><b><em>frequency</em></b> est le nombre de paiements d'intérêts par année. Les valeurs possibles sont : 1 pour les paiements annuels, 2 pour les paiements semestriels, 4 pour les paiements trimestriels.</p>
+            <p style="text-indent: 50px;"><b><em>basis</em></b> est la base de calcul utilisée, une valeur numérique supérieure ou égale à 0, main inférieure ou égale à 4 : C'est un argument facultatif. Il peut être l'un des éléments suivants :</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Valeur numérique</b></td>
+                    <td><b>Base de calcul</b></td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>US (NASD) 30/360</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Actuelle/actuelle</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Actuelle/360</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Actuelle/365</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Européenne 30/360</td>
+                </tr>
+            </table>
+            <p class="note"><b>Remarque :</b> les dates doivent être saisies à l'aide de la fonction DATE.</p>
+            <p>Les données peuvent être saisies à la main ou incluses dans les cellules auxquelles il est fait référence.</p>
+            <p>Pour appliquer la fonction <b>PRIX.PCOUPON.IRREG</b>,</p>
+            <ol>
+                <li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+                <li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+                <li>sélectionnez le groupe de fonctions <b>Financières</b> depuis la liste,</li>
+                <li>cliquez sur la fonction <b>PRIX.PCOUPON.IRREG</b>,</li>
+                <li>insérez les arguments requis en les séparant par des virgules,</li>
+                <li>appuyez sur la touche <b>Entrée</b></li>
+            </ol>
+            <p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+            <p style="text-indent: 150px;"><img alt="Fonction PRIX.PCOUPON.IRREG" src="../images/oddfprice.png" /></p>
+        </div>
+	</body>
+</html>

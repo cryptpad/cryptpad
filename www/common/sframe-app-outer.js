@@ -16,6 +16,7 @@ define([
     }).nThen(function (/*waitFor*/) {
         SFCommonO.start({
             cache: true,
+            noDrive: true,
             hash: hash,
             href: href,
             useCreationScreen: true,

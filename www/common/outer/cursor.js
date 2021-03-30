@@ -2,11 +2,12 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Constants, Messages, Crypto) {
+], function (Util, Constants, Messages, AppConfig, Crypto) {
     var Cursor = {};
 
-    var DEGRADED = 3; // XXX Number of users before switching to degraded mode
+    var DEGRADED = AppConfig.degradedLimit || 8;
 
     var convertToUint8 = function (obj) {
         var l = Object.keys(obj).length;
@@ -30,6 +31,7 @@ define([
             cursor: client.cursor
         };
         chan.sendMsg(JSON.stringify(data));
+        console.error(data);
         ctx.emit('MESSAGE', data, chan.clients.filter(function (cl) {
             return cl !== clientId;
         }));
@@ -48,6 +50,12 @@ define([
             // Send our data to the other users (NOT including the other tabs of the same worker)
             chan.sendMsg(JSON.stringify(data));
         });
+    };
+
+    var updateDegraded = function (ctx, wc, chan) {
+        var m = wc.members;
+        chan.degraded = (m.length-1) >= DEGRADED;
+        ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
     };
 
     var initCursor = function (ctx, obj, client, cb) {
@@ -92,14 +100,10 @@ define([
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
+            updateDegraded(ctx, chan.wc, chan);
             return void cb();
         }
 
-        var updateDegraded = function (ctx, wc, chan) {
-            var m = wc.members;
-            chan.degraded = (m.length-1) >= DEGRADED;
-            ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
-        };
         var onOpen = function (wc) {
 
             ctx.channels[channel] = ctx.channels[channel] || {};
@@ -180,9 +184,10 @@ define([
     var updateCursor = function (ctx, data, client, cb) {
         var c = ctx.clients[client];
         if (!c) { return void cb({error: 'NO_CLIENT'}); }
-        data.color = Util.find(ctx.store.proxy, ['settings', 'general', 'cursor', 'color']);
-        data.name = ctx.store.proxy[Constants.displayNameKey] || Messages.anonymous;
-        data.avatar = Util.find(ctx.store.proxy, ['profile', 'avatar']);
+        var proxy = ctx.store.proxy || {};
+        data.color = Util.find(proxy, ['settings', 'general', 'cursor', 'color']);
+        data.name = proxy[Constants.displayNameKey] || ctx.store.noDriveName || Messages.anonymous;
+        data.avatar = Util.find(proxy, ['profile', 'avatar']);
         c.cursor = data;
         sendMyCursor(ctx, client);
         cb();
@@ -241,6 +246,12 @@ define([
 
     Cursor.init = function (cfg, waitFor, emit) {
         var cursor = {};
+
+        // Already initialized by a "noDrive" tab?
+        if (cfg.store && cfg.store.modules && cfg.store.modules['cursor']) {
+            return cfg.store.modules['cursor'];
+        }
+
         var ctx = {
             store: cfg.store,
             emit: emit,

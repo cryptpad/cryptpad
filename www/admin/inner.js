@@ -506,7 +506,7 @@ define([
                 }
                 var size = Array.isArray(obj) && obj[0];
                 if (typeof(size) !== "number") { return; }
-                UI.alert(Util.getPrettySize(size, Messages));
+                UI.alert(getPrettySize(size));
             });
         });
 

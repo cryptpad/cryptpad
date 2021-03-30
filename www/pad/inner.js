@@ -908,7 +908,7 @@ define([
                 $(a).click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (!obj.el || UIElements.isVisible(obj.el, $inner)) { return; }
+                    if (!obj.el || UIElements.isVisible(obj.el, $contentContainer)) { return; }
                     obj.el.scrollIntoView();
                 });
                 a.innerHTML = title;
@@ -1404,6 +1404,35 @@ define([
                     };
                     framework._.sfCommon.getSframeChannel().event('EV_SHARE_OPEN', data);
                 };
+
+                var CKEDITOR = window.CKEDITOR;
+
+                // remove selected formatting with ctrl-space
+                editor.addCommand('deformat', {
+                    exec: function (edt) {
+                        edt.execCommand( 'removeFormat', editor.selection );
+                    },
+                });
+                editor.setKeystroke(CKEDITOR.CTRL + 32, 'deformat');
+
+                // Add keybindings for CTRL+ALT+n to set headings 1-6 on selected text
+                var styleKeys = {
+                    h1: 49, // 1
+                    h2: 50, // 2
+                    h3: 51, // 3
+                    h4: 52, // 4
+                    h5: 53, // 5
+                    h6: 54, // 6
+                    // 7 unassigned
+                    div: 56,// 8
+                    pre: 57, // 9
+                    p: 48, // 0
+                };
+                Object.keys(styleKeys).forEach(function (tag) {
+                    editor.addCommand(tag, new CKEDITOR.styleCommand(new CKEDITOR.style({ element: tag })));
+                    editor.setKeystroke( CKEDITOR.CTRL + CKEDITOR.ALT + styleKeys[tag], tag);
+                });
+
                 Links.init(Ckeditor, editor);
             }).nThen(function() {
                 // Move ckeditor parts to have a structure like the other apps

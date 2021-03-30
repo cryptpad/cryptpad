@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bedingte Formatierung</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Conditional formatting allows you to apply various formatting styles (color, font, decoration, gradient) to cells to work with data on the spreadsheet: highlight or sort through and display the data that meets the needed criteria." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Bedingte Formatierung</h1>
+            <p class="note"><b>Hinweis</b>: Der ONLYOFFICE-Tabelleneditor unterstützt derzeit nicht das Erstellen und Bearbeiten von Regeln für die bedingte Formatierung.</p>
+            <p>Mit der <b>bedingten Formatierung</b> können Sie verschiedene Formatierungsstile (Farbe, Schriftart, Schriftschnitt, Farbverlauf) auf Zellen anwenden, um mit Daten in der Tabelle zu arbeiten: Sortieren Sie oder bringen die Daten hervor, die die erforderlichen Bedingungen treffen, und zeigen Sie sie an. Die Bedingungen werden durch Regeltypen definiert. Der ONLYOFFICE Tabelleneditor unterstützt derzeit nicht das Erstellen und Bearbeiten von Regeln für die bedingte Formatierung.</p>
+            <p>Regeltypen, die der ONLYOFFICE Tabelleneditor unterstützt, sind: <b>Zellenwert (+Formel)</b>, die <b>oberen/unteren Werte</b> und <b>die Werte über/unter dem Durchschnitt</b>, die <b>eindeutigen</b> und <b>doppelten</b> Werte, die <b>Symbolsätze</b>, die <b>Datenbalken</b>, der <b>Farbverlauf (Farben-Skala)</b> und die Regeltypen, die sich <b>auf Formeln basieren</b>.</p>
+            <ul>
+                <li>
+                    Die Formatierungsoption <b>Zellenwert</b> wird verwendet, um die erforderlichen Zahlen, Daten und Texte in der Tabelle zu finden. Beispielsweise müssen Sie Verkäufe für den aktuellen Monat (rote Markierung), Produkte mit dem Namen „Grain“ (gelbe Markierung) und Produktverkäufe in Höhe von weniger als 500 USD (blaue Markierung) anzeigen.
+                    <p><img alt="Zellenwert" src="../images/conditionalformatting/cellvalue.png" /></p>
+                </li>
+                <li>Die Formatierungsoption <b>Zellenwert mit einer Formel</b> wird verwendet, um eine dynamisch geänderte Zahl oder einen Textwert in der Tabelle anzuzeigen. Beispielsweise müssen Sie Produkte mit den Namen "Grain", "Produce" oder "Dairy" (gelbe Markierung) oder Produktverkäufe in Höhe von 100 bis 500 USD (blaue Markierung) finden.
+                    <p><img alt="Zellenwert mit einer Formel" src="../images/conditionalformatting/cellvalueformula.gif" /></p>
+                </li>
+                <li>Die Formatierungsoption <b>obere/untere Werte und Werte über/unter dem Durchschnitt</b> wird verwendet, um die oberen und unteren Werte sowie die Werte uber/unter dem Durchschnitt in der Tabelle zu finden und anzuzeigen. Beispielsweise müssen Sie die Spitzenwerte für Gebühren in den von Ihnen besuchten Städten (orangefarbene Markierung), die Städte, in denen die Besucherzahlen überdurchschnittlich hoch waren (grüne Markierung) und die unteren Werte für Städte anzeigen, in denen Sie eine kleine Menge Bücher verkauft haben (blaue Markierung).
+                    <p><img alt="Obere und untere Werte / Werte über und unter dem Durchschnitt" src="../images/conditionalformatting/topbottomvalue.png" /></p>
+                </li>
+                <li>Die Formatierungsoption <b>eindeutige und doppelte Werte</b> wird verwendet, um die doppelten Werte auf dem Arbeitsblatt und dem Zellbereich, der von der bedingten Formatierung definiert ist, zu finden und bearbeiten. Beispielsweise müssen Sie die doppelten Kontakte finden. Öffnen Sie den Drop-Down-Menü. Die Anzahlt der doppelten Werte wird rechts angezeigt. Wenn Sie das Kästchen markieren, werden nur die doppelten Werte in der Liste angezeigt.
+                    <p><img alt="Eindeutige und doppelte Werte" src="../images/conditionalformatting/uniqueduplicates.gif" /></p>
+                </li>
+                <li>Die Formatierungsoption <b>Standardsätze</b> wird verwendet, um die Daten, die die Bedingungen treffen, mit dem entsprechenden Symbol zu markieren. Der Tabelleneditor hat verschiedene Symbolsätze. Nach unten sehen Sie die Beispiele für die meistverwendeten Symbolsätze.
+                    <ul>
+                        <li>
+                            Statt den Zahlen und Prozentwerten werden die formatierten Zellen mit entsprechenden Pfeilen angezeigt, die in der Spalte „Status“ den Umsatz und in der Spalte „Trend“ die Dynamik für zukünftige Trends anzeigen.
+                            <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsetrevenue.png" /></p>
+                        </li>
+                        <li>
+                            Statt den Zellen mit Bewertungsnummern zwischen 1 und 5 werden die entsprechenden Symbole für jedes Fahrrad in der Bewertungsliste angezeigt.
+                            <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsetbikerating.png" /></p>
+                        </li>
+                        <li>
+                            Statt der monatlichen Gewinndynamikdaten manuell zu vergleichen, sehen Sie die formatierten Zellen mit einem entsprechenden roten oder grünen Pfeil.
+                            <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsettrends.png" /></p>
+                        </li>
+                        <li>
+                            Um die Verkaufsdynamik zu visualisieren, verwenden Sie die das Ampelsystem (rote, gelbe und grüne Kreise).
+                            <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsettrafficlights.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Die Formatierungsoption <b>Datenbalken</b> wird verwendet, um Werte in Form einer Diagrammleiste zu vergleichen. Vergleichen Sie beispielsweise die Höhen der Berge, indem Sie ihren Standardwert in Metern (grüner Balken) und denselben Wert im Bereich von 0 bis 100 Prozent (gelber Balken) anzeigen; Perzentil, wenn Extremwerte die Daten neigen (hellblauer Balken); Balken statt der Zahlen (blauer Balken); zweispaltige Datenanalyse, um sowohl Zahlen als auch Balken zu sehen (roter Balken).
+                    <p><img alt="Datenbalken" src="../images/conditionalformatting/databars.png" /></p>
+                </li>
+                <li>
+                    Die Formatierungsoption <b>Farbverlauf</b>, oder Farben-Skala, wird verwendet, um die Werte auf dem Arbeitsblatt durch einen Farbverlauf hervorzuheben. Die Spalten von “Dairy” bis “Beverage” zeigen Daten über eine Zweifarbenskala mit Variationen von Gelb bis Rot an; die Spalte “Total Sales” zeigt die Daten durch eine 3-Farben-Skala von der kleinsten Menge in Rot bis zur größten Menge in Blau an.
+                    <p><img alt="Farbverlauf" src="../images/conditionalformatting/gradient.png" /></p>
+                </li>
+                <li>
+                    Die Formatierungsoption für den Regeltyp, der sich <b>auf Formeln basiert</b>, wird verwendet, um die Formeln bei der Datenfilterung anzuwenden. Beispielsweise können Sie abwechselnde Zeilen schattieren,
+                    <p><img alt="Formelbasiert" src="../images/conditionalformatting/shading.png" /></p>
+                    <p>mit einem Referenzwert vergleichen (hier sind es $ 55) und sehen, ob er höher (grün) oder niedriger (rot) ist,</p>
+                    <p><img alt="Formelbasiert" src="../images/conditionalformatting/comparison.png" /></p>
+                    <p>die Zeilen, die die Bedingungen treffen, hervorheben (sehen Sie, welche Ziele Sie in diesem Monat erreichen sollen, in diesem Fall ist es Oktober),</p>
+                    <p><img alt="Formelbasiert" src="../images/conditionalformatting/shaderows.png" /></p>
+                    <p>und nur die eindeutigen Zeilen hervorheben.</p>
+                    <p><img alt="Formelbasiert" src="../images/conditionalformatting/shadeunique.png" /></p>
+                </li>
+			</ul>
+            <p class="note"><b>Bitte beachten Sie</b>: Dieses Handbuch enthält grafische Informationen aus der Arbeitsmappe und Richtlinien für Microsoft Office <a href="https://download.microsoft.com/download/e/4/0/e4089f75-cdb0-4658-9d34-bfa3f7b48815/Conditional%20Formatting%20examples.xlsx" onclick="onhyperlinkclick(this)">bedingte Formatierungsbeispiele</a>. Sie können die bedingte Formatierung in dem ONLYOFFICE-Tabelleneditor selbst testen; laden Sie dieses Handbuch herunter und öffnen es in dem Tabelleneditor.</p>
+			
+		</div>
+	</body>
+</html>

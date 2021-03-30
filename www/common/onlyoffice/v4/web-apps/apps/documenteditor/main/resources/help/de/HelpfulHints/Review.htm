@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Dokumentenprüfung</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on document review option" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Dokumentenprüfung</h1>
+        <p>Wenn jemand eine Datei mit Überprüfungsberechtigung mit Ihnen teilt, müssen Sie die Funktion für die <b>Überprüfung</b> verwenden.</p>
+        <p>Wenn Sie der Rezensent sind, können Sie die Option <b>Überprüfung</b> verwenden, um das Dokument zu überprüfen, Sätze, Phrasen und andere Seitenelemente zu ändern, die Rechtschreibung zu korrigieren und andere Aktionen im Dokument vorzunehmen, ohne es tatsächlich zu bearbeiten. Alle Änderungen werden gespeichert und der Person angezeigt, die Ihnen das Dokument gesendet hat.</p>
+        <p>Wenn Sie die Datei für die Überprüfung gesendet haben, müssen Sie alle vorgenommenen Änderungen anzeigen lassen und entweder akzeptieren oder ablehnen.</p>
+        <h3>Die Funktion Änderungen nachverfolgen aktivieren</h3>
+        <p>Um Änderungen anzuzeigen, die von einem Rezensenten vorgeschlagen wurden, aktivieren Sie die Option <b>Änderungen nachverfolgen</b>:</p>
+        <ul>
+            <li>Klicken Sie in der rechten unteren Statusleiste auf das <img alt="Änderungen nachverfolgen" src="../images/trackchangesstatusbar.png" /> Symbol oder</li>
+            <li>Wechseln Sie in der oberen Symbolleiste in die Registerkarte <b>Zusammenarbeit</b> und klicken Sie auf <img alt="Änderungen nachverfolgen" src="../images/trackchangestoptoolbar.png" /> <b>Änderungen nachverfolgen</b>.</li>
+        </ul>
+        <p class="note"><b>Hinweis</b>: Der Rezensent muss die Option <b>Änderungen nachverfolgen</b> nicht aktivieren. Die Funktion ist standardmäßig aktiviert und kann nicht deaktiviert werden, wenn das Dokument mit Zugriffsrechten nur für die Überprüfung freigegeben ist.</p>
+        <h3 id="displaymode">Modus Änderungen anzeigen lassen</h3>
+        <p>Klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Anzeigemodus" src="../images/review_displaymode.png" /> <b>Anzeigemodus</b> und wählen Sie einen der verfügbaren Modi aus der Liste aus:</p>
+        <ul>
+            <li><b>Alle Änderungen (Bearbeiten)</b> - diese Option ist standardmäßig ausgewählt. Dieser Modus ermöglicht es Änderungsvorschläge anzuzeigen und das Dokument zu bearbeiten.</li>
+            <li><b>Alle Änderungen angenommen</b> - In diesem Modus werden alle Änderungen so angezeigt, als wären sie angenommen worden. Die Änderungen werden nicht wirklich akzeptiert, die Funktion ermöglicht Ihnen lediglich eine Vorschau, für den Fall, dass alle Änderungen angenommen werden. In diesem Modus kann das Dokument nicht bearbeitet werden.</li>
+            <li><b>Original</b> - In diesem Modus werden alle Änderungen so angezeigt, als wären sie abgelehnt worden. Die Änderungen werden nicht wirklich abgelehnt, die Funktion ermöglicht Ihnen lediglich eine Vorschau, für den Fall, dass alle Änderungen abgelehnt werden. In diesem Modus kann das Dokument nicht bearbeitet werden.</li>
+        </ul>
+        <h3 id="managechanges">Änderungen annehmen oder ablehnen</h3>
+        <p>Über die Schaltflächen <img alt="Vorherige Änderung" src="../images/review_previous.png" /> <b>Vorherige</b> und <img alt="Nächste Änderung" src="../images/review_next.png" /> <b>Nächste</b> in der oberen Symbolleiste, können Sie zwischen den Änderungen navigieren.</p>
+        <p>Annehmen von aktuell ausgewählten Änderungen:</p>
+        <ul>
+            <li>Klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Annehmen" src="../images/review_accepttoptoolbar.png" /> <b>Annehmen</b> oder</li>
+            <li>klicken Sie auf den Abwärtspfeil unter der Schaltfläche <b>Annehmen</b> und wählen Sie die Option <b>Aktuelle Änderung annehmen</b> (in diesem Fall wird die Änderung angenommen und Sie fahren mit der nächsten Änderung fort) oder</li>
+            <li>klicken Sie in der Gruppe Änderungsbenachrichtigungen auf <b>Annehmen</b> <img alt="Annehmen" src="../images/review_accept.png" />.</li>
+        </ul>
+        <p>Um alle Änderungen sofort anzunehmen, klicken Sie auf den Abwärtspfeil unter der Schaltfläche <img alt="Annehmen" src="../images/review_accepttoptoolbar.png" /> <b>Annehmen</b> und wählen Sie die Option <b>Alle Änderungen annehmen</b> aus.</p>
+        <p>Ablehnen von aktuell ausgewählten Änderungen:</p>
+        <ul>
+            <li>Klicken Sie in der oberen Symbolleiste das Symbol <img alt="Ablehnen" src="../images/review_rejecttoptoolbar.png" /> <b>Ablehnen</b> oder</li>
+            <li>klicken Sie auf den Abwärtspfeil unter der Schaltfläche <b>Ablehnen</b> und wählen Sie die Option <b>Aktuelle Änderung ablehnen</b> aus (in diesem Fall wird die Änderung abgelehnt und Sie fahren mit der nächsten verfügbaren Änderung fort) oder</li>
+            <li>klicken Sie in der Gruppe Änderungsbenachrichtigungen auf <b>Ablehnen</b> <img alt="Ablehnen" src="../images/review_reject.png" />.</li>
+        </ul>
+        <p>Um alle Änderungen direkt abzulehnen, klicken Sie auf den Abwärtspfeil unter der Schaltfläche <img alt="Ablehnen" src="../images/review_rejecttoptoolbar.png" /> <b>Ablehnen</b> und wählen Sie die Option <b>Alle Änderungen ablehnen</b>.</p>
+        <p class="note"><b>Hinweis</b>: Im Modus überprüfen, stehen Ihnen die Optionen <b>Annehmen</b> und <b>Ablehnen</b> nicht zur Verfügung. Sie können Ihre Änderungen mit dem entsprechenden Symbol <img alt="Änderung löschen" src="../images/review_delete.png" /> in der Änderungssprechblase löschen.</p>
+    </div>
+</body>
+</html>

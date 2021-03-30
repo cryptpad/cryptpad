@@ -101,6 +101,7 @@ define([
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
+                            channel: config.data.channel,
                             hashes: config.data.hashes,
                             password: config.data.password,
                             propChannels: config.data.getPropChannels(),

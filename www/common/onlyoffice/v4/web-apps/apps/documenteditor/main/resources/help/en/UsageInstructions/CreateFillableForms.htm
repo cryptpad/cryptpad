@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Create fillable forms</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Create fillable forms for advanced form interaction experience" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        
+            <h1>Create fillable forms</h1>
+            <p>ONLYOFFICE Document Editor allows you to effortlessly create <b>fillable forms</b> in your documents, e.g. agreement drafts or surveys. Creating fillable forms is enabled through user-editable objects that ensure overall consistency of the resulting documents and allow for advanced form interaction experience.</p>
+            <p>Currently, you can insert editable <em>plain text</em> fields, <em>combo boxes</em>, <em>dropdown lists</em>, <em>checkboxes</em>, <em>radio buttons</em>, and assign designated areas for <em>images</em>. Access these features on the <b>Forms</b> tab.</p>
+            <h2>Creating a new Plain Text Field</h2>
+            <p><em>Text fields</em> are user-editable plain text form fields; the text within cannot be formatted and no other objects can be added.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a text field,</summary>
+                <ol>
+                    <li>position the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <img alt="text field icon" src="../images/text_field_icon.png" /> <b>Text Field</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="text field inserted" src="../images/text_field_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <p id="text_field_settings">
+                    <img class="floatleft" alt="text field settings" src="../images/text_field_settings.png" />
+                    <ul>
+                        <li><b>Key</b>: a key to group fields to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each text field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted text field; <em>“Your text here”</em> is set by default.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the text field.
+                            <br /> <img alt="tip inserted" src="../images/text_field_tip.png" />
+                        </li>
+                        <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                        <li>
+                            <b>Comb of characters</b>: spread the text evenly within the inserted text field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                            <ul>
+                                <li><b>Cell width</b>: type in the required value or use the arrows to the right to set the width of the inserted text field. The text within will be justified accordingly.</li>
+                                <li><b>Border color</b>: click the icon <img alt="no fill" src="../images/nofill.png" />  to set the color for the borders of the inserted text field. Choose the preferred color out of <b>Standard Colors</b>. You can <b>add a new custom color</b> if necessary.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </p>
+                <p><img alt="comb of characters" src="../images/comb_of_characters.png" /></p>
+                <p>Click within the inserted text field and <a href="../UsageInstructions/FontTypeSizeColor.htm">adjust the font type, size, color</a>, apply <a href="../UsageInstructions/DecorationStyles.htm">decoration styles</a> and <a href="../UsageInstructions/FormattingPresets.htm">formatting presets</a>.</p>
+            </details>
+        </div>
+
+        
+            <h2>Creating a new Combo box</h2>
+            <p><em>Combo boxes</em> contain a dropdown list with a set of choices that can be edited by users.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a combo box,</summary>
+                <ol>
+                    <li>position the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <img alt="combo box icon" src="../images/combo_box_icon.png" /> <b>Combo box</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="combo box inserted" src="../images/combo_box_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <p id="combo_box_settings">
+                    <img class="floatleft" alt="combo box settings" src="../images/combo_box_settings.png" />
+                    <ul>
+                        <li><b>Key</b>: a key to group combo boxes to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each combo box using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted combo box; <em>“Choose an item”</em> is set by default.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the form field.
+                            <br /> <img alt="tip inserted" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Value Options</b>: add<img alt="add values" src="../images/combo_add_values.png" /> new values, delete<img alt="delete values" src="../images/combo_delete_values.png" /> them, or move them up<img alt="values up" src="../images/combo_values_up.png" /> and <img alt="values down" src="../images/combo_values_down.png" />down in the list.</li>
+                    </ul>
+                </p>
+                <p>You can click the arrow button in the right part of the added <b>Combo box</b> to open the item list and choose the necessary one. Once the necessary item is selected, you can edit the displayed text entirely or partially by replacing it with yours.</p>
+                <p><img alt="combo box opened" src="../images/combo_box_opened.png" /></p>
+            </details>
+            <p>You can change font decoration, color, and size. Click within the inserted combo box and proceed according to the <a href="../UsageInstructions/FontTypeSizeColor.htm">instructions</a>.</p>
+        </div>
+
+        
+            <h2>Creating a new Dropdown list form field</h2>
+            <p><em>Dropdown lists</em> contain a list with a set of choices that cannot be edited by the users.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a dropdown list,</summary>
+                <ol>
+                    <li>position the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <img alt="dropdown list icon" src="../images/dropdown_list_icon.png" /> <b>Dropdown</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="dropdown list inserted" src="../images/combo_box_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <p id="dropdown_list_settings">
+                    <img class="floatleft" alt="dropdown list settings" src="../images/dropdown_list_settings.png" />
+                    <ul>
+                        <li><b>Key</b>: a key to group dropdown lists to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each form field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted dropdown list; <em>“Choose an item”</em> is set by default.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the form field.
+                            <br /> <img alt="tip inserted" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Value Options</b>: add<img alt="add values" src="../images/combo_add_values.png" /> new values, delete<img alt="delete values" src="../images/combo_delete_values.png" /> them, or move them up<img alt="values up" src="../images/combo_values_up.png" /> and <img alt="values down" src="../images/combo_values_down.png" />down in the list.</li>
+                    </ul>
+                </p>
+                <p>You can click the arrow button in the right part of the added <b>Dropdown list</b> form field to open the item list and choose the necessary one.</p>
+                <p><img alt="dropdown list opened" src="../images/dropdown_list_opened.png" /></p>
+            </details>
+        </div>
+
+        
+            <h2>Creating a new Checkbox</h2>
+            <p><em>Checkboxes</em> are used to provide users with a variety of options, any number of which can be selected. Checkboxes operate individually, so they can be checked or unchecked independently.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a checkbox,</summary>
+                <ol>
+                    <li>position the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <img alt="checkbox icon" src="../images/checkbox_icon.png" /> <b>Checkbox</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="checkbox inserted" src="../images/checkbox_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <p id="checkbox_settings">
+                    <img class="floatleft" alt="checkbox settings" src="../images/checkbox_settings.png" />
+                    <ul>
+                        <li><b>Key</b>: a key to group checkboxes to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each form field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the checkbox.
+                            <br /> <img alt="tip inserted" src="../images/checkbox_tip.png" />
+                        </li>
+                    </ul>
+                </p>
+                <p>To check the box, click it once.</p>
+                <p><img alt="checkbox checked" src="../images/checkbox_checked.png" /></p>
+            </details>
+        </div>
+
+        
+            <h2>Creating a new Radio Button</h2>
+            <p><em>Radio buttons</em> are used to provide users with a variety of options, only one of which can be selected. Radio buttons can be grouped so that there is no selecting several buttons within one group.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a radio button,</summary>
+                <ol>
+                    <li>position the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <img alt="radio button icon" src="../images/radio_button_icon.png" /> <b>Radio Button</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="radio button inserted" src="../images/radio_button_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <p id="radio_button_settings">
+                    <img class="floatleft" alt="radio button settings" src="../images/radio_button_settings.png" />
+                    <ul>
+                        <li><b>Group key</b>: to create a new group of radio buttons, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each radio button.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the radio button.
+                            <br /> <img alt="tip inserted" src="../images/radio_button_tip.png" />
+                        </li>
+                    </ul>
+                </p>
+                <p>To check the radio button, click it once.</p>
+                <p><img alt="radio button checked" src="../images/radio_button_checked.png" /></p>
+            </details>
+        </div>
+
+        
+            <h2>Creating a new Image</h2>
+            <p><em>Images</em> are form fields which are used to enable inserting an image with the limitations you set, i.e. the location of the image or its size.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert an image form field,</summary>
+                <ol>
+                    <li>position the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <img alt="image form icon" src="../images/image_form_icon.png" /> <b>Image</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="image form inserted" src="../images/image_form_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <p id="image_form_settings">
+                    <img class="floatleft" alt="image form settings" src="../images/image_form_settings.png" />
+                    <ul>
+                        <li><b>Key</b>: a key to group dropdown lists to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each form field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted image form field; <em>“Click to load image”</em> is set by default.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the bottom border of the image.
+                        </li>
+                        <li><b>Select Image</b>: click this button to upload an image either <b>From File</b>, <b>From URL</b>, or <b>From Storage</b>.</li>
+                    </ul>
+                </p>
+                <p>To replace the image, click the <img alt="image icon" src="../images/image.png" /> image icon above the form field border and select another one.</p>
+                <p>To <b>adjust</b> the image settings, open the <b>Image Settings</b> tab on the right toolbar. To learn more, please read the guide on <a href="../UsageInstructions/InsertImages.htm">image settings</a>.</p>
+            </details>
+        </div>
+
+        
+            <h2>Highlight forms</h2>
+            <p>You can highlight inserted form fields with a certain color.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To highlight fields,</summary>
+                <p id="highlight_settings">
+                    <img alt="highlight settings" src="../images/highlight_settings.png" />
+                    <ul>
+                        <li>open the <b>Highlight Settings</b> on the <b>Forms</b> tab of the top toolbar,</li>
+                        <li>choose a color from the <b>Standard Colors</b>. You can also <b>add a new custom color</b>,</li>
+                        <li>to remove previously applied color highlighting, use the <b>No highlighting</b> option.</li>
+                    </ul>
+                </p>
+                <p>The selected highlight options will be applied to all form fields in the document.</p>
+                <p class="note">
+                    <b>Note</b>: The form field border is only visible when the field is selected. The borders do not appear on a printed version.
+                </p>
+            </details>
+        </div>
+
+            <h2>Enabling the View form</h2>
+            <p class="note">
+                <b>Note</b>: Once you have entered the <b>View form</b> mode, all editing options will become unavailable.
+            </p>
+            <p>Click the <img alt="view form button" src="../images/view_form_icon.png" /> <b>View form</b> button on the <b>Forms</b> tab of the top toolbar to see how all the inserted forms will be displayed in your document.</p>
+            <p><img alt="view form active" src="../images/view_form_active.png" /></p>
+            <p>To <b>exit</b> the viewing mode, click the same icon again.</p>
+
+            <h2>Moving form fields</h2>
+            <p>Form fields can be moved to another place in the document: click the button on the left of the control border to select the field and drag it without releasing the mouse button to another position in the text.</p>
+            <p><img alt="moving form fields" src="../images/moving_form_fields.png" /></p>
+            <p>You can also <b>copy and paste</b> form fields: select the necessary field and use the <b>Ctrl+C/Ctrl+V</b> key combinations.</p>
+
+            <h2>Locking form fields</h2>
+            <p>To <b>prevent further editing</b> of the inserted form field, click the <img alt="lock form icon" src="../images/lock_form_icon.png" /> <b>Lock</b> icon. Filling the fields remains available.</p>
+
+            <h2>Clearing form fields</h2>
+            <p>To clear all inserted fields and delete all values, click the <img alt="clear fields icon" src="../images/clear_fields_icon.png" /> <b>Clear All Fields</b> button on the <b>Forms</b> tab on the top toolbar.</p>
+
+            <h2>Removing form fields</h2>
+            <p>To remove a form field and leave all its contents, select it and click the <img alt="delete form icon" src="../images/combo_delete_values.png" /> <b>Delete</b> icon (make sure the field is not locked) or press the <b>Delete</b> key on the keyboard.</p>
+        </div>
+</body>
+</html>

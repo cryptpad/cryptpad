@@ -809,7 +809,7 @@ define([
                 $err.find('a').click(function () {
                     funcs.gotoURL();
                 });
-                UI.findOKButton().click();
+                UI.findOKButton().click(); // FIXME this might be randomly clicking something dangerous...
                 UI.errorLoadingScreen($err, true, true);
             });
 

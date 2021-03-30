@@ -26,13 +26,14 @@ define([
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
-             Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
+             Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
@@ -318,6 +319,7 @@ define([
             });
         };
 
+        var myDeletions = {};
         Store.removeOwnedChannel = function (clientId, data, cb) {
             // "data" used to be a string (channelID), now it can also be an object
             // data.force tells us we can safely remove the drive ID
@@ -338,7 +340,11 @@ define([
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
+            // If this channel is loaded, remember that we deleted it ourselves
+            if (Store.channels[channel]) { myDeletions[channel] = true; }
+
             s.rpc.removeOwnedChannel(channel, function (err) {
+                if (err) { delete myDeletions[channel]; }
                 cb({error:err});
             });
         };
@@ -449,7 +455,7 @@ define([
                     account.note = obj.note;
                     cb(obj);
                 });
-            });
+            }, Cache);
         };
 
         //////////////////////////////////////////////////////////////////
@@ -547,6 +553,7 @@ define([
         //////////////////////////////////////////////////////////////////
 
         var getAllStores = Store.getAllStores = function () {
+            if (!store.proxy) { return []; }
             var stores = [store];
             var teamModule = store.modules['team'];
             if (teamModule) {
@@ -568,7 +575,7 @@ define([
                          getColor().toString(16);
         };
         var getUserColor = function () {
-            var color = Util.find(store.proxy, ['settings', 'general', 'cursor', 'color']);
+            var color = Util.find(store, ['proxy', 'settings', 'general', 'cursor', 'color']);
             if (!color) {
                 color = getRandomColor();
                 Store.setAttribute(null, {
@@ -581,33 +588,37 @@ define([
 
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, app, cb) {
-            var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
+            var proxy = store.proxy || {};
+            var disableThumbnails = Util.find(proxy, ['settings', 'general', 'disableThumbnails']);
             var teams = (store.modules['team'] && store.modules['team'].getTeamsData(app)) || {};
+            if (!proxy.uid) {
+                store.noDriveUid = store.noDriveUid || Hash.createChannelId();
+            }
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
-                    name: store.proxy[Constants.displayNameKey] || "",
-                    uid: store.proxy.uid,
-                    avatar: Util.find(store.proxy, ['profile', 'avatar']),
-                    profile: Util.find(store.proxy, ['profile', 'view']),
+                    name: proxy[Constants.displayNameKey] || store.noDriveName || "",
+                    uid: proxy.uid || store.noDriveUid, // Random uid in nodrive mode
+                    avatar: Util.find(proxy, ['profile', 'avatar']),
+                    profile: Util.find(proxy, ['profile', 'view']),
                     color: getUserColor(),
-                    notifications: Util.find(store.proxy, ['mailboxes', 'notifications', 'channel']),
-                    curvePublic: store.proxy.curvePublic,
+                    notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
+                    curvePublic: proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
                     clientId: clientId,
-                    edPublic: store.proxy.edPublic,
-                    friends: store.proxy.friends || {},
-                    settings: store.proxy.settings,
+                    edPublic: proxy.edPublic,
+                    friends: proxy.friends || {},
+                    settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
-                    support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
+                    support: Util.find(proxy, ['mailboxes', 'support', 'channel']),
                     driveChannel: store.driveChannel,
-                    pendingFriends: store.proxy.friends_pending || {},
-                    supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
-                    accountName: store.proxy.login_name || '',
-                    offline: store.offline,
+                    pendingFriends: proxy.friends_pending || {},
+                    supportPrivateKey: Util.find(proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
+                    accountName: proxy.login_name || '',
+                    offline: store.proxy && store.offline,
                     teams: teams,
                     plan: account.plan
                 }
@@ -641,6 +652,7 @@ define([
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
+            if (data.readme) { pad.readme = 1; }
 
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
@@ -828,6 +840,7 @@ define([
                         channel: channel,
                         title: data.driveReadmeTitle,
                         owners: [ store.proxy.edPublic ],
+                        readme: true
                     };
                     Store.addPad(clientId, fileData, cb);
                 }, {
@@ -853,6 +866,11 @@ define([
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
+            if (!store.proxy) {
+                store.noDriveName = value;
+                broadcast([clientId], "UPDATE_METADATA");
+                return void cb();
+            }
             if (store.modules['profile']) {
                 store.modules['profile'].setName(value);
             }
@@ -1139,6 +1157,12 @@ define([
                     pad.owners = owners;
                 }
                 pad.expire = expire;
+
+                if (pad.readme) {
+                    delete pad.readme;
+                    Feedback.send('OPEN_README');
+                }
+
                 if (h.mode === 'view') { return; }
 
                 // If we only have rohref, it means we have a stronger href
@@ -1444,6 +1468,8 @@ define([
                 };
                 // Teams support offline/cache mode
                 if (obj.type === "team") { return void todo(); }
+                // If we're in "noDrive" mode
+                if (!store.proxy) { return void todo(); }
                 // Other modules should wait for the ready event
                 onReadyEvt.reg(todo);
             }
@@ -1634,6 +1660,9 @@ define([
             if (data.versionHash) {
                 return void getVersionHash(clientId, data);
             }
+            if (!Hash.isValidChannel(data.channel)) {
+                return void postMessage(clientId, "PAD_ERROR", 'INVALID_CHAN');
+            }
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -1692,7 +1721,16 @@ define([
                 return;
             }
             var onError = function (err) {
+                // If it's a deletion started from this worker, different UI message
+                if (err && err.type === "EDELETED" && myDeletions[data.channel]) {
+                    delete myDeletions[channel];
+                    err.ownDeletion = true;
+                }
                 channel.bcast("PAD_ERROR", err);
+
+                if (err && err.type === "EDELETED" && Cache && Cache.clearChannel) {
+                    Cache.clearChannel(data.channel);
+                }
 
                 // If this is a DELETED, EXPIRED or RESTRICTED pad, leave the channel
                 if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
@@ -1711,6 +1749,10 @@ define([
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
+                    }
+                    if (!store.proxy) {
+                        postMessage(clientId, "PAD_READY", pad.noCache);
+                        return;
                     }
                     onReadyEvt.reg(function () {
                         postMessage(clientId, "PAD_READY", pad.noCache);
@@ -1767,6 +1809,7 @@ define([
                 channel: data.channel,
                 metadata: data.metadata,
                 network: store.network || store.networkPromise,
+                websocketURL: NetConfig.getWebsocketURL(),
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
                     channel.sendMessage = function (msg, cId, cb) {
@@ -2002,6 +2045,10 @@ define([
             if (store.offline || !store.anon_rpc) { return void cb({ error: 'OFFLINE' }); }
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
+            if (!Hash.isValidChannel(data.channel)) {
+                Feedback.send('METADATA_INVALID_CHAN');
+                return void cb({ error: 'EINVAL' });
+            }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
                 if (err) { return void cb({error: err}); }
                 var metadata = (obj && obj[0]) || {};
@@ -2586,22 +2633,28 @@ define([
         // "cb" is wrapped in Util.once() and may have already been called
         // if we have a local cache
         var onReady = function (clientId, returned, cb) {
-            console.error('READY');
             store.ready = true;
             var proxy = store.proxy;
             var manager = store.manager;
             var userObject = store.userObject;
 
             nThen(function (waitFor) {
-                if (manager) { return; }
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
-                onCacheReady(clientId, waitFor());
-                manager = store.manager;
-                userObject = store.userObject;
-            }).nThen(function (waitFor) {
+
+                // Call onCacheReady if the manager is not yet defined
+                if (!manager) {
+                    onCacheReady(clientId, waitFor());
+                    manager = store.manager;
+                    userObject = store.userObject;
+                }
+
+                // Initialize RPC in parallel of onCacheReady in case a shared folder
+                // is RESTRICTED and requires RPC authentication
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+
+                // Update loading progress
                 postMessage(clientId, 'LOADING_DRIVE', {
                     type: 'migrate',
                     progress: 0
@@ -2755,6 +2808,7 @@ define([
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),
+                network: store.network,
                 channel: secret.channel,
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
@@ -2772,7 +2826,9 @@ define([
             store.onRpcReadyEvt = Util.mkEvent(true);
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
-            var returned = {};
+            var returned = {
+                loggedIn: Boolean(data.userHash)
+            };
             rt.proxy.on('create', function (info) {
                 store.realtime = info.realtime;
                 store.network = info.network;
@@ -2816,6 +2872,12 @@ define([
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
+                if (!rt.proxy[Constants.displayNameKey] && store.noDriveName) {
+                    rt.proxy[Constants.displayNameKey] = store.noDriveName;
+                }
+                if (!rt.proxy.uid && store.noDriveUid) {
+                    rt.proxy.uid = store.noDriveUid;
+                }
                 /*
                 // deprecating localStorage migration as of 4.2.0
                 var drive = rt.proxy.drive;
@@ -2910,6 +2972,63 @@ define([
          */
         var initialized = false;
 
+        // Are we still in noDrive mode?
+        Store.hasDrive = function (clientId, data, cb) {
+            cb({
+                state: Boolean(store.proxy)
+            });
+        };
+
+        // If we load CryptPad for the first time from an existing pad, don't create a
+        // drive automatically.
+        var onNoDrive = function (clientId, cb) {
+            var andThen = function () {
+                // To be able to use all the features inside the pad, we need to
+                // initialize the chat (messenger) and the cursor modules.
+                loadUniversal(Cursor, 'cursor', function () {});
+                loadUniversal(Messenger, 'messenger', function () {});
+                store.messenger = store.modules['messenger'];
+
+                // And now we're ready
+                initAnonRpc(null, null, function () {
+                    cb({});
+                });
+            };
+
+            // We need an anonymous RPC to be able to check if the pad exists and to get
+            // its metadata, so we have to create a network first.
+            if (!store.network) {
+                var wsUrl = NetConfig.getWebsocketURL();
+                return void Netflux.connect(wsUrl).then(function (network) {
+                    // If we already haave a network (race condition), use the
+                    // existing one and forget this one
+                    if (!store.network) { store.network = network; }
+                    else {
+                        network.disconnect();
+                        network = store.network;
+                    }
+                    // We need to know the HistoryKeeper ID to initialize the anon RPC
+                    // Join a basic ephemeral channel, get the ID and leave it instantly
+                    network.join('0000000000000000000000000000000000').then(function (wc) {
+                        var hk;
+                        wc.members.forEach(function (p) { if (p.length === 16) { hk = p; } });
+                        network.historyKeeper = hk;
+                        wc.leave();
+
+                        andThen();
+                    }, function (err) {
+                        console.error(err);
+                        cb({error: 'GET_HK'});
+                    });
+                }, function (err) {
+                    console.error(err);
+                    cb({error: 'OFFLINE'});
+                });
+            }
+            andThen();
+        };
+
+
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
 
@@ -2944,13 +3063,37 @@ define([
                 Cache.disable();
             }
 
+            if (data.query && data.broadcast) {
+                postMessage = function (clientId, cmd, d, cb) {
+                    data.query(clientId, cmd, d, cb);
+                };
+                broadcast = function (excludes, cmd, d, cb) {
+                    data.broadcast(excludes, cmd, d, cb);
+                };
+            }
+
+            // First tab, no user hash, no anon hash and this app doesn't need a drive
+            // ==> don't create a drive
+            if (data.noDrive && !data.userHash && !data.anonHash) {
+                return void onNoDrive(clientId, function (obj) {
+                    if (obj && obj.error) {
+                        // if we can't properly initialize the noDrive mode, use normal mode
+                        if (obj.error === 'GET_HK') {
+                            data.noDrive = false;
+                            Store.init(clientId, data, _callback);
+                            Feedback.send("NO_DRIVE_ERROR", true);
+                            return;
+                        }
+                    }
+                    Feedback.send("NO_DRIVE", true);
+                    callback(obj);
+                });
+            }
+
             initialized = true;
-            postMessage = function (clientId, cmd, d, cb) {
-                data.query(clientId, cmd, d, cb);
-            };
-            broadcast = function (excludes, cmd, d, cb) {
-                data.broadcast(excludes, cmd, d, cb);
-            };
+            if (store.noDriveUid) {
+                Feedback.send('NO_DRIVE_CONVERSION', true);
+            }
 
             store.data = data;
             connect(clientId, data, function (ret) {

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Verwalten von Zellen, Zeilen und Spalten</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert or delete cells, rows, and columns, hide or show rows or columns, change row height and column width" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Verwalten von Zellen, Zeilen und Spalten</h1>
+			<p>Sie können oberhalb oder links neben der ausgewählten Zelle in einem Arbeitsblatt leere Zellen einfügen. Sie können auch eine ganze Zeile, oberhalb der ausgewählten Zeile, oder eine Spalte, links neben der ausgewählten Spalte, einfügen. Um die Anzeige von großen Informationsmengen zu vereinfachen, können Sie bestimmte Zeilen oder Spalten ausblenden und wieder einblenden. Es ist auch möglich, die Zeilenhöhe und Spaltenbreite individuell festzulegen.</p>
+			<h3>Zellen, Zeilen und Spalten einfügen:</h3>
+            <p><b>Eine leere Zelle links von der gewählten Zelle einzufügen:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Zelle, vor der Sie eine neue Zelle einfügen wollen.</li>
+				<li>Klicken Sie auf das Symbol <b>Zellen einfügen</b> <img alt="Zellen einfügen" src="../images/insertcells.png" /> in der oberen Symbolleiste in der Registerkarte <b>Start</b> oder wählen Sie die Option <b>Einfügen</b> im Rechtsklickmenü aus und nutzen Sie die Option <b>Zellen nach rechts verschieben</b>.</li>
+			</ol>
+			<p>Die gewählte Zelle wird automatisch nach rechts verschoben und es wird eine neue Zelle eingefügt.</p>
+			<p><b>Eine leere Zelle über der gewählten Zelle einfügen:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Zelle, über der Sie eine neue einfügen wollen.</li>
+				<li>Klicken Sie auf das Symbol <b>Zellen einfügen</b> <img alt="Zellen einfügen" src="../images/insertcells.png" /> in der oberen Symbolleiste in der Registerkarte <b>Start</b> oder wählen Sie die Option <b>Einfügen</b> im Rechtsklickmenü aus und nutzen Sie die Option <b>Zellen nach unten verschieben</b>.</li>
+			</ol>
+			<p>Die gewählte Zelle wird automatisch nach unten verschoben und eine neue Zelle wird eingefügt.</p>
+			<p><b>Eine neue Reihe einfügen:</b></p>
+			<ol>
+				<li>Wählen Sie entweder die ganze Zeile aus, indem Sie auf die Zeilenbezeichnung klicken oder eine Zelle über der Sie eine neue Reihe einfügen wollen:<p class="note"><b>Hinweis</b>: Wenn Sie mehrere Zeilen einfügen wollen, markieren Sie die entsprechende Anzahl an Zeilen.</p>
+				</li>
+				<li>Klicken Sie auf das Symbol <b>Zellen einfügen</b> <img alt="Zellen einfügen" src="../images/insertcells.png" /> in der Registerkarte <b>Start</b> in der oberen Symbolleiste und wählen Sie die Option <b>Ganze Zeile</b> oder klicken Sie mit der <br />rechten Maustaste auf die entsprechende Zelle und wählen Sie die Option <b>Einfügen</b> aus dem Rechtsklickmenü aus und wählen Sie anschließend die Option <b>Ganze Zeile</b> oder <br />klicken Sie mit der rechten Maustaste auf die ausgewählte(n) Zelle(n) und wählen Sie die Option <b>Oberhalb</b> aus dem Rechtsklickmenü aus.</li>
+			</ol>
+			<p>Die gewählte Zeile wird automatisch nach unten verschoben und eine neue Zeile wird eingefügt.</p>
+			<p><b>Spalten einfügen:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf die Spalte, nach der Sie eine neue einfügen möchten.<p class="note"><b>Hinweis</b>: Wenn Sie mehrere Spalten einfügen wollen, markieren Sie die entsprechende Anzahl an Spalten.</p>
+				</li>
+				<li>Klicken Sie auf das Symbol <b>Zellen einfügen</b> <img alt="Zellen einfügen" src="../images/insertcells.png" /> in der Registerkarte <b>Start</b> in der oberen Symbolleiste und wählen Sie die Option <b>Ganze Spalte</b> oder klicken Sie mit der <br />rechten Maustaste auf die entsprechende Zelle und wählen Sie die Option <b>Einfügen</b> aus dem Rechtsklickmenü aus und wählen Sie anschließend die Option <b>Ganze Spalte</b> oder <br />klicken Sie mit der rechten Maustaste auf die ausgewählte(n) Spalte(n) und wählen Sie die Option <b>Links einfügen</b> aus dem Rechtsklickmenü aus.</li>
+			</ol>
+			<p>Die gewählte Spalte wird automatisch nach rechts verschoben und es wird eine neue Spalte eingefügt.</p>
+            <h3>Zeilen und Spalten ein- und ausblenden</h3>
+            <p><b>Eine Zeile oder Spalte ausblenden:</b></p>
+            <ol>
+                <li>Wählen Sie die Zellen, Zeilen oder Spalten aus, die Sie ausblenden wollen.</li>
+                <li>Klicken Sie mit der rechten Maustaste auf die markierten Zeilen oder Spalten und wählen Sie die Option <b>Ausblenden</b> im Rechtsklickmenü aus.</li>
+            </ol>
+            <p>Um <b>ausgeblendete Zeilen oder Spalten anzuzeigen</b>, wählen Sie sichtbare Zeilen über und unter den ausgeblendeten Zeilen oder sichtbare Spalten links und rechts neben den ausgeblendeten Spalten aus, klicken Sie mit der rechten Maustaste auf Ihre Auswahl und wählen Sie die Option <b>Anzeigen</b> aus dem Kontextmenü aus.</p>
+            <h3>Spaltenbreite und Zeilenhöhe ändern:</h3>
+            <p>Die <b>Spaltenbreite</b> gibt vor, wie viele Zeichen mit Standardformatierung in der Spaltenzelle angezeigt werden können. Der Standardwert ist auf 8,43 Symbole eingestellt. Standardwert ändern:</p>
+            <ol>
+                <li>Wählen Sie die Spalten aus für die Sie den Wert ändern wollen.</li>
+                <li>Klicken Sie mit der rechten Maustaste auf die markierten Spalten und wählen Sie die Option <b>Spaltenbreite festlegen</b> im Rechtsklickmenü aus.</li>
+                <li>Wählen Sie eine der verfügbaren Optionen:<ul>
+                        <li>Wählen Sie die Option <b>Spaltenbreite automatisch anpassen</b>, um die Breite jeder Spalte automatisch an ihren Inhalt anzupassen, oder</li>
+                        <li>Wählen Sie die Option <b>Benutzerdefinierte Spaltenbreite</b> und geben Sie im Fenster <b>Benutzerdefinierte Spaltenbreite</b> einen neuen Wert zwischen 0 und 255 ein und klicken Sie auf <b>OK</b>.<p><img alt="Benutzerdefinierte Spaltenbreite" src="../images/columnwidth.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Um die Breite einer einzelnen Spalte manuell zu ändern, bewegen Sie den Mauszeiger über den rechten Rand der Spaltenüberschrift, so dass der Cursor in den bidirektionalen Pfeil <img alt="Cursor bei der Änderung der Spaltenbreite" src="../images/changecolumnwidthcursor.png" /> wechselt. Ziehen Sie den Rahmen nach links oder rechts, um eine benutzerdefinierte Breite festzulegen, oder doppelklicken Sie auf die Maus, um die Spaltenbreite automatisch an den Inhalt anzupassen.</p>
+            <p><img alt="Spaltenbreite ändern" src="../images/changecolumnwidth.png" /></p>
+            <p>Der Standardwert für die <b>Zeilenhöhe</b> ist auf 14,25 Punkte eingestellt. Zeilenhöhe ändern:</p>
+            <ol>
+                <li>Wählen Sie die Zeilen aus für die Sie den Wert ändern wollen.</li>
+                <li>Klicken Sie mit der rechten Maustaste auf die markierten Zeilen und wählen Sie die Option <b>Zeilenhöhe festlegen</b> im Rechtsklickmenü aus.</li>
+                <li>Wählen Sie eine der verfügbaren Optionen:<ul>
+                        <li>Wählen Sie die Option <b>Zeilenhöhe automatisch anpassen</b>, um die Höhe jeder Spalte automatisch an ihren Inhalt anzupassen, oder</li>
+                        <li>Wählen Sie die Option <b>Benutzerdefinierte Zeilenhöhe</b> und geben Sie im Fenster <b>Benutzerdefinierte Zeilenhöhe</b> einen neuen Wert zwischen 0 und 408,75 ein und klicken Sie auf <b>OK</b>.<p><img alt="Benutzerdefinierte Zeilenhöhe" src="../images/rowheight.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Um die Höhe einer einzelnen Zeile manuell zu ändern, ziehen Sie den unteren Rand der Zeilenüberschrift.</p>
+            <h3>Zellen, Zeilen und Spalten löschen:</h3>
+            <p><b>Eine überflüssige Zelle, Reihe oder Spalte löschen:</b></p>
+			<ol>
+			<li>Wählen Sie die Zellen, Zeilen oder Spalten aus, die Sie löschen wollen.</li>
+			<li>Klicken Sie auf das Symbol <b>Zellen löschen</b> <img alt="Zellen löschen" src="../images/deletecells.png" /> in der oberen Symbolleiste in der Registerkarte <b>Start</b> oder wählen Sie die Option  im Rechtsklickmenü aus und wählen Sie anschließend den gewünschten Vorgang aus der angezeigten Liste: <br />Wenn Sie die Option <b>Zellen nach links verschieben</b> auswählen, wird die Zellen rechts von der gelöschten Zelle nach links verschoben; <br />wenn Sie die Option <b>Zellen nach oben verschieben</b> auswählen, wird die Zelle unterhalb der gelöschten Zelle nach oben verschoben; <br />wenn Sie die Option <b>Ganze Zeile</b> auswählen, wird die Zeile unterhalb der ausgewählten Zeile nach oben verschoben; <br />wenn Sie die Option <b>Ganze Spalte</b> auswählen, wird die Spalte rechts von der gelöschten Spalte nach links verschoben.</li>
+			</ol>
+			<p>Mithilfe des Symbols <b>Rückgängig</b> <img alt="Rückgängig" src="../images/undo.png" /> auf der oberen Symbolleiste können Sie gelöschte Daten jederzeit wiederherstellen.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,2550 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonctionnalités de correction automatique</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Les fonctionnalités de correction automatique fournissent des options pour mettre en forme le texte automatiquement ou insérer des symboles mathématiques. " />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Fonctionnalités de correction automatique</h1>
+            <p>Les fonctionnalités de correction automatique ONLYOFFICE Docs fournissent des options pour définir les éléments à mettre en forme automatiquement ou insérer des symboles mathématiques à remplacer les caractères reconnus.</p>
+            <p>Toutes les options sont disponibles dans la boîte de dialogue appropriée. Pour y accéder, passez à l'onglet <B>Fichier -&gt;</B> <b>Paramètres avancés</b> -&gt; <B>Vérification de l'orthographe</B> -&gt; <B>Vérification</B>-&gt; <b>Correction automatique</b>.</p>
+            <p>La boîte de dialogue <B>Correction automatique</B> comprend trois onglets: <em>AutoMaths</em>, <em>Fonctions reconnues</em> et <em>Mise en forme automatique au cours de la frappe</em>.</p>
+            <h2>AutoMaths</h2>
+            <p>Lorsque vous travailler dans l'éditeur d'équations, vous pouvez insérer plusieurs symboles, accents et opérateurs mathématiques en tapant sur clavier plutôt que de les rechercher dans la bibliothèque.</p>
+            <p>Dans l'éditeur d'équations, placez le point d'insertion dans l'espace réservé et tapez le code de correction mathématique, puis touchez la <B>Barre d'espace</B>. Le code que vous avez saisi, serait converti en symbole approprié mais l'espace est supprimé.</p>
+            <p class="note"><b>Remarque</b>: Les codes sont sensibles à la casse</p>
+            <p>Vous pouvez ajouter, modifier, rétablir et supprimer les éléments de la liste de corrections automatiques. Passez à l'onglet <B>Fichier -&gt;</B> <b>Paramètres avancés</b> -&gt; <B>Vérification de l'orthographe</B> <B>-&gt; Vérification</B>-&gt; <b>Correction automatique</b> -&gt; <B>AutoMaths</B>.</p>
+            <p>Ajoutez un élément à la liste de corrections automatiques.</p>
+            <p>
+                <ul>
+                    <li>Saisissez le code de correction automatique dans la zone <B>Remplacer</B>.</li>
+                    <li>Saisissez le symbole que vous souhaitez attribuer au code approprié dans la zone <B>Par</B>.</li>
+                    <li>Cliquez sur <B>Ajouter</B>.</li>
+                </ul>
+            </p>
+            <p>Modifier un élément de la liste de corrections automatiques.</p>
+            <p>
+                <ul>
+                    <li>Sélectionnez l'élément à modifier.</li>
+                    <li>Vous pouvez modifier les informations dans toutes les deux zones: le code dans la zone <B>Remplacer</B> et le symbole dans la zone <B>Par</B>.</li>
+                    <li>Cliquez sur <B>Remplacer</B>.</li>
+                </ul>
+            </p>
+            <p>Supprimer les éléments de la liste de corrections automatiques.</p>
+            <p>
+                <ul>
+                    <li>Sélectionnez l'élément que vous souhaitez supprimer de la liste.</li>
+                    <li>Cliquez sur <B>Supprimer</B>.</li>
+                </ul>
+            </p>
+            <p>Pour rétablir les éléments supprimés, sélectionnez l'élément que vous souhaitez rétablir dans la liste et appuyez sur <B>Restaurer</B>.</p>
+            <p>Utilisez l'option <b>Rétablir paramètres par défaut</b> pour réinitialiser les réglages par défaut. Tous les éléments que vous avez ajouté, seraient supprimés et toutes les modifications seraient annulées pour rétablir sa valeur d'origine.</p>
+            <p>Pour désactiver la correction automatique mathématique et éviter les changements et les remplacements automatiques, il faut décocher la case <B>Remplacer le texte au cours de la frappe</B>.</p>
+            <p><img alt="Remplacer le texte au cours de la frappe" src="../images/replacetext.png" /></p>
+            <p>Le tableau ci-dessous affiche tous le codes disponibles dans <b>Spreadsheet Editor</b> à présent. On peut trouver la liste complète de codes disponibles sous l'onglet <B>Fichier </B>dans les<B>Paramètres avancés...</B> -&gt; <B>Vérification</B> <B>de l'orthographe</B>-&gt;  <B>Vérification</B></p>
+            <details class="details-example"><summary>Les codes disponibles</summary>
+                <table>
+                    <tr>
+                        <td><b>Code</b></td>
+                        <td><b>Symbole</b></td>
+                        <td><b>Catégorie</b></td>
+                    </tr>
+                    <tr>
+                        <td>!!</td>
+                        <td><img alt="Double factorielle" src="../images/symbols/doublefactorial.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>...</td>
+                        <td><img alt="Horizontal ellipsis" src="../images/symbols/horizontalellipsis.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>::</td>
+                        <td><img alt="Double colon" src="../images/symbols/doublecolon.png" /></td>
+                        <td>Opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>:=</td>
+                        <td><img alt="Colon equal" src="../images/symbols/colonequal.png" /></td>
+                        <td>Opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>/<</td>
+                        <td><img alt="Not less than" src="../images/symbols/notlessthan.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>/></td>
+                        <td><img alt="Not greater than" src="../images/symbols/notgreaterthan.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>/=</td>
+                        <td><img alt="Not equal" src="../images/symbols/notequal.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\above</td>
+                        <td><img alt="Symbole" src="../images/symbols/above.png" /></td>
+                        <td>Indices et exposants</td>
+                    </tr>
+                    <tr>
+                        <td>\acute</td>
+                        <td><img alt="Symbole" src="../images/symbols/acute.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\aleph</td>
+                        <td><img alt="Symbole" src="../images/symbols/aleph.png" /></td>
+                        <td>Lettres hébra&iuml;ques</td>
+                    </tr>
+                    <tr>
+                        <td>\alpha</td>
+                        <td><img alt="Symbole" src="../images/symbols/alpha.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Alpha</td>
+                        <td><img alt="Symbole" src="../images/symbols/alpha2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\amalg</td>
+                        <td><img alt="Symbole" src="../images/symbols/amalg.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\angle</td>
+                        <td><img alt="Symbole" src="../images/symbols/angle.png" /></td>
+                        <td>Notation de géométrie</td>
+                    </tr>
+                    <tr>
+                        <td>\aoint</td>
+                        <td><img alt="Symbole" src="../images/symbols/aoint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\approx</td>
+                        <td><img alt="Symbole" src="../images/symbols/approx.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\asmash</td>
+                        <td><img alt="Symbole" src="../images/symbols/asmash.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\ast</td>
+                        <td><img alt="Asterisk" src="../images/symbols/ast.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\asymp</td>
+                        <td><img alt="Symbole" src="../images/symbols/asymp.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\atop</td>
+                        <td><img alt="Symbole" src="../images/symbols/atop.png" /></td>
+                        <td>Opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bar</td>
+                        <td><img alt="Symbole" src="../images/symbols/bar.png" /></td>
+                        <td>Trait suscrit/souscrit</td>
+                    </tr>
+                    <tr>
+                        <td>\Bar</td>
+                        <td><img alt="Symbole" src="../images/symbols/bar2.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\because</td>
+                        <td><img alt="Symbole" src="../images/symbols/because.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\begin</td>
+                        <td><img alt="Symbole" src="../images/symbols/begin.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\below</td>
+                        <td><img alt="Symbole" src="../images/symbols/below.png" /></td>
+                        <td>Indices et exposants</td>
+                    </tr>
+                    <tr>
+                        <td>\bet</td>
+                        <td><img alt="Symbole" src="../images/symbols/bet.png" /></td>
+                        <td>Lettres hébra&iuml;ques</td>
+                    </tr>
+                    <tr>
+                        <td>\beta</td>
+                        <td><img alt="Symbole" src="../images/symbols/beta.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Beta</td>
+                        <td><img alt="Symbole" src="../images/symbols/beta2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\beth</td>
+                        <td><img alt="Symbole" src="../images/symbols/beth.png" /></td>
+                        <td>Lettres hébra&iuml;ques</td>
+                    </tr>
+                    <tr>
+                        <td>\bigcap</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigcap.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigcup</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigcup.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigodot</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigodot.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigoplus</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigoplus.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigotimes</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigotimes.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigsqcup</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigsqcup.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\biguplus</td>
+                        <td><img alt="Symbole" src="../images/symbols/biguplus.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigvee</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigvee.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\bigwedge</td>
+                        <td><img alt="Symbole" src="../images/symbols/bigwedge.png" /></td>
+                        <td>Grands opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\binomial</td>
+                        <td><img alt="Symbole" src="../images/symbols/binomial.png" /></td>
+                        <td>Équations</td>
+                    </tr>
+                    <tr>
+                        <td>\bot</td>
+                        <td><img alt="Symbole" src="../images/symbols/bot.png" /></td>
+                        <td>Notations logiques</td>
+                    </tr>
+                    <tr>
+                        <td>\bowtie</td>
+                        <td><img alt="Symbole" src="../images/symbols/bowtie.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\box</td>
+                        <td><img alt="Symbole" src="../images/symbols/box.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\boxdot</td>
+                        <td><img alt="Symbole" src="../images/symbols/boxdot.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\boxminus</td>
+                        <td><img alt="Symbole" src="../images/symbols/boxminus.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\boxplus</td>
+                        <td><img alt="Symbole" src="../images/symbols/boxplus.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\bra</td>
+                        <td><img alt="Symbole" src="../images/symbols/bra.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\break</td>
+                        <td><img alt="Symbole" src="../images/symbols/break.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\breve</td>
+                        <td><img alt="Symbole" src="../images/symbols/breve.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\bullet</td>
+                        <td><img alt="Symbole" src="../images/symbols/bullet.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\cap</td>
+                        <td><img alt="Symbole" src="../images/symbols/cap.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\cbrt</td>
+                        <td><img alt="Symbole" src="../images/symbols/cbrt.png" /></td>
+                        <td>Racine carrée et radicaux</td>
+                    </tr>
+                    <tr>
+                        <td>\cases</td>
+                        <td><img alt="Symbole" src="../images/symbols/cases.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\cdot</td>
+                        <td><img alt="Symbole" src="../images/symbols/cdot.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\cdots</td>
+                        <td><img alt="Symbole" src="../images/symbols/cdots.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\check</td>
+                        <td><img alt="Symbole" src="../images/symbols/check.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\chi</td>
+                        <td><img alt="Symbole" src="../images/symbols/chi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Chi</td>
+                        <td><img alt="Symbole" src="../images/symbols/chi2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\circ</td>
+                        <td><img alt="Symbole" src="../images/symbols/circ.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\close</td>
+                        <td><img alt="Symbole" src="../images/symbols/close.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\clubsuit</td>
+                        <td><img alt="Symbole" src="../images/symbols/clubsuit.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\coint</td>
+                        <td><img alt="Symbole" src="../images/symbols/coint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\cong</td>
+                        <td><img alt="Symbole" src="../images/symbols/cong.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\coprod</td>
+                        <td><img alt="Symbole" src="../images/symbols/coprod.png" /></td>
+                        <td>Opérateurs mathématiques</td>
+                    </tr>
+                    <tr>
+                        <td>\cup</td>
+                        <td><img alt="Symbole" src="../images/symbols/cup.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\dalet</td>
+                        <td><img alt="Symbole" src="../images/symbols/dalet.png" /></td>
+                        <td>Lettres hébra&iuml;ques</td>
+                    </tr>
+                    <tr>
+                        <td>\daleth</td>
+                        <td><img alt="Symbole" src="../images/symbols/daleth.png" /></td>
+                        <td>Lettres hébra&iuml;ques</td>
+                    </tr>
+                    <tr>
+                        <td>\dashv</td>
+                        <td><img alt="Symbole" src="../images/symbols/dashv.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\dd</td>
+                        <td><img alt="Symbole" src="../images/symbols/dd.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\Dd</td>
+                        <td><img alt="Symbole" src="../images/symbols/dd2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\ddddot</td>
+                        <td><img alt="Symbole" src="../images/symbols/ddddot.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\dddot</td>
+                        <td><img alt="Symbole" src="../images/symbols/dddot.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\ddot</td>
+                        <td><img alt="Symbole" src="../images/symbols/ddot.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\ddots</td>
+                        <td><img alt="Symbole" src="../images/symbols/ddots.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\defeq</td>
+                        <td><img alt="Symbole" src="../images/symbols/defeq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\degc</td>
+                        <td><img alt="Symbole" src="../images/symbols/degc.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\degf</td>
+                        <td><img alt="Symbole" src="../images/symbols/degf.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\degree</td>
+                        <td><img alt="Symbole" src="../images/symbols/degree.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\delta</td>
+                        <td><img alt="Symbole" src="../images/symbols/delta.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Delta</td>
+                        <td><img alt="Symbole" src="../images/symbols/delta2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Deltaeq</td>
+                        <td><img alt="Symbole" src="../images/symbols/deltaeq.png" /></td>
+                        <td>Opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\diamond</td>
+                        <td><img alt="Symbole" src="../images/symbols/diamond.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\diamondsuit</td>
+                        <td><img alt="Symbole" src="../images/symbols/diamondsuit.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\div</td>
+                        <td><img alt="Symbole" src="../images/symbols/div.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\dot</td>
+                        <td><img alt="Symbole" src="../images/symbols/dot.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\doteq</td>
+                        <td><img alt="Symbole" src="../images/symbols/doteq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\dots</td>
+                        <td><img alt="Symbole" src="../images/symbols/dots.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\doublea</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublea.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleA</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublea2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleb</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleb.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleB</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleb2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublec</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublec.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleC</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublec2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubled</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubled.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleD</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubled2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublee</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublee.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleE</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublee2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublef</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublef.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleF</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublef2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleg</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleg.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleG</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleg2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleh</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleh.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleH</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleh2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublei</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublei.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleI</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublei2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublej</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublej.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleJ</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublej2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublek</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublek.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleK</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublek2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublel</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublel.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleL</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublel2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublem</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublem.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleM</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublem2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublen</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublen.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleN</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublen2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleo</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleo.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleO</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleo2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublep</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublep.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleP</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublep2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleq</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleq.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleQ</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleq2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubler</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubler.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleR</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubler2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubles</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubles.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleS</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubles2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublet</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublet.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleT</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublet2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleu</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleu.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleU</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubleu2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublev</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublev.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleV</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublev2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublew</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublew.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleW</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublew2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublex</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublex.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleX</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublex2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubley</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubley.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleY</td>
+                        <td><img alt="Symbole" src="../images/symbols/doubley2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doublez</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublez.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleZ</td>
+                        <td><img alt="Symbole" src="../images/symbols/doublez2.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\downarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/downarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Downarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/downarrow2.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\dsmash</td>
+                        <td><img alt="Symbole" src="../images/symbols/dsmash.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\ee</td>
+                        <td><img alt="Symbole" src="../images/symbols/ee.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\ell</td>
+                        <td><img alt="Symbole" src="../images/symbols/ell.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\emptyset</td>
+                        <td><img alt="Symbole" src="../images/symbols/emptyset.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\emsp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\end</td>
+                        <td><img alt="Symbole" src="../images/symbols/end.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\ensp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\epsilon</td>
+                        <td><img alt="Symbole" src="../images/symbols/epsilon.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Epsilon</td>
+                        <td><img alt="Symbole" src="../images/symbols/epsilon2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\eqarray</td>
+                        <td><img alt="Symbole" src="../images/symbols/eqarray.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\equiv</td>
+                        <td><img alt="Symbole" src="../images/symbols/equiv.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\eta</td>
+                        <td><img alt="Symbole" src="../images/symbols/eta.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Eta</td>
+                        <td><img alt="Symbole" src="../images/symbols/eta2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\exists</td>
+                        <td><img alt="Symbole" src="../images/symbols/exists.png" /></td>
+                        <td>Notations logiques</td>
+                    </tr>
+                    <tr>
+                        <td>\forall</td>
+                        <td><img alt="Symbole" src="../images/symbols/forall.png" /></td>
+                        <td>Notations logiques</td>
+                    </tr>
+                    <tr>
+                        <td>\fraktura</td>
+                        <td><img alt="Symbole" src="../images/symbols/fraktura.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturA</td>
+                        <td><img alt="Symbole" src="../images/symbols/fraktura2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturb</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturb.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturB</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturb2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturc</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturc.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturC</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturc2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturd</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturd.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturD</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturd2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakture</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakture.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturE</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakture2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturf</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturf.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturF</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturf2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturg</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturg.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturG</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturg2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturh</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturh.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturH</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturh2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturi</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturi.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturI</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturi2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturk</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturk.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturK</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturk2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturl</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturl.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturL</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturl2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturm</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturm.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturM</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturm2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturn</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturn.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturN</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturn2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturo</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturo.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturO</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturo2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturp</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturp.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturP</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturp2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturq</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturq.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturQ</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturq2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturr</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturr.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturR</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturr2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturs</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturs.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturS</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturs2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturt</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturt.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturT</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturt2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturu</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturu.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturU</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturu2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturv</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturv.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturV</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturv2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturw</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturw.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturW</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturw2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturx</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturx.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturX</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturx2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\fraktury</td>
+                        <td><img alt="Symbole" src="../images/symbols/fraktury.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturY</td>
+                        <td><img alt="Symbole" src="../images/symbols/fraktury2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturz</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturz.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturZ</td>
+                        <td><img alt="Symbole" src="../images/symbols/frakturz2.png" /></td>
+                        <td>Fraktur</td>
+                    </tr>
+                    <tr>
+                        <td>\frown</td>
+                        <td><img alt="Symbole" src="../images/symbols/frown.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\funcapply</td>
+                        <td></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\G</td>
+                        <td><img alt="Symbole" src="../images/symbols/g.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\gamma</td>
+                        <td><img alt="Symbole" src="../images/symbols/gamma.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Gamma</td>
+                        <td><img alt="Symbole" src="../images/symbols/gamma2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\ge</td>
+                        <td><img alt="Symbole" src="../images/symbols/ge.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\geq</td>
+                        <td><img alt="Symbole" src="../images/symbols/geq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\gets</td>
+                        <td><img alt="Symbole" src="../images/symbols/gets.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\gg</td>
+                        <td><img alt="Symbole" src="../images/symbols/gg.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\gimel</td>
+                        <td><img alt="Symbole" src="../images/symbols/gimel.png" /></td>
+                        <td>Lettres hébra&iuml;ques</td>
+                    </tr>
+                    <tr>
+                        <td>\grave</td>
+                        <td><img alt="Symbole" src="../images/symbols/grave.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\hairsp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\hat</td>
+                        <td><img alt="Symbole" src="../images/symbols/hat.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\hbar</td>
+                        <td><img alt="Symbole" src="../images/symbols/hbar.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\heartsuit</td>
+                        <td><img alt="Symbole" src="../images/symbols/heartsuit.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\hookleftarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/hookleftarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\hookrightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/hookrightarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\hphantom</td>
+                        <td><img alt="Symbole" src="../images/symbols/hphantom.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\hsmash</td>
+                        <td><img alt="Symbole" src="../images/symbols/hsmash.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\hvec</td>
+                        <td><img alt="Symbole" src="../images/symbols/hvec.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\identitymatrix</td>
+                        <td><img alt="Symbole" src="../images/symbols/identitymatrix.png" /></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\ii</td>
+                        <td><img alt="Symbole" src="../images/symbols/ii.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\iiint</td>
+                        <td><img alt="Symbole" src="../images/symbols/iiint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\iint</td>
+                        <td><img alt="Symbole" src="../images/symbols/iint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\iiiint</td>
+                        <td><img alt="Symbole" src="../images/symbols/iiiint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\Im</td>
+                        <td><img alt="Symbole" src="../images/symbols/im.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\imath</td>
+                        <td><img alt="Symbole" src="../images/symbols/imath.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\in</td>
+                        <td><img alt="Symbole" src="../images/symbols/in.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\inc</td>
+                        <td><img alt="Symbole" src="../images/symbols/inc.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\infty</td>
+                        <td><img alt="Symbole" src="../images/symbols/infty.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\int</td>
+                        <td><img alt="Symbole" src="../images/symbols/int.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\integral</td>
+                        <td><img alt="Symbole" src="../images/symbols/integral.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\iota</td>
+                        <td><img alt="Symbole" src="../images/symbols/iota.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Iota</td>
+                        <td><img alt="Symbole" src="../images/symbols/iota2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\itimes</td>
+                        <td></td>
+                        <td>Opérateurs mathématiques</td>
+                    </tr>
+                    <tr>
+                        <td>\j</td>
+                        <td><img alt="Symbole" src="../images/symbols/j.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\jj</td>
+                        <td><img alt="Symbole" src="../images/symbols/jj.png" /></td>
+                        <td>Lettres avec double barres</td>
+                    </tr>
+                    <tr>
+                        <td>\jmath</td>
+                        <td><img alt="Symbole" src="../images/symbols/jmath.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\kappa</td>
+                        <td><img alt="Symbole" src="../images/symbols/kappa.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Kappa</td>
+                        <td><img alt="Symbole" src="../images/symbols/kappa2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\ket</td>
+                        <td><img alt="Symbole" src="../images/symbols/ket.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\lambda</td>
+                        <td><img alt="Symbole" src="../images/symbols/lambda.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Lambda</td>
+                        <td><img alt="Symbole" src="../images/symbols/lambda2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\langle</td>
+                        <td><img alt="Symbole" src="../images/symbols/langle.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\lbbrack</td>
+                        <td><img alt="Symbole" src="../images/symbols/lbbrack.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\lbrace</td>
+                        <td><img alt="Symbole" src="../images/symbols/lbrace.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\lbrack</td>
+                        <td><img alt="Symbole" src="../images/symbols/lbrack.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\lceil</td>
+                        <td><img alt="Symbole" src="../images/symbols/lceil.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\ldiv</td>
+                        <td><img alt="Symbole" src="../images/symbols/ldiv.png" /></td>
+                        <td>Barres obliques</td>
+                    </tr>
+                    <tr>
+                        <td>\ldivide</td>
+                        <td><img alt="Symbole" src="../images/symbols/ldivide.png" /></td>
+                        <td>Barres obliques</td>
+                    </tr>
+                    <tr>
+                        <td>\ldots</td>
+                        <td><img alt="Symbole" src="../images/symbols/ldots.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\le</td>
+                        <td><img alt="Symbole" src="../images/symbols/le.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\left</td>
+                        <td><img alt="Symbole" src="../images/symbols/left.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\leftarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/leftarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Leftarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/leftarrow2.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\leftharpoondown</td>
+                        <td><img alt="Symbole" src="../images/symbols/leftharpoondown.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\leftharpoonup</td>
+                        <td><img alt="Symbole" src="../images/symbols/leftharpoonup.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\leftrightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/leftrightarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Leftrightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/leftrightarrow2.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\leq</td>
+                        <td><img alt="Symbole" src="../images/symbols/leq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\lfloor</td>
+                        <td><img alt="Symbole" src="../images/symbols/lfloor.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\lhvec</td>
+                        <td><img alt="Symbole" src="../images/symbols/lhvec.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\limit</td>
+                        <td><img alt="Symbole" src="../images/symbols/limit.png" /></td>
+                        <td>Limites</td>
+                    </tr>
+                    <tr>
+                        <td>\ll</td>
+                        <td><img alt="Symbole" src="../images/symbols/ll.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\lmoust</td>
+                        <td><img alt="Symbole" src="../images/symbols/lmoust.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\Longleftarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/longleftarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Longleftrightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/longleftrightarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Longrightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/longrightarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\lrhar</td>
+                        <td><img alt="Symbole" src="../images/symbols/lrhar.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\lvec</td>
+                        <td><img alt="Symbole" src="../images/symbols/lvec.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\mapsto</td>
+                        <td><img alt="Symbole" src="../images/symbols/mapsto.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\matrix</td>
+                        <td><img alt="Symbole" src="../images/symbols/matrix.png" /></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\medsp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\mid</td>
+                        <td><img alt="Symbole" src="../images/symbols/mid.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\middle</td>
+                        <td><img alt="Symbole" src="../images/symbols/middle.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\models</td>
+                        <td><img alt="Symbole" src="../images/symbols/models.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\mp</td>
+                        <td><img alt="Symbole" src="../images/symbols/mp.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\mu</td>
+                        <td><img alt="Symbole" src="../images/symbols/mu.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Mu</td>
+                        <td><img alt="Symbole" src="../images/symbols/mu2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\nabla</td>
+                        <td><img alt="Symbole" src="../images/symbols/nabla.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\naryand</td>
+                        <td><img alt="Symbole" src="../images/symbols/naryand.png" /></td>
+                        <td>Opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\nbsp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\ne</td>
+                        <td><img alt="Symbole" src="../images/symbols/ne.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\nearrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/nearrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\neq</td>
+                        <td><img alt="Symbole" src="../images/symbols/neq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\ni</td>
+                        <td><img alt="Symbole" src="../images/symbols/ni.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\norm</td>
+                        <td><img alt="Symbole" src="../images/symbols/norm.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\notcontain</td>
+                        <td><img alt="Symbole" src="../images/symbols/notcontain.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\notelement</td>
+                        <td><img alt="Symbole" src="../images/symbols/notelement.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\notin</td>
+                        <td><img alt="Symbole" src="../images/symbols/notin.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\nu</td>
+                        <td><img alt="Symbole" src="../images/symbols/nu.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Nu</td>
+                        <td><img alt="Symbole" src="../images/symbols/nu2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\nwarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/nwarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\o</td>
+                        <td><img alt="Symbole" src="../images/symbols/o.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\O</td>
+                        <td><img alt="Symbole" src="../images/symbols/o2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\odot</td>
+                        <td><img alt="Symbole" src="../images/symbols/odot.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\of</td>
+                        <td><img alt="Symbole" src="../images/symbols/of.png" /></td>
+                        <td>Opérateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\oiiint</td>
+                        <td><img alt="Symbole" src="../images/symbols/oiiint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\oiint</td>
+                        <td><img alt="Symbole" src="../images/symbols/oiint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\oint</td>
+                        <td><img alt="Symbole" src="../images/symbols/oint.png" /></td>
+                        <td>Intégrales</td>
+                    </tr>
+                    <tr>
+                        <td>\omega</td>
+                        <td><img alt="Symbole" src="../images/symbols/omega.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Omega</td>
+                        <td><img alt="Symbole" src="../images/symbols/omega2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\ominus</td>
+                        <td><img alt="Symbole" src="../images/symbols/ominus.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\open</td>
+                        <td><img alt="Symbole" src="../images/symbols/open.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\oplus</td>
+                        <td><img alt="Symbole" src="../images/symbols/oplus.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\otimes</td>
+                        <td><img alt="Symbole" src="../images/symbols/otimes.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\over</td>
+                        <td><img alt="Symbole" src="../images/symbols/over.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\overbar</td>
+                        <td><img alt="Symbole" src="../images/symbols/overbar.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\overbrace</td>
+                        <td><img alt="Symbole" src="../images/symbols/overbrace.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\overbracket</td>
+                        <td><img alt="Symbole" src="../images/symbols/overbracket.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\overline</td>
+                        <td><img alt="Symbole" src="../images/symbols/overline.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\overparen</td>
+                        <td><img alt="Symbole" src="../images/symbols/overparen.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\overshell</td>
+                        <td><img alt="Symbole" src="../images/symbols/overshell.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\parallel</td>
+                        <td><img alt="Symbole" src="../images/symbols/parallel.png" /></td>
+                        <td>Notation de géométrie</td>
+                    </tr>
+                    <tr>
+                        <td>\partial</td>
+                        <td><img alt="Symbole" src="../images/symbols/partial.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\pmatrix</td>
+                        <td><img alt="Symbole" src="../images/symbols/pmatrix.png" /></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\perp</td>
+                        <td><img alt="Symbole" src="../images/symbols/perp.png" /></td>
+                        <td>Notation de géométrie</td>
+                    </tr>
+                    <tr>
+                        <td>\phantom</td>
+                        <td><img alt="Symbole" src="../images/symbols/phantom.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\phi</td>
+                        <td><img alt="Symbole" src="../images/symbols/phi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Phi</td>
+                        <td><img alt="Symbole" src="../images/symbols/phi2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\pi</td>
+                        <td><img alt="Symbole" src="../images/symbols/pi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Pi</td>
+                        <td><img alt="Symbole" src="../images/symbols/pi2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\pm</td>
+                        <td><img alt="Symbole" src="../images/symbols/pm.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\pppprime</td>
+                        <td><img alt="Symbole" src="../images/symbols/pppprime.png" /></td>
+                        <td>Nombres premiers</td>
+                    </tr>
+                    <tr>
+                        <td>\ppprime</td>
+                        <td><img alt="Symbole" src="../images/symbols/ppprime.png" /></td>
+                        <td>Nombres premiers</td>
+                    </tr>
+                    <tr>
+                        <td>\pprime</td>
+                        <td><img alt="Symbole" src="../images/symbols/pprime.png" /></td>
+                        <td>Nombres premiers</td>
+                    </tr>
+                    <tr>
+                        <td>\prec</td>
+                        <td><img alt="Symbole" src="../images/symbols/prec.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\preceq</td>
+                        <td><img alt="Symbole" src="../images/symbols/preceq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\prime</td>
+                        <td><img alt="Symbole" src="../images/symbols/prime.png" /></td>
+                        <td>Nombres premiers</td>
+                    </tr>
+                    <tr>
+                        <td>\prod</td>
+                        <td><img alt="Symbole" src="../images/symbols/prod.png" /></td>
+                        <td>Opérateurs mathématiques</td>
+                    </tr>
+                    <tr>
+                        <td>\propto</td>
+                        <td><img alt="Symbole" src="../images/symbols/propto.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\psi</td>
+                        <td><img alt="Symbole" src="../images/symbols/psi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Psi</td>
+                        <td><img alt="Symbole" src="../images/symbols/psi2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\qdrt</td>
+                        <td><img alt="Symbole" src="../images/symbols/qdrt.png" /></td>
+                        <td>Racine carrée et radicaux</td>
+                    </tr>
+                    <tr>
+                        <td>\quadratic</td>
+                        <td><img alt="Symbole" src="../images/symbols/quadratic.png" /></td>
+                        <td>Racine carrée et radicaux</td>
+                    </tr>
+                    <tr>
+                        <td>\rangle</td>
+                        <td><img alt="Symbole" src="../images/symbols/rangle.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\Rangle</td>
+                        <td><img alt="Symbole" src="../images/symbols/rangle2.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\ratio</td>
+                        <td><img alt="Symbole" src="../images/symbols/ratio.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\rbrace</td>
+                        <td><img alt="Symbole" src="../images/symbols/rbrace.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\rbrack</td>
+                        <td><img alt="Symbole" src="../images/symbols/rbrack.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\Rbrack</td>
+                        <td><img alt="Symbole" src="../images/symbols/rbrack2.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\rceil</td>
+                        <td><img alt="Symbole" src="../images/symbols/rceil.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\rddots</td>
+                        <td><img alt="Symbole" src="../images/symbols/rddots.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\Re</td>
+                        <td><img alt="Symbole" src="../images/symbols/re.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\rect</td>
+                        <td><img alt="Symbole" src="../images/symbols/rect.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\rfloor</td>
+                        <td><img alt="Symbole" src="../images/symbols/rfloor.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\rho</td>
+                        <td><img alt="Symbole" src="../images/symbols/rho.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Rho</td>
+                        <td><img alt="Symbole" src="../images/symbols/rho2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\rhvec</td>
+                        <td><img alt="Symbole" src="../images/symbols/rhvec.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\right</td>
+                        <td><img alt="Symbole" src="../images/symbols/right.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\rightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/rightarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Rightarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/rightarrow2.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\rightharpoondown</td>
+                        <td><img alt="Symbole" src="../images/symbols/rightharpoondown.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\rightharpoonup</td>
+                        <td><img alt="Symbole" src="../images/symbols/rightharpoonup.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\rmoust</td>
+                        <td><img alt="Symbole" src="../images/symbols/rmoust.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\root</td>
+                        <td><img alt="Symbole" src="../images/symbols/root.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\scripta</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripta.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptA</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripta2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptb</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptb.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptB</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptb2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptc</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptc.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptC</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptc2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptd</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptd.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptD</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptd2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripte</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripte.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptE</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripte2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptf</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptf.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptF</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptf2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptg</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptg.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptG</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptg2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripth</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripth.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptH</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripth2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripti</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripti.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptI</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripti2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptk</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptk.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptK</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptk2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptl</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptl.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptL</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptl2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptm</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptm.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptM</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptm2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptn</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptn.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptN</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptn2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripto</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripto.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptO</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripto2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptp</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptp.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptP</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptp2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptq</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptq.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptQ</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptq2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptr</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptr.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptR</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptr2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripts</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripts.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptS</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripts2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptt</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptt.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptT</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptt2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptu</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptu.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptU</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptu2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptv</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptv.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptV</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptv2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptw</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptw.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptW</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptw2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptx</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptx.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptX</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptx2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripty</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripty.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptY</td>
+                        <td><img alt="Symbole" src="../images/symbols/scripty2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptz</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptz.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptZ</td>
+                        <td><img alt="Symbole" src="../images/symbols/scriptz2.png" /></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\sdiv</td>
+                        <td><img alt="Symbole" src="../images/symbols/sdiv.png" /></td>
+                        <td>Barres obliques</td>
+                    </tr>
+                    <tr>
+                        <td>\sdivide</td>
+                        <td><img alt="Symbole" src="../images/symbols/sdivide.png" /></td>
+                        <td>Barres obliques</td>
+                    </tr>
+                    <tr>
+                        <td>\searrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/searrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\setminus</td>
+                        <td><img alt="Symbole" src="../images/symbols/setminus.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\sigma</td>
+                        <td><img alt="Symbole" src="../images/symbols/sigma.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Sigma</td>
+                        <td><img alt="Symbole" src="../images/symbols/sigma2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\sim</td>
+                        <td><img alt="Symbole" src="../images/symbols/sim.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\simeq</td>
+                        <td><img alt="Symbole" src="../images/symbols/simeq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\smash</td>
+                        <td><img alt="Symbole" src="../images/symbols/smash.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\smile</td>
+                        <td><img alt="Symbole" src="../images/symbols/smile.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\spadesuit</td>
+                        <td><img alt="Symbole" src="../images/symbols/spadesuit.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\sqcap</td>
+                        <td><img alt="Symbole" src="../images/symbols/sqcap.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\sqcup</td>
+                        <td><img alt="Symbole" src="../images/symbols/sqcup.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\sqrt</td>
+                        <td><img alt="Symbole" src="../images/symbols/sqrt.png" /></td>
+                        <td>Racine carrée et radicaux</td>
+                    </tr>
+                    <tr>
+                        <td>\sqsubseteq</td>
+                        <td><img alt="Symbole" src="../images/symbols/sqsubseteq.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\sqsuperseteq</td>
+                        <td><img alt="Symbole" src="../images/symbols/sqsuperseteq.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\star</td>
+                        <td><img alt="Symbole" src="../images/symbols/star.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\subset</td>
+                        <td><img alt="Symbole" src="../images/symbols/subset.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\subseteq</td>
+                        <td><img alt="Symbole" src="../images/symbols/subseteq.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\succ</td>
+                        <td><img alt="Symbole" src="../images/symbols/succ.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\succeq</td>
+                        <td><img alt="Symbole" src="../images/symbols/succeq.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\sum</td>
+                        <td><img alt="Symbole" src="../images/symbols/sum.png" /></td>
+                        <td>Opérateurs mathématiques</td>
+                    </tr>
+                    <tr>
+                        <td>\superset</td>
+                        <td><img alt="Symbole" src="../images/symbols/superset.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\superseteq</td>
+                        <td><img alt="Symbole" src="../images/symbols/superseteq.png" /></td>
+                        <td>Ensemble de notations</td>
+                    </tr>
+                    <tr>
+                        <td>\swarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/swarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\tau</td>
+                        <td><img alt="Symbole" src="../images/symbols/tau.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Tau</td>
+                        <td><img alt="Symbole" src="../images/symbols/tau2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\therefore</td>
+                        <td><img alt="Symbole" src="../images/symbols/therefore.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\theta</td>
+                        <td><img alt="Symbole" src="../images/symbols/theta.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Theta</td>
+                        <td><img alt="Symbole" src="../images/symbols/theta2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\thicksp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\thinsp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\tilde</td>
+                        <td><img alt="Symbole" src="../images/symbols/tilde.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\times</td>
+                        <td><img alt="Symbole" src="../images/symbols/times.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\to</td>
+                        <td><img alt="Symbole" src="../images/symbols/to.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\top</td>
+                        <td><img alt="Symbole" src="../images/symbols/top.png" /></td>
+                        <td>Notations logiques</td>
+                    </tr>
+                    <tr>
+                        <td>\tvec</td>
+                        <td><img alt="Symbole" src="../images/symbols/tvec.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\ubar</td>
+                        <td><img alt="Symbole" src="../images/symbols/ubar.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\Ubar</td>
+                        <td><img alt="Symbole" src="../images/symbols/ubar2.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\underbar</td>
+                        <td><img alt="Symbole" src="../images/symbols/underbar.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\underbrace</td>
+                        <td><img alt="Symbole" src="../images/symbols/underbrace.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\underbracket</td>
+                        <td><img alt="Symbole" src="../images/symbols/underbracket.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\underline</td>
+                        <td><img alt="Symbole" src="../images/symbols/underline.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\underparen</td>
+                        <td><img alt="Symbole" src="../images/symbols/underparen.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\uparrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/uparrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Uparrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/uparrow2.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\updownarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/updownarrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\Updownarrow</td>
+                        <td><img alt="Symbole" src="../images/symbols/updownarrow2.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\uplus</td>
+                        <td><img alt="Symbole" src="../images/symbols/uplus.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\upsilon</td>
+                        <td><img alt="Symbole" src="../images/symbols/upsilon.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Upsilon</td>
+                        <td><img alt="Symbole" src="../images/symbols/upsilon2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\varepsilon</td>
+                        <td><img alt="Symbole" src="../images/symbols/varepsilon.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\varphi</td>
+                        <td><img alt="Symbole" src="../images/symbols/varphi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\varpi</td>
+                        <td><img alt="Symbole" src="../images/symbols/varpi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\varrho</td>
+                        <td><img alt="Symbole" src="../images/symbols/varrho.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\varsigma</td>
+                        <td><img alt="Symbole" src="../images/symbols/varsigma.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\vartheta</td>
+                        <td><img alt="Symbole" src="../images/symbols/vartheta.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\vbar</td>
+                        <td><img alt="Symbole" src="../images/symbols/vbar.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\vdash</td>
+                        <td><img alt="Symbole" src="../images/symbols/vdash.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>\vdots</td>
+                        <td><img alt="Symbole" src="../images/symbols/vdots.png" /></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\vec</td>
+                        <td><img alt="Symbole" src="../images/symbols/vec.png" /></td>
+                        <td>Accentuation</td>
+                    </tr>
+                    <tr>
+                        <td>\vee</td>
+                        <td><img alt="Symbole" src="../images/symbols/vee.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\vert</td>
+                        <td><img alt="Symbole" src="../images/symbols/vert.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\Vert</td>
+                        <td><img alt="Symbole" src="../images/symbols/vert2.png" /></td>
+                        <td>Séparateurs</td>
+                    </tr>
+                    <tr>
+                        <td>\Vmatrix</td>
+                        <td><img alt="Symbole" src="../images/symbols/vmatrix.png" /></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\vphantom</td>
+                        <td><img alt="Symbole" src="../images/symbols/vphantom.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>\vthicksp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\wedge</td>
+                        <td><img alt="Symbole" src="../images/symbols/wedge.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\wp</td>
+                        <td><img alt="Symbole" src="../images/symbols/wp.png" /></td>
+                        <td>Symboles</td>
+                    </tr>
+                    <tr>
+                        <td>\wr</td>
+                        <td><img alt="Symbole" src="../images/symbols/wr.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>\xi</td>
+                        <td><img alt="Symbole" src="../images/symbols/xi.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Xi</td>
+                        <td><img alt="Symbole" src="../images/symbols/xi2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\zeta</td>
+                        <td><img alt="Symbole" src="../images/symbols/zeta.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\Zeta</td>
+                        <td><img alt="Symbole" src="../images/symbols/zeta2.png" /></td>
+                        <td>Lettres grecques</td>
+                    </tr>
+                    <tr>
+                        <td>\zwnj</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>\zwsp</td>
+                        <td></td>
+                        <td>Caractères d'espace</td>
+                    </tr>
+                    <tr>
+                        <td>~=</td>
+                        <td><img alt="Is congruent to" src="../images/symbols/cong.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>-+</td>
+                        <td><img alt="Minus or plus" src="../images/symbols/mp.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>+-</td>
+                        <td><img alt="Plus or minus" src="../images/symbols/pm.png" /></td>
+                        <td>Opérateurs binaires</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;&lt;</td>
+                        <td><img alt="Symbole" src="../images/symbols/ll.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;=</td>
+                        <td><img alt="Less than or equal to" src="../images/symbols/lessthanorequalto.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>-&gt;</td>
+                        <td><img alt="Symbole" src="../images/symbols/arrow.png" /></td>
+                        <td>Flèches</td>
+                    </tr>
+                    <tr>
+                        <td>&gt;=</td>
+                        <td><img alt="Greater than or equal to" src="../images/symbols/greaterthanorequalto.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                    <tr>
+                        <td>&gt;&gt;</td>
+                        <td><img alt="Symbole" src="../images/symbols/gg.png" /></td>
+                        <td>Opérateurs relationnels</td>
+                    </tr>
+                </table>
+            </details> <br />
+            <h2>Fonctions reconnues</h2>
+            <p>Sous cet onglet, vous pouvez trouver les expressions mathématiques que l'éditeur d'équations reconnait comme les fonctions et lesquelles ne seront pas mises en italique automatiquement. Pour accéder à la liste de fonctions reconnues, passez à l'onglet <B>Fichier -&gt;</B> <b>Paramètres avancés</b> -&gt; <B>Vérification de l'orthographe</B> -&gt; <B>Vérification</B>-&gt; <b>Correction automatique</b> -&gt; <B>Fonctions reconnues</B>.</p>
+            <p>Pour ajouter un élément à la liste de fonctions reconnues, saisissez la fonction dans le champ vide et appuyez sur <B>Ajouter</B>.</p>
+            <p>Pour supprimer un élément de la liste de fonctions reconnues, sélectionnez la fonction à supprimer et appuyez sur <B>Supprimer</B>.</p>
+            <p>Pour rétablir les éléments supprimés, sélectionnez l'élément que vous souhaitez rétablir dans la liste et appuyez sur <B>Restaurer</B>.</p>
+            <p>Utilisez l'option <b>Rétablir paramètres par défaut</b> pour réinitialiser les réglages par défaut. Toutes les fonctions que vous avez ajoutées, seraient supprimées et celles qui ont été supprimées, seraient rétablies.</p>
+            <p><img alt="Fonctions reconnues" src="../images/recognizedfunctions.png" /></p>
+            <h2>Mise en forme automatique au cours de la frappe</h2>
+            <p>Par défaut, l'éditeur inclut les nouvelles lignes et colonnes dans le tableau lorsque vous saisissez des nouvelles données dans la ligne au-dessous du tableaux ou dans la colonne à côté de celui-ci.</p>
+            <p>Si vous souhaitez désactiver l'une des options de mise en forme automatique, désactivez la case à coche de l'élément pour lequel vous ne souhaitez pas de mise en forme automatique sous l'onglet <B>Fichier -&gt;</B> <B>Paramètres avancés</B> -&gt; <B>Vérification de l'orthographe</B> -&gt; <B>Vérification</B>-&gt; <B>Correction automatique</B> -&gt; <B>Mise en forme automatique au cours de la frappe</B></p>
+            <p><img alt="Mise en forme automatique au cours de la frappe" src="../images/autoformatasyoutype.png" /></p>
+        </div>
+	</body>
+</html>

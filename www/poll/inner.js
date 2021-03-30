@@ -1166,6 +1166,7 @@ define([
         var $drawer = APP.toolbar.$drawer;
 
         metadataMgr.onChange(function () {
+            if (!APP.proxy) { return; }
             var md = copyObject(metadataMgr.getMetadata());
             APP.proxy.metadata = md;
         });
@@ -1365,23 +1366,23 @@ define([
                 $('#cp-app-poll-comments-add-title').remove();
             }
 
-            var rt = APP.rt = Listmap.create(listmapConfig);
-            APP.proxy = rt.proxy;
+            common.getPadAttribute('userid', function (e, userid) {
+            if (e) { console.error(e); }
+                var rt = APP.rt = Listmap.create(listmapConfig);
+                APP.proxy = rt.proxy;
 
-            var firstConnection = true;
-            rt.proxy.on('create', onCreate)
-                 .on('ready', function (info) {
-                    if (!firstConnection) { return; } // TODO fix this issue in listmap
-                    firstConnection = false;
-                    common.getPadAttribute('userid', function (e, userid) {
-                        if (e) { console.error(e); }
+                var firstConnection = true;
+                rt.proxy.on('create', onCreate)
+                    .on('ready', function (info) {
+                        if (!firstConnection) { return; } // TODO fix this issue in listmap
+                        firstConnection = false;
                         APP.userid = userid;
                         onReady(info, userid);
-                    });
-                 })
-                 .on('disconnect', onDisconnect)
-                 .on('reconnect', onReconnect)
-                 .on('error', onError);
+                    })
+                .on('disconnect', onDisconnect)
+                .on('reconnect', onReconnect)
+                .on('error', onError);
+            });
         });
     };
     main();

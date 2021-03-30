@@ -1,0 +1,636 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Keyboard Shortcuts</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The keyboard shortcut list used for a faster and easier access to the features of Presentation Editor using the keyboard." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+        <script type="text/javascript" src="../search/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../search/js/keyboard-switch.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Keyboard Shortcuts</h1>
+            <ul class="shortcut_variants">
+                <li class="shortcut_toggle pc_option left_option">Windows/Linux</li><!--
+                --><li class="shortcut_toggle mac_option right_option">Mac OS</li>
+            </ul>
+			<table class="keyboard_shortcuts_table">
+				<tr>
+					<th colspan="4" class="keyboard_section">Working with Presentation</th>
+				</tr>
+				<tr>
+					<td>Open 'File' panel</td>
+					<td><kbd>Alt</kbd>+<kbd>F</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>F</kbd></td>
+					<td>Open the <b>File</b> panel to save, download, print the current presentation, view its info, create a new presentation or open an existing one, access Presentation Editor help or advanced settings.</td>
+				</tr>
+				<tr>
+					<td>Open 'Search' dialog box</td>
+					<td><kbd>Ctrl</kbd>+<kbd>F</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>F</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>F</kbd></td>
+					<td>Open the <b>Search</b> dialog box to start searching for a character/word/phrase in the currently edited presentation.</td>
+				</tr>
+				<tr>
+					<td>Open 'Comments' panel</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd></td>
+					<td>Open the <b>Comments</b> panel to add your own comment or reply to other users' comments.</td>
+				</tr>
+				<tr>
+					<td>Open comment field</td>
+					<td><kbd>Alt</kbd>+<kbd>H</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>H</kbd></td>
+					<td>Open a data entry field where you can add the text of your comment.</td>
+				</tr>
+				<tr class="onlineDocumentFeatures">
+					<td>Open 'Chat' panel</td>
+					<td><kbd>Alt</kbd>+<kbd>Q</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Q</kbd></td>
+					<td>Open the <b>Chat</b> panel and send a message.</td>
+				</tr>
+				<tr>
+					<td>Save presentation</td>
+					<td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>S</kbd></td>
+					<td>Save all the changes to the presentation currently edited with Presentation Editor. The active file will be saved with its current file name, location, and file format.</td>
+				</tr>
+				<tr>
+					<td>Print presentation</td>
+					<td><kbd>Ctrl</kbd>+<kbd>P</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>P</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>P</kbd></td>
+					<td>Print the presentation with one of the available printers or save it to a file.</td>
+				</tr>
+				<tr>
+					<td>Download As...</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd></td>
+					<td>Open the <b>Download as...</b> panel to save the currently edited presentation to the computer hard disk drive in one of the supported formats: PPTX, PDF, ODP, POTX, PDF/A, OTP.</td>
+				</tr>
+				<tr>
+					<td>Full screen</td>
+					<td><kbd>F11</kbd></td>
+					<td></td>
+					<td>Switch to the full screen view to fit Presentation Editor into your screen.</td>
+				</tr>
+                <tr>
+                    <td>Help menu</td>
+                    <td><kbd>F1</kbd></td>
+					<td><kbd>F1</kbd></td>
+                    <td>Open Presentation Editor <b>Help</b> menu.</td>
+                </tr>
+                <tr>
+                    <td>Open existing file (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>O</kbd></td>
+					<td></td>
+                    <td>On the <b>Open local file</b> tab in <b>Desktop Editors</b>, opens the standard dialog box that allows to select an existing file.</td>
+                </tr>
+                <tr>
+                    <td>Close file (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>F4</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>W</kbd></td>
+                    <td>Close the current presentation window in <b>Desktop Editors</b>.</td>
+                </tr>
+                <tr>
+                    <td>Element contextual menu</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F10</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F10</kbd></td>
+                    <td>Open the selected element <b>contextual menu</b>.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Navigation</th>
+				</tr>
+				<tr>
+					<td>The first slide</td>
+					<td><kbd>Home</kbd></td>
+					<td><kbd>Home</kbd>,<br /><kbd>Fn</kbd>+<kbd>←</kbd></td>
+					<td>Go to the first slide of the currently edited presentation.</td>
+				</tr>
+				<tr>
+					<td>The last slide</td>
+					<td><kbd>End</kbd></td>
+					<td><kbd>End</kbd>,<br /><kbd>Fn</kbd>+<kbd>→</kbd></td>
+					<td>Go to the last slide of the currently edited presentation.</td>
+				</tr>
+				<tr>
+					<td>Next slide</td>
+					<td><kbd>Page Down</kbd></td>
+					<td><kbd>Page Down</kbd>,<br /><kbd>Fn</kbd>+<kbd>↓</kbd></td>
+					<td>Go to the next slide of the currently edited presentation.</td>
+				</tr>
+				<tr>
+					<td>Previous slide</td>
+					<td><kbd>Page Up</kbd></td>
+					<td><kbd>Page Up</kbd>,<br /><kbd>Fn</kbd>+<kbd>↑</kbd></td>
+					<td>Go to the previous slide of the currently edited presentation.</td>
+				</tr>
+				<tr>
+					<td>Zoom In</td>
+					<td><kbd>Ctrl</kbd>+<kbd>+</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>=</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>=</kbd></td>
+					<td>Zoom in the currently edited presentation.</td>
+				</tr>
+				<tr>
+					<td>Zoom Out</td>
+					<td><kbd>Ctrl</kbd>+<kbd>-</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>-</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>-</kbd></td>
+					<td>Zoom out the currently edited presentation.</td>
+				</tr>
+				<tr id="manageslides">
+					<th colspan="4" class="keyboard_section">Performing Actions on Slides</th>
+				</tr>
+				<tr>
+					<td>New slide</td>
+					<td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+					<td>Create a new slide and add it after the selected one in the list.</td>
+				</tr>
+				<tr>
+					<td>Duplicate slide</td>
+					<td><kbd>Ctrl</kbd>+<kbd>D</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>D</kbd></td>
+					<td>Duplicate the selected slide in the list.</td>
+				</tr>
+				<tr>
+					<td>Move slide up</td>
+					<td><kbd>Ctrl</kbd>+<kbd>↑</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>↑</kbd></td>
+					<td>Move the selected slide above the previous one in the list.</td>
+				</tr>
+				<tr>
+					<td>Move slide down</td>
+					<td><kbd>Ctrl</kbd>+<kbd>↓</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>↓</kbd></td>
+					<td>Move the selected slide below the following one in the list.</td>
+				</tr>
+				<tr>
+					<td>Move slide to beginning</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+					<td>Move the selected slide to the very first position in the list.</td>
+				</tr>
+				<tr>
+					<td>Move slide to end</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+					<td>Move the selected slide to the very last position in the list.</td>
+				</tr>
+				<tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithobjects"></a>Performing Actions on Objects</th>
+				</tr>
+				<tr>
+					<td>Create a copy</td>
+					<td><kbd>Ctrl</kbd> + drag,<br /><kbd>Ctrl</kbd>+<kbd>D</kbd></td>
+					<td><kbd>^ Ctrl</kbd> + drag,<br /><kbd>^ Ctrl</kbd>+<kbd>D</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>D</kbd></td>
+					<td>Hold down the <kbd>Ctrl</kbd> key when dragging the selected object or press <kbd>Ctrl</kbd>+<kbd>D</kbd> (<kbd>&#8984; Cmd</kbd>+<kbd>D</kbd> for Mac) to create its copy.</td>
+				</tr>
+				<tr>
+					<td>Group</td>
+					<td><kbd>Ctrl</kbd>+<kbd>G</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>G</kbd></td>
+					<td>Group the selected objects.</td>
+				</tr>
+				<tr>
+					<td>Ungroup</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>G</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>G</kbd></td>
+					<td>Ungroup the selected group of objects.</td>
+				</tr>
+                <tr>
+                    <td>Select the next object</td>
+                    <td><kbd>↹ Tab</kbd></td>
+					<td><kbd>↹ Tab</kbd></td>
+                    <td>Select the next object after the currently selected one.</td>
+                </tr>
+                <tr>
+                    <td>Select the previous object</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Select the previous object before the currently selected one.</td>
+                </tr>
+                <tr>
+                    <td>Draw straight line or arrow</td>
+                    <td><kbd>⇧ Shift</kbd> + drag (when drawing lines/arrows)</td>
+                    <td><kbd>⇧ Shift</kbd> + drag (when drawing lines/arrows)</td>
+                    <td>Draw a straight vertical/horizontal/45-degree line or arrow.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Modifying Objects</th>
+				</tr>
+				<tr>
+					<td>Constrain movement</td>
+					<td><kbd>⇧ Shift</kbd> + drag</td>
+					<td><kbd>⇧ Shift</kbd> + drag</td>
+					<td>Constrain the movement of the selected object horizontally or vertically.</td>
+				</tr>
+				<tr>
+					<td>Set 15-degree-rotation</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when rotating)</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when rotating)</td>
+					<td>Constrain the rotation angle to 15 degree increments.</td>
+				</tr>
+				<tr>
+					<td>Maintain proportions</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when resizing)</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when resizing)</td>
+					<td>Maintain the proportions of the selected object when resizing.</td>
+				</tr>
+				<tr>
+					<td>Movement pixel by pixel</td>
+					<td><kbd>Ctrl</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+					<td>Hold down the <kbd>Ctrl</kbd> (<kbd>&#8984; Cmd</kbd> for Mac) key and use the keybord arrows to move the selected object by one pixel at a time.</td>
+				</tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithtables"></a>Working with Tables</th>
+                </tr>
+                <tr>
+                    <td>Move to the next cell in a row</td>
+                    <td><kbd>↹ Tab</kbd></td>
+					<td><kbd>↹ Tab</kbd></td>
+                    <td>Go to the next cell in a table row.</td>
+                </tr>
+                <tr>
+                    <td>Move to the previous cell in a row</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Go to the previous cell in a table row.</td>
+                </tr>
+                <tr>
+                    <td>Move to the next row</td>
+                    <td><kbd>↓</kbd></td>
+					<td><kbd>↓</kbd></td>
+                    <td>Go to the next row in a table.</td>
+                </tr>
+                <tr>
+                    <td>Move to the previous row</td>
+                    <td><kbd>↑</kbd></td>
+					<td><kbd>↑</kbd></td>
+                    <td>Go to the previous row in a table.</td>
+                </tr>
+                <tr>
+                    <td>Start new paragraph</td>
+                    <td><kbd>↵ Enter</kbd></td>
+					<td><kbd>↵ Return</kbd></td>
+                    <td>Start a new paragraph within a cell.</td>
+                </tr>
+                <tr>
+                    <td>Add new row</td>
+                    <td><kbd>↹ Tab</kbd> in the lower right table cell.</td>
+					<td><kbd>↹ Tab</kbd> in the lower right table cell.</td>
+                    <td>Add a new row at the bottom of the table.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="preview"></a>Previewing Presentation</th>
+				</tr>
+				<tr>
+					<td>Start preview from the beginning</td>
+					<td><kbd>Ctrl</kbd>+<kbd>F5</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>F5</kbd></td>
+					<td>Start a presentation from the beginning.</td>
+				</tr>
+				<tr>
+					<td>Navigate forward</td>
+					<td><kbd>↵ Enter</kbd>,<br /><kbd>Page Down</kbd>,<br /><kbd>→</kbd>,<br /><kbd>↓</kbd>,<br /><kbd>␣ Spacebar</kbd></td>
+					<td><kbd>↵ Return</kbd>,<br /><kbd>Page Down</kbd>,<br /><kbd>→</kbd>,<br /><kbd>↓</kbd>,<br /><kbd>␣ Spacebar</kbd></td>
+					<td>Display the next transition effect or advance to the next slide.</td>
+				</tr>
+				<tr>
+					<td>Navigate backward</td>
+					<td><kbd>Page Up</kbd>,<br /><kbd>←</kbd>,<br /><kbd>↑</kbd></td>
+					<td><kbd>Page Up</kbd>,<br /><kbd>←</kbd>,<br /><kbd>↑</kbd></td>
+					<td>Display the previous transition effect or return to the previous slide.</td>
+				</tr>
+				<tr>
+					<td>Close preview</td>
+					<td><kbd>Esc</kbd></td>
+					<td><kbd>Esc</kbd></td>
+					<td>End a presentation.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Undo and Redo</th>
+				</tr>
+				<tr>
+					<td>Undo</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Z</kbd></td>
+					<td>Reverse the latest performed action.</td>
+				</tr>
+				<tr>
+					<td>Redo</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Y</kbd></td>
+					<td>Repeat the latest undone action.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Cut, Copy, and Paste</th>
+				</tr>
+				<tr>
+					<td>Cut</td>
+					<td><kbd>Ctrl</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Delete</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>X</kbd></td>
+					<td>Cut the selected object and send it to the computer clipboard memory. The cut object can be later inserted to another place in the same presentation<!--, into another presentation, or into some other program-->.</td>
+				</tr>
+				<tr>
+					<td>Copy</td>
+					<td><kbd>Ctrl</kbd>+<kbd>C</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>Insert</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>C</kbd></td>
+					<td>Send the selected object to the computer clipboard memory. The copied object can be later inserted to another place in the same presentation<!--, into another presentation, or into some other program-->.</td>
+				</tr>
+				<tr>
+					<td>Paste</td>
+					<td><kbd>Ctrl</kbd>+<kbd>V</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Insert</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>V</kbd></td>
+					<td>Insert the previously copied object from the computer clipboard memory to the current cursor position. The object can be previously copied from the same presentation<!--, from another presentation, or from some other program-->.</td>
+				</tr>
+				<tr>
+					<td>Insert hyperlink</td>
+					<td><kbd>Ctrl</kbd>+<kbd>K</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>K</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>K</kbd></td>
+					<td>Insert a hyperlink which can be used to go to a web address or to a certain slide in the presentation.</td>
+				</tr>
+				<tr>
+					<td>Copy style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd></td>
+					<td>Copy the formatting from the selected fragment of the currently edited text. The copied formatting can be later applied to another text fragment in the same presentation.</td>
+				</tr>
+				<tr>
+					<td>Apply style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd></td>
+					<td>Apply the previously copied formatting to the text in the currently edited text box.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Selecting with the Mouse</th>
+				</tr>
+				<tr>
+					<td>Add to the selected fragment</td>
+					<td><kbd>⇧ Shift</kbd></td>
+					<td><kbd>⇧ Shift</kbd></td>
+					<td>Start the selection, hold down the <kbd>⇧ Shift</kbd> key and click where you need to end the selection.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="textselection"></a>Selecting using the Keyboard</th>
+				</tr>
+				<tr>
+					<td>Select all</td>
+					<td><kbd>Ctrl</kbd>+<kbd>A</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>A</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>A</kbd></td>
+					<td>Select all the slides (in the slides list) or all the objects within the slide (in the slide editing area) or all the text (within the text box) - depending on where the mouse cursor is located.</td>
+				</tr>
+				<tr>
+					<td>Select text fragment</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td>Select the text character by character.</td>
+				</tr>
+				<tr>
+					<td>Select text from cursor to beginning of line</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>Home</kbd></td>
+					<td></td>
+					<td>Select a text fragment from the cursor to the beginning of the current line.</td>
+				</tr>
+				<tr>
+					<td>Select text from cursor to end of line</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>End</kbd></td>
+					<td></td>
+					<td>Select a text fragment from the cursor to the end of the current line.</td>
+				</tr>
+                <tr>
+                    <td>Select one character to the right</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td>Select one character to the right of the cursor position.</td>
+                </tr>
+                <tr>
+                    <td>Select one character to the left</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td>Select one character to the left of the cursor position.</td>
+                </tr>
+                <tr>
+                    <td>Select to the end of a word</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td></td>
+                    <td>Select a text fragment from the cursor to the end of a word.</td>
+                </tr>
+                <tr>
+                    <td>Select to the beginning of a word</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td></td>
+                    <td>Select a text fragment from the cursor to the beginning of a word.</td>
+                </tr>
+                <tr>
+                    <td>Select one line up</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+                    <td>Select one line up (with the cursor at the beginning of a line).</td>
+                </tr>
+                <tr>
+                    <td>Select one line down</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+                    <td>Select one line down (with the cursor at the beginning of a line).</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Text Styling</th>
+				</tr>
+				<tr>
+					<td>Bold</td>
+					<td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>B</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>B</kbd></td>
+					<td>Make the font of the selected text fragment bold giving it more weight.</td>
+				</tr>
+				<tr>
+					<td>Italic</td>
+					<td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>I</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>I</kbd></td>
+					<td>Make the font of the selected text fragment italicized giving it some right side tilt.</td>
+				</tr>
+				<tr>
+					<td>Underline</td>
+					<td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>U</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>U</kbd></td>
+					<td>Make the selected text fragment underlined with the line going under the letters.</td>
+				</tr>
+				<tr>
+					<td>Strikeout</td>
+					<td><kbd>Ctrl</kbd>+<kbd>5</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>5</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>5</kbd></td>
+					<td>Make the selected text fragment struck out with the line going through the letters.</td>
+				</tr>
+				<tr>
+					<td>Subscript</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&gt;</kbd></kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&gt;</kbd></kbd></td>
+					<td>Make the selected text fragment smaller and place it to the lower part of the text line, e.g. as in chemical formulas.</td>
+				</tr>
+				<tr>
+					<td>Superscript</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&lt;</kbd></kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&lt;</kbd></kbd></td>
+					<td>Make the selected text fragment smaller and place it to the upper part of the text line, e.g. as in fractions.</td>
+				</tr>
+				<tr>
+					<td>Bulleted list</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd></td>
+					<td>Create an unordered bulleted list from the selected text fragment or start a new one.</td>
+				</tr>
+				<tr>
+					<td>Remove formatting</td>
+					<td><kbd>Ctrl</kbd>+<kbd>␣ Spacebar</kbd></td>
+					<td></td>
+					<td>Remove formatting from the selected text fragment.</td>
+				</tr>
+				<tr>
+					<td>Increase font</td>
+					<td><kbd>Ctrl</kbd>+<kbd>]</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>]</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>]</kbd></td>
+					<td>Increase the size of the font for the selected text fragment 1 point.</td>
+				</tr>
+				<tr>
+					<td>Decrease font</td>
+					<td><kbd>Ctrl</kbd>+<kbd>[</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>[</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>[</kbd></td>
+					<td>Decrease the size of the font for the selected text fragment 1 point.</td>
+				</tr>
+				<tr>
+					<td>Align center</td>
+					<td><kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+					<td></td>
+					<td>Center the text between the left and the right edges.</td>
+				</tr>
+				<tr>
+					<td>Align justified</td>
+					<td><kbd>Ctrl</kbd>+<kbd>J</kbd></td>
+					<td></td>
+					<td>Justify the text in the paragraph adding additional space between words so that the left and the right text edges were aligned with the paragraph margins.</td>
+				</tr>
+				<tr>
+					<td>Align right</td>
+					<td><kbd>Ctrl</kbd>+<kbd>R</kbd></td>
+					<td></td>
+					<td>Align right with the text lined up by the right side of the text box, the left side remains unaligned.</td>
+				</tr>
+				<tr>
+					<td>Align left</td>
+					<td><kbd>Ctrl</kbd>+<kbd>L</kbd></td>
+					<td></td>
+					<td>Align left with the text lined up by the left side of the text box, the right side remains unaligned.</td>
+				</tr>
+                <tr>
+                    <td>Increase left indent</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+                    <td>Increase the paragraph left indent by one tabulation position.</td>
+                </tr>
+                <tr>
+                    <td>Decrease left indent</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>M</kbd></td>
+                    <td>Decrease the paragraph left indent by one tabulation position.</td>
+                </tr>
+                <tr>
+                    <td>Delete one character to the left</td>
+                    <td><kbd>← Backspace</kbd></td>
+                    <td><kbd>← Backspace</kbd></td>
+                    <td>Delete one character to the left of the cursor.</td>
+                </tr>
+                <tr>
+                    <td>Delete one character to the right</td>
+                    <td><kbd>Delete</kbd></td>
+                    <td><kbd>Fn</kbd>+<kbd>Delete</kbd></td>
+                    <td>Delete one character to the right of the cursor.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section">Moving around in text</th>
+                </tr>
+                <tr>
+                    <td>Move one character to the left</td>
+                    <td><kbd>←</kbd></td>
+                    <td><kbd>←</kbd></td>
+                    <td>Move the cursor one character to the left.</td>
+                </tr>
+                <tr>
+                    <td>Move one character to the right</td>
+                    <td><kbd>→</kbd></td>
+                    <td><kbd>→</kbd></td>
+                    <td>Move the cursor one character to the right.</td>
+                </tr>
+                <tr>
+                    <td>Move one line up</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Move the cursor one line up.</td>
+                </tr>
+                <tr>
+                    <td>Move one line down</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Move the cursor one line down.</td>
+                </tr>
+                <tr>
+                    <td>Move to the beginning of a word or one word to the left</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd></td>
+                    <td>Move the cursor to the beginning of a word or one word to the left.</td>
+                </tr>
+                <tr>
+                    <td>Move one word to the right</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>→</kbd></td>
+                    <td>Move the cursor one word to the right.</td>
+                </tr>
+                <tr>
+                    <td>Move to next placeholder</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↵ Enter</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>↵ Return</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>↵ Return</kbd></td>
+                    <td>Move to the next title or body text placeholder. If it is the last placeholder on a slide, this will insert a new slide with the same slide layout as the original slide</td>
+                </tr>
+                <!--<tr>
+                    <td>One paragraph up</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↑</kbd></td>
+					<td></td>
+                    <td>Move the cursor one paragraph up.</td>
+                </tr>
+                <tr>
+                    <td>One paragraph down</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↓</kbd></td>
+					<td></td>
+                    <td>Move the cursor one paragraph down.</td>
+                </tr>-->
+                <tr>
+                    <td>Jump to the beginning of the line</td>
+                    <td><kbd>Home</kbd></td>
+                    <td><kbd>Home</kbd></td>
+                    <td>Put the cursor to the beginning of the currently edited line.</td>
+                </tr>
+                <tr>
+                    <td>Jump to the end of the line</td>
+                    <td><kbd>End</kbd></td>
+                    <td><kbd>End</kbd></td>
+                    <td>Put the cursor to the end of the currently edited line.</td>
+                </tr>
+                <tr>
+                    <td>Jump to the beginning of the text box</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Home</kbd></td>
+					<td></td>
+                    <td>Put the cursor to the beginning of the currently edited text box.</td>
+                </tr>
+                <tr>
+                    <td>Jump to the end of the text box</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>End</kbd></td>
+					<td></td>
+                    <td>Put the cursor to the end of the currently edited text box.</td>
+                </tr>
+			</table>
+		</div>
+	</body>
+</html>

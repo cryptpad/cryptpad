@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Inserire tabelle</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Add a table to your document and adjust its properties" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Inserire tabelle</h1>
+        <h3>Inserire una tabella</h3>
+        <p>Per inserire una tabella nel testo del documento,</p>
+        <ol>
+            <li>posizionare il cursore nel punto in cui si desidera inserire la tabella,</li>
+            <li>passare alla scheda <b>Inserisci</b> della barra degli strumenti superiore,</li>
+            <li>fare clic sull'icona <img alt="Tabella" src="../images/table.png" /> <b>Tabella</b> nella barra degli strumenti superiore,</li>
+            <li>
+                selezionare l'opzione per creare una tabella:
+                <ul>
+                    <li>
+                        <p>una tabella con un numero predefinito di celle (massimo 10 per 8 celle)</p>
+                        <p>Se si desidera aggiungere rapidamente una tabella, è sufficiente selezionare il numero di righe (8 massimo) e colonne (10 massimo).</p>
+                    </li>
+                    <li>
+                        <p>o una tabella personalizzata</p>
+                        <p>Nel caso in cui sia necessaria una tabella con  più di 10 per 8 celle, selezionare l'opzione <b>Inserisci tabella personalizzata</b> che aprirà la finestra in cui è possibile inserire rispettivamente il numero necessario di righe e colonne, quindi fare clic sul pulsante <b>OK</b>.</p>
+                        <p><img alt="Una tabella personalizzata" src="../images/customtable.png" /></p>
+                    </li>
+                    <li>Se si desidera disegnare una tabella con il mouse, selezionare l'opzione <b>Disegna tabella</b>. Ciò può essere utile se si desidera creare una tabella con righe e colonne di dimensioni diverse. Il cursore del mouse si trasformerà nella matita <img alt="Strumento Matita" src="../images/pencil_tool.png" />. Disegnare una forma rettangolare in cui si desidera aggiungere una tabella, quindi aggiungere righe disegnando linee e colonne orizzontali disegnando linee verticali all'interno del contorno della tabella.</li>
+                </ul>
+            </li>
+            <li>una volta aggiunta la tabella, è possibile modificarne le proprietà, le dimensioni e la posizione.</li>
+        </ol>
+        <p>Per ridimensionare una tabella, posizionare il cursore del mouse sul quadratino <img alt="Quadratino " src="../images/resizetable_handle.png" /> nell'angolo inferiore destro e trascinarlo fino a quando la tabella non raggiunge le dimensioni necessarie.</p>
+        <p><img alt="Per ridimensionare una tabella" src="../images/resizetable.png" /></p>
+        <p>È inoltre possibile modificare manualmente la larghezza di una determinata colonna o l'altezza di una riga. Spostare il cursore del mouse sul bordo destro della colonna in modo che il cursore si trasformi nella freccia bidirezionale <img alt="Freccia bidirezionale" src="../images/changecolumnwidth.png" /> e trascinare il bordo verso sinistra o verso destra per impostare la larghezza necessaria. Per modificare manualmente l'altezza di una singola riga, spostare il cursore del mouse sul bordo inferiore della riga in modo che il cursore si trasformi nella freccia bidirezionale <img alt="Freccia bidirezionale" src="../images/changerowheight.png" /> e trascini il bordo verso l'alto o verso il basso.</p>
+        <p>Per spostare una tabella, tenere premuto il quadratino <img alt="Quadratino" src="../images/movetable_handle.png" /> nell'angolo superiore sinistro e trascinarla nella posizione necessaria nel documento.</p>
+        <p>È anche possibile aggiungere una didascalia alla tabella. Per saperne di più su come lavorare con le didascalie per le tabelle, puoi fare riferimento a <a href="../UsageInstructions/AddCaption.htm" onclick="onhyperlinkclick(this)">questo articolo</a>.</p>
+        <hr />
+        <h3>Selezionare una tabella o una sua parte</h3>
+        <p>Per selezionare un'intera tabella, fare clic sul quadratino <img alt="Quadratino" src="../images/movetable_handle.png" /> nell'angolo superiore sinistro.</p>
+        <p>Per selezionare una determinata cella, spostare il cursore del mouse sul lato sinistro della cella necessaria in modo che il cursore si trasformi nella freccia nera <img alt="Selezionare una determinata cella" src="../images/selectcellpointer.png" />, quindi fare clic con il pulsante sinistro del mouse.</p>
+        <p>Per selezionare una determinata riga, spostare il cursore del mouse sul bordo sinistro della tabella accanto alla riga necessaria in modo che il cursore si trasformi nella freccia nera orizzontale <img alt="Selezionare una determinata riga" src="../images/selectrowpointer.png" />, quindi fare clic con il pulsante sinistro del mouse.</p>
+        <p>Per selezionare una determinata colonna, spostare il cursore del mouse sul bordo superiore della colonna necessaria in modo che il cursore si trasformi nella freccia nera verso il basso <img alt="Selezionare una determinata colonna" src="../images/selectcolumnpointer.png" />, quindi fare clic con il pulsante sinistro del mouse.</p>
+        <p>È anche possibile selezionare una cella, una riga, una colonna o una tabella utilizzando le opzioni del menu contestuale o dalla sezione <b>Righe e colonne</b> nella barra laterale destra.</p>
+        <p class="note">
+            <b>Nota</b>: per spostarsi in una tabella è possibile utilizzare le <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithtables" onclick="onhyperlinkclick(this)">scelte rapide da tastiera</a>.
+        </p>
+        <hr />
+        <h3>Regolare le impostazioni della tabella</h3>
+        <p>Alcune delle proprietà della tabella e la sua struttura possono essere modificate utilizzando il menu di scelta rapida. Le opzioni del menu sono:</p>
+        <ul>
+            <li><b>Taglia, Copia, Incolla</b> - opzioni standard utilizzate per tagliare o copiare un testo / oggetto selezionato e incollare un passaggio di testo o un oggetto precedentemente tagliato / copiato nella posizione corrente del cursore.</li>
+            <li><b>Seleziona</b> viene utilizzata per selezionare una riga, una colonna, una cella o una tabella.</li>
+            <li>
+                <b>Inserisci</b> viene utilizzata per inserire una riga sopra o sotto la riga in cui è posizionato il cursore, nonché per inserire una colonna a sinistra oa destra dalla colonna in cui è posizionato il cursore.
+                <p>È anche possibile inserire più righe o colonne. Se si seleziona l'opzione <b>Più righe/colonne</b>, viene visualizzata la finestra <b>Inserisci più righe/colonne</b>. Selezionare l'opzione <b>Righe</b> o <b>Colonne</b> dall'elenco, specificare il numero di righe/colonne da aggiungere, scegliere dove aggiungerle: <b>Sopra il cursore</b> o <b>Sotto il cursore</b> e fare clic su <b>OK</b>.</p>
+            </li>
+            <li><b>Elimina</b> viene utilizzato per eliminare una riga, una colonna, una tabella o celle. Se si seleziona l'opzione <b>Celle</b>, si aprirà la finestra <b>Elimina celle</b>, in cui è possibile selezionare se si desidera <b>Spostare le celle a sinistra</b>, <b>Elimina l'intera riga</b> o <b>Elimina l'intera colonna</b>.</li>
+            <li>
+                <b>Unisci celle</b> è disponibile se sono selezionate due o più celle e viene utilizzata per unirle.
+                <p>
+                    È anche possibile unire le celle cancellando una linea tra di loro utilizzando lo strumento gomma. Per fare ciò, fare clic sull'icona <img alt="Tabella" src="../images/table.png" /> <b>Tabella</b> nella barra degli strumenti superiore, scegliere l'opzione <b>Cancella tabella</b>. Il cursore del mouse si trasformerà nella gomma <img alt="Strumento gomma" src="../images/eraser_tool.png" />. Spostare il cursore del mouse sul bordo tra le celle da unire e cancellarlo.
+                </p>
+            </li>
+            <li>
+                <b>Dividi cella...</b> viene utilizzata per aprire una finestra in cui è possibile selezionare il numero necessario di colonne e righe in cui verrà divisa la cella.
+                <p>
+                    È anche possibile dividere una cella disegnando righe o colonne utilizzando lo strumento matita. Per fare ciò, fare clic sull'icona <img alt="Tabella" src="../images/table.png" /> <b>Tabella</b> nella barra degli strumenti superiore, scegliere l'opzione <b>Disegna tabella</b>. Il cursore del mouse si trasformerà nella matita <img alt="Strumento matita" src="../images/pencil_tool.png" />. Disegnare una linea orizzontale per creare una riga o una linea verticale per creare una colonna.
+                </p>
+            </li>
+            <li><b>Distribuisci righe</b> viene utilizzata per regolare le celle selezionate in modo che abbiano la stessa altezza senza modificare l'altezza complessiva della tabella.</li>
+            <li><b>Distribuisci colonne</b> viene utilizzata per regolare le celle selezionate in modo che abbiano la stessa larghezza senza modificare la larghezza complessiva della tabella.</li>
+            <li><b>Allineamento verticale cella</b> viene utilizzata per allineare il testo in alto, al centro o in basso nella cella selezionata.</li>
+            <li><b>Direzione testo</b> - viene utilizzata per modificare l'orientamento del testo in una cella. È possibile posizionare il testo orizzontalmente, verticalmente dall'alto verso il basso (<b>Ruota testo in basso</b>), o verticalmente dal basso verso l'alto (<b>Ruota testo in alto</b>).</li>
+            <li><b>Tabella Impostazioni avanzate</b> viene utilizzata per aprire la finestra 'Tabella - Impostazioni avanzate'.</li>
+            <li><b>Collegamento ipertestuale</b> viene utilizzato per inserire un collegamento ipertestuale.</li>
+            <li><b>Impostazioni avanzate del paragrafo</b> viene utilizzata per aprire la finestra 'Paragrafo - Impostazioni avanzate'.</li>
+        </ul>
+        <hr />
+        <p><img class="floatleft" alt="Barra laterale destra - Tabella Impostazioni" src="../images/right_table.png" /></p>
+        <p>È possibile modificare le proprietà della tabella nella barra laterale destra:</p>
+        <ul style="margin-left: 280px;">
+            <li>
+                <p><b>Righe</b> e <b>Colonne</b> vengono utilizzate per selezionare le parti della tabella che si desidera evidenziare.</p>
+                <p>Per le righe:</p>
+                <ul>
+                    <li><i>Intestazione</i> - per evidenziare la prima riga</li>
+                    <li><i>Totale</i> - per evidenziare l'ultima riga</li>
+                    <li><i>A strisce</i> - per evidenziare ogni altra riga</li>
+                </ul>
+                <p>Per le colonne:</p>
+                <ul>
+                    <li><i>Prima</i> - per evidenziare la prima colonna</li>
+                    <li><i>Ultima</i> - per evidenziare l'ultima colonna</li>
+                    <li><i>A strisce</i> - per evidenziare ogni altra colonna</li>
+                </ul>
+            </li>
+            <li><p><b>Seleziona da modello</b> viene utilizzato per scegliere un modello di tabella tra quelli disponibili.</p></li>
+            <li><p><b>Stile bordi</b> viene utilizzato per selezionare la dimensione, il colore, lo stile e il colore di sfondo del bordo.</p></li>
+            <li><p><b>Righe e colonne</b> viene utilizzato per eseguire alcune operazioni con la tabella: selezionare, eliminare, inserire righe e colonne, unire celle, dividere una cella.</p></li>
+            <li><p><b>Dimensione di righe e colonne</b> viene utilizzato per regolare la larghezza e l'altezza della cella attualmente selezionata.  In questa sezione, è anche possibile <b>Distribuire righe</b> in modo che tutte le celle selezionate abbiano la stessa altezza o <b>Distribuire colonne</b> in modo che tutte le celle selezionate abbiano la stessa larghezza.</p></li>
+            <li><p><b>Aggiungi formula</b> viene utilizzato per <a href="../UsageInstructions/AddFormulasInTables.htm" onclick="onhyperlinkclick(this)">inserire una formula</a> nella cella della tabella selezionata.</p></li>
+            <li><p><b>Ripeti come riga di intestazione nella parte superiore di ogni pagina</b> viene utilizzata per inserire la stessa riga di intestazione nella parte superiore di ogni pagina in tabelle lunghe.</p></li>
+            <li><p><b>Mostra impostazioni avanzate</b> viene utilizzato per aprire la finestra 'Tabella - Impostazioni avanzate'.</p></li>
+        </ul>
+        <hr />
+        <h3>Regolare le impostazioni avanzate della tabella</h3>
+        <p>Per modificare le proprietà avanzate della tabella, fare clic sulla tabella con il pulsante destro del mouse e selezionare l'opzione <b>Impostazioni avanzate tabella</b> dal menu di scelta rapida o utilizzare il collegamento <b>Mostra impostazioni avanzate</b> nella barra laterale destra. Si aprirà la finestra delle proprietà della tabella:</p>
+        <p><img alt="Tabella Impostazioni avanzate" src="../images/table_properties_1.png" /></p>
+        <p>La scheda <b>Tabella</b> consente di modificare le proprietà dell'intera tabella.</p>
+        <ul>
+            <li>
+                La sezione <b>Dimensioni tabella</b> contiene i seguenti parametri:
+                <ul>
+                    <li>
+                        <b>Larghezza</b> - per impostazione predefinita, la larghezza della tabella viene regolata automaticamente per adattarsi alla larghezza della pagina, ovvero la tabella occupa tutto lo spazio tra il margine sinistro e destro della pagina. È possibile selezionare questa casella e specificare manualmente la larghezza della tabella necessaria.
+                    </li>
+                    <li>
+                        <b>Misura in</b> - consente di specificare se si desidera impostare la larghezza della tabella in unità assolute, ovvero <b>Centimetri</b>/<b>Punti</b>/<b>Pollici</b> (a seconda dell'opzione specificata nella scheda <b>File</b> -> <b>Impostazioni avanzate...</b>) o in <b>Percentuale</b> della larghezza complessiva della pagina.
+                        <p class="note"><b>Nota</b>: è anche possibile regolare le dimensioni della tabella modificando manualmente l'altezza della riga e la larghezza della colonna. Spostare il cursore del mouse sul bordo di una riga/colonna finché non si trasforma nella freccia bidirezionale e trascinare il bordo. È inoltre possibile utilizzare gli indicatori <img alt="Tabella -  Larghezza della colonna - Marcatore" src="../images/columnwidthmarker.png" /> sul righello orizzontale per modificare la larghezza della colonna e gli indicatori <img alt="Tabella - Altezza delle righe - Marcatore" src="../images/rowheightmarker.png" /> sul righello verticale per modificare l'altezza della riga.</p>
+                    </li>
+                    <li><b>Adatta automaticamente al contenuto</b> - consente la modifica automatica della larghezza di ogni colonna in base al testo all'interno delle sue celle.</li>
+                </ul>
+            </li>
+            <li>La sezione <b>Margini predefiniti delle celle</b> consente di modificare lo spazio tra il testo all'interno delle celle e il bordo della cella utilizzato per impostazione predefinita.</li>
+            <li>
+                La sezione <b>Opzioni</b> consente di modificare il seguente parametro:
+                <ul>
+                    <li><b>Consenti spaziatura tra le celle</b> - la spaziatura delle celle che verrà riempita con il <b>colore di sfondo della tabella</b>.</li>
+                </ul>
+            </li>
+        </ul>
+        <p><img alt="Tabella Impostazioni avanzate" src="../images/table_properties_5.png" /></p>
+        <p>La scheda <b>Cella</b> consente di modificare le proprietà delle singole celle. In primo luogo è necessario selezionare la cella a cui si desidera applicare le modifiche o selezionare l'intera tabella per modificare le proprietà di tutte le sue celle.</p>
+        <ul>
+            <li>
+                La sezione <b>Dimensioni cella</b> contiene i seguenti parametri:
+                <ul>
+                    <li><b>Larghezza preferita</b> - permette di impostare una larghezza di cella preferita. Questa è la dimensione a cui una cellula si sforza di adattarsi, ma in alcuni casi potrebbe non essere possibile adattarsi a questo valore esatto. Ad esempio, se il testo all'interno di una cella supera la larghezza specificata, verrà suddiviso nella riga successiva in modo che la larghezza della cella preferita rimanga invariata, ma se si inserisce una nuova colonna, la larghezza preferita verrà ridotta.</li>
+                    <li>
+                        <b>Misura in</b> - consente di specificare se si desidera impostare la larghezza della cella in unità assolute, ovvero <b>Centimetri</b>/<b>Punti</b>/<b>Pollici</b> (a seconda dell'opzione specificata nella scheda <b>File</b> -> <b>Impostazioni avanzate...</b>) o in <b>Percentuale</b> della larghezza complessiva della tabella.
+                        <p class="note"><b>Nota</b>: è anche possibile regolare manualmente la larghezza della cella. Per rendere una singola cella in una colonna più larga o più stretta della larghezza complessiva della colonna, selezionare la cella necessaria e spostare il cursore del mouse sul bordo destro fino a quando non si trasforma nella freccia bidirezionale, quindi trascinare il bordo. Per modificare la larghezza di tutte le celle in una colonna, utilizzare gli indicatori <img alt="Tabella - Larghezza della colonna - Marcatore" src="../images/columnwidthmarker.png" /> sul righello orizzontale per modificare la larghezza della colonna.</p>
+                    </li>
+                </ul>
+            </li>
+            <li>La sezione <b>Margini cella</b> consente di regolare lo spazio tra il testo all'interno delle celle e il bordo della cella. Per impostazione predefinita, vengono utilizzati valori standard (i valori predefiniti possono essere modificati anche nella scheda <b>Tabella</b>), ma è possibile deselezionare la casella <b>Utilizzaa margini predefiniti</b> e immettere manualmente i valori necessari.</li>
+            <li>
+                La sezione <b>Opzioni cella</b> consente di modificare il seguente parametro:
+                <ul>
+                    <li>L’opzione <b>Disponi testo</b> è abilitata per impostazione predefinita. Consente di disporre il testo all'interno di una cella che supera la sua larghezza sulla riga successiva espandendo l'altezza della riga e mantenendo invariata la larghezza della colonna.</li>
+                </ul>
+            </li>
+        </ul>
+        <p><img alt="Tabella Impostazioni avanzate" src="../images/table_properties_3.png" /></p>
+        <p>La scheda <b>Bordi e sfondo</b> contiene i seguenti parametri:</p>
+        <ul>
+            <li>
+                Parametri del <b>bordo</b> (dimensione, colore e presenza o assenza) - impostare le dimensioni del bordo, selezionare il colore e scegliere il modo in cui verrà visualizzato nelle celle.
+                <p class="note">
+                    <b>Nota</b>: inel caso in cui si seleziona di non mostrare i bordi della tabella facendo clic sul pulsante <img alt="Nessun bordo" src="../images/noborders.png" /> o deselezionando manualmente tutti i bordi sul diagramma, saranno indicati da una linea tratteggiata nel documento.
+                    Per farli scomparire, fare clic sull'icona <b>Caratteri non stampabili</b> <img alt="Caratteri non stampabili" src="../images/nonprintingcharacters.png" /> nella scheda <b>Home</b> della barra degli strumenti superiore e selezionare l'opzione <b>Bordi tabella nascosti</b>.
+                </p>
+            </li>
+            <li><b>Sfondo cella</b> - il colore dello sfondo all'interno delle celle (disponibile solo se una o più celle sono selezionate o l'opzione <b>Consenti spaziatura tra le celle</b> è selezionata nella scheda <b>Tabella</b>).</li>
+            <li><b>Sfondo tabella</b> - il colore per lo sfondo della tabella o lo sfondo dello spazio tra le celle nel caso in cui l'opzione <b>Consenti spaziatura tra le celle</b> sia selezionata nella scheda <b>Tabella</b>.</li>
+        </ul>
+        <p id="position"><img alt="Tabella Impostazioni avanzate" src="../images/table_properties_4.png" /></p>
+        <p>La scheda <b>Posizione tabella</b> è disponibile solo se è selezionata l'opzione <b>Tabella dinamica</b> nella scheda <b>Disposizione testo</b> e contiene i seguenti parametri:</p>
+        <ul>
+            <li>I parametri <b>orizzontali</b> includono l'<b>allineamento</b> della tabella (a sinistra, al centro, a destra) <b>rispetto al</b> margine, alla pagina o al testo, nonché la <b>posizione della tabella a destra</b> del margine, della pagina o del testo.</li>
+            <li>I parametri <b>verticali</b> includono l'<b>allineamento</b> della tabella (in alto, al centro, in basso) <b>rispetto al</b> margine, alla pagina o al testo, nonché la <b>posizione della tabella sotto</b> il margine, la pagina o il testo.</li>
+            <li>
+                La sezione <b>Opzioni</b> consente di modificare i seguenti parametri:
+                <ul>
+                    <li><b>Sposta l'oggetto con il testo</b> controlla se la tabella si sposta quando il testo in cui è inserita si sposta.</li>
+                    <li><b>Consenti sovrapposizione</b> controlla se due tabelle vengono unite in una tabella di grandi dimensioni o sovrapposte se vengono trascinate l'una vicino all'altra nella pagina.</li>
+                </ul>
+            </li>
+        </ul>
+        <p><img alt="Tabella Impostazioni avanzate" src="../images/table_properties_2.png" /></p>
+        <p>La scheda <b>Disposizione testo</b> contiene i seguenti parametri:</p>
+        <ul>
+            <li><b>Stile di disposizione</b> del testo - <b>Tabella in linea</b> o <b>Tabella dinamica</b>. Utilizzare l'opzione necessaria per modificare il modo in cui la tabella viene posizionata rispetto al testo: sarà una parte del testo (nel caso in cui si seleziona la tabella in linea) o bypassata da tutti i lati (se si seleziona la tabella dinamica).</li>
+            <li>
+                Dopo aver selezionato lo stile di disposizione, è possibile impostare parametri di disposizione aggiuntivi sia per le tabelle in linea che per le tabelle dinamica:
+                <ul>
+                    <li>Per la tabella in linea, è possibile specificare l'<b>allineamento</b> e il <b>rientro da sinistra</b> della tabella.</li>
+                    <li>Per la tabella dinamica, è possibile specificare la <b>distanza dal testo</b> e la <b>posizione</b> della tabella nella scheda <b>Posizione tabella</b>.</li>
+                </ul>
+            </li>
+        </ul>
+        <p><img alt="Tabella Impostazioni avanzate" src="../images/table_properties_6.png" /></p>
+        <p>La scheda <b>Testo alternativo</b> consente di specificare un <b>Titolo</b> e una <b>Descrizione</b> che verranno letti alle persone con disabilità visive o cognitive per aiutarle a capire meglio quali informazioni ci sono nella tabella.</p>
+
+    </div>
+</body>
+</html>

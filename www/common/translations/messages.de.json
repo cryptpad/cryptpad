@@ -27,10 +27,10 @@
     "padNotPinned": "Dieses Pad wird nach 3 Monaten ohne Aktivität auslaufen, {0}logge dich ein{1} oder {2}registriere dich{3}, um das Auslaufen zu verhindern.",
     "anonymousStoreDisabled": "Der Webmaster dieses CryptPad-Servers hat die anonyme Verwendung des Speichers deaktiviert. Du musst dich einloggen, um CryptDrive zu verwenden.",
     "expiredError": "Dieses Pad ist abgelaufen und ist nicht mehr verfügbar.",
-    "deletedError": "Dieses Pad wurde von seinem Eigentümer gelöscht und ist nicht mehr verfügbar.",
+    "deletedError": "Dieses Dokument wurde gelöscht und ist nicht mehr verfügbar.",
     "inactiveError": "Dieses Pad ist wegen Inaktivität gelöscht worden. Drücke Esc, um ein neues Pad zu erstellen.",
     "chainpadError": "Ein kritischer Fehler ist beim Aktualisieren deines Inhalts aufgetreten. Diese Seite ist schreibgeschützt, damit du sicherstellen kannst, dass kein Inhalt verloren geht.<br>Drücke <em>Esc</em>, um das Pad schreibgeschützt zu lesen oder lade es neu, um die Bearbeitung fortzusetzen.",
-    "errorCopy": " Du kannst noch auf den Inhalt zugreifen, indem du <em>Esc</em> drückst.<br>Wenn du das Fenster schließt, kannst du darauf nicht mehr zugreifen.",
+    "errorCopy": " Du kannst die aktuelle Version weiterhin schreibgeschützt verwenden, indem du <em>Esc</em> drückst.",
     "errorRedirectToHome": "Drücke <em>Esc</em>, um zu deinem CryptDrive zurückzukehren.",
     "newVersionError": "Eine neue Version von CryptPad ist verfügbar.<br><a href='#'>Lade die Seite neu</a>, um die neue Version zu benutzen. Drücke Esc, um im <b>Offline-Modus</b> weiterzuarbeiten.",
     "loading": "Laden...",
@@ -151,7 +151,6 @@
     "cancel": "Abbrechen",
     "cancelButton": "Abbrechen (Esc)",
     "show_help_button": "Hilfe anzeigen",
-    "hide_help_button": "Hilfe verbergen",
     "help_button": "Hilfe",
     "historyText": "Verlauf",
     "historyButton": "Dokumentverlauf anzeigen",
@@ -251,7 +250,7 @@
     "fm_sharedFolderName": "Geteilter Ordner",
     "fm_searchPlaceholder": "Suchen...",
     "fm_newButton": "Neu",
-    "fm_newButtonTitle": "Ein neues Pad oder Ordner erstellen, oder eine Datei in den aktuellen Ordner importieren",
+    "fm_newButtonTitle": "Erstelle ein neues Dokument oder einen neuen Ordner, importiere eine Datei in den aktuellen Ordner.",
     "fm_newFolder": "Neuer Ordner",
     "fm_newFile": "Neues Pad",
     "fm_folder": "Ordner",
@@ -402,7 +401,6 @@
     "settings_deleteHint": "Die Löschung eines Accounts ist endgültig. Dein CryptDrive und die Liste deiner Pads werden vom Server gelöscht. Deine restlichen Pads werden nach 90 Tage gelöscht, wenn niemand anderes sie in seinem CryptDrive gespeichert hat.",
     "settings_deleteButton": "Deinen Account löschen",
     "settings_deleteModal": "Gib die folgenden Informationen an deinen CryptPad-Administrator weiter, damit er die Daten vom Server löschen kann.",
-    "settings_deleteConfirm": "Wenn du auf OK klickst, wird dein Account dauerhaft gelöscht. Bist du sicher?",
     "settings_deleted": "Dein Account ist jetzt gelöscht. Klicke auf OK, um zur Hauptseite zu gelangen.",
     "settings_anonymous": "Du bist nicht eingeloggt. Die Einstellungen hier gelten nur für diesen Browser.",
     "settings_publicSigningKey": "Öffentlicher Schlüssel zum Unterschreiben",
@@ -486,7 +484,7 @@
     "mdToolbar_check": "Aufgabenliste",
     "mdToolbar_code": "Code",
     "home_host": "Dies ist eine unabhängige Installation der CrypPad-Software.",
-    "main_catch_phrase": "Suite zur Zusammenarbeit,<br>verschlüsselt und quelloffen",
+    "main_catch_phrase": "Suite zur Zusammenarbeit<br>Ende-zu-Ende-verschlüsselt und quelloffen",
     "footer_aboutUs": "Über uns",
     "about": "Über uns",
     "privacy": "Datenschutzerklärung",
@@ -558,53 +556,7 @@
     "four04_pageNotFound": "Wir konnten die Seite, die du angefordert hast, nicht finden.",
     "header_logoTitle": "Zu deinem CryptDrive",
     "header_homeTitle": "Zur CryptPad-Hauptseite",
-    "help": {
-        "title": "Mit CryptPad anfangen",
-        "generic": {
-            "more": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a href=\"https://docs.cryptpad.fr\" target=\"_blank\" rel=\"noopener noreferrer\">Documentation</a> liest.",
-            "share": "Teile dieses Dokument mit der Schaltfläche  <i class=\"fa fa-shhare-alt\"></i> <b>Teilen</b> und verwalte die Zugriffsrechte mit <i class=\"fa fa-unlock-alt\"></i> <b>Zugriff</b>.",
-            "save": "Alle Änderungen werden automatisch synchronisiert. Du musst sie also nicht selbst speichern"
-        },
-        "text": {
-            "formatting": "Blende die Werkzeugleiste ein/aus mit der Schaltfläche <i class=\"fa fa-wrench\"></i> <b>Werkzeuge</b>.",
-            "embed": "Füge mit der Schaltfläche <i class=\"fa fa-image\"></i> <b>Einfügen</b> ein Bild aus deinem CryptDrive oder deinem Computer ein (eingeloggte Benutzer).",
-            "history": "Du kannst das Menü <em>Verlauf</em> <span class=\"fa fa-history\"></span> benutzen, um frühere Versionen anzusehen oder wiederherzustellen"
-        },
-        "pad": {
-            "export": "Du kannst Pads als PDF exportieren, indem du auf die Schaltfläche <span class=\"fa fa-print\"></span> in der Werkzeugleiste klickst"
-        },
-        "code": {
-            "modes": "Benutze Menü <span class=\"cptools cptools-palette\"></span><b>Theme</b>, um Editor-Theme und Syntaxhervorhebung auszuwählen."
-        },
-        "beta": {
-            "warning": "Dieser Editor ist noch <strong>experimentell</strong>, du kannst Fehler <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">hier</a> melden"
-        },
-        "oo": {
-            "access": "Zugriff ist auf registrierte Nutzer beschränkt, Mitarbeiter werden sich einloggen müssen"
-        },
-        "slide": {
-            "markdown": "Schreibe Folien in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> and trenne sie mit <code>---</code> in einer Zeile",
-            "present": "Starte die Präsentation mit der Schaltfläche <span class=\"fa fa-play-circle\"></span>",
-            "settings": "Benutze das Menü <span class=\"cptools cptools-palette\"></span><b>Theme</b>, um Folienfarben und <span class=\"fa fa-cog\"></span><b>Einstellungen</b> (Hintergrund, Übergänge, Anzeige der Foliennummer etc.) zu ändern.",
-            "colors": "Ändere Text- und Hintergrundfarbe mit den Schaltflächen <span class=\"fa fa-i-cursor\"></span> und <span class=\"fa fa-square\"></span>"
-        },
-        "poll": {
-            "decisions": "Treffe Entscheidungen gemeinsam mit deinen Kontakten",
-            "options": "Mache Vorschläge und teile deine Präferenzen mit",
-            "choices": "Klicke in die Zellen in deiner Spalte, um zwischen ja (<strong>✔</strong>), viellecht (<strong>~</strong>), oder nein (<strong>✖</strong>) zu wählen",
-            "submit": "Klicke auf <strong>Senden</strong>, damit deine Auswahl für andere sichtbar wird"
-        },
-        "whiteboard": {
-            "colors": "Ein Doppelklick auf Farben erlaubt, die Palette zu verändern",
-            "mode": "Wechsle zum <span class=\"fa fa-arrows\"></span> Auswahlmodus, um Elemente zu verschieben und zu verändern.",
-            "embed": "Bette Bilder von deinem CryptDrive oder deinem Computer ein mit <span class=\"fa fa-image\"></span> <b>Einfügen</b>. Exportiere die Zeichnung als PNG in dein CryptDrive mit <b><span class=\"fa fa-file-o\"></span> Datei > <span class=\"fa fa-file-image-o\"></span> Als Bild speichern</b> oder zu deinem Computer mit <b><span class=\"fa fa-file-o\"></span> Datei > <span class=\"fa fa-download\"></span> Exportieren</b>."
-        },
-        "kanban": {
-            "add": "Füge neue Karten und Boards mit der Schaltfläche <span class=\"fa fa-plus\"></span> hinzu",
-            "task": "Verschiebe Einträge per Drag & Drop oder ziehe sie zum <span class=\"fa fa-trash\"></span> Papierkorb, um sie zu löschen",
-            "color": "Bearbeite Titel, Inhalt, Tags und Farben durch Klicken auf die Schaltfläche <span class=\"fa fa-pencil\"></span> neben den Titeln von Karten und Boards"
-        }
-    },
+    "help_genericMore": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a>Documentation</a> liest.",
     "driveReadmeTitle": "Was ist CryptPad?",
     "readme_welcome": "Willkommen zu CryptPad!",
     "readme_p1": "Willkommen zu CryptPad, hier kannst du deine Notizen aufschreiben, allein oder mit Kontakten.",
@@ -644,9 +596,9 @@
     "creation_noOwner": "Kein Eigentümer",
     "creation_expiration": "Ablaufdatum",
     "creation_passwordValue": "Passwort",
-    "creation_newPadModalDescription": "Klicke auf einen Pad-Typ, um das entsprechende Pad zu erstellen. Du kannst auch die <b>Tab</b>-Taste für die Auswahl und die <b>Enter</b>-Taste zum Bestätigen benutzen.",
-    "password_info": "Das Pad, das du öffnen möchtest, existiert nicht mehr oder ist mit einem Passwort geschützt. Gib das richtige Passwort ein, um den Inhalt anzuzeigen.",
-    "password_error": "Pad nicht gefunden!<br>Dieser Fehler kann zwei Ursachen haben: Entweder ist das Passwort ungültig oder das Pad wurde vom Server gelöscht.",
+    "creation_newPadModalDescription": "Klicke auf einen Dokument-Typ, um das entsprechende Dokument zu erstellen. Du kannst auch die <b>Tab</b>-Taste für die Auswahl und die <b>Enter</b>-Taste zum Bestätigen benutzen.",
+    "password_info": "Das Dokument, das du öffnen möchtest, existiert nicht mehr oder ist mit einem neuen Passwort geschützt. Gib das richtige Passwort ein, um den Inhalt anzuzeigen.",
+    "password_error": "Dokument nicht gefunden!<br>Dieser Fehler kann zwei Ursachen haben: Entweder ist das Passwort ungültig oder das Dokument wurde zerstört.",
     "password_placeholder": "Gib das Passwort hier ein...",
     "password_submit": "Abschicken",
     "properties_addPassword": "Passwort hinzufügen",
@@ -1236,5 +1188,6 @@
     "addOptionalPassword": "Passwort hinzufügen (optional)",
     "oo_lostEdits": "Leider konnten deine letzten ungespeicherten Bearbeitungen nach dem Synchronisieren neuer Inhalte nicht wiederhergestellt werden.",
     "fm_cantUploadHere": "Hochladen hier nicht möglich",
-    "importError": "Import fehlgeschlagen (falsches Format)"
+    "importError": "Import fehlgeschlagen (falsches Format)",
+    "toolbar_degraded": "Derzeit bearbeiten über {0} Benutzer dieses Dokument. Die Benutzerliste und der Chat wurden deaktiviert, um die Performance zu verbessern."
 }

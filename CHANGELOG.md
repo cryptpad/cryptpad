@@ -1,3 +1,74 @@
+# 4.3.1 (WIP)
+
+This minor release addresses some bugs discovered after deploying and tagging 4.3.0
+
+* better isLoggedIn() check
+* fix templates in sheets
+* include onlyOffice version along with checkpoint hashes
+* send feedback when opening the readme
+  * so we can decide whether to remove it
+* handle decryption errors for blobs
+  * prompted by a badly formed sheet checkpoint
+* fix broken team creation
+* CKEditor
+  * broken table of contents scrollTo
+  * show the link bubble for links inside of comments
+* fix title reset in polls
+
+# 4.3.0 (D)
+
+## Goals
+
+This release is a continuation of our recent efforts to stabilize the platform, fixing small bugs and inconsistencies that we missed when developing larger features. In the meantime we've received reports of the platform performing poorly under various unusual circumstances, so we've developed some targeted fixes to both improve user experience and decrease the load on our server.
+
+## Update notes
+
+This release should be fairly simple for admins.
+
+To update from 4.2.1 to 4.3.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
+## Features
+
+* We're introducing a "degraded mode" for most of our editors (all except polls and sheets). This follows reports we received that CryptPad performed poorly in settings where a relatively large number of users with *edit* rights were connected simultaneously. To alleviate this, some non-essential features will be disabled when a number of concurrent editors is reached, in order to save computing power on client devices. The user-list will stop being updated as users join and leave, users cursors will stop being displayed, and the chat will not be disabled. Sessions will enter this mode when 8 or more editors are present. This threshold can be configured via `customize/application_config.js` by setting a `degradedLimit` attribute.
+* CryptPad was recently used to distribute some high-profile documents. For the first time we were able to observe our server supporting more than 1000 concurrent viewers in a single pad and around 350000 unique visitors over the course of a few days. While the distributed document incurred very little load, CryptPad created a drive for each visitor the first time they visited. Most of these drives were presumably abandoned as these users did not return to create or edit their own documents. Such users that directly load an existing document without having previously visited the platform will no longer create a drive automatically, unless they explicitly visit a page which requires it. This behaviour is supported in most of our editors except sheets and polls. This should result in faster load times for new users, but just in case it causes any issues we've made it easy to disable. Instance admins can disable "no-drive mode" via `customize/application_config.js` by setting `allowDrivelessMode` to `false`.
+* We've updated our sheet editor to use OnlyOffice 6.2, which includes support for pivot tables, among a range of other improvements.
+* Our rich text editor now features some keyboard shortcuts to apply some commonly used styles:
+  * heading size 1-6: ctrl+alt+1-6
+  * "div": ctrl+alt+8
+  * "preformatted": ctrl+alt+9
+  * paragraph: ctrl+alt+0
+  * remove styles from selection: ctrl+space
+* We've removed a large number of strings that were included in the "Getting started" box that was displayed to new users in each of our editors. Instead, this box simply contains a link to the relevant page in our documentation. Our intent is to both simplify the interface for newcomers and reduce the number of strings that require translation.
+* We've continued to progress on our "checkup page" which performs some routine checks to see whether the host instance is correctly configured. While its hints are not especially helpful for admins without reading the code to understand what they are testing, they do detect a fairly wide range of issues and have already helped us to identify some inconsistencies in our recommended configuration. We plan to link directly from this page to the relevant sections of a configuration guide an in upcoming release.
+* The admin support ticket interface has been updated to collapse very long messages in response to some ticket threads submitted in the last few weeks. We also found that sometimes we needed more information after a ticket had been closed, so we added the ability to re-open closed tickets.
+* Some time ago we removed the "Survey link" option from the user admin dropdown menu (found in the top-right corner of the page). This release re-enables it for instances that explicitly provide a link to a survey, however, we no longer provide a link to a survey by default.
+
+## Bug fixes
+
+* We finally reviewed and merged a number of pull-requests that had been pending for some time. Collectively, they fixed some configuration issues and type errors in some of our older scripts.
+* Sheets can now contain multiple images with the same name, whereas before they would conflict and one would be displayed multiple times.
+* A recent change in our code to conditionally display size measurements in different magnitudes (GB, MB) removed support for Kilobytes (KB). This release restores the previous behaviour.
+* We believe we've identified and corrected an issue that caused the rich text editor to scroll to the top of the document when the button to add a comment was clicked.
+* We recently made it such that documents owned by a particular user would not be automatically re-added to that user's drive when they viewed them. This change revealed a number of odd cases where various commands (destroy, add password, get document size, etc.) did not work as expected unless the document was first added to their drive. We reviewed many of these features and corrected the underlying issues that caused these commands to fail.
+* We performed a similar review of various commands related to user accounts and identified a number of issues that caused account deletion to fail.
+
+# 4.2.1
+
+This minor release addresses a few bugs discovered after deploying 4.2.0:
+
+* The 4.2.0 release included major improvements to the sheet application. This introduced breaking changes to the "lock" system in the application. Existing spreadsheets (before 4.2.0) that were closed by a user without "unlocking" all cells first became impossible to open after the 4.2.0 changes. This has been fixed.
+* Team owners can now properly upload a team avatar.
+* We've improved the file upload script to better recognize markdown files.
+* We've fixed a few issues resulting in an error screen:
+  * New users were unable to create a drive without registering first.
+  * Snapshots in the sheet application couldn't be loaded.
+  * Loading an existing drive as an unregistered user could fail.
+
 # 4.2.0 (C)
 
 ## Goals

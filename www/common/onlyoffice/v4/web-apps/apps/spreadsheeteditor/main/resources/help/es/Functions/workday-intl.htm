@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DIA.LAB.INTL</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función DIA.LAB.INTL</h1>
+			<p>La función <b>DIA.LAB.INTL</b> es una función de fecha y hora. Se usa para devolver la fecha de antes o de después de un número específico de días de trabajo con parámetros de fines de semana personalizados; los parámetros de fines de semana indican qué días y cuántos días son días de fines de semana.</p>
+			<p>La sintaxis de la función <b>DIA.LAB.INTL</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>DIA.LAB.INTL(fecha de inicio, días, [, fin de semana], [, vacaciones])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>fecha de inicio</em></b> es el número que representa la primera fecha del periodo. Se usa la función <a href="Date.htm" onclick="onhyperlinkclick(this)">Fecha</a> o cualquier otra función de fecha y hora.</p>
+			<p style="text-indent: 50px;"><b><em>días</em></b> es el número de días laborales antes o después de la <b><em>fecha de inicio</em></b>. Si los <b><em>días</em></b> tiene el símbolo negativo, la función devolverá la fecha que va antes de la <b>fecha de inicio</b> especificada. Si los <b><em>días</em></b>tiene el símbolo positivo, la función devolverá la fecha que va después de <b>fecha de inicio</b> especificada.</p>
+            <p style="text-indent: 50px;"><b><em>fin de semana</em></b> es un argumento opcional, un número o secuencia que especifica qué días se consideran fin de semana. Los números posibles se lista en la tabla de abajo.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Número</b></td>
+                    <td><b>Días de fin de semana</b></td>
+                </tr>
+                <tr>
+                    <td>1 u omitido</td>
+                    <td>sábado, domingo</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>domingo, lunes</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>lunes, martes</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>martes, miércoles</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>miércoles, jueves</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>jueves, viernes</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>viernes, sábado</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>solo domingo</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>solo lunes</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>solo martes</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>solo miércoles</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>solo jueves</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>solo viernes</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>solo sábado</td>
+                </tr>
+            </table>
+            <p style="text-indent: 50px;">Una secuencia que especifica que los fines de semana deben contener 7 caracteres. Cada carácter representa un día de la semana empezando en lunes 0 representa un día de trabajo, 1 representa un día de fin de semana. Por ejemplo,  <em>"0000011"</em> especifica que los días de fin de semana son el sábado y el domingo. La secuencia  <em>"1111111"</em> no es válida.</p>
+            <p style="text-indent: 50px;"><b><em>vacaciones</em></b> es un argumento opcional que especifica qué fechas, además de los <b><em>fines de semana</em></b>, son no laborables. Puede introducir estos usando la función <a href="Date.htm" onclick="onhyperlinkclick(this)">Fecha</a> u otras funciones de fecha y hora, o especificando una referencia a un rango de celdas que contienen fechas.</p>
+			<p>Para aplicar la función <b>DIA.LAB.INTL</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>Haga clic en el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Fecha y hora</b> en la lista,</li>
+			<li>haga clic en la función <b>DIA.LAB.INTL</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función DIA.LAB.INTL" src="../images/workday-intl.png" /></p>
+		</div>
+	</body>
+</html>

@@ -29,11 +29,11 @@
     "padNotPinnedVariable": "This pad will expire after {4} days of inactivity, {0}login{1} or {2}register{3} to preserve it.",
     "anonymousStoreDisabled": "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.",
     "expiredError": "This pad has reached its expiration time and is no longer available.",
-    "deletedError": "This pad has been deleted by its owner and is no longer available.",
+    "deletedError": "This document has been deleted and is no longer available.",
     "inactiveError": "This pad has been deleted due to inactivity. Press Esc to create a new pad.",
     "chainpadError": "A critical error occurred when updating your content. This page is in read-only mode to make sure you won't lose your work.<br>Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.",
     "invalidHashError": "The document you've requested has an invalid URL.",
-    "errorCopy": " You can still access the content by pressing <em>Esc</em>.<br>Once you close this window you will not be able to access it again.",
+    "errorCopy": " You can still use the current version in read-only mode by pressing <em>Esc</em>.",
     "errorRedirectToHome": "Press <em>Esc</em> to be redirected to your CryptDrive.",
     "newVersionError": "A new version of CryptPad is available.<br><a href='#'>Reload</a> to use the new version, or press escape to access your content in <b>offline mode</b>.",
     "loading": "Loading...",
@@ -156,7 +156,6 @@
     "cancel": "Cancel",
     "cancelButton": "Cancel (esc)",
     "show_help_button": "Show help",
-    "hide_help_button": "Hide help",
     "help_button": "Help",
     "historyText": "History",
     "historyButton": "Display the document history",
@@ -258,7 +257,7 @@
     "fm_sharedFolderName": "Shared folder",
     "fm_searchPlaceholder": "Search...",
     "fm_newButton": "New",
-    "fm_newButtonTitle": "Create a new pad or folder, import a file in the current folder",
+    "fm_newButtonTitle": "Create a new document or folder, import a file in the current folder.",
     "fm_newFolder": "New folder",
     "fm_newFile": "New pad",
     "fm_morePads": "More",
@@ -419,7 +418,6 @@
     "settings_deleteHint": "Account deletion is permanent. Your CryptDrive and your list of pads will be deleted from the server. The rest of your pads will be deleted in 90 days if nobody else has stored them in their CryptDrive.",
     "settings_deleteButton": "Delete your account",
     "settings_deleteModal": "Share the following information with your CryptPad administrator in order to have your data removed from their server.",
-    "settings_deleteConfirm": "Clicking OK will delete your account permanently. Are you sure?",
     "settings_deleted": "Your user account is now deleted. Press OK to go to the home page.",
     "settings_anonymous": "You are not logged in. Settings here are specific to this browser.",
     "settings_publicSigningKey": "Public Signing Key",
@@ -508,7 +506,7 @@
     "mdToolbar_code": "Code",
     "mdToolbar_toc": "Table of Contents",
     "home_host": "This is an independent community instance of CryptPad.",
-    "main_catch_phrase": "Collaboration suite,<br>encrypted and open-source",
+    "main_catch_phrase": "Collaboration suite<br>end-to-end encrypted and open-source",
     "footer_aboutUs": "About us",
     "about": "About",
     "privacy": "Privacy Policy",
@@ -580,53 +578,7 @@
     "four04_pageNotFound": "We couldn't find the page you were looking for.",
     "header_logoTitle": "Go to your CryptDrive",
     "header_homeTitle": "Go to CryptPad homepage",
-    "help": {
-        "title": "Getting started",
-        "generic": {
-            "more": "Learn more about how CryptPad can work for you by reading our <a href=\"https://docs.cryptpad.fr\" target=\"_blank\" rel=\"noopener noreferrer\">Documentation</a>.",
-            "share": "Share this document with the  <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> button, and manage access rights with <i class=\"fa fa-unlock-alt\"></i> <b>Access</b>.",
-            "save": "All your changes are synced automatically so you never need to save"
-        },
-        "text": {
-            "formatting": "Show/hide the text toolbar with the <i class=\"fa fa-wrench\"></i> <b>Tools</b> button.",
-            "embed": "Insert an image from your CryptDrive or computer with the <i class=\"fa fa-image\"></i> <b>Insert</b> button (logged in users).",
-            "history": "You can use <em>history</em> <span class=\"fa fa-history\"></span> to view or restore previous versions"
-        },
-        "pad": {
-            "export": "You can export the content as PDF using the <span class=\"fa fa-print\"></span> button in the text formatting toolbar"
-        },
-        "code": {
-            "modes": "Use the <span class=\"cptools cptools-palette\"></span> <b>Theme</b> menu to choose an editor theme and syntax highlighting."
-        },
-        "beta": {
-            "warning": "This editor is still <strong>experimental</strong>, you can report bugs on <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">our issue tracker</a>"
-        },
-        "oo": {
-            "access": "Access is restricted to registered users, collaborators will need to log in"
-        },
-        "slide": {
-            "markdown": "Write slides in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> and separate them with a line containing <code>---</code>",
-            "present": "Start the presentation using the <span class=\"fa fa-play-circle\"></span> button",
-            "settings": "Use the <span class=\"cptools cptools-palette\"></span> <b>Theme</b> menu to change slide colors and <span class=\"fa fa-cog\"></span> <b>Options</b> (background, transitions, page numbers, etc.).",
-            "colors": "Change the text and background colors using the <span class=\"fa fa-i-cursor\"></span> and <span class=\"fa fa-square\"></span> buttons"
-        },
-        "poll": {
-            "decisions": "Make decisions in private among trusted contacts",
-            "options": "Propose options, and express your preferences",
-            "choices": "Click cells in your column to cycle through yes (<strong>✔</strong>), maybe (<strong>~</strong>), or no (<strong>✖</strong>)",
-            "submit": "Click <strong>submit</strong> to make your choices visible to others"
-        },
-        "whiteboard": {
-            "colors": "Double-click colors to modify your palette",
-            "mode": "Switch to <span class=\"fa fa-arrows\"></span> Select mode to move and transform strokes.",
-            "embed": "Embed images from your CryptDrive or computer with <span class=\"fa fa-image\"></span> <b>Insert</b>. Export the canvas as PNG to your CryptDrive with <b><span class=\"fa fa-file-o\"></span> File > <span class=\"fa fa-file-image-o\"></span> Save as image</b> or to your computer with <b><span class=\"fa fa-file-o\"></span> File > <span class=\"fa fa-download\"></span> Export</b>."
-        },
-        "kanban": {
-            "add": "Add new cards and boards by clicking the <span class=\"fa fa-plus\"></span> buttons",
-            "task": "Move items by dragging and dropping, drag to the <span class=\"fa fa-trash\"></span> trash to delete",
-            "color": "Edit titles, content, tags, and colors by clicking on the <span class=\"fa fa-pencil\"></span> button next to card and board titles"
-        }
-    },
+    "help_genericMore": "Learn more about how CryptPad can work for you by reading our <a>Documentation</a>.",
     "driveReadmeTitle": "What is CryptPad?",
     "readme_welcome": "Welcome to CryptPad !",
     "readme_p1": "Welcome to CryptPad, this is where you can take note of things alone and with contacts.",
@@ -666,9 +618,9 @@
     "creation_noOwner": "No owner",
     "creation_expiration": "Expiration date",
     "creation_passwordValue": "Password",
-    "creation_newPadModalDescription": "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
-    "password_info": "The pad you're trying to open no longer exist or is protected with a password. Enter the correct password to access its content.",
-    "password_error": "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.",
+    "creation_newPadModalDescription": "Click on a document type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
+    "password_info": "The document you are trying to open no longer exists or is protected with a new password. Enter the correct password to access the content.",
+    "password_error": "Document not found<br>This error can be caused by two factors: either the password is invalid, or the document has been destroyed.",
     "password_placeholder": "Type the password here...",
     "password_submit": "Submit",
     "properties_addPassword": "Add a password",
@@ -1236,5 +1188,6 @@
     "addOptionalPassword": "Add a password (optional)",
     "importError": "Failed to import (wrong format)",
     "fm_cantUploadHere": "Can't upload a file here",
-    "oo_lostEdits": "Unfortunately your recent unsaved edits could not be recovered after synchronising new content."
+    "oo_lostEdits": "Unfortunately your recent unsaved edits could not be recovered after synchronising new content.",
+    "toolbar_degraded": "Over {0} editors are currently present in this document. The user list and chat are disabled to improve performance."
 }

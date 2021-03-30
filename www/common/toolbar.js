@@ -212,15 +212,19 @@ MessengerUI, Messages) {
         var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
                                 .appendTo($editUsers);
 
-        if (!online) {
+        var degradedLimit = Config.degradedLimit || 8;
+        if (toolbar.isDeleted) {
+            $('<em>').text(Messages.deletedFromServer).appendTo($editUsersList);
+            numberOfEditUsers = '?';
+            numberOfViewUsers = '?';
+        } else if (!online) {
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
             numberOfViewUsers = '?';
         } else if (metadataMgr.isDegraded() === true) {
             numberOfEditUsers = Math.max(metadataMgr.getChannelMembers().length - 1, 0);
             numberOfViewUsers = '';
-            Messages.toolbar_degraded = "Too many editors are present in the pad. The userlist has been disabled to improve performances"; // XXX
-            $('<em>').text(Messages.toolbar_degraded).appendTo($editUsersList);
+            $('<em>').text(Messages._getKey('toolbar_degraded', [degradedLimit])).appendTo($editUsersList);
         }
 
         // Update the buttons
@@ -229,7 +233,7 @@ MessengerUI, Messages) {
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
-        if (!online) { return; }
+        if (!online || toolbar.isDeleted) { return; }
 
         if (metadataMgr.isDegraded() === true) { return; }
 
@@ -542,6 +546,9 @@ MessengerUI, Messages) {
             hidden: true
         });
         $shareBlock.click(function () {
+            if (toolbar.isDeleted) {
+                return void UI.warn(Messages.deletedFromServer);
+            }
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";
@@ -565,7 +572,15 @@ MessengerUI, Messages) {
             h('span.cp-button-name', Messages.accessButton)
         ]));
         $accessBlock.click(function () { 
-            Common.getSframeChannel().event('EV_ACCESS_OPEN');
+            if (toolbar.isDeleted) {
+                return void UI.warn(Messages.deletedFromServer);
+            }
+            var title = (config.title && config.title.getTitle && config.title.getTitle())
+                        || (config.title && config.title.defaultName)
+                        || "";
+            Common.getSframeChannel().event('EV_ACCESS_OPEN', {
+                title: title
+            });
         });
 
         toolbar.$bottomM.append($accessBlock);
@@ -1378,7 +1393,9 @@ MessengerUI, Messages) {
         toolbar.deleted = function (/*userId*/) {
             toolbar.isErrorState = true;
             toolbar.connected = false;
+            toolbar.isDeleted = true;
             updateUserList(toolbar, config, true);
+            toolbar.title.toggleClass('cp-toolbar-unsync', true); // "read only" next to the title
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }
