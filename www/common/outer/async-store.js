@@ -1661,6 +1661,9 @@ define([
             if (data.versionHash) {
                 return void getVersionHash(clientId, data);
             }
+            if (!Hash.isValidChannel(data.channel)) {
+                return void postMessage(clientId, "PAD_ERROR", 'INVALID_CHAN');
+            }
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -2043,6 +2046,10 @@ define([
             if (store.offline || !store.anon_rpc) { return void cb({ error: 'OFFLINE' }); }
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
+            if (!Hash.isValidChannel(data.channel)) {
+                Feedback.send('METADATA_INVALID_CHAN');
+                return void cb({ error: 'EINVAL' });
+            }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
                 if (err) { return void cb({error: err}); }
                 var metadata = (obj && obj[0]) || {};
