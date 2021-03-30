@@ -1,3 +1,20 @@
+# 4.3.1 (WIP)
+
+This minor release addresses some bugs discovered after deploying and tagging 4.3.0
+
+* better isLoggedIn() check
+* fix templates in sheets
+* include onlyOffice version along with checkpoint hashes
+* send feedback when opening the readme
+  * so we can decide whether to remove it
+* handle decryption errors for blobs
+  * prompted by a badly formed sheet checkpoint
+* fix broken team creation
+* CKEditor
+  * broken table of contents scrollTo
+  * show the link bubble for links inside of comments
+* fix title reset in polls
+
 # 4.3.0 (D)
 
 ## Goals
