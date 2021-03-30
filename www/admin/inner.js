@@ -1381,7 +1381,7 @@ define([
         });
         refresh();
 
-        Common.makeUniversal('broadcast', {
+        common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
                 if (cmd !== "MAINTENANCE") { return; }
@@ -1475,7 +1475,7 @@ define([
         });
         refresh();
 
-        Common.makeUniversal('broadcast', {
+        common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
                 if (cmd !== "SURVEY") { return; }
