@@ -79,6 +79,7 @@ define([
 
 
     var toolbar;
+    var cursor;
 
 
     var andThen = function (common) {
@@ -871,17 +872,6 @@ define([
             return locks;
         };
 
-        var locksArrayToObject = function (arr) {
-            var l = {};
-            if (!Array.isArray(arr)) { return l; }
-            arr.forEach(function (lock) {
-                var uid = lock.block;
-                if (!uid) { return; }
-                l[uid] = lock;
-            });
-            return l;
-        };
-
         // Update the userlist in onlyoffice
         var handleNewIds = function (o, n) {
             if (stringify(o) === stringify(n)) { return; }
@@ -1297,7 +1287,6 @@ define([
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = !APP.history && (APP.migrate);
-            var type = common.getMetadataMgr().getPrivateData().ooType;
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -1605,9 +1594,6 @@ define([
             APP.getImageURL = function(name, callback) {
                 if (name && /^data:image/.test(name)) {
                     return void callback('');
-                    var b = Util.dataURIToBlob(name);
-                    var url = URL.createObjectURL(blob);
-                    return void callback(url);
                 }
 
                 var mediasSources = getMediasSources();
@@ -2673,7 +2659,7 @@ define([
                         // Cursor update
                         if (!data || !data.cursor) { return; }
                         // Store the new cursor in memory for this user, with their netflux ID
-                        var ooid = Util.find(data.cursor, ['messages', 0, 'user'])
+                        var ooid = Util.find(data.cursor, ['messages', 0, 'user']);
                         if (ooid) { cursors[ooid] = data.id.slice(0,32); }
                         // Update cursor in the UI
                         ooChannel.send(data.cursor);
