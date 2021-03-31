@@ -469,6 +469,10 @@ define([
         });
     }, true);
 
+    Messages.settings_deleteWarning = "Warning: it seems you're subscribed to a premium plan (paid or given by another user). Please cancel paid subscriptions before deleting your account as you won't be able to do it yourself once the account is deleted."; // XXX
+    Messages.settings_deleteContinue = "Delete my account"; // XXX
+    Messages.settings_deleteSubscription = "Manage my subscription"; // XXX
+
     makeBlock('delete', function(cb) { // Msg.settings_deleteHint, .settings_deleteTitle
         if (!common.isLoggedIn()) { return cb(false); }
 
@@ -488,41 +492,69 @@ define([
             classes: 'btn-danger',
             multiple: true
         }, function() {
-            $button.prop('disabled', 'disabled');
-            var password = $form.find('#cp-settings-delete-account').val();
-            if (!password) {
-                return void UI.warn(Messages.error);
-            }
-            spinner.spin();
-            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
-                password: password
-            }, function(err, data) {
-                if (data && data.error) {
-                    spinner.hide();
-                    $button.prop('disabled', '');
-                    if (data.error === 'INVALID_PASSWORD') {
-                        return void UI.warn(Messages.drive_sfPasswordError);
-                    }
-                    console.error(data.error);
+            nThen(function (waitFor) {
+                $button.prop('disabled', 'disabled');
+                var priv = metadataMgr.getPrivateData();
+                // Check if subscriptions are enabled and you have a premium plan
+                if (priv.plan && priv.plan !== "custom" && ApiConfig.allowSubscriptions) {
+                    // Also make sure upgradeURL is defined
+                    var url = priv.accounts && priv.accounts.upgradeURL;
+                    if (!url) { return; }
+                    url += '#mysubs';
+                    var a = h('a', { href:url }, Messages.settings_deleteSubscription);
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(url);
+                    });
+                    UI.confirm(h('div', [
+                        Messages.settings_deleteWarning, h('p', a)
+                    ]), waitFor(function (yes) {
+                        if (!yes) {
+                            $button.prop('disabled', '');
+                            waitFor.abort();
+                        }
+                    }), {
+                        ok: Messages.settings_deleteContinue,
+                        okClass: 'btn.btn-danger',
+                        cancelClass: 'btn.btn-primary'
+                    });
+                }
+            }).nThen(function () {
+                var password = $form.find('#cp-settings-delete-account').val();
+                if (!password) {
                     return void UI.warn(Messages.error);
                 }
-                // Owned drive
-                if (data.state === true) {
-                    sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
-                    UI.alert(Messages.settings_deleted, function() {
-                        common.gotoURL('/');
-                    });
-                    spinner.done();
-                    return;
-                }
-                // Not owned drive
-                var msg = h('div.cp-app-settings-delete-alert', [
-                    h('p', Messages.settings_deleteModal),
-                    h('pre', JSON.stringify(data, 0, 2))
-                ]);
-                UI.alert(msg);
-                spinner.hide();
-                $button.prop('disabled', '');
+                spinner.spin();
+                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
+                    password: password
+                }, function(err, data) {
+                    if (data && data.error) {
+                        spinner.hide();
+                        $button.prop('disabled', '');
+                        if (data.error === 'INVALID_PASSWORD') {
+                            return void UI.warn(Messages.drive_sfPasswordError);
+                        }
+                        console.error(data.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    // Owned drive
+                    if (data.state === true) {
+                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
+                        UI.alert(Messages.settings_deleted, function() {
+                            common.gotoURL('/');
+                        });
+                        spinner.done();
+                        return;
+                    }
+                    // Not owned drive
+                    var msg = h('div.cp-app-settings-delete-alert', [
+                        h('p', Messages.settings_deleteModal),
+                        h('pre', JSON.stringify(data, 0, 2))
+                    ]);
+                    UI.alert(msg);
+                    spinner.hide();
+                    $button.prop('disabled', '');
+                });
             });
         });
 
