@@ -1215,12 +1215,15 @@ define([
 
         var wordCount = h('span.cp-app-pad-wordCount');
         $('.cke_toolbox_main').append(wordCount);
+        Messages.pad_wordCountReadingTime = "{0} minute(s) to read"; // XXX
+        var truncate = function (n) { return Math.floor(n * 10) / 10; };
         editor.on('cp-wc-update', function() {
             if (!editor.wordCount || typeof(editor.wordCount.wordCount) === "undefined") {
                 wordCount.innerText = '';
                 return;
             }
             wordCount.innerText = Messages._getKey('pad_wordCount', [editor.wordCount.wordCount]);
+            wordCount.setAttribute("title", Messages._getKey('pad_wordCountReadingTime', [truncate(editor.wordCount.wordCount / 200)]));
         });
 
         // export the typing tests to the window.
