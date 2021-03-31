@@ -1,4 +1,4 @@
-# 4.3.1 (WIP)
+# 4.3.1
 
 This minor release addresses some bugs discovered after deploying and tagging 4.3.0
 
