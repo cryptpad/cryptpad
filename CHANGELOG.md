@@ -1,3 +1,21 @@
+# WIP
+
+* OnlyOffice
+  * inform OnlyOffice of userlist changes
+  * rename doc and slide editors
+  * handle different lock formats for docs and slides
+    * relative to sheets
+  * handle some cursor logic outside of sheets
+  * handle locks when integrating remote checkpoints in strict mode
+  * OnlyOffice renamed buttons in slides and docs and we need to hardcode CSS that hides them by their randomly generated IDs
+  * support CryptPad cursor colors in OnlyOffice by adding opacity value
+  * use the appropriate APIs to detect if the document is modified
+  * display users cursor colors in the toolbar next to their name
+* bad channel IDs stored in your drive or accessed via bad links (corrupted somehow)
+  * don't try to join invalid channels
+  * don't try to get their metadata
+* prompt premium users to cancel their subscriptions before deleting their accounts
+
 # 4.3.1
 
 This minor release addresses some bugs discovered after deploying and tagging 4.3.0
