@@ -2491,7 +2491,11 @@ define([
                     APP.onLocal();
                 } else {
                     msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    $(APP.helpMenu.menu).after(msg);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
                     readOnly = true;
                 }
             } else if (content && content.version <= 3) { // V2 or V3
@@ -2503,7 +2507,11 @@ define([
                     APP.onLocal();
                 } else {
                     msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    $(APP.helpMenu.menu).after(msg);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
                     readOnly = true;
                 }
             }
