@@ -1060,7 +1060,7 @@ define([
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
 
-        var refresh = getApi(function (Broadcast) {
+        var refresh = getApi(function (/* Broadcast */) { // XXX unused argument
             var button = h('button.btn.btn-primary', Messages.admin_broadcastButton);
             var $button = $(button);
             var removeButton = h('button.btn.btn-danger', Messages.admin_broadcastCancel);
@@ -1230,7 +1230,7 @@ define([
             var send = function (data) {
                 $button.prop('disabled', 'disabled');
                 data.time = +new Date();
-                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err, data) {
+                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err /*, data */) { // XXX unused argument
                     if (err) {
                         $button.prop('disabled', '');
                         console.error(err);
@@ -1255,7 +1255,7 @@ define([
                 if (!activeUid) { return; }
                 common.mailbox.sendTo('BROADCAST_DELETE', {
                     uid: activeUid
-                }, {}, function (err, data) {
+                }, {}, function (err /* , data */) { // XXX unused argument
                     if (err) { return UI.warn(Messages.error); }
                     UI.log(Messages.saved);
                     refresh();
@@ -1349,7 +1349,7 @@ define([
                         return;
                     }
                     // Maintenance applied, send notification
-                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function (err, data) {
+                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function (/* err, data */) { // XXX unused arguments
                         refresh();
                         checkLastBroadcastHash();
                     });
@@ -1445,7 +1445,7 @@ define([
                     // Maintenance applied, send notification
                     common.mailbox.sendTo('BROADCAST_SURVEY', {
                         url: data
-                    }, {}, function (err, data) {
+                    }, {}, function (/* err, data */) { // XXX unused arguments
                         refresh();
                         checkLastBroadcastHash();
                     });
