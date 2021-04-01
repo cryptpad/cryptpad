@@ -1375,12 +1375,11 @@ define([
                             return;
                         }
 
-                        if (lock) {
-                            getEditor().setViewModeDisconnect();
-                        } else if (readOnly) {
+                        if (lock || readOnly) {
                             try {
                                 getEditor().asc_setRestriction(true);
                             } catch (e) {}
+                            //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
                         } else {
                             setEditable(true);
                             deleteOfflineLocks();
@@ -1399,7 +1398,6 @@ define([
                                 });
                             }
                         }
-
 
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
@@ -1424,7 +1422,7 @@ define([
                             } catch (e) {}
                         }
 
-                        if (APP.migrate && !readOnly) {
+                        if (lock && !readOnly) {
                             onMigrateRdy.fire();
                         }
 
