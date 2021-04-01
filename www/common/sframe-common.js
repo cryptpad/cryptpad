@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/bower_components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
@@ -26,6 +27,7 @@ define([
     '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
+    ApiConfig,
     nThen,
     Messages,
     CpNfInner,
@@ -210,9 +212,8 @@ define([
     var modules = {};
     funcs.makeUniversal = function (type, cfg) {
         if (cfg && cfg.onEvent) {
-            modules[type] = {
-                onEvent: cfg.onEvent || function () {}
-            };
+            modules[type] = modules[type] || Util.mkEvent();
+            modules[type].reg(cfg.onEvent);
         }
         var sframeChan = funcs.getSframeChannel();
         return {
@@ -703,6 +704,12 @@ define([
         });
     };
 
+    funcs.isAdmin = function () {
+        var privateData = ctx.metadataMgr.getPrivateData();
+        return privateData.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                ApiConfig.adminKeys.indexOf(privateData.edPublic) !== -1;
+    };
+
     funcs.mailbox = {};
 
     Object.freeze(funcs);
@@ -825,7 +832,7 @@ define([
             ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj) {
                 var type = obj.type;
                 if (!type || !modules[type]) { return; }
-                modules[type].onEvent(obj.data);
+                modules[type].fire(obj.data);
             });
 
             ctx.cache = Cache.create(ctx.sframeChan);

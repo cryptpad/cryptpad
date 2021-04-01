@@ -406,10 +406,67 @@ define([
         }
     };
 
+    Messages.broadcast_newSurvey = "A new survey is available."; // XXX
+    handlers['BROADCAST_SURVEY'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            return Messages.broadcast_newSurvey;
+        };
+        content.handler = function () {
+            common.openUnsafeURL(msg.url);
+            // XXX dismiss on click?
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    Messages.broadcast_newCustom = "Message from the administrators"; // XXX
+    handlers['BROADCAST_CUSTOM'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        var text = msg.content;
+        var defaultL = msg.defaultLanguage;
+        var myLang = data.lang || Messages._languageUsed;
+        // Check if our language is available
+        var toShow = text[myLang];
+        // Otherwise, fallback to the default language if it exists
+        if (!toShow && defaultL) { toShow = text[defaultL]; }
+        // No translation available, dismiss
+        if (!toShow) { return defaultDismiss(common, data)(); }
+
+        var slice = toShow.length > 200;
+        toShow = Util.fixHTML(toShow);
+
+        content.getFormatText = function () {
+            // XXX Add a title to custom messages? Or use a generic key in the notification and only display the text in the alert?
+            if (slice) {
+                return toShow.slice(0, 200) + '...';
+            }
+            return toShow;
+        };
+        if (slice) {
+            content.handler = function () {
+                // XXX Allow markdown (sanitized)?
+                var content = h('div', [
+                    h('h4', Messages.broadcast_newCustom),
+                    h('div.cp-admin-message', toShow)
+                ]);
+                UI.alert(content);
+                // XXX Dismiss on click?
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
     return {
         add: function(common, data) {
+            console.log(data);
             var type = data.content.msg.type;
 
             if (handlers[type]) {

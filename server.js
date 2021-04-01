@@ -113,6 +113,7 @@ var setHeaders = (function () {
 
             // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
             // when duplicated by NGINX in production environments
+            // XXX /api/broadcast too?
             if (/^\/api\/config/.test(req.url)) { return; }
             // targeted CSP, generic policies, maybe custom headers
             const h = [
@@ -272,7 +273,59 @@ var serveConfig = (function () {
     };
 }());
 
+var serveBroadcast = (function () {
+    var cacheString = function () {
+        return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
+    };
+
+    var template = function (host) {
+        var maintenance = Env.maintenance;
+        if (maintenance && maintenance.end && maintenance.end < (+new Date())) {
+            maintenance = undefined;
+        }
+        return [
+            'define(function(){',
+            'return ' + JSON.stringify({
+                lastBroadcastHash: Env.lastBroadcastHash,
+                surveyURL: Env.surveyURL,
+                maintenance: maintenance
+            }, null, '\t'),
+            '});'
+        ].join(';\n')
+    };
+
+    var cleanUp = {};
+
+    return function (req, res) {
+        var host = req.headers.host.replace(/\:[0-9]+/, '');
+        res.setHeader('Content-Type', 'text/javascript');
+        // don't cache anything if you're in dev mode
+        if (Env.DEV_MODE) {
+            return void res.send(template(host));
+        }
+        // generate a lookup key for the cache
+        var cacheKey = host + ':' + cacheString();
+
+        // XXX do we need a cache for /api/broadcast?
+        if (!Env.broadcastCache[cacheKey]) {
+            // generate the response and cache it in memory
+            Env.broadcastCache[cacheKey] = template(host);
+            // and create a function to conditionally evict cache entries
+            // which have not been accessed in the last 20 seconds
+            cleanUp[cacheKey] = Util.throttle(function () {
+                delete cleanUp[cacheKey];
+                delete Env.broadcastCache[cacheKey];
+            }, 20000);
+        }
+
+        // successive calls to this function
+        cleanUp[cacheKey]();
+        return void res.send(Env.broadcastCache[cacheKey]);
+    };
+}());
+
 app.get('/api/config', serveConfig);
+app.get('/api/broadcast', serveBroadcast);
 
 var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
 var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');

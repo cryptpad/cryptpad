@@ -626,6 +626,33 @@ define([
             cb(JSON.parse(JSON.stringify(metadata)));
         };
 
+        Store.onMaintenanceUpdate = function (uid) {
+            // use uid in /api/broadcast so that all connected users will use the same cached
+            // version on the server
+            require(['/api/broadcast?'+uid], function (Broadcast) {
+                broadcast([], 'UNIVERSAL_EVENT', {
+                    type: 'broadcast',
+                    data: {
+                        ev: 'MAINTENANCE',
+                        data: Broadcast.maintenance
+                    }
+                });
+            });
+        };
+        Store.onSurveyUpdate = function (uid) {
+            // use uid in /api/broadcast so that all connected users will use the same cached
+            // version on the server
+            require(['/api/broadcast?'+uid], function (Broadcast) {
+                broadcast([], 'UNIVERSAL_EVENT', {
+                    type: 'broadcast',
+                    data: {
+                        ev: 'SURVEY',
+                        data: Broadcast.surveyURL
+                    }
+                });
+            });
+        };
+
         var makePad = function (href, roHref, title) {
             var now = +new Date();
             return {
@@ -1513,7 +1540,6 @@ define([
             execCommand: function (clientId, data, cb) {
                 // The mailbox can only be used when the store is ready
                 onReadyEvt.reg(function () {
-                    if (!store.loggedIn) { return void cb(); }
                     if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
                     store.mailbox.execCommand(clientId, data, cb);
                 });
@@ -2544,9 +2570,6 @@ define([
         };
 
         var loadMailbox = function (waitFor) {
-            if (!store.loggedIn || !store.proxy.edPublic) {
-                return;
-            }
             store.mailbox = Mailbox.init({
                 Store: Store,
                 store: store,
@@ -3133,6 +3156,9 @@ define([
             });
         };
 
+        Store.newVersionReload = function () {
+            broadcast([], "NETWORK_RECONNECT");
+        };
         Store.disconnect = function () {
             if (self.accountDeletion) { return; }
             if (!store.network) { return; }

@@ -2,6 +2,7 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/api/config',
+    '/api/broadcast',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
@@ -11,7 +12,7 @@ define([
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, MT, h,
+], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
 MessengerUI, Messages) {
     var Common;
 
@@ -45,6 +46,7 @@ MessengerUI, Messages) {
     var TITLE_CLS = Bar.constants.title = "cp-toolbar-title";
     var LINK_CLS = Bar.constants.link = "cp-toolbar-link";
     var NOTIFICATIONS_CLS = Bar.constants.user = 'cp-toolbar-notifications';
+    var MAINTENANCE_CLS = Bar.constants.user = 'cp-toolbar-maintenance';
 
     // User admin menu
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
@@ -78,6 +80,7 @@ MessengerUI, Messages) {
             'class': USER_CLS
         }).appendTo($topContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
+        $('<span>', {'class': MAINTENANCE_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': NOTIFICATIONS_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
@@ -1026,6 +1029,42 @@ MessengerUI, Messages) {
         return $userAdmin;
     };
 
+    Messages.broadcast_maintenance = "A maintenance is planned between <b>{0}</b> and <b>{1}</b>"; // XXX
+    var createMaintenance = function (toolbar, config) {
+        var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
+        var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
+        $notif.append(button);
+
+
+        var m = Broadcast.maintenance;
+        $(button).click(function () {
+            if (!m || !m.start || !m.end) { return; }
+            UI.alert(Messages._getKey('broadcast_maintenance', [
+                new Date(m.start).toLocaleString(),
+                new Date(m.end).toLocaleString(),
+            ]), null, true);
+        });
+
+        Common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "MAINTENANCE") { return; }
+                var data = obj.data;
+                if (!data) {
+                    return void $notif.hide();
+                }
+                m = data;
+                $notif.css('display', '');
+            }
+        });
+
+        if (m && m.start && m.end) {
+            $notif.css('display', '');
+        } else {
+            $notif.hide();
+        }
+    };
+
     var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
         var openNotifsApp = h('div.cp-notifications-gotoapp', h('p', Messages.openNotificationsApp || "Open notifications App"));
@@ -1096,7 +1135,7 @@ MessengerUI, Messages) {
             $button.addClass('fa-bell');
         };
 
-        Common.mailbox.subscribe(['notifications', 'team'], {
+        Common.mailbox.subscribe(['notifications', 'team', 'broadcast'], {
             onMessage: function (data, el) {
                 if (el) {
                     $(div).prepend(el);
@@ -1287,6 +1326,7 @@ MessengerUI, Messages) {
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
         tb['notifications'] = createNotifications;
+        tb['maintenance'] = createMaintenance;
 
         tb['pad'] = function () {
             toolbar.$file.show();
@@ -1323,6 +1363,7 @@ MessengerUI, Messages) {
         };
 
         addElement(config.displayed, {}, true);
+        addElement(['maintenance'], {}, true);
 
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);

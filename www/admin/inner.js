@@ -1,6 +1,7 @@
 define([
     'jquery',
     '/api/config',
+    '/customize/application_config.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     '/bower_components/nthen/index.js',
@@ -14,12 +15,16 @@ define([
     '/common/common-signing-keys.js',
     '/support/ui.js',
 
+    '/lib/datepicker/flatpickr.js',
+
+    'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/admin/app-admin.less',
 ], function (
     $,
     ApiConfig,
+    AppConfig,
     Crypto,
     Toolbar,
     nThen,
@@ -31,7 +36,8 @@ define([
     Util,
     Hash,
     Keys,
-    Support
+    Support,
+    Flatpickr
     )
 {
     var APP = {
@@ -66,6 +72,11 @@ define([
         'support': [ // Msg.admin_cat_support
             'cp-admin-support-list',
             'cp-admin-support-init'
+        ],
+        'broadcast': [ // Msg.admin_cat_broadcast
+            'cp-admin-maintenance',
+            'cp-admin-survey',
+            'cp-admin-broadcast',
         ],
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
@@ -930,6 +941,551 @@ define([
         return;
     };
 
+    Messages.admin_cat_broadcast = "Broadcast"; // XXX
+
+    Messages.admin_maintenanceTitle = "Maintenance"; // XXX
+    Messages.admin_maintenanceHint = "Plan, remove or update a maintenance. You can only have one active maintenance at a time."; // XXX
+    Messages.admin_maintenanceButton = "Plan maintenance"; // XXX
+    Messages.admin_maintenanceCancel = "Cancel planned maintenance"; // XXX
+    Messages.broadcast_start = 'Start time';
+    Messages.broadcast_end = 'End time';
+
+
+    Messages.admin_surveyTitle = "Survey"; // XXX
+    Messages.admin_surveyHint = "Add, update or remove the active survey accessible from the user menu"; // XXX
+    Messages.admin_surveyButton = "Apply survey"; // XXX
+    Messages.admin_surveyCancel = "Cancel active survey"; // XXX
+    Messages.admin_surveyActive = "View the active survey"; // XXX
+    Messages.broadcast_surveyURL = 'Survey URL';
+
+    Messages.admin_broadcastTitle = "Broadcast a message"; // XXX
+    Messages.admin_broadcastHint = "Send a message to all the existing and future users as a notification"; // XXX
+    Messages.admin_broadcastButton = "Send"; // XXX
+    Messages.admin_broadcastActive = "Active message"; // XXX
+    Messages.admin_broadcastCancel = "Delete active message"; // XXX
+    Messages.broadcast_translations = 'Translations';
+    Messages.broadcast_defaultLanguage = 'Fallback to this language';
+    Messages.broadcast_preview = "Preview in a fake notification";
+
+    var getApi = function (cb) {
+        return function () {
+            require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
+                cb(Broadcast);
+            });
+        };
+    };
+
+    // Update the lastBroadcastHash in /api/broadcast if we can do it.
+    // To do so, find the last "BROADCAST_CUSTOM" in the current history and use the previous
+    // message's hash.
+    // If the last BROADCAST_CUSTOM has been deleted by an admin, we can use the most recent
+    // message's hash.
+    var checkLastBroadcastHash = function () {
+        var deleted = [];
+
+        require(['/api/broadcast?'+ (+new Date())], function (BCast) {
+            var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+            common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+                if (e) { return void console.error(e); }
+
+                // No history, nothing to change
+                if (!Array.isArray(msgs)) { return; }
+                if (!msgs.length) { return; }
+
+                var lastHash;
+                var next = false;
+
+                // Start from the most recent messages until you find a CUSTOM message and
+                // check if it has been deleted
+                msgs.reverse().some(function (data) {
+                    var c = data.content;
+
+                    // This is the hash we want to keep
+                    if (next) {
+                        if (!c || !c.hash) { return; }
+                        lastHash = c.hash;
+                        next = false;
+                        return true;
+                    }
+
+                    // initialize with the most recent hash
+                    if (!lastHash && c && c.hash) { lastHash = c.hash; }
+
+                    var msg = c && c.msg;
+                    if (!msg) { return; }
+
+                    // Remember all deleted messages
+                    if (msg.type === "BROADCAST_DELETE") {
+                        deleted.push(Util.find(msg, ['content', 'uid']));
+                    }
+
+                    // Only check custom messages
+                    if (msg.type !== "BROADCAST_CUSTOM") { return; }
+
+                    // If the most recent CUSTOM message has been deleted, it means we don't
+                    // need to keep any message and we can continue with lastHash as the most
+                    // recent broadcast message.
+                    if (deleted.indexOf(msg.uid) !== -1) { return true; }
+
+                    // We just found the oldest message we want to keep, move one iteration
+                    // further into the loop to get the next message's hash.
+                    // If this is the end of the loop, don't bump lastBroadcastHash at all.
+                    next = true;
+                });
+
+                // If we don't have to bump our lastBroadcastHash, abort
+                if (next) { return; }
+
+                // Otherwise, bump to lastHash
+                console.warn('Updating last broadcast hash to', lastHash);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
+                }, function (e) {
+                    if (e) {
+                        console.error(e);
+                        return;
+                    }
+                    console.log('lastBroadcastHash updated');
+                });
+            });
+        });
+
+    };
+
+    create['broadcast'] = function () {
+        var key = 'broadcast';
+        var $div = makeBlock(key);
+
+        var form = h('div.cp-admin-broadcast-form');
+        var $form = $(form).appendTo($div);
+
+        var refresh = getApi(function (Broadcast) {
+            var button = h('button.btn.btn-primary', Messages.admin_broadcastButton);
+            var $button = $(button);
+            var removeButton = h('button.btn.btn-danger', Messages.admin_broadcastCancel);
+            var active = h('div.cp-broadcast-active', h('p', Messages.admin_broadcastActive));
+            var $active = $(active);
+            var activeUid;
+            var deleted = [];
+
+            // Render active message (if there is one)
+            require(['/api/broadcast?'+ (+new Date())], function (BCast) {
+                var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+                common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+                    if (e) { return void console.error(e); }
+                    if (!Array.isArray(msgs)) { return; }
+                    if (!msgs.length) {
+                        $active.hide();
+                    }
+                    msgs.reverse().some(function (data) {
+                        var c = data.content;
+                        var msg = c && c.msg;
+                        if (!msg) { return; }
+                        if (msg.type === "BROADCAST_DELETE") {
+                            deleted.push(Util.find(msg, ['content', 'uid']));
+                        }
+                        if (msg.type !== "BROADCAST_CUSTOM") { return; }
+                        if (deleted.indexOf(msg.uid) !== -1) { return true; }
+
+                        // We found an active custom message, show it
+                        var el = common.mailbox.createElement(data);
+                        var table = h('table.cp-broadcast-delete');
+                        var $table = $(table);
+                        var uid = Util.find(data, ['content', 'msg', 'uid']);
+                        var time = Util.find(data, ['content', 'msg', 'content', 'time']);
+                        var tr = h('tr', { 'data-uid': uid }, [
+                            h('td', 'ID: '+uid),
+                            h('td', new Date(time || 0).toLocaleString()),
+                            h('td', el),
+                            h('td.delete', removeButton),
+                        ]);
+                        $table.append(tr);
+                        $active.append(table);
+                        activeUid = uid;
+
+                        return true;
+                    });
+                    if (!activeUid) { $active.hide(); }
+                });
+            });
+
+            // Custom message
+            var container = h('div.cp-broadcast-container');
+            var $container = $(container);
+            var languages = Messages._languages;
+            var keys = Object.keys(languages).sort();
+
+            // Always keep the textarea ordered by language code
+            var reorder = function () {
+                $container.find('.cp-broadcast-lang').each(function (i, el) {
+                    var $el = $(el);
+                    var l = $el.attr('data-lang');
+                    $el.css('order', keys.indexOf(l));
+                });
+            };
+
+            // Remove a textarea
+            var removeLang = function (l) {
+                $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+
+                var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
+                if (!hasDefault) {
+                    $container.find('.cp-broadcast-lang').first().find('.cp-checkmark input').prop('checked', 'checked');
+                }
+            };
+
+            var getData = function () { return false; };
+            var onPreview = function (l) {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+
+                var msg = {
+                    uid: Util.uid(),
+                    type: 'BROADCAST_CUSTOM',
+                    content: data
+                };
+                common.mailbox.onMessage({
+                    lang: l,
+                    type: 'broadcast',
+                    content: {
+                        msg: msg,
+                        hash: 'LOCAL|' + JSON.stringify(msg).slice(0,58)
+                    }
+                }, function () {
+                    UI.log(Messages.saved);
+                });
+            };
+
+            // Add a textarea
+            var addLang = function (l) {
+                if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
+                var preview = h('button.btn.btn-secondary', Messages.broadcast_preview);
+                $(preview).click(function () {
+                    onPreview(l);
+                });
+                var bcastDefault = Messages.broadcast_defaultLanguage;
+                var first = !$container.find('.cp-broadcast-lang').length;
+                var radio = UI.createRadio('broadcastDefault', null, bcastDefault, first, {
+                    'data-lang': l,
+                    label: {class: 'noTitle'}
+                });
+                $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
+                    h('h4', languages[l]),
+                    h('label', Messages.kanban_body),
+                    h('textarea'),
+                    radio,
+                    preview
+                ]));
+                reorder();
+            };
+
+            // Checkboxes to select translations
+            var boxes = keys.map(function (l) {
+                var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
+                    languages[l], false, { label: { class: 'noTitle' } }));
+                var $check = $cbox.find('input').on('change', function () {
+                    var c = $check.is(':checked');
+                    if (c) { return void addLang(l); }
+                    removeLang(l);
+                });
+                if (l === 'en') {
+                    setTimeout(function () {
+                        $check.click();
+                    });
+                }
+                return $cbox[0];
+            });
+
+            // Extract form data
+            getData = function () {
+                var map = {};
+                var defaultLanguage;
+                var error = false;
+                $container.find('.cp-broadcast-lang').each(function (i, el) {
+                    var $el = $(el);
+                    var l = $el.attr('data-lang');
+                    if (!l) { error = true; return; }
+                    var text = $el.find('textarea').val();
+                    if (!text.trim()) { error = true; return; }
+                    if ($el.find('.cp-checkmark input').is(':checked')) {
+                        defaultLanguage = l;
+                    }
+                    map[l] = text;
+                });
+                if (!Object.keys(map).length) {
+                    console.error('You must select at least one language');
+                    return false;
+                }
+                if (error) {
+                    console.error('One of the selected languages has no data');
+                    return false;
+                }
+                return {
+                    defaultLanguage: defaultLanguage,
+                    content: map
+                };
+            };
+
+            var send = function (data) {
+                $button.prop('disabled', 'disabled');
+                data.time = +new Date();
+                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err, data) {
+                    if (err) {
+                        $button.prop('disabled', '');
+                        console.error(err);
+                        return UI.warn(Messages.error);
+                    }
+                    UI.log(Messages.saved);
+                    refresh();
+
+                    checkLastBroadcastHash();
+                });
+            };
+
+            $button.click(function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
+
+            UI.confirmButton(removeButton, {
+                classes: 'btn-danger',
+            }, function () {
+                if (!activeUid) { return; }
+                common.mailbox.sendTo('BROADCAST_DELETE', {
+                    uid: activeUid
+                }, {}, function (err, data) {
+                    if (err) { return UI.warn(Messages.error); }
+                    UI.log(Messages.saved);
+                    refresh();
+                    checkLastBroadcastHash();
+                });
+            });
+
+            // Make the form
+            $form.empty().append([
+                active,
+                h('label', Messages.broadcast_translations),
+                h('div.cp-broadcast-languages', boxes),
+                container,
+                h('div.cp-broadcast-form-submit', [
+                    h('br'),
+                    button
+                ])
+            ]);
+        });
+        refresh();
+
+        return $div;
+    };
+
+    create['maintenance'] = function () {
+        var key = 'maintenance';
+        var $div = makeBlock(key);
+
+        var form = h('div.cp-admin-broadcast-form');
+        var $form = $(form).appendTo($div);
+
+        var refresh = getApi(function (Broadcast) {
+            var button = h('button.btn.btn-primary', Messages.admin_maintenanceButton);
+            var $button = $(button);
+            var removeButton = h('button.btn.btn-danger', Messages.admin_maintenanceCancel);
+            var active;
+
+            if (Broadcast && Broadcast.maintenance) {
+                var m = Broadcast.maintenance;
+                if (m.start && m.end && m.end >= (+new Date())) {
+                    active = h('div.cp-broadcast-active', [
+                        UI.setHTML(h('p'), Messages._getKey('broadcast_maintenance', [
+                            new Date(m.start).toLocaleString(),
+                            new Date(m.end).toLocaleString(),
+                        ])),
+                        removeButton
+                    ]);
+                }
+            }
+
+            // Start and end date pickers
+            var start = h('input');
+            var end = h('input');
+            var $start = $(start);
+            var $end = $(end);
+            var endPickr = Flatpickr(end, {
+                enableTime: true,
+                minDate: new Date()
+            });
+            Flatpickr(start, {
+                enableTime: true,
+                minDate: new Date(),
+                onChange: function () {
+                    endPickr.set('minDate', new Date($start.val()));
+                }
+            });
+
+            // Extract form data
+            var getData = function () {
+                var start = +new Date($start.val());
+                var end = +new Date($end.val());
+                if (isNaN(start) || isNaN(end)) {
+                    console.error('Invalid dates');
+                    return false;
+                }
+                return {
+                    start: start,
+                    end: end
+                };
+            };
+
+            var send = function (data) {
+                $button.prop('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_MAINTENANCE', [data]]
+                }, function (e) {
+                    if (e) {
+                        UI.warn(Messages.error); console.error(e);
+                        $button.prop('disabled', '');
+                        return;
+                    }
+                    // Maintenance applied, send notification
+                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function (err, data) {
+                        refresh();
+                        checkLastBroadcastHash();
+                    });
+                });
+
+            };
+            $button.click(function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
+            UI.confirmButton(removeButton, {
+                classes: 'btn-danger',
+            }, function () {
+                send("");
+            });
+
+            $form.empty().append([
+                active,
+                h('label', Messages.broadcast_start),
+                start,
+                h('label', Messages.broadcast_end),
+                end,
+                h('br'),
+                h('div.cp-broadcast-form-submit', [
+                    button
+                ])
+            ]);
+        });
+        refresh();
+
+        common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "MAINTENANCE") { return; }
+                refresh();
+            }
+        });
+
+        return $div;
+    };
+    create['survey'] = function () {
+        var key = 'survey';
+        var $div = makeBlock(key);
+
+        var form = h('div.cp-admin-broadcast-form');
+        var $form = $(form).appendTo($div);
+
+        var refresh = getApi(function (Broadcast) {
+            var button = h('button.btn.btn-primary', Messages.admin_surveyButton);
+            var $button = $(button);
+            var removeButton = h('button.btn.btn-danger', Messages.admin_surveyCancel);
+            var active;
+
+            if (Broadcast && Broadcast.surveyURL) {
+                var a = h('a', {href: Broadcast.surveyURL}, Messages.admin_surveyActive);
+                $(a).click(function (e) {
+                    e.preventDefault();
+                    common.openUnsafeURL(Broadcast.surveyURL);
+                });
+                active = h('div.cp-broadcast-active', [
+                    h('p', a),
+                    removeButton
+                ]);
+            }
+
+            // Survey form
+            var label = h('label', Messages.broadcast_surveyURL);
+            var input = h('input');
+            var $input = $(input);
+
+            // Extract form data
+            var getData = function () {
+                var url = $input.val();
+                if (!Util.isValidURL(url)) {
+                    console.error('Invalid URL');
+                    return false;
+                }
+                return url;
+            };
+
+            var send = function (data) {
+                $button.prop('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_SURVEY_URL', [data]]
+                }, function (e) {
+                    if (e) {
+                        $button.prop('disabled', '');
+                        UI.warn(Messages.error); console.error(e);
+                        return;
+                    }
+                    // Maintenance applied, send notification
+                    common.mailbox.sendTo('BROADCAST_SURVEY', {
+                        url: data
+                    }, {}, function (err, data) {
+                        refresh();
+                        checkLastBroadcastHash();
+                    });
+                });
+
+            };
+            $button.click(function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
+            UI.confirmButton(removeButton, {
+                classes: 'btn-danger',
+            }, function () {
+                send("");
+            });
+
+            $form.empty().append([
+                active,
+                label,
+                input,
+                h('br'),
+                h('div.cp-broadcast-form-submit', [
+                    button
+                ])
+            ]);
+        });
+        refresh();
+
+        common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "SURVEY") { return; }
+                refresh();
+            }
+        });
+
+        return $div;
+    };
+
     var onRefreshPerformance = Util.mkEvent();
 
     create['refresh-performance'] = function () {
@@ -1010,6 +1566,7 @@ define([
         stats: 'fa fa-line-chart',
         quota: 'fa fa-hdd-o',
         support: 'fa fa-life-ring',
+        broadcast: 'fa fa-bullhorn',
         performance: 'fa fa-heartbeat',
     };
 
@@ -1094,8 +1651,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.adminPage || 'Administration');
 
-        if (!privateData.edPublic || !ApiConfig.adminKeys || !Array.isArray(ApiConfig.adminKeys)
-            || ApiConfig.adminKeys.indexOf(privateData.edPublic) === -1) {
+        if (!common.isAdmin()) {
             return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
         }
 
