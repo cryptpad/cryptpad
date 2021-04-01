@@ -1,19 +1,34 @@
-# 4.3.1 (WIP)
+# WIP
+
+* OnlyOffice
+  * inform OnlyOffice of userlist changes
+  * rename doc and slide editors
+  * handle different lock formats for docs and slides
+    * relative to sheets
+  * handle some cursor logic outside of sheets
+  * handle locks when integrating remote checkpoints in strict mode
+  * OnlyOffice renamed buttons in slides and docs and we need to hardcode CSS that hides them by their randomly generated IDs
+  * support CryptPad cursor colors in OnlyOffice by adding opacity value
+  * use the appropriate APIs to detect if the document is modified
+  * display users cursor colors in the toolbar next to their name
+  * handle errors when migrating in embed mode
+  * change the method we use to lock the whole sheet since OnlyOffice changed their internal API's behaviour
+* bad channel IDs stored in your drive or accessed via bad links (corrupted somehow)
+  * don't try to join invalid channels
+  * don't try to get their metadata
+* prompt premium users to cancel their subscriptions before deleting their accounts
+
+# 4.3.1
 
 This minor release addresses some bugs discovered after deploying and tagging 4.3.0
 
-* better isLoggedIn() check
-* fix templates in sheets
-* include onlyOffice version along with checkpoint hashes
-* send feedback when opening the readme
-  * so we can decide whether to remove it
-* handle decryption errors for blobs
-  * prompted by a badly formed sheet checkpoint
-* fix broken team creation
-* CKEditor
-  * broken table of contents scrollTo
-  * show the link bubble for links inside of comments
-* fix title reset in polls
+* We found that some browser extensions interfered with checks to determine whether a registered user was correctly logged in, which resulted in some disabled functionality. If you are running extensions that actively delete the tokens that keep you logged your session should now stay alive until you close all its active tabs, after which you will have to log back in.
+* Our 4.2.0 update introduced a new internal format for spreadsheets which broke support for spreadsheet templates using the older format. This release implements a compatibility layer.
+* We fixed some minor bugs in our rich text editor. Section links in the table of contents now navigate correctly. Adding a comment to a link no longer prevents clicking on that link.
+* A race condition that caused poll titles to reset occasionally has been fixed.
+* We've added a little bit of telemetry to tell our server when a newly registered user opens the new user guide which is automatically added to their drive. We're considering either rewriting or removing this guide, so it's helpful to be able to determine how often people actually read it.
+* An error introduced in 4.3.0 was preventing the creation of new teams. It's been fixed.
+* 4.3.0 temporarily broke the sheet editor for iPad users. Migrations to a new internal format that were run while the editor was in a bad state produced some invalid data that prevented sheets from loading correctly. This release improves the platforms ability to recover from bad states like this and improves its ability to detect the kind of errors we observed.
 
 # 4.3.0 (D)
 
