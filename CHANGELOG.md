@@ -11,6 +11,8 @@
   * support CryptPad cursor colors in OnlyOffice by adding opacity value
   * use the appropriate APIs to detect if the document is modified
   * display users cursor colors in the toolbar next to their name
+  * handle errors when migrating in embed mode
+  * change the method we use to lock the whole sheet since OnlyOffice changed their internal API's behaviour
 * bad channel IDs stored in your drive or accessed via bad links (corrupted somehow)
   * don't try to join invalid channels
   * don't try to get their metadata
