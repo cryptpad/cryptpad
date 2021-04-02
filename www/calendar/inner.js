@@ -16,6 +16,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
 
+    '/common/jscolor.js',
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/calendar/app-calendar.less',
@@ -47,9 +48,28 @@ define([
 
 Messages.calendar = "Calendar"; // XXX
 Messages.calendar_default = "My calendar"; // XXX
+Messages.calendar_new = "New calendar"; // XXX
+Messages.calendar_day = "Day";
+Messages.calendar_week = "Week";
+Messages.calendar_month = "Month";
+Messages.calendar_today = "Today";
+
+    var onCalendarsUpdate = Util.mkEvent();
 
     var newCalendar = function (data, cb) {
         APP.module.execCommand('CREATE', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var updateCalendar = function (data, cb) {
+        APP.module.execCommand('UPDATE', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var deleteCalendar = function (data, cb) {
+        APP.module.execCommand('DELETE', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -85,9 +105,23 @@ Messages.calendar_default = "My calendar"; // XXX
                           (parseInt(rgb[2]) * 114)) / 1000);
         return (brightness > 125) ? 'black' : 'white';
     };
+
+    var getWeekDays = function (locale) {
+        var baseDate = new Date(Date.UTC(2017, 0, 1)); // just a Sunday
+        var weekDays = [];
+        for(i = 0; i < 7; i++) {
+            weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
+            baseDate.setDate(baseDate.getDate() + 1);
+        }
+        return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }) });
+    };
+
+
+
     var getCalendars = function () {
         return Object.keys(APP.calendars).map(function (id) {
             var c = APP.calendars[id];
+            if (c.hidden) { return; }
             var md = Util.find(c, ['content', 'metadata']);
             if (!md) { return void console.error('Ignore calendar without metadata'); }
             return {
@@ -98,12 +132,13 @@ Messages.calendar_default = "My calendar"; // XXX
                 dragBgColor: md.color,
                 borderColor: md.color,
             };
-        });
+        }).filter(Boolean);
     };
     var getSchedules = function () {
         var s = [];
         Object.keys(APP.calendars).forEach(function (id) {
             var c = APP.calendars[id];
+            if (c.hidden) { return; }
             var data = c.content || {};
             Object.keys(data.content || {}).forEach(function (uid) {
                 var obj = data.content[uid];
@@ -114,7 +149,15 @@ Messages.calendar_default = "My calendar"; // XXX
         });
         return s;
     };
-    var updateCalendar = function (data) {
+    var renderCalendar = function () {
+        var cal = APP.calendar;
+        if (!cal) { return; }
+
+        cal.clear();
+        cal.createSchedules(getSchedules(), true);
+        cal.render();
+    };
+    var onCalendarUpdate = function (data) {
         var cal = APP.calendar;
 
         // Is it a new calendar?
@@ -123,38 +166,244 @@ Messages.calendar_default = "My calendar"; // XXX
         // Update local data
         APP.calendars[data.id] = data;
 
-        // If this calendar is new, add it
-        if (cal && isNew) { cal.setCalendars(getCalendars()); }
-
         // If calendar if initialized, update it
         if (!cal) { return; }
-        cal.clear();
-        cal.createSchedules(getSchedules(), true);
-        cal.render();
+        cal.setCalendars(getCalendars());
+        onCalendarsUpdate.fire();
+        renderCalendar();
     };
+
+    var getPadStart = function (value) {
+        value = value.toString();
+        return padStart.call(value, 2, '0');
+    };
+
+    var getTime = function (time) {
+        var d = new Date();
+        d.setHours(time.hour);
+        d.setMinutes(time.minutes);
+        return d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    };
+
+    // If this browser doesn't support options to toLocaleTimeString, use default layout
+    if (!(function () {
+        // Modern browser will return a RangeError if the "locale" argument is invalid.
+        // Note: the "locale" argument has the same browser compatibility table as the "options"
+        try {
+            new Date().toLocaleTimeString('i');
+        } catch (e) {
+            return e.name === 'RangeError';
+        }
+    })()) { getTime = undefined; }
 
     var templates = {
         popupSave: function () {
             return Messages.settings_save;
-        }
+        },
+        timegridDisplayTime: getTime,
+        timegridDisplayPrimaryTime: getTime,
     };
 
-    var makeCalendar = function (ctx) {
-        var $container = $('#cp-container');
-        $container.append([
-            h('div#menu', [
-                h('span#renderRange.render-range')
-            ]),
-            h('div#cp-calendar')
+    var makeTeamSelector = function () {
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var keys = Object.keys(privateData.teams);
+        if (!keys.length) { return; }
+        var options = [];
+        keys.forEach(function (id) {
+            var t = privateData.teams[id];
+            if (t.viewer) { return; }
+        });
+    };
+
+    // XXX Note: always create calendars in your own proxy. If you want a team calendar, you can share it with the team later.
+    var editCalendar = function (id) {
+        var isNew = !id;
+        var data = APP.calendars[id];
+        if (id && !data) { return; }
+        var md = {};
+        if (!isNew) { md = Util.find(data, ['content', 'metadata']); }
+        if (!md) { return; }
+
+        // Create form data
+        var labelTitle = h('label', Messages.kanban_title);
+        var title = h('input');
+        var $title = $(title);
+        $title.val(md.title || Messages.calendar_new);
+        var labelColor = h('label', Messages.kanban_color);
+
+        var $colorPicker = $(h('div.cp-calendar-colorpicker'));
+        var jscolorL = new window.jscolor($colorPicker[0], { showOnClick: false, valueElement: undefined, zIndex: 100000 });
+        var to;
+        $colorPicker.click(function() {
+            jscolorL.show();
+        });
+        if (md.color) { jscolorL.fromString(md.color); }
+
+        var form = h('div', [
+            labelTitle,
+            title,
+            labelColor,
+            $colorPicker[0]
         ]);
 
-        var cal = APP.calendar = new Calendar('#cp-calendar', {
+        var send = function (obj) {
+            if (isNew) {
+                return void newCalendar(obj, function (err) {
+                    if (err) { console.error(err); return void UI.warn(Messages.error); }
+                    UI.log(Messages.saved);
+                })
+            };
+            obj.id = id;
+            updateCalendar(obj, function (err) {
+                if (err) { console.error(err); return void UI.warn(Messages.error); }
+                UI.log(Messages.saved);
+            });
+        };
+        var m = UI.dialog.customModal(form, {
+            buttons: [{
+                className: 'cancel',
+                name: Messages.cancel,
+                onClick: function () {},
+                keys: [27]
+            }, {
+                className: 'primary',
+                name: Messages.settings_save,
+                onClick: function () {
+                    var color = jscolorL.toHEXString();
+                    var title = $title.val();
+                    var obj = {
+                        color: color,
+                        title: title
+                    }
+                    if (!title || !title.trim() ||!/^#[0-9a-fA-F]{6}$/.test(color)) {
+                        return true;
+                    }
+                    send(obj);
+                },
+                keys: [13]
+            }]
+        });
+        UI.openCustomModal(m);
+    };
+
+    var makeLeftside = function (calendar, $container) {
+        var $topContainer = $(h('div.cp-calendar-new')).appendTo($container);
+        // Add new button
+        var newButton = h('button.btn.btn-primary', [
+            h('i.fa.fa-plus'),
+            h('span', Messages.newButton)
+        ]);
+        $(newButton).click(function () {
+            editCalendar();
+        });
+        $topContainer.append(newButton);
+
+        // Change view mode
+        var options = ['day', 'week', 'month'].map(function (k) {
+            return {
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-calendar-view',
+                    'data-value': k,
+                    'href': '#',
+                },
+                content: Messages['calendar_'+k]
+                // Messages.calendar_day
+                // Messages.calendar_week
+                // Messages.calendar_month
+            };
+        });
+        var dropdownConfig = {
+            text: Messages.calendar_week,
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            common: common,
+            caretDown: true,
+            buttonCls: 'btn btn-secondary'
+        };
+        var $block = UIElements.createDropdown(dropdownConfig);
+        $block.setValue('week');
+        var $views = $block.find('a');
+        $views.click(function () {
+            var mode = $(this).attr('data-value');
+            calendar.changeView(mode);
+        });
+        $topContainer.append($block);
+
+        // Change page
+        var goLeft = h('button.btn.btn-secondary.fa.fa-chevron-left');
+        var goRight = h('button.btn.btn-secondary.fa.fa-chevron-right');
+        var goToday = h('button.btn.btn-secondary', Messages.calendar_today);
+        $(goLeft).click(function () { calendar.prev(); });
+        $(goRight).click(function () { calendar.next(); });
+        $(goToday).click(function () { calendar.today(); });
+        $container.append(h('div.cp-calendar-browse', [
+            goLeft, goToday, goRight
+        ]));
+
+        // Show calendars
+        var calendars = h('div.cp-calendar-list');
+        var $calendars = $(calendars).appendTo($container);
+        onCalendarsUpdate.reg(function () {
+            $calendars.empty();
+            Object.keys(APP.calendars || {}).forEach(function (id) {
+                var data = APP.calendars[id];
+                var edit;
+                if (!data.readOnly) {
+                    edit = h('button.btn.btn-cancel.fa.fa-pencil.small');
+                    $(edit).click(function (e) {
+                        e.stopPropagation();
+                        editCalendar(id);
+                    });
+                }
+                var md = Util.find(data, ['content', 'metadata']);
+                if (!md) { return; }
+                var active = data.hidden ? '' : '.cp-active';
+                var calendar = h('div.cp-calendar-entry'+active, [
+                    h('span.cp-calendar-color', {
+                        style: 'background-color: '+md.color+';'
+                    }),
+                    h('span.cp-calendar-title', md.title),
+                    edit
+                ]);
+                $(calendar).click(function () {
+                    data.hidden = !data.hidden;
+                    $(calendar).toggleClass('cp-active', !data.hidden);
+                    renderCalendar();
+                });
+                $calendars.append(calendar);
+            });
+        });
+        onCalendarsUpdate.fire();
+    };
+    var makeCalendar = function (ctx) {
+        var $container = $('#cp-sidebarlayout-container');
+        var leftside;
+        $container.append([
+            leftside = h('div#cp-sidebarlayout-leftside'),
+            h('div#cp-sidebarlayout-rightside')
+        ]);
+
+        var cal = APP.calendar = new Calendar('#cp-sidebarlayout-rightside', {
             defaultView: 'week', // weekly view option
             useCreationPopup: true,
             useDetailPopup: true,
             usageStatistics: false,
             calendars: getCalendars(),
+            template: templates,
+            month: {
+                daynames: getWeekDays(),
+                startDayOfWeek: 0,
+            },
+            week: {
+                daynames: getWeekDays(),
+                startDayOfWeek: 1,
+            }
         });
+
+        makeLeftside(cal, $(leftside));
+
         cal.on('beforeCreateSchedule', function(event) {
             // XXX Recurrence (later)
             // On creation, select a recurrence rule (daily / weekly / monthly / more weird rules)
@@ -211,8 +460,7 @@ Messages.calendar_default = "My calendar"; // XXX
             });
         });
 
-        cal.createSchedules(getSchedules(), true);
-        cal.render();
+        renderCalendar();
     };
 
     var createToolbar = function () {
@@ -232,8 +480,7 @@ Messages.calendar_default = "My calendar"; // XXX
         var ev = obj.ev;
         var data = obj.data;
         if (ev === 'UPDATE') {
-            console.log('Update');
-            updateCalendar(data);
+            onCalendarUpdate(data);
             return;
         }
     };

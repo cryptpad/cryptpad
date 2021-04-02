@@ -1,15 +1,33 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/tools.less';
 
 &.cp-app-calendar {
 
     .framework_min_main();
+    .sidebar-layout_main();
 
     display: flex;
     flex-flow: column;
 
-    #cp-calendar {
+    #cp-sidebarlayout-container #cp-sidebarlayout-rightside {
+        padding: 0;
+        & > div {
+            margin: 0;
+        }
+
         .tui-full-calendar-layout {
             background-color: @cp_sidebar-right-bg !important;
+            color: @cryptpad_text_col;
+            .tui-full-calendar-month * {
+                color: @cryptpad_text_col !important; // XXX
+            }
+        }
+        .tui-full-calendar-timegrid-timezone {
+            background-color: @cp_sidebar-right-bg !important;
+            .tui-full-calendar-timegrid-hour {
+                color: @cryptpad_text_col !important;
+            }
             color: @cryptpad_text_col;
         }
         .tui-full-calendar-timegrid-gridline, .tui-full-calendar-time-date {
@@ -62,5 +80,53 @@
         }
     }
 
+    #cp-sidebarlayout-leftside {
+        & > div {
+            padding: 10px
+        }
+        .cp-calendar-new {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cp-calendar-browse {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            justify-content: space-evenly;
+        }
+
+        .cp-calendar-list {
+            .cp-calendar-entry {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                padding: 5px;
+                cursor: pointer;
+                &:not(:last-child) {
+                    margin-bottom: 10px;
+                }
+                &:hover {
+                    background: fade(@cryptpad_text_col, 10%);
+                }
+                &.cp-active {
+                    background: @cp_sidebar-left-active;
+                }
+                .tools_unselectable();
+                .cp-calendar-color {
+                    display: inline-block;
+                    border-radius: 50%;
+                    width: 15px;
+                    height: 15px;
+                }
+            }
+        }
+    }
+    .cp-calendar-colorpicker {
+        width: 100px;
+        height: 25px;
+        cursor: pointer;
+        border: 1px solid @cp_forms-border;
+    }
 }
 
