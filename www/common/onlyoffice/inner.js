@@ -2466,6 +2466,7 @@ define([
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
             } else if (!privateData.isNewFile) {
                 // This is an empty doc but not a new file: error
+                // XXX clear cache before reloading
                 UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
                     common.gotoURL('');
                 });
