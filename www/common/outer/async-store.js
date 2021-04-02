@@ -19,6 +19,7 @@ define([
     '/common/outer/team.js',
     '/common/outer/messenger.js',
     '/common/outer/history.js',
+    '/common/outer/calendar.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -32,7 +33,7 @@ define([
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             NetConfig, AppConfig,
+             Calendar, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
@@ -574,7 +575,7 @@ define([
                          getColor().toString(16) +
                          getColor().toString(16);
         };
-        var getUserColor = function () {
+        Store.getUserColor = function () {
             var color = Util.find(store, ['proxy', 'settings', 'general', 'cursor', 'color']);
             if (!color) {
                 color = getRandomColor();
@@ -601,7 +602,7 @@ define([
                     uid: proxy.uid || store.noDriveUid, // Random uid in nodrive mode
                     avatar: Util.find(proxy, ['profile', 'avatar']),
                     profile: Util.find(proxy, ['profile', 'view']),
-                    color: getUserColor(),
+                    color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
                 },
@@ -2712,6 +2713,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
+                loadUniversal(Calendar, 'calendar', waitFor);
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {

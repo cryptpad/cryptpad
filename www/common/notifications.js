@@ -466,7 +466,6 @@ define([
 
     return {
         add: function(common, data) {
-            console.log(data);
             var type = data.content.msg.type;
 
             if (handlers[type]) {
