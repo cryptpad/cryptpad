@@ -203,6 +203,7 @@ define([
     };
     var showCategories = function (cat) {
         hideCategories();
+        if (!Array.isArray(cat)) { return void console.error("invalid category"); }
         cat.forEach(function (c) {
             APP.$rightside.find('.'+c).show();
         });
@@ -214,6 +215,7 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var active = privateData.category || 'tickets';
+        if (!categories[active]) { active = 'tickets'; }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {
