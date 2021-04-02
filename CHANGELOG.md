@@ -17,6 +17,8 @@
   * don't try to join invalid channels
   * don't try to get their metadata
 * prompt premium users to cancel their subscriptions before deleting their accounts
+* check that headers for XLSX export are correctly set via the checkup app
+* guard against some type errors in the support page
 
 # 4.3.1
 
