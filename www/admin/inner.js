@@ -970,6 +970,7 @@ define([
     var getApi = function (cb) {
         return function () {
             require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
+                // XXX require.s.contexts._ can be used to erase old loaded objects
                 cb(Broadcast);
             });
         };
@@ -1219,7 +1220,7 @@ define([
                 }
                 if (error) {
                     console.error('One of the selected languages has no data');
-                    return false;
+                    return false; // XXX better error handling?
                 }
                 return {
                     defaultLanguage: defaultLanguage,
@@ -1229,7 +1230,7 @@ define([
 
             var send = function (data) {
                 $button.prop('disabled', 'disabled');
-                data.time = +new Date();
+                data.time = +new Date(); // XXX not used anymore?
                 common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err /*, data */) { // XXX unused argument
                     if (err) {
                         $button.prop('disabled', '');
@@ -1249,7 +1250,7 @@ define([
                 send(data);
             });
 
-            UI.confirmButton(removeButton, {
+            UI.confirmButton(removeButton, { // XXX table jank
                 classes: 'btn-danger',
             }, function () {
                 if (!activeUid) { return; }
@@ -1311,7 +1312,8 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            var endPickr = Flatpickr(end, {
+            // XXX new Date().toLocaleString('fr-fr', {month: 'long'}).replace(/./, c => c.toUpperCase())
+            var endPickr = Flatpickr(end, { // XXX translations?
                 enableTime: true,
                 minDate: new Date()
             });
@@ -1411,7 +1413,7 @@ define([
                     common.openUnsafeURL(Broadcast.surveyURL);
                 });
                 active = h('div.cp-broadcast-active', [
-                    h('p', a),
+                    h('p', a), // XXX spacing around this element is really cramped
                     removeButton
                 ]);
             }

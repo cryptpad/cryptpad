@@ -466,7 +466,7 @@ define([
 
     return {
         add: function(common, data) {
-            console.log(data);
+            console.log(data); // XXX noise?
             var type = data.content.msg.type;
 
             if (handlers[type]) {

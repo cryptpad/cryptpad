@@ -3156,7 +3156,7 @@ define([
             });
         };
 
-        Store.newVersionReload = function () {
+        Store.newVersionReload = function () { // XXX not used anymore?
             broadcast([], "NETWORK_RECONNECT");
         };
         Store.disconnect = function () {
