@@ -1215,16 +1215,48 @@ define([
 
         var wordCount = h('span.cp-app-pad-wordCount');
         $('.cke_toolbox_main').append(wordCount);
-        Messages.pad_wordCountReadingTime = "{0} minute(s) to read"; // XXX
+        Messages.pad_wordCountReadingTime = "{0} minute read"; // XXX
+        Messages.pad_charCount = "Characters: {0}"; // XXX
+        var latestCount = {};
+
         var truncate = function (n) { return Math.floor(n * 10) / 10; };
-        editor.on('cp-wc-update', function() {
-            if (!editor.wordCount || typeof(editor.wordCount.wordCount) === "undefined") {
+        var DOC_METRICS = {
+            0: function () {
+                if (!latestCount.wordCount) { return void DOC_METRICS.default(); }
+                wordCount.innerText = Messages._getKey('pad_wordCount', [latestCount.wordCount]);
+            },
+            1: function () {
+                var time = (truncate((latestCount.wordCount || 0) / 200));
+                if (time < 1) { time =  '< 1'; }
+                wordCount.innerText = Messages._getKey('pad_wordCountReadingTime', [time]);
+            },
+            2: function () {
+                if (!latestCount.charCount) { return void DOC_METRICS.default(); }
+                wordCount.innerText = Messages._getKey('pad_charCount', [latestCount.charCount]); // XXX validate input
+            },
+            "default": function () {
+                // console.error("default doc metric");
                 wordCount.innerText = '';
-                return;
+            },
+        };
+
+        var currentDocMetric = 0;
+        var updateWordCount = function() {
+            if (!editor.wordCount) {
+                latestCount = {};
+                return void DOC_METRICS.default();
             }
-            wordCount.innerText = Messages._getKey('pad_wordCount', [editor.wordCount.wordCount]);
-            wordCount.setAttribute("title", Messages._getKey('pad_wordCountReadingTime', [truncate(editor.wordCount.wordCount / 200)]));
+            latestCount = editor.wordCount;
+            //console.log(latestCount); // XXX
+            var metric = DOC_METRICS[currentDocMetric] || DOC_METRICS.default;
+            try { metric(); } catch (err) { console.error(err); }
+        };
+        $(wordCount).click(function () {
+            currentDocMetric = (currentDocMetric + 1) % 3;
+            updateWordCount();
         });
+
+        editor.on('cp-wc-update', updateWordCount); // not called on paste
 
         // export the typing tests to the window.
         // call like `test = easyTest()`

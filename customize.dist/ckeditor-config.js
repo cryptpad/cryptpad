@@ -29,6 +29,9 @@ CKEDITOR.editorConfig = function( config ) {
     config.mathJaxLib = '/pad/mathjax/MathJax.js?config=TeX-AMS_HTML';
     config.font_defaultLabel = 'Arial';
     config.fontSize_defaultLabel = '16';
+    config.wordcount = {
+        showCharCount: true,
+    };
 
     config.keystrokes = [
         [ CKEDITOR.ALT + 121 /*F10*/, 'toolbarFocus' ],
