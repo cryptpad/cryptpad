@@ -39,18 +39,98 @@ define([
     )
 {
     var APP = window.APP = {
+        calendars: {}
     };
-console.log(Calendar);
-
 
     var common;
     var sframeChan;
 
 Messages.calendar = "Calendar"; // XXX
+Messages.calendar_default = "My calendar"; // XXX
 
+    var newCalendar = function (data, cb) {
+        APP.module.execCommand('CREATE', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var newEvent = function (data, cb) {
+        var start = data.start;
+        var end = data.end;
+        data.start = +new Date(start._date);
+        data.end = +new Date(end._date);
+        APP.module.execCommand('CREATE_EVENT', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var updateEvent = function (data, cb) {
+        APP.module.execCommand('UPDATE_EVENT', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var deleteEvent = function (data, cb) {
+        APP.module.execCommand('DELETE_EVENT', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    var getContrast = function (color) {
+        var rgb = Util.hexToRGB(color);
+        // http://www.w3.org/TR/AERT#color-contrast
+        var brightness = Math.round(((parseInt(rgb[0]) * 299) +
+                          (parseInt(rgb[1]) * 587) +
+                          (parseInt(rgb[2]) * 114)) / 1000);
+        return (brightness > 125) ? 'black' : 'white';
+    };
+    var getCalendars = function () {
+        return Object.keys(APP.calendars).map(function (id) {
+            var c = APP.calendars[id];
+            var md = Util.find(c, ['content', 'metadata']);
+            if (!md) { return void console.error('Ignore calendar without metadata'); }
+            return {
+                id: id,
+                name: Util.fixHTML(md.title),
+                color: getContrast(md.color),
+                bgColor: md.color,
+                dragBgColor: md.color,
+                borderColor: md.color,
+            };
+        });
+    };
+    var getSchedules = function () {
+        var s = [];
+        Object.keys(APP.calendars).forEach(function (id) {
+            var c = APP.calendars[id];
+            var data = c.content || {};
+            Object.keys(data.content || {}).forEach(function (uid) {
+                var obj = data.content[uid];
+                obj.title = Util.fixHTML(obj.title || "");
+                obj.location = Util.fixHTML(obj.location || "");
+                s.push(data.content[uid]);
+            });
+        });
+        return s;
+    };
     var updateCalendar = function (data) {
-        console.log(data);
+        var cal = APP.calendar;
 
+        // Is it a new calendar?
+        var isNew = !APP.calendars[data.id];
+
+        // Update local data
+        APP.calendars[data.id] = data;
+
+        // If this calendar is new, add it
+        if (cal && isNew) { cal.setCalendars(getCalendars()); }
+
+        // If calendar if initialized, update it
+        if (!cal) { return; }
+        cal.clear();
+        cal.createSchedules(getSchedules(), true);
+        cal.render();
     };
 
     var templates = {
@@ -68,34 +148,14 @@ Messages.calendar = "Calendar"; // XXX
             h('div#cp-calendar')
         ]);
 
-        var cal = new Calendar('#cp-calendar', {
+        var cal = APP.calendar = new Calendar('#cp-calendar', {
             defaultView: 'week', // weekly view option
             useCreationPopup: true,
             useDetailPopup: true,
             usageStatistics: false,
-            calendars: [{
-                id: '1',
-                name: 'My Calendar',
-                color: '#ffffff',
-                bgColor: '#9e5fff',
-                dragBgColor: '#9e5fff',
-                borderColor: '#9e5fff'
-            }, {
-                id: '2',
-                name: 'Company',
-                color: '#00a9ff',
-                bgColor: '#00a9ff',
-                dragBgColor: '#00a9ff',
-                borderColor: '#00a9ff'
-            }]
+            calendars: getCalendars(),
         });
         cal.on('beforeCreateSchedule', function(event) {
-            var startTime = event.start;
-            var endTime = event.end;
-            var isAllDay = event.isAllDay;
-            var guide = event.guide;
-            var triggerEventName = event.triggerEventName;
-
             // XXX Recurrence (later)
             // On creation, select a recurrence rule (daily / weekly / monthly / more weird rules)
             // then mark it under recurrence rule with a uid (the same for all the recurring events)
@@ -110,23 +170,49 @@ Messages.calendar = "Calendar"; // XXX
                 category: "time",
                 location: Util.fixHTML(event.location),
                 start: event.start,
+                isAllDay: event.isAllDay,
                 end: event.end,
             };
 
-            /*
-            if (triggerEventName === 'click') {
-                // open writing simple schedule popup
-                schedule = {
-                };
-            } else if (triggerEventName === 'dblclick') {
-                // open writing detail schedule popup
-                schedule = {
-                };
-            }
-            */
-
-            cal.createSchedules([schedule]);
+            newEvent(schedule, function (err) {
+                if (err) {
+                    console.error(err);
+                    return void UI.warn(err);
+                }
+                cal.createSchedules([schedule]);
+            });
         });
+        cal.on('beforeUpdateSchedule', function(event) {
+            var changes = event.changes || {};
+            delete changes.state;
+            if (changes.end) { changes.end = +new Date(changes.end._date); }
+            if (changes.start) { changes.start = +new Date(changes.start._date); }
+            var old = event.schedule;
+
+            updateEvent({
+                ev: old,
+                changes: changes
+            }, function (err) {
+                if (err) {
+                    console.error(err);
+                    return void UI.warn(err);
+                }
+                cal.updateSchedule(old.id, old.calendarId, changes);
+            });
+        });
+        cal.on('beforeDeleteSchedule', function(event) {
+            var data = event.schedule;
+            deleteEvent(event.schedule, function (err) {
+                if (err) {
+                    console.error(err);
+                    return void UI.warn(err);
+                }
+                cal.deleteSchedule(data.id, data.calendarId);
+            });
+        });
+
+        cal.createSchedules(getSchedules(), true);
+        cal.render();
     };
 
     var createToolbar = function () {
@@ -161,6 +247,10 @@ Messages.calendar = "Calendar"; // XXX
         sframeChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var user = metadataMgr.getUserData();
+
 
         // Fix flatpickr selection
         var MutationObserver = window.MutationObserver;
@@ -193,7 +283,6 @@ Messages.calendar = "Calendar"; // XXX
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
-            console.log(el);
         };
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
@@ -214,15 +303,25 @@ Messages.calendar = "Calendar"; // XXX
         APP.module = common.makeUniversal('calendar', {
             onEvent: onEvent
         });
-        APP.module.execCommand('SUBSCRIBE', null, function () {
+        APP.module.execCommand('SUBSCRIBE', null, function (obj) {
+            if (obj.empty) {
+                // No calendar yet, create one
+                newCalendar({
+                    teamId: 1,
+                    color: user.color,
+                    title: Messages.calendar_default
+                }, function (err, obj) {
+                    if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
+                    makeCalendar();
+                    UI.removeLoadingScreen();
+                });
+                return;
+            }
             console.error('subscribed');
             // XXX build UI
             makeCalendar();
             UI.removeLoadingScreen();
         });
-
-        var metadataMgr = common.getMetadataMgr();
-        var privateData = metadataMgr.getPrivateData();
 
         APP.origin = privateData.origin;
 

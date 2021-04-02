@@ -25,22 +25,16 @@ define([
 * Own drive
 {
     calendars: {
-        own: calendar,
-        extra: {
-            uid: calendar,
-            uid: calendar
-        }
+        uid: calendar,
+        uid: calendar
     }
 }
 
 * Team drive
 {
     calendars: {
-        own: calendar,
-        extra: {
-            uid: calendar,
-            uid: calendar
-        }
+        uid: calendar,
+        uid: calendar
     }
 }
 
@@ -85,10 +79,11 @@ ctx.calendars[channel] = {
     var initializeCalendars = function (ctx, cb) {
         var proxy = ctx.store.proxy;
         var calendars = proxy.calendars = proxy.calendars || {};
-        if (!calendars.own) {
+        /*if (!calendars.own) {
             var own = calendars.own = makeCalendar(true);
             own.color = ctx.Store.getUserColor();
         }
+        */
         setTimeout(cb);
         // XXX for each team, if we have edit rights, create the team calendar?
         // XXX or maybe do it from the team app?
@@ -99,11 +94,12 @@ ctx.calendars[channel] = {
             teams: c.stores,
             id: c.channel,
             readOnly: c.readOnly,
-            data: Util.clone(c.proxy)
+            content: Util.clone(c.proxy)
         }, ctx.clients);
     };
 
-    var openChannel = function (ctx, cfg) {
+    var openChannel = function (ctx, cfg, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var teamId = cfg.storeId;
         var data = cfg.data;
         var channel = data.channel;
@@ -165,34 +161,36 @@ ctx.calendars[channel] = {
         console.error(channel, config);
         var lm = Listmap.create(config);
         c.lm = lm;
-        c.proxy = lm.proxy;
+        var proxy = c.proxy = lm.proxy;
 
         lm.proxy.on('ready', function () {
             c.ready = true;
             console.warn('READY', channel);
+            if (!proxy.metadata) {
+                proxy.metadata = {
+                    color: data.color,
+                    title: data.title
+                };
+            }
             setTimeout(update);
+            if (cb) { cb(null, lm.proxy); }
         }).on('change', [], function () {
             setTimeout(update);
+        }).on('error', function (info) {
+            if (info && info.error) { cb(info); }
         });
     };
     var openChannels = function (ctx) {
         var findFromStore = function (store) {
             var c = store.proxy.calendars;
             if (!c) { return; }
-            if (c.own) {
+            Object.keys(c).forEach(function (channel) {
+                console.log(c[channel]);
                 openChannel(ctx, {
                     storeId: store.id || 1,
-                    data: c.own
+                    data: c[channel]
                 });
-            }
-            if (c.extra) {
-                Object.keys(c.extra).forEach(function (channel) {
-                    openChannel(ctx, {
-                        storeId: store.id || 1,
-                        data: c.extra[channel]
-                    });
-                });
-            }
+            });
         };
 
         // Personal drive
@@ -206,13 +204,85 @@ ctx.calendars[channel] = {
         if (idx === -1) {
             ctx.clients.push(cId);
         }
-        cb();
+        cb({
+            empty: !Object.keys(ctx.calendars).length
+        });
         Object.keys(ctx.calendars).forEach(function (channel) {
             var c = ctx.calendars[channel] || {};
             console.log(channel, c);
             if (!c.ready) { return; }
             sendUpdate(ctx, c);
         });
+    };
+
+    var getStore = function (ctx, id) {
+        if (!id || id === 1) {
+            return ctx.store;
+        }
+        var m = ctx.store.modules && ctx.store.modules.team;
+        if (!m) { return; }
+        return m.getTeam(id);
+    };
+
+    var createCalendar = function (ctx, data, cId, cb) {
+        console.error(data);
+        var store = getStore(ctx, data.teamId);
+        if (!store) { return void cb({error: "NO_STORE"}); }
+        // Check team edit rights: viewers in teams don't have rpc
+        if (!store.rpc) { return void cb({error: "EFORBIDDEN"}); }
+
+        var c = store.proxy.calendars = store.proxy.calendars || {};
+        var cal = makeCalendar();
+        cal.color = data.color;
+        cal.title = data.title;
+        openChannel(ctx, {
+            storeId: store.id || 1,
+            data: cal
+        }, function (err, proxy) {
+            if (err) {
+                // Can't open this channel, don't store it
+                console.error(err);
+                return void cb({error: err.error})
+            }
+            // Add the calendar and call back
+            c[cal.channel] = cal;
+            ctx.Store.onSync(store.id, cb);
+        });
+    };
+
+    var createEvent = function (ctx, data, cId, cb) {
+        var id = data.calendarId;
+        var c = ctx.calendars[id];
+        if (!c) { return void cb({error: "ENOENT"}); }
+        c.proxy.content = c.proxy.content || {};
+        c.proxy.content[data.id] = data;
+        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
+    };
+    var updateEvent = function (ctx, data, cId, cb) {
+        if (!data || !data.ev) { return void cb({error: 'EINVAL'}); }
+        var id = data.ev.calendarId;
+        var c = ctx.calendars[id];
+        if (!c || !c.proxy || !c.proxy.content) { return void cb({error: "ENOENT"}); }
+
+        // Find the event
+        var ev = c.proxy.content[data.ev.id];
+        if (!ev) { return void cb({error: "EINVAL"}); }
+
+        // update the event
+        var changes = data.changes || {};
+        Object.keys(changes).forEach(function (key) {
+            ev[key] = changes[key];
+        });
+
+        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
+    };
+    var deleteEvent = function (ctx, data, cId, cb) {
+        var id = data.calendarId;
+        var c = ctx.calendars[id];
+        if (!c) { return void cb({error: "ENOENT"}); }
+        c.proxy.content = c.proxy.content || {};
+        delete c.proxy.content[data.id];
+        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
     };
 
     var removeClient = function (ctx, cId) {
@@ -248,6 +318,18 @@ ctx.calendars[channel] = {
             var data = obj.data;
             if (cmd === 'SUBSCRIBE') {
                 return void subscribe(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CREATE') {
+                return void createCalendar(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CREATE_EVENT') {
+                return void createEvent(ctx, data, clientId, cb);
+            }
+            if (cmd === 'UPDATE_EVENT') {
+                return void updateEvent(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DELETE_EVENT') {
+                return void deleteEvent(ctx, data, clientId, cb);
             }
         };
 

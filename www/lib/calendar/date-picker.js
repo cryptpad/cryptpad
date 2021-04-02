@@ -7,8 +7,6 @@ define([
     var createRangePicker = function (cfg) {
         var start = cfg.startpicker;
         var end = cfg.endpicker;
-        console.log(cfg);
-        console.error(start, end);
 
         var e = $(end.input)[0];
         var endPickr = Flatpickr(e, {
