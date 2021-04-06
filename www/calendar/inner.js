@@ -53,6 +53,9 @@ Messages.calendar_day = "Day";
 Messages.calendar_week = "Week";
 Messages.calendar_month = "Month";
 Messages.calendar_today = "Today";
+Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
+Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
+Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -163,6 +166,7 @@ Messages.calendar_today = "Today";
         // Is it a new calendar?
         var isNew = !APP.calendars[data.id];
 
+        console.error(data, data.content.metadata.color);
         if (data.deleted) {
             // Remove this calendar
             delete APP.calendars[data.id];
@@ -173,6 +177,7 @@ Messages.calendar_today = "Today";
 
         // If calendar if initialized, update it
         if (!cal) { return; }
+        console.error('OK');
         cal.setCalendars(getCalendars());
         onCalendarsUpdate.fire();
         renderCalendar();
@@ -292,6 +297,79 @@ Messages.calendar_today = "Today";
         UI.openCustomModal(m);
     };
 
+    var makeEditDropdown = function (id, teamId) {
+        var options = [{
+            tag: 'a',
+            attributes: {
+                'class': 'fa fa-pencil',
+            },
+            content: h('span', Messages.tag_edit),
+            action: function (e) {
+                e.stopPropagation();
+                editCalendar(id);
+            }
+        }, {
+            tag: 'a',
+            attributes: {
+                'class': 'fa fa-trash-o',
+            },
+            content: h('span', Messages.kanban_delete),
+            action: function (e) {
+                e.stopPropagation();
+                var cal = APP.calendars[id];
+                var key = Messages.calendar_deleteConfirm;
+                var teams = (cal && cal.teams) || [];
+                if (teams.length === 1 && teams[0] !== 1) {
+                    key = Messages.calendar_deleteTeamConfirm;
+                }
+                if (cal.owned) {
+                    key += Messages.calendar_deleteOwned;
+                }
+                UI.confirm(Messages.calendar_deleteConfirm, function (yes) {
+                    deleteCalendar({
+                        id: id,
+                        teamId: teamId,
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            UI.warn(Messages.error);
+                        }
+                    });
+                });
+            }
+        }];
+        var dropdownConfig = {
+            text: '',
+            options: options, // Entries displayed in the menu
+            common: common,
+            buttonCls: 'btn btn-cancel fa fa-ellipsis-h small'
+        };
+        return UIElements.createDropdown(dropdownConfig)[0];
+    };
+    var makeCalendarEntry = function (id, teamId) {
+        var data = APP.calendars[id];
+        var edit;
+        if (!data.readOnly) {
+            edit = makeEditDropdown(id, teamId);
+        }
+        var md = Util.find(data, ['content', 'metadata']);
+        if (!md) { return; }
+        var active = data.hidden ? '' : '.cp-active';
+        var calendar = h('div.cp-calendar-entry'+active, [
+            h('span.cp-calendar-color', {
+                style: 'background-color: '+md.color+';'
+            }),
+            h('span.cp-calendar-title', md.title),
+            edit
+        ]);
+        $(calendar).click(function () {
+            data.hidden = !data.hidden;
+            $(calendar).toggleClass('cp-active', !data.hidden);
+            renderCalendar();
+        });
+        if (APP.$calendars) { APP.$calendars.append(calendar); }
+        return calendar;
+    };
     var makeLeftside = function (calendar, $container) {
         var $topContainer = $(h('div.cp-calendar-new')).appendTo($container);
         // Add new button
@@ -349,40 +427,20 @@ Messages.calendar_today = "Today";
 
         // Show calendars
         var calendars = h('div.cp-calendar-list');
-        var $calendars = $(calendars).appendTo($container);
+        var $calendars = APP.$calendars = $(calendars).appendTo($container);
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
             Object.keys(APP.calendars || {}).forEach(function (id) {
-                var data = APP.calendars[id];
-                var edit;
-                if (!data.readOnly) {
-                    edit = h('button.btn.btn-cancel.fa.fa-pencil.small');
-                    $(edit).click(function (e) {
-                        e.stopPropagation();
-                        editCalendar(id);
-                    });
-                }
-                var md = Util.find(data, ['content', 'metadata']);
-                if (!md) { return; }
-                var active = data.hidden ? '' : '.cp-active';
-                var calendar = h('div.cp-calendar-entry'+active, [
-                    h('span.cp-calendar-color', {
-                        style: 'background-color: '+md.color+';'
-                    }),
-                    h('span.cp-calendar-title', md.title),
-                    edit
-                ]);
-                $(calendar).click(function () {
-                    data.hidden = !data.hidden;
-                    $(calendar).toggleClass('cp-active', !data.hidden);
-                    renderCalendar();
+                var cal = APP.calendars[id];
+                if (!cal) { return; }
+                (cal.teams || []).forEach(function (teamId) {
+                    makeCalendarEntry(id, teamId);
                 });
-                $calendars.append(calendar);
             });
         });
         onCalendarsUpdate.fire();
     };
-    var makeCalendar = function (ctx) {
+    var makeCalendar = function () {
         var $container = $('#cp-sidebarlayout-container');
         var leftside;
         $container.append([
@@ -535,6 +593,11 @@ Messages.calendar_today = "Today";
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            var isUpdate = Boolean($el.find('#tui-full-calendar-schedule-title').val());
+            if (isUpdate) {
+                $el.find('.tui-full-calendar-dropdown-button').attr('disabled', 'disabled').off('click');
+            $el.find('.tui-full-calendar-dropdown-menu').addClass('cp-forcehide');
+            }
         };
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {

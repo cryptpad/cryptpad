@@ -16,6 +16,10 @@
             margin: 0;
         }
 
+        .cp-forcehide {
+            display: none !important;
+        }
+
         .tui-full-calendar-layout {
             background-color: @cp_sidebar-right-bg !important;
             color: @cryptpad_text_col;
@@ -103,7 +107,7 @@
             .cp-calendar-entry {
                 display: flex;
                 align-items: center;
-                justify-content: space-around;
+                justify-content: space-between;
                 padding: 5px;
                 cursor: pointer;
                 &:not(:last-child) {

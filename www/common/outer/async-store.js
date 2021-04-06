@@ -1522,6 +1522,7 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+                unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
             }, waitFor, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'UNIVERSAL_EVENT', {

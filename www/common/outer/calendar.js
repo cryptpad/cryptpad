@@ -95,6 +95,7 @@ ctx.calendars[channel] = {
             id: c.channel,
             readOnly: c.readOnly,
             deleted: !c.stores.length,
+            owned: false, // XXX XXX destroy
             content: Util.clone(c.proxy)
         }, ctx.clients);
     };
@@ -179,7 +180,6 @@ ctx.calendars[channel] = {
 
         lm.proxy.on('ready', function () {
             c.ready = true;
-            console.warn('READY', channel);
             if (!proxy.metadata) {
                 proxy.metadata = {
                     color: data.color,
@@ -296,7 +296,10 @@ ctx.calendars[channel] = {
         var cal = store.proxy.calendars[id];
         if (!cal) { return void cb(); } // Already deleted
 
+        // Delete
         delete store.proxy.calendars[id];
+
+        // Unpin
         var unpin = store.unpin || ctx.unpinPads;
         unpin([id], function (res) {
             if (res && res.error) {
@@ -304,13 +307,14 @@ ctx.calendars[channel] = {
             }
         });
 
+        // Clear/update ctx data
+
+        // Remove this store from the calendar's clients
         var ctxCal = ctx.calendars[id];
         var idx = ctxCal.stores.indexOf(store.id || 1);
-        // Remove this store from the calendar's clients
         ctxCal.stores.splice(idx, 1);
+        // If the calendar doesn't exist in any other team, stop it and delete it from ctx
         if (!ctxCal.stores.length) {
-            // If the calendar doesn't exist in any other team, stop it and delete it
-            // from ctx
             ctxCal.lm.stop();
             delete ctx.calendars[id];
         }
@@ -319,7 +323,6 @@ ctx.calendars[channel] = {
             sendUpdate(ctx, ctxCal);
             cb();
         });
-        // XXX broadcast to inner
     };
     // XXX when we destroy a calendar, make sure we also delete it
 
@@ -371,6 +374,7 @@ ctx.calendars[channel] = {
             store: store,
             Store: cfg.Store,
             pinPads: cfg.pinPads,
+            unpinPads: cfg.unpinPads,
             updateMetadata: cfg.updateMetadata,
             emit: emit,
             onReady: Util.mkEvent(true),
@@ -397,6 +401,9 @@ ctx.calendars[channel] = {
             }
             if (cmd === 'UPDATE') {
                 return void updateCalendar(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DELETE') {
+                return void deleteCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_EVENT') {
                 return void createEvent(ctx, data, clientId, cb);
