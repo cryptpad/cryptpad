@@ -94,6 +94,7 @@ ctx.calendars[channel] = {
             teams: c.stores,
             id: c.channel,
             readOnly: c.readOnly,
+            deleted: !c.stores.length,
             content: Util.clone(c.proxy)
         }, ctx.clients);
     };
@@ -274,7 +275,6 @@ ctx.calendars[channel] = {
         });
     };
     var updateCalendar = function (ctx, data, cId, cb) {
-        console.error(data);
         var id = data.id;
         var c = ctx.calendars[id];
         if (!c) { return void cb({error: "ENOENT"}); }
@@ -303,7 +303,22 @@ ctx.calendars[channel] = {
                 console.error(res.error);
             }
         });
-        ctx.Store.onSync(store.id, cb);
+
+        var ctxCal = ctx.calendars[id];
+        var idx = ctxCal.stores.indexOf(store.id || 1);
+        // Remove this store from the calendar's clients
+        ctxCal.stores.splice(idx, 1);
+        if (!ctxCal.stores.length) {
+            // If the calendar doesn't exist in any other team, stop it and delete it
+            // from ctx
+            ctxCal.lm.stop();
+            delete ctx.calendars[id];
+        }
+
+        ctx.Store.onSync(store.id, function () {
+            sendUpdate(ctx, ctxCal);
+            cb();
+        });
         // XXX broadcast to inner
     };
     // XXX when we destroy a calendar, make sure we also delete it

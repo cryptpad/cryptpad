@@ -163,8 +163,13 @@ Messages.calendar_today = "Today";
         // Is it a new calendar?
         var isNew = !APP.calendars[data.id];
 
-        // Update local data
-        APP.calendars[data.id] = data;
+        if (data.deleted) {
+            // Remove this calendar
+            delete APP.calendars[data.id];
+        } else {
+            // Update local data
+            APP.calendars[data.id] = data;
+        }
 
         // If calendar if initialized, update it
         if (!cal) { return; }
