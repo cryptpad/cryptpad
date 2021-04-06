@@ -56,7 +56,7 @@ Messages.calendar_today = "Today";
 Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
 Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
-Messages.calendar_errorNoCalendar = "No calendar selected!";
+Messages.calendar_errorNoCalendar = "No editable calendar selected!";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -125,7 +125,7 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
     var getCalendars = function () {
         return Object.keys(APP.calendars).map(function (id) {
             var c = APP.calendars[id];
-            if (c.hidden) { return; }
+            if (c.hidden || c.restricted) { return; }
             var md = Util.find(c, ['content', 'metadata']);
             if (!md) { return void console.error('Ignore calendar without metadata'); }
             return {
@@ -142,12 +142,15 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
         var s = [];
         Object.keys(APP.calendars).forEach(function (id) {
             var c = APP.calendars[id];
-            if (c.hidden) { return; }
+            if (c.hidden || c.restricted) { return; }
             var data = c.content || {};
             Object.keys(data.content || {}).forEach(function (uid) {
                 var obj = data.content[uid];
                 obj.title = Util.fixHTML(obj.title || "");
                 obj.location = Util.fixHTML(obj.location || "");
+                if (c.readOnly) {
+                    obj.isReadOnly = true;
+                }
                 s.push(data.content[uid]);
             });
         });
@@ -347,6 +350,7 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
         return UIElements.createDropdown(dropdownConfig)[0];
     };
     var makeCalendarEntry = function (id, teamId) {
+        // XXX handle RESTRICTED calendars (data.restricted)
         var data = APP.calendars[id];
         var edit;
         if (!data.readOnly) {
@@ -523,6 +527,15 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
             });
         });
 
+        cal.on('clickSchedule', function (event) {
+            var id = event.calendar && event.calendar.id;
+            if (!id || !APP.calendars[id]) {
+                APP.lastClicked = false;
+                return;
+            }
+            APP.lastClicked = id;
+        });
+
         renderCalendar();
     };
 
@@ -593,7 +606,20 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
-            if ($el.find('.tui-full-calendar-hide.tui-full-calendar-dropdown').length) {
+
+            var calendars = APP.calendars || {};
+            var show = false;
+            $el.find('.tui-full-calendar-dropdown-menu li').each(function (i, li) {
+                var $li = $(li);
+                var id = $li.attr('data-calendar-id');
+                var c = calendars[id];
+                if (!c || c.readOnly) {
+                    return void $li.remove();
+                }
+                // If at least one calendar is editable, show the popup
+                show = true;
+            });
+            if ($el.find('.tui-full-calendar-hide.tui-full-calendar-dropdown').length || !show) {
                 $el.hide();
                 UI.warn(Messages.calendar_errorNoCalendar);
                 return;
@@ -604,14 +630,24 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
                 $el.find('.tui-full-calendar-dropdown-menu').addClass('cp-forcehide');
             }
         };
+        var onCalendarEditPopup = function (el) {
+            // TODO
+        };
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 var node;
                 for (var i = 0; i < mutation.addedNodes.length; i++) {
                     var node = mutation.addedNodes[i];
-                    if (node.classList && node.classList.contains('tui-full-calendar-popup')) {
-                        onCalendarPopup(node);
-                    }
+                    try {
+                        if (node.classList && node.classList.contains('tui-full-calendar-popup')
+                                && node.parentNode.classList.contains('tui-view-26')) {
+                            onCalendarPopup(node);
+                        }
+                        if (node.classList && node.classList.contains('tui-full-calendar-popup')
+                                && node.parentNode.classList.contains('tui-view-29')) {
+                            onCalendarEditPopup(node);
+                        }
+                    } catch (e) {}
                 }
             });
         });
@@ -637,7 +673,6 @@ Messages.calendar_errorNoCalendar = "No calendar selected!";
                 });
                 return;
             }
-            console.error('subscribed');
             // XXX build UI
             makeCalendar();
             UI.removeLoadingScreen();

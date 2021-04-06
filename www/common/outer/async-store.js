@@ -1494,7 +1494,7 @@ define([
                     }
                 };
                 // Teams support offline/cache mode
-                if (obj.type === "team") { return void todo(); }
+                if (['team', 'calendar'].indexOf(obj.type) !== -1) { return void todo(); }
                 // If we're in "noDrive" mode
                 if (!store.proxy) { return void todo(); }
                 // Other modules should wait for the ready event
@@ -2652,6 +2652,7 @@ define([
                 }, true);
             }).nThen(function (waitFor) {
                 loadUniversal(Team, 'team', waitFor, clientId);
+                loadUniversal(Calendar, 'calendar', waitFor);
             }).nThen(function () {
                 cb();
             });

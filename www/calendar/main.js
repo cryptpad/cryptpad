@@ -26,7 +26,8 @@ define([
             //addRpc: addRpc,
             //addData: addData,
             //owned: true,
-            noRealtime: true
+            noRealtime: true,
+            cache: true,
         });
     });
 });

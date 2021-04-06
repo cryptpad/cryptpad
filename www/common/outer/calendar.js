@@ -3,12 +3,13 @@ define([
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-realtime.js',
+    '/common/outer/cache-store.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Util, Hash, Constants, Realtime, Messages, nThen, Listmap, Crypto, ChainPad) {
+], function (Util, Hash, Constants, Realtime, Cache, Messages, nThen, Listmap, Crypto, ChainPad) {
     var Calendar = {};
 
 
@@ -103,8 +104,9 @@ ctx.calendars[channel] = {
         ctx.emit('UPDATE', {
             teams: c.stores,
             id: c.channel,
-            readOnly: c.readOnly,
+            readOnly: c.readOnly || (!c.ready && c.cacheready),
             deleted: !c.stores.length,
+            restricted: c.restricted,
             owned: false, // XXX XXX destroy
             content: Util.clone(c.proxy)
         }, ctx.clients);
@@ -178,14 +180,16 @@ ctx.calendars[channel] = {
 
             var config = {
                 data: {},
-                network: ctx.store.network, // XXX offline
+                network: ctx.store.network || ctx.store.networkPromise, // XXX offline
                 channel: secret.channel,
                 crypto: crypto,
                 owners: [edPublic],
                 ChainPad: ChainPad,
                 validateKey: secret.keys.validateKey || undefined,
                 userName: 'calendar',
-                classic: true
+                Cache: Cache,
+                classic: true,
+                onRejected: ctx.Store && ctx.Store.onRejected
             };
 
             console.error(channel, config);
@@ -213,7 +217,12 @@ ctx.calendars[channel] = {
                 });
             };
 
-            lm.proxy.on('ready', function () {
+            lm.proxy.on('cacheready', function () {
+                if (!proxy.metadata) { return; }
+                c.cacheready = true;
+                setTimeout(update);
+                if (cb) { cb(null, lm.proxy); }
+            }).on('ready', function () {
                 c.ready = true;
                 if (!proxy.metadata) {
                     if (!cfg.isNew) {
@@ -239,6 +248,9 @@ ctx.calendars[channel] = {
                 if (!info || !info.error) { return; }
                 if (info.error === "EDELETED" ) {
                     return void onDeleted();
+                }
+                if (info.error === "ERESTRICTED" ) {
+                    c.restricted = true;
                 }
                 cb(info);
             });
@@ -274,7 +286,7 @@ ctx.calendars[channel] = {
         Object.keys(ctx.calendars).forEach(function (channel) {
             var c = ctx.calendars[channel] || {};
             console.log(channel, c);
-            if (!c.ready) { return; }
+            if (!c.ready && !c.cacheready) { return; }
             sendUpdate(ctx, c);
         });
     };
