@@ -12,19 +12,14 @@ define([
     }).nThen(function (waitFor) {
         SFCommonO.initIframe(waitFor);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils, cb) {
-            // XXX open calendar from URL
-        };
         var addData = function (meta, Cryptpad, user) {
             // XXX flag when opening URL
-            meta.isOwnProfile = !window.location.hash ||
-                window.location.hash.slice(1) === user.profile;
+            meta.calendarHash = Boolean(window.location.hash);
         };
         SFCommonO.start({
-            //getSecrets: getSecrets,
             //noHash: true, // Don't add the hash in the URL if it doesn't already exist
             //addRpc: addRpc,
-            //addData: addData,
+            addData: addData,
             //owned: true,
             noRealtime: true,
             cache: true,

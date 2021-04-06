@@ -595,7 +595,7 @@
         return '#' + getColor().toString(16) +
                      getColor().toString(16) +
                      getColor().toString(16);
-};
+    };
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;

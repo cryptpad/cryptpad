@@ -49,6 +49,7 @@ define([
     };
 
     var common;
+    var metadataMgr;
     var sframeChan;
 
 Messages.calendar = "Calendar"; // XXX
@@ -63,6 +64,7 @@ Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this cale
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
 Messages.calendar_errorNoCalendar = "No editable calendar selected!";
 Messages.calendar_myCalendars = "My calendars";
+Messages.calendar_tempCalendar = "Temp calendar";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -223,7 +225,6 @@ Messages.calendar_myCalendars = "My calendars";
     };
 
     var makeTeamSelector = function () {
-        var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var keys = Object.keys(privateData.teams);
         if (!keys.length) { return; }
@@ -347,36 +348,41 @@ Messages.calendar_myCalendars = "My calendars";
                 });
                 return true;
             }
-        }, {
-            tag: 'a',
-            attributes: {
-                'class': 'fa fa-trash-o',
-            },
-            content: h('span', Messages.kanban_delete),
-            action: function (e) {
-                e.stopPropagation();
-                var cal = APP.calendars[id];
-                var key = Messages.calendar_deleteConfirm;
-                var teams = (cal && cal.teams) || [];
-                if (teams.length === 1 && teams[0] !== 1) {
-                    key = Messages.calendar_deleteTeamConfirm;
-                }
-                if (cal.owned) {
-                    key += Messages.calendar_deleteOwned;
-                }
-                UI.confirm(Messages.calendar_deleteConfirm, function (yes) {
-                    deleteCalendar({
-                        id: id,
-                        teamId: teamId,
-                    }, function (err) {
-                        if (err) {
-                            console.error(err);
-                            UI.warn(Messages.error);
-                        }
-                    });
-                });
-            }
         }];
+        var privateData = metadataMgr.getPrivateData();
+        var cantRemove = teamId === 0 || (teamId !== 1 && privateData.teams[teamId].viewer);
+        if (!cantRemove) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-trash-o',
+                },
+                content: h('span', Messages.kanban_delete),
+                action: function (e) {
+                    e.stopPropagation();
+                    var cal = APP.calendars[id];
+                    var key = Messages.calendar_deleteConfirm;
+                    var teams = (cal && cal.teams) || [];
+                    if (teams.length === 1 && teams[0] !== 1) {
+                        key = Messages.calendar_deleteTeamConfirm;
+                    }
+                    if (cal.owned) {
+                        key += Messages.calendar_deleteOwned;
+                    }
+                    UI.confirm(Messages.calendar_deleteConfirm, function (yes) {
+                        deleteCalendar({
+                            id: id,
+                            teamId: teamId,
+                        }, function (err) {
+                            if (err) {
+                                console.error(err);
+                                UI.warn(Messages.error);
+                            }
+                        });
+                    });
+                }
+            });
+        }
         var dropdownConfig = {
             text: '',
             options: options, // Entries displayed in the menu
@@ -479,15 +485,21 @@ Messages.calendar_myCalendars = "My calendars";
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
-            var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
             var filter = function (teamId) {
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
                     var teams = cal.teams || [];
-                    return teams.indexOf(teamId || 1) !== -1;
+                    return teams.indexOf(typeof(teamId) !== "undefined" ? teamId : 1) !== -1;
                 });
             };
+            var tempCalendars = filter(0);
+            if (tempCalendars.length) {
+                APP.$calendars.append(h('div.cp-calendar-team', [
+                    h('span', Messages.calendar_tempCalendar)
+                ]));
+                makeCalendarEntry(tempCalendars[0], 0);
+            }
             var myCalendars = filter(1);
             if (myCalendars.length) {
                 APP.$calendars.append(h('div.cp-calendar-team', [
@@ -640,10 +652,9 @@ Messages.calendar_myCalendars = "My calendars";
         sframeChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();
-        var metadataMgr = common.getMetadataMgr();
+        metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
-
 
         // Fix flatpickr selection
         var MutationObserver = window.MutationObserver;
@@ -730,7 +741,7 @@ Messages.calendar_myCalendars = "My calendars";
             onEvent: onEvent
         });
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
-            if (obj.empty) {
+            if (obj.empty && !privateData.calendarHash) {
                 // No calendar yet, create one
                 newCalendar({
                     teamId: 1,
@@ -743,7 +754,14 @@ Messages.calendar_myCalendars = "My calendars";
                 });
                 return;
             }
-            // XXX build UI
+            if (privateData.calendarHash) {
+                APP.module.execCommand('OPEN', {
+                    hash: privateData.hashes.editHash || privateData.hashes.viewHash,
+                    password: privateData.password
+                }, function (obj) {
+                    console.error(obj); // XXX
+                });
+            }
             makeCalendar();
             UI.removeLoadingScreen();
         });

@@ -157,7 +157,7 @@ ctx.calendars[channel] = {
 
 
         var parsed = Hash.parsePadUrl(data.href || data.roHref);
-        var secret = Hash.getSecrets('calendar', parsed.hash);
+        var secret = Hash.getSecrets('calendar', parsed.hash, data.password);
         var crypto = Crypto.createEncryptor(secret.keys);
 
         c.hashes.viewHash = Hash.getViewHashFromKeys(secret);
@@ -207,6 +207,7 @@ ctx.calendars[channel] = {
                 if (obj && typeof(obj.isNew) === "boolean") {
                     if (obj.isNew) {
                         onDeleted();
+                        cb({error: 'EDELETED'});
                         waitFor.abort();
                         return;
                     }
@@ -216,7 +217,7 @@ ctx.calendars[channel] = {
             // Set the owners as the first store opening it. We don't know yet if it's a new or
             // existing calendar. "owners' will be ignored if the calendar already exists.
             var edPublic;
-            if (teamId === 1) {
+            if (teamId === 1 || !teamId) {
                 edPublic = ctx.store.proxy.edPublic;
             } else {
                 var teams = ctx.store.modules.team && ctx.store.modules.team.getTeamsData();
@@ -238,7 +239,6 @@ ctx.calendars[channel] = {
                 onRejected: ctx.Store && ctx.Store.onRejected
             };
 
-            console.error(channel, config);
             var lm = Listmap.create(config);
             c.lm = lm;
             var proxy = c.proxy = lm.proxy;
@@ -304,7 +304,6 @@ ctx.calendars[channel] = {
         if (!teams) { return; }
         Object.keys(teams).forEach(function (id) {
             var store = getStore(ctx, id);
-            console.log(store);
             findFromStore(store);
         });
     };
@@ -325,6 +324,23 @@ ctx.calendars[channel] = {
         });
     };
 
+    var openCalendar = function (ctx, data, cId, cb) {
+        var secret = Hash.getSecrets('calendar', data.hash, data.password);
+
+        var cal = {
+            href: Hash.hashToHref(Hash.getEditHashFromKeys(secret), 'calendar'),
+            roHref: Hash.hashToHref(Hash.getViewHashFromKeys(secret), 'calendar'),
+            channel: secret.channel,
+            color: Util.getRandomColor(),
+            title: '...'
+        };
+        openChannel(ctx, {
+            storeId: 0,
+            data: cal,
+            noStore: true,
+            isNew: true
+        }, cb);
+    };
     var addCalendar = function (ctx, data, cId, cb) {
         var store = getStore(ctx, data.teamId);
         if (!store) { return void cb({error: "NO_STORE"}); }
@@ -514,6 +530,12 @@ ctx.calendars[channel] = {
             var data = obj.data;
             if (cmd === 'SUBSCRIBE') {
                 return void subscribe(ctx, data, clientId, cb);
+            }
+            if (cmd === 'OPEN') {
+                ctx.Store.onReadyEvt.reg(function () {
+                    openCalendar(ctx, data, clientId, cb);
+                });
+                return;
             }
             if (cmd === 'ADD') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
