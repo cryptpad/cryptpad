@@ -4,10 +4,11 @@ define([
     '/common/common-constants.js',
     '/common/common-realtime.js',
     '/customize/messages.js',
+    '/bower_components/nthen/index.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Util, Hash, Constants, Realtime, Messages, Listmap, Crypto, ChainPad) {
+], function (Util, Hash, Constants, Realtime, Messages, nThen, Listmap, Crypto, ChainPad) {
     var Calendar = {};
 
 
@@ -63,6 +64,15 @@ ctx.calendars[channel] = {
 
 
 */
+
+    var getStore = function (ctx, id) {
+        if (!id || id === 1) {
+            return ctx.store;
+        }
+        var m = ctx.store.modules && ctx.store.modules.team;
+        if (!m) { return; }
+        return m.getTeam(id);
+    };
 
     var makeCalendar = function () {
         var hash = Hash.createRandomHash('calendar');
@@ -150,54 +160,88 @@ ctx.calendars[channel] = {
         var secret = Hash.getSecrets('calendar', parsed.hash);
         var crypto = Crypto.createEncryptor(secret.keys);
 
-        // Set the owners as the first store opening it. We don't know yet if it's a new or
-        // existing calendar. "owners' will be ignored if the calendar already exists.
-        var edPublic;
-        if (teamId === 1) {
-            edPublic = ctx.store.proxy.edPublic;
-        } else {
-            var teams = ctx.store.modules.team && ctx.store.modules.team.getTeamsData();
-            var team = teams && teams[teamId];
-            edPublic = team ? team.edPublic : undefined;
-        }
+        nThen(function (waitFor) {
+            // XXX Check if channel exists
+            // XXX Get pad metadata (offline??)
 
-        var config = {
-            data: {},
-            network: ctx.store.network, // XXX offline
-            channel: secret.channel,
-            crypto: crypto,
-            owners: [edPublic],
-            ChainPad: ChainPad,
-            validateKey: secret.keys.validateKey || undefined,
-            userName: 'calendar',
-            classic: true
-        };
-
-        console.error(channel, config);
-        var lm = Listmap.create(config);
-        c.lm = lm;
-        var proxy = c.proxy = lm.proxy;
-
-        lm.proxy.on('ready', function () {
-            c.ready = true;
-            if (!proxy.metadata) {
-                proxy.metadata = {
-                    color: data.color,
-                    title: data.title
-                };
+        }).nThen(function () {
+            // Set the owners as the first store opening it. We don't know yet if it's a new or
+            // existing calendar. "owners' will be ignored if the calendar already exists.
+            var edPublic;
+            if (teamId === 1) {
+                edPublic = ctx.store.proxy.edPublic;
+            } else {
+                var teams = ctx.store.modules.team && ctx.store.modules.team.getTeamsData();
+                var team = teams && teams[teamId];
+                edPublic = team ? team.edPublic : undefined;
             }
-            setTimeout(update);
-            if (cb) { cb(null, lm.proxy); }
-        }).on('change', [], function () {
-            if (!c.ready) { return; }
-            setTimeout(update);
-        }).on('change', ['metadata'], function () {
-            // if title or color have changed, update our local values
-            var md = proxy.metadata;
-            if (!md || !md.title || !md.color) { return; }
-            updateLocalCalendars(ctx, c, md);
-        }).on('error', function (info) {
-            if (info && info.error) { cb(info); }
+
+            var config = {
+                data: {},
+                network: ctx.store.network, // XXX offline
+                channel: secret.channel,
+                crypto: crypto,
+                owners: [edPublic],
+                ChainPad: ChainPad,
+                validateKey: secret.keys.validateKey || undefined,
+                userName: 'calendar',
+                classic: true
+            };
+
+            console.error(channel, config);
+            var lm = Listmap.create(config);
+            c.lm = lm;
+            var proxy = c.proxy = lm.proxy;
+
+            var onDeleted = function () {
+                nThen(function (w) {
+                    c.stores.forEach(function (storeId) {
+                        var store = getStore(ctx, storeId);
+                        if (!store || !store.rpc || !store.proxy.calendars) { return; }
+                        delete store.proxy.calendars[channel];
+                        var unpin = store.unpin || ctx.unpinPads;
+                        unpin([channel], function (res) {
+                            if (res && res.error) { console.error(res.error); }
+                        });
+                        ctx.Store.onSync(storeId, w());
+                    });
+                }).nThen(function () {
+                    lm.stop();
+                    c.stores = [];
+                    sendUpdate(ctx, c);
+                    delete ctx.calendars[channel];
+                });
+            };
+
+            lm.proxy.on('ready', function () {
+                c.ready = true;
+                if (!proxy.metadata) {
+                    if (!cfg.isNew) {
+                        // XXX no metadata on an existing calendar: deleted calendar
+                        return void onDeleted();
+                    }
+                    proxy.metadata = {
+                        color: data.color,
+                        title: data.title
+                    };
+                }
+                setTimeout(update);
+                if (cb) { cb(null, lm.proxy); }
+            }).on('change', [], function () {
+                if (!c.ready) { return; }
+                setTimeout(update);
+            }).on('change', ['metadata'], function () {
+                // if title or color have changed, update our local values
+                var md = proxy.metadata;
+                if (!md || !md.title || !md.color) { return; }
+                updateLocalCalendars(ctx, c, md);
+            }).on('error', function (info) {
+                if (!info || !info.error) { return; }
+                if (info.error === "EDELETED" ) {
+                    return void onDeleted();
+                }
+                cb(info);
+            });
         });
     };
     var openChannels = function (ctx) {
@@ -235,15 +279,6 @@ ctx.calendars[channel] = {
         });
     };
 
-    var getStore = function (ctx, id) {
-        if (!id || id === 1) {
-            return ctx.store;
-        }
-        var m = ctx.store.modules && ctx.store.modules.team;
-        if (!m) { return; }
-        return m.getTeam(id);
-    };
-
     var createCalendar = function (ctx, data, cId, cb) {
         var store = getStore(ctx, data.teamId);
         if (!store) { return void cb({error: "NO_STORE"}); }
@@ -256,7 +291,8 @@ ctx.calendars[channel] = {
         cal.title = data.title;
         openChannel(ctx, {
             storeId: store.id || 1,
-            data: cal
+            data: cal,
+            isNew: true
         }, function (err, proxy) {
             if (err) {
                 // Can't open this channel, don't store it
@@ -267,9 +303,7 @@ ctx.calendars[channel] = {
             c[cal.channel] = cal;
             var pin = store.pin || ctx.pinPads;
             pin([cal.channel], function (res) {
-                if (res && res.error) {
-                    console.error(res.error);
-                }
+                if (res && res.error) { console.error(res.error); }
             });
             ctx.Store.onSync(store.id, cb);
         });
@@ -302,9 +336,7 @@ ctx.calendars[channel] = {
         // Unpin
         var unpin = store.unpin || ctx.unpinPads;
         unpin([id], function (res) {
-            if (res && res.error) {
-                console.error(res.error);
-            }
+            if (res && res.error) { console.error(res.error); }
         });
 
         // Clear/update ctx data
@@ -332,7 +364,10 @@ ctx.calendars[channel] = {
         if (!c) { return void cb({error: "ENOENT"}); }
         c.proxy.content = c.proxy.content || {};
         c.proxy.content[data.id] = data;
-        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
+        Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
+            sendUpdate(ctx, c);
+            cb();
+        });
     };
     var updateEvent = function (ctx, data, cId, cb) {
         if (!data || !data.ev) { return void cb({error: 'EINVAL'}); }

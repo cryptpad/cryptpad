@@ -574,18 +574,10 @@ define([
         };
 
         // Get or create the user color for the cursor position
-        var getRandomColor = function () {
-            var getColor = function () {
-                return Math.floor(Math.random() * 156) + 70;
-            };
-            return '#' + getColor().toString(16) +
-                         getColor().toString(16) +
-                         getColor().toString(16);
-        };
         Store.getUserColor = function () {
             var color = Util.find(store, ['proxy', 'settings', 'general', 'cursor', 'color']);
             if (!color) {
-                color = getRandomColor();
+                color = Util.getRandomColor(true);
                 Store.setAttribute(null, {
                     attr: ['general', 'cursor', 'color'],
                     value: color

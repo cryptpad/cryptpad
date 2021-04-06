@@ -56,6 +56,7 @@ Messages.calendar_today = "Today";
 Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
 Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
+Messages.calendar_errorNoCalendar = "No calendar selected!";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -157,6 +158,7 @@ Messages.calendar_deleteOwned = " It will still be visible for the users it has 
         if (!cal) { return; }
 
         cal.clear();
+        cal.setCalendars(getCalendars());
         cal.createSchedules(getSchedules(), true);
         cal.render();
     };
@@ -166,7 +168,6 @@ Messages.calendar_deleteOwned = " It will still be visible for the users it has 
         // Is it a new calendar?
         var isNew = !APP.calendars[data.id];
 
-        console.error(data, data.content.metadata.color);
         if (data.deleted) {
             // Remove this calendar
             delete APP.calendars[data.id];
@@ -177,8 +178,6 @@ Messages.calendar_deleteOwned = " It will still be visible for the users it has 
 
         // If calendar if initialized, update it
         if (!cal) { return; }
-        console.error('OK');
-        cal.setCalendars(getCalendars());
         onCalendarsUpdate.fire();
         renderCalendar();
     };
@@ -249,6 +248,7 @@ Messages.calendar_deleteOwned = " It will still be visible for the users it has 
             jscolorL.show();
         });
         if (md.color) { jscolorL.fromString(md.color); }
+        else { jscolorL.fromString(Util.getRandomColor()); }
 
         var form = h('div', [
             labelTitle,
@@ -593,10 +593,15 @@ Messages.calendar_deleteOwned = " It will still be visible for the users it has 
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            if ($el.find('.tui-full-calendar-hide.tui-full-calendar-dropdown').length) {
+                $el.hide();
+                UI.warn(Messages.calendar_errorNoCalendar);
+                return;
+            }
             var isUpdate = Boolean($el.find('#tui-full-calendar-schedule-title').val());
             if (isUpdate) {
                 $el.find('.tui-full-calendar-dropdown-button').attr('disabled', 'disabled').off('click');
-            $el.find('.tui-full-calendar-dropdown-menu').addClass('cp-forcehide');
+                $el.find('.tui-full-calendar-dropdown-menu').addClass('cp-forcehide');
             }
         };
         var observer = new MutationObserver(function(mutations) {
