@@ -102,7 +102,8 @@ ctx.calendars[channel] = {
             deleted: !c.stores.length,
             restricted: c.restricted,
             owned: ctx.Store.isOwned(c.owners),
-            content: Util.clone(c.proxy)
+            content: Util.clone(c.proxy),
+            hashes: c.hashes
         }, ctx.clients);
     };
 
@@ -127,14 +128,21 @@ ctx.calendars[channel] = {
         if (!channel) { return; }
 
         var c = ctx.calendars[channel];
+
+        var update = function () {
+            sendUpdate(ctx, c);
+        };
+
         if (c) {
-            if (c.stores && c.stores.indexOf(teamId) !== -1) { return; }
             if (c.readOnly && data.href) {
                 // XXX UPGRADE
+                // c.hashes.editHash =
                 // XXX different cases if already ready or not?
             }
+            if (c.stores && c.stores.indexOf(teamId) !== -1) { return void cb(); }
             c.stores.push(teamId);
-            return;
+            update();
+            return void cb();
         }
 
         // Multiple teams can have the same calendar. Make sure we remember the list of stores
@@ -143,18 +151,19 @@ ctx.calendars[channel] = {
             ready: false,
             channel: channel,
             readOnly: !data.href,
-            stores: [teamId]
-        };
-
-        var update = function () {
-            console.log(ctx.clients);
-            sendUpdate(ctx, c);
+            stores: [teamId],
+            hashes: {}
         };
 
 
         var parsed = Hash.parsePadUrl(data.href || data.roHref);
         var secret = Hash.getSecrets('calendar', parsed.hash);
         var crypto = Crypto.createEncryptor(secret.keys);
+
+        c.hashes.viewHash = Hash.getViewHashFromKeys(secret);
+        if (data.href) {
+            c.hashes.editHash = Hash.getEditHashFromKeys(secret);
+        }
 
         c.proxy = {
             metadata: {
@@ -290,6 +299,14 @@ ctx.calendars[channel] = {
 
         // Personal drive
         findFromStore(ctx.store);
+
+        var teams = ctx.store.modules.team && ctx.store.modules.team.getTeamsData();
+        if (!teams) { return; }
+        Object.keys(teams).forEach(function (id) {
+            var store = getStore(ctx, id);
+            console.log(store);
+            findFromStore(store);
+        });
     };
 
 
@@ -308,6 +325,44 @@ ctx.calendars[channel] = {
         });
     };
 
+    var addCalendar = function (ctx, data, cId, cb) {
+        var store = getStore(ctx, data.teamId);
+        if (!store) { return void cb({error: "NO_STORE"}); }
+        // Check team edit rights: viewers in teams don't have rpc
+        if (!store.rpc) { return void cb({error: "EFORBIDDEN"}); }
+
+        var c = store.proxy.calendars = store.proxy.calendars || {};
+        var parsed = Hash.parsePadUrl(data.href);
+        var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+
+        var cal = {
+            href: Hash.getEditHashFromKeys(secret),
+            roHref: Hash.getViewHashFromKeys(secret),
+            color: data.color,
+            title: data.title,
+            channel: data.channel
+        };
+        cal.color = data.color;
+        cal.title = data.title;
+        openChannel(ctx, {
+            storeId: store.id || 1,
+            data: cal,
+            isNew: true
+        }, function (err) {
+            if (err) {
+                // Can't open this channel, don't store it
+                console.error(err);
+                return void cb({error: err.error})
+            }
+            // Add the calendar and call back
+            c[cal.channel] = cal;
+            var pin = store.pin || ctx.pinPads;
+            pin([cal.channel], function (res) {
+                if (res && res.error) { console.error(res.error); }
+            });
+            ctx.Store.onSync(store.id, cb);
+        });
+    };
     var createCalendar = function (ctx, data, cId, cb) {
         var store = getStore(ctx, data.teamId);
         if (!store) { return void cb({error: "NO_STORE"}); }
@@ -322,7 +377,7 @@ ctx.calendars[channel] = {
             storeId: store.id || 1,
             data: cal,
             isNew: true
-        }, function (err, proxy) {
+        }, function (err) {
             if (err) {
                 // Can't open this channel, don't store it
                 console.error(err);
@@ -459,6 +514,10 @@ ctx.calendars[channel] = {
             var data = obj.data;
             if (cmd === 'SUBSCRIBE') {
                 return void subscribe(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ADD') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                return void addCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }

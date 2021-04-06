@@ -1,6 +1,7 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/tools.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
 
 &.cp-app-calendar {
 
@@ -104,6 +105,22 @@
         }
 
         .cp-calendar-list {
+            .cp-calendar-team {
+                height: 30px;
+                .avatar_main(30px);
+                .cp-avatar {
+                    margin-right: 10px;
+                }
+                .cp-name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 5px 0;
+            }
             .cp-calendar-entry {
                 display: flex;
                 align-items: center;

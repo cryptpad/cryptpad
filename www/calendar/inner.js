@@ -16,6 +16,10 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
 
+    '/common/inner/share.js',
+    '/common/inner/access.js',
+    '/common/inner/properties.js',
+
     '/common/jscolor.js',
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -36,7 +40,8 @@ define([
     h,
     Messages,
     AppConfig,
-    Calendar
+    Calendar,
+    Share, Access, Properties
     )
 {
     var APP = window.APP = {
@@ -57,6 +62,7 @@ Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar
 Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
 Messages.calendar_errorNoCalendar = "No editable calendar selected!";
+Messages.calendar_myCalendars = "My calendars";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -310,6 +316,36 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
             action: function (e) {
                 e.stopPropagation();
                 editCalendar(id);
+                return true;
+            }
+        }, {
+            tag: 'a',
+            attributes: {
+                'class': 'fa fa-shhare-alt',
+            },
+            content: h('span', Messages.shareButton),
+            action: function (e) {
+                e.stopPropagation();
+                var friends = common.getFriends();
+                var cal = APP.calendars[id];
+                var title = Util.find(cal, ['content', 'metadata', 'title']);
+                var color = Util.find(cal, ['content', 'metadata', 'color']);
+                Share.getShareModal(common, {
+                    teamId: teamId === 1 ? undefined : teamId,
+                    origin: APP.origin,
+                    pathname: "/calendar/",
+                    friends: friends,
+                    title: title,
+                    password: cal.password, // XXX support passwords
+                    calendar: {
+                        title: title,
+                        color: color,
+                        channel: id,
+                    },
+                    common: common,
+                    hashes: cal.hashes
+                });
+                return true;
             }
         }, {
             tag: 'a',
@@ -361,7 +397,9 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
         var md = Util.find(data, ['content', 'metadata']);
         if (!md) { return; }
         var active = data.hidden ? '' : '.cp-active';
-        var calendar = h('div.cp-calendar-entry'+active, [
+        var calendar = h('div.cp-calendar-entry'+active, {
+            'data-uid': id
+        }, [
             h('span.cp-calendar-color', {
                 style: 'background-color: '+md.color+';'
             }),
@@ -370,7 +408,12 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
         ]);
         $(calendar).click(function () {
             data.hidden = !data.hidden;
-            $(calendar).toggleClass('cp-active', !data.hidden);
+            if (APP.$calendars) {
+                APP.$calendars.find('[data-uid="'+id+'"]').toggleClass('cp-active', !data.hidden);
+            } else {
+                $(calendar).toggleClass('cp-active', !data.hidden);
+            }
+
             renderCalendar();
         });
         if (APP.$calendars) { APP.$calendars.append(calendar); }
@@ -436,10 +479,35 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
-            Object.keys(APP.calendars || {}).forEach(function (id) {
-                var cal = APP.calendars[id];
-                if (!cal) { return; }
-                (cal.teams || []).forEach(function (teamId) {
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            var filter = function (teamId) {
+                return Object.keys(APP.calendars || {}).filter(function (id) {
+                    var cal = APP.calendars[id] || {};
+                    var teams = cal.teams || [];
+                    return teams.indexOf(teamId || 1) !== -1;
+                });
+            };
+            var myCalendars = filter(1);
+            if (myCalendars.length) {
+                APP.$calendars.append(h('div.cp-calendar-team', [
+                    h('span', Messages.calendar_myCalendars)
+                ]));
+            }
+            myCalendars.forEach(function (id) {
+                makeCalendarEntry(id, 1);
+            });
+            Object.keys(privateData.teams).forEach(function (teamId) {
+                var calendars = filter(teamId);
+                if (!calendars.length) { return; }
+                var team = privateData.teams[teamId];
+                var avatar = h('span.cp-avatar');
+                common.displayAvatar($(avatar), team.avatar, team.displayName);
+                APP.$calendars.append(h('div.cp-calendar-team', [
+                    avatar,
+                    h('span.cp-name', {title: team.name}, team.name)
+                ]));
+                calendars.forEach(function (id) {
                     makeCalendarEntry(id, teamId);
                 });
             });

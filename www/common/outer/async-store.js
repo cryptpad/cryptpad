@@ -2670,6 +2670,7 @@ define([
                 }, true);
             }).nThen(function (waitFor) {
                 loadUniversal(Team, 'team', waitFor, clientId);
+            }).nThen(function (waitFor) {
                 loadUniversal(Calendar, 'calendar', waitFor);
             }).nThen(function () {
                 cb();

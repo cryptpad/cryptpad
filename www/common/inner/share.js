@@ -111,6 +111,7 @@ define([
                                     password: config.password,
                                     isTemplate: config.isTemplate,
                                     name: myName,
+                                    isCalendar: Boolean(config.calendar),
                                     title: title
                                 }, {
                                     viewed: team && team.id,
@@ -122,6 +123,19 @@ define([
                         }
                         // If it's a team with edit right, add the pad directly
                         if (!team) { return; }
+                        if (config.calendar) {
+                            var calendarModule = common.makeUniversal('calendar');
+                            var calendarData = config.calendar;
+                            calendarData.href = href;
+                            calendarData.teamId = team.id;
+                            calendarModule.execCommand('ADD', calendarData, function (obj) {
+                                if (obj && obj.error) {
+                                    console.error(obj.error);
+                                    return void UI.warn(Messages.error);
+                                }
+                            });
+                            return;
+                        }
                         sframeChan.query('Q_STORE_IN_TEAM', {
                             href: href,
                             password: config.password,
