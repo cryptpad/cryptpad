@@ -154,6 +154,13 @@ define([
         if (membersChannel) { list.push(membersChannel); }
         if (mailboxChannel) { list.push(mailboxChannel); }
 
+        if (store.proxy.calendars) {
+            var cList = Object.keys(store.proxy.calendars).map(function (c) {
+                return store.proxy.calendars[c].channel;
+            });
+            list = list.concat(cList);
+        }
+
         var state = store.roster.getState();
         if (state.members) {
             Object.keys(state.members).forEach(function (curve) {

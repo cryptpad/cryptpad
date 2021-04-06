@@ -264,7 +264,12 @@ ctx.calendars[channel] = {
             }
             // Add the calendar and call back
             c[cal.channel] = cal;
-            // XXX PIN (also make sure it's included in the reset)
+            var pin = store.pin || ctx.pinPads;
+            pin([cal.channel], function (res) {
+                if (res && res.error) {
+                    console.error(res.error);
+                }
+            });
             ctx.Store.onSync(store.id, cb);
         });
     };
@@ -292,6 +297,12 @@ ctx.calendars[channel] = {
         if (!cal) { return void cb(); } // Already deleted
 
         delete store.proxy.calendars[id];
+        var unpin = store.unpin || ctx.unpinPads;
+        unpin([id], function (res) {
+            if (res && res.error) {
+                console.error(res.error);
+            }
+        });
         ctx.Store.onSync(store.id, cb);
         // XXX broadcast to inner
     };

@@ -212,6 +212,13 @@ define([
                 list = list.concat(mList);
             }
 
+            if (store.proxy.calendars) {
+                var cList = Object.keys(store.proxy.calendars).map(function (c) {
+                    return store.proxy.calendars[c].channel;
+                });
+                list = list.concat(cList);
+            }
+
             list.push(userChannel);
             list.sort();
 
