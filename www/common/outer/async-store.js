@@ -178,6 +178,24 @@ define([
                    typeof(store.proxy.curvePublic) === 'string';
         };
 
+        Store.isOwned = function (owners) {
+            var edPublic = store.proxy.edPublic;
+            // Not logged in? false
+            if (!edPublic) { return false; }
+            // No owners? false
+            if (!Array.isArray(owners) || !owners.length) { return false; }
+
+            if (owners.indexOf(edPublic) !== -1) { return true; }
+
+            // No team
+            var teams = store.proxy.teams;
+            if (!teams) { return false; }
+            return Object.keys(teams).some(function (id) {
+                var ed = Util.find(teams[id], ['keys', 'drive', 'edPublic']);
+                return ed && owners.indexOf(ed) !== -1;
+            });
+        };
+
         var getUserChannelList = function () {
             var userChannel = store.driveChannel;
             if (!userChannel) { return null; }

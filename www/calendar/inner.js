@@ -125,7 +125,7 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
     var getCalendars = function () {
         return Object.keys(APP.calendars).map(function (id) {
             var c = APP.calendars[id];
-            if (c.hidden || c.restricted) { return; }
+            if (c.hidden || c.restricted || c.loading) { return; }
             var md = Util.find(c, ['content', 'metadata']);
             if (!md) { return void console.error('Ignore calendar without metadata'); }
             return {
@@ -142,7 +142,7 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
         var s = [];
         Object.keys(APP.calendars).forEach(function (id) {
             var c = APP.calendars[id];
-            if (c.hidden || c.restricted) { return; }
+            if (c.hidden || c.restricted || c.loading) { return; }
             var data = c.content || {};
             Object.keys(data.content || {}).forEach(function (uid) {
                 var obj = data.content[uid];
@@ -353,7 +353,9 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
         // XXX handle RESTRICTED calendars (data.restricted)
         var data = APP.calendars[id];
         var edit;
-        if (!data.readOnly) {
+        if (data.loading) {
+            edit = h('i.fa.fa-spinner.fa-spin');
+        } else if (!data.readOnly) {
             edit = makeEditDropdown(id, teamId);
         }
         var md = Util.find(data, ['content', 'metadata']);

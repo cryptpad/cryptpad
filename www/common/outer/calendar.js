@@ -90,24 +90,18 @@ ctx.calendars[channel] = {
     var initializeCalendars = function (ctx, cb) {
         var proxy = ctx.store.proxy;
         var calendars = proxy.calendars = proxy.calendars || {};
-        /*if (!calendars.own) {
-            var own = calendars.own = makeCalendar(true);
-            own.color = ctx.Store.getUserColor();
-        }
-        */
         setTimeout(cb);
-        // XXX for each team, if we have edit rights, create the team calendar?
-        // XXX or maybe do it from the team app?
     };
 
     var sendUpdate = function (ctx, c) {
         ctx.emit('UPDATE', {
             teams: c.stores,
             id: c.channel,
+            loading: !c.ready && !c.cacheready,
             readOnly: c.readOnly || (!c.ready && c.cacheready),
             deleted: !c.stores.length,
             restricted: c.restricted,
-            owned: false, // XXX XXX destroy
+            owned: ctx.Store.isOwned(c.owners),
             content: Util.clone(c.proxy)
         }, ctx.clients);
     };
@@ -162,10 +156,53 @@ ctx.calendars[channel] = {
         var secret = Hash.getSecrets('calendar', parsed.hash);
         var crypto = Crypto.createEncryptor(secret.keys);
 
-        nThen(function (waitFor) {
-            // XXX Check if channel exists
-            // XXX Get pad metadata (offline??)
+        c.proxy = {
+            metadata: {
+                color: data.color,
+                title: data.title
+            }
+        };
+        update();
 
+        var onDeleted = function () {
+            // Remove this calendar from all our teams
+            c.stores.forEach(function (storeId) {
+                var store = getStore(ctx, storeId);
+                if (!store || !store.rpc || !store.proxy.calendars) { return; }
+                delete store.proxy.calendars[channel];
+                // And unpin
+                var unpin = store.unpin || ctx.unpinPads;
+                unpin([channel], function (res) {
+                    if (res && res.error) { console.error(res.error); }
+                });
+            });
+
+            // Close listmap, update the UI and clear the memory
+            if (c.lm) { c.lm.stop(); }
+            c.stores = [];
+            sendUpdate(ctx, c);
+            delete ctx.calendars[channel];
+        };
+
+        nThen(function (waitFor) {
+            if (!ctx.store.network || cfg.isNew) { return; }
+            // This is supposed to be an existing channel. Make sure it exists on the server
+            // before trying to load it.
+            // NOTE: if we can't check (error), we can skip this step. On "ready", we have
+            // another check to make sure we won't make a new calendar
+            ctx.Store.isNewChannel(null, channel, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    // If we can't check, skip this part
+                    return;
+                }
+                if (obj && typeof(obj.isNew) === "boolean") {
+                    if (obj.isNew) {
+                        onDeleted();
+                        waitFor.abort();
+                        return;
+                    }
+                }
+            }));
         }).nThen(function () {
             // Set the owners as the first store opening it. We don't know yet if it's a new or
             // existing calendar. "owners' will be ignored if the calendar already exists.
@@ -180,7 +217,7 @@ ctx.calendars[channel] = {
 
             var config = {
                 data: {},
-                network: ctx.store.network || ctx.store.networkPromise, // XXX offline
+                network: ctx.store.network || ctx.store.networkPromise,
                 channel: secret.channel,
                 crypto: crypto,
                 owners: [edPublic],
@@ -197,36 +234,18 @@ ctx.calendars[channel] = {
             c.lm = lm;
             var proxy = c.proxy = lm.proxy;
 
-            var onDeleted = function () {
-                nThen(function (w) {
-                    c.stores.forEach(function (storeId) {
-                        var store = getStore(ctx, storeId);
-                        if (!store || !store.rpc || !store.proxy.calendars) { return; }
-                        delete store.proxy.calendars[channel];
-                        var unpin = store.unpin || ctx.unpinPads;
-                        unpin([channel], function (res) {
-                            if (res && res.error) { console.error(res.error); }
-                        });
-                        ctx.Store.onSync(storeId, w());
-                    });
-                }).nThen(function () {
-                    lm.stop();
-                    c.stores = [];
-                    sendUpdate(ctx, c);
-                    delete ctx.calendars[channel];
-                });
-            };
-
             lm.proxy.on('cacheready', function () {
                 if (!proxy.metadata) { return; }
                 c.cacheready = true;
                 setTimeout(update);
                 if (cb) { cb(null, lm.proxy); }
-            }).on('ready', function () {
+            }).on('ready', function (info) {
+                var md = info.metadata;
+                c.owners = md.owners || [];
                 c.ready = true;
                 if (!proxy.metadata) {
                     if (!cfg.isNew) {
-                        // XXX no metadata on an existing calendar: deleted calendar
+                        // no metadata on an existing calendar: deleted calendar
                         return void onDeleted();
                     }
                     proxy.metadata = {
@@ -285,8 +304,6 @@ ctx.calendars[channel] = {
         });
         Object.keys(ctx.calendars).forEach(function (channel) {
             var c = ctx.calendars[channel] || {};
-            console.log(channel, c);
-            if (!c.ready && !c.cacheready) { return; }
             sendUpdate(ctx, c);
         });
     };
@@ -444,21 +461,27 @@ ctx.calendars[channel] = {
                 return void subscribe(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void createCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'UPDATE') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void updateCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void deleteCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_EVENT') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void createEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'UPDATE_EVENT') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void updateEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE_EVENT') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void deleteEvent(ctx, data, clientId, cb);
             }
         };
