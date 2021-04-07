@@ -336,6 +336,7 @@ define([
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,
                         href: href,
+                        calendar: opts.calendar,
                         password: data.password || priv.password,
                         title: data.title || title
                     }, {
@@ -1016,7 +1017,7 @@ define([
             var owned = Modal.isOwned(Env, data);
 
             // Request edit access
-            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned && !opts.calendar) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
@@ -1054,7 +1055,7 @@ define([
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
-            if (owned === true) {
+            if (owned === true && !opts.calendar) {
                 var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
                 var $cbox = $(cbox);
                 var spinner = UI.makeSpinner($cbox);

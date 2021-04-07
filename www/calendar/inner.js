@@ -390,6 +390,36 @@ Messages.calendar_import = "Import to my calendars";
                     return true;
                 }
             });
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-lock',
+                },
+                content: h('span', Messages.accessButton),
+                action: function (e) {
+                    e.stopPropagation();
+                    var friends = common.getFriends();
+                    var cal = APP.calendars[id];
+                    var title = Util.find(cal, ['content', 'metadata', 'title']);
+                    var color = Util.find(cal, ['content', 'metadata', 'color']);
+                    var h = cal.hashes || {};
+                    var href = Hash.hashToHref(h.editHash || h.viewHash, 'calendar');
+                    Access.getAccessModal(common, {
+                        title: title,
+                        password: cal.password, // XXX support passwords
+                        calendar: {
+                            title: title,
+                            color: color,
+                            channel: id,
+                        },
+                        common: common,
+                        noExpiration: true,
+                        channel: id,
+                        href: href
+                    });
+                    return true;
+                }
+            });
         }
         if (!cantRemove) {
             options.push({
@@ -443,14 +473,16 @@ Messages.calendar_import = "Import to my calendars";
         var md = Util.find(data, ['content', 'metadata']);
         if (!md) { return; }
         var active = data.hidden ? '' : '.cp-active';
-        var calendar = h('div.cp-calendar-entry'+active, {
+        var restricted = data.restricted ? '.cp-restricted' : '';
+        var calendar = h('div.cp-calendar-entry'+active+restricted, {
             'data-uid': id
         }, [
             h('span.cp-calendar-color', {
                 style: 'background-color: '+md.color+';'
             }),
             h('span.cp-calendar-title', md.title),
-            isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined,
+            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}) :
+                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
             edit
         ]);
         $(calendar).click(function () {
