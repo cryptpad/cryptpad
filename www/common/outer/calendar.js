@@ -96,6 +96,7 @@ ctx.calendars[channel] = {
     var sendUpdate = function (ctx, c) {
         ctx.emit('UPDATE', {
             teams: c.stores,
+            roTeams: c.roStores,
             id: c.channel,
             loading: !c.ready && !c.cacheready,
             readOnly: c.readOnly || (!c.ready && c.cacheready),
@@ -135,12 +136,38 @@ ctx.calendars[channel] = {
 
         if (c) {
             if (c.readOnly && data.href) {
-                // XXX UPGRADE
-                // c.hashes.editHash =
-                // XXX different cases if already ready or not?
+                // Upgrade readOnly calendar to editable
+                var upgradeParsed = Hash.parsePadUrl(data.href);
+                var upgradeSecret = Hash.getSecrets('calendar', upgradeParsed.hash, data.password);
+                var upgradeCrypto = Crypto.createEncryptor(upgradeSecret.keys);
+                c.hashes.editHash = Hash.getEditHashFromKeys(upgradeSecret);
+                c.lm.setReadOnly(false, upgradeCrypto);
+                c.readOnly = false;
+            } else if (teamId === 0) {
+                // Existing calendars can't be "temp calendars" (unless they are an upgrade)
+                return void cb();
             }
+
+            // Remove from roStores when upgrading this store
+            if (c.roStores.indexOf(teamId) !== -1 && data.href) {
+                c.roStores.splice(c.roStores.indexOf(teamId), 1);
+                // If we've upgraded a stored calendar, remove the temp calendar
+                if (c.stores.indexOf(0) !== -1) {
+                    c.stores.splice(c.stores.indexOf(0), 1);
+                }
+                update();
+            }
+
+            // Don't store duplicates
             if (c.stores && c.stores.indexOf(teamId) !== -1) { return void cb(); }
+
+            // If we store a temp calendar to our account or team, remove this "temp calendar"
+            if (c.stores.indexOf(0) !== -1) { c.stores.splice(c.stores.indexOf(0), 1); }
+
             c.stores.push(teamId);
+            if (!data.href) {
+                c.roStores.push(teamId);
+            }
             update();
             return void cb();
         }
@@ -152,6 +179,7 @@ ctx.calendars[channel] = {
             channel: channel,
             readOnly: !data.href,
             stores: [teamId],
+            roStores: data.href ? [] : [teamId],
             hashes: {}
         };
 
@@ -343,6 +371,38 @@ ctx.calendars[channel] = {
             isNew: true
         }, cb);
     };
+    var importCalendar = function (ctx, data, cId, cb) {
+        var id = data.id;
+        var c = ctx.calendars[id];
+        if (!c) { return void cb({error: "ENOENT"}); }
+        if (!Array.isArray(c.stores) || c.stores.indexOf(data.teamId) === -1) {
+            return void cb({error: 'EINVAL'});
+        }
+
+        // Add to my calendars
+        var store = ctx.store;
+        var calendars = store.proxy.calendars = store.proxy.calendars || {};
+        var hash = c.hashes.editHash;
+        var roHash = c.hashes.viewHash;
+        calendars[id] = {
+            href: hash && Hash.hashToHref(hash, 'calendar'),
+            roHref: roHash && Hash.hashToHref(roHash, 'calendar'),
+            channel: id,
+            color: Util.find(c,['proxy', 'metadata', 'color']) || Util.getRandomColor(),
+            title: Util.find(c,['proxy', 'metadata', 'title']) || '...'
+        };
+        ctx.Store.onSync(null, cb);
+
+        // Make the change in memory
+        openChannel(ctx, {
+            storeId: 1,
+            data: {
+                href: calendars[id].href,
+                toHref: calendars[id].roHref,
+                channel: id
+            }
+        });
+    };
     var addCalendar = function (ctx, data, cId, cb) {
         var store = getStore(ctx, data.teamId);
         if (!store) { return void cb({error: "NO_STORE"}); }
@@ -353,13 +413,21 @@ ctx.calendars[channel] = {
         var parsed = Hash.parsePadUrl(data.href);
         var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
 
+        if (secret.channel !== data.channel) { return void cb({error: 'EINVAL'}); }
+
+        var hash = Hash.getEditHashFromKeys(secret);
+        var roHash = Hash.getViewHashFromKeys(secret);
         var cal = {
-            href: Hash.getEditHashFromKeys(secret),
-            roHref: Hash.getViewHashFromKeys(secret),
+            href: hash && Hash.hashToHref(hash, 'calendar'),
+            roHref: roHash && Hash.hashToHref(roHash, 'calendar'),
             color: data.color,
             title: data.title,
             channel: data.channel
         };
+
+        // If it already existed and it's not an upgrade, nothing to do
+        if (c[data.channel] && (c[data.channel].href || !cal.href)) { return void cb(); }
+
         cal.color = data.color;
         cal.title = data.title;
         openChannel(ctx, {
@@ -373,6 +441,7 @@ ctx.calendars[channel] = {
                 return void cb({error: err.error})
             }
             // Add the calendar and call back
+            // If it already existed it means this is an upgrade
             c[cal.channel] = cal;
             var pin = store.pin || ctx.pinPads;
             pin([cal.channel], function (res) {
@@ -538,6 +607,10 @@ ctx.calendars[channel] = {
                     openCalendar(ctx, data, clientId, cb);
                 });
                 return;
+            }
+            if (cmd === 'IMPORT') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                return void importCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'ADD') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }

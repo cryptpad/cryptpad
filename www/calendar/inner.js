@@ -65,6 +65,7 @@ Messages.calendar_deleteOwned = " It will still be visible for the users it has 
 Messages.calendar_errorNoCalendar = "No editable calendar selected!";
 Messages.calendar_myCalendars = "My calendars";
 Messages.calendar_tempCalendar = "Temp calendar";
+Messages.calendar_import = "Import to my calendars";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -82,6 +83,12 @@ Messages.calendar_tempCalendar = "Temp calendar";
     };
     var deleteCalendar = function (data, cb) {
         APP.module.execCommand('DELETE', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var importCalendar = function (data, cb) {
+        APP.module.execCommand('IMPORT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -307,50 +314,83 @@ Messages.calendar_tempCalendar = "Temp calendar";
         UI.openCustomModal(m);
     };
 
+    var isReadOnly = function (id, teamId) {
+        var data = APP.calendars[id];
+        return data.readOnly || (data.roTeams && data.roTeams.indexOf(teamId) !== -1);
+    };
     var makeEditDropdown = function (id, teamId) {
-        var options = [{
-            tag: 'a',
-            attributes: {
-                'class': 'fa fa-pencil',
-            },
-            content: h('span', Messages.tag_edit),
-            action: function (e) {
-                e.stopPropagation();
-                editCalendar(id);
-                return true;
-            }
-        }, {
-            tag: 'a',
-            attributes: {
-                'class': 'fa fa-shhare-alt',
-            },
-            content: h('span', Messages.shareButton),
-            action: function (e) {
-                e.stopPropagation();
-                var friends = common.getFriends();
-                var cal = APP.calendars[id];
-                var title = Util.find(cal, ['content', 'metadata', 'title']);
-                var color = Util.find(cal, ['content', 'metadata', 'color']);
-                Share.getShareModal(common, {
-                    teamId: teamId === 1 ? undefined : teamId,
-                    origin: APP.origin,
-                    pathname: "/calendar/",
-                    friends: friends,
-                    title: title,
-                    password: cal.password, // XXX support passwords
-                    calendar: {
-                        title: title,
-                        color: color,
-                        channel: id,
-                    },
-                    common: common,
-                    hashes: cal.hashes
-                });
-                return true;
-            }
-        }];
+        var options = [];
         var privateData = metadataMgr.getPrivateData();
         var cantRemove = teamId === 0 || (teamId !== 1 && privateData.teams[teamId].viewer);
+        var data = APP.calendars[id];
+        if (!data.readOnly) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-pencil',
+                },
+                content: h('span', Messages.tag_edit),
+                action: function (e) {
+                    e.stopPropagation();
+                    editCalendar(id);
+                    return true;
+                }
+            });
+        }
+        if (data.teams.indexOf(1) === -1 || teamId === 0) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-clone',
+                },
+                content: h('span', Messages.calendar_import),
+                action: function (e) {
+                    e.stopPropagation();
+                    importCalendar({
+                        id: id,
+                        teamId: teamId
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return void UI.warn(obj.error);
+                        }
+                    });
+                    return true;
+                }
+            });
+        }
+        if (!data.restricted) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-shhare-alt',
+                },
+                content: h('span', Messages.shareButton),
+                action: function (e) {
+                    e.stopPropagation();
+                    var friends = common.getFriends();
+                    var cal = APP.calendars[id];
+                    var title = Util.find(cal, ['content', 'metadata', 'title']);
+                    var color = Util.find(cal, ['content', 'metadata', 'color']);
+                    Share.getShareModal(common, {
+                        teamId: teamId === 1 ? undefined : teamId,
+                        origin: APP.origin,
+                        pathname: "/calendar/",
+                        friends: friends,
+                        title: title,
+                        password: cal.password, // XXX support passwords
+                        calendar: {
+                            title: title,
+                            color: color,
+                            channel: id,
+                        },
+                        common: common,
+                        hashes: cal.hashes
+                    });
+                    return true;
+                }
+            });
+        }
         if (!cantRemove) {
             options.push({
                 tag: 'a',
@@ -397,7 +437,7 @@ Messages.calendar_tempCalendar = "Temp calendar";
         var edit;
         if (data.loading) {
             edit = h('i.fa.fa-spinner.fa-spin');
-        } else if (!data.readOnly) {
+        } else {
             edit = makeEditDropdown(id, teamId);
         }
         var md = Util.find(data, ['content', 'metadata']);
@@ -410,6 +450,7 @@ Messages.calendar_tempCalendar = "Temp calendar";
                 style: 'background-color: '+md.color+';'
             }),
             h('span.cp-calendar-title', md.title),
+            isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined,
             edit
         ]);
         $(calendar).click(function () {
