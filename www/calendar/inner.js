@@ -398,7 +398,6 @@ Messages.calendar_import = "Import to my calendars";
                 content: h('span', Messages.accessButton),
                 action: function (e) {
                     e.stopPropagation();
-                    var friends = common.getFriends();
                     var cal = APP.calendars[id];
                     var title = Util.find(cal, ['content', 'metadata', 'title']);
                     var color = Util.find(cal, ['content', 'metadata', 'color']);
@@ -414,6 +413,33 @@ Messages.calendar_import = "Import to my calendars";
                         },
                         common: common,
                         noExpiration: true,
+                        channel: id,
+                        href: href
+                    });
+                    return true;
+                }
+            });
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-info-circle',
+                },
+                content: h('span', Messages.propertiesButton),
+                action: function (e) {
+                    e.stopPropagation();
+                    var friends = common.getFriends();
+                    var cal = APP.calendars[id];
+                    var title = Util.find(cal, ['content', 'metadata', 'title']);
+                    var color = Util.find(cal, ['content', 'metadata', 'color']);
+                    var h = cal.hashes || {};
+                    var href = Hash.hashToHref(h.editHash || h.viewHash, 'calendar');
+                    Properties.getPropertiesModal(common, {
+                        calendar: {
+                            title: title,
+                            color: color,
+                            channel: id,
+                        },
+                        common: common,
                         channel: id,
                         href: href
                     });
