@@ -536,6 +536,7 @@ Messages.calendar_tempCalendar = "Temp calendar";
 
         var cal = APP.calendar = new Calendar('#cp-sidebarlayout-rightside', {
             defaultView: 'week', // weekly view option
+            taskView: false,
             useCreationPopup: true,
             useDetailPopup: true,
             usageStatistics: false,
@@ -714,6 +715,15 @@ Messages.calendar_tempCalendar = "Temp calendar";
         var onCalendarEditPopup = function (el) {
             // TODO
         };
+        var onPopupRemoved = function () {
+            var start, end;
+            if (window.CP_startPickr) { start = window.CP_startPickr.calendarContainer; }
+            if (window.CP_endPickr) { end = window.CP_endPickr.calendarContainer; }
+            $('.flatpickr-calendar').each(function (i, el) {
+                if (el === start || el === end) { return; }
+                $(el).remove();
+            });
+        };
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 var node;
@@ -721,12 +731,20 @@ Messages.calendar_tempCalendar = "Temp calendar";
                     var node = mutation.addedNodes[i];
                     try {
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
-                                && node.parentNode.classList.contains('tui-view-26')) {
+                                && !node.classList.contains('tui-full-calendar-popup-detail')) {
                             onCalendarPopup(node);
                         }
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
-                                && node.parentNode.classList.contains('tui-view-29')) {
+                                && node.classList.contains('tui-full-calendar-popup-detail')) {
                             onCalendarEditPopup(node);
+                        }
+                    } catch (e) {}
+                }
+                for (var j = 0; j < mutation.removedNodes.length; j++) {
+                    var _node = mutation.addedNodes[j];
+                    try {
+                        if (_node.classList && _node.classList.contains('tui-full-calendar-popup')) {
+                            onPopupRemoved();
                         }
                     } catch (e) {}
                 }
@@ -741,7 +759,7 @@ Messages.calendar_tempCalendar = "Temp calendar";
             onEvent: onEvent
         });
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
-            if (obj.empty && !privateData.calendarHash) {
+            if (obj.empty) {
                 // No calendar yet, create one
                 newCalendar({
                     teamId: 1,

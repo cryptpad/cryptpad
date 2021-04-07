@@ -23,6 +23,8 @@ define([
             }
         });
         startPickr.setDate(start.date);
+        window.CP_startPickr = startPickr;
+        window.CP_endPickr = endPickr;
 
         var getStartDate = function () {
             setTimeout(function () { $(startPickr.calendarContainer).remove(); });
