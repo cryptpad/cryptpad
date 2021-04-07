@@ -748,10 +748,7 @@ Messages.calendar_import = "Import to my calendars";
                 return;
             }
             var isUpdate = Boolean($el.find('#tui-full-calendar-schedule-title').val());
-            if (isUpdate) {
-                $el.find('.tui-full-calendar-dropdown-button').attr('disabled', 'disabled').off('click');
-                $el.find('.tui-full-calendar-dropdown-menu').addClass('cp-forcehide');
-            }
+            if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
         };
         var onCalendarEditPopup = function (el) {
             // TODO

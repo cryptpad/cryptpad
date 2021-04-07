@@ -552,11 +552,27 @@ ctx.calendars[channel] = {
 
         // update the event
         var changes = data.changes || {};
+
+        var newC;
+        if (changes.calendarId) {
+            newC = ctx.calendars[changes.calendarId];
+            if (!newC || !newC.proxy || !newC.proxy.content) { return void cb({error: "ENOENT"}); }
+        }
+
         Object.keys(changes).forEach(function (key) {
             ev[key] = changes[key];
         });
 
-        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
+        // Move to a different calendar?
+        if (changes.calendarId && newC) {
+            newC.proxy.content[data.ev.id] = Util.clone(ev);
+            delete c.proxy.content[data.ev.id];
+        }
+
+        nThen(function (waitFor) {
+            Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
+            if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
+        }).nThen(cb);
     };
     var deleteEvent = function (ctx, data, cId, cb) {
         var id = data.calendarId;
