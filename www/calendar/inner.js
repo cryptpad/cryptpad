@@ -759,7 +759,7 @@ Messages.calendar_tempCalendar = "Temp calendar";
             onEvent: onEvent
         });
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
-            if (obj.empty) {
+            if (obj.empty && !privateData.calendarHash) {
                 // No calendar yet, create one
                 newCalendar({
                     teamId: 1,
@@ -777,7 +777,7 @@ Messages.calendar_tempCalendar = "Temp calendar";
                     hash: privateData.hashes.editHash || privateData.hashes.viewHash,
                     password: privateData.password
                 }, function (obj) {
-                    console.error(obj); // XXX
+                    if (obj && obj.error) { console.error(obj.error); }
                 });
             }
             makeCalendar();

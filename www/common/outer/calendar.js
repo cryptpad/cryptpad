@@ -326,10 +326,12 @@ ctx.calendars[channel] = {
 
     var openCalendar = function (ctx, data, cId, cb) {
         var secret = Hash.getSecrets('calendar', data.hash, data.password);
+        var hash = Hash.getEditHashFromKeys(secret);
+        var roHash = Hash.getViewHashFromKeys(secret);
 
         var cal = {
-            href: Hash.hashToHref(Hash.getEditHashFromKeys(secret), 'calendar'),
-            roHref: Hash.hashToHref(Hash.getViewHashFromKeys(secret), 'calendar'),
+            href: hash && Hash.hashToHref(hash, 'calendar'),
+            roHref: roHash && Hash.hashToHref(roHash, 'calendar'),
             channel: secret.channel,
             color: Util.getRandomColor(),
             title: '...'
