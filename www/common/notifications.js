@@ -415,7 +415,7 @@ define([
         };
         content.handler = function () {
             common.openUnsafeURL(msg.url);
-            // XXX dismiss on click?
+            defaultDismiss(common, data)();
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
@@ -440,7 +440,6 @@ define([
         toShow = Util.fixHTML(toShow);
 
         content.getFormatText = function () {
-            // XXX Add a title to custom messages? Or use a generic key in the notification and only display the text in the alert?
             if (slice) {
                 return toShow.slice(0, 200) + '...';
             }
@@ -448,13 +447,11 @@ define([
         };
         if (slice) {
             content.handler = function () {
-                // XXX Allow markdown (sanitized)?
                 var content = h('div', [
                     h('h4', Messages.broadcast_newCustom),
                     h('div.cp-admin-message', toShow)
                 ]);
                 UI.alert(content);
-                // XXX Dismiss on click?
             };
         }
         if (!content.archived) {
@@ -466,7 +463,6 @@ define([
 
     return {
         add: function(common, data) {
-            console.log(data); // XXX noise?
             var type = data.content.msg.type;
 
             if (handlers[type]) {
