@@ -972,6 +972,19 @@ define([
             require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
                 // XXX require.s.contexts._ can be used to erase old loaded objects
                 cb(Broadcast);
+                setTimeout(function () {
+                    try {
+                        var ctx = require.s.contexts._;
+                        var defined = ctx.defined;
+                        Object.keys(defined).forEach(function (href) {
+                            if (/^\/api\/broadcast\?[0-9]{13}/.test(href)) {
+                                console.error(href);
+                                delete defined[href];
+                                return;
+                            }
+                        });
+                    } catch (e) {}
+                });
             });
         };
     };
@@ -1061,7 +1074,7 @@ define([
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
 
-        var refresh = getApi(function (/* Broadcast */) { // XXX unused argument
+        var refresh = getApi(function (Broadcast) {
             var button = h('button.btn.btn-primary', Messages.admin_broadcastButton);
             var $button = $(button);
             var removeButton = h('button.btn.btn-danger', Messages.admin_broadcastCancel);
@@ -1071,44 +1084,42 @@ define([
             var deleted = [];
 
             // Render active message (if there is one)
-            require(['/api/broadcast?'+ (+new Date())], function (BCast) {
-                var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
-                common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
-                    if (e) { return void console.error(e); }
-                    if (!Array.isArray(msgs)) { return; }
-                    if (!msgs.length) {
-                        $active.hide();
+            var hash = Broadcast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+            common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+                if (e) { return void console.error(e); }
+                if (!Array.isArray(msgs)) { return; }
+                if (!msgs.length) {
+                    $active.hide();
+                }
+                msgs.reverse().some(function (data) {
+                    var c = data.content;
+                    var msg = c && c.msg;
+                    if (!msg) { return; }
+                    if (msg.type === "BROADCAST_DELETE") {
+                        deleted.push(Util.find(msg, ['content', 'uid']));
                     }
-                    msgs.reverse().some(function (data) {
-                        var c = data.content;
-                        var msg = c && c.msg;
-                        if (!msg) { return; }
-                        if (msg.type === "BROADCAST_DELETE") {
-                            deleted.push(Util.find(msg, ['content', 'uid']));
-                        }
-                        if (msg.type !== "BROADCAST_CUSTOM") { return; }
-                        if (deleted.indexOf(msg.uid) !== -1) { return true; }
+                    if (msg.type !== "BROADCAST_CUSTOM") { return; }
+                    if (deleted.indexOf(msg.uid) !== -1) { return true; }
 
-                        // We found an active custom message, show it
-                        var el = common.mailbox.createElement(data);
-                        var table = h('table.cp-broadcast-delete');
-                        var $table = $(table);
-                        var uid = Util.find(data, ['content', 'msg', 'uid']);
-                        var time = Util.find(data, ['content', 'msg', 'content', 'time']);
-                        var tr = h('tr', { 'data-uid': uid }, [
-                            h('td', 'ID: '+uid),
-                            h('td', new Date(time || 0).toLocaleString()),
-                            h('td', el),
-                            h('td.delete', removeButton),
-                        ]);
-                        $table.append(tr);
-                        $active.append(table);
-                        activeUid = uid;
+                    // We found an active custom message, show it
+                    var el = common.mailbox.createElement(data);
+                    var table = h('table.cp-broadcast-delete');
+                    var $table = $(table);
+                    var uid = Util.find(data, ['content', 'msg', 'uid']);
+                    var time = Util.find(data, ['content', 'msg', 'content', 'time']);
+                    var tr = h('tr', { 'data-uid': uid }, [
+                        h('td', 'ID: '+uid),
+                        h('td', new Date(time || 0).toLocaleString()),
+                        h('td', el),
+                        h('td.delete', removeButton),
+                    ]);
+                    $table.append(tr);
+                    $active.append(table);
+                    activeUid = uid;
 
-                        return true;
-                    });
-                    if (!activeUid) { $active.hide(); }
+                    return true;
                 });
+                if (!activeUid) { $active.hide(); }
             });
 
             // Custom message

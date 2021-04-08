@@ -630,12 +630,25 @@ define([
             // use uid in /api/broadcast so that all connected users will use the same cached
             // version on the server
             require(['/api/broadcast?'+uid], function (Broadcast) {
+                if (!Broadcast) { return; }
                 broadcast([], 'UNIVERSAL_EVENT', {
                     type: 'broadcast',
                     data: {
                         ev: 'MAINTENANCE',
                         data: Broadcast.maintenance
                     }
+                });
+                setTimeout(function () {
+                    try {
+                        var ctx = require.s.contexts._;
+                        var defined = ctx.defined;
+                        Object.keys(defined).forEach(function (href) {
+                            if (/^\/api\/broadcast\?[a-z0-9]+/.test(href)) {
+                                delete defined[href];
+                                return;
+                            }
+                        });
+                    } catch (e) {}
                 });
             });
         };
