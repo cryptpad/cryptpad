@@ -3169,9 +3169,6 @@ define([
             });
         };
 
-        Store.newVersionReload = function () { // XXX not used anymore?
-            broadcast([], "NETWORK_RECONNECT");
-        };
         Store.disconnect = function () {
             if (self.accountDeletion) { return; }
             if (!store.network) { return; }

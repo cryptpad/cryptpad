@@ -970,7 +970,6 @@ define([
     var getApi = function (cb) {
         return function () {
             require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
-                // XXX require.s.contexts._ can be used to erase old loaded objects
                 cb(Broadcast);
                 setTimeout(function () {
                     try {
@@ -978,7 +977,6 @@ define([
                         var defined = ctx.defined;
                         Object.keys(defined).forEach(function (href) {
                             if (/^\/api\/broadcast\?[0-9]{13}/.test(href)) {
-                                console.error(href);
                                 delete defined[href];
                                 return;
                             }
