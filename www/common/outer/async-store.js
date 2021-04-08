@@ -652,6 +652,7 @@ define([
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
+            if (data.readme) { pad.readme = 1; }
 
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
@@ -839,6 +840,7 @@ define([
                         channel: channel,
                         title: data.driveReadmeTitle,
                         owners: [ store.proxy.edPublic ],
+                        readme: true
                     };
                     Store.addPad(clientId, fileData, cb);
                 }, {
@@ -1155,6 +1157,12 @@ define([
                     pad.owners = owners;
                 }
                 pad.expire = expire;
+
+                if (pad.readme) {
+                    delete pad.readme;
+                    Feedback.send('OPEN_README');
+                }
+
                 if (h.mode === 'view') { return; }
 
                 // If we only have rohref, it means we have a stronger href
@@ -1732,13 +1740,11 @@ define([
                     postMessage(clientId, "PAD_CACHE");
                 },
                 onCacheReady: function () {
-                    channel.hasCache = true;
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
-                    channel.ready = true;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
@@ -2624,22 +2630,28 @@ define([
         // "cb" is wrapped in Util.once() and may have already been called
         // if we have a local cache
         var onReady = function (clientId, returned, cb) {
-            console.error('READY');
             store.ready = true;
             var proxy = store.proxy;
             var manager = store.manager;
             var userObject = store.userObject;
 
             nThen(function (waitFor) {
-                if (manager) { return; }
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
-                onCacheReady(clientId, waitFor());
-                manager = store.manager;
-                userObject = store.userObject;
-            }).nThen(function (waitFor) {
+
+                // Call onCacheReady if the manager is not yet defined
+                if (!manager) {
+                    onCacheReady(clientId, waitFor());
+                    manager = store.manager;
+                    userObject = store.userObject;
+                }
+
+                // Initialize RPC in parallel of onCacheReady in case a shared folder
+                // is RESTRICTED and requires RPC authentication
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+
+                // Update loading progress
                 postMessage(clientId, 'LOADING_DRIVE', {
                     type: 'migrate',
                     progress: 0
@@ -2811,7 +2823,9 @@ define([
             store.onRpcReadyEvt = Util.mkEvent(true);
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
-            var returned = {};
+            var returned = {
+                loggedIn: Boolean(data.userHash)
+            };
             rt.proxy.on('create', function (info) {
                 store.realtime = info.realtime;
                 store.network = info.network;
@@ -3064,14 +3078,19 @@ define([
                         if (obj.error === 'GET_HK') {
                             data.noDrive = false;
                             Store.init(clientId, data, _callback);
+                            Feedback.send("NO_DRIVE_ERROR", true);
                             return;
                         }
                     }
+                    Feedback.send("NO_DRIVE", true);
                     callback(obj);
                 });
             }
 
             initialized = true;
+            if (store.noDriveUid) {
+                Feedback.send('NO_DRIVE_CONVERSION', true);
+            }
 
             store.data = data;
             connect(clientId, data, function (ret) {

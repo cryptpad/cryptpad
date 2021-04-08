@@ -1,3 +1,15 @@
+# 4.3.1
+
+This minor release addresses some bugs discovered after deploying and tagging 4.3.0
+
+* We found that some browser extensions interfered with checks to determine whether a registered user was correctly logged in, which resulted in some disabled functionality. If you are running extensions that actively delete the tokens that keep you logged your session should now stay alive until you close all its active tabs, after which you will have to log back in.
+* Our 4.2.0 update introduced a new internal format for spreadsheets which broke support for spreadsheet templates using the older format. This release implements a compatibility layer.
+* We fixed some minor bugs in our rich text editor. Section links in the table of contents now navigate correctly. Adding a comment to a link no longer prevents clicking on that link.
+* A race condition that caused poll titles to reset occasionally has been fixed.
+* We've added a little bit of telemetry to tell our server when a newly registered user opens the new user guide which is automatically added to their drive. We're considering either rewriting or removing this guide, so it's helpful to be able to determine how often people actually read it.
+* An error introduced in 4.3.0 was preventing the creation of new teams. It's been fixed.
+* 4.3.0 temporarily broke the sheet editor for iPad users. Migrations to a new internal format that were run while the editor was in a bad state produced some invalid data that prevented sheets from loading correctly. This release improves the platforms ability to recover from bad states like this and improves its ability to detect the kind of errors we observed.
+
 # 4.3.0 (D)
 
 ## Goals
@@ -5,6 +17,15 @@
 This release is a continuation of our recent efforts to stabilize the platform, fixing small bugs and inconsistencies that we missed when developing larger features. In the meantime we've received reports of the platform performing poorly under various unusual circumstances, so we've developed some targeted fixes to both improve user experience and decrease the load on our server.
 
 ## Update notes
+
+This release should be fairly simple for admins.
+
+To update from 4.2.1 to 4.3.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
 
 ## Features
 

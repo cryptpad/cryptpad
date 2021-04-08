@@ -547,6 +547,9 @@ MessengerUI, Messages, Pages) {
             hidden: true
         });
         $shareBlock.click(function () {
+            if (toolbar.isDeleted) {
+                return void UI.warn(Messages.deletedFromServer);
+            }
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";
@@ -570,6 +573,9 @@ MessengerUI, Messages, Pages) {
             h('span.cp-button-name', Messages.accessButton)
         ]));
         $accessBlock.click(function () { 
+            if (toolbar.isDeleted) {
+                return void UI.warn(Messages.deletedFromServer);
+            }
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";

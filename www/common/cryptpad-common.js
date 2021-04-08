@@ -2028,7 +2028,6 @@ define([
         });
     };
 
-
     var provideFeedback = function () {
         if (typeof(window.Proxy) === 'undefined') {
             Feedback.send("NO_PROXIES");
@@ -2065,7 +2064,6 @@ define([
         if (!common.hasCSSVariables()) {
             Feedback.send('NO_CSS_VARIABLES');
         }
-
         Feedback.reportScreenDimensions();
         Feedback.reportLanguage();
     };
@@ -2486,6 +2484,9 @@ define([
                             data = data.returned;
                         }
 
+                        if (data.loggedIn) {
+                            window.CP_logged_in = true;
+                        }
                         if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
                         initialized = true;
