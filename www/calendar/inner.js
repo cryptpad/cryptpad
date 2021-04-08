@@ -516,49 +516,6 @@ Messages.calendar_import = "Import to my calendars";
         });
         $topContainer.append(newButton);
 
-        // Change view mode
-        var options = ['day', 'week', 'month'].map(function (k) {
-            return {
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-calendar-view',
-                    'data-value': k,
-                    'href': '#',
-                },
-                content: Messages['calendar_'+k]
-                // Messages.calendar_day
-                // Messages.calendar_week
-                // Messages.calendar_month
-            };
-        });
-        var dropdownConfig = {
-            text: Messages.calendar_week,
-            options: options, // Entries displayed in the menu
-            isSelect: true,
-            common: common,
-            caretDown: true,
-            buttonCls: 'btn btn-secondary'
-        };
-        var $block = UIElements.createDropdown(dropdownConfig);
-        $block.setValue('week');
-        var $views = $block.find('a');
-        $views.click(function () {
-            var mode = $(this).attr('data-value');
-            calendar.changeView(mode);
-        });
-        $topContainer.append($block);
-
-        // Change page
-        var goLeft = h('button.btn.btn-secondary.fa.fa-chevron-left');
-        var goRight = h('button.btn.btn-secondary.fa.fa-chevron-right');
-        var goToday = h('button.btn.btn-secondary', Messages.calendar_today);
-        $(goLeft).click(function () { calendar.prev(); });
-        $(goRight).click(function () { calendar.next(); });
-        $(goToday).click(function () { calendar.today(); });
-        $container.append(h('div.cp-calendar-browse', [
-            goLeft, goToday, goRight
-        ]));
-
         // Show calendars
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
@@ -604,6 +561,32 @@ Messages.calendar_import = "Import to my calendars";
             });
         });
         onCalendarsUpdate.fire();
+    };
+    var updateDateRange = function () {
+        var range = APP.calendar._renderRange;
+        var start = range.start._date.toLocaleDateString();
+        var end = range.end._date.toLocaleDateString();
+        var date = [
+            h('b', start),
+            h('span', ' - '),
+            h('b', end),
+        ];
+        if (APP.calendar._viewName === "day") {
+            date = h('b', start);
+        } else if (APP.calendar._viewName === "month") {
+            var month;
+            try {
+                month = range.start._date.toLocaleString('default', {
+                    month: 'long',
+                    year:'numeric'
+                });
+                month = month.replace(/^./, function (str) { return str.toUpperCase(); });
+                date = h('b', month);
+            } catch (e) {
+                // Use same as week range: first day of month to last day of month
+            }
+        }
+        APP.toolbar.$bottomM.empty().append(h('div', date));
     };
     var makeCalendar = function () {
         var $container = $('#cp-sidebarlayout-container');
@@ -689,16 +672,65 @@ Messages.calendar_import = "Import to my calendars";
             });
         });
 
-        cal.on('clickSchedule', function (event) {
-            var id = event.calendar && event.calendar.id;
-            if (!id || !APP.calendars[id]) {
-                APP.lastClicked = false;
-                return;
-            }
-            APP.lastClicked = id;
-        });
+        updateDateRange();
 
         renderCalendar();
+
+        // Toolbar
+
+        // Change view mode
+        var options = ['day', 'week', 'month'].map(function (k) {
+            return {
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-calendar-view',
+                    'data-value': k,
+                    'href': '#',
+                },
+                content: Messages['calendar_'+k]
+                // Messages.calendar_day
+                // Messages.calendar_week
+                // Messages.calendar_month
+            };
+        });
+        var dropdownConfig = {
+            text: Messages.calendar_week,
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            common: common,
+            caretDown: true,
+            left: true,
+        };
+        var $block = UIElements.createDropdown(dropdownConfig);
+        $block.setValue('week');
+        var $views = $block.find('a');
+        $views.click(function () {
+            var mode = $(this).attr('data-value');
+            cal.changeView(mode);
+            updateDateRange();
+        });
+        APP.toolbar.$bottomR.append($block);
+
+        // Change page
+        var goLeft = h('button.fa.fa-chevron-left');
+        var goRight = h('button.fa.fa-chevron-right');
+        var goToday = h('button', Messages.calendar_today);
+        $(goLeft).click(function () {
+            cal.prev();
+            updateDateRange();
+        });
+        $(goRight).click(function () {
+            cal.next();
+            updateDateRange();
+        });
+        $(goToday).click(function () {
+            cal.today();
+            updateDateRange();
+        });
+        APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
+            goLeft, goToday, goRight
+        ]));
+
     };
 
     var createToolbar = function () {
