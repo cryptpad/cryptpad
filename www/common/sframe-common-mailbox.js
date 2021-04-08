@@ -217,11 +217,16 @@ define([
             });
         };
 
-        var historyState = false;
         var onHistory = function () {};
-    mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
-            if (type !== "broadcast" && historyState) { return void cb("ALREADY_CALLED"); }
-            historyState = true;
+        var onHistoryEnd;
+        mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
+            if (type === "broadcast" && onHistoryEnd) {
+                onHistoryEnd.reg(cb);
+                return;
+            }
+            if (onHistoryEnd) { return void cb("ALREADY_CALLED"); }
+            onHistoryEnd = Util.mkEvent();
+            onHistoryEnd.reg(cb);
             var txid = Util.uid();
             execCommand('LOAD_HISTORY', {
                 type: type,
@@ -237,8 +242,8 @@ define([
                 if (data.complete) {
                     onHistory = function () {};
                     var end = messages.length < count;
-                    cb(null, messages, end);
-                    historyState = false;
+                    onHistoryEnd.fire(null, messages, end);
+                    onHistoryEnd = undefined;
                     return;
                 }
                 if (data.hash !== lastKnownHash) {

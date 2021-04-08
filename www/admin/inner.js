@@ -1240,7 +1240,7 @@ define([
             var send = function (data) {
                 $button.prop('disabled', 'disabled');
                 data.time = +new Date(); // XXX not used anymore?
-                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err /*, data */) { // XXX unused argument
+                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err) {
                     if (err) {
                         $button.prop('disabled', '');
                         console.error(err);
@@ -1265,7 +1265,7 @@ define([
                 if (!activeUid) { return; }
                 common.mailbox.sendTo('BROADCAST_DELETE', {
                     uid: activeUid
-                }, {}, function (err /* , data */) { // XXX unused argument
+                }, {}, function (err) {
                     if (err) { return UI.warn(Messages.error); }
                     UI.log(Messages.saved);
                     refresh();
@@ -1360,7 +1360,7 @@ define([
                         return;
                     }
                     // Maintenance applied, send notification
-                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function (/* err, data */) { // XXX unused arguments
+                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
                         refresh();
                         checkLastBroadcastHash();
                     });
@@ -1456,7 +1456,7 @@ define([
                     // Maintenance applied, send notification
                     common.mailbox.sendTo('BROADCAST_SURVEY', {
                         url: data
-                    }, {}, function (/* err, data */) { // XXX unused arguments
+                    }, {}, function () {
                         refresh();
                         checkLastBroadcastHash();
                     });
