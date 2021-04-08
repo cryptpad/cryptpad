@@ -1260,6 +1260,13 @@ define([
             team.userObject.setReadOnly(!secret.keys.secondaryKey, secret.keys.secondaryKey);
         }
 
+        // Upgrade? update calendar rights
+        if (secret.keys.secondaryKey) {
+            try {
+                ctx.store.modules.calendar.upgradeTeam(teamId);
+            } catch (e) { console.error(e); }
+        }
+
         if (!secret.keys.secondaryKey && team.rpc) {
             team.rpc.destroy();
         }

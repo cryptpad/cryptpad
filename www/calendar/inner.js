@@ -859,6 +859,7 @@ Messages.calendar_import = "Import to my calendars";
                 // No calendar yet, create one
                 newCalendar({
                     teamId: 1,
+                    initialCalendar: true,
                     color: user.color,
                     title: Messages.calendar_default
                 }, function (err, obj) {

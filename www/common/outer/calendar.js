@@ -324,6 +324,24 @@ ctx.calendars[channel] = {
             });
         });
     };
+    var decryptTeamCalendarHref = function (store, calData) {
+        if (!calData.href) { return; }
+
+        // Already decrypted? nothing to do
+        if (calData.href.indexOf('#') !== -1) { return; }
+
+        // href exists and is encrypted: decrypt if we can or ignore the href
+        if (store.secondaryKey) {
+            try {
+                calData.href = store.userObject.cryptor.decrypt(calData.href);
+            } catch (e) {
+                console.error(e);
+                delete calData.href;
+            }
+        } else {
+            delete calData.href;
+        }
+    };
     var initializeStore = function (ctx, store) {
         var c = store.proxy.calendars;
         var storeId = store.id || 1;
@@ -358,11 +376,13 @@ ctx.calendars[channel] = {
             if (!o && n) {
                 (function () {
                     var id = p[1];
-                    var cal = store.proxy.calendars[id];
-                    if (!cal) { return; }
+                    var _cal = store.proxy.calendars[id];
+                    if (!_cal) { return; }
+                    var cal = Util.clone(_cal);
+                    decryptTeamCalendarHref(store, cal);
                     openChannel(ctx, {
                         storeId: storeId,
-                        data: Util.clone(cal)
+                        data: cal
                     });
                 })();
             }
@@ -378,9 +398,11 @@ ctx.calendars[channel] = {
 
         // If this store contains existing calendars, open them
         Object.keys(c || {}).forEach(function (channel) {
+            var cal = Util.clone(c[channel]);
+            decryptTeamCalendarHref(store, cal);
             openChannel(ctx, {
                 storeId: storeId,
-                data: c[channel]
+                data: cal
             });
         });
     };
@@ -426,9 +448,7 @@ ctx.calendars[channel] = {
         };
         openChannel(ctx, {
             storeId: 0,
-            data: cal,
-            noStore: true,
-            isNew: true
+            data: cal
         }, cb);
     };
     var importCalendar = function (ctx, data, cId, cb) {
@@ -477,8 +497,9 @@ ctx.calendars[channel] = {
 
         var hash = Hash.getEditHashFromKeys(secret);
         var roHash = Hash.getViewHashFromKeys(secret);
+        var href = hash && Hash.hashToHref(hash, 'calendar');
         var cal = {
-            href: hash && Hash.hashToHref(hash, 'calendar'),
+            href: href,
             roHref: roHash && Hash.hashToHref(roHash, 'calendar'),
             color: data.color,
             title: data.title,
@@ -492,13 +513,22 @@ ctx.calendars[channel] = {
         cal.title = data.title;
         openChannel(ctx, {
             storeId: store.id || 1,
-            data: cal
+            data: Util.clone(cal)
         }, function (err) {
             if (err) {
                 // Can't open this channel, don't store it
                 console.error(err);
                 return void cb({error: err.error})
             }
+
+            if (href && store.id && store.secondaryKey) {
+                try {
+                    cal.href = store.userObject.cryptor.encrypt(href);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
             // Add the calendar and call back
             // If it already existed it means this is an upgrade
             c[cal.channel] = cal;
@@ -682,6 +712,24 @@ ctx.calendars[channel] = {
             if (!store) { return; }
             initializeStore(ctx, store);
         };
+        calendar.upgradeTeam = function (teamId) {
+            if (!teamId) { return; }
+            var store = getStore(ctx, teamId);
+            if (!store) { return; }
+            Object.keys(ctx.calendars).forEach(function (id) {
+                var ctxCal = ctx.calendars[id];
+                var idx = ctxCal.stores.indexOf(teamId);
+                if (idx === -1) { return; }
+                var _cal = store.proxy.calendars[id];
+                var cal = Util.clone(_cal);
+                decryptTeamCalendarHref(store, cal);
+                openChannel(ctx, {
+                    storeId: teamId,
+                    data: cal
+                });
+                sendUpdate(ctx, ctxCal);
+            });
+        };
 
         calendar.removeClient = function (clientId) {
             removeClient(ctx, clientId);
@@ -707,6 +755,11 @@ ctx.calendars[channel] = {
                 return void addCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE') {
+                if (data.initialCalendar) {
+                    return void ctx.Store.onReadyEvt.reg(function () {
+                        createCalendar(ctx, data, clientId, cb);
+                    });
+                }
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void createCalendar(ctx, data, clientId, cb);
             }
