@@ -1045,6 +1045,7 @@ MessengerUI, Messages) {
             ]), null, true);
         });
 
+        var to;
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
@@ -1053,13 +1054,25 @@ MessengerUI, Messages) {
                 if (!data) {
                     return void $notif.hide();
                 }
+                if ((+new Date()) > data.end) {
+                    return void $notif.hide();
+                }
                 m = data;
+                clearTimeout(to);
+                to = setTimeout(function () {
+                    m = undefined;
+                    $notif.hide();
+                }, m.end-(+new Date()));
                 $notif.css('display', '');
             }
         });
 
         if (m && m.start && m.end) {
             $notif.css('display', '');
+            to = setTimeout(function () {
+                m = undefined;
+                $notif.hide();
+            }, m.end-(+new Date()));
         } else {
             $notif.hide();
         }
