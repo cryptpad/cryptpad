@@ -1738,7 +1738,14 @@ define([
             });
         }*/
         options.push({ tag: 'hr' });
+
+        // We have code to hide 2 separators in a row, but in the case of survey, they may be
+        // in the DOM but hidden. We need to know if there are other elements in this
+        // section to determine if we have to manually hide a separator.
+        var surveyAlone = true;
+
         if (Config.allowSubscriptions) {
+            surveyAlone = false;
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1751,6 +1758,7 @@ define([
             });
         }
         if (!priv.plan && !Config.removeDonateButton) {
+            surveyAlone = false;
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1844,7 +1852,10 @@ define([
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
         var $survey = $userAdmin.find('.cp-toolbar-survey');
-        if (!surveyURL) { $survey.hide(); }
+        if (!surveyURL) {
+            $survey.hide();
+            if (surveyAlone) { $survey.next('hr').hide(); }
+        }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
@@ -1855,9 +1866,11 @@ define([
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
+                    if (surveyAlone) { $survey.next('hr').hide(); }
                     return;
                 }
                 $survey.show();
+                if (surveyAlone) { $survey.next('hr').show(); }
             }
         });
 
