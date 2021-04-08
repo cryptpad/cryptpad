@@ -352,6 +352,8 @@ define([
         framework._.toolbar.$drawer.append(helpMenu.button);
     };
 
+    var mathClassPattern = /cke_widget_wrapper_math\-tex/;
+
     var mkDiffOptions = function(cursor, readOnly) {
         return {
             preDiffApply: function(info) {
@@ -377,9 +379,22 @@ define([
                     }
                 }
 
-                // Other users cursor
-                if (Cursors.preDiffApply(info)) {
-                    return true;
+                if (info.node && info.node.tagName === 'SPAN' &&
+                    /math/.test(info.node.getAttribute('class'))) {
+                        return true;
+                    if (info.diff.action === 'modifyAttribute' && // XXX
+                        info.diff.name === 'class' &&
+                        mathClassPattern.test(info.diff.oldValue) &&
+                        !mathClassPattern.test(info.diff.newValue)) {
+                        return true;
+                        console.log("%c%s", "color: blue;", 'modifyAttribute', info, info.node);
+                    } else if (info.diff.action === 'removeAttribute' &&
+                        info.diff.name === "data-cke-widget-id") {
+                        return true;
+                        console.log("%c%s", "color: red;", 'removeAttribute', info, info.node);
+                    } else {
+                        console.error(info, info.node);
+                    }
                 }
 
                 if (info.node && info.node.tagName === 'DIV' &&
