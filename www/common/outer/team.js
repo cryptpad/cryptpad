@@ -130,6 +130,9 @@ define([
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
+        if (ctx.store.calendar) {
+            ctx.store.calendar.closeTeam(teamId);
+        }
         if (ctx.store.mailbox) {
             ctx.store.mailbox.close('team-'+teamId, function () {
                 // Close team mailbox
@@ -345,6 +348,7 @@ define([
                 });
             }, true);
         }).nThen(function () {
+            if (ctx.store.calendar) { ctx.store.calendar.openTeam(id); }
             cb();
         });
     };

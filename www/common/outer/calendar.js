@@ -89,7 +89,7 @@ ctx.calendars[channel] = {
     };
     var initializeCalendars = function (ctx, cb) {
         var proxy = ctx.store.proxy;
-        var calendars = proxy.calendars = proxy.calendars || {};
+        proxy.calendars = proxy.calendars || {};
         setTimeout(cb);
     };
 
@@ -106,6 +106,17 @@ ctx.calendars[channel] = {
             content: Util.clone(c.proxy),
             hashes: c.hashes
         }, ctx.clients);
+    };
+
+    var closeCalendar = function (ctx, id) {
+        var ctxCal = ctx.calendars[id];
+        if (!ctxCal) { return; }
+
+        // If the calendar doesn't exist in any other team, stop it and delete it from ctx
+        if (!ctxCal.stores.length) {
+            ctxCal.lm.stop();
+            delete ctx.calendars[id];
+        }
     };
 
     var updateLocalCalendars = function (ctx, c, data) {
@@ -203,6 +214,7 @@ ctx.calendars[channel] = {
 
         var onDeleted = function () {
             // Remove this calendar from all our teams
+            // XXX Maybe not? don't remove automatically so that we can tell the user to do so.
             c.stores.forEach(function (storeId) {
                 var store = getStore(ctx, storeId);
                 if (!store || !store.rpc || !store.proxy.calendars) { return; }
@@ -312,27 +324,75 @@ ctx.calendars[channel] = {
             });
         });
     };
-    var openChannels = function (ctx) {
-        var findFromStore = function (store) {
-            var c = store.proxy.calendars;
-            if (!c) { return; }
-            Object.keys(c).forEach(function (channel) {
-                console.log(c[channel]);
-                openChannel(ctx, {
-                    storeId: store.id || 1,
-                    data: c[channel]
-                });
-            });
-        };
+    var initializeStore = function (ctx, store) {
+        var c = store.proxy.calendars;
+        var storeId = store.id || 1;
 
+        // Add listeners
+        store.proxy.on('change', ['calendars'], function (o, n, p) {
+            if (p.length < 2) { return; }
+
+            // Handle deletions
+            if (o && !n) {
+                (function () {
+                    var id = p[1];
+                    var ctxCal = ctx.calendars[id];
+                    if (!ctxCal) { return; }
+                    var idx = ctxCal.stores.indexOf(storeId);
+
+                    // Check if the team has loaded this calendar in memory
+                    if (idx === -1) { return; }
+
+                    // Remove the team from memory
+                    ctxCal.stores.splice(idx, 1);
+                    var roIdx = ctxCal.roStores.indexOf(storeId);
+                    if (roIdx !== -1) { ctxCal.roStores.splice(roIdx, 1); }
+
+                    // Check if we need to close listmap and update the UI
+                    closeCalendar(ctx, id);
+                    sendUpdate(ctx, ctxCal);
+                })();
+            }
+
+            // Handle additions
+            if (!o && n) {
+                (function () {
+                    var id = p[1];
+                    var cal = store.proxy.calendars[id];
+                    if (!cal) { return; }
+                    openChannel(ctx, {
+                        storeId: storeId,
+                        data: Util.clone(cal)
+                    });
+                })();
+            }
+
+            // Handle href updates (color and title updates are handled from the calendar channel)
+            if (o && n && p.length === 3 && p[2] === "href") {
+                (function () {
+                    var id = p[1];
+                })();
+
+            }
+        });
+
+        // If this store contains existing calendars, open them
+        Object.keys(c || {}).forEach(function (channel) {
+            openChannel(ctx, {
+                storeId: storeId,
+                data: c[channel]
+            });
+        });
+    };
+    var openChannels = function (ctx) {
         // Personal drive
-        findFromStore(ctx.store);
+        initializeStore(ctx, ctx.store);
 
         var teams = ctx.store.modules.team && ctx.store.modules.team.getTeamsData();
         if (!teams) { return; }
         Object.keys(teams).forEach(function (id) {
             var store = getStore(ctx, id);
-            findFromStore(store);
+            initializeStore(ctx, store);
         });
     };
 
@@ -432,8 +492,7 @@ ctx.calendars[channel] = {
         cal.title = data.title;
         openChannel(ctx, {
             storeId: store.id || 1,
-            data: cal,
-            isNew: true
+            data: cal
         }, function (err) {
             if (err) {
                 // Can't open this channel, don't store it
@@ -516,18 +575,14 @@ ctx.calendars[channel] = {
         var ctxCal = ctx.calendars[id];
         var idx = ctxCal.stores.indexOf(store.id || 1);
         ctxCal.stores.splice(idx, 1);
-        // If the calendar doesn't exist in any other team, stop it and delete it from ctx
-        if (!ctxCal.stores.length) {
-            ctxCal.lm.stop();
-            delete ctx.calendars[id];
-        }
+
+        closeCalendar(ctx, id);
 
         ctx.Store.onSync(store.id, function () {
             sendUpdate(ctx, ctxCal);
             cb();
         });
     };
-    // XXX when we destroy a calendar, make sure we also delete it
 
     var createEvent = function (ctx, data, cId, cb) {
         var id = data.calendarId;
@@ -608,6 +663,25 @@ ctx.calendars[channel] = {
             if (err) { return; }
             openChannels(ctx);
         }));
+
+        calendar.closeTeam = function (teamId) {
+            Object.keys(ctx.calendars).forEach(function (id) {
+                var ctxCal = ctx.calendars[id];
+                var idx = ctxCal.stores.indexOf(teamId);
+                if (idx === -1) { return; }
+                ctxCal.stores.splice(idx, 1);
+                var roIdx = ctxCal.roStores.indexOf(teamId);
+                if (roIdx !== -1) { ctxCal.roStores.splice(roIdx, 1); }
+
+                closeCalendar(ctx, id);
+                sendUpdate(ctx, ctxCal);
+            });
+        };
+        calendar.openTeam = function (teamId) {
+            var store = getStore(ctx, teamId);
+            if (!store) { return; }
+            initializeStore(ctx, store);
+        };
 
         calendar.removeClient = function (clientId) {
             removeClient(ctx, clientId);
