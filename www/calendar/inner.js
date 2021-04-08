@@ -125,14 +125,14 @@ Messages.calendar_import = "Import to my calendars";
         return (brightness > 125) ? 'black' : 'white';
     };
 
-    var getWeekDays = function (locale) {
+    var getWeekDays = function () {
         var baseDate = new Date(Date.UTC(2017, 0, 1)); // just a Sunday
         var weekDays = [];
-        for(i = 0; i < 7; i++) {
+        for(var i = 0; i < 7; i++) {
             weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
             baseDate.setDate(baseDate.getDate() + 1);
         }
-        return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }) });
+        return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
 
 
@@ -183,9 +183,6 @@ Messages.calendar_import = "Import to my calendars";
     var onCalendarUpdate = function (data) {
         var cal = APP.calendar;
 
-        // Is it a new calendar?
-        var isNew = !APP.calendars[data.id];
-
         if (data.deleted) {
             // Remove this calendar
             delete APP.calendars[data.id];
@@ -198,11 +195,6 @@ Messages.calendar_import = "Import to my calendars";
         if (!cal) { return; }
         onCalendarsUpdate.fire();
         renderCalendar();
-    };
-
-    var getPadStart = function (value) {
-        value = value.toString();
-        return padStart.call(value, 2, '0');
     };
 
     var getTime = function (time) {
@@ -231,17 +223,6 @@ Messages.calendar_import = "Import to my calendars";
         timegridDisplayPrimaryTime: getTime,
     };
 
-    var makeTeamSelector = function () {
-        var privateData = metadataMgr.getPrivateData();
-        var keys = Object.keys(privateData.teams);
-        if (!keys.length) { return; }
-        var options = [];
-        keys.forEach(function (id) {
-            var t = privateData.teams[id];
-            if (t.viewer) { return; }
-        });
-    };
-
     // XXX Note: always create calendars in your own proxy. If you want a team calendar, you can share it with the team later.
     var editCalendar = function (id) {
         var isNew = !id;
@@ -260,7 +241,6 @@ Messages.calendar_import = "Import to my calendars";
 
         var $colorPicker = $(h('div.cp-calendar-colorpicker'));
         var jscolorL = new window.jscolor($colorPicker[0], { showOnClick: false, valueElement: undefined, zIndex: 100000 });
-        var to;
         $colorPicker.click(function() {
             jscolorL.show();
         });
@@ -279,8 +259,8 @@ Messages.calendar_import = "Import to my calendars";
                 return void newCalendar(obj, function (err) {
                     if (err) { console.error(err); return void UI.warn(Messages.error); }
                     UI.log(Messages.saved);
-                })
-            };
+                });
+            }
             obj.id = id;
             updateCalendar(obj, function (err) {
                 if (err) { console.error(err); return void UI.warn(Messages.error); }
@@ -302,7 +282,7 @@ Messages.calendar_import = "Import to my calendars";
                     var obj = {
                         color: color,
                         title: title
-                    }
+                    };
                     if (!title || !title.trim() ||!/^#[0-9a-fA-F]{6}$/.test(color)) {
                         return true;
                     }
@@ -427,7 +407,6 @@ Messages.calendar_import = "Import to my calendars";
                 content: h('span', Messages.propertiesButton),
                 action: function (e) {
                     e.stopPropagation();
-                    var friends = common.getFriends();
                     var cal = APP.calendars[id];
                     var title = Util.find(cal, ['content', 'metadata', 'title']);
                     var color = Util.find(cal, ['content', 'metadata', 'color']);
@@ -466,6 +445,7 @@ Messages.calendar_import = "Import to my calendars";
                         key += Messages.calendar_deleteOwned;
                     }
                     UI.confirm(Messages.calendar_deleteConfirm, function (yes) {
+                        if (!yes) { return; }
                         deleteCalendar({
                             id: id,
                             teamId: teamId,
@@ -768,7 +748,7 @@ Messages.calendar_import = "Import to my calendars";
             mutations.forEach(function(mutation) {
                 var node;
                 for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    var node = mutation.addedNodes[i];
+                    node = mutation.addedNodes[i];
                     if (node.classList && node.classList.contains('flatpickr-calendar')) {
                         onFlatPickr(node);
                     }
@@ -809,6 +789,7 @@ Messages.calendar_import = "Import to my calendars";
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
         };
         var onCalendarEditPopup = function (el) {
+            el = el;
             // TODO
         };
         var onPopupRemoved = function () {
@@ -820,11 +801,11 @@ Messages.calendar_import = "Import to my calendars";
                 $(el).remove();
             });
         };
-        var observer = new MutationObserver(function(mutations) {
+        var observer2 = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                var node;
+                var node, _node;
                 for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    var node = mutation.addedNodes[i];
+                    node = mutation.addedNodes[i];
                     try {
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
                                 && !node.classList.contains('tui-full-calendar-popup-detail')) {
@@ -837,7 +818,7 @@ Messages.calendar_import = "Import to my calendars";
                     } catch (e) {}
                 }
                 for (var j = 0; j < mutation.removedNodes.length; j++) {
-                    var _node = mutation.addedNodes[j];
+                    _node = mutation.addedNodes[j];
                     try {
                         if (_node.classList && _node.classList.contains('tui-full-calendar-popup')) {
                             onPopupRemoved();
@@ -846,7 +827,7 @@ Messages.calendar_import = "Import to my calendars";
                 }
             });
         });
-        observer.observe($('body')[0], {
+        observer2.observe($('body')[0], {
             childList: true,
             subtree: true
         });
@@ -862,7 +843,7 @@ Messages.calendar_import = "Import to my calendars";
                     initialCalendar: true,
                     color: user.color,
                     title: Messages.calendar_default
-                }, function (err, obj) {
+                }, function (err) {
                     if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
                     makeCalendar();
                     UI.removeLoadingScreen();

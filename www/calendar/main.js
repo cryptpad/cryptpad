@@ -12,15 +12,11 @@ define([
     }).nThen(function (waitFor) {
         SFCommonO.initIframe(waitFor);
     }).nThen(function (/*waitFor*/) {
-        var addData = function (meta, Cryptpad, user) {
-            // XXX flag when opening URL
+        var addData = function (meta) {
             meta.calendarHash = Boolean(window.location.hash);
         };
         SFCommonO.start({
-            //noHash: true, // Don't add the hash in the URL if it doesn't already exist
-            //addRpc: addRpc,
             addData: addData,
-            //owned: true,
             noRealtime: true,
             cache: true,
         });

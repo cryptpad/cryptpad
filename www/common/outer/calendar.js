@@ -137,6 +137,7 @@ ctx.calendars[channel] = {
         var teamId = cfg.storeId;
         var data = cfg.data;
         var channel = data.channel;
+        console.error(cfg);
         if (!channel) { return; }
 
         var c = ctx.calendars[channel];
@@ -373,6 +374,7 @@ ctx.calendars[channel] = {
             }
 
             // Handle additions
+            // NOTE: this also upgrade from readOnly to edit (add an "href" to the calendar)
             if (!o && n) {
                 (function () {
                     var id = p[1];
@@ -385,14 +387,6 @@ ctx.calendars[channel] = {
                         data: cal
                     });
                 })();
-            }
-
-            // Handle href updates (color and title updates are handled from the calendar channel)
-            if (o && n && p.length === 3 && p[2] === "href") {
-                (function () {
-                    var id = p[1];
-                })();
-
             }
         });
 
@@ -518,7 +512,7 @@ ctx.calendars[channel] = {
             if (err) {
                 // Can't open this channel, don't store it
                 console.error(err);
-                return void cb({error: err.error})
+                return void cb({error: err.error});
             }
 
             if (href && store.id && store.secondaryKey) {
@@ -557,7 +551,7 @@ ctx.calendars[channel] = {
             if (err) {
                 // Can't open this channel, don't store it
                 console.error(err);
-                return void cb({error: err.error})
+                return void cb({error: err.error});
             }
             // Add the calendar and call back
             c[cal.channel] = cal;
