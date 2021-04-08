@@ -104,6 +104,7 @@ define([
         Store.get = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.proxy) { return void cb({ error: 'ENODRIVE' }); }
             cb(Util.find(s.proxy, data.key));
         };
         Store.set = function (clientId, data, cb) {
