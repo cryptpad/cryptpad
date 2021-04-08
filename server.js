@@ -113,8 +113,7 @@ var setHeaders = (function () {
 
             // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
             // when duplicated by NGINX in production environments
-            // XXX /api/broadcast too?
-            if (/^\/api\/config/.test(req.url)) { return; }
+            if (/^\/api\/(broadcast|config)/.test(req.url)) { return; }
             // targeted CSP, generic policies, maybe custom headers
             const h = [
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
@@ -273,7 +272,7 @@ var serveConfig = (function () {
     };
 }());
 
-var serveBroadcast = (function () {
+var serveBroadcast = (function () { // XXX deduplicate
     var cacheString = function () {
         return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
     };
@@ -284,7 +283,7 @@ var serveBroadcast = (function () {
             maintenance = undefined;
         }
         return [
-            'define(function(){',
+            'define(function(){', // XXX maybe this could just be JSON
             'return ' + JSON.stringify({
                 lastBroadcastHash: Env.lastBroadcastHash,
                 surveyURL: Env.surveyURL,

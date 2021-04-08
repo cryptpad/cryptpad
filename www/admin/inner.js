@@ -970,6 +970,7 @@ define([
     var getApi = function (cb) {
         return function () {
             require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
+                // XXX require.s.contexts._ can be used to erase old loaded objects
                 cb(Broadcast);
             });
         };
@@ -1060,7 +1061,7 @@ define([
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
 
-        var refresh = getApi(function (Broadcast) {
+        var refresh = getApi(function (/* Broadcast */) { // XXX unused argument
             var button = h('button.btn.btn-primary', Messages.admin_broadcastButton);
             var $button = $(button);
             var removeButton = h('button.btn.btn-danger', Messages.admin_broadcastCancel);
@@ -1219,7 +1220,7 @@ define([
                 }
                 if (error) {
                     console.error('One of the selected languages has no data');
-                    return false;
+                    return false; // XXX better error handling?
                 }
                 return {
                     defaultLanguage: defaultLanguage,
@@ -1229,8 +1230,8 @@ define([
 
             var send = function (data) {
                 $button.prop('disabled', 'disabled');
-                data.time = +new Date();
-                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err, data) {
+                data.time = +new Date(); // XXX not used anymore?
+                common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err /*, data */) { // XXX unused argument
                     if (err) {
                         $button.prop('disabled', '');
                         console.error(err);
@@ -1249,13 +1250,13 @@ define([
                 send(data);
             });
 
-            UI.confirmButton(removeButton, {
+            UI.confirmButton(removeButton, { // XXX table jank
                 classes: 'btn-danger',
             }, function () {
                 if (!activeUid) { return; }
                 common.mailbox.sendTo('BROADCAST_DELETE', {
                     uid: activeUid
-                }, {}, function (err, data) {
+                }, {}, function (err /* , data */) { // XXX unused argument
                     if (err) { return UI.warn(Messages.error); }
                     UI.log(Messages.saved);
                     refresh();
@@ -1311,7 +1312,8 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            var endPickr = Flatpickr(end, {
+            // XXX new Date().toLocaleString('fr-fr', {month: 'long'}).replace(/./, c => c.toUpperCase())
+            var endPickr = Flatpickr(end, { // XXX translations?
                 enableTime: true,
                 minDate: new Date()
             });
@@ -1349,7 +1351,7 @@ define([
                         return;
                     }
                     // Maintenance applied, send notification
-                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function (err, data) {
+                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function (/* err, data */) { // XXX unused arguments
                         refresh();
                         checkLastBroadcastHash();
                     });
@@ -1411,7 +1413,7 @@ define([
                     common.openUnsafeURL(Broadcast.surveyURL);
                 });
                 active = h('div.cp-broadcast-active', [
-                    h('p', a),
+                    h('p', a), // XXX spacing around this element is really cramped
                     removeButton
                 ]);
             }
@@ -1445,7 +1447,7 @@ define([
                     // Maintenance applied, send notification
                     common.mailbox.sendTo('BROADCAST_SURVEY', {
                         url: data
-                    }, {}, function (err, data) {
+                    }, {}, function (/* err, data */) { // XXX unused arguments
                         refresh();
                         checkLastBroadcastHash();
                     });

@@ -687,7 +687,7 @@ define([
 
 
     // Broadcast
-    var broadcasts = {};
+    //var broadcasts = {}; // XXX defined but never used ?
     handlers['BROADCAST_MAINTENANCE'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var uid = msg.uid;
@@ -708,7 +708,7 @@ define([
         var dismiss = !content.url;
         cb(dismiss, old);
     };
-    var activeCustom
+    var activeCustom;
     handlers['BROADCAST_CUSTOM'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var uid = msg.uid;

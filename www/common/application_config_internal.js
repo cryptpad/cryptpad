@@ -162,7 +162,7 @@ define(function() {
     // making it much faster to open new tabs.
     config.disableWorkers = false;
 
-    //config.surveyURL = "";
+    //config.surveyURL = ""; // XXX remove this?
 
     // Teams are always loaded during the initial loading screen (for the first tab only if
     // SharedWorkers are available). Allowing users to be members of multiple teams can

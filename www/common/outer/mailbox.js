@@ -341,7 +341,7 @@ proxy.mailboxes = {
                 };
                 var notify = box.ready;
                 Handlers.add(ctx, box, message, function (dismissed, toDismiss, setAsLKH) {
-                    if (setAsLKH) {
+                    if (setAsLKH) { // XXX confirm whether this if is used?
                         // Update LKH
                         box.data.lastKnownHash = hash;
                         box.data.viewed = [];

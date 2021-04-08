@@ -1382,15 +1382,15 @@ define([
 
         // Viewer to editor
         if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
-            changeEditRights(ctx, teamId, user, true, function (err) {
-                return void cb({error: err});
+            changeEditRights(ctx, teamId, user, true, function (obj) {
+                return void cb(obj);
             });
         }
 
         // Editor to viewer
         if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
-            changeEditRights(ctx, teamId, user, false, function (err) {
-                return void cb({error: err});
+            changeEditRights(ctx, teamId, user, false, function (obj) {
+                return void cb(obj);
             });
         }
 

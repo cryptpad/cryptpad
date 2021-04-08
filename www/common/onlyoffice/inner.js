@@ -1409,7 +1409,7 @@ define([
                                 // Migration required but read-only: continue...
                                 if (readOnly) {
                                     setEditable(true);
-                                    getEditor().setViewModeDisconnect();
+                                    try { getEditor().asc_setRestriction(true); } catch (e) {}
                                 } else {
                                     // No changes after the cp: migrate now
                                     onMigrateRdy.fire();
@@ -1434,12 +1434,9 @@ define([
                             return;
                         }
 
-                        if (lock) {
-                            getEditor().setViewModeDisconnect();
-                        } else if (readOnly) {
-                            try {
-                                getEditor().asc_setRestriction(true);
-                            } catch (e) {}
+                        if (lock || readOnly) {
+                            try { getEditor().asc_setRestriction(true); } catch (e) {}
+                            //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
                         } else {
                             setEditable(true);
                             deleteOfflineLocks();
@@ -1459,7 +1456,6 @@ define([
                             }
                         }
 
-
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
                             delete isLockedModal.modal;
@@ -1469,7 +1465,8 @@ define([
                         }
 
                         if (APP.template) {
-                            getEditor().setViewModeDisconnect();
+                            try { getEditor().asc_setRestriction(true); } catch (e) {}
+                            //getEditor().setViewModeDisconnect();
                             UI.removeLoadingScreen();
                             makeCheckpoint(true);
                             return;
@@ -1483,7 +1480,7 @@ define([
                             } catch (e) {}
                         }
 
-                        if (APP.migrate && !readOnly) {
+                        if (lock && !readOnly) {
                             onMigrateRdy.fire();
                         }
 
@@ -2065,7 +2062,7 @@ define([
                 UI.removeModals();
                 UI.confirm(Messages.oo_uploaded, function (yes) {
                     try {
-                        getEditor().setViewModeDisconnect();
+                        getEditor().asc_setRestriction(true);
                     } catch (e) {}
                     if (!yes) { return; }
                     common.gotoURL();
@@ -2232,7 +2229,9 @@ define([
             APP.history = true;
             APP.template = true;
             var editor = getEditor();
-            if (editor) { editor.setViewModeDisconnect(); }
+            if (editor) {
+                try { getEditor().asc_setRestriction(true); } catch (e) {}
+            }
             var content = parsed.content;
 
             // Get checkpoint
@@ -2372,7 +2371,7 @@ define([
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
-                        getEditor().setViewModeDisconnect();
+                        try { getEditor().asc_setRestriction(true); } catch (e) {}
                         return;
                     }
                     // Cancel button: redraw from lastCp
@@ -2579,7 +2578,11 @@ define([
                     APP.onLocal();
                 } else {
                     msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    $(APP.helpMenu.menu).after(msg);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
                     readOnly = true;
                 }
             } else if (content && content.version <= 3) { // V2 or V3
@@ -2591,7 +2594,11 @@ define([
                     APP.onLocal();
                 } else {
                     msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    $(APP.helpMenu.menu).after(msg);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
                     readOnly = true;
                 }
             }
