@@ -981,8 +981,6 @@ MessengerUI, Messages, Pages) {
                 });
             }
         };
-        //todo(void 0, true);
-
         Common.isOverPinLimit(todo);
 
         return $limit;

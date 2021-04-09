@@ -2721,13 +2721,6 @@ define([
                 common.openURL(priv.accounts.donateURL);
                 Feedback.send('CROWDFUNDING_YES');
             });
-            $(modal.popup).find('a').click(function (e) { // XXX do we really need both a link and a button? (the link is the less popular option)
-                e.stopPropagation();
-                e.preventDefault();
-                modal.delete();
-                common.openURL(priv.accounts.donateURL);
-                Feedback.send('CROWDFUNDING_LINK');
-            });
             $(no).click(function () {
                 modal.delete();
                 Feedback.send('CROWDFUNDING_NO');
