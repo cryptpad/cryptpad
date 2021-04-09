@@ -554,12 +554,17 @@ ctx.calendars[channel] = {
                 return void cb({error: err.error});
             }
             // Add the calendar and call back
-            c[cal.channel] = cal;
-            var pin = store.pin || ctx.pinPads;
-            pin([cal.channel], function (res) {
-                if (res && res.error) { console.error(res.error); }
+            // Wait for the metadata to be stored (channel fully ready) before adding it
+            // to our store
+            var ctxCal = ctx.calendars[cal.channel];
+            Realtime.whenRealtimeSyncs(ctxCal.lm.realtime, function () {
+                c[cal.channel] = cal;
+                var pin = store.pin || ctx.pinPads;
+                pin([cal.channel], function (res) {
+                    if (res && res.error) { console.error(res.error); }
+                });
+                ctx.Store.onSync(store.id, cb);
             });
-            ctx.Store.onSync(store.id, cb);
         });
     };
     var updateCalendar = function (ctx, data, cId, cb) {
@@ -635,7 +640,8 @@ ctx.calendars[channel] = {
         var newC;
         if (changes.calendarId) {
             newC = ctx.calendars[changes.calendarId];
-            if (!newC || !newC.proxy || !newC.proxy.content) { return void cb({error: "ENOENT"}); }
+            if (!newC || !newC.proxy) { return void cb({error: "ENOENT"}); }
+            newC.proxy.content = newC.proxy.content || {};
         }
 
         Object.keys(changes).forEach(function (key) {
