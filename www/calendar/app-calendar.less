@@ -24,12 +24,33 @@
         .tui-full-calendar-layout {
             background-color: @cp_sidebar-right-bg !important;
             color: @cryptpad_text_col;
-            .tui-full-calendar-month * {
-                color: @cryptpad_text_col !important; // XXX
+            .tui-full-calendar-month {
+                .tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
+                    color: @cryptpad_text_col !important; // XXX
+                }
+                .tui-full-calendar-extra-date {
+                    .tui-full-calendar-weekday-grid-date {
+                        color: @cp_sidebar-hint !important; // XXX
+                        opacity: 0.5;
+                    }
+                }
+                .tui-full-calendar-weekday-grid-date {
+                    color: @cryptpad_text_col !important; // XXX
+                }
+                .tui-full-calendar-month-dayname-item span {
+                    color: @cryptpad_text_col !important; // XXX
+                }
             }
             .tui-full-calendar-dayname * {
                 color: @cryptpad_text_col !important; // XXX
             }
+                .tui-full-calendar-month-more {
+                    background-color: @cp_sidebar-right-bg !important;
+                    color: @cryptpad_text_col;
+                    span {
+                        color: @cryptpad_text_col !important;
+                    }
+                }
         }
         .tui-full-calendar-timegrid-timezone {
             background-color: @cp_sidebar-right-bg !important;

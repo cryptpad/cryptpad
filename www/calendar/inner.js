@@ -639,7 +639,7 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
             template: templates,
             month: {
                 daynames: getWeekDays(),
-                startDayOfWeek: 0,
+                startDayOfWeek: 1,
             },
             week: {
                 daynames: getWeekDays(),
