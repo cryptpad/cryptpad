@@ -99,7 +99,8 @@ ctx.calendars[channel] = {
             roTeams: c.roStores,
             id: c.channel,
             loading: !c.ready && !c.cacheready,
-            readOnly: c.readOnly || (!c.ready && c.cacheready),
+            readOnly: c.readOnly || (!c.ready && c.cacheready) || c.offline,
+            offline: c.offline,
             deleted: !c.stores.length,
             restricted: c.restricted,
             owned: ctx.Store.isOwned(c.owners),
@@ -313,6 +314,12 @@ ctx.calendars[channel] = {
                 var md = proxy.metadata;
                 if (!md || !md.title || !md.color) { return; }
                 updateLocalCalendars(ctx, c, md);
+            }).on('disconnect', function () {
+                c.offline = true;
+                setTimeout(update);
+            }).on('reconnect', function () {
+                c.offline = false;
+                setTimeout(update);
             }).on('error', function (info) {
                 if (!info || !info.error) { return; }
                 if (info.error === "EDELETED" ) {
