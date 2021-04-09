@@ -646,11 +646,6 @@ define([
             } else {
                 displayedCategories = [FILES_DATA];
                 currentPath = [FILES_DATA];
-                if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                    var msg = common.fixLinks($('<div>').html(Messages.fm_alert_anonymous));
-                    UI.alert(msg);
-                    proxy.anonymousAlert = true;
-                }
             }
         }
 

@@ -102,7 +102,11 @@ define([
 
             setTimeout(function () {
                 var span = h('span', [
-                    UI.setHTML(h('h2'), Messages.register_warning), // TODO remove the icon from this translation string and pass it separately
+                    h('h2', [
+                        h('i.fa.fa-warning'),
+                        ' ',
+                        Messages.register_warning,
+                    ]),
                     Messages.register_warning_note
                 ]);
 
