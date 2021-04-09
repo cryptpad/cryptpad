@@ -9,9 +9,10 @@ define([
     return function () {
         var urlArgs = Config.requireConf.urlArgs;
 
-        var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
+        var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
         $(tos).find('a').attr({
             href: '/terms.html',
+            target: '_blank',
             tabindex: '-1',
         });
 
