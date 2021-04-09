@@ -842,7 +842,7 @@ define([
 
             // In the properties, we should have the edit href if we know it.
             // We should know it because the pad is stored, but it's better to check...
-            if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
+            if (!data.noEditPassword && !opts.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
                 var isOO = parsed.type === 'sheet';
                 var isFile = parsed.hashData.type === 'file';
                 var isSharedFolder = parsed.type === 'drive';
@@ -985,7 +985,7 @@ define([
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
                 });
-                $d.append(h('br'));
+                if (!opts.noEditPassword) { $d.append(h('br')); }
                 $d.append(h('div', [
                     h('label', Messages.access_destroyPad),
                     h('br'),

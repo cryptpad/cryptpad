@@ -424,6 +424,7 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
                         },
                         common: common,
                         noExpiration: true,
+                        noEditPassword: true,
                         channel: id,
                         href: href
                     });
