@@ -12,6 +12,9 @@ define([
         return e;
     };
 
+    // TODO make a docsLink function which wraps this
+    // and points to the appropriate translation:
+    // French, German, or English as a default
     Pages.externalLink = function (el, href) {
         if (!el) { return el; }
         el.setAttribute("rel", "noopener noreferrer");
@@ -55,6 +58,7 @@ define([
     };
 
     var footLink = function (ref, loc, text) {
+        if (!ref) { return; }
         var attrs =  {
             href: ref,
         };
@@ -81,6 +85,17 @@ define([
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
 
     Pages.infopageFooter = function () {
+        var terms = footLink('/terms.html', 'footer_tos'); // XXX
+        var legalFooter;
+
+        // only display the legal part of the footer if it has content
+        if (terms || Pages.privacyLink || Pages.imprintLink) {
+            legalFooter = footerCol('footer_legal', [
+                Pages.privacyLink,
+                Pages.imprintLink,
+            ]);
+        }
+
         return h('footer', [
             h('div.container', [
                 h('div.row', [
@@ -107,11 +122,7 @@ define([
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
                     ]),
-                    footerCol('footer_legal', [
-                        footLink('/terms.html', 'footer_tos'),
-                        Pages.privacyLink,
-                        Pages.imprintLink,
-                    ]),
+                    legalFooter,
                 ])
             ]),
             h('div.cp-version-footer', [
