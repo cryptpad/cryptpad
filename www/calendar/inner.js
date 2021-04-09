@@ -607,8 +607,9 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
             date = h('b', start);
         } else if (APP.calendar._viewName === "month") {
             var month;
+            var mid = new Date(Math.floor(((+range.start._date) + (+range.end._date)) / 2));
             try {
-                month = range.start._date.toLocaleString('default', {
+                month = mid.toLocaleString('default', {
                     month: 'long',
                     year:'numeric'
                 });
