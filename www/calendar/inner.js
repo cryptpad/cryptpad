@@ -66,6 +66,8 @@ Messages.calendar_errorNoCalendar = "No editable calendar selected!";
 Messages.calendar_myCalendars = "My calendars";
 Messages.calendar_tempCalendar = "Temp calendar";
 Messages.calendar_import = "Import to my calendars";
+Messages.calendar_newEvent = "New event";
+Messages.calendar_new = "New calendar";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -505,17 +507,6 @@ Messages.calendar_import = "Import to my calendars";
         return calendar;
     };
     var makeLeftside = function (calendar, $container) {
-        var $topContainer = $(h('div.cp-calendar-new')).appendTo($container);
-        // Add new button
-        var newButton = h('button.btn.btn-primary', [
-            h('i.fa.fa-plus'),
-            h('span', Messages.newButton)
-        ]);
-        $(newButton).click(function () {
-            editCalendar();
-        });
-        $topContainer.append(newButton);
-
         // Show calendars
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
@@ -559,8 +550,20 @@ Messages.calendar_import = "Import to my calendars";
                     makeCalendarEntry(id, teamId);
                 });
             });
+
+            // Add new button
+            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+            var newButton = h('button', [
+                h('i.fa.fa-plus'),
+                h('span', Messages.calendar_new),
+                h('span')
+            ]);
+            $(newButton).click(function () {
+                editCalendar();
+            }).appendTo($newContainer);
         });
         onCalendarsUpdate.fire();
+
     };
     var updateDateRange = function () {
         var range = APP.calendar._renderRange;
@@ -710,6 +713,16 @@ Messages.calendar_import = "Import to my calendars";
             updateDateRange();
         });
         APP.toolbar.$bottomR.append($block);
+
+        // New event button
+        var newEvent = h('button', [
+            h('i.fa.fa-plus'),
+            h('span', Messages.calendar_newEvent)
+        ]);
+        $(newEvent).click(function (e) {
+            e.preventDefault();
+            cal.openCreationPopup({isAllDay:false});
+        }).appendTo(APP.toolbar.$bottomL);
 
         // Change page
         var goLeft = h('button.fa.fa-chevron-left');

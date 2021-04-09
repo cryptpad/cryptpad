@@ -127,6 +127,25 @@
                 justify-content: space-between;
                 padding: 5px;
                 cursor: pointer;
+                &.cp-ghost {
+                    padding: 0;
+                    button {
+                        .tools_unselectable();
+                        cursor: pointer;
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        background: transparent;
+                        border: 1px solid @cryptpad_text_col;
+                        height: 36px;
+                        font: @colortheme_app-font;
+                        align-items: center;
+                        color: @cryptpad_text_col;
+                        &:hover {
+                            background: @cp_sidebar-left-active;
+                        }
+                    }
+                }
                 &:not(:last-child) {
                     margin-bottom: 10px;
                 }
