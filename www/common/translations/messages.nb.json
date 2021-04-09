@@ -57,7 +57,6 @@
     "editor": "redigerer",
     "userlist_offline": "Du er frakobla, brukerlista er ikke tilgjengelig.",
     "language": "Språk",
-    "newVersion": "<b>CryptPad er oppdatert!</b><br>Sjekk siste nytt:<br><a href=\"https://github.com/xwiki-labs/cryptpad/releases/tag/{0}\" target=\"_blank\">Versjonsinnhold for CryptPad {0}</a>",
     "upgrade": "Oppgrader",
     "upgradeAccount": "Oppgrader kontoen",
     "MB": "Megabyte",

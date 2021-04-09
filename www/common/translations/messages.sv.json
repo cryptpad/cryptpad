@@ -105,7 +105,6 @@
     "storageStatus": "Lagring:<br /><b>{0}</b> använd av <b>{1}</b>",
     "upgradeAccount": "Uppgradera konto",
     "upgrade": "Uppgradera",
-    "newVersion": "<b>CryptPad har uppdaterats!</b><br>Se vad som är nytt i den senaste versionen:<br><a href=\"https://github.com/xwiki-labs/cryptpad/releases/tag/{0}\" target=\"_blank\">Release notes för CryptPad {0}</a>",
     "language": "Språk",
     "userlist_offline": "Du är för närvarande offline, användarlistan är inte tillgänglig.",
     "editor": "redigerare",
