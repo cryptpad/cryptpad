@@ -174,6 +174,18 @@ proxy.mailboxes = {
     var dismiss = function (ctx, data, cId, cb) {
         var type = data.type;
         var hash = data.hash;
+
+        // Reminder messages don't persist
+        if (/^REMINDER\|/.test(hash)) {
+            cb();
+            delete ctx.boxes.reminders.content[hash];
+            hideMessage(ctx, type, hash, ctx.clients.filter(function (clientId) {
+                return clientId !== cId;
+            }));
+            return;
+        };
+
+
         var box = ctx.boxes[type];
         if (!box) { return void cb({error: 'NOT_LOADED'}); }
         var m = box.data || {};
@@ -548,6 +560,10 @@ proxy.mailboxes = {
             initializeHistory(ctx);
         }
 
+        ctx.boxes.reminders = {
+            content: {}
+        };
+
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
             var m = mailboxes[key];
@@ -586,6 +602,15 @@ proxy.mailboxes = {
                 content: content,
                 sender: store.proxy.curvePublic
             });
+        };
+
+        mailbox.showMessage = function (type, msg, cId, cb) {
+            if (type === "reminders" && msg) {
+                ctx.boxes.reminders.content[msg.hash] = msg.msg;
+                // Hide existing messages for this event
+                hideMessage(ctx, type, msg.hash, ctx.clients);
+            }
+            showMessage(ctx, type, msg, cId, cb);
         };
 
         mailbox.open = function (key, m, cb, team, opts) {

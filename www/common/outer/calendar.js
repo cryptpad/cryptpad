@@ -12,60 +12,6 @@ define([
 ], function (Util, Hash, Constants, Realtime, Cache, Messages, nThen, Listmap, Crypto, ChainPad) {
     var Calendar = {};
 
-
-/* TODO
-* Calendar
-{
-    href,
-    roHref,
-    channel, (pinning)
-    title, (when created from the UI, own calendar has no title)
-    color
-}
-
-
-* Own drive
-{
-    calendars: {
-        uid: calendar,
-        uid: calendar
-    }
-}
-
-* Team drive
-{
-    calendars: {
-        uid: calendar,
-        uid: calendar
-    }
-}
-
-* Calendars are listmap
-{
-    content: {},
-    metadata: {
-        title: "pewpewpew"
-    }
-}
-
-ctx.calendars[channel] = {
-    lm: lm,
-    proxy: lm.proxy?
-    stores: [teamId, teamId, 1]
-}
-
-* calendar app can subscribe to this module
-    * when a listmap changes, push an update for this calendar to subscribed tabs
-* Ability to open a calendar not stored in the stores but from its URL directly
-* No "userlist" visible in the UI
-* No framework
-
-
-
-
-
-*/
-
     var getStore = function (ctx, id) {
         if (!id || id === 1) {
             return ctx.store;
@@ -109,6 +55,15 @@ ctx.calendars[channel] = {
         }, ctx.clients);
     };
 
+    var clearReminders = function (ctx, id) {
+        var calendar = ctx.calendars[id];
+        if (!calendar || !calendar.reminders) { return; }
+        // Clear existing reminders
+        Object.keys(calendar.reminders).forEach(function (uid) {
+            if (!Array.isArray(calendar.reminders[uid])) { return; }
+            calendar.reminders[uid].forEach(function (to) { clearTimeout(to); });
+        });
+    };
     var closeCalendar = function (ctx, id) {
         var ctxCal = ctx.calendars[id];
         if (!ctxCal) { return; }
@@ -116,6 +71,7 @@ ctx.calendars[channel] = {
         // If the calendar doesn't exist in any other team, stop it and delete it from ctx
         if (!ctxCal.stores.length) {
             ctxCal.lm.stop();
+            clearReminders(ctx, id);
             delete ctx.calendars[id];
         }
     };
@@ -133,12 +89,83 @@ ctx.calendars[channel] = {
             if (cal.title !== data.title) { cal.title = data.title; }
         });
     };
+
+    var updateEventReminders = function (ctx, reminders, ev) {
+        var now = +new Date();
+        var time10 = now + (600 * 1000); // 10 minutes from now
+        var time60 = now + (3600 * 1000); // 1 hour from now
+        var uid = ev.id;
+
+        // Clear reminders for this event
+        if (Array.isArray(reminders[uid])) {
+            reminders[uid].forEach(function (to) { clearTimeout(to); });
+        }
+        reminders[uid] = [];
+
+        // No reminder for past events
+        if (ev.start <= now) {
+            delete reminders[uid];
+            return;
+        }
+
+        var send = function () {
+            console.error(ev);
+            ctx.store.mailbox.showMessage('reminders', {
+                msg: {
+                    ctime: +new Date(),
+                    type: "REMINDER",
+                    content: ev
+                },
+                hash: 'REMINDER|'+uid
+            }, null, function () {
+            });
+        };
+        var sendNotif = function () { ctx.Store.onReadyEvt.reg(send); };
+
+        if (ev.start <= time10) {
+            sendNotif();
+            return;
+        }
+
+        // It starts in more than 10 minutes: prepare the 10 minutes notification
+        reminders[uid].push(setTimeout(function () {
+            sendNotif();
+        }, (ev.start - time10)));
+
+        if (ev.start <= time60) { return; }
+
+        // It starts in more than 1 hour: prepare the 1 hour notification
+        reminders[uid].push(setTimeout(function () {
+            sendNotif();
+        }, (ev.start - time60)));
+    };
+    var addReminders = function (ctx, id, ev) {
+        var calendar = ctx.calendars[id];
+        if (!calendar || !calendar.reminders) { return; }
+        if (calendar.stores.length === 1 && calendar.stores[0] === 0) { return; }
+
+        updateEventReminders(ctx, calendar.reminders, ev);
+    };
+    var addInitialReminders = function (ctx, id) {
+        var calendar = ctx.calendars[id];
+        if (!calendar || !calendar.reminders) { return; }
+        if (Object.keys(calendar.reminders).length) { return; } // Already initialized
+
+        // No reminders for calendars not stored
+        if (calendar.stores.length === 1 && calendar.stores[0] === 0) { return; }
+
+        // Re-add all reminders
+        var content = Util.find(calendar, ['proxy', 'content']);
+        if (!content) { return; }
+        Object.keys(content).forEach(function (uid) {
+            updateEventReminders(ctx, calendar.reminders, content[uid]);
+        });
+    };
     var openChannel = function (ctx, cfg, _cb) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var teamId = cfg.storeId;
         var data = cfg.data;
         var channel = data.channel;
-        console.error(cfg);
         if (!channel) { return; }
 
         var c = ctx.calendars[channel];
@@ -193,6 +220,7 @@ ctx.calendars[channel] = {
             readOnly: !data.href,
             stores: [teamId],
             roStores: data.href ? [] : [teamId],
+            reminders: {},
             hashes: {}
         };
 
@@ -232,6 +260,7 @@ ctx.calendars[channel] = {
             if (c.lm) { c.lm.stop(); }
             c.stores = [];
             sendUpdate(ctx, c);
+            clearReminders(ctx, channel);
             delete ctx.calendars[channel];
         };
 
@@ -290,6 +319,7 @@ ctx.calendars[channel] = {
                 c.cacheready = true;
                 setTimeout(update);
                 if (cb) { cb(null, lm.proxy); }
+                addInitialReminders(ctx, channel);
             }).on('ready', function (info) {
                 var md = info.metadata;
                 c.owners = md.owners || [];
@@ -306,9 +336,25 @@ ctx.calendars[channel] = {
                 }
                 setTimeout(update);
                 if (cb) { cb(null, lm.proxy); }
+                addInitialReminders(ctx, channel);
             }).on('change', [], function () {
                 if (!c.ready) { return; }
                 setTimeout(update);
+            }).on('change', ['content'], function (o, n, p) {
+                if (p.length === 2 && n && !o) { // New event
+                    addReminders(ctx, channel, n);
+                }
+                if (p.length === 2 && !n && o) { // Deleted event
+                    addReminders(ctx, channel, {
+                        id: p[1],
+                        start: 0
+                    });
+                }
+                if (p.length === 3 && n && o && p[2] === 'start') { // Update event start
+                    setTimeout(function () {
+                        addReminders(ctx, channel, proxy.content[p[1]]);
+                    });
+                }
             }).on('change', ['metadata'], function () {
                 // if title or color have changed, update our local values
                 var md = proxy.metadata;
@@ -627,6 +673,7 @@ ctx.calendars[channel] = {
         c.proxy.content = c.proxy.content || {};
         c.proxy.content[data.id] = data;
         Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
+            addReminders(ctx, id, data);
             sendUpdate(ctx, c);
             cb();
         });
@@ -655,6 +702,7 @@ ctx.calendars[channel] = {
             ev[key] = changes[key];
         });
 
+
         // Move to a different calendar?
         if (changes.calendarId && newC) {
             newC.proxy.content[data.ev.id] = Util.clone(ev);
@@ -664,7 +712,10 @@ ctx.calendars[channel] = {
         nThen(function (waitFor) {
             Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
-        }).nThen(cb);
+        }).nThen(function () {
+            if (changes.start) { addReminders(ctx, id, ev); }
+            cb();
+        });
     };
     var deleteEvent = function (ctx, data, cId, cb) {
         var id = data.calendarId;
@@ -672,7 +723,12 @@ ctx.calendars[channel] = {
         if (!c) { return void cb({error: "ENOENT"}); }
         c.proxy.content = c.proxy.content || {};
         delete c.proxy.content[data.id];
-        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
+        Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
+            addReminders(ctx, id, {
+                id: data.id,
+                start: 0
+            });
+        });
     };
 
     var removeClient = function (ctx, cId) {
@@ -693,7 +749,7 @@ ctx.calendars[channel] = {
             emit: emit,
             onReady: Util.mkEvent(true),
             calendars: {},
-            clients: [],
+            clients: []
         };
 
         initializeCalendars(ctx, waitFor(function (err) {

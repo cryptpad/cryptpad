@@ -459,6 +459,25 @@ define([
         }
     };
 
+    Messages.reminder_minutes = "<b>{0}</b> will start in {1} minutes!"; // XXX
+    Messages.reminder_hour = "<b>{0}</b> will start in 1 hour!"; // XXX
+    handlers['REMINDER'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        var now = +new Date();
+        var start = msg.start;
+        content.getFormatText = function () {
+            if ((start - now) > 600000) {
+                return Messages._getKey('reminder_hour', [Util.fixHTML(msg.title)]);
+            }
+            var minutes = Math.round((start - now) / 60000);
+            return Messages._getKey('reminder_minutes', [Util.fixHTML(msg.title), minutes]);
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
     return {

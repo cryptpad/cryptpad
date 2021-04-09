@@ -65,6 +65,8 @@ define([
                 if (/^LOCAL\|/.test(data.content.hash)) {
                     $(avatar).addClass('preview');
                 }
+            } else if (data.type === 'reminders') {
+                avatar = h('i.fa.fa-calendar.cp-broadcast.preview');
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
@@ -117,7 +119,7 @@ define([
 
         // Call the onMessage handlers
         var isNotification = function (type) {
-            return type === "notifications" || /^team-/.test(type) || type === "broadcast";
+            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders";
         };
         var pushMessage = function (data, handler) {
             var todo = function (f) {
