@@ -68,6 +68,8 @@ Messages.calendar_tempCalendar = "Temp calendar";
 Messages.calendar_import = "Import to my calendars";
 Messages.calendar_newEvent = "New event";
 Messages.calendar_new = "New calendar";
+Messages.calendar_dateRange = "{0} - {1}";
+Messages.calendar_dateTimeRange = "{0} {1} - {2}";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -223,6 +225,33 @@ Messages.calendar_new = "New calendar";
         },
         timegridDisplayTime: getTime,
         timegridDisplayPrimaryTime: getTime,
+        popupDetailDate: function(isAllDay, start, end) {
+            var isSameDate = +start._date === +end._date;
+
+            var startDate = start._date.toLocaleDateString();
+            var endDate = end._date.toLocaleDateString();
+            if (isAllDay) {
+                if (startDate === endDate) { return startDate; }
+                return Messages._getKey('calendar_dateRange', [startDate, endDate]);
+            }
+
+            var startTime = getTime({
+                hour: start._date.getHours(),
+                minutes: start._date.getMinutes(),
+            });
+            var endTime = getTime({
+                hour: end._date.getHours(),
+                minutes: end._date.getMinutes(),
+            });
+
+            if (startDate === endDate && startTime === endTime) {
+                return start._date.toLocaleString();
+            }
+            if (startDate === endDate) {
+                return Messages._getKey('calendar_dateTimeRange', [startDate, startTime, endTime]);
+            }
+            return Messages._getKey('calendar_dateRange', [start._date.toLocaleString(), end._date.toLocaleString()]);
+        }
     };
 
     // XXX Note: always create calendars in your own proxy. If you want a team calendar, you can share it with the team later.
@@ -715,11 +744,11 @@ Messages.calendar_new = "New calendar";
         APP.toolbar.$bottomR.append($block);
 
         // New event button
-        var newEvent = h('button', [
+        var newEventBtn = h('button', [
             h('i.fa.fa-plus'),
             h('span', Messages.calendar_newEvent)
         ]);
-        $(newEvent).click(function (e) {
+        $(newEventBtn).click(function (e) {
             e.preventDefault();
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
@@ -808,7 +837,7 @@ Messages.calendar_new = "New calendar";
         // Customize creation/update popup
         var onCalendarPopup = function (el) {
             var $el = $(el);
-            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary');
+            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o'));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
@@ -834,8 +863,12 @@ Messages.calendar_new = "New calendar";
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
         };
         var onCalendarEditPopup = function (el) {
-            el = el;
-            // TODO
+            var $el = $(el);
+            $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
+            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
+            $el.find('.tui-full-calendar-popup-delete').addClass('btn btn-danger');
+            $el.find('.tui-full-calendar-popup-delete .tui-full-calendar-icon').addClass('fa fa-trash').removeClass('tui-full-calendar-icon');
+            $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
         };
         var onPopupRemoved = function () {
             var start, end;
