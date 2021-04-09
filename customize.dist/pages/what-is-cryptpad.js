@@ -4,8 +4,7 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/common-feedback.js',
-    '/customize/pages.js',
-], function (Config, h, Msg, Pages, Feedback, Pages) {
+], function (Config, h, Msg, Pages, Feedback) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var logoLink = function (alt, src, url, cls) {
