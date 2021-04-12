@@ -1322,7 +1322,7 @@ define([
             var $start = $(start);
             var $end = $(end);
             // XXX new Date().toLocaleString('fr-fr', {month: 'long'}).replace(/./, c => c.toUpperCase())
-            var is24h = false
+            var is24h = false;
             try {
                 is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
             } catch (e) {}

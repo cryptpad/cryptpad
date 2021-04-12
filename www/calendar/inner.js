@@ -226,8 +226,6 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
         timegridDisplayTime: getTime,
         timegridDisplayPrimaryTime: getTime,
         popupDetailDate: function(isAllDay, start, end) {
-            var isSameDate = +start._date === +end._date;
-
             var startDate = start._date.toLocaleDateString();
             var endDate = end._date.toLocaleDateString();
             if (isAllDay) {
