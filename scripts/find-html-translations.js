@@ -7,11 +7,18 @@ var simpleTags = [
     '<a href="/login/">',
     '<a href="/register/">',
 
-    // XXX
+    // FIXME
     "<a href='#'>",
     '<h3>',
     '</h3>',
 
+    // FIXME register_notes
+    '<ul class="cp-notes-list">',
+    '</ul>',
+    '<li>',
+    '</li>',
+    '<span class="red">',
+    '</span>',
 ];
 
 ['a', 'b', 'em', 'p', 'i'].forEach(function (tag) {
@@ -19,12 +26,11 @@ var simpleTags = [
     simpleTags.push('</' + tag + '>');
 });
 
-var PENDING_ENGLISH_KEYS = [];
-
-var KNOWN_ISSUES = [ // XXX
+// these keys are known to be problematic
+var KNOWN_ISSUES = [ // FIXME
     //'newVersion',
-    'fm_info_anonymous',
-    'register_notes',
+    //'fm_info_anonymous',
+    //'register_notes',
 ];
 
 var processLang = function (map, lang, primary) {
@@ -37,7 +43,7 @@ var processLang = function (map, lang, primary) {
 
     Object.keys(map).forEach(function (k) {
         if (!EN[k]) { return; }
-        if (KNOWN_ISSUES.indexOf(k) !== -1) { return; } // XXX
+        if (KNOWN_ISSUES.indexOf(k) !== -1) { return; }
 
         var s = map[k];
         if (typeof(s) !== 'string') { return; }
@@ -53,17 +59,9 @@ var processLang = function (map, lang, primary) {
         });
 
         if (usesHTML) {
-            if (primary) {
-                PENDING_ENGLISH_KEYS.push(k);
-            } else {
-                // XXX ignore HTML in translations if they are also present in English
-                //if (PENDING_ENGLISH_KEYS.indexOf(k) !== -1) { return; }
-            }
-            if (true || !primary) {
-                announce();
-                console.log("%s", s);
-                console.log("[%s]\n", k);
-            }
+            announce();
+            console.log("%s", s);
+            console.log("[%s]\n", k);
         }
     });
 };
