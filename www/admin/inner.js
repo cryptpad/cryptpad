@@ -1041,7 +1041,7 @@ define([
 
     create['broadcast'] = function () {
         var key = 'broadcast';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_broadcastHint, admin_broadcastTitle
 
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
@@ -1266,7 +1266,7 @@ define([
 
     create['maintenance'] = function () {
         var key = 'maintenance';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_maintenanceHint, admin_maintenanceTitle
 
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
@@ -1377,7 +1377,7 @@ define([
     };
     create['survey'] = function () {
         var key = 'survey';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_surveyHint, admin_surveyTitle
 
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
