@@ -710,6 +710,18 @@ define([
             var el = e.currentTarget;
             if (!el || el.nodeName !== 'A') { return; }
             var href = el.getAttribute('href');
+            if (/^#/.test(href)) {
+                try {
+                    $inner.find('.cke_anchor[data-cke-realelement]').each(function (i, el) {
+                        var i = editor.restoreRealElement($(el));
+                        var node = i.$;
+                        if (node.id === href.slice(1)) {
+                            el.scrollIntoView();
+                        }
+                    });
+                } catch (e) {}
+                return;
+            }
             if (href) {
                 framework._.sfCommon.openUnsafeURL(href);
             }
