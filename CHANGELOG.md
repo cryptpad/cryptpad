@@ -22,6 +22,7 @@
 * remove default privacy policy
 * remove HTML from most translations
 * localize links to the docs where a translation exists
+* remove redundant link from OpenCollective popup
 
 # 4.3.1
 
