@@ -128,6 +128,11 @@ define([
             return;
         }
 
+        // setTimeout only work with 32bit timeout values.
+        // FIXME: call this function again in xxx days to reload these missing timeout?
+        if (ev.start - time10 >= 2147483647) { return; }
+
+
         // It starts in more than 10 minutes: prepare the 10 minutes notification
         reminders[uid].push(setTimeout(function () {
             sendNotif();
