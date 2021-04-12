@@ -1395,7 +1395,7 @@ define([
                     common.openUnsafeURL(Broadcast.surveyURL);
                 });
                 active = h('div.cp-broadcast-active', [
-                    h('p', a), // XXX spacing around this element is really cramped
+                    h('p', a),
                     removeButton
                 ]);
             }
