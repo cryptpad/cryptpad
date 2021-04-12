@@ -218,6 +218,11 @@ define([
             };
             var toolbar = Toolbar.create(configTb);
 
+            var helpMenu = common.createHelpMenu(['drive']);
+            APP.help = helpMenu.menu;
+            $('#cp-app-drive-content-container').prepend(helpMenu.menu);
+
+
             var $displayName = APP.$bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {
                 var name = metadataMgr.getUserData().name || Messages.anonymous;

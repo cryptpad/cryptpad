@@ -1112,6 +1112,9 @@ define([
         if (apps[type]) {
             href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
+        if (type === 'drive') {
+            href = "https://docs.cryptpad.fr/en/user_guide/drive.html";
+        }
         href = Pages.localizeDocsLink(href);
 
         var content = setHTML(h('p'), Messages.help_genericMore);
