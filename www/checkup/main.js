@@ -210,7 +210,7 @@ define([
         };
 
         $.ajax(url, {
-            success: function (data, textStatus, xhr) {
+            complete: function (xhr) {
                 cb(!Object.keys(expect).some(function (k) {
                     var response = xhr.getResponseHeader(k);
                     console.log(k, response);
@@ -219,6 +219,17 @@ define([
             },
         });
     }, _alert("Missing HTTP headers required for XLSX export"));
+
+    assert(function (cb) {
+        cb(true);
+        $.ajax('/api/broadcast', {
+            dataType: 'text',
+            complete: function (xhr) {
+                console.log(xhr);
+                cb(xhr.status === 200);
+            },
+        });
+    }, _alert("/api/broadcast is not available"));
 
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
