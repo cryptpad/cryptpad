@@ -95,6 +95,9 @@ define([
         'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
         ],
+        'notifications': [
+            'cp-settings-notif-calendar'
+        ],
         'subscription': {
             onClick: function() {
                 var urls = common.getMetadataMgr().getPrivateData().accounts;
@@ -1566,6 +1569,43 @@ define([
         cb($d);
     }, true);
 
+    Messages.settings_notifCalendarTitle = "Calendar notifications";
+    Messages.settings_notifCalendarHint = "You can disable completely calendar notifications for incoming events.";
+    Messages.settings_notifCalendarCheckbox = "Enable calendar notifications";
+
+    makeBlock('notif-calendar', function(cb) { // Msg.settings_notifCalendarHint, .settings_notifCalendarTitle
+
+        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+            Messages.settings_notifCalendarCheckbox,
+            false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
+
+        var $checkbox = $cbox.find('input').on('change', function() {
+            spinner.spin();
+            var val = !$checkbox.is(':checked');
+            common.setAttribute(['general', 'calendar', 'hideNotif'], val, function(e) {
+                if (e) {
+                    console.error(e);
+                    // error: restore previous value
+                    if (val) { $checkbox.attr('checked', ''); }
+                    else { $checkbox.attr('checked', 'checked'); }
+                    spinner.hide();
+                    return void console.error(e);
+                }
+                spinner.done();
+            });
+        });
+
+        common.getAttribute(['general', 'calendar', 'hideNotif'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (!val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        cb($cbox[0]);
+    }, true);
+
     // Settings app
 
     var createUsageButton = function() {
@@ -1595,8 +1635,10 @@ define([
         subscription: 'fa fa-star-o',
         kanban: 'cptools cptools-kanban',
         style: 'cptools cptools-palette',
+        notifications: 'fa fa-bell'
     };
 
+    Messages.settings_cat_notifications = Messages.notificationsPage;
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);

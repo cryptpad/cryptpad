@@ -109,7 +109,8 @@ define([
         }
 
         var send = function () {
-            console.error(ev);
+            var hide = Util.find(ctx, ['store', 'proxy', 'settings', 'general', 'calendar', 'hideNotif']);
+            if (hide) { console.error('hidden'); return; }
             ctx.store.mailbox.showMessage('reminders', {
                 msg: {
                     ctime: +new Date(),

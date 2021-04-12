@@ -520,7 +520,10 @@ proxy.mailboxes = {
                     msg: ctx.boxes[type].content[h],
                     hash: h
                 };
-                showMessage(ctx, type, message, cId);
+                showMessage(ctx, type, message, cId, function (obj) {
+                    Notify.system(undefined, obj.msg);
+                    cb();
+                });
             });
         });
         // Subscribe to new notifications
@@ -610,7 +613,10 @@ proxy.mailboxes = {
                 // Hide existing messages for this event
                 hideMessage(ctx, type, msg.hash, ctx.clients);
             }
-            showMessage(ctx, type, msg, cId, cb);
+            showMessage(ctx, type, msg, cId, function (obj) {
+                Notify.system(undefined, obj.msg);
+                if (cb) { cb(); }
+            });
         };
 
         mailbox.open = function (key, m, cb, team, opts) {
