@@ -503,7 +503,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         var channel = config.channel;
         var lastKnownHash = config.lastKnownHash || -1;
 
-        if (config.newTeam) { // XXX
+        // make sure we don't send -1 (ask for full history) when we are trying to create a new team
+        if (config.newTeam) {
             lastKnownHash = undefined;
         }
 
