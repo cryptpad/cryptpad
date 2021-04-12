@@ -19,6 +19,7 @@ define([
     '/common/outer/team.js',
     '/common/outer/messenger.js',
     '/common/outer/history.js',
+    '/common/outer/calendar.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -32,7 +33,7 @@ define([
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             NetConfig, AppConfig,
+             Calendar, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
@@ -178,6 +179,24 @@ define([
                    typeof(store.proxy.curvePublic) === 'string';
         };
 
+        Store.isOwned = function (owners) {
+            var edPublic = store.proxy.edPublic;
+            // Not logged in? false
+            if (!edPublic) { return false; }
+            // No owners? false
+            if (!Array.isArray(owners) || !owners.length) { return false; }
+
+            if (owners.indexOf(edPublic) !== -1) { return true; }
+
+            // No team
+            var teams = store.proxy.teams;
+            if (!teams) { return false; }
+            return Object.keys(teams).some(function (id) {
+                var ed = Util.find(teams[id], ['keys', 'drive', 'edPublic']);
+                return ed && owners.indexOf(ed) !== -1;
+            });
+        };
+
         var getUserChannelList = function () {
             var userChannel = store.driveChannel;
             if (!userChannel) { return null; }
@@ -210,6 +229,13 @@ define([
                     return store.proxy.mailboxes[m].channel;
                 });
                 list = list.concat(mList);
+            }
+
+            if (store.proxy.calendars) {
+                var cList = Object.keys(store.proxy.calendars).map(function (c) {
+                    return store.proxy.calendars[c].channel;
+                });
+                list = list.concat(cList);
             }
 
             list.push(userChannel);
@@ -567,18 +593,10 @@ define([
         };
 
         // Get or create the user color for the cursor position
-        var getRandomColor = function () {
-            var getColor = function () {
-                return Math.floor(Math.random() * 156) + 70;
-            };
-            return '#' + getColor().toString(16) +
-                         getColor().toString(16) +
-                         getColor().toString(16);
-        };
-        var getUserColor = function () {
+        Store.getUserColor = function () {
             var color = Util.find(store, ['proxy', 'settings', 'general', 'cursor', 'color']);
             if (!color) {
-                color = getRandomColor();
+                color = Util.getRandomColor(true);
                 Store.setAttribute(null, {
                     attr: ['general', 'cursor', 'color'],
                     value: color
@@ -602,7 +620,7 @@ define([
                     uid: proxy.uid || store.noDriveUid, // Random uid in nodrive mode
                     avatar: Util.find(proxy, ['profile', 'avatar']),
                     profile: Util.find(proxy, ['profile', 'view']),
-                    color: getUserColor(),
+                    color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
                 },
@@ -1508,7 +1526,7 @@ define([
                     }
                 };
                 // Teams support offline/cache mode
-                if (obj.type === "team") { return void todo(); }
+                if (['team', 'calendar'].indexOf(obj.type) !== -1) { return void todo(); }
                 // If we're in "noDrive" mode
                 if (!store.proxy) { return void todo(); }
                 // Other modules should wait for the ready event
@@ -1528,6 +1546,7 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+                unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
             }, waitFor, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'UNIVERSAL_EVENT', {
@@ -2665,6 +2684,8 @@ define([
                 }, true);
             }).nThen(function (waitFor) {
                 loadUniversal(Team, 'team', waitFor, clientId);
+            }).nThen(function (waitFor) {
+                loadUniversal(Calendar, 'calendar', waitFor);
             }).nThen(function () {
                 cb();
             });
@@ -2726,6 +2747,7 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
+                loadUniversal(Calendar, 'calendar', waitFor);
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {

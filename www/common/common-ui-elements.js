@@ -1357,13 +1357,20 @@ define([
         var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
         if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
+        var hide = function () {
+            window.setTimeout(function () { $innerblock.hide(); }, 0);
+        };
+
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
             if (isElement(o)) { return $innerblock.append($(o)); }
             var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
             $el.appendTo($innerblock);
             if (typeof(o.action) === 'function') {
-                $el.click(o.action);
+                $el.click(function (e) {
+                    var close = o.action(e);
+                    if (close) { hide(); }
+                });
             }
         });
 
@@ -1381,10 +1388,6 @@ define([
             } else if (scroll > ($innerblock.scrollTop() + 280)) {
                 $innerblock.scrollTop(scroll-270);
             }
-        };
-
-        var hide = function () {
-            window.setTimeout(function () { $innerblock.hide(); }, 0);
         };
 
         var show = function () {
@@ -2931,7 +2934,7 @@ define([
 
         var dismiss = function () {
             common.mailbox.dismiss(data, function (err) {
-                console.log(err);
+                if (err) { console.log(err); }
             });
         };
         var answer = function (yes) {
@@ -2940,6 +2943,7 @@ define([
                 href: msg.content.href,
                 password: msg.content.password,
                 title: msg.content.title,
+                calendar: msg.content.calendar,
                 answer: yes
             }, {
                 channel: msg.content.user.notifications,
@@ -2975,16 +2979,29 @@ define([
                     // Add the pad to your drive
                     // This command will also add your mailbox to the metadata log
                     // The callback is called when the pad is stored, independantly of the metadata command
-                    sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
-                        if (err || (res && res.error)) {
-                            return void console.error(err | res.error);
-                        }
-                        UI.log(Messages.saved);
-                        if (autoStoreModal[data.channel]) {
-                            autoStoreModal[data.channel].delete();
-                            delete autoStoreModal[data.channel];
-                        }
-                    });
+                    if (data.calendar) {
+                        var calendarModule = common.makeUniversal('calendar');
+                        var calendarData = data.calendar;
+                        calendarData.href = data.href;
+                        calendarData.teamId = 1;
+                        calendarModule.execCommand('ADD', calendarData, function (obj) {
+                            if (obj && obj.error) {
+                                console.error(obj.error);
+                                return void UI.warn(Messages.error);
+                            }
+                        });
+                    } else {
+                        sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
+                            if (err || (res && res.error)) {
+                                return void console.error(err | res.error);
+                            }
+                            UI.log(Messages.saved);
+                            if (autoStoreModal[data.channel]) {
+                                autoStoreModal[data.channel].delete();
+                                delete autoStoreModal[data.channel];
+                            }
+                        });
+                    }
 
                     // Remove yourself from the pending owners
                     sframeChan.query('Q_SET_PAD_METADATA', {

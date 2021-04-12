@@ -585,6 +585,18 @@
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
 
+    Util.getRandomColor = function (light) {
+        var getColor = function () {
+            if (light) {
+                return Math.floor(Math.random() * 156) + 70;
+            }
+            return Math.floor(Math.random() * 200) + 25;
+        };
+        return '#' + getColor().toString(16) +
+                     getColor().toString(16) +
+                     getColor().toString(16);
+    };
+
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {

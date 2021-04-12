@@ -571,7 +571,7 @@ define([
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
-            var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
+            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar'].indexOf(currentPad.app) !== -1;
 
             var isDeleted = isNewFile && currentPad.hash.length > 0;
             if (isDeleted) {

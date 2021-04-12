@@ -1,5 +1,6 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
+@import (reference) "./tools.less";
 
 .forms_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -13,14 +14,20 @@
         color: @cp_forms-fg;
         background-color: @cp_forms-bg;
         border: 1px solid @cp_forms-border;
-        width: 100%;
         font-size: 100%;
         padding: @alertify_padding-base;
+        &:not(.tui-full-calendar-content) {
+            width: 100%;
+        }
+        &.tui-full-calendar-content {
+            font-size: @colortheme_app-font-size;
+        }
         &[readonly] {
             background-color: @cp_forms-readonly;
             border-color: @cp_forms-readonly-border;
             color: @cp_forms-fg;
         }
+        .tools_placeholder-color();
     }
 
     input:not(.form-control) {
@@ -111,6 +118,11 @@
 
         &.no-margin {
             margin: 0;
+        }
+        &.small {
+            line-height: initial;
+            padding: 5px;
+            height: auto;
         }
 
         &:hover, &:not(:disabled):not(.disabled):active, &:focus {
