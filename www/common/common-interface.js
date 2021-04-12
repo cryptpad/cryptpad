@@ -739,6 +739,7 @@ define([
             }
         });
     };
+    // TODO: make it such that the confirmButton's width does not change
     UI.confirmButton = function (originalBtn, config, _cb) {
         config = config || {};
         var cb = Util.mkAsync(_cb);

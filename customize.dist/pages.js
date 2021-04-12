@@ -85,7 +85,7 @@ define([
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
 
     Pages.infopageFooter = function () {
-        var terms = footLink('/terms.html', 'footer_tos'); // XXX
+        var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
         var legalFooter;
 
         // only display the legal part of the footer if it has content

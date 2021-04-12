@@ -1203,7 +1203,7 @@ define([
                 }
                 if (error) {
                     console.error('One of the selected languages has no data');
-                    return false; // XXX better error handling?
+                    return false;
                 }
                 return {
                     defaultLanguage: defaultLanguage,
@@ -1213,7 +1213,7 @@ define([
 
             var send = function (data) {
                 $button.prop('disabled', 'disabled');
-                data.time = +new Date(); // XXX not used anymore?
+                //data.time = +new Date(); // FIXME not used anymore?
                 common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err) {
                     if (err) {
                         $button.prop('disabled', '');
@@ -1233,7 +1233,7 @@ define([
                 send(data);
             });
 
-            UI.confirmButton(removeButton, { // XXX table jank
+            UI.confirmButton(removeButton, {
                 classes: 'btn-danger',
             }, function () {
                 if (!activeUid) { return; }
