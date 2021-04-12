@@ -81,7 +81,7 @@ define([
         }
 
         var supportText = Pages.setHTML(h('span'), Msg.home_support);
-        Pages.externalLink(supportText.querySelector('a'), "https://docs.cryptpad.fr/en/how_to_contribute.html");
+        Pages.documentationLink(supportText.querySelector('a'), "https://docs.cryptpad.fr/en/how_to_contribute.html");
 
         var opensource = Pages.setHTML(h('p'), Msg.home_opensource);
         Pages.externalLink(opensource.querySelector('a'), "https://github.com/xwiki-labs/cryptpad");

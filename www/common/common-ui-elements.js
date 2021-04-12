@@ -370,7 +370,7 @@ define([
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
-                        href: origin + 'https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders',
+                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders'),
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
@@ -1112,6 +1112,7 @@ define([
         if (apps[type]) {
             href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
+        href = Pages.localizeDocsLink(href);
 
         var content = setHTML(h('p'), Messages.help_genericMore);
         $(content).find('a').attr({
@@ -2167,7 +2168,7 @@ define([
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
                 h('span', newPadH3Title),
-                createHelper('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document', Messages.creation_helperText)
+                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
             ])
         ]);
         $creation.append(title);
