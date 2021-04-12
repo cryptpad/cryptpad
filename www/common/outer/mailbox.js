@@ -183,7 +183,7 @@ proxy.mailboxes = {
                 return clientId !== cId;
             }));
             return;
-        };
+        }
 
 
         var box = ctx.boxes[type];
