@@ -1172,5 +1172,21 @@
     "oo_lostEdits": "Leider konnten deine letzten ungespeicherten Bearbeitungen nach dem Synchronisieren neuer Inhalte nicht wiederhergestellt werden.",
     "fm_cantUploadHere": "Hochladen hier nicht möglich",
     "importError": "Import fehlgeschlagen (falsches Format)",
-    "toolbar_degraded": "Derzeit bearbeiten über {0} Benutzer dieses Dokument. Die Benutzerliste und der Chat wurden deaktiviert, um die Performance zu verbessern."
+    "toolbar_degraded": "Derzeit bearbeiten über {0} Benutzer dieses Dokument. Die Benutzerliste und der Chat wurden deaktiviert, um die Performance zu verbessern.",
+    "admin_maintenanceButton": "Wartungsarbeiten planen",
+    "admin_maintenanceTitle": "Wartungsarbeiten",
+    "broadcast_maintenance": "Zwischen <b>{0}</b> und <b>{1}</b> sind Wartungsarbeiten geplant. Zu dieser Zeit ist CryptPad möglicherweise nicht verfügbar.",
+    "broadcast_start": "Beginn",
+    "settings_deleteContinue": "Meinen Account löschen",
+    "settings_deleteWarning": "Warnung: Du hast derzeit ein Premium-Abo abgeschlossen (bezahlt oder von einem anderen Benutzer zur Verfügung gestellt). Bitte kündige dein Abo, bevor du dein Account löschst. Denn sobald dein Account gelöscht wurde, ist eine Kündigung nur noch über Kontaktaufnahme mit dem Support möglich.",
+    "broadcast_translations": "Übersetzungen",
+    "admin_broadcastButton": "Senden",
+    "broadcast_newSurvey": "Eine neue Umfrage ist verfügbar. Zum Öffnen anklicken.",
+    "admin_surveyTitle": "Umfrage",
+    "broadcast_end": "Ende",
+    "settings_deleteSubscription": "Meine Abonnements verwalten",
+    "broadcast_surveyURL": "Link zur Umfrage",
+    "admin_surveyActive": "Umfrage öffnen",
+    "admin_surveyCancel": "Entfernen",
+    "admin_surveyButton": "Umfrage speichern"
 }
