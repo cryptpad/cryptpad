@@ -10,8 +10,9 @@ define([
     '/common/clipboard.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
+    '/customize/pages.js',
 ], function ($, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
-             Messages, nThen) {
+             Messages, nThen, Pages) {
     var Share = {};
 
     var createShareWithFriends = function (config, onShare, linkGetter) {
@@ -252,7 +253,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            opts.common.openUnsafeURL("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders");
+            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders"));
         });
         return link;
     };

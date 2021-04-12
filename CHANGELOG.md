@@ -19,6 +19,9 @@
 * prompt premium users to cancel their subscriptions before deleting their accounts
 * check that headers for XLSX export are correctly set via the checkup app
 * guard against some type errors in the support page
+* remove default privacy policy
+* remove HTML from most translations
+* localize links to the docs where a translation exists
 
 # 4.3.1
 

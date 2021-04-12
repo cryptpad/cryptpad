@@ -12,9 +12,6 @@ define([
         return e;
     };
 
-    // TODO make a docsLink function which wraps this
-    // and points to the appropriate translation:
-    // French, German, or English as a default
     Pages.externalLink = function (el, href) {
         if (!el) { return el; }
         el.setAttribute("rel", "noopener noreferrer");
@@ -23,6 +20,26 @@ define([
             el.setAttribute("href", href);
         }
         return el;
+    };
+
+    // this rewrites URLS to point to the appropriate translation:
+    // French, German, or English as a default
+    var documentedLanguages = ['en', 'fr', 'de'];
+    Pages.localizeDocsLink = function (href) {
+        try {
+            var lang = Msg._getLanguage();
+            if (documentedLanguages.indexOf(lang) > 0) {
+                return href.replace('/en/', '/' + lang + '/');
+            }
+        } catch (err) {
+            console.error(err);
+            // if it fails just use the default href (English)
+        }
+        return href;
+    };
+
+    Pages.documentationLink = function (el, href) {
+        return Pages.externalLink(el, Pages.localizeDocsLink(href));
     };
 
     var languageSelector = function () {
