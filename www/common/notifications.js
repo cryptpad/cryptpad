@@ -459,19 +459,37 @@ define([
         }
     };
 
+    Messages.reminder_missed = "You missed <b>{0}</b> on {1}"; // XXX
+    Messages.reminder_inProgress = "<b>{0}</b> has started on {1}"; // XXX
+    Messages.reminder_inProgressAllDay = "<b>{0}</b> is happening today"; // XXX
     Messages.reminder_minutes = "<b>{0}</b> will start in {1} minutes!"; // XXX
     Messages.reminder_hour = "<b>{0}</b> will start in 1 hour!"; // XXX
     handlers['REMINDER'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;
+        var missed = content.msg.missed;
         var now = +new Date();
         var start = msg.start;
+        var title = Util.fixHTML(msg.title);
         content.getFormatText = function () {
+            // Missed events
+            if (start < now && missed) {
+                return Messages._getKey('reminder_missed', [title, new Date(start).toLocaleString()]);
+            }
+            // In progress, is all day
+            if (start < now && msg.isAllDay) {
+                return Messages._getKey('reminder_inProgressAllDay', [title]);
+            }
+            // In progress, normal event
+            if (start < now) {
+                return Messages._getKey('reminder_inProgress', [title, new Date(start).toLocaleString()]);
+            }
+            // Not started yet
             if ((start - now) > 600000) {
-                return Messages._getKey('reminder_hour', [Util.fixHTML(msg.title)]);
+                return Messages._getKey('reminder_hour', [title]);
             }
             var minutes = Math.round((start - now) / 60000);
-            return Messages._getKey('reminder_minutes', [Util.fixHTML(msg.title), minutes]);
+            return Messages._getKey('reminder_minutes', [title, minutes]);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);

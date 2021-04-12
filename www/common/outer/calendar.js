@@ -90,11 +90,13 @@ define([
         });
     };
 
-    var updateEventReminders = function (ctx, reminders, ev) {
+    var updateEventReminders = function (ctx, reminders, ev, useLastVisit) {
         var now = +new Date();
         var time10 = now + (600 * 1000); // 10 minutes from now
         var time60 = now + (3600 * 1000); // 1 hour from now
         var uid = ev.id;
+
+        ctx.store.data.lastVisit = 1617922639683; // XXX Friday Apr 09
 
         // Clear reminders for this event
         if (Array.isArray(reminders[uid])) {
@@ -102,19 +104,29 @@ define([
         }
         reminders[uid] = [];
 
-        // No reminder for past events
-        if (ev.start <= now) {
+        var last = ctx.store.data.lastVisit;
+        // XXX add a limit to make sure we don't go too far in the past?
+        var missed = useLastVisit && ev.start > last && ev.end <= now;
+        if (ev.end <= now && !missed) {
+            // No reminder for past events
             delete reminders[uid];
             return;
         }
 
+        // XXX
+        // TODO
+        // use custom notifications per event
+        // if you missed a notification, show it instantly (eg: load cryptpad 45min before an event, show the 1h notification)
+
         var send = function () {
             var hide = Util.find(ctx, ['store', 'proxy', 'settings', 'general', 'calendar', 'hideNotif']);
             if (hide) { return; }
+            var ctime = ev.start <= now ? ev.start : +new Date(); // Correct order for past events
             ctx.store.mailbox.showMessage('reminders', {
                 msg: {
-                    ctime: +new Date(),
+                    ctime: ctime,
                     type: "REMINDER",
+                    missed: Boolean(missed),
                     content: ev
                 },
                 hash: 'REMINDER|'+uid
@@ -152,7 +164,7 @@ define([
 
         updateEventReminders(ctx, calendar.reminders, ev);
     };
-    var addInitialReminders = function (ctx, id) {
+    var addInitialReminders = function (ctx, id, useLastVisit) {
         var calendar = ctx.calendars[id];
         if (!calendar || !calendar.reminders) { return; }
         if (Object.keys(calendar.reminders).length) { return; } // Already initialized
@@ -164,7 +176,7 @@ define([
         var content = Util.find(calendar, ['proxy', 'content']);
         if (!content) { return; }
         Object.keys(content).forEach(function (uid) {
-            updateEventReminders(ctx, calendar.reminders, content[uid]);
+            updateEventReminders(ctx, calendar.reminders, content[uid], useLastVisit);
         });
     };
     var openChannel = function (ctx, cfg, _cb) {
@@ -325,7 +337,7 @@ define([
                 c.cacheready = true;
                 setTimeout(update);
                 if (cb) { cb(null, lm.proxy); }
-                addInitialReminders(ctx, channel);
+                addInitialReminders(ctx, channel, cfg.lastVisitNotif);
             }).on('ready', function (info) {
                 var md = info.metadata;
                 c.owners = md.owners || [];
@@ -342,7 +354,7 @@ define([
                 }
                 setTimeout(update);
                 if (cb) { cb(null, lm.proxy); }
-                addInitialReminders(ctx, channel);
+                addInitialReminders(ctx, channel, cfg.lastVisitNotif);
             }).on('change', [], function () {
                 if (!c.ready) { return; }
                 setTimeout(update);
@@ -455,6 +467,7 @@ define([
             decryptTeamCalendarHref(store, cal);
             openChannel(ctx, {
                 storeId: storeId,
+                lastVisitNotif: true,
                 data: cal
             });
         });
