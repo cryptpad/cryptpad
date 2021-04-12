@@ -941,32 +941,6 @@ define([
         return;
     };
 
-    Messages.admin_cat_broadcast = "Broadcast"; // XXX
-
-    Messages.admin_maintenanceTitle = "Maintenance"; // XXX
-    Messages.admin_maintenanceHint = "Plan, remove or update a maintenance. You can only have one active maintenance at a time."; // XXX
-    Messages.admin_maintenanceButton = "Plan maintenance"; // XXX
-    Messages.admin_maintenanceCancel = "Cancel planned maintenance"; // XXX
-    Messages.broadcast_start = 'Start time';
-    Messages.broadcast_end = 'End time';
-
-
-    Messages.admin_surveyTitle = "Survey"; // XXX
-    Messages.admin_surveyHint = "Add, update or remove the active survey accessible from the user menu"; // XXX
-    Messages.admin_surveyButton = "Apply survey"; // XXX
-    Messages.admin_surveyCancel = "Cancel active survey"; // XXX
-    Messages.admin_surveyActive = "View the active survey"; // XXX
-    Messages.broadcast_surveyURL = 'Survey URL';
-
-    Messages.admin_broadcastTitle = "Broadcast a message"; // XXX
-    Messages.admin_broadcastHint = "Send a message to all the existing and future users as a notification"; // XXX
-    Messages.admin_broadcastButton = "Send"; // XXX
-    Messages.admin_broadcastActive = "Active message"; // XXX
-    Messages.admin_broadcastCancel = "Delete active message"; // XXX
-    Messages.broadcast_translations = 'Translations';
-    Messages.broadcast_defaultLanguage = 'Fallback to this language';
-    Messages.broadcast_preview = "Preview in a fake notification";
-
     var getApi = function (cb) {
         return function () {
             require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
@@ -1321,8 +1295,7 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            // XXX new Date().toLocaleString('fr-fr', {month: 'long'}).replace(/./, c => c.toUpperCase())
-            var endPickr = Flatpickr(end, { // XXX translations?
+            var endPickr = Flatpickr(end, {
                 enableTime: true,
                 minDate: new Date()
             });

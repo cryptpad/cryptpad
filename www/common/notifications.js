@@ -410,7 +410,6 @@ define([
         }
     };
 
-    Messages.broadcast_newSurvey = "A new survey is available."; // XXX
     handlers['BROADCAST_SURVEY'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;
@@ -426,7 +425,6 @@ define([
         }
     };
 
-    Messages.broadcast_newCustom = "Message from the administrators"; // XXX
     handlers['BROADCAST_CUSTOM'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;

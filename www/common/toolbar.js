@@ -1037,10 +1037,9 @@ MessengerUI, Messages, Pages) {
         return $userAdmin;
     };
 
-    Messages.broadcast_maintenance = "A maintenance is planned between <b>{0}</b> and <b>{1}</b>"; // XXX
     var createMaintenance = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
-        var button = h('button.cp-maintenance-wrench.fa.fa-wrench'); // XXX might need some color contrast
+        var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
         $notif.append(button);
 
 
