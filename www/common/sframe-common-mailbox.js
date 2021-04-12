@@ -87,6 +87,15 @@ define([
 
             if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+                if (data.content.autorefresh) {
+                    var it = setInterval(function () {
+                        if (!data.content.autorefresh) {
+                            clearInterval(it);
+                            return;
+                        }
+                        $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+                    }, 60000);
+                }
             }
 
             if (data.content.isClickable) {

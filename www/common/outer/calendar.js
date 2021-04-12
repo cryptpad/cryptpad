@@ -96,7 +96,7 @@ define([
         var time60 = now + (3600 * 1000); // 1 hour from now
         var uid = ev.id;
 
-        ctx.store.data.lastVisit = 1617922639683; // XXX Friday Apr 09
+        //ctx.store.data.lastVisit = 1617922639683; // XXX Friday Apr 09, used to test
 
         // Clear reminders for this event
         if (Array.isArray(reminders[uid])) {
@@ -135,27 +135,29 @@ define([
         };
         var sendNotif = function () { ctx.Store.onReadyEvt.reg(send); };
 
-        if (ev.start <= time10) {
-            sendNotif();
-            return;
-        }
+        var notifs = [600000, 3600000]; // 10min, 60min
+        notifs.sort();
 
-        // setTimeout only work with 32bit timeout values.
-        // FIXME: call this function again in xxx days to reload these missing timeout?
-        if (ev.start - time10 >= 2147483647) { return; }
+        notifs.some(function (delay) {
+            var time = now + delay;
 
+            // setTimeout only work with 32bit timeout values. If the event is too far away,
+            // ignore this event for now
+            // FIXME: call this function again in xxx days to reload these missing timeout?
+            if (ev.start - time >= 2147483647) { return true; }
 
-        // It starts in more than 10 minutes: prepare the 10 minutes notification
-        reminders[uid].push(setTimeout(function () {
-            sendNotif();
-        }, (ev.start - time10)));
+            // If we're too late to send a notification, send it instantly and ignore
+            // all notifications that were supposed to be sent even earlier
+            if (ev.start <= time) {
+                sendNotif();
+                return true;
+            }
 
-        if (ev.start <= time60) { return; }
-
-        // It starts in more than 1 hour: prepare the 1 hour notification
-        reminders[uid].push(setTimeout(function () {
-            sendNotif();
-        }, (ev.start - time60)));
+            // It starts in more than "delay": prepare the notification
+            reminders[uid].push(setTimeout(function () {
+                sendNotif();
+            }, (ev.start - time)));
+        });
     };
     var addReminders = function (ctx, id, ev) {
         var calendar = ctx.calendars[id];

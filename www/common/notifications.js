@@ -460,21 +460,36 @@ define([
     };
 
     Messages.reminder_missed = "You missed <b>{0}</b> on {1}"; // XXX
+    Messages.reminder_now = "<b>{0}</b> is starting!"; // XXX
     Messages.reminder_inProgress = "<b>{0}</b> has started on {1}"; // XXX
     Messages.reminder_inProgressAllDay = "<b>{0}</b> is happening today"; // XXX
     Messages.reminder_minutes = "<b>{0}</b> will start in {1} minutes!"; // XXX
-    Messages.reminder_hour = "<b>{0}</b> will start in 1 hour!"; // XXX
+    Messages.reminder_time = "<b>{0}</b> will start today at {1}!"; // XXX
+    Messages.reminder_date = "<b>{0}</b> will start on {1}!"; // XXX
+    var getDate = function (time) {
+        return new Date(time).toLocaleDateString();
+    };
     handlers['REMINDER'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;
         var missed = content.msg.missed;
-        var now = +new Date();
         var start = msg.start;
         var title = Util.fixHTML(msg.title);
+        var i = 0;
         content.getFormatText = function () {
+            var now = +new Date();
+
+            // Events that have already started
+            var wasRefresh = content.autorefresh;
+            content.autorefresh = false;
+
             // Missed events
             if (start < now && missed) {
                 return Messages._getKey('reminder_missed', [title, new Date(start).toLocaleString()]);
+            }
+            // Starting now
+            if (start < now && wasRefresh) {
+                return Messages._getKey('reminder_now', [title]);
             }
             // In progress, is all day
             if (start < now && msg.isAllDay) {
@@ -484,12 +499,25 @@ define([
             if (start < now) {
                 return Messages._getKey('reminder_inProgress', [title, new Date(start).toLocaleString()]);
             }
+
             // Not started yet
-            if ((start - now) > 600000) {
-                return Messages._getKey('reminder_hour', [title]);
+
+            // In less than an hour: show countdown in minutes
+            if ((start - now) < 3600000) {
+                var minutes = Math.round((start - now) / 60000);
+                content.autorefresh = true;
+                return Messages._getKey('reminder_minutes', [title, minutes]);
             }
-            var minutes = Math.round((start - now) / 60000);
-            return Messages._getKey('reminder_minutes', [title, minutes]);
+
+            // Not today: show full date
+            var nowDateStr = new Date().toLocaleDateString();
+            var startDate = new Date(start);
+            if (nowDateStr !== startDate.toLocaleDateString()) {
+                return Messages._getKey('reminder_date', [title, startDate.toLocaleString()]);
+            }
+
+            // Today: show time
+            return Messages._getKey('reminder_time', [title, startDate.toLocaleTimeString()]);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
