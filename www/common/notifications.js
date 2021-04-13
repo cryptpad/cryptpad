@@ -483,21 +483,27 @@ define([
             var wasRefresh = content.autorefresh;
             content.autorefresh = false;
 
+            var nowDateStr = new Date().toLocaleDateString();
+            var startDate = new Date(start);
+
             // Missed events
             if (start < now && missed) {
-                return Messages._getKey('reminder_missed', [title, new Date(start).toLocaleString()]);
+                return Messages._getKey('reminder_missed', [title, startDate.toLocaleString()]);
             }
             // Starting now
             if (start < now && wasRefresh) {
                 return Messages._getKey('reminder_now', [title]);
             }
             // In progress, is all day
+            // XXX fix this...
+            // XXX start and end time may not matter...
+            // XXX and timezone?
             if (start < now && msg.isAllDay) {
                 return Messages._getKey('reminder_inProgressAllDay', [title]);
             }
             // In progress, normal event
             if (start < now) {
-                return Messages._getKey('reminder_inProgress', [title, new Date(start).toLocaleString()]);
+                return Messages._getKey('reminder_inProgress', [title, startDate.toLocaleString()]);
             }
 
             // Not started yet
@@ -510,8 +516,6 @@ define([
             }
 
             // Not today: show full date
-            var nowDateStr = new Date().toLocaleDateString();
-            var startDate = new Date(start);
             if (nowDateStr !== startDate.toLocaleDateString()) {
                 return Messages._getKey('reminder_date', [title, startDate.toLocaleString()]);
             }
