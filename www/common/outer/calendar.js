@@ -754,7 +754,18 @@ define([
             Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
         }).nThen(function () {
-            if (changes.start || changes.reminders) { addReminders(ctx, id, ev); }
+            if (newC) {
+                // Move reminders to the new calendar
+                addReminders(ctx, id, {
+                    id: ev.id,
+                    start: 0
+                });
+                addReminders(ctx, ev.calendarId, ev);
+            } else if (changes.start || changes.reminders || changes.isAllDay) {
+                // Update reminders
+                addReminders(ctx, id, ev);
+            }
+
             sendUpdate(ctx, c);
             if (newC) { sendUpdate(ctx, newC); }
             cb();
