@@ -676,7 +676,9 @@ ctx.calendars[channel] = {
         if (!c) { return void cb({error: "ENOENT"}); }
         c.proxy.content = c.proxy.content || {};
         delete c.proxy.content[data.id];
-        Realtime.whenRealtimeSyncs(c.lm.realtime, cb);
+        Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
+            sendUpdate(ctx, c);
+        });
     };
 
     var removeClient = function (ctx, cId) {
