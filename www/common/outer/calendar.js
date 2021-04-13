@@ -624,8 +624,20 @@ ctx.calendars[channel] = {
         var id = data.calendarId;
         var c = ctx.calendars[id];
         if (!c) { return void cb({error: "ENOENT"}); }
+
+        var startDate = new Date(data.start);
+        var endDate = new Date(data.end);
+        if (data.isAllDay) {
+            data.startDay = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate();
+            data.endDay = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate();
+        } else {
+            delete ev.startDay;
+            delete ev.endDay;
+        }
+
         c.proxy.content = c.proxy.content || {};
         c.proxy.content[data.id] = data;
+
         Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
             sendUpdate(ctx, c);
             cb();
@@ -654,6 +666,16 @@ ctx.calendars[channel] = {
         Object.keys(changes).forEach(function (key) {
             ev[key] = changes[key];
         });
+
+        var startDate = new Date(ev.start);
+        var endDate = new Date(ev.end);
+        if (ev.isAllDay) {
+            ev.startDay = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate();
+            ev.endDay = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate();
+        } else {
+            delete ev.startDay;
+            delete ev.endDay;
+        }
 
         // Move to a different calendar?
         if (changes.calendarId && newC) {
