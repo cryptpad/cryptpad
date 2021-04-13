@@ -59,6 +59,7 @@ Messages.calendar_day = "Day";
 Messages.calendar_week = "Week";
 Messages.calendar_month = "Month";
 Messages.calendar_today = "Today";
+Messages.calendar_more = "{0} more";
 Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
 Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
@@ -225,6 +226,9 @@ Messages.calendar_allDay = "All day";
     })()) { getTime = undefined; }
 
     var templates = {
+        monthGridHeaderExceed: function(hiddenSchedules) {
+            return '<span class="tui-full-calendar-weekday-grid-more-schedules">' + Messages._getKey('calendar_more', [hiddenSchedules]) + '</span>';
+        },
         popupSave: function () { return Messages.settings_save; },
         popupUpdate: function() { return Messages.calendar_update; },
         popupEdit: function() { return Messages.poll_edit; },
