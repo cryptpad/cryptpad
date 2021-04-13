@@ -468,16 +468,12 @@ define([
     Messages.reminder_minutes = "<b>{0}</b> will start in {1} minutes!"; // XXX
     Messages.reminder_time = "<b>{0}</b> will start today at {1}!"; // XXX
     Messages.reminder_date = "<b>{0}</b> will start on {1}!"; // XXX
-    var getDate = function (time) {
-        return new Date(time).toLocaleDateString();
-    };
     handlers['REMINDER'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;
         var missed = content.msg.missed;
         var start = msg.start;
         var title = Util.fixHTML(msg.title);
-        var i = 0;
         content.getFormatText = function () {
             var now = +new Date();
 

@@ -844,7 +844,6 @@ Messages.calendar_noNotification = "None";
             max: 60
         });
         var $number = $(number);
-        var list = [];
         var options = ['minutes', 'hours', 'days'].map(function (k) {
             return {
                 tag: 'a',

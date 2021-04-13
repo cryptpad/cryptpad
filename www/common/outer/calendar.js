@@ -92,8 +92,6 @@ define([
 
     var updateEventReminders = function (ctx, reminders, ev, useLastVisit) {
         var now = +new Date();
-        var time10 = now + (600 * 1000); // 10 minutes from now
-        var time60 = now + (3600 * 1000); // 1 hour from now
         var uid = ev.id;
 
         //ctx.store.data.lastVisit = 1617922639683; // XXX Friday Apr 09, used to test
