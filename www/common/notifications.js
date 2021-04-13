@@ -483,6 +483,9 @@ define([
 
             var nowDateStr = new Date().toLocaleDateString();
             var startDate = new Date(start);
+            if (msg.isAllDay && msg.startDay) {
+                startDate = new Date(msg.startDay);
+            }
 
             // Missed events
             if (start < now && missed) {
@@ -493,9 +496,6 @@ define([
                 return Messages._getKey('reminder_now', [title]);
             }
             // In progress, is all day
-            // XXX fix this...
-            // XXX start and end time may not matter...
-            // XXX and timezone?
             if (start < now && msg.isAllDay) {
                 return Messages._getKey('reminder_inProgressAllDay', [title]);
             }
@@ -505,6 +505,11 @@ define([
             }
 
             // Not started yet
+
+            // No precise time for allDay events
+            if (msg.isAllDay) {
+                return Messages._getKey('reminder_date', [title, startDate.toLocaleDateString()]);
+            }
 
             // In less than an hour: show countdown in minutes
             if ((start - now) < 3600000) {
