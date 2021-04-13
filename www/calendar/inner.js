@@ -149,7 +149,7 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
             if (!md) { return void console.error('Ignore calendar without metadata'); }
             return {
                 id: id,
-                name: Util.fixHTML(md.title),
+                name: md.title,
                 color: getContrast(md.color),
                 bgColor: md.color,
                 dragBgColor: md.color,
@@ -165,8 +165,8 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
             var data = c.content || {};
             Object.keys(data.content || {}).forEach(function (uid) {
                 var obj = data.content[uid];
-                obj.title = Util.fixHTML(obj.title || "");
-                obj.location = Util.fixHTML(obj.location || "");
+                obj.title = obj.title || "";
+                obj.location = obj.location || "";
                 if (c.readOnly) {
                     obj.isReadOnly = true;
                 }
@@ -222,6 +222,9 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
     var templates = {
         popupSave: function () {
             return Messages.settings_save;
+        },
+        popupDetailLocation: function(schedule) {
+            return 'Location : ' + Util.fixHTML(schedule.location); // XXX
         },
         timegridDisplayTime: getTime,
         timegridDisplayPrimaryTime: getTime,
