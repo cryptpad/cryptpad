@@ -70,6 +70,11 @@ Messages.calendar_newEvent = "New event";
 Messages.calendar_new = "New calendar";
 Messages.calendar_dateRange = "{0} - {1}";
 Messages.calendar_dateTimeRange = "{0} {1} - {2}";
+Messages.calendar_update = "Update";
+Messages.calendar_title = "Title";
+Messages.calendar_loc = "Location";
+Messages.calendar_location = "Location: {0}";
+Messages.calendar_allDay = "All day";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -220,11 +225,19 @@ Messages.calendar_dateTimeRange = "{0} {1} - {2}";
     })()) { getTime = undefined; }
 
     var templates = {
-        popupSave: function () {
-            return Messages.settings_save;
-        },
+        popupSave: function () { return Messages.settings_save; },
+        popupUpdate: function() { return Messages.calendar_update; },
+        popupEdit: function() { return Messages.poll_edit; },
+        popupDelete: function() { return Messages.kanban_delete; },
         popupDetailLocation: function(schedule) {
-            return 'Location : ' + Util.fixHTML(schedule.location); // XXX
+            // TODO detect url and create 'a' tag
+            return Messages._getKey('calendar_location', [Util.fixHTML(schedule.location)]);
+        },
+        popupIsAllDay: function() { return Messages.calendar_allDay; },
+        titlePlaceholder: function() { return Messages.calendar_title; },
+        locationPlaceholder: function() { return Messages.calendar_loc; },
+        alldayTitle: function() {
+            return '<span class="tui-full-calendar-left-content">'+Messages.calendar_allDay+'</span>';
         },
         timegridDisplayTime: getTime,
         timegridDisplayPrimaryTime: getTime,
