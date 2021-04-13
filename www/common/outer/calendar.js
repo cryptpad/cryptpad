@@ -678,6 +678,7 @@ ctx.calendars[channel] = {
         delete c.proxy.content[data.id];
         Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
             sendUpdate(ctx, c);
+            cb();
         });
     };
 
