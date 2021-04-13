@@ -61,6 +61,7 @@ Messages.calendar_day = "Day";
 Messages.calendar_week = "Week";
 Messages.calendar_month = "Month";
 Messages.calendar_today = "Today";
+Messages.calendar_more = "{0} more";
 Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
 Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
@@ -235,7 +236,6 @@ Messages.calendar_noNotification = "None";
     })()) { getTime = undefined; }
 
     var templates = {
-        // XXX find template for "xxx more" in month view
         popupSave: function (obj) {
             APP.editModalData = obj.data && obj.data.root;
             return Messages.settings_save;
@@ -243,6 +243,9 @@ Messages.calendar_noNotification = "None";
         popupUpdate: function(obj) {
             APP.editModalData = obj.data && obj.data.root;
             return Messages.calendar_update;
+        },
+        monthGridHeaderExceed: function(hiddenSchedules) {
+            return '<span class="tui-full-calendar-weekday-grid-more-schedules">' + Messages._getKey('calendar_more', [hiddenSchedules]) + '</span>';
         },
         popupEdit: function() { return Messages.poll_edit; },
         popupDelete: function() { return Messages.kanban_delete; },
@@ -653,7 +656,9 @@ Messages.calendar_noNotification = "None";
         }
         APP.toolbar.$bottomM.empty().append(h('div', date));
     };
-    var makeCalendar = function () {
+    var makeCalendar = function (view) {
+        var store = window.cryptpadStore;
+
         var $container = $('#cp-sidebarlayout-container');
         var leftside;
         $container.append([
@@ -662,7 +667,7 @@ Messages.calendar_noNotification = "None";
         ]);
 
         var cal = APP.calendar = new Calendar('#cp-sidebarlayout-rightside', {
-            defaultView: 'week', // weekly view option
+            defaultView: view || 'week', // weekly view option
             taskView: false,
             useCreationPopup: true,
             useDetailPopup: true,
@@ -775,12 +780,13 @@ Messages.calendar_noNotification = "None";
             left: true,
         };
         var $block = UIElements.createDropdown(dropdownConfig);
-        $block.setValue('week');
+        $block.setValue(view || 'week');
         var $views = $block.find('a');
         $views.click(function () {
             var mode = $(this).attr('data-value');
             cal.changeView(mode);
             updateDateRange();
+            store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
 
@@ -1065,6 +1071,7 @@ Messages.calendar_noNotification = "None";
         APP.module = common.makeUniversal('calendar', {
             onEvent: onEvent
         });
+        var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
             if (obj.empty && !privateData.calendarHash) {
                 // No calendar yet, create one
@@ -1075,7 +1082,7 @@ Messages.calendar_noNotification = "None";
                     title: Messages.calendar_default
                 }, function (err) {
                     if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
-                    makeCalendar();
+                    store.get('calendarView', makeCalendar);
                     UI.removeLoadingScreen();
                 });
                 return;
@@ -1088,7 +1095,7 @@ Messages.calendar_noNotification = "None";
                     if (obj && obj.error) { console.error(obj.error); }
                 });
             }
-            makeCalendar();
+            store.get('calendarView', makeCalendar);
             UI.removeLoadingScreen();
         });
 
