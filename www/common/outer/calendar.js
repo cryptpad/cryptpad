@@ -90,8 +90,9 @@ define([
         });
     };
 
-    var updateEventReminders = function (ctx, reminders, ev, useLastVisit) {
+    var updateEventReminders = function (ctx, reminders, _ev, useLastVisit) {
         var now = +new Date();
+        var ev = Util.clone(_ev);
         var uid = ev.id;
 
         //ctx.store.data.lastVisit = 1617922639683; // XXX Friday Apr 09, used to test
@@ -103,6 +104,12 @@ define([
         reminders[uid] = [];
 
         var last = ctx.store.data.lastVisit;
+
+        if (ev.isAllDay) {
+            if (ev.startDay) { ev.start = +new Date(ev.startDay); }
+            if (ev.endDay) { ev.end = +new Date(ev.endDay); }
+        }
+
         // XXX add a limit to make sure we don't go too far in the past?
         var missed = useLastVisit && ev.start > last && ev.end <= now;
         if (ev.end <= now && !missed) {
