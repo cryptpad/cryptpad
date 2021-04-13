@@ -114,10 +114,6 @@ Messages.calendar_noNotification = "None";
         });
     };
     var newEvent = function (data, cb) {
-        var start = data.start;
-        var end = data.end;
-        data.start = +new Date(start._date);
-        data.end = +new Date(end._date);
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -183,6 +179,14 @@ Messages.calendar_noNotification = "None";
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
+                if (obj.isAllDay && obj.startDay) { obj.start = +new Date(obj.startDay); }
+                if (obj.isAllDay && obj.endDay) {
+                    var endDate = new Date(obj.endDay);
+                    endDate.setHours(23);
+                    endDate.setMinutes(59);
+                    endDate.setSeconds(59);
+                    obj.end = +endDate;
+                }
                 if (c.readOnly) {
                     obj.isReadOnly = true;
                 }
@@ -695,16 +699,19 @@ Messages.calendar_noNotification = "None";
             // a non technical value
             var reminders = APP.notificationsEntries;
 
+            var startDate = event.start._date;
+            var endDate = event.end._date;
+
             var schedule = {
                 id: Util.uid(),
                 calendarId: event.calendarId,
                 title: Util.fixHTML(event.title),
                 category: "time",
                 location: Util.fixHTML(event.location),
-                start: event.start,
+                start: +startDate,
                 isAllDay: event.isAllDay,
-                end: event.end,
-                reminders: reminders
+                end: +endDate,
+                reminders: reminders,
             };
 
             newEvent(schedule, function (err) {
