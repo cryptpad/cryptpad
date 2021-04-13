@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'json.sortify',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     '/bower_components/nthen/index.js',
@@ -26,6 +27,7 @@ define([
     'less!/calendar/app-calendar.less',
 ], function (
     $,
+    JSONSortify,
     Crypto,
     Toolbar,
     nThen,
@@ -75,6 +77,14 @@ Messages.calendar_title = "Title";
 Messages.calendar_loc = "Location";
 Messages.calendar_location = "Location: {0}";
 Messages.calendar_allDay = "All day";
+
+Messages.calendar_minutes = "Minutes";
+Messages.calendar_hours = "Hours";
+Messages.calendar_days = "Days";
+
+Messages.calendar_notifications = "Reminders";
+Messages.calendar_addNotification = "Add reminder";
+Messages.calendar_noNotification = "None";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -225,8 +235,15 @@ Messages.calendar_allDay = "All day";
     })()) { getTime = undefined; }
 
     var templates = {
-        popupSave: function () { return Messages.settings_save; },
-        popupUpdate: function() { return Messages.calendar_update; },
+        // XXX find template for "xxx more" in month view
+        popupSave: function (obj) {
+            APP.editModalData = obj.data && obj.data.root;
+            return Messages.settings_save;
+        },
+        popupUpdate: function(obj) {
+            APP.editModalData = obj.data && obj.data.root;
+            return Messages.calendar_update;
+        },
         popupEdit: function() { return Messages.poll_edit; },
         popupDelete: function() { return Messages.kanban_delete; },
         popupDetailLocation: function(schedule) {
@@ -490,7 +507,7 @@ Messages.calendar_allDay = "All day";
                     if (cal.owned) {
                         key += Messages.calendar_deleteOwned;
                     }
-                    UI.confirm(Messages.calendar_deleteConfirm, function (yes) {
+                    UI.confirm(key, function (yes) {
                         if (!yes) { return; }
                         deleteCalendar({
                             id: id,
@@ -671,6 +688,7 @@ Messages.calendar_allDay = "All day";
             // ie: recurrenceRule: DAILY|{uid}
             // Use template to hide "recurrenceRule" from the detailPopup or at least to use
             // a non technical value
+            var reminders = APP.notificationsEntries;
 
             var schedule = {
                 id: Util.uid(),
@@ -681,6 +699,7 @@ Messages.calendar_allDay = "All day";
                 start: event.start,
                 isAllDay: event.isAllDay,
                 end: event.end,
+                reminders: reminders
             };
 
             newEvent(schedule, function (err) {
@@ -697,6 +716,12 @@ Messages.calendar_allDay = "All day";
             if (changes.end) { changes.end = +new Date(changes.end._date); }
             if (changes.start) { changes.start = +new Date(changes.start._date); }
             var old = event.schedule;
+
+            var oldReminders = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'reminders']);
+            var reminders = APP.notificationsEntries;
+            if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
+                changes.reminders = reminders;
+            }
 
             updateEvent({
                 ev: old,
@@ -791,6 +816,114 @@ Messages.calendar_allDay = "All day";
 
     };
 
+    var parseNotif = function (minutes) {
+        var res = {
+            unit: 'minutes',
+            value: minutes
+        };
+        var hours = minutes / 60;
+        if (!Number.isInteger(hours)) { return res; }
+        res.unit = 'hours';
+        res.value = hours;
+        var days = hours / 24;
+        if (!Number.isInteger(days)) { return res; }
+        res.unit = 'days';
+        res.value = days;
+        return res;
+    };
+    var getNotificationDropdown = function () {
+        var ev = APP.editModalData;
+        var calId = ev.selectedCal.id;
+        // XXX DEFAULT HERE [10] ==> 10 minutes before the event
+        var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', ev.id, 'reminders']) || [10];
+        APP.notificationsEntries = [];
+        var number = h('input.tui-full-calendar-content', {
+            type: "number",
+            value: 10,
+            min: 1,
+            max: 60
+        });
+        var $number = $(number);
+        var list = [];
+        var options = ['minutes', 'hours', 'days'].map(function (k) {
+            return {
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-calendar-reminder',
+                    'data-value': k,
+                    'href': '#',
+                },
+                content: Messages['calendar_'+k]
+                // Messages.calendar_minutes
+                // Messages.calendar_hours
+                // Messages.calendar_days
+            };
+        });
+        var dropdownConfig = {
+            text: Messages.calendar_minutes,
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            common: common,
+            buttonCls: 'btn btn-secondary',
+            caretDown: true,
+        };
+
+        var $block = UIElements.createDropdown(dropdownConfig);
+        $block.setValue('minutes');
+        var $types = $block.find('a');
+        $types.click(function () {
+            var mode = $(this).attr('data-value');
+            var max = mode === "minutes" ? 60 : 24;
+            $number.attr('max', max);
+            if ($number.val() > max) { $number.val(max); }
+        });
+        var addNotif = h('button.btn.btn-primary.fa.fa-plus');
+        var $list = $(h('div.cp-calendar-notif-list'));
+        var listContainer = h('div.cp-calendar-notif-list-container', [
+            h('span.cp-notif-label', Messages.calendar_notifications),
+            $list[0],
+            h('span.cp-notif-empty', Messages.calendar_noNotification)
+        ]);
+        var addNotification = function (unit, value) {
+            var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
+            var del = h('button.btn.btn-danger.small.fa.fa-times');
+            var minutes = value * unitValue;
+            if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
+            var span = h('span.cp-notif-entry', {
+                'data-minutes': minutes
+            }, [
+                h('span', value),
+                h('span', Messages['calendar_'+unit]),
+                del
+            ]);
+            $(del).click(function () {
+                $(span).remove();
+                var idx = APP.notificationsEntries.indexOf(minutes);
+                APP.notificationsEntries.splice(idx, 1);
+            });
+            $list.append(span);
+            APP.notificationsEntries.push(minutes);
+        };
+        $(addNotif).click(function () {
+            var unit = $block.getValue();
+            var value = $number.val();
+            addNotification(unit, value);
+        });
+        oldReminders.forEach(function (minutes) {
+            var p = parseNotif(minutes);
+            addNotification(p.unit, p.value);
+        });
+        return h('div.tui-full-calendar-popup-section.cp-calendar-add-notif', [
+            listContainer,
+            h('div.cp-calendar-notif-form', [
+                h('span.cp-notif-label', Messages.calendar_addNotification),
+                number,
+                $block[0],
+                addNotif
+            ])
+        ]);
+    };
+
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
         var configTb = {
@@ -877,6 +1010,10 @@ Messages.calendar_allDay = "All day";
             }
             var isUpdate = Boolean($el.find('#tui-full-calendar-schedule-title').val());
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
+
+            var $button = $el.find('.tui-full-calendar-section-button-save');
+            var div = getNotificationDropdown();
+            $button.before(div);
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);

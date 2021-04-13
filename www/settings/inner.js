@@ -1565,7 +1565,7 @@ define([
         cb($d);
     }, true);
 
-    Messages.settings_notifCalendarTitle = "Calendar notifications";
+    Messages.settings_notifCalendarTitle = "Calendar notifications"; // XXX
     Messages.settings_notifCalendarHint = "You can disable completely calendar notifications for incoming events.";
     Messages.settings_notifCalendarCheckbox = "Enable calendar notifications";
 

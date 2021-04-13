@@ -135,10 +135,11 @@ define([
         };
         var sendNotif = function () { ctx.Store.onReadyEvt.reg(send); };
 
-        var notifs = [600000, 3600000]; // 10min, 60min
+        var notifs = ev.reminders || [];
         notifs.sort();
 
-        notifs.some(function (delay) {
+        notifs.some(function (delayMinutes) {
+            var delay = delayMinutes * 60000;
             var time = now + delay;
 
             // setTimeout only work with 32bit timeout values. If the event is too far away,
@@ -734,7 +735,7 @@ define([
             Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
         }).nThen(function () {
-            if (changes.start) { addReminders(ctx, id, ev); }
+            if (changes.start || changes.reminders) { addReminders(ctx, id, ev); }
             sendUpdate(ctx, c);
             if (newC) { sendUpdate(ctx, newC); }
             cb();
