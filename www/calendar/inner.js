@@ -684,11 +684,6 @@ Messages.calendar_allDay = "All day";
 
             var startDate = event.start._date;
             var endDate = event.end._date;
-            var startDay, endDay;
-            if (event.isAllDay) {
-                startDay = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate();
-                endDay = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate();
-            }
 
             var schedule = {
                 id: Util.uid(),
@@ -697,12 +692,9 @@ Messages.calendar_allDay = "All day";
                 category: "time",
                 location: Util.fixHTML(event.location),
                 start: +startDate,
-                startDay: startDay,
                 isAllDay: event.isAllDay,
                 end: +endDate,
-                endDay: endDay
             };
-
 
             newEvent(schedule, function (err) {
                 if (err) {
