@@ -664,7 +664,11 @@ ctx.calendars[channel] = {
         nThen(function (waitFor) {
             Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
-        }).nThen(cb);
+        }).nThen(function () {
+            sendUpdate(ctx, c);
+            if (newC) { sendUpdate(ctx, newC); }
+            cb();
+        });
     };
     var deleteEvent = function (ctx, data, cId, cb) {
         var id = data.calendarId;
