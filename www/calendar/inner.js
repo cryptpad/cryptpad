@@ -640,7 +640,9 @@ Messages.calendar_allDay = "All day";
         }
         APP.toolbar.$bottomM.empty().append(h('div', date));
     };
-    var makeCalendar = function () {
+    var makeCalendar = function (view) {
+        var store = window.cryptpadStore;
+
         var $container = $('#cp-sidebarlayout-container');
         var leftside;
         $container.append([
@@ -649,7 +651,7 @@ Messages.calendar_allDay = "All day";
         ]);
 
         var cal = APP.calendar = new Calendar('#cp-sidebarlayout-rightside', {
-            defaultView: 'week', // weekly view option
+            defaultView: view || 'week', // weekly view option
             taskView: false,
             useCreationPopup: true,
             useDetailPopup: true,
@@ -754,12 +756,13 @@ Messages.calendar_allDay = "All day";
             left: true,
         };
         var $block = UIElements.createDropdown(dropdownConfig);
-        $block.setValue('week');
+        $block.setValue(view || 'week');
         var $views = $block.find('a');
         $views.click(function () {
             var mode = $(this).attr('data-value');
             cal.changeView(mode);
             updateDateRange();
+            store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
 
@@ -933,6 +936,7 @@ Messages.calendar_allDay = "All day";
         APP.module = common.makeUniversal('calendar', {
             onEvent: onEvent
         });
+        var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
             if (obj.empty && !privateData.calendarHash) {
                 // No calendar yet, create one
@@ -943,7 +947,7 @@ Messages.calendar_allDay = "All day";
                     title: Messages.calendar_default
                 }, function (err) {
                     if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
-                    makeCalendar();
+                    store.get('calendarView', makeCalendar);
                     UI.removeLoadingScreen();
                 });
                 return;
@@ -956,7 +960,7 @@ Messages.calendar_allDay = "All day";
                     if (obj && obj.error) { console.error(obj.error); }
                 });
             }
-            makeCalendar();
+            store.get('calendarView', makeCalendar);
             UI.removeLoadingScreen();
         });
 
