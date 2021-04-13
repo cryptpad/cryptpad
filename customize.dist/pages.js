@@ -12,6 +12,36 @@ define([
         return e;
     };
 
+    Pages.externalLink = function (el, href) {
+        if (!el) { return el; }
+        el.setAttribute("rel", "noopener noreferrer");
+        el.setAttribute("target", "_blank");
+        if (typeof(href) === 'string') {
+            el.setAttribute("href", href);
+        }
+        return el;
+    };
+
+    // this rewrites URLS to point to the appropriate translation:
+    // French, German, or English as a default
+    var documentedLanguages = ['en', 'fr', 'de'];
+    Pages.localizeDocsLink = function (href) {
+        try {
+            var lang = Msg._getLanguage();
+            if (documentedLanguages.indexOf(lang) > 0) {
+                return href.replace('/en/', '/' + lang + '/');
+            }
+        } catch (err) {
+            console.error(err);
+            // if it fails just use the default href (English)
+        }
+        return href;
+    };
+
+    Pages.documentationLink = function (el, href) {
+        return Pages.externalLink(el, Pages.localizeDocsLink(href));
+    };
+
     var languageSelector = function () {
         var options = [];
         var languages = Msg._languages;
@@ -45,6 +75,7 @@ define([
     };
 
     var footLink = function (ref, loc, text) {
+        if (!ref) { return; }
         var attrs =  {
             href: ref,
         };
@@ -62,7 +93,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.3.1";
+    Pages.versionString = "v4.4.0";
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
@@ -71,6 +102,17 @@ define([
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
 
     Pages.infopageFooter = function () {
+        var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
+        var legalFooter;
+
+        // only display the legal part of the footer if it has content
+        if (terms || Pages.privacyLink || Pages.imprintLink) {
+            legalFooter = footerCol('footer_legal', [
+                Pages.privacyLink,
+                Pages.imprintLink,
+            ]);
+        }
+
         return h('footer', [
             h('div.container', [
                 h('div.row', [
@@ -97,11 +139,7 @@ define([
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
                     ]),
-                    footerCol('footer_legal', [
-                        footLink('/terms.html', 'footer_tos'),
-                        Pages.privacyLink,
-                        Pages.imprintLink,
-                    ]),
+                    legalFooter,
                 ])
             ]),
             h('div.cp-version-footer', [

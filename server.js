@@ -201,46 +201,14 @@ app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
-var serveConfig = (function () {
-    // if dev mode: never cache
-    var cacheString = function () {
-        return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
-    };
+// if dev mode: never cache
+var cacheString = function () {
+    return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
+};
 
-    var template = function (host) {
-        return [
-            'define(function(){',
-            'var obj = ' + JSON.stringify({
-                requireConf: {
-                    waitSeconds: 600,
-                    urlArgs: 'ver=' + Package.version + cacheString(),
-                },
-                removeDonateButton: (config.removeDonateButton === true),
-                allowSubscriptions: (config.allowSubscriptions === true),
-                websocketPath: config.externalWebsocketURL,
-                httpUnsafeOrigin: config.httpUnsafeOrigin,
-                adminEmail: Env.adminEmail,
-                adminKeys: Env.admins,
-                inactiveTime: Env.inactiveTime,
-                supportMailbox: Env.supportMailbox,
-                defaultStorageLimit: Env.defaultStorageLimit,
-                maxUploadSize: Env.maxUploadSize,
-                premiumUploadSize: Env.premiumUploadSize,
-            }, null, '\t'),
-            'obj.httpSafeOrigin = ' + (function () {
-                if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
-                if (config.httpSafePort) {
-                    return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
-                        config.httpSafePort + "'); }())";
-                }
-                return 'window.location.origin';
-            }()),
-            'return obj',
-            '});'
-        ].join(';\n')
-    };
-
+var makeRouteCache = function (template, cacheName) {
     var cleanUp = {};
+    var cache = Env[cacheName] = Env[cacheName] || {};
 
     return function (req, res) {
         var host = req.headers.host.replace(/\:[0-9]+/, '');
@@ -255,73 +223,71 @@ var serveConfig = (function () {
         // FIXME mutable
         // we must be able to clear the cache when updating any mutable key
         // if there's nothing cached for that key...
-        if (!Env.configCache[cacheKey]) {
+        if (!cache[cacheKey]) {
             // generate the response and cache it in memory
-            Env.configCache[cacheKey] = template(host);
+            cache[cacheKey] = template(host);
             // and create a function to conditionally evict cache entries
             // which have not been accessed in the last 20 seconds
             cleanUp[cacheKey] = Util.throttle(function () {
                 delete cleanUp[cacheKey];
-                delete Env.configCache[cacheKey];
+                delete cache[cacheKey];
             }, 20000);
         }
 
         // successive calls to this function
         cleanUp[cacheKey]();
-        return void res.send(Env.configCache[cacheKey]);
+        return void res.send(cache[cacheKey]);
     };
-}());
+};
 
-var serveBroadcast = (function () { // XXX deduplicate
-    var cacheString = function () {
-        return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
-    };
+var serveConfig = makeRouteCache(function (host) {
+    return [
+        'define(function(){',
+        'var obj = ' + JSON.stringify({
+            requireConf: {
+                waitSeconds: 600,
+                urlArgs: 'ver=' + Package.version + cacheString(),
+            },
+            removeDonateButton: (config.removeDonateButton === true),
+            allowSubscriptions: (config.allowSubscriptions === true),
+            websocketPath: config.externalWebsocketURL,
+            httpUnsafeOrigin: config.httpUnsafeOrigin,
+            adminEmail: Env.adminEmail,
+            adminKeys: Env.admins,
+            inactiveTime: Env.inactiveTime,
+            supportMailbox: Env.supportMailbox,
+            defaultStorageLimit: Env.defaultStorageLimit,
+            maxUploadSize: Env.maxUploadSize,
+            premiumUploadSize: Env.premiumUploadSize,
+        }, null, '\t'),
+        'obj.httpSafeOrigin = ' + (function () {
+            if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
+            if (config.httpSafePort) {
+                return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
+                    config.httpSafePort + "'); }())";
+            }
+            return 'window.location.origin';
+        }()),
+        'return obj',
+        '});'
+    ].join(';\n')
+}, 'configCache');
 
-    var template = function (host) {
-        var maintenance = Env.maintenance;
-        if (maintenance && maintenance.end && maintenance.end < (+new Date())) {
-            maintenance = undefined;
-        }
-        return [
-            'define(function(){', // XXX maybe this could just be JSON
-            'return ' + JSON.stringify({
-                lastBroadcastHash: Env.lastBroadcastHash,
-                surveyURL: Env.surveyURL,
-                maintenance: maintenance
-            }, null, '\t'),
-            '});'
-        ].join(';\n')
-    };
-
-    var cleanUp = {};
-
-    return function (req, res) {
-        var host = req.headers.host.replace(/\:[0-9]+/, '');
-        res.setHeader('Content-Type', 'text/javascript');
-        // don't cache anything if you're in dev mode
-        if (Env.DEV_MODE) {
-            return void res.send(template(host));
-        }
-        // generate a lookup key for the cache
-        var cacheKey = host + ':' + cacheString();
-
-        // XXX do we need a cache for /api/broadcast?
-        if (!Env.broadcastCache[cacheKey]) {
-            // generate the response and cache it in memory
-            Env.broadcastCache[cacheKey] = template(host);
-            // and create a function to conditionally evict cache entries
-            // which have not been accessed in the last 20 seconds
-            cleanUp[cacheKey] = Util.throttle(function () {
-                delete cleanUp[cacheKey];
-                delete Env.broadcastCache[cacheKey];
-            }, 20000);
-        }
-
-        // successive calls to this function
-        cleanUp[cacheKey]();
-        return void res.send(Env.broadcastCache[cacheKey]);
-    };
-}());
+var serveBroadcast = makeRouteCache(function (host) {
+    var maintenance = Env.maintenance;
+    if (maintenance && maintenance.end && maintenance.end < (+new Date())) {
+        maintenance = undefined;
+    }
+    return [
+        'define(function(){',
+        'return ' + JSON.stringify({
+            lastBroadcastHash: Env.lastBroadcastHash,
+            surveyURL: Env.surveyURL,
+            maintenance: maintenance
+        }, null, '\t'),
+        '});'
+    ].join(';\n')
+}, 'broadcastCache');
 
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);

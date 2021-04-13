@@ -45,11 +45,6 @@ define([
             });
         }
 
-        // XXX Debugging code to remove deprecated dev data
-        if (mailboxes.broadcast && mailboxes.broadcast.channel && mailboxes.broadcast.channel.length === 32) {
-            delete mailboxes['broadcast'];
-        }
-
         if (!mailboxes['broadcast']) {
             mailboxes.broadcast = {
                 channel: BROADCAST_CHAN,
@@ -352,22 +347,7 @@ proxy.mailboxes = {
                     hash: hash
                 };
                 var notify = box.ready;
-                Handlers.add(ctx, box, message, function (dismissed, toDismiss, setAsLKH) {
-                    if (setAsLKH) { // XXX confirm whether this if is used?
-                        // Update LKH
-                        box.data.lastKnownHash = hash;
-                        box.data.viewed = [];
-
-                        // Make sure we remove data about dismissed messages
-                        Realtime.whenRealtimeSyncs(ctx.store.realtime, function () {
-                            Object.keys(box.content).forEach(function (h) {
-                                Handlers.remove(ctx, box, box.content[h], h);
-                                delete box.content[h];
-                                hideMessage(ctx, type, h, ctx.clients);
-                            });
-                        });
-                        return;
-                    }
+                Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
                     if (toDismiss) { // List of other messages to remove
                         dismiss(ctx, toDismiss, '', function () {
                             console.log('Notification handled automatically');

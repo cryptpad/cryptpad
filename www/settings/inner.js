@@ -472,10 +472,6 @@ define([
         });
     }, true);
 
-    Messages.settings_deleteWarning = "Warning: it seems you're subscribed to a premium plan (paid or given by another user). Please cancel paid subscriptions before deleting your account as you won't be able to do it yourself once the account is deleted."; // XXX
-    Messages.settings_deleteContinue = "Delete my account"; // XXX
-    Messages.settings_deleteSubscription = "Manage my subscription"; // XXX
-
     makeBlock('delete', function(cb) { // Msg.settings_deleteHint, .settings_deleteTitle
         if (!common.isLoggedIn()) { return cb(false); }
 

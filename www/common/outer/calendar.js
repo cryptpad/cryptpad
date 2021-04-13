@@ -735,6 +735,8 @@ define([
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
         }).nThen(function () {
             if (changes.start) { addReminders(ctx, id, ev); }
+            sendUpdate(ctx, c);
+            if (newC) { sendUpdate(ctx, newC); }
             cb();
         });
     };
@@ -749,6 +751,8 @@ define([
                 id: data.id,
                 start: 0
             });
+            sendUpdate(ctx, c);
+            cb();
         });
     };
 

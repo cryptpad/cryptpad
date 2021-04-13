@@ -941,32 +941,6 @@ define([
         return;
     };
 
-    Messages.admin_cat_broadcast = "Broadcast"; // XXX
-
-    Messages.admin_maintenanceTitle = "Maintenance"; // XXX
-    Messages.admin_maintenanceHint = "Plan, remove or update a maintenance. You can only have one active maintenance at a time."; // XXX
-    Messages.admin_maintenanceButton = "Plan maintenance"; // XXX
-    Messages.admin_maintenanceCancel = "Cancel planned maintenance"; // XXX
-    Messages.broadcast_start = 'Start time';
-    Messages.broadcast_end = 'End time';
-
-
-    Messages.admin_surveyTitle = "Survey"; // XXX
-    Messages.admin_surveyHint = "Add, update or remove the active survey accessible from the user menu"; // XXX
-    Messages.admin_surveyButton = "Apply survey"; // XXX
-    Messages.admin_surveyCancel = "Cancel active survey"; // XXX
-    Messages.admin_surveyActive = "View the active survey"; // XXX
-    Messages.broadcast_surveyURL = 'Survey URL';
-
-    Messages.admin_broadcastTitle = "Broadcast a message"; // XXX
-    Messages.admin_broadcastHint = "Send a message to all the existing and future users as a notification"; // XXX
-    Messages.admin_broadcastButton = "Send"; // XXX
-    Messages.admin_broadcastActive = "Active message"; // XXX
-    Messages.admin_broadcastCancel = "Delete active message"; // XXX
-    Messages.broadcast_translations = 'Translations';
-    Messages.broadcast_defaultLanguage = 'Fallback to this language';
-    Messages.broadcast_preview = "Preview in a fake notification";
-
     var getApi = function (cb) {
         return function () {
             require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
@@ -1067,7 +1041,7 @@ define([
 
     create['broadcast'] = function () {
         var key = 'broadcast';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_broadcastHint, admin_broadcastTitle
 
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
@@ -1229,7 +1203,7 @@ define([
                 }
                 if (error) {
                     console.error('One of the selected languages has no data');
-                    return false; // XXX better error handling?
+                    return false;
                 }
                 return {
                     defaultLanguage: defaultLanguage,
@@ -1239,7 +1213,7 @@ define([
 
             var send = function (data) {
                 $button.prop('disabled', 'disabled');
-                data.time = +new Date(); // XXX not used anymore?
+                //data.time = +new Date(); // FIXME not used anymore?
                 common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err) {
                     if (err) {
                         $button.prop('disabled', '');
@@ -1259,7 +1233,7 @@ define([
                 send(data);
             });
 
-            UI.confirmButton(removeButton, { // XXX table jank
+            UI.confirmButton(removeButton, {
                 classes: 'btn-danger',
             }, function () {
                 if (!activeUid) { return; }
@@ -1292,7 +1266,7 @@ define([
 
     create['maintenance'] = function () {
         var key = 'maintenance';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_maintenanceHint, admin_maintenanceTitle
 
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
@@ -1321,13 +1295,12 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            // XXX new Date().toLocaleString('fr-fr', {month: 'long'}).replace(/./, c => c.toUpperCase())
             var is24h = false;
             try {
                 is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
             } catch (e) {}
 
-            var endPickr = Flatpickr(end, { // XXX translations?
+            var endPickr = Flatpickr(end, {
                 enableTime: true,
                 time_24hr: is24h,
                 minDate: new Date()
@@ -1411,7 +1384,7 @@ define([
     };
     create['survey'] = function () {
         var key = 'survey';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_surveyHint, admin_surveyTitle
 
         var form = h('div.cp-admin-broadcast-form');
         var $form = $(form).appendTo($div);
@@ -1429,7 +1402,7 @@ define([
                     common.openUnsafeURL(Broadcast.surveyURL);
                 });
                 active = h('div.cp-broadcast-active', [
-                    h('p', a), // XXX spacing around this element is really cramped
+                    h('p', a),
                     removeButton
                 ]);
             }

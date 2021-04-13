@@ -370,7 +370,7 @@ define([
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
-                        href: origin + 'https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders',
+                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders'),
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
@@ -715,8 +715,14 @@ define([
                                         callback(err);
                                         return void UI.warn(Messages.fm_forbidden);
                                     }
-                                    var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                                    var msg = common.fixLinks($('<div>').html(cMsg));
+                                    var msg;
+                                    if (common.isLoggedIn()) {
+                                        msg = Pages.setHTML(h('div'), Messages.movedToTrash);
+                                        $(msg).find('a').attr('href', '/drive/');
+                                        common.fixLinks(msg);
+                                    } else {
+                                        msg = h('div', Messages.deleted);
+                                    }
                                     UI.alert(msg);
                                     callback();
                                     return;
@@ -1106,6 +1112,10 @@ define([
         if (apps[type]) {
             href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
         }
+        if (type === 'drive') {
+            href = "https://docs.cryptpad.fr/en/user_guide/drive.html";
+        }
+        href = Pages.localizeDocsLink(href);
 
         var content = setHTML(h('p'), Messages.help_genericMore);
         $(content).find('a').attr({
@@ -1741,7 +1751,14 @@ define([
             });
         }*/
         options.push({ tag: 'hr' });
+
+        // We have code to hide 2 separators in a row, but in the case of survey, they may be
+        // in the DOM but hidden. We need to know if there are other elements in this
+        // section to determine if we have to manually hide a separator.
+        var surveyAlone = true;
+
         if (Config.allowSubscriptions) {
+            surveyAlone = false;
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1754,6 +1771,7 @@ define([
             });
         }
         if (!priv.plan && !Config.removeDonateButton) {
+            surveyAlone = false;
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1847,7 +1865,10 @@ define([
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
         var $survey = $userAdmin.find('.cp-toolbar-survey');
-        if (!surveyURL) { $survey.hide(); }
+        if (!surveyURL) {
+            $survey.hide();
+            if (surveyAlone) { $survey.next('hr').hide(); }
+        }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
@@ -1858,9 +1879,11 @@ define([
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
+                    if (surveyAlone) { $survey.next('hr').hide(); }
                     return;
                 }
                 $survey.show();
+                if (surveyAlone) { $survey.next('hr').show(); }
             }
         });
 
@@ -2164,7 +2187,7 @@ define([
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
                 h('span', newPadH3Title),
-                createHelper('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document', Messages.creation_helperText)
+                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
             ])
         ]);
         $creation.append(title);
@@ -2738,13 +2761,6 @@ define([
                 common.openURL(priv.accounts.donateURL);
                 Feedback.send('CROWDFUNDING_YES');
             });
-            $(modal.popup).find('a').click(function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                modal.delete();
-                common.openURL(priv.accounts.donateURL);
-                Feedback.send('CROWDFUNDING_LINK');
-            });
             $(no).click(function () {
                 modal.delete();
                 Feedback.send('CROWDFUNDING_NO');
@@ -2784,7 +2800,7 @@ define([
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
                           Messages.autostore_pad;
         var text = Messages._getKey('autostore_notstored', [typeMsg]);
-        var footer = Messages.autostore_settings;
+        var footer = Pages.setHTML(h('span'), Messages.autostore_settings);
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);
