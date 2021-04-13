@@ -1026,6 +1026,31 @@ Messages.calendar_noNotification = "None";
             var $button = $el.find('.tui-full-calendar-section-button-save');
             var div = getNotificationDropdown();
             $button.before(div);
+
+            var $cbox = $el.find('#tui-full-calendar-schedule-allday');
+            var $start = $el.find('.tui-full-calendar-section-start-date');
+            var $dash = $el.find('.tui-full-calendar-section-date-dash');
+            var $end = $el.find('.tui-full-calendar-section-end-date');
+            var allDay = $cbox.is(':checked');
+            if (allDay) {
+                $start.hide();
+                $dash.hide();
+                $end.hide();
+            }
+            $el.find('.tui-full-calendar-section-allday').click(function () {
+                setTimeout(function () {
+                    var allDay = $cbox.is(':checked');
+                    if (allDay) {
+                        $start.hide();
+                        $dash.hide();
+                        $end.hide();
+                        return;
+                    }
+                    $start.show();
+                    $dash.show();
+                    $end.show();
+                });
+            });
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);
