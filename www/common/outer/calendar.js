@@ -108,11 +108,11 @@ define([
         if (ev.isAllDay) {
             if (ev.startDay) { ev.start = +new Date(ev.startDay); }
             if (ev.endDay) {
-                var endDate = new Date(obj.endDay);
+                var endDate = new Date(ev.endDay);
                 endDate.setHours(23);
                 endDate.setMinutes(59);
                 endDate.setSeconds(59);
-                obj.end = +endDate;
+                ev.end = +endDate;
             }
         }
 
