@@ -846,6 +846,8 @@ Messages.calendar_allDay = "All day";
         var privateData = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
 
+        common.setTabTitle(Messages.calendar);
+
         // Fix flatpickr selection
         var MutationObserver = window.MutationObserver;
         var onFlatPickr = function (el) {
