@@ -733,6 +733,12 @@ Messages.calendar_allDay = "All day";
             });
         });
 
+        $('body').on('keydown', function (e) {
+            if (e.which === 27) {
+                $('.tui-full-calendar-floating-layer').hide();
+            }
+        });
+
         updateDateRange();
 
         renderCalendar();

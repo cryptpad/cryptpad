@@ -138,7 +138,6 @@ ctx.calendars[channel] = {
         var teamId = cfg.storeId;
         var data = cfg.data;
         var channel = data.channel;
-        console.error(cfg);
         if (!channel) { return; }
 
         var c = ctx.calendars[channel];
