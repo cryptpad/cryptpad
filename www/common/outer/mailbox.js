@@ -501,8 +501,11 @@ proxy.mailboxes = {
                     hash: h
                 };
                 showMessage(ctx, type, message, cId, function (obj) {
+                    if (obj.error) { return; }
+                    // Notify only if "requiresNotif" is true
+                    if (!message.msg || !message.msg.requiresNotif) { return; }
                     Notify.system(undefined, obj.msg);
-                    cb();
+                    delete message.msg.requiresNotif;
                 });
             });
         });
@@ -590,6 +593,9 @@ proxy.mailboxes = {
         mailbox.showMessage = function (type, msg, cId, cb) {
             if (type === "reminders" && msg) {
                 ctx.boxes.reminders.content[msg.hash] = msg.msg;
+                if (!ctx.clients.length) {
+                    ctx.boxes.reminders.content[msg.hash].requiresNotif = true;
+                }
                 // Hide existing messages for this event
                 hideMessage(ctx, type, msg.hash, ctx.clients);
             }
