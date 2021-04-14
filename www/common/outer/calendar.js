@@ -631,8 +631,8 @@ ctx.calendars[channel] = {
             data.startDay = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate();
             data.endDay = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate();
         } else {
-            delete ev.startDay;
-            delete ev.endDay;
+            delete data.startDay;
+            delete data.endDay;
         }
 
         c.proxy.content = c.proxy.content || {};
