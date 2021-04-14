@@ -757,6 +757,12 @@ Messages.calendar_noNotification = "None";
             });
         });
 
+        $('body').on('keydown', function (e) {
+            if (e.which === 27) {
+                $('.tui-full-calendar-floating-layer').hide();
+            }
+        });
+
         updateDateRange();
 
         renderCalendar();
@@ -970,6 +976,8 @@ Messages.calendar_noNotification = "None";
         metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
+
+        common.setTabTitle(Messages.calendar);
 
         // Fix flatpickr selection
         var MutationObserver = window.MutationObserver;

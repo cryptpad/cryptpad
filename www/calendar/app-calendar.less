@@ -24,6 +24,23 @@
         .tui-full-calendar-layout {
             background-color: @cp_sidebar-right-bg !important;
             color: @cryptpad_text_col;
+            display: flex;
+            flex-flow: column;
+            .tui-full-calendar-week-container {
+                min-height: 0;
+                display: flex;
+                flex-flow: column;
+                .tui-full-calendar-vlayout-area {
+                    display: flex;
+                    flex-flow: column;
+                    flex: 1;
+                    min-height: 0;
+                    & > div:last-child {
+                        flex: 1;
+                        min-height: 0;
+                    }
+                }
+            }
             .tui-full-calendar-month {
                 .tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
                     color: @cryptpad_text_col !important; // XXX
