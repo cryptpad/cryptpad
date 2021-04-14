@@ -1,7 +1,7 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
 
 // body
-body.cp-app-sheet, body.cp-app-oodoc, body.cp-app-ooslide {
+body.cp-app-sheet, body.cp-app-doc, body.cp-app-presentation {
     display: flex;
     flex-flow: column;
 
@@ -10,14 +10,14 @@ body.cp-app-sheet, body.cp-app-oodoc, body.cp-app-ooslide {
             @bg-color: @colortheme_apps[sheet],
         );
     }
-    &.cp-app-oodoc {
+    &.cp-app-doc {
         .framework_main(
-            @bg-color: @colortheme_apps[oodoc],
+            @bg-color: @colortheme_apps[doc],
         );
     }
-    &.cp-app-ooslide {
+    &.cp-app-presentation {
         .framework_main(
-            @bg-color: @colortheme_apps[ooslide],
+            @bg-color: @colortheme_apps[presentation],
         );
     }
 

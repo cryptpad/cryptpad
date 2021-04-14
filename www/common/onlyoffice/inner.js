@@ -79,6 +79,7 @@ define([
 
 
     var toolbar;
+    var cursor;
 
 
     var andThen = function (common) {
@@ -231,7 +232,7 @@ define([
             var title = common.getMetadataMgr().getMetadataLazy().title;
             var file = {};
             switch(type) {
-                case 'oodoc':
+                case 'doc':
                     file.type = 'docx';
                     file.title = title + '.docx' || 'document.docx';
                     file.doc = 'text';
@@ -241,7 +242,7 @@ define([
                     file.title = title + '.xlsx' || 'spreadsheet.xlsx';
                     file.doc = 'spreadsheet';
                     break;
-                case 'ooslide':
+                case 'presentation':
                     file.type = 'pptx';
                     file.title = title + '.pptx' || 'presentation.pptx';
                     file.doc = 'presentation';
@@ -561,10 +562,10 @@ define([
                 case 'sheet' :
                     newText = EmptyCell(useNewDefault);
                     break;
-                case 'oodoc':
+                case 'doc':
                     newText = EmptyDoc();
                     break;
-                case 'ooslide':
+                case 'presentation':
                     newText = EmptySlide();
                     break;
                 default:
@@ -798,6 +799,7 @@ define([
             var i = 1;
             var p = Object.keys(content.ids || {}).map(function (id) {
                 var nId = id.slice(0,32);
+                if (!users[nId]) { return; }
                 var ooId = content.ids[id].ooid;
                 var idx = content.ids[id].index;
                 if (!ooId || ooId === myOOId) { return; }
@@ -841,14 +843,31 @@ define([
         };
 
         // Get all existing locks
-        var getUserLock = function (id) {
+        var getUserLock = function (id, forceArray) {
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            content.locks = content.locks || {};
             var l = content.locks[id] || {};
-            return Object.keys(l).map(function (uid) { return l[uid]; });
+            if (type === "sheet" || forceArray) {
+                return Object.keys(l).map(function (uid) { return l[uid]; });
+            }
+            var res = {};
+            Object.keys(l).forEach(function (uid) {
+                res[uid] = l[uid];
+            });
+            return res;
         };
         var getLock = function () {
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             var locks = [];
-            Object.keys(content.locks).forEach(function (id) {
-                Array.prototype.push.apply(locks, getUserLock(id));
+            if (type === "sheet") {
+                Object.keys(content.locks || {}).forEach(function (id) {
+                    Array.prototype.push.apply(locks, getUserLock(id));
+                });
+                return locks;
+            }
+            locks = {};
+            Object.keys(content.locks || {}).forEach(function (id) {
+                Util.extend(locks, getUserLock(id));
             });
             return locks;
         };
@@ -997,6 +1016,8 @@ define([
                 }, 50);
                 return;
             }
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+
             content.locks = content.locks || {};
             // Send the lock to other users
             var msg = {
@@ -1006,8 +1027,13 @@ define([
             };
             var myId = getId();
             content.locks[myId] = content.locks[myId] || {};
-            var uid = Util.uid();
-            content.locks[myId][uid] = msg;
+            var b = obj.block && obj.block[0];
+            if (type === "sheet") {
+                var uid = Util.uid();
+                content.locks[myId][uid] = msg;
+            } else {
+                if (typeof(b) === "string") { content.locks[myId][b] = msg; }
+            }
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
@@ -1098,8 +1124,8 @@ define([
                 type: "saveChanges",
                 changes: parseChanges(obj.changes),
                 changesIndex: ooChannel.cpIndex || 0,
-                locks: getUserLock(getId()),
-                excelAdditionalInfo: null
+                locks: getUserLock(getId(), true),
+                excelAdditionalInfo: obj.excelAdditionalInfo
             }, null, function (err, hash) {
                 if (err) {
                     return void console.error(err);
@@ -1134,6 +1160,7 @@ define([
         var makeChannel = function () {
             var msgEv = Util.mkEvent();
             var iframe = $('#cp-app-oo-editor > iframe')[0].contentWindow;
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             window.addEventListener('message', function (msg) {
                 if (msg.source !== iframe) { return; }
                 msgEv.fire(msg);
@@ -1145,7 +1172,11 @@ define([
                 APP.chan = chan;
 
                 var send = ooChannel.send = function (obj, force) {
-                    if (APP.onStrictSaveChanges && !force) { return; } // can't push to OO before reloading cp
+                    // can't push to OO before reloading cp
+                    if (APP.onStrictSaveChanges && !force) { return; }
+                    // We only need to release locks for sheets
+                    if (type !== "sheet" && obj.type === "releaseLock") { return; }
+
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
                 };
@@ -1174,6 +1205,17 @@ define([
                                 }
                             }
                             break;
+                        case "cursor":
+                            cursor.updateCursor({
+                                type: "cursor",
+                                messages: [{
+                                    cursor: obj.cursor,
+                                    time: +new Date(),
+                                    user: myUniqueOOId,
+                                    useridoriginal: myOOId
+                                }]
+                            });
+                            break;
                         case "getLock":
                             handleLock(obj, send);
                             break;
@@ -1184,12 +1226,14 @@ define([
                         case "saveChanges":
                             // If we have unsaved data before reloading for a checkpoint...
                             if (APP.onStrictSaveChanges) {
+                                delete APP.unsavedLocks;
                                 APP.unsavedChanges = {
                                     type: "saveChanges",
                                     changes: parseChanges(obj.changes),
                                     changesIndex: ooChannel.cpIndex || 0,
-                                    locks: getUserLock(getId()),
-                                    excelAdditionalInfo: null
+                                    locks: type === "sheet" ? [] : APP.unsavedLocks,
+                                    excelAdditionalInfo: null,
+                                    recover: true
                                 };
                                 APP.onStrictSaveChanges();
                                 return;
@@ -1284,22 +1328,37 @@ define([
                         var css = // Old OO
                                   //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   //'#fm-btn-save { display: none !important; }' +
-                                  '#panel-settings-general tr.autosave { display: none !important; }' +
-                                  '#panel-settings-general tr.coauth { display: none !important; }' +
+                                  //'#panel-settings-general tr.autosave { display: none !important; }' +
+                                  //'#panel-settings-general tr.coauth { display: none !important; }' +
                                   //'#header { display: none !important; }' +
                                   '#title-doc-name { display: none !important; }' +
                                   '#title-user-name { display: none !important; }' +
            (supportsXLSX() ? '' : '#slot-btn-dt-print { display: none !important; }') +
                                   // New OO:
-                                  '#asc-gen257 { display: none !important; }' + // Insert image from url
                                   'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
                                   '#slot-btn-insequation { display: none !important; }' + // Insert equation
+                                  '#asc-gen125 { display: none !important; }' + // Disable presenter mode
                                   //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
                                   '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                                   '#panel-info { display: none !important; }' + // Same but content
                                   '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
+
+                                  '#asc-gen257 { display: none !important; }' + // Insert image from url
                                   '#asc-gen1839 { display: none !important; }' + // Image context menu: replace with url
                                   '#asc-gen5883 { display: none !important; }' + // Rightside image menu: replace with url
+
+                                  '#asc-gen1211 { display: none !important; }' + // Slide Image context menu: replace with url
+                                  '#asc-gen3880 { display: none !important; }' + // Rightside slide image menu: replace with url
+                                  '#asc-gen2218 { display: none !important; }' + // Rightside slide menu: fill slide with image url
+                                  '#asc-gen849 { display: none !important; }' + // Toolbar slide: insert image from url
+                                  '#asc-gen857 { display: none !important; }' + // Toolbar slide: insert image from url (insert tab)
+
+                                  '#asc-gen180 { display: none !important; }' + // Doc Insert image from url
+                                  '#asc-gen1760 { display: none !important; }' + // Doc Image context menu: replace with url
+                                  '#asc-gen3319 { display: none !important; }' + // Doc Rightside image menu: replace with url
+
+                                  '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
+                                  '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   'div.btn-users.dropdown-toggle { display: none; !important }';
@@ -1445,6 +1504,29 @@ define([
             };
             */
 
+            APP.getUserColor = function (userId) {
+                var hex;
+                Object.keys(content.ids || {}).some(function (k) {
+                    var u = content.ids[k];
+                    if (Number(u.ooid) === Number(userId)) {
+                        var md = common.getMetadataMgr().getMetadataLazy();
+                        if (md && md.users && md.users[u.netflux]) {
+                            hex = md.users[u.netflux].color;
+                        }
+                        return true;
+                    }
+                });
+                if (hex) {
+                    var rgb = Util.hexToRGB(hex);
+                    return {
+                        r: rgb[0],
+                        g: rgb[1],
+                        b: rgb[2],
+                        a: 255
+                    };
+                }
+            };
+
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
                 return void cb();
             };
@@ -1507,6 +1589,10 @@ define([
 
             APP.loadingImage = 0;
             APP.getImageURL = function(name, callback) {
+                if (name && /^data:image/.test(name)) {
+                    return void callback('');
+                }
+
                 var mediasSources = getMediasSources();
                 var data = mediasSources[name];
 
@@ -1782,10 +1868,10 @@ define([
             if (type === "sheet" && extension !== 'xlsx') {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
                 filename += '.xlsx';
-            } else if (type === "ooslide" && extension !== "pptx") {
+            } else if (type === "presentation" && extension !== "pptx") {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'pptx');
                 filename += '.pptx';
-            } else if (type === "oodoc" && extension !== "docx") {
+            } else if (type === "doc" && extension !== "docx") {
                 xlsData = x2tConvertDataInternal(x2t, data, filename, 'docx');
                 filename += '.docx';
             }
@@ -1809,9 +1895,9 @@ define([
             var ext = ['.xlsx', '.ods', '.bin', '.csv', '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
-            if (type==="ooslide") {
+            if (type==="presentation") {
                 ext = ['.pptx', /*'.odp',*/ '.bin'];
-            } else if (type==="oodoc") {
+            } else if (type==="doc") {
                 ext = ['.docx', /*'.odt',*/ '.bin'];
             }
 
@@ -2034,10 +2120,10 @@ define([
                 case 'sheet' :
                     newText = EmptyCell(useNewDefault);
                     break;
-                case 'oodoc':
+                case 'doc':
                     newText = EmptyDoc();
                     break;
-                case 'ooslide':
+                case 'presentation':
                     newText = EmptySlide();
                     break;
                 default:
@@ -2094,7 +2180,8 @@ define([
         var setStrictEditing = function () {
             if (APP.isFast) { return; }
             var editor = getEditor();
-            var editing = editor.asc_isDocumentModified();
+            var isModified = editor.asc_isDocumentModified || editor.isDocumentModified;
+            var editing = isModified();
             if (editing) {
                 evOnPatch.fire();
             } else {
@@ -2252,6 +2339,7 @@ define([
                 $contentContainer: $('#cp-app-oo-container')
             };
             toolbar = APP.toolbar = Toolbar.create(configTb);
+            toolbar.showColors();
             Title.setToolbar(toolbar);
 
             if (window.CP_DEV_MODE) {
@@ -2398,9 +2486,9 @@ define([
 
             var type = privateData.ooType;
             var accept = [".bin", ".ods", ".xlsx"];
-            if (type === "ooslide") {
+            if (type === "presentation") {
                 accept = ['.bin', '.odp', '.pptx'];
-            } else if (type === "oodoc") {
+            } else if (type === "doc") {
                 accept = ['.bin', '.odt', '.docx'];
             }
             if (!supportsXLSX()) {
@@ -2466,6 +2554,7 @@ define([
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
             } else if (!privateData.isNewFile) {
                 // This is an empty doc but not a new file: error
+                // XXX clear cache before reloading
                 UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
                     common.gotoURL('');
                 });
@@ -2547,6 +2636,44 @@ define([
                 initializing = false;
                 common.openPadChat(APP.onLocal);
 
+
+                if (!readOnly) {
+                    var cursors = {};
+                    common.openCursorChannel(APP.onLocal);
+                    cursor = common.createCursor(APP.onLocal);
+                    cursor.onCursorUpdate(function (data) {
+                        // Leaving user
+                        if (data && data.leave && data.id) {
+                            // When a netflux user leaves, remove all their cursors
+                            Object.keys(cursors).forEach(function (ooid) {
+                                var d = cursors[ooid];
+                                if (d !== data.id) { return; } // Only continue for the leaving user
+                                // Remove from OO UI
+                                ooChannel.send({
+                                    type: "cursor",
+                                    messages: [{
+                                        cursor: "10;AgAAADIAAAAAAA==",
+                                        time: +new Date(),
+                                        user: ooid,
+                                        useridoriginal: String(ooid).slice(0,-1),
+                                    }]
+                                });
+                                // Remove from memory
+                                delete cursors[ooid];
+                            });
+                            handleNewIds({}, content.ids);
+                        }
+
+                        // Cursor update
+                        if (!data || !data.cursor) { return; }
+                        // Store the new cursor in memory for this user, with their netflux ID
+                        var ooid = Util.find(data.cursor, ['messages', 0, 'user']);
+                        if (ooid) { cursors[ooid] = data.id.slice(0,32); }
+                        // Update cursor in the UI
+                        ooChannel.send(data.cursor);
+                    });
+                }
+
                 if (APP.startWithTemplate) {
                     var template = APP.startWithTemplate;
                     loadTemplate(template.href, template.password, template.content);
@@ -2590,6 +2717,8 @@ define([
 
             var wasMigrating = content.migration;
 
+            var myLocks = getUserLock(getId(), true);
+
             content = json.content;
 
             if (content.saveLock && wasLocked !== content.saveLock) {
@@ -2615,8 +2744,12 @@ define([
                             checkNewCheckpoint();
                         });
                     };
-                    if (editor.asc_isDocumentModified()) {
+                    var isModified = editor.asc_isDocumentModified || function () {
+                        return editor.isDocumentModify;
+                    };
+                    if (isModified()) {
                         setEditable(false);
+                        APP.unsavedLocks = myLocks;
                         APP.onStrictSaveChanges = function () {
                             reload();
                             delete APP.onStrictSaveChanges;

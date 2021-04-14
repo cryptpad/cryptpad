@@ -37,6 +37,7 @@ define([
         var $i = $('<iframe>').attr('id', 'sbox-iframe').attr('src',
             ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
+        $i.attr('allowfullscreen', 'true');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -211,7 +212,6 @@ define([
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
-                        if (loginOpts.createReadme) { Cryptpad.createReadme = true; }
                         if (loginOpts.mergeAnonDrive) { Cryptpad.migrateAnonDrive = true; }
                         // Remove newPadOpts from the hash
                         delete options.loginOpts;
@@ -570,7 +570,7 @@ define([
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
-            var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
+            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar'].indexOf(currentPad.app) !== -1;
 
             var isDeleted = isNewFile && currentPad.hash.length > 0;
             if (isDeleted) {

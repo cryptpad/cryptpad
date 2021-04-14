@@ -19,6 +19,7 @@ define([
     '/common/proxy-manager.js',
     '/customize/application_config.js',
     '/customize/messages.js',
+    '/customize/pages.js',
 ], function (
     $,
     ApiConfig,
@@ -37,7 +38,8 @@ define([
     h,
     ProxyManager,
     AppConfig,
-    Messages)
+    Messages,
+    Pages)
 {
 
     var APP = window.APP = {
@@ -646,11 +648,6 @@ define([
             } else {
                 displayedCategories = [FILES_DATA];
                 currentPath = [FILES_DATA];
-                if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                    var msg = common.fixLinks($('<div>').html(Messages.fm_alert_anonymous));
-                    UI.alert(msg);
-                    proxy.anonymousAlert = true;
-                }
             }
         }
 
@@ -2495,7 +2492,7 @@ define([
         // Get the upload options
         var addSharedFolderModal = function (cb) {
 
-        var docsHref = common.getBounceURL("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners");
+            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners"));
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -2508,7 +2505,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-app-drive-sf-owned', Messages.sharedFolders_create_owned, true),
-                    UI.createHelper(docsHref, Messages.creation_owned1) // TODO
+                    UI.createHelper(docsHref, Messages.creation_owned1)
                 ]),
             ]);
 
@@ -4399,7 +4396,7 @@ define([
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
                                 UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
-                                UI.createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
+                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                             ]),
                         ]);
                         return void UI.confirm(convertContent, function(res) {

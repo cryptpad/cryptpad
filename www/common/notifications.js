@@ -7,7 +7,8 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages) {
+    '/customize/pages.js',
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages) {
 
     var handlers = {};
 
@@ -395,12 +396,66 @@ define([
     handlers['SAFE_LINKS_DEFAULT'] = function (common, data) {
         var content = data.content;
         content.getFormatText = function () {
-            return Messages.settings_safeLinkDefault;
+            var msg = Pages.setHTML(h('span'), Messages.settings_safeLinkDefault);
+            var i = msg.querySelector('i');
+            if (i) { i.classList = 'fa fa-shhare-alt'; }
+            return msg.innerHTML;
         };
 
         content.handler = function () {
             common.openURL('/settings/#security');
         };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['BROADCAST_SURVEY'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            return Messages.broadcast_newSurvey;
+        };
+        content.handler = function () {
+            common.openUnsafeURL(msg.url);
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['BROADCAST_CUSTOM'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        var text = msg.content;
+        var defaultL = msg.defaultLanguage;
+        var myLang = data.lang || Messages._languageUsed;
+        // Check if our language is available
+        var toShow = text[myLang];
+        // Otherwise, fallback to the default language if it exists
+        if (!toShow && defaultL) { toShow = text[defaultL]; }
+        // No translation available, dismiss
+        if (!toShow) { return defaultDismiss(common, data)(); }
+
+        var slice = toShow.length > 200;
+        toShow = Util.fixHTML(toShow);
+
+        content.getFormatText = function () {
+            if (slice) {
+                return toShow.slice(0, 200) + '...';
+            }
+            return toShow;
+        };
+        if (slice) {
+            content.handler = function () {
+                var content = h('div', [
+                    h('h4', Messages.broadcast_newCustom),
+                    h('div.cp-admin-message', toShow)
+                ]);
+                UI.alert(content);
+            };
+        }
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }

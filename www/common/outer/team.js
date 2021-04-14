@@ -130,6 +130,9 @@ define([
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
+        if (ctx.store.calendar) {
+            ctx.store.calendar.closeTeam(teamId);
+        }
         if (ctx.store.mailbox) {
             ctx.store.mailbox.close('team-'+teamId, function () {
                 // Close team mailbox
@@ -153,6 +156,13 @@ define([
         if (chatChannel) { list.push(chatChannel); }
         if (membersChannel) { list.push(membersChannel); }
         if (mailboxChannel) { list.push(mailboxChannel); }
+
+        if (store.proxy.calendars) {
+            var cList = Object.keys(store.proxy.calendars).map(function (c) {
+                return store.proxy.calendars[c].channel;
+            });
+            list = list.concat(cList);
+        }
 
         var state = store.roster.getState();
         if (state.members) {
@@ -338,6 +348,7 @@ define([
                 });
             }, true);
         }).nThen(function () {
+            if (ctx.store.calendar) { ctx.store.calendar.openTeam(id); }
             cb();
         });
     };
@@ -1249,6 +1260,13 @@ define([
             team.userObject.setReadOnly(!secret.keys.secondaryKey, secret.keys.secondaryKey);
         }
 
+        // Upgrade? update calendar rights
+        if (secret.keys.secondaryKey) {
+            try {
+                ctx.store.modules.calendar.upgradeTeam(teamId);
+            } catch (e) { console.error(e); }
+        }
+
         if (!secret.keys.secondaryKey && team.rpc) {
             team.rpc.destroy();
         }
@@ -1364,15 +1382,15 @@ define([
 
         // Viewer to editor
         if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
-            changeEditRights(ctx, teamId, user, true, function (err) {
-                return void cb({error: err});
+            changeEditRights(ctx, teamId, user, true, function (obj) {
+                return void cb(obj);
             });
         }
 
         // Editor to viewer
         if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
-            changeEditRights(ctx, teamId, user, false, function (err) {
-                return void cb({error: err});
+            changeEditRights(ctx, teamId, user, false, function (obj) {
+                return void cb(obj);
             });
         }
 

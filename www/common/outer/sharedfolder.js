@@ -186,7 +186,7 @@ define([
                 ChainPad: ChainPad,
                 classic: true,
                 network: network,
-                Cache: Cache, // ICE shared-folder cache
+                Cache: Cache, // shared-folder cache
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners

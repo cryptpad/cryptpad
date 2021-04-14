@@ -202,6 +202,35 @@ define([
 
     }, _alert("Login block is not working (write/read/remove)"));
 
+    assert(function (cb) {
+        var url = '/common/onlyoffice/v4/web-apps/apps/spreadsheeteditor/main/index.html';
+        var expect = {
+            'cross-origin-resource-policy': 'cross-origin',
+            'cross-origin-embedder-policy': 'require-corp',
+        };
+
+        $.ajax(url, {
+            complete: function (xhr) {
+                cb(!Object.keys(expect).some(function (k) {
+                    var response = xhr.getResponseHeader(k);
+                    console.log(k, response);
+                    return response !== expect[k];
+                }));
+            },
+        });
+    }, _alert("Missing HTTP headers required for XLSX export"));
+
+    assert(function (cb) {
+        cb(true);
+        $.ajax('/api/broadcast', {
+            dataType: 'text',
+            complete: function (xhr) {
+                console.log(xhr);
+                cb(xhr.status === 200);
+            },
+        });
+    }, _alert("/api/broadcast is not available"));
+
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
             return h('td', cell);

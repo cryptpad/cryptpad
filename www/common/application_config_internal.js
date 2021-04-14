@@ -12,7 +12,7 @@ define(function() {
      * You should never remove the drive from this list.
      */
     config.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
-                                /*'oodoc', 'ooslide',*/ 'file', /*'todo',*/ 'contacts'];
+                                /*'doc', 'presentation',*/ 'file', /*'todo',*/ 'contacts' /*, 'calendar' */];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'notifications', 'support'];
+    config.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support', 'calendar'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -43,7 +43,6 @@ define(function() {
     /* You can display a link to your own privacy policy in the static pages footer.
      * To do so, set the following value to the absolute URL of your privacy policy.
      */
-    config.privacy = '/privacy.html';
     // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
 
     /*  Cryptpad apps use a common API to display notifications to users
@@ -115,8 +114,8 @@ define(function() {
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
         kanban: 'cptools-kanban',
-        oodoc: 'fa-file-word-o',
-        ooslide: 'fa-file-powerpoint-o',
+        doc: 'fa-file-word-o',
+        presentation: 'fa-file-powerpoint-o',
         sheet: 'cptools-sheet',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
@@ -161,8 +160,6 @@ define(function() {
     // SharedWorkers allow us to load only one websocket and one user drive for all the browser tabs,
     // making it much faster to open new tabs.
     config.disableWorkers = false;
-
-    //config.surveyURL = "";
 
     // Teams are always loaded during the initial loading screen (for the first tab only if
     // SharedWorkers are available). Allowing users to be members of multiple teams can

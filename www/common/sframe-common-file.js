@@ -10,10 +10,11 @@ define([
     '/common/common-hash.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
+    '/customize/pages.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages) {
+], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -327,7 +328,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
-                    createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
+                    createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                 ]),
                 manualStore
             ]);
@@ -382,7 +383,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-upload-owned', Messages.uploadFolder_modal_owner, modalState.owned),
-                    createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
+                    createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                 ]),
                 manualStore
             ]);

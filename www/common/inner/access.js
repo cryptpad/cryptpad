@@ -336,6 +336,7 @@ define([
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,
                         href: href,
+                        calendar: opts.calendar,
                         password: data.password || priv.password,
                         title: data.title || title
                     }, {
@@ -841,7 +842,7 @@ define([
 
             // In the properties, we should have the edit href if we know it.
             // We should know it because the pad is stored, but it's better to check...
-            if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
+            if (!data.noEditPassword && !opts.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
                 var isOO = parsed.type === 'sheet';
                 var isFile = parsed.hashData.type === 'file';
                 var isSharedFolder = parsed.type === 'drive';
@@ -984,7 +985,7 @@ define([
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
                 });
-                $d.append(h('br'));
+                if (!opts.noEditPassword) { $d.append(h('br')); }
                 $d.append(h('div', [
                     h('label', Messages.access_destroyPad),
                     h('br'),
@@ -1016,7 +1017,7 @@ define([
             var owned = Modal.isOwned(Env, data);
 
             // Request edit access
-            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned && !opts.calendar) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
@@ -1054,7 +1055,7 @@ define([
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
-            if (owned === true) {
+            if (owned === true && !opts.calendar) {
                 var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
                 var $cbox = $(cbox);
                 var spinner = UI.makeSpinner($cbox);
