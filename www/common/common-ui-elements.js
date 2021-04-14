@@ -1957,6 +1957,7 @@ define([
             if (p === 'todo') { return; }
             if (p === 'file') { return; }
             if (p === 'accounts') { return; }
+            if (p === 'calendar') { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;

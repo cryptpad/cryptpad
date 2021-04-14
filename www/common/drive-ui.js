@@ -2543,6 +2543,7 @@ define([
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
                 if (type === 'accounts') { return; }
+                if (type === 'calendar') { return; }
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
