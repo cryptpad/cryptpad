@@ -1171,7 +1171,7 @@
     "admin_surveyActive": "Open survey",
     "broadcast_surveyURL": "Survey link",
     "admin_broadcastTitle": "Broadcast message",
-    "admin_broadcastHint": "Send a message to all users on this instance. All existing and new users will receive it as a notification. Preview messages before sending them with **Preview notification**. Preview notifications have a red icon and are visible only to you.",
+    "admin_broadcastHint": "Send a message to all users on this instance. All existing and new users will receive it as a notification. Preview messages before sending them with <b>Preview notification</b>. Preview notifications have a red icon and are visible only to you.",
     "admin_broadcastButton": "Send",
     "admin_broadcastActive": "Active message",
     "admin_broadcastCancel": "Delete message",
