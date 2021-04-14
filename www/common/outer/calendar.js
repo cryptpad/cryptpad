@@ -107,7 +107,13 @@ define([
 
         if (ev.isAllDay) {
             if (ev.startDay) { ev.start = +new Date(ev.startDay); }
-            if (ev.endDay) { ev.end = +new Date(ev.endDay); }
+            if (ev.endDay) {
+                var endDate = new Date(obj.endDay);
+                endDate.setHours(23);
+                endDate.setMinutes(59);
+                endDate.setSeconds(59);
+                obj.end = +endDate;
+            }
         }
 
         // XXX add a limit to make sure we don't go too far in the past?
