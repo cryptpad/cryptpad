@@ -104,10 +104,6 @@ Messages.calendar_allDay = "All day";
         });
     };
     var newEvent = function (data, cb) {
-        var start = data.start;
-        var end = data.end;
-        data.start = +new Date(start._date);
-        data.end = +new Date(end._date);
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -173,6 +169,14 @@ Messages.calendar_allDay = "All day";
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
+                if (obj.isAllDay && obj.startDay) { obj.start = +new Date(obj.startDay); }
+                if (obj.isAllDay && obj.endDay) {
+                    var endDate = new Date(obj.endDay);
+                    endDate.setHours(23);
+                    endDate.setMinutes(59);
+                    endDate.setSeconds(59);
+                    obj.end = +endDate;
+                }
                 if (c.readOnly) {
                     obj.isReadOnly = true;
                 }
@@ -678,15 +682,18 @@ Messages.calendar_allDay = "All day";
             // Use template to hide "recurrenceRule" from the detailPopup or at least to use
             // a non technical value
 
+            var startDate = event.start._date;
+            var endDate = event.end._date;
+
             var schedule = {
                 id: Util.uid(),
                 calendarId: event.calendarId,
                 title: Util.fixHTML(event.title),
                 category: "time",
                 location: Util.fixHTML(event.location),
-                start: event.start,
+                start: +startDate,
                 isAllDay: event.isAllDay,
-                end: event.end,
+                end: +endDate,
             };
 
             newEvent(schedule, function (err) {
@@ -884,6 +891,31 @@ Messages.calendar_allDay = "All day";
             }
             var isUpdate = Boolean($el.find('#tui-full-calendar-schedule-title').val());
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
+
+            var $cbox = $el.find('#tui-full-calendar-schedule-allday');
+            var $start = $el.find('.tui-full-calendar-section-start-date');
+            var $dash = $el.find('.tui-full-calendar-section-date-dash');
+            var $end = $el.find('.tui-full-calendar-section-end-date');
+            var allDay = $cbox.is(':checked');
+            if (allDay) {
+                $start.hide();
+                $dash.hide();
+                $end.hide();
+            }
+            $el.find('.tui-full-calendar-section-allday').click(function () {
+                setTimeout(function () {
+                    var allDay = $cbox.is(':checked');
+                    if (allDay) {
+                        $start.hide();
+                        $dash.hide();
+                        $end.hide();
+                        return;
+                    }
+                    $start.show();
+                    $dash.show();
+                    $end.show();
+                });
+            });
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);
