@@ -43,7 +43,6 @@ define(function() {
     /* You can display a link to your own privacy policy in the static pages footer.
      * To do so, set the following value to the absolute URL of your privacy policy.
      */
-    //config.privacy = '/privacy.html';
     // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
 
     /*  Cryptpad apps use a common API to display notifications to users
