@@ -135,10 +135,6 @@ define([
         Exports.mergeAnonDrive = 1;
     };
 
-    var setCreateReadme = function () {
-        Exports.createReadme = 1;
-    };
-
     Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
         if (typeof(cb) !== 'function') { return; }
 
@@ -372,7 +368,6 @@ define([
                     proxy.curvePrivate = opt.curvePrivate;
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
-                    setCreateReadme();
                     if (shouldImport) {
                         setMergeAnonDrive();
                     } else {
@@ -435,9 +430,6 @@ define([
             var loginOpts = {};
             if (Exports.mergeAnonDrive) {
                 loginOpts.mergeAnonDrive = 1;
-            }
-            if (Exports.createReadme) {
-                loginOpts.createReadme = 1;
             }
             h = Hash.getLoginURL(h, loginOpts);
 

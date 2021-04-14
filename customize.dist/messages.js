@@ -120,10 +120,6 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    messages.driveReadme = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","contenteditable":"true","spellcheck":"false","style":"color: rgb(51, 51, 51);"},' +
-        '[["H1",{},["'+messages.readme_welcome+'"]],["P",{},["'+messages.readme_p1+'"]],["P",{},["'+messages.readme_p2+'"]],["HR",{},[]],["H2",{},["'+messages.readme_cat1+'",["BR",{},[]]]],["UL",{},[["LI",{},["'+messages._getKey("readme_cat1_l1", ['",["STRONG",{},["'+messages.newButton+'"]],"', '",["STRONG",{},["'+messages.type.pad+'"]],"'])+'"]],["LI",{},["'+messages.readme_cat1_l2+'"]],["LI",{},["'+messages._getKey("readme_cat1_l3", ['",["STRONG",{},["'+messages.fm_unsortedName+'"]],"'])+'",["UL",{},[["LI",{},["'+messages._getKey("readme_cat1_l3_l1", ['",["STRONG",{},["'+messages.fm_rootName+'"]],"'])+'"]],["LI",{},["'+messages.readme_cat1_l3_l2+'"]]]]]],["LI",{},["'+messages._getKey("readme_cat1_l4", ['",["STRONG",{},["'+messages.fm_trashName+'"]],"'])+'",["BR",{},[]]]]]],["P",{},[["BR",{},[]]]],["H2",{},["'+messages.readme_cat2+'",["BR",{},[]]]],["UL",{},[["LI",{},["'+messages._getKey("readme_cat2_l1", ['",["STRONG",{},["'+messages.shareButton+'"]],"', '",["STRONG",{},["'+messages.edit+'"]],"', '",["STRONG",{},["'+messages.view+'"]],"'])+'"]],["LI",{},["'+messages.readme_cat2_l2+'"]]]],["P",{},[["BR",{},[]]]],["H2",{},["'+messages.readme_cat3+'"]],["UL",{},[["LI",{},["'+messages.readme_cat3_l1+'"]],["LI",{},["'+messages.readme_cat3_l2+'"]],["LI",{},["'+messages.readme_cat3_l3+'",["BR",{},[]]]]]]],' +
-        '{"metadata":{"defaultTitle":"' + messages.driveReadmeTitle + '","title":"' + messages.driveReadmeTitle + '"}}]';
-
     return messages;
 
 });

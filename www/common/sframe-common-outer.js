@@ -212,7 +212,6 @@ define([
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
-                        if (loginOpts.createReadme) { Cryptpad.createReadme = true; }
                         if (loginOpts.mergeAnonDrive) { Cryptpad.migrateAnonDrive = true; }
                         // Remove newPadOpts from the hash
                         delete options.loginOpts;
