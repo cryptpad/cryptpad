@@ -2553,16 +2553,6 @@ define([
                 postMessage("DISCONNECT");
             });
         }).nThen(function (waitFor) {
-            if (common.createReadme || sessionStorage.createReadme) {
-                var data = {
-                    driveReadme: Messages.driveReadme,
-                    driveReadmeTitle: Messages.driveReadmeTitle,
-                };
-                postMessage("CREATE_README", data, waitFor(function (e) {
-                    if (e && e.error) { return void console.error(e.error); }
-                }));
-            }
-        }).nThen(function (waitFor) {
             if (common.migrateAnonDrive || sessionStorage.migrateAnonDrive) {
                 common.mergeAnonDrive(waitFor());
             }
