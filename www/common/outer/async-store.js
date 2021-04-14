@@ -880,38 +880,6 @@ define([
         };
 
         /**
-         * add a "What is CryptPad?" pad in the drive
-         * data
-         *   - driveReadme
-         *   - driveReadmeTitle
-         */
-        Store.createReadme = function (clientId, data, cb) {
-            require(['/common/cryptget.js'], function (Crypt) {
-                var hash = Hash.createRandomHash('pad');
-                Crypt.put(hash, data.driveReadme, function (e) {
-                    if (e) {
-                        return void cb({ error: "Error while creating the default pad:"+ e});
-                    }
-                    var href = '/pad/#' + hash;
-                    var channel = Hash.hrefToHexChannelId(href, null);
-                    var fileData = {
-                        href: href,
-                        channel: channel,
-                        title: data.driveReadmeTitle,
-                        owners: [ store.proxy.edPublic ],
-                        readme: true
-                    };
-                    Store.addPad(clientId, fileData, cb);
-                }, {
-                    metadata: {
-                        owners: [ store.proxy.edPublic ],
-                    },
-                });
-            });
-        };
-
-
-        /**
          * Merge the anonymous drive into the user drive at registration
          * data
          *   - anonHash

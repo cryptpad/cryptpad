@@ -108,6 +108,7 @@ define([
         // only display the legal part of the footer if it has content
         if (terms || Pages.privacyLink || Pages.imprintLink) {
             legalFooter = footerCol('footer_legal', [
+                terms,
                 Pages.privacyLink,
                 Pages.imprintLink,
             ]);
