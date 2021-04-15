@@ -95,8 +95,6 @@ define([
         var ev = Util.clone(_ev);
         var uid = ev.id;
 
-        //ctx.store.data.lastVisit = 1617922639683; // XXX Friday Apr 09, used to test
-
         // Clear reminders for this event
         if (Array.isArray(reminders[uid])) {
             reminders[uid].forEach(function (to) { clearTimeout(to); });
@@ -123,11 +121,6 @@ define([
             delete reminders[uid];
             return;
         }
-
-        // XXX
-        // TODO
-        // use custom notifications per event
-        // if you missed a notification, show it instantly (eg: load cryptpad 45min before an event, show the 1h notification)
 
         var send = function () {
             var hide = Util.find(ctx, ['store', 'proxy', 'settings', 'general', 'calendar', 'hideNotif']);
@@ -524,6 +517,7 @@ define([
         c.proxy.content = c.proxy.content || {};
         Object.keys(json).forEach(function (uid) {
             c.proxy.content[uid] = json[uid];
+            addReminders(ctx, id, json[uid]);
         });
 
         Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
