@@ -107,6 +107,12 @@ Messages.calendar_allDay = "All day";
             cb(null, obj);
         });
     };
+    var importICSCalendar = function (data, cb) {
+        APP.module.execCommand('IMPORT_ICS', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
     var newEvent = function (data, cb) {
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
@@ -466,7 +472,21 @@ Messages.calendar_allDay = "All day";
                     },
                     content: h('span', Messages.importButton),
                     action: function (e) {
-                        e.stopPropagation();
+                        UIElements.importContent('text/calendar', function (res) {
+                            Export.import(res, id, function (err, json) {
+                                if (err) { return void UI.warn(Messages.importError); }
+                                importICSCalendar({
+                                    id: id,
+                                    json: json
+                                }, function (err) {
+                                    if (err) { return void UI.warn(Messages.error); }
+                                    UI.log(Messages.saved);
+                                });
+
+                            });
+                        }, {
+                            accept: ['.ics']
+                        })();
                         return true;
                     }
                 });

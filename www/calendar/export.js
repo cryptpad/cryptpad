@@ -99,13 +99,12 @@ define([
                         'TRIGGER:'+str,
                         'END:VALARM'
                     ]);
-                    // XXX ACTION:EMAIL
-                    // XXX ATTENDEE:mailto:xxx@xxx.xxx
-                    // XXX SUMMARY:Alarm notification
                 });
             }
 
-            // XXX add hidden data (from imports)
+            if (Array.isArray(data.cp_hidden)) {
+                Array.prototype.push.apply(ICS, data.cp_hidden);
+            }
 
             ICS.push('END:VEVENT');
         });
@@ -113,6 +112,86 @@ define([
         ICS.push('END:VCALENDAR');
 
         return new Blob([ ICS.join('\n') ], { type: 'text/calendar;charset=utf-8' });
+    };
+
+    module.import = function (content, id, cb) {
+        require(['/lib/ical.min.js'], function () {
+            var ICAL = window.ICAL;
+            var res = {};
+
+            try {
+                var jcalData = ICAL.parse(content);
+                var vcalendar = new ICAL.Component(jcalData);
+            } catch (e) {
+                return void cb(e);
+            }
+
+            var method = vcalendar.getFirstPropertyValue('method');
+            if (method !== "PUBLISH") { return void cb('NOT_SUPPORTED'); }
+
+            var events = vcalendar.getAllSubcomponents('vevent');
+            events.forEach(function (ev) {
+                var uid = ev.getFirstPropertyValue('uid');
+                if (!uid) { return; }
+
+                // Get start and end time
+                var isAllDay = false;
+                var start = ev.getFirstPropertyValue('dtstart');
+                var end = ev.getFirstPropertyValue('dtend');
+                if (start.isDate && end.isDate) {
+                    isAllDay = true;
+                    start = String(start);
+                    end.adjust(-1); // Substract one day
+                    end = String(end);
+                } else {
+                    start = +start.toJSDate();
+                    end = +end.toJSDate();
+                }
+
+                // Store other properties
+                var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'dtstamp'];
+                var hidden = [];
+                ev.getAllProperties().forEach(function (p) {
+                    if (used.indexOf(p.name) !== -1) { return; }
+                    // This is an unused property
+                    hidden.push(p.toICALString());
+                });
+
+                // Get reminders
+                var reminders = [];
+                ev.getAllSubcomponents('valarm').forEach(function (al) {
+                    var action = al.getFirstPropertyValue('action');
+                    if (action !== 'DISPLAY') {
+                        // XXX email: maybe keep a notification in CryptPad?
+                        hidden.push(al.toString());
+                        return;
+                    }
+                    var trigger = al.getFirstPropertyValue('trigger');
+                    var minutes = -trigger.toSeconds() / 60;
+                    if (reminders.indexOf(minutes) === -1) { reminders.push(minutes); }
+                });
+
+                // Create event
+                res[uid] = {
+                    calendarId: id,
+                    id: uid,
+                    category: 'time',
+                    title: ev.getFirstPropertyValue('summary'),
+                    location: ev.getFirstPropertyValue('location'),
+                    isAllDay: isAllDay,
+                    start: start,
+                    end: end,
+                    reminders: reminders,
+                    cp_hidden: hidden
+                };
+
+                if (!hidden.length) { delete res[uid].cp_hidden; }
+                if (!reminders.length) { delete res[uid].reminders; }
+
+            });
+
+            cb(null, res);
+        });
     };
 
     return module;

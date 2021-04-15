@@ -434,6 +434,22 @@ ctx.calendars[channel] = {
         });
     };
 
+    var importICSCalendar = function (ctx, data, cId, cb) {
+        var id = data.id;
+        var c = ctx.calendars[id];
+        if (!c || !c.proxy) { return void cb({error: "ENOENT"}); }
+        var json = data.json;
+        c.proxy.content = c.proxy.content || {};
+        Object.keys(json).forEach(function (uid) {
+            c.proxy.content[uid] = json[uid];
+        });
+
+        Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
+            sendUpdate(ctx, c);
+            cb();
+        });
+    };
+
     var openCalendar = function (ctx, data, cId, cb) {
         var secret = Hash.getSecrets('calendar', data.hash, data.password);
         var hash = Hash.getEditHashFromKeys(secret);
@@ -784,6 +800,10 @@ ctx.calendars[channel] = {
             if (cmd === 'IMPORT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
                 return void importCalendar(ctx, data, clientId, cb);
+            }
+            if (cmd === 'IMPORT_ICS') {
+                if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                return void importICSCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'ADD') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
