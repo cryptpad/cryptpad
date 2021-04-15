@@ -54,7 +54,7 @@ define([
     var metadataMgr;
     var sframeChan;
 
-Messages.calendar = "Calendar"; // XXX
+Messages.calendar = "BETA Calendar"; // XXX
 Messages.calendar_default = "My calendar"; // XXX
 Messages.calendar_new = "New calendar"; // XXX
 Messages.calendar_day = "Day";
