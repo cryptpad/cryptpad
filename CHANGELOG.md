@@ -2,7 +2,7 @@
 
 ## Goals
 
-Our main goal for this release were complete the first steps of our ["Dialogue" project](https://nlnet.nl/project/CryptPadForms/), which will introduce surveys into CryptPad. We've also put condiderable effort towards addressing some configuration issues, correcting some inconsistently translated UI, and writing some new documentation.
+Our main goal for this release was to complete the first steps of our ["Dialogue" project](https://nlnet.nl/project/CryptPadForms/), which will introduce surveys into CryptPad. We've also put considerable effort towards addressing some configuration issues, correcting some inconsistently translated UI, and writing some new documentation.
 
 ## Update notes
 
