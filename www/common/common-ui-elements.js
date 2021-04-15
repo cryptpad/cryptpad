@@ -127,7 +127,7 @@ define([
         dcAlert = undefined;
     };
 
-    var importContent = function (type, f, cfg) {
+    var importContent = UIElements.importContent = function (type, f, cfg) {
         return function () {
             var $files = $('<input>', {type:"file"});
             if (cfg && cfg.accept) {
