@@ -1179,7 +1179,7 @@
     "broadcast_newCustom": "Mitteilung der Administratoren",
     "admin_broadcastCancel": "Mitteilung löschen",
     "admin_broadcastActive": "Aktive Mitteilung",
-    "admin_broadcastHint": "Sende eine Mitteilung an alle Benutzer auf dieser Instanz. Alle existierenden und neue Benutzer werden sie als Benachrichtigung erhalten. Du kannst sie mit **Vorschau der Benachrichtigung** überprüfen. Die Vorschau ist mit einem roten Symbol gekennzeichnet und nur für dich sichtbar.",
+    "admin_broadcastHint": "Sende eine Mitteilung an alle Benutzer auf dieser Instanz. Alle existierenden und neue Benutzer werden sie als Benachrichtigung erhalten. Du kannst sie mit <b>Vorschau der Benachrichtigung</b> überprüfen. Die Vorschau ist mit einem roten Symbol gekennzeichnet und nur für dich sichtbar.",
     "broadcast_preview": "Vorschau der Benachrichtigung",
     "admin_maintenanceCancel": "Wartungsarbeiten stornieren"
 }
