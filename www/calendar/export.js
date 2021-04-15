@@ -162,9 +162,8 @@ define([
                 ev.getAllSubcomponents('valarm').forEach(function (al) {
                     var action = al.getFirstPropertyValue('action');
                     if (action !== 'DISPLAY') {
-                        // XXX email: maybe keep a notification in CryptPad?
+                        // Email notification: keep it in "hidden" and create a cryptpad notification
                         hidden.push(al.toString());
-                        return;
                     }
                     var trigger = al.getFirstPropertyValue('trigger');
                     var minutes = -trigger.toSeconds() / 60;
