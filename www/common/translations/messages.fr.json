@@ -1165,7 +1165,7 @@
     "admin_broadcastCancel": "Effacer le message",
     "admin_broadcastActive": "Message actif",
     "admin_broadcastButton": "Envoyer",
-    "admin_broadcastHint": "Envoyez un message à tous les utilisateurs de cette instance. Tous les utilisateurs existants et nouveaux le recevront sous forme de notification. Prévisualisez les messages avant de les envoyer avec **Aperçu de la notification**. Les aperçus de notifications ont une icône rouge et ne sont visibles que par vous.",
+    "admin_broadcastHint": "Envoyez un message à tous les utilisateurs de cette instance. Tous les utilisateurs existants et nouveaux le recevront sous forme de notification. Prévisualisez les messages avant de les envoyer avec <b>Aperçu de la notification</b>. Les aperçus de notifications ont une icône rouge et ne sont visibles que par vous.",
     "admin_broadcastTitle": "Message d'annonce",
     "broadcast_surveyURL": "Lien vers l'enquête",
     "admin_surveyActive": "Ouvrir l'enquête",

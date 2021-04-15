@@ -1,4 +1,36 @@
-# WIP
+# 4.4.0
+
+## Goals
+
+## Update notes
+
+* no default privacy policy
+* nginx update
+  * calendar
+  * /api/broadcast
+* clarified TELEMETRY in the 4.3.1 release notes
+
+## Features
+
+* prompt premium users to cancel their subscriptions before deleting their accounts
+* check that headers for XLSX export are correctly set via the checkup app
+* remove HTML from most translations
+* localize links to the docs where a translation exists
+* implement admin-broadcast features
+* add "getting started" banner in the drive
+* calendars: BETA
+* clear document cache when visiting /logout/
+
+## Bug fixes
+
+* bad channel IDs stored in your drive or accessed via bad links (corrupted somehow)
+  * don't try to join invalid channels
+  * don't try to get their metadata
+* guard against some type errors in the support page
+* remove redundant link from OpenCollective popup
+* guard against a type error when copying a pad in nodrive mode
+* correctly navigate to anchors when clicking links to anchors in read-only rich-text pads
+
 
 * OnlyOffice
   * inform OnlyOffice of userlist changes
@@ -16,19 +48,6 @@
   * **soft release of OnlyOffice presentations and docs**
     * if you've been using them, tell your users to export them before they break
     * we still don't recommend that you use either editor!
-* bad channel IDs stored in your drive or accessed via bad links (corrupted somehow)
-  * don't try to join invalid channels
-  * don't try to get their metadata
-* prompt premium users to cancel their subscriptions before deleting their accounts
-* check that headers for XLSX export are correctly set via the checkup app
-* guard against some type errors in the support page
-* remove default privacy policy
-* remove HTML from most translations
-* localize links to the docs where a translation exists
-* remove redundant link from OpenCollective popup
-* guard against a type error when copying a pad in nodrive mode
-* warn premium users that their subscription won't be cancelled automatically when they delete their account
-* implement admin-broadcast features
 
 # 4.3.1
 
