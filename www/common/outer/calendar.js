@@ -147,7 +147,9 @@ define([
         var sendNotif = function () { ctx.Store.onReadyEvt.reg(send); };
 
         var notifs = ev.reminders || [];
-        notifs.sort();
+        notifs.sort(function (a, b) {
+            return a - b;
+        });
 
         notifs.some(function (delayMinutes) {
             var delay = delayMinutes * 60000;
