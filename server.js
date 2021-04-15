@@ -111,6 +111,12 @@ var setHeaders = (function () {
                 "Cross-Origin-Embedder-Policy": 'require-corp',
             });
 
+            if (Env.NO_SANDBOX) {
+                applyHeaderMap(res, {
+                    "Cross-Origin-Resource-Policy": 'cross-origin',
+                });
+            }
+
             // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
             // when duplicated by NGINX in production environments
             if (/^\/api\/(broadcast|config)/.test(req.url)) {
