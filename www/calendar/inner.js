@@ -15,12 +15,14 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
+    '/calendar/export.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
     '/common/jscolor.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/calendar/app-calendar.less',
@@ -41,9 +43,11 @@ define([
     Messages,
     AppConfig,
     Calendar,
+    Export,
     Share, Access, Properties
     )
 {
+    var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
     };
@@ -453,6 +457,65 @@ Messages.calendar_allDay = "All day";
                     return true;
                 }
             });
+
+            if (!data.readOnly) {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'fa fa-upload',
+                    },
+                    content: h('span', Messages.importButton),
+                    action: function (e) {
+                        e.stopPropagation();
+                        return true;
+                    }
+                });
+            }
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-download',
+                },
+                content: h('span', Messages.exportButton),
+                action: function (e) {
+                    e.stopPropagation();
+                    var cal = APP.calendars[id];
+                    var suggestion = Util.find(cal, ['content', 'metadata', 'title']);
+                    var types = [];
+                    types.push({
+                        tag: 'a',
+                        attributes: {
+                            'data-value': '.ics',
+                            'href': '#'
+                        },
+                        content: '.ics'
+                    });
+                    var dropdownConfig = {
+                        text: '.ics', // Button initial text
+                        caretDown: true,
+                        options: types, // Entries displayed in the menu
+                        isSelect: true,
+                        initialValue: '.ics',
+                        common: common
+                    };
+                    var $select = UIElements.createDropdown(dropdownConfig);
+                    UI.prompt(Messages.exportPrompt,
+                        Util.fixFileName(suggestion), function (filename)
+                    {
+                        if (!(typeof(filename) === 'string' && filename)) { return; }
+                        var ext = $select.getValue();
+                        filename = filename + ext;
+                        var blob = Export.main(cal.content);
+                        SaveAs(blob, filename);
+                    }, {
+                        typeInput: $select[0]
+                    });
+                    return true;
+                }
+            });
+
+
+
             options.push({
                 tag: 'a',
                 attributes: {
