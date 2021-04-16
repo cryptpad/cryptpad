@@ -2288,7 +2288,8 @@ define([
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
-                driveEvents: !rdyCfg.noDrive //rdyCfg.driveEvents // Boolean
+                driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
+                lastVisit: Number(localStorage.lastVisit) || undefined
             };
             common.userHash = userHash;
 
@@ -2560,6 +2561,12 @@ define([
                 AppConfig.afterLogin(common, waitFor());
             }
         }).nThen(function () {
+            // Last visit is used to warn you about missed events from your calendars
+            localStorage.lastVisit = +new Date();
+            setInterval(function () {
+                // Bump last visit every minute
+                localStorage.lastVisit = +new Date();
+            }, 60000);
             f(void 0, env);
             if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
         });

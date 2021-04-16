@@ -169,6 +169,18 @@ proxy.mailboxes = {
     var dismiss = function (ctx, data, cId, cb) {
         var type = data.type;
         var hash = data.hash;
+
+        // Reminder messages don't persist
+        if (/^REMINDER\|/.test(hash)) {
+            cb();
+            delete ctx.boxes.reminders.content[hash];
+            hideMessage(ctx, type, hash, ctx.clients.filter(function (clientId) {
+                return clientId !== cId;
+            }));
+            return;
+        }
+
+
         var box = ctx.boxes[type];
         if (!box) { return void cb({error: 'NOT_LOADED'}); }
         var m = box.data || {};
@@ -488,7 +500,13 @@ proxy.mailboxes = {
                     msg: ctx.boxes[type].content[h],
                     hash: h
                 };
-                showMessage(ctx, type, message, cId);
+                showMessage(ctx, type, message, cId, function (obj) {
+                    if (obj.error) { return; }
+                    // Notify only if "requiresNotif" is true
+                    if (!message.msg || !message.msg.requiresNotif) { return; }
+                    Notify.system(undefined, obj.msg);
+                    delete message.msg.requiresNotif;
+                });
             });
         });
         // Subscribe to new notifications
@@ -528,6 +546,10 @@ proxy.mailboxes = {
             initializeHistory(ctx);
         }
 
+        ctx.boxes.reminders = {
+            content: {}
+        };
+
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
             var m = mailboxes[key];
@@ -565,6 +587,21 @@ proxy.mailboxes = {
                 type: type,
                 content: content,
                 sender: store.proxy.curvePublic
+            });
+        };
+
+        mailbox.showMessage = function (type, msg, cId, cb) {
+            if (type === "reminders" && msg) {
+                ctx.boxes.reminders.content[msg.hash] = msg.msg;
+                if (!ctx.clients.length) {
+                    ctx.boxes.reminders.content[msg.hash].requiresNotif = true;
+                }
+                // Hide existing messages for this event
+                hideMessage(ctx, type, msg.hash, ctx.clients);
+            }
+            showMessage(ctx, type, msg, cId, function (obj) {
+                Notify.system(undefined, obj.msg);
+                if (cb) { cb(); }
             });
         };
 
