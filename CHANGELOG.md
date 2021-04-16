@@ -2,52 +2,55 @@
 
 ## Goals
 
+Our main goal for this release was to complete the first steps of our ["Dialogue" project](https://nlnet.nl/project/CryptPadForms/), which will introduce surveys into CryptPad. We've also put considerable effort towards addressing some configuration issues, correcting some inconsistently translated UI, and writing some new documentation.
+
 ## Update notes
 
-* no default privacy policy
-* nginx update
-  * calendar
-  * /api/broadcast
-* clarified TELEMETRY in the 4.3.1 release notes
+This release removes the default privacy policy that has been included in CryptPad up until now. It included some assertions that were true of our own instance (CryptPad.fr) which we couldn't guarantee on third-party instances. We've updated our custom configuration to link to a privacy policy that was written in a rich text pad. You can do the same on your instance by editing `cryptpad/customize/application_config.js` to include the absolute URL of your instance, like so: `AppConfig.privacy = "https://cryptpad.your.website/privacy.html";`.
+
+We've clarified a point about telemetry in the notes of our 4.3.1 release. The text suggested that users on your instance would send telemetry to OUR webserver. It has been clarified to reflect that telemetry from your users is only ever sent to your instance.
+
+We've spent some time working on improving our (officially) unreleased integrations of OnlyOffice's presentation and document editors. We've advised against enabling these editors on your instance. This release includes changes that may not be fully backwards compatible. If your users rely on either editor we advise that you not update until they have had an opportunity to back up their documents. We still aren't officially supporting either editor and we may make further breaking changes in the future. Consider this a warning and not an advertizement of their readiness!
+
+This release also includes changes to the recommended NGINX configuration. Compare your instance's config against `cryptpad/docs/example.nginx.conf` and apply all the new changes before updating. In particular, you'll want to pay attention to the configuration for a newly exposed server API (`/api/broadcast`). This should work much the same as `/api/config`, so if you're using a non-standard configuration that uses more than one server you may want to proxy it in a similar fashion.
+
+To update from 4.3.1 to 4.4.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+
+This release requires updates to both clientside and serverside dependencies. **You will experience problems if you skip any of the above steps.**
 
 ## Features
 
-* prompt premium users to cancel their subscriptions before deleting their accounts
-* check that headers for XLSX export are correctly set via the checkup app
-* remove HTML from most translations
-* localize links to the docs where a translation exists
-* implement admin-broadcast features
-* add "getting started" banner in the drive
-* calendars: BETA
-* clear document cache when visiting /logout/
+* 4.4.0 includes a basic version of a calendar app. There are no links to it anywhere in the platform, its translations are hardcoded, and its title includes the text **BETA**. It's included in this release so that we can test and improve it for the next release, however, it should not be considered stable. Use it at your own risk! Our plan for this app is to offer the ability to set and review reminders for deadlines in CryptPad. We haven't secured funding for more advanced functionality, however, our team is available for sponsored development if you'd like to provide funding to include such improvements in our short-term roadmap.
+* The admin panel now includes several closely related features in its "broadcast" tab, which allows administrators to send a few types of notifications to all users:
+  1. _Maintenance notices_ inform users that the service may be unavailable during a specified time range.
+  2. _Survey notices_ inform users that the instance administrators have published a new survey and would like their feedback. We plan to use this on CryptPad.fr to perform some voluntary user studies on an ongoing basis.
+  3. _Broadcast messages_ allow admins to send all users a custom message with optional localization in their users' preferred language.
+* The drive now includes a "Getting started" message and a link to our docs, like all our other apps. This replaces the creation of a personal "What is CryptPad" pad in the user's drive when they register.
+* The /checkup/ page which performs some automatic tests to validate the host instance's configuration now includes a few more tests that check that the sheet editor has the correct HTTP headers applied and that the _broadcast API_ is available.
+* We recently wrote some scripts to automatically review our translations. This exposed some inconsistencies and incorrectly applied attributes in translations that included HTML. Since it's not reasonable to expect translators to know HTML, we've taken some steps to remove all but the most basic markup from translatable messages. Instead, more advanced attributes are applied via JavaScript. This makes it easier than ever to translate CryptPad as well as providing a more consistent experience to those using translations written by contributors.
 
 ## Bug fixes
 
-* bad channel IDs stored in your drive or accessed via bad links (corrupted somehow)
-  * don't try to join invalid channels
-  * don't try to get their metadata
-* guard against some type errors in the support page
-* remove redundant link from OpenCollective popup
-* guard against a type error when copying a pad in nodrive mode
-* correctly navigate to anchors when clicking links to anchors in read-only rich-text pads
-
-
-* OnlyOffice
-  * inform OnlyOffice of userlist changes
-  * rename doc and slide editors
-  * handle different lock formats for docs and slides
-    * relative to sheets
-  * handle some cursor logic outside of sheets
-  * handle locks when integrating remote checkpoints in strict mode
-  * OnlyOffice renamed buttons in slides and docs and we need to hardcode CSS that hides them by their randomly generated IDs
-  * support CryptPad cursor colors in OnlyOffice by adding opacity value
-  * use the appropriate APIs to detect if the document is modified
-  * display users cursor colors in the toolbar next to their name
-  * handle errors when migrating in embed mode
-  * change the method we use to lock the whole sheet since OnlyOffice changed their internal API's behaviour
-  * **soft release of OnlyOffice presentations and docs**
-    * if you've been using them, tell your users to export them before they break
-    * we still don't recommend that you use either editor!
+* Premium users are now prompted to cancel their subscriptions before deleting their accounts.
+* The /logout/ page will now clear users' local document cache. Admins can recommend that users try loading this page when users are mysteriously unable to load their drive (or that of a team). If you find that this solves a user's problem, please report their exact problem so we can investigate the underlying cause.
+* The _support_ page guards against type errors that appear to have been caused by third-party extensions interfering with some browser APIs and rewriting URLs.
+* We found that anonymous users who had not created a drive were not able to use the "Make a copy" functionality on a pad that they were viewing. This has been fixed.
+* We noticed that under some unknown circumstances it was possible for users to store documents with invalid document IDs in their drive. We've added a few guards that detect these invalid channels and we're working on a solution to automatically repair them, if possible.
+* Links to anchors in read-only rich text documents now navigate to the correct section of the document rather than opening a new tab.
+* We've made a large number of improvements to our OnlyOffice integration. This will primarily affect the sheet app, but it also paves the way for us to introduce presentations and text documents in a future release.
+  * We now inform OnlyOffice of user-list changes, which should fix the incorrect display of users names when they lock a portion of a document.
+  * Text documents and presentations use a different data format than sheets for locking the document. We've adjusted our code to handle these formats.
+  * We've fixed some lock-related errors in sheets that could be triggered when receiving checkpoints from other users while editing in strict mode.
+  * We've adjusted some CSS selectors intended to hide parts of OnlyOffice's UI that are invalid within CryptPad, since those elements' IDs have changed since the last version.
+  * OnlyOffice's cursors now use your CryptPad account's preferred color.
+  * We now handle some errors that occurred when documents were migrated by a user editing a sheet in embed mode.
+  * OnlyOffice modified some of the APIs used to lock a document, so we've adjusted our code to match.
 
 # 4.3.1
 

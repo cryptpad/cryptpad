@@ -3,8 +3,9 @@ define([], function () {
         var failMessages = [];
         var passed = 0;
         var ASSERTS = [];
-
+        var MESSAGES = [];
         var assert = function (test, msg) {
+            MESSAGES.push(msg || false);
             ASSERTS.push(function (cb, i) {
                 test(function (result) {
                     if (result === true) {
@@ -17,7 +18,7 @@ define([], function () {
                             output: result,
                         });
                     }
-                });
+                }, msg);
             });
         };
 

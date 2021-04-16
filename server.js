@@ -43,6 +43,7 @@ var canonicalizeOrigin = function (s) {
     }
 
     if (typeof(config.httpSafeOrigin) !== 'string') {
+        Env.NO_SANDBOX = true;
         if (typeof(config.httpSafePort) !== 'number') {
             config.httpSafePort = config.httpPort + 1;
         }
@@ -110,9 +111,22 @@ var setHeaders = (function () {
                 "Cross-Origin-Embedder-Policy": 'require-corp',
             });
 
+            if (Env.NO_SANDBOX) {
+                applyHeaderMap(res, {
+                    "Cross-Origin-Resource-Policy": 'cross-origin',
+                });
+            }
+
             // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
             // when duplicated by NGINX in production environments
-            if (/^\/api\/(broadcast|config)/.test(req.url)) { return; }
+            if (/^\/api\/(broadcast|config)/.test(req.url)) {
+                if (!Env.NO_SANDBOX) {
+                    applyHeaderMap(res, {
+                        "Cross-Origin-Resource-Policy": 'cross-origin',
+                    });
+                }
+                return;
+            }
             applyHeaderMap(res, {
                 "Cross-Origin-Resource-Policy": 'cross-origin',
             });
