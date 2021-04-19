@@ -20,7 +20,7 @@ define([
         var minutes = min < 10 ? "0" + min : min.toString();
 
         return year + month + day + "T" + hours + minutes + "00Z";
-    }
+    };
 
 
     var getDate = function (str, end) {
@@ -45,7 +45,6 @@ define([
 
     module.main = function (userDoc) {
         var content = userDoc.content;
-        var md = userDoc.metadata;
 
         var ICS = [
             'BEGIN:VCALENDAR',
@@ -119,9 +118,10 @@ define([
             var ICAL = window.ICAL;
             var res = {};
 
+            var vcalendar;
             try {
                 var jcalData = ICAL.parse(content);
-                var vcalendar = new ICAL.Component(jcalData);
+                vcalendar = new ICAL.Component(jcalData);
             } catch (e) {
                 return void cb(e);
             }

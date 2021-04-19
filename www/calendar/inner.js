@@ -487,7 +487,7 @@ Messages.calendar_noNotification = "None";
                         'class': 'fa fa-upload',
                     },
                     content: h('span', Messages.importButton),
-                    action: function (e) {
+                    action: function () {
                         UIElements.importContent('text/calendar', function (res) {
                             Export.import(res, id, function (err, json) {
                                 if (err) { return void UI.warn(Messages.importError); }
