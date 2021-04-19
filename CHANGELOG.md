@@ -14,6 +14,8 @@ We've spent some time working on improving our (officially) unreleased integrati
 
 This release also includes changes to the recommended NGINX configuration. Compare your instance's config against `cryptpad/docs/example.nginx.conf` and apply all the new changes before updating. In particular, you'll want to pay attention to the configuration for a newly exposed server API (`/api/broadcast`). This should work much the same as `/api/config`, so if you're using a non-standard configuration that uses more than one server you may want to proxy it in a similar fashion.
 
+Lastly, we've made some big improvements to the `/checkup/` page which performs some basic tests to confirm that your instance is configured correctly. It now provides some much more detailed descriptions of what might be wrong and how you can start debugging any issues that were identified. If you experience any problems after updating please review this page to assess your instance for any known issues before asking for help.
+
 To update from 4.3.1 to 4.4.0:
 
 1. Apply the documented NGINX configuration
@@ -32,7 +34,6 @@ This release requires updates to both clientside and serverside dependencies. **
   2. _Survey notices_ inform users that the instance administrators have published a new survey and would like their feedback. We plan to use this on CryptPad.fr to perform some voluntary user studies on an ongoing basis.
   3. _Broadcast messages_ allow admins to send all users a custom message with optional localization in their users' preferred language.
 * The drive now includes a "Getting started" message and a link to our docs, like all our other apps. This replaces the creation of a personal "What is CryptPad" pad in the user's drive when they register.
-* The /checkup/ page which performs some automatic tests to validate the host instance's configuration now includes a few more tests that check that the sheet editor has the correct HTTP headers applied and that the _broadcast API_ is available.
 * We recently wrote some scripts to automatically review our translations. This exposed some inconsistencies and incorrectly applied attributes in translations that included HTML. Since it's not reasonable to expect translators to know HTML, we've taken some steps to remove all but the most basic markup from translatable messages. Instead, more advanced attributes are applied via JavaScript. This makes it easier than ever to translate CryptPad as well as providing a more consistent experience to those using translations written by contributors.
 
 ## Bug fixes

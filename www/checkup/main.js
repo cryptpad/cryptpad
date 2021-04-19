@@ -175,17 +175,19 @@ define([
     // Test Websocket
     var evWSError = Util.mkEvent(true);
     assert(function (_cb, msg) {
-        var cb = Util.once(Util.both(_cb, function (err) {
-            if (typeof(err) === 'string') {
-                msg.innerText = err;
-            }
+        var timeoutErr = 'Could not connect to the websocket server within 5 seconds.';
+        var cb = Util.once(Util.both(_cb, function (status) {
+            if (status === true) { return; }
+            msg.appendChild(h('span#websocket', [
+                status || 'Unknown websocket error',
+            ]));
         }));
 
         var ws = new WebSocket(NetConfig.getWebsocketURL());
         var to = setTimeout(function () {
             console.error('Websocket TIMEOUT');
             evWSError.fire();
-            cb('Could not connect to the websocket server within 5 seconds.');
+            cb(timeoutErr);
         }, 5000);
         ws.onopen = function () {
             clearTimeout(to);
@@ -200,17 +202,32 @@ define([
     });
 
     // Test login block
-    assert(function (cb, msg) {
-        msg.appendChild(h('span', [
-            "Unable to create, retrieve, or remove encrypted credentials from the server. ",
-            "This is most commonly caused by a mismatch between the value of the  ",
-            h('code', 'blockPath'),
-            ' value configured in ',
-            CONFIG_PATH(),
-            " and the corresponding settings in your reverse proxy's configuration file,",
-            " but it can also be explained by a websocket error. ",
-            RESTART_WARNING(),
-        ]));
+    assert(function (_cb, msg) {
+        var websocketErr = "No WebSocket available";
+        var cb = Util.once(Util.both(_cb, function (status) {
+            if (status === true) { return; }
+            if (status === websocketErr) {
+                msg.appendChild(h('span', [
+                    websocketErr,
+                    ' See ',
+                    h('a', {
+                        href: '#websocket',
+                    }, 'the related websocket error'),
+                ]));
+                return;
+            }
+            // else
+            msg.appendChild(h('span', [
+                "Unable to create, retrieve, or remove encrypted credentials from the server. ",
+                "This is most commonly caused by a mismatch between the value of the  ",
+                h('code', 'blockPath'),
+                ' value configured in ',
+                CONFIG_PATH(),
+                " and the corresponding settings in your reverse proxy's configuration file,",
+                " but it can also be explained by a websocket error. ",
+                RESTART_WARNING(),
+            ]));
+        }));
 
         var bytes = new Uint8Array(Login.requiredBytes);
 
@@ -237,7 +254,7 @@ define([
             // If WebSockets aren't working, don't wait forever here
             evWSError.reg(function () {
                 waitFor.abort();
-                cb("No WebSocket available");
+                cb(websocketErr);
             });
             // Create proxy
             Login.loadUserObject(opt, waitFor(function (err, rt) {
@@ -416,12 +433,16 @@ define([
 
         var statusClass = failed? 'failure': 'success';
 
+        var failedDetails = "Details found below";
+        var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors.";
+        var details = h('p', failed? failedDetails: successDetails);
+
         var summary = h('div.summary.' + statusClass, [
             h('p', Messages._getKey('assert_numberOfTestsPassed', [
                 state.passed,
                 state.total
             ])),
-            h('p', "Details found below"),
+            details,
         ]);
 
         var report = h('div.report', [
