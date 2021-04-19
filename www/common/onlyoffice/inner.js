@@ -1028,7 +1028,7 @@ define([
             var myId = getId();
             content.locks[myId] = content.locks[myId] || {};
             var b = obj.block && obj.block[0];
-            if (type === "sheet") {
+            if (type === "sheet" || typeof(b) !== "string") {
                 var uid = Util.uid();
                 content.locks[myId][uid] = msg;
             } else {
@@ -1342,21 +1342,7 @@ define([
                                   '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                                   '#panel-info { display: none !important; }' + // Same but content
                                   '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
-
-                                  '#asc-gen257 { display: none !important; }' + // Insert image from url
-                                  '#asc-gen1839 { display: none !important; }' + // Image context menu: replace with url
-                                  '#asc-gen5883 { display: none !important; }' + // Rightside image menu: replace with url
-
-                                  '#asc-gen1211 { display: none !important; }' + // Slide Image context menu: replace with url
-                                  '#asc-gen3880 { display: none !important; }' + // Rightside slide image menu: replace with url
-                                  '#asc-gen2218 { display: none !important; }' + // Rightside slide menu: fill slide with image url
-                                  '#asc-gen849 { display: none !important; }' + // Toolbar slide: insert image from url
-                                  '#asc-gen857 { display: none !important; }' + // Toolbar slide: insert image from url (insert tab)
-
-                                  '#asc-gen180 { display: none !important; }' + // Doc Insert image from url
-                                  '#asc-gen1760 { display: none !important; }' + // Doc Image context menu: replace with url
-                                  '#asc-gen3319 { display: none !important; }' + // Doc Rightside image menu: replace with url
-
+                                  '.cp-from-url, #textart-button-from-url { display: none !important; }' + // Spellcheck language
                                   '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
                                   '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
