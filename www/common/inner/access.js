@@ -268,6 +268,9 @@ define([
                             return void UI.warn(text);
                         }
                         var isTemplate = priv.isTemplate || opts.isTemplate;
+
+                        // never store calendars in the team drive
+                        if (opts.calendar) { return; }
                         toAddTeams.forEach(function (obj) {
                             sframeChan.query('Q_STORE_IN_TEAM', {
                                 href: data.href || data.rohref,
