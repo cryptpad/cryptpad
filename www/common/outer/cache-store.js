@@ -2,7 +2,7 @@ define([
     '/common/common-util.js',
     '/bower_components/localforage/dist/localforage.min.js',
 ], function (Util, localForage) {
-    var S = {};
+    var S = window.CryptPad_Cache = {};
     var onReady = Util.mkEvent(true);
 
     // Check if indexedDB is allowed

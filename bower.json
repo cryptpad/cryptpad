@@ -41,7 +41,7 @@
     "diff-dom": "2.1.1",
     "nthen": "0.1.7",
     "open-sans-fontface": "^1.4.2",
-    "bootstrap-tokenfield": "^0.12.1",
+    "bootstrap-tokenfield": "0.12.1",
     "localforage": "^1.5.2",
     "html2canvas": "^0.4.1",
     "croppie": "^2.5.0",
