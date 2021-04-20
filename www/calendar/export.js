@@ -129,6 +129,15 @@ define([
             //var method = vcalendar.getFirstPropertyValue('method');
             //if (method !== "PUBLISH") { return void cb('NOT_SUPPORTED'); }
 
+            // Add all timezones in iCalendar object to TimezoneService
+            // if they are not already registered.
+            var timezones = vcalendar.getAllSubcomponents("vtimezone");
+            timezones.forEach(function (timezone) {
+                if (!(ICAL.TimezoneService.has(timezone.getFirstPropertyValue("tzid")))) {
+                    ICAL.TimezoneService.register(timezone);
+                }
+            });
+
             var events = vcalendar.getAllSubcomponents('vevent');
             events.forEach(function (ev) {
                 var uid = ev.getFirstPropertyValue('uid');
