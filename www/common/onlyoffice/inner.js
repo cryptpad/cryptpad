@@ -463,6 +463,9 @@ define([
             };
             fixSheets();
 
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
             ooChannel.ready = false;
             ooChannel.queue = [];
             data.callback = function () {
@@ -2199,6 +2202,9 @@ define([
         };
 
         var loadCp = function (cp, keepQueue) {
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
             loadLastDocument(cp, function () {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -2681,6 +2687,9 @@ define([
         var reloadPopup = false;
 
         var checkNewCheckpoint = function () {
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
             var lastCp = getLastCp();
             loadLastDocument(lastCp, function (err) {
                 console.error(err);
