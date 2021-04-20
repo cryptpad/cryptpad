@@ -5,7 +5,7 @@ define([
     '/customize/messages.js'
 ], function ($, h, UIElements, Messages) {
 
-    var onLinkClicked = function (e, inner) {
+    var onLinkClicked = function (e, inner, openLinkSetting) {
         var $target = $(e.target);
         if (!$target.is('a')) {
             $target = $target.closest('a');
@@ -24,6 +24,13 @@ define([
             anchor[0].scrollIntoView();
             return;
         }
+
+        var open = function () {
+            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
+            window.open(bounceHref);
+        };
+
+        if (openLinkSetting) { return void open(); }
 
         var $iframe = $('html').find('iframe').contents();
 
@@ -48,8 +55,7 @@ define([
         $(a).click(function (ee) {
             ee.preventDefault();
             ee.stopPropagation();
-            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            window.open(bounceHref);
+            open();
             $link.remove();
         });
         $link.on('mouseleave', function () {
@@ -61,7 +67,7 @@ define([
     };
 
     return {
-        init : function (Ckeditor, editor) {
+        init : function (Ckeditor, editor, openLinkSetting) {
             if (!Ckeditor.plugins.link) { return; }
 
             var inner = editor.document.$.body;
@@ -70,7 +76,7 @@ define([
             $inner.click(function (e) {
                 removeClickedLink($inner);
                 if (e.target.nodeName.toUpperCase() === 'A' || $(e.target).closest('a').length) {
-                    return void onLinkClicked(e, inner);
+                    return void onLinkClicked(e, inner, openLinkSetting);
                 }
             });
 

@@ -1,3 +1,7 @@
+# WIP
+
+* merge PR to open links in rich text with a single click
+
 # 4.4.0
 
 ## Goals
