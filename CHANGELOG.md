@@ -52,6 +52,7 @@ This release requires updates to both clientside and serverside dependencies. **
   * OnlyOffice's cursors now use your CryptPad account's preferred color.
   * We now handle some errors that occurred when documents were migrated by a user editing a sheet in embed mode.
   * OnlyOffice modified some of the APIs used to lock a document, so we've adjusted our code to match.
+* We found and fixed a race condition which could be triggered when loading a shared folder included in more than one of your user or team drives.
 
 # 4.3.1
 
