@@ -126,8 +126,8 @@ define([
                 return void cb(e);
             }
 
-            var method = vcalendar.getFirstPropertyValue('method');
-            if (method !== "PUBLISH") { return void cb('NOT_SUPPORTED'); }
+            //var method = vcalendar.getFirstPropertyValue('method');
+            //if (method !== "PUBLISH") { return void cb('NOT_SUPPORTED'); }
 
             var events = vcalendar.getAllSubcomponents('vevent');
             events.forEach(function (ev) {
