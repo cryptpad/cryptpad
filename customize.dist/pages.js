@@ -95,11 +95,14 @@ define([
 
     Pages.versionString = "v4.4.0";
 
+
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
     Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
     Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
+    Msg.home_roadmap = "Roadmap"; // XXX
+    Pages.roadmapLink = footLink(AppConfig.roadmap, 'home_roadmap');
 
     Pages.infopageFooter = function () {
         var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
@@ -139,6 +142,7 @@ define([
                         footLink('/contact.html', 'contact'),
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
+                        Pages.roadmapLink,
                     ]),
                     legalFooter,
                 ])

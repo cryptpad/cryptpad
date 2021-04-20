@@ -45,6 +45,11 @@ define(function() {
      */
     // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
 
+    /* XXX
+     *
+     */
+    //config.roadmap = 'https://cryptpad.fr/kanban/#/2/kanban/view/PLM0C3tFWvYhd+EPzXrbT+NxB76Z5DtZhAA5W5hG9wo/'; // XXX
+
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
      *  You can change their duration here (measured in milliseconds)
