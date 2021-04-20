@@ -1445,7 +1445,9 @@ define([
                     editor.setKeystroke( CKEDITOR.CTRL + CKEDITOR.ALT + styleKeys[tag], tag);
                 });
 
-                Links.init(Ckeditor, editor);
+                var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+                var openLinkSetting = Util.find(privateData, ['settings', 'pad', 'openLink']);
+                Links.init(Ckeditor, editor, openLinkSetting);
             }).nThen(function() {
                 // Move ckeditor parts to have a structure like the other apps
                 var $contentContainer = $('#cke_1_contents');
