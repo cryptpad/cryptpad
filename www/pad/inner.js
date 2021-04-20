@@ -1445,7 +1445,7 @@ define([
                     editor.setKeystroke( CKEDITOR.CTRL + CKEDITOR.ALT + styleKeys[tag], tag);
                 });
 
-                var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+                var privateData = framework._.cpNfInner.metadataMgr.getPrivateData(); // XXX race condition. framework isn't defined when this is called
                 var openLinkSetting = Util.find(privateData, ['settings', 'pad', 'openLink']);
                 Links.init(Ckeditor, editor, openLinkSetting);
             }).nThen(function() {
