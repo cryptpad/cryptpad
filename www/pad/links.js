@@ -25,10 +25,12 @@ define([
             return;
         }
 
-        if(openLinkSetting) {
-          window.open(href, '_blank', 'noreferrer');
-          return;
-        }
+        var open = function () {
+            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
+            window.open(bounceHref);
+        };
+
+        if (openLinkSetting) { return void open(); }
 
         var $iframe = $('html').find('iframe').contents();
 
@@ -53,8 +55,7 @@ define([
         $(a).click(function (ee) {
             ee.preventDefault();
             ee.stopPropagation();
-            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            window.open(bounceHref);
+            open();
             $link.remove();
         });
         $link.on('mouseleave', function () {
