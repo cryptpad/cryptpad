@@ -84,6 +84,7 @@ define([
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
+            'cp-settings-pad-openlink',
         ],
         'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',
@@ -1327,6 +1328,43 @@ define([
 
         cb($cbox);
     }, true);
+
+    create['pad-openlink'] = function() {
+        var $div = $('<div>', {
+            'class': 'cp-settings-pad-openlink cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_padOpenLinkTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-sidebarlayout-description' })
+            .text(Messages.settings_padOpenLinkHint).appendTo($div);
+
+        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
+        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
+
+        var $cbox = $(UI.createCheckbox('cp-settings-pad-openlink',
+            Messages.settings_padOpenLinkLabel,
+            false, { label: { class: 'noTitle' } }));
+        var $checkbox = $cbox.find('input').on('change', function() {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['pad', 'openLink'], val, function() {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['pad', 'openLink'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
 
     // Code settings
 
