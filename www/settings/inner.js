@@ -84,7 +84,7 @@ define([
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
-            'cp-settings-pad-openlink',
+            //'cp-settings-pad-openlink', // XXX test, translate and re-enable
         ],
         'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',

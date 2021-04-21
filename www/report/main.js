@@ -63,6 +63,7 @@ define([
             network = _network;
         }));
     }).nThen(function (waitFor) {
+        addReport('BEGIN REPORT');
         var secret = Hash.getSecrets('drive', hash);
         addReport('Load drive. ID: ' + secret.channel);
         checkCache(secret.channel, waitFor());
@@ -82,7 +83,6 @@ define([
             }
         }), { network: network, onCacheReady: onCacheReady});
     }).nThen(function (waitFor) {
-        console.log(proxy);
         var drive = proxy.drive || {};
         if (!proxy.drive) {
             addReport('ERROR: no drive');
@@ -184,7 +184,6 @@ define([
                         return;
                     }
                     addReport('Roster channel: ' + d.channel);
-                    console.warn(rosterKeys);
                     checkCache(d.channel, function () {
                         var crypto = Crypto.Team.createEncryptor(rosterKeys);
                         var m = 0;
@@ -233,7 +232,6 @@ define([
                                     _obj.href = cryptor.decrypt(_obj.href);
                                 }
                                 var parsed = Hash.parsePadUrl(_obj.href || _obj.roHref);
-                                console.log(parsed.hash, _obj);
                                 Crypt.get(parsed.hash, function (err, val, errorObj) {
                                     if (err) {
                                         addReport('ERROR: ' + err);

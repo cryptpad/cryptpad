@@ -1656,7 +1656,9 @@ define([
             } else if (teams.some(function (teamId) {
                 // We're not allowed: check our teams
                 var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
+                var edPrivate = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPrivate']);
                 if (allowed.indexOf(ed) === -1) { return false; }
+                if (!edPrivate) { return false; } // XXX: Only editors can authenticate...
                 // This team is allowed: use its rpc
                 var t = teamModule.getTeam(teamId);
                 _store = t;
