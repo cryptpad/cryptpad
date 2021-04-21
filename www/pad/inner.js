@@ -1444,7 +1444,6 @@ define([
                     editor.addCommand(tag, new CKEDITOR.styleCommand(new CKEDITOR.style({ element: tag })));
                     editor.setKeystroke( CKEDITOR.CTRL + CKEDITOR.ALT + styleKeys[tag], tag);
                 });
-
             }).nThen(function() {
                 // Move ckeditor parts to have a structure like the other apps
                 var $contentContainer = $('#cke_1_contents');
