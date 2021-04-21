@@ -239,6 +239,9 @@ define([
         if (!Env.folders[id]) { return {}; }
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
+            if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") {
+                continue;
+            }
             var data = Util.clone(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]);
             if (k === "href" && data.indexOf('#') === -1) {
                 try {
