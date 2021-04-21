@@ -13,7 +13,7 @@ define([
 ], function (Crypto, CPNetflux, Netflux, Util, Hash, Realtime, NetConfig, Cache, Pinpad, nThen) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
-        S.cb(err, doc);
+        S.cb((err && err.error), doc, err);
         S.done = true;
 
         if (!S.hasNetwork) {
@@ -135,12 +135,14 @@ define([
 
         config.onError = function (info) {
             console.warn(info);
-            finish(Session, info.error);
+            finish(Session, info);
         };
         config.onChannelError = function (info) {
             console.error(info);
-            finish(Session, info.error);
+            finish(Session, info);
         };
+
+        config.onCacheReady = opt.onCacheReady;
 
         // We use the new onMessage handler to compute the progress:
         // we should receive 2 checkpoints max, so 100 messages max
