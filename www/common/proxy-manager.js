@@ -239,7 +239,7 @@ define([
         if (!Env.folders[id]) { return {}; }
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
-            if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") {
+            if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") { // XXX "deleted folder" for restricted shared folders when viewer in a team
                 continue;
             }
             var data = Util.clone(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]);
