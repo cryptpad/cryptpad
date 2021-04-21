@@ -373,8 +373,9 @@ define([
                 APP.FM.handleFile(blob);
             });
         };
-        var MAX_IMAGE_SIZE = 1 * 1024 * 1024; // 1 MB
-        var maxSizeStr = Util.bytesToMegabytes(MAX_IMAGE_SIZE);
+        var ONE_MB = 1 * 1024 * 1024; // 1 MB
+        var MAX_IMAGE_SIZE = Math.ceil(ONE_MB / 3) * 4 + 23; // 23 is the length of "data:image/jpeg;base64,"
+        var maxSizeStr = Util.bytesToMegabytes(ONE_MB);
         var addImageToCanvas = function (img) {
             if (img.src && img.src.length > MAX_IMAGE_SIZE) {
                 UI.warn(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
