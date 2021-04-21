@@ -63,6 +63,7 @@ define([
             network = _network;
         }));
     }).nThen(function (waitFor) {
+        addReport('BEGIN REPORT');
         var secret = Hash.getSecrets('drive', hash);
         addReport('Load drive. ID: ' + secret.channel);
         checkCache(secret.channel, waitFor());
