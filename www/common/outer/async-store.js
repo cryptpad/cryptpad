@@ -1,4 +1,5 @@
 define([
+    '/api/config',
     'json.sortify',
     '/common/userObject.js',
     '/common/proxy-manager.js',
@@ -30,7 +31,7 @@ define([
     '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
-], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
+], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, NetConfig, AppConfig,
@@ -226,8 +227,9 @@ define([
 
             if (store.proxy.mailboxes) {
                 var mList = Object.keys(store.proxy.mailboxes).map(function (m) {
+                    if (m === "broadcast" && !store.isAdmin) { return; }
                     return store.proxy.mailboxes[m].channel;
-                });
+                }).filter(Boolean);
                 list = list.concat(mList);
             }
 
@@ -2927,6 +2929,12 @@ define([
                         onReady(clientId, returned, cb);
                     });
                 }
+
+                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
+                    store.isAdmin = true;
+                }
+
                 onReady(clientId, returned, cb);
             })
             .on('change', ['drive', 'migrate'], function () {
