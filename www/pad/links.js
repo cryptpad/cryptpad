@@ -5,7 +5,7 @@ define([
     '/customize/messages.js'
 ], function ($, h, UIElements, Messages) {
 
-    var onLinkClicked = function (e, inner, openLinkSetting) {
+    var onLinkClicked = function (e, inner, openLinkSetting, editor) {
         var $target = $(e.target);
         if (!$target.is('a')) {
             $target = $target.closest('a');
@@ -85,7 +85,7 @@ define([
             $inner.click(function (e) {
                 removeClickedLink($inner);
                 if (e.target.nodeName.toUpperCase() === 'A' || $(e.target).closest('a').length) {
-                    return void onLinkClicked(e, inner, openLinkSetting);
+                    return void onLinkClicked(e, inner, openLinkSetting, editor);
                 }
             });
 
