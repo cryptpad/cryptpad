@@ -41,7 +41,25 @@
                     }
                 }
             }
+            .tui-full-calendar-weekday-filled {
+                background-color: @cp_dropdown-bg-hover !important;
+            }
+
+            .tui-full-calendar-timegrid-hourmarker-time {
+                color: @cp_calendar-now !important;
+            }
+            .tui-full-calendar-timegrid-hourmarker-line-left, .tui-full-calendar-timegrid-hourmarker-line-today {
+                border-color: @cp_calendar-now !important;
+            }
+            .tui-full-calendar-timegrid-todaymarker {
+                background-color: @cp_calendar-now !important;
+            }
+
             .tui-full-calendar-month {
+                .tui-full-calendar-today .tui-full-calendar-weekday-grid-date-decorator {
+                    background-color: @cp_calendar-now !important;
+                    color: @cp_calendar-now-fg !important;
+                }
                 .tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
                     color: @cryptpad_text_col !important; // XXX
                 }
@@ -193,12 +211,24 @@
             & > div {
                 display: flex;
             }
+            .cp-calendar-notif-list-container {
+                margin-bottom: 10px;
+            }
             .cp-calendar-notif-list {
                 display: flex;
                 flex-flow: column;
                 .cp-notif-entry {
+                    margin-bottom: 2px;
+                    .cp-notif-value {
+                        width: 170px;
+                        display: inline-flex;
+                        .cp-before {
+                            flex: 1;
+                            min-width: 0;
+                        }
+                    }
                     span:not(:last-child) {
-                        margin-right: 20px;
+                        margin-right: 5px;
                     }
                 }
             }
@@ -210,6 +240,7 @@
             }
             .cp-calendar-notif-form {
                 align-items: center;
+                margin-bottom: 20px;
                 input {
                     width: 100px;
                 }
@@ -241,6 +272,7 @@
             justify-content: space-between;
         }
         .cp-calendar-list {
+            overflow-y: auto;
             .cp-calendar-team {
                 height: 30px;
                 .avatar_main(30px);
@@ -256,13 +288,21 @@
                 align-items: center;
                 justify-content: center;
                 margin: 5px 0;
+                &:not(:first-child) {
+                    margin-top: 30px;
+                }
             }
             .cp-calendar-entry {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 padding: 5px;
-                cursor: pointer;
+                &:not(.cp-unclickable) {
+                    cursor: pointer;
+                }
+                .cp-dropdown-container {
+                    position: initial;
+                }
                 &.cp-ghost {
                     padding: 0;
                     button {
@@ -291,8 +331,27 @@
                 &.cp-restricted {
                     color: @cp_drive-header-fg;
                 }
+                .cp-calendar-icon {
+                    width: 36px;
+                    display: inline-flex;
+                    height: 36px;
+                    margin: -5px;
+                    align-items: center;
+                    justify-content: center;
+                }
                 &.cp-active {
                     background: @cp_sidebar-left-active;
+                    .cp-calendar-inactive {
+                        display: none;
+                    }
+                }
+                &:not(.cp-active) {
+                    .cp-calendar-icon {
+                        background: transparent !important;
+                    }
+                    .cp-calendar-active {
+                        display: none;
+                    }
                 }
                 .tools_unselectable();
                 .cp-calendar-color {

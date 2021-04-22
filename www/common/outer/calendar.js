@@ -211,6 +211,10 @@ define([
                 c.lm.setReadOnly(false, upgradeCrypto);
                 c.readOnly = false;
             } else if (teamId === 0) {
+                // If we open a second tab with the same temp URL, push to tempId
+                if (c.stores.length === 1 && c.stores[0] === 0 && c.tempId.length && cfg.cId) {
+                    c.tempId.push(cfg.cId);
+                }
                 // Existing calendars can't be "temp calendars" (unless they are an upgrade)
                 return void cb();
             }
@@ -229,7 +233,10 @@ define([
             if (c.stores && c.stores.indexOf(teamId) !== -1) { return void cb(); }
 
             // If we store a temp calendar to our account or team, remove this "temp calendar"
-            if (c.stores.indexOf(0) !== -1) { c.stores.splice(c.stores.indexOf(0), 1); }
+            if (c.stores.indexOf(0) !== -1) {
+                c.stores.splice(c.stores.indexOf(0), 1);
+                c.tempId = [];
+            }
 
             c.stores.push(teamId);
             if (!data.href) {
@@ -245,11 +252,16 @@ define([
             ready: false,
             channel: channel,
             readOnly: !data.href,
+            tempId: [],
             stores: [teamId],
             roStores: data.href ? [] : [teamId],
             reminders: {},
             hashes: {}
         };
+
+        if (teamId === 0) {
+            c.tempId.push(cfg.cId);
+        }
 
 
         var parsed = Hash.parsePadUrl(data.href || data.roHref);
@@ -539,6 +551,7 @@ define([
             title: '...'
         };
         openChannel(ctx, {
+            cId: cId,
             storeId: 0,
             data: cal
         }, cb);
@@ -815,6 +828,19 @@ define([
     var removeClient = function (ctx, cId) {
         var idx = ctx.clients.indexOf(cId);
         ctx.clients.splice(idx, 1);
+
+        Object.keys(ctx.calendars).forEach(function (id) {
+            var cal = ctx.calendars[id];
+            if (cal.stores.length !== 1 || cal.stores[0] !== 0 || !cal.tempId.length) { return; }
+            // This is a temp calendar: check if the closed tab had this calendar opened
+            var idx = cal.tempId.indexOf(cId);
+            if (idx !== -1) { cal.tempId.splice(idx, 1); }
+            if (!cal.tempId.length) {
+                cal.stores = [];
+                // Close calendar
+                closeCalendar(ctx, id);
+            }
+        });
     };
 
     Calendar.init = function (cfg, waitFor, emit) {
