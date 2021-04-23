@@ -56,6 +56,15 @@
             }
 
             .tui-full-calendar-month {
+                display: flex;
+                flex-flow: column;
+                & > div:last-child {
+                    display: flex;
+                    flex-flow: column;
+                    flex: 1;
+                    min-height: 0;
+                    overflow: hidden;
+                }
                 .tui-full-calendar-today .tui-full-calendar-weekday-grid-date-decorator {
                     background-color: @cp_calendar-now !important;
                     color: @cp_calendar-now-fg !important;
