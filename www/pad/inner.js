@@ -984,7 +984,11 @@ define([
             displayMediaTags(framework, inner, mediaTagMap);
 
             // MEDIATAG: Initialize mediatag widgets inserted in the document by other users
-            editor.widgets.checkWidgets();
+            try {
+                editor.widgets.checkWidgets();
+            } catch (e) {
+                console.error(e);
+            }
 
             if (framework.isReadOnly()) {
                 var $links = $inner.find('a');
