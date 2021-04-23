@@ -2528,6 +2528,18 @@ define([
             toolbar.$drawer.append($properties);
         };
 
+        var noCache = false; // Prevent reload loops
+        var onCorruptedCache = function () {
+            if (noCache) {
+                UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
+                    common.gotoURL('');
+                });
+            }
+            noCache = true;
+            var sframeChan = common.getSframeChannel();
+            sframeChan.event("EV_CORRUPTED_CACHE");
+        };
+
         config.onReady = function (info) {
             if (APP.realtime !== info.realtime) {
                 APP.realtime = info.realtime;
@@ -2560,11 +2572,8 @@ define([
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
             } else if (!privateData.isNewFile) {
                 // This is an empty doc but not a new file: error
-                // XXX clear cache before reloading
-                UI.errorLoadingScreen(Messages.unableToDisplay, false, function () {
-                    common.gotoURL('');
-                });
-                throw new Error("Empty chainpad for a non-empty doc");
+                onCorruptedCache();
+                return void console.error("Empty chainpad for a non-empty doc");
             } else {
                 Title.updateTitle(Title.defaultTitle);
             }
