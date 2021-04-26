@@ -220,7 +220,7 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            exp.writeLoginBlock = function (data, cb) {
+            exp.writeLoginBlock = function (data, cb) { // XXX restricted-registration
                 if (!data) { return void cb('NO_DATA'); }
                 if (!data.publicKey || !data.signature || !data.ciphertext) {
                     console.log(data);

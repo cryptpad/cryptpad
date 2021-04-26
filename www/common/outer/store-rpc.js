@@ -24,7 +24,7 @@ define([
             UPLOAD_COMPLETE: Store.uploadComplete,
             UPLOAD_STATUS: Store.uploadStatus,
             UPLOAD_CANCEL: Store.uploadCancel,
-            WRITE_LOGIN_BLOCK: Store.writeLoginBlock,
+            WRITE_LOGIN_BLOCK: Store.writeLoginBlock, // XXX restricted-registration
             REMOVE_LOGIN_BLOCK: Store.removeLoginBlock,
             PIN_PADS: Store.pinPads,
             UNPIN_PADS: Store.unpinPads,

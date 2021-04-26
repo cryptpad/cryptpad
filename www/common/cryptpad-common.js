@@ -416,7 +416,7 @@ define([
         });
     };
 
-    common.writeLoginBlock = function (data, cb) {
+    common.writeLoginBlock = function (data, cb) { // XXX restricted-registration
         postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
             cb(obj);
         });
@@ -1746,7 +1746,7 @@ define([
             });
         });
     };
-    common.changeUserPassword = function (Crypt, edPublic, data, cb) {
+    common.changeUserPassword = function (Crypt, edPublic, data, cb) { // XXX restricted-registration
         if (!edPublic) {
             return void cb({
                 error: 'E_NOT_LOGGED_IN'
