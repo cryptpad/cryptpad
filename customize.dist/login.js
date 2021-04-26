@@ -414,7 +414,10 @@ define([
             var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
 
             rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
-                if (e) { return void console.error(e); }
+                if (e) {
+                    console.error(e);
+                    return void cb(e);
+                }
 
                 console.log("blockInfo available at:", blockHash);
                 LocalStore.setBlockHash(blockHash);
