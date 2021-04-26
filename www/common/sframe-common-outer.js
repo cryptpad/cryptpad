@@ -1533,6 +1533,16 @@ define([
             sframeChan.on('Q_CLEAR_CACHE', function (data, cb) {
                 Utils.Cache.clear(cb);
             });
+            sframeChan.on('Q_CLEAR_CACHE_CHANNELS', function (channels, cb) {
+                if (!Array.isArray(channels)) { return void cb({error: "NOT_AN_ARRAY"}); }
+                nThen(function (waitFor) {
+                    channels.forEach(function (chan) {
+                        if (chan === "chainpad") { chan = secret.channel; }
+                        console.error(chan);
+                        Utils.Cache.clearChannel(chan, waitFor());
+                    });
+                }).nThen(cb);
+            });
 
             sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
                 Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
