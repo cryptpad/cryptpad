@@ -10,6 +10,9 @@
 * support displaying a roadmap in static pages' footer
 * adjust threshold for whiteboard file size limit to better match user expectation (file size instead of base64 size)
 * FLOC OFF GOOGLE header
+* /report/ page
+* broadcast channel included in pin list
+* fix package-lock to use server update
 
 # 4.4.0
 
