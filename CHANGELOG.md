@@ -1,6 +1,18 @@
 # WIP
 
 * merge PR to open links in rich text with a single click
+* calendars
+  * reminders in calendars
+  * import/export
+  * include LICENSE for ical.js
+* use a specific version of bootstrap-tokenfield in bower.json
+* don't create readmes
+* support displaying a roadmap in static pages' footer
+* adjust threshold for whiteboard file size limit to better match user expectation (file size instead of base64 size)
+* FLOC OFF GOOGLE header
+* /report/ page
+* broadcast channel included in pin list
+* fix package-lock to use server update
 
 # 4.4.0
 
