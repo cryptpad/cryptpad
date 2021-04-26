@@ -477,6 +477,18 @@ define([
         var saveToServer = function () {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = getContent();
+            text = undefined;
+            if (!text) {
+                setEditable(false, true);
+                sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
+                    'chainpad',
+                    content.channel,
+                ], function () {});
+                UI.alert(Messages.realtime_unrecoverableError, function () {
+                    common.gotoURL();
+                });
+                return;
+            }
             var blob = new Blob([text], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
