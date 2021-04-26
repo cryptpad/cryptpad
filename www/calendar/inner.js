@@ -71,8 +71,9 @@ Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this cale
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
 Messages.calendar_errorNoCalendar = "No editable calendar selected!";
 Messages.calendar_myCalendars = "My calendars";
-Messages.calendar_tempCalendar = "Temp calendar";
+Messages.calendar_tempCalendar = "Viewing";
 Messages.calendar_import = "Import to my calendars";
+Messages.calendar_import_temp = "Import this calendar";
 Messages.calendar_newEvent = "New event";
 Messages.calendar_new = "New calendar";
 Messages.calendar_dateRange = "{0} - {1}";
@@ -86,6 +87,7 @@ Messages.calendar_allDay = "All day";
 Messages.calendar_minutes = "Minutes";
 Messages.calendar_hours = "Hours";
 Messages.calendar_days = "Days";
+Messages.calendar_before = "before";
 
 Messages.calendar_notifications = "Reminders";
 Messages.calendar_addNotification = "Add reminder";
@@ -148,7 +150,7 @@ Messages.calendar_noNotification = "None";
         var brightness = Math.round(((parseInt(rgb[0]) * 299) +
                           (parseInt(rgb[1]) * 587) +
                           (parseInt(rgb[2]) * 114)) / 1000);
-        return (brightness > 125) ? 'black' : 'white';
+        return (brightness > 125) ? '#424242' : '#EEEEEE';
     };
 
     var getWeekDays = function () {
@@ -181,7 +183,17 @@ Messages.calendar_noNotification = "None";
     };
     var getSchedules = function () {
         var s = [];
-        Object.keys(APP.calendars).forEach(function (id) {
+        var calendars = Object.keys(APP.calendars);
+        if (APP.currentCalendar) {
+            var currentCal = calendars.filter(function (id) {
+                var c = APP.calendars[id];
+                var t = c.teams || [];
+                if (id !== APP.currentCalendar) { return; }
+                return t.length === 1 && t[0] === 0;
+            });
+            if (currentCal.length) { calendars = currentCal; }
+        }
+        calendars.forEach(function (id) {
             var c = APP.calendars[id];
             if (c.hidden || c.restricted || c.loading) { return; }
             var data = c.content || {};
@@ -633,18 +645,25 @@ Messages.calendar_noNotification = "None";
         if (!md) { return; }
         var active = data.hidden ? '' : '.cp-active';
         var restricted = data.restricted ? '.cp-restricted' : '';
-        var calendar = h('div.cp-calendar-entry'+active+restricted, {
+        var temp = teamId === 0 ? '.cp-unclickable' : '';
+        var calendar = h('div.cp-calendar-entry'+active+restricted+temp, {
             'data-uid': id
         }, [
-            h('span.cp-calendar-color', {
+            h('span.cp-calendar-icon', {
                 style: 'background-color: '+md.color+';'
-            }),
+            }, [
+                h('i.cp-calendar-active.fa.fa-calendar', {
+                    style: 'color: '+getContrast(md.color)+';'
+                }),
+                h('i.cp-calendar-inactive.fa.fa-calendar-o')
+            ]),
             h('span.cp-calendar-title', md.title),
             data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}) :
                 (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
             edit
         ]);
         $(calendar).click(function () {
+            if (teamId === 0) { return; }
             data.hidden = !data.hidden;
             if (APP.$calendars) {
                 APP.$calendars.find('[data-uid="'+id+'"]').toggleClass('cp-active', !data.hidden);
@@ -672,11 +691,29 @@ Messages.calendar_noNotification = "None";
                 });
             };
             var tempCalendars = filter(0);
-            if (tempCalendars.length) {
+            if (tempCalendars.length && tempCalendars[0] === APP.currentCalendar) {
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     h('span', Messages.calendar_tempCalendar)
                 ]));
                 makeCalendarEntry(tempCalendars[0], 0);
+                var importTemp = h('button', [
+                    h('i.fa.fa-calendar-plus-o'),
+                    h('span', Messages.calendar_import_temp),
+                    h('span')
+                ]);
+                $(importTemp).click(function () {
+                    importCalendar({
+                        id: tempCalendars[0],
+                        teamId: 0
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return void UI.warn(obj.error);
+                        }
+                    });
+                });
+                APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                return;
             }
             var myCalendars = filter(1);
             if (myCalendars.length) {
@@ -687,6 +724,18 @@ Messages.calendar_noNotification = "None";
             myCalendars.forEach(function (id) {
                 makeCalendarEntry(id, 1);
             });
+
+            // Add new button
+            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+            var newButton = h('button', [
+                h('i.fa.fa-calendar-plus-o'),
+                h('span', Messages.calendar_new),
+                h('span')
+            ]);
+            $(newButton).click(function () {
+                editCalendar();
+            }).appendTo($newContainer);
+
             Object.keys(privateData.teams).forEach(function (teamId) {
                 var calendars = filter(teamId);
                 if (!calendars.length) { return; }
@@ -701,17 +750,6 @@ Messages.calendar_noNotification = "None";
                     makeCalendarEntry(id, teamId);
                 });
             });
-
-            // Add new button
-            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
-            var newButton = h('button', [
-                h('i.fa.fa-plus'),
-                h('span', Messages.calendar_new),
-                h('span')
-            ]);
-            $(newButton).click(function () {
-                editCalendar();
-            }).appendTo($newContainer);
         });
         onCalendarsUpdate.fire();
 
@@ -978,7 +1016,7 @@ Messages.calendar_noNotification = "None";
             $number.attr('max', max);
             if ($number.val() > max) { $number.val(max); }
         });
-        var addNotif = h('button.btn.btn-primary.fa.fa-plus');
+        var addNotif = h('button.btn.btn-primary-outline.fa.fa-plus');
         var $list = $(h('div.cp-calendar-notif-list'));
         var listContainer = h('div.cp-calendar-notif-list-container', [
             h('span.cp-notif-label', Messages.calendar_notifications),
@@ -987,14 +1025,17 @@ Messages.calendar_noNotification = "None";
         ]);
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
-            var del = h('button.btn.btn-danger.small.fa.fa-times');
+            var del = h('button.btn.btn-danger-outline.small.fa.fa-times');
             var minutes = value * unitValue;
             if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
             var span = h('span.cp-notif-entry', {
                 'data-minutes': minutes
             }, [
-                h('span', value),
-                h('span', Messages['calendar_'+unit]),
+                h('span.cp-notif-value', [
+                    h('span', value),
+                    h('span', Messages['calendar_'+unit]),
+                    h('span.cp-before', Messages.calendar_before)
+                ]),
                 del
             ]);
             $(del).click(function () {
@@ -1211,8 +1252,11 @@ Messages.calendar_noNotification = "None";
                 return;
             }
             if (privateData.calendarHash) {
+                var hash = privateData.hashes.editHash || privateData.hashes.viewHash;
+                var secret = Hash.getSecrets('calendar', hash, privateData.password);
+                APP.currentCalendar = secret.channel;
                 APP.module.execCommand('OPEN', {
-                    hash: privateData.hashes.editHash || privateData.hashes.viewHash,
+                    hash: hash,
                     password: privateData.password
                 }, function (obj) {
                     if (obj && obj.error) { console.error(obj.error); }
