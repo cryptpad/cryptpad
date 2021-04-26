@@ -534,6 +534,10 @@ define([
                                     });
                                 });
                                 break;
+                            case 'E_RESTRICTED':
+                                Messages.register_restrictedError = "Registration is restricted on this instance"; // XXX
+                                UI.errorLoadingScreen(Messages.register_restrictedError); // XXX
+                                break;
                             default: // UNHANDLED ERROR
                                 hashing = false;
                                 UI.errorLoadingScreen(Messages.login_unhandledError);

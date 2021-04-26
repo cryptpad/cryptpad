@@ -243,7 +243,7 @@ define([
         opt.keys = secret.keys;
         opt.channelHex = secret.channel;
 
-        var RT, rpc, exists;
+        var RT, rpc, exists, restricted;
 
         nThen(function (waitFor) {
             Util.fetch(blockUrl, waitFor(function (err) {
@@ -285,6 +285,12 @@ define([
             // Write block
             if (exists) { return; }
             rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+                // we should tolerate restricted registration
+                // and proceed to clean up after any data we've created
+                if (e === 'E_RESTRICTED') {
+                    restricted = true;
+                    return void cb(true);
+                }
                 if (e) {
                     waitFor.abort();
                     console.error("Can't write login block", e);
@@ -292,6 +298,7 @@ define([
                 }
             }));
         }).nThen(function (waitFor) {
+            if (restricted) { return; }
             // Read block
             Util.fetch(blockUrl, waitFor(function (e) {
                 if (e) {
@@ -303,6 +310,7 @@ define([
         }).nThen(function (waitFor) {
             // Remove block
             rpc.removeLoginBlock(removeRequest, waitFor(function (e) {
+                if (restricted) { return; } // an ENOENT is expected in the case of restricted registration, but we call this anyway to clean up any mess from previous tests.
                 if (e) {
                     waitFor.abort();
                     console.error("Can't remove login block", e);

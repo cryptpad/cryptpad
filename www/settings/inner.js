@@ -593,6 +593,7 @@ define([
         $(form).appendTo($div);
 
         var updateBlock = function(data, cb) {
+// XXX restricted-registration registered users should be able to change their password even if registration is closed. Include proof of ownership of their existing block when requesting the creation of a new one
             sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function(err, obj) {
                 if (err || obj.error) { return void cb({ error: err || obj.error }); }
                 cb(obj);

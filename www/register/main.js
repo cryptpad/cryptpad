@@ -11,26 +11,22 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/hyperscript.js',
+    '/api/config',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, ApiConfig) {
     var Messages = Cryptpad.Messages;
-
+    Messages.register_registrationIsClosed = "REGISTRATION IS CLOSED ON THIS INSTANCE."; // XXX
     $(function () {
-        var $main = $('#mainBlock');
-
-        // main block is hidden in case javascript is disabled
-        $main.removeClass('hidden');
-
-        // Make sure we don't display non-translated content (empty button)
-        $main.find('#data').removeClass('hidden');
+        if (ApiConfig.restrictRegistration) {
+            return void UI.alert(Messages.register_registrationIsClosed); // XXX restricted-registration better UI ?
+            // remove the form and display text instead of an alert that people will probably dismiss?
+        }
 
         if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
-        } else {
-            $main.find('#userForm').removeClass('hidden');
         }
 
         // text and password input fields

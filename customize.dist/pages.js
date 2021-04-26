@@ -4,7 +4,8 @@ define([
     '/customize/application_config.js',
     '/customize/messages.js',
     'jquery',
-], function (h, Language, AppConfig, Msg, $) {
+    '/api/config',
+], function (h, Language, AppConfig, Msg, $, ApiConfig) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -157,10 +158,16 @@ define([
     Pages.infopageTopbar = function () {
         var rightLinks;
         var username = window.localStorage.getItem('User_name');
+        var registerLink;
+
+        if (!ApiConfig.restrictRegistration) {
+            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register);
+        }
+
         if (username === null) {
             rightLinks = [
                 h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, Msg.login_login),
-                h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register)
+                registerLink,
             ];
         } else {
             rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/' }, [

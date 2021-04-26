@@ -53,7 +53,7 @@ define([
             'cp-admin-update-limit',
             'cp-admin-archive',
             'cp-admin-unarchive',
-            // 'cp-admin-registration',
+            'cp-admin-registration', // XXX restricted-registration
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -254,7 +254,7 @@ define([
     create['registration'] = function () {
         var key = 'registration';
         var $div = makeBlock(key, true); // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
-        var $button = $div.find('button');
+        var $button = $div.find('button'); // XXX restricted-registration: a checkbox might be better. it's easy to misinterpret the verb "OPEN" as an adjective
         var state = APP.instanceStatus.restrictRegistration;
         if (state) {
             $button.text(Messages.admin_registrationAllow);
