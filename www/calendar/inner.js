@@ -686,8 +686,8 @@ Messages.calendar_noNotification = "None";
             var filter = function (teamId) {
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
-                    var teams = cal.teams || [];
-                    return teams.indexOf(typeof(teamId) !== "undefined" ? teamId : 1) !== -1;
+                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
+                    return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
                 });
             };
             var tempCalendars = filter(0);
