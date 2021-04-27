@@ -356,6 +356,14 @@ define([
             }
         };
 
+        // Add a lock
+        var isLockedModal = {
+            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.oo_isLocked)
+            ]))
+        };
+
         var onUploaded = function (ev, data, err) {
             content.saveLock = undefined;
             if (err) {
@@ -442,14 +450,6 @@ define([
             }
         };
         APP.FM = common.createFileManager(fmConfig);
-
-        // Add a lock
-        var isLockedModal = {
-            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
-                h('span', Messages.oo_isLocked)
-            ]))
-        };
 
         var resetData = function (blob, type) {
             // If a read-only refresh popup was planned, abort it
