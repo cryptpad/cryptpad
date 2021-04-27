@@ -133,6 +133,7 @@ define([
                 $pv.text(Messages.error);
                 queue.inProgress = false;
                 queue.next();
+                if (config.onError) { config.onError("TOO_LARGE"); }
                 return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
             }
 
