@@ -11,6 +11,10 @@
     display: flex;
     flex-flow: column;
 
+    .cp-toolbar-bottom-mid > div {
+        .cp-small { display: none; }
+    }
+
     #cp-sidebarlayout-container #cp-sidebarlayout-rightside {
         padding: 0;
         & > div {
@@ -384,6 +388,44 @@
         height: 25px;
         cursor: pointer;
         border: 1px solid @cp_forms-border;
+    }
+
+    @media (max-width: @browser_media-medium-screen) {
+        .cp-calendar-newevent {
+            i {
+                margin: 0 !important;
+            }
+            span {
+                display: none;
+            }
+        }
+        .tui-full-calendar-dayname-leftmargin, .tui-full-calendar-timegrid-right {
+            margin-left: 40px !important;
+        }
+        .tui-full-calendar-allday-left, .tui-full-calendar-timegrid-left {
+            width: 40px !important;
+        }
+        .tui-full-calendar-dayname > span {
+            display: flex;
+            flex-flow: column;
+            line-height: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .tui-full-calendar-dayname * {
+            font-size: 11px;
+            line-height: initial;
+            height: auto;
+        }
+        .cp-toolbar-bottom-mid > div {
+            :not(:first-child) {
+                display: none;
+            }
+            :first-child {
+                display: inline-block;
+            }
+        }
     }
 }
 

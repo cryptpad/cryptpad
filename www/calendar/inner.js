@@ -78,6 +78,7 @@ Messages.calendar_newEvent = "New event";
 Messages.calendar_new = "New calendar";
 Messages.calendar_dateRange = "{0} - {1}";
 Messages.calendar_dateTimeRange = "{0} {1} - {2}";
+Messages.calendar_weekNumber = "Week {0}";
 Messages.calendar_update = "Update";
 Messages.calendar_title = "Title";
 Messages.calendar_loc = "Location";
@@ -153,12 +154,15 @@ Messages.calendar_noNotification = "None";
         return (brightness > 125) ? '#424242' : '#EEEEEE';
     };
 
-    var getWeekDays = function () {
+    var getWeekDays = function (large) {
         var baseDate = new Date(Date.UTC(2017, 0, 1)); // just a Sunday
         var weekDays = [];
         for(var i = 0; i < 7; i++) {
             weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
             baseDate.setDate(baseDate.getDate() + 1);
+        }
+        if (!large) {
+            weekDays = weekDays.map(function (day) { return day.slice(0,3); });
         }
         return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
@@ -754,11 +758,26 @@ Messages.calendar_noNotification = "None";
         onCalendarsUpdate.fire();
 
     };
+
+    var ISO8601_week_no = function (dt) {
+        var tdt = new Date(dt.valueOf());
+        var dayn = (dt.getDay() + 6) % 7;
+        tdt.setDate(tdt.getDate() - dayn + 3);
+        var firstThursday = tdt.valueOf();
+        tdt.setMonth(0, 1);
+        if (tdt.getDay() !== 4) {
+            tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+        }
+        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+    };
+
     var updateDateRange = function () {
         var range = APP.calendar._renderRange;
         var start = range.start._date.toLocaleDateString();
         var end = range.end._date.toLocaleDateString();
+        var week = ISO8601_week_no(range.start._date);
         var date = [
+            h('b.cp-small', Messages._getKey('calendar_weekNumber', [week])),
             h('b', start),
             h('span', ' - '),
             h('b', end),
@@ -791,6 +810,7 @@ Messages.calendar_noNotification = "None";
             h('div#cp-sidebarlayout-rightside')
         ]);
 
+        var large = $(window).width() >= 800;
         var cal = APP.calendar = new Calendar('#cp-sidebarlayout-rightside', {
             defaultView: view || 'week', // weekly view option
             taskView: false,
@@ -800,12 +820,29 @@ Messages.calendar_noNotification = "None";
             calendars: getCalendars(),
             template: templates,
             month: {
-                daynames: getWeekDays(),
+                daynames: getWeekDays(large),
                 startDayOfWeek: 1,
             },
             week: {
-                daynames: getWeekDays(),
+                daynames: getWeekDays(large),
                 startDayOfWeek: 1,
+            }
+        });
+
+        $(window).on('resize', function () {
+            var _large = $(window).width() >= 800;
+            if (large !== _large) {
+                large = _large;
+                cal.setOptions({
+                    month: {
+                        daynames: getWeekDays(_large),
+                        startDayOfWeek: 1,
+                    },
+                    week: {
+                        daynames: getWeekDays(_large),
+                        startDayOfWeek: 1,
+                    }
+                });
             }
         });
 
@@ -925,7 +962,7 @@ Messages.calendar_noNotification = "None";
         APP.toolbar.$bottomR.append($block);
 
         // New event button
-        var newEventBtn = h('button', [
+        var newEventBtn = h('button.cp-calendar-newevent', [
             h('i.fa.fa-plus'),
             h('span', Messages.calendar_newEvent)
         ]);
