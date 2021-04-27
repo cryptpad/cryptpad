@@ -45,7 +45,7 @@ define([
     '/customize/application_config.js',
     '/common/test.js',
 
-    '/bower_components/diff-dom/diffDOM.js',
+    '/lib/diff-dom/diffDOM.js',
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/customize/src/print.css',
