@@ -1557,7 +1557,7 @@ define([
             });
 
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
-                Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb); // XXX restricted-registration
+                Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);
             });
 
             sframeChan.on('Q_WRITE_LOGIN_BLOCK', function (data, cb) {
