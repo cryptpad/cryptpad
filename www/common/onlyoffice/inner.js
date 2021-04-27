@@ -477,7 +477,6 @@ define([
         var saveToServer = function () {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = getContent();
-            text = undefined;
             if (!text) {
                 setEditable(false, true);
                 sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
