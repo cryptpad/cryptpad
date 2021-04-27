@@ -318,7 +318,6 @@ Messages.calendar_noNotification = "None";
         }
     };
 
-    // XXX Note: always create calendars in your own proxy. If you want a team calendar, you can share it with the team later.
     var editCalendar = function (id) {
         var isNew = !id;
         var data = APP.calendars[id];
@@ -453,7 +452,7 @@ Messages.calendar_noNotification = "None";
                         pathname: "/calendar/",
                         friends: friends,
                         title: title,
-                        password: cal.password, // XXX support passwords
+                        password: cal.password,
                         calendar: {
                             title: title,
                             color: color,
@@ -480,7 +479,7 @@ Messages.calendar_noNotification = "None";
                     var href = Hash.hashToHref(h.editHash || h.viewHash, 'calendar');
                     Access.getAccessModal(common, {
                         title: title,
-                        password: cal.password, // XXX support passwords
+                        password: cal.password,
                         calendar: {
                             title: title,
                             color: color,
