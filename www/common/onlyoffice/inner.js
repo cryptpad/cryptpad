@@ -454,7 +454,6 @@ define([
 
         var saveToServer = function () {
             var text = getContent();
-            text = undefined;
             if (!text) {
                 setEditable(false, true);
                 sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
