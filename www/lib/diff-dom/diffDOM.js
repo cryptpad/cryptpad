@@ -690,7 +690,9 @@
                 }
                 if (objNode.childNodes) {
                     objNode.childNodes.forEach(function(childNode) {
-                        node.appendChild(dobj.objToNode(childNode, insideSvg));
+                        try {
+                            node.appendChild(dobj.objToNode(childNode, insideSvg));
+                        } catch (e) { console.debug(e); }
                     });
                 }
                 if (this.valueDiffing) {
