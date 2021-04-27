@@ -416,7 +416,7 @@ define([
         });
     };
 
-    common.writeLoginBlock = function (data, cb) { // XXX restricted-registration
+    common.writeLoginBlock = function (data, cb) {
         postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
             cb(obj);
         });
@@ -1746,7 +1746,7 @@ define([
             });
         });
     };
-    common.changeUserPassword = function (Crypt, edPublic, data, cb) { // XXX restricted-registration
+    common.changeUserPassword = function (Crypt, edPublic, data, cb) {
         if (!edPublic) {
             return void cb({
                 error: 'E_NOT_LOGGED_IN'
@@ -1855,6 +1855,9 @@ define([
             };
 
             var content = Block.serialize(JSON.stringify(temp), blockKeys);
+            console.error("OLD AND NEW BLOCK KEYS", oldBlockKeys, blockKeys);
+            // XXX ignored unless restricted registration is active?
+            // content.registrationProof = Block.proveAncestor();
 
             console.log("writing new login block");
             common.writeLoginBlock(content, waitFor(function (obj) {

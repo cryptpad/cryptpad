@@ -86,6 +86,30 @@ define([
         };
     };
 
+    Block.proveAncestor = function (O /* oldBlockKeys */, N /* newBlockKeys */) {
+        N = N;
+/*
+        var registrationProof;
+        var registrationSig;
+        if (keys.previous) {
+            // XXX restricted-registration
+            // sign the publicKey of the new key with the old key
+
+            // your existing block's publicKey
+            // the new block's publicKey
+            // some proof of recency to prevent replays?
+            // a signature of the whole thing
+
+            // registrationProof = [oldPublicKey, newPublicKey];
+            // registrationSig = sign(registrationProof, oldPrivateKey);
+        }
+*/
+
+// needed for password change with restricted registration
+//registrationProof: registrationProof? Nacl.util.encodeBase64(registrationProof): undefined,
+//registrationSig: registrationSig? Nacl.util.encode
+    };
+
     Block.remove = function (keys) {
         // sign the hash of the text 'DELETE_BLOCK'
         var sig = Nacl.sign.detached(Nacl.hash(
