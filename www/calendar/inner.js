@@ -70,7 +70,6 @@ Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar
 Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
 Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
 Messages.calendar_errorNoCalendar = "No editable calendar selected!";
-Messages.calendar_myCalendars = "My calendars";
 Messages.calendar_tempCalendar = "Viewing";
 Messages.calendar_import = "Import to my calendars";
 Messages.calendar_import_temp = "Import this calendar";
@@ -720,8 +719,13 @@ Messages.calendar_noNotification = "None";
             }
             var myCalendars = filter(1);
             if (myCalendars.length) {
+                var user = metadataMgr.getUserData();
+                var avatar = h('span.cp-avatar');
+                var name = user.name || Messages.anonymous;
+                common.displayAvatar($(avatar), user.avatar, name);
                 APP.$calendars.append(h('div.cp-calendar-team', [
-                    h('span', Messages.calendar_myCalendars)
+                    avatar,
+                    h('span.cp-name', {title: name}, name)
                 ]));
             }
             myCalendars.forEach(function (id) {
