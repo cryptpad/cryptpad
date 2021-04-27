@@ -44,8 +44,8 @@ define([
         // loading screen setup.
         var done = waitFor();
         var onMsg = function (msg) {
-            var data = JSON.parse(msg.data);
-            if (data.q !== 'READY') { return; }
+            var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
+            if (!data || data.q !== 'READY') { return; }
             window.removeEventListener('message', onMsg);
             var _done = done;
             done = function () { };
@@ -182,8 +182,8 @@ define([
                 };
                 var whenReady = waitFor(function (msg) {
                     if (msg.source !== iframe) { return; }
-                    var data = JSON.parse(msg.data);
-                    if (!data.txid) { return; }
+                    var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
+                    if (!data || !data.txid) { return; }
                     // Remove the listener once we've received the READY message
                     window.removeEventListener('message', whenReady);
                     // Answer with the requested data
