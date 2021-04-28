@@ -356,7 +356,6 @@ define([
             }
         };
 
-        Messages.oo_cantMigrate = "This sheet exceeds the maximum upload size and is too large to be migrated."; // XXX
         var onUploaded = function (ev, data, err) {
             content.saveLock = undefined;
             if (err) {
