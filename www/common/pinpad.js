@@ -226,7 +226,7 @@ var factory = function (Util, Rpc) {
                     console.log(data);
                     return void cb("MISSING_PARAMETERS");
                 }
-                if (['string', 'undefined'].indexOf(typeof(data.registrationProof)) !== -1) {
+                if (['string', 'undefined'].indexOf(typeof(data.registrationProof)) === -1) {
                     return void cb("INVALID_REGISTRATION_PROOF");
                 }
 

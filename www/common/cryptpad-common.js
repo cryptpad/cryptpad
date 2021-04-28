@@ -1857,7 +1857,7 @@ define([
             var content = Block.serialize(JSON.stringify(temp), blockKeys);
             console.error("OLD AND NEW BLOCK KEYS", oldBlockKeys, blockKeys);
             // XXX ignored unless restricted registration is active?
-            // content.registrationProof = Block.proveAncestor();
+            content.registrationProof = Block.proveAncestor(oldBlockKeys);
 
             console.log("writing new login block");
             common.writeLoginBlock(content, waitFor(function (obj) {

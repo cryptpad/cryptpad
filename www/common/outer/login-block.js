@@ -88,26 +88,16 @@ define([
 
     Block.proveAncestor = function (O /* oldBlockKeys */, N /* newBlockKeys */) {
         N = N;
-/*
-        var registrationProof;
-        var registrationSig;
-        if (keys.previous) {
-            // XXX restricted-registration
-            // sign the publicKey of the new key with the old key
-
-            // your existing block's publicKey
-            // the new block's publicKey
-            // some proof of recency to prevent replays?
-            // a signature of the whole thing
-
-            // registrationProof = [oldPublicKey, newPublicKey];
-            // registrationSig = sign(registrationProof, oldPrivateKey);
+        var u8_pub = Util.find(O, ['sign', 'publicKey']);
+        var u8_secret = Util.find(O, ['sign', 'secretKey']);
+        try {
+        // sign your old publicKey with your old privateKey
+            var u8_sig = Nacl.sign.detached(u8_pub, u8_secret);
+        // return an array with the sig and the pubkey
+            return JSON.stringify([u8_pub, u8_sig].map(Nacl.util.encodeBase64));
+        } catch (err) {
+            throw err; // XXX restricted-registration
         }
-*/
-
-// needed for password change with restricted registration
-//registrationProof: registrationProof? Nacl.util.encodeBase64(registrationProof): undefined,
-//registrationSig: registrationSig? Nacl.util.encode
     };
 
     Block.remove = function (keys) {
