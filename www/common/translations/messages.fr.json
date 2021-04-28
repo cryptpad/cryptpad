@@ -1181,5 +1181,7 @@
     "admin_maintenanceButton": "Planifier maintenance",
     "admin_maintenanceHint": "Planifier une maintenance sur cette instance et avertir tous les utilisateurs. Limité à une maintenance active à la fois.",
     "admin_maintenanceTitle": "Maintenance",
-    "admin_cat_broadcast": "Annonces"
+    "admin_cat_broadcast": "Annonces",
+    "oo_cantMigrate": "Ce tableur dépasse la taille maximale de téléchargement et est trop grand pour être mis à jour.",
+    "footer_roadmap": "Feuille de route"
 }

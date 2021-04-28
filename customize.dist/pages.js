@@ -101,8 +101,7 @@ define([
     Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
     Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
-    Msg.home_roadmap = "Roadmap"; // XXX
-    Pages.roadmapLink = footLink(AppConfig.roadmap, 'home_roadmap');
+    Pages.roadmapLink = footLink(AppConfig.roadmap, 'footer_roadmap');
 
     Pages.infopageFooter = function () {
         var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages

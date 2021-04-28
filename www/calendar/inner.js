@@ -635,7 +635,6 @@ Messages.calendar_noNotification = "None";
         return UIElements.createDropdown(dropdownConfig)[0];
     };
     var makeCalendarEntry = function (id, teamId) {
-        // XXX handle RESTRICTED calendars (data.restricted)
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
@@ -852,7 +851,7 @@ Messages.calendar_noNotification = "None";
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            // XXX Recurrence (later)
+            // TODO Recurrence (later)
             // On creation, select a recurrence rule (daily / weekly / monthly / more weird rules)
             // then mark it under recurrence rule with a uid (the same for all the recurring events)
             // ie: recurrenceRule: DAILY|{uid}
@@ -1014,7 +1013,7 @@ Messages.calendar_noNotification = "None";
     var getNotificationDropdown = function () {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
-        // XXX DEFAULT HERE [10] ==> 10 minutes before the event
+        // DEFAULT HERE [10] ==> 10 minutes before the event
         var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', ev.id, 'reminders']) || [10];
         APP.notificationsEntries = [];
         var number = h('input.tui-full-calendar-content', {
