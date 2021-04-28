@@ -30,8 +30,8 @@ define([
             ];
         };
 
-        if (Config.restrictRegistration) { // XXX restricted-registration
-            Msg.register_closed = "This instance does not allow registration at the moment.";
+        if (Config.restrictRegistration) {
+            Msg.register_closed = "This instance does not allow registration at the moment."; // XXX
             return frame([
                 h('h4', Msg.register_closed)
             ]);

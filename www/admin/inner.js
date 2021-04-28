@@ -53,7 +53,7 @@ define([
             'cp-admin-update-limit',
             'cp-admin-archive',
             'cp-admin-unarchive',
-            'cp-admin-registration', // XXX restricted-registration
+            'cp-admin-registration',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
