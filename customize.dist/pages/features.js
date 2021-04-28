@@ -146,7 +146,7 @@ define([
                 ]),
             ]);
         var availableFeatures =
-            (Config.allowSubscriptions && accounts.upgradeURL) ?
+            (Config.allowSubscriptions && accounts.upgradeURL && !Config.restrictRegistration) ?
                 [anonymousFeatures, registeredFeatures, premiumFeatures] :
                 [anonymousFeatures, registeredFeatures];
 

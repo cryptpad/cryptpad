@@ -1833,14 +1833,16 @@ define([
                     Common.setLoginRedirect('login');
                 },
             });
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                content: h('span', Messages.login_register),
-                action: function () {
-                    Common.setLoginRedirect('register');
-                },
-            });
+            if (!Config.restrictRegistration) {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
+                    content: h('span', Messages.login_register),
+                    action: function () {
+                        Common.setLoginRedirect('register');
+                    },
+                });
+            }
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
         //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
