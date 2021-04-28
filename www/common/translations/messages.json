@@ -1185,5 +1185,6 @@
     "settings_deleteWarning": "Warning: you are currently subscribed to a premium plan (paid or given by another user). Please cancel your plan before deleting your account as will not be possible without contacting support once your account is deleted.",
     "settings_deleteContinue": "Delete my account",
     "settings_deleteSubscription": "Manage my subscription",
-    "footer_roadmap": "Roadmap"
+    "footer_roadmap": "Roadmap",
+    "oo_cantMigrate": "This sheet exceeds the maximum upload size and is too large to be migrated."
 }
