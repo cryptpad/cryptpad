@@ -96,7 +96,7 @@ define([
         // return an array with the sig and the pubkey
             return JSON.stringify([u8_pub, u8_sig].map(Nacl.util.encodeBase64));
         } catch (err) {
-            throw err; // XXX restricted-registration
+            return void console.error(err);
         }
     };
 
