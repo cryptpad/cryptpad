@@ -129,6 +129,7 @@ define([
             var l = privateData.plan ? ApiConfig.premiumUploadSize : false;
             l = l || ApiConfig.maxUploadSize || "?";
             var maxSizeStr = Util.bytesToMegabytes(l);
+            // XXX blob.byteLength is wrong: we should use the lenght of the encrypted content (see whiteboard)
             if (blob && blob.byteLength && typeof(l) === "number" && blob.byteLength > l) {
                 $pv.text(Messages.error);
                 queue.inProgress = false;

@@ -2374,7 +2374,12 @@ define([
                     };
                     postMsg('INIT');
 
+                    /*
                     window.addEventListener('beforeunload', function () {
+                        postMsg('CLOSE');
+                    });
+                    */
+                    window.addEventListener('unload', function () {
                         postMsg('CLOSE');
                     });
                 } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {

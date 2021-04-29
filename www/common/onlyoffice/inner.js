@@ -2201,20 +2201,22 @@ define([
             }
         };
 
+        var wasEditing = false;
         var setStrictEditing = function () {
             if (APP.isFast) { return; }
             var editor = getEditor();
-            var isModified = editor.asc_isDocumentModified || editor.isDocumentModified;
-            var editing = isModified();
+            var editing = editor.asc_isDocumentModified ? editor.asc_isDocumentModified() : editor.isDocumentModified();
             if (editing) {
                 evOnPatch.fire();
             } else {
                 evOnSync.fire();
             }
+            wasEditing = Boolean(editing);
         };
         APP.onFastChange = function (isFast) {
             APP.isFast = isFast;
             if (isFast) {
+                wasEditing = false;
                 if (APP.hasChangedInterval) {
                     window.clearInterval(APP.hasChangedInterval);
                 }
@@ -2561,6 +2563,7 @@ define([
             sframeChan.event("EV_CORRUPTED_CACHE");
         };
 
+        var firstReady = true;
         config.onReady = function (info) {
             if (APP.realtime !== info.realtime) {
                 APP.realtime = info.realtime;
@@ -2670,8 +2673,12 @@ define([
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
-                common.openPadChat(APP.onLocal);
 
+                // Only execute the following code the first time we call onReady
+                if (!firstReady) { return void setEditable(!readOnly); }
+                firstReady = false;
+
+                common.openPadChat(APP.onLocal);
 
                 if (!readOnly) {
                     var cursors = {};
