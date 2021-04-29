@@ -13,6 +13,11 @@
 * /report/ page
 * broadcast channel included in pin list
 * fix package-lock to use server update
+* code app present mode fix
+* sheets
+  * lock sheets faster when applying checkpoints
+  * guard against undefined checkpoints
+  * don't spam users with prompts to checkpoints when they can't
 
 # 4.4.0
 
