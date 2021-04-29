@@ -356,10 +356,39 @@ define([
             }
         };
 
+        // Add a lock
+        var isLockedModal = {
+            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.oo_isLocked)
+            ]))
+        };
+
         var onUploaded = function (ev, data, err) {
             content.saveLock = undefined;
             if (err) {
                 console.error(err);
+                if (content.saveLock === myOOId) { delete content.saveLock; } // Unlock checkpoints
+                if (APP.migrateModal) {
+                    try { getEditor().asc_setRestriction(true); } catch (e) {}
+                    setEditable(true);
+                    delete content.migration;
+                    APP.migrateModal.closeModal();
+                    APP.onLocal();
+                }
+                if (isLockedModal.modal && err === "TOO_LARGE") {
+                    if (APP.migrate) {
+                        UI.warn(Messages.oo_cantMigrate);
+                    }
+                    APP.cantCheckpoint = true;
+                    isLockedModal.modal.closeModal();
+                    delete isLockedModal.modal;
+                    if (content.saveLock === myOOId) {
+                        delete content.saveLock;
+                    }
+                    APP.onLocal();
+                    return;
+                }
                 return void UI.alert(Messages.oo_saveError);
             }
             // Get the last cp idx
@@ -422,14 +451,6 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        // Add a lock
-        var isLockedModal = {
-            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
-                h('span', Messages.oo_isLocked)
-            ]))
-        };
-
         var resetData = function (blob, type) {
             // If a read-only refresh popup was planned, abort it
             delete APP.refreshPopup;
@@ -453,7 +474,19 @@ define([
         };
 
         var saveToServer = function () {
+            if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = getContent();
+            if (!text) {
+                setEditable(false, true);
+                sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
+                    'chainpad',
+                    content.channel,
+                ], function () {});
+                UI.alert(Messages.realtime_unrecoverableError, function () {
+                    common.gotoURL();
+                });
+                return;
+            }
             var blob = new Blob([text], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
@@ -479,6 +512,8 @@ define([
         var noLogin = false;
 
         var makeCheckpoint = function (force) {
+            if (APP.cantCheckpoint) { return; } // TOO_LARGE
+
             var locked = content.saveLock;
             var lastCp = getLastCp();
 
@@ -1374,7 +1409,7 @@ define([
                                 h('span.fa.fa-spin.fa-spinner'),
                                 h('span', Messages.oo_sheetMigration_loading)
                             ]);
-                            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+                            APP.migrateModal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
                             makeCheckpoint(true);
                         });
                         // DEPRECATED: from version 3, the queue is sent again during init

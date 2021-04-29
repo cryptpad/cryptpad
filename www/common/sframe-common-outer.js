@@ -44,8 +44,8 @@ define([
         // loading screen setup.
         var done = waitFor();
         var onMsg = function (msg) {
-            var data = JSON.parse(msg.data);
-            if (data.q !== 'READY') { return; }
+            var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
+            if (!data || data.q !== 'READY') { return; }
             window.removeEventListener('message', onMsg);
             var _done = done;
             done = function () { };
@@ -182,8 +182,8 @@ define([
                 };
                 var whenReady = waitFor(function (msg) {
                     if (msg.source !== iframe) { return; }
-                    var data = JSON.parse(msg.data);
-                    if (!data.txid) { return; }
+                    var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
+                    if (!data || !data.txid) { return; }
                     // Remove the listener once we've received the READY message
                     window.removeEventListener('message', whenReady);
                     // Answer with the requested data
@@ -1532,6 +1532,16 @@ define([
             });
             sframeChan.on('Q_CLEAR_CACHE', function (data, cb) {
                 Utils.Cache.clear(cb);
+            });
+            sframeChan.on('Q_CLEAR_CACHE_CHANNELS', function (channels, cb) {
+                if (!Array.isArray(channels)) { return void cb({error: "NOT_AN_ARRAY"}); }
+                nThen(function (waitFor) {
+                    channels.forEach(function (chan) {
+                        if (chan === "chainpad") { chan = secret.channel; }
+                        console.error(chan);
+                        Utils.Cache.clearChannel(chan, waitFor());
+                    });
+                }).nThen(cb);
             });
 
             sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {

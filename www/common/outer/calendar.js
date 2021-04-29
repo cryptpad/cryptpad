@@ -114,7 +114,7 @@ define([
             }
         }
 
-        // XXX add a limit to make sure we don't go too far in the past?
+        // XXX add a limit to make sure we don't go too far in the past? ==> 1 week
         var missed = useLastVisit && ev.start > last && ev.end <= now;
         if (ev.end <= now && !missed) {
             // No reminder for past events
@@ -283,7 +283,6 @@ define([
 
         var onDeleted = function () {
             // Remove this calendar from all our teams
-            // XXX Maybe not? don't remove automatically so that we can tell the user to do so.
             c.stores.forEach(function (storeId) {
                 var store = getStore(ctx, storeId);
                 if (!store || !store.rpc || !store.proxy.calendars) { return; }
@@ -412,6 +411,7 @@ define([
                 }
                 if (info.error === "ERESTRICTED" ) {
                     c.restricted = true;
+                    setTimeout(update);
                 }
                 cb(info);
             });
@@ -846,7 +846,7 @@ define([
     Calendar.init = function (cfg, waitFor, emit) {
         var calendar = {};
         var store = cfg.store;
-        if (!store.loggedIn || !store.proxy.edPublic) { return; } // XXX logged in only?
+        if (!store.loggedIn || !store.proxy.edPublic) { return; } // XXX logged in only? we should al least allow read-only for URL calendars
         var ctx = {
             store: store,
             Store: cfg.Store,
