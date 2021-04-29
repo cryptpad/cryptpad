@@ -40,6 +40,19 @@ define([
         };
     };
 
+    Block.keysToRPCFormat = function (keys) {
+        try {
+            var sign = keys.sign;
+            return {
+                edPrivate: Nacl.util.encodeBase64(sign.secretKey),
+                edPublic: Nacl.util.encodeBase64(sign.publicKey),
+            };
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    };
+
     // (UTF8 content, keys object) => Uint8Array block
     Block.encrypt = function (version, content, keys) {
         var u8 = Nacl.util.decodeUTF8(content);

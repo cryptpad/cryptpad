@@ -392,7 +392,7 @@ define([
             // send an RPC to store the block which you created.
             console.log("initializing rpc interface");
 
-            Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
+            Pinpad.create(RT.network, Block.keysToRPCFormat(res.opt.blockKeys), waitFor(function (e, _rpc) {
                 if (e) {
                     waitFor.abort();
                     console.error(e); // INVALID_KEYS
