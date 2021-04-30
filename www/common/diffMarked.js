@@ -40,6 +40,7 @@ define([
                     Mermaid = _Mermaid;
                     Mermaid.initialize({
                         gantt: { axisFormat: '%m-%d', },
+                        flowchart: { htmlLabels: false, },
                         theme: (window.CryptPad_theme === 'dark') ? 'dark' : 'default',
                         "themeCSS": mermaidThemeCSS,
                     });
