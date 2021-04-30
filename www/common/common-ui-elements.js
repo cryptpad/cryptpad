@@ -798,7 +798,6 @@ define([
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
                     common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
-                        waitingForStoringCb = false; // XXX lint error, not defined
                         var error = err || (obj && obj.error);
                         if (error) {
                             $(button).show();
