@@ -84,7 +84,7 @@ define([
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
-            'cp-settings-pad-openlink', // XXX test, translate and re-enable
+            'cp-settings-pad-openlink',
         ],
         'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',
@@ -1602,10 +1602,6 @@ define([
 
         cb($d);
     }, true);
-
-    Messages.settings_notifCalendarTitle = "Calendar notifications"; // XXX
-    Messages.settings_notifCalendarHint = "You can disable completely calendar notifications for incoming events.";
-    Messages.settings_notifCalendarCheckbox = "Enable calendar notifications";
 
     makeBlock('notif-calendar', function(cb) { // Msg.settings_notifCalendarHint, .settings_notifCalendarTitle
 

@@ -58,41 +58,6 @@ define([
     var metadataMgr;
     var sframeChan;
 
-Messages.calendar = "BETA Calendar"; // XXX
-Messages.calendar_default = "My calendar"; // XXX
-Messages.calendar_new = "New calendar"; // XXX
-Messages.calendar_day = "Day";
-Messages.calendar_week = "Week";
-Messages.calendar_month = "Month";
-Messages.calendar_today = "Today";
-Messages.calendar_more = "{0} more";
-Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
-Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
-Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
-Messages.calendar_errorNoCalendar = "No editable calendar selected!";
-Messages.calendar_tempCalendar = "Viewing";
-Messages.calendar_import = "Import to my calendars";
-Messages.calendar_import_temp = "Import this calendar";
-Messages.calendar_newEvent = "New event";
-Messages.calendar_new = "New calendar";
-Messages.calendar_dateRange = "{0} - {1}";
-Messages.calendar_dateTimeRange = "{0} {1} - {2}";
-Messages.calendar_weekNumber = "Week {0}";
-Messages.calendar_update = "Update";
-Messages.calendar_title = "Title";
-Messages.calendar_loc = "Location";
-Messages.calendar_location = "Location: {0}";
-Messages.calendar_allDay = "All day";
-
-Messages.calendar_minutes = "Minutes";
-Messages.calendar_hours = "Hours";
-Messages.calendar_days = "Days";
-Messages.calendar_before = "before";
-
-Messages.calendar_notifications = "Reminders";
-Messages.calendar_addNotification = "Add reminder";
-Messages.calendar_noNotification = "None";
-
     var onCalendarsUpdate = Util.mkEvent();
 
     var newCalendar = function (data, cb) {
@@ -603,15 +568,15 @@ Messages.calendar_noNotification = "None";
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
-                    var key = Messages.calendar_deleteConfirm;
                     var teams = (cal && cal.teams) || [];
+                    var text = [ Messages.calendar_deleteConfirm ];
                     if (teams.length === 1 && teams[0] !== 1) {
-                        key = Messages.calendar_deleteTeamConfirm;
+                        text[0] = Messages.calendar_deleteTeamConfirm;
                     }
                     if (cal.owned) {
-                        key += Messages.calendar_deleteOwned;
+                        text = text.concat([' ', Messages.calendar_deleteOwned]);
                     }
-                    UI.confirm(key, function (yes) {
+                    UI.confirm(h('span', text), function (yes) {
                         if (!yes) { return; }
                         deleteCalendar({
                             id: id,
@@ -663,7 +628,7 @@ Messages.calendar_noNotification = "None";
                 (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
             edit
         ]);
-        $(calendar).click(function () {
+        var $calendar = $(calendar).click(function () {
             if (teamId === 0) { return; }
             data.hidden = !data.hidden;
             if (APP.$calendars) {
@@ -674,6 +639,12 @@ Messages.calendar_noNotification = "None";
 
             renderCalendar();
         });
+        if (!data.loading) {
+            $calendar.contextmenu(function (ev) {
+                ev.preventDefault();
+                $(edit).click();
+            });
+        }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
         return calendar;
     };

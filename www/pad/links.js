@@ -46,7 +46,6 @@ define([
         var t = rect.bottom + $iframe.scrollTop() +'px';
 
         var text = href;
-        Messages.pad_goToAnchor = "Go to anchor"; // XXX
         if (text[0] === '#') { text = Messages.pad_goToAnchor; }
         var a = h('a', { href: href}, text);
         var link = h('div.cp-link-clicked.non-realtime', {
