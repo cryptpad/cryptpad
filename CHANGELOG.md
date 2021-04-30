@@ -5,6 +5,9 @@
   * reminders in calendars
   * import/export
   * include LICENSE for ical.js
+  * translations
+  * out of BETA
+  * available from user admin menu
 * use a specific version of bootstrap-tokenfield in bower.json
 * don't create readmes
 * support displaying a roadmap in static pages' footer
@@ -18,6 +21,12 @@
   * lock sheets faster when applying checkpoints
   * guard against undefined checkpoints
   * don't spam users with prompts to checkpoints when they can't
+* decrees
+  * SET_ADMIN_EMAIL
+  * SET_SUPPORT_MAILBOX
+* Add DAPSI to our sponsor list
+* checkup
+  * check for duplicate or incorrect headers
 
 # 4.4.0
 
