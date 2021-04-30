@@ -1676,6 +1676,18 @@ define([
                 },
             });
         }
+        if (padType !== 'calendar' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-calendar',
+                },
+                content: h('span', Messages.calendar),
+                action: function () {
+                    Common.openURL('/calendar/');
+                },
+            });
+        }
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
