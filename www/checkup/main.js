@@ -357,7 +357,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        msg = msg; // XXX
+        msg = msg;
         return void cb(true);
         /*
         msg.appendChild(h('span', [
@@ -405,6 +405,41 @@ define([
                 cb(xhr.status === 200);
             },
         });
+    });
+
+    var checkDuplicateHeaders = function (url, cb) {
+        $.ajax(url, {
+            dataType: 'text',
+            complete: function (xhr) {
+                var allHeaders = xhr.getAllResponseHeaders();
+                console.error(allHeaders);
+                var headers = {};
+
+                var duplicate = allHeaders.split('\n').some(function (header) {
+                    var duplicate;
+                    header.replace(/([^:]+):(.*)/, function (all, type, value) {
+                        type = type.trim();
+                        if (typeof(headers[type]) !== 'undefined') {
+                            duplicate = true;
+                        }
+                        headers[type] = value.trim();
+                    });
+                    return duplicate;
+                });
+
+                cb(!duplicate);
+            },
+        });
+    };
+
+    assert(function (cb, msg) {
+        msg.innerText = "/api/config was served with duplicated headers.";
+        checkDuplicateHeaders('/api/config', cb);
+    });
+
+    assert(function (cb, msg) {
+        msg.innerText = "/api/config was served with duplicated headers.";
+        checkDuplicateHeaders('/api/broadcast', cb);
     });
 
     var row = function (cells) {
