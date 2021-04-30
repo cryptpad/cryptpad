@@ -407,15 +407,16 @@ define([
         });
     });
 
-    var checkDuplicateHeaders = function (url, cb) {
+    var checkAPIHeaders = function (url, cb) {
         $.ajax(url, {
             dataType: 'text',
             complete: function (xhr) {
                 var allHeaders = xhr.getAllResponseHeaders();
                 console.error(allHeaders);
+
                 var headers = {};
 
-                var duplicate = allHeaders.split('\n').some(function (header) {
+                var duplicated = allHeaders.split('\n').some(function (header) {
                     var duplicate;
                     header.replace(/([^:]+):(.*)/, function (all, type, value) {
                         type = type.trim();
@@ -427,19 +428,35 @@ define([
                     return duplicate;
                 });
 
-                cb(!duplicate);
+                if (duplicated) { return void cb(false); }
+
+                var expect = {
+                    'cross-origin-resource-policy': 'cross-origin',
+                };
+                var incorrect = Object.keys(expect).some(function (k) {
+                    var response = xhr.getResponseHeader(k);
+                    if (response !== expect[k]) {
+                        return true;
+                    }
+                });
+
+                cb(!incorrect);
             },
         });
     };
 
+    var INCORRECT_HEADER_TEXT = ' was served with duplicated or incorrect headers. Compare your reverse-proxy configuration against the provided example.';
+
     assert(function (cb, msg) {
-        msg.innerText = "/api/config was served with duplicated headers.";
-        checkDuplicateHeaders('/api/config', cb);
+        var url = '/api/config';
+        msg.innerText = url + INCORRECT_HEADER_TEXT;
+        checkAPIHeaders(url, cb);
     });
 
     assert(function (cb, msg) {
-        msg.innerText = "/api/config was served with duplicated headers.";
-        checkDuplicateHeaders('/api/broadcast', cb);
+        var url = '/api/broadcast';
+        msg.innerText = url + INCORRECT_HEADER_TEXT;
+        checkAPIHeaders(url, cb);
     });
 
     var row = function (cells) {
