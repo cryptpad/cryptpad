@@ -105,13 +105,15 @@ var setHeaders = (function () {
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
+
             // apply a bunch of cross-origin headers for XLSX export in FF and printing elsewhere
             applyHeaderMap(res, {
                 "Cross-Origin-Opener-Policy": /^\/sheet\//.test(req.url)? 'same-origin': '',
                 "Cross-Origin-Embedder-Policy": 'require-corp',
             });
 
-            if (Env.NO_SANDBOX) {
+            if (Env.NO_SANDBOX) { // handles correct configuration for local development
+            // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
                 applyHeaderMap(res, {
                     "Cross-Origin-Resource-Policy": 'cross-origin',
                 });
@@ -120,11 +122,13 @@ var setHeaders = (function () {
             // Don't set CSP headers on /api/config because they aren't necessary and they cause problems
             // when duplicated by NGINX in production environments
             if (/^\/api\/(broadcast|config)/.test(req.url)) {
-                if (!Env.NO_SANDBOX) {
+                /*
+                if (Env.NO_SANDBOX) {
                     applyHeaderMap(res, {
                         "Cross-Origin-Resource-Policy": 'cross-origin',
                     });
                 }
+                */
                 return;
             }
             applyHeaderMap(res, {

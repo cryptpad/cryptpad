@@ -365,7 +365,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        msg = msg; // XXX
+        msg = msg;
         return void cb(true);
         /*
         msg.appendChild(h('span', [
@@ -413,6 +413,58 @@ define([
                 cb(xhr.status === 200);
             },
         });
+    });
+
+    var checkAPIHeaders = function (url, cb) {
+        $.ajax(url, {
+            dataType: 'text',
+            complete: function (xhr) {
+                var allHeaders = xhr.getAllResponseHeaders();
+                console.error(allHeaders);
+
+                var headers = {};
+
+                var duplicated = allHeaders.split('\n').some(function (header) {
+                    var duplicate;
+                    header.replace(/([^:]+):(.*)/, function (all, type, value) {
+                        type = type.trim();
+                        if (typeof(headers[type]) !== 'undefined') {
+                            duplicate = true;
+                        }
+                        headers[type] = value.trim();
+                    });
+                    return duplicate;
+                });
+
+                if (duplicated) { return void cb(false); }
+
+                var expect = {
+                    'cross-origin-resource-policy': 'cross-origin',
+                };
+                var incorrect = Object.keys(expect).some(function (k) {
+                    var response = xhr.getResponseHeader(k);
+                    if (response !== expect[k]) {
+                        return true;
+                    }
+                });
+
+                cb(!incorrect);
+            },
+        });
+    };
+
+    var INCORRECT_HEADER_TEXT = ' was served with duplicated or incorrect headers. Compare your reverse-proxy configuration against the provided example.';
+
+    assert(function (cb, msg) {
+        var url = '/api/config';
+        msg.innerText = url + INCORRECT_HEADER_TEXT;
+        checkAPIHeaders(url, cb);
+    });
+
+    assert(function (cb, msg) {
+        var url = '/api/broadcast';
+        msg.innerText = url + INCORRECT_HEADER_TEXT;
+        checkAPIHeaders(url, cb);
     });
 
     var row = function (cells) {
