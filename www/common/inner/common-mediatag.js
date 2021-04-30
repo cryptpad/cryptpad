@@ -467,11 +467,9 @@ define([
                         canvas.height = i.height;
                         var context = canvas.getContext('2d');
                         context.drawImage(i, 0, 0, i.width, i.height);
-                        var png = canvas.toDataURL();
-                        var link = document.createElement('a');
-                        link.download = name;
-                        link.href = png;
-                        link.click();
+                        canvas.toBlob(function (blob) {
+                            window.saveAs(blob, name);
+                        });
                     };
                     i.src = blobURL;
                     })();
