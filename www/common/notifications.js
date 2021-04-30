@@ -461,13 +461,6 @@ define([
         }
     };
 
-    Messages.reminder_missed = "You missed <b>{0}</b> on {1}"; // XXX
-    Messages.reminder_now = "<b>{0}</b> is starting!"; // XXX
-    Messages.reminder_inProgress = "<b>{0}</b> has started on {1}"; // XXX
-    Messages.reminder_inProgressAllDay = "<b>{0}</b> is happening today"; // XXX
-    Messages.reminder_minutes = "<b>{0}</b> will start in {1} minutes!"; // XXX
-    Messages.reminder_time = "<b>{0}</b> will start today at {1}!"; // XXX
-    Messages.reminder_date = "<b>{0}</b> will start on {1}!"; // XXX
     handlers['REMINDER'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;

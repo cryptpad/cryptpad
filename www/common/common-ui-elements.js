@@ -788,6 +788,30 @@ define([
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
                 break;
+            case 'storeindrive':
+                Messages.toolbar_storeInDrive = "Store in CryptDrive"; // XXX
+                button = $(h('button.cp-toolbar-storeindrive', {
+                    style: 'display:none;'
+                }, [
+                    h('i.fa.fa-hdd-o'),
+                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
+                ])).click(common.prepareFeedback(type)).click(function () {
+                    $(button).hide();
+                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                        waitingForStoringCb = false;
+                        var error = err || (obj && obj.error);
+                        if (error) {
+                            $(button).show();
+                            if (error === 'E_OVER_LIMIT') {
+                                return void UI.warn(Messages.pinLimitReached);
+                            }
+                            return void UI.warn(Messages.autostore_error);
+                        }
+                        $(document).trigger('cpPadStored');
+                        UI.log(Messages.autostore_saved);
+                    });
+                });
+                break;
             case 'hashtag':
                 button = $('<button>', {
                     'class': 'fa fa-hashtag cp-toolbar-icon-hashtag',
@@ -1649,6 +1673,18 @@ define([
                 content: h('span', Messages.type.teams),
                 action: function () {
                     Common.openURL('/teams/');
+                },
+            });
+        }
+        if (padType !== 'calendar' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-calendar',
+                },
+                content: h('span', Messages.calendar),
+                action: function () {
+                    Common.openURL('/calendar/');
                 },
             });
         }
@@ -2799,6 +2835,7 @@ define([
         // This pad will be deleted automatically, it shouldn't be stored
         if (priv.burnAfterReading) { return; }
 
+
         var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
                           Messages.autostore_pad;
@@ -2810,10 +2847,17 @@ define([
         var actions = h('div', [hide, store]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
+        if (initialHide) {
+            $('.cp-toolbar-storeindrive').show();
+            UIElements.displayCrowdfunding(common);
+            return;
+        }
+
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
 
         // Once the store pad popup is created, put the crowdfunding one in the queue
         UIElements.displayCrowdfunding(common);
+
 
         autoStoreModal[priv.channel] = modal;
 
@@ -2824,6 +2868,7 @@ define([
 
         $(hide).click(function () {
             delete autoStoreModal[priv.channel];
+            $('.cp-toolbar-storeindrive').show();
             modal.delete();
         });
         var waitingForStoringCb = false;
