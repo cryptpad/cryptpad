@@ -1434,13 +1434,13 @@ define([
     */
     UI.createDrawer = function ($button, $content) {
         $button.click(function () {
+            var topPos = $button[0].getBoundingClientRect().bottom;
             $content.toggle();
             $button.removeClass('cp-toolbar-button-active');
             if ($content.is(':visible')) {
                 $button.addClass('cp-toolbar-button-active');
                 $content.focus();
                 var wh = $(window).height();
-                var topPos = $button[0].getBoundingClientRect().bottom;
                 $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
         });
