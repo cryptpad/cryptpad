@@ -469,8 +469,9 @@ define([
         msg.appendChild(h('span', [
             'This instance does not provide a valid ',
             h('code', 'adminEmail'),
-            ' which can make it difficult to contact its adminstrator in the event of a critical vulnerability.',
-            ' This can be corrected in ', CONFIG_PATH(), '.',
+            ' which can make it difficult to contact its adminstrator to report vulnerabilities or abusive content.',
+            ' This can be configured in ', CONFIG_PATH(), '. ',
+            RESTART_WARNING(),
         ]));
         cb(email);
     });
@@ -479,20 +480,30 @@ define([
         var support = ApiConfig.supportMailbox;
         setWarningClass(msg);
         msg.appendChild(h('span', [
-            '// XXX ApiConfig.supportMailbox',
+            "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",
+            "This can be configured via the ",
+            h('code', 'supportMailbox'),
+            " attribute in ",
+            CONFIG_PATH(),
+            ". ",
+            RESTART_WARNING(),
         ]));
-        cb(false && support && typeof(support) === 'string' && support.length === 44);
+        cb(support && typeof(support) === 'string' && support.length === 44);
     });
 
     assert(function (cb, msg) {
         var adminKeys = ApiConfig.adminKeys;
-        if (false && 
-            Array.isArray(adminKeys) && adminKeys.length >= 1 && typeof(adminKeys[0]) === 'string' && adminKeys[0].length === 44) {
+        if (Array.isArray(adminKeys) && adminKeys.length >= 1 && typeof(adminKeys[0]) === 'string' && adminKeys[0].length === 44) {
             return void cb(true);
         }
         setWarningClass(msg);
         msg.appendChild(h('span', [
-            '// XXX ApiConfig.adminKeys',
+            "This instance has not been configured to support web administration. This can be enabled by adding a registered user's public signing key to the ",
+            h('code', 'adminKeys'),
+            ' array in ',
+            CONFIG_PATH(),
+            '. ',
+            RESTART_WARNING(),
         ]));
         cb(false);
     });
