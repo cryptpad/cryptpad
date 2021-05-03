@@ -1227,5 +1227,6 @@
     "calendar_notifications": "Reminders",
     "calendar_addNotification": "Add reminder",
     "calendar_noNotification": "None",
-    "toolbar_storeInDrive": "Store in CryptDrive"
+    "toolbar_storeInDrive": "Store in CryptDrive",
+    "genericCopySuccess": "Copied to clipboard"
 }
