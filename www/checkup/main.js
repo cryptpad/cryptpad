@@ -15,7 +15,7 @@ define([
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/pages/page-checkup.less',
+    'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig) {
@@ -26,7 +26,7 @@ define([
     };
 
     var assert = function (f, msg) {
-        Assert(f, msg || h('span.advisory-text'));
+        Assert(f, msg || h('span.advisory-text.cp-danger'));
     };
 
     var CONFIG_PATH = function () {
@@ -412,10 +412,7 @@ define([
             dataType: 'text',
             complete: function (xhr) {
                 var allHeaders = xhr.getAllResponseHeaders();
-                console.error(allHeaders);
-
                 var headers = {};
-
                 var duplicated = allHeaders.split('\n').some(function (header) {
                     var duplicate;
                     header.replace(/([^:]+):(.*)/, function (all, type, value) {
@@ -428,8 +425,6 @@ define([
                     return duplicate;
                 });
 
-                if (duplicated) { return void cb(false); }
-
                 var expect = {
                     'cross-origin-resource-policy': 'cross-origin',
                 };
@@ -440,7 +435,8 @@ define([
                     }
                 });
 
-                cb(!incorrect);
+                if (duplicated || incorrect) { console.error(allHeaders); }
+                cb(!duplicated && !incorrect);
             },
         });
     };
@@ -457,6 +453,48 @@ define([
         var url = '/api/broadcast';
         msg.innerText = url + INCORRECT_HEADER_TEXT;
         checkAPIHeaders(url, cb);
+    });
+
+    var setWarningClass = function (msg) {
+        $(msg).removeClass('cp-danger').addClass('cp-warning');
+    };
+
+    assert(function (cb, msg) {
+        var email = ApiConfig.adminEmail;
+        if (typeof(email) === 'string' && email && email !== 'i.did.not.read.my.config@cryptpad.fr') {
+            return void cb(true);
+        }
+
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'This instance does not provide a valid ',
+            h('code', 'adminEmail'),
+            ' which can make it difficult to contact its adminstrator in the event of a critical vulnerability.',
+            ' This can be corrected in ', CONFIG_PATH(), '.',
+        ]));
+        cb(email);
+    });
+
+    assert(function (cb, msg) {
+        var support = ApiConfig.supportMailbox;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            '// XXX ApiConfig.supportMailbox',
+        ]));
+        cb(false && support && typeof(support) === 'string' && support.length === 44);
+    });
+
+    assert(function (cb, msg) {
+        var adminKeys = ApiConfig.adminKeys;
+        if (false && 
+            Array.isArray(adminKeys) && adminKeys.length >= 1 && typeof(adminKeys[0]) === 'string' && adminKeys[0].length === 44) {
+            return void cb(true);
+        }
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            '// XXX ApiConfig.adminKeys',
+        ]));
+        cb(false);
     });
 
     var row = function (cells) {
