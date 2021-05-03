@@ -1,6 +1,12 @@
 .cursor_main() {
     // CodeMirror
     .cp-codemirror-cursor {
+        &:before {
+            content: "";
+            display: inline-block;
+        }
+
+
         cursor: default;
         background-color: red;
         background-clip: padding-box;
@@ -8,8 +14,8 @@
         border: 2px solid red;
         border-right-color: transparent !important;
         border-left-color: transparent !important;
-        margin-left: -3px;
-        margin-right: -3px;
+        display: inline-block;
+        margin: -2px -3px;
     }
     .cp-codemirror-selection {
         background-color: rgba(255,0,0,0.3);
