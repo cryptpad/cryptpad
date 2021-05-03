@@ -513,8 +513,7 @@ define([
             var privateData = metadataMgr.getPrivateData();
             var url = Hash.getPublicSigningKeyString(privateData.origin, data.name, data.edPublic);
             var success = Clipboard.copy(url);
-            Messages.edCopySuccess = "Copied key to clipboard"; // XXX
-            if (success) { UI.log(Messages.shareSuccess); }
+            if (success) { UI.log(Messages.genericCopySuccess); }
         };
     };
 
