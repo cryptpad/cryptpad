@@ -1226,5 +1226,7 @@
     "pad_goToAnchor": "Aller à cette ancre",
     "settings_padOpenLinkLabel": "Activer l'ouverture directe des liens",
     "settings_padOpenLinkHint": "Cette option permet d'ouvrir les liens dans un document texte sans fenêtre d’aperçu",
-    "settings_padOpenLinkTitle": "Ouvrir les lien avec un seul clic"
+    "settings_padOpenLinkTitle": "Ouvrir les lien avec un seul clic",
+    "toolbar_storeInDrive": "Stocker dans CryptDrive",
+    "genericCopySuccess": "Copié dans le presse-papiers"
 }

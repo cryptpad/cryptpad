@@ -2790,10 +2790,8 @@ define([
                             checkNewCheckpoint();
                         });
                     };
-                    var isModified = editor.asc_isDocumentModified || function () {
-                        return editor.isDocumentModify;
-                    };
-                    if (isModified()) {
+                    var editing = editor.asc_isDocumentModified ? editor.asc_isDocumentModified() : editor.isDocumentModify;
+                    if (editing) {
                         setEditable(false);
                         APP.unsavedLocks = myLocks;
                         APP.onStrictSaveChanges = function () {
