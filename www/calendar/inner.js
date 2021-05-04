@@ -1264,7 +1264,7 @@ define([
                     color: user.color,
                     title: Messages.calendar_default
                 }, function (err) {
-                    if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
+                    if (err) { return void UI.errorLoadingScreen(Messages.error); }
                     store.get('calendarView', makeCalendar);
                     UI.removeLoadingScreen();
                 });
