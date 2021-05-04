@@ -15,7 +15,6 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
     var Messages = Cryptpad.Messages;
-    Messages.register_registrationIsClosed = "REGISTRATION IS CLOSED ON THIS INSTANCE."; // XXX
     $(function () {
         if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive

@@ -535,8 +535,7 @@ define([
                                 });
                                 break;
                             case 'E_RESTRICTED':
-                                Messages.register_restrictedError = "Registration is restricted on this instance"; // XXX
-                                UI.errorLoadingScreen(Messages.register_restrictedError); // XXX
+                                UI.errorLoadingScreen(Messages.register_registrationIsClosed);
                                 break;
                             default: // UNHANDLED ERROR
                                 hashing = false;

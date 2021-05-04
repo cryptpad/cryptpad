@@ -31,10 +31,9 @@ define([
         };
 
         if (Config.restrictRegistration) {
-            Msg.register_closed = "This instance does not allow registration at the moment."; // XXX
             return frame([
                 h('div.cp-restricted-registration', [
-                    h('p', Msg.register_closed),
+                    h('p', Msg.register_registrationIsClosed),
                 ])
             ]);
         }
