@@ -575,12 +575,18 @@ define([
                 }
                 else if (callback) {*/
                     // Old import button, used in settings
-                    button
-                    .click(common.prepareFeedback(type))
-                    .click(importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
+                    var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                         accept: data ? data.accept : undefined,
                         binary: data ? data.binary : undefined
-                    }));
+                    });
+
+                    var handler = data.first? function () {
+                        data.first(importer);
+                    }: importer; //importContent;
+
+                    button
+                    .click(common.prepareFeedback(type))
+                    .click(handler);
                 //}
                 break;
             case 'upload':
