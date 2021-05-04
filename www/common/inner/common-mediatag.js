@@ -431,7 +431,7 @@ define([
             else if ($this.hasClass("cp-app-code-context-download")) {
                 if ($mt.is('pre.mermaid')  || $mt.is('pre.markmap')) {
                     (function () {
-                    var name = 'image.svg'; // XXX
+                    var name = Messages.mediatag_defaultImageName + '.svg';
                     var svg = $mt.find('svg')[0].cloneNode(true);
                     $(svg).attr('xmlns', 'http://www.w3.org/2000/svg').attr('width', $mt.width()).attr('height', $mt.height());
                     $(svg).find('foreignObject').each(function (i, el) {
@@ -454,7 +454,7 @@ define([
                 }
                 if ($mt.is('pre.mathjax')) {
                     (function () {
-                    var name = 'image.png'; // XXX
+                    var name = Messages.mediatag_defaultImageName + '.png';
                     var svg = $mt.find('> span > svg')[0];
                     var clone = svg.cloneNode(true);
                     var html = clone.outerHTML;
