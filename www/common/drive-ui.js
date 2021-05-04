@@ -122,8 +122,8 @@ define([
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
-    var $listIcon = $('<button>', {"class": "fa fa-list"});
-    var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
+    //var $listIcon = $('<button>', {"class": "fa fa-list"});
+    //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-times"});
@@ -2407,36 +2407,52 @@ define([
             return $box;
         };
 
+        var getOppositeViewMode = function (viewMode) {
+            viewMode = viewMode || getViewMode();
+            var newViewMode = viewMode === 'grid'? 'list': 'grid';
+            return newViewMode;
+        };
+
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
-            var $listButton = $listIcon.clone();
-            var $gridButton = $gridIcon.clone();
+            var viewMode = getViewMode();
+            var gridIcon = h('button.fa.fa-th-large', { title: Messages.fm_viewGridButton });
+            var listIcon = h('button.fa.fa-list', { title: Messages.fm_viewListButton });
 
-            $listButton.click(function () {
-                $gridButton.show();
-                $listButton.hide();
-                setViewMode('list');
-                $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-grid');
-                $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-list');
-                Feedback.send('DRIVE_LIST_MODE');
-            });
-            $gridButton.click(function () {
-                $listButton.show();
-                $gridButton.hide();
-                setViewMode('grid');
-                $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-grid');
-                $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-list');
-                Feedback.send('DRIVE_GRID_MODE');
-            });
+            var $button = $(h('span.cp-drive-viewmode-button', [
+                gridIcon,
+                listIcon
+            ]));
+            var $gridIcon = $(gridIcon);
+            var $listIcon = $(listIcon);
+            var showMode = function (mode) {
+                if (mode === 'grid') {
+                    $gridIcon.hide();
+                    $listIcon.show();
+                } else {
+                    $listIcon.hide();
+                    $gridIcon.show();
+                }
+            };
+            setViewMode(viewMode || 'grid');
+            showMode(viewMode);
 
-            if (getViewMode() === 'list') {
-                $listButton.hide();
-            } else {
-                $gridButton.hide();
-            }
-            $listButton.attr('title', Messages.fm_viewListButton);
-            $gridButton.attr('title', Messages.fm_viewGridButton);
-            $container.append($listButton).append($gridButton);
+            $button.click(function (e) {
+                console.error(e);
+                var viewMode = getViewMode();
+                var newViewMode = getOppositeViewMode(viewMode);
+                setViewMode(newViewMode);
+                showMode(newViewMode);
+                var $folder = $('#' + FOLDER_CONTENT_ID);
+                if (newViewMode === 'list') {
+                    $folder.removeClass('cp-app-drive-content-grid').addClass('cp-app-drive-content-list');
+                    Feedback.send('DRIVE_LIST_MODE');
+                } else {
+                    $folder.addClass('cp-app-drive-content-grid').removeClass('cp-app-drive-content-list');
+                    Feedback.send('DRIVE_GRID_MODE');
+                }
+            });
+            $container.append($button);
         };
         var emptyTrashModal = function () {
             var ownedInTrash = manager.ownedInTrash();
