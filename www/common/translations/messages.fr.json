@@ -1228,5 +1228,6 @@
     "settings_padOpenLinkHint": "Cette option permet d'ouvrir les liens dans un document texte sans fenêtre d’aperçu",
     "settings_padOpenLinkTitle": "Ouvrir les lien avec un seul clic",
     "toolbar_storeInDrive": "Stocker dans CryptDrive",
-    "genericCopySuccess": "Copié dans le presse-papiers"
+    "genericCopySuccess": "Copié dans le presse-papiers",
+    "mediatag_defaultImageName": "image"
 }
