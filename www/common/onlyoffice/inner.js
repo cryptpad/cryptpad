@@ -2668,15 +2668,21 @@ define([
             }
 
 
+            // Only execute the following code the first time we call onReady
+            if (!firstReady) {
+                setMyId();
+                oldHashes = JSON.parse(JSON.stringify(content.hashes));
+                initializing = false;
+                return void setEditable(!readOnly);
+            }
+            firstReady = false;
+
+
             var useNewDefault = content.version && content.version >= 2;
             openRtChannel(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
-
-                // Only execute the following code the first time we call onReady
-                if (!firstReady) { return void setEditable(!readOnly); }
-                firstReady = false;
 
                 common.openPadChat(APP.onLocal);
 
@@ -2790,10 +2796,8 @@ define([
                             checkNewCheckpoint();
                         });
                     };
-                    var isModified = editor.asc_isDocumentModified || function () {
-                        return editor.isDocumentModify;
-                    };
-                    if (isModified()) {
+                    var editing = editor.asc_isDocumentModified ? editor.asc_isDocumentModified() : editor.isDocumentModify;
+                    if (editing) {
                         setEditable(false);
                         APP.unsavedLocks = myLocks;
                         APP.onStrictSaveChanges = function () {
@@ -2838,10 +2842,12 @@ define([
                         common.gotoURL();
                     });
                 }
-                setEditable(true);
+                //setEditable(true);
+                try { getEditor().asc_setViewMode(false); } catch (e) {}
                 offline = false;
             } else {
-                setEditable(false);
+                try { getEditor().asc_setViewMode(true); } catch (e) {}
+                //setEditable(false);
                 offline = true;
                 UI.findOKButton().click();
                 UIElements.disconnectAlert();

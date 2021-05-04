@@ -626,7 +626,6 @@ define([
                         },
                         isNewFile: isNewFile,
                         isDeleted: isDeleted,
-                        password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
                         devMode: localStorage.CryptPad_dev === "1",
@@ -651,6 +650,7 @@ define([
 
                     if (isSafe) {
                         additionalPriv.hashes = hashes;
+                        additionalPriv.password = password;
                     }
 
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }

@@ -1,7 +1,6 @@
-@import (reference) "../include/colortheme-all.less";
-@import (reference) "../include/font.less";
-//@import (reference) "../include/forms.less";
-@import (reference) "../include/alertify.less";
+@import (reference) "../../customize/src/less2/include/colortheme-all.less";
+@import (reference) "../../customize/src/less2/include/font.less";
+@import (reference) "../../customize/src/less2/include/alertify.less";
 
 html, body {
     .font_main();
@@ -55,9 +54,16 @@ html, body {
         word-break: break-word;
         padding: 5px;
         //font-size: 16px;
-        border: 1px solid red;
-        background-color: @cp_alerts-danger-bg;
-        color: @cp_alerts-danger-text;
+        &.cp-danger {
+            border: 1px solid @cp_alerts-danger-bg;
+            background-color: @cp_alerts-danger-bg;
+            color: @cp_alerts-danger-text;
+        }
+        &.cp-warning {
+            border: 1px solid @cp_alerts-warning-bg;
+            background-color: @cp_alerts-warning-bg;
+            color: @cp_alerts-warning-text;
+        }
         code {
             word-break: keep-all;
             font-style: italic;

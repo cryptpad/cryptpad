@@ -1226,5 +1226,7 @@
     "calendar": "Kalender",
     "calendar_before": "vorher",
     "calendar_weekNumber": "Woche {0}",
-    "oo_cantMigrate": "Diese Tabelle überschreitet die maximale Größe für hochgeladene Dateien und kann nicht migriert werden."
+    "oo_cantMigrate": "Diese Tabelle überschreitet die maximale Größe für hochgeladene Dateien und kann nicht migriert werden.",
+    "toolbar_storeInDrive": "In CryptDrive speichern",
+    "genericCopySuccess": "In die Zwischenablage kopiert"
 }

@@ -789,7 +789,6 @@ define([
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'storeindrive':
-                Messages.toolbar_storeInDrive = "Store in CryptDrive"; // XXX
                 button = $(h('button.cp-toolbar-storeindrive', {
                     style: 'display:none;'
                 }, [
