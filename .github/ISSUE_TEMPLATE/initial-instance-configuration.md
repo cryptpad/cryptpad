@@ -53,3 +53,5 @@ If you believe you've done all of those steps correctly then proceed with creati
 2. A link to your instance so we can easily load your `/checkup/` page for ourselves
 3. A list of any errors visible in your browser's console on whichever page is not behaving as expected
 4. A list of any further steps you've taken to debug the problem on your own
+
+Finally, remove the text of this issue template and leave only the content you've written.
