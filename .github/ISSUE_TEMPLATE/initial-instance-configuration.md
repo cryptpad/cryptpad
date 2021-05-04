@@ -1,6 +1,6 @@
 ---
 name: Initial instance configuration
-about: Difficulty configuring a CryptPd instance
+about: Difficulty configuring a CryptPad instance
 title: CONFIG
 labels: configuration
 assignees: ''
