@@ -2551,6 +2551,9 @@ define([
                 common.createButton('hashtag', true).appendTo(toolbar.$drawer);
             }
 
+            var $store = common.createButton('storeindrive', true);
+            toolbar.$drawer.append($store);
+
             var $forget = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
