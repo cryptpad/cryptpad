@@ -772,7 +772,7 @@
     "support_listHint": "Aqui está a lista de tíquetes enviados aos administradores e suas respostas. Um tíquete fechado não pode ser reaberto, mas você pode fazer um novo. Você pode ocultar tíquetes que foram fechados.",
     "support_listTitle": "Tíquetes de suporte",
     "support_cat_tickets": "Tíquetes existentes",
-    "support_formMessage": "Digite sua mensagem...",
+    "support_formMessage": "Digite sua mensagem…",
     "support_formContentError": "Erro: conteúdo está vazio",
     "support_formTitleError": "Erro: Título está vazio",
     "support_formButton": "Enviar",
