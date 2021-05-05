@@ -84,7 +84,7 @@ define([
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
-            //'cp-settings-pad-openlink', // XXX test, translate and re-enable
+            'cp-settings-pad-openlink',
         ],
         'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',
@@ -95,6 +95,9 @@ define([
         ],
         'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
+        ],
+        'notifications': [
+            'cp-settings-notif-calendar'
         ],
         'subscription': {
             onClick: function() {
@@ -1600,6 +1603,39 @@ define([
         cb($d);
     }, true);
 
+    makeBlock('notif-calendar', function(cb) { // Msg.settings_notifCalendarHint, .settings_notifCalendarTitle
+
+        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+            Messages.settings_notifCalendarCheckbox,
+            false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
+
+        var $checkbox = $cbox.find('input').on('change', function() {
+            spinner.spin();
+            var val = !$checkbox.is(':checked');
+            common.setAttribute(['general', 'calendar', 'hideNotif'], val, function(e) {
+                if (e) {
+                    console.error(e);
+                    // error: restore previous value
+                    if (val) { $checkbox.attr('checked', ''); }
+                    else { $checkbox.attr('checked', 'checked'); }
+                    spinner.hide();
+                    return void console.error(e);
+                }
+                spinner.done();
+            });
+        });
+
+        common.getAttribute(['general', 'calendar', 'hideNotif'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (!val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        cb($cbox[0]);
+    }, true);
+
     // Settings app
 
     var createUsageButton = function() {
@@ -1629,8 +1665,10 @@ define([
         subscription: 'fa fa-star-o',
         kanban: 'cptools cptools-kanban',
         style: 'cptools cptools-palette',
+        notifications: 'fa fa-bell'
     };
 
+    Messages.settings_cat_notifications = Messages.notificationsPage;
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);

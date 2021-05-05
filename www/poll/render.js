@@ -6,7 +6,7 @@ define([
     '/common/common-util.js',
     '/customize/messages.js',
 
-    '/bower_components/diff-dom/diffDOM.js'
+    '/lib/diff-dom/diffDOM.js',
 ], function ($, Hyperjson, TextCursor, ChainPad, Util, Messages) {
     var DiffDOM = window.diffDOM;
 

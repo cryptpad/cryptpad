@@ -89,6 +89,8 @@ define([
                             'https://www.mozilla.org/en-US/moss/'),
                         logoLink('NGI Trust logo', '/customize/images/logo_ngi_trust.png',
                             'https://www.ngi.eu/ngi-projects/ngi-trust/'),
+                        logoLink('NGI DAPSI LOGO', '/customize/images/logo_ngi_dapsi.png',
+                            'https://dapsi.ngi.eu/'),
                     ]),
                 ]),
                 h('div.row.cp-page-section', [

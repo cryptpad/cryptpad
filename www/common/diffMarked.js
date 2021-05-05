@@ -9,7 +9,7 @@ define([
     '/common/media-tag.js',
     '/customize/messages.js',
     '/common/highlight/highlight.pack.js',
-    '/bower_components/diff-dom/diffDOM.js',
+    '/lib/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
 ],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages) {
@@ -40,6 +40,7 @@ define([
                     Mermaid = _Mermaid;
                     Mermaid.initialize({
                         gantt: { axisFormat: '%m-%d', },
+                        flowchart: { htmlLabels: false, },
                         theme: (window.CryptPad_theme === 'dark') ? 'dark' : 'default',
                         "themeCSS": mermaidThemeCSS,
                     });

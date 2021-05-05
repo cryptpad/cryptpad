@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'json.sortify',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     '/bower_components/nthen/index.js',
@@ -15,17 +16,20 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
+    '/calendar/export.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
     '/common/jscolor.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/calendar/app-calendar.less',
 ], function (
     $,
+    JSONSortify,
     Crypto,
     Toolbar,
     nThen,
@@ -41,9 +45,11 @@ define([
     Messages,
     AppConfig,
     Calendar,
+    Export,
     Share, Access, Properties
     )
 {
+    var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
     };
@@ -51,31 +57,6 @@ define([
     var common;
     var metadataMgr;
     var sframeChan;
-
-Messages.calendar = "BETA Calendar"; // XXX
-Messages.calendar_default = "My calendar"; // XXX
-Messages.calendar_new = "New calendar"; // XXX
-Messages.calendar_day = "Day";
-Messages.calendar_week = "Week";
-Messages.calendar_month = "Month";
-Messages.calendar_today = "Today";
-Messages.calendar_more = "{0} more";
-Messages.calendar_deleteConfirm = "Are you sure you want to delete this calendar from your account?";
-Messages.calendar_deleteTeamConfirm = "Are you sure you want to delete this calendar from this team?";
-Messages.calendar_deleteOwned = " It will still be visible for the users it has been shared with.";
-Messages.calendar_errorNoCalendar = "No editable calendar selected!";
-Messages.calendar_myCalendars = "My calendars";
-Messages.calendar_tempCalendar = "Temp calendar";
-Messages.calendar_import = "Import to my calendars";
-Messages.calendar_newEvent = "New event";
-Messages.calendar_new = "New calendar";
-Messages.calendar_dateRange = "{0} - {1}";
-Messages.calendar_dateTimeRange = "{0} {1} - {2}";
-Messages.calendar_update = "Update";
-Messages.calendar_title = "Title";
-Messages.calendar_loc = "Location";
-Messages.calendar_location = "Location: {0}";
-Messages.calendar_allDay = "All day";
 
     var onCalendarsUpdate = Util.mkEvent();
 
@@ -99,6 +80,12 @@ Messages.calendar_allDay = "All day";
     };
     var importCalendar = function (data, cb) {
         APP.module.execCommand('IMPORT', data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+    var importICSCalendar = function (data, cb) {
+        APP.module.execCommand('IMPORT_ICS', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -128,15 +115,18 @@ Messages.calendar_allDay = "All day";
         var brightness = Math.round(((parseInt(rgb[0]) * 299) +
                           (parseInt(rgb[1]) * 587) +
                           (parseInt(rgb[2]) * 114)) / 1000);
-        return (brightness > 125) ? 'black' : 'white';
+        return (brightness > 125) ? '#424242' : '#EEEEEE';
     };
 
-    var getWeekDays = function () {
+    var getWeekDays = function (large) {
         var baseDate = new Date(Date.UTC(2017, 0, 1)); // just a Sunday
         var weekDays = [];
         for(var i = 0; i < 7; i++) {
             weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
             baseDate.setDate(baseDate.getDate() + 1);
+        }
+        if (!large) {
+            weekDays = weekDays.map(function (day) { return day.slice(0,3); });
         }
         return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
@@ -161,7 +151,17 @@ Messages.calendar_allDay = "All day";
     };
     var getSchedules = function () {
         var s = [];
-        Object.keys(APP.calendars).forEach(function (id) {
+        var calendars = Object.keys(APP.calendars);
+        if (APP.currentCalendar) {
+            var currentCal = calendars.filter(function (id) {
+                var c = APP.calendars[id];
+                var t = c.teams || [];
+                if (id !== APP.currentCalendar) { return; }
+                return t.length === 1 && t[0] === 0;
+            });
+            if (currentCal.length) { calendars = currentCal; }
+        }
+        calendars.forEach(function (id) {
             var c = APP.calendars[id];
             if (c.hidden || c.restricted || c.loading) { return; }
             var data = c.content || {};
@@ -230,11 +230,17 @@ Messages.calendar_allDay = "All day";
     })()) { getTime = undefined; }
 
     var templates = {
+        popupSave: function (obj) {
+            APP.editModalData = obj.data && obj.data.root;
+            return Messages.settings_save;
+        },
+        popupUpdate: function(obj) {
+            APP.editModalData = obj.data && obj.data.root;
+            return Messages.calendar_update;
+        },
         monthGridHeaderExceed: function(hiddenSchedules) {
             return '<span class="tui-full-calendar-weekday-grid-more-schedules">' + Messages._getKey('calendar_more', [hiddenSchedules]) + '</span>';
         },
-        popupSave: function () { return Messages.settings_save; },
-        popupUpdate: function() { return Messages.calendar_update; },
         popupEdit: function() { return Messages.poll_edit; },
         popupDelete: function() { return Messages.kanban_delete; },
         popupDetailLocation: function(schedule) {
@@ -276,7 +282,6 @@ Messages.calendar_allDay = "All day";
         }
     };
 
-    // XXX Note: always create calendars in your own proxy. If you want a team calendar, you can share it with the team later.
     var editCalendar = function (id) {
         var isNew = !id;
         var data = APP.calendars[id];
@@ -370,7 +375,7 @@ Messages.calendar_allDay = "All day";
                 }
             });
         }
-        if (data.teams.indexOf(1) === -1 || teamId === 0) {
+        if (APP.loggedIn && (data.teams.indexOf(1) === -1 || teamId === 0)) {
             options.push({
                 tag: 'a',
                 attributes: {
@@ -382,10 +387,10 @@ Messages.calendar_allDay = "All day";
                     importCalendar({
                         id: id,
                         teamId: teamId
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            console.error(obj.error);
-                            return void UI.warn(obj.error);
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
                         }
                     });
                     return true;
@@ -411,7 +416,7 @@ Messages.calendar_allDay = "All day";
                         pathname: "/calendar/",
                         friends: friends,
                         title: title,
-                        password: cal.password, // XXX support passwords
+                        password: cal.password,
                         calendar: {
                             title: title,
                             color: color,
@@ -438,7 +443,7 @@ Messages.calendar_allDay = "All day";
                     var href = Hash.hashToHref(h.editHash || h.viewHash, 'calendar');
                     Access.getAccessModal(common, {
                         title: title,
-                        password: cal.password, // XXX support passwords
+                        password: cal.password,
                         calendar: {
                             title: title,
                             color: color,
@@ -453,6 +458,79 @@ Messages.calendar_allDay = "All day";
                     return true;
                 }
             });
+
+            if (!data.readOnly) {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'fa fa-upload',
+                    },
+                    content: h('span', Messages.importButton),
+                    action: function () {
+                        UIElements.importContent('text/calendar', function (res) {
+                            Export.import(res, id, function (err, json) {
+                                if (err) { return void UI.warn(Messages.importError); }
+                                importICSCalendar({
+                                    id: id,
+                                    json: json
+                                }, function (err) {
+                                    if (err) { return void UI.warn(Messages.error); }
+                                    UI.log(Messages.saved);
+                                });
+
+                            });
+                        }, {
+                            accept: ['.ics']
+                        })();
+                        return true;
+                    }
+                });
+            }
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-download',
+                },
+                content: h('span', Messages.exportButton),
+                action: function (e) {
+                    e.stopPropagation();
+                    var cal = APP.calendars[id];
+                    var suggestion = Util.find(cal, ['content', 'metadata', 'title']);
+                    var types = [];
+                    types.push({
+                        tag: 'a',
+                        attributes: {
+                            'data-value': '.ics',
+                            'href': '#'
+                        },
+                        content: '.ics'
+                    });
+                    var dropdownConfig = {
+                        text: '.ics', // Button initial text
+                        caretDown: true,
+                        options: types, // Entries displayed in the menu
+                        isSelect: true,
+                        initialValue: '.ics',
+                        common: common
+                    };
+                    var $select = UIElements.createDropdown(dropdownConfig);
+                    UI.prompt(Messages.exportPrompt,
+                        Util.fixFileName(suggestion), function (filename)
+                    {
+                        if (!(typeof(filename) === 'string' && filename)) { return; }
+                        var ext = $select.getValue();
+                        filename = filename + ext;
+                        var blob = Export.main(cal.content);
+                        SaveAs(blob, filename);
+                    }, {
+                        typeInput: $select[0]
+                    });
+                    return true;
+                }
+            });
+
+
+
             options.push({
                 tag: 'a',
                 attributes: {
@@ -490,15 +568,15 @@ Messages.calendar_allDay = "All day";
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
-                    var key = Messages.calendar_deleteConfirm;
                     var teams = (cal && cal.teams) || [];
+                    var text = [ Messages.calendar_deleteConfirm ];
                     if (teams.length === 1 && teams[0] !== 1) {
-                        key = Messages.calendar_deleteTeamConfirm;
+                        text[0] = Messages.calendar_deleteTeamConfirm;
                     }
                     if (cal.owned) {
-                        key += Messages.calendar_deleteOwned;
+                        text = text.concat([' ', Messages.calendar_deleteOwned]);
                     }
-                    UI.confirm(Messages.calendar_deleteConfirm, function (yes) {
+                    UI.confirm(h('span', text), function (yes) {
                         if (!yes) { return; }
                         deleteCalendar({
                             id: id,
@@ -522,7 +600,6 @@ Messages.calendar_allDay = "All day";
         return UIElements.createDropdown(dropdownConfig)[0];
     };
     var makeCalendarEntry = function (id, teamId) {
-        // XXX handle RESTRICTED calendars (data.restricted)
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
@@ -534,18 +611,25 @@ Messages.calendar_allDay = "All day";
         if (!md) { return; }
         var active = data.hidden ? '' : '.cp-active';
         var restricted = data.restricted ? '.cp-restricted' : '';
-        var calendar = h('div.cp-calendar-entry'+active+restricted, {
+        var temp = teamId === 0 ? '.cp-unclickable' : '';
+        var calendar = h('div.cp-calendar-entry'+active+restricted+temp, {
             'data-uid': id
         }, [
-            h('span.cp-calendar-color', {
+            h('span.cp-calendar-icon', {
                 style: 'background-color: '+md.color+';'
-            }),
+            }, [
+                h('i.cp-calendar-active.fa.fa-calendar', {
+                    style: 'color: '+getContrast(md.color)+';'
+                }),
+                h('i.cp-calendar-inactive.fa.fa-calendar-o')
+            ]),
             h('span.cp-calendar-title', md.title),
             data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}) :
                 (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
             edit
         ]);
-        $(calendar).click(function () {
+        var $calendar = $(calendar).click(function () {
+            if (teamId === 0) { return; }
             data.hidden = !data.hidden;
             if (APP.$calendars) {
                 APP.$calendars.find('[data-uid="'+id+'"]').toggleClass('cp-active', !data.hidden);
@@ -555,6 +639,12 @@ Messages.calendar_allDay = "All day";
 
             renderCalendar();
         });
+        if (!data.loading) {
+            $calendar.contextmenu(function (ev) {
+                ev.preventDefault();
+                $(edit).click();
+            });
+        }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
         return calendar;
     };
@@ -568,26 +658,63 @@ Messages.calendar_allDay = "All day";
             var filter = function (teamId) {
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
-                    var teams = cal.teams || [];
-                    return teams.indexOf(typeof(teamId) !== "undefined" ? teamId : 1) !== -1;
+                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
+                    return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
                 });
             };
             var tempCalendars = filter(0);
-            if (tempCalendars.length) {
+            if (tempCalendars.length && tempCalendars[0] === APP.currentCalendar) {
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     h('span', Messages.calendar_tempCalendar)
                 ]));
                 makeCalendarEntry(tempCalendars[0], 0);
+                var importTemp = h('button', [
+                    h('i.fa.fa-calendar-plus-o'),
+                    h('span', Messages.calendar_import_temp),
+                    h('span')
+                ]);
+                $(importTemp).click(function () {
+                    importCalendar({
+                        id: tempCalendars[0],
+                        teamId: 0
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                    });
+                });
+                if (APP.loggedIn) {
+                    APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                }
+                return;
             }
             var myCalendars = filter(1);
             if (myCalendars.length) {
+                var user = metadataMgr.getUserData();
+                var avatar = h('span.cp-avatar');
+                var name = user.name || Messages.anonymous;
+                common.displayAvatar($(avatar), user.avatar, name);
                 APP.$calendars.append(h('div.cp-calendar-team', [
-                    h('span', Messages.calendar_myCalendars)
+                    avatar,
+                    h('span.cp-name', {title: name}, name)
                 ]));
             }
             myCalendars.forEach(function (id) {
                 makeCalendarEntry(id, 1);
             });
+
+            // Add new button
+            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+            var newButton = h('button', [
+                h('i.fa.fa-calendar-plus-o'),
+                h('span', Messages.calendar_new),
+                h('span')
+            ]);
+            $(newButton).click(function () {
+                editCalendar();
+            }).appendTo($newContainer);
+
             Object.keys(privateData.teams).forEach(function (teamId) {
                 var calendars = filter(teamId);
                 if (!calendars.length) { return; }
@@ -602,26 +729,30 @@ Messages.calendar_allDay = "All day";
                     makeCalendarEntry(id, teamId);
                 });
             });
-
-            // Add new button
-            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
-            var newButton = h('button', [
-                h('i.fa.fa-plus'),
-                h('span', Messages.calendar_new),
-                h('span')
-            ]);
-            $(newButton).click(function () {
-                editCalendar();
-            }).appendTo($newContainer);
         });
         onCalendarsUpdate.fire();
 
     };
+
+    var ISO8601_week_no = function (dt) {
+        var tdt = new Date(dt.valueOf());
+        var dayn = (dt.getDay() + 6) % 7;
+        tdt.setDate(tdt.getDate() - dayn + 3);
+        var firstThursday = tdt.valueOf();
+        tdt.setMonth(0, 1);
+        if (tdt.getDay() !== 4) {
+            tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+        }
+        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+    };
+
     var updateDateRange = function () {
         var range = APP.calendar._renderRange;
         var start = range.start._date.toLocaleDateString();
         var end = range.end._date.toLocaleDateString();
+        var week = ISO8601_week_no(range.start._date);
         var date = [
+            h('b.cp-small', Messages._getKey('calendar_weekNumber', [week])),
             h('b', start),
             h('span', ' - '),
             h('b', end),
@@ -654,6 +785,7 @@ Messages.calendar_allDay = "All day";
             h('div#cp-sidebarlayout-rightside')
         ]);
 
+        var large = $(window).width() >= 800;
         var cal = APP.calendar = new Calendar('#cp-sidebarlayout-rightside', {
             defaultView: view || 'week', // weekly view option
             taskView: false,
@@ -663,24 +795,42 @@ Messages.calendar_allDay = "All day";
             calendars: getCalendars(),
             template: templates,
             month: {
-                daynames: getWeekDays(),
+                daynames: getWeekDays(large),
                 startDayOfWeek: 1,
             },
             week: {
-                daynames: getWeekDays(),
+                daynames: getWeekDays(large),
                 startDayOfWeek: 1,
+            }
+        });
+
+        $(window).on('resize', function () {
+            var _large = $(window).width() >= 800;
+            if (large !== _large) {
+                large = _large;
+                cal.setOptions({
+                    month: {
+                        daynames: getWeekDays(_large),
+                        startDayOfWeek: 1,
+                    },
+                    week: {
+                        daynames: getWeekDays(_large),
+                        startDayOfWeek: 1,
+                    }
+                });
             }
         });
 
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            // XXX Recurrence (later)
+            // TODO Recurrence (later)
             // On creation, select a recurrence rule (daily / weekly / monthly / more weird rules)
             // then mark it under recurrence rule with a uid (the same for all the recurring events)
             // ie: recurrenceRule: DAILY|{uid}
             // Use template to hide "recurrenceRule" from the detailPopup or at least to use
             // a non technical value
+            var reminders = APP.notificationsEntries;
 
             var startDate = event.start._date;
             var endDate = event.end._date;
@@ -694,6 +844,7 @@ Messages.calendar_allDay = "All day";
                 start: +startDate,
                 isAllDay: event.isAllDay,
                 end: +endDate,
+                reminders: reminders,
             };
 
             newEvent(schedule, function (err) {
@@ -710,6 +861,12 @@ Messages.calendar_allDay = "All day";
             if (changes.end) { changes.end = +new Date(changes.end._date); }
             if (changes.start) { changes.start = +new Date(changes.start._date); }
             var old = event.schedule;
+
+            var oldReminders = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'reminders']);
+            var reminders = APP.notificationsEntries;
+            if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
+                changes.reminders = reminders;
+            }
 
             updateEvent({
                 ev: old,
@@ -780,7 +937,7 @@ Messages.calendar_allDay = "All day";
         APP.toolbar.$bottomR.append($block);
 
         // New event button
-        var newEventBtn = h('button', [
+        var newEventBtn = h('button.cp-calendar-newevent', [
             h('i.fa.fa-plus'),
             h('span', Messages.calendar_newEvent)
         ]);
@@ -809,6 +966,116 @@ Messages.calendar_allDay = "All day";
             goLeft, goToday, goRight
         ]));
 
+    };
+
+    var parseNotif = function (minutes) {
+        var res = {
+            unit: 'minutes',
+            value: minutes
+        };
+        var hours = minutes / 60;
+        if (!Number.isInteger(hours)) { return res; }
+        res.unit = 'hours';
+        res.value = hours;
+        var days = hours / 24;
+        if (!Number.isInteger(days)) { return res; }
+        res.unit = 'days';
+        res.value = days;
+        return res;
+    };
+    var getNotificationDropdown = function () {
+        var ev = APP.editModalData;
+        var calId = ev.selectedCal.id;
+        // DEFAULT HERE [10] ==> 10 minutes before the event
+        var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', ev.id, 'reminders']) || [10];
+        APP.notificationsEntries = [];
+        var number = h('input.tui-full-calendar-content', {
+            type: "number",
+            value: 10,
+            min: 1,
+            max: 60
+        });
+        var $number = $(number);
+        var options = ['minutes', 'hours', 'days'].map(function (k) {
+            return {
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-calendar-reminder',
+                    'data-value': k,
+                    'href': '#',
+                },
+                content: Messages['calendar_'+k]
+                // Messages.calendar_minutes
+                // Messages.calendar_hours
+                // Messages.calendar_days
+            };
+        });
+        var dropdownConfig = {
+            text: Messages.calendar_minutes,
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            common: common,
+            buttonCls: 'btn btn-secondary',
+            caretDown: true,
+        };
+
+        var $block = UIElements.createDropdown(dropdownConfig);
+        $block.setValue('minutes');
+        var $types = $block.find('a');
+        $types.click(function () {
+            var mode = $(this).attr('data-value');
+            var max = mode === "minutes" ? 60 : 24;
+            $number.attr('max', max);
+            if ($number.val() > max) { $number.val(max); }
+        });
+        var addNotif = h('button.btn.btn-primary-outline.fa.fa-plus');
+        var $list = $(h('div.cp-calendar-notif-list'));
+        var listContainer = h('div.cp-calendar-notif-list-container', [
+            h('span.cp-notif-label', Messages.calendar_notifications),
+            $list[0],
+            h('span.cp-notif-empty', Messages.calendar_noNotification)
+        ]);
+        var addNotification = function (unit, value) {
+            var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
+            var del = h('button.btn.btn-danger-outline.small.fa.fa-times');
+            var minutes = value * unitValue;
+            if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
+            var span = h('span.cp-notif-entry', {
+                'data-minutes': minutes
+            }, [
+                h('span.cp-notif-value', [
+                    h('span', value),
+                    h('span', Messages['calendar_'+unit]),
+                    h('span.cp-before', Messages.calendar_before)
+                ]),
+                del
+            ]);
+            $(del).click(function () {
+                $(span).remove();
+                var idx = APP.notificationsEntries.indexOf(minutes);
+                APP.notificationsEntries.splice(idx, 1);
+            });
+            $list.append(span);
+            APP.notificationsEntries.push(minutes);
+        };
+        $(addNotif).click(function () {
+            var unit = $block.getValue();
+            var value = $number.val();
+            addNotification(unit, value);
+        });
+        oldReminders.forEach(function (minutes) {
+            var p = parseNotif(minutes);
+            addNotification(p.unit, p.value);
+        });
+        return h('div.tui-full-calendar-popup-section.cp-calendar-add-notif', [
+            listContainer,
+            h('div.cp-calendar-notif-form', [
+                h('span.cp-notif-label', Messages.calendar_addNotification),
+                number,
+                $block[0],
+                addNotif
+            ])
+        ]);
     };
 
     var createToolbar = function () {
@@ -845,6 +1112,8 @@ Messages.calendar_allDay = "All day";
         metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
+
+        APP.loggedIn = common.isLoggedIn();
 
         common.setTabTitle(Messages.calendar);
 
@@ -899,6 +1168,10 @@ Messages.calendar_allDay = "All day";
             }
             var isUpdate = Boolean($el.find('#tui-full-calendar-schedule-title').val());
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
+
+            var $button = $el.find('.tui-full-calendar-section-button-save');
+            var div = getNotificationDropdown();
+            $button.before(div);
 
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
             var $start = $el.find('.tui-full-calendar-section-start-date');
@@ -979,6 +1252,11 @@ Messages.calendar_allDay = "All day";
         var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
             if (obj.empty && !privateData.calendarHash) {
+                if (!privateData.loggedIn) {
+                    return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                        common.setLoginRedirect('login');
+                    });
+                }
                 // No calendar yet, create one
                 newCalendar({
                     teamId: 1,
@@ -986,15 +1264,18 @@ Messages.calendar_allDay = "All day";
                     color: user.color,
                     title: Messages.calendar_default
                 }, function (err) {
-                    if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
+                    if (err) { return void UI.errorLoadingScreen(Messages.error); }
                     store.get('calendarView', makeCalendar);
                     UI.removeLoadingScreen();
                 });
                 return;
             }
             if (privateData.calendarHash) {
+                var hash = privateData.hashes.editHash || privateData.hashes.viewHash;
+                var secret = Hash.getSecrets('calendar', hash, privateData.password);
+                APP.currentCalendar = secret.channel;
                 APP.module.execCommand('OPEN', {
-                    hash: privateData.hashes.editHash || privateData.hashes.viewHash,
+                    hash: hash,
                     password: privateData.password
                 }, function (obj) {
                     if (obj && obj.error) { console.error(obj.error); }

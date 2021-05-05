@@ -40,6 +40,19 @@ define([
         };
     };
 
+    Block.keysToRPCFormat = function (keys) {
+        try {
+            var sign = keys.sign;
+            return {
+                edPrivate: Nacl.util.encodeBase64(sign.secretKey),
+                edPublic: Nacl.util.encodeBase64(sign.publicKey),
+            };
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    };
+
     // (UTF8 content, keys object) => Uint8Array block
     Block.encrypt = function (version, content, keys) {
         var u8 = Nacl.util.decodeUTF8(content);
@@ -84,6 +97,20 @@ define([
             signature: Nacl.util.encodeBase64(sig),
             ciphertext: Nacl.util.encodeBase64(ciphertext),
         };
+    };
+
+    Block.proveAncestor = function (O /* oldBlockKeys */, N /* newBlockKeys */) {
+        N = N;
+        var u8_pub = Util.find(O, ['sign', 'publicKey']);
+        var u8_secret = Util.find(O, ['sign', 'secretKey']);
+        try {
+        // sign your old publicKey with your old privateKey
+            var u8_sig = Nacl.sign.detached(u8_pub, u8_secret);
+        // return an array with the sig and the pubkey
+            return JSON.stringify([u8_pub, u8_sig].map(Nacl.util.encodeBase64));
+        } catch (err) {
+            return void console.error(err);
+        }
     };
 
     Block.remove = function (keys) {

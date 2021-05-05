@@ -4,15 +4,54 @@
 * calendars
   * reminders in calendars
   * import/export
-  * include LICENSE for ical.js
+    * include LICENSE for ical.js
+  * translations
+  * out of BETA
+  * available from user admin menu
+  * mobile styles fixed
+  * import calendars from URL
+  * anonymous viewing of calendars from URL
+  * settings
 * use a specific version of bootstrap-tokenfield in bower.json
 * don't create readmes
 * support displaying a roadmap in static pages' footer
 * adjust threshold for whiteboard file size limit to better match user expectation (file size instead of base64 size)
+  * XXX still incorrect?
 * FLOC OFF GOOGLE header
+  * opt out of Google's FLoC Network
 * /report/ page
 * broadcast channel included in pin list
 * fix package-lock to use server update
+* code app present mode fix
+* sheets
+  * lock sheets faster when applying checkpoints
+  * guard against undefined checkpoints
+  * don't spam users with prompts to checkpoints when they can't
+  * warn users when their browser doesn't support import/export so they don't email us
+  * check that WebAssembly exists
+* decrees
+  * SET_ADMIN_EMAIL
+  * SET_SUPPORT_MAILBOX
+* Add DAPSI to our sponsor list
+* checkup
+  * check for duplicate or incorrect headers
+  * check for missing adminEmail
+    * XXX make sure this is present on prod
+* save rendered markmap, mathjax, and mermaid as images
+* guard against incorrect iPhone behaviour that broke the ability to toggle between grid and list mode
+* new issue template
+* registration
+  * additional validation for block uploads
+  * ability to close registration via the admin panel
+  * handle an silent error
+* add "store in drive" to app toolbar's file menu
+  * XXX check sheets and polls?
+    * not in sheets
+    * not in polls
+* XXX CryptGet changes?
+  * onCacheReady
+* guard against input that crashes diffDOM
+  * https://github.com/xwiki-labs/cryptpad/issues/620
 
 # 4.4.0
 

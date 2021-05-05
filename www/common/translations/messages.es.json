@@ -508,7 +508,7 @@
     "pad_base64": "Este Pad contiene imágenes almacenadas de manera ineficiente. Estas imágenes aumentarán significativamente el tamaño de la Pad en su CryptDrive y harán que la carga sea más lenta. Puede migrar estos archivos a un nuevo formato que se almacenará por separado en su CryptDrive. ¿Desea migrar estas imágenes ahora?",
     "mdToolbar_defaultText": "Su texto aqui",
     "mdToolbar_help": "Ayuda",
-    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/es/",
     "mdToolbar_bold": "Negrita",
     "mdToolbar_italic": "Itálica",
     "mdToolbar_strikethrough": "Tachado",

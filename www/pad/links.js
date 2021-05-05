@@ -5,7 +5,7 @@ define([
     '/customize/messages.js'
 ], function ($, h, UIElements, Messages) {
 
-    var onLinkClicked = function (e, inner, openLinkSetting) {
+    var onLinkClicked = function (e, inner, openLinkSetting, editor) {
         var $target = $(e.target);
         if (!$target.is('a')) {
             $target = $target.closest('a');
@@ -18,14 +18,20 @@ define([
         e.preventDefault();
         e.stopPropagation();
 
-        if (href[0] === '#') {
-            var anchor = $inner.find(href);
-            if (!anchor.length) { return; }
-            anchor[0].scrollIntoView();
-            return;
-        }
-
         var open = function () {
+            if (href[0] === '#') {
+                try {
+                    $inner.find('.cke_anchor[data-cke-realelement]').each(function (j, el) {
+                        var i = editor.restoreRealElement($(el));
+                        var node = i.$;
+                        if (node.id === href.slice(1)) {
+                            el.scrollIntoView();
+                        }
+                    });
+                } catch (err) {}
+                return;
+            }
+
             var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
             window.open(bounceHref);
         };
@@ -39,7 +45,9 @@ define([
         var l = (rect.left - rect0.left)+'px';
         var t = rect.bottom + $iframe.scrollTop() +'px';
 
-        var a = h('a', { href: href}, href);
+        var text = href;
+        if (text[0] === '#') { text = Messages.pad_goToAnchor; }
+        var a = h('a', { href: href}, text);
         var link = h('div.cp-link-clicked.non-realtime', {
             contenteditable: false,
             style: 'top:'+t+';left:'+l
@@ -76,7 +84,7 @@ define([
             $inner.click(function (e) {
                 removeClickedLink($inner);
                 if (e.target.nodeName.toUpperCase() === 'A' || $(e.target).closest('a').length) {
-                    return void onLinkClicked(e, inner, openLinkSetting);
+                    return void onLinkClicked(e, inner, openLinkSetting, editor);
                 }
             });
 

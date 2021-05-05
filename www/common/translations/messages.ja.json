@@ -24,7 +24,7 @@
     },
     "main_title": "CryptPad - 安全にリアルタイム編集可能なコラボレーションツール",
     "support_formButton": "送信",
-    "support_formMessage": "メッセージを入力...",
+    "support_formMessage": "メッセージを入力…",
     "support_formContentError": "エラー：内容が空です",
     "support_formTitleError": "エラー：件名が空です",
     "support_formTitle": "チケットの件名",
@@ -358,7 +358,6 @@
     "admin_cat_quota": "ユーザーストレージ",
     "admin_invalKey": "無効な公開鍵です",
     "admin_limitPlan": "プラン: {0}",
-    "admin_registrationAllow": "開く",
     "admin_registrationButton": "閉じる",
     "oo_version": "バージョン: ",
     "snapshots_delete": "削除",
@@ -391,5 +390,6 @@
     "home_opensource_title": "オープンソース",
     "home_host_title": "このインスタンスについて",
     "home_privacy_text": "CryptPad は、データをプライベートに保護しながらコラボレーションを可能にするように構築されています。すべてのコンテンツは、あなたのブラウザ上で暗号化および復号されます。つまり、ドキュメント、チャット、およびファイルは、あなたがログインしているセッション以外では読み取れません。サービス管理者でさえ、あなたの情報にアクセスすることはできません。",
-    "home_privacy_title": "プライバシーバイデザイン"
+    "home_privacy_title": "プライバシーバイデザイン",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/jp/"
 }
