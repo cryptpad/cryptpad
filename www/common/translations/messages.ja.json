@@ -358,7 +358,6 @@
     "admin_cat_quota": "ユーザーストレージ",
     "admin_invalKey": "無効な公開鍵です",
     "admin_limitPlan": "プラン: {0}",
-    "admin_registrationAllow": "開く",
     "admin_registrationButton": "閉じる",
     "oo_version": "バージョン: ",
     "snapshots_delete": "削除",

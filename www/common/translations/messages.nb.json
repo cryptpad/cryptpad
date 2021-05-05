@@ -499,7 +499,6 @@
     "admin_getlimitsTitle": "Egendefinerte grenser",
     "admin_limit": "Nåværende grense: {0}",
     "admin_setlimitButton": "Sett grense",
-    "admin_registrationAllow": "Åpne",
     "admin_registrationButton": "Lukk",
     "oo_version": "Versjon: ",
     "snapshots_delete": "Slett",
