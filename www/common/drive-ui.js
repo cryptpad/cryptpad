@@ -2416,10 +2416,10 @@ define([
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
             var viewMode = getViewMode();
-            var gridIcon = h('button.fa.fa-th-large', { title: Messages.fm_viewGridButton });
-            var listIcon = h('button.fa.fa-list', { title: Messages.fm_viewListButton });
+            var gridIcon = h('i.fa.fa-th-large', { title: Messages.fm_viewGridButton });
+            var listIcon = h('i.fa.fa-list', { title: Messages.fm_viewListButton });
 
-            var $button = $(h('span.cp-drive-viewmode-button', [
+            var $button = $(h('button.cp-app-drive-viewmode-button', [
                 gridIcon,
                 listIcon
             ]));
