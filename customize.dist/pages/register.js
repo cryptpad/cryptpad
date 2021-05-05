@@ -16,11 +16,30 @@ define([
             tabindex: '-1',
         });
 
-        return [h('div#cp-main', [
-            Pages.infopageTopbar(),
-            h('div.container.cp-container', [
-                h('div.row.cp-page-title', h('h1', Msg.register_header)),
-                h('div.row.cp-register-det', [
+
+        var frame = function (content) {
+            return [
+                h('div#cp-main', [
+                    Pages.infopageTopbar(),
+                    h('div.container.cp-container', [
+                        h('div.row.cp-page-title', h('h1', Msg.register_header)),
+                        //h('div.row.cp-register-det', content),
+                    ].concat(content)),
+                ]),
+                Pages.infopageFooter(),
+            ];
+        };
+
+        if (Config.restrictRegistration) {
+            return frame([
+                h('div.cp-restricted-registration', [
+                    h('p', Msg.register_registrationIsClosed),
+                ])
+            ]);
+        }
+
+        return frame([
+            h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
@@ -59,11 +78,8 @@ define([
                         h('button#register', Msg.login_register)
                     ])
                 ]),
-                ]),
-            ]),
-
-            Pages.infopageFooter(),
-        ])];
+            ])
+        ]);
     };
 
 });

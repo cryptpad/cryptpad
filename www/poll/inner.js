@@ -1175,6 +1175,9 @@ define([
             metadataMgr.updateMetadata(meta);
         });
 
+        var $store = common.createButton('storeindrive', true);
+        $drawer.append($store);
+
         /* add a forget button */
         var forgetCb = function (err) {
             if (err) { return; }

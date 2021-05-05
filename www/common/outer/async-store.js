@@ -1,4 +1,5 @@
 define([
+    '/api/config',
     'json.sortify',
     '/common/userObject.js',
     '/common/proxy-manager.js',
@@ -30,7 +31,7 @@ define([
     '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
-], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
+], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, NetConfig, AppConfig,
@@ -226,8 +227,9 @@ define([
 
             if (store.proxy.mailboxes) {
                 var mList = Object.keys(store.proxy.mailboxes).map(function (m) {
+                    if (m === "broadcast" && !store.isAdmin) { return; }
                     return store.proxy.mailboxes[m].channel;
-                });
+                }).filter(Boolean);
                 list = list.concat(mList);
             }
 
@@ -449,19 +451,33 @@ define([
         };
 
         Store.writeLoginBlock = function (clientId, data, cb) {
-            store.rpc.writeLoginBlock(data, function (e, res) {
-                cb({
-                    error: e,
-                    data: res
+            Pinpad.create(store.network, data && data.keys, function (err, rpc) {
+                if (err) {
+                    return void cb({
+                        error: err,
+                    });
+                }
+                rpc.writeLoginBlock(data && data.content, function (e, res) {
+                    cb({
+                        error: e,
+                        data: res
+                    });
                 });
             });
         };
 
         Store.removeLoginBlock = function (clientId, data, cb) {
-            store.rpc.removeLoginBlock(data, function (e, res) {
-                cb({
-                    error: e,
-                    data: res
+            Pinpad.create(store.network, data && data.keys, function (err, rpc) {
+                if (err) {
+                    return void cb({
+                        error: err,
+                    });
+                }
+                rpc.removeLoginBlock(data && data.content, function (e, res) {
+                    cb({
+                        error: e,
+                        data: res
+                    });
                 });
             });
         };
@@ -813,6 +829,7 @@ define([
         Store.deleteAccount = function (clientId, data, cb) {
             var edPublic = store.proxy.edPublic;
             var removeData = data && data.removeData;
+            var rpcKeys = data && data.keys;
             Store.anonRpcMsg(clientId, {
                 msg: 'GET_METADATA',
                 data: store.driveChannel
@@ -843,8 +860,15 @@ define([
                         }, waitFor());
                     }).nThen(function (waitFor) {
                         if (!removeData) { return; }
-                        // Delete the block. Don't abort if it fails, it doesn't leak any data.
-                        store.rpc.removeLoginBlock(removeData, waitFor());
+                        var done = waitFor();
+                        Pinpad.create(store.network, rpcKeys, function (err, rpc) {
+                            if (err) {
+                                console.error(err);
+                                return void done();
+                            }
+                            // Delete the block. Don't abort if it fails, it doesn't leak any data.
+                            rpc.removeLoginBlock(removeData, done);
+                        });
                     }).nThen(function () {
                         // Log out current worker
                         postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
@@ -2927,6 +2951,12 @@ define([
                         onReady(clientId, returned, cb);
                     });
                 }
+
+                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
+                    store.isAdmin = true;
+                }
+
                 onReady(clientId, returned, cb);
             })
             .on('change', ['drive', 'migrate'], function () {

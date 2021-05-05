@@ -129,13 +129,28 @@
     }
 
     @media (max-width: @browser_media-medium-screen) {
-        #cp-app-code-container {
-            flex: 1;
-            max-width: 100%;
-            resize: none;
-        }
-        #cp-app-code-preview {
-            display: none !important;
+        #cp-app-code-editor {
+            &.cp-app-code-present {
+                #cp-app-code-container { display: none !important; }
+                #cp-app-code-preview {
+                    flex: 1;
+                    max-width: 100%;
+                    border: 0;
+                    #cp-app-code-preview-content {
+                        margin: 10px;
+                    }
+                }
+            }
+            &:not(.cp-app-code-present) {
+                #cp-app-code-container {
+                    flex: 1;
+                    max-width: 100%;
+                    resize: none;
+                }
+                #cp-app-code-preview {
+                    display: none !important;
+                }
+            }
         }
     }
     #cp-app-code-print {

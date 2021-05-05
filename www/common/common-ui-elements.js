@@ -127,7 +127,7 @@ define([
         dcAlert = undefined;
     };
 
-    var importContent = function (type, f, cfg) {
+    var importContent = UIElements.importContent = function (type, f, cfg) {
         return function () {
             var $files = $('<input>', {type:"file"});
             if (cfg && cfg.accept) {
@@ -575,12 +575,18 @@ define([
                 }
                 else if (callback) {*/
                     // Old import button, used in settings
-                    button
-                    .click(common.prepareFeedback(type))
-                    .click(importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
+                    var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                         accept: data ? data.accept : undefined,
                         binary: data ? data.binary : undefined
-                    }));
+                    });
+
+                    var handler = data.first? function () {
+                        data.first(importer);
+                    }: importer; //importContent;
+
+                    button
+                    .click(common.prepareFeedback(type))
+                    .click(handler);
                 //}
                 break;
             case 'upload':
@@ -787,6 +793,28 @@ define([
                     h('i.fa.fa-file-image-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
+                break;
+            case 'storeindrive':
+                button = $(h('button.cp-toolbar-storeindrive', {
+                    style: 'display:none;'
+                }, [
+                    h('i.fa.fa-hdd-o'),
+                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
+                ])).click(common.prepareFeedback(type)).click(function () {
+                    $(button).hide();
+                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                        var error = err || (obj && obj.error);
+                        if (error) {
+                            $(button).show();
+                            if (error === 'E_OVER_LIMIT') {
+                                return void UI.warn(Messages.pinLimitReached);
+                            }
+                            return void UI.warn(Messages.autostore_error);
+                        }
+                        $(document).trigger('cpPadStored');
+                        UI.log(Messages.autostore_saved);
+                    });
+                });
                 break;
             case 'hashtag':
                 button = $('<button>', {
@@ -1652,6 +1680,18 @@ define([
                 },
             });
         }
+        if (padType !== 'calendar' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-calendar',
+                },
+                content: h('span', Messages.calendar),
+                action: function () {
+                    Common.openURL('/calendar/');
+                },
+            });
+        }
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
@@ -1833,14 +1873,16 @@ define([
                     Common.setLoginRedirect('login');
                 },
             });
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                content: h('span', Messages.login_register),
-                action: function () {
-                    Common.setLoginRedirect('register');
-                },
-            });
+            if (!Config.restrictRegistration) {
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
+                    content: h('span', Messages.login_register),
+                    action: function () {
+                        Common.setLoginRedirect('register');
+                    },
+                });
+            }
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
         //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
@@ -2797,6 +2839,7 @@ define([
         // This pad will be deleted automatically, it shouldn't be stored
         if (priv.burnAfterReading) { return; }
 
+
         var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
                           Messages.autostore_pad;
@@ -2808,10 +2851,17 @@ define([
         var actions = h('div', [hide, store]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
+        if (initialHide) {
+            $('.cp-toolbar-storeindrive').show();
+            UIElements.displayCrowdfunding(common);
+            return;
+        }
+
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
 
         // Once the store pad popup is created, put the crowdfunding one in the queue
         UIElements.displayCrowdfunding(common);
+
 
         autoStoreModal[priv.channel] = modal;
 
@@ -2822,6 +2872,7 @@ define([
 
         $(hide).click(function () {
             delete autoStoreModal[priv.channel];
+            $('.cp-toolbar-storeindrive').show();
             modal.delete();
         });
         var waitingForStoringCb = false;

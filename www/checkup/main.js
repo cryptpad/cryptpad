@@ -12,13 +12,14 @@ define([
     '/common/common-util.js',
     '/common/pinpad.js',
     '/common/outer/network-config.js',
+    '/customize/pages.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/pages/page-checkup.less',
+    'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig) {
+            NetConfig, Pages) {
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -26,7 +27,7 @@ define([
     };
 
     var assert = function (f, msg) {
-        Assert(f, msg || h('span.advisory-text'));
+        Assert(f, msg || h('span.advisory-text.cp-danger'));
     };
 
     var CONFIG_PATH = function () {
@@ -243,7 +244,7 @@ define([
         opt.keys = secret.keys;
         opt.channelHex = secret.channel;
 
-        var RT, rpc, exists;
+        var RT, rpc, exists, restricted;
 
         nThen(function (waitFor) {
             Util.fetch(blockUrl, waitFor(function (err) {
@@ -285,6 +286,12 @@ define([
             // Write block
             if (exists) { return; }
             rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+                // we should tolerate restricted registration
+                // and proceed to clean up after any data we've created
+                if (e === 'E_RESTRICTED') {
+                    restricted = true;
+                    return void cb(true);
+                }
                 if (e) {
                     waitFor.abort();
                     console.error("Can't write login block", e);
@@ -292,6 +299,7 @@ define([
                 }
             }));
         }).nThen(function (waitFor) {
+            if (restricted) { return; }
             // Read block
             Util.fetch(blockUrl, waitFor(function (e) {
                 if (e) {
@@ -303,6 +311,7 @@ define([
         }).nThen(function (waitFor) {
             // Remove block
             rpc.removeLoginBlock(removeRequest, waitFor(function (e) {
+                if (restricted) { return; } // an ENOENT is expected in the case of restricted registration, but we call this anyway to clean up any mess from previous tests.
                 if (e) {
                     waitFor.abort();
                     console.error("Can't remove login block", e);
@@ -357,7 +366,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        msg = msg; // XXX
+        msg = msg;
         return void cb(true);
         /*
         msg.appendChild(h('span', [
@@ -407,6 +416,114 @@ define([
         });
     });
 
+    var checkAPIHeaders = function (url, cb) {
+        $.ajax(url, {
+            dataType: 'text',
+            complete: function (xhr) {
+                var allHeaders = xhr.getAllResponseHeaders();
+                var headers = {};
+                var duplicated = allHeaders.split('\n').some(function (header) {
+                    var duplicate;
+                    header.replace(/([^:]+):(.*)/, function (all, type, value) {
+                        type = type.trim();
+                        if (typeof(headers[type]) !== 'undefined') {
+                            duplicate = true;
+                        }
+                        headers[type] = value.trim();
+                    });
+                    return duplicate;
+                });
+
+                var expect = {
+                    'cross-origin-resource-policy': 'cross-origin',
+                };
+                var incorrect = Object.keys(expect).some(function (k) {
+                    var response = xhr.getResponseHeader(k);
+                    if (response !== expect[k]) {
+                        return true;
+                    }
+                });
+
+                if (duplicated || incorrect) { console.error(allHeaders); }
+                cb(!duplicated && !incorrect);
+            },
+        });
+    };
+
+    var INCORRECT_HEADER_TEXT = ' was served with duplicated or incorrect headers. Compare your reverse-proxy configuration against the provided example.';
+
+    assert(function (cb, msg) {
+        var url = '/api/config';
+        msg.innerText = url + INCORRECT_HEADER_TEXT;
+        checkAPIHeaders(url, cb);
+    });
+
+    assert(function (cb, msg) {
+        var url = '/api/broadcast';
+        msg.innerText = url + INCORRECT_HEADER_TEXT;
+        checkAPIHeaders(url, cb);
+    });
+
+    var setWarningClass = function (msg) {
+        $(msg).removeClass('cp-danger').addClass('cp-warning');
+    };
+
+    assert(function (cb, msg) {
+        var email = ApiConfig.adminEmail;
+        if (typeof(email) === 'string' && email && email !== 'i.did.not.read.my.config@cryptpad.fr') {
+            return void cb(true);
+        }
+
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'This instance does not provide a valid ',
+            h('code', 'adminEmail'),
+            ' which can make it difficult to contact its adminstrator to report vulnerabilities or abusive content.',
+            ' This can be configured in ', CONFIG_PATH(), '. ',
+            RESTART_WARNING(),
+        ]));
+        cb(email);
+    });
+
+    assert(function (cb, msg) {
+        var support = ApiConfig.supportMailbox;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",
+            "This can be configured via the ",
+            h('code', 'supportMailbox'),
+            " attribute in ",
+            CONFIG_PATH(),
+            ". ",
+            RESTART_WARNING(),
+        ]));
+        cb(support && typeof(support) === 'string' && support.length === 44);
+    });
+
+    assert(function (cb, msg) {
+        var adminKeys = ApiConfig.adminKeys;
+        if (Array.isArray(adminKeys) && adminKeys.length >= 1 && typeof(adminKeys[0]) === 'string' && adminKeys[0].length === 44) {
+            return void cb(true);
+        }
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            "This instance has not been configured to support web administration. This can be enabled by adding a registered user's public signing key to the ",
+            h('code', 'adminKeys'),
+            ' array in ',
+            CONFIG_PATH(),
+            '. ',
+            RESTART_WARNING(),
+        ]));
+        cb(false);
+    });
+
+    if (false) {
+        assert(function (cb, msg) {
+            msg.innerText = 'fake test to simulate failure';
+            cb(false);
+        });
+    }
+
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
             return h('td', cell);
@@ -425,6 +542,19 @@ define([
 
     var completed = 0;
     var $progress = $('#cp-progress');
+
+    var versionStatement = function () {
+        return h('p', [
+            "This instance is running ",
+            h('span.cp-app-checkup-version',[
+                "CryptPad",
+                ' ',
+                Pages.versionString,
+            ]),
+            '.',
+        ]);
+    };
+
     Assert.run(function (state) {
         var errors = state.errors;
         var failed = errors.length;
@@ -434,10 +564,11 @@ define([
         var statusClass = failed? 'failure': 'success';
 
         var failedDetails = "Details found below";
-        var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors.";
+        var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors or incorrect behaviour.";
         var details = h('p', failed? failedDetails: successDetails);
 
         var summary = h('div.summary.' + statusClass, [
+            versionStatement(),
             h('p', Messages._getKey('assert_numberOfTestsPassed', [
                 state.passed,
                 state.total
@@ -457,6 +588,7 @@ define([
         completed++;
         Messages.assert_numberOfTestsCompleted = "{0} / {1} tests completed.";
         $progress.html('').append(h('div.report.pending.summary', [
+            versionStatement(),
             h('p', [
                 h('i.fa.fa-spinner.fa-pulse'),
                 h('span', Messages._getKey('assert_numberOfTestsCompleted', [completed, total]))

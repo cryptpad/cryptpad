@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support', 'calendar'];
+    config.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -44,6 +44,13 @@ define(function() {
      * To do so, set the following value to the absolute URL of your privacy policy.
      */
     // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
+
+    /* We (the project's developers) include the ability to display a 'Roadmap' in static pages footer.
+     * This is disabled by default.
+     * We use this to publish the project's development roadmap, but you can use it however you like.
+     * To do so, set the following value to an absolute URL.
+     */
+    //config.roadmap = 'https://cryptpad.fr/kanban/#/2/kanban/view/PLM0C3tFWvYhd+EPzXrbT+NxB76Z5DtZhAA5W5hG9wo/';
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds

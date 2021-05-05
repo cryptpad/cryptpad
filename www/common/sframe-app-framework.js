@@ -912,6 +912,9 @@ define([
             var $copy = common.createButton('copy', true);
             toolbar.$drawer.append($copy);
 
+            var $store = common.createButton('storeindrive', true);
+            toolbar.$drawer.append($store);
+
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {
                     rt: cpNfInner.chainpad,

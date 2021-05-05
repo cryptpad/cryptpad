@@ -4,7 +4,8 @@ define([
     '/customize/application_config.js',
     '/customize/messages.js',
     'jquery',
-], function (h, Language, AppConfig, Msg, $) {
+    '/api/config',
+], function (h, Language, AppConfig, Msg, $, ApiConfig) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -93,13 +94,15 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.4.0";
+    Pages.versionString = "v4.5.0";
+
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
     Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
     Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
+    Pages.roadmapLink = footLink(AppConfig.roadmap, 'footer_roadmap');
 
     Pages.infopageFooter = function () {
         var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
@@ -139,6 +142,7 @@ define([
                         footLink('/contact.html', 'contact'),
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
+                        Pages.roadmapLink,
                     ]),
                     legalFooter,
                 ])
@@ -153,10 +157,16 @@ define([
     Pages.infopageTopbar = function () {
         var rightLinks;
         var username = window.localStorage.getItem('User_name');
+        var registerLink;
+
+        if (!ApiConfig.restrictRegistration) {
+            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register);
+        }
+
         if (username === null) {
             rightLinks = [
                 h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, Msg.login_login),
-                h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register)
+                registerLink,
             ];
         } else {
             rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/' }, [

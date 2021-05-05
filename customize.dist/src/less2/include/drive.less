@@ -606,7 +606,7 @@
             }
         }
 
-        .cp-app-drive-content-list {
+        div.cp-app-drive-content-list {
             .cp-app-drive-element-grid {
                 display: none;
             }
@@ -896,7 +896,13 @@
     .cp-toolbar-bottom {
         .cp-toolbar-bottom-right {
             .fa-history { order: 50; }
-            .fa-list, .fa-th-large { order: 25; }
+            // .fa-list, .fa-th-large,
+            .cp-app-drive-viewmode-button {
+                order: 25;
+                i {
+                    margin-right: 0;
+                }
+            }
             #cp-app-drive-toolbar-context-mobile, #cp-app-drive-toolbar-contextbuttons { order: 0; }
             #cp-app-drive-toolbar-context-mobile {
                 .fa { margin: 0 !important; }

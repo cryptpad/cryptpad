@@ -226,11 +226,15 @@ var factory = function (Util, Rpc) {
                     console.log(data);
                     return void cb("MISSING_PARAMETERS");
                 }
+                if (['string', 'undefined'].indexOf(typeof(data.registrationProof)) === -1) {
+                    return void cb("INVALID_REGISTRATION_PROOF");
+                }
 
                 rpc.send('WRITE_LOGIN_BLOCK', [
                     data.publicKey,
                     data.signature,
-                    data.ciphertext
+                    data.ciphertext,
+                    data.registrationProof || undefined,
                 ], function (e) {
                     cb(e);
                 });

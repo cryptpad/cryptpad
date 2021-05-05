@@ -53,7 +53,7 @@ define([
             'cp-admin-update-limit',
             'cp-admin-archive',
             'cp-admin-unarchive',
-            // 'cp-admin-registration',
+            'cp-admin-registration',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -253,36 +253,32 @@ define([
 
     create['registration'] = function () {
         var key = 'registration';
-        var $div = makeBlock(key, true); // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
-        var $button = $div.find('button');
+        var $div = makeBlock(key); // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
+
         var state = APP.instanceStatus.restrictRegistration;
-        if (state) {
-            $button.text(Messages.admin_registrationAllow);
-        } else {
-            $button.removeClass('btn-primary').addClass('btn-danger');
-        }
-        var called = false;
-        $div.find('button').click(function () {
-            called = true;
+        var $cbox = $(UI.createCheckbox('cp-settings-userfeedback',
+            Messages.admin_registrationTitle,
+            state, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
+        var $checkbox = $cbox.find('input').on('change', function() {
+            spinner.spin();
+            var val = $checkbox.is(':checked') || false;
+            $checkbox.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
-                data: ['RESTRICT_REGISTRATION', [!state]]
+                data: ['RESTRICT_REGISTRATION', [val]]
             }, function (e) {
                 if (e) { UI.warn(Messages.error); console.error(e); }
                 APP.updateStatus(function () {
-                    called = false;
+                    spinner.done();
                     state = APP.instanceStatus.restrictRegistration;
-                    if (state) {
-                        console.log($button);
-                        $button.text(Messages.admin_registrationAllow);
-                        $button.addClass('btn-primary').removeClass('btn-danger');
-                    } else {
-                        $button.text(Messages.admin_registrationButton);
-                        $button.removeClass('btn-primary').addClass('btn-danger');
-                    }
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
                 });
             });
         });
+        $cbox.appendTo($div);
+
         return $div;
     };
 
