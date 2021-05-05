@@ -12,13 +12,14 @@ define([
     '/common/common-util.js',
     '/common/pinpad.js',
     '/common/outer/network-config.js',
+    '/customize/pages.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig) {
+            NetConfig, Pages) {
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -516,6 +517,13 @@ define([
         cb(false);
     });
 
+    if (false) {
+        assert(function (cb, msg) {
+            msg.innerText = 'fake test to simulate failure';
+            cb(false);
+        });
+    }
+
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
             return h('td', cell);
@@ -534,6 +542,19 @@ define([
 
     var completed = 0;
     var $progress = $('#cp-progress');
+
+    var versionStatement = function () {
+        return h('p', [
+            "This instance is running ",
+            h('span.cp-app-checkup-version',[
+                "CryptPad",
+                ' ',
+                Pages.versionString,
+            ]),
+            '.',
+        ]);
+    };
+
     Assert.run(function (state) {
         var errors = state.errors;
         var failed = errors.length;
@@ -543,10 +564,11 @@ define([
         var statusClass = failed? 'failure': 'success';
 
         var failedDetails = "Details found below";
-        var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors.";
+        var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors or incorrect behaviour.";
         var details = h('p', failed? failedDetails: successDetails);
 
         var summary = h('div.summary.' + statusClass, [
+            versionStatement(),
             h('p', Messages._getKey('assert_numberOfTestsPassed', [
                 state.passed,
                 state.total
@@ -566,6 +588,7 @@ define([
         completed++;
         Messages.assert_numberOfTestsCompleted = "{0} / {1} tests completed.";
         $progress.html('').append(h('div.report.pending.summary', [
+            versionStatement(),
             h('p', [
                 h('i.fa.fa-spinner.fa-pulse'),
                 h('span', Messages._getKey('assert_numberOfTestsCompleted', [completed, total]))
