@@ -280,6 +280,7 @@ var serveConfig = makeRouteCache(function (host) {
             defaultStorageLimit: Env.defaultStorageLimit,
             maxUploadSize: Env.maxUploadSize,
             premiumUploadSize: Env.premiumUploadSize,
+            restrictRegistration: Env.restrictRegistration,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
             if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }

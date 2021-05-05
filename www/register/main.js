@@ -15,22 +15,11 @@ define([
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
     var Messages = Cryptpad.Messages;
-
     $(function () {
-        var $main = $('#mainBlock');
-
-        // main block is hidden in case javascript is disabled
-        $main.removeClass('hidden');
-
-        // Make sure we don't display non-translated content (empty button)
-        $main.find('#data').removeClass('hidden');
-
         if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
-        } else {
-            $main.find('#userForm').removeClass('hidden');
         }
 
         // text and password input fields

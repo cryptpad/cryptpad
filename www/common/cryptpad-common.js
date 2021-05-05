@@ -1735,6 +1735,7 @@ define([
             var removeData = obj.Block.remove(blockKeys);
 
             postMessage("DELETE_ACCOUNT", {
+                keys: Block.keysToRPCFormat(blockKeys),
                 removeData: removeData
             }, function (obj) {
                 if (obj.state) {
@@ -1855,9 +1856,16 @@ define([
             };
 
             var content = Block.serialize(JSON.stringify(temp), blockKeys);
+            console.error("OLD AND NEW BLOCK KEYS", oldBlockKeys, blockKeys);
+            content.registrationProof = Block.proveAncestor(oldBlockKeys);
 
             console.log("writing new login block");
-            common.writeLoginBlock(content, waitFor(function (obj) {
+
+            var data = {
+                keys: Block.keysToRPCFormat(blockKeys),
+                content: content,
+            };
+            common.writeLoginBlock(data, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
                     return void cb(obj);
@@ -1875,8 +1883,11 @@ define([
             // Remove block hash
             if (blockHash) {
                 console.log('removing old login block');
-                var removeData = Block.remove(oldBlockKeys);
-                common.removeLoginBlock(removeData, waitFor(function (obj) {
+                var data = {
+                    keys: Block.keysToRPCFormat(oldBlockKeys), // { edPrivate, edPublic }
+                    content: Block.remove(oldBlockKeys),
+                };
+                common.removeLoginBlock(data, waitFor(function (obj) {
                     if (obj && obj.error) { return void console.error(obj.error); }
                 }));
             }
