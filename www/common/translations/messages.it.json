@@ -814,7 +814,6 @@
     "settings_safeLinksCheckbox": "Attiva link sicuri",
     "safeLinks_error": "Questo link non ti dà accesso al documento",
     "settings_safeLinksHint": "CryptPad include le chiavi per decriptare i tuoi pad nei loro link. Chiunque abbia accesso alla tua cronologia browser può potenzialmente leggere i tuoi dati. Questo include estensioni di browser intrusivi e i navigatori che sincronizzano la tua cronologia nei dispositivi. L'attivazione di \"link sicuri\" impedisce alle chiavi di entrare nella tua cronologia browser oppure evita che vengano mostrate nella tua barra degli indirizzi quando possibile. Ti raccomandiamo vivamente di attivare questa funzione e usare il {0} menu Condividi.",
-    "oo_exportChrome": "L'esportazione nei formati Microsoft Office è al momento disponibile solo in Google Chrome.",
     "burnAfterReading_warningDeleted": "Questo pad è stato definitivamente eliminato, una volta chiusa questa finestra non sarà possibile accedervi di nuovo.",
     "burnAfterReading_warningAccess": "Questo documento si autodistruggerà. Quando cliccherai sul pulsante sottostante vedrai il contenuto una sola volta prima che venga definitivamente eliminato. Quando chiuderai questa finestra non potrai più accedervi. Se non sei sicuro di continuare puoi chiudere questa finestra e ritornare più tardi.",
     "burnAfterReading_warningLink": "Hai scelto di autodistruggere questo pad. Quando il tuo destinatario visiterà questo link potrà vedere il pad una sola volta prima che questo sia definitivamente eliminato.",

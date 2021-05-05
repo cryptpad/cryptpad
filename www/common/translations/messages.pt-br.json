@@ -918,7 +918,6 @@
     "oo_exportInProgress": "Exportação em andamento",
     "oo_importInProgress": "Importação em andamento",
     "oo_invalidFormat": "Este arquivo não pode ser importado",
-    "oo_exportChrome": "A exportação para formatos do Microsoft Office está atualmente disponível apenas no Google Chrome.",
     "burnAfterReading_warningDeleted": "Este bloco foi excluído permanentemente, uma vez que você feche esta janela, você não poderá acessá-lo novamente.",
     "burnAfterReading_proceed": "ver e deletar",
     "burnAfterReading_warningAccess": "Este documento se autodestruirá. Ao clicar no botão abaixo, você verá o conteúdo uma vez antes de ser excluído permanentemente. Ao fechar esta janela, você não poderá acessá-la novamente. Se você não estiver pronto para prosseguir, pode fechar esta janela e voltar mais tarde.",
