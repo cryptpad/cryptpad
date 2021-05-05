@@ -51,6 +51,8 @@ define([
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
+Messages.oo_exportChrome = "Your browser cannot handle conversion to and from Microsoft Office formats. We suggest using a recent version of Firefox or Chrome."; // XXX
+Messages.oo_importBin = "Click OK to import CryptPad's internal .bin format."; // XXX
 
     var APP = window.APP = {
         $: $,
@@ -74,6 +76,7 @@ define([
     };
 
     var supportsXLSX = function () {
+        //if (true) { return false; } // XXX
         return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined");
     };
 
@@ -1927,7 +1930,7 @@ define([
 
             if (!supportsXLSX()) {
                 ext = ['.bin'];
-                warning = '<div class="alert alert-info cp-alert-top">'+Messages.oo_exportChrome+'</div>';
+                warning = h('div.alert.alert-info.cp-alert-top', Messages.oo_exportChrome);
             }
 
             var types = ext.map(function (val) {
@@ -1950,7 +1953,12 @@ define([
             };
             var $select = UIElements.createDropdown(dropdownConfig);
 
-            UI.prompt(Messages.exportPrompt+warning, Util.fixFileName(suggestion), function (filename) {
+            var promptMessage = h('span', [
+                Messages.exportPrompt,
+                warning
+            ]);
+
+            UI.prompt(promptMessage, Util.fixFileName(suggestion), function (filename) {
                 // $select.getValue()
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                 var ext = ($select.getValue() || '').slice(1);
@@ -2520,15 +2528,28 @@ define([
             } else if (type === "doc") {
                 accept = ['.bin', '.odt', '.docx'];
             }
+            var first;
             if (!supportsXLSX()) {
                 accept = ['.bin'];
+                first = function (cb) {
+                    var msg = h('span', [
+                        Messages.oo_exportChrome,
+                        ' ', h('span', Messages.oo_importBin),
+                    ]);
+                    UI.confirm(msg, function (yes) {
+                        if (yes) {
+                            cb();
+                        }
+                    });
+                };
             }
 
             if (common.isLoggedIn()) {
                 window.CryptPad_deleteLastCp = deleteLastCp;
                 var $importXLSX = common.createButton('import', true, {
                     accept: accept,
-                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
+                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
+                    first: first,
                 }, importXLSXFile);
                 $importXLSX.appendTo(toolbar.$drawer);
                 common.createButton('hashtag', true).appendTo(toolbar.$drawer);

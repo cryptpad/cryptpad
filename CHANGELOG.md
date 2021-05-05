@@ -27,6 +27,8 @@
 * Add DAPSI to our sponsor list
 * checkup
   * check for duplicate or incorrect headers
+* save rendered markmap, mathjax, and mermaid as images
+* guard against incorrect iPhone behaviour that broke the ability to toggle between grid and list mode
 
 # 4.4.0
 

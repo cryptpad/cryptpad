@@ -375,7 +375,7 @@ define([
                 }
             });
         }
-        if (data.teams.indexOf(1) === -1 || teamId === 0) {
+        if (APP.loggedIn && (data.teams.indexOf(1) === -1 || teamId === 0)) {
             options.push({
                 tag: 'a',
                 attributes: {
@@ -387,10 +387,10 @@ define([
                     importCalendar({
                         id: id,
                         teamId: teamId
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            console.error(obj.error);
-                            return void UI.warn(obj.error);
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
                         }
                     });
                     return true;
@@ -677,14 +677,16 @@ define([
                     importCalendar({
                         id: tempCalendars[0],
                         teamId: 0
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            console.error(obj.error);
-                            return void UI.warn(obj.error);
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
                         }
                     });
                 });
-                APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                if (APP.loggedIn) {
+                    APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                }
                 return;
             }
             var myCalendars = filter(1);
@@ -1111,6 +1113,8 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
 
+        APP.loggedIn = common.isLoggedIn();
+
         common.setTabTitle(Messages.calendar);
 
         // Fix flatpickr selection
@@ -1248,6 +1252,11 @@ define([
         var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
             if (obj.empty && !privateData.calendarHash) {
+                if (!privateData.loggedIn) {
+                    return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                        common.setLoginRedirect('login');
+                    });
+                }
                 // No calendar yet, create one
                 newCalendar({
                     teamId: 1,
@@ -1255,7 +1264,7 @@ define([
                     color: user.color,
                     title: Messages.calendar_default
                 }, function (err) {
-                    if (err) { return void UI.errorLoadingScreen(Messages.error); } // XXX
+                    if (err) { return void UI.errorLoadingScreen(Messages.error); }
                     store.get('calendarView', makeCalendar);
                     UI.removeLoadingScreen();
                 });

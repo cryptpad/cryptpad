@@ -114,8 +114,8 @@ define([
             }
         }
 
-        // XXX add a limit to make sure we don't go too far in the past? ==> 1 week
-        var missed = useLastVisit && ev.start > last && ev.end <= now;
+        var oneWeekAgo = now - (7 * 24 * 3600 * 1000);
+        var missed = useLastVisit && ev.start > last && ev.end <= now && ev.end > oneWeekAgo;
         if (ev.end <= now && !missed) {
             // No reminder for past events
             delete reminders[uid];
@@ -543,6 +543,8 @@ define([
         var hash = Hash.getEditHashFromKeys(secret);
         var roHash = Hash.getViewHashFromKeys(secret);
 
+        if (!ctx.loggedIn) { hash = undefined; }
+
         var cal = {
             href: hash && Hash.hashToHref(hash, 'calendar'),
             roHref: roHash && Hash.hashToHref(roHash, 'calendar'),
@@ -846,8 +848,9 @@ define([
     Calendar.init = function (cfg, waitFor, emit) {
         var calendar = {};
         var store = cfg.store;
-        if (!store.loggedIn || !store.proxy.edPublic) { return; } // XXX logged in only? we should al least allow read-only for URL calendars
+        //if (!store.loggedIn || !store.proxy.edPublic) { return; } // XXX logged in only? we should al least allow read-only for URL calendars
         var ctx = {
+            loggedIn: store.loggedIn && store.proxy.edPublic,
             store: store,
             Store: cfg.Store,
             pinPads: cfg.pinPads,
@@ -918,17 +921,21 @@ define([
             }
             if (cmd === 'IMPORT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void importCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'IMPORT_ICS') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void importICSCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'ADD') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void addCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE') {
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 if (data.initialCalendar) {
                     return void ctx.Store.onReadyEvt.reg(function () {
                         createCalendar(ctx, data, clientId, cb);
@@ -939,22 +946,27 @@ define([
             }
             if (cmd === 'UPDATE') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void updateCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void deleteCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void createEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'UPDATE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void updateEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
+                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void deleteEvent(ctx, data, clientId, cb);
             }
         };
