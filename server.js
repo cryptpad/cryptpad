@@ -105,7 +105,6 @@ var setHeaders = (function () {
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
-
             // apply a bunch of cross-origin headers for XLSX export in FF and printing elsewhere
             applyHeaderMap(res, {
                 "Cross-Origin-Opener-Policy": /^\/sheet\//.test(req.url)? 'same-origin': '',
@@ -280,7 +279,7 @@ var serveConfig = makeRouteCache(function (host) {
             defaultStorageLimit: Env.defaultStorageLimit,
             maxUploadSize: Env.maxUploadSize,
             premiumUploadSize: Env.premiumUploadSize,
-            restrictRegistration: Env.restrictRegistration,
+            restrictRegistration: Env.restrictRegistration, // FIXME see the race condition in env.js
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
             if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
