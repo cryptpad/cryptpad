@@ -73,7 +73,7 @@ define([
     };
 
     var supportsXLSX = function () {
-        return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined");
+        return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined" || typeof(WebAssembly) === 'undefined');
     };
 
 
