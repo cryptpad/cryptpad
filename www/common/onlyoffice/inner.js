@@ -51,9 +51,6 @@ define([
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
-Messages.oo_exportChrome = "Your browser cannot handle conversion to and from Microsoft Office formats. We suggest using a recent version of Firefox or Chrome."; // XXX
-Messages.oo_importBin = "Click OK to import CryptPad's internal .bin format."; // XXX
-
     var APP = window.APP = {
         $: $,
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
@@ -76,7 +73,6 @@ Messages.oo_importBin = "Click OK to import CryptPad's internal .bin format."; /
     };
 
     var supportsXLSX = function () {
-        //if (true) { return false; } // XXX
         return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined");
     };
 
@@ -1930,7 +1926,7 @@ Messages.oo_importBin = "Click OK to import CryptPad's internal .bin format."; /
 
             if (!supportsXLSX()) {
                 ext = ['.bin'];
-                warning = h('div.alert.alert-info.cp-alert-top', Messages.oo_exportChrome);
+                warning = h('div.alert.alert-info.cp-alert-top', Messages.oo_conversionSupport);
             }
 
             var types = ext.map(function (val) {
@@ -2533,7 +2529,7 @@ Messages.oo_importBin = "Click OK to import CryptPad's internal .bin format."; /
                 accept = ['.bin'];
                 first = function (cb) {
                     var msg = h('span', [
-                        Messages.oo_exportChrome,
+                        Messages.oo_conversionSupport,
                         ' ', h('span', Messages.oo_importBin),
                     ]);
                     UI.confirm(msg, function (yes) {
