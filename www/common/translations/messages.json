@@ -1230,5 +1230,7 @@
     "toolbar_storeInDrive": "Store in CryptDrive",
     "genericCopySuccess": "Copied to clipboard",
     "mediatag_defaultImageName": "image",
-    "register_registrationIsClosed": "Registration is closed."
+    "register_registrationIsClosed": "Registration is closed.",
+    "oo_conversionSupport": "Your browser cannot handle conversion to and from Microsoft Office formats. We suggest using a recent version of Firefox or Chrome.",
+    "oo_importBin": "Click OK to import CryptPad's internal .bin format."
 }
