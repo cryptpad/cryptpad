@@ -1229,5 +1229,6 @@
     "genericCopySuccess": "Copié dans le presse-papiers",
     "mediatag_defaultImageName": "image",
     "register_registrationIsClosed": "Les inscriptions sont fermées.",
-    "oo_conversionSupport": "Votre navigateur ne gère pas la conversion vers et depuis les formats Microsoft Office. Il est recommandé d'utiliser une version récente de Firefox ou Chrome."
+    "oo_conversionSupport": "Votre navigateur ne gère pas la conversion vers et depuis les formats Microsoft Office. Il est recommandé d'utiliser une version récente de Firefox ou Chrome.",
+    "oo_importBin": "Cliquez sur OK pour importer au format .bin interne à CryptPad."
 }
