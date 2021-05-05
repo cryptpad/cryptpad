@@ -719,7 +719,7 @@
     "support_formButton": "Send",
     "support_formTitleError": "Error: title is empty",
     "support_formContentError": "Error: content is empty",
-    "support_formMessage": "Type your message...",
+    "support_formMessage": "Type your message…",
     "support_cat_tickets": "Existing tickets",
     "support_listTitle": "Support tickets",
     "support_listHint": "Here is the list of tickets sent to the administrators and their answers. A closed ticket cannot be re-opened but you can make a new one. You can hide tickets that have been closed.",
@@ -823,7 +823,7 @@
     "properties_confirmChangeFile": "Are you sure? Users without the new password will lose access to this file.",
     "properties_confirmNewFile": "Are you sure? Adding a password will change this file's URL. Users without the password will lose access to this file.",
     "properties_passwordWarningFile": "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the file manually.",
-    "properties_passwordSuccessFile": "The password was successfully changed.",
+    "properties_passwordSuccessFile": "The password was changed.",
     "driveOfflineError": "Your connection to CryptPad has been lost. Changes to this pad will not be saved in your CryptDrive. Please close all CryptPad tabs and try again in a new window. ",
     "teams_table": "Roles",
     "teams_table_generic": "Roles and permissions",
@@ -1078,7 +1078,7 @@
     "archivedFromServer": "Document archived",
     "allowNotifications": "Allow notifications",
     "fileTableHeader": "Downloads and uploads",
-    "download_zip": "Building ZIP file...",
+    "download_zip": "Building ZIP file…",
     "download_zip_file": "File {0}/{1}",
     "Offline": "Offline",
     "mediatag_saveButton": "Save",
@@ -1230,5 +1230,7 @@
     "toolbar_storeInDrive": "Store in CryptDrive",
     "genericCopySuccess": "Copied to clipboard",
     "mediatag_defaultImageName": "image",
-    "register_registrationIsClosed": "Registration is closed."
+    "register_registrationIsClosed": "Registration is closed.",
+    "oo_conversionSupport": "Your browser cannot handle conversion to and from Microsoft Office formats. We suggest using a recent version of Firefox or Chrome.",
+    "oo_importBin": "Click OK to import CryptPad's internal .bin format."
 }

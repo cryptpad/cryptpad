@@ -628,7 +628,7 @@
     "fc_noAction": "Nessuna azione disponibile",
     "support_from": "<b>Da:</b> {0}",
     "support_answer": "Rispondi",
-    "support_formMessage": "Scrivi il tuo messaggio...",
+    "support_formMessage": "Scrivi il tuo messaggio…",
     "support_formContentError": "Errore: il contenuto è vuoto",
     "support_formTitleError": "Errore: il titolo è vuoto",
     "support_formButton": "Invia",

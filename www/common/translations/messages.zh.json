@@ -250,5 +250,6 @@
     "historyText": "历史",
     "help_button": "帮助",
     "button_newsheet": "新工作表",
-    "button_newkanban": "新看板"
+    "button_newkanban": "新看板",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/zh-cn/"
 }

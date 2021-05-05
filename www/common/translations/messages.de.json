@@ -698,7 +698,7 @@
     "support_formButton": "Absenden",
     "support_formTitleError": "Fehler: Titel ist leer",
     "support_formContentError": "Fehler: Inhalt ist leer",
-    "support_formMessage": "Gib deine Nachricht ein...",
+    "support_formMessage": "Gib deine Nachricht ein…",
     "support_cat_tickets": "Vorhandene Tickets",
     "support_listTitle": "Support-Tickets",
     "support_listHint": "Hier ist die Liste der an die Administratoren gesendeten Tickets und der dazugehörigen Antworten. Ein geschlossenes Ticket kann nicht wieder geöffnet werden, aber du kannst ein neues Ticket eröffnen. Du kannst geschlossene Tickets ausblenden.",
@@ -1075,7 +1075,7 @@
     "admin_archiveInput": "URL des Dokuments",
     "admin_archiveButton": "Archivieren",
     "Offline": "Offline",
-    "download_zip": "ZIP-Datei erstellen...",
+    "download_zip": "ZIP-Datei erstellen…",
     "fileTableHeader": "Downloads und Uploads",
     "allowNotifications": "Benachrichtigungen erlauben",
     "admin_unarchiveHint": "Ein zuvor archiviertes Dokument wiederherstellen",
@@ -1228,5 +1228,7 @@
     "calendar_weekNumber": "Woche {0}",
     "oo_cantMigrate": "Diese Tabelle überschreitet die maximale Größe für hochgeladene Dateien und kann nicht migriert werden.",
     "toolbar_storeInDrive": "In CryptDrive speichern",
-    "genericCopySuccess": "In die Zwischenablage kopiert"
+    "genericCopySuccess": "In die Zwischenablage kopiert",
+    "register_registrationIsClosed": "Die Registrierung ist geschlossen.",
+    "mediatag_defaultImageName": "Bild"
 }

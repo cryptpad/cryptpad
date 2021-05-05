@@ -425,5 +425,6 @@
     "fm_creation": "Aanmaak",
     "fm_lastAccess": "Laatste toegang",
     "fm_ownedPadsName": "Eigendom",
-    "poll_descriptionHint": "Beschrijf  uw enquête en gebruik de ✓ (publiceer) knop als u klaar bent.\nDe beschrijving kan met markdown-syntax geschreven worden en u kunt media elementen integreren van uw CryptDrive.\nIedereen met de link kan de beschrijving veranderen, maar dit raden wij af."
+    "poll_descriptionHint": "Beschrijf  uw enquête en gebruik de ✓ (publiceer) knop als u klaar bent.\nDe beschrijving kan met markdown-syntax geschreven worden en u kunt media elementen integreren van uw CryptDrive.\nIedereen met de link kan de beschrijving veranderen, maar dit raden wij af.",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/nl/"
 }
