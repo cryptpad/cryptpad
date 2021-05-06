@@ -1125,7 +1125,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe === true) {
+            if (useUnsafe === true || APP.newSharedFolder) {
                 return void window.open(APP.origin + href);
             }
 
