@@ -162,15 +162,6 @@ module.exports = {
      */
     //blockDailyCheck: false,
 
-    /*
-     *  By default users get 50MB of storage by registering on an instance.
-     *  You can set this value to whatever you want.
-     *
-     *  hint: 50MB is 50 * 1024 * 1024
-     */
-    //defaultStorageLimit: 50 * 1024 * 1024,
-
-
     /* =====================
      *        STORAGE
      * ===================== */
@@ -225,29 +216,6 @@ module.exports = {
      *  defaults to 20MB if no value is provided
      */
     //maxUploadSize: 20 * 1024 * 1024,
-
-    /*
-     *  CryptPad allows administrators to give custom limits to their friends.
-     *  add an entry for each friend, identified by their user id,
-     *  which can be found on the settings page. Include a 'limit' (number of bytes),
-     *  a 'plan' (string), and a 'note' (string).
-     *
-     *  hint: 1GB is 1024 * 1024 * 1024 bytes
-     */
-/*
-    customLimits: {
-        "[cryptpad-user1@my.awesome.website/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=]": {
-            limit: 20 * 1024 * 1024 * 1024,
-            plan: 'insider',
-            note: 'storage space donated by my.awesome.website'
-        },
-        "[cryptpad-user2@my.awesome.website/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=]": {
-            limit: 10 * 1024 * 1024 * 1024,
-            plan: 'insider',
-            note: 'storage space donated by my.awesome.website'
-        }
-    },
-*/
 
     /*  Users with premium accounts (those with a plan included in their customLimit)
      *  can benefit from an increased upload size limit. By default they are restricted to the same

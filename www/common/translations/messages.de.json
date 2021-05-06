@@ -819,7 +819,7 @@
     "properties_confirmChangeFile": "Bist du sicher? Benutzer, die das neue Passwort nicht kennen, werden den Zugriff auf die Datei verlieren.",
     "properties_confirmNewFile": "Bist du sicher? Durch das Hinzufügen eines Passwortes wird sich der Link für die Datei ändern. Benutzer, die das Passwort nicht kennen, werden den Zugriff auf die Datei verlieren.",
     "properties_passwordWarningFile": "Das Passwort wurde erfolgreich geändert. Allerdings konnten die Daten in deinem CryptDrive nicht aktualisiert werden. Möglicherweise musst die alte Version der Datei manuell entfernen.",
-    "properties_passwordSuccessFile": "Das Passwort wurde erfolgreich geändert.",
+    "properties_passwordSuccessFile": "Das Passwort wurde geändert.",
     "driveOfflineError": "Die Verbindung zu CryptPad ist verloren gegangen. Änderungen an diesem Pad werden nicht in deinem CryptDrive gespeichert. Bitte schließe alle CryptPad-Tabs und versuche es in einem neuen Fenster erneut. ",
     "storageStatus": "Speicher:<br /><b>{0}</b> von <b>{1}</b> belegt",
     "teams_table": "Rollen",
@@ -1228,5 +1228,7 @@
     "toolbar_storeInDrive": "In CryptDrive speichern",
     "genericCopySuccess": "In die Zwischenablage kopiert",
     "register_registrationIsClosed": "Die Registrierung ist geschlossen.",
-    "mediatag_defaultImageName": "Bild"
+    "mediatag_defaultImageName": "Bild",
+    "oo_importBin": "Klicke auf OK, um CryptPads interne Format .bin zu importieren.",
+    "oo_conversionSupport": "Dein Browser unterstützt die Konvertierung von und in Microsoft-Office-Formaten nicht. Wir empfehlen die Verwendung einer aktuellen Version von Firefox oder Chrome."
 }

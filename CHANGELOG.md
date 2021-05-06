@@ -1,57 +1,48 @@
-# WIP
+# 4.5.0
 
-* merge PR to open links in rich text with a single click
-* calendars
-  * reminders in calendars
-  * import/export
-    * include LICENSE for ical.js
-  * translations
-  * out of BETA
-  * available from user admin menu
-  * mobile styles fixed
-  * import calendars from URL
-  * anonymous viewing of calendars from URL
-  * settings
-* use a specific version of bootstrap-tokenfield in bower.json
-* don't create readmes
-* support displaying a roadmap in static pages' footer
-* adjust threshold for whiteboard file size limit to better match user expectation (file size instead of base64 size)
-  * XXX still incorrect?
-* FLOC OFF GOOGLE header
-  * opt out of Google's FLoC Network
-* /report/ page
-* broadcast channel included in pin list
-* fix package-lock to use server update
-* code app present mode fix
-* sheets
-  * lock sheets faster when applying checkpoints
-  * guard against undefined checkpoints
-  * don't spam users with prompts to checkpoints when they can't
-  * warn users when their browser doesn't support import/export so they don't email us
-  * check that WebAssembly exists
-* decrees
-  * SET_ADMIN_EMAIL
-  * SET_SUPPORT_MAILBOX
-* Add DAPSI to our sponsor list
-* checkup
-  * check for duplicate or incorrect headers
-  * check for missing adminEmail
-    * XXX make sure this is present on prod
-* save rendered markmap, mathjax, and mermaid as images
-* guard against incorrect iPhone behaviour that broke the ability to toggle between grid and list mode
-* new issue template
-* registration
-  * additional validation for block uploads
-  * ability to close registration via the admin panel
-  * handle an silent error
-* add "store in drive" to app toolbar's file menu
-  * XXX check sheets and polls?
-    * not in sheets
-    * not in polls
-* XXX CryptGet changes?
-  * onCacheReady
-* guard against input that crashes diffDOM
-  * https://github.com/xwiki-labs/cryptpad/issues/620
+## Goals
+
+This release cycle we aimed to complete three major milestones: the official release of our calendar app, the ability for admins to close registration on their instance, and the deployment of the admin section of our [official documentation](https://docs.cryptpad.fr/en/admin_guide/index.html). We spent the remainder of our time addressing a growing backlog of issues on GitHub by fixing a number of weird bugs.
+
+## Update notes
+
+This release includes a new GitHub issue template (`cryptpad/.github/ISSUE_TEMPLATE/initial-instance-configuration.md`). The intent of this file is to make it clear that _Bug Reports_ are for intended for bugs in the software itself, not for soliciting help in configuring your personal server. Such issues take away time that we'd rather spend improving the platform for everybody's benefit, rather than for single administrators.
+
+Sometimes difficulty configuring an instance does stem from an actual bug, however, most of the time these issues relate to the use of an unsupported configuration or failure to correctly follow installation instructions. The issue template includes some basic debugging steps which should identify the vast majority of problems. Beyond its primary goal of narrowing the scope of our issue tracker, we hope it will also be useful as an offline reference for administrators attempting to debug their instance.
+
+This template references the /checkup/ page that we've been steadily improving over the last few releases. It now includes even more tests to diagnose instance configuration problems, each with their own messages that provide some fairly detailed hints about what is wrong when an error is detected. This release introduces a number of tests that print _warnings_ that won't break an instance but might detract from users' experience. We recommend checking this page on your instance with each release as we will continue to improve it on an regular basis, and it might detect some errors of which you were unaware.
+
+Otherwise, this release includes some changes to the provided example NGINX config file. It now includes a header designed to disable clients' participation in Google's [FLoC network](https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea), as well as some basic rules related to the addition of our calendar app and OnlyOffice's two remaining editors (which are still not officially supported despite their inclusion here).
+
+Lastly, any instance administrators that have had to customize their instance in order to disable registration can instead rely on a built-in feature that is available on the main page of the admin panel. Checking the "Close registration" checkbox will cause the application server to reject the creation of new "login blocks" (which store users' encrypted account credentials) while permitting existing users to change their passwords. Clients will be informed that registration is closed via the `/api/config` endpoint, causing the registration page to display a notice instead of the usual form. You may need to use the `FLUSH CACHE` button which can found on the same page of the admin panel in order to force clients to load the updated server config.
+
+To update from 4.4.0 to 4.5.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+
+## Features
+
+* We included a first version of our new calendar app in our last release, however, it was only accessible by URL as there were no links to it in the UI. We've spent time implementing the basic features we expect of any of our apps, including translated UI text (the first version was mostly for us to test) and the ability to import/export .ics files (via ical.js), and the ability to view and store a calendar shared via its URL. It also introduces support for configurable reminders (which can be disabled via the _notifications_ panel of your settings page) and fixes a number of style issues that occurred on small screens. You can access the calendar app via the _user admin menu_ found at the top-right corner of your screen.
+* The _What-is-CryptPad_ page now includes the logo of our latest sponsor: [NGI DAPSI](https://dapsi.ngi.eu) (the Data and Portability Services Incubator). DAPSI is another branch of the European Next Generation Internet initiative which has already done so much for our project. Over the next nine months we will use their funding and mentorship to improve CryptPad's interoperability with other services via support for open and de-facto file formats and increasingly intuitive workflows for import and export of your documents. There is already a lot of demand for this functionality, so we're very grateful to finally have the support necessary to take on this big project.
+* We've merged a contribution that implements a preference for the rich text editor to open links in a single click instead of treating them as text with a clickable bubble that contains a link. This can be configured on the rich text panel of your settings page.
+* The _File_ menu in our apps now includes a _Store in CryptDrive_. This option appears when you have not already stored the document you are currently viewing and when the prompt to store the file has been dismissed or intentionally suppressed via the _never ask_ setting for pad storage.
+* We've added support for the display of a configurable _Roadmap_ URL in the footer that can be found on our static pages. This is included mostly for our own purposes of increasing the visibility of the project's planned development, but administrators can also use it however they want to keep their own users informed of their upcoming plans. This value can be set via the host instance's `customize/application_config.js`. An example is included in `cryptpad/www/common/application_config_internal.js`.
+* Following the addition of some basic telemetry in our 4.3.1 release we observed that about 20% of newly registered users actually opened the _What is CryptPad_ document which was automatically created in their drive. As such, we've removed the code responsible for its creation along with the translations of its text. New users will instead be directed to read our docs.
+
+## Bug fixes
+
+* Our 4.4.0 release included functionality allowing administrators to broadcast notifications to all the users of their instance. Since then, we noticed that clients were incorrectly "pinning" the log file which stores a record of all messages broadcast in this fashion. In other words, they were informing the server that it should continue to store this file on their behalf and that its size should count against their storage quota. We added an explicit exception to code responsible for generating the list of documents that should be "pinned".
+* Right-clicking on rendered markdown extensions in the code editor's preview pane opens a custom menu that offers some basic options. This menu incorrectly displayed some options that were appropriate for encrypted uploads, but not for other extensions such _markmap_, _mathjax_, and _mermaid_. We now handle these explicitly and provide options to export to the relevant image format.
+* In one more example of a long list of browser quirks that have broken CryptPad in bizarre ways, we learned that the web engine that used by all browsers available for iPhone incorrectly handles click events on elements that contain buttons. Rather than emitting a single click event in response to user action, the engine seems to emit an event for each sibling _button_ tag regardless of whether it is visible. The HTML structure of the list/grid view mode toggle in the drive caused the engine to emit two click events, immediately toggling the view mode away from and back to its original state. Since Apple has an anti-competitive policy requiring every browser to use the engine they provide (as opposed to independent ones which include speed-boosting optimizations, modern features, and frequent bug fixes), this means that iPhone users could not switch to an alternative. Anyway, we changed the HTML structure that was working well in literally every other browser to make this better for iPhone users.
+* There were some CSS selectors in the code app that caused the preview pane to be hidden on narrow screens. This rule is no longer applied when the client loads in embed/present mode, which disable all other UI to display only the preview pane.
+* We identified and addressed an unhandled error on the registration page which could have caused clients to act as though the upload of their accounts encrypted credentials had succeeded when it had not. This could result in the inability to access their content on successive login attempts.
+* The whiteboard editor allows users to upload images for inclusion in their whiteboard up to a certain size. It was brought to our attention that the enforced size limit was compared against the size of the image after it had been encoded, while the resulting error message suggested that it was measuring the size of the image as uploaded. We've updated this limit to account for the encoding's overhead.
+* We've added some extra error handling to diffDOM, the library we use to compute and apply a minimal set of patches to a document. It was brought to our attention that it did not correctly parse and compare some input that is valid in the HTML dialect used to display emails but does not commonly occur in modern browsers. This crashed the renderer with a DOMException error when it tried to apply the malformed attribute.
+* Lastly, as usual, we've received a variety of questions and bug reports related to spreadsheets. We've added some guards to prevent the creation of invalid checkpoints. If a generated checkpoint is larger than the maximum file size limit allowed for a particular user we avoid successive attempts to upload within that same session, which avoids spamming the user with repeated warnings of failed uploads. We updated the notice that informs users when conversion to Office formats is not supported in their browser to recommend a recent version of Firefox or Chrome, and displayed the same notice when importing. We also updated the function which checks whether the APIs required for conversion were present, as it checked for SharedArrayBuffers and Atomics but not WebAssembly, all of which are necessary. Finally, we made some minor changes that allow the sheet editor to lock and unlock faster when a checkpoint is loaded and applied, resulting in less disruption to the user's work.
 
 # 4.4.0
 

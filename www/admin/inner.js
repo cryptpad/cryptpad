@@ -566,6 +566,13 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'GET_FILE_DESCRIPTOR_COUNT',
             }, function (e, data) {
+                if (e || (data && data.error)) {
+                    console.error(e, data);
+                    $div.append(h('pre', {
+                        style: 'text-decoration: underline',
+                    }, String(e || data.error)));
+                    return;
+                }
                 console.log(e, data);
                 $div.find('pre').remove();
                 $div.append(h('pre', String(data)));
