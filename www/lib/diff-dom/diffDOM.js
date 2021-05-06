@@ -685,7 +685,9 @@
                 }
                 if (objNode.attributes) {
                     Object.keys(objNode.attributes).forEach(function(attribute) {
-                        node.setAttribute(attribute, objNode.attributes[attribute]);
+                        try {
+                            node.setAttribute(attribute, objNode.attributes[attribute]);
+                        } catch (e) { console.debug(e); }
                     });
                 }
                 if (objNode.childNodes) {
