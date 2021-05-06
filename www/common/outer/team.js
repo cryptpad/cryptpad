@@ -348,7 +348,7 @@ define([
                 });
             }, true);
         }).nThen(function () {
-            if (ctx.store.calendar) { ctx.store.calendar.openTeam(id); }
+            if (ctx.store.modules.calendar) { ctx.store.modules.calendar.openTeam(id); }
             cb();
         });
     };
@@ -407,6 +407,7 @@ define([
                 });
             }
             delete ctx.onReadyHandlers[id];
+            if (ctx.store.modules.calendar) { ctx.store.modules.calendar.openTeam(id); }
             cb();
         });
 
