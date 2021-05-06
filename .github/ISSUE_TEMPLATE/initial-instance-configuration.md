@@ -11,6 +11,12 @@ We receive many issues from people that have tried to set up a new CryptPad inst
 
 Before you create an issue:
 
+## Confirm that the problem stems from your instance and not from your browser
+
+Not all browsers support CryptPad correctly, and various browser extensions interfere with its intended behaviour.
+
+https://CryptPad.fr is a good reference point that you can use to confirm that your browser can load a correctly configured instance. If you can't load CryptPad.fr then the problem may be with your browser, its configuration, or one of its active extensions.
+
 ## See your instance's checkup page
 
 If your instance is able to at least partially load some pages then you should be able to access the diagnostic page `http(s)://<your-domain>/checkup/`. It will perform some automated tests of your instance's configuration and will provide hints indicating:
@@ -37,12 +43,6 @@ If your instance is able to at least partially load some pages then you should b
 If the answer to any of the above questions is _No_ then that is the most likely cause of your difficulty.
 
 Identifying the problem on your own reduces the time we spend answering GitHub issues and leaves more time to fix actual bugs and develop new features.
-
-## Confirm that the problem stems from your instance and not from your browser
-
-Not all browsers support CryptPad correctly, and various browser extensions interfere with its intended behaviour. 
-
-https://CryptPad.fr is a good reference point that you can use to confirm that your browser can load a correctly configured instance. If you can't load CryptPad.fr then the problem may be with your browser, its configuration, or one of its active extensions.
 
 ## Create a detailed report
 
