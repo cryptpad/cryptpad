@@ -1,3 +1,9 @@
+# WIP
+
+* fix opening links from temporary shared folders on iphone or other contexts that do not support shared workers
+* add checkup test for disabling google FLoC
+* update lodash devDependency
+
 # 4.5.0
 
 ## Goals
