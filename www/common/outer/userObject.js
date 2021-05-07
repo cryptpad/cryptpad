@@ -829,6 +829,11 @@ define([
                             console.error(e);
                         }
                     }
+                    if (!Hash.isValidChannel(el.channel)) {
+                        // XXX delete channel? replace with parsed.channel?
+                        console.error('Remove invalid channel', el.channel, el);
+                        // toClean.push(id);
+                    }
 
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);

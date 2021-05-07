@@ -135,10 +135,6 @@ define([
         Exports.mergeAnonDrive = 1;
     };
 
-    var setCreateReadme = function () {
-        Exports.createReadme = 1;
-    };
-
     Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
         if (typeof(cb) !== 'function') { return; }
 
@@ -372,7 +368,6 @@ define([
                     proxy.curvePrivate = opt.curvePrivate;
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
-                    setCreateReadme();
                     if (shouldImport) {
                         setMergeAnonDrive();
                     } else {
@@ -397,7 +392,7 @@ define([
             // send an RPC to store the block which you created.
             console.log("initializing rpc interface");
 
-            Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
+            Pinpad.create(RT.network, Block.keysToRPCFormat(res.opt.blockKeys), waitFor(function (e, _rpc) {
                 if (e) {
                     waitFor.abort();
                     console.error(e); // INVALID_KEYS
@@ -419,7 +414,10 @@ define([
             var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
 
             rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
-                if (e) { return void console.error(e); }
+                if (e) {
+                    console.error(e);
+                    return void cb(e);
+                }
 
                 console.log("blockInfo available at:", blockHash);
                 LocalStore.setBlockHash(blockHash);
@@ -435,9 +433,6 @@ define([
             var loginOpts = {};
             if (Exports.mergeAnonDrive) {
                 loginOpts.mergeAnonDrive = 1;
-            }
-            if (Exports.createReadme) {
-                loginOpts.createReadme = 1;
             }
             h = Hash.getLoginURL(h, loginOpts);
 
@@ -538,6 +533,9 @@ define([
                                         });
                                     });
                                 });
+                                break;
+                            case 'E_RESTRICTED':
+                                UI.errorLoadingScreen(Messages.register_registrationIsClosed);
                                 break;
                             default: // UNHANDLED ERROR
                                 hashing = false;

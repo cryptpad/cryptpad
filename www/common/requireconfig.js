@@ -15,7 +15,9 @@ define([
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
             //"pdfjs-dist/build/pdf": "/bower_components/pdfjs-dist/build/pdf",
             //"pdfjs-dist/build/pdf.worker": "/bower_components/pdfjs-dist/build/pdf.worker"
-            cm: '/bower_components/codemirror'
+            cm: '/bower_components/codemirror',
+            'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
+            'tui-date-picker': '/lib/calendar/date-picker',
         },
         map: {
             '*': {

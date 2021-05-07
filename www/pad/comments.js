@@ -578,7 +578,7 @@ define([
 
                 // Scroll into view
                 if (!$last.length) { return; }
-                var visible = UIElements.isVisible($last[0], Env.$inner);
+                var visible = UIElements.isVisible($last[0], Env.$contentContainer);
                 if (!visible) { $last[0].scrollIntoView(); }
             };
 

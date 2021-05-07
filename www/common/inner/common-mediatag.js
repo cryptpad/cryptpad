@@ -386,11 +386,11 @@ define([
                     'tabindex': '-1',
                     'data-icon': "fa-eye",
                 }, Messages.pad_mediatagPreview)),
-                h('li.cp-svg', h('a.cp-app-code-context-openin.dropdown-item', {
+                h('li', h('a.cp-app-code-context-openin.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-external-link",
                 }, Messages.pad_mediatagOpen)),
-                h('li.cp-svg', h('a.cp-app-code-context-share.dropdown-item', {
+                h('li', h('a.cp-app-code-context-share.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-shhare-alt",
                 }, Messages.pad_mediatagShare)),
@@ -398,7 +398,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': "fa-cloud-upload",
                 }, Messages.pad_mediatagImport)),
-                h('li', h('a.cp-app-code-context-download.dropdown-item', {
+                h('li.cp-svg', h('a.cp-app-code-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-download",
                 }, Messages.download_mt_button)),
@@ -429,6 +429,52 @@ define([
                 common.importMediaTag($mt);
             }
             else if ($this.hasClass("cp-app-code-context-download")) {
+                if ($mt.is('pre.mermaid')  || $mt.is('pre.markmap')) {
+                    (function () {
+                    var name = Messages.mediatag_defaultImageName + '.svg';
+                    var svg = $mt.find('svg')[0].cloneNode(true);
+                    $(svg).attr('xmlns', 'http://www.w3.org/2000/svg').attr('width', $mt.width()).attr('height', $mt.height());
+                    $(svg).find('foreignObject').each(function (i, el) {
+                        var $el = $(el);
+                        $el.find('br').after('\n');
+                        $el.find('br').remove();
+                        var t = $el[0].innerText || $el[0].textContent;
+                        t.split('\n').forEach(function (text, i) {
+                            var dy = (i+1)+'em';
+                            $el.after(h('text', {y:0, dy:dy, style: ''}, text));
+                        });
+                        $el.remove();
+                    });
+                    var html = svg.outerHTML;
+                    html = html.replace('<br>', '<br/>');
+                    var b = new Blob([html], { type: 'image/svg+xml' });
+                    window.saveAs(b, name);
+                    })();
+                    return;
+                }
+                if ($mt.is('pre.mathjax')) {
+                    (function () {
+                    var name = Messages.mediatag_defaultImageName + '.png';
+                    var svg = $mt.find('> span > svg')[0];
+                    var clone = svg.cloneNode(true);
+                    var html = clone.outerHTML;
+                    var b = new Blob([html], { type: 'image/svg+xml' });
+                    var blobURL = URL.createObjectURL(b);
+                    var i = new Image();
+                    i.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = i.width;
+                        canvas.height = i.height;
+                        var context = canvas.getContext('2d');
+                        context.drawImage(i, 0, 0, i.width, i.height);
+                        canvas.toBlob(function (blob) {
+                            window.saveAs(blob, name);
+                        });
+                    };
+                    i.src = blobURL;
+                    })();
+                    return;
+                }
                 var media = Util.find($mt, [0, '_mediaObject']);
                 if (!media) { return void console.error('no media'); }
                 if (!media.complete) { return void UI.warn(Messages.mediatag_notReady); }

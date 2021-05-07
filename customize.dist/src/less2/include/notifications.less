@@ -17,6 +17,16 @@
         .cp-notification {
             min-height: @notif-height;
             display: flex;
+            .cp-broadcast {
+                display: flex;
+                font-size: 30px;
+                align-items: center;
+                padding: 0 5px;
+                color: @cp_dropdown-fg;
+                &.preview:not(.fa-calendar) {
+                    color: @cryptpad_color_red;
+                }
+            }
             .cp-avatar {
                 .avatar_main(30px);
                 padding: 0 5px;

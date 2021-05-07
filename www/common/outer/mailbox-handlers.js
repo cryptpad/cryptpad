@@ -686,6 +686,54 @@ define([
     };
 
 
+    // Broadcast
+    handlers['BROADCAST_MAINTENANCE'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var uid = msg.uid;
+        ctx.Store.onMaintenanceUpdate(uid);
+        cb(true);
+    };
+    var activeSurvey;
+    handlers['BROADCAST_SURVEY'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var uid = msg.uid;
+        var old = activeSurvey;
+        activeSurvey = {
+            type: box.type,
+            hash: data.hash
+        };
+        ctx.Store.onSurveyUpdate(uid);
+        var dismiss = !content.url;
+        cb(dismiss, old);
+    };
+    var activeCustom;
+    handlers['BROADCAST_CUSTOM'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var uid = msg.uid;
+        var old = activeCustom;
+        activeCustom = {
+            uid: uid,
+            type: box.type,
+            hash: data.hash
+        };
+        cb(false, old);
+    };
+    handlers['BROADCAST_DELETE'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        var uid = content.uid; // uid of the message to delete
+        if (activeCustom && activeCustom.uid === uid) {
+            // We have the message in memory, remove it and don't keep the DELETE msg
+            cb(true, activeCustom);
+            activeCustom = undefined;
+            return;
+        }
+        // We don't have this message in memory, nothing to delete
+        cb(true);
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**

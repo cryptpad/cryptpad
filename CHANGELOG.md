@@ -1,50 +1,164 @@
-# Pending
+# WIP
 
-* PRs
-  * comment config.js about supporting multiple domains in httpUnsafeOrigin
-  * add decreePath
-  * explicitly pass archivePath when initializing stores
-  * fix incorrect API in `scripts/migrations/migrate-tasks-v1.js`
-* login/register
-  * delete login block when deleting account
-  * more careful checks when changing user password
-* checkup page
-  * fixed typo
-  * progress bar
-  * test
-    * websockets
-    * sandbox CSP
-    * login block
-* admin page
-  * support responses to closed tickets
-  * collapse very long messages
-* open properties menu for pads that aren't stored in your drive
-* help menu that only links to docs
-  * remove unused (nested) keys
-* display survey URL
-* support 'KB' in Util.magnitudeOfBytes
-* degraded mode
-  * decide on a number
-* sheets
-  * fix naming collisions between images in spreadsheets
-  * degraded mode not supported
-  * getPropChannels
-    * pinning?
-  * oo rebuild
-  * OnlyOffice v6.2
-  * some buttons that we were hiding have new ids and needed to be hidden again
-* translations
-  * updated catch-phrase (Collaboration suite\nend-to-end-encrypted and open-source
-* CKEditor
-  * cursor jump when clicking on a comment bubble
-  * keybindings for common styles
-    * test if this affects scroll position (it shouldn't)
-    * check that CTRL-space doesn't mess with anything and that it is what Google uses
-    * test on Mac
-* nodrive
-  * load anonymous accounts without creating a drive
-  * faster load time, less junk on the server
+* fix opening links from temporary shared folders on iphone or other contexts that do not support shared workers
+* add checkup test for disabling google FLoC
+* update lodash devDependency
 
+# 4.5.0
+
+## Goals
+
+This release cycle we aimed to complete three major milestones: the official release of our calendar app, the ability for admins to close registration on their instance, and the deployment of the admin section of our [official documentation](https://docs.cryptpad.fr/en/admin_guide/index.html). We spent the remainder of our time addressing a growing backlog of issues on GitHub by fixing a number of weird bugs.
+
+## Update notes
+
+This release includes a new GitHub issue template (`cryptpad/.github/ISSUE_TEMPLATE/initial-instance-configuration.md`). The intent of this file is to make it clear that _Bug Reports_ are for intended for bugs in the software itself, not for soliciting help in configuring your personal server. Such issues take away time that we'd rather spend improving the platform for everybody's benefit, rather than for single administrators.
+
+Sometimes difficulty configuring an instance does stem from an actual bug, however, most of the time these issues relate to the use of an unsupported configuration or failure to correctly follow installation instructions. The issue template includes some basic debugging steps which should identify the vast majority of problems. Beyond its primary goal of narrowing the scope of our issue tracker, we hope it will also be useful as an offline reference for administrators attempting to debug their instance.
+
+This template references the /checkup/ page that we've been steadily improving over the last few releases. It now includes even more tests to diagnose instance configuration problems, each with their own messages that provide some fairly detailed hints about what is wrong when an error is detected. This release introduces a number of tests that print _warnings_ that won't break an instance but might detract from users' experience. We recommend checking this page on your instance with each release as we will continue to improve it on an regular basis, and it might detect some errors of which you were unaware.
+
+Otherwise, this release includes some changes to the provided example NGINX config file. It now includes a header designed to disable clients' participation in Google's [FLoC network](https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea), as well as some basic rules related to the addition of our calendar app and OnlyOffice's two remaining editors (which are still not officially supported despite their inclusion here).
+
+Lastly, any instance administrators that have had to customize their instance in order to disable registration can instead rely on a built-in feature that is available on the main page of the admin panel. Checking the "Close registration" checkbox will cause the application server to reject the creation of new "login blocks" (which store users' encrypted account credentials) while permitting existing users to change their passwords. Clients will be informed that registration is closed via the `/api/config` endpoint, causing the registration page to display a notice instead of the usual form. You may need to use the `FLUSH CACHE` button which can found on the same page of the admin panel in order to force clients to load the updated server config.
+
+To update from 4.4.0 to 4.5.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+
+## Features
+
+* We included a first version of our new calendar app in our last release, however, it was only accessible by URL as there were no links to it in the UI. We've spent time implementing the basic features we expect of any of our apps, including translated UI text (the first version was mostly for us to test) and the ability to import/export .ics files (via ical.js), and the ability to view and store a calendar shared via its URL. It also introduces support for configurable reminders (which can be disabled via the _notifications_ panel of your settings page) and fixes a number of style issues that occurred on small screens. You can access the calendar app via the _user admin menu_ found at the top-right corner of your screen.
+* The _What-is-CryptPad_ page now includes the logo of our latest sponsor: [NGI DAPSI](https://dapsi.ngi.eu) (the Data and Portability Services Incubator). DAPSI is another branch of the European Next Generation Internet initiative which has already done so much for our project. Over the next nine months we will use their funding and mentorship to improve CryptPad's interoperability with other services via support for open and de-facto file formats and increasingly intuitive workflows for import and export of your documents. There is already a lot of demand for this functionality, so we're very grateful to finally have the support necessary to take on this big project.
+* We've merged a contribution that implements a preference for the rich text editor to open links in a single click instead of treating them as text with a clickable bubble that contains a link. This can be configured on the rich text panel of your settings page.
+* The _File_ menu in our apps now includes a _Store in CryptDrive_. This option appears when you have not already stored the document you are currently viewing and when the prompt to store the file has been dismissed or intentionally suppressed via the _never ask_ setting for pad storage.
+* We've added support for the display of a configurable _Roadmap_ URL in the footer that can be found on our static pages. This is included mostly for our own purposes of increasing the visibility of the project's planned development, but administrators can also use it however they want to keep their own users informed of their upcoming plans. This value can be set via the host instance's `customize/application_config.js`. An example is included in `cryptpad/www/common/application_config_internal.js`.
+* Following the addition of some basic telemetry in our 4.3.1 release we observed that about 20% of newly registered users actually opened the _What is CryptPad_ document which was automatically created in their drive. As such, we've removed the code responsible for its creation along with the translations of its text. New users will instead be directed to read our docs.
+
+## Bug fixes
+
+* Our 4.4.0 release included functionality allowing administrators to broadcast notifications to all the users of their instance. Since then, we noticed that clients were incorrectly "pinning" the log file which stores a record of all messages broadcast in this fashion. In other words, they were informing the server that it should continue to store this file on their behalf and that its size should count against their storage quota. We added an explicit exception to code responsible for generating the list of documents that should be "pinned".
+* Right-clicking on rendered markdown extensions in the code editor's preview pane opens a custom menu that offers some basic options. This menu incorrectly displayed some options that were appropriate for encrypted uploads, but not for other extensions such _markmap_, _mathjax_, and _mermaid_. We now handle these explicitly and provide options to export to the relevant image format.
+* In one more example of a long list of browser quirks that have broken CryptPad in bizarre ways, we learned that the web engine that used by all browsers available for iPhone incorrectly handles click events on elements that contain buttons. Rather than emitting a single click event in response to user action, the engine seems to emit an event for each sibling _button_ tag regardless of whether it is visible. The HTML structure of the list/grid view mode toggle in the drive caused the engine to emit two click events, immediately toggling the view mode away from and back to its original state. Since Apple has an anti-competitive policy requiring every browser to use the engine they provide (as opposed to independent ones which include speed-boosting optimizations, modern features, and frequent bug fixes), this means that iPhone users could not switch to an alternative. Anyway, we changed the HTML structure that was working well in literally every other browser to make this better for iPhone users.
+* There were some CSS selectors in the code app that caused the preview pane to be hidden on narrow screens. This rule is no longer applied when the client loads in embed/present mode, which disable all other UI to display only the preview pane.
+* We identified and addressed an unhandled error on the registration page which could have caused clients to act as though the upload of their accounts encrypted credentials had succeeded when it had not. This could result in the inability to access their content on successive login attempts.
+* The whiteboard editor allows users to upload images for inclusion in their whiteboard up to a certain size. It was brought to our attention that the enforced size limit was compared against the size of the image after it had been encoded, while the resulting error message suggested that it was measuring the size of the image as uploaded. We've updated this limit to account for the encoding's overhead.
+* We've added some extra error handling to diffDOM, the library we use to compute and apply a minimal set of patches to a document. It was brought to our attention that it did not correctly parse and compare some input that is valid in the HTML dialect used to display emails but does not commonly occur in modern browsers. This crashed the renderer with a DOMException error when it tried to apply the malformed attribute.
+* Lastly, as usual, we've received a variety of questions and bug reports related to spreadsheets. We've added some guards to prevent the creation of invalid checkpoints. If a generated checkpoint is larger than the maximum file size limit allowed for a particular user we avoid successive attempts to upload within that same session, which avoids spamming the user with repeated warnings of failed uploads. We updated the notice that informs users when conversion to Office formats is not supported in their browser to recommend a recent version of Firefox or Chrome, and displayed the same notice when importing. We also updated the function which checks whether the APIs required for conversion were present, as it checked for SharedArrayBuffers and Atomics but not WebAssembly, all of which are necessary. Finally, we made some minor changes that allow the sheet editor to lock and unlock faster when a checkpoint is loaded and applied, resulting in less disruption to the user's work.
+
+# 4.4.0
+
+## Goals
+
+Our main goal for this release was to complete the first steps of our ["Dialogue" project](https://nlnet.nl/project/CryptPadForms/), which will introduce surveys into CryptPad. We've also put considerable effort towards addressing some configuration issues, correcting some inconsistently translated UI, and writing some new documentation.
+
+## Update notes
+
+This release removes the default privacy policy that has been included in CryptPad up until now. It included some assertions that were true of our own instance (CryptPad.fr) which we couldn't guarantee on third-party instances. We've updated our custom configuration to link to a privacy policy that was written in a rich text pad. You can do the same on your instance by editing `cryptpad/customize/application_config.js` to include the absolute URL of your instance, like so: `AppConfig.privacy = "https://cryptpad.your.website/privacy.html";`.
+
+We've clarified a point about telemetry in the notes of our 4.3.1 release. The text suggested that users on your instance would send telemetry to OUR webserver. It has been clarified to reflect that telemetry from your users is only ever sent to your instance.
+
+We've spent some time working on improving our (officially) unreleased integrations of OnlyOffice's presentation and document editors. We've advised against enabling these editors on your instance. This release includes changes that may not be fully backwards compatible. If your users rely on either editor we advise that you not update until they have had an opportunity to back up their documents. We still aren't officially supporting either editor and we may make further breaking changes in the future. Consider this a warning and not an advertizement of their readiness!
+
+This release also includes changes to the recommended NGINX configuration. Compare your instance's config against `cryptpad/docs/example.nginx.conf` and apply all the new changes before updating. In particular, you'll want to pay attention to the configuration for a newly exposed server API (`/api/broadcast`). This should work much the same as `/api/config`, so if you're using a non-standard configuration that uses more than one server you may want to proxy it in a similar fashion.
+
+Lastly, we've made some big improvements to the `/checkup/` page which performs some basic tests to confirm that your instance is configured correctly. It now provides some much more detailed descriptions of what might be wrong and how you can start debugging any issues that were identified. If you experience any problems after updating please review this page to assess your instance for any known issues before asking for help.
+
+To update from 4.3.1 to 4.4.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+
+This release requires updates to both clientside and serverside dependencies. **You will experience problems if you skip any of the above steps.**
+
+## Features
+
+* 4.4.0 includes a basic version of a calendar app. There are no links to it anywhere in the platform, its translations are hardcoded, and its title includes the text **BETA**. It's included in this release so that we can test and improve it for the next release, however, it should not be considered stable. Use it at your own risk! Our plan for this app is to offer the ability to set and review reminders for deadlines in CryptPad. We haven't secured funding for more advanced functionality, however, our team is available for sponsored development if you'd like to provide funding to include such improvements in our short-term roadmap.
+* The admin panel now includes several closely related features in its "broadcast" tab, which allows administrators to send a few types of notifications to all users:
+  1. _Maintenance notices_ inform users that the service may be unavailable during a specified time range.
+  2. _Survey notices_ inform users that the instance administrators have published a new survey and would like their feedback. We plan to use this on CryptPad.fr to perform some voluntary user studies on an ongoing basis.
+  3. _Broadcast messages_ allow admins to send all users a custom message with optional localization in their users' preferred language.
+* The drive now includes a "Getting started" message and a link to our docs, like all our other apps. This replaces the creation of a personal "What is CryptPad" pad in the user's drive when they register.
+* We recently wrote some scripts to automatically review our translations. This exposed some inconsistencies and incorrectly applied attributes in translations that included HTML. Since it's not reasonable to expect translators to know HTML, we've taken some steps to remove all but the most basic markup from translatable messages. Instead, more advanced attributes are applied via JavaScript. This makes it easier than ever to translate CryptPad as well as providing a more consistent experience to those using translations written by contributors.
+
+## Bug fixes
+
+* Premium users are now prompted to cancel their subscriptions before deleting their accounts.
+* The /logout/ page will now clear users' local document cache. Admins can recommend that users try loading this page when users are mysteriously unable to load their drive (or that of a team). If you find that this solves a user's problem, please report their exact problem so we can investigate the underlying cause.
+* The _support_ page guards against type errors that appear to have been caused by third-party extensions interfering with some browser APIs and rewriting URLs.
+* We found that anonymous users who had not created a drive were not able to use the "Make a copy" functionality on a pad that they were viewing. This has been fixed.
+* We noticed that under some unknown circumstances it was possible for users to store documents with invalid document IDs in their drive. We've added a few guards that detect these invalid channels and we're working on a solution to automatically repair them, if possible.
+* Links to anchors in read-only rich text documents now navigate to the correct section of the document rather than opening a new tab.
+* We've made a large number of improvements to our OnlyOffice integration. This will primarily affect the sheet app, but it also paves the way for us to introduce presentations and text documents in a future release.
+  * We now inform OnlyOffice of user-list changes, which should fix the incorrect display of users names when they lock a portion of a document.
+  * Text documents and presentations use a different data format than sheets for locking the document. We've adjusted our code to handle these formats.
+  * We've fixed some lock-related errors in sheets that could be triggered when receiving checkpoints from other users while editing in strict mode.
+  * We've adjusted some CSS selectors intended to hide parts of OnlyOffice's UI that are invalid within CryptPad, since those elements' IDs have changed since the last version.
+  * OnlyOffice's cursors now use your CryptPad account's preferred color.
+  * We now handle some errors that occurred when documents were migrated by a user editing a sheet in embed mode.
+  * OnlyOffice modified some of the APIs used to lock a document, so we've adjusted our code to match.
+* We found and fixed a race condition which could be triggered when loading a shared folder included in more than one of your user or team drives.
+
+# 4.3.1
+
+This minor release addresses some bugs discovered after deploying and tagging 4.3.0
+
+* We found that some browser extensions interfered with checks to determine whether a registered user was correctly logged in, which resulted in some disabled functionality. If you are running extensions that actively delete the tokens that keep you logged your session should now stay alive until you close all its active tabs, after which you will have to log back in.
+* Our 4.2.0 update introduced a new internal format for spreadsheets which broke support for spreadsheet templates using the older format. This release implements a compatibility layer.
+* We fixed some minor bugs in our rich text editor. Section links in the table of contents now navigate correctly. Adding a comment to a link no longer prevents clicking on that link.
+* A race condition that caused poll titles to reset occasionally has been fixed.
+* We've added a little bit of telemetry to tell the application server when a newly registered user opens the new user guide which is automatically added to their drive. We're considering either rewriting or removing this guide, so it's helpful to be able to determine how often people actually read it.
+* An error introduced in 4.3.0 was preventing the creation of new teams. It's been fixed.
+* 4.3.0 temporarily broke the sheet editor for iPad users. Migrations to a new internal format that were run while the editor was in a bad state produced some invalid data that prevented sheets from loading correctly. This release improves the platforms ability to recover from bad states like this and improves its ability to detect the kind of errors we observed.
+
+# 4.3.0 (D)
+
+## Goals
+
+This release is a continuation of our recent efforts to stabilize the platform, fixing small bugs and inconsistencies that we missed when developing larger features. In the meantime we've received reports of the platform performing poorly under various unusual circumstances, so we've developed some targeted fixes to both improve user experience and decrease the load on our server.
+
+## Update notes
+
+This release should be fairly simple for admins.
+
+To update from 4.2.1 to 4.3.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
+## Features
+
+* We're introducing a "degraded mode" for most of our editors (all except polls and sheets). This follows reports we received that CryptPad performed poorly in settings where a relatively large number of users with *edit* rights were connected simultaneously. To alleviate this, some non-essential features will be disabled when a number of concurrent editors is reached, in order to save computing power on client devices. The user-list will stop being updated as users join and leave, users cursors will stop being displayed, and the chat will not be disabled. Sessions will enter this mode when 8 or more editors are present. This threshold can be configured via `customize/application_config.js` by setting a `degradedLimit` attribute.
+* CryptPad was recently used to distribute some high-profile documents. For the first time we were able to observe our server supporting more than 1000 concurrent viewers in a single pad and around 350000 unique visitors over the course of a few days. While the distributed document incurred very little load, CryptPad created a drive for each visitor the first time they visited. Most of these drives were presumably abandoned as these users did not return to create or edit their own documents. Such users that directly load an existing document without having previously visited the platform will no longer create a drive automatically, unless they explicitly visit a page which requires it. This behaviour is supported in most of our editors except sheets and polls. This should result in faster load times for new users, but just in case it causes any issues we've made it easy to disable. Instance admins can disable "no-drive mode" via `customize/application_config.js` by setting `allowDrivelessMode` to `false`.
+* We've updated our sheet editor to use OnlyOffice 6.2, which includes support for pivot tables, among a range of other improvements.
+* Our rich text editor now features some keyboard shortcuts to apply some commonly used styles:
+  * heading size 1-6: ctrl+alt+1-6
+  * "div": ctrl+alt+8
+  * "preformatted": ctrl+alt+9
+  * paragraph: ctrl+alt+0
+  * remove styles from selection: ctrl+space
+* We've removed a large number of strings that were included in the "Getting started" box that was displayed to new users in each of our editors. Instead, this box simply contains a link to the relevant page in our documentation. Our intent is to both simplify the interface for newcomers and reduce the number of strings that require translation.
+* We've continued to progress on our "checkup page" which performs some routine checks to see whether the host instance is correctly configured. While its hints are not especially helpful for admins without reading the code to understand what they are testing, they do detect a fairly wide range of issues and have already helped us to identify some inconsistencies in our recommended configuration. We plan to link directly from this page to the relevant sections of a configuration guide an in upcoming release.
+* The admin support ticket interface has been updated to collapse very long messages in response to some ticket threads submitted in the last few weeks. We also found that sometimes we needed more information after a ticket had been closed, so we added the ability to re-open closed tickets.
+* Some time ago we removed the "Survey link" option from the user admin dropdown menu (found in the top-right corner of the page). This release re-enables it for instances that explicitly provide a link to a survey, however, we no longer provide a link to a survey by default.
+
+## Bug fixes
+
+* We finally reviewed and merged a number of pull-requests that had been pending for some time. Collectively, they fixed some configuration issues and type errors in some of our older scripts.
+* Sheets can now contain multiple images with the same name, whereas before they would conflict and one would be displayed multiple times.
+* A recent change in our code to conditionally display size measurements in different magnitudes (GB, MB) removed support for Kilobytes (KB). This release restores the previous behaviour.
+* We believe we've identified and corrected an issue that caused the rich text editor to scroll to the top of the document when the button to add a comment was clicked.
+* We recently made it such that documents owned by a particular user would not be automatically re-added to that user's drive when they viewed them. This change revealed a number of odd cases where various commands (destroy, add password, get document size, etc.) did not work as expected unless the document was first added to their drive. We reviewed many of these features and corrected the underlying issues that caused these commands to fail.
+* We performed a similar review of various commands related to user accounts and identified a number of issues that caused account deletion to fail.
 
 # 4.2.1
 

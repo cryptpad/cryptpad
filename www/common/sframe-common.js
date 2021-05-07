@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/bower_components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
@@ -16,6 +17,7 @@ define([
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
+    '/customize/pages.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -23,9 +25,11 @@ define([
     '/common/common-interface.js',
     '/common/common-feedback.js',
     '/common/common-language.js',
-    '/bower_components/localforage/dist/localforage.min.js'
+    '/bower_components/localforage/dist/localforage.min.js',
+    '/common/hyperscript.js',
 ], function (
     $,
+    ApiConfig,
     nThen,
     Messages,
     CpNfInner,
@@ -41,6 +45,7 @@ define([
     MT,
     MetadataMgr,
     AppConfig,
+    Pages,
     CommonRealtime,
     Util,
     Hash,
@@ -48,7 +53,8 @@ define([
     UI,
     Feedback,
     Language,
-    localForage
+    localForage,
+    h
 ) {
     // Chainpad Netflux Inner
     var funcs = {};
@@ -210,9 +216,8 @@ define([
     var modules = {};
     funcs.makeUniversal = function (type, cfg) {
         if (cfg && cfg.onEvent) {
-            modules[type] = {
-                onEvent: cfg.onEvent || function () {}
-            };
+            modules[type] = modules[type] || Util.mkEvent();
+            modules[type].reg(cfg.onEvent);
         }
         var sframeChan = funcs.getSframeChannel();
         return {
@@ -703,6 +708,12 @@ define([
         });
     };
 
+    funcs.isAdmin = function () {
+        var privateData = ctx.metadataMgr.getPrivateData();
+        return privateData.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                ApiConfig.adminKeys.indexOf(privateData.edPublic) !== -1;
+    };
+
     funcs.mailbox = {};
 
     Object.freeze(funcs);
@@ -765,7 +776,14 @@ define([
             UI.addTooltips();
 
             ctx.sframeChan.on("EV_PAD_NODATA", function () {
-                UI.errorLoadingScreen(Messages.safeLinks_error);
+                var error = Pages.setHTML(h('span'), Messages.safeLinks_error);
+                var i = error.querySelector('i');
+                if (i) { i.classList = 'fa fa-shhare-alt'; }
+                var a = error.querySelector('a');
+                if (a) {
+                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/user_account.html#confidentiality"));
+                }
+                UI.errorLoadingScreen(error);
             });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD", function (cfg) {
@@ -801,7 +819,7 @@ define([
                 $err.find('a').click(function () {
                     funcs.gotoURL();
                 });
-                UI.findOKButton().click();
+                UI.findOKButton().click(); // FIXME this might be randomly clicking something dangerous...
                 UI.errorLoadingScreen($err, true, true);
             });
 
@@ -825,7 +843,7 @@ define([
             ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj) {
                 var type = obj.type;
                 if (!type || !modules[type]) { return; }
-                modules[type].onEvent(obj.data);
+                modules[type].fire(obj.data);
             });
 
             ctx.cache = Cache.create(ctx.sframeChan);

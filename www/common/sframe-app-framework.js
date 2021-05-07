@@ -213,10 +213,6 @@ define([
                     evStart.reg(function () { toolbar.forgotten(); });
                     break;
                 }
-                case STATE.FORBIDDEN: {
-                    evStart.reg(function () { toolbar.deleted(); });
-                    break;
-                }
                 case STATE.DELETED: {
                     evStart.reg(function () { toolbar.deleted(); });
                     break;
@@ -915,6 +911,9 @@ define([
 
             var $copy = common.createButton('copy', true);
             toolbar.$drawer.append($copy);
+
+            var $store = common.createButton('storeindrive', true);
+            toolbar.$drawer.append($store);
 
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {

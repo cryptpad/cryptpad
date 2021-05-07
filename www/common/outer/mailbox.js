@@ -1,4 +1,6 @@
 define([
+    '/api/config',
+    '/api/broadcast',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
@@ -7,19 +9,22 @@ define([
     '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
+], function (Config, BCast, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
         'notifications',
         'supportadmin',
-        'support'
+        'support',
+        'broadcast'
     ];
     var BLOCKING_TYPES = [
     ];
 
+    var BROADCAST_CHAN = '000000000000000000000000000000000'; // Admin channel, 33 characters
+
     var initializeMailboxes = function (ctx, mailboxes) {
-        if (!mailboxes['notifications']) {
+        if (!mailboxes['notifications'] && ctx.loggedIn) {
             mailboxes.notifications = {
                 channel: Hash.createChannelId(),
                 lastKnownHash: '',
@@ -29,7 +34,7 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
-        if (!mailboxes['support']) {
+        if (!mailboxes['support'] && ctx.loggedIn) {
             mailboxes.support = {
                 channel: Hash.createChannelId(),
                 lastKnownHash: '',
@@ -38,6 +43,15 @@ define([
             ctx.pinPads([mailboxes.support.channel], function (res) {
                 if (res.error) { console.error(res); }
             });
+        }
+
+        if (!mailboxes['broadcast']) {
+            mailboxes.broadcast = {
+                channel: BROADCAST_CHAN,
+                lastKnownHash: BCast.lastBroadcastHash,
+                decrypted: true,
+                viewed: []
+            };
         }
     };
 
@@ -80,33 +94,49 @@ proxy.mailboxes = {
 
     // Send a message to someone else
     var sendTo = Mailbox.sendTo = function (ctx, type, msg, user, _cb) {
+        user = user || {};
         var cb = _cb || function (obj) {
             if (obj && obj.error) {
                 console.error(obj.error);
             }
         };
+
         if (!Crypto.Mailbox) {
             return void cb({error: "chainpad-crypto is outdated and doesn't support mailboxes."});
         }
-        var keys = getMyKeys(ctx);
-        if (!keys) { return void cb({error: "missing asymmetric encryption keys"}); }
-        if (!user || !user.channel || !user.curvePublic) { return void cb({error: "no notification channel"}); }
 
         var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc', ]);
         if (!anonRpc) { return void cb({error: "anonymous rpc session not ready"}); }
 
-        var crypto = Crypto.Mailbox.createEncryptor(keys);
-
-        // Always send your data
-        if (typeof(msg) === "object" && !msg.user) {
-            var myData = Messaging.createData(ctx.store.proxy, false);
-            msg.user = myData;
-        }
-
-        var text = JSON.stringify({
+        // Broadcast mailbox doesn't use encryption. Sending messages there is restricted
+        // to admins in the server directly
+        var crypto = { encrypt: function (x) { return x; } };
+        var channel = BROADCAST_CHAN;
+        var obj = {
+            uid: Util.uid(), // add uid at the beginning to have a unique server hash
             type: type,
             content: msg
-        });
+        };
+
+        if (!/^BROADCAST/.test(type)) {
+            var keys = getMyKeys(ctx);
+            if (!keys) { return void cb({error: "missing asymmetric encryption keys"}); }
+            if (!user || !user.channel || !user.curvePublic) { return void cb({error: "no notification channel"}); }
+            channel = user.channel;
+            crypto = Crypto.Mailbox.createEncryptor(keys);
+
+            // Always send your data
+            if (typeof(msg) === "object" && !msg.user) {
+                var myData = Messaging.createData(ctx.store.proxy, false);
+                msg.user = myData;
+            }
+            obj = {
+                type: type,
+                content: msg
+            };
+        }
+
+        var text = JSON.stringify(obj);
         var ciphertext = crypto.encrypt(text, user.curvePublic);
 
         // If we've sent this message to one of our teams' mailbox, we may want to "dismiss" it
@@ -121,7 +151,7 @@ proxy.mailboxes = {
         }
 
         anonRpc.send("WRITE_PRIVATE_MESSAGE", [
-            user.channel,
+            channel,
             ciphertext
         ], function (err /*, response */) {
             if (err) {
@@ -129,7 +159,9 @@ proxy.mailboxes = {
                     error: err,
                 });
             }
-            return void cb();
+            return void cb({
+                hash: ciphertext.slice(0,64)
+            });
         });
     };
 
@@ -137,6 +169,18 @@ proxy.mailboxes = {
     var dismiss = function (ctx, data, cId, cb) {
         var type = data.type;
         var hash = data.hash;
+
+        // Reminder messages don't persist
+        if (/^REMINDER\|/.test(hash)) {
+            cb();
+            delete ctx.boxes.reminders.content[hash];
+            hideMessage(ctx, type, hash, ctx.clients.filter(function (clientId) {
+                return clientId !== cId;
+            }));
+            return;
+        }
+
+
         var box = ctx.boxes[type];
         if (!box) { return void cb({error: 'NOT_LOADED'}); }
         var m = box.data || {};
@@ -239,15 +283,18 @@ proxy.mailboxes = {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
         }
         var keys = m.keys || getMyKeys(ctx);
-        if (!keys) { return void console.error("missing asymmetric encryption keys"); }
-        var crypto = Crypto.Mailbox.createEncryptor(keys);
+        if (!keys && !m.decrypted) { return void console.error("missing asymmetric encryption keys"); }
+        var crypto = m.decrypted ? {
+            encrypt: function (x) { return x; },
+            decrypt: function (x) { return x; }
+        } : Crypto.Mailbox.createEncryptor(keys);
         box.encryptor = crypto;
         var cfg = {
             network: ctx.store.network,
             channel: m.channel,
             noChainPad: true,
             crypto: crypto,
-            owners: opts.owners || [ctx.store.proxy.edPublic],
+            owners: type === 'broadcast' ? [] : (opts.owners || [ctx.store.proxy.edPublic]),
             lastKnownHash: m.lastKnownHash
         };
         cfg.onConnectionChange = function () {}; // Allow reconnections in chainpad-netflux
@@ -265,6 +312,7 @@ proxy.mailboxes = {
                 sendMessage(msg, function (err, hash) {
                     if (err) { return void console.error(err); }
                     box.history.push(hash);
+                    _msg.ctime = +new Date();
                     box.content[hash] = _msg;
                     var message = {
                         msg: _msg,
@@ -280,9 +328,10 @@ proxy.mailboxes = {
             box.queue = [];
         };
         var lastReceivedHash; // Don't send a duplicate of the last known hash on reconnect
-        box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
+        box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author, data) {
             if (hash === m.lastKnownHash) { return; }
             if (hash === lastReceivedHash) { return; }
+            var time = data && data.time;
             lastReceivedHash = hash;
             try {
                 msg = JSON.parse(msg);
@@ -313,6 +362,7 @@ proxy.mailboxes = {
                         });
                         return;
                     }
+                    msg.ctime = time || 0;
                     box.content[hash] = msg;
                     showMessage(ctx, type, message, null, function (obj) {
                         if (!obj || !obj.msg || !notify) { return; }
@@ -389,12 +439,16 @@ proxy.mailboxes = {
             if (type === 'HISTORY_RANGE') {
                 if (!Array.isArray(_msg)) { return; }
                 var message;
-                try {
-                    var decrypted = box.encryptor.decrypt(_msg[4]);
-                    message = JSON.parse(decrypted.content);
-                    message.author = decrypted.author;
-                } catch (e) {
-                    console.log(e);
+                if (req.box.type === 'broadcast') {
+                    message = Util.tryParse(_msg[4]);
+                } else {
+                    try {
+                        var decrypted = box.encryptor.decrypt(_msg[4]);
+                        message = JSON.parse(decrypted.content);
+                        message.author = decrypted.author;
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
                 ctx.emit('HISTORY', {
                     txid: txid,
@@ -420,6 +474,13 @@ proxy.mailboxes = {
                 txid: data.txid
             }
         ];
+        if (data.type === 'broadcast') {
+            msg = [ 'GET_HISTORY_RANGE', box.channel, {
+                    to: data.lastKnownHash,
+                    txid: data.txid
+                }
+            ];
+        }
         ctx.req[data.txid] = {
             cId: clientId,
             box: box
@@ -439,7 +500,13 @@ proxy.mailboxes = {
                     msg: ctx.boxes[type].content[h],
                     hash: h
                 };
-                showMessage(ctx, type, message, cId);
+                showMessage(ctx, type, message, cId, function (obj) {
+                    if (obj.error) { return; }
+                    // Notify only if "requiresNotif" is true
+                    if (!message.msg || !message.msg.requiresNotif) { return; }
+                    Notify.system(undefined, obj.msg);
+                    delete message.msg.requiresNotif;
+                });
             });
         });
         // Subscribe to new notifications
@@ -458,22 +525,30 @@ proxy.mailboxes = {
     Mailbox.init = function (cfg, waitFor, emit) {
         var mailbox = {};
         var store = cfg.store;
+        var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
+
         var ctx = {
             Store: cfg.Store,
             store: store,
             pinPads: cfg.pinPads,
             updateMetadata: cfg.updateMetadata,
             updateDrive: cfg.updateDrive,
+            mailboxes: mailboxes,
             emit: emit,
             clients: [],
             boxes: {},
-            req: {}
+            req: {},
+            loggedIn: store.loggedIn && store.proxy.edPublic
         };
 
-        var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
-
         initializeMailboxes(ctx, mailboxes);
-        initializeHistory(ctx);
+        if (ctx.loggedIn) {
+            initializeHistory(ctx);
+        }
+
+        ctx.boxes.reminders = {
+            content: {}
+        };
 
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
@@ -490,18 +565,20 @@ proxy.mailboxes = {
             }
         });
 
-        Object.keys(store.proxy.teams || {}).forEach(function (teamId) {
-            var team = store.proxy.teams[teamId];
-            if (!team) { return; }
-            var teamMailbox = team.keys.mailbox || {};
-            if (!teamMailbox.channel) { return; }
-            var opts = {
-                owners: [Util.find(team, ['keys', 'drive', 'edPublic'])]
-            };
-            openChannel(ctx, 'team-'+teamId, teamMailbox, function () {
-                //console.log('Mailbox team', teamId);
-            }, opts);
-        });
+        if (ctx.loggedIn) {
+            Object.keys(store.proxy.teams || {}).forEach(function (teamId) {
+                var team = store.proxy.teams[teamId];
+                if (!team) { return; }
+                var teamMailbox = team.keys.mailbox || {};
+                if (!teamMailbox.channel) { return; }
+                var opts = {
+                    owners: [Util.find(team, ['keys', 'drive', 'edPublic'])]
+                };
+                openChannel(ctx, 'team-'+teamId, teamMailbox, function () {
+                    //console.log('Mailbox team', teamId);
+                }, opts);
+            });
+        }
 
         mailbox.post = function (box, type, content) {
             var b = ctx.boxes[box];
@@ -510,6 +587,21 @@ proxy.mailboxes = {
                 type: type,
                 content: content,
                 sender: store.proxy.curvePublic
+            });
+        };
+
+        mailbox.showMessage = function (type, msg, cId, cb) {
+            if (type === "reminders" && msg) {
+                ctx.boxes.reminders.content[msg.hash] = msg.msg;
+                if (!ctx.clients.length) {
+                    ctx.boxes.reminders.content[msg.hash].requiresNotif = true;
+                }
+                // Hide existing messages for this event
+                hideMessage(ctx, type, msg.hash, ctx.clients);
+            }
+            showMessage(ctx, type, msg, cId, function (obj) {
+                Notify.system(undefined, obj.msg);
+                if (cb) { cb(); }
             });
         };
 
@@ -526,6 +618,7 @@ proxy.mailboxes = {
         };
 
         mailbox.sendTo = function (type, msg, user, cb) {
+            if (!ctx.loggedIn) { return void cb({error:'NOT_LOGGED_IN'}); }
             sendTo(ctx, type, msg, user, cb);
         };
 

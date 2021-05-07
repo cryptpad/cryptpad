@@ -739,6 +739,7 @@ define([
             }
         });
     };
+    // TODO: make it such that the confirmButton's width does not change
     UI.confirmButton = function (originalBtn, config, _cb) {
         config = config || {};
         var cb = Util.mkAsync(_cb);
@@ -1257,10 +1258,13 @@ define([
             Messages.dontShowAgain
         ]);
 
+        var footerSel = 'div.cp-corner-footer';
         var popup = h('div.cp-corner-container', [
             setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
-            setHTML(h('div.cp-corner-footer'), footer),
+            (typeof(footer) === 'string'?
+                setHTML(h(footerSel), footer):
+                h(footerSel, footer)),
             opts.dontShowAgain ? dontShowAgain : undefined
         ]);
 
@@ -1430,13 +1434,13 @@ define([
     */
     UI.createDrawer = function ($button, $content) {
         $button.click(function () {
+            var topPos = $button[0].getBoundingClientRect().bottom;
             $content.toggle();
             $button.removeClass('cp-toolbar-button-active');
             if ($content.is(':visible')) {
                 $button.addClass('cp-toolbar-button-active');
                 $content.focus();
                 var wh = $(window).height();
-                var topPos = $button[0].getBoundingClientRect().bottom;
                 $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
         });

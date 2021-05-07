@@ -2,6 +2,7 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/api/config',
+    '/api/broadcast',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
@@ -11,8 +12,9 @@ define([
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, MT, h,
-MessengerUI, Messages) {
+    '/customize/pages.js',
+], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
+MessengerUI, Messages, Pages) {
     var Common;
 
     var Bar = {
@@ -45,6 +47,7 @@ MessengerUI, Messages) {
     var TITLE_CLS = Bar.constants.title = "cp-toolbar-title";
     var LINK_CLS = Bar.constants.link = "cp-toolbar-link";
     var NOTIFICATIONS_CLS = Bar.constants.user = 'cp-toolbar-notifications';
+    var MAINTENANCE_CLS = Bar.constants.user = 'cp-toolbar-maintenance';
 
     // User admin menu
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
@@ -78,6 +81,7 @@ MessengerUI, Messages) {
             'class': USER_CLS
         }).appendTo($topContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
+        $('<span>', {'class': MAINTENANCE_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': NOTIFICATIONS_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
@@ -212,15 +216,19 @@ MessengerUI, Messages) {
         var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
                                 .appendTo($editUsers);
 
-        if (!online) {
+        var degradedLimit = Config.degradedLimit || 8;
+        if (toolbar.isDeleted) {
+            $('<em>').text(Messages.deletedFromServer).appendTo($editUsersList);
+            numberOfEditUsers = '?';
+            numberOfViewUsers = '?';
+        } else if (!online) {
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
             numberOfViewUsers = '?';
         } else if (metadataMgr.isDegraded() === true) {
             numberOfEditUsers = Math.max(metadataMgr.getChannelMembers().length - 1, 0);
             numberOfViewUsers = '';
-            Messages.toolbar_degraded = "Too many editors are present in the pad. The userlist has been disabled to improve performances"; // XXX
-            $('<em>').text(Messages.toolbar_degraded).appendTo($editUsersList);
+            $('<em>').text(Messages._getKey('toolbar_degraded', [degradedLimit])).appendTo($editUsersList);
         }
 
         // Update the buttons
@@ -229,7 +237,7 @@ MessengerUI, Messages) {
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
-        if (!online) { return; }
+        if (!online || toolbar.isDeleted) { return; }
 
         if (metadataMgr.isDegraded() === true) { return; }
 
@@ -542,6 +550,9 @@ MessengerUI, Messages) {
             hidden: true
         });
         $shareBlock.click(function () {
+            if (toolbar.isDeleted) {
+                return void UI.warn(Messages.deletedFromServer);
+            }
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";
@@ -565,7 +576,15 @@ MessengerUI, Messages) {
             h('span.cp-button-name', Messages.accessButton)
         ]));
         $accessBlock.click(function () { 
-            Common.getSframeChannel().event('EV_ACCESS_OPEN');
+            if (toolbar.isDeleted) {
+                return void UI.warn(Messages.deletedFromServer);
+            }
+            var title = (config.title && config.title.getTitle && config.title.getTitle())
+                        || (config.title && config.title.defaultName)
+                        || "";
+            Common.getSframeChannel().event('EV_ACCESS_OPEN', {
+                title: title
+            });
         });
 
         toolbar.$bottomM.append($accessBlock);
@@ -949,12 +968,19 @@ MessengerUI, Messages) {
         var todo = function (e, overLimit) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
-                var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
-                if (!ApiConfig.allowSubscriptions) {
-                    key = 'pinLimitReachedAlertNoAccounts'; // Msg.pinLimitReachedAlertNoAccounts
-                }
                 $limit.show().click(function () {
-                    UI.alert(Messages._getKey(key, [encodeURIComponent(l.hostname)]), null, true);
+                    if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
+                        var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
+                        var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
+                        $(msg).find('a').attr({
+                            target: '_blank',
+                            href: Config.upgradeURL,
+                        });
+
+                        UI.alert(msg);
+                    } else {
+                        UI.alert(Messages.pinLimitReachedAlertNoAccounts);
+                    }
                 });
             }
         };
@@ -1009,6 +1035,54 @@ MessengerUI, Messages) {
         });
 
         return $userAdmin;
+    };
+
+    var createMaintenance = function (toolbar, config) {
+        var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
+        var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
+        $notif.append(button);
+
+
+        var m = Broadcast.maintenance;
+        $(button).click(function () {
+            if (!m || !m.start || !m.end) { return; }
+            UI.alert(Messages._getKey('broadcast_maintenance', [
+                new Date(m.start).toLocaleString(),
+                new Date(m.end).toLocaleString(),
+            ]), null, true);
+        });
+
+        var to;
+        Common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "MAINTENANCE") { return; }
+                var data = obj.data;
+                if (!data) {
+                    return void $notif.hide();
+                }
+                if ((+new Date()) > data.end) {
+                    return void $notif.hide();
+                }
+                m = data;
+                clearTimeout(to);
+                to = setTimeout(function () {
+                    m = undefined;
+                    $notif.hide();
+                }, m.end-(+new Date()));
+                $notif.css('display', '');
+            }
+        });
+
+        if (m && m.start && m.end) {
+            $notif.css('display', '');
+            to = setTimeout(function () {
+                m = undefined;
+                $notif.hide();
+            }, m.end-(+new Date()));
+        } else {
+            $notif.hide();
+        }
     };
 
     var createNotifications = function (toolbar, config) {
@@ -1081,7 +1155,7 @@ MessengerUI, Messages) {
             $button.addClass('fa-bell');
         };
 
-        Common.mailbox.subscribe(['notifications', 'team'], {
+        Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders'], {
             onMessage: function (data, el) {
                 if (el) {
                     $(div).prepend(el);
@@ -1272,6 +1346,7 @@ MessengerUI, Messages) {
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
         tb['notifications'] = createNotifications;
+        tb['maintenance'] = createMaintenance;
 
         tb['pad'] = function () {
             toolbar.$file.show();
@@ -1308,6 +1383,7 @@ MessengerUI, Messages) {
         };
 
         addElement(config.displayed, {}, true);
+        addElement(['maintenance'], {}, true);
 
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
@@ -1378,7 +1454,9 @@ MessengerUI, Messages) {
         toolbar.deleted = function (/*userId*/) {
             toolbar.isErrorState = true;
             toolbar.connected = false;
+            toolbar.isDeleted = true;
             updateUserList(toolbar, config, true);
+            toolbar.title.toggleClass('cp-toolbar-unsync', true); // "read only" next to the title
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }

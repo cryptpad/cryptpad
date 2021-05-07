@@ -19,6 +19,7 @@ define([
     '/common/proxy-manager.js',
     '/customize/application_config.js',
     '/customize/messages.js',
+    '/customize/pages.js',
 ], function (
     $,
     ApiConfig,
@@ -37,7 +38,8 @@ define([
     h,
     ProxyManager,
     AppConfig,
-    Messages)
+    Messages,
+    Pages)
 {
 
     var APP = window.APP = {
@@ -120,8 +122,8 @@ define([
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
-    var $listIcon = $('<button>', {"class": "fa fa-list"});
-    var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
+    //var $listIcon = $('<button>', {"class": "fa fa-list"});
+    //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-times"});
@@ -646,11 +648,6 @@ define([
             } else {
                 displayedCategories = [FILES_DATA];
                 currentPath = [FILES_DATA];
-                if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                    var msg = common.fixLinks($('<div>').html(Messages.fm_alert_anonymous));
-                    UI.alert(msg);
-                    proxy.anonymousAlert = true;
-                }
             }
         }
 
@@ -1128,7 +1125,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe === true) {
+            if (useUnsafe === true || APP.newSharedFolder) {
                 return void window.open(APP.origin + href);
             }
 
@@ -2410,36 +2407,52 @@ define([
             return $box;
         };
 
+        var getOppositeViewMode = function (viewMode) {
+            viewMode = viewMode || getViewMode();
+            var newViewMode = viewMode === 'grid'? 'list': 'grid';
+            return newViewMode;
+        };
+
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
-            var $listButton = $listIcon.clone();
-            var $gridButton = $gridIcon.clone();
+            var viewMode = getViewMode();
+            var gridIcon = h('i.fa.fa-th-large', { title: Messages.fm_viewGridButton });
+            var listIcon = h('i.fa.fa-list', { title: Messages.fm_viewListButton });
 
-            $listButton.click(function () {
-                $gridButton.show();
-                $listButton.hide();
-                setViewMode('list');
-                $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-grid');
-                $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-list');
-                Feedback.send('DRIVE_LIST_MODE');
-            });
-            $gridButton.click(function () {
-                $listButton.show();
-                $gridButton.hide();
-                setViewMode('grid');
-                $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-grid');
-                $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-list');
-                Feedback.send('DRIVE_GRID_MODE');
-            });
+            var $button = $(h('button.cp-app-drive-viewmode-button', [
+                gridIcon,
+                listIcon
+            ]));
+            var $gridIcon = $(gridIcon);
+            var $listIcon = $(listIcon);
+            var showMode = function (mode) {
+                if (mode === 'grid') {
+                    $gridIcon.hide();
+                    $listIcon.show();
+                } else {
+                    $listIcon.hide();
+                    $gridIcon.show();
+                }
+            };
+            setViewMode(viewMode || 'grid');
+            showMode(viewMode);
 
-            if (getViewMode() === 'list') {
-                $listButton.hide();
-            } else {
-                $gridButton.hide();
-            }
-            $listButton.attr('title', Messages.fm_viewListButton);
-            $gridButton.attr('title', Messages.fm_viewGridButton);
-            $container.append($listButton).append($gridButton);
+            $button.click(function (e) {
+                console.error(e);
+                var viewMode = getViewMode();
+                var newViewMode = getOppositeViewMode(viewMode);
+                setViewMode(newViewMode);
+                showMode(newViewMode);
+                var $folder = $('#' + FOLDER_CONTENT_ID);
+                if (newViewMode === 'list') {
+                    $folder.removeClass('cp-app-drive-content-grid').addClass('cp-app-drive-content-list');
+                    Feedback.send('DRIVE_LIST_MODE');
+                } else {
+                    $folder.addClass('cp-app-drive-content-grid').removeClass('cp-app-drive-content-list');
+                    Feedback.send('DRIVE_GRID_MODE');
+                }
+            });
+            $container.append($button);
         };
         var emptyTrashModal = function () {
             var ownedInTrash = manager.ownedInTrash();
@@ -2495,7 +2508,7 @@ define([
         // Get the upload options
         var addSharedFolderModal = function (cb) {
 
-        var docsHref = common.getBounceURL("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners");
+            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners"));
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -2508,7 +2521,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-app-drive-sf-owned', Messages.sharedFolders_create_owned, true),
-                    UI.createHelper(docsHref, Messages.creation_owned1) // TODO
+                    UI.createHelper(docsHref, Messages.creation_owned1)
                 ]),
             ]);
 
@@ -2543,6 +2556,7 @@ define([
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
                 if (type === 'accounts') { return; }
+                if (type === 'calendar') { return; }
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
@@ -4398,7 +4412,7 @@ define([
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
                                 UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
-                                UI.createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
+                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                             ]),
                         ]);
                         return void UI.confirm(convertContent, function(res) {

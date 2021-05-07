@@ -45,7 +45,7 @@ define([
     '/customize/application_config.js',
     '/common/test.js',
 
-    '/bower_components/diff-dom/diffDOM.js',
+    '/lib/diff-dom/diffDOM.js',
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/customize/src/print.css',
@@ -710,6 +710,18 @@ define([
             var el = e.currentTarget;
             if (!el || el.nodeName !== 'A') { return; }
             var href = el.getAttribute('href');
+            if (/^#/.test(href)) {
+                try {
+                    $inner.find('.cke_anchor[data-cke-realelement]').each(function (j, el) {
+                        var i = editor.restoreRealElement($(el));
+                        var node = i.$;
+                        if (node.id === href.slice(1)) {
+                            el.scrollIntoView();
+                        }
+                    });
+                } catch (err) {}
+                return;
+            }
             if (href) {
                 framework._.sfCommon.openUnsafeURL(href);
             }
@@ -908,7 +920,7 @@ define([
                 $(a).click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (!obj.el || UIElements.isVisible(obj.el, $inner)) { return; }
+                    if (!obj.el || UIElements.isVisible(obj.el, $contentContainer)) { return; }
                     obj.el.scrollIntoView();
                 });
                 a.innerHTML = title;
@@ -972,7 +984,11 @@ define([
             displayMediaTags(framework, inner, mediaTagMap);
 
             // MEDIATAG: Initialize mediatag widgets inserted in the document by other users
-            editor.widgets.checkWidgets();
+            try {
+                editor.widgets.checkWidgets();
+            } catch (e) {
+                console.error(e);
+            }
 
             if (framework.isReadOnly()) {
                 var $links = $inner.find('a');
@@ -1432,8 +1448,6 @@ define([
                     editor.addCommand(tag, new CKEDITOR.styleCommand(new CKEDITOR.style({ element: tag })));
                     editor.setKeystroke( CKEDITOR.CTRL + CKEDITOR.ALT + styleKeys[tag], tag);
                 });
-
-                Links.init(Ckeditor, editor);
             }).nThen(function() {
                 // Move ckeditor parts to have a structure like the other apps
                 var $contentContainer = $('#cke_1_contents');
@@ -1477,6 +1491,9 @@ define([
             }).nThen(waitFor());
 
         }).nThen(function(waitFor) {
+            var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var openLinkSetting = Util.find(privateData, ['settings', 'pad', 'openLink']);
+            Links.init(Ckeditor, editor, openLinkSetting);
             require(['/pad/csp.js'], waitFor());
         }).nThen(function( /*waitFor*/ ) {
 

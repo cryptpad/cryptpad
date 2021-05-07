@@ -12,6 +12,7 @@ define([
     '/support/ui.js',
     '/api/config',
     '/customize/application_config.js',
+    '/customize/pages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -29,7 +30,8 @@ define([
     h,
     Support,
     ApiConfig,
-    AppConfig
+    AppConfig,
+    Pages
     )
 {
     var APP = window.APP = {};
@@ -168,6 +170,7 @@ define([
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true); // Msg.support_formHint, .support_formTitle, .support_formButton
+        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.fr/en/user_guide/index.html');
 
         var form = APP.support.makeForm();
 
@@ -203,6 +206,7 @@ define([
     };
     var showCategories = function (cat) {
         hideCategories();
+        if (!Array.isArray(cat)) { return void console.error("invalid category"); }
         cat.forEach(function (c) {
             APP.$rightside.find('.'+c).show();
         });
@@ -214,6 +218,7 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var active = privateData.category || 'tickets';
+        if (!categories[active]) { active = 'tickets'; }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {

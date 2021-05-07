@@ -1,5 +1,6 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
+@import (reference) "./tools.less";
 
 .forms_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -8,19 +9,25 @@
 & {
     @alertify_padding-base: @variables_padding;
 
-    input:not(.form-control):not([type="checkbox"]), textarea, div.cp-textarea {
+    input:not(.numInput):not(.form-control):not([type="checkbox"]), textarea, div.cp-textarea {
         // background-color: @alertify-input-fg;
         color: @cp_forms-fg;
         background-color: @cp_forms-bg;
         border: 1px solid @cp_forms-border;
-        width: 100%;
         font-size: 100%;
         padding: @alertify_padding-base;
+        &:not(.tui-full-calendar-content) {
+            width: 100%;
+        }
+        &.tui-full-calendar-content {
+            font-size: @colortheme_app-font-size;
+        }
         &[readonly] {
             background-color: @cp_forms-readonly;
             border-color: @cp_forms-readonly-border;
             color: @cp_forms-fg;
         }
+        .tools_placeholder-color();
     }
 
     input:not(.form-control) {
@@ -112,6 +119,11 @@
         &.no-margin {
             margin: 0;
         }
+        &.small {
+            line-height: initial;
+            padding: 5px;
+            height: auto !important;
+        }
 
         &:hover, &:not(:disabled):not(.disabled):active, &:focus {
             color: @cp_buttons-fg;
@@ -169,7 +181,7 @@
             &:hover, &:not(:disabled):active, &:focus {
                 border-color: @cryptpad_text_col;
                 color: @cryptpad_text_col;
-                background-color: fade(@cryptpad_text_col, 25%);
+                background-color: fade(@cryptpad_text_col, 10%);
             }
         }
 
@@ -184,6 +196,7 @@
         }
         &.btn-register {
             margin-top: 10px !important;
+            white-space: normal;
         }
 
 
@@ -277,6 +290,92 @@
         &.cp-banner-info {
             background-color: @cp_drive-infobox-bg;
             color: @cp_drive-infobox-fg;
+        }
+    }
+
+    // Flatpickr
+    body {
+        .flatpickr-calendar {
+            background: @cp_flatpickr-bg;
+            color: @cryptpad_text_col;
+            border-radius: 0;
+            box-shadow: @variables_shadow;
+            -webkit-box-shadow: @variables_shadow;
+            &.arrowTop::before, &.arrowTop::after {
+                border-bottom: 0;
+            }
+            .flatpickr-months {
+                .flatpickr-month, .flatpickr-months, .flatpickr-next-month,  .flatpickr-prev-month {
+                    color: @cryptpad_text_col;
+                    fill: @cryptpad_text_col;
+                    &:hover {
+                        svg {
+                            fill: @cryptpad_text_col;
+                        }
+                    }
+                }
+                .flatpickr-current-month {
+                    span.cur-month:hover {
+                        background: fade(@cryptpad_text_col, 10%);
+                      }
+                    .numInputWrapper span.arrowUp:after {
+                        border-bottom-color: @cryptpad_text_col;
+                    }
+                    .numInputWrapper span.arrowDown:after {
+                        border-top-color: @cryptpad_text_col;
+                    }
+                }
+            }
+            .flatpickr-innerContainer {
+                border-bottom: 0;
+                .flatpickr-weekdays {
+                    span.flatpickr-weekday {
+                        color: @cryptpad_text_col;
+                    }
+                }
+                .flatpickr-days {
+                    border-left: 0;
+                    border-right: 0;
+                    .flatpickr-day {
+                        color: @cryptpad_text_col;
+                        &:hover {
+                            background-color: fade(@cryptpad_text_col, 10%);
+                            border: 0;
+                        }
+                        &.selected {
+                            background: @cp_flatpickr-highlight;
+                            color: @cp_flatpickr-highlight-text;
+                            border: 0;
+                        }
+                    }
+                    .flatpickr-disabled {
+                        color: fade(@cryptpad_text_col, 20%);
+                    }
+                }
+            }
+            .flatpickr-time {
+                border-top: none;
+                .flatpickr-time-separator,  .flatpickr-am-pm {
+                    color: @cryptpad_text_col;
+                }
+                .flatpickr-am-pm {
+                    &:hover {
+                        background-color: fade(@cryptpad_text_col, 10%);
+                    }
+                }
+                .numInputWrapper {
+                    .numInput, .arrowUp, .arrowDown {
+                        color: @cryptpad_text_col;
+                        &:hover, &:focus {
+                            background-color: fade(@cryptpad_text_col, 10%);
+                        }
+                    }
+                    span.arrowDown::after, span.arrowUp::after {
+                        border-top-color: @cryptpad_text_col;
+                        border-bottom-color: @cryptpad_text_col;
+                    }
+                }
+            }
         }
     }
 }

@@ -39,10 +39,10 @@ define([
                 type: type,
                 msg: content,
                 user: user
-            }, function (err, obj) {
-                cb(err || (obj && obj.error), obj);
-                if (err || (obj && obj.error)) {
-                    return void console.error(err || obj.error);
+            }, function (obj) {
+                cb(obj && obj.error, obj);
+                if (obj && obj.error) {
+                    return void console.error(obj.error);
                 }
             });
         };
@@ -56,7 +56,18 @@ define([
             var notif;
             var avatar;
             var userData = Util.find(data, ['content', 'msg', 'content', 'user']);
-            if (userData && typeof(userData) === "object" && userData.profile) {
+
+            if (Util.find(data, ['content', 'msg', 'type']) === 'BROADCAST_DELETE') {
+                return;
+            }
+            if (data.type === 'broadcast') {
+                avatar = h('i.fa.fa-bullhorn.cp-broadcast');
+                if (/^LOCAL\|/.test(data.content.hash)) {
+                    $(avatar).addClass('preview');
+                }
+            } else if (data.type === 'reminders') {
+                avatar = h('i.fa.fa-calendar.cp-broadcast.preview');
+            } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
                 $(avatar).click(function (e) {
@@ -64,7 +75,9 @@ define([
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
                 });
             }
+            var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
             notif = h('div.cp-notification', {
+                style: 'order:'+order+';',
                 'data-hash': data.content.hash
             }, [
                 avatar,
@@ -74,6 +87,15 @@ define([
 
             if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+                if (data.content.autorefresh) {
+                    var it = setInterval(function () {
+                        if (!data.content.autorefresh) {
+                            clearInterval(it);
+                            return;
+                        }
+                        $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+                    }, 60000);
+                }
             }
 
             if (data.content.isClickable) {
@@ -106,7 +128,7 @@ define([
 
         // Call the onMessage handlers
         var isNotification = function (type) {
-            return type === "notifications" || /^team-/.test(type);
+            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders";
         };
         var pushMessage = function (data, handler) {
             var todo = function (f) {
@@ -142,7 +164,7 @@ define([
             removeFromHistory(data.type, data.hash);
         };
 
-        var onMessage = function (data, cb) {
+        var onMessage = mailbox.onMessage = function (data, cb) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
             pushMessage(data);
             if (data.content && typeof (data.content.getFormatText) === "function") {
@@ -160,6 +182,11 @@ define([
                 hash: data.content.hash,
                 type: data.type
             };
+            if (/^LOCAL\|/.test(dataObj.hash)) {
+                onViewed(dataObj);
+                cb();
+                return;
+            }
             execCommand('DISMISS', dataObj, function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 onViewed(dataObj);
@@ -183,7 +210,7 @@ define([
                     cfg.onViewed(data);
                 });
             }
-            if (typeof(cfg.onMessage) === "function") {
+            if (typeof(cfg.onMessage) === "function" && !cfg.history) {
                 onMessageHandlers.push(function (data, el) {
                     var type = data.type;
                     if (types.indexOf(type) === -1 && !(teams && /^team-/.test(type))) { return; }
@@ -201,11 +228,16 @@ define([
             });
         };
 
-        var historyState = false;
         var onHistory = function () {};
+        var onHistoryEnd;
         mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
-            if (historyState) { return void cb("ALREADY_CALLED"); }
-            historyState = true;
+            if (type === "broadcast" && onHistoryEnd) {
+                onHistoryEnd.reg(cb);
+                return;
+            }
+            if (onHistoryEnd) { return void cb("ALREADY_CALLED"); }
+            onHistoryEnd = Util.mkEvent();
+            onHistoryEnd.reg(cb);
             var txid = Util.uid();
             execCommand('LOAD_HISTORY', {
                 type: type,
@@ -221,8 +253,8 @@ define([
                 if (data.complete) {
                     onHistory = function () {};
                     var end = messages.length < count;
-                    cb(null, messages, end);
-                    historyState = false;
+                    onHistoryEnd.fire(null, messages, end);
+                    onHistoryEnd = undefined;
                     return;
                 }
                 if (data.hash !== lastKnownHash) {

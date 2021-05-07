@@ -186,7 +186,7 @@ define([
                 ChainPad: ChainPad,
                 classic: true,
                 network: network,
-                Cache: Cache, // ICE shared-folder cache
+                Cache: Cache, // shared-folder cache
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners
@@ -249,6 +249,7 @@ define([
                                 if (obj.store.handleSharedFolder) {
                                     obj.store.handleSharedFolder(obj.id, null);
                                 }
+                                obj.cb();
                             });
                         } catch (e) {}
                         delete allSharedFolders[secret.channel];
@@ -260,6 +261,7 @@ define([
                     if (info.error === "ERESTRICTED" ) {
                         sf.teams.forEach(function (obj) {
                             obj.store.manager.restrictedProxy(obj.id, secret.channel);
+                            obj.cb();
                         });
                         delete allSharedFolders[secret.channel];
                         return void cb();

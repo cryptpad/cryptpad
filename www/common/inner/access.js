@@ -25,10 +25,12 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
 
-        var channel = data.channel;
+        var priv = metadataMgr.getPrivateData();
+        var channel = data.channel || priv.channel;
         var owners = data.owners || [];
         var pending_owners = data.pending_owners || [];
         var teamOwner = data.teamId;
+        var title = opts.title;
 
         opts = opts || {};
         var redrawAll = function () {};
@@ -115,7 +117,7 @@ define([
                     if (!friend) { return; }
                     common.mailbox.sendTo("RM_OWNER", {
                         channel: channel,
-                        title: data.title,
+                        title: data.title || title,
                         pending: pending
                     }, {
                         channel: friend.notifications,
@@ -266,12 +268,15 @@ define([
                             return void UI.warn(text);
                         }
                         var isTemplate = priv.isTemplate || opts.isTemplate;
+
+                        // never store calendars in the team drive
+                        if (opts.calendar) { return; }
                         toAddTeams.forEach(function (obj) {
                             sframeChan.query('Q_STORE_IN_TEAM', {
                                 href: data.href || data.rohref,
                                 password: data.password,
                                 path: isTemplate ? ['template'] : undefined,
-                                title: data.title || '',
+                                title: data.title || title || "",
                                 teamId: obj.id
                             }, waitFor(function (err) {
                                 if (err) { return void console.error(err); }
@@ -320,6 +325,12 @@ define([
                     }));
                 }
             }).nThen(function (waitFor) {
+                var href = data.href;
+                var hashes = priv.hashes || {};
+                var bestHash = hashes.editHash || hashes.viewHash || hashes.fileHash;
+                if (data.fakeHref) {
+                    href = Hash.hashToHref(bestHash, priv.app);
+                }
                 sel.forEach(function (el) {
                     var curve = $(el).attr('data-curve');
                     if (curve === user.curvePublic) { return; }
@@ -327,9 +338,10 @@ define([
                     if (!friend) { return; }
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,
-                        href: data.href,
-                        password: data.password,
-                        title: data.title
+                        href: href,
+                        calendar: opts.calendar,
+                        password: data.password || priv.password,
+                        title: data.title || title
                     }, {
                         channel: friend.notifications,
                         curvePublic: friend.curvePublic
@@ -398,7 +410,8 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
 
-        var channel = data.channel;
+        var priv = metadataMgr.getPrivateData();
+        var channel = data.channel || priv.channel;
         var owners = data.owners || [];
         var restricted = data.restricted || false;
         var allowed = data.allowed || [];
@@ -832,7 +845,7 @@ define([
 
             // In the properties, we should have the edit href if we know it.
             // We should know it because the pad is stored, but it's better to check...
-            if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
+            if (!data.noEditPassword && !opts.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
                 var isOO = parsed.type === 'sheet';
                 var isFile = parsed.hashData.type === 'file';
                 var isSharedFolder = parsed.type === 'drive';
@@ -888,9 +901,17 @@ define([
                             });
                         }
 
+                        var href = data.href;
+                        var hashes = priv.hashes || {};
+                        var bestHash = hashes.editHash || hashes.viewHash || hashes.fileHash;
+                        if (data.fakeHref) {
+                            href = Hash.hashToHref(bestHash, priv.app);
+                        }
+                        var isNotStored = Boolean(data.fakeHref);
                         sframeChan.query(q, {
                             teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                            href: data.href,
+                            href: href,
+                            oldPassword: priv.password,
                             password: newPass
                         }, function (err, data) {
                             $(passwordOk).text(Messages.properties_changePasswordButton);
@@ -924,22 +945,26 @@ define([
                             // Pad password changed: update the href
                             // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
                             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-                            var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
+                            if (isNotStored) { useUnsafe = true; }
+                            var _href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
                             if (useUnsafe !== true) {
-                                var newParsed = Hash.parsePadUrl(href);
+                                var newParsed = Hash.parsePadUrl(_href);
                                 var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
                                 var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
-                                href = Hash.hashToHref(newHash, parsed.type);
+                                _href = Hash.hashToHref(newHash, parsed.type);
                             }
+
+                            // Trigger a page reload if the href didn't change
+                            if (_href === href) { _href = undefined; }
 
                             if (data.warning) {
                                 return void UI.alert(Messages.properties_passwordWarning, function () {
-                                    common.gotoURL(href);
+                                    common.gotoURL(_href);
                                 }, {force: true});
                             }
                             return void UI.alert(Messages.properties_passwordSuccess, function () {
                                 if (!isSharedFolder) {
-                                    common.gotoURL(href);
+                                    common.gotoURL(_href);
                                 }
                             }, {force: true});
                         });
@@ -956,14 +981,14 @@ define([
                     spinner.spin();
                     sframeChan.query('Q_DELETE_OWNED', {
                         teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                        channel: data.channel
+                        channel: data.channel || priv.channel
                     }, function (err, obj) {
                         spinner.done();
                         UI.findCancelButton().click();
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
                 });
-                $d.append(h('br'));
+                if (!opts.noEditPassword) { $d.append(h('br')); }
                 $d.append(h('div', [
                     h('label', Messages.access_destroyPad),
                     h('br'),
@@ -995,7 +1020,7 @@ define([
             var owned = Modal.isOwned(Env, data);
 
             // Request edit access
-            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned && !opts.calendar) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
@@ -1033,7 +1058,7 @@ define([
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
-            if (owned === true) {
+            if (owned === true && !opts.calendar) {
                 var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
                 var $cbox = $(cbox);
                 var spinner = UI.makeSpinner($cbox);

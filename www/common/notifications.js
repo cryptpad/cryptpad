@@ -7,7 +7,8 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages) {
+    '/customize/pages.js',
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages) {
 
     var handlers = {};
 
@@ -395,11 +396,128 @@ define([
     handlers['SAFE_LINKS_DEFAULT'] = function (common, data) {
         var content = data.content;
         content.getFormatText = function () {
-            return Messages.settings_safeLinkDefault;
+            var msg = Pages.setHTML(h('span'), Messages.settings_safeLinkDefault);
+            var i = msg.querySelector('i');
+            if (i) { i.classList = 'fa fa-shhare-alt'; }
+            return msg.innerHTML;
         };
 
         content.handler = function () {
             common.openURL('/settings/#security');
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['BROADCAST_SURVEY'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            return Messages.broadcast_newSurvey;
+        };
+        content.handler = function () {
+            common.openUnsafeURL(msg.url);
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['BROADCAST_CUSTOM'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        var text = msg.content;
+        var defaultL = msg.defaultLanguage;
+        var myLang = data.lang || Messages._languageUsed;
+        // Check if our language is available
+        var toShow = text[myLang];
+        // Otherwise, fallback to the default language if it exists
+        if (!toShow && defaultL) { toShow = text[defaultL]; }
+        // No translation available, dismiss
+        if (!toShow) { return defaultDismiss(common, data)(); }
+
+        var slice = toShow.length > 200;
+        toShow = Util.fixHTML(toShow);
+
+        content.getFormatText = function () {
+            if (slice) {
+                return toShow.slice(0, 200) + '...';
+            }
+            return toShow;
+        };
+        if (slice) {
+            content.handler = function () {
+                var content = h('div', [
+                    h('h4', Messages.broadcast_newCustom),
+                    h('div.cp-admin-message', toShow)
+                ]);
+                UI.alert(content);
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['REMINDER'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        var missed = content.msg.missed;
+        var start = msg.start;
+        var title = Util.fixHTML(msg.title);
+        content.getFormatText = function () {
+            var now = +new Date();
+
+            // Events that have already started
+            var wasRefresh = content.autorefresh;
+            content.autorefresh = false;
+
+            var nowDateStr = new Date().toLocaleDateString();
+            var startDate = new Date(start);
+            if (msg.isAllDay && msg.startDay) {
+                startDate = new Date(msg.startDay);
+            }
+
+            // Missed events
+            if (start < now && missed) {
+                return Messages._getKey('reminder_missed', [title, startDate.toLocaleString()]);
+            }
+            // Starting now
+            if (start < now && wasRefresh) {
+                return Messages._getKey('reminder_now', [title]);
+            }
+            // In progress, is all day
+            if (start < now && msg.isAllDay) {
+                return Messages._getKey('reminder_inProgressAllDay', [title]);
+            }
+            // In progress, normal event
+            if (start < now) {
+                return Messages._getKey('reminder_inProgress', [title, startDate.toLocaleString()]);
+            }
+
+            // Not started yet
+
+            // No precise time for allDay events
+            if (msg.isAllDay) {
+                return Messages._getKey('reminder_date', [title, startDate.toLocaleDateString()]);
+            }
+
+            // In less than an hour: show countdown in minutes
+            if ((start - now) < 3600000) {
+                var minutes = Math.round((start - now) / 60000);
+                content.autorefresh = true;
+                return Messages._getKey('reminder_minutes', [title, minutes]);
+            }
+
+            // Not today: show full date
+            if (nowDateStr !== startDate.toLocaleDateString()) {
+                return Messages._getKey('reminder_date', [title, startDate.toLocaleString()]);
+            }
+
+            // Today: show time
+            return Messages._getKey('reminder_time', [title, startDate.toLocaleTimeString()]);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);

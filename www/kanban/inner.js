@@ -30,10 +30,6 @@ define([
     'css!/bower_components/codemirror/lib/codemirror.css',
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
-
-
-
-    'css!/kanban/jkanban.css',
     'less!/kanban/app-kanban.less'
 ], function (
     $,

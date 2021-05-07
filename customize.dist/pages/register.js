@@ -9,11 +9,37 @@ define([
     return function () {
         var urlArgs = Config.requireConf.urlArgs;
 
-        return [h('div#cp-main', [
-            Pages.infopageTopbar(),
-            h('div.container.cp-container', [
-                h('div.row.cp-page-title', h('h1', Msg.register_header)),
-                h('div.row.cp-register-det', [
+        var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
+        $(tos).find('a').attr({
+            href: '/terms.html',
+            target: '_blank',
+            tabindex: '-1',
+        });
+
+
+        var frame = function (content) {
+            return [
+                h('div#cp-main', [
+                    Pages.infopageTopbar(),
+                    h('div.container.cp-container', [
+                        h('div.row.cp-page-title', h('h1', Msg.register_header)),
+                        //h('div.row.cp-register-det', content),
+                    ].concat(content)),
+                ]),
+                Pages.infopageFooter(),
+            ];
+        };
+
+        if (Config.restrictRegistration) {
+            return frame([
+                h('div.cp-restricted-registration', [
+                    h('p', Msg.register_registrationIsClosed),
+                ])
+            ]);
+        }
+
+        return frame([
+            h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
@@ -47,16 +73,13 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
                         h('div.checkbox-container', [
-                            $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
+                            tos,
                         ]),
                         h('button#register', Msg.login_register)
                     ])
                 ]),
-                ]),
-            ]),
-
-            Pages.infopageFooter(),
-        ])];
+            ])
+        ]);
     };
 
 });

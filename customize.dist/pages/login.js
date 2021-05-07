@@ -2,8 +2,9 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js',
-    '/customize/pages.js'
-], function (h, UI, Msg, Pages) {
+    '/customize/pages.js',
+    '/api/config',
+], function (h, UI, Msg, Pages, Config) {
     return function () {
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
@@ -32,7 +33,10 @@ define([
                         ]),
                         h('div.extra', [
                             h('button.login', Msg.login_login),
-                            h('button#register.cp-secondary', Msg.login_register)
+                            (Config.restrictRegistration?
+                                undefined:
+                                h('button#register.cp-secondary', Msg.login_register)
+                            )
                         ])
                     ]),
                     h('div.col-md-3')

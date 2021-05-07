@@ -4,12 +4,43 @@ define([
     '/customize/application_config.js',
     '/customize/messages.js',
     'jquery',
-], function (h, Language, AppConfig, Msg, $) {
+    '/api/config',
+], function (h, Language, AppConfig, Msg, $, ApiConfig) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
         e.innerHTML = html;
         return e;
+    };
+
+    Pages.externalLink = function (el, href) {
+        if (!el) { return el; }
+        el.setAttribute("rel", "noopener noreferrer");
+        el.setAttribute("target", "_blank");
+        if (typeof(href) === 'string') {
+            el.setAttribute("href", href);
+        }
+        return el;
+    };
+
+    // this rewrites URLS to point to the appropriate translation:
+    // French, German, or English as a default
+    var documentedLanguages = ['en', 'fr', 'de'];
+    Pages.localizeDocsLink = function (href) {
+        try {
+            var lang = Msg._getLanguage();
+            if (documentedLanguages.indexOf(lang) > 0) {
+                return href.replace('/en/', '/' + lang + '/');
+            }
+        } catch (err) {
+            console.error(err);
+            // if it fails just use the default href (English)
+        }
+        return href;
+    };
+
+    Pages.documentationLink = function (el, href) {
+        return Pages.externalLink(el, Pages.localizeDocsLink(href));
     };
 
     var languageSelector = function () {
@@ -45,6 +76,7 @@ define([
     };
 
     var footLink = function (ref, loc, text) {
+        if (!ref) { return; }
         var attrs =  {
             href: ref,
         };
@@ -62,15 +94,29 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.3.0";
+    Pages.versionString = "v4.5.0";
+
 
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
     Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
     Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
+    Pages.roadmapLink = footLink(AppConfig.roadmap, 'footer_roadmap');
 
     Pages.infopageFooter = function () {
+        var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
+        var legalFooter;
+
+        // only display the legal part of the footer if it has content
+        if (terms || Pages.privacyLink || Pages.imprintLink) {
+            legalFooter = footerCol('footer_legal', [
+                terms,
+                Pages.privacyLink,
+                Pages.imprintLink,
+            ]);
+        }
+
         return h('footer', [
             h('div.container', [
                 h('div.row', [
@@ -96,12 +142,9 @@ define([
                         footLink('/contact.html', 'contact'),
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
+                        Pages.roadmapLink,
                     ]),
-                    footerCol('footer_legal', [
-                        footLink('/terms.html', 'footer_tos'),
-                        Pages.privacyLink,
-                        Pages.imprintLink,
-                    ]),
+                    legalFooter,
                 ])
             ]),
             h('div.cp-version-footer', [
@@ -114,10 +157,16 @@ define([
     Pages.infopageTopbar = function () {
         var rightLinks;
         var username = window.localStorage.getItem('User_name');
+        var registerLink;
+
+        if (!ApiConfig.restrictRegistration) {
+            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register);
+        }
+
         if (username === null) {
             rightLinks = [
                 h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, Msg.login_login),
-                h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register)
+                registerLink,
             ];
         } else {
             rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/' }, [

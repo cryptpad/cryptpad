@@ -5,9 +5,12 @@ define([
     '/customize/messages.js'
 ], function ($, h, UIElements, Messages) {
 
-    var onLinkClicked = function (e, inner) {
+    var onLinkClicked = function (e, inner, openLinkSetting, editor) {
         var $target = $(e.target);
-        if (!$target.is('a')) { return; }
+        if (!$target.is('a')) {
+            $target = $target.closest('a');
+            if (!$target.length) { return; }
+        }
         var href = $target.attr('href');
         if (!href) { return; }
         var $inner = $(inner);
@@ -15,12 +18,25 @@ define([
         e.preventDefault();
         e.stopPropagation();
 
-        if (href[0] === '#') {
-            var anchor = $inner.find(href);
-            if (!anchor.length) { return; }
-            anchor[0].scrollIntoView();
-            return;
-        }
+        var open = function () {
+            if (href[0] === '#') {
+                try {
+                    $inner.find('.cke_anchor[data-cke-realelement]').each(function (j, el) {
+                        var i = editor.restoreRealElement($(el));
+                        var node = i.$;
+                        if (node.id === href.slice(1)) {
+                            el.scrollIntoView();
+                        }
+                    });
+                } catch (err) {}
+                return;
+            }
+
+            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
+            window.open(bounceHref);
+        };
+
+        if (openLinkSetting) { return void open(); }
 
         var $iframe = $('html').find('iframe').contents();
 
@@ -29,7 +45,9 @@ define([
         var l = (rect.left - rect0.left)+'px';
         var t = rect.bottom + $iframe.scrollTop() +'px';
 
-        var a = h('a', { href: href}, href);
+        var text = href;
+        if (text[0] === '#') { text = Messages.pad_goToAnchor; }
+        var a = h('a', { href: href}, text);
         var link = h('div.cp-link-clicked.non-realtime', {
             contenteditable: false,
             style: 'top:'+t+';left:'+l
@@ -45,8 +63,7 @@ define([
         $(a).click(function (ee) {
             ee.preventDefault();
             ee.stopPropagation();
-            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            window.open(bounceHref);
+            open();
             $link.remove();
         });
         $link.on('mouseleave', function () {
@@ -58,7 +75,7 @@ define([
     };
 
     return {
-        init : function (Ckeditor, editor) {
+        init : function (Ckeditor, editor, openLinkSetting) {
             if (!Ckeditor.plugins.link) { return; }
 
             var inner = editor.document.$.body;
@@ -66,8 +83,8 @@ define([
             // Bubble to open the link in a new tab
             $inner.click(function (e) {
                 removeClickedLink($inner);
-                if (e.target.nodeName.toUpperCase() === 'A') {
-                    return void onLinkClicked(e, inner);
+                if (e.target.nodeName.toUpperCase() === 'A' || $(e.target).closest('a').length) {
+                    return void onLinkClicked(e, inner, openLinkSetting, editor);
                 }
             });
 

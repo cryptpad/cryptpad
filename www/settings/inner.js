@@ -84,6 +84,7 @@ define([
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
             'cp-settings-pad-notif',
+            'cp-settings-pad-openlink',
         ],
         'code': [ // Msg.settings_cat_code
             'cp-settings-code-indent-unit',
@@ -94,6 +95,9 @@ define([
         ],
         'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
+        ],
+        'notifications': [
+            'cp-settings-notif-calendar'
         ],
         'subscription': {
             onClick: function() {
@@ -488,41 +492,69 @@ define([
             classes: 'btn-danger',
             multiple: true
         }, function() {
-            $button.prop('disabled', 'disabled');
-            var password = $form.find('#cp-settings-delete-account').val();
-            if (!password) {
-                return void UI.warn(Messages.error);
-            }
-            spinner.spin();
-            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
-                password: password
-            }, function(err, data) {
-                if (data && data.error) {
-                    spinner.hide();
-                    $button.prop('disabled', '');
-                    if (data.error === 'INVALID_PASSWORD') {
-                        return void UI.warn(Messages.drive_sfPasswordError);
-                    }
-                    console.error(data.error);
+            nThen(function (waitFor) {
+                $button.prop('disabled', 'disabled');
+                var priv = metadataMgr.getPrivateData();
+                // Check if subscriptions are enabled and you have a premium plan
+                if (priv.plan && priv.plan !== "custom" && ApiConfig.allowSubscriptions) {
+                    // Also make sure upgradeURL is defined
+                    var url = priv.accounts && priv.accounts.upgradeURL;
+                    if (!url) { return; }
+                    url += '#mysubs';
+                    var a = h('a', { href:url }, Messages.settings_deleteSubscription);
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(url);
+                    });
+                    UI.confirm(h('div', [
+                        Messages.settings_deleteWarning, h('p', a)
+                    ]), waitFor(function (yes) {
+                        if (!yes) {
+                            $button.prop('disabled', '');
+                            waitFor.abort();
+                        }
+                    }), {
+                        ok: Messages.settings_deleteContinue,
+                        okClass: 'btn.btn-danger',
+                        cancelClass: 'btn.btn-primary'
+                    });
+                }
+            }).nThen(function () {
+                var password = $form.find('#cp-settings-delete-account').val();
+                if (!password) {
                     return void UI.warn(Messages.error);
                 }
-                // Owned drive
-                if (data.state === true) {
-                    sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
-                    UI.alert(Messages.settings_deleted, function() {
-                        common.gotoURL('/');
-                    });
-                    spinner.done();
-                    return;
-                }
-                // Not owned drive
-                var msg = h('div.cp-app-settings-delete-alert', [
-                    h('p', Messages.settings_deleteModal),
-                    h('pre', JSON.stringify(data, 0, 2))
-                ]);
-                UI.alert(msg);
-                spinner.hide();
-                $button.prop('disabled', '');
+                spinner.spin();
+                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
+                    password: password
+                }, function(err, data) {
+                    if (data && data.error) {
+                        spinner.hide();
+                        $button.prop('disabled', '');
+                        if (data.error === 'INVALID_PASSWORD') {
+                            return void UI.warn(Messages.drive_sfPasswordError);
+                        }
+                        console.error(data.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    // Owned drive
+                    if (data.state === true) {
+                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
+                        UI.alert(Messages.settings_deleted, function() {
+                            common.gotoURL('/');
+                        });
+                        spinner.done();
+                        return;
+                    }
+                    // Not owned drive
+                    var msg = h('div.cp-app-settings-delete-alert', [
+                        h('p', Messages.settings_deleteModal),
+                        h('pre', JSON.stringify(data, 0, 2))
+                    ]);
+                    UI.alert(msg);
+                    spinner.hide();
+                    $button.prop('disabled', '');
+                });
             });
         });
 
@@ -1328,6 +1360,43 @@ define([
         cb($cbox);
     }, true);
 
+    create['pad-openlink'] = function() {
+        var $div = $('<div>', {
+            'class': 'cp-settings-pad-openlink cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_padOpenLinkTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-sidebarlayout-description' })
+            .text(Messages.settings_padOpenLinkHint).appendTo($div);
+
+        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
+        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
+
+        var $cbox = $(UI.createCheckbox('cp-settings-pad-openlink',
+            Messages.settings_padOpenLinkLabel,
+            false, { label: { class: 'noTitle' } }));
+        var $checkbox = $cbox.find('input').on('change', function() {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['pad', 'openLink'], val, function() {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['pad', 'openLink'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
+
     // Code settings
 
     create['code-indent-unit'] = function() {
@@ -1534,6 +1603,39 @@ define([
         cb($d);
     }, true);
 
+    makeBlock('notif-calendar', function(cb) { // Msg.settings_notifCalendarHint, .settings_notifCalendarTitle
+
+        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+            Messages.settings_notifCalendarCheckbox,
+            false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
+
+        var $checkbox = $cbox.find('input').on('change', function() {
+            spinner.spin();
+            var val = !$checkbox.is(':checked');
+            common.setAttribute(['general', 'calendar', 'hideNotif'], val, function(e) {
+                if (e) {
+                    console.error(e);
+                    // error: restore previous value
+                    if (val) { $checkbox.attr('checked', ''); }
+                    else { $checkbox.attr('checked', 'checked'); }
+                    spinner.hide();
+                    return void console.error(e);
+                }
+                spinner.done();
+            });
+        });
+
+        common.getAttribute(['general', 'calendar', 'hideNotif'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (!val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        cb($cbox[0]);
+    }, true);
+
     // Settings app
 
     var createUsageButton = function() {
@@ -1563,8 +1665,10 @@ define([
         subscription: 'fa fa-star-o',
         kanban: 'cptools cptools-kanban',
         style: 'cptools cptools-palette',
+        notifications: 'fa fa-bell'
     };
 
+    Messages.settings_cat_notifications = Messages.notificationsPage;
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);

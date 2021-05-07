@@ -239,6 +239,9 @@ define([
         if (!Env.folders[id]) { return {}; }
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
+            if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") { // XXX "deleted folder" for restricted shared folders when viewer in a team
+                continue;
+            }
             var data = Util.clone(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]);
             if (k === "href" && data.indexOf('#') === -1) {
                 try {
@@ -868,7 +871,6 @@ define([
                     if (fId && Env.folders[fId] && Env.folders[fId].deleting) {
                         delete Env.folders[fId].deleting;
                     }
-                    console.error(obj.error, chan);
                     Feedback.send('ERROR_DELETING_OWNED_PAD=' + chan + '|' + obj.error, true);
                     return void cb();
                 }
@@ -879,6 +881,11 @@ define([
                 // If the pad was a shared folder, delete it too and leave it
                 if (fId) {
                     ids.push(fId);
+                }
+
+                if (!ids.length) {
+                    toDelete = undefined;
+                    return void cb();
                 }
 
                 ids.forEach(function (id) {
@@ -912,8 +919,13 @@ define([
                 });
             });
         }).nThen(function () {
-            // Remove deleted pads from the drive
-            _delete(Env, { resolved: toDelete }, cb);
+            if (!toDelete) {
+                // Nothing to delete
+                cb();
+            } else {
+                // Remove deleted pads from the drive
+                _delete(Env, { resolved: toDelete }, cb);
+            }
             // If we were using the access modal, send a refresh command
             if (data.channel) {
                 Env.Store.refreshDriveUI();

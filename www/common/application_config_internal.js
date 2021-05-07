@@ -12,7 +12,7 @@ define(function() {
      * You should never remove the drive from this list.
      */
     config.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
-                                /*'oodoc', 'ooslide',*/ 'file', /*'todo',*/ 'contacts'];
+                                /*'doc', 'presentation',*/ 'file', /*'todo',*/ 'contacts' /*, 'calendar' */];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'notifications', 'support'];
+    config.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -43,8 +43,14 @@ define(function() {
     /* You can display a link to your own privacy policy in the static pages footer.
      * To do so, set the following value to the absolute URL of your privacy policy.
      */
-    config.privacy = '/privacy.html';
     // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
+
+    /* We (the project's developers) include the ability to display a 'Roadmap' in static pages footer.
+     * This is disabled by default.
+     * We use this to publish the project's development roadmap, but you can use it however you like.
+     * To do so, set the following value to an absolute URL.
+     */
+    //config.roadmap = 'https://cryptpad.fr/kanban/#/2/kanban/view/PLM0C3tFWvYhd+EPzXrbT+NxB76Z5DtZhAA5W5hG9wo/';
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
@@ -115,8 +121,8 @@ define(function() {
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
         kanban: 'cptools-kanban',
-        oodoc: 'fa-file-word-o',
-        ooslide: 'fa-file-powerpoint-o',
+        doc: 'fa-file-word-o',
+        presentation: 'fa-file-powerpoint-o',
         sheet: 'cptools-sheet',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
@@ -162,8 +168,6 @@ define(function() {
     // making it much faster to open new tabs.
     config.disableWorkers = false;
 
-    config.surveyURL = "https://survey.cryptpad.fr/index.php/672782";
-
     // Teams are always loaded during the initial loading screen (for the first tab only if
     // SharedWorkers are available). Allowing users to be members of multiple teams can
     // make them have a very slow loading time. To avoid impacting the user experience
@@ -178,6 +182,24 @@ define(function() {
     // users don't use "fake" teams (1 member) just to increase their storage limit.
     // You can change the value here.
     // config.maxOwnedTeams = 5;
+
+    // The userlist displayed in collaborative documents is stored alongside the document data.
+    // Everytime someone with edit rights joins a document or modify their user data (display
+    // name, avatar, color, etc.), they update the "userlist" part of the document. When too many
+    // editors are in the same document, all these changes increase the risks of conflicts which
+    // require CPU time to solve. A "degraded" mode can now be set when a certain number of editors
+    // are in a document at the same time. This mode disables the userlist, the chat and the
+    // position of other users' cursor. You can configure the number of user from which the session
+    // will enter into degraded mode. A big number may result in collaborative edition being broken,
+    // but this number depends on the network and CPU performances of each user's device.
+    config.degradedLimit = 8;
+
+    // In "legacy" mode, one-time users were always creating an "anonymous" drive when visiting CryptPad
+    // in which they could store their pads. The new "driveless" mode allow users to open an existing
+    // pad without creating a drive in the background. The drive will only be created if they visit
+    // a different page (Drive, Settings, etc.) or try to create a new pad themselves. You can disable
+    // the driveless mode by changing the following value to "false"
+    config.allowDrivelessMode = true;
 
     return config;
 });

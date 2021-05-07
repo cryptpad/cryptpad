@@ -73,7 +73,7 @@ define([
     };
 
     LocalStore.isLoggedIn = function () {
-        return typeof getUserHash() === "string";
+        return window.CP_logged_in || typeof getUserHash() === "string";
     };
 
     LocalStore.login = function (hash, name, cb) {
