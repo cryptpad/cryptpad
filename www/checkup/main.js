@@ -366,6 +366,15 @@ define([
     });
 
     assert(function (cb, msg) {
+        msg.innerText = "Missing HTTP header required to disable Google's Floc.";
+        $.ajax('/?'+ (+new Date()), {
+            complete: function (xhr) {
+                cb(xhr.getResponseHeader('permissions-policy') === 'interest-cohort=()');
+            },
+        });
+    });
+
+    assert(function (cb, msg) {
         msg = msg;
         return void cb(true);
         /*
