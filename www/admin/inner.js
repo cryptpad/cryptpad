@@ -267,8 +267,11 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['RESTRICT_REGISTRATION', [val]]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
                 APP.updateStatus(function () {
                     spinner.done();
                     state = APP.instanceStatus.restrictRegistration;
@@ -316,8 +319,11 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['UPDATE_DEFAULT_STORAGE', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); return void console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
                 var limit = getPrettySize(l);
                 $div.find('.cp-admin-defaultlimit-value').text(Messages._getKey('admin_limit', [limit]));
             });
@@ -448,8 +454,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['RM_QUOTA', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
                 APP.refreshLimits();
                 $key.val('');
             });
@@ -462,8 +472,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['SET_QUOTA', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
                 APP.refreshLimits();
                 $key.val('');
             });
@@ -1030,9 +1044,10 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
-                }, function (e) {
-                    if (e) {
-                        console.error(e);
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         return;
                     }
                     console.log('lastBroadcastHash updated');
@@ -1336,9 +1351,10 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_MAINTENANCE', [data]]
-                }, function (e) {
-                    if (e) {
-                        UI.warn(Messages.error); console.error(e);
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         $button.prop('disabled', '');
                         return;
                     }
@@ -1430,10 +1446,11 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_SURVEY_URL', [data]]
-                }, function (e) {
-                    if (e) {
+                }, function (e, response) {
+                    if (e || response.error) {
                         $button.prop('disabled', '');
-                        UI.warn(Messages.error); console.error(e);
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         return;
                     }
                     // Maintenance applied, send notification
@@ -1529,11 +1546,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'GET_WORKER_PROFILES',
             }, function (e, data) {
-                if (e) { return void console.error(e); }
+                if (e || data.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, data);
+                }
                 //console.info(data);
                 $div.find("table").remove();
-
-
                 process(data);
                 $div.append(table);
             });
