@@ -237,7 +237,7 @@ define([
         var blockUrl = Login.Block.getBlockUrl(opt.blockKeys);
         var blockRequest = Login.Block.serialize("{}", opt.blockKeys);
         var removeRequest = Login.Block.remove(opt.blockKeys);
-        console.log('Test block URL:', blockUrl);
+        console.warn('Testing block URL (%s). One 404 is normal.', blockUrl);
 
         var userHash = '/2/drive/edit/000000000000000000000000';
         var secret = Hash.getSecrets('drive', userHash);
@@ -375,7 +375,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        msg = msg;
+        msg.innerText = "This test is incorrect.";
         return void cb(true);
         /*
         msg.appendChild(h('span', [
@@ -419,7 +419,6 @@ define([
         $.ajax('/api/broadcast', {
             dataType: 'text',
             complete: function (xhr) {
-                console.log(xhr);
                 cb(xhr.status === 200);
             },
         });
@@ -445,6 +444,7 @@ define([
 
                 var expect = {
                     'cross-origin-resource-policy': 'cross-origin',
+                    'cross-origin-embedder-policy': 'require-corp',
                 };
                 var incorrect = Object.keys(expect).some(function (k) {
                     var response = xhr.getResponseHeader(k);
