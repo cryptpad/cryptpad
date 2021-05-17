@@ -119,7 +119,7 @@ define([
     };
 
     var getWeekDays = function (large) {
-        var baseDate = new Date(Date.UTC(2017, 0, 1)); // just a Sunday
+        var baseDate = new Date(2017, 0, 1); // just a Sunday
         var weekDays = [];
         for(var i = 0; i < 7; i++) {
             weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
