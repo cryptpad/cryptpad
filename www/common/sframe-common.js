@@ -448,6 +448,9 @@ define([
         }
     };
     funcs.createPad = function (cfg, cb) {
+        if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
+            return void UI.errorLoadingScreen(Messages.mustLogin);
+        }
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
