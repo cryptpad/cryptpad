@@ -1314,19 +1314,23 @@ define([
             var $start = $(start);
             var $end = $(end);
             var is24h = false;
+            var dateFormat = "Y-m-d H:i";
             try {
                 is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
             } catch (e) {}
+            if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
             var endPickr = Flatpickr(end, {
                 enableTime: true,
                 time_24hr: is24h,
+                dateFormat: dateFormat,
                 minDate: new Date()
             });
             Flatpickr(start, {
                 enableTime: true,
                 time_24hr: is24h,
                 minDate: new Date(),
+                dateFormat: dateFormat,
                 onChange: function () {
                     endPickr.set('minDate', new Date($start.val()));
                 }
