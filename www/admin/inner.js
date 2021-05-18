@@ -16,6 +16,7 @@ define([
     '/support/ui.js',
 
     '/lib/datepicker/flatpickr.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -44,6 +45,7 @@ define([
         'instanceStatus': {}
     };
 
+    var Nacl = window.nacl;
     var common;
     var sFrameChan;
 
@@ -54,6 +56,7 @@ define([
             'cp-admin-archive',
             'cp-admin-unarchive',
             'cp-admin-registration',
+            'cp-admin-email'
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -71,7 +74,8 @@ define([
         ],
         'support': [ // Msg.admin_cat_support
             'cp-admin-support-list',
-            'cp-admin-support-init'
+            'cp-admin-support-init',
+            'cp-admin-support-priv',
         ],
         'broadcast': [ // Msg.admin_cat_broadcast
             'cp-admin-maintenance',
@@ -281,6 +285,48 @@ define([
             });
         });
         $cbox.appendTo($div);
+
+        return $div;
+    };
+
+    Messages.admin_emailTitle = "Admin contact email"; // XXX
+    Messages.admin_emailHint = "Set the contact email for your instance here"; // XXX
+    Messages.admin_emailButton = "Update";
+    create['email'] = function () {
+        var key = 'email';
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton
+        var $button = $div.find('button');
+
+        var input = h('input', {
+            type: 'email',
+            value: ApiConfig.adminEmail || ''
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setlimit-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            if (!$input.val()) { return; }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_ADMIN_EMAIL', [$input.val()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        $button.before(innerDiv);
 
         return $div;
     };
@@ -651,8 +697,13 @@ define([
     };
 
     var supportKey = ApiConfig.supportMailbox;
+    var checkAdminKey = function (priv) {
+        if (!supportKey) { return; }
+        return Hash.checkBoxKeyPair(priv, supportKey);
+    };
+
     create['support-list'] = function () {
-        if (!supportKey || !APP.privateKey) { return; }
+        if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
         var $container = makeBlock('support-list'); // Msg.admin_supportListHint, .admin_supportListTitle
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
@@ -913,15 +964,66 @@ define([
     };
 
 
-    var checkAdminKey = function (priv) {
-        if (!supportKey) { return; }
-        return Hash.checkBoxKeyPair(priv, supportKey);
-    };
+    Messages.admin_supportPrivTitle = "Support admin key"; // XXX
+    Messages.admin_supportPrivHint = "Display the private key allowing other admins to access the support. A form to enter this key will be displayed in their admin panel.";
+    Messages.admin_supportPrivButton = "Show key";
+    create['support-priv'] = function () {
+        if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
 
+        var $div = makeBlock('support-priv', true); // Msg.admin_supportPrivHint, .admin_supportPrivTitle, .admin_supportPrivButton
+        var $button = $div.find('button').click(function () {
+            $button.remove();
+            $div.append(h('pre', APP.privateKey));
+        });
+        return $div;
+    };
+    Messages.admin_supportInitGenerate = "Generate support keys"; // XXX
     create['support-init'] = function () {
         var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
         if (!supportKey) {
-            $div.append(h('p', Messages.admin_supportInitHelp));
+            (function () {
+                $div.append(h('p', Messages.admin_supportInitHelp)); // XXX Update text for this key
+                var button = h('button.btn.btn-primary', Messages.admin_supportInitGenerate);
+                var $button = $(button).appendTo($div);
+                $div.append($button);
+                var spinner = UI.makeSpinner($div);
+                $button.click(function () {
+                    spinner.spin();
+                    $button.attr('disabled', 'disabled');
+                    var keyPair = Nacl.box.keyPair();
+                    var pub = Nacl.util.encodeBase64(keyPair.publicKey);
+                    var priv = Nacl.util.encodeBase64(keyPair.secretKey);
+                    // Store the private key first. It won't be used until the decree is accepted.
+                    sFrameChan.query("Q_ADMIN_MAILBOX", priv, function (err, obj) {
+                        if (err || (obj && obj.error)) {
+                            console.error(err || obj.error);
+                            UI.warn(Messages.error);
+                            spinner.hide();
+                            return;
+                        }
+                        // Then send the decree
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['SET_SUPPORT_MAILBOX', [pub]]
+                        }, function (e, response) {
+                            $button.removeAttr('disabled');
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                                spinner.hide();
+                                return;
+                            }
+                            spinner.done();
+                            UI.log(Messages.saved);
+                            supportKey = pub;
+                            APP.privateKey = priv;
+                            $('.cp-admin-support-init').hide();
+                            APP.$rightside.append(create['support-list']());
+                            APP.$rightside.append(create['support-priv']());
+                        });
+                    });
+                });
+            })();
             return $div;
         }
         if (!APP.privateKey || !checkAdminKey(APP.privateKey)) {
@@ -951,6 +1053,7 @@ define([
                     APP.privateKey = key;
                     $('.cp-admin-support-init').hide();
                     APP.$rightside.append(create['support-list']());
+                    APP.$rightside.append(create['support-priv']());
                 });
             });
             return $div;
