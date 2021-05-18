@@ -424,7 +424,11 @@ define([
         });
     });
 
-    var checkAPIHeaders = function (url, cb) {
+    var code = function (content) {
+        return h('code', content);
+    };
+
+    var checkAPIHeaders = function (url, msg, cb) {
         $.ajax(url, {
             dataType: 'text',
             complete: function (xhr) {
@@ -446,14 +450,29 @@ define([
                     'cross-origin-resource-policy': 'cross-origin',
                     'cross-origin-embedder-policy': 'require-corp',
                 };
-                var incorrect = Object.keys(expect).some(function (k) {
+                var incorrect = false;
+
+                Object.keys(expect).forEach(function (k) {
                     var response = xhr.getResponseHeader(k);
-                    if (response !== expect[k]) {
-                        return true;
+                    var expected = expect[k];
+                    if (response !== expected) {
+                        incorrect = true;
+                        msg.appendChild(h('p', [
+                            'The ',
+                            code(k),
+                            ' header for ',
+                            code(url),
+                            " is '",
+                            code(response),
+                            "' instead of '",
+                            code(expected),
+                            "' as expected.",
+                        ]));
+
                     }
                 });
 
-                if (duplicated || incorrect) { console.error(allHeaders); }
+                if (duplicated || incorrect) { console.debug(allHeaders); }
                 cb(!duplicated && !incorrect);
             },
         });
@@ -464,13 +483,13 @@ define([
     assert(function (cb, msg) {
         var url = '/api/config';
         msg.innerText = url + INCORRECT_HEADER_TEXT;
-        checkAPIHeaders(url, cb);
+        checkAPIHeaders(url, msg, cb);
     });
 
     assert(function (cb, msg) {
         var url = '/api/broadcast';
         msg.innerText = url + INCORRECT_HEADER_TEXT;
-        checkAPIHeaders(url, cb);
+        checkAPIHeaders(url, msg, cb);
     });
 
     var setWarningClass = function (msg) {
