@@ -43,6 +43,17 @@ define([
         return Pages.externalLink(el, Pages.localizeDocsLink(href));
     };
 
+    var accounts = Pages.accounts = {
+        donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
+        upgradeURL: AppConfig.upgradeURL
+    };
+
+    Pages.areSubscriptionsAllowed = function () {
+        try {
+            return ApiConfig.allowSubscriptions && accounts.upgradeURL && !ApiConfig.restrictRegistration;
+        } catch (err) { return void console.error(err); }
+    };
+
     var languageSelector = function () {
         var options = [];
         var languages = Msg._languages;
@@ -133,7 +144,7 @@ define([
                     footerCol('footer_product', [
                         footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
                         Pages.docsLink,
-                        footLink('/features.html', 'pricing'),
+                        footLink('/features.html', Pages.areSubscriptionsAllowed()? 'pricing': 'features'), // Messages.pricing, Messages.features
                         Pages.githubLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
