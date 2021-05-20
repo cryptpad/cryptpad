@@ -59,11 +59,71 @@ define([
 
     Messages.form_duplicates = "Duplicate entries have been removed";
 
+    Messages.form_reset = "Reset";
+    Messages.form_sent = "Sent";
+
+    // XXX to update our own answers, we need to store the server hash of the message
+    // and we'll be able to use getHistoryRange to fetch this message when we come back
+
+
     var makeFormSettings = function (framework) {
         // XXX
         // Button to set results as public
         // Checkbox to allow anonymous answers
         // Button to clear all answers?
+    };
+
+    var editOptions = function (v, cb) {
+        var add = h('button.btn.btn-secondary', [
+            h('i.fa.fa-plus'),
+            h('span', Messages.tag_add)
+        ]);
+
+        // Show existing options
+        var getOption = function (val) {
+            var input = h('input', {value:val});
+            var del = h('button.btn.btn-danger', h('i.fa.fa-times'));
+            var el = h('div.cp-form-edit-block-input', [ input, del ]);
+            $(del).click(function () { $(el).remove(); });
+            return el;
+        };
+        var inputs = v.map(getOption);
+        inputs.push(add);
+        var container = h('div.cp-form-edit-block', inputs);
+
+        // Add option
+        var $add = $(add).click(function () {
+            $add.before(getOption(Messages.form_newOption));
+        });
+
+        // Cancel changes
+        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
+        $(cancelBlock).click(function () { cb(); });
+
+        // Save changes
+        var saveBlock = h('button.btn.btn-primary', [
+            h('i.fa.fa-floppy-o'),
+            h('span', Messages.settings_save)
+        ]);
+        $(saveBlock).click(function () {
+            $(saveBlock).attr('disabled', 'disabled');
+            var values = [];
+            var duplicates = false;
+            $(container).find('input').each(function (i, el) {
+                var val = $(el).val().trim();
+                if (values.indexOf(val) === -1) { values.push(val); }
+                else { duplicates = true; }
+            });
+            if (duplicates) {
+                UI.warn(Messages.form_duplicates);
+            }
+            cb({values: values});
+        });
+
+        return [
+            container,
+            h('div', [cancelBlock, saveBlock])
+        ];
     };
 
     var TYPES = {
@@ -75,6 +135,7 @@ define([
                     tag: tag,
                     getValue: function () { return $tag.val(); },
                     //setValue: function (val) { $tag.val(val); }
+                    reset: function () { $tag.val(''); }
                 };
             },
             icon: h('i.fa.fa-font')
@@ -102,59 +163,10 @@ define([
                         });
                         return res;
                     },
+                    reset: function () { $(tag).find('input').removeAttr('checked'); },
                     edit: function (cb) {
                         var v = opts.values.slice();
-
-                        var add = h('button.btn.btn-secondary', [
-                            h('i.fa.fa-plus'),
-                            h('span', Messages.tag_add)
-                        ]);
-
-                        // Show existing options
-                        var getOption = function (val) {
-                            var input = h('input', {value:val});
-                            var del = h('button.btn.btn-danger', h('i.fa.fa-times'));
-                            var el = h('div.cp-form-edit-block-input', [ input, del ]);
-                            $(del).click(function () { $(el).remove(); });
-                            return el;
-                        };
-                        var inputs = v.map(getOption);
-                        inputs.push(add);
-                        var container = h('div.cp-form-edit-block', inputs);
-
-                        // Add option
-                        var $add = $(add).click(function () {
-                            $add.before(getOption(Messages.form_newOption));
-                        });
-
-                        // Cancel changes
-                        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-                        $(cancelBlock).click(function () { cb(); });
-
-                        // Save changes
-                        var saveBlock = h('button.btn.btn-primary', [
-                            h('i.fa.fa-floppy-o'),
-                            h('span', Messages.settings_save)
-                        ]);
-                        $(saveBlock).click(function () {
-                            $(saveBlock).attr('disabled', 'disabled');
-                            var values = [];
-                            var duplicates = false;
-                            $(container).find('input').each(function (i, el) {
-                                var val = $(el).val().trim();
-                                if (values.indexOf(val) === -1) { values.push(val); }
-                                else { duplicates = true; }
-                            });
-                            if (duplicates) {
-                                UI.warn(Messages.form_duplicates);
-                            }
-                            cb({values: values});
-                        });
-
-                        return [
-                            container,
-                            h('div', [cancelBlock, saveBlock])
-                        ];
+                        return editOptions(v, cb);
                     }
                     //setValue: function (val) {}
                 };
@@ -164,13 +176,44 @@ define([
         }
     };
 
-    var renderForm = function (content, editable) {
+    var makeFormControls = function (framework, content) {
+        var send = h('button.btn.btn-primary', Messages.poll_commit);
+        var reset = h('button.btn.btn-danger-alt', Messages.form_reset);
+        $(reset).click(function () {
+            if (!Array.isArray(APP.formBlocks)) { return; }
+            APP.formBlocks.forEach(function (data) {
+                if (typeof(data.reset) === "function") { data.reset(); }
+            });
+        });
+        var $send = $(send).click(function () {
+            $send.attr('disabled', 'disabled');
+            if (!Array.isArray(APP.formBlocks)) { return; }
+            var results = {};
+            APP.formBlocks.forEach(function (data) {
+                results[data.uid] = data.getValue();
+            });
 
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            sframeChan.query('Q_FORM_SUBMIT', {
+                mailbox: content.answers,
+                results: results
+            }, function (err, data) {
+                console.error(data);
+                if (err || (data && data.error)) {
+                    console.error(err || data.error);
+                    return void UI.warn(Messages.error);
+                }
+                UI.alert(Messages.form_sent);
+            });
+        });
+        return h('div.cp-form-send-container', [send, reset]);
     };
     var updateForm = function (framework, content, editable) {
         var $container = $('div.cp-form-creator-content');
 
         var form = content.form;
+
+        APP.formBlocks = [];
 
         // XXX order array later
         var elements = Object.keys(form).map(function (uid) {
@@ -178,9 +221,15 @@ define([
             var type = block.type;
             var model = TYPES[type];
             if (!model) { return; }
+
             var data = model.get(block.opts);
+            data.uid = uid;
+
             var q = h('div.cp-form-block-question', block.q || Messages.form_default);
             var edit, editContainer;
+
+            APP.formBlocks.push(data);
+
             if (editable) {
                 // Question
 
@@ -231,6 +280,7 @@ define([
                         }
                         $(editContainer).empty();
                         block.opts = newOpts;
+                        framework.localChange();
                         var $oldTag = $(data.tag);
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             $edit.show();
@@ -257,34 +307,43 @@ define([
         });
 
         $container.empty().append(elements);
+        $container.append(makeFormControls(framework, content));
     };
 
     var andThen = function (framework) {
         framework.start();
         var content = {};
 
-        var $container = $('#cp-app-form-container');
+        var sframeChan = framework._.sfCommon.getSframeChannel();
+        var metadataMgr = framework._.cpNfInner.metadataMgr;
+
+        var priv = metadataMgr.getPrivateData();
+        APP.isEditor = Boolean(priv.form_public);
 
         var makeFormCreator = function () {
-            var controls = Object.keys(TYPES).map(function (type) {
 
-                var btn = h('button.btn', [
-                    TYPES[type].icon.cloneNode(),
-                    h('span', Messages['form_type_'+type])
-                ]);
-                $(btn).click(function () {
-                    var uid = Util.uid();
-                    content.form[uid] = {
-                        //q: Messages.form_default,
-                        //opts: opts
-                        type: type,
-                    };
-                    framework.localChange();
-                    updateForm(framework, content, true);
+            var controlContainer;
+            if (APP.isEditor) {
+                var controls = Object.keys(TYPES).map(function (type) {
+
+                    var btn = h('button.btn', [
+                        TYPES[type].icon.cloneNode(),
+                        h('span', Messages['form_type_'+type])
+                    ]);
+                    $(btn).click(function () {
+                        var uid = Util.uid();
+                        content.form[uid] = {
+                            //q: Messages.form_default,
+                            //opts: opts
+                            type: type,
+                        };
+                        framework.localChange();
+                        updateForm(framework, content, true);
+                    });
+                    return btn;
                 });
-                return btn;
-            });
-            var controlContainer = h('div.cp-form-creator-control', controls);
+                controlContainer = h('div.cp-form-creator-control', controls);
+            }
 
             var contentContainer = h('div.cp-form-creator-content');
             var div = h('div.cp-form-creator-container', [
@@ -294,12 +353,9 @@ define([
             return div;
         };
 
+        var $container = $('#cp-app-form-container');
         $container.append(makeFormCreator());
-
-        var sframeChan = framework._.sfCommon.getSframeChannel();
-        var metadataMgr = framework._.cpNfInner.metadataMgr;
-        var priv = metadataMgr.getPrivateData();
-        APP.isEditor = Boolean(priv.form_public);
+        if (!APP.isEditor) { makeFormControls(); }
 
         framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
@@ -340,6 +396,7 @@ define([
         framework.onContentUpdate(function (newContent) {
             console.log(newContent);
             content = newContent;
+            updateForm(framework, content, APP.isEditor);
         });
 
         framework.setContentGetter(function () {

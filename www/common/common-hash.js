@@ -34,6 +34,12 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         var keyPair = Nacl.sign.keyPair.fromSecretKey(privateKey);
         return Nacl.util.encodeBase64(keyPair.publicKey);
     };
+    Hash.getCurvePublicFromPrivate = function (curvePrivateSafeStr) {
+        var curvePrivateStr = Crypto.b64AddSlashes(curvePrivateSafeStr);
+        var privateKey = Nacl.util.decodeBase64(curvePrivateStr);
+        var keyPair = Nacl.box.keyPair.fromSecretKey(privateKey);
+        return Nacl.util.encodeBase64(keyPair.publicKey);
+    };
 
     var getEditHashFromKeys = Hash.getEditHashFromKeys = function (secret) {
         var version = secret.version;

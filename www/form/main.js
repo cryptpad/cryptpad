@@ -63,11 +63,37 @@ define([
                     config.onReady = function () {
                         cb();
                         // XXX
+                        network.disconnect();
                     };
                     config.onMessage = function () {
                         // XXX
                     };
                     CPNetflux.start(config);
+                });
+            });
+            sframeChan.on("Q_FORM_SUBMIT", function (data, cb) {
+                var box = data.mailbox;
+                var myKeys;
+                nThen(function (w) {
+                    Cryptpad.getFormKeys(w(function (keys) {
+                        myKeys = keys;
+                    }));
+                }).nThen(function (w) {
+
+                    var keys = Utils.secret && Utils.secret.keys;
+                    myKeys.signingKey = keys.secondarySignKey;
+
+                    var crypto = Utils.Crypto.Mailbox.createEncryptor(myKeys);
+                    var text = JSON.stringify(data.results);
+                    var ciphertext = crypto.encrypt(text, box.publicKey);
+
+                    var hash = ciphertext.slice(0,64); // XXX use this to recover our previous answers
+                    Cryptpad.anonRpcMsg("WRITE_PRIVATE_MESSAGE", [
+                        box.channel,
+                        ciphertext
+                    ], function (err, response) {
+                        cb({error: err, response: response, hash: hash});
+                    });
                 });
             });
             sframeChan.on('EV_FORM_MAILBOX', function (data) {

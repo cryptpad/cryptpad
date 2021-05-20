@@ -100,6 +100,17 @@ define([
             cb(keys);
         });
     };
+    common.getFormKeys = function (cb) {
+        postMessage("GET", {
+            key: ['curvePrivate'],
+        }, function (obj) {
+            if (obj.error) { return void cb(); }
+            cb({
+                curvePrivate: obj,
+                curvePublic: Hash.getCurvePublicFromPrivate(obj)
+            });
+        });
+    };
 
     common.makeNetwork = function (cb) {
         require([
