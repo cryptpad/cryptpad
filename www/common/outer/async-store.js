@@ -2696,6 +2696,7 @@ define([
 
             nThen(function (waitFor) {
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+                if (!proxy.forms) { proxy.forms = {}; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
 
                 // Call onCacheReady if the manager is not yet defined

@@ -22,6 +22,9 @@ define([
             var secondary = keys && keys.secondaryKey;
             if (!secondary) { return; }
             var curvePair = Nacl.box.keyPair.fromSecretKey(Nacl.util.decodeUTF8(secondary).slice(0,32));
+            var validateKey = keys.secondaryValidateKey;
+            meta.form_answerValidateKey = validateKey;
+
             publicKey = meta.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
             privateKey = Nacl.util.encodeBase64(curvePair.secretKey);
         };
@@ -71,6 +74,44 @@ define([
                     CPNetflux.start(config);
                 });
             });
+            sframeChan.on("Q_FETCH_MY_ANSWERS", function (data, cb) {
+                var keys;
+                var CPNetflux;
+                var network;
+                var answer;
+                var myKeys;
+                nThen(function (w) {
+                    Cryptpad.getFormKeys(w(function (keys) {
+                        myKeys = keys;
+                    }));
+                    Cryptpad.getFormAnswer({channel: data.channel}, w(function (obj) {
+                        if (!obj || obj.error) {
+                            w.abort();
+                            return void cb(obj);
+                        }
+                        answer = obj;
+                    }));
+                }).nThen(function (w) {
+                    Cryptpad.getHistoryRange({
+                        channel: data.channel,
+                        lastKnownHash: answer.hash,
+                        toHash: answer.hash,
+                    }, function (obj) {
+                        if (obj && obj.error) { return void cb(obj); }
+                        var messages = obj.messages;
+                        var ephemeral_priv = answer.curvePrivate;
+                        var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
+                            validateKey: data.validateKey,
+                            ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
+                            my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
+                            their_public: Nacl.util.decodeBase64(data.publicKey)
+                        });
+                        cb(JSON.parse(res.content));
+                    });
+
+                });
+
+            });
             sframeChan.on("Q_FORM_SUBMIT", function (data, cb) {
                 var box = data.mailbox;
                 var myKeys;
@@ -83,6 +124,10 @@ define([
                     var keys = Utils.secret && Utils.secret.keys;
                     myKeys.signingKey = keys.secondarySignKey;
 
+                    var ephemeral_keypair = Nacl.box.keyPair();
+                    var ephemeral_private = Nacl.util.encodeBase64(ephemeral_keypair.secretKey);
+                    myKeys.ephemeral_keypair = ephemeral_keypair;
+
                     var crypto = Utils.Crypto.Mailbox.createEncryptor(myKeys);
                     var text = JSON.stringify(data.results);
                     var ciphertext = crypto.encrypt(text, box.publicKey);
@@ -92,6 +137,11 @@ define([
                         box.channel,
                         ciphertext
                     ], function (err, response) {
+                        Cryptpad.storeFormAnswer({
+                            channel: box.channel,
+                            hash: hash,
+                            curvePrivate: ephemeral_private
+                        });
                         cb({error: err, response: response, hash: hash});
                     });
                 });

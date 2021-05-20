@@ -100,6 +100,7 @@ define([
             cb(keys);
         });
     };
+
     common.getFormKeys = function (cb) {
         postMessage("GET", {
             key: ['curvePrivate'],
@@ -110,6 +111,23 @@ define([
                 curvePublic: Hash.getCurvePublicFromPrivate(obj)
             });
         });
+    };
+    common.getFormAnswer = function (data, cb) {
+        postMessage("GET", {
+            key: ['forms', data.channel],
+        }, cb);
+    };
+    common.storeFormAnswer = function (data) {
+        postMessage("SET", {
+            key: ['forms', data.channel],
+            value: {
+                hash: data.hash,
+                curvePrivate: data.curvePrivate
+            }
+        }, function (obj) {
+            if (obj && obj.error) { console.error(obj.error); }
+        });
+
     };
 
     common.makeNetwork = function (cb) {

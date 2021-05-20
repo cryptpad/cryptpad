@@ -62,6 +62,8 @@ define([
     Messages.form_reset = "Reset";
     Messages.form_sent = "Sent";
 
+    Messages.form_cantFindAnswers = "Unable to retrieve your existing answers for this form.";
+
     // XXX to update our own answers, we need to store the server hash of the message
     // and we'll be able to use getHistoryRange to fetch this message when we come back
 
@@ -134,7 +136,7 @@ define([
                 return {
                     tag: tag,
                     getValue: function () { return $tag.val(); },
-                    //setValue: function (val) { $tag.val(val); }
+                    setValue: function (val) { $tag.val(val); },
                     reset: function () { $tag.val(''); }
                 };
             },
@@ -148,8 +150,10 @@ define([
                 if (!opts) { opts = TYPES.radio.defaultOpts; }
                 var name = Util.uid();
                 var els = opts.values.map(function (data, i) {
-                    return UI.createRadio(name, 'cp-form-'+name+'-'+i,
-                               data, false, { mark: {tabindex:1} });
+                    var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
+                               data, false, { mark: { tabindex:1 } });
+                    $(radio).find('input').data('val', data);
+                    return radio;
                 });
                 var tag = h('div.radio-group', els);
                 return {
@@ -167,8 +171,17 @@ define([
                     edit: function (cb) {
                         var v = opts.values.slice();
                         return editOptions(v, cb);
+                    },
+                    setValue: function (val) {
+                        this.reset();
+                        els.some(function (el) {
+                            var $el = $(el).find('input');
+                            if ($el.data('val') === val) {
+                                $el.prop('checked', true);
+                                return true;
+                            }
+                        });
                     }
-                    //setValue: function (val) {}
                 };
 
             },
@@ -208,7 +221,7 @@ define([
         });
         return h('div.cp-form-send-container', [send, reset]);
     };
-    var updateForm = function (framework, content, editable) {
+    var updateForm = function (framework, content, editable, answers) {
         var $container = $('div.cp-form-creator-content');
 
         var form = content.form;
@@ -224,6 +237,7 @@ define([
 
             var data = model.get(block.opts);
             data.uid = uid;
+            if (answers && answers[uid]) { data.setValue(answers[uid]); }
 
             var q = h('div.cp-form-block-question', block.q || Messages.form_default);
             var edit, editContainer;
@@ -364,16 +378,17 @@ define([
                     content.form = {};
                     framework.localChange();
                 }
-                if (!content.answers || !content.answers.channel || !content.answers.publicKey) {
+                if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                     content.answers = {
                         channel: Hash.createChannelId(),
-                        publicKey: priv.form_public
+                        publicKey: priv.form_public,
+                        validateKey: priv.form_answerValidateKey
                     };
                     framework.localChange();
                 }
             }
 
-            if (!content.answers || !content.answers.channel || !content.answers.publicKey) {
+            if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                 return void UI.errorLoadingScreen(Messages.form_invalid);
             }
             // XXX fetch answers and
@@ -389,7 +404,19 @@ define([
                 });
                 return;
             }
-            updateForm(framework, content, false);
+
+            sframeChan.query("Q_FETCH_MY_ANSWERS", {
+                channel: content.answers.channel,
+                validateKey: content.answers.validateKey,
+                publicKey: content.answers.publicKey
+            }, function (err, obj) {
+                if (obj && obj.error) {
+                    UI.warn(Messages.form_cantFindAnswers);
+                }
+                var answers;
+                if (obj && !obj.error) { answers = obj; }
+                updateForm(framework, content, false, answers);
+            });
 
         });
 
