@@ -133,8 +133,10 @@ define(function() {
     AppConfig.displayCreationScreen = true;
 
     // Prevent anonymous users from storing pads in their drive
+    // NOTE: this is only enforced client-side as the server does not distinguish between users drives and pads
     AppConfig.disableAnonymousStore = false;
     // Prevent anonymous users from creating new pads (they can still access and edit existing ones)
+    // NOTE: this is only enforced client-side and will not prevent malicious clients from storing data
     AppConfig.disableAnonymousPadCreation = false;
 
     // Hide the usage bar in settings and drive
@@ -142,11 +144,6 @@ define(function() {
 
     // Disable feedback for all the users and hide the settings part about feedback
     //AppConfig.disableFeedback = true;
-
-    // Add new options in the share modal (extend an existing tab or add a new tab).
-    // More info about how to use it on the wiki:
-    // https://github.com/xwiki-labs/cryptpad/wiki/Application-config#configcustomizeshareoptions XXX page is a 404
-    //AppConfig.customizeShareOptions = function (hashes, tabs, config) {};
 
     // Add code to be executed on every page before loading the user object. `isLoggedIn` (bool) is
     // indicating if the user is registered or anonymous. Here you can change the way anonymous users
