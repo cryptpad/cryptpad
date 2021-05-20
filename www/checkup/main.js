@@ -20,6 +20,7 @@ define([
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Pages) {
+
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -52,6 +53,13 @@ define([
 
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
+/*
+// XXX display results from this iframe on this page
+    document.body.appendChild(h('iframe', {
+        class: 'sandbox-test',
+        src: trimmedSafe + '/checkup/sandbox/index.html',
+    }));
+*/
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
@@ -117,7 +125,7 @@ define([
 
     var checkAvailability = function (url, cb) {
         $.ajax({
-            url: url,
+            url: url, // XXX bust cache
             data: {},
             complete: function (xhr) {
                 cb(xhr.status === 200);
@@ -158,6 +166,7 @@ define([
         ]));
 
         var to;
+        var obj;
         nThen(function (waitFor) {
             DomReady.onReady(waitFor());
         }).nThen(function (waitFor) {
@@ -165,8 +174,13 @@ define([
                 console.error('TIMEOUT loading iframe on the safe domain');
                 cb(false);
             }, 5000);
-            SFCommonO.initIframe(waitFor);
+            obj = SFCommonO.initIframe(waitFor);
         }).nThen(function () {
+            SFCommonO.start({
+                href: obj.href,
+            });
+        }).nThen(function () {
+            console.error("DONE?");
             // Iframe is loaded
             clearTimeout(to);
             cb(true);
@@ -344,7 +358,7 @@ define([
             //'cross-origin-opener-policy': 'same-origin', // FIXME this is in our nginx config but not server.js
         };
 
-        $.ajax(url, {
+        $.ajax(url, { // XXX bust cache
             complete: function (xhr) {
                 cb(!Object.keys(expect).some(function (k) {
                     var response = xhr.getResponseHeader(k);
@@ -390,7 +404,7 @@ define([
             RESTART_WARNING(),
         ]));
 
-        $.ajax(sheetURL, {
+        $.ajax(sheetURL, { // FIXME bust cache
             complete: function (xhr) {
                 var csp = xhr.getResponseHeader('Content-Security-Policy');
                 if (!/unsafe\-eval/.test(csp)) {
@@ -416,7 +430,7 @@ define([
             "Your browser console may provide more details as to why this resource could not be loaded. ",
         ]));
 
-        $.ajax('/api/broadcast', {
+        $.ajax('/api/broadcast', { // XXX bust cache
             dataType: 'text',
             complete: function (xhr) {
                 cb(xhr.status === 200);
@@ -429,7 +443,7 @@ define([
     };
 
     var checkAPIHeaders = function (url, msg, cb) {
-        $.ajax(url, {
+        $.ajax(url, { // XXX bust cache
             dataType: 'text',
             complete: function (xhr) {
                 var allHeaders = xhr.getAllResponseHeaders();
@@ -481,13 +495,13 @@ define([
     var INCORRECT_HEADER_TEXT = ' was served with duplicated or incorrect headers. Compare your reverse-proxy configuration against the provided example.';
 
     assert(function (cb, msg) {
-        var url = '/api/config';
+        var url = '/api/config'; // XXX bust cache
         msg.innerText = url + INCORRECT_HEADER_TEXT;
         checkAPIHeaders(url, msg, cb);
     });
 
     assert(function (cb, msg) {
-        var url = '/api/broadcast';
+        var url = '/api/broadcast'; // XXX bust cache
         msg.innerText = url + INCORRECT_HEADER_TEXT;
         checkAPIHeaders(url, msg, cb);
     });
