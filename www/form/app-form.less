@@ -1,0 +1,92 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/tools.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
+
+&.cp-app-form {
+    @form_input-width: 400px;
+
+    .framework_main(
+        @bg-color: @colortheme_apps[form]
+    );
+
+    display: flex;
+    flex-flow: column;
+
+    #cp-app-form-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #cp-app-form-container {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+
+        div.cp-form-creator-container {
+            display: flex;
+            flex: 1;
+            max-width: 1300px;
+            div.cp-form-creator-control {
+                padding: 10px;
+                display: flex;
+                flex-flow: column;
+                width: 300px;
+            }
+            div.cp-form-creator-content {
+                padding: 10px;
+                display: flex;
+                flex-flow: column;
+                flex: 1;
+                .cp-form-block {
+                    &:not(:last-child) {
+                        margin-bottom: 20px;
+                    }
+                    .cp-form-input-block {
+                        display: flex;
+                        //width: @form_input-width;
+                        &:not(:focus-within) {
+                            input {
+                                background: transparent;
+                                border: none;
+                                & ~ button:not(:disabled) {
+                                    .cp-form-edit { display: inline; }
+                                    .cp-form-save { display: none; }
+                                }
+                            }
+                        }
+                        input {
+                            flex: 1;
+                            min-width: 100px;
+                        }
+                        button {
+                            .cp-form-edit {
+                                display: none;
+                                margin: 0 !important;
+                            }
+                            .cp-form-save { display: inline; }
+                        }
+                    }
+                }
+                .cp-form-edit-block {
+                    .cp-form-edit-block-input {
+                        display: flex;
+                        width: 400px;
+                        input {
+                            flex: 1;
+                            min-width: 100px;
+                        }
+                        button {
+                            i { margin: 0 !important; }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+}
+
