@@ -289,9 +289,6 @@ define([
         return $div;
     };
 
-    Messages.admin_emailTitle = "Admin contact email"; // XXX
-    Messages.admin_emailHint = "Set the contact email for your instance here"; // XXX
-    Messages.admin_emailButton = "Update";
     create['email'] = function () {
         var key = 'email';
         var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton
@@ -963,26 +960,22 @@ define([
         return $container;
     };
 
-
-    Messages.admin_supportPrivTitle = "Support admin key"; // XXX
-    Messages.admin_supportPrivHint = "Display the private key allowing other admins to access the support. A form to enter this key will be displayed in their admin panel.";
-    Messages.admin_supportPrivButton = "Show key";
     create['support-priv'] = function () {
         if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
 
         var $div = makeBlock('support-priv', true); // Msg.admin_supportPrivHint, .admin_supportPrivTitle, .admin_supportPrivButton
         var $button = $div.find('button').click(function () {
             $button.remove();
-            $div.append(h('pre', APP.privateKey));
+            var $selectable = $(UI.dialog.selectable(APP.privateKey)).css({ 'max-width': '28em' });
+            $div.append($selectable);
         });
         return $div;
     };
-    Messages.admin_supportInitGenerate = "Generate support keys"; // XXX
     create['support-init'] = function () {
         var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
         if (!supportKey) {
             (function () {
-                $div.append(h('p', Messages.admin_supportInitHelp)); // XXX Update text for this key
+                $div.append(h('p', Messages.admin_supportInitHelp));
                 var button = h('button.btn.btn-primary', Messages.admin_supportInitGenerate);
                 var $button = $(button).appendTo($div);
                 $div.append($button);
@@ -1419,7 +1412,7 @@ define([
             var is24h = false;
             var dateFormat = "Y-m-d H:i";
             try {
-                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/); // XXX
             } catch (e) {}
             if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
