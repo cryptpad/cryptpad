@@ -20,6 +20,17 @@
         overflow: hidden;
     }
 
+    &.cp-app-form-results {
+        div.cp-form-creator-content, .cp-app-form-button-results {
+            display: none !important;
+        }
+    }
+    &:not(.cp-app-form-results) {
+        div.cp-form-creator-results, .cp-app-form-button-creator {
+            display: none !important;
+        }
+    }
+
     #cp-app-form-container {
         display: flex;
         flex: 1;
@@ -34,8 +45,13 @@
                 display: flex;
                 flex-flow: column;
                 width: 300px;
+                .cp-form-creator-types {
+                    margin-top: 20px;
+                    display: flex;
+                    flex-flow: column;
+                }
             }
-            div.cp-form-creator-content {
+            div.cp-form-creator-content, div.cp-form-creator-results {
                 padding: 10px;
                 display: flex;
                 flex-flow: column;
@@ -82,6 +98,54 @@
                             i { margin: 0 !important; }
                         }
 
+                    }
+                }
+            }
+        }
+        div.cp-form-creator-results {
+            display: flex;
+            flex-flow: column;
+            position: relative;
+            & > div {
+                background: @cp_forms-bg1;
+                padding: 10px;
+                &:not(:last-child) {
+                    margin-bottom: 20px;
+                }
+            }
+            .cp-form-block-question {
+                margin-bottom: 5px;
+            }
+            .cp-form-block-type {
+                float: right;
+                padding: 5px;
+                margin-top: -10px;
+                margin-right: -10px;
+                i { margin-right: 5px; }
+                background: @cp_forms-bg2;
+            }
+            .cp-form-results-type-text {
+                max-height: 300px;
+                overflow: auto;
+                .cp-form-results-type-text-data {
+                    padding: 5px 10px;
+                    background: @cp_forms-bg2;
+                    &:not(:last-child) { margin-bottom: 1px; }
+                }
+            }
+            .cp-form-results-type-radio {
+                display: table;
+                .cp-form-results-type-radio-data {
+                    display: table-row;
+                    border: 1px solid @cp_forms-border;
+                    & > span {
+                        border: 1px solid @cp_forms-border;
+                        display: table-cell;
+                        padding: 5px 10px;
+                        background: @cp_forms-bg2;
+                        &.cp-value {
+                            min-width: 200px;
+                        }
                     }
                 }
             }

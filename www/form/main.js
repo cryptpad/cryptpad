@@ -30,7 +30,7 @@ define([
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
-                var keys;
+                var myKeys;
                 var CPNetflux;
                 var network;
                 nThen(function (w) {
@@ -40,7 +40,15 @@ define([
                         CPNetflux = _CPNetflux;
                     }));
                     Cryptpad.getAccessKeys(w(function (_keys) {
-                        keys = _keys;
+                        if (!Array.isArray(_keys)) { return; }
+
+                        _keys.some(function (_k) {
+                            if ((!Cryptpad.initialTeam && !_k.id) || Cryptpad.initialTeam === _k.id) {
+                                myKeys = _k;
+                                return true;
+                            }
+                        });
+                        console.error(myKeys);
                     }));
                     Cryptpad.makeNetwork(w(function (err, nw) {
                         network = nw;
@@ -52,24 +60,31 @@ define([
 
                     var crypto = Utils.Crypto.Mailbox.createEncryptor({
                         curvePrivate: privateKey,
-                        curvePublic: publicKey || data.publicKey
+                        curvePublic: publicKey || data.publicKey,
+                        validateKey: data.validateKey
                     });
                     var config = {
                         network: network,
                         channel: data.channel,
                         noChainPad: true,
                         validateKey: keys.secondaryValidateKey,
-                        owners: [], // XXX add pad owner
+                        owners: [myKeys.edPublic], // XXX add pad owner
                         crypto: crypto,
                         // XXX Cache
                     };
+                    var results = {};
                     config.onReady = function () {
-                        cb();
-                        // XXX
+                        cb(results);
                         network.disconnect();
                     };
-                    config.onMessage = function () {
-                        // XXX
+                    config.onMessage = function (msg, peer, vKey, isCp, hash, senderCurve, cfg) {
+                        var parsed = Utils.Util.tryParse(msg);
+                        if (!parsed) { return; }
+                        results[senderCurve] = {
+                            msg: parsed,
+                            hash: hash,
+                            time: cfg.time
+                        };
                     };
                     CPNetflux.start(config);
                 });

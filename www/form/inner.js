@@ -59,21 +59,17 @@ define([
 
     Messages.form_duplicates = "Duplicate entries have been removed";
 
+    Messages.form_submit = "Submit";
+    Messages.form_update = "Update";
     Messages.form_reset = "Reset";
     Messages.form_sent = "Sent";
 
     Messages.form_cantFindAnswers = "Unable to retrieve your existing answers for this form.";
 
-    // XXX to update our own answers, we need to store the server hash of the message
-    // and we'll be able to use getHistoryRange to fetch this message when we come back
+    Messages.form_viewResults = "Go to responses";
+    Messages.form_viewCreator = "Go to form creator";
 
-
-    var makeFormSettings = function (framework) {
-        // XXX
-        // Button to set results as public
-        // Checkbox to allow anonymous answers
-        // Button to clear all answers?
-    };
+    Messages.form_notAnswered = "And <b>{0}</b> empty answers";
 
     var editOptions = function (v, cb) {
         var add = h('button.btn.btn-secondary', [
@@ -128,6 +124,12 @@ define([
         ];
     };
 
+    var getEmpty = function (empty) {
+        if (empty) {
+            return UI.setHTML(h('div.cp-form-results-type-text-empty'), Messages._getKey('form_notAnswered', [empty]));
+        }
+    };
+
     var TYPES = {
         input: {
             get: function () {
@@ -139,6 +141,19 @@ define([
                     setValue: function (val) { $tag.val(val); },
                     reset: function () { $tag.val(''); }
                 };
+            },
+            printResults: function (answers, uid) {
+                var results = [];
+                var empty = 0;
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (!answer || !answer.trim()) { return empty++; }
+                    results.push(h('div.cp-form-results-type-text-data', answer));
+                });
+                results.push(getEmpty(empty));
+
+                return h('div.cp-form-results-type-text', results);
             },
             icon: h('i.fa.fa-font')
         },
@@ -185,12 +200,33 @@ define([
                 };
 
             },
+            printResults: function (answers, uid) {
+                var results = [];
+                var empty = 0;
+                var count = {};
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (!answer || !answer.trim()) { return empty++; }
+                    count[answer] = count[answer] || 0;
+                    count[answer]++;
+                });
+                Object.keys(count).forEach(function (value) {
+                    results.push(h('div.cp-form-results-type-radio-data', [
+                        h('span.cp-value', value),
+                        h('span.cp-count', count[value])
+                    ]));
+                });
+                results.push(getEmpty(empty));
+
+                return h('div.cp-form-results-type-radio', results);
+            },
             icon: h('i.fa.fa-list-ul')
         }
     };
 
-    var makeFormControls = function (framework, content) {
-        var send = h('button.btn.btn-primary', Messages.poll_commit);
+    var makeFormControls = function (framework, content, update) {
+        var send = h('button.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.btn.btn-danger-alt', Messages.form_reset);
         $(reset).click(function () {
             if (!Array.isArray(APP.formBlocks)) { return; }
@@ -211,12 +247,13 @@ define([
                 mailbox: content.answers,
                 results: results
             }, function (err, data) {
-                console.error(data);
+                $send.attr('disabled', 'disabled');
                 if (err || (data && data.error)) {
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
                 UI.alert(Messages.form_sent);
+                $send.text(Messages.form_update);
             });
         });
         return h('div.cp-form-send-container', [send, reset]);
@@ -321,7 +358,30 @@ define([
         });
 
         $container.empty().append(elements);
-        $container.append(makeFormControls(framework, content));
+        $container.append(makeFormControls(framework, content, Boolean(answers)));
+    };
+
+    var renderResults = function (content, answers) {
+        var $container = $('div.cp-form-creator-results').empty();
+        var form = content.form;
+        var elements = Object.keys(form).map(function (uid) {
+            var block = form[uid];
+            var type = block.type;
+            var model = TYPES[type];
+            if (!model || !model.printResults) { return; }
+            var print = model.printResults(answers, uid);
+
+            var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+            return h('div.cp-form-block', [
+                h('div.cp-form-block-type', [
+                    TYPES[type].icon.cloneNode(),
+                    h('span', Messages['form_type_'+type])
+                ]),
+                q,
+                h('div.cp-form-block-content', print),
+            ]);
+        });
+        $container.append(elements);
     };
 
     var andThen = function (framework) {
@@ -333,6 +393,39 @@ define([
 
         var priv = metadataMgr.getPrivateData();
         APP.isEditor = Boolean(priv.form_public);
+        var $body = $('body');
+
+        var makeFormSettings = function () {
+            var viewResults = h('button.btn.btn-primary', [
+                h('span.cp-app-form-button-results', Messages.form_viewResults),
+                h('span.cp-app-form-button-creator', Messages.form_viewCreator),
+            ]);
+            var $v = $(viewResults).click(function () {
+                if ($body.hasClass('cp-app-form-results')) {
+                    $body.removeClass('cp-app-form-results');
+                    return;
+                }
+                $v.attr('disabled', 'disabled');
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", {
+                    channel: content.answers.channel,
+                    validateKey: content.answers.validateKey,
+                    publicKey: content.answers.publicKey
+                }, function (err, answers) {
+                    $v.removeAttr('disabled');
+                    $body.addClass('cp-app-form-results');
+                    renderResults(content, answers);
+                });
+
+            });
+            return [
+                viewResults
+            ];
+
+            // XXX
+            // Button to set results as public
+            // Checkbox to allow anonymous answers
+            // Button to clear all answers?
+        };
 
         var makeFormCreator = function () {
 
@@ -356,13 +449,21 @@ define([
                     });
                     return btn;
                 });
-                controlContainer = h('div.cp-form-creator-control', controls);
+
+                var settings = makeFormSettings();
+
+                controlContainer = h('div.cp-form-creator-control', [
+                    h('div.cp-form-creator-settings', settings),
+                    h('div.cp-form-creator-types', controls)
+                ]);
             }
 
             var contentContainer = h('div.cp-form-creator-content');
+            var resultsContainer = h('div.cp-form-creator-results');
             var div = h('div.cp-form-creator-container', [
                 controlContainer,
                 contentContainer,
+                resultsContainer
             ]);
             return div;
         };
@@ -397,8 +498,10 @@ define([
             if (APP.isEditor) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
+                    validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey
-                }, function () {
+                }, function (err, obj) {
+                    if (obj) { APP.answers = obj; }
                     updateForm(framework, content, true);
 
                 });

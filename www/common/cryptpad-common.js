@@ -69,7 +69,7 @@ define([
         }, cb);
     };
 
-    common.getAccessKeys = function (cb) {
+    common.getAccessKeys = function (cb, opts) {
         var keys = [];
         Nthen(function (waitFor) {
             // Push account keys
@@ -84,6 +84,7 @@ define([
                     });
                 } catch (e) { console.error(e); }
             }));
+
             // Push teams keys
             postMessage("GET", {
                 key: ['teams'],
@@ -92,6 +93,7 @@ define([
                 Object.keys(obj || {}).forEach(function (id) {
                     var t = obj[id];
                     var _keys = t.keys.drive || {};
+                    _keys.id = id;
                     if (!_keys.edPrivate) { return; }
                     keys.push(t.keys.drive);
                 });
