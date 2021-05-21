@@ -1230,5 +1230,11 @@
     "mediatag_defaultImageName": "image",
     "register_registrationIsClosed": "Registration is closed.",
     "oo_conversionSupport": "Your browser cannot handle conversion to and from Microsoft Office formats. We suggest using a recent version of Firefox or Chrome.",
-    "oo_importBin": "Click OK to import CryptPad's internal .bin format."
+    "oo_importBin": "Click OK to import CryptPad's internal .bin format.",
+    "admin_emailTitle": "Admin contact email",
+    "admin_emailHint": "Set the contact email for your instance here",
+    "admin_supportPrivTitle": "Support mailbox private key",
+    "admin_supportInitGenerate": "Generate support keys",
+    "admin_supportPrivHint": "Display the private key that other admins will need to view support tickets. A form to enter this key will be displayed on their admin panel.",
+    "admin_supportPrivButton": "Show key"
 }
