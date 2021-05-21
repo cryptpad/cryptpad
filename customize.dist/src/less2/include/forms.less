@@ -71,6 +71,12 @@
 
     div.cp-button-confirm {
         display: inline-block;
+        &.new {
+            vertical-align: top;
+            button {
+                height: 35px;
+            }
+        }
         button {
             margin: 0 !important;
         }
@@ -85,7 +91,7 @@
             }
         }
     }
-    button.cp-button-confirm-placeholder {
+    button.cp-button-confirm-placeholder:not(.new) {
         margin-bottom: 3px !important;
     }
 

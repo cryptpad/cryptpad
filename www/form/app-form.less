@@ -11,6 +11,8 @@
 
     display: flex;
     flex-flow: column;
+    font: @colortheme_app-font;
+    color: @cryptpad_text_col;
 
     #cp-app-form-editor {
         flex: 1;
@@ -56,17 +58,26 @@
                 display: flex;
                 flex-flow: column;
                 flex: 1;
+                overflow: auto;
+
                 .cp-form-block {
+                    .tools_unselectable();
+                    background: @cp_form-bg1;
+                    padding: 10px;
                     &:not(:last-child) {
                         margin-bottom: 20px;
+                    }
+                    .cp-form-block-question {
+                        margin-bottom: 5px;
                     }
                     .cp-form-input-block {
                         display: flex;
                         //width: @form_input-width;
-                        &:not(:focus-within) {
+                        &:not(.editing) {
                             input {
                                 background: transparent;
                                 border: none;
+                                padding: 0 !important;
                                 & ~ button:not(:disabled) {
                                     .cp-form-edit { display: inline; }
                                     .cp-form-save { display: none; }
@@ -76,15 +87,24 @@
                         input {
                             flex: 1;
                             min-width: 100px;
+                            padding: 0 10px !important;
+                            height: auto;
                         }
                         button {
                             .cp-form-edit {
                                 display: none;
-                                margin: 0 !important;
                             }
                             .cp-form-save { display: inline; }
                         }
+                        .cp-form-block-drag {
+                            font-size: 22px;
+                            width: 20px;
+                            margin-left: 5px;
+                            text-align: center;
+                            line-height: 31px;
+                        }
                     }
+                    &.editable { cursor: grab; }
                 }
                 .cp-form-edit-block {
                     .cp-form-edit-block-input {
@@ -107,7 +127,7 @@
             flex-flow: column;
             position: relative;
             & > div {
-                background: @cp_forms-bg1;
+                background: @cp_form-bg1;
                 padding: 10px;
                 &:not(:last-child) {
                     margin-bottom: 20px;
@@ -122,14 +142,14 @@
                 margin-top: -10px;
                 margin-right: -10px;
                 i { margin-right: 5px; }
-                background: @cp_forms-bg2;
+                background: @cp_form-bg2;
             }
             .cp-form-results-type-text {
                 max-height: 300px;
                 overflow: auto;
                 .cp-form-results-type-text-data {
                     padding: 5px 10px;
-                    background: @cp_forms-bg2;
+                    background: @cp_form-bg2;
                     &:not(:last-child) { margin-bottom: 1px; }
                 }
             }
@@ -137,18 +157,27 @@
                 display: table;
                 .cp-form-results-type-radio-data {
                     display: table-row;
-                    border: 1px solid @cp_forms-border;
+                    border: 1px solid @cp_form-border;
                     & > span {
-                        border: 1px solid @cp_forms-border;
+                        border: 1px solid @cp_form-border;
                         display: table-cell;
                         padding: 5px 10px;
-                        background: @cp_forms-bg2;
+                        background: @cp_form-bg2;
                         &.cp-value {
                             min-width: 200px;
                         }
                     }
                 }
             }
+        }
+    }
+
+    .cp-form-type-radio {
+        display: flex;
+        flex-flow: column;
+        align-items: baseline;
+        .cp-radio {
+            display: inline-flex;
         }
     }
 

@@ -20,6 +20,8 @@ define([
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
+    '/bower_components/sortablejs/Sortable.min.js',
+
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
@@ -40,7 +42,8 @@ define([
     h,
     Messages,
     AppConfig,
-    Share, Access, Properties
+    Share, Access, Properties,
+    Sortable
     )
 {
     var SaveAs = window.saveAs;
@@ -50,6 +53,7 @@ define([
     Messages.button_newform = "New Form"; // XXX
     Messages.form_invalid = "Invalid form";
     Messages.form_editBlock = "Edit options";
+    Messages.form_editQuestion = "Edit question";
 
     Messages.form_newOption = "New option";
 
@@ -63,6 +67,7 @@ define([
     Messages.form_update = "Update";
     Messages.form_reset = "Reset";
     Messages.form_sent = "Sent";
+    Messages.form_delete = "Delete block";
 
     Messages.form_cantFindAnswers = "Unable to retrieve your existing answers for this form.";
 
@@ -170,7 +175,7 @@ define([
                     $(radio).find('input').data('val', data);
                     return radio;
                 });
-                var tag = h('div.radio-group', els);
+                var tag = h('div.radio-group.cp-form-type-radio', els);
                 return {
                     tag: tag,
                     getValue: function () {
@@ -266,7 +271,7 @@ define([
         APP.formBlocks = [];
 
         // XXX order array later
-        var elements = Object.keys(form).map(function (uid) {
+        var elements = content.order.map(function (uid) {
             var block = form[uid];
             var type = block.type;
             var model = TYPES[type];
@@ -277,7 +282,7 @@ define([
             if (answers && answers[uid]) { data.setValue(answers[uid]); }
 
             var q = h('div.cp-form-block-question', block.q || Messages.form_default);
-            var edit, editContainer;
+            var editButtons, editContainer;
 
             APP.formBlocks.push(data);
 
@@ -288,32 +293,64 @@ define([
                     value: block.q || Messages.form_default
                 });
                 var $inputQ = $(inputQ);
-                var saveQ = h('button.btn.btn-primary', [
+                var saveQ = h('button.btn.btn-primary.small', [
                     h('i.fa.fa-pencil.cp-form-edit'),
+                    h('span.cp-form-edit', Messages.form_editQuestion),
+                    h('i.fa.fa-floppy-o.cp-form-save'),
                     h('span.cp-form-save', Messages.settings_save)
                 ]);
+                var dragHandle = h('i.fa.fa-arrows-v.cp-form-block-drag');
+
                 var $saveQ = $(saveQ).click(function () {
+                    if (!$(q).hasClass('editing')) {
+                        $(q).addClass('editing');
+                        $inputQ.focus();
+                        return;
+                    }
                     var v = $inputQ.val();
-                    if (!v || !v.trim() || v === block.q) { return; }
+                    if (!v || !v.trim()) { return void UI.warn(Messages.error); }
                     block.q = v.trim();
                     framework.localChange();
                     $saveQ.attr('disabled', 'disabled');
                     framework._.cpNfInner.chainpad.onSettle(function () {
+                        $(q).removeClass('editing');
                         $saveQ.removeAttr('disabled');
-                        $saveQ.blur();
+                        $inputQ.blur();
                         UI.log(Messages.saved);
                     });
                 });
-                var onBlur = function (e) {
+                var onCancelQ = function (e) {
                     if (e && e.relatedTarget && e.relatedTarget === saveQ) { return; }
-                    $inputQ.val(block.q);
+                    $inputQ.val(block.q || Messages.form_default);
+                    if (!e) { $inputQ.blur(); }
+                    $(q).removeClass('editing');
                 };
                 $inputQ.keydown(function (e) {
                     if (e.which === 13) { return void $saveQ.click(); }
-                    if (e.which === 27) { return void $inputQ.blur(); }
+                    if (e.which === 27) { return void onCancelQ(); }
                 });
-                $inputQ.blur(onBlur);
-                q = h('div.cp-form-input-block', [inputQ, saveQ]);
+                $inputQ.focus(function () {
+                    $(q).addClass('editing');
+                });
+                $inputQ.blur(onCancelQ);
+                q = h('div.cp-form-input-block', [inputQ, saveQ, dragHandle]);
+
+                // Delete question
+                var edit;
+                var del = h('button.btn.btn-danger', [
+                    h('i.fa.fa-trash-o'),
+                    h('span', Messages.form_delete)
+                ]);
+                UI.confirmButton(del, {
+                    classes: 'btn-danger',
+                    new: true
+                }, function () {
+                    delete content.form[uid];
+                    var idx = content.order.indexOf(uid);
+                    content.order.splice(idx, 1);
+                    $('.cp-form-block[data-id="'+uid+'"]').remove();
+                    framework.localChange();
+                });
 
                 // Values
                 if (data.edit) {
@@ -325,7 +362,7 @@ define([
                     var onSave = function (newOpts) {
                         if (!newOpts) { // Cancel edit
                             $(editContainer).empty();
-                            $edit.show();
+                            $(editButtons).show();
                             $(data.tag).show();
                             return;
                         }
@@ -334,37 +371,62 @@ define([
                         framework.localChange();
                         var $oldTag = $(data.tag);
                         framework._.cpNfInner.chainpad.onSettle(function () {
-                            $edit.show();
+                            $(editButtons).show();
                             UI.log(Messages.saved);
                             data = model.get(newOpts);
                             $oldTag.before(data.tag).remove();
                         });
                     };
-                    var $edit = $(edit).click(function () {
+                    $(edit).click(function () {
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave));
-                        $edit.hide();
+                        $(editButtons).hide();
                     });
                 }
+
+                editButtons = h('div.cp-form-edit-buttons-container', [
+                    edit, del
+                ]);
             }
-            return h('div.cp-form-block', [
+            var editableCls = editable ? ".editable" : "";
+            return h('div.cp-form-block'+editableCls, {
+                'data-id':uid
+            }, [
                 q,
                 h('div.cp-form-block-content', [
                     data.tag,
-                    edit
+                    editButtons
                 ]),
                 editContainer
             ]);
         });
 
         $container.empty().append(elements);
+
+        if (editable) {
+            Sortable.create($container[0], {
+                direction: "vertical",
+                filter: "input, button",
+                preventOnFilter: false,
+                store: {
+                    set: function (s) {
+                        content.order = s.toArray();
+                        framework.localChange();
+                    }
+                }
+            });
+
+            return;
+        }
+
+        // In view mode, add "Submit" and "reset" buttons
         $container.append(makeFormControls(framework, content, Boolean(answers)));
     };
 
     var renderResults = function (content, answers) {
         var $container = $('div.cp-form-creator-results').empty();
         var form = content.form;
-        var elements = Object.keys(form).map(function (uid) {
+        var elements = content.order.map(function (uid) {
             var block = form[uid];
             var type = block.type;
             var model = TYPES[type];
@@ -427,6 +489,26 @@ define([
             // Button to clear all answers?
         };
 
+        var checkIntegrity = function (getter) {
+            var changed = false;
+            content.order.forEach(function (uid) {
+                if (!content.form[uid]) {
+                    var idx = content.order.indexOf(uid);
+                    content.order.splice(idx, 1);
+                    changed = true;
+                }
+            });
+            Object.keys(content.form).forEach(function (uid) {
+                var idx = content.order.indexOf(uid);
+                if (idx === -1) {
+                    changed = true;
+                    content.order.push(uid);
+                }
+            });
+
+            if (!getter && changed) { framework.localChange(); }
+        };
+
         var makeFormCreator = function () {
 
             var controlContainer;
@@ -444,6 +526,7 @@ define([
                             //opts: opts
                             type: type,
                         };
+                        content.order.push(uid);
                         framework.localChange();
                         updateForm(framework, content, true);
                     });
@@ -479,6 +562,10 @@ define([
                     content.form = {};
                     framework.localChange();
                 }
+                if (!content.order) {
+                    content.order = [];
+                    framework.localChange();
+                }
                 if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                     content.answers = {
                         channel: Hash.createChannelId(),
@@ -502,6 +589,7 @@ define([
                     publicKey: content.answers.publicKey
                 }, function (err, obj) {
                     if (obj) { APP.answers = obj; }
+                    checkIntegrity(false);
                     updateForm(framework, content, true);
 
                 });
@@ -518,6 +606,7 @@ define([
                 }
                 var answers;
                 if (obj && !obj.error) { answers = obj; }
+                checkIntegrity(false);
                 updateForm(framework, content, false, answers);
             });
 
@@ -530,6 +619,7 @@ define([
         });
 
         framework.setContentGetter(function () {
+            checkIntegrity(true);
             return content;
         });
 
