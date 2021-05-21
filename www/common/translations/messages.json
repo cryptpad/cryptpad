@@ -1236,5 +1236,6 @@
     "admin_supportPrivTitle": "Support mailbox private key",
     "admin_supportInitGenerate": "Generate support keys",
     "admin_supportPrivHint": "Display the private key that other admins will need to view support tickets. A form to enter this key will be displayed on their admin panel.",
-    "admin_supportPrivButton": "Show key"
+    "admin_supportPrivButton": "Show key",
+    "admin_emailButton": "Update"
 }
