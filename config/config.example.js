@@ -147,11 +147,6 @@ module.exports = {
      */
     //removeDonateButton: false,
 
-    /*  CryptPad will display a point of contact for your instance on its contact page
-     *  (/contact.html) if you provide it below.
-     */
-    adminEmail: 'i.did.not.read.my.config@cryptpad.fr',
-
     /*
      *  By default, CryptPad contacts one of our servers once a day.
      *  This check-in will also send some very basic information about your instance including its

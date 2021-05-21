@@ -511,8 +511,7 @@ define([
             'This instance does not provide a valid ',
             h('code', 'adminEmail'),
             ' which can make it difficult to contact its adminstrator to report vulnerabilities or abusive content.',
-            ' This can be configured in ', CONFIG_PATH(), '. ',
-            RESTART_WARNING(),
+            " This can be configured on your instance's admin panel. Use the provided 'Flush cache' button for this change to take effect for all users."
         ]));
         cb(email);
     });
