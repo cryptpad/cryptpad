@@ -237,7 +237,15 @@ define([
 
     var getSharedFolderData = function (Env, id) {
         if (!Env.folders[id]) { return {}; }
-        var obj = Util.clone(Env.folders[id].proxy.metadata || {});
+        var proxy = Env.folders[id].proxy;
+
+        // Clean deprecated values
+        if (Object.keys(proxy.metadata || {}).length > 1) {
+            proxy.metadata = { title: proxy.metadata.title; }
+        }
+
+        var obj = Util.clone(proxy.metadata || {});
+
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
             if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") { // XXX "deleted folder" for restricted shared folders when viewer in a team
                 continue;
