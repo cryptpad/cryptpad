@@ -27,7 +27,7 @@ define([
     'less!/form/app-form.less',
 ], function (
     $,
-    JSONSortify,
+    Sortify,
     Crypto,
     Framework,
     Toolbar,
@@ -81,15 +81,29 @@ define([
     Messages.form_isPublic = "Results are public";
     Messages.form_isPrivate = "Results are private";
 
-    var editOptions = function (v, cb) {
+    var editOptions = function (v, setCursorGetter, cb, tmp) {
         var add = h('button.btn.btn-secondary', [
             h('i.fa.fa-plus'),
             h('span', Messages.tag_add)
         ]);
 
+        var cursor;
+        if (tmp && tmp.content && Sortify(v) === Sortify(tmp.old)) {
+            v = tmp.content.values;
+            cursor = tmp.cursor;
+        }
+
         // Show existing options
         var getOption = function (val) {
             var input = h('input', {value:val});
+
+            // if this element was active before the remote change, restore cursor
+            if (cursor && cursor.el === val) {
+                input.selectionStart = cursor.start || 0;
+                input.selectionEnd = cursor.end || 0;
+                setTimeout(function () { input.focus(); });
+            }
+
             var del = h('button.btn.btn-danger', h('i.fa.fa-times'));
             var el = h('div.cp-form-edit-block-input', [ input, del ]);
             $(del).click(function () { $(el).remove(); });
@@ -107,6 +121,26 @@ define([
         // Cancel changes
         var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
         $(cancelBlock).click(function () { cb(); });
+
+        // Set cursor getter (to handle remote changes to the form)
+        setCursorGetter(function () {
+            var values = [];
+            var active = document.activeElement;
+            var cursor = {};
+            $(container).find('input').each(function (i, el) {
+                if (el === active) {
+                    cursor.el= $(el).val();
+                    cursor.start = el.selectionStart;
+                    cursor.end = el.selectionEnd;
+                }
+                values.push($(el).val());
+            });
+            return {
+                old: v,
+                content: {values: values},
+                cursor: cursor
+            };
+        });
 
         // Save changes
         var saveBlock = h('button.btn.btn-primary', [
@@ -181,6 +215,8 @@ define([
                     return radio;
                 });
                 var tag = h('div.radio-group.cp-form-type-radio', els);
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
                     getValue: function () {
@@ -193,10 +229,11 @@ define([
                         return res;
                     },
                     reset: function () { $(tag).find('input').removeAttr('checked'); },
-                    edit: function (cb) {
+                    edit: function (cb, tmp) {
                         var v = opts.values.slice();
-                        return editOptions(v, cb);
+                        return editOptions(v, setCursorGetter, cb, tmp);
                     },
+                    getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
                         this.reset();
                         els.some(function (el) {
@@ -258,6 +295,14 @@ define([
         $container.append(elements);
     };
 
+    var getFormResults = function () {
+        if (!Array.isArray(APP.formBlocks)) { return; }
+        var results = {};
+        APP.formBlocks.forEach(function (data) {
+            results[data.uid] = data.getValue();
+        });
+        return results;
+    };
     var makeFormControls = function (framework, content, update) {
         var send = h('button.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.btn.btn-danger-alt', Messages.form_reset);
@@ -269,12 +314,8 @@ define([
         });
         var $send = $(send).click(function () {
             $send.attr('disabled', 'disabled');
-            if (!Array.isArray(APP.formBlocks)) { return; }
-            var results = {};
-            APP.formBlocks.forEach(function (data) {
-                results[data.uid] = data.getValue();
-            });
-
+            var results = getFormResults();
+            if (!results) { return; }
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query('Q_FORM_SUBMIT', {
                 mailbox: content.answers,
@@ -306,8 +347,9 @@ define([
         }
         return h('div.cp-form-send-container', [send, reset, viewResults]);
     };
-    var updateForm = function (framework, content, editable, answers) {
+    var updateForm = function (framework, content, editable, answers, temp) {
         var $container = $('div.cp-form-creator-content');
+        if (!$container.length) { return; } // Not ready
 
         var form = content.form;
 
@@ -403,6 +445,7 @@ define([
                     ]);
                     editContainer = h('div');
                     var onSave = function (newOpts) {
+                        data.editing = false;
                         if (!newOpts) { // Cancel edit
                             $(editContainer).empty();
                             $(editButtons).show();
@@ -420,11 +463,22 @@ define([
                             $oldTag.before(data.tag).remove();
                         });
                     };
-                    $(edit).click(function () {
+                    var onEdit = function (tmp) {
+                        data.editing = true;
                         $(data.tag).hide();
-                        $(editContainer).append(data.edit(onSave));
+                        $(editContainer).append(data.edit(onSave, tmp));
                         $(editButtons).hide();
+                    };
+                    $(edit).click(function () {
+                        onEdit();
                     });
+
+                    // If we were editing this field, recover our unsaved changes
+                    if (temp && temp[uid]) {
+                        setTimeout(function () {
+                            onEdit(temp[uid]);
+                        });
+                    }
                 }
 
                 editButtons = h('div.cp-form-edit-buttons-container', [
@@ -458,12 +512,23 @@ define([
                     }
                 }
             });
-
             return;
         }
 
         // In view mode, add "Submit" and "reset" buttons
         $container.append(makeFormControls(framework, content, Boolean(answers)));
+    };
+
+    var getTempFields = function () {
+        if (!Array.isArray(APP.formBlocks)) { return; }
+        var temp = {};
+        APP.formBlocks.forEach(function (data) {
+            if (data.editing) {
+                var cursor = data.getCursor && data.getCursor();
+                temp[data.uid] = cursor;
+            }
+        });
+        return temp;
     };
 
     var andThen = function (framework) {
@@ -657,7 +722,10 @@ define([
         framework.onContentUpdate(function (newContent) {
             console.log(newContent);
             content = newContent;
-            updateForm(framework, content, APP.isEditor);
+            var answers, temp;
+            if (!APP.isEditor) { answers = getFormResults(); }
+            else { temp = getTempFields(); }
+            updateForm(framework, content, APP.isEditor, answers, temp);
         });
 
         framework.setContentGetter(function () {
