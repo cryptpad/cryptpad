@@ -76,6 +76,11 @@ define([
 
     Messages.form_notAnswered = "And <b>{0}</b> empty answers";
 
+    Messages.form_makePublic = "Make public";
+    Messages.form_makePublicWarning = "Are you sure you want to make the results of this form public? This can't be undone.";
+    Messages.form_isPublic = "Results are public";
+    Messages.form_isPrivate = "Results are private";
+
     var editOptions = function (v, cb) {
         var add = h('button.btn.btn-secondary', [
             h('i.fa.fa-plus'),
@@ -230,6 +235,29 @@ define([
         }
     };
 
+    var renderResults = function (content, answers) {
+        var $container = $('div.cp-form-creator-results').empty();
+        var form = content.form;
+        var elements = content.order.map(function (uid) {
+            var block = form[uid];
+            var type = block.type;
+            var model = TYPES[type];
+            if (!model || !model.printResults) { return; }
+            var print = model.printResults(answers, uid);
+
+            var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+            return h('div.cp-form-block', [
+                h('div.cp-form-block-type', [
+                    TYPES[type].icon.cloneNode(),
+                    h('span', Messages['form_type_'+type])
+                ]),
+                q,
+                h('div.cp-form-block-content', print),
+            ]);
+        });
+        $container.append(elements);
+    };
+
     var makeFormControls = function (framework, content, update) {
         var send = h('button.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.btn.btn-danger-alt', Messages.form_reset);
@@ -261,7 +289,22 @@ define([
                 $send.text(Messages.form_update);
             });
         });
-        return h('div.cp-form-send-container', [send, reset]);
+
+        if (content.answers.privateKey) {
+            var viewResults = h('button.btn.btn-primary', [
+                h('span.cp-app-form-button-results', Messages.form_viewResults),
+            ]);
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            var $v = $(viewResults).click(function () {
+                $v.attr('disabled', 'disabled');
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, answers) {
+                    $v.removeAttr('disabled');
+                    $('body').addClass('cp-app-form-results');
+                    renderResults(content, answers);
+                });
+            });
+        }
+        return h('div.cp-form-send-container', [send, reset, viewResults]);
     };
     var updateForm = function (framework, content, editable, answers) {
         var $container = $('div.cp-form-creator-content');
@@ -423,29 +466,6 @@ define([
         $container.append(makeFormControls(framework, content, Boolean(answers)));
     };
 
-    var renderResults = function (content, answers) {
-        var $container = $('div.cp-form-creator-results').empty();
-        var form = content.form;
-        var elements = content.order.map(function (uid) {
-            var block = form[uid];
-            var type = block.type;
-            var model = TYPES[type];
-            if (!model || !model.printResults) { return; }
-            var print = model.printResults(answers, uid);
-
-            var q = h('div.cp-form-block-question', block.q || Messages.form_default);
-            return h('div.cp-form-block', [
-                h('div.cp-form-block-type', [
-                    TYPES[type].icon.cloneNode(),
-                    h('span', Messages['form_type_'+type])
-                ]),
-                q,
-                h('div.cp-form-block-content', print),
-            ]);
-        });
-        $container.append(elements);
-    };
-
     var andThen = function (framework) {
         framework.start();
         var content = {};
@@ -458,6 +478,27 @@ define([
         var $body = $('body');
 
         var makeFormSettings = function () {
+            var makePublic = h('button.btn.btn-primary', Messages.form_makePublic);
+            if (content.answers.privateKey) { makePublic = undefined; }
+            var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
+            var resultsType = h('div.cp-form-results-type-container', [
+                h('span.cp-form-results-type', publicText),
+                makePublic
+            ]);
+            var $makePublic = $(makePublic).click(function () {
+                UI.confirm(Messages.form_makePublicWarning, function (yes) {
+                    if (!yes) { return; }
+                    content.answers.privateKey = priv.form_private;
+                    framework.localChange();
+                    framework._.cpNfInner.chainpad.onSettle(function () {
+                        UI.log(Messages.saved);
+                        $makePublic.remove();
+                        $(resultsType).find('.cp-form-results-type').text(Messages.form_isPublic);
+                    });
+                });
+            });
+
+
             var viewResults = h('button.btn.btn-primary', [
                 h('span.cp-app-form-button-results', Messages.form_viewResults),
                 h('span.cp-app-form-button-creator', Messages.form_viewCreator),
@@ -480,7 +521,8 @@ define([
 
             });
             return [
-                viewResults
+                resultsType,
+                viewResults,
             ];
 
             // XXX
@@ -551,12 +593,12 @@ define([
             return div;
         };
 
-        var $container = $('#cp-app-form-container');
-        $container.append(makeFormCreator());
-        if (!APP.isEditor) { makeFormControls(); }
-
         framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
+
+            var $container = $('#cp-app-form-container');
+            $container.append(makeFormCreator());
+
             if (APP.isEditor) {
                 if (!content.form) {
                     content.form = {};

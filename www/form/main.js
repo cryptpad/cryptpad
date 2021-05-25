@@ -26,7 +26,7 @@ define([
             meta.form_answerValidateKey = validateKey;
 
             publicKey = meta.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
-            privateKey = Nacl.util.encodeBase64(curvePair.secretKey);
+            privateKey = meta.form_private = Nacl.util.encodeBase64(curvePair.secretKey);
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
@@ -59,7 +59,7 @@ define([
                     var keys = Utils.secret && Utils.secret.keys;
 
                     var crypto = Utils.Crypto.Mailbox.createEncryptor({
-                        curvePrivate: privateKey,
+                        curvePrivate: privateKey || data.privateKey,
                         curvePublic: publicKey || data.publicKey,
                         validateKey: data.validateKey
                     });
