@@ -215,6 +215,17 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         });
         return k ? Crypto.b64AddSlashes(k) : '';
     };
+    var getAuditorKey = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (/^auditor=/.test(data)) {
+                k = data.slice(8);
+                return true;
+            }
+        });
+        return k ? Crypto.b64AddSlashes(k) : '';
+    };
     var getOwnerKey = function (hashArr) {
         var k;
         // Check if we have a ownerKey for this pad
@@ -237,6 +248,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             parsed.present = options.indexOf('present') !== -1;
             parsed.embed = options.indexOf('embed') !== -1;
             parsed.versionHash = getVersionHash(options);
+            parsed.auditorKey = getAuditorKey(options);
             parsed.newPadOpts = getNewPadOpts(options);
             parsed.loginOpts = getLoginOpts(options);
             parsed.ownerKey = getOwnerKey(options);
@@ -278,6 +290,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                     present: parsed.present,
                     ownerKey: parsed.ownerKey,
                     versionHash: parsed.versionHash,
+                    auditorKey: parsed.auditorKey,
                     newPadOpts: parsed.newPadOpts,
                     loginOpts: parsed.loginOpts,
                     password: parsed.password
@@ -303,6 +316,10 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 var versionHash = typeof(opts.versionHash) !== "undefined" ? opts.versionHash : parsed.versionHash;
                 if (versionHash) {
                     hash += 'hash=' + Crypto.b64RemoveSlashes(versionHash) + '/';
+                }
+                var auditorKey = typeof(opts.auditorKey) !== "undefined" ? opts.auditorKey : parsed.auditorKey;
+                if (auditorKey) {
+                    hash += 'auditor=' + Crypto.b64RemoveSlashes(auditorKey) + '/';
                 }
                 if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
                 if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }

@@ -58,6 +58,7 @@ define([
                     hashes: data.hashes || priv.hashes,
                     common: common,
                     title: data.title,
+                    auditorHash: data.auditorHash,
                     versionHash: data.versionHash,
                     friends: friends,
                     onClose: function () {

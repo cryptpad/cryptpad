@@ -689,6 +689,20 @@ define([
             // XXX fetch answers and
             //  * viewers ==> check if you've already answered and show form (new or edit)
             //  * editors ==> show schema and warn users if existing questions already have answers
+
+            if (priv.form_auditorKey) {
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", {
+                    channel: content.answers.channel,
+                    validateKey: content.answers.validateKey,
+                    publicKey: content.answers.publicKey,
+                    privateKey: priv.form_auditorKey
+                }, function (err, obj) {
+                    $body.addClass('cp-app-form-results');
+                    renderResults(content, obj);
+                });
+                return;
+            }
+
             if (APP.isEditor) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,

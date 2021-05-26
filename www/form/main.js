@@ -19,6 +19,13 @@ define([
         var privateKey, publicKey;
         var addData = function (meta, CryptPad, user, Utils) {
             var keys = Utils.secret && Utils.secret.keys;
+
+            var parsed = Utils.Hash.parseTypeHash('pad', hash.slice(1));
+            if (parsed.auditorKey) {
+                meta.form_auditorKey = parsed.auditorKey;
+                meta.form_auditorHash = hash;
+            }
+
             var secondary = keys && keys.secondaryKey;
             if (!secondary) { return; }
             var curvePair = Nacl.box.keyPair.fromSecretKey(Nacl.util.decodeUTF8(secondary).slice(0,32));
@@ -27,10 +34,19 @@ define([
 
             publicKey = meta.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
             privateKey = meta.form_private = Nacl.util.encodeBase64(curvePair.secretKey);
+
+            var auditorHash = Utils.Hash.getViewHashFromKeys({
+                version: 1,
+                channel: Utils.secret.channel,
+                keys: { viewKeyStr: Nacl.util.encodeBase64(keys.cryptKey) }
+            });
+            var parsed = Utils.Hash.parseTypeHash('pad', auditorHash);
+            meta.form_auditorHash = parsed.getHash({auditorKey: privateKey});
+
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
-                var myKeys;
+                var myKeys = {};
                 var CPNetflux;
                 var network;
                 nThen(function (w) {
@@ -48,7 +64,6 @@ define([
                                 return true;
                             }
                         });
-                        console.error(myKeys);
                     }));
                     Cryptpad.makeNetwork(w(function (err, nw) {
                         network = nw;
