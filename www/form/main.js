@@ -17,6 +17,10 @@ define([
         hash = obj.hash;
     }).nThen(function (/*waitFor*/) {
         var privateKey, publicKey;
+        var channels = {};
+        var getPropChannels = function () {
+            return channels;
+        };
         var addData = function (meta, CryptPad, user, Utils) {
             var keys = Utils.secret && Utils.secret.keys;
 
@@ -45,6 +49,17 @@ define([
 
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
+            sframeChan.on('EV_FORM_PIN', function (data) {
+                channels.answersChannel = data.channel;
+                Cryptpad.getPadAttribute('answersChannel', function (err, res) {
+                    // If already stored, don't pin it again
+                    if (res && res === data.channel) { return; }
+                    Cryptpad.pinPads([data.channel], function () {
+                        Cryptpad.setPadAttribute('answersChannel', data.channel, function () {});
+                    });
+                });
+
+            });
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
                 var myKeys = {};
                 var CPNetflux;
@@ -83,7 +98,7 @@ define([
                         channel: data.channel,
                         noChainPad: true,
                         validateKey: keys.secondaryValidateKey,
-                        owners: [myKeys.edPublic], // XXX add pad owner
+                        owners: [myKeys.edPublic],
                         crypto: crypto,
                         // XXX Cache
                     };
@@ -162,7 +177,7 @@ define([
                     var text = JSON.stringify(data.results);
                     var ciphertext = crypto.encrypt(text, box.publicKey);
 
-                    var hash = ciphertext.slice(0,64); // XXX use this to recover our previous answers
+                    var hash = ciphertext.slice(0,64);
                     Cryptpad.anonRpcMsg("WRITE_PRIVATE_MESSAGE", [
                         box.channel,
                         ciphertext
@@ -190,7 +205,8 @@ define([
             hash: hash,
             href: href,
             useCreationScreen: true,
-            messaging: true
+            messaging: true,
+            getPropChannels: getPropChannels
         });
     });
 });

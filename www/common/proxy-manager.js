@@ -810,6 +810,7 @@ define([
             _findChannels(Env, toUnpin).forEach(function (id) {
                 var data = _getFileData(Env, id);
                 var arr = [data.channel];
+                if (data.answersChannel) { arr.push(data.answersChannel); }
                 if (data.rtChannel) { arr.push(data.rtChannel); }
                 if (data.lastVersion) { arr.push(Hash.hrefToHexChannelId(data.lastVersion)); }
                 Array.prototype.push.apply(toKeep, arr);
@@ -1175,6 +1176,10 @@ define([
                         if (result.indexOf(otherChan) === -1) {
                             result.push(otherChan);
                         }
+                    }
+                    // Pin form answers channels
+                    if (data.answersChannel && result.indexOf(data.answersChannel) === -1) {
+                        result.push(data.answersChannel);
                     }
                     // Pin onlyoffice realtime patches
                     if (data.rtChannel && result.indexOf(data.rtChannel) === -1) {

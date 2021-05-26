@@ -3013,6 +3013,7 @@ define([
                 // ACCEPT
                 sframeChan.query('Q_SET_PAD_METADATA', {
                     channel: msg.content.channel,
+                    channels: msg.content.channels,
                     command: 'ADD_OWNERS',
                     value: [priv.edPublic]
                 }, function (err, res) {
@@ -3062,6 +3063,7 @@ define([
                     // Remove yourself from the pending owners
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: msg.content.channel,
+                        channels: msg.content.channels,
                         command: 'RM_PENDING_OWNERS',
                         value: [priv.edPublic]
                     }, function (err, res) {
@@ -3078,6 +3080,7 @@ define([
             // Remove yourself from the pending owners
             sframeChan.query('Q_SET_PAD_METADATA', {
                 channel: msg.content.channel,
+                channels: msg.content.channels,
                 command: 'RM_PENDING_OWNERS',
                 value: [priv.edPublic]
             }, function (err, res) {

@@ -2139,11 +2139,23 @@ define([
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
             var s = getStore(data.teamId);
+            var otherChannels = data.channels;
+            delete data.channels;
             s.rpc.setMetadata(data, function (err, res) {
                 if (err) { return void cb({ error: err }); }
                 if (!Array.isArray(res) || !res.length) { return void cb({}); }
                 cb(res[0]);
             });
+            // If we have other related channels, send the command for them too
+            if (Array.isArray(otherChannels)) {
+                otherChannels.forEach(function (chan) {
+                    var _d = Util.clone(data);
+                    _d.channel = chan;
+                    Store.setPadMetadata(clientId, _d, function () {
+
+                    });
+                });
+            }
         };
 
         // GET_FULL_HISTORY from sframe-common-outer

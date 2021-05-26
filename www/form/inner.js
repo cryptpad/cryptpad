@@ -597,6 +597,7 @@ define([
         };
 
         var checkIntegrity = function (getter) {
+            if (!content.order || !content.form) { return; }
             var changed = false;
             content.order.forEach(function (uid) {
                 if (!content.form[uid]) {
@@ -679,6 +680,8 @@ define([
                     framework.localChange();
                 }
             }
+
+            sframeChan.event('EV_FORM_PIN', {channel: content.answers.channel});
 
             var $container = $('#cp-app-form-container');
             $container.append(makeFormCreator());
