@@ -661,9 +661,6 @@ define([
         framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
 
-            var $container = $('#cp-app-form-container');
-            $container.append(makeFormCreator());
-
             if (APP.isEditor) {
                 if (!content.form) {
                     content.form = {};
@@ -682,6 +679,9 @@ define([
                     framework.localChange();
                 }
             }
+
+            var $container = $('#cp-app-form-container');
+            $container.append(makeFormCreator());
 
             if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                 return void UI.errorLoadingScreen(Messages.form_invalid);
