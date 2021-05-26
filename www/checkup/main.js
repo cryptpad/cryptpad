@@ -574,6 +574,19 @@ define([
         }
     };
 
+    var deferredPostMessage = function (content, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        nThen(function (w) {
+            sandboxIframeReady.reg(w(function (err) {
+                if (!err) { return; }
+                w.abort();
+                cb(err);
+            }));
+        }).nThen(function () {
+            postMessage(content, cb);
+        });
+    };
+
     window.addEventListener('message', function (event) {
         try {
             var msg = JSON.parse(event.data);
@@ -638,46 +651,30 @@ define([
         var url = '/sheet/inner.html';
         var cb = Util.once(Util.mkAsync(_cb));
         msg.appendChild(CSP_WARNING(url));
-        nThen(function (w) {
-            sandboxIframeReady.reg(w(function (err) {
-                if (!err) { return; }
-                w.abort();
-                cb(err);
-            }));
-        }).nThen(function () {
-            postMessage({
-                command: 'GET_HEADER',
-                content: {
-                    url: url,
-                    header: 'content-security-policy',
-                },
-            }, function (content) {
-                var CSP_headers = parseCSP(content);
-                cb(hasOnlyOfficeHeaders(CSP_headers));
-            });
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url,
+                header: 'content-security-policy',
+            },
+        }, function (content) {
+            var CSP_headers = parseCSP(content);
+            cb(hasOnlyOfficeHeaders(CSP_headers));
         });
     });
 
     assert(function (cb, msg) {
         var url = '/common/onlyoffice/v4/web-apps/apps/spreadsheeteditor/main/index.html';
         msg.appendChild(CSP_WARNING(url));
-        nThen(function (w) {
-            sandboxIframeReady.reg(w(function (err) {
-                if (!err) { return; }
-                w.abort();
-                cb(err);
-            }));
-        }).nThen(function () {
-            postMessage({
-                command: 'GET_HEADER',
-                content: {
-                    url: url,
-                    header: 'content-security-policy',
-                },
-            }, function (content) {
-                var CSP_headers = parseCSP(content);
-                cb(hasOnlyOfficeHeaders(CSP_headers));
-            });
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url,
+                header: 'content-security-policy',
+            },
+        }, function (content) {
+            var CSP_headers = parseCSP(content);
+            cb(hasOnlyOfficeHeaders(CSP_headers));
         });
     });
 
@@ -689,22 +686,14 @@ define([
             code("'cross-origin-opener-policy'"),
             ' headers set.',
         ]));
-        nThen(function (w) {
-            sandboxIframeReady.reg(w(function (err) {
-                if (!err) { return; }
-                w.abort();
-                cb(err);
-            }));
-        }).nThen(function () {
-            postMessage({
-                command: 'GET_HEADER',
-                content: {
-                    url: url,
-                    header: 'cross-origin-opener-policy',
-                },
-            }, function (content) {
-                cb(content === 'same-origin');
-            });
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url,
+                header: 'cross-origin-opener-policy',
+            },
+        }, function (content) {
+            cb(content === 'same-origin');
         });
     });
 

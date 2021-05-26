@@ -1,12 +1,10 @@
 define([
     'jquery',
-    //'/bower_components/nthen/index.js',
-    //'/common/common-util.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
-], function ($ /*, nThen, Util */) {
+], function ($) {
     var postMessage = function (content) {
         window.parent.postMessage(JSON.stringify(content), '*');
     };
