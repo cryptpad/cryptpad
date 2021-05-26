@@ -1133,6 +1133,7 @@ define([
             sheet: 'sheets',
             poll: 'poll',
             kanban: 'kanban',
+            form: 'form',
             whiteboard: 'whiteboard',
         };
 

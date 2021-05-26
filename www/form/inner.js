@@ -20,9 +20,11 @@ define([
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
+    '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
+    'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
@@ -43,6 +45,7 @@ define([
     Messages,
     AppConfig,
     Share, Access, Properties,
+    Flatpickr,
     Sortable
     )
 {
@@ -80,6 +83,13 @@ define([
     Messages.form_makePublicWarning = "Are you sure you want to make the results of this form public? This can't be undone.";
     Messages.form_isPublic = "Results are public";
     Messages.form_isPrivate = "Results are private";
+
+    Messages.form_open = "Open";
+    Messages.form_setEnd = "Set closing date";
+    Messages.form_removeEnd = "Remove closing date";
+    Messages.form_isOpen = "This form is open";
+    Messages.form_isClosed = "This form was closed on {0}";
+    Messages.form_willClose = "This form will close on {0}";
 
     var editOptions = function (v, setCursorGetter, cb, tmp) {
         var add = h('button.btn.btn-secondary', [
@@ -304,8 +314,8 @@ define([
         return results;
     };
     var makeFormControls = function (framework, content, update) {
-        var send = h('button.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
-        var reset = h('button.btn.btn-danger-alt', Messages.form_reset);
+        var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
+        var reset = h('button.cp-open.btn.btn-danger-alt', Messages.form_reset);
         $(reset).click(function () {
             if (!Array.isArray(APP.formBlocks)) { return; }
             APP.formBlocks.forEach(function (data) {
@@ -345,6 +355,12 @@ define([
                 });
             });
         }
+
+        if (APP.isClosed) {
+            send = undefined;
+            reset = undefined;
+        }
+
         return h('div.cp-form-send-container', [send, reset, viewResults]);
     };
     var updateForm = function (framework, content, editable, answers, temp) {
@@ -542,6 +558,11 @@ define([
         APP.isEditor = Boolean(priv.form_public);
         var $body = $('body');
 
+        var $toolbarContainer = $('#cp-toolbar');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+        $toolbarContainer.after(helpMenu.menu);
+
+
         var makeFormSettings = function () {
             var makePublic = h('button.btn.btn-primary', Messages.form_makePublic);
             if (content.answers.privateKey) { makePublic = undefined; }
@@ -562,6 +583,73 @@ define([
                     });
                 });
             });
+
+            // End date / Closed state
+            var endDateContainer = h('div.cp-form-status-container');
+            var $endDate = $(endDateContainer);
+            var refreshEndDate = function () {
+                $endDate.empty();
+
+                var endDate = content.answers.endDate;
+                var date = new Date(endDate).toLocaleString();
+                var now = +new Date();
+                var text = Messages.form_isOpen;
+                var buttonTxt = Messages.form_setEnd;
+                if (endDate <= now) {
+                    text = Messages._getKey('form_isClosed', [date]);
+                    buttonTxt = Messages.form_open;
+                    action = function () {
+                    };
+                } else if (endDate > now) {
+                    text = Messages._getKey('form_willClose', [date]);
+                    buttonTxt = Messages.form_removeEnd;
+                }
+
+                var button = h('button.btn.btn-secondary', buttonTxt);
+
+                var $button = $(button).click(function () {
+                    $button.attr('disabled', 'disabled');
+                    // If there is an end date, remove it
+                    if (endDate) {
+                        delete content.answers.endDate;
+                        framework.localChange();
+                        refreshEndDate();
+                        return;
+                    }
+                    // Otherwise add it
+                    var datePicker = h('input');
+                    var is24h = false;
+                    var dateFormat = "Y-m-d H:i";
+                    try {
+                        is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+                    } catch (e) {}
+                    if (!is24h) { dateFormat = "Y-m-d h:i K"; }
+                    var picker = Flatpickr(datePicker, {
+                        enableTime: true,
+                        time_24hr: is24h,
+                        dateFormat: dateFormat,
+                        minDate: new Date()
+                    });
+                    var save = h('button.btn.btn-primary', Messages.settings_save);
+                    $(save).click(function () {
+                        var d = picker.parseDate(datePicker.value);
+                        content.answers.endDate = +d;
+                        framework.localChange();
+                        refreshEndDate();
+                    });
+                    var confirmContent = h('div', [
+                        h('div', Messages.form_setEnd),
+                        h('div.cp-form-input-block', [datePicker, save]),
+                    ]);
+                    $button.after(confirmContent);
+                    $button.remove();
+                });
+
+                $endDate.append(h('div.cp-form-status', text));
+                $endDate.append(h('div.cp-form-actions', button));
+
+            };
+            refreshEndDate();
 
 
             var viewResults = h('button.btn.btn-primary', [
@@ -586,6 +674,7 @@ define([
 
             });
             return [
+                endDateContainer,
                 resultsType,
                 viewResults,
             ];
@@ -659,6 +748,35 @@ define([
             return div;
         };
 
+        var endDateEl = h('div.alert.alert-warning.cp-burn-after-reading');
+        var endDate;
+        var endDateTo;
+        var refreshEndDateBanner = function (force) {
+            var _endDate = content.answers.endDate;
+            if (_endDate === endDate && !force) { return; }
+            endDate = _endDate;
+            var date = new Date(endDate).toLocaleString();
+            var text = Messages._getKey('form_isClosed', [date]);
+            if (endDate > +new Date()) {
+                text = Messages._getKey('form_willClose', [date]);
+            }
+            if ($('.cp-help-container').length && endDate) {
+                $(endDateEl).text(text);
+                $('.cp-help-container').before(endDateEl);
+            } else {
+                $(endDateEl).remove();
+            }
+
+            APP.isClosed = endDate && endDate < (+new Date());
+            clearTimeout(endDateTo);
+            if (!APP.isClosed && endDate) {
+                setTimeout(function () {
+                    refreshEndDateBanner(true);
+                    $('.cp-form-send-container').find('.cp-open').remove();
+                },(endDate - +new Date() + 100));
+            }
+        };
+
         framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
 
@@ -720,6 +838,9 @@ define([
                 return;
             }
 
+            refreshEndDateBanner();
+
+
             sframeChan.query("Q_FETCH_MY_ANSWERS", {
                 channel: content.answers.channel,
                 validateKey: content.answers.validateKey,
@@ -739,6 +860,7 @@ define([
         framework.onContentUpdate(function (newContent) {
             console.log(newContent);
             content = newContent;
+            refreshEndDateBanner();
             var answers, temp;
             if (!APP.isEditor) { answers = getFormResults(); }
             else { temp = getTempFields(); }
