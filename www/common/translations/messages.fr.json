@@ -1230,5 +1230,12 @@
     "mediatag_defaultImageName": "image",
     "register_registrationIsClosed": "Les inscriptions sont fermées.",
     "oo_conversionSupport": "Votre navigateur ne gère pas la conversion vers et depuis les formats Microsoft Office. Il est recommandé d'utiliser une version récente de Firefox ou Chrome.",
-    "oo_importBin": "Cliquez sur OK pour importer au format .bin interne à CryptPad."
+    "oo_importBin": "Cliquez sur OK pour importer au format .bin interne à CryptPad.",
+    "admin_emailButton": "Valider",
+    "admin_supportPrivButton": "Afficher la clé",
+    "admin_supportPrivHint": "Afficher la clé privée et la transmettre aux autres administrateurs pour leur permettre de consulter les tickets de support. Un formulaire permettant de saisir cette clé est affiché dans leur espace d'administration.",
+    "admin_supportInitGenerate": "Créer les clés",
+    "admin_supportPrivTitle": "Clé privée de la messagerie de support",
+    "admin_emailHint": "Entrez ici l'adresse email de contact pour votre instance",
+    "admin_emailTitle": "Email de l'administrateur"
 }
