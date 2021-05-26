@@ -743,6 +743,10 @@ define([
             delete meta.chat2;
             delete meta.chat;
             delete meta.cursor;
+
+            if (meta.type === "form") {
+                delete parsed.answers;
+            }
         }
     };
 
