@@ -109,6 +109,18 @@
                     }
                     &.editable { cursor: grab; }
                 }
+                .cp-form-edit-max-options {
+                    display: flex;
+                    align-items: center;
+                    input {
+                        width: 100px;
+                        margin-left: 10px;
+                    }
+                }
+                .cp-form-edit-options-block {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
                 .cp-form-edit-block {
                     .cp-form-edit-block-input {
                         display: flex;
@@ -158,6 +170,10 @@
             }
             .cp-form-results-type-radio {
                 display: table;
+                .cp-form-results-type-multiradio-data {
+                    display: flex;
+                    flex-flow: column;
+                }
                 .cp-form-results-type-radio-data {
                     display: table-row;
                     border: 1px solid @cp_form-border;
@@ -175,12 +191,29 @@
         }
     }
 
-    .cp-form-type-radio {
+    .cp-form-type-radio, .cp-form-type-checkbox {
         display: flex;
         flex-flow: column;
         align-items: baseline;
         .cp-radio {
             display: inline-flex;
+        }
+    }
+    .cp-form-type-multiradio {
+        display: table;
+        & > * {
+            display: table-row;
+            & > * {
+                display: table-cell;
+                padding: 5px 20px;
+                vertical-align: middle;
+                &:first-child {
+                    min-width: 200px;
+                }
+                .cp-radio-mark {
+                    margin: auto;
+                }
+            }
         }
     }
 
