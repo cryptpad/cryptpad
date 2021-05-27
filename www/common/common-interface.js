@@ -1177,6 +1177,7 @@ define([
         var label = h('span.cp-checkmark-label', labelTxt);
 
         $mark.keydown(function (e) {
+            if ($input.is(':disabled')) { return; }
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -1226,6 +1227,7 @@ define([
         var label = h('span.cp-checkmark-label', labelTxt);
 
         $(mark).keydown(function (e) {
+            if ($input.is(':disabled')) { return; }
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
