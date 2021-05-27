@@ -1,8 +1,37 @@
-# WIP
+# 4.6.0
+
+## Goals
+
+* work on polls/surveys
+* stabilize and implement tests
+
+## Update notes
+
+* checkup/server/config
+  * test for anti-FLoC header
+  * add anti-FloC header to server so the default dev server passes all tests
+  * update NGINX example to avoid duplicated headers
+  * simplify dev server headers
+  * adjust table borders for dark/light mode
+  * say what headers are wrong
+* rename exported object in `application_config_internal.js` to avoid copypasta errors
+* `AppConfig.disableAnonymousPadCreation = false;`
+  * note that it's only enforced client-side
+* update lodash devDependency
+
+## Features
+
+* generate `supportMailbox` keys via the admin panel
+  * document this
+* markdown preview
+  * code blocks are full width
+
+## Bug fixes
 
 * fix opening links from temporary shared folders on iphone or other contexts that do not support shared workers
-* add checkup test for disabling google FLoC
-* update lodash devDependency
+* show "features" instead of "pricing" in static pages' footer when premium subscriptions are not available
+* use preferred 12/24h time format in date picker
+* add error handling to admin panel decree RPCs
 
 # 4.5.0
 
