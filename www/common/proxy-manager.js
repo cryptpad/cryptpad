@@ -241,7 +241,7 @@ define([
 
         // Clean deprecated values
         if (Object.keys(proxy.metadata || {}).length > 1) {
-            proxy.metadata = { title: proxy.metadata.title; }
+            proxy.metadata = { title: proxy.metadata.title };
         }
 
         var obj = Util.clone(proxy.metadata || {});
