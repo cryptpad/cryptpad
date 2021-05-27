@@ -2,36 +2,47 @@
 
 ## Goals
 
-* work on polls/surveys
-* stabilize and implement tests
+Our main goal for this release cycle was to get a strong start on our upcoming _forms_ app. This is a big job which we didn't expect to finish in the course of a few weeks, so in the meantime we've taken the opportunity to address many minor issues, stabilize the codebase, and implement a number of new tests.
 
 ## Update notes
 
-* checkup/server/config
-  * test for anti-FLoC header
-  * add anti-FloC header to server so the default dev server passes all tests
-  * update NGINX example to avoid duplicated headers
-  * simplify dev server headers
-  * adjust table borders for dark/light mode
-  * say what headers are wrong
-* rename exported object in `application_config_internal.js` to avoid copypasta errors
-* `AppConfig.disableAnonymousPadCreation = false;`
-  * note that it's only enforced client-side
-* update lodash devDependency
+Over the years the example configuration file has grown to include a large number of parameters. We've seen that this can make it hard to pick out which configuration parameters are important for a newly installed or migrated instance. We're trying to address this by moving more configuration options to the admin panel.
+
+4.6.0 introduces the ability to generate credentials for your instance's support ticket mailbox and publish the corresponding public key with the push of a button. Previously it was necessary to run a script, copy its value, update the config file, restart the server, and enter the private component of the keypair into an input on the admin panel. The relevant button can be found in the admin panel's _Support_ tab.
+
+We've also introduced the ability to update your _adminEmail_ settings via a field on the _General_ tab of the admin panel. This value is used by the contact page so that your users can contact you (instead of us) in case they encounter any problems when using your instance. Both the `supportMailbox` and `adminEmail` values are distributed by the `/api/config` endpoint which is typically cached by clients. You probably need to use the _Flush cache_ button to ensure that everyone loads the latest value. This button can also found on the _General_ tab.
+
+One admin reported difficulty customizing their instance because they copy-pasted code from `cryptpad/www/common/application_config_internal.js` directly into `cryptpad/customize/application_config.js`. Unfortunately the internal variable name for the configuration object in the former did not match the value in the latter, so this led to a reference error. We've updated the variable name in the internal configuration file which provides the default options to match the customizable one, making it easier to copy-paste code examples without understanding what it's really doing.
+
+We also introduced a new configuration option in `application_config_internal.js` which prevents unregistered users from creating new pads. Add `AppConfig.disableAnonymousPadCreation = true;` to your `customize/application_config.js` to disable anonymous pad creation. If you read the adjacent comment above the default example you'll see that this barrier is only enforced on the client, so it will keep out honest users but won't stop malicious ones from messaging the server directly.
+
+This release also includes a number of new tests on the `/checkup/` page. Most notably it now checks for headers on certain assets which can only be checked from within the sandboxed iframe. These new tests automate the manual checks we were performing when admins reported that everything was working except for sheets, and go a little bit further to report which particular headers are incorrect. We also fixed some bugs that were checking headers on resources which could be cached, added a test for the recently added anti-FLoC header, fixed the styles on the page to respond to both light and dark mode, and made sure that websocket connections that were opened by tests were closed when they finished.
+
+Some of the tests we implemented checked the headers on resources that were particularly prone to misconfiguration because its headers were set by both NGINX and the NodeJS application server (see [#694](https://github.com/xwiki-labs/cryptpad/issues/694)). We tested in a variety of configurations and ultimately decided that the most resilient solution was to give up on using heuristics in the application server and just update the example NGINX config to use a patch proposed by another admin which fully overrides the settings of the application server. You can find this patch in the `/api/(config|broadcast)` section of the example config.
+
+Finally, we've made some minor changes to the provided `package-lock.json` file because `npm` reported some "Regular Expression Denial of Service" vulnerabilities. One of these was easy to fix, but another two were reported shortly thereafter. These "vulnerabilities" only affect some developer dependencies and will have no effect on regular usage of our software. The "risk" is essentially that malicious modifications to our source code can be tailored to make our style linting software run particularly slowly. This can only be triggered by integrating such malicious changes into your local repository and running `npm run lint:less`, so maybe don't do that.
+
+To update from 4.5.0 to 4.6.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
 
 ## Features
 
-* generate `supportMailbox` keys via the admin panel
-  * document this
-* markdown preview
-  * code blocks are full width
+This release includes very few new features aside from those already mentioned in the _Update notes_ section. One very minor improvement is that formatted code blocks in the code editor's markdown preview use the full width of their parent container instead of being indented.
 
 ## Bug fixes
 
-* fix opening links from temporary shared folders on iphone or other contexts that do not support shared workers
-* show "features" instead of "pricing" in static pages' footer when premium subscriptions are not available
-* use preferred 12/24h time format in date picker
-* add error handling to admin panel decree RPCs
+* Once again we fixed a bug that only occurs on Safari because Apple refuses to implement APIs that make the web a viable competitor to their app store. This one was triggered by opening a shared folder from its link as an unregistered user, then trying to open a pad stored only in that folder and not elsewhere in your drive. Literally every other browser supports _SharedWorkers_, which allow tabs on the same domain to share a background process, reducing consumption of CPU, RAM, and electricity, as well as allowing the newly opened tab to read the document's credentials from the temporarily loaded shared folder. On Safari the new tab failed to load. We fixed it by checking whether the shared folder would be accessible from newly opened tabs, and choosing to use the document's "unsafe link" instead of its "safe link".
+* We updated the "Features" page to be displayed as "Pricing" in the footer when some prospective clients reported that they couldn't find a mention of what they would get by creating a premium subscription. [#683](https://github.com/xwiki-labs/cryptpad/issues/683) had the opposite problem, that they didn't support payment and they wanted to only show features. Now the footer displays the appropriate string depending on your instance's configuration.
+* We fixed some inconsistent UI in our recently introduced date picker. The time formats displayed in the text field and date picker interface should now match the localization settings provided to your browser by your OS. Previously it was possible for one of these elements to appear in 24 hour time while the other appeared in 12 hour time.
+* Another time-related issue appeared in the calendar for users in Hawai'i, who reported that some events were displayed on the wrong day due to the incorrect initialization of a reference date.
+* We've applied a minor optimization which should reduce the size of shared folders.
+* Some functionality on the admin panel has been improved with some better error handling.
+* Finally, one user reported that one of their PDFs was displaying only blank pages. After a short investigation we found that the problematic PDF was trying to run some scripts which were being blocked by our strict Content-Security-Policy headers. We've updated our PDF renderer to avoid compiling and running such scripts. As a result, such PDFs should not be prevented from rendering, though they may lack some dynamic functionality that you might be expecting. We'd welcome an example of such a PDF so we can assess if there is a safe way to load their embedded scripts and how much work would be required to do so.
 
 # 4.5.0
 
