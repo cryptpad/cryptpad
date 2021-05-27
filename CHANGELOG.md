@@ -2,7 +2,7 @@
 
 ## Goals
 
-Our main goal for this release cycle was to get a strong start on our upcoming _forms_ app. This is a big job which we didn't expect to finish in the course of a few weeks, so in the meantime we've taken the opportunity to address many minor issues, stabilize the codebase, and implement a number of new tests.
+Our main goal for this release cycle was to get a strong start on our upcoming _Forms_ app. This is a big job which we didn't expect to finish in the course of a few weeks, so in the meantime we've taken the opportunity to address many minor issues, stabilize the codebase, and implement a number of new tests.
 
 ## Update notes
 
