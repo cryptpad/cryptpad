@@ -16,6 +16,7 @@ define([
     '/support/ui.js',
 
     '/lib/datepicker/flatpickr.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -44,6 +45,7 @@ define([
         'instanceStatus': {}
     };
 
+    var Nacl = window.nacl;
     var common;
     var sFrameChan;
 
@@ -54,6 +56,7 @@ define([
             'cp-admin-archive',
             'cp-admin-unarchive',
             'cp-admin-registration',
+            'cp-admin-email'
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -71,7 +74,8 @@ define([
         ],
         'support': [ // Msg.admin_cat_support
             'cp-admin-support-list',
-            'cp-admin-support-init'
+            'cp-admin-support-init',
+            'cp-admin-support-priv',
         ],
         'broadcast': [ // Msg.admin_cat_broadcast
             'cp-admin-maintenance',
@@ -267,8 +271,11 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['RESTRICT_REGISTRATION', [val]]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
                 APP.updateStatus(function () {
                     spinner.done();
                     state = APP.instanceStatus.restrictRegistration;
@@ -278,6 +285,45 @@ define([
             });
         });
         $cbox.appendTo($div);
+
+        return $div;
+    };
+
+    create['email'] = function () {
+        var key = 'email';
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton
+        var $button = $div.find('button');
+
+        var input = h('input', {
+            type: 'email',
+            value: ApiConfig.adminEmail || ''
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setlimit-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            if (!$input.val()) { return; }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_ADMIN_EMAIL', [$input.val()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        $button.before(innerDiv);
 
         return $div;
     };
@@ -316,8 +362,11 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['UPDATE_DEFAULT_STORAGE', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); return void console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
                 var limit = getPrettySize(l);
                 $div.find('.cp-admin-defaultlimit-value').text(Messages._getKey('admin_limit', [limit]));
             });
@@ -448,8 +497,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['RM_QUOTA', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
                 APP.refreshLimits();
                 $key.val('');
             });
@@ -462,8 +515,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['SET_QUOTA', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
                 APP.refreshLimits();
                 $key.val('');
             });
@@ -637,8 +694,13 @@ define([
     };
 
     var supportKey = ApiConfig.supportMailbox;
+    var checkAdminKey = function (priv) {
+        if (!supportKey) { return; }
+        return Hash.checkBoxKeyPair(priv, supportKey);
+    };
+
     create['support-list'] = function () {
-        if (!supportKey || !APP.privateKey) { return; }
+        if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
         var $container = makeBlock('support-list'); // Msg.admin_supportListHint, .admin_supportListTitle
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
@@ -898,16 +960,63 @@ define([
         return $container;
     };
 
+    create['support-priv'] = function () {
+        if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
 
-    var checkAdminKey = function (priv) {
-        if (!supportKey) { return; }
-        return Hash.checkBoxKeyPair(priv, supportKey);
+        var $div = makeBlock('support-priv', true); // Msg.admin_supportPrivHint, .admin_supportPrivTitle, .admin_supportPrivButton
+        var $button = $div.find('button').click(function () {
+            $button.remove();
+            var $selectable = $(UI.dialog.selectable(APP.privateKey)).css({ 'max-width': '28em' });
+            $div.append($selectable);
+        });
+        return $div;
     };
-
     create['support-init'] = function () {
         var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
         if (!supportKey) {
-            $div.append(h('p', Messages.admin_supportInitHelp));
+            (function () {
+                $div.append(h('p', Messages.admin_supportInitHelp));
+                var button = h('button.btn.btn-primary', Messages.admin_supportInitGenerate);
+                var $button = $(button).appendTo($div);
+                $div.append($button);
+                var spinner = UI.makeSpinner($div);
+                $button.click(function () {
+                    spinner.spin();
+                    $button.attr('disabled', 'disabled');
+                    var keyPair = Nacl.box.keyPair();
+                    var pub = Nacl.util.encodeBase64(keyPair.publicKey);
+                    var priv = Nacl.util.encodeBase64(keyPair.secretKey);
+                    // Store the private key first. It won't be used until the decree is accepted.
+                    sFrameChan.query("Q_ADMIN_MAILBOX", priv, function (err, obj) {
+                        if (err || (obj && obj.error)) {
+                            console.error(err || obj.error);
+                            UI.warn(Messages.error);
+                            spinner.hide();
+                            return;
+                        }
+                        // Then send the decree
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['SET_SUPPORT_MAILBOX', [pub]]
+                        }, function (e, response) {
+                            $button.removeAttr('disabled');
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                                spinner.hide();
+                                return;
+                            }
+                            spinner.done();
+                            UI.log(Messages.saved);
+                            supportKey = pub;
+                            APP.privateKey = priv;
+                            $('.cp-admin-support-init').hide();
+                            APP.$rightside.append(create['support-list']());
+                            APP.$rightside.append(create['support-priv']());
+                        });
+                    });
+                });
+            })();
             return $div;
         }
         if (!APP.privateKey || !checkAdminKey(APP.privateKey)) {
@@ -937,6 +1046,7 @@ define([
                     APP.privateKey = key;
                     $('.cp-admin-support-init').hide();
                     APP.$rightside.append(create['support-list']());
+                    APP.$rightside.append(create['support-priv']());
                 });
             });
             return $div;
@@ -1030,9 +1140,10 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
-                }, function (e) {
-                    if (e) {
-                        console.error(e);
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         return;
                     }
                     console.log('lastBroadcastHash updated');
@@ -1299,19 +1410,23 @@ define([
             var $start = $(start);
             var $end = $(end);
             var is24h = false;
+            var dateFormat = "Y-m-d H:i";
             try {
                 is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
             } catch (e) {}
+            if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
             var endPickr = Flatpickr(end, {
                 enableTime: true,
                 time_24hr: is24h,
+                dateFormat: dateFormat,
                 minDate: new Date()
             });
             Flatpickr(start, {
                 enableTime: true,
                 time_24hr: is24h,
                 minDate: new Date(),
+                dateFormat: dateFormat,
                 onChange: function () {
                     endPickr.set('minDate', new Date($start.val()));
                 }
@@ -1336,9 +1451,10 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_MAINTENANCE', [data]]
-                }, function (e) {
-                    if (e) {
-                        UI.warn(Messages.error); console.error(e);
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         $button.prop('disabled', '');
                         return;
                     }
@@ -1430,10 +1546,11 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_SURVEY_URL', [data]]
-                }, function (e) {
-                    if (e) {
+                }, function (e, response) {
+                    if (e || response.error) {
                         $button.prop('disabled', '');
-                        UI.warn(Messages.error); console.error(e);
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         return;
                     }
                     // Maintenance applied, send notification
@@ -1529,11 +1646,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'GET_WORKER_PROFILES',
             }, function (e, data) {
-                if (e) { return void console.error(e); }
+                if (e || data.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, data);
+                }
                 //console.info(data);
                 $div.find("table").remove();
-
-
                 process(data);
                 $div.append(table);
             });

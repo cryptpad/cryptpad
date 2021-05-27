@@ -5355,10 +5355,12 @@ var PDFFunction = function PDFFunctionClosure() {
       var domain = IR[1];
       var range = IR[2];
       var code = IR[3];
+/*
       var compiled = new PostScriptCompiler().compile(code, domain, range);
       if (compiled) {
         return new Function('src', 'srcOffset', 'dest', 'destOffset', compiled);
       }
+*/
       (0, _util.info)('Unable to compile PS function');
       var numOutputs = range.length >> 1;
       var numInputs = domain.length >> 1;
