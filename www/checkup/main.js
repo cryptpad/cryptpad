@@ -191,7 +191,8 @@ define([
             ]));
         }));
 
-        var ws = shared_websocket = new WebSocket(NetConfig.getWebsocketURL());
+        var ws = new WebSocket(NetConfig.getWebsocketURL());
+        shared_websocket = ws;
         var to = setTimeout(function () {
             console.error('Websocket TIMEOUT');
             evWSError.fire();
@@ -379,40 +380,6 @@ define([
                 cb(xhr.getResponseHeader('permissions-policy') === 'interest-cohort=()');
             },
         });
-    });
-
-    assert(function (cb, msg) {
-        msg.innerText = "This test is incorrect.";
-        return void cb(true);
-        /*
-        msg.appendChild(h('span', [
-            "The spreadsheet editor's code was not served with the required Content-Security Policy headers. ",
-            "This is most often caused by incorrectly configured sandbox parameters (",
-            h('code', 'httpUnsafeOrigin'),
-            ' and ',
-            h('code', 'httpSafeOrigin'),
-            ' in ',
-            CONFIG_PATH,
-            "), or settings in your reverse proxy's configuration which don't match your application server's config. ",
-            RESTART_WARNING(),
-        ]));
-
-        $.ajax(sheetURL, { // FIXME bust cache
-            complete: function (xhr) {
-                var csp = xhr.getResponseHeader('Content-Security-Policy');
-                if (!/unsafe\-eval/.test(csp)) {
-                    // OnlyOffice requires unsafe-eval
-                    console.error('CSP', csp);
-                    return cb("expected 'unsafe-eval'");
-                }
-                if (!/unsafe\-inline/.test(csp)) {
-                    // OnlyOffice also requires unsafe-inline
-                    console.error('CSP', csp);
-                    return cb("expected 'unsafe-inline'");
-                }
-                cb(true);
-            },
-        }); */
     });
 
     assert(function (cb, msg) {
