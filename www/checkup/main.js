@@ -173,10 +173,13 @@ define([
         }).nThen(function () {
             // Iframe is loaded
             clearTimeout(to);
+            console.log("removing sandbox iframe");
+            $('iframe#sbox-iframe').remove();
             cb(true);
         });
     });
 
+    var shared_websocket;
     // Test Websocket
     var evWSError = Util.mkEvent(true);
     assert(function (_cb, msg) {
@@ -188,7 +191,7 @@ define([
             ]));
         }));
 
-        var ws = new WebSocket(NetConfig.getWebsocketURL());
+        var ws = shared_websocket = new WebSocket(NetConfig.getWebsocketURL());
         var to = setTimeout(function () {
             console.error('Websocket TIMEOUT');
             evWSError.fire();
@@ -207,6 +210,7 @@ define([
     });
 
     // Test login block
+    var shared_realtime;
     assert(function (_cb, msg) {
         var websocketErr = "No WebSocket available";
         var cb = Util.once(Util.both(_cb, function (status) {
@@ -268,7 +272,7 @@ define([
                     console.error("Can't create new channel. This may also be a websocket issue.");
                     return void cb(false);
                 }
-                RT = rt;
+                shared_realtime = RT = rt;
                 var proxy = rt.proxy;
                 proxy.edPublic = opt.edPublic;
                 proxy.edPrivate = opt.edPrivate;
@@ -334,7 +338,6 @@ define([
         }).nThen(function () {
             cb(true);
         });
-
     });
 
     var sheetURL = '/common/onlyoffice/v4/web-apps/apps/spreadsheeteditor/main/index.html';
@@ -511,7 +514,9 @@ define([
             'This instance does not provide a valid ',
             h('code', 'adminEmail'),
             ' which can make it difficult to contact its adminstrator to report vulnerabilities or abusive content.',
-            " This can be configured on your instance's admin panel. Use the provided 'Flush cache' button for this change to take effect for all users."
+            " This can be configured on your instance's admin panel. Use the provided ",
+            code("Flush cache'"),
+            " button for this change to take effect for all users.",
         ]));
         cb(email);
     });
@@ -591,6 +596,7 @@ define([
         try {
             var msg = JSON.parse(event.data);
             if (msg.command === 'READY') { return void sandboxIframeReady.fire(); }
+            if (msg.q === "READY") { return; } // ignore messages from the usual sandboxed iframe
             var txid = msg.txid;
             if (!txid) { return console.log("no handler for ", txid); }
             response.handle(txid, msg.content);
@@ -763,6 +769,14 @@ define([
 
         $progress.remove();
         $('body').prepend(report);
+        try {
+            console.log('closing shared websocket');
+            shared_websocket.close();
+        } catch (err) { console.error(err); }
+        try {
+            console.log('closing shared realtime');
+            shared_realtime.network.disconnect();
+        } catch (err) { console.error(err); }
     }, function (i, total) {
         console.log('test '+ i +' completed');
         completed++;
