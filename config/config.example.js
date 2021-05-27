@@ -122,19 +122,6 @@ module.exports = {
     ],
 */
 
-    /*  CryptPad's administration panel includes a "support" tab
-     *  wherein administrators with a secret key can view messages
-     *  sent from users via the encrypted forms on the /support/ page
-     *
-     *  To enable this functionality:
-     *    run `node ./scripts/generate-admin-keys.js`
-     *    save the public key in your config in the value below
-     *    add the private key via the admin panel
-     *    and back it up in a secure manner
-     *
-     */
-    // supportMailboxPublicKey: "",
-
     /*  We're very proud that CryptPad is available to the public as free software!
      *  We do, however, still need to pay our bills as we develop the platform.
      *
