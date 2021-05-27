@@ -1412,7 +1412,7 @@ define([
             var is24h = false;
             var dateFormat = "Y-m-d H:i";
             try {
-                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/); // XXX
+                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
             } catch (e) {}
             if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
