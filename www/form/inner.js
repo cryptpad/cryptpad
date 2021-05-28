@@ -196,7 +196,7 @@ define([
 
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
-                if (v.type !== 'text') { return; }
+                if (v.type && v.type !== 'text') { return; }
                 input.selectionStart = cursor.start || 0;
                 input.selectionEnd = cursor.end || 0;
                 setTimeout(function () { input.focus(); });
