@@ -53,10 +53,15 @@ define([
 
     var is24h = false;
     var dateFormat = "Y-m-d H:i";
+    var timeFormat = "H:i";
     try {
         is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
     } catch (e) {}
-    if (!is24h) { dateFormat = "Y-m-d h:i K"; }
+    is24h = false;
+    if (!is24h) {
+        dateFormat = "Y-m-d h:i K";
+        timeFormat = "h:i K";
+    }
 
     Messages.button_newform = "New Form"; // XXX
     Messages.form_invalid = "Invalid form";
@@ -190,8 +195,13 @@ define([
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
+                        defaultDate: val ? new Date(val) : undefined
                     });
-                } else if (v.type === 'day') { Flatpickr(input); }
+                } else if (v.type === 'day') {
+                    Flatpickr(input, {
+                        defaultDate: val ? new Date(val) : undefined
+                    });
+                }
             }
 
             // if this element was active before the remote change, restore cursor
@@ -342,6 +352,7 @@ define([
             var duplicates = false;
             $container.find('input').each(function (i, el) {
                 var val = $(el).val().trim();
+                if (v.type === "day" || v.type === "time") { val = +new Date(val); }
                 if (values.indexOf(val) === -1) { values.push(val); }
                 else { duplicates = true; }
             });
@@ -392,11 +403,21 @@ define([
     };
 
     var makePollTable = function (answers, opts) {
+        // Sort date values
+        if (opts.type !== "text") {
+            opts.values.sort(function (a, b) {
+                return +new Date(a) - +new Date(b);
+            });
+        }
         // Create first line with options
         var els = opts.values.map(function (data) {
             if (opts.type === "day") {
                 var _date = new Date(data);
                 data = _date.toLocaleDateString();
+            }
+            if (opts.type === "time") {
+                var _dateT = new Date(data);
+                data = Flatpickr.formatDate(_dateT, timeFormat);
             }
             return h('div.cp-poll-cell.cp-form-poll-option', data);
         });
@@ -406,6 +427,28 @@ define([
         ]);
         els.unshift(h('div.cp-poll-cell.cp-poll-switch', switchAxis));
         var lines = [h('div', els)];
+
+        // Add an initial row to "time" values containing the days
+        if (opts.type === "time") {
+            var days = [h('div.cp-poll-cell')];
+            var _days = {};
+            opts.values.forEach(function (d) {
+                var date = new Date(d);
+                var day = date.toLocaleDateString();
+                _days[day] = _days[day] || 0;
+                _days[day]++;
+            });
+            var dayValues = Object.keys(_days).map(function (d) { return _days[d]; });
+            var minDay = Math.min.apply(null, dayValues);
+            console.log(_days, minDay);
+            Object.keys(_days).forEach(function (day) {
+                days.push(h('div.cp-poll-cell.cp-poll-time-day', {
+                    style: 'flex-grow:'+(_days[day]-1)+';'
+                }, day));
+            });
+            var width = (opts.values.length + 2)*100;
+            lines.unshift(h('div', days));
+        }
 
         // Add answers
         if (Array.isArray(answers)) {
@@ -957,7 +1000,6 @@ define([
                         $tag.find('.cp-form-poll-choice').each(function (i, el) {
                             if (!el._setValue) { return; }
                             var $el = $(el);
-                            console.log(el, $el.data('option'), val);
                             el._setValue(val[$el.data('option')] || 0);
                         });
                     }

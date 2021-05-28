@@ -74,6 +74,9 @@
                     .cp-form-block-question {
                         margin-bottom: 5px;
                     }
+                    .cp-form-block-content {
+                        overflow-x: auto;
+                    }
                     .cp-form-input-block {
                         //width: @form_input-width;
                         &:not(.editing) {
@@ -218,7 +221,7 @@
     }
 
     .cp-form-type-poll {
-        display: flex;
+        display: inline-flex;
         flex-flow: column;
         & > div {
             display: flex;
@@ -236,6 +239,12 @@
                 width: 100%;
             }
         }
+        .cp-poll-time-day {
+            flex-basis: 100px;
+            border-right: 1px solid @cryptpad_text_col;
+            border-left: 1px solid @cryptpad_text_col;
+            border-top: 1px solid @cryptpad_text_col;
+        }
         &.cp-form-poll-switch {
             flex-flow: row;
             & > div {
@@ -248,6 +257,13 @@
             }
             .cp-form-poll-option, .cp-poll-switch {
                 width: 200px;
+            }
+            .cp-poll-time-day {
+                flex-basis: 40px;
+                border-right: none;
+                border-bottom: 1px solid @cryptpad_text_col;
+                border-left: 1px solid @cryptpad_text_col;
+                border-top: 1px solid @cryptpad_text_col;
             }
         }
         .cp-form-poll-choice, .cp-form-poll-answer {
