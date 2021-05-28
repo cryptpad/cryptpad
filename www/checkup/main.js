@@ -373,8 +373,28 @@ define([
         });
     });
 
+    var link = function (href, text) {
+        return h('a', {
+            href: href,
+            rel: 'noopener noreferrer',
+            target: '_blank',
+        }, text);
+    };
+
     assert(function (cb, msg) {
-        msg.innerText = "Missing HTTP header required to disable Google's Floc.";
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            "You haven't opted out of participation in Google's ",
+            code('FLoC'),
+            " targeted advertizing network. This can be done by adding a ",
+            code('permissions-policy'),
+            " HTTP header with a value of ",
+            code('interest-cohort=()'),
+            " in your reverse proxy's configuration. See the provided NGINX configuration file for an example. ",
+            h('p', [
+                link("https://www.eff.org/deeplinks/2021/04/am-i-floced-launch", 'Learn more'),
+            ]),
+        ]));
         $.ajax('/?'+ (+new Date()), {
             complete: function (xhr) {
                 cb(xhr.getResponseHeader('permissions-policy') === 'interest-cohort=()');
@@ -493,12 +513,9 @@ define([
         setWarningClass(msg);
         msg.appendChild(h('span', [
             "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",
-            "This can be configured via the ",
-            h('code', 'supportMailbox'),
-            " attribute in ",
-            CONFIG_PATH(),
-            ". ",
-            RESTART_WARNING(),
+            "This can be configured via the admin panel's ",
+            h('code', 'Support'),
+            " tab.",
         ]));
         cb(support && typeof(support) === 'string' && support.length === 44);
     });
