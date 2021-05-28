@@ -217,5 +217,66 @@
         }
     }
 
+    .cp-form-type-poll {
+        display: flex;
+        flex-flow: column;
+        & > div {
+            display: flex;
+        }
+        .cp-poll-cell {
+            width: 100px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            &:first-child {
+                width: 200px;
+            }
+            button {
+                width: 100%;
+            }
+        }
+        &.cp-form-poll-switch {
+            flex-flow: row;
+            & > div {
+                flex-flow: column;
+            }
+            .cp-poll-cell:not(.cp-poll-switch) {
+                &:first-child {
+                    width: 100px;
+                }
+            }
+            .cp-form-poll-option, .cp-poll-switch {
+                width: 200px;
+            }
+        }
+        .cp-form-poll-choice, .cp-form-poll-answer {
+            .fa {
+                display: none;
+            }
+            color: @cp_form-poll-color;
+            &[data-value="0"] {
+                background: @cp_form-poll-no;
+                .cp-no { display: inline; }
+            }
+            &[data-value="1"] {
+                background: @cp_form-poll-yes;
+                .cp-yes { display: inline; }
+            }
+            &[data-value="2"] {
+                background: @cp_form-poll-maybe;
+                .cp-maybe { display: inline; }
+            }
+        }
+        div.cp-form-poll-choice {
+            cursor: pointer;
+            padding: 5px;
+            border: 5px double @cp_form-bg1;
+        }
+        div.cp-form-poll-answer {
+            color: @cp_form_poll-yes-color;
+        }
+    }
+
 }
 

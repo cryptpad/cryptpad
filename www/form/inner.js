@@ -53,11 +53,24 @@ define([
     var APP = window.APP = {
     };
 
+    var is24h = false;
+    var dayFormat = "Y-m-d";
+    var dateFormat = "Y-m-d H:i";
+    try {
+        is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+    } catch (e) {}
+    if (!is24h) { dateFormat = "Y-m-d h:i K"; }
+
     Messages.button_newform = "New Form"; // XXX
     Messages.form_invalid = "Invalid form";
     Messages.form_editBlock = "Edit options";
     Messages.form_editQuestion = "Edit question";
     Messages.form_editMax = "Max selectable options";
+    Messages.form_editType = "Options type";
+
+    Messages.form_poll_text = "Text";
+    Messages.form_poll_day = "Day";
+    Messages.form_poll_time = "Time";
 
     Messages.form_default = "Your question here?";
     Messages.form_type_input = "Text"; // XXX
@@ -65,6 +78,7 @@ define([
     Messages.form_type_multiradio = "Multiline Radio"; // XXX
     Messages.form_type_checkbox = "Checkbox"; // XXX
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
+    Messages.form_type_poll = "Poll"; // XXX
 
     Messages.form_duplicates = "Duplicate entries have been removed";
     Messages.form_maxOptions = "{0} answer(s) max";
@@ -135,21 +149,57 @@ define([
             ]);
         }
 
+        var type, typeSelect;
+        if (v.type) {
+            var options = ['text', 'day', 'time'].map(function (t) {
+                return {
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-form-type-value',
+                        'data-value': t,
+                        'href': '#',
+                    },
+                    content: Messages['form_poll_'+t]
+                };
+            });
+            var dropdownConfig = {
+                text: '', // Button initial text
+                options: options, // Entries displayed in the menu
+                //left: true, // Open to the left of the button
+                //container: $(type),
+                isSelect: true,
+                caretDown: true,
+                buttonCls: 'btn btn-secondary'
+            };
+            typeSelect = UIElements.createDropdown(dropdownConfig);
+            typeSelect.setValue(v.type);
+
+            type = h('div.cp-form-edit-type', [
+                h('span', Messages.form_editType),
+                typeSelect[0]
+            ]);
+        }
+
         // Show existing options
         var $add;
         var getOption = function (val, isItem, uid) {
             var input = h('input', {value:val});
             if (uid) { $(input).data('uid', uid); }
 
-            // if this element was active before the remote change, restore cursor
-            if (cursor && cursor.el === val) {
-                console.log(isItem);
-                console.log(cursor.item);
-                console.log(Boolean(isItem));
-                console.log(Boolean(cursor.item));
+            // If the input is a date, initialize flatpickr
+            if (v.type && v.type !== 'text') {
+                if (v.type === 'time') {
+                    Flatpickr(input, {
+                        enableTime: true,
+                        time_24hr: is24h,
+                        dateFormat: dateFormat,
+                    });
+                } else if (v.type === 'day') { Flatpickr(input); }
             }
 
+            // if this element was active before the remote change, restore cursor
             var setCursor = function () {
+                if (v.type !== 'text') { return; }
                 input.selectionStart = cursor.start || 0;
                 input.selectionEnd = cursor.end || 0;
                 setTimeout(function () { input.focus(); });
@@ -175,6 +225,7 @@ define([
         inputs.push(add);
 
         var container = h('div.cp-form-edit-block', inputs);
+        var $container = $(container);
 
         var containerItems;
         if (v.items) {
@@ -185,17 +236,47 @@ define([
             containerItems = h('div.cp-form-edit-block', inputsItems);
         }
 
+        // Doodle type change: empty current values and change input types?
+        if (typeSelect) {
+            typeSelect.onChange.reg(function (prettyVal, val) {
+                $container.find('input').each(function (i, input) {
+                    if (!input._flatpickr && val !== 'text') {
+                        input.value = "";
+                    }
+
+                    if (input._flatpickr) {
+                        input._flatpickr.destroy();
+                        delete input._flatpickr;
+                    }
+                    if (val === 'time') {
+                        Flatpickr(input, {
+                            enableTime: true,
+                            time_24hr: is24h,
+                            dateFormat: dateFormat,
+                        });
+                    }
+                    if (val === 'day') {
+                        Flatpickr(input, {
+                            time_24hr: is24h,
+                        });
+                    }
+                });
+            });
+        }
+
         // "Add option" button handler
         $add = $(add).click(function () {
             $add.before(getOption(Messages.form_newOption, false));
-            if ($(container).find('input').length >= MAX_OPTIONS) { $add.hide(); }
+            var l = $container.find('input').length;
+            $(maxInput).attr('max', l);
+            if (l >= MAX_OPTIONS) { $add.hide(); }
         });
         // If multiline block, handle "Add item" button
         $addItem = $(addItem).click(function () {
             $addItem.before(getOption(Messages.form_newItem, true, Util.uid()));
             if ($(containerItems).find('input').length >= MAX_ITEMS) { $addItem.hide(); }
         });
-        if ($(container).find('input').length >= MAX_OPTIONS) { $add.hide(); }
+        if ($container.find('input').length >= MAX_OPTIONS) { $add.hide(); }
         if ($(containerItems).find('input').length >= MAX_ITEMS) { $addItem.hide(); }
 
         // Cancel changes
@@ -207,8 +288,8 @@ define([
             var values = [];
             var active = document.activeElement;
             var cursor = {};
-            $(container).find('input').each(function (i, el) {
-                if (el === active) {
+            $container.find('input').each(function (i, el) {
+                if (el === active && !el._flatpickr) {
                     cursor.el= $(el).val();
                     cursor.start = el.selectionStart;
                     cursor.end = el.selectionEnd;
@@ -219,6 +300,10 @@ define([
 
             if (maxInput) {
                 _content.max = Number($(maxInput).val()) || 1;
+            }
+
+            if (typeSelect) {
+                _content.type = typeSelect.getValue();
             }
 
             if (v.items) {
@@ -255,7 +340,7 @@ define([
             // Get values
             var values = [];
             var duplicates = false;
-            $(container).find('input').each(function (i, el) {
+            $container.find('input').each(function (i, el) {
                 var val = $(el).val().trim();
                 if (values.indexOf(val) === -1) { values.push(val); }
                 else { duplicates = true; }
@@ -291,14 +376,61 @@ define([
                 res.max = maxVal;
             }
 
+            if (typeSelect) {
+                res.type = typeSelect.getValue();
+            }
+
             cb(res);
         });
 
         return [
+            type,
             maxOptions,
             h('div.cp-form-edit-options-block', [containerItems, container]),
             h('div', [cancelBlock, saveBlock])
         ];
+    };
+
+    var makePollTable = function (answers, opts) {
+        // Create first line with options
+        var els = opts.values.map(function (data, i) {
+            if (opts.type === "day") {
+                var _date = new Date(data);
+                data = _date.toLocaleDateString();
+            }
+            return h('div.cp-poll-cell.cp-form-poll-option', data);
+        });
+        // Insert axis switch button
+        var switchAxis = h('button.btn', [
+            h('i.fa.fa-exchange'),
+        ]);
+        els.unshift(h('div.cp-poll-cell.cp-poll-switch', switchAxis));
+        var lines = [h('div', els)];
+
+        // Add answers
+        if (Array.isArray(answers)) {
+            answers.forEach(function (answer) {
+                if (!answer.name || !answer.values) { return; }
+                var _name = answer.name;
+                var values = answer.values || {};
+                var els = opts.values.map(function (data) {
+                    var res = values[data] || 0;
+                    var v = (Number(res) === 1) ? h('i.fa.fa-check.cp-yes') : undefined;
+                    var cell = h('div.cp-poll-cell.cp-form-poll-answer', {
+                        'data-value': res
+                    }, v);
+                    return cell;
+                });
+                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', _name));
+                lines.push(h('div', els));
+            });
+        }
+
+        var $s = $(switchAxis).click(function () {
+            $s.closest('.cp-form-type-poll').toggleClass('cp-form-poll-switch');
+        });
+
+        return lines;
     };
 
     var getEmpty = function (empty) {
@@ -739,6 +871,99 @@ define([
             },
             icon: h('i.fa.fa-list-ul')
         },
+        poll: {
+            defaultOpts: {
+                type: 'text', // Text or Days or Time
+                values: [1, 2, 3].map(function (i) {
+                    return Messages._getKey('form_defaultOption', [i]);
+                })
+            },
+            get: function (opts, answers, username) {
+                if (!opts) { opts = TYPES.poll.defaultOpts; }
+                if (!Array.isArray(opts.values)) { return; }
+                var name = Util.uid();
+
+                var lines = makePollTable(answers, opts);
+
+                // Add form
+                // XXX only if not already answered!
+                var addLine = opts.values.map(function (data, i) {
+                    var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
+                        h('i.fa.fa-times.cp-no'),
+                        h('i.fa.fa-check.cp-yes'),
+                        h('i.fa.fa-question.cp-maybe'),
+                    ]);
+                    var $c = $(cell);
+                    $c.data('option', data);
+                    var val = 0;
+                    $c.attr('data-value', val);
+                    $c.click(function () {
+                        val = (val+1)%3;
+                        $c.attr('data-value', val);
+                    });
+                    cell._setValue = function (v) {
+                        val = v;
+                        $c.attr('data-value', val);
+                    };
+                    return cell;
+                });
+                // Name input
+                var nameInput = h('input', { value: username });
+                addLine.unshift(h('div.cp-poll-cell', nameInput));
+                // XXX Submit button here?
+                lines.push(h('div', addLine));
+
+
+
+                var tag = h('div.cp-form-type-poll', lines);
+                var $tag = $(tag);
+
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
+                return {
+                    tag: tag,
+                    getValue: function () {
+                        var res = {};
+                        var name = $(nameInput).val().trim() || Messages.anonymous;
+                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
+                            var $el = $(el);
+                            res[$el.data('option')] = $el.attr('data-value');
+                        });
+                        return {
+                            name: name,
+                            values: res
+                        };
+                    },
+                    reset: function () {
+                        $tag.find('.cp-form-poll-choice').attr('data-value', 0);
+                    },
+                    edit: function (cb, tmp) {
+                        var v = Util.clone(opts);
+                        return editOptions(v, setCursorGetter, cb, tmp);
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    setValue: function (res) {
+                        this.reset();
+                        if (!res || !res.values || !res.name) { return; }
+                        var val = res.values;
+                        $(nameInput).val(res.name);
+                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
+                            if (!el._setValue) { return; }
+                            var $el = $(el);
+                            console.log(el, $el.data('option'), val);
+                            el._setValue(val[$el.data('option')] || 0);
+                        });
+                    }
+                };
+
+            },
+            printResults: function (answers, uid, form) {
+                var _answers = getBlockAnswers(answers, uid);
+                var lines = makePollTable(_answers, form[uid].opts);
+                return h('div.cp-form-type-poll', lines);
+            },
+            icon: h('i.fa.fa-check-square-o')
+        },
     };
 
     var renderResults = function (content, answers) {
@@ -764,6 +989,14 @@ define([
         $container.append(elements);
     };
 
+    var getBlockAnswers = function (answers, uid, filterCurve) {
+        return Object.keys(answers || {}).map(function (user) {
+            if (filterCurve && user === filterCurve) { return; }
+            try {
+                return answers[user].msg[uid];
+            } catch (e) { console.error(e); }
+        }).filter(Boolean);
+    };
     var getFormResults = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
@@ -809,6 +1042,7 @@ define([
             var $v = $(viewResults).click(function () {
                 $v.attr('disabled', 'disabled');
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, answers) {
+                    if (answers) { APP.answers = answers; }
                     $v.removeAttr('disabled');
                     $('body').addClass('cp-app-form-results');
                     renderResults(content, answers);
@@ -838,7 +1072,17 @@ define([
             var model = TYPES[type];
             if (!model) { return; }
 
-            var data = model.get(block.opts);
+            var _answers, name;
+            if (type === 'poll') {
+                var metadataMgr = framework._.cpNfInner.metadataMgr;
+                var user = metadataMgr.getUserData();
+                // If we are a participant, our results shouldn't be in the table but in the
+                // editable part: remove them from _answers
+                _answers = getBlockAnswers(APP.answers, uid, !editable && user.curvePublic);
+                name = user.name;
+            }
+
+            var data = model.get(block.opts, _answers, name);
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid]) { data.setValue(answers[uid]); }
@@ -936,7 +1180,8 @@ define([
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             $(editButtons).show();
                             UI.log(Messages.saved);
-                            data = model.get(newOpts);
+                            var _answers = getBlockAnswers(APP.answers, uid);
+                            data = model.get(newOpts, answers);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
                         });
@@ -1015,6 +1260,7 @@ define([
 
         var sframeChan = framework._.sfCommon.getSframeChannel();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
+        var user = metadataMgr.getUserData();
 
         var priv = metadataMgr.getPrivateData();
         APP.isEditor = Boolean(priv.form_public);
@@ -1080,12 +1326,6 @@ define([
                     }
                     // Otherwise add it
                     var datePicker = h('input');
-                    var is24h = false;
-                    var dateFormat = "Y-m-d H:i";
-                    try {
-                        is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
-                    } catch (e) {}
-                    if (!is24h) { dateFormat = "Y-m-d h:i K"; }
                     var picker = Flatpickr(datePicker, {
                         enableTime: true,
                         time_24hr: is24h,
@@ -1129,6 +1369,7 @@ define([
                     validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey
                 }, function (err, answers) {
+                    if (answers) { APP.answers = answers; }
                     $v.removeAttr('disabled');
                     $body.addClass('cp-app-form-results');
                     renderResults(content, answers);
@@ -1281,6 +1522,7 @@ define([
                     publicKey: content.answers.publicKey,
                     privateKey: priv.form_auditorKey
                 }, function (err, obj) {
+                    if (obj) { APP.answers = obj; }
                     $body.addClass('cp-app-form-results');
                     renderResults(content, obj);
                 });
@@ -1303,6 +1545,26 @@ define([
 
             refreshEndDateBanner();
 
+            // If the results are public and there is at least one doodle, fetch the results now
+            if (content.answers.privateKey && Object.keys(content.form).some(function (uid) {
+                    return content.form[uid].type === "poll";
+                })) {
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", {
+                    channel: content.answers.channel,
+                    validateKey: content.answers.validateKey,
+                    publicKey: content.answers.publicKey,
+                    privateKey: content.answers.privateKey,
+                }, function (err, obj) {
+                    if (obj) { APP.answers = obj; }
+                    checkIntegrity(false);
+                    var myAnswers;
+                    if (user.curvePublic && obj && obj[user.curvePublic]) { // XXX ANONYMOUS
+                        myAnswers = obj[user.curvePublic].msg;
+                    }
+                    updateForm(framework, content, false, myAnswers);
+                });
+                return;
+            }
 
             sframeChan.query("Q_FETCH_MY_ANSWERS", {
                 channel: content.answers.channel,

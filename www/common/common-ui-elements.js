@@ -1473,11 +1473,13 @@ define([
         if (config.isSelect) {
             var pressed = '';
             var to;
+            $container.onChange = Util.mkEvent();
             $container.on('click', 'a', function () {
                 value = $(this).data('value');
                 var $val = $(this);
                 var textValue = $val.html() || value;
                 $button.find('.cp-dropdown-button-title').html(textValue);
+                $container.onChange.fire(textValue, value);
             });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
