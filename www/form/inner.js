@@ -116,9 +116,11 @@ define([
     Messages.form_newItem = "New item";
     Messages.form_add_option = "Add option";
     Messages.form_add_item = "Add item";
+    Messages.form_addMultiple = "Add all";
+    Messages.form_clear = "Clear";
 
 
-    var MAX_OPTIONS = 10; // XXX
+    var MAX_OPTIONS = 15; // XXX
     var MAX_ITEMS = 10; // XXX
 
     var editOptions = function (v, setCursorGetter, cb, tmp) {
@@ -184,6 +186,7 @@ define([
 
         // Show existing options
         var $add, $addItem;
+        var addMultiple;
         var getOption = function (val, isItem, uid) {
             var input = h('input', {value:val});
             if (uid) { $(input).data('uid', uid); }
@@ -198,9 +201,9 @@ define([
                         defaultDate: val ? new Date(val) : undefined
                     });
                 } else if (v.type === 'day') {
-                    Flatpickr(input, {
+                    /*Flatpickr(input, {
                         defaultDate: val ? new Date(val) : undefined
-                    });
+                    });*/
                 }
             }
 
@@ -224,7 +227,10 @@ define([
                 // We've just deleted an item/option so we should be under the MAX limit and
                 // we can show the "add" button again
                 if (isItem && $addItem) { $addItem.show(); }
-                if (!isItem && $add) { $add.show(); }
+                if (!isItem && $add) {
+                    $add.show();
+                    if (v.type === "time") { $(addMultiple).show(); }
+                }
             });
             return el;
         };
@@ -243,31 +249,92 @@ define([
             containerItems = h('div.cp-form-edit-block', inputsItems);
         }
 
+        // Calendar...
+        var calendarView;
+        if (v.type) {
+            var calendarInput = h('input');
+            calendarView = h('div', calendarInput);
+            var calendarDefault = v.type === "day" ? v.values.map(function (time) {
+                if (!time) { return; }
+                var d = new Date(time);
+                if (!isNaN(d)) { return d; }
+            }).filter(Boolean) : undefined;
+            Flatpickr(calendarInput, {
+                mode: 'multiple',
+                inline: true,
+                defaultDate: calendarDefault,
+                appendTo: calendarView
+            });
+        }
+
+        // Calendar time // XXX
+        if (v.type) {
+            var multipleInput = h('input');
+            var multipleClearButton = h('button.btn', Messages.form_clear);
+            var addMultipleButton = h('button.btn', [
+                h('i.fa.fa-plus'),
+                h('span', Messages.form_addMultiple)
+            ]);
+            addMultiple = h('div', { style: "display: none;" }, [
+                multipleInput,
+                addMultipleButton,
+                multipleClearButton
+            ]);
+            var multiplePickr = Flatpickr(multipleInput, {
+                mode: 'multiple',
+                enableTime: true,
+                dateFormat: dateFormat,
+            });
+            $(multipleClearButton).click(function () {
+                multiplePickr.clear();
+            });
+            $(addMultipleButton).click(function () {
+                multiplePickr.selectedDates.some(function (date) {
+                    $add.before(getOption(date, false));
+                    var l = $container.find('input').length;
+                    $(maxInput).attr('max', l);
+                    if (l >= MAX_OPTIONS) {
+                        $add.hide();
+                        $(addMultiple).hide();
+                        return true;
+                    }
+                });
+                multiplePickr.clear();
+            });
+        }
+
+        var refreshView = function () {
+            if (!v.type) { return; }
+            var $calendar = $(calendarView);
+            if (v.type !== "day") {
+                $calendar.hide();
+                $container.show();
+                var l = $container.find('input').length;
+                if (v.type === "time" && l < MAX_OPTIONS) {
+                    $(addMultiple).show();
+                } else {
+                    $(addMultiple).hide();
+                }
+            } else {
+                $calendar.show();
+                $container.hide();
+            }
+        };
+        refreshView();
+
         // Doodle type change: empty current values and change input types?
         if (typeSelect) {
             typeSelect.onChange.reg(function (prettyVal, val) {
+                v.type = val;
+                refreshView();
+                if (val !== "text") {
+                    $container.find('.cp-form-edit-block-input').remove();
+                    return;
+                }
                 $container.find('input').each(function (i, input) {
-                    if (!input._flatpickr && val !== 'text') {
-                        input.value = "";
-                    }
-
-                    v.type = val;
-
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
                         delete input._flatpickr;
-                    }
-                    if (val === 'time') {
-                        Flatpickr(input, {
-                            enableTime: true,
-                            time_24hr: is24h,
-                            dateFormat: dateFormat,
-                        });
-                    }
-                    if (val === 'day') {
-                        Flatpickr(input, {
-                            time_24hr: is24h,
-                        });
                     }
                 });
             });
@@ -281,6 +348,7 @@ define([
             $(maxInput).attr('max', l);
             if (l >= MAX_OPTIONS) { $add.hide(); }
         });
+
         // If multiline block, handle "Add item" button
         $addItem = $(addItem).click(function () {
             $addItem.before(getOption(Messages.form_newItem, true, Util.uid()));
@@ -306,6 +374,12 @@ define([
                 }
                 values.push($(el).val());
             });
+            if (v.type === "day") {
+                var dayPickr = $(calendarView).find('input')[0]._flatpickr;
+                values = dayPickr.selectedDates.map(function (date) {
+                    return +date;
+                });
+            }
             var _content = {values: values};
 
             if (maxInput) {
@@ -350,12 +424,22 @@ define([
             // Get values
             var values = [];
             var duplicates = false;
-            $container.find('input').each(function (i, el) {
-                var val = $(el).val().trim();
-                if (v.type === "day" || v.type === "time") { val = +new Date(val); }
-                if (values.indexOf(val) === -1) { values.push(val); }
-                else { duplicates = true; }
-            });
+            if (v.type === "day") {
+                var dayPickr = $(calendarView).find('input')[0]._flatpickr;
+                values = dayPickr.selectedDates.map(function (date) {
+                    return +date;
+                });
+            } else {
+                $container.find('input').each(function (i, el) {
+                    var val = $(el).val().trim();
+                    if (v.type === "day" || v.type === "time") { val = +new Date(val); }
+                    if (values.indexOf(val) === -1) { values.push(val); }
+                    else { duplicates = true; }
+                });
+            }
+            if (!values.length) {
+                return void UI.warn(Messages.error); // XXX error message: no values
+            }
             var res = { values: values };
 
             // If multiline block, get items
@@ -397,7 +481,9 @@ define([
         return [
             type,
             maxOptions,
+            calendarView,
             h('div.cp-form-edit-options-block', [containerItems, container]),
+            addMultiple,
             h('div', [cancelBlock, saveBlock])
         ];
     };
@@ -446,7 +532,6 @@ define([
                     style: 'flex-grow:'+(_days[day]-1)+';'
                 }, day));
             });
-            var width = (opts.values.length + 2)*100;
             lines.unshift(h('div', days));
         }
 
