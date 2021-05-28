@@ -215,7 +215,7 @@ define([
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
-                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features),
             ].concat(rightLinks))
         );
     };
