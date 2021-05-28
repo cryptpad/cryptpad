@@ -266,7 +266,7 @@ define([
         // "Add option" button handler
         $add = $(add).click(function () {
             var txt = v.type ? '' : Messages.form_newOption;
-            $add.before(getOption(Messages.form_newOption, false));
+            $add.before(getOption(txt, false));
             var l = $container.find('input').length;
             $(maxInput).attr('max', l);
             if (l >= MAX_OPTIONS) { $add.hide(); }
