@@ -23,7 +23,6 @@ define([
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
@@ -49,12 +48,10 @@ define([
     Sortable
     )
 {
-    var SaveAs = window.saveAs;
     var APP = window.APP = {
     };
 
     var is24h = false;
-    var dayFormat = "Y-m-d";
     var dateFormat = "Y-m-d H:i";
     try {
         is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
@@ -142,7 +139,7 @@ define([
                 value: v.max,
                 min: 1,
                 max: v.values.length
-            })
+            });
             maxOptions = h('div.cp-form-edit-max-options', [
                 h('span', Messages.form_editMax),
                 maxInput
@@ -181,7 +178,7 @@ define([
         }
 
         // Show existing options
-        var $add;
+        var $add, $addItem;
         var getOption = function (val, isItem, uid) {
             var input = h('input', {value:val});
             if (uid) { $(input).data('uid', uid); }
@@ -393,7 +390,7 @@ define([
 
     var makePollTable = function (answers, opts) {
         // Create first line with options
-        var els = opts.values.map(function (data, i) {
+        var els = opts.values.map(function (data) {
             if (opts.type === "day") {
                 var _date = new Date(data);
                 data = _date.toLocaleDateString();
@@ -451,6 +448,15 @@ define([
         return res;
     };
 
+    var getBlockAnswers = function (answers, uid, filterCurve) {
+        return Object.keys(answers || {}).map(function (user) {
+            if (filterCurve && user === filterCurve) { return; }
+            try {
+                return answers[user].msg[uid];
+            } catch (e) { console.error(e); }
+        }).filter(Boolean);
+    };
+
     var TYPES = {
         input: {
             get: function () {
@@ -501,7 +507,7 @@ define([
                     tag: tag,
                     getValue: function () {
                         var res;
-                        els.some(function (el, i) {
+                        els.some(function (el) {
                             var $i = $(el).find('input');
                             if (Util.isChecked($i)) {
                                 res = $i.data('val');
@@ -592,10 +598,10 @@ define([
                     getValue: function () {
                         var res = {};
                         var l = lines.slice(1);
-                        l.forEach(function (el, i) {
+                        l.forEach(function (el) {
                             var $el = $(el);
                             var uid = $el.attr('data-uid');
-                            var $l = $el.find('input').each(function (i, input) {
+                            $el.find('input').each(function (i, input) {
                                 var $i = $(input);
                                 if (res[uid]) { return; }
                                 if (Util.isChecked($i)) { res[uid] = $i.data('val'); }
@@ -696,7 +702,7 @@ define([
                     tag: tag,
                     getValue: function () {
                         var res = [];
-                        els.forEach(function (el, i) {
+                        els.forEach(function (el) {
                             var $i = $(el).find('input');
                             if (Util.isChecked($i)) {
                                 res.push($i.data('val'));
@@ -801,11 +807,11 @@ define([
                     getValue: function () {
                         var res = {};
                         var l = lines.slice(1);
-                        l.forEach(function (el, i) {
+                        l.forEach(function (el) {
                             var $el = $(el);
                             var uid = $el.attr('data-uid');
                             res[uid] = [];
-                            var $l = $el.find('input').each(function (i, input) {
+                            $el.find('input').each(function (i, input) {
                                 var $i = $(input);
                                 if (Util.isChecked($i)) { res[uid].push($i.data('val')); }
                             });
@@ -881,13 +887,12 @@ define([
             get: function (opts, answers, username) {
                 if (!opts) { opts = TYPES.poll.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
-                var name = Util.uid();
 
                 var lines = makePollTable(answers, opts);
 
                 // Add form
                 // XXX only if not already answered!
-                var addLine = opts.values.map(function (data, i) {
+                var addLine = opts.values.map(function (data) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
                         h('i.fa.fa-times.cp-no'),
                         h('i.fa.fa-check.cp-yes'),
@@ -989,14 +994,6 @@ define([
         $container.append(elements);
     };
 
-    var getBlockAnswers = function (answers, uid, filterCurve) {
-        return Object.keys(answers || {}).map(function (user) {
-            if (filterCurve && user === filterCurve) { return; }
-            try {
-                return answers[user].msg[uid];
-            } catch (e) { console.error(e); }
-        }).filter(Boolean);
-    };
     var getFormResults = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
@@ -1034,8 +1031,9 @@ define([
             });
         });
 
+        var viewResults;
         if (content.answers.privateKey) {
-            var viewResults = h('button.btn.btn-primary', [
+            viewResults = h('button.btn.btn-primary', [
                 h('span.cp-app-form-button-results', Messages.form_viewResults),
             ]);
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -1181,7 +1179,7 @@ define([
                             $(editButtons).show();
                             UI.log(Messages.saved);
                             var _answers = getBlockAnswers(APP.answers, uid);
-                            data = model.get(newOpts, answers);
+                            data = model.get(newOpts, _answers);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
                         });
@@ -1306,8 +1304,6 @@ define([
                 if (endDate <= now) {
                     text = Messages._getKey('form_isClosed', [date]);
                     buttonTxt = Messages.form_open;
-                    action = function () {
-                    };
                 } else if (endDate > now) {
                     text = Messages._getKey('form_willClose', [date]);
                     buttonTxt = Messages.form_removeEnd;
@@ -1481,7 +1477,7 @@ define([
             }
         };
 
-        framework.onReady(function (isNew) {
+        framework.onReady(function () {
             var priv = metadataMgr.getPrivateData();
 
             if (APP.isEditor) {

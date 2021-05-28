@@ -8,6 +8,7 @@ define([
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
     var Nacl = window.nacl;
 
+    var href, hash;
     // Loaded in load #2
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
@@ -44,8 +45,8 @@ define([
                 channel: Utils.secret.channel,
                 keys: { viewKeyStr: Nacl.util.encodeBase64(keys.cryptKey) }
             });
-            var parsed = Utils.Hash.parseTypeHash('pad', auditorHash);
-            meta.form_auditorHash = parsed.getHash({auditorKey: privateKey});
+            var _parsed = Utils.Hash.parseTypeHash('pad', auditorHash);
+            meta.form_auditorHash = _parsed.getHash({auditorKey: privateKey});
 
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
@@ -67,7 +68,7 @@ define([
                 nThen(function (w) {
                     require([
                         '/bower_components/chainpad-netflux/chainpad-netflux.js',
-                    ], w(function (_CPNetflux, _Crypto) {
+                    ], w(function (_CPNetflux) {
                         CPNetflux = _CPNetflux;
                     }));
                     Cryptpad.getAccessKeys(w(function (_keys) {
@@ -83,7 +84,7 @@ define([
                     Cryptpad.makeNetwork(w(function (err, nw) {
                         network = nw;
                     }));
-                }).nThen(function (w) {
+                }).nThen(function () {
                     if (!network) { return void cb({error: "E_CONNECT"}); }
 
                     var keys = Utils.secret && Utils.secret.keys;
@@ -120,9 +121,6 @@ define([
                 });
             });
             sframeChan.on("Q_FETCH_MY_ANSWERS", function (data, cb) {
-                var keys;
-                var CPNetflux;
-                var network;
                 var answer;
                 var myKeys;
                 nThen(function (w) {
@@ -136,7 +134,7 @@ define([
                         }
                         answer = obj;
                     }));
-                }).nThen(function (w) {
+                }).nThen(function () {
                     Cryptpad.getHistoryRange({
                         channel: data.channel,
                         lastKnownHash: answer.hash,
@@ -144,7 +142,6 @@ define([
                     }, function (obj) {
                         if (obj && obj.error) { return void cb(obj); }
                         var messages = obj.messages;
-                        var ephemeral_priv = answer.curvePrivate;
                         var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
                             validateKey: data.validateKey,
                             ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
@@ -164,7 +161,7 @@ define([
                     Cryptpad.getFormKeys(w(function (keys) {
                         myKeys = keys;
                     }));
-                }).nThen(function (w) {
+                }).nThen(function () {
 
                     var keys = Utils.secret && Utils.secret.keys;
                     myKeys.signingKey = keys.secondarySignKey;
@@ -190,11 +187,6 @@ define([
                         cb({error: err, response: response, hash: hash});
                     });
                 });
-            });
-            sframeChan.on('EV_FORM_MAILBOX', function (data) {
-                var curvePair = Nacl.box.keyPair();
-                publicKey = Nacl.util.encodeBase64(curvePair.publicKey);
-                privateKey = Nacl.util.encodeBase64(curvePair.secretKey);
             });
         };
         SFCommonO.start({

@@ -1223,6 +1223,7 @@ define([
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
+        var $input = $(input);
         var mark = h('span.cp-radio-mark', markOpts);
         var label = h('span.cp-checkmark-label', labelTxt);
 
@@ -1231,13 +1232,13 @@ define([
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
-                if ($(input).is(':checked')) { return; }
-                $(input).prop('checked', !$(input).is(':checked'));
-                $(input).change();
+                if ($input.is(':checked')) { return; }
+                $input.prop('checked', !$input.is(':checked'));
+                $input.change();
             }
         });
 
-        $(input).change(function () { $(mark).focus(); });
+        $input.change(function () { $(mark).focus(); });
 
         var radio =  h('label', labelOpts, [
             input,

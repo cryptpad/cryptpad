@@ -69,7 +69,7 @@ define([
         }, cb);
     };
 
-    common.getAccessKeys = function (cb, opts) {
+    common.getAccessKeys = function (cb) {
         var keys = [];
         Nthen(function (waitFor) {
             // Push account keys
