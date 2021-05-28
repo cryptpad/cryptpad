@@ -241,6 +241,8 @@ define([
                         input.value = "";
                     }
 
+                    v.type = val;
+
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
                         delete input._flatpickr;
@@ -263,6 +265,7 @@ define([
 
         // "Add option" button handler
         $add = $(add).click(function () {
+            var txt = v.type ? '' : Messages.form_newOption;
             $add.before(getOption(Messages.form_newOption, false));
             var l = $container.find('input').length;
             $(maxInput).attr('max', l);
@@ -891,7 +894,6 @@ define([
                 var lines = makePollTable(answers, opts);
 
                 // Add form
-                // XXX only if not already answered!
                 var addLine = opts.values.map(function (data) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
                         h('i.fa.fa-times.cp-no'),
@@ -913,7 +915,7 @@ define([
                     return cell;
                 });
                 // Name input
-                var nameInput = h('input', { value: username });
+                var nameInput = h('input', { value: username || '' });
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 // XXX Submit button here?
                 lines.push(h('div', addLine));
