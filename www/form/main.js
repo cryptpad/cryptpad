@@ -63,6 +63,7 @@ define([
             });
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
                 var myKeys = {};
+                var myFormKeys;
                 var CPNetflux;
                 var network;
                 nThen(function (w) {
@@ -81,11 +82,18 @@ define([
                             }
                         });
                     }));
+                    Cryptpad.getFormKeys(w(function (keys) {
+                        myFormKeys = keys;
+                    }));
                     Cryptpad.makeNetwork(w(function (err, nw) {
                         network = nw;
                     }));
                 }).nThen(function () {
                     if (!network) { return void cb({error: "E_CONNECT"}); }
+
+                    if (myFormKeys.formSeed) {
+                        myFormKeys = getAnonymousKeys(myFormKeys.formSeed, data.channel);
+                    }
 
                     var keys = Utils.secret && Utils.secret.keys;
 
@@ -105,7 +113,15 @@ define([
                     };
                     var results = {};
                     config.onReady = function () {
-                        cb(results);
+                        var myKey;
+                        // If we have submitted an anonymous answer, retrieve it
+                        if (myFormKeys.curvePublic && results[myFormKeys.curvePublic]) {
+                            myKey = myFormKeys.curvePublic;
+                        }
+                        cb({
+                            myKey: myKey,
+                            results: results
+                        });
                         network.disconnect();
                     };
                     config.onMessage = function (msg, peer, vKey, isCp, hash, senderCurve, cfg) {
@@ -135,6 +151,10 @@ define([
                         answer = obj;
                     }));
                 }).nThen(function () {
+                    if (answer.anonymous) {
+                        if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
+                        myKeys = getAnonymousKeys(myKeys.formSeed, data.channel);
+                    }
                     Cryptpad.getHistoryRange({
                         channel: data.channel,
                         lastKnownHash: answer.hash,
@@ -154,6 +174,16 @@ define([
                 });
 
             });
+            var getAnonymousKeys = function (formSeed, channel) {
+                var array = Nacl.util.decodeBase64(formSeed + channel);
+                var hash = Nacl.hash(array);
+                var secretKey = Nacl.util.encodeBase64(hash.subarray(32));
+                var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
+                return {
+                    curvePrivate: secretKey,
+                    curvePublic: publicKey,
+                };
+            };
             sframeChan.on("Q_FORM_SUBMIT", function (data, cb) {
                 var box = data.mailbox;
                 var myKeys;
@@ -162,7 +192,15 @@ define([
                         myKeys = keys;
                     }));
                 }).nThen(function () {
-
+                    // XXX if we are a registered user (myKeys.curvePrivate exists), we may
+                    // have already answered anonymously. We should send a "proof" to show
+                    // that the existing anonymous answer are ours (using myKeys.formSeed).
+                    // Even if we never answered anonymously, the keyPair would be unique to
+                    // the current channel so it wouldn't leak anything.
+                    if (data.anonymous) {
+                        if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
+                        myKeys = getAnonymousKeys(myKeys.formSeed, box.channel);
+                    }
                     var keys = Utils.secret && Utils.secret.keys;
                     myKeys.signingKey = keys.secondarySignKey;
 
@@ -182,7 +220,8 @@ define([
                         Cryptpad.storeFormAnswer({
                             channel: box.channel,
                             hash: hash,
-                            curvePrivate: ephemeral_private
+                            curvePrivate: ephemeral_private,
+                            anonymous: Boolean(data.anonymous)
                         });
                         cb({error: err, response: response, hash: hash});
                     });

@@ -629,6 +629,7 @@ define([
             if (!proxy.uid) {
                 store.noDriveUid = store.noDriveUid || Hash.createChannelId();
             }
+
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
@@ -655,7 +656,7 @@ define([
                     accountName: proxy.login_name || '',
                     offline: store.proxy && store.offline,
                     teams: teams,
-                    plan: account.plan
+                    plan: account.plan,
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -2710,6 +2711,10 @@ define([
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
                 if (!proxy.forms) { proxy.forms = {}; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
+                // Form seed is used to generate a box encryption keypair when
+                // answering a form anonymously
+                if (!proxy.form_seed) { proxy.form_seed = Hash.createChannelId(); }
+
 
                 // Call onCacheReady if the manager is not yet defined
                 if (!manager) {

@@ -110,6 +110,12 @@ define([
     Messages.form_isClosed = "This form was closed on {0}";
     Messages.form_willClose = "This form will close on {0}";
 
+    Messages.form_anonymous_on = "Anonymous answers are allowed";
+    Messages.form_anonymous_off = "Anonymous answers are blocked";
+    Messages.form_anonymous_button_on = "Block anonymous answers";
+    Messages.form_anonymous_button_off = "Allow anonymous answers";
+    Messages.form_anonymous_blocked = "Anonymous responses are blocked for this form. You must log in or register to submit answers.";
+
     Messages.form_defaultOption = "Option {0}";
     Messages.form_defaultItem = "Item {0}";
     Messages.form_newOption = "New option";
@@ -119,6 +125,7 @@ define([
     Messages.form_addMultiple = "Add all";
     Messages.form_clear = "Clear";
 
+    Messages.form_anonymousBox = "Answer anonymously";
 
     var MAX_OPTIONS = 15; // XXX
     var MAX_ITEMS = 10; // XXX
@@ -544,7 +551,6 @@ define([
             });
             var dayValues = Object.keys(_days).map(function (d) { return _days[d]; });
             var minDay = Math.min.apply(null, dayValues);
-            console.log(_days, minDay);
             Object.keys(_days).forEach(function (day) {
                 days.push(h('div.cp-poll-cell.cp-poll-time-day', {
                     style: 'flex-grow:'+(_days[day]-1)+';'
@@ -1061,12 +1067,9 @@ define([
                     return cell;
                 });
                 // Name input
-                var nameInput = h('input', { value: username || '' });
+                var nameInput = h('input', { value: username || Messages.anonymous });
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
-                // XXX Submit button here?
                 lines.push(h('div', addLine));
-
-
 
                 var tag = h('div.cp-form-type-poll', lines);
                 var $tag = $(tag);
@@ -1150,6 +1153,20 @@ define([
         return results;
     };
     var makeFormControls = function (framework, content, update) {
+        var loggedIn = framework._.sfCommon.isLoggedIn();
+
+        if (!loggedIn && !content.answers.anonymous) { return; }
+
+        var cbox;
+        if (loggedIn) {
+            cbox = UI.createCheckbox('cp-form-anonymous',
+                       Messages.form_anonymousBox, false, { mark: { tabindex:1 } });
+            if (!content.answers.anonymous) {
+                $(cbox).find('input').attr('disabled', 'disabled');
+            }
+
+        }
+
         var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.cp-open.btn.btn-danger-alt', Messages.form_reset);
         $(reset).click(function () {
@@ -1162,10 +1179,12 @@ define([
             $send.attr('disabled', 'disabled');
             var results = getFormResults();
             if (!results) { return; }
+
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query('Q_FORM_SUBMIT', {
                 mailbox: content.answers,
-                results: results
+                results: results,
+                anonymous: !loggedIn || Util.isChecked($(cbox).find('input'))
             }, function (err, data) {
                 $send.attr('disabled', 'disabled');
                 if (err || (data && data.error)) {
@@ -1186,7 +1205,8 @@ define([
             var sframeChan = framework._.sfCommon.getSframeChannel();
             var $v = $(viewResults).click(function () {
                 $v.attr('disabled', 'disabled');
-                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, answers) {
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                    var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
                     $v.removeAttr('disabled');
                     $('body').addClass('cp-app-form-results');
@@ -1200,7 +1220,10 @@ define([
             reset = undefined;
         }
 
-        return h('div.cp-form-send-container', [send, reset, viewResults]);
+        return h('div.cp-form-send-container', [
+            cbox ? h('div', cbox) : undefined,
+            send, reset, viewResults
+        ]);
     };
     var updateForm = function (framework, content, editable, answers, temp) {
         var $container = $('div.cp-form-creator-content');
@@ -1401,6 +1424,7 @@ define([
 
     var andThen = function (framework) {
         framework.start();
+        var evOnChange = Util.mkEvent();
         var content = {};
 
         var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -1416,26 +1440,54 @@ define([
         $toolbarContainer.after(helpMenu.menu);
 
 
+        // XXX refresh form settings on remote change
         var makeFormSettings = function () {
-            var makePublic = h('button.btn.btn-primary', Messages.form_makePublic);
-            if (content.answers.privateKey) { makePublic = undefined; }
-            var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
-            var resultsType = h('div.cp-form-results-type-container', [
-                h('span.cp-form-results-type', publicText),
-                makePublic
-            ]);
-            var $makePublic = $(makePublic).click(function () {
-                UI.confirm(Messages.form_makePublicWarning, function (yes) {
-                    if (!yes) { return; }
-                    content.answers.privateKey = priv.form_private;
+            // Private / public status
+            var resultsType = h('div.cp-form-results-type-container');
+            var $results = $(resultsType);
+            var refreshPublic = function () {
+                $results.empty();
+                var makePublic = h('button.btn.btn-primary', Messages.form_makePublic);
+                if (content.answers.privateKey) { makePublic = undefined; }
+                var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
+                $results.append(h('span.cp-form-results-type', publicText));
+                $results.append(makePublic);
+                var $makePublic = $(makePublic).click(function () {
+                    UI.confirm(Messages.form_makePublicWarning, function (yes) {
+                        if (!yes) { return; }
+                        $makePublic.attr('disabled', 'disabled');
+                        content.answers.privateKey = priv.form_private;
+                        framework.localChange();
+                        framework._.cpNfInner.chainpad.onSettle(function () {
+                            UI.log(Messages.saved);
+                            refreshPublic();
+                        });
+                    });
+                });
+            };
+            refreshPublic();
+
+            // Allow anonymous answers
+            var privacyContainer = h('div.cp-form-privacy-container');
+            var $privacy = $(privacyContainer);
+            var refreshPrivacy = function () {
+                $privacy.empty();
+                var anonymous = content.answers.anonymous;
+                var key = anonymous ? 'on' : 'off';
+                var button = h('button.btn.btn-secondary', Messages['form_anonymous_button_'+key]);
+                var $b = $(button).click(function () {
+                    $b.attr('disabled', 'disabled');
+                    content.answers.anonymous = !anonymous;
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
-                        $makePublic.remove();
-                        $(resultsType).find('.cp-form-results-type').text(Messages.form_isPublic);
+                        refreshPrivacy();
                     });
                 });
-            });
+                $privacy.append(h('div.cp-form-status', Messages['form_anonymous_'+key]));
+                $privacy.append(h('div.cp-form-actions', button));
+            };
+            refreshPrivacy();
 
             // End date / Closed state
             var endDateContainer = h('div.cp-form-status-container');
@@ -1511,7 +1563,8 @@ define([
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey
-                }, function (err, answers) {
+                }, function (err, obj) {
+                    var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
                     $v.removeAttr('disabled');
                     $body.addClass('cp-app-form-results');
@@ -1519,8 +1572,14 @@ define([
                 });
 
             });
+
+            evOnChange.reg(refreshPublic);
+            evOnChange.reg(refreshPrivacy);
+            evOnChange.reg(refreshEndDate);
+
             return [
                 endDateContainer,
+                privacyContainer,
                 resultsType,
                 viewResults,
             ];
@@ -1665,9 +1724,10 @@ define([
                     publicKey: content.answers.publicKey,
                     privateKey: priv.form_auditorKey
                 }, function (err, obj) {
-                    if (obj) { APP.answers = obj; }
+                    var answers = obj && obj.results;
+                    if (answers) { APP.answers = answers; }
                     $body.addClass('cp-app-form-results');
-                    renderResults(content, obj);
+                    renderResults(content, answers);
                 });
                 return;
             }
@@ -1678,15 +1738,20 @@ define([
                     validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey
                 }, function (err, obj) {
-                    if (obj) { APP.answers = obj; }
+                    var answers = obj && obj.results;
+                    if (answers) { APP.answers = answers; }
                     checkIntegrity(false);
                     updateForm(framework, content, true);
-
                 });
                 return;
             }
 
             refreshEndDateBanner();
+
+            var loggedIn = framework._.sfCommon.isLoggedIn();
+            if (!loggedIn && !content.answers.anonymous) {
+                UI.alert(Messages.form_anonymous_blocked);
+            }
 
             // If the results are public and there is at least one doodle, fetch the results now
             if (content.answers.privateKey && Object.keys(content.form).some(function (uid) {
@@ -1698,12 +1763,19 @@ define([
                     publicKey: content.answers.publicKey,
                     privateKey: content.answers.privateKey,
                 }, function (err, obj) {
-                    if (obj) { APP.answers = obj; }
+                    var answers = obj && obj.results;
+                    if (answers) { APP.answers = answers; }
                     checkIntegrity(false);
                     var myAnswers;
-                    if (user.curvePublic && obj && obj[user.curvePublic]) { // XXX ANONYMOUS
-                        myAnswers = obj[user.curvePublic].msg;
+                    var curve1 = user.curvePublic
+                    var curve2 = obj && obj.myKey; // Anonymous answer key
+                    if (answers) {
+                        var myAnswersObj = answers[curve1] || answers[curve2] || undefined;
+                        if (myAnswersObj) {
+                            myAnswers = myAnswersObj.msg;
+                        }
                     }
+                    console.warn(obj);
                     updateForm(framework, content, false, myAnswers);
                 });
                 return;
@@ -1726,8 +1798,8 @@ define([
         });
 
         framework.onContentUpdate(function (newContent) {
-            console.log(newContent);
             content = newContent;
+            evOnChange.fire();
             refreshEndDateBanner();
             var answers, temp;
             if (!APP.isEditor) { answers = getFormResults(); }

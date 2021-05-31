@@ -76,7 +76,7 @@ define([
             postMessage("GET", {
                 key: ['edPrivate'],
             }, waitFor(function (obj) {
-                if (obj.error) { return; }
+                if (!obj || obj.error) { return; }
                 try {
                     keys.push({
                         edPrivate: obj,
@@ -89,7 +89,7 @@ define([
             postMessage("GET", {
                 key: ['teams'],
             }, waitFor(function (obj) {
-                if (obj.error) { return; }
+                if (!obj || obj.error) { return; }
                 Object.keys(obj || {}).forEach(function (id) {
                     var t = obj[id];
                     var _keys = t.keys.drive || {};
@@ -104,13 +104,26 @@ define([
     };
 
     common.getFormKeys = function (cb) {
-        postMessage("GET", {
-            key: ['curvePrivate'],
-        }, function (obj) {
-            if (obj.error) { return void cb(); }
+        var curvePrivate;
+        var formSeed;
+        Nthen(function (waitFor) {
+            postMessage("GET", {
+                key: ['curvePrivate'],
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                curvePrivate = obj;
+            }));
+            postMessage("GET", {
+                key: ['form_seed'],
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                formSeed = obj;
+            }));
+        }).nThen(function () {
             cb({
-                curvePrivate: obj,
-                curvePublic: Hash.getCurvePublicFromPrivate(obj)
+                curvePrivate: curvePrivate,
+                curvePublic: curvePrivate && Hash.getCurvePublicFromPrivate(curvePrivate),
+                formSeed: formSeed
             });
         });
     };
@@ -124,7 +137,8 @@ define([
             key: ['forms', data.channel],
             value: {
                 hash: data.hash,
-                curvePrivate: data.curvePrivate
+                curvePrivate: data.curvePrivate,
+                anonymous: data.anonymous
             }
         }, function (obj) {
             if (obj && obj.error) { console.error(obj.error); }
