@@ -1103,6 +1103,11 @@ define([
         postMessage('BURN_PAD', data);
     };
 
+    common.setDriveRedirectPreference = function (data, cb) {
+        LocalStore.setDriveRedirectPreference(data && data.value);
+        cb();
+    };
+
     common.changePadPassword = function (Crypt, Crypto, data, cb) {
         var href = data.href;
         var oldPassword = data.oldPassword;
@@ -2505,6 +2510,11 @@ define([
                             window.CP_logged_in = true;
                         }
                         if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
+
+                        var prefersDriveRedirect = data[Constants.prefersDriveRedirectKey];
+                        if (typeof(prefersDriveRedirect) === 'boolean') {
+                            LocalStore.setDriveRedirectPreference(prefersDriveRedirect);
+                        }
 
                         initialized = true;
                         channelIsReady();

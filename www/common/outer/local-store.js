@@ -76,6 +76,16 @@ define([
         return window.CP_logged_in || typeof getUserHash() === "string";
     };
 
+    LocalStore.getDriveRedirectPreference = function () {
+        try {
+            return JSON.parse(localStorage[Constants.redirectToDriveKey]);
+        } catch (err) { return; }
+    };
+
+    LocalStore.setDriveRedirectPreference = function (bool) {
+        localStorage.setItem(Constants.redirectToDriveKey, Boolean(bool));
+    };
+
     LocalStore.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }

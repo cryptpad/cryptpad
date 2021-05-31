@@ -615,6 +615,7 @@ define([
                         newTemplate: Array.isArray(Cryptpad.initialPath)
                                         && Cryptpad.initialPath[0] === "template",
                         feedbackAllowed: Utils.Feedback.state,
+                        prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password

@@ -3167,6 +3167,10 @@ define([
                     initialized = false;
                 }
 
+                var redirect = Constants.prefersDriveRedirectKey;
+                var redirectPreference = Util.find(store, [ 'proxy', 'settings', 'general', redirect, ]);
+                ret[redirect] = redirectPreference;
+
                 callback(ret);
             });
 
