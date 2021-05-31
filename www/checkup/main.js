@@ -30,8 +30,12 @@ define([
         Assert(f, msg || h('span.advisory-text.cp-danger'));
     };
 
+    var code = function (content) {
+        return h('code', content);
+    };
+
     var CONFIG_PATH = function () {
-        return h('code', 'cryptpad/config/config.js');
+        return code('cryptpad/config/config.js');
     };
     var API_CONFIG_LINK = function () {
         return h('a', {
@@ -50,6 +54,18 @@ define([
         ]);
     };
 
+    var link = function (href, text) {
+        return h('a', {
+            href: href,
+            rel: 'noopener noreferrer',
+            target: '_blank',
+        }, text);
+    };
+
+    var setWarningClass = function (msg) {
+        $(msg).removeClass('cp-danger').addClass('cp-warning');
+    };
+
     var cacheBuster = function (url) {
         return url + '?test=' + (+new Date());
     };
@@ -60,9 +76,9 @@ define([
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
             "CryptPad's sandbox requires that both ",
-            h('code', 'httpUnsafeOrigin'),
+            code('httpUnsafeOrigin'),
             ' and ',
-            h('code', 'httpSafeOrigin'),
+            code('httpSafeOrigin'),
             " be configured in ",
             CONFIG_PATH(),
             '. ',
@@ -75,9 +91,9 @@ define([
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
-            h('code', 'httpUnsafeOrigin'),
+            code('httpUnsafeOrigin'),
             ' and ',
-            h('code', 'httpSafeOrigin'),
+            code('httpSafeOrigin'),
             ' are equivalent. ',
             "In order for CryptPad's security features to be as effective as intended they must be different. ",
             "See ",
@@ -91,9 +107,9 @@ define([
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
-            h('code', 'httpUnsafeOrigin'),
+            code('httpUnsafeOrigin'),
             ' and ',
-            h('code', 'httpSafeOrigin'),
+            code('httpSafeOrigin'),
             ' must not contain trailing slashes. This can be configured in ',
             CONFIG_PATH(),
             '. ',
@@ -105,10 +121,10 @@ define([
     assert(function (cb, msg) {
         msg.appendChild(h("span", [
             "It appears that you are trying to load this page via an origin other than its main domain (",
-            h('code', ApiConfig.httpUnsafeOrigin),
+            code(ApiConfig.httpUnsafeOrigin),
 
             "). See the ",
-            h('code', 'httpUnsafeOrigin'),
+            code('httpUnsafeOrigin'),
             " option in ",
             CONFIG_PATH(),
             " which is exposed via ",
@@ -132,7 +148,7 @@ define([
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
             "The main domain (configured via ",
-            h('code', 'httpUnsafeOrigin'),
+            code('httpUnsafeOrigin'),
             ' as ',
             ApiConfig.httpUnsafeOrigin,
             ' in ',
@@ -149,13 +165,13 @@ define([
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
             "Your browser was not able to load an iframe using the origin specified as ",
-            h('code', "httpSafeOrigin"),
+            code("httpSafeOrigin"),
             " (",
             ApiConfig.httpSafeOrigin,
             ") in ",
             CONFIG_PATH(),
             ". This can be caused by an invalid ",
-            h('code', 'httpUnsafeDomain'),
+            code('httpUnsafeDomain'),
             ', invalid CSP configuration in your reverse proxy, invalid SSL certificates, and many other factors. ',
             'More information about your particular error may be found in your browser console. ',
             RESTART_WARNING(),
@@ -230,7 +246,7 @@ define([
             msg.appendChild(h('span', [
                 "Unable to create, retrieve, or remove encrypted credentials from the server. ",
                 "This is most commonly caused by a mismatch between the value of the  ",
-                h('code', 'blockPath'),
+                code('blockPath'),
                 ' value configured in ',
                 CONFIG_PATH(),
                 " and the corresponding settings in your reverse proxy's configuration file,",
@@ -359,11 +375,11 @@ define([
                     if (response !== expect[k]) {
                         msg.appendChild(h('span', [
                             'A value of ',
-                            h('code', expect[k]),
+                            code(expect[k]),
                             ' was expected for the ',
-                            h('code', k),
+                            code(k),
                             ' HTTP header, but instead a value of "',
-                            h('code', response),
+                            code(response),
                             '" was received.',
                         ]));
                         return true; // returning true indicates that a value is incorrect
@@ -372,14 +388,6 @@ define([
             },
         });
     });
-
-    var link = function (href, text) {
-        return h('a', {
-            href: href,
-            rel: 'noopener noreferrer',
-            target: '_blank',
-        }, text);
-    };
 
     assert(function (cb, msg) {
         setWarningClass(msg);
@@ -404,7 +412,7 @@ define([
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
-            h('code', '/api/broadcast'),
+            code('/api/broadcast'),
             " could not be loaded. This can be caused by an outdated application server or an incorrectly configured reverse proxy. ",
             "Even if the most recent code has been downloaded it's possible the application server has not been restarted. ",
             "Your browser console may provide more details as to why this resource could not be loaded. ",
@@ -417,10 +425,6 @@ define([
             },
         });
     });
-
-    var code = function (content) {
-        return h('code', content);
-    };
 
     var checkAPIHeaders = function (url, msg, cb) {
         $.ajax(cacheBuster(url), {
@@ -486,10 +490,6 @@ define([
         checkAPIHeaders(url, msg, cb);
     });
 
-    var setWarningClass = function (msg) {
-        $(msg).removeClass('cp-danger').addClass('cp-warning');
-    };
-
     assert(function (cb, msg) {
         var email = ApiConfig.adminEmail;
         if (typeof(email) === 'string' && email && email !== 'i.did.not.read.my.config@cryptpad.fr') {
@@ -499,7 +499,7 @@ define([
         setWarningClass(msg);
         msg.appendChild(h('span', [
             'This instance does not provide a valid ',
-            h('code', 'adminEmail'),
+            code('adminEmail'),
             ' which can make it difficult to contact its adminstrator to report vulnerabilities or abusive content.',
             " This can be configured on your instance's admin panel. Use the provided ",
             code("Flush cache'"),
@@ -514,7 +514,7 @@ define([
         msg.appendChild(h('span', [
             "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",
             "This can be configured via the admin panel's ",
-            h('code', 'Support'),
+            code('Support'),
             " tab.",
         ]));
         cb(support && typeof(support) === 'string' && support.length === 44);
@@ -528,7 +528,7 @@ define([
         setWarningClass(msg);
         msg.appendChild(h('span', [
             "This instance has not been configured to support web administration. This can be enabled by adding a registered user's public signing key to the ",
-            h('code', 'adminKeys'),
+            code('adminKeys'),
             ' array in ',
             CONFIG_PATH(),
             '. ',
