@@ -221,7 +221,14 @@ define([
             }
 
             var del = h('button.btn.btn-danger', h('i.fa.fa-times'));
-            var el = h('div.cp-form-edit-block-input', [ input, del ]);
+            var el = h('div.cp-form-edit-block-input', [
+                h('span.cp-form-handle', [
+                    h('i.fa.fa-ellipsis-v'),
+                    h('i.fa.fa-ellipsis-v'),
+                ]),
+                input,
+                del
+            ]);
             $(del).click(function () {
                 $(el).remove();
                 // We've just deleted an item/option so we should be under the MAX limit and
@@ -240,6 +247,12 @@ define([
         var container = h('div.cp-form-edit-block', inputs);
         var $container = $(container);
 
+        Sortable.create(container, {
+            direction: "vertical",
+            handle: ".cp-form-handle",
+            draggable: ".cp-form-edit-block-input",
+        });
+
         var containerItems;
         if (v.items) {
             var inputsItems = v.items.map(function (itemData) {
@@ -247,6 +260,11 @@ define([
             });
             inputsItems.push(addItem);
             containerItems = h('div.cp-form-edit-block', inputsItems);
+            Sortable.create(containerItems, {
+                direction: "vertical",
+                handle: ".cp-form-handle",
+                draggable: ".cp-form-edit-block-input",
+            });
         }
 
         // Calendar...
