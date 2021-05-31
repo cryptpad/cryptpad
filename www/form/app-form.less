@@ -123,6 +123,19 @@
                 .cp-form-edit-options-block {
                     display: flex;
                     flex-wrap: wrap;
+                    .CodeMirror {
+                        cursor: default;
+                        flex: 1;
+                        margin: auto;
+                        min-width: 80%;
+                        width: 80%;
+                        min-height: 200px;
+                        height: 200px;
+                        border: 1px solid @cp_forms-border;
+                        .CodeMirror-placeholder {
+                            color: #777;
+                        }
+                    }
                 }
                 .cp-form-edit-block {
                     .cp-form-handle {

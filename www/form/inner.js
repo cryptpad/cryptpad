@@ -15,6 +15,9 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/common/diffMarked.js',
+    '/common/sframe-common-codemirror.js',
+    'cm/lib/codemirror',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -23,6 +26,13 @@ define([
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
 
+    'cm/addon/display/placeholder',
+    'cm/mode/markdown/markdown',
+    'css!cm/lib/codemirror.css',
+
+    'css!/bower_components/codemirror/lib/codemirror.css',
+    'css!/bower_components/codemirror/addon/dialog/dialog.css',
+    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
@@ -43,6 +53,9 @@ define([
     h,
     Messages,
     AppConfig,
+    DiffMd,
+    SFCodeMirror,
+    CMeditor,
     Share, Access, Properties,
     Flatpickr,
     Sortable
@@ -81,6 +94,8 @@ define([
     Messages.form_type_checkbox = "Checkbox"; // XXX
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
     Messages.form_type_poll = "Poll"; // XXX
+
+    Messages.form_type_md = "Description"; // XXX
 
     Messages.form_duplicates = "Duplicate entries have been removed";
     Messages.form_maxOptions = "{0} answer(s) max";
@@ -550,7 +565,6 @@ define([
                 _days[day]++;
             });
             var dayValues = Object.keys(_days).map(function (d) { return _days[d]; });
-            var minDay = Math.min.apply(null, dayValues);
             Object.keys(_days).forEach(function (day) {
                 days.push(h('div.cp-poll-cell.cp-poll-time-day', {
                     style: 'flex-grow:'+(_days[day]-1)+';'
@@ -612,6 +626,75 @@ define([
         }).filter(Boolean);
     };
 
+    var STATIC_TYPES = {
+        md: {
+            defaultOpts: {
+                text: "Your text here" // XXX
+            },
+            get: function (opts) {
+                if (!opts) { opts = STATIC_TYPES.md.defaultOpts; }
+                var tag = h('div', {
+                    id: 'form'+Util.uid()
+                }, opts.text);
+                var $tag = $(tag);
+                DiffMd.apply(DiffMd.render(opts.text || ''), $tag, APP.common);
+                return {
+                    tag: tag,
+                    edit: function (cb, tmp) {
+                        // XXX use tmp and cursor getter
+                        var t = h('textarea');
+                        var block = h('div.cp-form-edit-options-block', [t]);
+                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
+                        var editor = cm.editor;
+                        editor.setOption('lineNumbers', true);
+                        editor.setOption('lineWrapping', true);
+                        editor.setOption('styleActiveLine', true);
+                        editor.setOption('readOnly', false);
+                        console.warn(APP.common);
+                        setTimeout(function () {
+                            editor.setValue(opts.text);
+                            editor.refresh();
+                            editor.save();
+                            editor.focus();
+                        });
+                        if (APP.common) {
+                            var markdownTb = APP.common.createMarkdownToolbar(editor);
+                            $(block).prepend(markdownTb.toolbar);
+                            $(markdownTb.toolbar).show();
+                            cm.configureTheme(APP.common, function () {});
+                        }
+                        // Cancel changes
+                        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
+                        $(cancelBlock).click(function () { cb(); });
+                        // Save changes
+                        var saveBlock = h('button.btn.btn-primary', [
+                            h('i.fa.fa-floppy-o'),
+                            h('span', Messages.settings_save)
+                        ]);
+                        $(saveBlock).click(function () {
+                            $(saveBlock).attr('disabled', 'disabled');
+                            cb({
+                                text: editor.getValue()
+                            });
+                        });
+                        return [
+                            block,
+                            h('div', [cancelBlock, saveBlock])
+                        ];
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    //getValue: function () { return $tag.val(); },
+                    //setValue: function (val) { $tag.val(val); },
+                    //reset: function () { $tag.val(''); }
+                };
+            },
+            printResults: function () {
+                var results = [];
+                return h('div.cp-form-results-type-text', results);
+            },
+            icon: h('i.fa.fa-info')
+        },
+    };
     var TYPES = {
         input: {
             get: function () {
@@ -1117,7 +1200,7 @@ define([
                 var lines = makePollTable(_answers, form[uid].opts);
                 return h('div.cp-form-type-poll', lines);
             },
-            icon: h('i.fa.fa-check-square-o')
+            icon: h('i.cptools.cptools-poll')
         },
     };
 
@@ -1148,6 +1231,7 @@ define([
         if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
         APP.formBlocks.forEach(function (data) {
+            if (!data.getValue) { return; }
             results[data.uid] = data.getValue();
         });
         return results;
@@ -1237,7 +1321,8 @@ define([
         var elements = content.order.map(function (uid) {
             var block = form[uid];
             var type = block.type;
-            var model = TYPES[type];
+            var model = TYPES[type] || STATIC_TYPES[type];
+            var isStatic = Boolean(STATIC_TYPES[type]);
             if (!model) { return; }
 
             var _answers, name;
@@ -1253,7 +1338,7 @@ define([
             var data = model.get(block.opts, _answers, name);
             if (!data) { return; }
             data.uid = uid;
-            if (answers && answers[uid]) { data.setValue(answers[uid]); }
+            if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
 
             var q = h('div.cp-form-block-question', block.q || Messages.form_default);
             var editButtons, editContainer;
@@ -1380,7 +1465,7 @@ define([
             return h('div.cp-form-block'+editableCls, {
                 'data-id':uid
             }, [
-                q,
+                isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
                     data.tag,
                     editButtons
@@ -1394,7 +1479,7 @@ define([
         if (editable) {
             Sortable.create($container[0], {
                 direction: "vertical",
-                filter: "input, button",
+                filter: "input, button, .CodeMirror",
                 preventOnFilter: false,
                 store: {
                     set: function (s) {
@@ -1427,6 +1512,7 @@ define([
         var evOnChange = Util.mkEvent();
         var content = {};
 
+        APP.common = framework._.sfCommon;
         var sframeChan = framework._.sfCommon.getSframeChannel();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
         var user = metadataMgr.getUserData();
@@ -1615,10 +1701,9 @@ define([
 
             var controlContainer;
             if (APP.isEditor) {
-                var controls = Object.keys(TYPES).map(function (type) {
-
+                var addControl = function (type) {
                     var btn = h('button.btn', [
-                        TYPES[type].icon.cloneNode(),
+                        (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
                         h('span', Messages['form_type_'+type])
                     ]);
                     $(btn).click(function () {
@@ -1633,13 +1718,16 @@ define([
                         updateForm(framework, content, true);
                     });
                     return btn;
-                });
+                };
+                var controls = Object.keys(TYPES).map(addControl);
+                var staticControls = Object.keys(STATIC_TYPES).map(addControl);
 
                 var settings = makeFormSettings();
 
                 controlContainer = h('div.cp-form-creator-control', [
                     h('div.cp-form-creator-settings', settings),
-                    h('div.cp-form-creator-types', controls)
+                    h('div.cp-form-creator-types', controls),
+                    h('div.cp-form-creator-types', staticControls)
                 ]);
             }
 
@@ -1767,7 +1855,7 @@ define([
                     if (answers) { APP.answers = answers; }
                     checkIntegrity(false);
                     var myAnswers;
-                    var curve1 = user.curvePublic
+                    var curve1 = user.curvePublic;
                     var curve2 = obj && obj.myKey; // Anonymous answer key
                     if (answers) {
                         var myAnswersObj = answers[curve1] || answers[curve2] || undefined;

@@ -61,6 +61,16 @@ define([
                 });
 
             });
+            var getAnonymousKeys = function (formSeed, channel) {
+                var array = Nacl.util.decodeBase64(formSeed + channel);
+                var hash = Nacl.hash(array);
+                var secretKey = Nacl.util.encodeBase64(hash.subarray(32));
+                var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
+                return {
+                    curvePrivate: secretKey,
+                    curvePublic: publicKey,
+                };
+            };
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
                 var myKeys = {};
                 var myFormKeys;
@@ -174,16 +184,6 @@ define([
                 });
 
             });
-            var getAnonymousKeys = function (formSeed, channel) {
-                var array = Nacl.util.decodeBase64(formSeed + channel);
-                var hash = Nacl.hash(array);
-                var secretKey = Nacl.util.encodeBase64(hash.subarray(32));
-                var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
-                return {
-                    curvePrivate: secretKey,
-                    curvePublic: publicKey,
-                };
-            };
             sframeChan.on("Q_FORM_SUBMIT", function (data, cb) {
                 var box = data.mailbox;
                 var myKeys;
