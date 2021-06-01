@@ -936,7 +936,8 @@ define([
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
-                    var q = findItem(structure.opts.items, q_uid);
+                    var opts = structure.opts || TYPES.multiradio.defaultOpts;
+                    var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
                     var values = Object.keys(c).map(function (res) {
                         return h('div.cp-form-results-type-radio-data', [
@@ -1296,8 +1297,8 @@ define([
         if (loggedIn) {
             cbox = UI.createCheckbox('cp-form-anonymous',
                        Messages.form_anonymousBox, false, { mark: { tabindex:1 } });
-            if (!content.answers.anonymous) {
-                $(cbox).find('input').attr('disabled', 'disabled');
+            if (!content.answers.anonymous || APP.cantAnon) {
+                $(cbox).hide().find('input').attr('disabled', 'disabled');
             }
 
         }
@@ -1732,6 +1733,7 @@ define([
                     ]);
                     $button.after(confirmContent);
                     $button.remove();
+                    picker.open();
                 });
 
                 $endDate.append(h('div.cp-form-status', text));
@@ -1969,6 +1971,8 @@ define([
                             myAnswers = myAnswersObj.msg;
                         }
                     }
+                    // If we have a non-anon answer, we can't answer anonymously later
+                    if (answers[curve1]) { APP.cantAnon = true; }
                     updateForm(framework, content, false, myAnswers);
                 });
                 return;
@@ -1983,7 +1987,11 @@ define([
                     UI.warn(Messages.form_cantFindAnswers);
                 }
                 var answers;
-                if (obj && !obj.error) { answers = obj; }
+                if (obj && !obj.error) {
+                    answers = obj;
+                    // If we have a non-anon answer, we can't answer anonymously later
+                    if (!obj._isAnon) { APP.cantAnon = true; }
+                }
                 checkIntegrity(false);
                 updateForm(framework, content, false, answers);
             });

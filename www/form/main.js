@@ -71,6 +71,55 @@ define([
                     curvePublic: publicKey,
                 };
             };
+            var u8_slice = function (A, start, end) {
+                return new Uint8Array(Array.prototype.slice.call(A, start, end));
+            };
+            var u8_concat = function (A) {
+                var length = 0;
+                A.forEach(function (a) { length += a.length; });
+                var total = new Uint8Array(length);
+
+                var offset = 0;
+                A.forEach(function (a) {
+                    total.set(a, offset);
+                    offset += a.length;
+                });
+                return total;
+            };
+            var anonProof = function (channel, theirPub, anonKeys) {
+                var u8_plain = Nacl.util.decodeUTF8(channel);
+                var u8_nonce = Nacl.randomBytes(Nacl.box.nonceLength);
+                var u8_cipher = Nacl.box(
+                    u8_plain,
+                    u8_nonce,
+                    Nacl.util.decodeBase64(theirPub),
+                    Nacl.util.decodeBase64(anonKeys.curvePrivate)
+                );
+                var u8_bundle = u8_concat([
+                    u8_nonce, // 24 uint8s
+                    u8_cipher, // arbitrary length
+                ]);
+                return {
+                    key: anonKeys.curvePublic,
+                    proof: Nacl.util.encodeBase64(u8_bundle)
+                };
+            };
+            var checkAnonProof = function (proofObj, channel, curvePrivate) {
+                var pub = proofObj.key;
+                var proofTxt = proofObj.proof;
+                try {
+                    var u8_bundle = Nacl.util.decodeBase64(proofTxt);
+                    var u8_nonce = u8_slice(u8_bundle, 0, Nacl.box.nonceLength);
+                    var u8_cipher = u8_slice(u8_bundle, Nacl.box.nonceLength);
+                    var u8_plain = Nacl.box.open(
+                        u8_cipher,
+                        u8_nonce,
+                        Nacl.util.decodeBase64(pub),
+                        Nacl.util.decodeBase64(curvePrivate)
+                    );
+                } catch (e) { console.error(e); }
+                return channel === Nacl.util.encodeUTF8(u8_plain);
+            };
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
                 var cb = Utils.Util.once(_cb);
                 var myKeys = {};
@@ -112,8 +161,9 @@ define([
 
                     var keys = Utils.secret && Utils.secret.keys;
 
+                    var curvePrivate = privateKey || data.privateKey;
                     var crypto = Utils.Crypto.Mailbox.createEncryptor({
-                        curvePrivate: privateKey || data.privateKey,
+                        curvePrivate: curvePrivate,
                         curvePublic: publicKey || data.publicKey,
                         validateKey: data.validateKey
                     });
@@ -162,6 +212,12 @@ define([
                     config.onMessage = function (msg, peer, vKey, isCp, hash, senderCurve, cfg) {
                         var parsed = Utils.Util.tryParse(msg);
                         if (!parsed) { return; }
+                        if (parsed._proof) {
+                            var check = checkAnonProof(parsed._proof, data.channel, curvePrivate)
+                            if (check) {
+                                delete results[parsed._proof.key];
+                            }
+                        }
                         results[senderCurve] = {
                             msg: parsed,
                             hash: hash,
@@ -203,6 +259,7 @@ define([
                             my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
                             their_public: Nacl.util.decodeBase64(data.publicKey)
                         });
+                        res.content._isAnon = answer.anonymous;
                         cb(JSON.parse(res.content));
                     });
 
@@ -222,9 +279,12 @@ define([
                     // that the existing anonymous answer are ours (using myKeys.formSeed).
                     // Even if we never answered anonymously, the keyPair would be unique to
                     // the current channel so it wouldn't leak anything.
+                    var myAnonymousKeys;
                     if (data.anonymous) {
                         if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
                         myKeys = getAnonymousKeys(myKeys.formSeed, box.channel);
+                    } else {
+                        myAnonymousKeys = getAnonymousKeys(myKeys.formSeed, box.channel);
                     }
                     var keys = Utils.secret && Utils.secret.keys;
                     myKeys.signingKey = keys.secondarySignKey;
@@ -232,6 +292,11 @@ define([
                     var ephemeral_keypair = Nacl.box.keyPair();
                     var ephemeral_private = Nacl.util.encodeBase64(ephemeral_keypair.secretKey);
                     myKeys.ephemeral_keypair = ephemeral_keypair;
+
+                    if (myAnonymousKeys) {
+                        var proof = anonProof(box.channel, box.publicKey, myAnonymousKeys);
+                        data.results._proof = proof;
+                    }
 
                     var crypto = Utils.Crypto.Mailbox.createEncryptor(myKeys);
                     var text = JSON.stringify(data.results);
