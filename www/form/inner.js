@@ -472,7 +472,12 @@ define([
             } else {
                 $container.find('input').each(function (i, el) {
                     var val = $(el).val().trim();
-                    if (v.type === "day" || v.type === "time") { val = +new Date(val); }
+                    if (v.type === "day" || v.type === "time") {
+                        var f = el._flatpickr;
+                        if (f && f.selectedDates && f.selectedDates.length) {
+                            val = +f.selectedDates[0];
+                        }
+                    }
                     if (values.indexOf(val) === -1) { values.push(val); }
                     else { duplicates = true; }
                 });
