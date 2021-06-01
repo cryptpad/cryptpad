@@ -64,6 +64,26 @@
                 flex: 1;
                 overflow: auto;
 
+                .cp-form-page-container {
+                    display: flex;
+                    justify-content: center;
+                    margin: 10px 0;
+                    & > span {
+                        margin: 0 20px;
+                        width: 100px;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    button {
+                        .cp-next {
+                            .fa {
+                                margin-right: 0;
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
                 .cp-form-block {
                     .tools_unselectable();
                     background: @cp_form-bg1;
@@ -76,6 +96,13 @@
                     }
                     .cp-form-block-content {
                         overflow-x: auto;
+                        .cp-form-page-break-edit {
+                            text-align: center;
+                            padding: 10px;
+                            i {
+                                margin-right: 5px;
+                            }
+                        }
                     }
                     .cp-form-input-block {
                         //width: @form_input-width;

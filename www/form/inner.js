@@ -96,6 +96,7 @@ define([
     Messages.form_type_poll = "Poll"; // XXX
 
     Messages.form_type_md = "Description"; // XXX
+    Messages.form_type_page = "Page break"; // XXX
 
     Messages.form_duplicates = "Duplicate entries have been removed";
     Messages.form_maxOptions = "{0} answer(s) max";
@@ -139,6 +140,10 @@ define([
     Messages.form_add_item = "Add item";
     Messages.form_addMultiple = "Add all";
     Messages.form_clear = "Clear";
+
+    Messages.form_page_prev = "Previous";
+    Messages.form_page = "Page {0}/{1}";
+    Messages.form_page_next = "Next";
 
     Messages.form_anonymousBox = "Answer anonymously";
 
@@ -720,16 +725,25 @@ define([
                         ];
                     },
                     getCursor: function () { return cursorGetter(); },
-                    //getValue: function () { return $tag.val(); },
-                    //setValue: function (val) { $tag.val(val); },
-                    //reset: function () { $tag.val(''); }
                 };
             },
-            printResults: function () {
-                var results = [];
-                return h('div.cp-form-results-type-text', results);
-            },
+            printResults: function () { return; },
             icon: h('i.fa.fa-info')
+        },
+        page: {
+            get: function () {
+                var tag = h('div.cp-form-page-break-edit', [
+                    h('i.fa.fa-hand-o-right'),
+                    h('span', Messages.form_type_page)
+                ]);
+                var $tag = $(tag);
+                return {
+                    tag: tag,
+                    pageBreak: true
+                };
+            },
+            printResults: function () { return; },
+            icon: h('i.fa.fa-hand-o-right')
         },
     };
     var TYPES = {
@@ -1377,6 +1391,11 @@ define([
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
 
+            if (data.pageBreak && !editable) {
+                return data;
+            }
+
+
             var q = h('div.cp-form-block-question', block.q || Messages.form_default);
             var editButtons, editContainer;
 
@@ -1511,7 +1530,57 @@ define([
             ]);
         });
 
-        $container.empty().append(elements);
+        var _content = elements;
+        if (!editable) {
+            _content = [];
+            var div = h('div.cp-form-page');
+            var pages = 1;
+            var wasPage = false;
+            elements.forEach(function (obj) {
+                if (obj && obj.pageBreak) {
+                    if (wasPage) { return; } // Prevent double page break
+                    _content.push(div);
+                    pages++;
+                    div = h('div.cp-form-page');
+                    wasPage = true;
+                    return;
+                }
+                wasPage = false;
+                $(div).append(obj);
+            });
+            _content.push(div);
+
+            var pageContainer = h('div.cp-form-page-container');
+            var $page = $(pageContainer);
+            _content.push(pageContainer);
+            var refreshPage = function (current) {
+                $page.empty();
+                if (!current || current < 1) { current = 1; }
+                if (current > pages) { current = pages; }
+                var left = h('button.btn.btn-secondary.small.cp-prev', [
+                    h('i.fa.fa-chevron-left'),
+                    h('span', Messages.form_page_prev)
+                ]);
+                var state = h('span', Messages._getKey('form_page', [current, pages]));
+                var right = h('button.btn.btn-secondary.small.cp-next', [
+                    h('span', Messages.form_page_next),
+                    h('i.fa.fa-chevron-right'),
+                ]);
+                $(left).click(function () { refreshPage(current - 1); });
+                $(right).click(function () { refreshPage(current + 1); });
+                $page.append([left, state, right]);
+                $container.find('.cp-form-page').hide();
+                $($container.find('.cp-form-page').get(current-1)).show();
+                if (current !== pages) {
+                    $container.find('.cp-form-send-container').hide();
+                } else {
+                    $container.find('.cp-form-send-container').show();
+                }
+            };
+            setTimeout(refreshPage);
+        }
+
+        $container.empty().append(_content);
 
         if (editable) {
             Sortable.create($container[0], {
@@ -1900,7 +1969,6 @@ define([
                             myAnswers = myAnswersObj.msg;
                         }
                     }
-                    console.warn(obj);
                     updateForm(framework, content, false, myAnswers);
                 });
                 return;
