@@ -69,13 +69,13 @@ define([
             'cp-settings-custom-theme',
         ],
         'drive': [
+            'cp-settings-redirect',
             'cp-settings-resettips',
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
             'cp-settings-trim-history',
-            'cp-settings-redirect',
             //'cp-settings-drive-reset'
         ],
         'cursor': [ // Msg.settings_cat_cursor
@@ -844,9 +844,9 @@ define([
         return $div;
     };
 
-    Messages.settings_driveRedirectTitle = "DRIVE REDIRECT TITLE"; // XXX redirect
-    Messages.settings_driveRedirectHint = "DRIVE REDIRECT HINT"; // XXX redirect
-    Messages.settings_driveRedirect = "DRIVE REDIRECT"; // XXX redirect
+    Messages.settings_driveRedirectTitle = "Home page redirection"; // XXX redirect
+    Messages.settings_driveRedirectHint = "Automatic redirection from the home page to the drive when logged in is no longer enabled by default. Legacy behaviour can be enabled below."; // XXX redirect
+    Messages.settings_driveRedirect = "Automatically redirect me"; // XXX redirect
 
     create['redirect'] = function () {
         if (!common.isLoggedIn()) { return; }
@@ -868,7 +868,7 @@ define([
             $spinner.show();
             $ok.hide();
             var val = $checkbox.is(':checked') || false;
-            common.setAttribute(['general', Constants.prefersDriveRedirectKey, val, function() {
+            common.setAttribute(['general', Constants.prefersDriveRedirectKey], val, function() {
                 $spinner.hide();
                 $ok.show();
                 sframeChan.query("Q_SET_DRIVE_REDIRECT_PREFERENCE", {
