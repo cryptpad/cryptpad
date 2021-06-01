@@ -1,3 +1,22 @@
+# WIP
+
+## Goals
+
+## Update notes
+
+* `bower update` for `chainpad-crypto#0.2.6` ([signed mailbox extensions](https://github.com/xwiki-labs/chainpad-crypto/releases/tag/0.2.6))
+* log some information about the checkup page when launching the server
+
+## Features
+
+* more detailed messages for some tests on the checkup page
+* log messages which fail signature validation
+* make drive-redirect configurable via the settings page (disabled by default)
+
+## Bug fixes
+
+* variably display "Features" or "Pricing" in the _top bar_
+
 # 4.6.0
 
 ## Goals
