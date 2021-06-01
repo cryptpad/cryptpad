@@ -1,12 +1,14 @@
 define(['jquery'], function ($) {
     var Clipboard = {};
 
-    // copy arbitrary text to the clipboard
-    // return boolean indicating success
-    Clipboard.copy = function (text) {
+    var copy = function (text, multiline) {
         var $ta = $('<input>', {
             type: 'text',
         }).val(text);
+
+        if (multiline) {
+            $ta = $('<textarea>').val(text);
+        }
 
         $('body').append($ta);
 
@@ -27,6 +29,16 @@ define(['jquery'], function ($) {
         $ta.remove();
 
         return success;
+    };
+
+    // copy arbitrary text to the clipboard
+    // return boolean indicating success
+    Clipboard.copy = function (text) {
+        return copy(text);
+    };
+
+    Clipboard.copy.multiline = function (text) {
+        return copy(text, true);
     };
 
     return Clipboard;

@@ -13,6 +13,7 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/userObject.js',
+    '/common/clipboard.js',
 
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
@@ -20,16 +21,40 @@ define([
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
             nThen, Hash, Util, Crypt, Cryptpad, Cache, UI, CPNetflux,
-            Crypto, UserObject) {
+            Crypto, UserObject, Clipboard) {
     var $report = $('#cp-report');
     var hash = localStorage.User_hash;
     if (!hash) {
-        return void UI.errorLoadingScreen(Messages.mustLogin);
+        return void UI.alert(Messages.mustLogin, function () {
+            var href = Hash.hashToHref('', 'login');
+            var url = Hash.getNewPadURL(href, {
+                href: '/report/',
+            });
+            console.log(url);
+            window.location.href = url;
+        });
     }
 
     var addReport = function (str) {
         $report.append(h('div', str));
     };
+
+    var getReportContent = window.getReportContent = function () {
+        try {
+            return $report[0].innerText;
+        } catch (err) {
+            return '';
+        }
+    };
+
+    var copyToClipboard = function () {
+        if (Clipboard.copy.multiline(getReportContent())) {
+            UI.log(Messages.genericCopySuccess);
+        } else {
+            UI.warn(Messages.error);
+        }
+    };
+
     var checkCache = function (chan, cb) {
         Cache.getChannelCache(chan, function (err, val) {
             if (err) {
@@ -261,6 +286,15 @@ define([
         n(function () {
             addReport('===================');
             addReport('DONE');
+
+            Messages.copyToClipboard = 'Copy report to clipboard'; // XXX
+            var copyButton = h('button.btn.btn-primary', Messages.copyToClipboard);
+            copyButton.onclick = copyToClipboard;
+            var buttonContainer = h('div#cp-report-ui', [
+                copyButton,
+            ]);
+
+            document.body.appendChild(buttonContainer);
         });
     });
 

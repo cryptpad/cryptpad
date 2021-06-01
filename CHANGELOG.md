@@ -12,6 +12,7 @@
 * more detailed messages for some tests on the checkup page
 * log messages which fail signature validation
 * make drive-redirect configurable via the settings page (disabled by default)
+* minor UI improvements for report page
 
 ## Bug fixes
 
