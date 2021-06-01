@@ -20,6 +20,14 @@ var canonicalizeOrigin = function (s) {
     return (s || '').trim().replace(/\/+$/, '');
 };
 
+var fancyURL = function (domain, path) {
+    try {
+        if (domain && path) { return new URL(path, domain).href; }
+        return new URL(domain);
+    } catch (err) {}
+    return false;
+};
+
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin'
     if (typeof(config.httpUnsafeOrigin) !== 'string') {
@@ -47,21 +55,6 @@ var canonicalizeOrigin = function (s) {
         if (typeof(config.httpSafePort) !== 'number') {
             config.httpSafePort = config.httpPort + 1;
         }
-
-        if (Env.DEV_MODE) { return; }
-        console.log(`
-    m     m   mm   mmmmm  mm   m mmmmm  mm   m   mmm    m
-    #  #  #   ##   #   "# #"m  #   #    #"m  # m"   "   #
-    " #"# #  #  #  #mmmm" # #m #   #    # #m # #   mm   #
-     ## ##"  #mm#  #   "m #  # #   #    #  # # #    #
-     #   #  #    # #    " #   ## mm#mm  #   ##  "mmm"   #
-`);
-
-        console.log("\nNo 'httpSafeOrigin' provided.");
-        console.log("Your configuration probably isn't taking advantage of all of CryptPad's security features!");
-        console.log("This is acceptable for development, otherwise your users may be at risk.\n");
-
-        console.log("Serving sandboxed content via port %s.\nThis is probably not what you want for a production instance!\n", config.httpSafePort);
     }
 }());
 
@@ -338,7 +331,19 @@ nThen(function (w) {
         var port = config.httpPort;
         var ps = port === 80? '': ':' + port;
 
-        console.log('[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+        var roughAddress = 'http://' + hostName + ps;
+        var betterAddress = fancyURL(config.httpUnsafeOrigin);
+
+        if (betterAddress) {
+            console.log('Serving content for %s via %s.\n', betterAddress, roughAddress);
+        } else {
+            console.log('Serving content via %s.\n', roughAddress);
+        }
+        if (!Array.isArray(config.adminKeys)) {
+            console.log("Your instance is not correctly configured for safe use in production.\nSee %s for more information.\n",
+                fancyURL(config.httpUnsafeOrigin, '/checkup/') || 'https://your-domain.com/checkup/'
+            );
+        }
     });
 
     if (config.httpSafePort) {
