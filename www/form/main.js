@@ -71,19 +71,24 @@ define([
                     curvePublic: publicKey,
                 };
             };
-            sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, cb) {
+            sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
+                var cb = Utils.Util.once(_cb);
                 var myKeys = {};
                 var myFormKeys;
-                var CPNetflux;
+                var accessKeys;
+                var CPNetflux, Pinpad;
                 var network;
                 nThen(function (w) {
                     require([
                         '/bower_components/chainpad-netflux/chainpad-netflux.js',
-                    ], w(function (_CPNetflux) {
+                        '/common/pinpad.js',
+                    ], w(function (_CPNetflux, _Pinpad) {
                         CPNetflux = _CPNetflux;
+                        Pinpad = _Pinpad;
                     }));
                     Cryptpad.getAccessKeys(w(function (_keys) {
                         if (!Array.isArray(_keys)) { return; }
+                        accessKeys = _keys;
 
                         _keys.some(function (_k) {
                             if ((!Cryptpad.initialTeam && !_k.id) || Cryptpad.initialTeam === _k.id) {
@@ -122,6 +127,26 @@ define([
                         // XXX Cache
                     };
                     var results = {};
+                    config.onError = function (info) {
+                        cb({ error: info.type });
+                    };
+                    config.onRejected = function (data, cb) {
+                        if (!Array.isArray(data) || !data.length || data[0].length !== 16) {
+                            return void cb(true);
+                        }
+                        if (!Array.isArray(accessKeys)) { return void cb(true); }
+                        network.historyKeeper = data[0];
+                        nThen(function (waitFor) {
+                            accessKeys.forEach(function (obj) {
+                                Pinpad.create(network, obj, waitFor(function (e) {
+                                    console.log('done', obj);
+                                    if (e) { console.error(e); }
+                                }));
+                            });
+                        }).nThen(function () {
+                            cb();
+                        });
+                    };
                     config.onReady = function () {
                         var myKey;
                         // If we have submitted an anonymous answer, retrieve it

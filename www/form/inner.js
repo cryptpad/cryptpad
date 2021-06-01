@@ -646,7 +646,6 @@ define([
                 return {
                     tag: tag,
                     edit: function (cb, tmp) {
-                        // XXX use tmp and cursor getter
                         var t = h('textarea');
                         var block = h('div.cp-form-edit-options-block', [t]);
                         var cm = SFCodeMirror.create("gfm", CMeditor, t);
@@ -655,9 +654,23 @@ define([
                         editor.setOption('lineWrapping', true);
                         editor.setOption('styleActiveLine', true);
                         editor.setOption('readOnly', false);
-                        console.warn(APP.common);
+
+                        var text = opts.text;
+                        var cursor;
+                        if (tmp && tmp.content && tmp.old.text === text) {
+                            text = tmp.content.text;
+                            cursor = tmp.cursor;
+                        }
+
                         setTimeout(function () {
-                            editor.setValue(opts.text);
+                            editor.setValue(text);
+                            if (cursor) {
+                                if (Sortify(cursor.start) === Sortify(cursor.end)) {
+                                    editor.setCursor(cursor.start);
+                                } else {
+                                    editor.setSelection(cursor.start, cursor.end);
+                                }
+                            }
                             editor.refresh();
                             editor.save();
                             editor.focus();
@@ -676,12 +689,31 @@ define([
                             h('i.fa.fa-floppy-o'),
                             h('span', Messages.settings_save)
                         ]);
+
+                        var getContent = function () {
+                            return {
+                                text: editor.getValue()
+                            };
+                        };
                         $(saveBlock).click(function () {
                             $(saveBlock).attr('disabled', 'disabled');
-                            cb({
-                                text: editor.getValue()
-                            });
+                            cb(getContent());
                         });
+
+                        cursorGetter = function () {
+                            if (document.activeElement && block.contains(document.activeElement)) {
+                                cursor = {
+                                    start: editor.getCursor('from'),
+                                    end: editor.getCursor('to')
+                                }
+                            }
+                            return {
+                                old: opts,
+                                content: getContent(),
+                                cursor: cursor
+                            };
+                        };
+
                         return [
                             block,
                             h('div', [cancelBlock, saveBlock])
