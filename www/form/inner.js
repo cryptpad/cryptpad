@@ -111,6 +111,13 @@ define([
 
     Messages.form_viewResults = "Go to responses";
     Messages.form_viewCreator = "Go to form creator";
+    Messages.form_showIndividual = "Show individual answers";
+    Messages.form_showSummary = "Show summary";
+    Messages.form_answerAnonymous = "Anonymous answer on <em>{0}</em>";
+    Messages.form_viewButton = "View";
+    Messages.form_backButton = "Back";
+    Messages.form_answerName = "Answer from {0} on <em>{1}</em>";
+    Messages.form_answerWarning = "Unconfirmed identity";
 
     Messages.form_notAnswered = "And <b>{0}</b> empty answers";
 
@@ -1258,25 +1265,119 @@ define([
 
     var renderResults = function (content, answers) {
         var $container = $('div.cp-form-creator-results').empty();
-        var form = content.form;
-        var elements = content.order.map(function (uid) {
-            var block = form[uid];
-            var type = block.type;
-            var model = TYPES[type];
-            if (!model || !model.printResults) { return; }
-            var print = model.printResults(answers, uid, form);
+        var controls = h('div.cp-form-creator-results-controls');
+        var $controls = $(controls).appendTo($container);
+        var results = h('div.cp-form-creator-results-content');
+        var $results = $(results).appendTo($container);
 
-            var q = h('div.cp-form-block-question', block.q || Messages.form_default);
-            return h('div.cp-form-block', [
-                h('div.cp-form-block-type', [
-                    TYPES[type].icon.cloneNode(),
-                    h('span', Messages['form_type_'+type])
-                ]),
-                q,
-                h('div.cp-form-block-content', print),
-            ]);
+        var summary = true;
+        var form = content.form;
+
+        var switchMode = h('button.btn.btn-primary', Messages.form_showIndividual);
+        $controls.append(switchMode);
+
+        var show = function (answers, header) {
+            var elements = content.order.map(function (uid) {
+                var block = form[uid];
+                var type = block.type;
+                var model = TYPES[type];
+                if (!model || !model.printResults) { return; }
+                var print = model.printResults(answers, uid, form);
+
+                var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+                return h('div.cp-form-block', [
+                    h('div.cp-form-block-type', [
+                        TYPES[type].icon.cloneNode(),
+                        h('span', Messages['form_type_'+type])
+                    ]),
+                    q,
+                    h('div.cp-form-block-content', print),
+                ]);
+            });
+            $results.empty().append(elements);
+            if (header) { $results.prepend(header); }
+        };
+        show(answers);
+
+        var $s = $(switchMode).click(function () {
+            $results.empty();
+            if (!summary) {
+                $s.text(Messages.form_showIndividual);
+                summary = true;
+                show(answers);
+                return;
+            }
+            summary = false;
+            $s.text(Messages.form_showSummary);
+
+            var origin, priv;
+            if (APP.common) {
+                var metadataMgr = APP.common.getMetadataMgr();
+                priv = metadataMgr.getPrivateData();
+                origin = priv.origin;
+            }
+            var getHref = function (hash) {
+                if (APP.common) {
+                    return origin + Hash.hashToHref(hash, 'profile');
+                }
+                return '#';
+            };
+
+            var els = Object.keys(answers).map(function (curve) {
+                var obj = answers[curve];
+                var answer = obj.msg;
+                var date = new Date(obj.time).toLocaleString();
+                var text, warning, badge;
+                if (!answer._userdata || !answer._userdata.name) {
+                    text = Messages._getKey('form_answerAnonymous', [date]);
+                } else {
+                    var ud = answer._userdata;
+                    var user;
+                    if (ud.profile) {
+                        if (priv && priv.friends[curve]) {
+                            badge = h('span.cp-form-friend', [
+                                h('i.fa.fa-address-book'),
+                                Messages._getKey('isContact', [ud.name || Messages.anonymous])
+                            ]);
+                        }
+                        user = h('a', {
+                            href: getHref(ud.profile) // Only used visually
+                        }, Util.fixHTML(ud.name || Messages.anonymous));
+                        if (curve !== ud.curvePublic || 1) {
+                            warning = h('span.cp-form-warning', Messages.form_answerWarning);
+                        }
+                        // XXX back
+                        // XXX confirm curve and ud.curvePublic match
+                    } else {
+                        user = h('b', Util.fixHTML(ud.name || Messages.anonymous));
+                    }
+                    text = Messages._getKey('form_answerName', [user.outerHTML, date]);
+                }
+                var span = UI.setHTML(h('span'), text);
+                var viewButton = h('button.btn.btn-secondary.small', Messages.form_viewButton);
+                var div = h('div.cp-form-individual', [span, viewButton, warning, badge]);
+                $(viewButton).click(function () {
+                    var res = {};
+                    res[curve] = obj;
+                    var back = h('button.btn.btn-secondary.small', Messages.form_backButton);
+                    $(back).click(function () {
+                        summary = true;
+                        $s.click();
+                    });
+                    var header = h('div.cp-form-individual', [
+                        span.cloneNode(true),
+                        back
+                    ]);
+                    show(res, header);
+                });
+                $(div).find('a').click(function (e) {
+                    e.preventDefault();
+                    APP.common.openURL(Hash.hashToHref(ud.profile, 'profile'));
+                });
+                return div;
+            });
+            $results.append(els);
         });
-        $container.append(elements);
     };
 
     var getFormResults = function () {
@@ -1290,18 +1391,21 @@ define([
     };
     var makeFormControls = function (framework, content, update) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
+        var metadataMgr = framework._.cpNfInner.metadataMgr;
 
         if (!loggedIn && !content.answers.anonymous) { return; }
 
         var cbox;
+        cbox = UI.createCheckbox('cp-form-anonymous',
+                   Messages.form_anonymousBox, false, { mark: { tabindex:1 } });
         if (loggedIn) {
-            cbox = UI.createCheckbox('cp-form-anonymous',
-                       Messages.form_anonymousBox, false, { mark: { tabindex:1 } });
             if (!content.answers.anonymous || APP.cantAnon) {
                 $(cbox).hide().find('input').attr('disabled', 'disabled');
             }
-
         }
+
+            var user = metadataMgr.getUserData();
+            console.log(user);
 
         var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.cp-open.btn.btn-danger-alt', Messages.form_reset);
@@ -1315,6 +1419,17 @@ define([
             $send.attr('disabled', 'disabled');
             var results = getFormResults();
             if (!results) { return; }
+
+            var user = metadataMgr.getUserData();
+            if (!Util.isChecked($(cbox).find('input'))) {
+                results._userdata = loggedIn ? {
+                    avatar: user.avatar,
+                    name: user.name,
+                    notifications: user.notifications,
+                    curvePublic: user.curvePublic,
+                    profile: user.profile
+                } : { name: user.name };
+            }
 
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query('Q_FORM_SUBMIT', {
