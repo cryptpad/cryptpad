@@ -108,6 +108,7 @@ define([
     Messages.form_delete = "Delete block";
 
     Messages.form_cantFindAnswers = "Unable to retrieve your existing answers for this form.";
+    Messages.form_answered = "You already answered this form";
 
     Messages.form_viewResults = "Go to responses";
     Messages.form_viewCreator = "Go to form creator";
@@ -1274,7 +1275,7 @@ define([
         var form = content.form;
 
         var switchMode = h('button.btn.btn-primary', Messages.form_showIndividual);
-        $controls.append(switchMode);
+        $controls.hide().append(switchMode);
 
         var show = function (answers, header) {
             var elements = content.order.map(function (uid) {
@@ -1298,6 +1299,8 @@ define([
             if (header) { $results.prepend(header); }
         };
         show(answers);
+
+        if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
         var $s = $(switchMode).click(function () {
             $results.empty();
@@ -1436,6 +1439,9 @@ define([
             }, function (err, data) {
                 $send.attr('disabled', 'disabled');
                 if (err || (data && data.error)) {
+                    if (data.error === "EANSWERED") {
+                        return void UI.warn(Messages.form_answered);
+                    }
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
@@ -1663,34 +1669,36 @@ define([
             });
             _content.push(div);
 
-            var pageContainer = h('div.cp-form-page-container');
-            var $page = $(pageContainer);
-            _content.push(pageContainer);
-            var refreshPage = function (current) {
-                $page.empty();
-                if (!current || current < 1) { current = 1; }
-                if (current > pages) { current = pages; }
-                var left = h('button.btn.btn-secondary.small.cp-prev', [
-                    h('i.fa.fa-chevron-left'),
-                    h('span', Messages.form_page_prev)
-                ]);
-                var state = h('span', Messages._getKey('form_page', [current, pages]));
-                var right = h('button.btn.btn-secondary.small.cp-next', [
-                    h('span', Messages.form_page_next),
-                    h('i.fa.fa-chevron-right'),
-                ]);
-                $(left).click(function () { refreshPage(current - 1); });
-                $(right).click(function () { refreshPage(current + 1); });
-                $page.append([left, state, right]);
-                $container.find('.cp-form-page').hide();
-                $($container.find('.cp-form-page').get(current-1)).show();
-                if (current !== pages) {
-                    $container.find('.cp-form-send-container').hide();
-                } else {
-                    $container.find('.cp-form-send-container').show();
-                }
-            };
-            setTimeout(refreshPage);
+            if (pages > 1) {
+                var pageContainer = h('div.cp-form-page-container');
+                var $page = $(pageContainer);
+                _content.push(pageContainer);
+                var refreshPage = function (current) {
+                    $page.empty();
+                    if (!current || current < 1) { current = 1; }
+                    if (current > pages) { current = pages; }
+                    var left = h('button.btn.btn-secondary.small.cp-prev', [
+                        h('i.fa.fa-chevron-left'),
+                        h('span', Messages.form_page_prev)
+                    ]);
+                    var state = h('span', Messages._getKey('form_page', [current, pages]));
+                    var right = h('button.btn.btn-secondary.small.cp-next', [
+                        h('span', Messages.form_page_next),
+                        h('i.fa.fa-chevron-right'),
+                    ]);
+                    $(left).click(function () { refreshPage(current - 1); });
+                    $(right).click(function () { refreshPage(current + 1); });
+                    $page.append([left, state, right]);
+                    $container.find('.cp-form-page').hide();
+                    $($container.find('.cp-form-page').get(current-1)).show();
+                    if (current !== pages) {
+                        $container.find('.cp-form-send-container').hide();
+                    } else {
+                        $container.find('.cp-form-send-container').show();
+                    }
+                };
+                setTimeout(refreshPage);
+            }
         }
 
         $container.empty().append(_content);
@@ -1745,7 +1753,6 @@ define([
         $toolbarContainer.after(helpMenu.menu);
 
 
-        // XXX refresh form settings on remote change
         var makeFormSettings = function () {
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
@@ -1761,6 +1768,7 @@ define([
                     UI.confirm(Messages.form_makePublicWarning, function (yes) {
                         if (!yes) { return; }
                         $makePublic.attr('disabled', 'disabled');
+                        var priv = metadataMgr.getPrivateData();
                         content.answers.privateKey = priv.form_private;
                         framework.localChange();
                         framework._.cpNfInner.chainpad.onSettle(function () {
@@ -1889,11 +1897,6 @@ define([
                 resultsType,
                 viewResults,
             ];
-
-            // XXX
-            // Button to set results as public
-            // Checkbox to allow anonymous answers
-            // Button to clear all answers?
         };
 
         var checkIntegrity = function (getter) {
@@ -2025,18 +2028,22 @@ define([
             //  * viewers ==> check if you've already answered and show form (new or edit)
             //  * editors ==> show schema and warn users if existing questions already have answers
 
-            if (priv.form_auditorKey) {
+            var getResults = function (key) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey,
-                    privateKey: priv.form_auditorKey
+                    privateKey: key
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
                     $body.addClass('cp-app-form-results');
                     renderResults(content, answers);
                 });
+            };
+            if (priv.form_auditorKey) {
+                APP.isAuditor = true;
+                getResults(priv.form_auditorKey);
                 return;
             }
 
@@ -2073,6 +2080,17 @@ define([
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
+
+                    if (obj && obj.noDriveAnswered) {
+                        // No drive mode already answered: can't answer again
+                        if (answers) {
+                            $body.addClass('cp-app-form-results');
+                            renderResults(content, answers);
+                        } else {
+                            return void UI.errorLoadingScreen(Messages.form_answered);
+                        }
+                        return;
+                    }
                     checkIntegrity(false);
                     var myAnswers;
                     var curve1 = user.curvePublic;
@@ -2096,6 +2114,14 @@ define([
                 publicKey: content.answers.publicKey
             }, function (err, obj) {
                 if (obj && obj.error) {
+                    if (obj.error === "EANSWERED") {
+                        // No drive mode already answered: can't answer again
+                        if (content.answers.privateKey) {
+                            return void getResults(content.answers.privateKey);
+                        }
+                        // Here, we know results are private so we can use an error screen
+                        return void UI.errorLoadingScreen(Messages.form_answered);
+                    }
                     UI.warn(Messages.form_cantFindAnswers);
                 }
                 var answers;

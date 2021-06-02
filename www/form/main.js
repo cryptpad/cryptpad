@@ -47,7 +47,6 @@ define([
             });
             var _parsed = Utils.Hash.parseTypeHash('pad', auditorHash);
             meta.form_auditorHash = _parsed.getHash({auditorKey: privateKey});
-
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_FORM_PIN', function (data) {
@@ -127,6 +126,7 @@ define([
                 var accessKeys;
                 var CPNetflux, Pinpad;
                 var network;
+                var noDriveAnswered = false;
                 nThen(function (w) {
                     require([
                         '/bower_components/chainpad-netflux/chainpad-netflux.js',
@@ -147,6 +147,11 @@ define([
                         });
                     }));
                     Cryptpad.getFormKeys(w(function (keys) {
+                        if (!keys.curvePublic && !keys.formSeed) {
+                            // No drive mode
+                            var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                            noDriveAnswered = answered.indexOf(data.channel) !== -1;
+                        }
                         myFormKeys = keys;
                     }));
                     Cryptpad.makeNetwork(w(function (err, nw) {
@@ -204,6 +209,7 @@ define([
                             myKey = myFormKeys.curvePublic;
                         }
                         cb({
+                            noDriveAnswered: noDriveAnswered,
                             myKey: myKey,
                             results: results
                         });
@@ -236,6 +242,15 @@ define([
                     }));
                     Cryptpad.getFormAnswer({channel: data.channel}, w(function (obj) {
                         if (!obj || obj.error) {
+                            if (obj && obj.error === "ENODRIVE") {
+                                var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                                if (answered.indexOf(data.channel) !== -1) {
+                                    cb({error:'EANSWERED'});
+                                } else {
+                                    cb();
+                                }
+                                return void w.abort();
+                            }
                             w.abort();
                             return void cb(obj);
                         }
@@ -266,19 +281,26 @@ define([
                 });
 
             });
+            var noDriveSeed = Utils.Hash.createChannelId();
             sframeChan.on("Q_FORM_SUBMIT", function (data, cb) {
                 var box = data.mailbox;
                 var myKeys;
                 nThen(function (w) {
                     Cryptpad.getFormKeys(w(function (keys) {
+                        // If formSeed doesn't exists, it means we're probably in noDrive mode.
+                        // We can create a seed in localStorage.
+                        if (!keys.formSeed) {
+                            // No drive mode
+                            var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                            if(answered.indexOf(data.channel) !== -1) {
+                                // Already answered: abort
+                                return void cb({ error: "EANSWERED" });
+                            }
+                            keys = { formSeed: noDriveSeed };
+                        }
                         myKeys = keys;
                     }));
                 }).nThen(function () {
-                    // XXX if we are a registered user (myKeys.curvePrivate exists), we may
-                    // have already answered anonymously. We should send a "proof" to show
-                    // that the existing anonymous answer are ours (using myKeys.formSeed).
-                    // Even if we never answered anonymously, the keyPair would be unique to
-                    // the current channel so it wouldn't leak anything.
                     var myAnonymousKeys;
                     if (data.anonymous) {
                         if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }

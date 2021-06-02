@@ -141,7 +141,15 @@ define([
                 anonymous: data.anonymous
             }
         }, function (obj) {
-            if (obj && obj.error) { console.error(obj.error); }
+            if (obj && obj.error) {
+                if (obj.error === "ENODRIVE") {
+                    var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                    if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
+                    localStorage.CP_formAnswered = JSON.stringify(answered);
+                    return;
+                }
+                console.error(obj.error);
+            }
         });
 
     };
