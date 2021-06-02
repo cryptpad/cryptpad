@@ -1397,15 +1397,12 @@ define([
 
         var cbox;
         cbox = UI.createCheckbox('cp-form-anonymous',
-                   Messages.form_anonymousBox, false, { mark: { tabindex:1 } });
+                   Messages.form_anonymousBox, true, { mark: { tabindex:1 } });
         if (loggedIn) {
             if (!content.answers.anonymous || APP.cantAnon) {
-                $(cbox).hide().find('input').attr('disabled', 'disabled');
+                $(cbox).hide().find('input').attr('disabled', 'disabled').prop('checked', false);
             }
         }
-
-            var user = metadataMgr.getUserData();
-            console.log(user);
 
         var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.cp-open.btn.btn-danger-alt', Messages.form_reset);
