@@ -1487,8 +1487,80 @@ define([
 
         APP.formBlocks = [];
 
-        // XXX order array later
-        var elements = content.order.map(function (uid) {
+
+        var getFormCreator = function (uid) {
+            var full = !uid;
+            var idx = content.order.indexOf(uid);
+            var addControl = function (type) {
+                var btn = h('button.btn.small', {
+                    title: full ? undefined : Messages['form_type_'+type]
+                }, [
+                    (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
+                    full ? h('span', Messages['form_type_'+type]) : undefined
+                ]);
+                $(btn).click(function () {
+                    var uid = Util.uid();
+                    content.form[uid] = {
+                        //q: Messages.form_default,
+                        //opts: opts
+                        type: type,
+                    };
+                    if (full) {
+                        content.order.push(uid);
+                    } else {
+                        content.order.splice(idx, 0, uid);
+                    }
+                    framework.localChange();
+                    updateForm(framework, content, true);
+                });
+                return btn;
+            };
+
+            var controls = Object.keys(TYPES).map(addControl);
+            var staticControls = Object.keys(STATIC_TYPES).map(addControl);
+
+            var buttons = h('div.cp-form-creator-control-inline', [
+                h('div.cp-form-creator-types', controls),
+                h('div.cp-form-creator-types', staticControls)
+            ]);
+            var add = h('div', Messages.tag_add);
+            if (!full) {
+                add = h('button.btn.cp-form-creator-inline-add', {
+                    title: Messages.tag_add
+                }, [
+                    h('i.fa.fa-plus.add-open'),
+                    h('i.fa.fa-times.add-close')
+                ]);
+                var $b = $(buttons).hide();
+                $(add).click(function () {
+                    $b.toggle();
+                    $(add).toggleClass('displayed');
+                });
+            }
+
+            var inlineCls = full ? '-full' : '-inline'
+            return h('div.cp-form-creator-add'+inlineCls, [
+                h('div', add),
+                buttons
+            ]);
+
+        };
+
+        var updateAddInline = function () {
+            console.log($container, $container.find('.cp-form-block'));
+            $container.find('.cp-form-creator-add-inline').remove();
+            $container.find('.cp-form-block').each(function (i, el) {
+                console.log(i, el);
+                if (i === 0) { return; }
+                var $el = $(el);
+                var uid = $el.attr('data-id');
+                $el.before(getFormCreator(uid));
+            });
+        };
+
+
+        var elements = [];
+        content.order.forEach(function (uid, i) {
             var block = form[uid];
             var type = block.type;
             var model = TYPES[type] || STATIC_TYPES[type];
@@ -1511,7 +1583,8 @@ define([
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
 
             if (data.pageBreak && !editable) {
-                return data;
+                elements.push(data);
+                return;
             }
 
 
@@ -1584,6 +1657,7 @@ define([
                     content.order.splice(idx, 1);
                     $('.cp-form-block[data-id="'+uid+'"]').remove();
                     framework.localChange();
+                    updateAddInline();
                 });
 
                 // Values
@@ -1637,7 +1711,7 @@ define([
                 ]);
             }
             var editableCls = editable ? ".editable" : "";
-            return h('div.cp-form-block'+editableCls, {
+            elements.push(h('div.cp-form-block'+editableCls, {
                 'data-id':uid
             }, [
                 isStatic ? undefined : q,
@@ -1646,8 +1720,12 @@ define([
                     editButtons
                 ]),
                 editContainer
-            ]);
+            ]));
         });
+
+        if (APP.isEditor) {
+            elements.push(getFormCreator());
+        }
 
         var _content = elements;
         if (!editable) {
@@ -1702,6 +1780,7 @@ define([
         }
 
         $container.empty().append(_content);
+        updateAddInline();
 
         if (editable) {
             Sortable.create($container[0], {
@@ -1712,6 +1791,7 @@ define([
                     set: function (s) {
                         content.order = s.toArray();
                         framework.localChange();
+                        updateAddInline();
                     }
                 }
             });
@@ -1924,33 +2004,10 @@ define([
 
             var controlContainer;
             if (APP.isEditor) {
-                var addControl = function (type) {
-                    var btn = h('button.btn', [
-                        (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
-                        h('span', Messages['form_type_'+type])
-                    ]);
-                    $(btn).click(function () {
-                        var uid = Util.uid();
-                        content.form[uid] = {
-                            //q: Messages.form_default,
-                            //opts: opts
-                            type: type,
-                        };
-                        content.order.push(uid);
-                        framework.localChange();
-                        updateForm(framework, content, true);
-                    });
-                    return btn;
-                };
-                var controls = Object.keys(TYPES).map(addControl);
-                var staticControls = Object.keys(STATIC_TYPES).map(addControl);
-
                 var settings = makeFormSettings();
 
                 controlContainer = h('div.cp-form-creator-control', [
                     h('div.cp-form-creator-settings', settings),
-                    h('div.cp-form-creator-types', controls),
-                    h('div.cp-form-creator-types', staticControls)
                 ]);
             }
 
