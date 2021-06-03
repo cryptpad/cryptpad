@@ -37,6 +37,7 @@
         display: flex;
         flex: 1;
         justify-content: center;
+        min-width: 300px;
 
         .cp-form-input-block {
             display: flex;
@@ -45,7 +46,22 @@
         div.cp-form-creator-container {
             display: flex;
             flex: 1;
-            max-width: 1300px;
+            justify-content: center;
+            min-width: 300px;
+            flex-wrap: wrap;
+            overflow: auto;
+
+            .cp-form-creator-settings {
+                padding: 30px;
+                & > div:not(:last-child) {
+                    margin-bottom: 20px;
+                }
+            }
+            div.cp-form-filler-container {
+                width: 300px;
+                min-width: 0;
+                flex: 0 300 300px;
+            }
             div.cp-form-creator-control {
                 padding: 10px;
                 display: flex;
@@ -58,10 +74,12 @@
                 }
             }
             div.cp-form-creator-content, div.cp-form-creator-results {
+                max-width: 1000px;
+                min-width: 300px;
                 padding: 10px;
                 display: flex;
                 flex-flow: column;
-                flex: 1;
+                flex: 1 1 1000px;
                 overflow: auto;
 
                 .cp-form-creator-add-inline {
@@ -150,6 +168,25 @@
                     &:not(:last-child) {
                         margin-bottom: 20px;
                     }
+
+                    .cp-form-block-drag-handle {
+                        display: flex;
+                        flex-flow: column;
+                        align-items: center;
+                        color: @cp_sidebar-hint;
+                        i {
+                            cursor: grab;
+                            &:first-child {
+                                height: 3px;
+                                margin-top: -10px;
+                                margin-bottom: 1px;
+                            }
+                        }
+                    }
+
+                    &.sortable-ghost { visibility: hidden; }
+                    &.sortable-drag { opacity: 0.9 !important; }
+
                     .cp-form-block-question {
                         margin-bottom: 5px;
                     }
@@ -162,9 +199,16 @@
                                 margin-right: 5px;
                             }
                         }
+                        .cp-form-edit-buttons-container {
+                            display: flex;
+                            justify-content: space-between;
+                        }
                     }
                     .cp-form-input-block {
                         //width: @form_input-width;
+                        padding-bottom: 10px;
+                        border-bottom: 2px solid @cp_sidebar-hint;
+                        margin-bottom: 10px;
                         &:not(.editing) {
                             input {
                                 background: transparent;
@@ -181,6 +225,7 @@
                             min-width: 100px;
                             padding: 0 10px !important;
                             height: auto;
+                            font-size: 20px;
                         }
                         button {
                             .cp-form-edit {
@@ -209,6 +254,7 @@
                 .cp-form-edit-options-block {
                     display: flex;
                     flex-wrap: wrap;
+                    align-items: baseline;
                     .CodeMirror {
                         cursor: default;
                         flex: 1;
@@ -229,8 +275,14 @@
                         align-items: center;
                         justify-content: center;
                         width: 30px;
+                        color: @cp_sidebar-hint;
+                        i:first-child {
+                            margin-right: 1px;
+                        }
                     }
                     .cp-form-edit-block-input {
+                        &.sortable-ghost { visibility: hidden; }
+                        &.sortable-drag { opacity: 0.9 !important; }
                         display: flex;
                         width: 400px;
                         input {

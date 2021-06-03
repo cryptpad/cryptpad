@@ -116,8 +116,11 @@ define([
                         Nacl.util.decodeBase64(pub),
                         Nacl.util.decodeBase64(curvePrivate)
                     );
-                } catch (e) { console.error(e); }
-                return channel === Nacl.util.encodeUTF8(u8_plain);
+                    return channel === Nacl.util.encodeUTF8(u8_plain);
+                } catch (e) {
+                    console.error(e);
+                    return false;
+                }
             };
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
                 var cb = Utils.Util.once(_cb);
@@ -219,7 +222,7 @@ define([
                         var parsed = Utils.Util.tryParse(msg);
                         if (!parsed) { return; }
                         if (parsed._proof) {
-                            var check = checkAnonProof(parsed._proof, data.channel, curvePrivate)
+                            var check = checkAnonProof(parsed._proof, data.channel, curvePrivate);
                             if (check) {
                                 delete results[parsed._proof.key];
                             }
