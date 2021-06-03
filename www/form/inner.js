@@ -646,11 +646,6 @@ define([
         }).filter(Boolean);
     };
 
-    var checkMt = function (framework) {
-        var cm = $('.CodeMirror').length;
-        if (!cm) { framework.setMediaTagEmbedder(); }
-    };
-
     var STATIC_TYPES = {
         md: {
             defaultOpts: {
@@ -666,7 +661,7 @@ define([
                 var cursorGetter;
                 return {
                     tag: tag,
-                    edit: function (cb, tmp, framework) {
+                    edit: function (cb, tmp) {
                         var t = h('textarea');
                         var block = h('div.cp-form-edit-options-block', [t]);
                         var cm = SFCodeMirror.create("gfm", CMeditor, t);
@@ -675,14 +670,6 @@ define([
                         editor.setOption('lineWrapping', true);
                         editor.setOption('styleActiveLine', true);
                         editor.setOption('readOnly', false);
-
-                        editor.on('focus', function () {
-                            framework.setMediaTagEmbedder();
-                            framework.setMediaTagEmbedder(function (mt) {
-                                editor.focus();
-                                editor.replaceSelection($(mt)[0].outerHTML);
-                            });
-                        })
 
                         var text = opts.text;
                         var cursor;
@@ -705,7 +692,12 @@ define([
                             editor.focus();
                         });
                         if (APP.common) {
-                            var markdownTb = APP.common.createMarkdownToolbar(editor);
+                            var markdownTb = APP.common.createMarkdownToolbar(editor, {
+                                embed: function (mt) {
+                                    editor.focus();
+                                    editor.replaceSelection($(mt)[0].outerHTML);
+                                }
+                            });
                             $(block).prepend(markdownTb.toolbar);
                             $(markdownTb.toolbar).show();
                             cm.configureTheme(APP.common, function () {});
@@ -714,7 +706,6 @@ define([
                         var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
                         $(cancelBlock).click(function () {
                             cb();
-                            checkMt(framework);
                         });
                         // Save changes
                         var saveBlock = h('button.btn.btn-primary', [
@@ -730,7 +721,6 @@ define([
                         $(saveBlock).click(function () {
                             $(saveBlock).attr('disabled', 'disabled');
                             cb(getContent());
-                            checkMt(framework);
                         });
 
                         cursorGetter = function () {
@@ -1698,7 +1688,6 @@ define([
                     $('.cp-form-block[data-id="'+uid+'"]').remove();
                     framework.localChange();
                     updateAddInline();
-                    checkMt(framework);
                 });
 
                 // Values

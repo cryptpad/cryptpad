@@ -241,7 +241,12 @@ define([
             e.stopPropagation();
         });
         var common = framework._.sfCommon;
-        var markdownTb = common.createMarkdownToolbar(editor);
+        var markdownTb = common.createMarkdownToolbar(editor, {
+            embed: function (mt) {
+                editor.focus();
+                editor.replaceSelection($(mt)[0].outerHTML);
+            }
+        });
         $(text).before(markdownTb.toolbar);
         $(markdownTb.toolbar).show();
         editor.refresh();

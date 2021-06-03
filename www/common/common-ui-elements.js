@@ -936,7 +936,8 @@ define([
         return button;
     };
 
-    var createMdToolbar = function (common, editor) {
+    var createMdToolbar = function (common, editor, cfg) {
+        cfg = cfg || {};
         var $toolbar = $('<div>', {
             'class': 'cp-markdown-toolbar'
         });
@@ -1025,9 +1026,39 @@ define([
                 icon: 'fa-newspaper-o'
             }
         };
+
+        if (typeof(cfg.embed) === "function") {
+            actions.embed = {
+                icon: 'fa-picture-o',
+                action: function () {
+                    var _cfg = {
+                        types: ['file'],
+                        where: ['root']
+                    };
+                    common.openFilePicker(_cfg, function (data) {
+                        if (data.type !== 'file') {
+                            console.log("Unexpected data type picked " + data.type);
+                            return;
+                        }
+                        if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
+                        common.setPadAttribute('atime', +new Date(), null, data.href);
+                        var privateDat = common.getMetadataMgr().getPrivateData();
+                        var origin = privateDat.fileHost || privateDat.origin;
+                        var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
+                        cfg.embed($('<media-tag src="' + src +
+                            '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
+                    });
+
+                }
+            };
+        }
+
         var onClick = function () {
             var type = $(this).attr('data-type');
             var texts = editor.getSelections();
+            if (actions[type].action) {
+                return actions[type].action();
+            }
             var newTexts = texts.map(function (str) {
                 str = str || Messages.mdToolbar_defaultText;
                 if (actions[type].apply) {
@@ -1054,7 +1085,7 @@ define([
         }).appendTo($toolbar);
         return $toolbar;
     };
-    UIElements.createMarkdownToolbar = function (common, editor) {
+    UIElements.createMarkdownToolbar = function (common, editor, opts) {
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
         if (readOnly) {
             return {
@@ -1064,7 +1095,7 @@ define([
             };
         }
 
-        var $toolbar = createMdToolbar(common, editor);
+        var $toolbar = createMdToolbar(common, editor, opts);
         var cfg = {
             title: Messages.mdToolbar_button,
             element: $toolbar
