@@ -646,6 +646,11 @@ define([
         }).filter(Boolean);
     };
 
+    var checkMt = function (framework) {
+        var cm = $('.CodeMirror').length;
+        if (!cm) { framework.setMediaTagEmbedder(); }
+    };
+
     var STATIC_TYPES = {
         md: {
             defaultOpts: {
@@ -661,7 +666,7 @@ define([
                 var cursorGetter;
                 return {
                     tag: tag,
-                    edit: function (cb, tmp) {
+                    edit: function (cb, tmp, framework) {
                         var t = h('textarea');
                         var block = h('div.cp-form-edit-options-block', [t]);
                         var cm = SFCodeMirror.create("gfm", CMeditor, t);
@@ -670,6 +675,14 @@ define([
                         editor.setOption('lineWrapping', true);
                         editor.setOption('styleActiveLine', true);
                         editor.setOption('readOnly', false);
+
+                        editor.on('focus', function () {
+                            framework.setMediaTagEmbedder();
+                            framework.setMediaTagEmbedder(function (mt) {
+                                editor.focus();
+                                editor.replaceSelection($(mt)[0].outerHTML);
+                            });
+                        })
 
                         var text = opts.text;
                         var cursor;
@@ -699,7 +712,10 @@ define([
                         }
                         // Cancel changes
                         var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-                        $(cancelBlock).click(function () { cb(); });
+                        $(cancelBlock).click(function () {
+                            cb();
+                            checkMt(framework);
+                        });
                         // Save changes
                         var saveBlock = h('button.btn.btn-primary', [
                             h('i.fa.fa-floppy-o'),
@@ -714,6 +730,7 @@ define([
                         $(saveBlock).click(function () {
                             $(saveBlock).attr('disabled', 'disabled');
                             cb(getContent());
+                            checkMt(framework);
                         });
 
                         cursorGetter = function () {
@@ -1568,8 +1585,6 @@ define([
         var updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
             $container.find('.cp-form-block').each(function (i, el) {
-                console.log(i, el);
-                if (i === 0) { return; }
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
@@ -1634,6 +1649,12 @@ define([
                     }
                     var v = $inputQ.val();
                     if (!v || !v.trim()) { return void UI.warn(Messages.error); }
+                    // Don't save if no change
+                    if (v.trim() === block.q) {
+                        $(q).removeClass('editing');
+                        if (!e) { $inputQ.blur(); }
+                        return;
+                    }
                     if (saving && !e) { return; } // Prevent spam Enter
                     block.q = v.trim();
                     framework.localChange();
@@ -1677,6 +1698,7 @@ define([
                     $('.cp-form-block[data-id="'+uid+'"]').remove();
                     framework.localChange();
                     updateAddInline();
+                    checkMt(framework);
                 });
 
                 // Values
@@ -1710,7 +1732,7 @@ define([
                     var onEdit = function (tmp) {
                         data.editing = true;
                         $(data.tag).hide();
-                        $(editContainer).append(data.edit(onSave, tmp));
+                        $(editContainer).append(data.edit(onSave, tmp, framework));
                         $(editButtons).hide();
                     };
                     $(edit).click(function () {
@@ -1811,6 +1833,7 @@ define([
                 preventOnFilter: false,
                 draggable: ".cp-form-block",
                 forceFallback: true,
+                fallbackTolerance: 5,
                 onStart: function () {
                     $container.find('.cp-form-creator-add-inline').remove();
                 },
