@@ -765,9 +765,12 @@ define([
     };
     var TYPES = {
         input: {
-            get: function () {
+            get: function (opts, a, n, evOnChange) {
                 var tag = h('input');
                 var $tag = $(tag);
+                $tag.on('change keypress', Util.throttle(function () {
+                    evOnChange.fire();
+                }, 500));
                 return {
                     tag: tag,
                     getValue: function () { return $tag.val(); },
@@ -796,7 +799,7 @@ define([
                     return Messages._getKey('form_defaultOption', [i]);
                 })
             },
-            get: function (opts) {
+            get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.radio.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
@@ -809,6 +812,9 @@ define([
                 var tag = h('div.radio-group.cp-form-type-radio', els);
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
+                $(tag).find('input[type="radio"]').on('change', function () {
+                    evOnChange.fire();
+                });
                 return {
                     tag: tag,
                     getValue: function () {
@@ -876,7 +882,7 @@ define([
                     return Messages._getKey('form_defaultOption', [i]);
                 })
             },
-            get: function (opts) {
+            get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.multiradio.defaultOpts; }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
@@ -899,6 +905,9 @@ define([
                 var tag = h('div.radio-group.cp-form-type-multiradio', lines);
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
+                $(tag).find('input[type="radio"]').on('change', function () {
+                    evOnChange.fire();
+                });
                 return {
                     tag: tag,
                     getValue: function () {
@@ -980,7 +989,7 @@ define([
                     return Messages._getKey('form_defaultOption', [i]);
                 })
             },
-            get: function (opts) {
+            get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.checkbox.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
@@ -1002,6 +1011,7 @@ define([
                     } else {
                         $tag.find('input').removeAttr('disabled');
                     }
+                    evOnChange.fire();
                 });
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
@@ -1074,7 +1084,7 @@ define([
                     return Messages._getKey('form_defaultOption', [i]);
                 })
             },
-            get: function (opts) {
+            get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.multicheck.defaultOpts; }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
@@ -1099,6 +1109,7 @@ define([
                         } else {
                             $(l).find('input').removeAttr('disabled');
                         }
+                        evOnChange.fire();
                     });
                 });
 
@@ -1191,7 +1202,7 @@ define([
                     return Messages._getKey('form_defaultOption', [i]);
                 })
             },
-            get: function (opts, answers, username) {
+            get: function (opts, answers, username, evOnChange) {
                 if (!opts) { opts = TYPES.poll.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
 
@@ -1211,6 +1222,7 @@ define([
                     $c.click(function () {
                         val = (val+1)%3;
                         $c.attr('data-value', val);
+                        evOnChange.fire();
                     });
                     cell._setValue = function (v) {
                         val = v;
@@ -1512,6 +1524,23 @@ define([
 
         APP.formBlocks = [];
 
+        var evOnChange = Util.mkEvent();
+        if (!APP.isEditor) {
+            var _answers = Util.clone(answers || {});
+            delete _answers._proof;
+            delete _answers._userdata;
+            evOnChange.reg(function () {
+                var results = getFormResults();
+                if (!answers || Sortify(_answers) !== Sortify(results)) {
+                    window.onbeforeunload = function () {
+                        return true;
+                    };
+                } else {
+                    window.onbeforeunload = undefined;
+                }
+            });
+        }
+
 
         var getFormCreator = function (uid) {
             if (!APP.isEditor) { return; }
@@ -1600,7 +1629,7 @@ define([
                 name = user.name;
             }
 
-            var data = model.get(block.opts, _answers, name);
+            var data = model.get(block.opts, _answers, name, evOnChange);
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -1713,7 +1742,7 @@ define([
                             $(editButtons).show();
                             UI.log(Messages.saved);
                             var _answers = getBlockAnswers(APP.answers, uid);
-                            data = model.get(newOpts, _answers);
+                            data = model.get(newOpts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
                         });
