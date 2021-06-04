@@ -97,6 +97,8 @@ define([
     Messages.form_type_md = "Description"; // XXX
     Messages.form_type_page = "Page break"; // XXX
 
+    Messages.form_description_default = "Your text here";
+
     Messages.form_duplicates = "Duplicate entries have been removed";
     Messages.form_maxOptions = "{0} answer(s) max";
 
@@ -649,7 +651,7 @@ define([
     var STATIC_TYPES = {
         md: {
             defaultOpts: {
-                text: "Your text here" // XXX
+                text: Messages.form_description_default
             },
             get: function (opts) {
                 if (!opts) { opts = STATIC_TYPES.md.defaultOpts; }
@@ -1417,7 +1419,6 @@ define([
                 $('body').addClass('cp-app-form-results');
                 renderResults(content, answers);
                 $res.remove();
-                // XXX when not APP.isEditor, change icon and text
                 var $editor = $(h('button.cp-toolbar-appmenu', [
                     h('i.fa.fa-pencil'),
                     h('span.cp-button-name', APP.isEditor ? Messages.form_editor : Messages.form_form)
@@ -2137,9 +2138,6 @@ define([
             if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                 return void UI.errorLoadingScreen(Messages.form_invalid);
             }
-            // XXX fetch answers and
-            //  * viewers ==> check if you've already answered and show form (new or edit)
-            //  * editors ==> show schema and warn users if existing questions already have answers
 
             var getResults = function (key) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
