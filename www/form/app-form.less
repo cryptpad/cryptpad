@@ -13,6 +13,7 @@
     flex-flow: column;
     font: @colortheme_app-font;
     color: @cryptpad_text_col;
+    background-color: @cp_app-bg;
 
     #cp-app-form-editor {
         flex: 1;
@@ -84,7 +85,7 @@
 
                 .cp-form-creator-add-inline {
                     display: flex;
-                    flex-flow: column;
+                    flex-flow: row;
                     align-items: center;
                     margin-bottom: 20px;
                     button {
@@ -94,6 +95,8 @@
                         }
                     }
                     .cp-form-creator-inline-add {
+                        font-size: 25px;
+                        margin-right: 30px;
                         .add-close { display: none; }
                         &.displayed {
                             .add-close { display: inline; }
@@ -103,12 +106,21 @@
                     .cp-form-creator-control-inline {
                         display: flex;
                         justify-content: space-around;
-                        margin-top: 10px;
                         button:not(:last-child) {
                             margin-right: 5px;
                         }
-                        .cp-form-creator-types:first-child {
-                            margin-right: 50px;
+                        .cp-form-creator-types {
+                            button {
+                                border: 0px;
+                                //padding-bottom: 3px;
+                                i {
+                                    font-size: 35px;
+                                    line-height: 35px;
+                                }
+                            }
+                            &:first-child {
+                                margin-right: 50px;
+                            }
                         }
                     }
                 }

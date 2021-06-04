@@ -1547,7 +1547,7 @@ define([
             var full = !uid;
             var idx = content.order.indexOf(uid);
             var addControl = function (type) {
-                var btn = h('button.btn.small', {
+                var btn = h('button.btn.btn-default', {
                     title: full ? undefined : Messages['form_type_'+type]
                 }, [
                     (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
