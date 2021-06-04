@@ -1578,7 +1578,7 @@ define([
                 h('div.cp-form-creator-types', controls),
                 h('div.cp-form-creator-types', staticControls)
             ]);
-            var add = h('div', Messages.tag_add);
+            var add = h('div', [h('i.fa.fa-plus')]);
             if (!full) {
                 add = h('button.btn.cp-form-creator-inline-add', {
                     title: Messages.tag_add
