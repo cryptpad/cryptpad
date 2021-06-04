@@ -746,12 +746,12 @@ define([
                 };
             },
             printResults: function () { return; },
-            icon: h('i.fa.fa-info')
+            icon: h('i.cptools.cptools-form-paragraph')
         },
         page: {
             get: function () {
                 var tag = h('div.cp-form-page-break-edit', [
-                    h('i.fa.fa-hand-o-right'),
+                    h('i.cptools.cptools-form-page-break'),
                     h('span', Messages.form_type_page)
                 ]);
                 return {
@@ -760,7 +760,7 @@ define([
                 };
             },
             printResults: function () { return; },
-            icon: h('i.fa.fa-hand-o-right')
+            icon: h('i.cptools.cptools-form-page-break')
         },
     };
     var TYPES = {
@@ -791,7 +791,7 @@ define([
 
                 return h('div.cp-form-results-type-text', results);
             },
-            icon: h('i.fa.fa-font')
+            icon: h('i.cptools.cptools-form-text')
         },
         radio: {
             defaultOpts: {
@@ -868,7 +868,7 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
-            icon: h('i.fa.fa-list-ul')
+            icon: h('i.cptools.cptools-form-list-radio')
         },
         multiradio: {
             defaultOpts: {
@@ -980,7 +980,7 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
-            icon: h('i.fa.fa-list-ul')
+            icon: h('i.cptools.cptools-form-grid-radio')
         },
         checkbox: {
             defaultOpts: {
@@ -1069,7 +1069,7 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
-            icon: h('i.fa.fa-check-square-o')
+            icon: h('i.cptools.cptools-form-list-check')
         },
         multicheck: {
             defaultOpts: {
@@ -1193,7 +1193,7 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
-            icon: h('i.fa.fa-list-ul')
+            icon: h('i.cptools.cptools-form-grid-check')
         },
         poll: {
             defaultOpts: {
@@ -1281,7 +1281,7 @@ define([
                 var lines = makePollTable(_answers, form[uid].opts);
                 return h('div.cp-form-type-poll', lines);
             },
-            icon: h('i.cptools.cptools-poll')
+            icon: h('i.cptools.cptools-form-poll')
         },
     };
 
