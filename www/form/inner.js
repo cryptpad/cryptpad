@@ -102,6 +102,7 @@ define([
     Messages.form_type_checkbox = "Checkbox"; // XXX
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
     Messages.form_type_poll = "Poll"; // XXX
+    Messages.form_type_sort = "Ordered list"; // XXX
 
     Messages.form_type_md = "Description"; // XXX
     Messages.form_type_page = "Page break"; // XXX
@@ -207,7 +208,7 @@ define([
             ]);
             getLengthVal = function () {
                 var val = Number($(lengthInput).val()) || 1000;
-                if (val < 100) { val = 1; }
+                if (val < 1) { val = 1; }
                 if (val > 5000) { val = 5000; }
                 return val;
             };
@@ -953,7 +954,7 @@ define([
 
                 return h('div.cp-form-results-type-text', results);
             },
-            icon: h('i.fa.fa-font')
+            icon: h('i.cptools.cptools-form-paragraph')
         },
         radio: {
             defaultOpts: {
@@ -1553,7 +1554,7 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
-            icon: h('i.fa.fa-list-ul')
+            icon: h('i.cptools.cptools-form-list-ordered')
         },
     };
 

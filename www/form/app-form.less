@@ -49,8 +49,21 @@
             flex: 1;
             justify-content: center;
             min-width: 300px;
-            flex-wrap: wrap;
+            //flex-wrap: wrap;
             overflow: auto;
+
+            @media screen and (max-width: 1000px) {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                .cp-form-creator-control {
+                    width: 100% !important;
+                    .cp-form-creator-settings {
+                        display: flex;
+                        justify-content: space-evenly;
+                        flex-wrap: wrap;
+                    }
+                }
+            }
 
             .cp-form-creator-settings {
                 padding: 30px;
@@ -110,6 +123,12 @@
                             margin-right: 5px;
                         }
                         .cp-form-creator-types {
+                            .btn-default {
+                                background: transparent;
+                                &:hover, &:not(:disabled):active, &:focus {
+                                    background-color: @cp_buttons-default;
+                                }
+                            }
                             button {
                                 border: 0px;
                                 //padding-bottom: 3px;
@@ -148,6 +167,12 @@
                             margin-right: 5px;
                         }
                         .cp-form-creator-types {
+                            .btn-default {
+                                background: transparent;
+                                &:hover, &:not(:disabled):active, &:focus {
+                                    background-color: @cp_buttons-default;
+                                }
+                            }
                             button {
                                 border: 0px;
                                 padding:5px;
