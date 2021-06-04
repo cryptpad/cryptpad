@@ -80,14 +80,23 @@ define([
     Messages.form_invalid = "Invalid form";
     Messages.form_editBlock = "Edit";
     Messages.form_editMax = "Max selectable options";
+    Messages.form_editMaxLength = "Maximum characters";
     Messages.form_editType = "Options type";
 
     Messages.form_poll_text = "Text";
     Messages.form_poll_day = "Day";
     Messages.form_poll_time = "Time";
 
+
+    Messages.form_textType = "Text type";
+    Messages.form_text_text = "Text";
+    Messages.form_text_url = "URL";
+    Messages.form_text_email = "Email";
+    Messages.form_text_number = "Number";
+
     Messages.form_default = "Your question here?";
     Messages.form_type_input = "Text"; // XXX
+    Messages.form_type_textarea = "Textarea"; // XXX
     Messages.form_type_radio = "Radio"; // XXX
     Messages.form_type_multiradio = "Multiline Radio"; // XXX
     Messages.form_type_checkbox = "Checkbox"; // XXX
@@ -161,6 +170,109 @@ define([
     var MAX_OPTIONS = 15; // XXX
     var MAX_ITEMS = 10; // XXX
 
+    var saveAndCancelOptions = function (getRes, cb) {
+        // Cancel changes
+        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
+        $(cancelBlock).click(function () { cb(); });
+
+        // Save changes
+        var saveBlock = h('button.btn.btn-primary', [
+            h('i.fa.fa-floppy-o'),
+            h('span', Messages.settings_save)
+        ]);
+
+        $(saveBlock).click(function () {
+            $(saveBlock).attr('disabled', 'disabled');
+            cb(getRes());
+        });
+
+        return h('div', [cancelBlock, saveBlock]);
+    };
+    var editTextOptions = function (opts, setCursorGetter, cb, tmp) {
+        if (tmp && tmp.content && Sortify(opts) === Sortify(tmp.old)) {
+            opts = tmp.content;
+        }
+
+        var maxLength, getLengthVal;
+        if (opts.maxLength) {
+            var lengthInput = h('input', {
+                type:"number",
+                value: opts.maxLength,
+                min: 100,
+                max: 5000
+            });
+            maxLength = h('div.cp-form-edit-max-options', [
+                h('span', Messages.form_editMaxLength),
+                lengthInput
+            ]);
+            getLengthVal = function () {
+                var val = Number($(lengthInput).val()) || 1000;
+                if (val < 100) { val = 1; }
+                if (val > 5000) { val = 5000; }
+                return val;
+            };
+
+            var $l = $(lengthInput).on('input', Util.throttle(function () {
+                $l.val(getLengthVal());
+            }, 500));
+
+        }
+
+        var type, typeSelect;
+        if (opts.type) {
+            var options = ['text', 'number', 'url', 'email'].map(function (t) {
+                return {
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-form-type-value',
+                        'data-value': t,
+                        'href': '#',
+                    },
+                    content: Messages['form_text_'+t]
+                };
+            });
+            var dropdownConfig = {
+                text: '', // Button initial text
+                options: options, // Entries displayed in the menu
+                //left: true, // Open to the left of the button
+                //container: $(type),
+                isSelect: true,
+                caretDown: true,
+                buttonCls: 'btn btn-secondary'
+            };
+            typeSelect = UIElements.createDropdown(dropdownConfig);
+            typeSelect.setValue(opts.type);
+
+            type = h('div.cp-form-edit-type', [
+                h('span', Messages.form_textType),
+                typeSelect[0]
+            ]);
+        }
+
+        setCursorGetter(function () {
+            return {
+                old: (tmp && tmp.old) || opts,
+                content: {
+                    maxLength: getLengthVal ? getLengthVal() : undefined,
+                    type: typeSelect ? typeSelect.getValue() : undefined
+                }
+            };
+        });
+
+        var getSaveRes = function () {
+            return {
+                maxLength: getLengthVal ? getLengthVal() : undefined,
+                type: typeSelect ? typeSelect.getValue() : undefined
+            };
+        };
+        var saveAndCancel = saveAndCancelOptions(getSaveRes, cb);
+
+        return [
+            maxLength,
+            type,
+            saveAndCancel
+        ];
+    };
     var editOptions = function (v, setCursorGetter, cb, tmp) {
         var add = h('button.btn.btn-secondary', [
             h('i.fa.fa-plus'),
@@ -415,10 +527,6 @@ define([
         if ($container.find('input').length >= MAX_OPTIONS) { $add.hide(); }
         if ($(containerItems).find('input').length >= MAX_ITEMS) { $addItem.hide(); }
 
-        // Cancel changes
-        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-        $(cancelBlock).click(function () { cb(); });
-
         // Set cursor getter (to handle remote changes to the form)
         setCursorGetter(function () {
             var values = [];
@@ -471,14 +579,7 @@ define([
             };
         });
 
-        // Save changes
-        var saveBlock = h('button.btn.btn-primary', [
-            h('i.fa.fa-floppy-o'),
-            h('span', Messages.settings_save)
-        ]);
-        $(saveBlock).click(function () {
-            $(saveBlock).attr('disabled', 'disabled');
-
+        var getSaveRes = function () {
             // Get values
             var values = [];
             var duplicates = false;
@@ -538,8 +639,10 @@ define([
                 res.type = typeSelect.getValue();
             }
 
-            cb(res);
-        });
+            return res;
+        };
+
+        var saveAndCancel = saveAndCancelOptions(getSaveRes, cb);
 
         return [
             type,
@@ -547,7 +650,7 @@ define([
             calendarView,
             h('div.cp-form-edit-options-block', [containerItems, container]),
             addMultiple,
-            h('div', [cancelBlock, saveBlock])
+            saveAndCancel
         ];
     };
 
@@ -767,16 +870,33 @@ define([
     };
     var TYPES = {
         input: {
+            defaultOpts: {
+                type: 'text'
+            },
             get: function (opts, a, n, evOnChange) {
-                var tag = h('input');
+                if (!opts) { opts = TYPES.input.defaultOpts; }
+                var tag = h('input', {
+                    type: opts.type
+                });
                 var $tag = $(tag);
                 $tag.on('change keypress', Util.throttle(function () {
                     evOnChange.fire();
                 }, 500));
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
-                    getValue: function () { return $tag.val(); },
+                    getValue: function () {
+                        var invalid = $tag.is(':invalid');
+                        if (invalid) { return; } // XXX invalid answers are ignored?
+                        return $tag.val();
+                    },
                     setValue: function (val) { $tag.val(val); },
+                    edit: function (cb, tmp) {
+                        var v = Util.clone(opts);
+                        return editTextOptions(v, setCursorGetter, cb, tmp);
+                    },
+                    getCursor: function () { return cursorGetter(); },
                     reset: function () { $tag.val(''); }
                 };
             },
@@ -788,6 +908,46 @@ define([
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
                     results.push(h('div.cp-form-results-type-text-data', answer));
+                });
+                results.push(getEmpty(empty));
+
+                return h('div.cp-form-results-type-text', results);
+            },
+            icon: h('i.fa.fa-font')
+        },
+        textarea: {
+            defaultOpts: {
+                maxLength: 1000
+            },
+            get: function (opts, a, n, evOnChange) {
+                if (!opts) { opts = TYPES.textarea.defaultOpts; }
+                var tag = h('textarea', {maxlength: opts.maxLength});
+                var $tag = $(tag);
+                $tag.on('change keypress', Util.throttle(function () {
+                    evOnChange.fire();
+                }, 500));
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
+                return {
+                    tag: tag,
+                    getValue: function () { return $tag.val(); },
+                    setValue: function (val) { $tag.val(val); },
+                    edit: function (cb, tmp) {
+                        var v = Util.clone(opts);
+                        return editTextOptions(v, setCursorGetter, cb, tmp);
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    reset: function () { $tag.val(''); }
+                };
+            },
+            printResults: function (answers, uid) {
+                var results = [];
+                var empty = 0;
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (!answer || !answer.trim()) { return empty++; }
+                    results.push(h('div.cp-form-results-type-textarea-data', answer));
                 });
                 results.push(getEmpty(empty));
 
@@ -1284,6 +1444,116 @@ define([
                 return h('div.cp-form-type-poll', lines);
             },
             icon: h('i.cptools.cptools-poll')
+        },
+        sort: {
+            defaultOpts: {
+                values: [1,2].map(function (i) {
+                    return Messages._getKey('form_defaultOption', [i]);
+                })
+            },
+            get: function (opts, a, n, evOnChange) {
+                if (!opts) { opts = TYPES.radio.defaultOpts; }
+                if (!Array.isArray(opts.values)) { return; }
+                var map = {};
+                var invMap = {};
+                var els = opts.values.map(function (data, i) {
+                    var uid = Util.uid();
+                    map[uid] = data;
+                    invMap[data] = uid;
+                    var div = h('div.cp-form-type-sort', {'data-id': uid}, [
+                        h('span.cp-form-handle', [
+                            h('i.fa.fa-ellipsis-v'),
+                            h('i.fa.fa-ellipsis-v'),
+                        ]),
+                        h('span.cp-form-sort-order', (i+1)),
+                        h('span', data)
+                    ]);
+                    $(div).data('val', data);
+                    return div;
+                });
+                var tag = h('div.cp-form-type-sort-container', els);
+                var $tag = $(tag);
+                var reorder = function () {
+                    $tag.find('.cp-form-type-sort').each(function (i, el) {
+                        $(el).find('.cp-form-sort-order').text(i+1);
+                    });
+                };
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
+
+                var sortable = Sortable.create(tag, {
+                    direction: "vertical",
+                    draggable: ".cp-form-type-sort",
+                    forceFallback: true,
+                    store: {
+                        set: function () {
+                            evOnChange.fire();
+                            reorder();
+                        }
+                    }
+                });
+
+                $(tag).find('input[type="radio"]').on('change', function () {
+                    evOnChange.fire();
+                });
+                return {
+                    tag: tag,
+                    getValue: function () {
+                        return sortable.toArray().map(function (id) {
+                            return map[id];
+                        });
+                    },
+                    reset: function () {
+                        var toSort = (opts.values).map(function (val) {
+                            return invMap[val];
+                        });
+                        sortable.sort(toSort);
+                        reorder();
+                    },
+                    edit: function (cb, tmp) {
+                        var v = Util.clone(opts);
+                        return editOptions(v, setCursorGetter, cb, tmp);
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    setValue: function (val) {
+                        var toSort = (val || []).map(function (val) {
+                            return invMap[val];
+                        });
+                        sortable.sort(toSort);
+                        reorder();
+                    }
+                };
+
+            },
+            printResults: function (answers, uid, form) {
+                var opts = form[uid].opts || TYPES.radio.defaultOpts;
+                var l = (opts.values || []).length;
+                var results = [];
+                var empty = 0;
+                var count = {};
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (!Array.isArray(answer) || !answer.length) { return empty++; }
+                    answer.forEach(function (el, i) {
+                        var score = l - i;
+                        count[el] = (count[el] || 0) + score;
+                    });
+                });
+                var sorted = Object.keys(count).sort(function (a, b) {
+                    return count[b] - count[a];
+                });
+                sorted.forEach(function (value) {
+                    results.push(h('div.cp-form-results-type-radio-data', [
+                        h('span.cp-value', value),
+                        h('span.cp-count', count[value])
+                    ]));
+                });
+                results.push(getEmpty(empty));
+
+                return h('div.cp-form-results-type-radio', results);
+            },
+            icon: h('i.fa.fa-list-ul')
         },
     };
 
@@ -1848,7 +2118,7 @@ define([
         if (editable) {
             Sortable.create($container[0], {
                 direction: "vertical",
-                filter: "input, button, .CodeMirror",
+                filter: "input, button, .CodeMirror, .cp-form-type-sort",
                 preventOnFilter: false,
                 draggable: ".cp-form-block",
                 forceFallback: true,

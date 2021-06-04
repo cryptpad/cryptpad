@@ -203,6 +203,9 @@
                             display: flex;
                             justify-content: space-between;
                         }
+                        input:invalid {
+                            border: 1px solid @cp_form-invalid;
+                        }
                     }
                     .cp-form-input-block {
                         //width: @form_input-width;
@@ -328,6 +331,12 @@
                     &:not(:last-child) { margin-bottom: 1px; }
                 }
             }
+            .cp-form-results-type-textarea-data {
+                white-space: pre-wrap;
+                font-size: 14px;
+                border: 1px solid @cp_profile-hint;
+                padding: 0 5px;
+            }
             .cp-form-results-type-radio {
                 display: table;
                 .cp-form-results-type-multiradio-data {
@@ -388,6 +397,18 @@
                     margin: auto;
                 }
             }
+        }
+    }
+    .cp-form-type-sort {
+        cursor: grab;
+        padding: 2px;
+        .cp-form-handle {
+            margin-right: 5px;
+        }
+        .cp-form-sort-order {
+            border: 1px solid @cp_profile-hint;
+            padding: 0 5px;
+            margin-right: 5px;
         }
     }
 
@@ -461,7 +482,7 @@
             border: 5px double @cp_form-bg1;
         }
         div.cp-form-poll-answer {
-            color: @cp_form_poll-yes-color;
+            color: @cp_form-poll-yes-color;
         }
     }
 
