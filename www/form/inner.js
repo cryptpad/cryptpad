@@ -87,6 +87,7 @@ define([
     Messages.form_poll_day = "Day";
     Messages.form_poll_time = "Time";
 
+    Messages.form_pollYourAnswers = "Your answers";
 
     Messages.form_textType = "Text type";
     Messages.form_text_text = "Text";
@@ -702,9 +703,12 @@ define([
 
         // Add answers
         if (Array.isArray(answers)) {
-            answers.forEach(function (answer) {
-                if (!answer.name || !answer.values) { return; }
-                var _name = answer.name;
+            answers.forEach(function (answerObj) {
+                var answer = answerObj.results;
+                if (!answer || !answer.values) { return; }
+                var name = Util.find(answerObj, ['user', 'name']) || answer.name || Messages.anonymous;
+                var avatar = h('span.cp-avatar');
+                APP.common.displayAvatar($(avatar), Util.find(answerObj, ['user', 'avatar']), name);
                 var values = answer.values || {};
                 var els = opts.values.map(function (data) {
                     var res = values[data] || 0;
@@ -714,7 +718,10 @@ define([
                     }, v);
                     return cell;
                 });
-                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', _name));
+                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', [
+                    avatar,
+                    h('span', name)
+                ]));
                 lines.push(h('div', els));
             });
         }
@@ -748,7 +755,10 @@ define([
         return Object.keys(answers || {}).map(function (user) {
             if (filterCurve && user === filterCurve) { return; }
             try {
-                return answers[user].msg[uid];
+                return {
+                    user: answers[user].msg._userdata,
+                    results: answers[user].msg[uid]
+                };
             } catch (e) { console.error(e); }
         }).filter(Boolean);
     };
@@ -1418,7 +1428,8 @@ define([
                     return cell;
                 });
                 // Name input
-                var nameInput = h('input', { value: username || Messages.anonymous });
+                //var nameInput = h('input', { value: username || Messages.anonymous });
+                var nameInput = h('span.cp-poll-your-answers', Messages.form_pollYourAnswers)
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 lines.push(h('div', addLine));
 
@@ -1431,13 +1442,11 @@ define([
                     tag: tag,
                     getValue: function () {
                         var res = {};
-                        var name = $(nameInput).val().trim() || Messages.anonymous;
                         $tag.find('.cp-form-poll-choice').each(function (i, el) {
                             var $el = $(el);
                             res[$el.data('option')] = $el.attr('data-value');
                         });
                         return {
-                            name: name,
                             values: res
                         };
                     },
@@ -1451,9 +1460,8 @@ define([
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (res) {
                         this.reset();
-                        if (!res || !res.values || !res.name) { return; }
+                        if (!res || !res.values) { return; }
                         var val = res.values;
-                        $(nameInput).val(res.name);
                         $tag.find('.cp-form-poll-choice').each(function (i, el) {
                             if (!el._setValue) { return; }
                             var $el = $(el);
@@ -2037,7 +2045,7 @@ define([
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             $(editButtons).show();
                             UI.log(Messages.saved);
-                            var _answers = getBlockAnswers(APP.answers, uid);
+                            _answers = getBlockAnswers(APP.answers, uid);
                             data = model.get(newOpts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
