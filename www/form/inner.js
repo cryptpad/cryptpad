@@ -27,7 +27,7 @@ define([
     '/bower_components/sortablejs/Sortable.min.js',
 
     'cm/addon/display/placeholder',
-    'cm/mode/markdown/markdown',
+    'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
     'css!/bower_components/codemirror/lib/codemirror.css',
