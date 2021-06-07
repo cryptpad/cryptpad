@@ -2180,7 +2180,7 @@ define([
             var refreshPublic = function () {
                 $results.empty();
                 var makePublic = h('button.btn.btn-secondary', Messages.form_makePublic);
-                var makePublicDiv = h('div', makePublic);
+                var makePublicDiv = h('div.cp-form-actions', makePublic);
                 if (content.answers.privateKey) { makePublicDiv = undefined; }
                 var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
                 $results.append(h('span.cp-form-results-type', publicText));
