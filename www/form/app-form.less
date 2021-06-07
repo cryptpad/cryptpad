@@ -253,6 +253,7 @@
                             }
                         }
                         .cp-form-edit-buttons-container {
+                            margin-top: 20px;
                             display: flex;
                             justify-content: space-between;
                         }
@@ -297,11 +298,26 @@
                             line-height: 31px;
                         }
                     }
-                    &.editable { cursor: grab; }
+                    &.editable {
+                        cursor: grab;
+                        .cp-form-edit-save {
+                            margin-top: 20px;
+                            button {
+                                margin-right: 10px;
+                            }
+                        }
+                        .cp-form-edit-type {
+                            margin-bottom: 10px;
+                            .cp-dropdown-container {
+                                margin-left: 10px;
+                            }
+                        }
+                    }
                 }
                 .cp-form-edit-max-options {
                     display: flex;
                     align-items: center;
+                    margin-bottom: 10px;
                     input {
                         width: 100px;
                         margin-left: 10px;
@@ -326,6 +342,10 @@
                     }
                 }
                 .cp-form-edit-block {
+
+                    button.btn-secondary {
+                        margin-left: 30px;
+                    }
                     .cp-form-handle {
                         display: flex;
                         align-items: center;
@@ -337,6 +357,7 @@
                         }
                     }
                     .cp-form-edit-block-input {
+                        margin-bottom: 5px; // XXX DB margin bug
                         &.sortable-ghost { visibility: hidden; }
                         &.sortable-drag { opacity: 0.9 !important; }
                         display: flex;
@@ -344,6 +365,8 @@
                         input {
                             flex: 1;
                             min-width: 100px;
+                            border-color: @cryptpad_text_col;
+                            border-right: 0px;
                         }
                         button {
                             i { margin: 0 !important; }

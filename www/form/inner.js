@@ -187,7 +187,7 @@ define([
             cb(getRes());
         });
 
-        return h('div', [cancelBlock, saveBlock]);
+        return h('div.cp-form-edit-save', [cancelBlock, saveBlock]);
     };
     var editTextOptions = function (opts, setCursorGetter, cb, tmp) {
         if (tmp && tmp.content && Sortify(opts) === Sortify(tmp.old)) {
@@ -371,7 +371,7 @@ define([
                 if (cursor && cursor.el === val && !cursor.item) { setCursor(); }
             }
 
-            var del = h('button.btn.btn-danger', h('i.fa.fa-times'));
+            var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
             var el = h('div.cp-form-edit-block-input', [
                 h('span.cp-form-handle', [
                     h('i.fa.fa-ellipsis-v'),
@@ -845,7 +845,7 @@ define([
 
                         return [
                             block,
-                            h('div', [cancelBlock, saveBlock])
+                            h('div.cp-form-edit-save', [cancelBlock, saveBlock])
                         ];
                     },
                     getCursor: function () { return cursorGetter(); },
