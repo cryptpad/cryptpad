@@ -12,7 +12,7 @@ define(function() {
      * You should never remove the drive from this list.
      */
     AppConfig.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
-                                /*'doc', 'presentation',*/ 'file', /*'todo',*/ 'contacts' /*, 'calendar' */];
+                                /*'doc', 'presentation',*/ 'file', /*'todo',*/ 'contacts', 'form'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -117,6 +117,7 @@ define(function() {
         code: 'cptools-code',
         slide: 'cptools-slide',
         poll: 'cptools-poll',
+        form: 'cptools-poll',
         whiteboard: 'cptools-whiteboard',
         todo: 'cptools-todo',
         contacts: 'fa-address-book',

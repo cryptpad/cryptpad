@@ -747,6 +747,7 @@ define([
             cb = Util.once(cb);
         }
         var classes = 'btn ' + (config.classes || 'btn-primary');
+        var newCls = config.new ? '.new' : '';
 
         var button = h('button', {
             "class": classes,
@@ -759,7 +760,7 @@ define([
         });
         var timer = h('div.cp-button-timer', div);
 
-        var content = h('div.cp-button-confirm', [
+        var content = h('div.cp-button-confirm'+newCls, [
             button,
             timer
         ]);
@@ -795,7 +796,8 @@ define([
             to = setTimeout(todo, INTERVAL);
         };
 
-        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function (e) {
+        var newCls2 = config.new ? 'new' : '';
+        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).click(function (e) {
             e.stopPropagation();
             // If we have a validation function, continue only if it's true
             if (config.validate && !config.validate()) { return; }
@@ -1175,6 +1177,7 @@ define([
         var label = h('span.cp-checkmark-label', labelTxt);
 
         $mark.keydown(function (e) {
+            if ($input.is(':disabled')) { return; }
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -1220,20 +1223,22 @@ define([
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
+        var $input = $(input);
         var mark = h('span.cp-radio-mark', markOpts);
         var label = h('span.cp-checkmark-label', labelTxt);
 
         $(mark).keydown(function (e) {
+            if ($input.is(':disabled')) { return; }
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
-                if ($(input).is(':checked')) { return; }
-                $(input).prop('checked', !$(input).is(':checked'));
-                $(input).change();
+                if ($input.is(':checked')) { return; }
+                $input.prop('checked', !$input.is(':checked'));
+                $input.change();
             }
         });
 
-        $(input).change(function () { $(mark).focus(); });
+        $input.change(function () { $(mark).focus(); });
 
         var radio =  h('label', labelOpts, [
             input,

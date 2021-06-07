@@ -112,6 +112,7 @@ define([
         Store.set = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.proxy) { return void cb({ error: 'ENODRIVE' }); }
             var path = data.key.slice();
             var key = path.pop();
             var obj = Util.find(s.proxy, path);
@@ -629,6 +630,7 @@ define([
             if (!proxy.uid) {
                 store.noDriveUid = store.noDriveUid || Hash.createChannelId();
             }
+
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
@@ -655,7 +657,7 @@ define([
                     accountName: proxy.login_name || '',
                     offline: store.proxy && store.offline,
                     teams: teams,
-                    plan: account.plan
+                    plan: account.plan,
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -2139,11 +2141,23 @@ define([
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
             var s = getStore(data.teamId);
+            var otherChannels = data.channels;
+            delete data.channels;
             s.rpc.setMetadata(data, function (err, res) {
                 if (err) { return void cb({ error: err }); }
                 if (!Array.isArray(res) || !res.length) { return void cb({}); }
                 cb(res[0]);
             });
+            // If we have other related channels, send the command for them too
+            if (Array.isArray(otherChannels)) {
+                otherChannels.forEach(function (chan) {
+                    var _d = Util.clone(data);
+                    _d.channel = chan;
+                    Store.setPadMetadata(clientId, _d, function () {
+
+                    });
+                });
+            }
         };
 
         // GET_FULL_HISTORY from sframe-common-outer
@@ -2696,7 +2710,12 @@ define([
 
             nThen(function (waitFor) {
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+                if (!proxy.forms) { proxy.forms = {}; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
+                // Form seed is used to generate a box encryption keypair when
+                // answering a form anonymously
+                if (!proxy.form_seed) { proxy.form_seed = Hash.createChannelId(); }
+
 
                 // Call onCacheReady if the manager is not yet defined
                 if (!manager) {

@@ -553,11 +553,13 @@ MessengerUI, Messages, Pages) {
             if (toolbar.isDeleted) {
                 return void UI.warn(Messages.deletedFromServer);
             }
+            var privateData = config.metadataMgr.getPrivateData();
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";
             Common.getSframeChannel().event('EV_SHARE_OPEN', {
-                title: title
+                title: title,
+                auditorHash: privateData.form_auditorHash
             });
         });
 

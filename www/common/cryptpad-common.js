@@ -76,7 +76,7 @@ define([
             postMessage("GET", {
                 key: ['edPrivate'],
             }, waitFor(function (obj) {
-                if (obj.error) { return; }
+                if (!obj || obj.error) { return; }
                 try {
                     keys.push({
                         edPrivate: obj,
@@ -84,14 +84,16 @@ define([
                     });
                 } catch (e) { console.error(e); }
             }));
+
             // Push teams keys
             postMessage("GET", {
                 key: ['teams'],
             }, waitFor(function (obj) {
-                if (obj.error) { return; }
+                if (!obj || obj.error) { return; }
                 Object.keys(obj || {}).forEach(function (id) {
                     var t = obj[id];
                     var _keys = t.keys.drive || {};
+                    _keys.id = id;
                     if (!_keys.edPrivate) { return; }
                     keys.push(t.keys.drive);
                 });
@@ -99,6 +101,57 @@ define([
         }).nThen(function () {
             cb(keys);
         });
+    };
+
+    common.getFormKeys = function (cb) {
+        var curvePrivate;
+        var formSeed;
+        Nthen(function (waitFor) {
+            postMessage("GET", {
+                key: ['curvePrivate'],
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                curvePrivate = obj;
+            }));
+            postMessage("GET", {
+                key: ['form_seed'],
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                formSeed = obj;
+            }));
+        }).nThen(function () {
+            cb({
+                curvePrivate: curvePrivate,
+                curvePublic: curvePrivate && Hash.getCurvePublicFromPrivate(curvePrivate),
+                formSeed: formSeed
+            });
+        });
+    };
+    common.getFormAnswer = function (data, cb) {
+        postMessage("GET", {
+            key: ['forms', data.channel],
+        }, cb);
+    };
+    common.storeFormAnswer = function (data) {
+        postMessage("SET", {
+            key: ['forms', data.channel],
+            value: {
+                hash: data.hash,
+                curvePrivate: data.curvePrivate,
+                anonymous: data.anonymous
+            }
+        }, function (obj) {
+            if (obj && obj.error) {
+                if (obj.error === "ENODRIVE") {
+                    var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                    if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
+                    localStorage.CP_formAnswered = JSON.stringify(answered);
+                    return;
+                }
+                console.error(obj.error);
+            }
+        });
+
     };
 
     common.makeNetwork = function (cb) {
@@ -712,6 +765,10 @@ define([
             delete meta.chat2;
             delete meta.chat;
             delete meta.cursor;
+
+            if (meta.type === "form") {
+                delete parsed.answers;
+            }
         }
     };
 
