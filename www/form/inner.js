@@ -2130,6 +2130,8 @@ define([
                         h('span', Messages.form_page_next),
                         h('i.fa.fa-chevron-right'),
                     ]);
+                    if (current === pages) { $(right).css('visibility', 'hidden'); }
+                    if (current === 1) { $(left).css('visibility', 'hidden'); }
                     $(left).click(function () { refreshPage(current - 1); });
                     $(right).click(function () { refreshPage(current + 1); });
                     $page.append([left, state, right]);
