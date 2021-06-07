@@ -111,6 +111,7 @@ define([
 
     Messages.form_duplicates = "Duplicate entries have been removed";
     Messages.form_maxOptions = "{0} answer(s) max";
+    Messages.form_maxLength = "Characters limit: {0}/{1}";
 
     Messages.form_submit = "Submit";
     Messages.form_update = "Update";
@@ -922,23 +923,46 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.textarea.defaultOpts; }
-                var tag = h('textarea', {maxlength: opts.maxLength});
-                var $tag = $(tag);
-                $tag.on('change keypress', Util.throttle(function () {
+                var text = h('textarea', {maxlength: opts.maxLength});
+                var $text = $(text);
+                var charCount = h('div.cp-form-type-textarea-charcount');
+                var updateChar = function () {
+                    var l = $text.val().length;
+                    if (l > opts.maxLength) {
+                        $text.val($text.val().slice(0, opts.maxLength));
+                        l = $text.val().length;
+                    }
+                    $(charCount).text(Messages._getKey('form_maxLength', [
+                        $text.val().length,
+                        opts.maxLength
+                    ]));
+                };
+                updateChar();
+                var tag = h('div.cp-form-type-textarea', [
+                    text,
+                    charCount
+                ]);
+
+                var evChange = Util.throttle(function () {
                     evOnChange.fire();
-                }, 500));
+                }, 500);
+
+                $text.on('change keypress', function () {
+                    setTimeout(updateChar);
+                    evChange();
+                });
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
-                    getValue: function () { return $tag.val(); },
-                    setValue: function (val) { $tag.val(val); },
+                    getValue: function () { return $text.val().slice(0, opts.maxLength); },
+                    setValue: function (val) { $text.val(val); },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
                         return editTextOptions(v, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
-                    reset: function () { $tag.val(''); }
+                    reset: function () { $text.val(''); }
                 };
             },
             printResults: function (answers, uid) {
