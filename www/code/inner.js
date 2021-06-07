@@ -257,8 +257,8 @@ define([
                 'class': 'cp-splitter'
             }).appendTo($previewContainer);
 
-            $preview.on('scroll', function() {
-                splitter.css('top', $preview.scrollTop() + 'px');
+            $previewContainer.on('scroll', function() {
+                splitter.css('top', $previewContainer.scrollTop() + 'px');
             });
 
             var $target = $codeMirrorContainer;
