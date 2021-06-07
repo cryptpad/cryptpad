@@ -197,6 +197,15 @@
                 .cp-form-page + .cp-form-send-container {
                     margin-top: 10px;
                 }
+                .cp-form-send-container {
+                    text-align: center;
+                    margin: 50px auto 100px auto;
+                    button {
+                        &:not(:last-child) {
+                            margin-right: 10px;
+                        }
+                    }
+                }
 
                 .cp-form-page-container {
                     display: flex;
@@ -210,11 +219,12 @@
                         justify-content: center;
                     }
                     button {
-                        &.cp-next {
-                            .fa {
-                                margin-right: 0;
-                                margin-left: 5px;
-                            }
+                        display: flex;
+                        height: 38px;
+                        align-items: center;
+                        i {
+                            margin-right: 0;
+                            font-size: 25px;
                         }
                     }
                 }
@@ -505,11 +515,19 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            margin:5px;
             &:first-child {
                 width: 200px;
             }
             button {
                 width: 100%;
+                border-top: 0px;
+                border-left: 0px;
+                background-color: @cp_form-bg1;
+                .fa{
+                    margin-left:10px;
+                    transform: rotate(-45deg);
+                }
             }
         }
         .cp-poll-time-day {
@@ -544,6 +562,7 @@
                 display: none;
             }
             color: @cp_form-poll-color;
+            font-size: 25px;
             &[data-value="0"] {
                 background: @cp_form-poll-no;
                 .cp-no { display: inline; }
@@ -560,7 +579,9 @@
         div.cp-form-poll-choice {
             cursor: pointer;
             padding: 5px;
-            border: 5px double @cp_form-bg1;
+            //margin: 10px 0px 0px 10px;
+            //border: 1px solid @cryptpad_text_col;
+            color: @cryptpad_text_col;
         }
         div.cp-form-poll-answer {
             color: @cp_form-poll-yes-color;

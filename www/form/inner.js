@@ -86,7 +86,7 @@ define([
     Messages.form_poll_text = "Text";
     Messages.form_poll_day = "Day";
     Messages.form_poll_time = "Time";
-
+    Messages.form_poll_switch = "Switch axes" // XXX DB
 
     Messages.form_textType = "Text type";
     Messages.form_text_text = "Text";
@@ -676,6 +676,7 @@ define([
         });
         // Insert axis switch button
         var switchAxis = h('button.btn.btn-default', [
+            Messages.form_poll_switch,
             h('i.fa.fa-exchange'),
         ]);
         els.unshift(h('div.cp-poll-cell.cp-poll-switch', switchAxis));
@@ -2089,14 +2090,12 @@ define([
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
                     if (current > pages) { current = pages; }
-                    var left = h('button.btn.btn-secondary.small.cp-prev', [
-                        h('i.fa.fa-chevron-left'),
-                        h('span', Messages.form_page_prev)
+                    var left = h('button.btn.btn-secondary.cp-prev', [
+                        h('i.fa.fa-arrow-left'),
                     ]);
                     var state = h('span', Messages._getKey('form_page', [current, pages]));
-                    var right = h('button.btn.btn-secondary.small.cp-next', [
-                        h('span', Messages.form_page_next),
-                        h('i.fa.fa-chevron-right'),
+                    var right = h('button.btn.btn-secondary.cp-next', [
+                        h('i.fa.fa-arrow-right'),
                     ]);
                     $(left).click(function () { refreshPage(current - 1); });
                     $(right).click(function () { refreshPage(current + 1); });
