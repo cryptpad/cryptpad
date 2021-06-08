@@ -504,6 +504,7 @@ define([
                 refreshView();
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
+                    $(add).click();
                     return;
                 }
                 $container.find('input').each(function (i, input) {
