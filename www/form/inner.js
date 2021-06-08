@@ -968,7 +968,10 @@ define([
                 return {
                     tag: tag,
                     getValue: function () { return $text.val().slice(0, opts.maxLength); },
-                    setValue: function (val) { $text.val(val); },
+                    setValue: function (val) {
+                        $text.val(val);
+                        updateChar();
+                    },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
                         return editTextOptions(v, setCursorGetter, cb, tmp);
