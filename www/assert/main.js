@@ -250,6 +250,12 @@ define([
             secret.hashData.ownerKey === "uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA" &&
             !secret.hashData.present);
     }, "test support for owner key in version 1 file hash failed to parse");
+    assert(function (cb) {
+        var parsed = Hash.parsePadUrl('/file/#/2/file/JQU88aX+ieXR58L5T787434a/');
+        var secret = Hash.getSecrets('file', parsed.hash);
+        return cb(secret.type === 'file' && secret.password === undefined &&
+            secret.channel === "2031a9b51247a07ad398227367c1b95efaad969b209a279c");
+    }, "test support for v2 file hash");
 
     assert(function (cb) {
         var secret = Hash.parsePadUrl('/invite/#/2/invite/edit/oRE0oLCtEXusRDyin7GyLGcS/p/');
