@@ -163,6 +163,7 @@ define([
     Messages.form_add_option = "Add option";
     Messages.form_add_item = "Add item";
     Messages.form_addMultiple = "Add all";
+    Messages.form_addMultipleHint = "Add multiple dates and times"
     Messages.form_clear = "Clear";
 
     Messages.form_page_prev = "Previous";
@@ -443,13 +444,13 @@ define([
 
         // Calendar time
         if (v.type) {
-            var multipleInput = h('input');
+            var multipleInput = h('input', {placeholder: Messages.form_addMultipleHint});
             var multipleClearButton = h('button.btn', Messages.form_clear);
             var addMultipleButton = h('button.btn', [
                 h('i.fa.fa-plus'),
                 h('span', Messages.form_addMultiple)
             ]);
-            addMultiple = h('div', { style: "display: none;" }, [
+            addMultiple = h('div.cp-form-multiple-picker', { style: "display: none;" }, [
                 multipleInput,
                 addMultipleButton,
                 multipleClearButton
@@ -708,6 +709,12 @@ define([
         // Add answers
         var bodyEls = [];
         if (Array.isArray(answers)) {
+            for(var i = 0; i< 20; i++) { // XXX
+                answers.push({
+                    user: { name: 'User '+i },
+                    results: { values: {} }
+                });
+            }
             answers.forEach(function (answerObj) {
                 var answer = answerObj.results;
                 if (!answer || !answer.values) { return; }
