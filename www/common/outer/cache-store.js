@@ -49,7 +49,10 @@ define([
                 }
                 cb(null, obj.c);
                 obj.t = +new Date();
-                cache.setItem(id, obj);
+                cache.setItem(id, obj, function (err) {
+                    if (!err) { return; }
+                    console.error(err);
+                });
             });
         });
     };
@@ -81,7 +84,10 @@ define([
                 }
                 cb(null, obj);
                 obj.t = +new Date();
-                cache.setItem(id, obj);
+                cache.setItem(id, obj, function (err) {
+                    if (!err) { return; }
+                    console.error(err);
+                });
             });
         });
     };
