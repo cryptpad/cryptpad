@@ -959,7 +959,7 @@ define([
                     evOnChange.fire();
                 }, 500);
 
-                $text.on('change keypress', function () {
+                $text.on('change keypress keyup keydown', function () {
                     setTimeout(updateChar);
                     evChange();
                 });
