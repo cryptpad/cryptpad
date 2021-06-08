@@ -16,10 +16,6 @@ var Env = require("./lib/env").create(config);
 
 var app = Express();
 
-var canonicalizeOrigin = function (s) {
-    return (s || '').trim().replace(/\/+$/, '');
-};
-
 var fancyURL = function (domain, path) {
     try {
         if (domain && path) { return new URL(path, domain).href; }
@@ -30,13 +26,8 @@ var fancyURL = function (domain, path) {
 
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin'
-    if (typeof(config.httpUnsafeOrigin) !== 'string') {
+    if (typeof(Env.httpUnsafeOrigin) !== 'string') {
         throw new Error("No 'httpUnsafeOrigin' provided");
-    }
-
-    config.httpUnsafeOrigin = canonicalizeOrigin(config.httpUnsafeOrigin);
-    if (typeof(config.httpSafeOrigin) === 'string') {
-        config.httpSafeOrigin = canonicalizeOrigin(config.httpSafeOrigin);
     }
 
     // fall back to listening on a local address
@@ -50,7 +41,7 @@ var fancyURL = function (domain, path) {
         config.httpPort = 3000;
     }
 
-    if (typeof(config.httpSafeOrigin) !== 'string') {
+    if (typeof(Env.httpSafeOrigin) !== 'string') {
         Env.NO_SANDBOX = true;
         if (typeof(config.httpSafePort) !== 'number') {
             config.httpSafePort = config.httpPort + 1;
@@ -76,7 +67,7 @@ var setHeaders = (function () {
     }
 
     // next define the base Content Security Policy (CSP) headers
-    if (typeof(config.contentSecurity) === 'string') {
+    if (typeof(config.contentSecurity) === 'string') { // XXX deprecate this
         headers['Content-Security-Policy'] = config.contentSecurity;
         if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
@@ -87,14 +78,14 @@ var setHeaders = (function () {
         }
     } else {
         // use the default CSP headers constructed with your domain
-        headers['Content-Security-Policy'] = Default.contentSecurity(config.httpUnsafeOrigin);
+        headers['Content-Security-Policy'] = Default.contentSecurity(Env.httpUnsafeOrigin);
     }
 
     const padHeaders = Util.clone(headers);
     if (typeof(config.padContentSecurity) === 'string') {
         padHeaders['Content-Security-Policy'] = config.padContentSecurity;
     } else {
-        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(config.httpUnsafeOrigin);
+        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(Env.httpUnsafeOrigin);
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
@@ -151,7 +142,7 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 
 app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
-        Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
+        Express.static(Path.join(__dirname, Env.paths.blob),
             setHeaders: function (res, path, stat) {
                 res.set('Access-Control-Allow-Origin', '*');
                 res.set('Access-Control-Allow-Headers', 'Content-Length');
@@ -191,13 +182,13 @@ var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize'));
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
-app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
+app.use("/blob", Express.static(Path.join(__dirname, Env.paths.blob), {
     maxAge: Env.DEV_MODE? "0d": "365d"
 }));
-app.use("/datastore", Express.static(Path.join(__dirname, (config.filePath || './datastore')), {
+app.use("/datastore", Express.static(Path.join(__dirname, Env.paths.data), {
     maxAge: "0d"
 }));
-app.use("/block", Express.static(Path.join(__dirname, (config.blockPath || '/block')), {
+app.use("/block", Express.static(Path.join(__dirname, Env.paths.block), {
     maxAge: "0d",
 }));
 
@@ -254,10 +245,10 @@ var serveConfig = makeRouteCache(function (host) {
                 waitSeconds: 600,
                 urlArgs: 'ver=' + Package.version + cacheString(),
             },
-            removeDonateButton: (config.removeDonateButton === true),
-            allowSubscriptions: (config.allowSubscriptions === true),
+            removeDonateButton: (Env.removeDonateButton === true),
+            allowSubscriptions: (Env.allowSubscriptions === true),
             websocketPath: config.externalWebsocketURL,
-            httpUnsafeOrigin: config.httpUnsafeOrigin,
+            httpUnsafeOrigin: Env.httpUnsafeOrigin,
             adminEmail: Env.adminEmail,
             adminKeys: Env.admins,
             inactiveTime: Env.inactiveTime,
@@ -265,10 +256,10 @@ var serveConfig = makeRouteCache(function (host) {
             defaultStorageLimit: Env.defaultStorageLimit,
             maxUploadSize: Env.maxUploadSize,
             premiumUploadSize: Env.premiumUploadSize,
-            restrictRegistration: Env.restrictRegistration, // FIXME see the race condition in env.js
+            restrictRegistration: Env.restrictRegistration,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
-            if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
+            if (Env.httpSafeOrigin) { return '"' + Env.httpSafeOrigin + '"'; }
             if (config.httpSafePort) {
                 return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
                     config.httpSafePort + "'); }())";
@@ -332,16 +323,16 @@ nThen(function (w) {
         var ps = port === 80? '': ':' + port;
 
         var roughAddress = 'http://' + hostName + ps;
-        var betterAddress = fancyURL(config.httpUnsafeOrigin);
+        var betterAddress = fancyURL(Env.httpUnsafeOrigin);
 
         if (betterAddress) {
             console.log('Serving content for %s via %s.\n', betterAddress, roughAddress);
         } else {
             console.log('Serving content via %s.\n', roughAddress);
         }
-        if (!Array.isArray(config.adminKeys)) {
+        if (!Env.admins.length) {
             console.log("Your instance is not correctly configured for safe use in production.\nSee %s for more information.\n",
-                fancyURL(config.httpUnsafeOrigin, '/checkup/') || 'https://your-domain.com/checkup/'
+                fancyURL(Env.httpUnsafeOrigin, '/checkup/') || 'https://your-domain.com/checkup/'
             );
         }
     });
