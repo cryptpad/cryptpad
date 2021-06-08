@@ -489,6 +489,7 @@ define([
                     $(addMultiple).hide();
                 }
             } else {
+                $(addMultiple).hide();
                 $calendar.show();
                 $container.hide();
             }
