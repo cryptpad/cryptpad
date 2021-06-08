@@ -1441,7 +1441,7 @@ define([
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 lines.push(h('div', addLine));
 
-                var tag = h('div', h('div.cp-form-type-poll', lines));
+                var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
                 var $tag = $(tag);
 
                 var cursorGetter;
