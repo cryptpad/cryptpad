@@ -704,6 +704,7 @@ define([
         }
 
         // Add answers
+        var bodyEls = [];
         if (Array.isArray(answers)) {
             answers.forEach(function (answerObj) {
                 var answer = answerObj.results;
@@ -724,9 +725,11 @@ define([
                     avatar,
                     h('span', name)
                 ]));
-                lines.push(h('div', els));
+                bodyEls.push(h('div', els));
             });
         }
+        var body = h('div.cp-form-poll-body', bodyEls);
+        lines.push(body);
 
         var $s = $(switchAxis).click(function () {
             $s.closest('.cp-form-type-poll').toggleClass('cp-form-poll-switch');
@@ -1438,7 +1441,7 @@ define([
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 lines.push(h('div', addLine));
 
-                var tag = h('div.cp-form-type-poll', lines);
+                var tag = h('div', h('div.cp-form-type-poll', lines));
                 var $tag = $(tag);
 
                 var cursorGetter;
