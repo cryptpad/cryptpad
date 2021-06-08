@@ -87,6 +87,7 @@ define([
     Messages.form_poll_day = "Day";
     Messages.form_poll_time = "Time";
     Messages.form_poll_switch = "Switch axes" // XXX DB
+    Messages.form_pollTotal = "Total";
 
     Messages.form_pollYourAnswers = "Your answers";
 
@@ -678,7 +679,9 @@ define([
                 var _dateT = new Date(data);
                 data = Flatpickr.formatDate(_dateT, timeFormat);
             }
-            return h('div.cp-poll-cell.cp-form-poll-option', data);
+            return h('div.cp-poll-cell.cp-form-poll-option', {
+                title: Util.fixHTML(data)
+            }, data);
         });
         // Insert axis switch button
         var switchAxis = h('button.btn.btn-default', [
@@ -730,7 +733,9 @@ define([
                     }, v);
                     return cell;
                 });
-                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', [
+                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', {
+                    title: Util.fixHTML(name)
+                }, [
                     avatar,
                     h('span', name)
                 ]));
@@ -745,6 +750,56 @@ define([
         });
 
         return lines;
+    };
+    var makePollTotal = function (answers, opts) {
+        if (!Array.isArray(answers)) { return; }
+        var totals = {};
+        var totalEls = opts.values.map(function (data) {
+            var y = 0; // Yes
+            var m = 0; // Maybe
+            answers.forEach(function (answerObj) {
+                var answer = answerObj.results;
+                if (!answer || !answer.values) { return; }
+                var values = answer.values || {};
+                var res = Number(values[data]) || 0;
+                if (res === 1) { y++; }
+                else if (res === 2) { m++; }
+            });
+            totals[data] = {
+                y: y,
+                m: m
+            };
+
+            return h('div.cp-poll-cell', {
+                'data-id': data
+            }, [
+                h('span.cp-form-total-yes', y),
+                h('span.cp-form-total-maybe', '('+m+')'),
+            ]);
+        });
+
+        var totalMax = {
+            value: 0,
+            data: []
+        };
+        Object.keys(totals).forEach(function (k) {
+            var obj = totals[k];
+            if (obj.y === totalMax.value) {
+                totalMax.data.push(k);
+            } else if (obj.y > totalMax.value) {
+                totalMax.value = obj.y;
+                totalMax.data = [k];
+            }
+        });
+        totalEls.unshift(h('div.cp-poll-cell', Messages.form_pollTotal));
+        var total = h('div.cp-poll-total', totalEls);
+        if (totalMax.value) {
+            totalMax.data.forEach(function (k) {
+                $(total).find('[data-id="'+k+'"]').addClass('cp-poll-best');
+            });
+        }
+
+        return total;
     };
 
     var getEmpty = function (empty) {
@@ -1450,6 +1505,9 @@ define([
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 lines.push(h('div', addLine));
 
+                var total = makePollTotal(answers, opts);
+                if (total) { lines.push(h('div', total)); }
+
                 var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
                 var $tag = $(tag);
 
@@ -1491,6 +1549,10 @@ define([
             printResults: function (answers, uid, form) {
                 var _answers = getBlockAnswers(answers, uid);
                 var lines = makePollTable(_answers, form[uid].opts);
+
+                var total = makePollTotal(_answers, form[uid].opts);
+                if (total) { lines.push(h('div', total)); }
+
                 return h('div.cp-form-type-poll', lines);
             },
             icon: h('i.cptools.cptools-form-poll')

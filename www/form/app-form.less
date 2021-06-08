@@ -530,19 +530,21 @@
         }
         .cp-form-poll-body {
             flex-flow: column;
-            max-height: 200px;
+            max-height: 225px;
             overflow: auto;
+
             & > div {
                 display: flex;
             }
         }
         .cp-poll-cell {
             width: 100px;
-            height: 40px;
+            height: 35px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin:5px;
+            margin-top:5px;
+            margin-left:5px;
             &:first-child {
                 width: 200px;
             }
@@ -555,6 +557,12 @@
                     margin-left:10px;
                     transform: rotate(-45deg);
                 }
+            }
+            .cp-form-total-yes {
+                margin-right: 5px;
+            }
+            &.cp-poll-best {
+                font-weight: bold;
             }
         }
         .cp-poll-answer-name {
@@ -576,7 +584,22 @@
             flex-basis: 100px;
             border-bottom: 1px solid @cryptpad_text_col;
         }
+        &:not(.cp-form-poll-switch) {
+            & > div {
+                &:last-child {
+                    margin-bottom: 5px;
+                }
+            }
+            .cp-form-poll-body {
+                &::-webkit-scrollbar {
+                  display: none;
+                }
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+        }
         &.cp-form-poll-switch {
+            display: flex;
             flex-flow: row;
             .cp-avatar {
                 .avatar_main(20px);
@@ -585,7 +608,7 @@
                 flex-flow: column;
                 &.cp-form-poll-body {
                     flex-flow: row;
-                    max-width: 500px;
+                    max-width: 550px;
                     max-height: unset;
                     scroll-snap-type: x mandatory;
                     & > div {
