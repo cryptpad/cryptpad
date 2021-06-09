@@ -4,7 +4,6 @@
 var Express = require('express');
 var Http = require('http');
 var Fs = require('fs');
-var Package = require('./package.json');
 var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
@@ -243,7 +242,7 @@ var serveConfig = makeRouteCache(function (host) {
         'var obj = ' + JSON.stringify({
             requireConf: {
                 waitSeconds: 600,
-                urlArgs: 'ver=' + Package.version + cacheString(),
+                urlArgs: 'ver=' + Env.version + cacheString(),
             },
             removeDonateButton: (Env.removeDonateButton === true),
             allowSubscriptions: (Env.allowSubscriptions === true),
