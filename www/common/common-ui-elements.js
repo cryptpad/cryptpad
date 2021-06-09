@@ -2661,6 +2661,18 @@ define([
         $creation.focus();
     };
 
+    Messages.restrictedLoginPrompt = "You are not authorized to access this document. <a>Log in</a> if you think your account should be able to access it."; // XXX
+    UIElements.loginErrorScreenContent = function (common) {
+        var msg = Pages.setHTML(h('span'), Messages.restrictedLoginPrompt);
+        $(msg).find('a').attr({
+            href: '/login/',
+        }).click(function (ev) {
+            ev.preventDefault();
+            common.setLoginRedirect('login');
+        });
+        return msg;
+    };
+
     var autoStoreModal = {};
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
@@ -2708,6 +2720,10 @@ define([
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'ERESTRICTED') {
             msg = Messages.restrictedError;
+            if (!common.isLoggedIn()) {
+                msg = UIElements.loginErrorScreenContent(common);
+            }
+
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         } else if (err.type === 'HASH_NOT_FOUND' && priv.isHistoryVersion) {
             msg = Messages.oo_deletedVersion;
