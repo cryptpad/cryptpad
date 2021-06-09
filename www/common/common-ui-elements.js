@@ -2884,7 +2884,13 @@ define([
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
-        if (data && data.stored) { return; } // We won't display the popup for dropped files
+        // We won't display the popup for dropped files or already stored pads
+        if (data && data.stored) {
+            if (!data.inMyDrive) {
+                $('.cp-toolbar-storeindrive').show();
+            }
+            return;
+        }
         var priv = common.getMetadataMgr().getPrivateData();
 
         // This pad will be deleted automatically, it shouldn't be stored
