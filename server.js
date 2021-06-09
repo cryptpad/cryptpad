@@ -142,7 +142,7 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 
 app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
-        Express.static(Path.join(__dirname, Env.paths.blob),
+        Express.static(Path.join(__dirname, Env.paths.blob), {
             setHeaders: function (res, path, stat) {
                 res.set('Access-Control-Allow-Origin', '*');
                 res.set('Access-Control-Allow-Headers', 'Content-Length');
