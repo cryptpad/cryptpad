@@ -1465,100 +1465,6 @@ define([
             },
             icon: h('i.cptools.cptools-form-grid-check')
         },
-        poll: {
-            defaultOpts: {
-                type: 'text', // Text or Days or Time
-                values: [1, 2, 3].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
-                })
-            },
-            get: function (opts, answers, username, evOnChange) {
-                if (!opts) { opts = TYPES.poll.defaultOpts; }
-                if (!Array.isArray(opts.values)) { return; }
-
-                var lines = makePollTable(answers, opts);
-
-                // Add form
-                var addLine = opts.values.map(function (data) {
-                    var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
-                        h('i.fa.fa-times.cp-no'),
-                        h('i.fa.fa-check.cp-yes'),
-                        h('i.fa.fa-question.cp-maybe'),
-                    ]);
-                    var $c = $(cell);
-                    $c.data('option', data);
-                    var val = 0;
-                    $c.attr('data-value', val);
-                    $c.click(function () {
-                        val = (val+1)%3;
-                        $c.attr('data-value', val);
-                        evOnChange.fire();
-                    });
-                    cell._setValue = function (v) {
-                        val = v;
-                        $c.attr('data-value', val);
-                    };
-                    return cell;
-                });
-                // Name input
-                //var nameInput = h('input', { value: username || Messages.anonymous });
-                var nameInput = h('span.cp-poll-your-answers', Messages.form_pollYourAnswers)
-                addLine.unshift(h('div.cp-poll-cell', nameInput));
-                lines.push(h('div', addLine));
-
-                var total = makePollTotal(answers, opts);
-                if (total) { lines.push(h('div', total)); }
-
-                var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
-                var $tag = $(tag);
-
-                var cursorGetter;
-                var setCursorGetter = function (f) { cursorGetter = f; };
-                return {
-                    tag: tag,
-                    getValue: function () {
-                        var res = {};
-                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
-                            var $el = $(el);
-                            res[$el.data('option')] = $el.attr('data-value');
-                        });
-                        return {
-                            values: res
-                        };
-                    },
-                    reset: function () {
-                        $tag.find('.cp-form-poll-choice').attr('data-value', 0);
-                    },
-                    edit: function (cb, tmp) {
-                        var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
-                    },
-                    getCursor: function () { return cursorGetter(); },
-                    setValue: function (res) {
-                        this.reset();
-                        if (!res || !res.values) { return; }
-                        var val = res.values;
-                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
-                            if (!el._setValue) { return; }
-                            var $el = $(el);
-                            el._setValue(val[$el.data('option')] || 0);
-                        });
-                    }
-                };
-
-            },
-            printResults: function (answers, uid, form) {
-                var opts = form[uid].opts || TYPES.poll.defaultOpts;
-                var _answers = getBlockAnswers(answers, uid);
-                var lines = makePollTable(_answers, opts);
-
-                var total = makePollTotal(_answers, opts);
-                if (total) { lines.push(h('div', total)); }
-
-                return h('div.cp-form-type-poll', lines);
-            },
-            icon: h('i.cptools.cptools-form-poll')
-        },
         sort: {
             defaultOpts: {
                 values: [1,2].map(function (i) {
@@ -1668,6 +1574,100 @@ define([
                 return h('div.cp-form-results-type-radio', results);
             },
             icon: h('i.cptools.cptools-form-list-ordered')
+        },
+        poll: {
+            defaultOpts: {
+                type: 'text', // Text or Days or Time
+                values: [1, 2, 3].map(function (i) {
+                    return Messages._getKey('form_defaultOption', [i]);
+                })
+            },
+            get: function (opts, answers, username, evOnChange) {
+                if (!opts) { opts = TYPES.poll.defaultOpts; }
+                if (!Array.isArray(opts.values)) { return; }
+
+                var lines = makePollTable(answers, opts);
+
+                // Add form
+                var addLine = opts.values.map(function (data) {
+                    var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
+                        h('i.fa.fa-times.cp-no'),
+                        h('i.fa.fa-check.cp-yes'),
+                        h('i.fa.fa-question.cp-maybe'),
+                    ]);
+                    var $c = $(cell);
+                    $c.data('option', data);
+                    var val = 0;
+                    $c.attr('data-value', val);
+                    $c.click(function () {
+                        val = (val+1)%3;
+                        $c.attr('data-value', val);
+                        evOnChange.fire();
+                    });
+                    cell._setValue = function (v) {
+                        val = v;
+                        $c.attr('data-value', val);
+                    };
+                    return cell;
+                });
+                // Name input
+                //var nameInput = h('input', { value: username || Messages.anonymous });
+                var nameInput = h('span.cp-poll-your-answers', Messages.form_pollYourAnswers)
+                addLine.unshift(h('div.cp-poll-cell', nameInput));
+                lines.push(h('div', addLine));
+
+                var total = makePollTotal(answers, opts);
+                if (total) { lines.push(h('div', total)); }
+
+                var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
+                var $tag = $(tag);
+
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
+                return {
+                    tag: tag,
+                    getValue: function () {
+                        var res = {};
+                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
+                            var $el = $(el);
+                            res[$el.data('option')] = $el.attr('data-value');
+                        });
+                        return {
+                            values: res
+                        };
+                    },
+                    reset: function () {
+                        $tag.find('.cp-form-poll-choice').attr('data-value', 0);
+                    },
+                    edit: function (cb, tmp) {
+                        var v = Util.clone(opts);
+                        return editOptions(v, setCursorGetter, cb, tmp);
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    setValue: function (res) {
+                        this.reset();
+                        if (!res || !res.values) { return; }
+                        var val = res.values;
+                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
+                            if (!el._setValue) { return; }
+                            var $el = $(el);
+                            el._setValue(val[$el.data('option')] || 0);
+                        });
+                    }
+                };
+
+            },
+            printResults: function (answers, uid, form) {
+                var opts = form[uid].opts || TYPES.poll.defaultOpts;
+                var _answers = getBlockAnswers(answers, uid);
+                var lines = makePollTable(_answers, opts);
+
+                var total = makePollTotal(_answers, opts);
+                if (total) { lines.push(h('div', total)); }
+
+                return h('div.cp-form-type-poll', lines);
+            },
+            icon: h('i.cptools.cptools-form-poll')
         },
     };
 
