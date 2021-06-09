@@ -1214,6 +1214,7 @@ define([
             printResults: function (answers, uid, form) {
                 var structure = form[uid];
                 if (!structure) { return; }
+                var opts = structure.opts || TYPES.multiradio.defaultOpts;
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1231,7 +1232,6 @@ define([
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
-                    var opts = structure.opts || TYPES.multiradio.defaultOpts;
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
                     var values = Object.keys(c).map(function (res) {
@@ -1427,6 +1427,7 @@ define([
             printResults: function (answers, uid, form) {
                 var structure = form[uid];
                 if (!structure) { return; }
+                var opts = structure.opts || TYPES.multicheck.defaultOpts;
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1445,7 +1446,7 @@ define([
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
-                    var q = findItem(structure.opts.items, q_uid);
+                    var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
                     var values = Object.keys(c).map(function (res) {
                         return h('div.cp-form-results-type-radio-data', [
@@ -1547,10 +1548,11 @@ define([
 
             },
             printResults: function (answers, uid, form) {
+                var opts = form[uid].opts || TYPES.poll.defaultOpts;
                 var _answers = getBlockAnswers(answers, uid);
-                var lines = makePollTable(_answers, form[uid].opts);
+                var lines = makePollTable(_answers, opts);
 
-                var total = makePollTotal(_answers, form[uid].opts);
+                var total = makePollTotal(_answers, opts);
                 if (total) { lines.push(h('div', total)); }
 
                 return h('div.cp-form-type-poll', lines);
@@ -1564,7 +1566,7 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
-                if (!opts) { opts = TYPES.radio.defaultOpts; }
+                if (!opts) { opts = TYPES.sort.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var map = {};
                 var invMap = {};
@@ -1638,7 +1640,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
-                var opts = form[uid].opts || TYPES.radio.defaultOpts;
+                var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
                 var results = [];
                 var empty = 0;
