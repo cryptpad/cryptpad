@@ -1691,6 +1691,7 @@ define([
         if (active.indexOf('-') !== -1) {
             active = active.split('-')[0];
         }
+        if (!categories[active]) { active = 'general'; }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
