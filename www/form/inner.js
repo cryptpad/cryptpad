@@ -106,6 +106,7 @@ define([
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
     Messages.form_type_poll = "Poll"; // XXX
     Messages.form_type_sort = "Ordered list"; // XXX
+    Messages.form_sort_hint = "Please sort these items from most (1) to least (n) preferred.";
 
     Messages.form_type_md = "Description"; // XXX
     Messages.form_type_page = "Page break"; // XXX
@@ -1491,7 +1492,7 @@ define([
                     $(div).data('val', data);
                     return div;
                 });
-                var tag = h('div.cp-form-type-sort-container', els);
+                var tag = h('div.cp-form-type-sort-container', [h('div.cp-form-sort-hint', Messages.form_sort_hint), els]);
                 var $tag = $(tag);
                 var reorder = function () {
                     $tag.find('.cp-form-type-sort').each(function (i, el) {
