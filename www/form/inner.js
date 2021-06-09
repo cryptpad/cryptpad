@@ -106,7 +106,7 @@ define([
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
     Messages.form_type_poll = "Poll"; // XXX
     Messages.form_type_sort = "Ordered list"; // XXX
-    Messages.form_sort_hint = "Please sort these items from most (1) to least (n) preferred.";
+    Messages.form_sort_hint = "Please drag these items from most (1) to least (n) preferred.";
 
     Messages.form_type_md = "Description"; // XXX
     Messages.form_type_page = "Page break"; // XXX
@@ -127,6 +127,7 @@ define([
     Messages.form_answered = "You already answered this form";
 
     Messages.form_results = "Responses";
+    Messages.form_results_empty = "There are no responses";
     Messages.form_editor = "Editor";
     Messages.form_form = "Form";
     Messages.form_viewResults = "Go to responses";
