@@ -1493,7 +1493,10 @@ define([
                     $(div).data('val', data);
                     return div;
                 });
-                var tag = h('div.cp-form-type-sort-container', [h('div.cp-form-sort-hint', Messages.form_sort_hint), els]);
+                var tag = h('div.cp-form-type-sort-container', [
+                    h('div.cp-form-sort-hint', Messages._getKey('form_sort_hint', [els.length])),
+                    els
+                ]);
                 var $tag = $(tag);
                 var reorder = function () {
                     $tag.find('.cp-form-type-sort').each(function (i, el) {
