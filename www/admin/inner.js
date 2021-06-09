@@ -87,11 +87,12 @@ define([
             'cp-admin-performance-profiling',
         ],
         'network': [ // Msg.admin_cat_network
+            'cp-admin-update-available',
             'cp-admin-checkup',
             'cp-admin-block-daily-check',
-            'cp-admin-consent-to-contact',
-            'cp-admin-list-my-instance',
             'cp-admin-provide-aggregate-statistics',
+            'cp-admin-list-my-instance',
+            'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
         ],
     };
@@ -1725,8 +1726,28 @@ define([
 
     Messages.admin_cat_network = 'Network'; // XXX
 
-    Messages.admin_checkupTitle = 'admin_checkupTitle'; // XXX
-    Messages.admin_checkupHint = 'admin_checkupHint'; // XXX
+    Messages.admin_updateAvailableTitle = 'New versions'; // XXX
+    Messages.admin_updateAvailableHint = "A new version of CryptPad is available."; // XXX
+    Messages.admin_updateAvailableButton = 'See release notes'; // XXX
+
+    create['update-available'] = function () {
+        if (!APP.instanceStatus.updateAvailable) { return; }
+        var $div = makeBlock('update-available', true);
+
+        var updateURL = 'https://github.com/xwiki-labs/cryptpad/releases/latest';
+        if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
+            updateURL = APP.instanceStatus.updateAvailable;
+        }
+
+        $div.find('button').click(function () {
+            common.openURL(updateURL);
+        });
+
+        return $div;
+    };
+
+    Messages.admin_checkupTitle = 'Diagnose configuration errors'; // XXX
+    Messages.admin_checkupHint = "CryptPad includes a page which automatically diagnoses common configuration issues and suggests how to correct them."; // XXX
     Messages.admin_checkupButton = 'Run diagnostics'; // XXX
 
     create['checkup'] = function () {
@@ -1737,9 +1758,9 @@ define([
         return $div;
     };
 
-    Messages.admin_consentToContactTitle = 'admin_consentToContactTitle'; // XXX
-    Messages.admin_consentToContactHint = 'admin_consentToContactHint'; // XXX
-    Messages.admin_consentToContactLabel = 'admin_consentToContactLabel'; // XXX
+    Messages.admin_consentToContactTitle = 'Consent to contact'; // XXX
+    Messages.admin_consentToContactHint = "Server telemetry includes the admin contact email so that the developers can notify you of vulnerabilities in the softare. This will never be shared, sold, or used for marketing purposes. Consent to contact if you'd like to be informed of critical issues in your server."; // XXX
+    Messages.admin_consentToContactLabel = 'I consent'; // XXX
 
     create['consent-to-contact'] = makeAdminCheckbox({
         key: 'consent-to-contact',
@@ -1762,11 +1783,11 @@ define([
         },
     });
 
-    Messages.admin_listMyInstanceTitle = 'admin_listMyInstanceTitle'; // XXX
-    Messages.admin_listMyInstanceHint = 'admin_listMyInstanceHint'; // XXX
-    Messages.admin_listMyInstanceLabel = 'admin_listMyInstanceLabel'; // XXX
+    Messages.admin_listMyInstanceTitle = 'List my instance in public directories'; // XXX
+    Messages.admin_listMyInstanceHint = 'If your instance is suitable for public use you may consent to be listed in web directories.'; // XXX
+    Messages.admin_listMyInstanceLabel = 'List this instance'; // XXX
 
-    create['list-my-instance'] = makeAdminCheckbox({
+    create['list-my-instance'] = makeAdminCheckbox({ // XXX uncheck if server telemetry is disabled?
         key: 'list-my-instance',
         getState: function () {
             return APP.instanceStatus.listMyInstance;
@@ -1787,11 +1808,11 @@ define([
         },
     });
 
-    Messages.admin_provideAggregateStatisticsTitle = 'admin_provideAggregateStatisticsTitle'; // XXX
-    Messages.admin_provideAggregateStatisticsHint = 'admin_provideAggregateStatisticsHint'; // XXX
-    Messages.admin_provideAggregateStatisticsLabel = 'admin_provideAggregateStatisticsLabel'; // XXX
+    Messages.admin_provideAggregateStatisticsTitle = 'Provide aggregated statistics'; // XXX
+    Messages.admin_provideAggregateStatisticsHint = 'You may opt-in to providing additional usage metrics to the developers, such as the approximate number of registered and daily users.'; // XXX
+    Messages.admin_provideAggregateStatisticsLabel = 'Provide aggregated data'; // XXX
 
-    create['provide-aggregate-statistics'] = makeAdminCheckbox({
+    create['provide-aggregate-statistics'] = makeAdminCheckbox({ // XXX uncheck if server telemetry is disabled?
         key: 'provide-aggregate-statistics',
         getState: function () {
             return APP.instanceStatus.provideAggregateStatistics;
@@ -1812,21 +1833,9 @@ define([
         },
     });
 
-    Messages.admin_removeDonateButtonTitle = 'admin_removeDonateButtonTitle'; // XXX
-    Messages.admin_removeDonateButtonHint = 'admin_removeDonateButtonHint'; // XXX
-    Messages.admin_removeDonateButtonLabel = 'admin_removeDonateButtonLabel'; // XXX
-
-    /*  // XXX
-     *  We're very proud that CryptPad is available to the public as free software!
-     *  We do, however, still need to pay our bills as we develop the platform.
-     *
-     *  By default CryptPad will prompt users to consider donating to
-     *  our OpenCollective campaign. We publish the state of our finances periodically
-     *  so you can decide for yourself whether our expenses are reasonable.
-     *
-     *  You can disable any solicitations for donations by setting 'removeDonateButton' to true,
-     *  but we'd appreciate it if you didn't!
-     */
+    Messages.admin_removeDonateButtonTitle = "Crowdfunding participation"; // XXX
+    Messages.admin_removeDonateButtonHint = "CryptPad's development is partially funded by public grants and donations. Advertizing our crowdfunding efforts on your instance help the developers to continue improving the platform for everybody, but you may disable these notices if you find them inappropriate."; // XXX
+    Messages.admin_removeDonateButtonLabel = 'Do not advertize crowdfunding campaigns'; // XXX
 
     create['remove-donate-button'] = makeAdminCheckbox({
         key: 'remove-donate-button',
@@ -1849,9 +1858,9 @@ define([
         },
     });
 
-    Messages.admin_blockDailyCheckTitle = 'admin_blockDailyCheckTitle'; // XXX
-    Messages.admin_blockDailyCheckHint = 'admin_blockDailyCheckHint'; // XXX
-    Messages.admin_blockDailyCheckLabel = 'admin_blockDailyCheckLabel'; // XXX
+    Messages.admin_blockDailyCheckTitle = 'Opt-out of server telemetry'; // XXX
+    Messages.admin_blockDailyCheckHint = "CryptPad instances send a message to the developers' server when launched and once per day thereafter. This lets them keep track of how many servers are running which versions of the software. You can opt-out of this measurement below."; // XXX
+    Messages.admin_blockDailyCheckLabel = 'Disable server telemetry'; // XXX
 
     /*  // XXX
      *  By default, CryptPad contacts one of our servers once a day.
