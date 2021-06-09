@@ -106,7 +106,7 @@ define([
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
     Messages.form_type_poll = "Poll"; // XXX
     Messages.form_type_sort = "Ordered list"; // XXX
-    Messages.form_sort_hint = "Please drag these items from most (1) to least (n) preferred.";
+    Messages.form_sort_hint = "Please drag these items from most (1) to least ({0}) preferred.";
 
     Messages.form_type_md = "Description"; // XXX
     Messages.form_type_page = "Page break"; // XXX
