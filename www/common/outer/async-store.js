@@ -1228,7 +1228,7 @@ define([
             });
 
             // Add the pad if it does not exist in our drive
-            if (!contains) { // || (ownedByMe && !inMyDrive)) {
+            if (!contains || (data.forceSave && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
@@ -1269,7 +1269,8 @@ define([
             });
             // Let inner know that dropped files shouldn't trigger the popup
             postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
-                stored: true
+                stored: true,
+                inMyDrive: inMyDrive
             });
             nThen(function (waitFor) {
                 sendTo.forEach(function (teamId) {
