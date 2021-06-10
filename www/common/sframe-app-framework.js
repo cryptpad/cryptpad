@@ -572,7 +572,9 @@ define([
                 if (!readOnly) { onLocal(); }
                 evOnReady.fire(newPad);
 
-                common.openPadChat(onLocal);
+                // In forms, only editors can see the chat
+                if (!readOnly || type !== 'form') { common.openPadChat(onLocal); }
+
                 if (!readOnly && cursorGetter) {
                     common.openCursorChannel(onLocal);
                     cursor = common.createCursor(onLocal);

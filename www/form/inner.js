@@ -27,7 +27,7 @@ define([
     '/bower_components/sortablejs/Sortable.min.js',
 
     'cm/addon/display/placeholder',
-    'cm/mode/markdown/markdown',
+    'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
     'css!/bower_components/codemirror/lib/codemirror.css',
@@ -86,13 +86,18 @@ define([
     Messages.form_poll_text = "Text";
     Messages.form_poll_day = "Day";
     Messages.form_poll_time = "Time";
+    Messages.form_poll_switch = "Switch axes" // XXX DB
+    Messages.form_pollTotal = "Total";
 
+    Messages.form_pollYourAnswers = "Your answers";
 
     Messages.form_textType = "Text type";
     Messages.form_text_text = "Text";
     Messages.form_text_url = "URL";
     Messages.form_text_email = "Email";
     Messages.form_text_number = "Number";
+    Messages.form_input_ph_url = "Enter a URL here";
+    Messages.form_input_ph_email = "Email address";
 
     Messages.form_default = "Your question here?";
     Messages.form_type_input = "Text"; // XXX
@@ -103,6 +108,7 @@ define([
     Messages.form_type_multicheck = "Multiline Checkbox"; // XXX
     Messages.form_type_poll = "Poll"; // XXX
     Messages.form_type_sort = "Ordered list"; // XXX
+    Messages.form_sort_hint = "Please drag these items from most (1) to least ({0}) preferred.";
 
     Messages.form_type_md = "Description"; // XXX
     Messages.form_type_page = "Page break"; // XXX
@@ -111,17 +117,23 @@ define([
 
     Messages.form_duplicates = "Duplicate entries have been removed";
     Messages.form_maxOptions = "{0} answer(s) max";
+    Messages.form_maxLength = "Characters limit: {0}/{1}";
 
     Messages.form_submit = "Submit";
     Messages.form_update = "Update";
+    Messages.form_submitWarning = "Submit anyway";
+    Messages.form_updateWarning  = "Update anyway";
     Messages.form_reset = "Reset";
     Messages.form_sent = "Sent";
     Messages.form_delete = "Delete";
+    Messages.form_invalidWarning = "There are errors in some answers:";
+    Messages.form_invalidQuestion = "Question {0}";
 
     Messages.form_cantFindAnswers = "Unable to retrieve your existing answers for this form.";
     Messages.form_answered = "You already answered this form";
 
     Messages.form_results = "Responses";
+    Messages.form_results_empty = "There are no responses";
     Messages.form_editor = "Editor";
     Messages.form_form = "Form";
     Messages.form_viewResults = "Go to responses";
@@ -160,11 +172,10 @@ define([
     Messages.form_add_option = "Add option";
     Messages.form_add_item = "Add item";
     Messages.form_addMultiple = "Add all";
+    Messages.form_addMultipleHint = "Add multiple dates and times"
     Messages.form_clear = "Clear";
 
-    Messages.form_page_prev = "Previous";
     Messages.form_page = "Page {0}/{1}";
-    Messages.form_page_next = "Next";
 
     Messages.form_anonymousBox = "Answer anonymously";
 
@@ -440,13 +451,13 @@ define([
 
         // Calendar time
         if (v.type) {
-            var multipleInput = h('input');
+            var multipleInput = h('input', {placeholder: Messages.form_addMultipleHint});
             var multipleClearButton = h('button.btn', Messages.form_clear);
             var addMultipleButton = h('button.btn', [
                 h('i.fa.fa-plus'),
                 h('span', Messages.form_addMultiple)
             ]);
-            addMultiple = h('div', { style: "display: none;" }, [
+            addMultiple = h('div.cp-form-multiple-picker', { style: "display: none;" }, [
                 multipleInput,
                 addMultipleButton,
                 multipleClearButton
@@ -487,6 +498,7 @@ define([
                     $(addMultiple).hide();
                 }
             } else {
+                $(addMultiple).hide();
                 $calendar.show();
                 $container.hide();
             }
@@ -500,6 +512,7 @@ define([
                 refreshView();
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
+                    $(add).click();
                     return;
                 }
                 $container.find('input').each(function (i, input) {
@@ -598,12 +611,13 @@ define([
                             val = +f.selectedDates[0];
                         }
                     }
-                    if (values.indexOf(val) === -1) { values.push(val); }
+                    if (val && values.indexOf(val) === -1) { values.push(val); }
                     else { duplicates = true; }
                 });
             }
+            values = values.filter(Boolean); // Block empty or undeinfed options
             if (!values.length) {
-                return void UI.warn(Messages.error); // XXX error message: no values
+                return void UI.warn(Messages.error);
             }
             var res = { values: values };
 
@@ -672,10 +686,13 @@ define([
                 var _dateT = new Date(data);
                 data = Flatpickr.formatDate(_dateT, timeFormat);
             }
-            return h('div.cp-poll-cell.cp-form-poll-option', data);
+            return h('div.cp-poll-cell.cp-form-poll-option', {
+                title: Util.fixHTML(data)
+            }, data);
         });
         // Insert axis switch button
         var switchAxis = h('button.btn.btn-default', [
+            Messages.form_poll_switch,
             h('i.fa.fa-exchange'),
         ]);
         els.unshift(h('div.cp-poll-cell.cp-poll-switch', switchAxis));
@@ -700,10 +717,14 @@ define([
         }
 
         // Add answers
+        var bodyEls = [];
         if (Array.isArray(answers)) {
-            answers.forEach(function (answer) {
-                if (!answer.name || !answer.values) { return; }
-                var _name = answer.name;
+            answers.forEach(function (answerObj) {
+                var answer = answerObj.results;
+                if (!answer || !answer.values) { return; }
+                var name = Util.find(answerObj, ['user', 'name']) || answer.name || Messages.anonymous;
+                var avatar = h('span.cp-avatar');
+                APP.common.displayAvatar($(avatar), Util.find(answerObj, ['user', 'avatar']), name);
                 var values = answer.values || {};
                 var els = opts.values.map(function (data) {
                     var res = values[data] || 0;
@@ -713,16 +734,128 @@ define([
                     }, v);
                     return cell;
                 });
-                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', _name));
-                lines.push(h('div', els));
+                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', {
+                    title: Util.fixHTML(name)
+                }, [
+                    avatar,
+                    h('span', name)
+                ]));
+                bodyEls.push(h('div', els));
             });
         }
+        var body = h('div.cp-form-poll-body', bodyEls);
+        lines.push(body);
 
         var $s = $(switchAxis).click(function () {
             $s.closest('.cp-form-type-poll').toggleClass('cp-form-poll-switch');
         });
 
         return lines;
+    };
+    var makePollTotal = function (answers, opts, myLine, evOnChange) {
+        if (!Array.isArray(answers)) { return; }
+        var totals = {};
+        var myTotals = {};
+        var updateMyTotals = function () {
+            if (!myLine) { return; }
+            opts.values.forEach(function (data) {
+                myLine.some(function (el) {
+                    if ($(el).data('option') !== data) { return; }
+                    var res = Number($(el).attr('data-value')) || 0;
+                    if (res === 1) {
+                        myTotals[data] = {
+                            y: 1,
+                            m: 0
+                        };
+                    }
+                    else if (res === 2) {
+                        myTotals[data] = {
+                            y: 0,
+                            m: 1
+                        };
+                    } else {
+                        delete myTotals[data];
+                    }
+                    return true;
+                });
+
+            });
+        };
+        var totalEls = opts.values.map(function (data) {
+            var y = 0; // Yes
+            var m = 0; // Maybe
+            answers.forEach(function (answerObj) {
+                var answer = answerObj.results;
+                if (!answer || !answer.values) { return; }
+                var values = answer.values || {};
+                var res = Number(values[data]) || 0;
+                if (res === 1) { y++; }
+                else if (res === 2) { m++; }
+            });
+            totals[data] = {
+                y: y,
+                m: m
+            };
+
+            return h('div.cp-poll-cell', {
+                'data-id': data
+            }, [
+                h('span.cp-form-total-yes', y),
+                h('span.cp-form-total-maybe', '('+m+')'),
+            ]);
+        });
+
+        totalEls.unshift(h('div.cp-poll-cell', Messages.form_pollTotal));
+        var total = h('div.cp-poll-total', totalEls);
+        var $total = $(total);
+        var refreshBest = function () {
+            var totalMax = {
+                value: 0,
+                data: []
+            };
+            Object.keys(totals).forEach(function (k) {
+                var obj = Util.clone(totals[k]);
+                if (myTotals[k]) {
+                    obj.y += myTotals[k].y || 0;
+                    obj.m += myTotals[k].m || 0;
+                }
+                if (obj.y === totalMax.value) {
+                    totalMax.data.push(k);
+                } else if (obj.y > totalMax.value) {
+                    totalMax.value = obj.y;
+                    totalMax.data = [k];
+                }
+            });
+            if (totalMax.value) {
+                $total.find('[data-id]').removeClass('cp-poll-best');
+                totalMax.data.forEach(function (k) {
+                    $total.find('[data-id="'+k+'"]').addClass('cp-poll-best');
+                });
+            }
+        };
+        refreshBest();
+
+        if (myLine && evOnChange) {
+            var updateValues = function () {
+                totalEls.forEach(function (cell) {
+                    var $c = $(cell);
+                    var data = $c.attr('data-id');
+                    if (!data) { return; }
+                    var y = totals[data].y + ((myTotals[data] || {}).y || 0);
+                    var m = totals[data].m + ((myTotals[data] || {}).m || 0);
+                    $c.find('.cp-form-total-yes').text(y);
+                    $c.find('.cp-form-total-maybe').text('('+m+')');
+                });
+            };
+            evOnChange.reg(function () {
+                updateMyTotals();
+                updateValues();
+                refreshBest();
+            });
+        }
+
+
+        return total;
     };
 
     var getEmpty = function (empty) {
@@ -744,10 +877,14 @@ define([
     };
 
     var getBlockAnswers = function (answers, uid, filterCurve) {
+        if (!answers) { return; }
         return Object.keys(answers || {}).map(function (user) {
             if (filterCurve && user === filterCurve) { return; }
             try {
-                return answers[user].msg[uid];
+                return {
+                    user: answers[user].msg._userdata,
+                    results: answers[user].msg[uid]
+                };
             } catch (e) { console.error(e); }
         }).filter(Boolean);
     };
@@ -877,7 +1014,8 @@ define([
             get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.input.defaultOpts; }
                 var tag = h('input', {
-                    type: opts.type
+                    type: opts.type,
+                    placeholder: Messages['form_input_ph_'+opts.type] || ''
                 });
                 var $tag = $(tag);
                 $tag.on('change keypress', Util.throttle(function () {
@@ -922,23 +1060,49 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.textarea.defaultOpts; }
-                var tag = h('textarea', {maxlength: opts.maxLength});
-                var $tag = $(tag);
-                $tag.on('change keypress', Util.throttle(function () {
+                var text = h('textarea', {maxlength: opts.maxLength});
+                var $text = $(text);
+                var charCount = h('div.cp-form-type-textarea-charcount');
+                var updateChar = function () {
+                    var l = $text.val().length;
+                    if (l > opts.maxLength) {
+                        $text.val($text.val().slice(0, opts.maxLength));
+                        l = $text.val().length;
+                    }
+                    $(charCount).text(Messages._getKey('form_maxLength', [
+                        $text.val().length,
+                        opts.maxLength
+                    ]));
+                };
+                updateChar();
+                var tag = h('div.cp-form-type-textarea', [
+                    text,
+                    charCount
+                ]);
+
+                var evChange = Util.throttle(function () {
                     evOnChange.fire();
-                }, 500));
+                }, 500);
+
+                $text.on('change keypress keyup keydown', function () {
+                    setTimeout(updateChar);
+                    evChange();
+                });
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
-                    getValue: function () { return $tag.val(); },
-                    setValue: function (val) { $tag.val(val); },
+                    getValue: function () { return $text.val().slice(0, opts.maxLength); },
+                    setValue: function (val) {
+                        $text.val(val);
+                        updateChar();
+                    },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
                         return editTextOptions(v, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
-                    reset: function () { $tag.val(''); }
+                    reset: function () { $text.val(''); }
                 };
             },
             printResults: function (answers, uid) {
@@ -1108,6 +1272,7 @@ define([
             printResults: function (answers, uid, form) {
                 var structure = form[uid];
                 if (!structure) { return; }
+                var opts = structure.opts || TYPES.multiradio.defaultOpts;
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1125,7 +1290,6 @@ define([
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
-                    var opts = structure.opts || TYPES.multiradio.defaultOpts;
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
                     var values = Object.keys(c).map(function (res) {
@@ -1321,6 +1485,7 @@ define([
             printResults: function (answers, uid, form) {
                 var structure = form[uid];
                 if (!structure) { return; }
+                var opts = structure.opts || TYPES.multicheck.defaultOpts;
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1339,7 +1504,7 @@ define([
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
-                    var q = findItem(structure.opts.items, q_uid);
+                    var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
                     var values = Object.keys(c).map(function (res) {
                         return h('div.cp-form-results-type-radio-data', [
@@ -1358,94 +1523,6 @@ define([
             },
             icon: h('i.cptools.cptools-form-grid-check')
         },
-        poll: {
-            defaultOpts: {
-                type: 'text', // Text or Days or Time
-                values: [1, 2, 3].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
-                })
-            },
-            get: function (opts, answers, username, evOnChange) {
-                if (!opts) { opts = TYPES.poll.defaultOpts; }
-                if (!Array.isArray(opts.values)) { return; }
-
-                var lines = makePollTable(answers, opts);
-
-                // Add form
-                var addLine = opts.values.map(function (data) {
-                    var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
-                        h('i.fa.fa-times.cp-no'),
-                        h('i.fa.fa-check.cp-yes'),
-                        h('i.fa.fa-question.cp-maybe'),
-                    ]);
-                    var $c = $(cell);
-                    $c.data('option', data);
-                    var val = 0;
-                    $c.attr('data-value', val);
-                    $c.click(function () {
-                        val = (val+1)%3;
-                        $c.attr('data-value', val);
-                        evOnChange.fire();
-                    });
-                    cell._setValue = function (v) {
-                        val = v;
-                        $c.attr('data-value', val);
-                    };
-                    return cell;
-                });
-                // Name input
-                var nameInput = h('input', { value: username || Messages.anonymous });
-                addLine.unshift(h('div.cp-poll-cell', nameInput));
-                lines.push(h('div', addLine));
-
-                var tag = h('div.cp-form-type-poll', lines);
-                var $tag = $(tag);
-
-                var cursorGetter;
-                var setCursorGetter = function (f) { cursorGetter = f; };
-                return {
-                    tag: tag,
-                    getValue: function () {
-                        var res = {};
-                        var name = $(nameInput).val().trim() || Messages.anonymous;
-                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
-                            var $el = $(el);
-                            res[$el.data('option')] = $el.attr('data-value');
-                        });
-                        return {
-                            name: name,
-                            values: res
-                        };
-                    },
-                    reset: function () {
-                        $tag.find('.cp-form-poll-choice').attr('data-value', 0);
-                    },
-                    edit: function (cb, tmp) {
-                        var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
-                    },
-                    getCursor: function () { return cursorGetter(); },
-                    setValue: function (res) {
-                        this.reset();
-                        if (!res || !res.values || !res.name) { return; }
-                        var val = res.values;
-                        $(nameInput).val(res.name);
-                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
-                            if (!el._setValue) { return; }
-                            var $el = $(el);
-                            el._setValue(val[$el.data('option')] || 0);
-                        });
-                    }
-                };
-
-            },
-            printResults: function (answers, uid, form) {
-                var _answers = getBlockAnswers(answers, uid);
-                var lines = makePollTable(_answers, form[uid].opts);
-                return h('div.cp-form-type-poll', lines);
-            },
-            icon: h('i.cptools.cptools-form-poll')
-        },
         sort: {
             defaultOpts: {
                 values: [1,2].map(function (i) {
@@ -1453,7 +1530,7 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
-                if (!opts) { opts = TYPES.radio.defaultOpts; }
+                if (!opts) { opts = TYPES.sort.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var map = {};
                 var invMap = {};
@@ -1472,7 +1549,10 @@ define([
                     $(div).data('val', data);
                     return div;
                 });
-                var tag = h('div.cp-form-type-sort-container', els);
+                var tag = h('div.cp-form-type-sort-container', [
+                    h('div.cp-form-sort-hint', Messages._getKey('form_sort_hint', [els.length])),
+                    els
+                ]);
                 var $tag = $(tag);
                 var reorder = function () {
                     $tag.find('.cp-form-type-sort').each(function (i, el) {
@@ -1527,7 +1607,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
-                var opts = form[uid].opts || TYPES.radio.defaultOpts;
+                var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
                 var results = [];
                 var empty = 0;
@@ -1556,14 +1636,115 @@ define([
             },
             icon: h('i.cptools.cptools-form-list-ordered')
         },
+        poll: {
+            defaultOpts: {
+                type: 'text', // Text or Days or Time
+                values: [1, 2, 3].map(function (i) {
+                    return Messages._getKey('form_defaultOption', [i]);
+                })
+            },
+            get: function (opts, answers, username, evOnChange) {
+                if (!opts) { opts = TYPES.poll.defaultOpts; }
+                if (!Array.isArray(opts.values)) { return; }
+
+                var lines = makePollTable(answers, opts);
+
+                // Add form
+                var addLine = opts.values.map(function (data) {
+                    var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
+                        h('i.fa.fa-times.cp-no'),
+                        h('i.fa.fa-check.cp-yes'),
+                        h('i.fa.fa-question.cp-maybe'),
+                    ]);
+                    var $c = $(cell);
+                    $c.data('option', data);
+                    var val = 0;
+                    $c.attr('data-value', val);
+                    $c.click(function () {
+                        val = (val+1)%3;
+                        $c.attr('data-value', val);
+                        evOnChange.fire();
+                    });
+                    cell._setValue = function (v) {
+                        val = v;
+                        $c.attr('data-value', val);
+                    };
+                    return cell;
+                });
+                // Name input
+                //var nameInput = h('input', { value: username || Messages.anonymous });
+                var nameInput = h('span.cp-poll-your-answers', Messages.form_pollYourAnswers)
+                addLine.unshift(h('div.cp-poll-cell', nameInput));
+                lines.push(h('div', addLine));
+
+                var total = makePollTotal(answers, opts, addLine, evOnChange);
+                if (total) { lines.push(h('div', total)); }
+
+                var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
+                var $tag = $(tag);
+
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
+                return {
+                    tag: tag,
+                    getValue: function () {
+                        var res = {};
+                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
+                            var $el = $(el);
+                            res[$el.data('option')] = $el.attr('data-value');
+                        });
+                        return {
+                            values: res
+                        };
+                    },
+                    reset: function () {
+                        $tag.find('.cp-form-poll-choice').attr('data-value', 0);
+                    },
+                    edit: function (cb, tmp) {
+                        var v = Util.clone(opts);
+                        return editOptions(v, setCursorGetter, cb, tmp);
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    setValue: function (res) {
+                        this.reset();
+                        if (!res || !res.values) { return; }
+                        var val = res.values;
+                        $tag.find('.cp-form-poll-choice').each(function (i, el) {
+                            if (!el._setValue) { return; }
+                            var $el = $(el);
+                            el._setValue(val[$el.data('option')] || 0);
+                        });
+                    }
+                };
+
+            },
+            printResults: function (answers, uid, form) {
+                var opts = form[uid].opts || TYPES.poll.defaultOpts;
+                var _answers = getBlockAnswers(answers, uid);
+                var lines = makePollTable(_answers, opts);
+
+                var total = makePollTotal(_answers, opts);
+                if (total) { lines.push(h('div', total)); }
+
+                return h('div.cp-form-type-poll', lines);
+            },
+            icon: h('i.cptools.cptools-form-poll')
+        },
     };
 
     var renderResults = function (content, answers) {
         var $container = $('div.cp-form-creator-results').empty();
+
+        if (!Object.keys(answers || {}).length) {
+            $container.append(h('div.alert.alert-info', Messages.form_results_empty));
+            return;
+        }
+
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
+
 
         var summary = true;
         var form = content.form;
@@ -1715,7 +1896,7 @@ define([
         });
         return results;
     };
-    var makeFormControls = function (framework, content, update) {
+    var makeFormControls = function (framework, content, update, evOnChange) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
 
@@ -1768,6 +1949,7 @@ define([
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
+                window.onbeforeunload = undefined;
                 if (!update) {
                     // Add results button
                     addResultsButton(framework, content);
@@ -1783,7 +1965,53 @@ define([
             reset = undefined;
         }
 
+        var invalid = h('div.cp-form-invalid-warning');
+        var $invalid = $(invalid);
+        if (evOnChange) {
+            var origin, priv;
+            if (APP.common) {
+                var metadataMgr = APP.common.getMetadataMgr();
+                priv = metadataMgr.getPrivateData();
+                origin = priv.origin;
+            }
+            evOnChange.reg(function () {
+                var $container = $('div.cp-form-creator-content');
+                var $inputs = $container.find('input:invalid');
+                if (!$inputs.length) {
+                    $send.text(update ? Messages.form_update : Messages.form_submit);
+                    return void $invalid.empty();
+                }
+                $send.text(update ? Messages.form_updateWarning : Messages.form_submitWarning);
+                var lis = [];
+                $inputs.each(function (i, el) {
+                    var $el = $(el).closest('.cp-form-block');
+                    var number = $el.find('.cp-form-block-question-number').text();
+                    var a = h('a', {
+                        href: origin + '#' + Messages._getKey('form_invalidQuestion', [number])
+                    }, Messages._getKey('form_invalidQuestion', [number]));
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        if (!$el.is(':visible')) {
+                            var pages = $el.closest('.cp-form-page').index();
+                            if (APP.refreshPage) { APP.refreshPage(pages + 1); }
+                        }
+                        $el[0].scrollIntoView();
+                    });
+                    var li = h('li', a);
+                    lis.push(li);
+                });
+                var list = h('ul', lis);
+                var content = [
+                    h('span', Messages.form_invalidWarning),
+                    list
+                ];
+                $invalid.empty().append(content);
+            });
+            evOnChange.fire(true);
+        }
+
         return h('div.cp-form-send-container', [
+            invalid,
             cbox ? h('div', cbox) : undefined,
             send, reset
         ]);
@@ -1801,7 +2029,8 @@ define([
             var _answers = Util.clone(answers || {});
             delete _answers._proof;
             delete _answers._userdata;
-            evOnChange.reg(function () {
+            evOnChange.reg(function (noBeforeUnload) {
+                if (noBeforeUnload) { return; }
                 var results = getFormResults();
                 if (!answers || Sortify(_answers) !== Sortify(results)) {
                     window.onbeforeunload = function () {
@@ -1884,6 +2113,7 @@ define([
 
 
         var elements = [];
+        var n = 1; // Question number
         content.order.forEach(function (uid) {
             var block = form[uid];
             var type = block.type;
@@ -1913,7 +2143,10 @@ define([
 
 
             var dragHandle;
-            var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+            var q = h('div.cp-form-block-question', [
+                h('span.cp-form-block-question-number', (n++)+'.'),
+                h('span', block.q || Messages.form_default)
+            ]);
             var editButtons, editContainer;
 
             APP.formBlocks.push(data);
@@ -2013,7 +2246,7 @@ define([
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             $(editButtons).show();
                             UI.log(Messages.saved);
-                            var _answers = getBlockAnswers(APP.answers, uid);
+                            _answers = getBlockAnswers(APP.answers, uid);
                             data = model.get(newOpts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
@@ -2085,19 +2318,19 @@ define([
                 var pageContainer = h('div.cp-form-page-container');
                 var $page = $(pageContainer);
                 _content.push(pageContainer);
-                var refreshPage = function (current) {
+                var refreshPage = APP.refreshPage = function (current) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
                     if (current > pages) { current = pages; }
-                    var left = h('button.btn.btn-secondary.small.cp-prev', [
-                        h('i.fa.fa-chevron-left'),
-                        h('span', Messages.form_page_prev)
+                    var left = h('button.btn.btn-secondary.cp-prev', [
+                        h('i.fa.fa-arrow-left'),
                     ]);
                     var state = h('span', Messages._getKey('form_page', [current, pages]));
-                    var right = h('button.btn.btn-secondary.small.cp-next', [
-                        h('span', Messages.form_page_next),
-                        h('i.fa.fa-chevron-right'),
+                    var right = h('button.btn.btn-secondary.cp-next', [
+                        h('i.fa.fa-arrow-right'),
                     ]);
+                    if (current === pages) { $(right).css('visibility', 'hidden'); }
+                    if (current === 1) { $(left).css('visibility', 'hidden'); }
                     $(left).click(function () { refreshPage(current - 1); });
                     $(right).click(function () { refreshPage(current + 1); });
                     $page.append([left, state, right]);
@@ -2139,7 +2372,7 @@ define([
         }
 
         // In view mode, add "Submit" and "reset" buttons
-        $container.append(makeFormControls(framework, content, Boolean(answers)));
+        $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
     };
 
     var getTempFields = function () {
@@ -2172,6 +2405,9 @@ define([
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.after(helpMenu.menu);
 
+        if (!APP.isEditor) {
+            framework._.toolbar.alone();
+        }
 
         var makeFormSettings = function () {
             // Private / public status
@@ -2180,7 +2416,7 @@ define([
             var refreshPublic = function () {
                 $results.empty();
                 var makePublic = h('button.btn.btn-secondary', Messages.form_makePublic);
-                var makePublicDiv = h('div', makePublic);
+                var makePublicDiv = h('div.cp-form-actions', makePublic);
                 if (content.answers.privateKey) { makePublicDiv = undefined; }
                 var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
                 $results.append(h('span.cp-form-results-type', publicText));

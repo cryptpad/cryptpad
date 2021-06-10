@@ -32,6 +32,9 @@
         div.cp-form-creator-results, .cp-app-form-button-creator {
             display: none !important;
         }
+        .cp-form-block {
+            .tools_unselectable();
+        }
     }
 
     #cp-app-form-container {
@@ -67,6 +70,9 @@
 
             .cp-form-creator-settings {
                 padding: 30px;
+                .cp-form-actions {
+                    margin-top: 5px;
+                }
                 & > div:not(:last-child) {
                     margin-bottom: 20px;
                 }
@@ -90,6 +96,7 @@
             div.cp-form-creator-content, div.cp-form-creator-results {
                 max-width: 1000px;
                 min-width: 300px;
+                margin-top: 10px;
                 padding: 10px;
                 display: flex;
                 flex-flow: column;
@@ -193,6 +200,24 @@
                 .cp-form-page + .cp-form-send-container {
                     margin-top: 10px;
                 }
+                .cp-form-send-container {
+                    text-align: center;
+                    margin: 50px auto 100px auto;
+                    button {
+                        &:not(:last-child) {
+                            margin-right: 10px;
+                        }
+                    }
+                    .cp-form-invalid-warning {
+                        color: @cp_form-invalid;
+                        ul {
+                            list-style-type: disclosure-closed;
+                        }
+                        li {
+                            text-align: left;
+                        }
+                    }
+                }
 
                 .cp-form-page-container {
                     display: flex;
@@ -206,16 +231,16 @@
                         justify-content: center;
                     }
                     button {
-                        &.cp-next {
-                            .fa {
-                                margin-right: 0;
-                                margin-left: 5px;
-                            }
+                        display: flex;
+                        height: 38px;
+                        align-items: center;
+                        i {
+                            margin-right: 0;
+                            font-size: 25px;
                         }
                     }
                 }
                 .cp-form-block {
-                    .tools_unselectable();
                     background: @cp_form-bg1;
                     padding: 10px;
                     &:not(:last-child) {
@@ -240,12 +265,22 @@
                     &.sortable-ghost { visibility: hidden; }
                     &.sortable-drag { opacity: 0.9 !important; }
 
+                    .flatpickr-calendar.inline {
+                        box-shadow: unset;
+                        border: 1px solid @cryptpad_text_col;
+                    }
+
                     .cp-form-block-question {
                         margin-bottom: 5px;
+                        .cp-form-block-question-number {
+                            font-weight: bold;
+                            margin-right: 10px;
+                        }
                     }
                     .cp-form-block-content {
                         overflow-x: auto;
                         .cp-form-page-break-edit {
+                            font-size: 20px;
                             text-align: center;
                             padding: 10px;
                             i {
@@ -258,7 +293,13 @@
                             justify-content: space-between;
                         }
                         input:invalid {
-                            border: 1px solid @cp_form-invalid;
+                            border: 2px solid @cp_form-invalid;
+                            color: @cp_form-invalid;
+                        }
+                        media-tag {
+                            & > * {
+                                max-width: 100%;
+                            }
                         }
                     }
                     .cp-form-input-block {
@@ -312,6 +353,12 @@
                                 margin-left: 10px;
                             }
                         }
+                        .cp-form-multiple-picker {
+                            margin: 10px 0px 0px 0px;
+                            button {
+                                margin: 10px 10px 0px 0px;
+                            }
+                        }
                     }
                 }
                 .cp-form-edit-max-options {
@@ -357,7 +404,7 @@
                         }
                     }
                     .cp-form-edit-block-input {
-                        margin-bottom: 5px; // XXX DB margin bug
+                        margin-bottom: 5px;
                         &.sortable-ghost { visibility: hidden; }
                         &.sortable-drag { opacity: 0.9 !important; }
                         display: flex;
@@ -409,9 +456,9 @@
             }
             .cp-form-results-type-textarea-data {
                 white-space: pre-wrap;
-                font-size: 14px;
-                border: 1px solid @cp_profile-hint;
-                padding: 0 5px;
+                padding: 5px 10px;
+                background: @cp_form-bg2;
+                &:not(:last-child) { margin-bottom: 1px; }
             }
             .cp-form-results-type-radio {
                 display: table;
@@ -475,48 +522,125 @@
             }
         }
     }
+    .cp-form-sort-hint {
+        margin-bottom: 10px;
+    }
     .cp-form-type-sort {
         cursor: grab;
-        padding: 2px;
+        padding: 5px;
         .cp-form-handle {
             margin-right: 5px;
         }
         .cp-form-sort-order {
-            border: 1px solid @cp_profile-hint;
+            border: 1px solid @cryptpad_text_col;
             padding: 0 5px;
             margin-right: 5px;
         }
+        &:hover {
+            background-color: @cp_app-bg;
+            color: @cryptpad_color_link;
+            .cp-form-sort-order {
+                border-color: @cryptpad_color_link;
+            }
+        }
     }
 
+    .cp-form-type-poll-container {
+        overflow: auto;
+    }
     .cp-form-type-poll {
         display: inline-flex;
         flex-flow: column;
         & > div {
             display: flex;
         }
+        .cp-form-poll-body {
+            flex-flow: column;
+            max-height: 225px;
+            overflow: auto;
+
+            & > div {
+                display: flex;
+            }
+        }
         .cp-poll-cell {
             width: 100px;
-            height: 40px;
+            height: 35px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            margin-top:5px;
+            margin-left:5px;
             &:first-child {
                 width: 200px;
             }
             button {
                 width: 100%;
+                border-top: 0px;
+                border-left: 0px;
+                background-color: @cp_form-bg1;
+                .fa{
+                    margin-left:10px;
+                    transform: rotate(-45deg);
+                }
+            }
+            .cp-form-total-yes {
+                margin-right: 5px;
+            }
+            &.cp-poll-best {
+                font-weight: bold;
+            }
+        }
+        .cp-poll-answer-name {
+            padding: 0 5px;
+            display: flex;
+            :last-child {
+                flex: 1;
+                min-width: 0;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            .cp-avatar {
+                .avatar_main(30px);
+                margin-right: 10px;
             }
         }
         .cp-poll-time-day {
             flex-basis: 100px;
-            border-right: 1px solid @cryptpad_text_col;
-            border-left: 1px solid @cryptpad_text_col;
-            border-top: 1px solid @cryptpad_text_col;
+            border-bottom: 1px solid @cryptpad_text_col;
+        }
+        &:not(.cp-form-poll-switch) {
+            & > div {
+                &:last-child {
+                    margin-bottom: 5px;
+                }
+            }
+            .cp-form-poll-body {
+                &::-webkit-scrollbar {
+                  display: none;
+                }
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
         }
         &.cp-form-poll-switch {
+            display: flex;
             flex-flow: row;
+            .cp-avatar {
+                .avatar_main(20px);
+            }
             & > div {
                 flex-flow: column;
+                &.cp-form-poll-body {
+                    flex-flow: row;
+                    max-width: 550px;
+                    max-height: unset;
+                    scroll-snap-type: x mandatory;
+                    & > div {
+                        flex-flow: column;
+                    }
+                }
             }
             .cp-poll-cell:not(.cp-poll-switch) {
                 &:first-child {
@@ -529,9 +653,8 @@
             .cp-poll-time-day {
                 flex-basis: 40px;
                 border-right: none;
-                border-bottom: 1px solid @cryptpad_text_col;
-                border-left: 1px solid @cryptpad_text_col;
-                border-top: 1px solid @cryptpad_text_col;
+                border-right: 1px solid @cryptpad_text_col;
+                border-bottom: 0px;
             }
         }
         .cp-form-poll-choice, .cp-form-poll-answer {
@@ -539,6 +662,7 @@
                 display: none;
             }
             color: @cp_form-poll-color;
+            font-size: 25px;
             &[data-value="0"] {
                 background: @cp_form-poll-no;
                 .cp-no { display: inline; }
@@ -555,7 +679,9 @@
         div.cp-form-poll-choice {
             cursor: pointer;
             padding: 5px;
-            border: 5px double @cp_form-bg1;
+            //margin: 10px 0px 0px 10px;
+            //border: 1px solid @cryptpad_text_col;
+            color: @cryptpad_text_col;
         }
         div.cp-form-poll-answer {
             color: @cp_form-poll-yes-color;

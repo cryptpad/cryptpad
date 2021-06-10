@@ -1069,6 +1069,7 @@ define([
             editor.replaceSelections(newTexts, 'around');
             editor.focus();
         };
+        Messages.mdToolbar_embed = "Embed file"; // XXX
         for (var k in actions) {
             $('<button>', {
                 'data-type': k,

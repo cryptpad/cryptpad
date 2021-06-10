@@ -64,7 +64,8 @@
 @cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
 @cryptpad_color_light_yellow: #FFE69C;
-@cryptpad_color_yellow_fade: fade(#FFE69C, 15%);
+@cryptpad_color_yellow_fade: fade(@cryptpad_color_light_yellow, 50%);
+@cryptpad_color_yellow_fader: fade(#FFE69C, 15%); // not in light theme
 @cryptpad_color_lighter_blue: #d2e1f2;
 
 @cryptpad_color_link:@cryptpad_color_brand_300;
@@ -115,7 +116,7 @@
 @cp_forms-disabled: @cryptpad_color_grey_500;
 
 // Bootstrap alerts
-@cp_alerts-warning-bg: @cryptpad_color_yellow_fade;
+@cp_alerts-warning-bg: @cryptpad_color_yellow_fader;
 @cp_alerts-warning-fg: @cryptpad_color_light_yellow;
 @cp_alerts-warning-text: @cryptpad_color_light_yellow;
 @cp_alerts-danger-bg: @cryptpad_color_red_fader;
@@ -432,8 +433,8 @@
 @cp_form-bg2: @cryptpad_color_grey_900;
 @cp_form-border: @cryptpad_color_grey_800;
 @cp_form-poll-color: @cryptpad_color_grey_800;
-@cp_form-poll-no: @cryptpad_color_light_red;
-@cp_form-poll-yes: @cryptpad_color_light_green;
-@cp_form-poll-maybe: @cryptpad_color_light_yellow;
+@cp_form-poll-no: fade(@cryptpad_color_red, 25%);
+@cp_form-poll-yes: fade(@cryptpad_color_green, 25%);
+@cp_form-poll-maybe: @cryptpad_color_grey_700;
 @cp_form-poll-yes-color: @cryptpad_color_green;
 @cp_form-invalid: @cryptpad_color_red;
