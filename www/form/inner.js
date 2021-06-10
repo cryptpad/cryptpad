@@ -719,12 +719,6 @@ define([
         // Add answers
         var bodyEls = [];
         if (Array.isArray(answers)) {
-            for(var i = 0; i< 20; i++) { // XXX
-                answers.push({
-                    user: { name: 'User '+i },
-                    results: { values: {} }
-                });
-            }
             answers.forEach(function (answerObj) {
                 var answer = answerObj.results;
                 if (!answer || !answer.values) { return; }
@@ -758,9 +752,35 @@ define([
 
         return lines;
     };
-    var makePollTotal = function (answers, opts) {
+    var makePollTotal = function (answers, opts, myLine, evOnChange) {
         if (!Array.isArray(answers)) { return; }
         var totals = {};
+        var myTotals = {};
+        var updateMyTotals = function () {
+            if (!myLine) { return; }
+            opts.values.forEach(function (data) {
+                myLine.some(function (el) {
+                    if ($(el).data('option') !== data) { return; }
+                    var res = Number($(el).attr('data-value')) || 0;
+                    if (res === 1) {
+                        myTotals[data] = {
+                            y: 1,
+                            m: 0
+                        };
+                    }
+                    else if (res === 2) {
+                        myTotals[data] = {
+                            y: 0,
+                            m: 1
+                        };
+                    } else {
+                        delete myTotals[data];
+                    }
+                    return true;
+                });
+
+            });
+        };
         var totalEls = opts.values.map(function (data) {
             var y = 0; // Yes
             var m = 0; // Maybe
@@ -785,26 +805,55 @@ define([
             ]);
         });
 
-        var totalMax = {
-            value: 0,
-            data: []
-        };
-        Object.keys(totals).forEach(function (k) {
-            var obj = totals[k];
-            if (obj.y === totalMax.value) {
-                totalMax.data.push(k);
-            } else if (obj.y > totalMax.value) {
-                totalMax.value = obj.y;
-                totalMax.data = [k];
-            }
-        });
         totalEls.unshift(h('div.cp-poll-cell', Messages.form_pollTotal));
         var total = h('div.cp-poll-total', totalEls);
-        if (totalMax.value) {
-            totalMax.data.forEach(function (k) {
-                $(total).find('[data-id="'+k+'"]').addClass('cp-poll-best');
+        var $total = $(total);
+        var refreshBest = function () {
+            var totalMax = {
+                value: 0,
+                data: []
+            };
+            Object.keys(totals).forEach(function (k) {
+                var obj = Util.clone(totals[k]);
+                if (myTotals[k]) {
+                    obj.y += myTotals[k].y || 0;
+                    obj.m += myTotals[k].m || 0;
+                }
+                if (obj.y === totalMax.value) {
+                    totalMax.data.push(k);
+                } else if (obj.y > totalMax.value) {
+                    totalMax.value = obj.y;
+                    totalMax.data = [k];
+                }
+            });
+            if (totalMax.value) {
+                $total.find('[data-id]').removeClass('cp-poll-best');
+                totalMax.data.forEach(function (k) {
+                    $total.find('[data-id="'+k+'"]').addClass('cp-poll-best');
+                });
+            }
+        };
+        refreshBest();
+
+        if (myLine && evOnChange) {
+            var updateValues = function () {
+                totalEls.forEach(function (cell) {
+                    var $c = $(cell);
+                    var data = $c.attr('data-id');
+                    if (!data) { return; }
+                    var y = totals[data].y + ((myTotals[data] || {}).y || 0);
+                    var m = totals[data].m + ((myTotals[data] || {}).m || 0);
+                    $c.find('.cp-form-total-yes').text(y);
+                    $c.find('.cp-form-total-maybe').text('('+m+')');
+                });
+            };
+            evOnChange.reg(function () {
+                updateMyTotals();
+                updateValues();
+                refreshBest();
             });
         }
+
 
         return total;
     };
@@ -828,6 +877,7 @@ define([
     };
 
     var getBlockAnswers = function (answers, uid, filterCurve) {
+        if (!answers) { return; }
         return Object.keys(answers || {}).map(function (user) {
             if (filterCurve && user === filterCurve) { return; }
             try {
@@ -1627,7 +1677,7 @@ define([
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 lines.push(h('div', addLine));
 
-                var total = makePollTotal(answers, opts);
+                var total = makePollTotal(answers, opts, addLine, evOnChange);
                 if (total) { lines.push(h('div', total)); }
 
                 var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
@@ -1936,11 +1986,7 @@ define([
                         e.preventDefault();
                         if (!$el.is(':visible')) {
                             var pages = $el.closest('.cp-form-page').index();
-                            console.error($el, $el.prevAll());
-                            if (APP.refreshPage) {
-                                APP.refreshPage(pages + 1);
-                            }
-                            // XXX find page number
+                            if (APP.refreshPage) { APP.refreshPage(pages + 1); }
                         }
                         $el[0].scrollIntoView();
                     });
