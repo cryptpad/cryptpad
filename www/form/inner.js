@@ -96,6 +96,8 @@ define([
     Messages.form_text_url = "URL";
     Messages.form_text_email = "Email";
     Messages.form_text_number = "Number";
+    Messages.form_input_ph_url = "Enter a URL here";
+    Messages.form_input_ph_email = "Email address";
 
     Messages.form_default = "Your question here?";
     Messages.form_type_input = "Text"; // XXX
@@ -119,9 +121,13 @@ define([
 
     Messages.form_submit = "Submit";
     Messages.form_update = "Update";
+    Messages.form_submitWarning = "Submit anyway";
+    Messages.form_updateWarning  = "Update anyway";
     Messages.form_reset = "Reset";
     Messages.form_sent = "Sent";
     Messages.form_delete = "Delete";
+    Messages.form_invalidWarning = "There are errors in some answers:";
+    Messages.form_invalidQuestion = "Question {0}";
 
     Messages.form_cantFindAnswers = "Unable to retrieve your existing answers for this form.";
     Messages.form_answered = "You already answered this form";
@@ -169,9 +175,7 @@ define([
     Messages.form_addMultipleHint = "Add multiple dates and times"
     Messages.form_clear = "Clear";
 
-    Messages.form_page_prev = "Previous";
     Messages.form_page = "Page {0}/{1}";
-    Messages.form_page_next = "Next";
 
     Messages.form_anonymousBox = "Answer anonymously";
 
@@ -607,12 +611,13 @@ define([
                             val = +f.selectedDates[0];
                         }
                     }
-                    if (values.indexOf(val) === -1) { values.push(val); }
+                    if (val && values.indexOf(val) === -1) { values.push(val); }
                     else { duplicates = true; }
                 });
             }
+            values = values.filter(Boolean); // Block empty or undeinfed options
             if (!values.length) {
-                return void UI.warn(Messages.error); // XXX error message: no values
+                return void UI.warn(Messages.error);
             }
             var res = { values: values };
 
@@ -959,7 +964,8 @@ define([
             get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.input.defaultOpts; }
                 var tag = h('input', {
-                    type: opts.type
+                    type: opts.type,
+                    placeholder: Messages['form_input_ph_'+opts.type] || ''
                 });
                 var $tag = $(tag);
                 $tag.on('change keypress', Util.throttle(function () {
@@ -1833,7 +1839,7 @@ define([
         });
         return results;
     };
-    var makeFormControls = function (framework, content, update) {
+    var makeFormControls = function (framework, content, update, evOnChange) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
 
@@ -1886,6 +1892,7 @@ define([
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
+                window.onbeforeunload = undefined;
                 if (!update) {
                     // Add results button
                     addResultsButton(framework, content);
@@ -1901,7 +1908,57 @@ define([
             reset = undefined;
         }
 
+        var invalid = h('div.cp-form-invalid-warning');
+        var $invalid = $(invalid);
+        if (evOnChange) {
+            var origin, priv;
+            if (APP.common) {
+                var metadataMgr = APP.common.getMetadataMgr();
+                priv = metadataMgr.getPrivateData();
+                origin = priv.origin;
+            }
+            evOnChange.reg(function () {
+                var $container = $('div.cp-form-creator-content');
+                var $inputs = $container.find('input:invalid');
+                if (!$inputs.length) {
+                    $send.text(update ? Messages.form_update : Messages.form_submit);
+                    return void $invalid.empty();
+                }
+                $send.text(update ? Messages.form_updateWarning : Messages.form_submitWarning);
+                var lis = [];
+                $inputs.each(function (i, el) {
+                    var $el = $(el).closest('.cp-form-block');
+                    var number = $el.find('.cp-form-block-question-number').text();
+                    var a = h('a', {
+                        href: origin + '#' + Messages._getKey('form_invalidQuestion', [number])
+                    }, Messages._getKey('form_invalidQuestion', [number]));
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        if (!$el.is(':visible')) {
+                            var pages = $el.closest('.cp-form-page').index();
+                            console.error($el, $el.prevAll());
+                            if (APP.refreshPage) {
+                                APP.refreshPage(pages + 1);
+                            }
+                            // XXX find page number
+                        }
+                        $el[0].scrollIntoView();
+                    });
+                    var li = h('li', a);
+                    lis.push(li);
+                });
+                var list = h('ul', lis);
+                var content = [
+                    h('span', Messages.form_invalidWarning),
+                    list
+                ];
+                $invalid.empty().append(content);
+            });
+            evOnChange.fire();
+        }
+
         return h('div.cp-form-send-container', [
+            invalid,
             cbox ? h('div', cbox) : undefined,
             send, reset
         ]);
@@ -2002,6 +2059,7 @@ define([
 
 
         var elements = [];
+        var n = 1; // Question number
         content.order.forEach(function (uid) {
             var block = form[uid];
             var type = block.type;
@@ -2031,7 +2089,10 @@ define([
 
 
             var dragHandle;
-            var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+            var q = h('div.cp-form-block-question', [
+                h('span.cp-form-block-question-number', (n++)+'.'),
+                h('span', block.q || Messages.form_default)
+            ]);
             var editButtons, editContainer;
 
             APP.formBlocks.push(data);
@@ -2203,7 +2264,7 @@ define([
                 var pageContainer = h('div.cp-form-page-container');
                 var $page = $(pageContainer);
                 _content.push(pageContainer);
-                var refreshPage = function (current) {
+                var refreshPage = APP.refreshPage = function (current) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
                     if (current > pages) { current = pages; }
@@ -2257,7 +2318,7 @@ define([
         }
 
         // In view mode, add "Submit" and "reset" buttons
-        $container.append(makeFormControls(framework, content, Boolean(answers)));
+        $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
     };
 
     var getTempFields = function () {

@@ -205,6 +205,15 @@
                             margin-right: 10px;
                         }
                     }
+                    .cp-form-invalid-warning {
+                        color: @cp_form-invalid;
+                        ul {
+                            list-style-type: disclosure-closed;
+                        }
+                        li {
+                            text-align: left;
+                        }
+                    }
                 }
 
                 .cp-form-page-container {
@@ -261,6 +270,10 @@
 
                     .cp-form-block-question {
                         margin-bottom: 5px;
+                        .cp-form-block-question-number {
+                            font-weight: bold;
+                            margin-right: 10px;
+                        }
                     }
                     .cp-form-block-content {
                         overflow-x: auto;
@@ -278,7 +291,8 @@
                             justify-content: space-between;
                         }
                         input:invalid {
-                            border: 1px solid @cp_form-invalid;
+                            border: 2px solid @cp_form-invalid;
+                            color: @cp_form-invalid;
                         }
                         media-tag {
                             & > * {
