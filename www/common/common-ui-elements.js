@@ -2085,7 +2085,6 @@ define([
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
         });
-        Messages.type.form = "Form"; // XXX
         types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
