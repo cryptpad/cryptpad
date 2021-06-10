@@ -1734,10 +1734,17 @@ define([
 
     var renderResults = function (content, answers) {
         var $container = $('div.cp-form-creator-results').empty();
+
+        if (!Object.keys(answers || {}).length) {
+            $container.append(h('div.alert.alert-info', Messages.form_results_empty));
+            return;
+        }
+
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
+
 
         var summary = true;
         var form = content.form;
