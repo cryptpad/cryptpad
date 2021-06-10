@@ -714,12 +714,6 @@ define([
         // Add answers
         var bodyEls = [];
         if (Array.isArray(answers)) {
-            for(var i = 0; i< 20; i++) { // XXX
-                answers.push({
-                    user: { name: 'User '+i },
-                    results: { values: {} }
-                });
-            }
             answers.forEach(function (answerObj) {
                 var answer = answerObj.results;
                 if (!answer || !answer.values) { return; }
