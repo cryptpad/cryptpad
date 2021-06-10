@@ -1069,6 +1069,7 @@ define([
             editor.replaceSelections(newTexts, 'around');
             editor.focus();
         };
+        Messages.mdToolbar_embed = "Embed file"; // XXX
         for (var k in actions) {
             $('<button>', {
                 'data-type': k,
@@ -2084,7 +2085,6 @@ define([
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
         });
-        Messages.type.form = "Form"; // XXX
         types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
@@ -2661,6 +2661,18 @@ define([
         $creation.focus();
     };
 
+    Messages.restrictedLoginPrompt = "You are not authorized to access this document. <a>Log in</a> if you think your account should be able to access it."; // XXX
+    UIElements.loginErrorScreenContent = function (common) {
+        var msg = Pages.setHTML(h('span'), Messages.restrictedLoginPrompt);
+        $(msg).find('a').attr({
+            href: '/login/',
+        }).click(function (ev) {
+            ev.preventDefault();
+            common.setLoginRedirect('login');
+        });
+        return msg;
+    };
+
     var autoStoreModal = {};
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
@@ -2708,6 +2720,10 @@ define([
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'ERESTRICTED') {
             msg = Messages.restrictedError;
+            if (!common.isLoggedIn()) {
+                msg = UIElements.loginErrorScreenContent(common);
+            }
+
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         } else if (err.type === 'HASH_NOT_FOUND' && priv.isHistoryVersion) {
             msg = Messages.oo_deletedVersion;
@@ -2868,7 +2884,13 @@ define([
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
-        if (data && data.stored) { return; } // We won't display the popup for dropped files
+        // We won't display the popup for dropped files or already stored pads
+        if (data && data.stored) {
+            if (!data.inMyDrive) {
+                $('.cp-toolbar-storeindrive').show();
+            }
+            return;
+        }
         var priv = common.getMetadataMgr().getPrivateData();
 
         // This pad will be deleted automatically, it shouldn't be stored

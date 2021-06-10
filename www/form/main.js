@@ -230,7 +230,7 @@ define([
                         results[senderCurve] = {
                             msg: parsed,
                             hash: hash,
-                            time: cfg.time
+                            time: cfg && cfg.time
                         };
                     };
                     CPNetflux.start(config);

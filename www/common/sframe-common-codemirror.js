@@ -73,6 +73,8 @@ define([
         else {
             editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
         }
+
+        editor.scrollTo(scroll.left, scroll.top);
     };
 
     module.handleImagePaste = function (editor) {

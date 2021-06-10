@@ -502,9 +502,6 @@ define([
 
         var auditor;
         if (isForm) {
-            Messages.share_formEdit = "Author"; // XXX
-            Messages.share_formView = "Participant"; // XXX
-            Messages.share_formAuditor = "Auditor"; // XXX
             labelEdit = Messages.share_formEdit;
             labelView = Messages.share_formView;
             auditor = UI.createRadio('accessRights', 'cp-share-form', Messages.share_formAuditor, false, {
