@@ -90,7 +90,7 @@ define([
             'cp-admin-update-available',
             'cp-admin-checkup',
             'cp-admin-block-daily-check',
-            'cp-admin-provide-aggregate-statistics',
+            //'cp-admin-provide-aggregate-statistics',
             'cp-admin-list-my-instance',
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
@@ -1759,7 +1759,7 @@ define([
     };
 
     Messages.admin_consentToContactTitle = 'Consent to contact'; // XXX
-    Messages.admin_consentToContactHint = "Server telemetry includes the admin contact email so that the developers can notify you of vulnerabilities in the softare. This will never be shared, sold, or used for marketing purposes. Consent to contact if you'd like to be informed of critical issues in your server."; // XXX
+    Messages.admin_consentToContactHint = "Server telemetry includes the admin contact email so that the developers can notify you of vulnerabilities in the software or your configuration. This will never be shared, sold, or used for marketing purposes. Consent to contact if you'd like to be informed of critical issues in your server."; // XXX
     Messages.admin_consentToContactLabel = 'I consent'; // XXX
 
     create['consent-to-contact'] = makeAdminCheckbox({
@@ -1784,7 +1784,7 @@ define([
     });
 
     Messages.admin_listMyInstanceTitle = 'List my instance in public directories'; // XXX
-    Messages.admin_listMyInstanceHint = 'If your instance is suitable for public use you may consent to be listed in web directories.'; // XXX
+    Messages.admin_listMyInstanceHint = 'If your instance is suitable for public use you may consent to be listed in web directories. Server telemetry must be enabled for this to have any effect.'; // XXX
     Messages.admin_listMyInstanceLabel = 'List this instance'; // XXX
 
     create['list-my-instance'] = makeAdminCheckbox({ // XXX uncheck if server telemetry is disabled?
@@ -1858,8 +1858,8 @@ define([
         },
     });
 
-    Messages.admin_blockDailyCheckTitle = 'Opt-out of server telemetry'; // XXX
-    Messages.admin_blockDailyCheckHint = "CryptPad instances send a message to the developers' server when launched and once per day thereafter. This lets them keep track of how many servers are running which versions of the software. You can opt-out of this measurement below."; // XXX
+    Messages.admin_blockDailyCheckTitle = 'Server telemetry'; // XXX
+    Messages.admin_blockDailyCheckHint = "CryptPad instances send a message to the developers' server when launched and once per day thereafter. This lets them keep track of how many servers are running which versions of the software. You can opt-out of this measurement below. The contents of this message can be found in the application server's log for your review."; // XXX
     Messages.admin_blockDailyCheckLabel = 'Disable server telemetry'; // XXX
 
     /*  // XXX
