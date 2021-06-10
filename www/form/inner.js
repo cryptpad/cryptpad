@@ -1909,7 +1909,7 @@ define([
 
         return h('div.cp-form-send-container', [
             invalid,
-            cbox ? h('div', cbox) : undefined,
+            cbox ? h('div.cp-form-anon-answer', cbox) : undefined,
             send, reset
         ]);
     };
