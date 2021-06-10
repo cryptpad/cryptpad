@@ -166,6 +166,7 @@ MessengerUI, Messages, Pages) {
     var showColors = false;
     var updateUserList = function (toolbar, config, forceOffline) {
         if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
+        if (toolbar.isAlone) { return; }
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
         var $userlistContent = toolbar.userlistContent;
@@ -1216,6 +1217,7 @@ MessengerUI, Messages, Pages) {
         if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
         var notify = function(type, name, oldname) {
+            if (toolbar.isAlone) { return; }
             // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
             if (typeof name === "undefined") { return; }
             name = name || Messages.anonymous;
@@ -1513,6 +1515,15 @@ MessengerUI, Messages, Pages) {
             } else {
                 kickSpinner(toolbar, config);
             }
+        };
+
+        // disable notification, userlist and chat
+        toolbar.alone = function () {
+            toolbar.userlist.hide();
+            toolbar.chat.hide();
+            $('.cp-toolbar-userlist-drawer').remove();
+            $('.cp-toolbar-chat-drawer').remove();
+            toolbar.isAlone = true;
         };
 
         // On log out, remove permanently the realtime elements of the toolbar

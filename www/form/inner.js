@@ -2000,7 +2000,7 @@ define([
                 ];
                 $invalid.empty().append(content);
             });
-            evOnChange.fire();
+            evOnChange.fire(true);
         }
 
         return h('div.cp-form-send-container', [
@@ -2022,7 +2022,8 @@ define([
             var _answers = Util.clone(answers || {});
             delete _answers._proof;
             delete _answers._userdata;
-            evOnChange.reg(function () {
+            evOnChange.reg(function (noBeforeUnload) {
+                if (noBeforeUnload) { return; }
                 var results = getFormResults();
                 if (!answers || Sortify(_answers) !== Sortify(results)) {
                     window.onbeforeunload = function () {
@@ -2397,6 +2398,9 @@ define([
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.after(helpMenu.menu);
 
+        if (!APP.isEditor) {
+            framework._.toolbar.alone();
+        }
 
         var makeFormSettings = function () {
             // Private / public status
