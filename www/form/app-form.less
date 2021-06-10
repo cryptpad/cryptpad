@@ -32,6 +32,9 @@
         div.cp-form-creator-results, .cp-app-form-button-creator {
             display: none !important;
         }
+        .cp-form-block {
+            .tools_unselectable();
+        }
     }
 
     #cp-app-form-container {
@@ -238,7 +241,6 @@
                     }
                 }
                 .cp-form-block {
-                    .tools_unselectable();
                     background: @cp_form-bg1;
                     padding: 10px;
                     &:not(:last-child) {
