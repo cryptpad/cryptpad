@@ -844,10 +844,6 @@ define([
         return $div;
     };
 
-    Messages.settings_driveRedirectTitle = "Home page redirection"; // XXX redirect
-    Messages.settings_driveRedirectHint = "Automatic redirection from the home page to the drive when logged in is no longer enabled by default. Legacy behaviour can be enabled below."; // XXX redirect
-    Messages.settings_driveRedirect = "Automatically redirect me"; // XXX redirect
-
     create['redirect'] = function () {
         if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-redirect cp-sidebarlayout-element' });

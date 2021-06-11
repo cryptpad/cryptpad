@@ -1069,7 +1069,6 @@ define([
             editor.replaceSelections(newTexts, 'around');
             editor.focus();
         };
-        Messages.mdToolbar_embed = "Embed file"; // XXX
         for (var k in actions) {
             $('<button>', {
                 'data-type': k,
@@ -2661,7 +2660,6 @@ define([
         $creation.focus();
     };
 
-    Messages.restrictedLoginPrompt = "You are not authorized to access this document. <a>Log in</a> if you think your account should be able to access it."; // XXX
     UIElements.loginErrorScreenContent = function (common) {
         var msg = Pages.setHTML(h('span'), Messages.restrictedLoginPrompt);
         $(msg).find('a').attr({
