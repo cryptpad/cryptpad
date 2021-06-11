@@ -85,15 +85,27 @@ define([
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
             'cp-admin-performance-profiling',
-        ]
+        ],
+        'network': [ // Msg.admin_cat_network
+            'cp-admin-update-available',
+            'cp-admin-checkup',
+            'cp-admin-block-daily-check',
+            //'cp-admin-provide-aggregate-statistics',
+            'cp-admin-list-my-instance',
+            'cp-admin-consent-to-contact',
+            'cp-admin-remove-donate-button',
+        ],
     };
 
     var create = {};
 
+    var keyToCamlCase = function (key) {
+        return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    };
+
     var makeBlock = function (key, addButton) { // Title, Hint, maybeButton
         // Convert to camlCase for translation keys
-        var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-
+        var safeKey = keyToCamlCase(key);
         var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
         $('<label>').text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
@@ -260,7 +272,7 @@ define([
         var $div = makeBlock(key); // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
 
         var state = APP.instanceStatus.restrictRegistration;
-        var $cbox = $(UI.createCheckbox('cp-settings-userfeedback',
+        var $cbox = $(UI.createCheckbox('cp-settings-' + key,
             Messages.admin_registrationTitle,
             state, { label: { class: 'noTitle' } }));
         var spinner = UI.makeSpinner($cbox);
@@ -288,6 +300,55 @@ define([
 
         return $div;
     };
+
+    var makeAdminCheckbox = function (data) {
+        return function () {
+            var state = data.getState();
+            var key = data.key;
+            var $div = makeBlock(key);
+
+            var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
+            var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
+            var $cbox = $(UI.createCheckbox('cp-admin-' + key,
+                Messages[labelKey] || Messages[titleKey],
+                state, { label: { class: 'noTitle' } }));
+            var spinner = UI.makeSpinner($cbox);
+            var $checkbox = $cbox.find('input').on('change', function() {
+                spinner.spin();
+                var val = $checkbox.is(':checked') || false;
+                $checkbox.attr('disabled', 'disabled');
+                data.query(val, function (state) {
+                    spinner.done();
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
+                });
+            });
+            $cbox.appendTo($div);
+            return $div;
+        };
+    };
+
+    // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
+    create['registration'] = makeAdminCheckbox({
+        key: 'registration',
+        getState: function () {
+            return APP.instanceStatus.restrictRegistration;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['RESTRICT_REGISTRATION', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.restrictRegistration);
+                });
+            });
+        },
+    });
 
     create['email'] = function () {
         var key = 'email';
@@ -1663,6 +1724,135 @@ define([
         return $div;
     };
 
+    create['update-available'] = function () { // Messages.admin_updateAvailableTitle.admin_updateAvailableHint.admin_updateAvailableLabel.admin_updateAvailableButton
+        if (!APP.instanceStatus.updateAvailable) { return; }
+        var $div = makeBlock('update-available', true);
+
+        var updateURL = 'https://github.com/xwiki-labs/cryptpad/releases/latest';
+        if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
+            updateURL = APP.instanceStatus.updateAvailable;
+        }
+
+        $div.find('button').click(function () {
+            common.openURL(updateURL);
+        });
+
+        return $div;
+    };
+
+    create['checkup'] = function () {
+        var $div = makeBlock('checkup', true); // Messages.admin_checkupButton.admin_checkupHint.admin_checkupTitle
+        $div.find('button').click(function () {
+            common.openURL('/checkup/');
+        });
+        return $div;
+    };
+
+    create['consent-to-contact'] = makeAdminCheckbox({ // Messages.admin_consentToContactTitle.admin_consentToContactHint.admin_consentToContactLabel
+        key: 'consent-to-contact',
+        getState: function () {
+            return APP.instanceStatus.consentToContact;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['CONSENT_TO_CONTACT', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.consentToContact);
+                });
+            });
+        },
+    });
+
+    create['list-my-instance'] = makeAdminCheckbox({ // Messages.admin_listMyInstanceTitle.admin_listMyInstanceHint.admin_listMyInstanceLabel
+        key: 'list-my-instance',
+        getState: function () {
+            return APP.instanceStatus.listMyInstance;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['LIST_MY_INSTANCE', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.listMyInstance);
+                });
+            });
+        },
+    });
+
+    create['provide-aggregate-statistics'] = makeAdminCheckbox({ // Messages.admin_provideAggregateStatisticsTitle.admin_provideAggregateStatisticsHint.admin_provideAggregateStatisticsLabel
+        key: 'provide-aggregate-statistics',
+        getState: function () {
+            return APP.instanceStatus.provideAggregateStatistics;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['PROVIDE_AGGREGATE_STATISTICS', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.provideAggregateStatistics);
+                });
+            });
+        },
+    });
+
+    create['remove-donate-button'] = makeAdminCheckbox({ // Messages.admin_removeDonateButtonTitle.admin_removeDonateButtonHint.admin_removeDonateButtonLabel
+        key: 'remove-donate-button',
+        getState: function () {
+            return APP.instanceStatus.removeDonateButton;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['REMOVE_DONATE_BUTTON', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.removeDonateButton);
+                });
+            });
+        },
+    });
+
+    create['block-daily-check'] = makeAdminCheckbox({ // Messages.admin_blockDailyCheckTitle.admin_blockDailyCheckHint.admin_blockDailyCheckLabel
+        key: 'block-daily-check',
+        getState: function () {
+            return APP.instanceStatus.blockDailyCheck;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['BLOCK_DAILY_CHECK', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.blockDailyCheck);
+                });
+            });
+        },
+    });
+
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
     };
@@ -1680,6 +1870,7 @@ define([
         support: 'fa fa-life-ring',
         broadcast: 'fa fa-bullhorn',
         performance: 'fa fa-heartbeat',
+        network: 'fa fa-sitemap', // or fa-university ?
     };
 
     var createLeftside = function () {
