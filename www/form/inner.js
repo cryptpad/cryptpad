@@ -2512,6 +2512,16 @@ define([
             }
         };
 
+        var showAnonBlockedAlert = function () {
+            var content = UI.setHTML(h('span.cp-anon-blocked-msg'), Messages.form_anonymous_blocked);
+            $(content).find('a').click(function (ev) {
+                ev.preventDefault();
+                var href = ($(this).attr('href') || '').replace(/\//g, '');
+                APP.common.setLoginRedirect(href || 'login');
+            });
+            UI.alert(content);
+        };
+
         framework.onReady(function () {
             var priv = metadataMgr.getPrivateData();
 
@@ -2581,7 +2591,7 @@ define([
 
             var loggedIn = framework._.sfCommon.isLoggedIn();
             if (!loggedIn && !content.answers.anonymous) {
-                UI.alert(Messages.form_anonymous_blocked);
+                showAnonBlockedAlert();
             }
 
             // If the results are public and there is at least one doodle, fetch the results now
