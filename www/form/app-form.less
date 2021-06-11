@@ -155,12 +155,11 @@
                     flex-flow: column;
                     margin: 20px 0px 100px 0px;
                     &> div:first-child {
-                        border-right: 1px solid fade(@cryptpad_text_col, 25%);
                         display: flex;
                         height: 100%;
                         align-items: center;
                         padding-right: 10px;
-                        margin-right: 10px;
+                        margin-bottom: 10px;
                         i {
                             color: @cryptpad_text_col;
                             font-size: 30px;
@@ -172,7 +171,6 @@
                         display: flex;
                         flex-flow: column;
                         justify-content: space-around;
-                        margin-left: 50px;
                         button:not(:last-child) {
                             margin-right: 5px;
                         }
@@ -286,6 +284,11 @@
                     }
                     .cp-form-block-content {
                         overflow-x: auto;
+                        p {
+                            a {
+                                color: @cryptpad_color_link;
+                            }
+                        }
                         .cp-form-page-break-edit {
                             font-size: 20px;
                             text-align: center;
