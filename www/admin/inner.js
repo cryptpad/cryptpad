@@ -1724,13 +1724,7 @@ define([
         return $div;
     };
 
-    Messages.admin_cat_network = 'Network'; // XXX
-
-    Messages.admin_updateAvailableTitle = 'New versions'; // XXX
-    Messages.admin_updateAvailableHint = "A new version of CryptPad is available."; // XXX
-    Messages.admin_updateAvailableButton = 'See release notes'; // XXX
-
-    create['update-available'] = function () {
+    create['update-available'] = function () { // Messages.admin_updateAvailableTitle.admin_updateAvailableHint.admin_updateAvailableLabel.admin_updateAvailableButton
         if (!APP.instanceStatus.updateAvailable) { return; }
         var $div = makeBlock('update-available', true);
 
@@ -1746,23 +1740,15 @@ define([
         return $div;
     };
 
-    Messages.admin_checkupTitle = 'Diagnose configuration errors'; // XXX
-    Messages.admin_checkupHint = "CryptPad includes a page which automatically diagnoses common configuration issues and suggests how to correct them."; // XXX
-    Messages.admin_checkupButton = 'Run diagnostics'; // XXX
-
     create['checkup'] = function () {
-        var $div = makeBlock('checkup', true);
+        var $div = makeBlock('checkup', true); // Messages.admin_checkupButton.admin_checkupHint.admin_checkupTitle
         $div.find('button').click(function () {
             common.openURL('/checkup/');
         });
         return $div;
     };
 
-    Messages.admin_consentToContactTitle = 'Consent to contact'; // XXX
-    Messages.admin_consentToContactHint = "Server telemetry includes the admin contact email so that the developers can notify you of vulnerabilities in the software or your configuration. This will never be shared, sold, or used for marketing purposes. Consent to contact if you'd like to be informed of critical issues in your server."; // XXX
-    Messages.admin_consentToContactLabel = 'I consent'; // XXX
-
-    create['consent-to-contact'] = makeAdminCheckbox({
+    create['consent-to-contact'] = makeAdminCheckbox({ // Messages.admin_consentToContactTitle.admin_consentToContactHint.admin_consentToContactLabel
         key: 'consent-to-contact',
         getState: function () {
             return APP.instanceStatus.consentToContact;
@@ -1783,11 +1769,7 @@ define([
         },
     });
 
-    Messages.admin_listMyInstanceTitle = 'List my instance in public directories'; // XXX
-    Messages.admin_listMyInstanceHint = 'If your instance is suitable for public use you may consent to be listed in web directories. Server telemetry must be enabled for this to have any effect.'; // XXX
-    Messages.admin_listMyInstanceLabel = 'List this instance'; // XXX
-
-    create['list-my-instance'] = makeAdminCheckbox({ // XXX uncheck if server telemetry is disabled?
+    create['list-my-instance'] = makeAdminCheckbox({ // Messages.admin_listMyInstanceTitle.admin_listMyInstanceHint.admin_listMyInstanceLabel
         key: 'list-my-instance',
         getState: function () {
             return APP.instanceStatus.listMyInstance;
@@ -1808,11 +1790,7 @@ define([
         },
     });
 
-    Messages.admin_provideAggregateStatisticsTitle = 'Provide aggregated statistics'; // XXX
-    Messages.admin_provideAggregateStatisticsHint = 'You may opt-in to providing additional usage metrics to the developers, such as the approximate number of registered and daily users.'; // XXX
-    Messages.admin_provideAggregateStatisticsLabel = 'Provide aggregated data'; // XXX
-
-    create['provide-aggregate-statistics'] = makeAdminCheckbox({ // XXX uncheck if server telemetry is disabled?
+    create['provide-aggregate-statistics'] = makeAdminCheckbox({ // Messages.admin_provideAggregateStatisticsTitle.admin_provideAggregateStatisticsHint.admin_provideAggregateStatisticsLabel
         key: 'provide-aggregate-statistics',
         getState: function () {
             return APP.instanceStatus.provideAggregateStatistics;
@@ -1833,11 +1811,7 @@ define([
         },
     });
 
-    Messages.admin_removeDonateButtonTitle = "Crowdfunding participation"; // XXX
-    Messages.admin_removeDonateButtonHint = "CryptPad's development is partially funded by public grants and donations. Advertizing our crowdfunding efforts on your instance help the developers to continue improving the platform for everybody, but you may disable these notices if you find them inappropriate."; // XXX
-    Messages.admin_removeDonateButtonLabel = 'Do not advertize crowdfunding campaigns'; // XXX
-
-    create['remove-donate-button'] = makeAdminCheckbox({
+    create['remove-donate-button'] = makeAdminCheckbox({ // Messages.admin_removeDonateButtonTitle.admin_removeDonateButtonHint.admin_removeDonateButtonLabel
         key: 'remove-donate-button',
         getState: function () {
             return APP.instanceStatus.removeDonateButton;
@@ -1858,20 +1832,7 @@ define([
         },
     });
 
-    Messages.admin_blockDailyCheckTitle = 'Server telemetry'; // XXX
-    Messages.admin_blockDailyCheckHint = "CryptPad instances send a message to the developers' server when launched and once per day thereafter. This lets them keep track of how many servers are running which versions of the software. You can opt-out of this measurement below. The contents of this message can be found in the application server's log for your review."; // XXX
-    Messages.admin_blockDailyCheckLabel = 'Disable server telemetry'; // XXX
-
-    /*  // XXX
-     *  By default, CryptPad contacts one of our servers once a day.
-     *  This check-in will also send some very basic information about your instance including its
-     *  version and the adminEmail so we can reach you if we are aware of a serious problem.
-     *  We will never sell it or send you marketing mail.
-     *
-     *  If you want to block this check-in and remain set 'blockDailyCheck' to true.
-     */
-
-    create['block-daily-check'] = makeAdminCheckbox({
+    create['block-daily-check'] = makeAdminCheckbox({ // Messages.admin_blockDailyCheckTitle.admin_blockDailyCheckHint.admin_blockDailyCheckLabel
         key: 'block-daily-check',
         getState: function () {
             return APP.instanceStatus.blockDailyCheck;
