@@ -287,7 +287,6 @@ define([
             addReport('===================');
             addReport('DONE');
 
-            Messages.copyToClipboard = 'Copy report to clipboard'; // XXX
             var copyButton = h('button.btn.btn-primary', Messages.copyToClipboard);
             copyButton.onclick = copyToClipboard;
             var buttonContainer = h('div#cp-report-ui', [
