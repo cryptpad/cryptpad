@@ -1573,7 +1573,7 @@ define([
                 });
                 // Name input
                 //var nameInput = h('input', { value: username || Messages.anonymous });
-                var nameInput = h('span.cp-poll-your-answers', Messages.form_pollYourAnswers)
+                var nameInput = h('span.cp-poll-your-answers', Messages.form_pollYourAnswers);
                 addLine.unshift(h('div.cp-poll-cell', nameInput));
                 lines.push(h('div', addLine));
 
@@ -1872,7 +1872,7 @@ define([
         if (evOnChange) {
             var origin, priv;
             if (APP.common) {
-                var metadataMgr = APP.common.getMetadataMgr();
+                //var metadataMgr = APP.common.getMetadataMgr();
                 priv = metadataMgr.getPrivateData();
                 origin = priv.origin;
             }
