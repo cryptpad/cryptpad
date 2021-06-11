@@ -1339,7 +1339,7 @@
     "admin_checkupTitle": "Validate instance configuration",
     "admin_checkupHint": "CryptPad includes a page which automatically diagnoses common configuration issues and suggests how to correct them if necessary.",
     "admin_checkupButton": "Run diagnostics",
-    "admin_contentToContactTitle": "Consent to contact",
+    "admin_consentToContactTitle": "Consent to contact",
     "admin_consentToContactHint": "Server telemetry includes the admin contact email so that the developers can notify you of serious problems with the software or your configuration. It will never be shared, sold, or used for marketing purposes. Consent to contact if you'd like to be informed of critical issues in your server.",
     "admin_consentToContactLabel": "I consent",
     "admin_listMyInstanceTitle": "List my instance in public directories",
