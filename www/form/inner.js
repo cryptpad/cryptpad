@@ -1872,7 +1872,6 @@ define([
         if (evOnChange) {
             var origin, priv;
             if (APP.common) {
-                //var metadataMgr = APP.common.getMetadataMgr();
                 priv = metadataMgr.getPrivateData();
                 origin = priv.origin;
             }
