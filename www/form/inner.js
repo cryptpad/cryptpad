@@ -1945,7 +1945,7 @@ define([
             var full = !uid;
             var idx = content.order.indexOf(uid);
             var addControl = function (type) {
-                var btn = h('button.btn.btn-default', {
+                var btn = h('button.btn.btn-secondary', {
                     title: full ? undefined : Messages['form_type_'+type]
                 }, [
                     (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
@@ -1990,10 +1990,13 @@ define([
                     $(add).toggleClass('displayed');
                 });
             }
+            else {
+                $(add).append(h('span', Messages.tag_add));
+            }
 
             var inlineCls = full ? '-full' : '-inline';
             return h('div.cp-form-creator-add'+inlineCls, [
-                h('div', add),
+                add,
                 buttons
             ]);
 
