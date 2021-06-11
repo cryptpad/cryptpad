@@ -129,6 +129,7 @@ define([
 
         var type, typeSelect;
         if (opts.type) {
+            // Messages.form_text_text.form_text_number.form_text_url.form_text_email
             var options = ['text', 'number', 'url', 'email'].map(function (t) {
                 return {
                     tag: 'a',
@@ -214,6 +215,7 @@ define([
 
         var type, typeSelect;
         if (v.type) {
+            // Messages.form_poll_text.form_poll_day.form_poll_time
             var options = ['text', 'day', 'time'].map(function (t) {
                 return {
                     tag: 'a',
@@ -910,6 +912,7 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 if (!opts) { opts = TYPES.input.defaultOpts; }
+                // Messages.form_input_ph_email.form_input_ph_url
                 var tag = h('input', {
                     type: opts.type,
                     placeholder: Messages['form_input_ph_'+opts.type] || ''
@@ -1658,6 +1661,8 @@ define([
                 var print = model.printResults(answers, uid, form);
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+
+//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
                         TYPES[type].icon.cloneNode(),

@@ -1028,7 +1028,7 @@ define([
         };
 
         if (typeof(cfg.embed) === "function") {
-            actions.embed = {
+            actions.embed = { // Messages.mdToolbar_embed
                 icon: 'fa-picture-o',
                 action: function () {
                     var _cfg = {
@@ -2258,7 +2258,7 @@ define([
 
         // Title
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
-        var newPadH3Title = Messages['button_new' + type];
+        var newPadH3Title = Messages['button_new' + type]; // Messages.button_newform
 
         var title = h('div.cp-creation-title', [
             UI.getFileIcon({type: type})[0],
