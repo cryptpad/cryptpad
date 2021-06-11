@@ -1950,7 +1950,7 @@ define([
             var idx = content.order.indexOf(uid);
             var addControl = function (type) {
                 var btn = h('button.btn.btn-secondary', {
-                    title: full ? undefined : Messages['form_type_'+type]
+                    title: full ? '' : Messages['form_type_'+type]
                 }, [
                     (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
                     full ? h('span', Messages['form_type_'+type]) : undefined
