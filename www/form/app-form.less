@@ -152,9 +152,9 @@
                 }
                 .cp-form-creator-add-full {
                     display: flex;
-                    align-items: center;
-                    margin: 50px 0px 100px 0px;
-                    &> div:first-child {
+                    flex-flow: column;
+                    margin: 20px 0px 100px 0px;
+                    &> div:first-child { // XXX + on the side
                         border-right: 1px solid fade(@cryptpad_text_col, 25%);
                         display: flex;
                         height: 100%;
@@ -162,14 +162,17 @@
                         padding-right: 10px;
                         margin-right: 10px;
                         i {
-                            color: fade(@cryptpad_text_col, 25%);
+                            color: @cryptpad_text_col;
                             font-size: 30px;
+                            width: 50px;
+                            text-align: center;
                         }
                     }
                     .cp-form-creator-control-inline {
                         display: flex;
                         flex-flow: column;
                         justify-content: space-around;
+                        margin-left: 50px;
                         button:not(:last-child) {
                             margin-right: 5px;
                         }
