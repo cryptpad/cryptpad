@@ -448,6 +448,7 @@ define([
         }
     };
     funcs.createPad = function (cfg, cb) {
+        var priv = ctx.metadataMgr.getPrivateData();
         if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
             return void UI.errorLoadingScreen(Messages.mustLogin);
         }

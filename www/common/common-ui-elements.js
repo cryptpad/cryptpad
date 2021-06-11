@@ -2080,6 +2080,7 @@ define([
             if (p === 'file') { return; }
             if (p === 'accounts') { return; }
             if (p === 'calendar') { return; }
+            if (p === 'poll') { return; } // Replaced by forms
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
