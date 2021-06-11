@@ -14,6 +14,10 @@ define([
         var obj = SFCommonO.initIframe(waitFor, true);
         href = obj.href;
         hash = obj.hash;
+        if (!hash) {
+            window.location.href = '/form/';
+            waitFor.abort();
+        }
     }).nThen(function (/*waitFor*/) {
         SFCommonO.start({
             hash: hash,

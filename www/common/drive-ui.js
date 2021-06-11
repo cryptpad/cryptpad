@@ -2557,6 +2557,7 @@ define([
                 if (type === 'file') { return; }
                 if (type === 'accounts') { return; }
                 if (type === 'calendar') { return; }
+                if (type === 'poll') { return; } // replaced by forms
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
