@@ -53,7 +53,7 @@ define([
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
             'cp-settings-change-password',
-            'cp-settings-delete'
+            'cp-settings-delete',
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
@@ -115,6 +115,10 @@ define([
     }
     if (!ApiConfig.allowSubscriptions) {
         delete categories.subscription;
+    }
+    if (AppConfig.ssoEnabled) {
+        var deleteIdx = categories.account.indexOf('cp-settings-delete');
+        categories.account.splice(deleteIdx, 1);
     }
 
     var create = {};

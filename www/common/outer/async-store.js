@@ -812,6 +812,9 @@ define([
         };
 
         Store.deleteAccount = function (clientId, data, cb) {
+            if (AppConfig.ssoEnabled) {
+                return void console.error("SSO users cannot delete their account");
+            }
             var edPublic = store.proxy.edPublic;
             var removeData = data && data.removeData;
             Store.anonRpcMsg(clientId, {
