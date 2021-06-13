@@ -591,7 +591,8 @@ define([
 
     funcs.getFriends = function (meIncluded) {
         var priv = ctx.metadataMgr.getPrivateData();
-        var friends = priv.friends;
+        var friends = Util.clone(priv.friends);
+        Util.extend(friends, priv.ssoFriends);
         var goodFriends = {};
         Object.keys(friends).forEach(function (curve) {
             if (curve.length !== 44 && !meIncluded) { return; }

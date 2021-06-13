@@ -1,4 +1,5 @@
 define([
+    '/customize/application_config.js',
     '/api/config',
     '/api/broadcast',
     '/common/common-util.js',
@@ -9,7 +10,7 @@ define([
     '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Config, BCast, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
+], function (AppConfig, Config, BCast, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
@@ -24,12 +25,27 @@ define([
     var BROADCAST_CHAN = '000000000000000000000000000000000'; // Admin channel, 33 characters
 
     var initializeMailboxes = function (ctx, mailboxes) {
+        // On the first time the worker loads, create mailbox channel if it does not exist
         if (!mailboxes['notifications'] && ctx.loggedIn) {
             mailboxes.notifications = {
                 channel: Hash.createChannelId(),
                 lastKnownHash: '',
                 viewed: []
             };
+            // If SSO is enabled, send user notification channel to the server
+            // So that we can retreive every SSO users that registered in cryptpad
+            // in order to be able to share pads with them
+            if (AppConfig.ssoEnabled) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/sso/user/notifications/');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onerror = function () {
+                    throw new Error('Not able to send notification data');
+                };
+                xhr.send(JSON.stringify({
+                    notifications: mailboxes.notifications.channel,
+                }));
+            }
             ctx.pinPads([mailboxes.notifications.channel], function (res) {
                 if (res.error) { console.error(res); }
             });

@@ -629,6 +629,7 @@ define([
                     clientId: clientId,
                     edPublic: proxy.edPublic,
                     friends: proxy.friends || {},
+                    ssoFriends: proxy.ssoFriends || {},
                     settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
@@ -2699,6 +2700,25 @@ define([
                         progress: progress
                     });
                 }, store);
+            }).nThen(function (waitFor) {
+                // If sso is enabled, fetch SSO Friends from the server
+                // and store them in the proxy object
+                if (AppConfig.ssoEnabled) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/api/sso/friends');
+                    var cb = waitFor(function () {
+                        var ssoFriends;
+                        try {
+                            ssoFriends = JSON.parse(xhr.responseText);
+                        } catch (err) {
+                            ssoFriends = {};
+                        }
+                        proxy.ssoFriends = ssoFriends;
+                    });
+                    xhr.onload = cb;
+                    xhr.onError = cb;
+                    xhr.send();
+                }
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     type: 'sf',

@@ -92,4 +92,25 @@ module.exports = function (app) {
         res.send();
     });
 
+    /**
+     * Return the list of every registered sso user on the server
+     * The response is a stringified Object, in the form:
+     * {
+     *   curvePublic1: { uid, edPublic, curvePublic, displayName, notifications },
+     *   curvePublic2: { ... }
+     *   ...
+     * }
+     */
+    app.get('/api/sso/friends', function (req, res) {
+        const uid = req.headers.preferred_username;
+        const friendsDB = DB.JSON();
+        const ssoFriends = {};
+        Object.values(friendsDB).forEach(friend => {
+            // Do not include yourself in your friends
+            if (friend.uid === uid) { return; }
+            ssoFriends[friend.curvePublic] = friend;
+        });
+        res.json(ssoFriends);
+    });
+
 };
