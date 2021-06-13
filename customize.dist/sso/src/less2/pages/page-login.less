@@ -1,0 +1,60 @@
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/alertify.less";
+@import (reference) "../include/checkmark.less";
+@import (reference) "../include/forms.less";
+
+&.cp-page-login {
+    .infopages_main();
+    .alertify_main();
+    .forms_main();
+    .checkmark_main(20px);
+
+    .form-group {
+        .extra {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+    }
+    .cp-container {
+        .cp-page-title {
+            flex-direction: column;
+            p {
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+        }
+        #userForm {
+            .cp-shadow();
+            background-color: @cp_static-card-bg;
+            padding: 10px;
+            .form-control {
+                border-radius: 0;
+                color: @cryptpad_text_col;
+                background-color: @cp_forms-bg;
+                margin-bottom: 5px;
+                &:focus {
+                    border-color: @cryptpad_color_brand;
+                }
+                .tools_placeholder-color();
+            }
+            .checkbox-container {
+                color: @cryptpad_text_col;
+            }
+        }
+        .align-items-center {
+            box-shadow: 0 5px 15px @cp_shadow-color;
+            background: @cryptpad_color_white;
+        }
+        .extra {
+            margin-top: 1em;
+        }
+    }
+    .cp-container {
+        padding-top: 3em;
+        min-height: 66vh;
+    }
+}
+

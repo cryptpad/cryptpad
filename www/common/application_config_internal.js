@@ -3,8 +3,69 @@
  * If you want to change some configurable values, use the '/customize/application_config.js'
  * file (make a copy from /customize.dist/application_config.js)
  */
-define(function() {
+define(['/common/common-hash.js'], function(Hash) {
     var config = {};
+
+    //
+    //
+    //
+    //
+    /**
+     * A helper function allowing to create conditionnal default configuration,
+     * depending whether or not SSO mode was enabled on the application
+     *
+     * We need to use a getter function to chose at runtime
+     * which one of the "default" or "sso" value to use
+     * as the sso mode could be specified in the overriden configuration
+     *
+     * @param {string} propertyName The property name to define
+     * @param {Object} values An object containing two keys: "default" and "sso"
+     * - "default" value will be used when sso mode is disabled
+     * - "sso" value will be used when sso mode is enabled
+     */
+    var setConfigPropertyWhetherSSOEnabled = function (propertyName, values) {
+        Object.defineProperty(config, propertyName, {
+            configurable: true,
+            enumerable: true,
+            get: function () {
+                if (config.ssoEnabled) { return values.sso; }
+                return values.default;
+            },
+            // Allow default properties to
+            set: function (value) {
+                Object.defineProperty(config, propertyName, {
+                    value: value,
+                    configurable: true,
+                    writable: true,
+                    enumerable: true,
+                });
+            },
+        });
+    };
+
+    /**
+     * Return whether the user has already register to cryptpad with his SSO credentials
+     * SSO-TODO: maybe move this to a more appropriate location?
+     */
+     config.sso_hasRegistered = function (cb) {
+      // Get user account public informations from ldap server, if it exists
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/sso/user');
+      xhr.onload = function () {
+        if (xhr.readyState === xhr.DONE) {
+            if (xhr.status === 200) {
+                var user = xhr.responseText;
+                // If the string is not empty, it means the user information was stored on the server
+                var hasRegistered = !!user;
+                cb(hasRegistered);
+            }
+        }
+      };
+      xhr.onerror = function (error) {
+          console.log(error);
+      };
+      xhr.send();
+    };
 
     /* Select the buttons displayed on the main page to create new collaborative sessions.
      * Removing apps from the list will prevent users from accessing them. They will instead be
@@ -20,7 +81,10 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support', 'calendar'];
+    setConfigPropertyWhetherSSOEnabled('registeredOnlyTypes', {
+        default: ['file', 'contacts', 'notifications', 'support', 'calendar'],
+        sso: ['drive', 'file', 'contacts', 'notifications', 'support', 'calendar'],
+    });
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -144,16 +208,65 @@ define(function() {
     // work in CryptPad, use an external SSO or even force registration
     // *NOTE*: You have to call the `callback` function to continue the loading process
     //config.beforeLogin = function(isLoggedIn, callback) {};
+    setConfigPropertyWhetherSSOEnabled('beforeLogin', {
+        sso: function (isLoggedIn, callback) {
+            // If user is already logged in, skip
+            if (isLoggedIn) { return void callback(); }
+
+            // Redirect to register if user hasn't create his cryptpad account yet
+            // Else, redirect to login page
+            config.sso_hasRegistered(function (hasRegistered) {
+                var redirectPage = hasRegistered ? "login" : "register";
+                var href = Hash.hashToHref('', redirectPage);
+                var url = Hash.getNewPadURL(href, { href: window.location.href });
+                window.location.href = url;
+            });
+        },
+    });
 
     // Add code to be executed on every page after the user object is loaded (also work for
     // unregistered users). This allows you to interact with your users' drive
     // *NOTE*: You have to call the `callback` function to continue the loading process
     //config.afterLogin = function(api, callback) {};
 
+    // Add code to be executed at the end of the logout
+    // *NOTE*: You have to call the `callback` function to end the logout process
+    // setConfigPropertyWhetherSSOEnabled('customizeLogout', {
+    //     sso: function () {
+    //         // Here we are deleting every cookies so that it can work for every SSO solutions
+    //         // SSO-TODO: there might be an already exiting solution to do this in cryptpad,
+    //         // but haven't found it
+    //         var clearCookies = function () {
+    //             var cookies = document.cookie.split("; ");
+    //             for (var c = 0; c < cookies.length; c++) {
+    //                 var d = window.location.hostname.split(".");
+    //                 while (d.length > 0) {
+    //                     var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+    //                     var p = location.pathname.split('/');
+    //                     document.cookie = cookieBase + '/';
+    //                     while (p.length > 0) {
+    //                         document.cookie = cookieBase + p.join('/');
+    //                         p.pop();
+    //                     };
+    //                     d.shift();
+    //                 }
+    //             }
+    //         };
+    //         debugger;
+    //         clearCookies();
+    //         localStorage.clear();
+    //         window.location.href = config.ssoLogoutUrl;
+    //     },
+    // });
+
+
     // Disabling the profile app allows you to import the profile informations (display name, avatar)
     // from an external source and make sure the users can't change them from CryptPad.
     // You can use config.afterLogin to import these values in the users' drive.
-    //config.disableProfile = true;
+    setConfigPropertyWhetherSSOEnabled('disableProfile', {
+        default: false,
+        sso: true,
+    });
 
     // Disable the use of webworkers and sharedworkers in CryptPad.
     // Workers allow us to run the websockets connection and open the user drive in a separate thread.

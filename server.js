@@ -16,6 +16,14 @@ var Env = require("./lib/env").create(config);
 
 var app = Express();
 
+// If sso is enabled
+// Create new api routes for accessing and setting sso data
+// And remap customize sso routes if needed
+if (config.ssoEnabled) {
+    require("./server-sso-extension")(app);
+}
+
+
 var canonicalizeOrigin = function (s) {
     return (s || '').trim().replace(/\/+$/, '');
 };

@@ -1,5 +1,7 @@
 define([
     'jquery',
+    '/api/sso',
+    '/customize/application_config.js',
     '/customize/login.js',
     '/common/cryptpad-common.js',
     '/common/test.js',
@@ -11,9 +13,10 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/hyperscript.js',
+    '/bower_components/nthen/index.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
+], function ($, ssoHeaders, AppConfig, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, nThen) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -31,6 +34,15 @@ define([
             return;
         } else {
             $main.find('#userForm').removeClass('hidden');
+        }
+
+        // If SSO is enabled and user has already registered, redirect to /login/
+        if (AppConfig.ssoEnabled) {
+            AppConfig.sso_hasRegistered(function (hasRegistered) {
+                if (hasRegistered) {
+                    document.location.href = '/login/';
+                }
+            });
         }
 
         // text and password input fields
@@ -100,45 +112,78 @@ define([
                 return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
-            setTimeout(function () {
-                var span = h('span', [
-                    h('h2', [
-                        h('i.fa.fa-warning'),
-                        ' ',
-                        Messages.register_warning,
-                    ]),
-                    Messages.register_warning_note
-                ]);
+            // If SSO is enabled, check if username matches the sso one
+            if (uname !== ssoHeaders.preferred_username) {
+                return void UI.alert(Messages.register_ssoIncorrectUsername);
+            }
 
-            UI.confirm(span,
-            function (yes) {
-                if (!yes) { return; }
+            nThen(function (waitFor) {
+                // If SSO is enabled, check if username has already logged in
+                // SSO-TODO: move this elsewhere for cleaner code
+                if (AppConfig.ssoEnabled) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/api/sso/user/registered/?uid=' + uname);
+                    xhr.onload = waitFor(function () {
+                        if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+                            if (xhr.responseText === "true") {
+                                UI.alert(Messages.register_ssoAlreadyRegistered);
+                                waitFor.abort();
+                            }
+                        } else {
+                            UI.alert(Messages.register_ssoAlreadyRegisteredError);
+                            waitFor.abort();
+                        }
+                    });
+                    xhr.onerror = function () {
+                        UI.alert(Messages.register_ssoAlreadyRegisteredError);
+                    };
+                    xhr.send();
+                }
+            }).nThen(function () {
+                setTimeout(function () {
+                    var span = h('span', [
+                        h('h2', [
+                            h('i.fa.fa-warning'),
+                            ' ',
+                            Messages.register_warning,
+                        ]),
+                        Messages.register_warning_note
+                    ]);
 
-                Login.loginOrRegisterUI(uname, passwd, true, shouldImport, Test.testing, function () {
-                    if (test) {
-                        localStorage.clear();
-                        test.pass();
-                        return true;
-                    }
+                UI.confirm(span,
+                function (yes) {
+                    if (!yes) { return; }
+
+                    Login.loginOrRegisterUI(uname, passwd, true, shouldImport, Test.testing, function () {
+                        if (test) {
+                            localStorage.clear();
+                            test.pass();
+                            return true;
+                        }
+                    });
+                    registering = true;
+                }, {
+                    ok: Messages.register_writtenPassword,
+                    cancel: Messages.register_cancel,
+    /*  If we're certain that we aren't using these "*Class" APIs
+        anywhere else then we can deprecate them and make this a
+        custom modal in common-interface (or here).  */
+                    cancelClass: 'btn.btn-cancel.btn-register',
+                    okClass: 'btn.btn-danger.btn-register',
+                    reverseOrder: true,
+                    done: function ($dialog) {
+                        $dialog.find('> div').addClass('half');
+                    },
                 });
-                registering = true;
-            }, {
-                ok: Messages.register_writtenPassword,
-                cancel: Messages.register_cancel,
-/*  If we're certain that we aren't using these "*Class" APIs
-    anywhere else then we can deprecate them and make this a
-    custom modal in common-interface (or here).  */
-                cancelClass: 'btn.btn-cancel.btn-register',
-                okClass: 'btn.btn-danger.btn-register',
-                reverseOrder: true,
-                done: function ($dialog) {
-                    $dialog.find('> div').addClass('half');
-                },
+                }, 150);
             });
-            }, 150);
         };
 
-        $register.click(registerClick);
+        $register.click(function () {
+            $register.prop("disabled", true);
+            registerClick();
+            $register.prop("disabled", false);
+        });
 
         var clickRegister = Util.notAgainForAnother(function () {
             $register.click();

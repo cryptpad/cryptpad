@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/customize/login.js',
     '/common/common-interface.js',
@@ -9,7 +10,7 @@ define([
     '/common/test.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
+], function ($, AppConfig, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
     $(function () {
         var $main = $('#mainBlock');
         var $checkImport = $('#import-recent');
@@ -26,6 +27,15 @@ define([
             return;
         } else {
             $main.find('#userForm').removeClass('hidden');
+        }
+
+        // If SSO is enabled and user has not already registered, redirect to /register/
+        if (AppConfig.ssoEnabled) {
+            AppConfig.sso_hasRegistered(function (hasRegistered) {
+                if (!hasRegistered) {
+                    document.location.href = '/register/';
+                }
+            });
         }
 
         /* Log in UI */

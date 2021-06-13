@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/customize/application_config.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
@@ -18,7 +19,7 @@ define([
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
-], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
+], function ($, AppConfig, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
             Feedback, LocalStore, Messages, nThen, Block, Hash) {
     var Exports = {
         Cred: Cred,
@@ -372,6 +373,32 @@ define([
                         setMergeAnonDrive();
                     } else {
                         proxy.version = 11;
+                    }
+
+                    // If SSO is enabled, save user public information on the server
+                    if (AppConfig.ssoEnabled) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/api/sso/user');
+                        xhr.setRequestHeader('Content-Type', 'application/json');
+                        xhr.onload = function () {
+                            if (xhr.readyState === xhr.DONE) {
+                                if (xhr.status === 200) {
+                                    var displayName = xhr.responseText;
+                                    proxy[Constants.displayNameKey] = displayName;
+                                }
+                            }
+                            else {
+                                throw new Error('Unable to regiser sso user to the server');
+                            }
+                        };
+                        xhr.onerror = function () {
+                            throw new Error('Unable to regiser sso user to the server');
+                        };
+                        xhr.send(JSON.stringify({
+                            uid: uname,
+                            edPublic: proxy.edPublic,
+                            curvePublic: proxy.curvePublic,
+                        }));
                     }
 
                     Feedback.send('REGISTRATION', true);
