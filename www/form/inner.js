@@ -1931,7 +1931,7 @@ define([
         return h('div.cp-form-send-container', [
             invalid,
             cbox ? h('div.cp-form-anon-answer', cbox) : undefined,
-            send, reset
+            reset, send
         ]);
     };
     var updateForm = function (framework, content, editable, answers, temp) {
