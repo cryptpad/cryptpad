@@ -1,11 +1,25 @@
-# WIP
+# 4.7.0
 
 ## Goals
+
+* deploy new forms page
 
 ## Update notes
 
 * `bower update` for `chainpad-crypto#0.2.6` ([signed mailbox extensions](https://github.com/xwiki-labs/chainpad-crypto/releases/tag/0.2.6))
 * log some information about the checkup page when launching the server
+* new admin panel features
+  * link to checkup for better discoverability
+  * opt in to public listings
+  * opt in to email contact
+  * opt out of telemetry
+    * `blockDailyCheck` option moved here from default config
+  * preliminary work for statistical aggregation
+  * `removeDonateButton` option moved here from default config
+* new app, so you probably want to review that your custom color schemes don't conflict
+* server update and restart is required
+* ready to display warnings about new server updates starting in 4.7.1 or 4.8.0
+* lots of new translations!
 
 ## Features
 
@@ -13,10 +27,30 @@
 * log messages which fail signature validation
 * make drive-redirect configurable via the settings page (disabled by default)
 * minor UI improvements for report page
+  * copy report to clipboard
+  * margins?
+* new form app
+  * with participant, author, and auditor roles
+  * partially replaces the poll app
+    * polls no longer listed on home page
+    * it is still possible to make copies of existing polls
+    * otherwise the poll app redirects to the form app
+* ability to add a file to your drive from the file menu even if it's already in a team
+* embed file option in markdown toolbar
+  * kanban
+  * code
+  * slide?
 
 ## Bug fixes
 
 * variably display "Features" or "Pricing" in the _top bar_
+* default to the 'general' tab of the admin panel when the URL includes an unsupported hash
+* guard against DOMException when updating atime in cache entries
+* code app improvements
+  * guard against codemirror scroll-jank
+  * allow preview pane resize
+* self-XSS via accountName
+* password-protected files could not be opened or shared
 
 # 4.6.0
 
