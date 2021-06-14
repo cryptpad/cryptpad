@@ -1949,6 +1949,7 @@ define([
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
+                evOnChange.fire(false, true);
                 window.onbeforeunload = undefined;
                 if (!update) {
                     // Add results button
@@ -2029,9 +2030,13 @@ define([
             var _answers = Util.clone(answers || {});
             delete _answers._proof;
             delete _answers._userdata;
-            evOnChange.reg(function (noBeforeUnload) {
+            evOnChange.reg(function (noBeforeUnload, isSave) {
                 if (noBeforeUnload) { return; }
                 var results = getFormResults();
+                if (isSave) {
+                    answers = Util.clone(results || {});
+                    _answers = Util.clone(answers);
+                }
                 if (!answers || Sortify(_answers) !== Sortify(results)) {
                     window.onbeforeunload = function () {
                         return true;
