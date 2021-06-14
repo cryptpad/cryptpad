@@ -2341,6 +2341,7 @@ define([
                 if (APP.mainSortable) { APP.mainSortable.options.filter = oldFilter; }
                 if (!APP.isEditor) { $(offlineEl).remove(); }
                 $body.removeClass('cp-form-readonly');
+                $('.cp-form-creator-settings').find('input, button').removeAttr('disabled');
             } else {
                 if (APP.mainSortable) {
                     oldFilter = APP.mainSortable.options.filter;
@@ -2348,6 +2349,7 @@ define([
                 }
                 if (!APP.isEditor) { $('.cp-help-container').before(offlineEl); }
                 $body.addClass('cp-form-readonly');
+                $('.cp-form-creator-settings').find('input, button').attr('disabled', 'disabled');
             }
         });
 
