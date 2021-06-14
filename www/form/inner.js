@@ -2279,7 +2279,7 @@ define([
         updateAddInline();
 
         if (editable) {
-            Sortable.create($container[0], {
+            APP.mainSortable = Sortable.create($container[0], {
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort",
                 preventOnFilter: false,
@@ -2333,6 +2333,23 @@ define([
         var $toolbarContainer = $('#cp-toolbar');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.after(helpMenu.menu);
+
+        var offlineEl = h('div.alert.alert-danger.cp-burn-after-reading', Messages.disconnected);
+        var oldFilter;
+        framework.onEditableChange(function (editable) {
+            if (editable) {
+                if (APP.mainSortable) { APP.mainSortable.options.filter = oldFilter; }
+                if (!APP.isEditor) { $(offlineEl).remove(); }
+                $body.removeClass('cp-readonly');
+            } else {
+                if (APP.mainSortable) {
+                    oldFilter = APP.mainSortable.options.filter;
+                    APP.mainSortable.options.filter = function () { return true; };
+                }
+                if (!APP.isEditor) { $('.cp-help-container').before(offlineEl); }
+                $body.addClass('cp-readonly');
+            }
+        });
 
         if (!APP.isEditor) {
             framework._.toolbar.alone();
