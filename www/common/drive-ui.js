@@ -351,7 +351,7 @@ define([
                 h('li', h('a.cp-app-drive-context-openro.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
-                }, Messages.fc_open_ro)),
+                }, h('span.cp-text', Messages.fc_open_ro))),
                 h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faOpenInCode,
@@ -1646,6 +1646,20 @@ define([
                     }
 
                     paths = getSelectedPaths($element);
+
+                    // Forms: change "Open (read-only)" to "Open (as participant)"
+                    Messages.fc_open_formro = "Open (as participant)"; // XXX
+                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_ro);
+                    if (paths.length === 1) {
+                        var metadata = manager.getFileData(manager.find(paths[0].path));
+                        if (metadata.roHref) {
+                            var parsed = Hash.parsePadUrl(metadata.roHref);
+                            if (parsed.type === "form") {
+                                $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                            }
+                        }
+                    }
+
                 }
 
                 $contextMenu.attr('data-menu-type', type);
