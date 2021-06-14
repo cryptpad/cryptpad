@@ -1870,7 +1870,7 @@ define([
                 }
                 evOnChange.fire(false, true);
                 window.onbeforeunload = undefined;
-                if (!update) {
+                if (!update && content.answers.privateKey) {
                     // Add results button
                     addResultsButton(framework, content);
                 }
@@ -2712,6 +2712,9 @@ define([
                     answers = obj;
                     // If we have a non-anon answer, we can't answer anonymously later
                     if (!obj._isAnon) { APP.cantAnon = true; }
+
+                    // Add results button
+                    if (content.answers.privateKey) { addResultsButton(framework, content); }
                 }
                 checkIntegrity(false);
                 updateForm(framework, content, false, answers);
