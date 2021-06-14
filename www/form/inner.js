@@ -905,6 +905,9 @@ define([
             icon: h('i.cptools.cptools-form-page-break')
         },
     };
+
+    Messages.form_poll_hint = "<i></i>: Yes, <i></i>: No, <i></i>: Acceptable"; // XXX
+
     var TYPES = {
         input: {
             defaultOpts: {
@@ -1580,7 +1583,21 @@ define([
                 var total = makePollTotal(answers, opts, addLine, evOnChange);
                 if (total) { lines.push(h('div', total)); }
 
-                var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
+                var pollHint = UI.setHTML(h('div.cp-form-poll-hint'), Messages.form_poll_hint);
+                var classes = [
+                    'fa fa-check cp-yes',
+                    'fa fa-times cp-no',
+                    'cptools cptools-form-poll-maybe cp-maybe',
+                ];
+                $(pollHint).find('i').each(function (index) {
+                    this.setAttribute('class', classes[index]);
+                    // XXX accessibility options?
+                });
+
+                var tag = h('div.cp-form-type-poll-container', [
+                    pollHint,
+                    h('div.cp-form-type-poll', lines)
+                ]);
                 var $tag = $(tag);
 
                 var cursorGetter;
