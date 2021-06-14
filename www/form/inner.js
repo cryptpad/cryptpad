@@ -1554,7 +1554,7 @@ define([
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
                         h('i.fa.fa-times.cp-no'),
                         h('i.fa.fa-check.cp-yes'),
-                        h('i.fa.fa-question.cp-maybe'),
+                        h('i.cptools.cptools-form-poll-maybe.cp-maybe'),
                     ]);
                     var $c = $(cell);
                     $c.data('option', data);
