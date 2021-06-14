@@ -1650,7 +1650,7 @@ define([
         var $displayedName = $('<span>', {'class': displayNameCls});
 
         var priv = metadataMgr.getPrivateData();
-        var accountName = priv.accountName;
+        var accountName = Util.fixHTML(priv.accountName);
         var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
@@ -1660,7 +1660,8 @@ define([
             var $userAdminContent = $('<p>');
             if (accountName) {
                 var $userAccount = $('<span>').append(Messages.user_accountName + ': ');
-                $userAdminContent.append($userAccount).append(Util.fixHTML(accountName));
+
+                $userAdminContent.append($userAccount).append(accountName);
                 $userAdminContent.append($('<br>'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
