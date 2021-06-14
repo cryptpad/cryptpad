@@ -182,7 +182,7 @@ define([
                         validateKey: keys.secondaryValidateKey,
                         owners: [myKeys.edPublic],
                         crypto: crypto,
-                        // XXX Cache
+                        Cache: Utils.Cache
                     };
                     var results = {};
                     config.onError = function (info) {
@@ -346,7 +346,7 @@ define([
         SFCommonO.start({
             addData: addData,
             addRpc: addRpc,
-            cache: true,
+            //cache: true,
             noDrive: true,
             hash: hash,
             href: href,
