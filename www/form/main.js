@@ -31,22 +31,15 @@ define([
                 meta.form_auditorHash = hash;
             }
 
-            var secondary = keys && keys.secondaryKey;
-            if (!secondary) { return; }
-            var curvePair = Nacl.box.keyPair.fromSecretKey(Nacl.util.decodeUTF8(secondary).slice(0,32));
+            var formData = Utils.Hash.getFormData(Utils.secret);
+            if (!formData) { return; }
+
             var validateKey = keys.secondaryValidateKey;
             meta.form_answerValidateKey = validateKey;
 
-            publicKey = meta.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
-            privateKey = meta.form_private = Nacl.util.encodeBase64(curvePair.secretKey);
-
-            var auditorHash = Utils.Hash.getViewHashFromKeys({
-                version: 1,
-                channel: Utils.secret.channel,
-                keys: { viewKeyStr: Nacl.util.encodeBase64(keys.cryptKey) }
-            });
-            var _parsed = Utils.Hash.parseTypeHash('pad', auditorHash);
-            meta.form_auditorHash = _parsed.getHash({auditorKey: privateKey});
+            publicKey = meta.form_public = formData.form_public;
+            privateKey = meta.form_private = formData.form_private;
+            meta.form_auditorHash = formData.form_auditorHash;
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_FORM_PIN', function (data) {

@@ -2068,6 +2068,7 @@ define([
             // can't share the read-only URL and we don't have access to the edit one.
             // We should hide the share button.
             if (!data.href && !ro) { return; }
+
             $shareBlock.click(function () {
                 Share.getShareModal(common, {
                     teamId: APP.team,
@@ -4449,6 +4450,18 @@ define([
                         data = sf ? manager.getSharedFolderData(el) : manager.getFileData(el);
                     }
                     parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
+
+                    // Form: get auditor hash
+                    var auditorHash;
+                    if (parsed.hash && parsed.type === "form") {
+                        console.error('ICI');
+                        var formData = Hash.getFormData(null, parsed.hash, data.password);
+                        console.log(formData);
+                        if (formData) {
+                            auditorHash = formData.form_auditorHash;
+                        }
+                    }
+
                     var roParsed = Hash.parsePadUrl(data.roHref);
                     var padType = parsed.type || roParsed.type;
                     var ro = !sf || (folders[el] && folders[el].version >= 2);
@@ -4463,6 +4476,7 @@ define([
                             viewHash: ro && roParsed.hash,
                             fileHash: parsed.hash
                         },
+                        auditorHash: auditorHash,
                         fileData: {
                             hash: parsed.hash,
                             password: data.password
