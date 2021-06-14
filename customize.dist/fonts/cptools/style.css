@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'cptools';
-  src:
-    url('fonts/cptools.ttf?am461j') format('truetype'),
+  src:  url('fonts/cptools.eot?chd5a1');
+  src:  url('fonts/cptools.eot?chd5a1#iefix') format('embedded-opentype'),
     url('fonts/cptools.ttf?chd5a1') format('truetype'),
     url('fonts/cptools.woff?chd5a1') format('woff'),
     url('fonts/cptools.svg?chd5a1#cptools') format('svg');
