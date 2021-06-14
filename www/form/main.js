@@ -163,6 +163,7 @@ define([
                     var keys = Utils.secret && Utils.secret.keys;
 
                     var curvePrivate = privateKey || data.privateKey;
+                    if (!curvePrivate) { return void cb({error: 'EFORBIDDEN'}); }
                     var crypto = Utils.Crypto.Mailbox.createEncryptor({
                         curvePrivate: curvePrivate,
                         curvePublic: publicKey || data.publicKey,
