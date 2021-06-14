@@ -644,6 +644,27 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         return hashes;
     };
 
+    Hash.getFormData = function (secret, hash, password) {
+        secret = secret || Hash.getSecrets('form', hash, password);
+        var keys = secret && secret.keys;
+        var secondary = keys && keys.secondaryKey;
+        if (!secondary) { return; }
+        var curvePair = Nacl.box.keyPair.fromSecretKey(Nacl.util.decodeUTF8(secondary).slice(0,32));
+        var ret = {};
+        ret.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
+        var privateKey = ret.form_private = Nacl.util.encodeBase64(curvePair.secretKey);
+
+        var auditorHash = Hash.getViewHashFromKeys({
+            version: 1,
+            channel: secret.channel,
+            keys: { viewKeyStr: Nacl.util.encodeBase64(keys.cryptKey) }
+        });
+        var _parsed = Hash.parseTypeHash('pad', auditorHash);
+        ret.form_auditorHash = _parsed.getHash({auditorKey: privateKey});
+
+        return ret;
+    };
+
     // STORAGE
     Hash.hrefToHexChannelId = function (href, password) {
         var parsed = Hash.parsePadUrl(href);
