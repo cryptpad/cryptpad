@@ -37,6 +37,31 @@
         }
     }
 
+    &.cp-readonly {
+        .cp-form-creator-inline-add {
+            display: none;
+        }
+        .cp-form-creator-add-full {
+            display: none !important;
+        }
+        .cp-form-edit-buttons-container button {
+            display: none;
+        }
+        .cp-form-edit-save {
+            display: none;
+        }
+        .cp-form-block {
+            cursor: default !important;
+            .cp-form-block-drag-handle {
+                display: none !important;
+            }
+        }
+    }
+
+    #cp-toolbar .cp-toolbar-title-readonly {
+        display: none;
+    }
+
     #cp-app-form-container {
         display: flex;
         flex: 1;
