@@ -906,7 +906,6 @@ define([
         },
     };
 
-    Messages.form_poll_hint = "<i></i>: Yes, <i></i>: No, <i></i>: Acceptable"; // XXX
 
     var TYPES = {
         input: {
