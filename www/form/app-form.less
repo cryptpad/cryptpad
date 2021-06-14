@@ -461,11 +461,16 @@
             display: flex;
             flex-flow: column;
             position: relative;
-            & > div {
+            .cp-form-creator-results-controls {
+                margin-bottom: 20px;
                 background: @cp_form-bg1;
                 padding: 10px;
-                &:not(:last-child) {
-                    margin-bottom: 20px;
+
+            }
+            .cp-form-creator-results-content {
+                .cp-form-block {
+                        background: @cp_form-bg1;
+                        padding: 10px;
                 }
             }
             .cp-form-block-question {
@@ -477,7 +482,7 @@
                 margin-top: -10px;
                 margin-right: -10px;
                 i { margin-right: 5px; }
-                background: @cp_form-bg2;
+                background: fade(@cryptpad_text_col, 15%);
             }
             .cp-form-results-type-text {
                 max-height: 300px;
@@ -515,6 +520,7 @@
                 }
             }
             .cp-form-individual {
+                margin-bottom: 10px;
                 & > *:not(:last-child) {
                     margin-right: 10px;
                 }
