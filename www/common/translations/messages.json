@@ -1353,5 +1353,7 @@
     "admin_blockDailyCheckLabel": "Disable server telemetry",
     "admin_provideAggregateStatisticsTitle": "Statistical aggregation",
     "admin_provideAggregateStatisticsHint": "You may opt-in to providing additional usage metrics to the developers, such as the approximate number of registered and daily users for your instance.",
-    "admin_provideAggregateStatisticsLabel": "Provide aggregated statistics"
+    "admin_provideAggregateStatisticsLabel": "Provide aggregated statistics",
+    "form_poll_hint": "<i></i>: Yes, <i></i>: No, <i></i>: Acceptable",
+    "fc_open_formro": "Open (as participant)"
 }
