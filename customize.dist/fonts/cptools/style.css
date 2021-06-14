@@ -2,8 +2,9 @@
   font-family: 'cptools';
   src:
     url('fonts/cptools.ttf?am461j') format('truetype'),
-    url('fonts/cptools.woff?am461j') format('woff'),
-    url('fonts/cptools.svg?am461j#cptools') format('svg');
+    url('fonts/cptools.ttf?chd5a1') format('truetype'),
+    url('fonts/cptools.woff?chd5a1') format('woff'),
+    url('fonts/cptools.svg?chd5a1#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,14 +26,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.cptools-form-poll:before {
+  content: "\e910";
+}
+.cptools-form-poll-maybe:before {
+  content: "\e91e";
+}
 .cptools-form-list-check:before {
   content: "\e916";
 }
 .cptools-form-grid-check:before {
   content: "\e917";
-}
-.cptools-form-poll:before {
-  content: "\e910";
 }
 .cptools-form-grid-radio:before {
   content: "\e918";
