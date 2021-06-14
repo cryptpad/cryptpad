@@ -2152,6 +2152,9 @@ define([
                 h('span.cp-form-block-question-number', (n++)+'.'),
                 h('span', block.q || Messages.form_default)
             ]);
+            // Static blocks don't have questions ("q" is not used) so we can decrement n
+            if (isStatic) { n--; }
+
             var editButtons, editContainer;
 
             APP.formBlocks.push(data);
