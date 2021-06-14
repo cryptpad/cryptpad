@@ -1,7 +1,7 @@
 define(['/api/config'], function (ApiConfig) {
     var Module = {};
 
-    var apps = ['code', 'slide', 'pad', 'kanban', 'whiteboard', 'sheet', 'poll', 'teams'];
+    var apps = ['code', 'slide', 'pad', 'kanban', 'whiteboard', 'sheet', 'poll', 'teams', 'form'];
     var app = window.location.pathname.slice(1, -1); // remove "/" at the beginnin and the end
     var suffix = apps.indexOf(app) !== -1 ? '-'+app : '';
 
