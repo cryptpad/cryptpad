@@ -905,6 +905,9 @@ define([
             icon: h('i.cptools.cptools-form-page-break')
         },
     };
+
+    Messages.form_poll_hint = "<i></i>: Yes, <i></i>: No, <i></i>: Acceptable"; // XXX
+
     var TYPES = {
         input: {
             defaultOpts: {
@@ -1580,7 +1583,21 @@ define([
                 var total = makePollTotal(answers, opts, addLine, evOnChange);
                 if (total) { lines.push(h('div', total)); }
 
-                var tag = h('div.cp-form-type-poll-container', h('div.cp-form-type-poll', lines));
+                var pollHint = UI.setHTML(h('div.cp-form-poll-hint'), Messages.form_poll_hint);
+                var classes = [
+                    'fa fa-check cp-yes',
+                    'fa fa-times cp-no',
+                    'cptools cptools-form-poll-maybe cp-maybe',
+                ];
+                $(pollHint).find('i').each(function (index) {
+                    this.setAttribute('class', classes[index]);
+                    // XXX accessibility options?
+                });
+
+                var tag = h('div.cp-form-type-poll-container', [
+                    pollHint,
+                    h('div.cp-form-type-poll', lines)
+                ]);
                 var $tag = $(tag);
 
                 var cursorGetter;
@@ -1851,6 +1868,7 @@ define([
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
+                evOnChange.fire(false, true);
                 window.onbeforeunload = undefined;
                 if (!update) {
                     // Add results button
@@ -1930,9 +1948,13 @@ define([
             var _answers = Util.clone(answers || {});
             delete _answers._proof;
             delete _answers._userdata;
-            evOnChange.reg(function (noBeforeUnload) {
+            evOnChange.reg(function (noBeforeUnload, isSave) {
                 if (noBeforeUnload) { return; }
                 var results = getFormResults();
+                if (isSave) {
+                    answers = Util.clone(results || {});
+                    _answers = Util.clone(answers);
+                }
                 if (!answers || Sortify(_answers) !== Sortify(results)) {
                     window.onbeforeunload = function () {
                         return true;
@@ -2051,6 +2073,9 @@ define([
                 h('span.cp-form-block-question-number', (n++)+'.'),
                 h('span', block.q || Messages.form_default)
             ]);
+            // Static blocks don't have questions ("q" is not used) so we can decrement n
+            if (isStatic) { n--; }
+
             var editButtons, editContainer;
 
             APP.formBlocks.push(data);
