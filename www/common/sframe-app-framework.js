@@ -927,7 +927,9 @@ define([
             }
 
             var $importTemplateButton = common.createButton('importtemplate', true);
-            toolbar.$drawer.append($importTemplateButton);
+            if (!readOnly) {
+                toolbar.$drawer.append($importTemplateButton);
+            }
 
             /* add a forget button */
             toolbar.$drawer.append(common.createButton('forget', true, {}, function (err) {

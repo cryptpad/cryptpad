@@ -2340,19 +2340,21 @@ define([
             if (editable) {
                 if (APP.mainSortable) { APP.mainSortable.options.filter = oldFilter; }
                 if (!APP.isEditor) { $(offlineEl).remove(); }
-                $body.removeClass('cp-readonly');
+                $body.removeClass('cp-form-readonly');
             } else {
                 if (APP.mainSortable) {
                     oldFilter = APP.mainSortable.options.filter;
                     APP.mainSortable.options.filter = function () { return true; };
                 }
                 if (!APP.isEditor) { $('.cp-help-container').before(offlineEl); }
-                $body.addClass('cp-readonly');
+                $body.addClass('cp-form-readonly');
             }
         });
 
         if (!APP.isEditor) {
             framework._.toolbar.alone();
+            $('.cp-toolbar-icon-history').hide();
+            $('.cp-toolbar-icon-snapshots').hide();
         }
 
         var makeFormSettings = function () {
