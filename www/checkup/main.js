@@ -687,6 +687,40 @@ define([
         });
     });
 
+    var isHTTPS = function (host) {
+        return /^https:\/\//.test(host);
+    };
+
+    var isOnion = function (host) {
+        return /\.onion$/.test(host);
+    };
+    assert(function (cb, msg) {
+        // provide an exception for development instances
+        if (/http:\/\/localhost/.test(trimmedUnsafe)) { return void cb(true); }
+
+        // if both the main and sandbox domains are onion addresses
+        // then the HTTPS requirement is unnecessary
+        if (isOnion(trimmedUnsafe) && isOnion(trimmedSafe)) { return void cb(true); }
+
+        // otherwise expect that both inner and outer domains use HTTPS
+        setWarningClass(msg);
+
+        msg.appendChild(h('span', [
+            "Both ",
+            code('httpUnsafeOrigin'),
+            ' and ',
+            code('httpSafeOrigin'),
+            ' should be accessed via HTTPS for production use. ',
+            "This can be configured via ",
+            CONFIG_PATH(),
+            '. ',
+            RESTART_WARNING(),
+        ]));
+
+        console.error("HTTPS?", trimmedUnsafe, trimmedSafe);
+        cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
+    });
+
     if (false) {
         assert(function (cb, msg) {
             msg.innerText = 'fake test to simulate failure';

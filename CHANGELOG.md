@@ -20,6 +20,11 @@
 * server update and restart is required
 * ready to display warnings about new server updates starting in 4.7.1 or 4.8.0
 * lots of new translations!
+* updated readme
+  * notes about staying up to date
+  * public listings
+  * removed references to freenode
+* nginx update to add trailing slashes
 
 ## Features
 
@@ -40,6 +45,10 @@
   * kanban
   * code
   * slide?
+* new form app
+  * with participant, author, and auditor roles
+  * partially replaces the poll app
+* ability to add a file to your drive from the file menu even if it's already in a team
 
 ## Bug fixes
 
