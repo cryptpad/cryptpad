@@ -2450,6 +2450,7 @@ define([
                         'title': name,
                     }).appendTo($container);
                     $span.data('id', obj.id);
+                    if (obj.content) { $span.data('content', obj.content); }
                     if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
                     if (!obj.thumbnail) {
                         $span.append(obj.icon || h('span.cptools.cptools-template'));
@@ -2605,6 +2606,7 @@ define([
 
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
+            var templateContent = $template.data('content') || undefined;
             // Team
             var team;
             if (teamValue) {
@@ -2617,6 +2619,7 @@ define([
                 password: passwordVal,
                 expire: expireVal,
                 templateId: templateId,
+                templateContent: templateContent,
                 team: team
             };
         };

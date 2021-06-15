@@ -2579,11 +2579,14 @@ define([
 
             if (APP.isEditor) {
                 if (!content.form) {
-                    content.form = {};
+                    content.form = {
+                        "1": { type: 'md' },
+                        "2": { type: 'radio' }
+                    };
                     framework.localChange();
                 }
                 if (!content.order) {
-                    content.order = [];
+                    content.order = ["1", "2"];
                     framework.localChange();
                 }
                 if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
@@ -2594,6 +2597,7 @@ define([
                     };
                     framework.localChange();
                 }
+                checkIntegrity();
             }
 
             sframeChan.event('EV_FORM_PIN', {channel: content.answers.channel});
