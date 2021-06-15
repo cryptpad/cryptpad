@@ -928,8 +928,8 @@ define([
                 return {
                     tag: tag,
                     getValue: function () {
-                        var invalid = $tag.is(':invalid');
-                        if (invalid) { return; } // XXX invalid answers are ignored?
+                        //var invalid = $tag.is(':invalid');
+                        //if (invalid) { return; }
                         return $tag.val();
                     },
                     setValue: function (val) { $tag.val(val); },
