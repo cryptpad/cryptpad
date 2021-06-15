@@ -2,64 +2,48 @@
 
 ## Goals
 
-* deploy new forms page
+Our main goal for this release was to prepare a BETA version of our new forms app, however, it also includes a number of nice bug fixes and minor features.
 
 ## Update notes
 
-* `bower update` for `chainpad-crypto#0.2.6` ([signed mailbox extensions](https://github.com/xwiki-labs/chainpad-crypto/releases/tag/0.2.6))
-* log some information about the checkup page when launching the server
-* new admin panel features
-  * link to checkup for better discoverability
-  * opt in to public listings
-  * opt in to email contact
-  * opt out of telemetry
-    * `blockDailyCheck` option moved here from default config
-  * preliminary work for statistical aggregation
-  * `removeDonateButton` option moved here from default config
-* new app, so you probably want to review that your custom color schemes don't conflict
-* server update and restart is required
-* ready to display warnings about new server updates starting in 4.7.1 or 4.8.0
-* lots of new translations!
-* updated readme
-  * notes about staying up to date
-  * public listings
-  * removed references to freenode
-* nginx update to add trailing slashes
+As this release includes a new app you'll want to compare your current NGINX config against our example (`cryptpad/docs/example.nginx.conf`) and update yours to match the updated sections which rewrites URLs to include trailing slashes. We've also introduced a number of new variables to our color scheme which might conflict with customizations you've made to your stylesheets. As always, it's recommended that you test your customizations on a updated non-production instance before deploying.
+
+We've been steadily adding new tests to our recently developed checkup page each time we observe particular types of instance misconfigurations in the wild. Unfortunately, it seems the admins that have the most trouble with instance configuration are those that haven't read the numerous mentions of this page throughout the last few release notes. For that reason we've made it so the server prints a link to this page at launch time if it detects that some important value is left unconfigured.
+
+On the topic of instance configuration, admins that have enabled their instance's admin panel may notice that it contains a new "Network" tab. On this pane you may find a button that links to the instance's checkup page to make it even easier to identify configuration problems. You should also notice options for configuring a number of values, some of which could previously only be set by modifying the server's configuration file and restarting.
+
+* One checkbox allows you to opt out of the server telemetry which tells our server that your server exists. This is mostly so that we have a rough idea of how many admins are running CryptPad and what version they have installed. It was clearly documented in the config file, but now it's even easier to opt out if you don't want us to know you exist. In the interest of transparency, everything that is sent to our server as a part of this telemetry is also printed to your application server's logs, so you always check what information has been shared.
+* Another setting opts in to listing your server in public directories. At present there is no public directory of CryptPad instances that are suitable for public use, but we plan to launch one in the coming months. For now this checkbox will serve to inform us how many instance admins are interested in offering their server to the public. This setting will have no effect if you've disabled telemetry as that is how your server informs ours of your preferences. We reserve the right to exclude instances from our listing for _any reason_.
+* A third option allows you to consent to be contacted by email. We aren't interested in spamming you with marketing email, rather, it's so that we can inform administrators of vulnerabilities in the software before they are publicly disclosed. Leave this unchecked if you prefer to be surprised by security flaws.
+* The option to disable crowdfunding notices in the UI can be disabled via a simple checkbox.
+* Starting with our next release (4.8.0) anyone running 4.7.0 should also notice that a button appears on this pane informing them that an update is available. We regularly fix security flaws and improve general safeguards against them, so if you aren't up to date you might be putting your users' data at risk.
+
+To update from 4.6.0 to 4.7.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
 
 ## Features
 
-* more detailed messages for some tests on the checkup page
-* log messages which fail signature validation
-* make drive-redirect configurable via the settings page (disabled by default)
-* minor UI improvements for report page
-  * copy report to clipboard
-  * margins?
-* new form app
-  * with participant, author, and auditor roles
-  * partially replaces the poll app
-    * polls no longer listed on home page
-    * it is still possible to make copies of existing polls
-    * otherwise the poll app redirects to the form app
-* ability to add a file to your drive from the file menu even if it's already in a team
-* embed file option in markdown toolbar
-  * kanban
-  * code
-  * slide?
-* new form app
-  * with participant, author, and auditor roles
-  * partially replaces the poll app
-* ability to add a file to your drive from the file menu even if it's already in a team
+* As mentioned above, this release introduces our new _form_ app. This app depends on an update to our cryptography library, so if you haven't run `bower update` it won't work. This app allows users to create complex forms. Form authors can collaboratively create surveys with different types of questions and generate links to share with participants. Participants can respond to forms, but can't edit their questions or see other users answers unless they have also been granted a separate "auditor" encryption key that will allow them to decrypt the set of results. Auditors can view results, but cannot necessarily add their own answers unless they have the correct participant key. This new app includes all the functionality of our current _poll_ app but adds far more granular permissions, so we've decided to replace the poll app. You'll still be able to view and respond to existing polls and even create new polls by copying existing ones, however, we do not plan to make any improvements to it in the future.
+* In response to a GitHub issue we've added an option to the toolbar's _File_ menu to add the current pad to your drive regardless of whether it is already stored in one of your teams' drives.
+* Likewise, we received some reports that some users found it frustrating that the home page automatically redirected them to their drive when they were logged in. We've disabled this behaviour by default but added an option in the settings page through which you may re-enable the old behaviour. This can be found at the top of the "CryptDrive" pane.
+* Embedded markdown editors' toolbars (such as that in the kanban and form apps) now include an "embed file" option.
+* We've revised some text on the checkup page to better explain what some headers do and how to correct them.
+* Some error messages printed by the server under rare conditions now include a little more debugging information.
+* We've improved some of the UI of the "report" page (which diagnoses possible reasons why your drive, shared folders, or teams might be failing to load now includes) so that users can now copy the output of the report directly to their clipboard instead of having to select that page's text and use their OS's copy to clipboard functionality.
 
 ## Bug fixes
 
-* variably display "Features" or "Pricing" in the _top bar_
-* default to the 'general' tab of the admin panel when the URL includes an unsupported hash
-* guard against DOMException when updating atime in cache entries
-* code app improvements
-  * guard against codemirror scroll-jank
-  * allow preview pane resize
-* self-XSS via accountName
-* password-protected files could not be opened or shared
+* The home page now displays the appropriate text ("Features" of "Pricing") for the features page depending on whether the instance in question supports subscriptions. We had made some changes to this before but missed an instance where the text was displayed.
+* The admin page will now display the "General" pane if for some reason the hash in its URL does not contain a supported value.
+* We found that there were two cases where localForage (a library that manages an in-browser cache) could throw a DOMExceptionerror because we didn't supply a handler. This caused the calendar app's UI to incorrectly treat a newly created event as though it had not been saved.
+* A user brought it to our attention that the share menu was returning incorrect URLs for password-protected files. This has now been fixed.
+* The code that is responsible for preserving your cursor position when using the code editor collaboratively was capable of interfering with active scrolling when other users' edits were applied. This is now handled more gracefully. Another fix addresses an issue that prevented the markdown preview pane from being resized under certain conditions.
+* Finally, as a part of a routine security scan funded by [NLnet](https://nlnet.nl/) and executed by [Radically Open Security](https://www.radicallyopensecurity.com/) it was discovered that an unsanitized _account name_ was displayed in the users own toolbar. As a consequence, users could trigger a cross-site scripting vulnerability on themself by entering `<script>alert("pew")</script>` for their username at registration time. On a correctly configured instance this was blocked everywhere except in the sheet editor due to its more lax Content-Security Policy. This unsanitized value was never displayed for remote accounts, so the impact is extremely limited. Even so, we recommend that you update.
 
 # 4.6.0
 
@@ -2812,7 +2796,7 @@ latest server with npm update before updating your clientside dependencies with 
     effort to improve administrator tooling for situations like this
 * users who have not logged in, but wish to use their drive now see a ghost icon which they can use to create pads.
   We hope this makes it easier to get started as a new user.
-* registered users who have saved templates in their drives can now use those templates at any time, rather than only
+* REGistered users who have saved templates in their drives can now use those templates at any time, rather than only
   using them to create new pads
 * we've updated our file encryption code such that it does not interfere with other scripts which may be running at
   the same time (synchronous blocking, for those who are interested)
