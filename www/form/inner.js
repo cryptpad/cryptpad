@@ -906,7 +906,6 @@ define([
         },
     };
 
-
     var TYPES = {
         input: {
             defaultOpts: {
