@@ -4453,7 +4453,6 @@ define([
                     // Form: get auditor hash
                     var auditorHash;
                     if (parsed.hash && parsed.type === "form") {
-                        console.error('ICI');
                         var formData = Hash.getFormData(null, parsed.hash, data.password);
                         console.log(formData);
                         if (formData) {

@@ -177,7 +177,8 @@
                 .cp-form-creator-add-full {
                     display: flex;
                     flex-flow: column;
-                    margin: 20px 0px 100px 0px;
+                    margin: 20px 0px 0px 0px;
+                    padding-bottom: 100px;
                     &> div:first-child {
                         display: flex;
                         height: 100%;
@@ -224,7 +225,8 @@
 
                 .cp-form-send-container {
                     text-align: center;
-                    margin: 50px auto 100px auto;
+                    margin: 50px auto 0px auto;
+                    padding-bottom: 100px;
                     button {
                         &:not(:last-child) {
                             margin-right: 10px;
@@ -461,11 +463,16 @@
             display: flex;
             flex-flow: column;
             position: relative;
-            & > div {
-                background: @cp_form-bg1;
-                padding: 10px;
-                &:not(:last-child) {
-                    margin-bottom: 20px;
+            .cp-form-creator-results-controls {
+                margin-bottom: 20px;
+                //background: @cp_form-bg1;
+                //padding: 10px;
+
+            }
+            .cp-form-creator-results-content {
+                .cp-form-block {
+                        background: @cp_form-bg1;
+                        padding: 10px;
                 }
             }
             .cp-form-block-question {
@@ -477,7 +484,7 @@
                 margin-top: -10px;
                 margin-right: -10px;
                 i { margin-right: 5px; }
-                background: @cp_form-bg2;
+                background: fade(@cryptpad_text_col, 15%);
             }
             .cp-form-results-type-text {
                 max-height: 300px;
@@ -515,6 +522,8 @@
                 }
             }
             .cp-form-individual {
+                background: @cp_form-bg1;
+                padding: 10px;
                 & > *:not(:last-child) {
                     margin-right: 10px;
                 }

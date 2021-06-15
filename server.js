@@ -24,8 +24,8 @@ var fancyURL = function (domain, path) {
 };
 
 (function () {
-    // you absolutely must provide an 'httpUnsafeOrigin'
-    if (typeof(Env.httpUnsafeOrigin) !== 'string') {
+    // you absolutely must provide an 'httpUnsafeOrigin' (a truthy string)
+    if (!Env.httpUnsafeOrigin || typeof(Env.httpUnsafeOrigin) !== 'string') {
         throw new Error("No 'httpUnsafeOrigin' provided");
     }
 
@@ -66,7 +66,7 @@ var setHeaders = (function () {
     }
 
     // next define the base Content Security Policy (CSP) headers
-    if (typeof(config.contentSecurity) === 'string') { // XXX deprecate this
+    if (typeof(config.contentSecurity) === 'string') {
         headers['Content-Security-Policy'] = config.contentSecurity;
         if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
