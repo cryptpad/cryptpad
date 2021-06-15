@@ -31,12 +31,12 @@ Please note that the new _Forms_ app depends on an update to our cryptography li
 ## Features
 
 * This release introduces our new _Forms_ app. This app allows users to create complex forms and to collect answers. Three roles are available with granular permissions:
-  
-  * Authors can collaboratively create surveys with different types of questions and generate links to share with participants. 
-  * Participants can respond to forms and view responses if these are made public (this can be set by authors). 
+
+  * Authors can collaboratively create surveys with different types of questions and generate links to share with participants.
+  * Participants can respond to forms and view responses if these are made public (this can be set by authors).
   * Auditors can view responses, but cannot necessarily add their own answers unless they have the correct participant key.
 
-  This new app addresses many of the shortcomings of our current _Polls_ and vastly expands the feature set. Polls are effectively one of the many question types now available in _Forms_. For this reason we are deprecating the _Polls_ app. It will remain available to view and respond to existing polls, but we discourage the creation of new polls and all future improvements will be focused on _Forms_.   
+  This new app addresses many of the shortcomings of our current _Polls_ and vastly expands the feature set. Polls are effectively one of the many question types now available in _Forms_. For this reason we are deprecating the _Polls_ app. It will remain available to view and respond to existing polls, but we discourage the creation of new polls and all future improvements will be focused on _Forms_.  
 
 * In response to a GitHub issue we've added an option to the toolbar's _File_ menu to add the current pad to your drive regardless of whether it is already stored in one of your teams' drives.
 * Likewise, we received some reports that some users found it frustrating that the home page automatically redirected them to their drive when they were logged in. We've disabled this behaviour by default but added an option in the settings page through which you may re-enable the old behaviour. This can be found at the top of the "CryptDrive" pane.
