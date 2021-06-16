@@ -2330,6 +2330,7 @@ define([
         var $toolbarContainer = $('#cp-toolbar');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.after(helpMenu.menu);
+        framework._.toolbar.$drawer.append(helpMenu.button);
 
         var offlineEl = h('div.alert.alert-danger.cp-burn-after-reading', Messages.disconnected);
         framework.onEditableChange(function (editable) {
