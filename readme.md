@@ -1,6 +1,8 @@
-![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
+# CryptPad
 
-CryptPad is a collaboration suite that is end-to-end-encrypted and open-source.
+CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data is encrypted, the service and its administrators have no way of seeing the content being edited and stored.
+
+![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
 
 # Installation
 
@@ -83,5 +85,4 @@ sales@xwiki.com.
 
 [Tor browser]: https://www.torproject.org/download/
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack
-
 
