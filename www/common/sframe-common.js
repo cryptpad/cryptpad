@@ -458,7 +458,8 @@ define([
             password: cfg.password,
             team: cfg.team,
             template: cfg.template,
-            templateId: cfg.templateId
+            templateId: cfg.templateId,
+            templateContent: cfg.templateContent
         }, cb);
     };
 

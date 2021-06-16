@@ -927,8 +927,8 @@ define([
                 return {
                     tag: tag,
                     getValue: function () {
-                        var invalid = $tag.is(':invalid');
-                        if (invalid) { return; } // XXX invalid answers are ignored?
+                        //var invalid = $tag.is(':invalid');
+                        //if (invalid) { return; }
                         return $tag.val();
                     },
                     setValue: function (val) { $tag.val(val); },
@@ -2282,7 +2282,7 @@ define([
                 filter: "input, button, .CodeMirror, .cp-form-type-sort",
                 preventOnFilter: false,
                 draggable: ".cp-form-block",
-                forceFallback: true,
+                //forceFallback: true,
                 fallbackTolerance: 5,
                 onStart: function () {
                     $container.find('.cp-form-creator-add-inline').remove();
@@ -2333,17 +2333,17 @@ define([
         $toolbarContainer.after(helpMenu.menu);
 
         var offlineEl = h('div.alert.alert-danger.cp-burn-after-reading', Messages.disconnected);
-        var oldFilter;
         framework.onEditableChange(function (editable) {
             if (editable) {
-                if (APP.mainSortable) { APP.mainSortable.options.filter = oldFilter; }
+                if (APP.mainSortable) {
+                    APP.mainSortable.options.disabled = false;
+                }
                 if (!APP.isEditor) { $(offlineEl).remove(); }
                 $body.removeClass('cp-form-readonly');
                 $('.cp-form-creator-settings').find('input, button').removeAttr('disabled');
             } else {
                 if (APP.mainSortable) {
-                    oldFilter = APP.mainSortable.options.filter;
-                    APP.mainSortable.options.filter = function () { return true; };
+                    APP.mainSortable.options.disabled = true;
                 }
                 if (!APP.isEditor) { $('.cp-help-container').before(offlineEl); }
                 $body.addClass('cp-form-readonly');
@@ -2578,11 +2578,14 @@ define([
 
             if (APP.isEditor) {
                 if (!content.form) {
-                    content.form = {};
+                    content.form = {
+                        "1": { type: 'md' },
+                        "2": { type: 'radio' }
+                    };
                     framework.localChange();
                 }
                 if (!content.order) {
-                    content.order = [];
+                    content.order = ["1", "2"];
                     framework.localChange();
                 }
                 if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
@@ -2593,6 +2596,7 @@ define([
                     };
                     framework.localChange();
                 }
+                checkIntegrity();
             }
 
             sframeChan.event('EV_FORM_PIN', {channel: content.answers.channel});
