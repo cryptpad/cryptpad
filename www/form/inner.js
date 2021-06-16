@@ -1589,7 +1589,6 @@ define([
                 ];
                 $(pollHint).find('i').each(function (index) {
                     this.setAttribute('class', classes[index]);
-                    // XXX accessibility options?
                 });
 
                 var tag = h('div.cp-form-type-poll-container', [

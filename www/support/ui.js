@@ -133,7 +133,7 @@ define([
             'account', // Msg.support_cat_account
             'data', // Msg.support_cat_data
             'bug', // Msg.support_cat_bug
-            // XXX report
+            // TODO report
             'other' // Msg.support_cat_other
         ];
         if (all) { categories.push('all'); } // Msg.support_cat_all
@@ -178,7 +178,7 @@ define([
         var catContainer = h('div.cp-dropdown-container' + (title ? '.cp-hidden': ''));
         makeCategoryDropdown(ctx, catContainer, function (key) {
             $(category).val(key);
-            // XXX add a hint suggesting relevant information to include for the chosen category
+            // TODO add a hint suggesting relevant information to include for the chosen category
         });
 
         var attachments, addAttachment;
