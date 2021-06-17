@@ -92,7 +92,12 @@ define([
                 if (!obj || obj.error) { return; }
                 Object.keys(obj || {}).forEach(function (id) {
                     var t = obj[id];
-                    var _keys = t.keys.drive || {};
+                    var _keys = {};
+                    try {
+                        _keys = t.keys.drive || {};
+                    } catch (err) {
+                        console.error(err);
+                    }
                     _keys.id = id;
                     if (!_keys.edPrivate) { return; }
                     keys.push(t.keys.drive);
