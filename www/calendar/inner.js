@@ -17,6 +17,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
     '/calendar/export.js',
+    '/lib/datepicker/flatpickr.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -46,6 +47,7 @@ define([
     AppConfig,
     Calendar,
     Export,
+    Flatpickr,
     Share, Access, Properties
     )
 {
@@ -169,9 +171,9 @@ define([
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
-                if (obj.isAllDay && obj.startDay) { obj.start = +new Date(obj.startDay); }
+                if (obj.isAllDay && obj.startDay) { obj.start = +Flatpickr.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
-                    var endDate = new Date(obj.endDay);
+                    var endDate = Flatpickr.parseDate(obj.endDay);
                     endDate.setHours(23);
                     endDate.setMinutes(59);
                     endDate.setSeconds(59);
