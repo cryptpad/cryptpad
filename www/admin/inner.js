@@ -1596,7 +1596,7 @@ define([
             var getData = function () {
                 var url = $input.val();
                 if (!Util.isValidURL(url)) {
-                    console.error('Invalid URL');
+                    console.error('Invalid URL', url);
                     return false;
                 }
                 return url;
