@@ -1115,7 +1115,7 @@ define([
 
             framework._.sfCommon.isPadStored(function(err, val) {
                 if (!val) { return; }
-                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset)');
+                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset), img[src^="data:application/octet-stream"]:not(.cke_reset)');
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
