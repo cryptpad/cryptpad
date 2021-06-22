@@ -1169,7 +1169,14 @@ define([
             });
             cb($dom[0]);
         };
-        framework.setFileImporter({ accept: 'text/html' }, function(content, f, cb) {
+        framework.setFileImporter({ accept: ['.md', 'text/html'] }, function(content, f, cb) {
+            if (!f) { return; }
+            if (/\.md$/.test(f.name)) {
+                var mdDom = Exporter.importMd(content, framework._.sfCommon);
+                return importMediaTags(mdDom, function(dom) {
+                    cb(Hyperjson.fromDOM(dom));
+                });
+            }
             importMediaTags(domFromHTML(content).body, function(dom) {
                 cb(Hyperjson.fromDOM(dom));
             });

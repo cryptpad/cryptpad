@@ -172,12 +172,16 @@ define([
         return h('div.cp-md-toc', content).outerHTML;
     };
 
-    DiffMd.render = function (md, sanitize, restrictedMd) {
+    var noHeadingId = false;
+    DiffMd.render = function (md, sanitize, restrictedMd, noId) {
         Marked.setOptions({
             renderer: restrictedMd ? restrictedRenderer : renderer,
         });
+        noHeadingId = noId;
         var r = Marked(md, {
-            sanitize: sanitize
+            sanitize: sanitize,
+            headerIds: !noId,
+            gfm: true,
         });
 
         // Add Table of Content
@@ -207,7 +211,11 @@ define([
     };
     restrictedRenderer.code = renderer.code;
 
+    var _heading = renderer.heading;
     renderer.heading = function (text, level) {
+        if (noHeadingId) {
+            return _heading.apply(this, arguments);
+        }
         var i = 0;
         var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
         var getId = function () {
