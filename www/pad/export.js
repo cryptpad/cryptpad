@@ -93,10 +93,10 @@ define([
                 var md = Turndown({
                     headingStyle: 'atx'
                 }).turndown(toExport);
-                var blob = new Blob([md], {
+                var mdBlob = new Blob([md], {
                     type: 'text/markdown;charset=utf-8'
                 });
-                return void cb(blob);
+                return void cb(mdBlob);
             }
             var html = module.getHTML(toExport);
             cb(new Blob([ html ], { type: "text/html;charset=utf-8" }));
