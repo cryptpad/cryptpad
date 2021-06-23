@@ -267,7 +267,7 @@ define([
     };
 
     renderer.image = function (href, title, text) {
-        if (href.slice(0,6) === '/file/') {
+        if (href.slice(0,6) === '/file/') { // XXX this has been deprecated for about 3 years... use the same inline image handler as below?
             // DEPRECATED
             // Mediatag using markdown syntax should not be used anymore so they don't support
             // password-protected files
@@ -283,12 +283,14 @@ define([
             mt += '</media-tag>';
             return mt;
         }
-        var out = '<img src="' + href + '" alt="' + text + '"';
-        if (title) {
-            out += ' title="' + title + '"';
-        }
-        out += this.options.xhtml ? '/>' : '>';
-        return out;
+
+        var img = h('img.cp-inline-img', {
+            src: href || '',
+            title: title || '',
+            alt: text || '',
+        });
+
+        return img.outerHTML;
     };
     restrictedRenderer.image = renderer.image;
 
