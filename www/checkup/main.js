@@ -732,6 +732,54 @@ define([
         cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
     });
 
+    assert(function (cb, msg) {
+        setWarningClass(msg);
+        $.ajax(cacheBuster('/'), {
+            dataType: 'text',
+            complete: function (xhr) {
+                var serverToken = xhr.getResponseHeader('server');
+                if (serverToken === null) { return void cb(true); }
+
+                var lowered = (serverToken || '').toLowerCase();
+                var family;
+
+                ['Apache', 'Caddy', 'NGINX'].some(function (pattern) {
+                    if (lowered.indexOf(pattern.toLowerCase()) !== -1) {
+                        family = pattern;
+                        return true;
+                    }
+                });
+
+                var text = [
+                    "This instance is set to respond with an HTTP ",
+                    code("server"),
+                    " header. This information can make it easier for attackers to find and exploit known vulnerabilities. ",
+                ];
+
+
+                if (family === 'NGINX') {
+                    msg.appendChild(h('span', text.concat([
+                        "This can be addressed by setting ",
+                        code("server_tokens off"),
+                        " in your global NGINX config."
+                    ])));
+                    return void cb(serverToken);
+                }
+
+                // handle other
+                msg.appendChild(h('span', text.concat([
+                    "In this case, it appears that the host server is running ",
+                    code(serverToken),
+                    " instead of ",
+                    code("NGINX"),
+                    " as recommended. As such, you may not benefit from the latest security enhancements that are tested and maintained by the CryptPad development team.",
+                ])));
+
+                cb(serverToken);
+            }
+        });
+    });
+
     if (false) {
         assert(function (cb, msg) {
             msg.innerText = 'fake test to simulate failure';
