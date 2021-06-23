@@ -8,11 +8,12 @@ define([
     '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/common/less.min.js',
     '/common/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less) {
     var DiffMd = {};
 
     var Highlight = window.hljs;
@@ -473,6 +474,43 @@ define([
         }
     };
 
+    var rendered_less = {}; // XXX this never gets evicted, so it's a memory leak
+
+    var applyCSS = function (el, css) {
+        var style = h('style');
+        style.appendChild(document.createTextNode(css));
+        el.innerText = '';
+        el.appendChild(style);
+    };
+
+    var canonicalizeLess = function (source) {
+        return source.replace(/\/\/[^\n]*/g, '').replace(/^[ \t]*$/g, '').replace(/\n+/g, '');
+    };
+
+    plugins.less = { // XXX
+        name: 'less',
+        attr: 'less-src',
+        render: function renderLess ($el, opt) {
+            var src = canonicalizeLess(($el.text() || '').trim());
+
+            console.log(src);
+            if (!src) { return; }
+            var el = $el[0];
+            if (rendered_less[src]) { // XXX janky cache instead of using the same methodology as other plugins...
+                return void applyCSS(el, rendered_less[src]);
+            }
+
+            var scope = opt.scope.attr('id') || 'cp-app-code-preview-content';
+            var scoped_src = '#' + scope + ' { ' + src + '}';
+            console.error("RENDERING LESS", opt.cache);
+            Less.render(scoped_src, {}, function (err, result) {
+                if (err) { return void console.error(err); }
+                var css = rendered_less[src] = result.css;
+                applyCSS(el, css);
+            });
+        },
+    };
+
     var getAvailableCachedElement = function ($content, cache, src) {
         var cached = cache[src];
         if (!Array.isArray(cached)) { return; }
@@ -485,7 +523,8 @@ define([
         }
     };
 
-    var cacheRenderedElement = function (cache, src, el) {
+    var cacheRenderedElement = function (cache, src, el) { // XXX
+    console.log("CACHING", cache, src, el);
         if (Array.isArray(cache[src])) {
             cache[src].push(el);
         } else {
@@ -546,7 +585,9 @@ define([
         // caching their source as you go
         $(newDomFixed).find('pre[data-plugin]').each(function (index, el) {
             if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
-                var plugin = plugins[el.getAttribute('data-plugin')];
+                var type = el.getAttribute('data-plugin');
+                var plugin = plugins[type];
+                console.log(type);
                 if (!plugin) { return; }
                 var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
                 el.setAttribute(plugin.attr, src);
@@ -559,7 +600,8 @@ define([
         var scrollTop = $parent.scrollTop();
         // iterate over rendered mermaid charts
         $content.find('pre[data-plugin]:not([processed="true"])').each(function (index, el) {
-            var plugin = plugins[el.getAttribute('data-plugin')];
+            var type = el.getAttribute('data-plugin');
+            var plugin = plugins[type];
             if (!plugin) { return; }
 
             // retrieve the attached source code which it was drawn
@@ -721,9 +763,21 @@ define([
                 if (target) { target.scrollIntoView(); }
             });
 
+            $content.find('style').each(function (index, el) { // XXX
+                var parent = el.parentElement;
+                var pre = h('pre', {
+                    'data-plugin': 'less',
+                    'less-src': el.innerText,
+                    style: 'display: none',
+                }, el.innerText);
+                parent.replaceChild(pre, el);
+            });
+
             // loop over plugin elements in the rendered content
-            $content.find('pre[data-plugin]').each(function (index, el) {
-                var plugin = plugins[el.getAttribute('data-plugin')];
+            $content.find('pre[data-plugin]').each(function (index, el) { // XXX
+                var type = el.getAttribute('data-plugin');
+                var plugin = plugins[type];
+
                 if (!plugin) { return; }
                 var $el = $(el);
                 $el.off('contextmenu').on('contextmenu', function (e) {
@@ -742,13 +796,18 @@ define([
                 // you can assume that the index of your rendered charts matches that
                 // of those in the markdown source. 
                 var src = plugin.source[index];
-                el.setAttribute(plugin.attr, src);
+                if (src) {
+                    el.setAttribute(plugin.attr, src);
+                }
                 var cached = getAvailableCachedElement($content, plugin.cache, src);
 
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        plugin.render($el);
+                        plugin.render($el, {
+                            scope: $content, // XXX
+                            cache: plugin.cache,
+                        });
                     } catch (e) { console.error(e); }
                     return;
                 }
