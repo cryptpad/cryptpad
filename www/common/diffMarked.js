@@ -723,6 +723,35 @@ define([
                 if (target) { target.scrollIntoView(); }
             });
 
+            // replace remote images with links to those images
+            $content.find('img.cp-inline-img').each(function (index, el) {
+                var link = h('a', {
+                    href: el.src, //common.getBounceURL(el.src), // XXX
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    title: el.src,
+                }, [
+                    'open image at ',
+                    h('strong', el.src),
+                ]);
+
+                link.onclick = function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    common.openURL(el.src);
+                };
+
+                var warning = h('span.cp-inline-img-warning', [
+                    "CryptPad disallows unencrypted images",
+                    h('br'),
+                    h('br'),
+                    link,
+                ]);
+
+                var parent = el.parentElement;
+                parent.replaceChild(warning, el);
+            });
+
             // loop over plugin elements in the rendered content
             $content.find('pre[data-plugin]').each(function (index, el) {
                 var plugin = plugins[el.getAttribute('data-plugin')];
