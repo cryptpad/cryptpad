@@ -279,8 +279,6 @@ define([
         }
     };
 
-    var urlArgs = Util.find(ApiConfig, ['requireConf', 'urlArgs']) || '';
-
     renderer.image = function (href, title, text) { // XXX
         if (href.slice(0,6) === '/file/') { // XXX this has been deprecated for about 3 years... use the same inline image handler as below?
             // DEPRECATED
@@ -299,20 +297,22 @@ define([
             return mt;
         }
 
-        var warning = h('span.cp-inline-img-warning', [
-            h('img', {
-                src: '/images/broken.png?ver=' + ApiConfig.requireConf.urlArgs,
-            }),
-            h('br'),
-            h('span', {
-                //title: text,
+        var warning = h('div.cp-inline-img-warning', [
+            h('div.cp-inline-img', [
+                h('img.cp-inline-img', {
+                    src: '/images/broken.png',
+                    title: title || '',
+                }),
+                h('p.cp-alt-txt', text),
+            ]),
+            h('span.cp-img-block-notice', {
             }, "CryptPad blocked a remote image."),
             h('br'),
-            h('a', {
+            h('a.cp-remote-img', {
                 href: qualifiedHref(href),
             }, "Open its source in a new tab"),
             h('br'),
-            h('a', {
+            h('a.cp-learn-more', {
                 href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images',
             }, 'learn why it was blocked'),
         ]);
@@ -827,26 +827,10 @@ define([
             });
 
             // replace remote images with links to those images
-            $content.find('span.cp-inline-img-warning').each(function (index, el) { // XXX
-/*
-    var link = h('a', {
-            href: href, //el.src, //common.getBounceURL(el.src), // XXX
-            //target: '_blank',
-            //rel: 'noopener noreferrer',
-            //title: title, //el.src,
-        }, [
-            'open image at ',
-            h('strong', href), //el.src),
-        ]);
-*/
-
-
-                console.log('INLINE_IMG', index, el);
+            $content.find('div.cp-inline-img-warning').each(function (index, el) {
                 if (!el) { return; }
-
-                var link = el.querySelector('a');
+                var link = el.querySelector('a.cp-remote-img');
                 if (!link) { return; }
-
                 link.onclick = function (ev) {
                     ev.preventDefault();
                     ev.stopPropagation();

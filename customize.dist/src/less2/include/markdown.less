@@ -155,15 +155,23 @@
         text-align: left;
     }
 
-/*
-    span.cp-inline-img-warning {
-        //display: inline-block;
-        border: 1px solid red;
-        a, br, strong {
-            border: none;
+    div.cp-inline-img-warning {
+        display: inline-block;
+        //border: 1px solid red !important; //  @cp_markdown-border !important;
+        padding: 10px;
+        //color: @cryptpad_color_light_red; // very bad in light mode
+        //background: @cryptpad_color_red_fader;
+
+        .cp-inline-img {
+            display: flex;
+            margin-bottom:10px;
         }
-    } */
-    //.cp-inline-img { }
+        .cp-alt-txt {
+            margin-left: 10px;
+            font-family: monospace;
+            font-size: 0.8em;
+        }
+    }
 }
 
 .markdown_cryptpad() {
