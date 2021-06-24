@@ -1344,7 +1344,6 @@
     "mdToolbar_embed": "Datei einbetten",
     "admin_checkupButton": "Diagnose ausführen",
     "share_formAuditor": "Prüfer",
-    "form_viewResults": "Gehe zu Antworten",
     "form_type_multicheck": "Mehrfachauswahl-Matrix",
     "form_type_multiradio": "Einfachauswahl-Matrix",
     "form_editMax": "Maximal auswählbare Optionen",
@@ -1353,5 +1352,7 @@
     "form_isClosed": "Dieses Formular wurde geschlossen am {0}",
     "form_isOpen": "Dieses Formular ist offen",
     "form_open": "Öffnen",
-    "form_viewButton": "Anzeigen"
+    "form_viewButton": "Anzeigen",
+    "form_poll_hint": "<i></i>: Ja, <i></i>: Nein, <i></i>: Akzeptabel",
+    "fc_open_formro": "Öffnen (als Teilnehmer)"
 }

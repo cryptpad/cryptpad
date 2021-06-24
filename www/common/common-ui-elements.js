@@ -1045,8 +1045,10 @@ define([
                         var privateDat = common.getMetadataMgr().getPrivateData();
                         var origin = privateDat.fileHost || privateDat.origin;
                         var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
-                        cfg.embed($('<media-tag src="' + src +
-                            '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
+                        cfg.embed(h('media-tag', {
+                            src: src,
+                            'data-crypto-key': 'cryptpad:' + data.key,
+                        }), data);
                     });
 
                 }

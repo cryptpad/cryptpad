@@ -8,11 +8,12 @@ define([
     '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/common/less.min.js',
     '/common/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less) {
     var DiffMd = {};
 
     var Highlight = window.hljs;
@@ -481,6 +482,75 @@ define([
         }
     };
 
+    var applyCSS = function (el, css) {
+        var style = h('style');
+        style.appendChild(document.createTextNode(css));
+        el.innerText = '';
+        el.appendChild(style);
+    };
+
+    // trim non-functional text from less input so that
+    // the compiler is only triggered when there has been a functional change
+    var canonicalizeLess = function (source) {
+        return (source || '')
+        // leading and trailing spaces are irrelevant
+            .trim()
+        // line comments are easy to disregard
+            .replace(/\/\/[^\n]*/g, '')
+        // lines with nothing but spaces and tabs can be ignored
+            .replace(/^[ \t]*$/g, '')
+        // consecutive newlines make no difference
+            .replace(/\n+/g, '');
+    };
+
+    var rendered_less = {};
+    var getRenderedLess = (function () {
+        var timeouts = {};
+        return function (src) {
+            if (!rendered_less[src]) { return; }
+            if (timeouts[src]) {
+                clearTimeout(timeouts[src]);
+            }
+            // avoid memory leaks by deleting cached content
+            // 15s after it was last accessed
+            timeouts[src] = setTimeout(function () {
+                delete rendered_less[src];
+                delete timeouts[src];
+            }, 15000);
+            return rendered_less[src];
+        };
+    }());
+
+    plugins.less = {
+        name: 'less',
+        attr: 'less-src',
+        render: function renderLess ($el, opt) {
+            var src = canonicalizeLess($el.text());
+            if (!src) { return; }
+            var el = $el[0];
+            var rendered = getRenderedLess(src);
+            if (rendered) { return void applyCSS(el, rendered); }
+
+            var scope = opt.scope.attr('id') || 'cp-app-code-preview-content';
+            var scoped_src = '#' + scope + ' { ' + src + '}';
+            //console.error("RENDERING LESS");
+            Less.render(scoped_src, {}, function (err, result) {
+        // the console is the only feedback for users to know that they did something wrong
+        // but less rendering isn't intended so much as a feature but a useful tool to avoid
+        // leaking styles from the preview into the rest of the DOM. This is an improvement.
+                if (err) {
+        // we assume the compiler is deterministic. Something that returns an error once
+        // will do it again, so avoid successive calls by caching a truthy
+        // but non-functional string to block them.
+                    rendered_less[src] = ' ';
+                    return void console.error(err);
+                }
+                var css = rendered_less[src] = result.css;
+                applyCSS(el, css);
+            });
+        },
+    };
+
     var getAvailableCachedElement = function ($content, cache, src) {
         var cached = cache[src];
         if (!Array.isArray(cached)) { return; }
@@ -554,7 +624,9 @@ define([
         // caching their source as you go
         $(newDomFixed).find('pre[data-plugin]').each(function (index, el) {
             if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
-                var plugin = plugins[el.getAttribute('data-plugin')];
+                var type = el.getAttribute('data-plugin');
+                var plugin = plugins[type];
+                console.log(type);
                 if (!plugin) { return; }
                 var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
                 el.setAttribute(plugin.attr, src);
@@ -567,7 +639,8 @@ define([
         var scrollTop = $parent.scrollTop();
         // iterate over rendered mermaid charts
         $content.find('pre[data-plugin]:not([processed="true"])').each(function (index, el) {
-            var plugin = plugins[el.getAttribute('data-plugin')];
+            var type = el.getAttribute('data-plugin');
+            var plugin = plugins[type];
             if (!plugin) { return; }
 
             // retrieve the attached source code which it was drawn
@@ -729,9 +802,23 @@ define([
                 if (target) { target.scrollIntoView(); }
             });
 
+            // transform style tags into pre tags with the same content
+            // to be handled by the less rendering plugin
+            $content.find('style').each(function (index, el) {
+                var parent = el.parentElement;
+                var pre = h('pre', {
+                    'data-plugin': 'less',
+                    'less-src': canonicalizeLess(el.innerText),
+                    style: 'display: none',
+                }, el.innerText);
+                parent.replaceChild(pre, el);
+            });
+
             // loop over plugin elements in the rendered content
             $content.find('pre[data-plugin]').each(function (index, el) {
-                var plugin = plugins[el.getAttribute('data-plugin')];
+                var type = el.getAttribute('data-plugin');
+                var plugin = plugins[type];
+
                 if (!plugin) { return; }
                 var $el = $(el);
                 $el.off('contextmenu').on('contextmenu', function (e) {
@@ -750,13 +837,17 @@ define([
                 // you can assume that the index of your rendered charts matches that
                 // of those in the markdown source. 
                 var src = plugin.source[index];
-                el.setAttribute(plugin.attr, src);
+                if (src) {
+                    el.setAttribute(plugin.attr, src);
+                }
                 var cached = getAvailableCachedElement($content, plugin.cache, src);
 
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        plugin.render($el);
+                        plugin.render($el, {
+                            scope: $content,
+                        });
                     } catch (e) { console.error(e); }
                     return;
                 }

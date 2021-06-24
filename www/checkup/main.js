@@ -391,21 +391,32 @@ define([
 
     assert(function (cb, msg) {
         setWarningClass(msg);
-        msg.appendChild(h('span', [
-            "You haven't opted out of participation in Google's ",
-            code('FLoC'),
-            " targeted advertizing network. This can be done by adding a ",
-            code('permissions-policy'),
-            " HTTP header with a value of ",
-            code('interest-cohort=()'),
-            " in your reverse proxy's configuration. See the provided NGINX configuration file for an example. ",
-            h('p', [
-                link("https://www.eff.org/deeplinks/2021/04/am-i-floced-launch", 'Learn more'),
-            ]),
-        ]));
+
+        var printMessage = function (value) {
+            msg.appendChild(h('span', [
+                "This instance hasn't opted out of participation in Google's ",
+                code('FLoC'),
+                " targeted advertizing network. ",
+
+                "This can be done by setting a ",
+                code('permissions-policy'),
+                " HTTP header with a value of ",
+                code('"interest-cohort=()"'),
+                " in the configuration of its reverse proxy instead of the current value (",
+                code(value),
+                "). See the provided NGINX configuration file for an example. ",
+
+                h('p', [
+                    link("https://www.eff.org/deeplinks/2021/04/am-i-floced-launch", 'Learn more'),
+                ]),
+            ]));
+        };
+
         $.ajax('/?'+ (+new Date()), {
             complete: function (xhr) {
-                cb(xhr.getResponseHeader('permissions-policy') === 'interest-cohort=()');
+                var header = xhr.getResponseHeader('permissions-policy');
+                printMessage(JSON.stringify(header));
+                cb(header === 'interest-cohort=()' || header);
             },
         });
     });
@@ -687,6 +698,88 @@ define([
         });
     });
 
+    var isHTTPS = function (host) {
+        return /^https:\/\//.test(host);
+    };
+
+    var isOnion = function (host) {
+        return /\.onion$/.test(host);
+    };
+    assert(function (cb, msg) {
+        // provide an exception for development instances
+        if (/http:\/\/localhost/.test(trimmedUnsafe)) { return void cb(true); }
+
+        // if both the main and sandbox domains are onion addresses
+        // then the HTTPS requirement is unnecessary
+        if (isOnion(trimmedUnsafe) && isOnion(trimmedSafe)) { return void cb(true); }
+
+        // otherwise expect that both inner and outer domains use HTTPS
+        setWarningClass(msg);
+
+        msg.appendChild(h('span', [
+            "Both ",
+            code('httpUnsafeOrigin'),
+            ' and ',
+            code('httpSafeOrigin'),
+            ' should be accessed via HTTPS for production use. ',
+            "This can be configured via ",
+            CONFIG_PATH(),
+            '. ',
+            RESTART_WARNING(),
+        ]));
+
+        console.error("HTTPS?", trimmedUnsafe, trimmedSafe);
+        cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
+    });
+
+    assert(function (cb, msg) {
+        setWarningClass(msg);
+        $.ajax(cacheBuster('/'), {
+            dataType: 'text',
+            complete: function (xhr) {
+                var serverToken = xhr.getResponseHeader('server');
+                if (serverToken === null) { return void cb(true); }
+
+                var lowered = (serverToken || '').toLowerCase();
+                var family;
+
+                ['Apache', 'Caddy', 'NGINX'].some(function (pattern) {
+                    if (lowered.indexOf(pattern.toLowerCase()) !== -1) {
+                        family = pattern;
+                        return true;
+                    }
+                });
+
+                var text = [
+                    "This instance is set to respond with an HTTP ",
+                    code("server"),
+                    " header. This information can make it easier for attackers to find and exploit known vulnerabilities. ",
+                ];
+
+
+                if (family === 'NGINX') {
+                    msg.appendChild(h('span', text.concat([
+                        "This can be addressed by setting ",
+                        code("server_tokens off"),
+                        " in your global NGINX config."
+                    ])));
+                    return void cb(serverToken);
+                }
+
+                // handle other
+                msg.appendChild(h('span', text.concat([
+                    "In this case, it appears that the host server is running ",
+                    code(serverToken),
+                    " instead of ",
+                    code("NGINX"),
+                    " as recommended. As such, you may not benefit from the latest security enhancements that are tested and maintained by the CryptPad development team.",
+                ])));
+
+                cb(serverToken);
+            }
+        });
+    });
+
     if (false) {
         assert(function (cb, msg) {
             msg.innerText = 'fake test to simulate failure';
@@ -701,11 +794,18 @@ define([
     };
 
     var failureReport = function (obj) {
+        var printableValue = obj.output;
+        try {
+            printableValue = JSON.stringify(obj.output);
+        } catch (err) {
+            console.error(err);
+        }
+
         return h('div.error', [
             h('h5', obj.message),
             h('table', [
                 row(["Failed test number", obj.test + 1]),
-                row(["Returned value", obj.output]),
+                row(["Returned value", code(printableValue)]),
             ]),
         ]);
     };

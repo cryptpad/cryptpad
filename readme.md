@@ -1,20 +1,18 @@
-[![An XWiki Labs Project](https://raw.githubusercontent.com/xwiki-labs/xwiki-labs-logo/master/projects/xwikilabs/xlabs-project.png "XWiki labs")](https://labs.xwiki.com/xwiki/bin/view/Main/WebHome)
+# CryptPad
+
+CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data is encrypted, the service and its administrators have no way of seeing the content being edited and stored.
 
 ![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
 
-CryptPad is the **Zero Knowledge** realtime collaborative editor.
-
-Encryption carried out in your web browser protects the data from the server, the cloud
-and the NSA. It relies on the [ChainPad] realtime engine.
-
-<!--If you'd like to know more, please read [the Whitepaper]().-->
-
 # Installation
 
-Installing CryptPad is pretty straightforward. You can read all about it in the
-[installation guide](https://github.com/xwiki-labs/cryptpad/wiki/Installation-guide).
+## For development
 
-It also contains information on keeping your instance of CryptPad up to date.
+Our [developer guide](https://docs.cryptpad.fr/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
+
+## For production
+
+Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.fr/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
 
 ## Current version
 
@@ -24,33 +22,40 @@ The most recent version and all past release notes can be found [here](https://g
 
 See [Cryptpad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with Cryptpad in Docker. This repository is maintained by the community and not officially supported.
 
-
 # Security
 
-CryptPad is *private*, not *anonymous*. Privacy protects your data, anonymity protects you.
-As such, it is possible for a collaborator on the pad to include some silly/ugly/nasty things
-in a CryptPad such as an image which reveals your IP address when your browser automatically
-loads it or a script which plays Rick Astleys's greatest hits. It is possible for anyone
-who does not have the key to be able to change anything in the pad or add anything, even the
-server, however the clients will notice this because the content hashes in CryptPad will fail to
-validate.
+CryptPad offers a variety of collaborative tools that encrypt your data in your browser
+before it is sent to the server and your collaborators. In the event that the server is
+compromized the database holds encrypted data that is not of much value to attackers.
 
-The server does have a certain power, it can send you evil javascript which does the wrong
-thing (leaks the key or the data back to the server or to someone else). This is however an
-[active attack] which makes it detectable. The NSA really hates doing these because they might
-get caught and laughed at and humiliated in front of the whole world (again). If you're making
-the NSA mad enough for them to use an active attack against you, Great Success Highfive, now take
-the battery out of your computer before it spawns Agent Smith.
+The code which performs the encryption is still loaded from the host server like any
+other web page, so you still need to trust the administrator to keep their server secure
+and to send you the right code. An expert can download code from the server and check
+that it isn't doing anything malicious like leaking your encryption keys, which is why
+this is considered an [active attack].
 
-Still there are other low-lives in the world so using CryptPad over HTTPS is probably a good idea.
+The platform is designed to minimize what data is exposed to its operators. User registration
+and account access is based on a cryptographic key that is derived from your username
+and password so the server never needs to see either and you don't need to worry about
+whether they are being stored securely. It is impossible to verify whether a server's
+operators are logging your IP or other activity, so if you consider this information
+sensitive it is safest to assume it is being recorded and access your preferred instance
+via [Tor browser].
+
+A correctly configured instance has safeguards to prevent collaborators from doing some
+nasty things like injecting scripts into collaborative documents or uploads. The project
+is actively maintained and bugs that our safeguards don't catch tend to get fixed quickly.
+For this reason it is best to only use instances that are running the most recent version,
+which is currently on a three-week release cycle. It is difficult for a non-expert to
+determine whether an instance is otherwise configured correctly, so we are actively
+working on allowing administrators to opt in to a public directory of servers that
+meet our strict criteria for safety.
 
 # Translations
 
-We'd like to make it easy for more people to use encryption in their routine activities.
-As such, we've tried to make language-specific parts of CryptPad translatable. If you're
-able to translate CryptPad's interface, and would like to help, please contact us!
-
-You can also see [our translation guide](/customize.dist/translations/README.md).
+CryptPad can be translated with nothing more than a web browser via our
+[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+More information about this can be found in [our translation guide](/customize.dist/translations/README.md).
 
 # Contacting Us
 
@@ -61,13 +66,13 @@ via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), 
 
 # Team
 
-CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), a company that has been building Open-Source software since 2004 with contributors from around the world. Between 2015 and 2019 it was funded by a research grant from the French state through [BPI France](https://www.bpifrance.fr/). It is currently financed by [NLnet PET](https://nlnet.nl/PET/), subscribers of CryptPad.fr and donations to our [Open-Collective campaign](https://opencollective.com/cryptpad).
+CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), a company that has been building Open-Source software since 2004 with contributors from around the world. Between 2015 and 2019 it was funded by a research grant from the French state through [BPI France](https://www.bpifrance.fr/). In the years since we have been funded by [NLnet PET](https://nlnet.nl/PET/), [NGI TRUST](https://www.ngi.eu/ngi-projects/ngi-trust/), [NGI DAPSI](https://dapsi.ngi.eu/), subscribers of CryptPad.fr, and donations to our [Open-Collective campaign](https://opencollective.com/cryptpad).
 
 # Contributing
 
 We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.fr/en/how_to_contribute.html). 
 
-If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi on IRC, `#cryptpad` on Freenode.
+If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
 
 # License
 
@@ -78,5 +83,6 @@ published by the Free Software Foundation, either version 3 of the License, or (
 any later version. If you wish to use this technology in a proprietary product, please contact
 sales@xwiki.com.
 
-[ChainPad]: https://github.com/xwiki-contrib/chainpad
+[Tor browser]: https://www.torproject.org/download/
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack
+
