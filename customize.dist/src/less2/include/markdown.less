@@ -157,10 +157,11 @@
 
     div.cp-inline-img-warning {
         display: inline-block;
-        //border: 1px solid red !important; //  @cp_markdown-border !important;
         padding: 10px;
-        //color: @cryptpad_color_light_red; // very bad in light mode
-        //background: @cryptpad_color_red_fader;
+
+        color: @cryptpad_text_col;
+        background-color: @cryptpad_color_red_fader;
+        border: 1px solid @cryptpad_color_red;
 
         .cp-inline-img {
             display: flex;

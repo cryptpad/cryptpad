@@ -279,8 +279,12 @@ define([
         }
     };
 
-    renderer.image = function (href, title, text) { // XXX
-        if (href.slice(0,6) === '/file/') { // XXX this has been deprecated for about 3 years... use the same inline image handler as below?
+    Messages.resources_imageBlocked = "CryptPad blocked a remote image"; // XXX
+    Messages.resources_openInNewTab = "Open its source in a new tab"; // XXX
+    Messages.resources_learnWhy = "Learn why it was blocked"; // XXX
+
+    renderer.image = function (href, title, text) {
+        if (href.slice(0,6) === '/file/') { // XXX this has been deprecated for about 3 years. Maybe we should display a warning?
             // DEPRECATED
             // Mediatag using markdown syntax should not be used anymore so they don't support
             // password-protected files
@@ -301,20 +305,20 @@ define([
             h('div.cp-inline-img', [
                 h('img.cp-inline-img', {
                     src: '/images/broken.png',
-                    title: title || '',
+                    //title: title || '',
                 }),
                 h('p.cp-alt-txt', text),
             ]),
             h('span.cp-img-block-notice', {
-            }, "CryptPad blocked a remote image."),
+            }, Messages.resources_imageBlocked),
             h('br'),
             h('a.cp-remote-img', {
                 href: qualifiedHref(href),
-            }, "Open its source in a new tab"),
+            }, Messages.resources_openInNewTab),
             h('br'),
             h('a.cp-learn-more', {
                 href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images',
-            }, 'learn why it was blocked'),
+            }, Messages.resources_learnWhy),
         ]);
 
         return warning.outerHTML;
