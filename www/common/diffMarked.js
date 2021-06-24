@@ -474,8 +474,6 @@ define([
         }
     };
 
-    var rendered_less = {}; // XXX this never gets evicted, so it's a memory leak
-
     var applyCSS = function (el, css) {
         var style = h('style');
         style.appendChild(document.createTextNode(css));
@@ -483,28 +481,62 @@ define([
         el.appendChild(style);
     };
 
+    // trim non-functional text from less input so that
+    // the compiler is only triggered when there has been a functional change
     var canonicalizeLess = function (source) {
-        return source.replace(/\/\/[^\n]*/g, '').replace(/^[ \t]*$/g, '').replace(/\n+/g, '');
+        return (source || '')
+        // leading and trailing spaces are irrelevant
+            .trim()
+        // line comments are easy to disregard
+            .replace(/\/\/[^\n]*/g, '')
+        // lines with nothing but spaces and tabs can be ignored
+            .replace(/^[ \t]*$/g, '')
+        // consecutive newlines make no difference
+            .replace(/\n+/g, '');
     };
 
-    plugins.less = { // XXX
+    var rendered_less = {};
+    var getRenderedLess = (function () {
+        var timeouts = {};
+        return function (src) {
+            if (!rendered_less[src]) { return; }
+            if (timeouts[src]) {
+                clearTimeout(timeouts[src]);
+            }
+            // avoid memory leaks by deleting cached content
+            // 15s after it was last accessed
+            timeouts[src] = setTimeout(function () {
+                delete rendered_less[src];
+                delete timeouts[src];
+            }, 15000);
+            return rendered_less[src];
+        };
+    }());
+
+    plugins.less = {
         name: 'less',
         attr: 'less-src',
         render: function renderLess ($el, opt) {
-            var src = canonicalizeLess(($el.text() || '').trim());
-
-            console.log(src);
+            var src = canonicalizeLess($el.text());
             if (!src) { return; }
             var el = $el[0];
-            if (rendered_less[src]) { // XXX janky cache instead of using the same methodology as other plugins...
-                return void applyCSS(el, rendered_less[src]);
-            }
+            var rendered = getRenderedLess(src);
+            if (rendered) { return void applyCSS(el, rendered); }
 
             var scope = opt.scope.attr('id') || 'cp-app-code-preview-content';
             var scoped_src = '#' + scope + ' { ' + src + '}';
-            console.error("RENDERING LESS", opt.cache);
+            //console.error("RENDERING LESS");
             Less.render(scoped_src, {}, function (err, result) {
-                if (err) { return void console.error(err); }
+        // the console is the only feedback for users to know that they did something wrong
+        // but less rendering isn't intended so much as a feature but a useful tool to avoid
+        // leaking styles from the preview into the rest of the DOM. This is an improvement.
+                if (err) {
+        // we assume the compiler is deterministic. Something that returns an error once
+        // will do it again, so avoid successive calls by caching a truthy
+        // but non-functional string to block them.
+                    rendered_less[src] = ' ';
+                    return void console.error(err);
+                }
                 var css = rendered_less[src] = result.css;
                 applyCSS(el, css);
             });
@@ -523,8 +555,7 @@ define([
         }
     };
 
-    var cacheRenderedElement = function (cache, src, el) { // XXX
-    console.log("CACHING", cache, src, el);
+    var cacheRenderedElement = function (cache, src, el) {
         if (Array.isArray(cache[src])) {
             cache[src].push(el);
         } else {
@@ -763,18 +794,20 @@ define([
                 if (target) { target.scrollIntoView(); }
             });
 
-            $content.find('style').each(function (index, el) { // XXX
+            // transform style tags into pre tags with the same content
+            // to be handled by the less rendering plugin
+            $content.find('style').each(function (index, el) {
                 var parent = el.parentElement;
                 var pre = h('pre', {
                     'data-plugin': 'less',
-                    'less-src': el.innerText,
+                    'less-src': canonicalizeLess(el.innerText),
                     style: 'display: none',
                 }, el.innerText);
                 parent.replaceChild(pre, el);
             });
 
             // loop over plugin elements in the rendered content
-            $content.find('pre[data-plugin]').each(function (index, el) { // XXX
+            $content.find('pre[data-plugin]').each(function (index, el) {
                 var type = el.getAttribute('data-plugin');
                 var plugin = plugins[type];
 
@@ -805,8 +838,7 @@ define([
                 if (typeof(cached) !== 'object') {
                     try {
                         plugin.render($el, {
-                            scope: $content, // XXX
-                            cache: plugin.cache,
+                            scope: $content,
                         });
                     } catch (e) { console.error(e); }
                     return;
