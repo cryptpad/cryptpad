@@ -267,7 +267,21 @@ define([
         return '<li>' + text + '</li>\n';
     };
 
-    renderer.image = function (href, title, text) {
+
+    var qualifiedHref = function (href) {
+        if (typeof(window.URL) === 'undefined') { return href; }
+        try {
+            var url = new URL(href, ApiConfig.httpUnsafeOrigin);
+            return url.href;
+        } catch (err) {
+            console.error(err);
+            return href;
+        }
+    };
+
+    var urlArgs = Util.find(ApiConfig, ['requireConf', 'urlArgs']) || '';
+
+    renderer.image = function (href, title, text) { // XXX
         if (href.slice(0,6) === '/file/') { // XXX this has been deprecated for about 3 years... use the same inline image handler as below?
             // DEPRECATED
             // Mediatag using markdown syntax should not be used anymore so they don't support
@@ -285,13 +299,25 @@ define([
             return mt;
         }
 
-        var img = h('img.cp-inline-img', {
-            src: href || '',
-            title: title || '',
-            alt: text || '',
-        });
+        var warning = h('span.cp-inline-img-warning', [
+            h('img', {
+                src: '/images/broken.png?ver=' + ApiConfig.requireConf.urlArgs,
+            }),
+            h('br'),
+            h('span', {
+                //title: text,
+            }, "CryptPad blocked a remote image."),
+            h('br'),
+            h('a', {
+                href: qualifiedHref(href),
+            }, "Open its source in a new tab"),
+            h('br'),
+            h('a', {
+                href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images',
+            }, 'learn why it was blocked'),
+        ]);
 
-        return img.outerHTML;
+        return warning.outerHTML;
     };
     restrictedRenderer.image = renderer.image;
 
@@ -741,7 +767,11 @@ define([
         if (typeof(patch) === 'string') {
             throw new Error(patch);
         } else {
-            DD.apply($content[0], patch);
+            try {
+                DD.apply($content[0], patch);
+            } catch (err) {
+                console.error(err);
+            }
             var $mts = $content.find('media-tag');
             $mts.each(function (i, el) {
                 var $mt = $(el).contextmenu(function (e) {
@@ -797,32 +827,31 @@ define([
             });
 
             // replace remote images with links to those images
-            $content.find('img.cp-inline-img').each(function (index, el) {
-                var link = h('a', {
-                    href: el.src, //common.getBounceURL(el.src), // XXX
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                    title: el.src,
-                }, [
-                    'open image at ',
-                    h('strong', el.src),
-                ]);
+            $content.find('span.cp-inline-img-warning').each(function (index, el) { // XXX
+/*
+    var link = h('a', {
+            href: href, //el.src, //common.getBounceURL(el.src), // XXX
+            //target: '_blank',
+            //rel: 'noopener noreferrer',
+            //title: title, //el.src,
+        }, [
+            'open image at ',
+            h('strong', href), //el.src),
+        ]);
+*/
+
+
+                console.log('INLINE_IMG', index, el);
+                if (!el) { return; }
+
+                var link = el.querySelector('a');
+                if (!link) { return; }
 
                 link.onclick = function (ev) {
                     ev.preventDefault();
                     ev.stopPropagation();
-                    common.openURL(el.src);
+                    common.openURL(link.href);
                 };
-
-                var warning = h('span.cp-inline-img-warning', [
-                    "CryptPad disallows unencrypted images",
-                    h('br'),
-                    h('br'),
-                    link,
-                ]);
-
-                var parent = el.parentElement;
-                parent.replaceChild(warning, el);
             });
 
             // transform style tags into pre tags with the same content
