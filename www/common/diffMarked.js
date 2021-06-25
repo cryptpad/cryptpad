@@ -305,7 +305,7 @@ define([
             h('div.cp-inline-img', [
                 h('img.cp-inline-img', {
                     src: '/images/broken.png',
-                    //title: title || '',
+                    //title: title || '', // XXX sort out tippy issues (double-title)
                 }),
                 h('p.cp-alt-txt', text),
             ]),
@@ -317,7 +317,7 @@ define([
             }, Messages.resources_openInNewTab),
             h('br'),
             h('a.cp-learn-more', {
-                href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images',
+                href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images', // XXX point to an actual page
             }, Messages.resources_learnWhy),
         ]);
 
