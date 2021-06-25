@@ -1861,7 +1861,7 @@ define([
     Messages.admin_purpose_experiment = "To test the CryptPad platform"; // XXX
     Messages.admin_purpose_development = "To develop new features for CryptPad"; // XXX
 
-    Messages.admin_purpose_personal = "For myself, family, and friends"; // XXX
+    Messages.admin_purpose_personal = "For myself, family, or friends"; // XXX
 
     Messages.admin_purpose_business = "For my business's external use"; // XXX
     Messages.admin_purpose_intranet = "For my business's internal use"; // XXX
@@ -1871,6 +1871,13 @@ define([
 
     Messages.admin_purpose_commercial = "To provide a commercial service"; // XXX
     Messages.admin_purpose_public   = "To provide a free service"; // XXX
+
+    var sendDecree = function (data, cb) {
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'ADMIN_DECREE',
+            data: data,
+        }, cb);
+    };
 
     create['instance-purpose'] = function () {
         var key = 'instance-purpose';
@@ -1890,7 +1897,7 @@ define([
         ];
 
         var defaultPurpose = 'noanswer';
-        var purpose = defaultPurpose;
+        var purpose = APP.instanceStatus.instancePurpose || defaultPurpose;
 
         var opts = h('div.cp-admin-radio-container', [
             values.map(function (key) {
@@ -1904,7 +1911,35 @@ define([
             })
         ]);
 
+        var $opts = $(opts);
+        //var $br = $(h('br',));
+        //$div.append($br);
+
         $div.append(opts);
+
+        var setPurpose = function (value, cb) {
+            sendDecree([
+                'SET_INSTANCE_PURPOSE',
+                [ value]
+            ], cb);
+        };
+        //var spinner = UI.makeSpinner($br); // XXX
+
+        $opts.on('change', function () {
+            var val = $opts.find('input:radio:checked').val();
+            console.log(val);
+            //spinner.spin();
+            setPurpose(val, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    //spinner.hide();
+                    return;
+                }
+                //spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
         return $div;
     };
 
