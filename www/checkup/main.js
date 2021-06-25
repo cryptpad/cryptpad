@@ -732,6 +732,7 @@ define([
         cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
     });
 
+/*
     assert(function (cb, msg) {
         setWarningClass(msg);
         $.ajax(cacheBuster('/'), {
@@ -756,8 +757,7 @@ define([
                     " header. This information can make it easier for attackers to find and exploit known vulnerabilities. ",
                 ];
 
-
-                if (family === 'NGINX') {
+                if (family === 'NGINX') { // XXX incorrect instructions for HTTP2. needs a recompile?
                     msg.appendChild(h('span', text.concat([
                         "This can be addressed by setting ",
                         code("server_tokens off"),
@@ -779,6 +779,7 @@ define([
             }
         });
     });
+*/
 
     if (false) {
         assert(function (cb, msg) {
