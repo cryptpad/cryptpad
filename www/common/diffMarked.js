@@ -314,11 +314,17 @@ define([
             h('br'),
             h('a.cp-remote-img', {
                 href: qualifiedHref(href),
-            }, Messages.resources_openInNewTab),
+            }, [
+                //h('i.fa.fa-external-link'), // XXX
+                Messages.resources_openInNewTab
+            ]),
             h('br'),
             h('a.cp-learn-more', {
                 href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images', // XXX point to an actual page
-            }, Messages.resources_learnWhy),
+            }, [
+                //h('i.fa.fa-question-circle'), // XXX
+                Messages.resources_learnWhy
+            ]),
         ]);
 
         return warning.outerHTML;
