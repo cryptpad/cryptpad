@@ -1,3 +1,21 @@
+# WIP
+
+* WIP file conversion utilities
+* server
+  * `installMethod: 'unspecified'` in the default config to distinguish docker installs
+  * `instancePurpose` on admin panel
+* display warnings when remote resources are blocked
+  * in code preview
+* restrict style tags to a scope when rendering them in markdown preview by compiling their content as scoped less
+* iPhone/Safari calendar and notification fixes (data parsing errors)
+* checkup
+  * display actual FLoC header in checkup test
+  * WIP check for `server_tokens` settings (needs work for HTTP2)
+  * nicer output in error/warning tables
+* form templates
+* guard against a type error in `getAccessKeys`
+* guard against invalid or malicious input when constructing media-tags for embedding in markdown
+
 # 4.7.0
 
 ## Goals
