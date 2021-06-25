@@ -94,6 +94,7 @@ define([
             'cp-admin-list-my-instance',
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
+            'cp-admin-instance-purpose', // XXX
         ],
     };
 
@@ -1852,6 +1853,60 @@ define([
             });
         },
     });
+
+    Messages.admin_instancePurposeTitle = "Instance purpose"; // XXX
+    Messages.admin_instancePurposeHint = "Why do you run this instance? Your answer will be shared with the developers unless you have disabled telemetry"; // XXX
+
+    Messages.admin_purpose_noanswer = "I prefer not to answer"; // XXX
+    Messages.admin_purpose_experiment = "To test the CryptPad platform"; // XXX
+    Messages.admin_purpose_development = "To develop new features for CryptPad"; // XXX
+
+    Messages.admin_purpose_personal = "For myself, family, and friends"; // XXX
+
+    Messages.admin_purpose_business = "For my business's external use"; // XXX
+    Messages.admin_purpose_intranet = "For my business's internal use"; // XXX
+
+    Messages.admin_purpose_school = "For my school, college, or university"; // XXX
+    Messages.admin_purpose_org = "For a non-profit organization or advocacy group"; // XXX
+
+    Messages.admin_purpose_commercial = "To provide a commercial service"; // XXX
+    Messages.admin_purpose_public   = "To provide a free service"; // XXX
+
+    create['instance-purpose'] = function () {
+        var key = 'instance-purpose';
+        var $div = makeBlock(key);
+
+        var values = [
+            'noanswer',
+            'development',
+            'experiment',
+            'personal',
+            'business', // as a public resource for my business clients
+            'intranet', // for my business's _internal use_
+            'school',
+            'org',
+            'commercial',
+            'public', // to provide a free service (for the public)
+        ];
+
+        var defaultPurpose = 'noanswer';
+        var purpose = defaultPurpose;
+
+        var opts = h('div.cp-admin-radio-container', [
+            values.map(function (key) {
+                var full_key = 'admin_purpose_' + key;
+                return UI.createRadio('cp-instance-purpose-radio', 'cp-instance-purpose-radio-'+key,
+                    Messages[full_key] || Messages._getKey(full_key, [defaultPurpose]),
+                    key === purpose, {
+                        input: { value: key },
+                        label: { class: 'noTitle' }
+                    });
+            })
+        ]);
+
+        $div.append(opts);
+        return $div;
+    };
 
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
