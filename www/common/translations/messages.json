@@ -1357,5 +1357,14 @@
     "fc_open_formro": "Open (as participant)",
     "resources_imageBlocked": "CryptPad blocked a remote image",
     "resources_openInNewTab": "Open it in a new tab",
-    "resources_learnWhy": "Learn why it was blocked"
+    "resources_learnWhy": "Learn why it was blocked",
+    "admin_instancePurposeTitle": "Instance purpose",
+    "admin_purpose_noanswer": "I prefer not to say",
+    "admin_purpose_experiment": "To test the platform or develop new features",
+    "admin_purpose_personal": "For myself, family, or friends",
+    "admin_purpose_org": "For a non-profit organization or advocacy group",
+    "admin_purpose_education": "For a school, college, or university",
+    "admin_purpose_public": "To provide a free service to the public",
+    "admin_purpose_business": "For a business or commercial organization",
+    "admin_instancePurposeHint": "Why do you run this instance? Your answer will be used to inform the development roadmap if your telemetry is enabled."
 }
