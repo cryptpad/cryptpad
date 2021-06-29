@@ -9,6 +9,7 @@ var map = {
     'fr': 'Français',
     //'hi': 'हिन्दी',
     'it': 'Italiano',
+    'ja': '日本語',
     'nb': 'Norwegian Bokmål',
     //'pl': 'Polski',
     'pt-br': 'Português do Brasil',
