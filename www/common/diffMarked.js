@@ -279,12 +279,8 @@ define([
         }
     };
 
-    Messages.resources_imageBlocked = "CryptPad blocked a remote image"; // XXX
-    Messages.resources_openInNewTab = "Open its source in a new tab"; // XXX
-    Messages.resources_learnWhy = "Learn why it was blocked"; // XXX
-
     renderer.image = function (href, title, text) {
-        if (href.slice(0,6) === '/file/') { // XXX this has been deprecated for about 3 years. Maybe we should display a warning?
+        if (href.slice(0,6) === '/file/') { // FIXME this has been deprecated for about 3 years. Maybe we should display a warning?
             // DEPRECATED
             // Mediatag using markdown syntax should not be used anymore so they don't support
             // password-protected files
@@ -305,7 +301,7 @@ define([
             h('div.cp-inline-img', [
                 h('img.cp-inline-img', {
                     src: '/images/broken.png',
-                    //title: title || '', // XXX sort out tippy issues (double-title)
+                    //title: title || '', // FIXME sort out tippy issues (double-title)
                 }),
                 h('p.cp-alt-txt', text),
             ]),
@@ -315,14 +311,12 @@ define([
             h('a.cp-remote-img', {
                 href: qualifiedHref(href),
             }, [
-                //h('i.fa.fa-external-link'), // XXX
                 Messages.resources_openInNewTab
             ]),
             h('br'),
             h('a.cp-learn-more', {
-                href: 'https://docs.cryptpad.fr/en/user_guide/index.html?placeholder=remote_images', // XXX point to an actual page
+                href: 'https://docs.cryptpad.fr/user_guide/security.html#remote-content', // XXX make sure this exists
             }, [
-                //h('i.fa.fa-question-circle'), // XXX
                 Messages.resources_learnWhy
             ]),
         ]);
