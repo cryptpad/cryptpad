@@ -5,7 +5,7 @@ define([
     var Export = {};
 
     var escapeCSV = function (v) {
-        if (!/("|,)/.test(v)) {
+        if (!/("|,|\n)/.test(v)) {
             return v || '';
         }
         var value = '';
@@ -14,7 +14,6 @@ define([
         return value;
     };
     Export.results = function (content, answers, TYPES) {
-        console.log(content, answers, TYPES);
         if (!content || !content.form) { return; }
         var csv = "";
         var form = content.form;
@@ -24,8 +23,8 @@ define([
             if (!obj) { return; }
             return obj.q || Messages.form_default;
         }).filter(Boolean);
-        questions.unshift(Messages.form_poll_time); // "Time"
         questions.unshift(Messages.share_formView); // "Participant"
+        questions.unshift(Messages.form_poll_time); // "Time"
 
         questions.forEach(function (v, i) {
             if (i) { csv += ','; }
@@ -37,14 +36,14 @@ define([
             csv += '\n';
             var time = new Date(obj.time).toISOString();
             var msg = obj.msg || {};
-            var user = msg._userdata;
+            var user = msg._userdata || {};
             csv += escapeCSV(time);
             csv += ',' + escapeCSV(user.name || Messages.anonymous);
             Object.keys(form).forEach(function (key) {
-                csv += ',' + escapeCSV(String(msg[key]));
+                if (msg[key] && typeof(msg[key]) !== "string") { console.warn(key, msg[key]); }
+                csv += ',' + escapeCSV(String(msg[key] || ''));
             });
         });
-        console.log(csv);
         return csv;
     };
 
