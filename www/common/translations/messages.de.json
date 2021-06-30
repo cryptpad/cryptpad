@@ -1356,5 +1356,14 @@
     "form_poll_hint": "<i></i>: Ja, <i></i>: Nein, <i></i>: Akzeptabel",
     "fc_open_formro": "Öffnen (als Teilnehmer)",
     "resources_openInNewTab": "In neuem Tab öffnen",
-    "resources_imageBlocked": "CryptPad hat ein externes Bild blockiert"
+    "resources_imageBlocked": "CryptPad hat ein externes Bild blockiert",
+    "admin_purpose_noanswer": "Möchte ich nicht sagen",
+    "admin_purpose_business": "Für ein Unternehmen oder eine kommerzielle Organisation",
+    "admin_purpose_education": "Für eine Schule, Hochschule oder Universität",
+    "admin_purpose_org": "Für eine gemeinnützige Organisation oder eine Interessengruppe",
+    "admin_purpose_personal": "Für mich selbst, Familie oder Freunde",
+    "admin_purpose_experiment": "Zum Testen der Plattform oder zur Entwicklung neuer Funktionen",
+    "admin_instancePurposeTitle": "Zweck der Instanz",
+    "admin_instancePurposeHint": "Warum betreibst du diese Instanz? Deine Antwort wird mit den Entwicklern geteilt, sofern die Telemetrie aktiviert ist.",
+    "admin_purpose_public": "Zur Bereitstellung eines kostenlosen Dienstes für die Allgemeinheit"
 }
