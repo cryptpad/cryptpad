@@ -1354,5 +1354,7 @@
     "form_open": "Öffnen",
     "form_viewButton": "Anzeigen",
     "form_poll_hint": "<i></i>: Ja, <i></i>: Nein, <i></i>: Akzeptabel",
-    "fc_open_formro": "Öffnen (als Teilnehmer)"
+    "fc_open_formro": "Öffnen (als Teilnehmer)",
+    "resources_openInNewTab": "In neuem Tab öffnen",
+    "resources_imageBlocked": "CryptPad hat ein externes Bild blockiert"
 }
