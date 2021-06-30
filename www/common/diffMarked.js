@@ -287,9 +287,28 @@ define([
         }
     };
 
+    var isLocalURL = function (href) {
+        // treat all URLs as remote if you are using an ancient browser
+        if (typeof(window.URL) === 'undefined') { return false; }
+        try {
+            var url = new URL(href, ApiConfig.httpUnsafeOrigin);
+            var localURL = new URL(ApiConfig.httpUnsafeOrigin);
+            return url.host === localURL.host;
+        } catch (err) {
+            return true;
+        }
+    };
+
     renderer.image = function (href, title, text) {
-        if (href.slice(0,6) === '/file/') { // FIXME this has been deprecated for about 3 years. Maybe we should display a warning?
-            // DEPRECATED
+        if (isLocalURL(href) && href.slice(0, 6) !== '/file/') {
+            return h('img', {
+                src: href,
+                title: title || '',
+                alt: text,
+            }).outerHTML;
+        }
+
+        if (href.slice(0,6) === '/file/') {
             // Mediatag using markdown syntax should not be used anymore so they don't support
             // password-protected files
             console.log('DEPRECATED: mediatag using markdown syntax!');
@@ -297,12 +316,11 @@ define([
             var secret = Hash.getSecrets('file', parsed.hash);
             var src = (ApiConfig.fileHost || '') +Hash.getBlobPathFromHex(secret.channel);
             var key = Hash.encodeBase64(secret.keys.cryptKey);
-            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
-            if (mediaMap[src]) {
-                mt += mediaMap[src];
-            }
-            mt += '</media-tag>';
-            return mt;
+            var mt = h('media-tag', {
+                src: src,
+                'data-crypto-key': 'cryptpad:' + key,
+            });
+            return mt.outerHTML;
         }
 
         var warning = h('div.cp-inline-img-warning', [
@@ -323,7 +341,7 @@ define([
             ]),
             h('br'),
             h('a.cp-learn-more', {
-                href: 'https://docs.cryptpad.fr/user_guide/security.html#remote-content', // XXX make sure this exists
+                href: 'https://docs.cryptpad.fr/user_guide/security.html#remote-content',
             }, [
                 Messages.resources_learnWhy
             ]),
