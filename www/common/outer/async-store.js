@@ -274,9 +274,9 @@ define([
             }
 
             var pads = data.pads || data;
-            s.rpc.pin(pads, function (e, hash) {
+            s.rpc.pin(pads, function (e) {
                 if (e) { return void cb({error: e}); }
-                cb({hash: hash});
+                cb({});
             });
         };
 
@@ -289,9 +289,9 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             var pads = data.pads || data;
-            s.rpc.unpin(pads, function (e, hash) {
+            s.rpc.unpin(pads, function (e) {
                 if (e) { return void cb({error: e}); }
-                cb({hash: hash});
+                cb({});
             });
         };
 
@@ -394,9 +394,9 @@ define([
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             var list = getCanonicalChannelList(false);
-            store.rpc.reset(list, function (e, hash) {
+            store.rpc.reset(list, function (e) {
                 if (e) { return void cb(e); }
-                cb(null, hash);
+                cb(null);
             });
         };
 
