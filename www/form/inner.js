@@ -1646,6 +1646,15 @@ define([
 
                 return h('div.cp-form-type-poll', lines);
             },
+            exportCSV: function (answer) {
+                if (!answer || !answer.values) { return ''; }
+                var str = '';
+                Object.keys(answer.values).sort().forEach(function (k, i) {
+                    if (i !== 0) { str += ';'; }
+                    str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
+                });
+                return str;
+            },
             icon: h('i.cptools.cptools-form-poll')
         },
     };
