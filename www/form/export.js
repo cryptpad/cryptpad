@@ -5,7 +5,7 @@ define([
     var Export = {};
 
     var escapeCSV = function (v) {
-        if (!/("|,|\n)/.test(v)) {
+        if (!/("|,|\n|;)/.test(v)) {
             return v || '';
         }
         var value = '';
@@ -40,7 +40,11 @@ define([
             csv += escapeCSV(time);
             csv += ',' + escapeCSV(user.name || Messages.anonymous);
             Object.keys(form).forEach(function (key) {
-                if (msg[key] && typeof(msg[key]) !== "string") { console.warn(key, msg[key]); }
+                var type = form[key].type;
+                if (TYPES[type] && TYPES[type].exportCSV) {
+                    csv += ',' + escapeCSV(TYPES[type].exportCSV(msg[key]));
+                    return;
+                }
                 csv += ',' + escapeCSV(String(msg[key] || ''));
             });
         });
