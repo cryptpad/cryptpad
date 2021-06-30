@@ -18,6 +18,7 @@ define([
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
+    '/kanban/export.js',
 
     'cm/mode/gfm/gfm',
     'cm/addon/edit/closebrackets',
@@ -50,7 +51,8 @@ define([
     ChainPad,
     Marked,
     CodeMirror,
-    jKanban)
+    jKanban,
+    Export)
 {
 
     var verbose = function (x) { console.log(x); };
@@ -1060,6 +1062,11 @@ define([
             var parsed;
             try { parsed = JSON.parse(content); }
             catch (e) { return void console.error(e); }
+
+            if (parsed && parsed.id && parsed.lists && parsed.cards) {
+                return { content: Export.import(parsed) };
+            }
+
             return { content: parsed };
         });
 

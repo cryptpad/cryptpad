@@ -4,6 +4,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
+    '/form/export.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
@@ -30,6 +31,8 @@ define([
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
+    '/bower_components/file-saver/FileSaver.min.js',
+
     'css!/bower_components/codemirror/lib/codemirror.css',
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
@@ -42,6 +45,7 @@ define([
     Crypto,
     Framework,
     Toolbar,
+    Exporter,
     nThen,
     SFCommon,
     Util,
@@ -1656,9 +1660,22 @@ define([
 
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
+        Messages.form_exportCSV = "Export results as CSV";
+        var exportButton = h('button.btn.btn-secondary', Messages.form_exportCSV);
+        var exportCSV = h('div.cp-form-creator-results-export', exportButton);
+        $(exportCSV).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
 
+        $(exportButton).click(function () {
+            var csv = Exporter.results(content, answers, TYPES);
+            if (!csv) { return void UI.warn(Messages.error); }
+            var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
+            var title = Util.fixFileName(suggestion) + '.csv';
+            window.saveAs(new Blob([csv], {
+                type: 'text/csv'
+            }), title);
+        });
 
         var summary = true;
         var form = content.form;
@@ -2315,6 +2332,7 @@ define([
 
     var andThen = function (framework) {
         framework.start();
+        APP.framework = framework;
         var evOnChange = Util.mkEvent();
         var content = {};
 
@@ -2738,6 +2756,17 @@ define([
             checkIntegrity(true);
             return content;
         });
+
+        framework.setFileImporter({ accept: ['.json'] }, function (newContent) {
+            var parsed = JSON.parse(newContent || {});
+            parsed.answers = content.answers;
+            return parsed;
+        });
+
+        framework.setFileExporter(['.json'], function(cb, ext) {
+            Exporter.main(content, cb, ext);
+        }, true);
+
 
     };
 
