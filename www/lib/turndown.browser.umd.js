@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.TurndownService = factory());
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.TurndownService = factory());
 }(this, (function () { 'use strict';
 
   function extend (destination) {
@@ -16,6 +16,17 @@
 
   function repeat (character, count) {
     return Array(count + 1).join(character)
+  }
+
+  function trimLeadingNewlines (string) {
+    return string.replace(/^\n*/, '')
+  }
+
+  function trimTrailingNewlines (string) {
+    // avoid match-at-end regexp bottleneck, see #370
+    var indexEnd = string.length;
+    while (indexEnd > 0 && string[indexEnd - 1] === '\n') indexEnd--;
+    return string.substring(0, indexEnd)
   }
 
   var blockElements = [
@@ -303,19 +314,15 @@
     },
 
     replacement: function (content) {
-      if (!content.trim()) return ''
+      if (!content) return ''
+      content = content.replace(/\r?\n|\r/g, ' ');
 
+      var extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : '';
       var delimiter = '`';
-      var leadingSpace = '';
-      var trailingSpace = '';
-      var matches = content.match(/`+/gm);
-      if (matches) {
-        if (/^`/.test(content)) leadingSpace = ' ';
-        if (/`$/.test(content)) trailingSpace = ' ';
-        while (matches.indexOf(delimiter) !== -1) delimiter = delimiter + '`';
-      }
+      var matches = content.match(/`+/gm) || [];
+      while (matches.indexOf(delimiter) !== -1) delimiter = delimiter + '`';
 
-      return delimiter + leadingSpace + content + trailingSpace + delimiter
+      return delimiter + extraSpace + content + extraSpace + delimiter
     }
   };
 
@@ -459,7 +466,7 @@
     if (!element.firstChild || isPre(element)) return
 
     var prevText = null;
-    var prevVoid = false;
+    var keepLeadingWs = false;
 
     var prev = null;
     var node = next(prev, element, isPre);
@@ -469,7 +476,7 @@
         var text = node.data.replace(/[ \r\n\t]+/g, ' ');
 
         if ((!prevText || / $/.test(prevText.data)) &&
-            !prevVoid && text[0] === ' ') {
+            !keepLeadingWs && text[0] === ' ') {
           text = text.substr(1);
         }
 
@@ -489,11 +496,14 @@
           }
 
           prevText = null;
-          prevVoid = false;
-        } else if (isVoid(node)) {
-          // Avoid trimming space around non-block, non-BR void elements.
+          keepLeadingWs = false;
+        } else if (isVoid(node) || isPre(node)) {
+          // Avoid trimming space around non-block, non-BR void elements and inline PRE.
           prevText = null;
-          prevVoid = true;
+          keepLeadingWs = true;
+        } else if (prevText) {
+          // Drop protection if set previously.
+          keepLeadingWs = false;
         }
       } else {
         node = remove(node);
@@ -609,7 +619,7 @@
 
   var HTMLParser = canParseHTMLNatively() ? root.DOMParser : createHTMLParser();
 
-  function RootNode (input) {
+  function RootNode (input, options) {
     var root;
     if (typeof input === 'string') {
       var doc = htmlParser().parseFromString(
@@ -626,7 +636,8 @@
     collapseWhitespace({
       element: root,
       isBlock: isBlock,
-      isVoid: isVoid
+      isVoid: isVoid,
+      isPre: options.preformattedCode ? isPreOrCode : null
     });
 
     return root
@@ -638,11 +649,15 @@
     return _htmlParser
   }
 
-  function Node (node) {
+  function isPreOrCode (node) {
+    return node.nodeName === 'PRE' || node.nodeName === 'CODE'
+  }
+
+  function Node (node, options) {
     node.isBlock = isBlock(node);
-    node.isCode = node.nodeName.toLowerCase() === 'code' || node.parentNode.isCode;
+    node.isCode = node.nodeName === 'CODE' || node.parentNode.isCode;
     node.isBlank = isBlank(node);
-    node.flankingWhitespace = flankingWhitespace(node);
+    node.flankingWhitespace = flankingWhitespace(node, options);
     return node
   }
 
@@ -656,28 +671,39 @@
     )
   }
 
-  function flankingWhitespace (node) {
-    var leading = '';
-    var trailing = '';
-
-    if (!node.isBlock) {
-      var hasLeading = /^\s/.test(node.textContent);
-      var hasTrailing = /\s$/.test(node.textContent);
-      var blankWithSpaces = node.isBlank && hasLeading && hasTrailing;
-
-      if (hasLeading && !isFlankedByWhitespace('left', node)) {
-        leading = ' ';
-      }
-
-      if (!blankWithSpaces && hasTrailing && !isFlankedByWhitespace('right', node)) {
-        trailing = ' ';
-      }
+  function flankingWhitespace (node, options) {
+    if (node.isBlock || (options.preformattedCode && node.isCode)) {
+      return { leading: '', trailing: '' }
     }
 
-    return { leading: leading, trailing: trailing }
+    var edges = edgeWhitespace(node.textContent);
+
+    // abandon leading ASCII WS if left-flanked by ASCII WS
+    if (edges.leadingAscii && isFlankedByWhitespace('left', node, options)) {
+      edges.leading = edges.leadingNonAscii;
+    }
+
+    // abandon trailing ASCII WS if right-flanked by ASCII WS
+    if (edges.trailingAscii && isFlankedByWhitespace('right', node, options)) {
+      edges.trailing = edges.trailingNonAscii;
+    }
+
+    return { leading: edges.leading, trailing: edges.trailing }
   }
 
-  function isFlankedByWhitespace (side, node) {
+  function edgeWhitespace (string) {
+    var m = string.match(/^(([ \t\r\n]*)(\s*))[\s\S]*?((\s*?)([ \t\r\n]*))$/);
+    return {
+      leading: m[1], // whole string for whitespace-only strings
+      leadingAscii: m[2],
+      leadingNonAscii: m[3],
+      trailing: m[4], // empty for whitespace-only strings
+      trailingNonAscii: m[5],
+      trailingAscii: m[6]
+    }
+  }
+
+  function isFlankedByWhitespace (side, node, options) {
     var sibling;
     var regExp;
     var isFlanked;
@@ -693,6 +719,8 @@
     if (sibling) {
       if (sibling.nodeType === 3) {
         isFlanked = regExp.test(sibling.nodeValue);
+      } else if (options.preformattedCode && sibling.nodeName === 'CODE') {
+        isFlanked = false;
       } else if (sibling.nodeType === 1 && !isBlock(sibling)) {
         isFlanked = regExp.test(sibling.textContent);
       }
@@ -701,8 +729,6 @@
   }
 
   var reduce = Array.prototype.reduce;
-  var leadingNewLinesRegExp = /^\n*/;
-  var trailingNewLinesRegExp = /\n*$/;
   var escapes = [
     [/\\/g, '\\\\'],
     [/\*/g, '\\*'],
@@ -734,6 +760,7 @@
       linkStyle: 'inlined',
       linkReferenceStyle: 'full',
       br: '  ',
+      preformattedCode: false,
       blankReplacement: function (content, node) {
         return node.isBlock ? '\n\n' : ''
       },
@@ -766,7 +793,7 @@
 
       if (input === '') return ''
 
-      var output = process.call(this, new RootNode(input));
+      var output = process.call(this, new RootNode(input, this.options));
       return postProcess.call(this, output)
     },
 
@@ -855,7 +882,7 @@
   function process (parentNode) {
     var self = this;
     return reduce.call(parentNode.childNodes, function (output, node) {
-      node = new Node(node);
+      node = new Node(node, self.options);
 
       var replacement = '';
       if (node.nodeType === 3) {
@@ -908,31 +935,21 @@
   }
 
   /**
-   * Determines the new lines between the current output and the replacement
+   * Joins replacement to the current output with appropriate number of new lines
    * @private
    * @param {String} output The current conversion output
    * @param {String} replacement The string to append to the output
-   * @returns The whitespace to separate the current output and the replacement
+   * @returns Joined output
    * @type String
    */
 
-  function separatingNewlines (output, replacement) {
-    var newlines = [
-      output.match(trailingNewLinesRegExp)[0],
-      replacement.match(leadingNewLinesRegExp)[0]
-    ].sort();
-    var maxNewlines = newlines[newlines.length - 1];
-    return maxNewlines.length < 2 ? maxNewlines : '\n\n'
-  }
+  function join (output, replacement) {
+    var s1 = trimTrailingNewlines(output);
+    var s2 = trimLeadingNewlines(replacement);
+    var nls = Math.max(output.length - s1.length, replacement.length - s2.length);
+    var separator = '\n\n'.substring(0, nls);
 
-  function join (string1, string2) {
-    var separator = separatingNewlines(string1, string2);
-
-    // Remove trailing/leading newlines and replace with separator
-    string1 = string1.replace(trailingNewLinesRegExp, '');
-    string2 = string2.replace(leadingNewLinesRegExp, '');
-
-    return string1 + separator + string2
+    return s1 + separator + s2
   }
 
   /**
