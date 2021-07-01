@@ -22,6 +22,12 @@ define(function() {
      */
     AppConfig.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support'];
 
+    // XXX to prevent apps that aren't officially supported from showing up
+    // in the document creation modal
+    AppConfig.hiddenTypes = ['drive', 'teams', 'contacts', 'todo', 'file', 'accounts', 'calendar', 'poll', 'convert',
+    //'doc', 'presentation'
+    ];
+
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
      * will use the english version instead. You can customize the langauges you want to be available

@@ -3082,6 +3082,7 @@ define([
             }
             // Pads
             getNewPadTypes().forEach(function (type) {
+                if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-new-doc cp-app-drive-element-row ' +
                              'cp-app-drive-element-grid'
