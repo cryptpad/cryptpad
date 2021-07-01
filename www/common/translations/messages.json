@@ -287,7 +287,7 @@
     "fm_info_template": "Contains all the pads stored as templates and that you can re-use when you create a new pad.",
     "fm_info_recent": "These pads have recently been opened or modified by you or people you collaborate with.",
     "fm_info_trash": "Empty your trash to free space in your CryptDrive.",
-    "fm_info_anonymous": "You are not logged in so your documents will expire after {0} days. Clearing your browser's history may make them disappear.<br><a href=\"/register/\">Sign up</a> (no personal information required) or <a href=\"/login/\">Log in</a> to store them in your drive indefinitely. <a href=\"https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types\" target=\"_blank\">Read more about registered accounts</a>.",
+    "fm_info_anonymous": "You are not logged in so your documents will expire after {0} days. Clearing your browser's history may make them disappear.<br><a href=\"/register/\">Sign up</a> (no personal information required) or <a href=\"/login/\">Log in</a> to store them in your drive indefinitely. <a href=\"#docs\">Read more about registered accounts</a>.",
     "fm_info_sharedFolder": "This is a shared folder. You're not logged in so you can only access it in read-only mode.<br><a href=\"/register/\">Sign up</a> or <a href=\"/login/\">Log in</a> to be able to import it to your CryptDrive and to modify it.",
     "fm_info_owned": "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.",
     "fm_error_cantPin": "Internal server error. Please reload the page and try again.",
