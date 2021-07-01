@@ -2571,14 +2571,7 @@ define([
         var getNewPadTypes = function () {
             var arr = [];
             AppConfig.availablePadTypes.forEach(function (type) {
-                if (type === 'drive') { return; }
-                if (type === 'teams') { return; }
-                if (type === 'contacts') { return; }
-                if (type === 'todo') { return; }
-                if (type === 'file') { return; }
-                if (type === 'accounts') { return; }
-                if (type === 'calendar') { return; }
-                if (type === 'poll') { return; } // replaced by forms
+                if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
@@ -3082,7 +3075,6 @@ define([
             }
             // Pads
             getNewPadTypes().forEach(function (type) {
-                if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-new-doc cp-app-drive-element-row ' +
                              'cp-app-drive-element-grid'
