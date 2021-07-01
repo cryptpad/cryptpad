@@ -414,7 +414,7 @@
     "fm_viewListButton": "Lijstweergave",
     "fm_info_owned": "U bent de eigenaar van de werkomgevingen die hier zijn weergegeven. Dit betekent dat u ze voorgoed van de server kunt verwijderen. Als u dat doet, zijn ze niet meer toegankelijk voor andere gebruikers.",
     "fm_info_sharedFolder": "Dit is een gedeelde map. U bent niet ingelogd, dus u kunt de inhoud alleen lezen. U kunt zich <br><a href=\"/register/\">registreren</a> of <a href=\"/login/\">inloggen</a> om het in uw CryptDrive te importeren en het te wijzigen.",
-    "fm_info_anonymous": "U bent niet ingelogd, dus uw documenten zullen verlopen na {0} dagen. Ze kunnen ook verdwijnen als uw browsergeschiedenis gewist wordt. <br><a href=\"/register/\">Registreren</a> (geen persoonlijke gegevens vereist) of <a href=\"/login/\">Inloggen</a> om ze voor altijd in uw drive op te slaan. <a href=\"https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types\" target=\"_blank\">Lees meer over geregistreerde accounts</a>.",
+    "fm_info_anonymous": "U bent niet ingelogd, dus uw documenten zullen verlopen na {0} dagen. Ze kunnen ook verdwijnen als uw browsergeschiedenis gewist wordt. <br><a href=\"/register/\">Registreren</a> (geen persoonlijke gegevens vereist) of <a href=\"/login/\">Inloggen</a> om ze voor altijd in uw drive op te slaan. <a href=\"#docs\">Lees meer over geregistreerde accounts</a>.",
     "fm_info_trash": "Leeg uw prullenbak om opslagruimte vrij te maken in uw CryptDrive.",
     "fm_info_recent": "Deze werkomgevingen zijn onlangs geopend of gewijzigd door u of door mensen met wie u samenwerkt.",
     "fm_info_template": "Dit bevat alle werkomgevingen die zijn opgeslagen als sjablonen en die je kunt gebruiken voor een nieuwe werkomgeving.",

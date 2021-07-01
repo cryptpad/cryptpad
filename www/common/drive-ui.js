@@ -2401,7 +2401,14 @@ define([
             }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
-                return $(common.fixLinks($box.html(msg)));
+                var docsLink = 'https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types';
+                $box.html(msg).find('a[href="#docs"]').each(function () {
+                    $(this).attr({
+                        href: Pages.localizeDocsLink(docsLink),
+                        target: '_blank',
+                    });
+                });
+                return $(common.fixLinks($box));
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
                 $box.hide();

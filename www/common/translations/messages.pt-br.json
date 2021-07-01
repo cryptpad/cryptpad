@@ -138,7 +138,7 @@
     "fm_categoryError": "Incapaz de abrir a categoria selecionada, Exibindo diretório raiz",
     "fm_info_root": "Crie quantos diretórios aninhados aqui desejar para organizar seus arquivos..",
     "fm_info_trash": "Empty your trash to free space in your CryptDrive.",
-    "fm_info_anonymous": "Você não está logado, então estes documentos vão expirar em {0} dias. Limpar o histórico do seu navegador pode fazê-los desaparecer. <br><a href=\"/register/\">Registre-se</a> (nenhuma informação pessoal será requerida) ou <a href=\"/login/\">Faça login</a> para guarda-lo no seu disco. <a href=\"https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types\" target=\"_blank\">Leia mais sobre contas registradas</a>.",
+    "fm_info_anonymous": "Você não está logado, então estes documentos vão expirar em {0} dias. Limpar o histórico do seu navegador pode fazê-los desaparecer. <br><a href=\"/register/\">Registre-se</a> (nenhuma informação pessoal será requerida) ou <a href=\"/login/\">Faça login</a> para guarda-lo no seu disco. <a href=\"#docs\">Leia mais sobre contas registradas</a>.",
     "fm_error_cantPin": "Erro interno do servidor. Por favor recarregue a página e tente novamente.",
     "fc_newfolder": "Nova pasta",
     "fc_rename": "Renomear",
