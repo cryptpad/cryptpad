@@ -27,12 +27,14 @@ define([
     };
 
     window.addEventListener("message", function (event) {
+        var txid, command;
         if (event && event.data) {
             try {
                 //console.log(JSON.parse(event.data));
                 var msg = JSON.parse(event.data);
-                var command = msg.command;
-                var txid = msg.txid;
+                command = msg.command;
+                txid = msg.txid;
+                if (!txid) { return; }
                 COMMANDS[command](msg.content, function (response) {
                     // postMessage with same txid
                     postMessage({
@@ -41,7 +43,11 @@ define([
                     });
                 });
             } catch (err) {
-                console.error(err);
+                postMessage({
+                    txid: txid,
+                    content: err,
+                });
+                console.error(err, command);
             }
         } else {
             console.error(event);

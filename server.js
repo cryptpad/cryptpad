@@ -90,7 +90,7 @@ var setHeaders = (function () {
         return function (req, res) {
             // apply a bunch of cross-origin headers for XLSX export in FF and printing elsewhere
             applyHeaderMap(res, {
-                "Cross-Origin-Opener-Policy": /^\/sheet\//.test(req.url)? 'same-origin': '',
+                "Cross-Origin-Opener-Policy": /^\/(sheet|presentation|doc|convert)\//.test(req.url)? 'same-origin': '',
             });
 
             if (Env.NO_SANDBOX) { // handles correct configuration for local development
