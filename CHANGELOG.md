@@ -19,6 +19,7 @@
   * display actual FLoC header in checkup test
   * WIP check for `server_tokens` settings (needs work for HTTP2)
   * nicer output in error/warning tables
+  * more tests for Cross-Origin-Opener-Policy headers
 * form templates
 * guard against a type error in `getAccessKeys`
 * guard against invalid or malicious input when constructing media-tags for embedding in markdown
@@ -26,7 +27,7 @@
 * conversions
   * convert app
   * some basic office formats
-  * rich text => markdown
+  * rich text => markdown (via turndown.js v7.1.1)
     * handle some pecularities with headings and ids
   * forms => .csv
   * trello import with some loss
@@ -34,7 +35,6 @@
   * guard against domExceptions
   * catch errors thrown by the diff applier
 * don't bother returning the hash of a pin list to the client, since they don't use it
-
 
 # 4.7.0
 
