@@ -676,7 +676,6 @@ define([
             if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
                 var type = el.getAttribute('data-plugin');
                 var plugin = plugins[type];
-                console.log(type);
                 if (!plugin) { return; }
                 var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
                 el.setAttribute(plugin.attr, src);

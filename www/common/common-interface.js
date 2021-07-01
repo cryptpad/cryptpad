@@ -41,6 +41,15 @@ define([
         return e;
     };
 
+    // FIXME almost everywhere this is used would also be
+    // a good candidate for sframe-common's getMediatagFromHref
+    UI.mediaTag = function (src, key) {
+        return h('media-tag', {
+            src: src,
+            'data-crypto-key': 'cryptpad:' + key,
+        });
+    };
+
     var findCancelButton = UI.findCancelButton = function (root) {
         if (root) {
             return $(root).find('button.cancel').last();
