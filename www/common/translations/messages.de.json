@@ -1365,5 +1365,6 @@
     "admin_purpose_experiment": "Zum Testen der Plattform oder zur Entwicklung neuer Funktionen",
     "admin_instancePurposeTitle": "Zweck der Instanz",
     "admin_instancePurposeHint": "Warum betreibst du diese Instanz? Deine Antwort wird mit den Entwicklern geteilt, sofern die Telemetrie aktiviert ist.",
-    "admin_purpose_public": "Zur Bereitstellung eines kostenlosen Dienstes für die Allgemeinheit"
+    "admin_purpose_public": "Zur Bereitstellung eines kostenlosen Dienstes für die Allgemeinheit",
+    "resources_learnWhy": "Mehr über die Gründe erfahren"
 }
