@@ -282,7 +282,7 @@
     "fm_info_template": "Contiene tutti i pad salvati come modelli e che puoi riutilizzare per creare nuovi pad.",
     "fm_info_recent": "Questi pad sono stati recentemente aperti o modificati da te o da persone con le quali tu collabori.",
     "fm_info_trash": "Svuota il tuo cestino per liberare spazio nel tuo CryptDrive.",
-    "fm_info_anonymous": "Non hai effettuato l'accesso, quindi i tuoi pad scadranno fra tre mesi (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">scopri di più</a>). Sono conservati nel tuo browser, quindi cancellando la cronologia potresti farli scomparire.<br><a href=\"/register/\">Registrati</a> o <a href=\"/login/\">Accedi</a> per conservarli permanentemente.<br>",
+    "fm_info_anonymous": "Non hai effettuato l'accesso, quindi i tuoi pad scadranno fra tre mesi. Sono conservati nel tuo browser, quindi cancellando la cronologia potresti farli scomparire.<br><a href=\"/register/\">Registrati</a> o <a href=\"/login/\">Accedi</a> per conservarli permanentemente.<br>",
     "fm_info_sharedFolder": "Questa è una cartella condivisa. Non hai effettuato l'accesso, quindi puoi visualizzarla solo in modalità di sola lettura.<br><a href=\"/register/\">Registrati</a> o <a href=\"/login/\">Accedi</a> per poterla importare nel tuo CryptDrive e per modificarla.",
     "fm_info_owned": "Sei il proprietario dei pad mostrati qui. Questo significa che puoi rimuoverli permanentemente dal server quando lo desideri. Se lo fai, gli altri utenti non potranno più accedervi.",
     "fm_error_cantPin": "Errore interno del server. Ricarica la pagina e prova di nuovo.",
