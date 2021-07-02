@@ -153,7 +153,7 @@ define([
             register: isRegister,
         };
 
-        var RT, blockKeys, blockHash, Pinpad, rpc, userHash;
+        var RT, blockKeys, blockHash, blockUrl, Pinpad, rpc, userHash;
 
         nThen(function (waitFor) {
             // derive a predefined number of bytes from the user's inputs,
@@ -171,7 +171,7 @@ define([
             // the rest of their data
 
             // determine where a block for your set of keys would be stored
-            var blockUrl = Block.getBlockUrl(res.opt.blockKeys);
+            blockUrl = Block.getBlockUrl(res.opt.blockKeys);
 
             // Check whether there is a block at that location
             Util.fetch(blockUrl, waitFor(function (err, block) {
@@ -412,11 +412,20 @@ define([
             toPublish.edPublic = RT.proxy.edPublic;
 
             var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
-
             rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
                 if (e) {
                     console.error(e);
+                    waitFor.abort();
                     return void cb(e);
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // confirm that the block was actually written before considering registration successful
+            Util.fetch(blockUrl, waitFor(function (err /*, block */) {
+                if (err) {
+                    console.error(err);
+                    waitFor.abort();
+                    return void cb(err);
                 }
 
                 console.log("blockInfo available at:", blockHash);

@@ -35,6 +35,9 @@
   * guard against domExceptions
   * catch errors thrown by the diff applier
 * don't bother returning the hash of a pin list to the client, since they don't use it
+* accounts
+  * trim leading and trailing whitespace from usernames when registering
+  * double-check that login blocks can be loaded after they have been written without error
 
 # 4.7.0
 
