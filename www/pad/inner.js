@@ -1327,6 +1327,7 @@ define([
                 $(waitFor());
             }).nThen(function(waitFor) {
                 Ckeditor.config.toolbarCanCollapse = true;
+                Ckeditor.config.language = Messages._getLanguage();
                 if (screen.height < 800) {
                     Ckeditor.config.toolbarStartupExpanded = false;
                     $('meta[name=viewport]').attr('content',

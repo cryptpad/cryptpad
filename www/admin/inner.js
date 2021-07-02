@@ -94,7 +94,7 @@ define([
             'cp-admin-list-my-instance',
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
-            'cp-admin-instance-purpose', // XXX
+            'cp-admin-instance-purpose',
         ],
     };
 
@@ -1902,7 +1902,6 @@ define([
                 [ value]
             ], cb);
         };
-        //var spinner = UI.makeSpinner($br); // XXX
 
         $opts.on('change', function () {
             var val = $opts.find('input:radio:checked').val();

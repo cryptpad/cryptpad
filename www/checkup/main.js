@@ -732,6 +732,36 @@ define([
         cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
     });
 
+
+    [
+        'sheet',
+        'presentation',
+        'doc',
+        'convert',
+    ].forEach(function (url) {
+        assert(function (cb, msg) {
+            var header = 'cross-origin-opener-policy';
+            var expected = 'same-origin';
+            deferredPostMessage({
+                command: 'GET_HEADER',
+                content: {
+                    url: '/' + url + '/',
+                    header: header,
+                }
+            }, function (content) {
+                msg.appendChild(h('span', [
+                    code(url),
+                    ' was served without the correct ',
+                    code(header),
+                    ' HTTP header value (',
+                    code(expected),
+                    '). This will interfere with your ability to convert between office file formats.'
+                ]));
+                cb(content === expected);
+            });
+        });
+    });
+
 /*
     assert(function (cb, msg) {
         setWarningClass(msg);

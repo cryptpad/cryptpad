@@ -145,8 +145,7 @@ define([
             var hexFileName = secret.channel;
             var origin = data.fileHost || data.origin;
             var src = origin + Hash.getBlobPathFromHex(hexFileName);
-            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '">' +
-                   '</media-tag>';
+            return UI.mediaTag(src, key).outerHTML;
         }
         return;
     };

@@ -2075,15 +2075,9 @@ define([
 
         var $container = $('<div>');
         var i = 0;
+
         var types = AppConfig.availablePadTypes.filter(function (p) {
-            if (p === 'drive') { return; }
-            if (p === 'teams') { return; }
-            if (p === 'contacts') { return; }
-            if (p === 'todo') { return; }
-            if (p === 'file') { return; }
-            if (p === 'accounts') { return; }
-            if (p === 'calendar') { return; }
-            if (p === 'poll') { return; } // Replaced by forms
+            if (AppConfig.hiddenTypes.indexOf(p) !== -1) { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;

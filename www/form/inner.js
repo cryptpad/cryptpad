@@ -80,8 +80,11 @@ define([
         timeFormat = "h:i K";
     }
 
-    var MAX_OPTIONS = 15; // XXX
-    var MAX_ITEMS = 10; // XXX
+    // multi-line radio, checkboxes, and possibly other things have a max number of items
+    // we'll consider increasing this restriction if people are unhappy with it
+    // but as a general rule we expect users will appreciate having simpler questions
+    var MAX_OPTIONS = 15;
+    var MAX_ITEMS = 10;
 
     var saveAndCancelOptions = function (getRes, cb) {
         // Cancel changes

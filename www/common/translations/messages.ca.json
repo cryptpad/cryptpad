@@ -282,7 +282,7 @@
     "fm_info_template": "Conté tots els documents desats com plantilles i que podeu reutilitzar quan vulgueu crear un nou document.",
     "fm_info_recent": "Aquests documents s'han modificat o obert darrerament, per vós o per alguna persona col·laboradora.",
     "fm_info_trash": "Buideu la paperera per alliberar espai al vostre CryptDrive.",
-    "fm_info_anonymous": "No heu iniciat la sessió, per tant, els vostres documents caducaran d'aquí a 3 mesos (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">saber-ne més</a>). Es desen al vostre navegador, per tant, si netegeu el vostre historial podríeu perdre'ls.<br><a href=\"/register/\">Registreu-vos</a> o <a href=\"/login/\">Inicieu la sessió</a> per mantenir-los accessibles.<br>",
+    "fm_info_anonymous": "No heu iniciat la sessió, per tant, els vostres documents caducaran d'aquí a 3 mesos. Es desen al vostre navegador, per tant, si netegeu el vostre historial podríeu perdre'ls.<br><a href=\"/register/\">Registreu-vos</a> o <a href=\"/login/\">Inicieu la sessió</a> per mantenir-los accessibles.<br>",
     "fm_info_sharedFolder": "Aquesta és una carpeta compartida. No heu iniciat cap sessió, pel que només podeu accedir en mode només de lectura.<br><a href=\"/register/\">Registreu-vos</a> o <a href=\"/login/\">Inicieu la sessió</a> per poder importar-ho al vostre CryptDrive i modificar-ho.",
     "fm_info_owned": "Es documents que es mostren són de la vostra propietat. Això vol dir que podeu eliminar-los permanentment del servidor quan vulgueu. Si ho feu, la resta de persones no podran accedir-hi mai més.",
     "fm_error_cantPin": "Error intern del servidor. Si us plau, torneu a garregar la pàgina i torneu a provar-ho.",

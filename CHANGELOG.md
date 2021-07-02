@@ -4,6 +4,13 @@
 * server
   * `installMethod: 'unspecified'` in the default config to distinguish docker installs
   * `instancePurpose` on admin panel
+  * add support for archiving pin lists (instead of deleting them)
+  * blocks
+    * archive blocks instead of deleting them outright
+    * implement as storage API
+    * validate blocks in worker
+  * don't include adminEmail in telemetry unless we have consentToContact
+  * don't include instancePurpose in telemetry if it is "noanswer"
 * display warnings when remote resources are blocked
   * in code preview
 * restrict style tags to a scope when rendering them in markdown preview by compiling their content as scoped less
@@ -12,9 +19,25 @@
   * display actual FLoC header in checkup test
   * WIP check for `server_tokens` settings (needs work for HTTP2)
   * nicer output in error/warning tables
+  * more tests for Cross-Origin-Opener-Policy headers
 * form templates
 * guard against a type error in `getAccessKeys`
 * guard against invalid or malicious input when constructing media-tags for embedding in markdown
+* Japanese translation
+* conversions
+  * convert app
+  * some basic office formats
+  * rich text => markdown (via turndown.js v7.1.1)
+    * handle some pecularities with headings and ids
+  * forms => .csv
+  * trello import with some loss
+* fix rendering issue for legacy markdown media tag syntax
+  * guard against domExceptions
+  * catch errors thrown by the diff applier
+* don't bother returning the hash of a pin list to the client, since they don't use it
+* accounts
+  * trim leading and trailing whitespace from usernames when registering
+  * double-check that login blocks can be loaded after they have been written without error
 
 # 4.7.0
 

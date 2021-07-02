@@ -118,7 +118,7 @@
     "fm_info_root": "Crează câte foldere tip cuib ai nevoie pentru a-ți sorta fișierele.",
     "fm_info_template": "Conține toate pad-urile stocate ca șabloane și pe care le poți refolosi atunci când creezi un nou pad.",
     "fm_info_trash": "Fișierele șterse din gunoi vor fi șterse și din \"Toate fișierele\", făcând imposibilă recuperarea fișierelor din managerul de fișiere.",
-    "fm_info_anonymous": "Nu ești logat cu un cont valid așa că aceste pad-uri vor fi șterse (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">află de ce</a>). <a href=\"/register/\">Înscrie-te</a> sau <a href=\"/login/\">Loghează-te</a> pentru a le salva.",
+    "fm_info_anonymous": "Nu ești logat cu un cont valid așa că aceste pad-uri vor fi șterse. <a href=\"/register/\">Înscrie-te</a> sau <a href=\"/login/\">Loghează-te</a> pentru a le salva.",
     "fc_newfolder": "Folder nou",
     "fc_rename": "Redenumește",
     "fc_open": "Deschide",
