@@ -1061,7 +1061,7 @@
     "form_poll_hint": "<i></i>: はい、<i></i>: いいえ、<i></i>: 可",
     "admin_provideAggregateStatisticsLabel": "集計済みの統計を提供",
     "admin_provideAggregateStatisticsTitle": "統計による集計",
-    "admin_blockDailyCheckHint": "以後CryptPadのインスタンスは、1日に1回、CryptPadの開発者のサーバーにメッセージを送信します。開発者はそれをもとに、CryptPadのバージョンごとのサーバー数を追跡することができます。以下からこの測定をオプトアプトできます。なお、送信されるメッセージの内容は、確認用として、アプリケーションのサーバーのログに記録されます。",
+    "admin_blockDailyCheckHint": "CryptPadのインスタンスは、1日に1度、開発者のサーバーにメッセージを送信するよう設定されています。開発者はそれをもとに、CryptPadのバージョンごとのサーバー数を追跡しています。以下からこの測定をオプトアプトできます。なお、送信されるメッセージの内容は、確認用として、アプリケーションのサーバーのログに記録されます。",
     "admin_listMyInstanceHint": "あなたのインスタンスが誰でも利用できる場合、同意によってウェブディレクトリに表示できます。その際は、サーバーのテレメトリーが有効になっている必要があります。",
     "settings_driveRedirectTitle": "ホームページにリダイレクト",
     "form_defaultItem": "項目{0}",
@@ -1203,7 +1203,7 @@
     "admin_diskUsageHint": "CryptPadのリソースが消費しているストレージ容量",
     "timeoutError": "エラーが発生してサーバーへの接続が切断されました。<br><em>Esc</em>キーを押してページをリロードしてください。",
     "footer_team": "貢献者",
-    "admin_updateLimitHint": "ユーザーのストレージ制限の強制アップデートはいつでも可能ですが、エラーが発生したときのみ必須となります",
+    "admin_updateLimitHint": "ユーザーのストレージ制限の強制アップデートはいつでも可能です。エラーが発生したときは必須となります",
     "admin_cat_general": "全般",
     "poll_bookmarked_col": "列をブックマークしました。常に編集可能な仕方で左端に表示されます。",
     "poll_bookmark_col": "この列をブックマークすると、常に編集可能な仕方で左端に表示されます",
@@ -1229,7 +1229,7 @@
     "owner_team_add": "{0}があなたをチーム（<b>{1}</b>）のオーナーにしようとしています。承諾しますか？",
     "friendRequest_accepted": "<b>{0}</b>が連絡先リクエストを承諾しました",
     "friendRequest_accept": "承諾（Enter）",
-    "admin_flushCacheHint": "サーバーから最新のコンテンツをダウンロードするようユーザーに強制（サーバーが「フレッシュ」モードの場合のみ）",
+    "admin_flushCacheHint": "サーバーから最新のコンテンツをダウンロードするようユーザーに強制（サーバーがフレッシュモードの場合のみ）",
     "admin_activeSessionsHint": "アクティブなwebsocketの接続（および接続する一意のIPアドレス）の数",
     "convertFolderToSF_SFParent": "このフォルダは別の共有フォルダ内にあるため、共有フォルダに変換できません。続行するには、外部に移動してください。",
     "settings_deleteWarning": "注意：現在、プレミアムプランに加入しています（別のユーザーが支払いまたは提供）。アカウントを削除する前に、プランをキャンセルしてください。アカウントを削除すると、サポートに連絡しないとキャンセルできなくなります。",
@@ -1308,5 +1308,7 @@
     "share_linkPasswordAlert": "この項目はパスワードで保護されています。リンクを受け取った相手はパスワードを入力する必要があります。",
     "register_notes_title": "重要な注意事項",
     "teams_table_specificHint": "以前のバージョンの共有フォルダでは、閲覧者は既存のパッドを変更することができます。 これらのフォルダで作成またはコピーしたパッドには、標準の権限が与えられます。",
-    "broadcast_maintenance": "<b>{0}</b>から<b>{1}</b>の間でメンテナンスを予定しています。その間CryptPadは使用できません。"
+    "broadcast_maintenance": "<b>{0}</b>から<b>{1}</b>の間でメンテナンスを予定しています。その間CryptPadは使用できません。",
+    "admin_archiveHint": "ドキュメントを完全削除することなく、利用できないよう設定できます。「アーカイブ」フォルダに移動し、数日後に削除します（期間については設定ファイルより設定できます）。",
+    "admin_unarchiveHint": "アーカイブされたドキュメントを復元できます"
 }
