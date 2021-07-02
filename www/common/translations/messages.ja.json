@@ -503,7 +503,7 @@
     "slide_backCol": "背景色",
     "code_editorTheme": "エディターのテーマ",
     "unknownPad": "不明なパッド",
-    "admin_openFilesTitle": "ファイルを開く",
+    "admin_openFilesTitle": "開かれているファイル",
     "kanban_conflicts": "編集中:",
     "kanban_noTags": "タグがありません",
     "historyTrim_historySize": "履歴: {0}",
@@ -1022,7 +1022,7 @@
     "canvas_imageEmbed": "コンピューターの画像を埋め込む",
     "canvas_currentBrush": "現在のブラシ",
     "poll_total": "合計",
-    "kanban_todo": "タスク",
+    "kanban_todo": "未着手",
     "slide_invalidLess": "ユーザー定義のスタイルは無効です",
     "printCSS": "ユーザー定義のスタイルルール（CSS）：",
     "admin_provideAggregateStatisticsHint": "追加の利用状況を開発者に提供することも選択できます。追加の情報には、あなたのインスタンスのおおよその登録ユーザー数や一日あたりのユーザー数などがあります。",
@@ -1306,5 +1306,7 @@
     "share_embedPasswordAlert": "この項目はパスワードで保護されています。このパッドを埋め込む際、閲覧にはパスワードの入力が必要となります。",
     "share_contactPasswordAlert": "この項目はパスワードで保護されています。CryptPadの連絡先と共有するため、相手がパスワードを入力する必要はありません。",
     "share_linkPasswordAlert": "この項目はパスワードで保護されています。リンクを受け取った相手はパスワードを入力する必要があります。",
-    "register_notes_title": "重要な注意事項"
+    "register_notes_title": "重要な注意事項",
+    "teams_table_specificHint": "以前のバージョンの共有フォルダでは、閲覧者は既存のパッドを変更することができます。 これらのフォルダで作成またはコピーしたパッドには、標準の権限が与えられます。",
+    "broadcast_maintenance": "<b>{0}</b>から<b>{1}</b>の間でメンテナンスを予定しています。その間CryptPadは使用できません。"
 }
