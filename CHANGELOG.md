@@ -23,7 +23,6 @@
 * form templates
 * guard against a type error in `getAccessKeys`
 * guard against invalid or malicious input when constructing media-tags for embedding in markdown
-* Japanese translation
 * conversions
   * convert app
   * some basic office formats
