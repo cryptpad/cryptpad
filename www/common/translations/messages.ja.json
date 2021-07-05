@@ -343,7 +343,7 @@
     "settings_safeLinksTitle": "セーフリンク",
     "settings_safeLinksHint": "CryptPadでは、リンクの中にパッドを解読するための鍵が含まれています。ブラウザの閲覧履歴にアクセスできる人は、誰でもCryptPadのデータを閲覧することができます。ここにはデバイス間で履歴を同期するブラウザやその拡張機能も含まれます。「セーフリンク」を有効にすると、鍵がブラウザの閲覧履歴に残ったり、アドレスバーに表示されたりするのを可能な限り防ぐことができます。この機能を有効にして{0}の共有メニューを使用することを強く推奨します。",
     "settings_autostoreTitle": "CryptDriveへのパッドの保存",
-    "settings_logoutEverywhereConfirm": "全てのデバイスでログインが取り消されるため、今後利用する際にもう一度ログインするよう求められます。続行しますか？",
+    "settings_logoutEverywhereConfirm": "全てのデバイスで改めてログインしなければならなくなります。よろしいですか？",
     "settings_logoutEverywhere": "他の全てのウェブセッションからログアウト",
     "settings_logoutEverywhereTitle": "リモートセッションを閉じる",
     "loading_state_5": "ドキュメントを再構築",
