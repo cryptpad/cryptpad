@@ -543,7 +543,7 @@ To upgrade from 3.24.0 to 3.25.0:
 ## Features
 
 * This release makes a lot of changes to how content is loaded over the network.
-  * Most notably, CryptPad now employs a client-side cache based on the the _indexedDB API_. Browsers that support this functionality will opportunistically store messages in a local cache for the next time they need them. This should make a considerable difference in how quickly you're able to load a pad, particularly if you accessing the server over a low-bandwidth network.
+  * Most notably, CryptPad now employs a client-side cache based on the _indexedDB API_. Browsers that support this functionality will opportunistically store messages in a local cache for the next time they need them. This should make a considerable difference in how quickly you're able to load a pad, particularly if you accessing the server over a low-bandwidth network.
   * Uploaded files (images, PDFs, etc.) are also cached in a similar way. Once you'd loaded an asset, your client will prefer to load its local copy instead of the server.
   * We've updated the code for our _full drive backup_ functionality so that it uses the local cache to load files more quickly. In addition to this, backing up the contents of your drive will also populate the cache as though you had loaded your documents in the normal fashion. This cache will persist until it is invalidated (due to the authoritative document having been deleted or had its history trimmed) or until you have logged out.
   * We've added the ability to configure the maximum size for automatically downloaded files. Any encrypted files that are above this size will instead require manual interaction to begin downloading. Files that are larger than this limit which are already loaded in your cache will still be automatically displayed.
@@ -2063,7 +2063,7 @@ Finally, we prioritized the ability to archive files for a period instead of del
 * Users with existing friends on the platform will run a migration to allow them to share pads with friends directly instead of sending them a link.
   * they'll receive a notification indicating the title of the pad and who shared it
   * if you've already added friends on the platform, you can send them pads from the usual "sharing menu"
-* Our code editor already offered the ability to set their color theme and highlighting mode, but now those values will be previewed when mousing over the the option in the dropdown.
+* Our code editor already offered the ability to set their color theme and highlighting mode, but now those values will be previewed when mousing over the option in the dropdown.
   * Our slide editor now offers the same theme selection as the code editor
 * It's now possible to view the history of a shared folder by clicking the history button while viewing the shared folder's contents.
 
