@@ -732,7 +732,6 @@ define([
         cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
     });
 
-
     [
         'sheet',
         'presentation',
@@ -787,7 +786,7 @@ define([
                     " header. This information can make it easier for attackers to find and exploit known vulnerabilities. ",
                 ];
 
-                if (family === 'NGINX') { // XXX incorrect instructions for HTTP2. needs a recompile?
+                if (family === 'NGINX') { // FIXME incorrect instructions for HTTP2. needs a recompile?
                     msg.appendChild(h('span', text.concat([
                         "This can be addressed by setting ",
                         code("server_tokens off"),
