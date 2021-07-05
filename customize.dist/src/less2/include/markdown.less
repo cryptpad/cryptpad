@@ -156,14 +156,11 @@
     }
 
     div.cp-inline-img-warning {
-        @cryptpad_test_red_fader: fade(@cryptpad_color_red, 15%); // XXX
         display: inline-block;
         padding: 10px;
-
-        color: @cryptpad_text_col; // XXX
-        background-color: @cryptpad_test_red_fader; // XXX @cryptpad_color_red_fader;
+        color: @cryptpad_text_col;
+        background-color: @cryptpad_color_red_fader;
         border: 1px solid @cryptpad_color_red;
-
         .cp-inline-img {
             display: flex;
             margin-bottom: 10px;
