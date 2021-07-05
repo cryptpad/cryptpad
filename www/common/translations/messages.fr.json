@@ -1354,5 +1354,15 @@
     "button_newform": "Nouveau formulaire",
     "share_formView": "Participant",
     "share_formAuditor": "Auditeur",
-    "share_formEdit": "Auteur"
+    "share_formEdit": "Auteur",
+    "admin_purpose_noanswer": "Je préfère ne pas répondre",
+    "admin_purpose_experiment": "Pour tester la plateforme ou développer de nouvelles fonctionnalités",
+    "resources_imageBlocked": "CryptPad a bloqué une image distante",
+    "resources_openInNewTab": "Ouvrir dans un nouvel onglet",
+    "resources_learnWhy": "En savoir plus sur les images bloquées",
+    "admin_instancePurposeTitle": "Usage de l'instance",
+    "admin_purpose_personal": "Usage personnel, famille ou amis",
+    "admin_purpose_org": "Usage associatif",
+    "admin_purpose_education": "Usage en entreprise",
+    "admin_purpose_public": "Service gratuit ouvert au public"
 }
