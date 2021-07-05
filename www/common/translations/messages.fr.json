@@ -1364,5 +1364,7 @@
     "admin_purpose_personal": "Usage personnel, famille ou amis",
     "admin_purpose_org": "Usage associatif",
     "admin_purpose_education": "Usage éducatif, école ou université",
-    "admin_purpose_public": "Service gratuit ouvert au public"
+    "admin_purpose_public": "Service gratuit ouvert au public",
+    "admin_purpose_business": "Usage en entreprise",
+    "admin_instancePurposeHint": "À quel usage cette instance est-elle destinée ? Votre réponse sera utilisée pour définir la planification de nouvelles fonctionnalités (si votre télémétrie est activée)."
 }
