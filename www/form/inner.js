@@ -1215,6 +1215,20 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
+            exportCSV: function (answer, form) {
+                var opts = form.opts;
+                var q = form.q || Messages.form_default;
+                if (answer === false) {
+                    return (opts.items || []).map(function (obj) {
+                        return q + ' | ' + obj.v;
+                    });
+                }
+                if (!answer) { return ['']; }
+                return (opts.items || []).map(function (obj) {
+                    var uid = obj.uid;
+                    return String(answer[uid] || '');
+                });
+            },
             icon: h('i.cptools.cptools-form-grid-radio')
         },
         checkbox: {
@@ -1428,6 +1442,20 @@ define([
                 results.push(getEmpty(empty));
 
                 return h('div.cp-form-results-type-radio', results);
+            },
+            exportCSV: function (answer, form) {
+                var opts = form.opts;
+                var q = form.q || Messages.form_default;
+                if (answer === false) {
+                    return (opts.items || []).map(function (obj) {
+                        return q + ' | ' + obj.v;
+                    });
+                }
+                if (!answer) { return ['']; }
+                return (opts.items || []).map(function (obj) {
+                    var uid = obj.uid;
+                    return String(answer[uid] || '');
+                });
             },
             icon: h('i.cptools.cptools-form-grid-check')
         },
@@ -1650,13 +1678,14 @@ define([
                 return h('div.cp-form-type-poll', lines);
             },
             exportCSV: function (answer) {
-                if (!answer || !answer.values) { return ''; }
+                if (answer === false) { return; }
+                if (!answer || !answer.values) { return ['']; }
                 var str = '';
                 Object.keys(answer.values).sort().forEach(function (k, i) {
                     if (i !== 0) { str += ';'; }
                     str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
                 });
-                return str;
+                return [str];
             },
             icon: h('i.cptools.cptools-form-poll')
         },

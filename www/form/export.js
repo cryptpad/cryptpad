@@ -18,13 +18,18 @@ define([
         var csv = "";
         var form = content.form;
 
-        var questions = Object.keys(form).map(function (key) {
+        var questions = [Messages.form_poll_time, Messages.share_formView];
+
+        content.order.forEach(function (key) {
             var obj = form[key];
             if (!obj) { return; }
-            return obj.q || Messages.form_default;
-        }).filter(Boolean);
-        questions.unshift(Messages.share_formView); // "Participant"
-        questions.unshift(Messages.form_poll_time); // "Time"
+            var type = obj.type;
+            if (!TYPES[type]) { return; } // Ignore static types
+            var c;
+            if (TYPES[type] && TYPES[type].exportCSV) { c = TYPES[type].exportCSV(false, obj); }
+            if (!c) { c = [obj.q || Messages.form_default]; }
+            Array.prototype.push.apply(questions, c);
+        });
 
         questions.forEach(function (v, i) {
             if (i) { csv += ','; }
@@ -39,10 +44,14 @@ define([
             var user = msg._userdata || {};
             csv += escapeCSV(time);
             csv += ',' + escapeCSV(user.name || Messages.anonymous);
-            Object.keys(form).forEach(function (key) {
+            content.order.forEach(function (key) {
                 var type = form[key].type;
-                if (TYPES[type] && TYPES[type].exportCSV) {
-                    csv += ',' + escapeCSV(TYPES[type].exportCSV(msg[key]));
+                if (!TYPES[type]) { return; } // Ignore static types
+                if (TYPES[type].exportCSV) {
+                    var res = TYPES[type].exportCSV(msg[key], form[key]).map(function (str) {
+                        return escapeCSV(str);
+                    }).join(',');
+                    csv += ',' + res;
                     return;
                 }
                 csv += ',' + escapeCSV(String(msg[key] || ''));
