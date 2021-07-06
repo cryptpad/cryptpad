@@ -904,7 +904,6 @@ define([
         var leave = h('button.cp-online.btn.btn-danger', Messages.team_leaveButton);
         $(leave).click(function () {
             if (me && me.role === 'OWNER') {
-                Messages.team_leaveOwner = "Owners can't leave the team. You can demote yourself if there is at least one other owner."; // XXX
                 return void UI.alert(Messages.team_leaveOwner);
             }
             UI.confirm(Messages.team_leaveConfirm, function (yes) {
