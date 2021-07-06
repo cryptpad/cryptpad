@@ -44,6 +44,7 @@ To update from 4.7.0 to 4.8.0:
 * The checkup page uses some slightly nicer methods of displaying values returned by tests when the expected value of `true` is not returned. Some tests have been revised to return the problematic value instead of `false` when the test fails, since there were some cases where it was not clear why the test was failing, such as when a header was present but duplicated.
 * We've made some server requests related to _pinning files_ moderately faster by skipping an expensive calculation and omitting the value it returned. This value was meant to be used as a checksum to ensure that all of a user's documents were included in the list which should be associated with their account, however, clients used a separate command to fetch this checksum. The value provided in response to the other commands was never used by the client.
 * We've implemented a system on the client for defining default templates for particular types of documents across an entire instance in addition to the use of documents in the _templates_ section of the users drive (or that of their teams). This is intended more as a generic system for us to reuse throughout the platform's source than an API for instance admins to use. If there is sufficient interest (and funding) from other admins we'll implement this as an instance configuration point. We now provide a _poll_ template to replicate the features of our old poll app which has been deprecated in favour of forms.
+* We've included some more non-sensitive information about users' teams to the debugging data to which is automatically submitted along with support tickets, such as the id of the team's drive, roster, and how large the drive's contents are.
 
 ## Bug fixes
 
@@ -52,6 +53,8 @@ To update from 4.7.0 to 4.8.0:
 * We learned that the Javascript engine used on iOS has trouble parsing an alternative representation of data strings that every other platform seems to handle. This caused calendars to display incorrect data. Because Apple prevents third-party browsers from including their own JavaScript engines this means that users were affected by this Safari bug regardless of whether they used browsers branded as Safari, Firefox, Chrome, or otherwise.
 * After some internal review we now guard against a variety of cases where user-crafted input could trigger a DOMException error and prevent a whole page worth of markdown content to fail to render. While there is no impact for users' privacy or security in this bug, a malicious user could exploit it to be annoying.
 * Shortly after our last release a user reported being unable to access their account due to a typeError which we were able to [guard against](https://github.com/xwiki-labs/cryptpad/commit/abc9466abe71a76d1d31ef6a3c2c9bba4d2233e4).
+* Images appearing in the 'lightbox' preview modal no longer appear stretched.
+* Before applying actions that modify the team's membership we now confirm that server-enforced permissions match our local state.
 
 # 4.7.0
 
