@@ -1366,5 +1366,6 @@
     "admin_purpose_education": "For a school, college, or university",
     "admin_purpose_public": "To provide a free service to the public",
     "admin_purpose_business": "For a business or commercial organization",
-    "admin_instancePurposeHint": "Why do you run this instance? Your answer will be used to inform the development roadmap if your telemetry is enabled."
+    "admin_instancePurposeHint": "Why do you run this instance? Your answer will be used to inform the development roadmap if your telemetry is enabled.",
+    "team_leaveOwner": "Please demote yourself from the owner role before leaving the team. Note that teams must have at least one owner, please add one before proceeding if you are currently the only owner."
 }
