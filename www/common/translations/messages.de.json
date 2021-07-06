@@ -1366,5 +1366,6 @@
     "admin_instancePurposeTitle": "Zweck der Instanz",
     "admin_instancePurposeHint": "Warum betreibst du diese Instanz? Deine Antwort wird mit den Entwicklern geteilt, sofern die Telemetrie aktiviert ist.",
     "admin_purpose_public": "Zur Bereitstellung eines kostenlosen Dienstes für die Allgemeinheit",
-    "resources_learnWhy": "Mehr über die Gründe erfahren"
+    "resources_learnWhy": "Mehr über die Gründe erfahren",
+    "team_leaveOwner": "Bitte entferne dich von der Rolle des Eigentümers, bevor du das Teams verlässt. Beachte, dass Teams mindestens einen Eigentümer haben müssen. Bitte füge daher zunächst einen weiteren Eigentümer hinzu, sofern du derzeit der alleinige Eigentümer bist."
 }
