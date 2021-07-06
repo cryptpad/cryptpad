@@ -2040,9 +2040,16 @@ define([
             if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
                 if (!ctx.teams[id]) { return; }
+                var proxy = ctx.teams[id].proxy || {};
+                var nPads = proxy.drive && Object.keys(proxy.drive.filesData || {}).length;
+                var nSf = proxy.drive && Object.keys(proxy.drive.sharedFolders || {}).length;
                 t[id] = {
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
+                    channel: teams[id].channel,
+                    numberPads: nPads,
+                    numberSf: nSf,
+                    roster: Util.find(teams[id], ['keys', 'roster', 'channel']),
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar']),
                     viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
