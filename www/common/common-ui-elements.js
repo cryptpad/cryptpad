@@ -1886,8 +1886,11 @@ define([
                 },
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
-                    Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                        Common.gotoURL(origin + '/');
+                    UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
+                        if (!yes) { return; }
+                        Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                            Common.gotoURL(origin + '/');
+                        });
                     });
                 },
             });
