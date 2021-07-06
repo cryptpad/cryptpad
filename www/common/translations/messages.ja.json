@@ -428,7 +428,7 @@
     "settings_disableThumbnailsAction": "CryptDriveでのサムネイルの作成を無効にする",
     "settings_resetError": "入力した確認文が正しくありません。CryptDriveのデータは消去されていません。",
     "settings_resetDone": "データが消去されました！",
-    "settings_resetPrompt": "あなたのドライブからのパッドを削除します。<br>本当に続けてよろしいですか？</br>続けるには「I love CryptPad」と入力してください。",
+    "settings_resetPrompt": "あなたのドライブからのパッドを削除します。<br>本当に続けてよろしいですか？<br>続けるには「I love CryptPad」と入力してください。",
     "settings_reset": "CryptDriveの全てのファイルとフォルダを削除",
     "settings_exportErrorOther": "ドキュメントのエクスポート中にエラーが発生しました: {0}",
     "drive_activeOld": "以前のパッド",
@@ -1366,5 +1366,6 @@
     "reminder_date": "<b>{0}</b>が{1}にあります",
     "calendar_more": "あと{0}個",
     "reminder_time": "<b>{0}</b>が今日の{1}にあります",
-    "form_answerWarning": "本人であることが確認されていません"
+    "form_answerWarning": "本人であることが確認されていません",
+    "team_leaveOwner": "チームから退出する前に、オーナーの役割から降格してください。チームには最低1人以上のオーナーが必要です。あなたが唯一のオーナーの場合は、別のオーナーを追加してください。"
 }
