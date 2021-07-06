@@ -1,43 +1,57 @@
-# WIP
+# 4.8.0
 
-* WIP file conversion utilities
-* server
-  * `installMethod: 'unspecified'` in the default config to distinguish docker installs
-  * `instancePurpose` on admin panel
-  * add support for archiving pin lists (instead of deleting them)
-  * blocks
-    * archive blocks instead of deleting them outright
-    * implement as storage API
-    * validate blocks in worker
-  * don't include adminEmail in telemetry unless we have consentToContact
-  * don't include instancePurpose in telemetry if it is "noanswer"
-* display warnings when remote resources are blocked
-  * in code preview
-* restrict style tags to a scope when rendering them in markdown preview by compiling their content as scoped less
-* iPhone/Safari calendar and notification fixes (data parsing errors)
-* checkup
-  * display actual FLoC header in checkup test
-  * WIP check for `server_tokens` settings (needs work for HTTP2)
-  * nicer output in error/warning tables
-  * more tests for Cross-Origin-Opener-Policy headers
-* form templates
-* guard against a type error in `getAccessKeys`
-* guard against invalid or malicious input when constructing media-tags for embedding in markdown
-* Japanese translation
-* conversions
-  * convert app
-  * some basic office formats
-  * rich text => markdown (via turndown.js v7.1.1)
-    * handle some pecularities with headings and ids
-  * forms => .csv
-  * trello import with some loss
-* fix rendering issue for legacy markdown media tag syntax
-  * guard against domExceptions
-  * catch errors thrown by the diff applier
-* don't bother returning the hash of a pin list to the client, since they don't use it
-* accounts
-  * trim leading and trailing whitespace from usernames when registering
-  * double-check that login blocks can be loaded after they have been written without error
+## Goals
+
+This release cycle we decided to give people a chance to try our forms app and provide feedback before we begin developing its second round of major features and improvements. In the meantime we planned to work mostly on the activities of our [NGI DAPSI](https://dapsi.ngi.eu/) project which concerns client-side file format conversions. Otherwise, we dedicated some of our independently funded time towards some internal code review and security best-practices as a follow-up to the recent quick-scan performed by [Radically Open Security](https://radicallyopensecurity.com/) that was funded by [NLnet](https://nlnet.nl) as a part of our now-closing _CryptPad for Communities_ project.
+
+## Update notes
+
+We are still accepting feedback concerning our Form application via [a form hosted on CryptPad.fr](https://cryptpad.fr/form/#/2/form/view/gYs4QS7DetInCXy0z2CQoUW6CwN6kaR2utGsftDzp58/). We will accept feedback here until July 12th, 2021, so if you'd like your opinions to be represented in the app's second round of development act quickly!
+
+Following our last release we sent out an email to the admins of each outdated instance that had included their addresses in the server's daily telemetry. This appears to have been successful, as more than half of the 700+ instances that provide this telemetry are now running **4.7.0**. Previously, only 15% of instances were running the latest version. It's worth noting that of those admins that are hosting the latest version, less than 10% have opted into future emails warning them of security issues. In case you missed it, this can be done on the admin panel's _Network_ tab. Unlike most companies, we consider excess data collection a liability rather than an asset. As such, adminstrator emails are no longer included in server telemetry unless the admin has consented to be contacted.
+
+The same HTTP request that communicates server telemetry will soon begin responding with the URL of our latest release notes if it is detected that the remote instance is running an older version. The admin panel's _Network_ tab for instances running 4.7.0 or later will begin prompting admins to view the release notes and update once 4.8.0 is available.
+
+The Network tab now includes a multiple choice form as well. If you have not disabled your instance's telemetry you can use this field to answer _why you run your instance_ (for a business, an academic institution, personal use, etc.). We intend to use this data to inform our development roadmap, though as always, the fastest way to get us to prioritize your needs is to contact us for a support contract (sales@cryptpad.fr).
+
+Server telemetry will also include an `installMethod` property. By default this is `"unspecified"`, but we are planning to work with packagers of alternate install methods to modify this property in their installation scripts. This will help us assess what proportion of instances are installed via the steps included in our installation guide vs other methods such as the various docker images. We hope that it will also allow us to determine the source of some common misconfigurations so we can propose some improvements to the root cause.
+
+Getting off the topic of telemetry: two types of data that were previously deleted outright (pin logs and login blocks) are now archived when the client sends a _remove_ command. This provides for the ability to restore old user credentials in cases where users claim that their new credentials do not work following a password change. Some discretion is required in such cases as a user might have intentionally invalidated their old credentials due to shoulder-surfing or the breach of another service's database where they'd reused credentials. Neither of these types of data are currently included in the scripts which evict old data as they are not likely to consume a significant amount of storage space. In any case, CryptPad's data is stored on the filesystem, so it's always possible to remove outdated files by removing them from `cryptpad/data/archive/*` or whatever path you've configured for your archives.
+
+This release introduces some minor changes to the provided NGINX configuration file to enable support for WebAssembly where it is required for client-side file format conversions. We've added some new tests on the /checkup/ page that determine whether these changes have been applied. This page can be found via a button on the admin panel.
+
+To update from 4.7.0 to 4.8.0:
+
+1. Apply the documented NGINX configuration
+2. Stop your server
+3. Get the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+6. Confirm that your instance is passing all the tests included on the `/checkup/` page
+
+## Features
+
+* Those who prefer using tools localized in Japanese can thank [@Suguru](https://mstdn.progressiv.dev/@suguru) for completing the Japanese translation of the platform's text! CryptPad is a fairly big platform with a lot of text to translate, so we really appreciate how much effort went into this.
+  * While we're on the topic, CryptPad's _Deutsch_ translation is kept up to date largely by a single member of the German Pirate Party (Piratenpartei Deutschland). This is a huge job and we appreciate your work too!
+  * Anyone else who wishes to give back to the project by doing the same can contribute translations on an ongoing basis through [our Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+* We've implemented a new app for file format conversions as a part of our _INTEROFFICE_ project. At this point this page is largely a test-case for the conversion engine that we hope to integrate more tightly into the rest of the platform. It allows users to load a variety of file formats into their browser and convert to any other format that has a defined conversion process from the original format. What's special about this is that files are converted entirely in your browser, unlike other platforms which do so in the cloud and expose their contents in the process. Currently we support conversion between the following formats in every browser that supports modern web standards (ie. not safari):
+  * XLSX and ODS
+  * DOCX and ODT and TXT
+  * PPTX and ODP
+* In addition to the /convert/ page which supports office file formats, we also put some time into improving interoperability for our existing apps. We're introducing the ability to export rich text documents as Markdown (via the [turndown](https://github.com/mixmark-io/turndown) library), to import trello's JSON format into our Kanban app (with some loss of attributes because we don't support all the same features), and to export form summaries as CSV files.
+* We've added another extension to our customized markdown renderer which replaces markdown images with a warning that CryptPad blocks remote content to prevent malicious users from tracking visitors to certain pages. Such images should already be blocked by our strict use of Content-Security-Policy headers, but this will provide a better indication why images are failing to load on isnstances that are correctly configured and a modest improvement to users' privacy on instances that aren't.
+* Up until now it was possible to include style tags in markdown documents, which some of our more advanced users used in order to customize the appearance of their rendered documents. Unfortunately, these styles were not applied strictly to the markdown preview window, but to the page as a whole, making it possible to break the platform's interface (for that pad) through the use of overly broad and powerful style rules. As of this release style tags are now treated as special elements, such that their contents are compiled as [LESS](https://lesscss.org/) within a scope that is only applied to the preview pane. This was intended as a bug fix, but it's included here as a _feature_ because advanced users might see it as such and use it to do neat things. We have no funding for further work in this direction, however, and presently have no intent of providing documentation about this behaviour.
+* The checkup page uses some slightly nicer methods of displaying values returned by tests when the expected value of `true` is not returned. Some tests have been revised to return the problematic value instead of `false` when the test fails, since there were some cases where it was not clear why the test was failing, such as when a header was present but duplicated.
+* We've made some server requests related to _pinning files_ moderately faster by skipping an expensive calculation and omitting the value it returned. This value was meant to be used as a checksum to ensure that all of a user's documents were included in the list which should be associated with their account, however, clients used a separate command to fetch this checksum. The value provided in response to the other commands was never used by the client.
+* We've implemented a system on the client for defining default templates for particular types of documents across an entire instance in addition to the use of documents in the _templates_ section of the users drive (or that of their teams). This is intended more as a generic system for us to reuse throughout the platform's source than an API for instance admins to use. If there is sufficient interest (and funding) from other admins we'll implement this as an instance configuration point. We now provide a _poll_ template to replicate the features of our old poll app which has been deprecated in favour of forms.
+
+## Bug fixes
+
+* It was brought to our attention that the registration page was not trimming leading and trailing whitespace from usernames as intended. We've updated the page to do so, however, accounts created with such characters in their username field must enter their credentials exactly as they were at registration time in order to log in. We have no means of detecting such accounts on the server, as usernames are not visible to server admins. We'll consider this behaviour in the future if we introduce an option to change usernames as we do with passwords.
+* We now double-check that login blocks (account credentials encrypted with a key derived from a username and password) can be accessed by the client when registering or changing passwords. It should be sufficient to rely on the server to report whether the encrypted credentials were stored successfully when uploading them, but in instances where these resources don't load due to a misbehaving browser extension it's better that we detect it at registration time rather than after the user creates content that will be difficult to access without assistance determining which extension or browser customization is to blame.
+* We learned that the Javascript engine used on iOS has trouble parsing an alternative representation of data strings that every other platform seems to handle. This caused calendars to display incorrect data. Because Apple prevents third-party browsers from including their own JavaScript engines this means that users were affected by this Safari bug regardless of whether they used browsers branded as Safari, Firefox, Chrome, or otherwise.
+* After some internal review we now guard against a variety of cases where user-crafted input could trigger a DOMException error and prevent a whole page worth of markdown content to fail to render. While there is no impact for users' privacy or security in this bug, a malicious user could exploit it to be annoying.
+* Shortly after our last release a user reported being unable to access their account due to a typeError which we were able to [guard against](https://github.com/xwiki-labs/cryptpad/commit/abc9466abe71a76d1d31ef6a3c2c9bba4d2233e4).
 
 # 4.7.0
 
@@ -529,7 +543,7 @@ To upgrade from 3.24.0 to 3.25.0:
 ## Features
 
 * This release makes a lot of changes to how content is loaded over the network.
-  * Most notably, CryptPad now employs a client-side cache based on the the _indexedDB API_. Browsers that support this functionality will opportunistically store messages in a local cache for the next time they need them. This should make a considerable difference in how quickly you're able to load a pad, particularly if you accessing the server over a low-bandwidth network.
+  * Most notably, CryptPad now employs a client-side cache based on the _indexedDB API_. Browsers that support this functionality will opportunistically store messages in a local cache for the next time they need them. This should make a considerable difference in how quickly you're able to load a pad, particularly if you accessing the server over a low-bandwidth network.
   * Uploaded files (images, PDFs, etc.) are also cached in a similar way. Once you'd loaded an asset, your client will prefer to load its local copy instead of the server.
   * We've updated the code for our _full drive backup_ functionality so that it uses the local cache to load files more quickly. In addition to this, backing up the contents of your drive will also populate the cache as though you had loaded your documents in the normal fashion. This cache will persist until it is invalidated (due to the authoritative document having been deleted or had its history trimmed) or until you have logged out.
   * We've added the ability to configure the maximum size for automatically downloaded files. Any encrypted files that are above this size will instead require manual interaction to begin downloading. Files that are larger than this limit which are already loaded in your cache will still be automatically displayed.
@@ -2049,7 +2063,7 @@ Finally, we prioritized the ability to archive files for a period instead of del
 * Users with existing friends on the platform will run a migration to allow them to share pads with friends directly instead of sending them a link.
   * they'll receive a notification indicating the title of the pad and who shared it
   * if you've already added friends on the platform, you can send them pads from the usual "sharing menu"
-* Our code editor already offered the ability to set their color theme and highlighting mode, but now those values will be previewed when mousing over the the option in the dropdown.
+* Our code editor already offered the ability to set their color theme and highlighting mode, but now those values will be previewed when mousing over the option in the dropdown.
   * Our slide editor now offers the same theme selection as the code editor
 * It's now possible to view the history of a shared folder by clicking the history button while viewing the shared folder's contents.
 

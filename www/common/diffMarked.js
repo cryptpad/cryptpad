@@ -292,6 +292,9 @@ define([
         if (typeof(window.URL) === 'undefined') { return false; }
         try {
             var url = new URL(href, ApiConfig.httpUnsafeOrigin);
+            // FIXME data URLs can be quite large, but that should be addressed
+            // in the source markdown's, not the renderer
+            if (url.protocol === 'data:') { return true; }
             var localURL = new URL(ApiConfig.httpUnsafeOrigin);
             return url.host === localURL.host;
         } catch (err) {

@@ -48,7 +48,6 @@ define([
         debug("x2t mount done");
     };
     var getX2t = function (cb) {
-        // XXX require http headers on firefox...
         require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
             var x2t = window.Module;
             x2t.run();
