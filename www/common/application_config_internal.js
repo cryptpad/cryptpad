@@ -22,7 +22,7 @@ define(function() {
      */
     AppConfig.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support'];
 
-    // XXX to prevent apps that aren't officially supported from showing up
+    // to prevent apps that aren't officially supported from showing up
     // in the document creation modal
     AppConfig.hiddenTypes = ['drive', 'teams', 'contacts', 'todo', 'file', 'accounts', 'calendar', 'poll', 'convert',
     //'doc', 'presentation'
