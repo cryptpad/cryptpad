@@ -46,6 +46,7 @@ To update from 4.7.0 to 4.8.0:
 * We've made some server requests related to _pinning files_ moderately faster by skipping an expensive calculation and omitting the value it returned. This value was meant to be used as a checksum to ensure that all of a user's documents were included in the list which should be associated with their account, however, clients used a separate command to fetch this checksum. The value provided in response to the other commands was never used by the client.
 * We've implemented a system on the client for defining default templates for particular types of documents across an entire instance in addition to the use of documents in the _templates_ section of the users drive (or that of their teams). This is intended more as a generic system for us to reuse throughout the platform's source than an API for instance admins to use. If there is sufficient interest (and funding) from other admins we'll implement this as an instance configuration point. We now provide a _poll_ template to replicate the features of our old poll app which has been deprecated in favour of forms.
 * We've included some more non-sensitive information about users' teams to the debugging data to which is automatically submitted along with support tickets, such as the id of the team's drive, roster, and how large the drive's contents are.
+* The _Log out everywhere_ option that is displayed in the user admin menu in the top-right corner of the page for logged-in users now displays a confirmation before terminating all remote sessions.
 
 ## Bug fixes
 
