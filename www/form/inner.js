@@ -1216,7 +1216,7 @@ define([
                 return h('div.cp-form-results-type-radio', results);
             },
             exportCSV: function (answer, form) {
-                var opts = form.opts;
+                var opts = form.opts || {};
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
                     return (opts.items || []).map(function (obj) {
@@ -1444,7 +1444,7 @@ define([
                 return h('div.cp-form-results-type-radio', results);
             },
             exportCSV: function (answer, form) {
-                var opts = form.opts;
+                var opts = form.opts || {};
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
                     return (opts.items || []).map(function (obj) {
@@ -1701,7 +1701,7 @@ define([
 
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
-        Messages.form_exportCSV = "Export results as CSV";
+        Messages.form_exportCSV = "Export results as CSV"; // XXX
         var exportButton = h('button.btn.btn-secondary', Messages.form_exportCSV);
         var exportCSV = h('div.cp-form-creator-results-export', exportButton);
         $(exportCSV).appendTo($container);
