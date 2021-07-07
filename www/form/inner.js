@@ -4,6 +4,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
+    '/form/export.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
@@ -30,6 +31,8 @@ define([
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
+    '/bower_components/file-saver/FileSaver.min.js',
+
     'css!/bower_components/codemirror/lib/codemirror.css',
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
@@ -42,6 +45,7 @@ define([
     Crypto,
     Framework,
     Toolbar,
+    Exporter,
     nThen,
     SFCommon,
     Util,
@@ -76,8 +80,11 @@ define([
         timeFormat = "h:i K";
     }
 
-    var MAX_OPTIONS = 15; // XXX
-    var MAX_ITEMS = 10; // XXX
+    // multi-line radio, checkboxes, and possibly other things have a max number of items
+    // we'll consider increasing this restriction if people are unhappy with it
+    // but as a general rule we expect users will appreciate having simpler questions
+    var MAX_OPTIONS = 15;
+    var MAX_ITEMS = 10;
 
     var saveAndCancelOptions = function (getRes, cb) {
         // Cancel changes
@@ -1208,6 +1215,20 @@ define([
 
                 return h('div.cp-form-results-type-radio', results);
             },
+            exportCSV: function (answer, form) {
+                var opts = form.opts || {};
+                var q = form.q || Messages.form_default;
+                if (answer === false) {
+                    return (opts.items || []).map(function (obj) {
+                        return q + ' | ' + obj.v;
+                    });
+                }
+                if (!answer) { return ['']; }
+                return (opts.items || []).map(function (obj) {
+                    var uid = obj.uid;
+                    return String(answer[uid] || '');
+                });
+            },
             icon: h('i.cptools.cptools-form-grid-radio')
         },
         checkbox: {
@@ -1421,6 +1442,20 @@ define([
                 results.push(getEmpty(empty));
 
                 return h('div.cp-form-results-type-radio', results);
+            },
+            exportCSV: function (answer, form) {
+                var opts = form.opts || {};
+                var q = form.q || Messages.form_default;
+                if (answer === false) {
+                    return (opts.items || []).map(function (obj) {
+                        return q + ' | ' + obj.v;
+                    });
+                }
+                if (!answer) { return ['']; }
+                return (opts.items || []).map(function (obj) {
+                    var uid = obj.uid;
+                    return String(answer[uid] || '');
+                });
             },
             icon: h('i.cptools.cptools-form-grid-check')
         },
@@ -1642,6 +1677,16 @@ define([
 
                 return h('div.cp-form-type-poll', lines);
             },
+            exportCSV: function (answer) {
+                if (answer === false) { return; }
+                if (!answer || !answer.values) { return ['']; }
+                var str = '';
+                Object.keys(answer.values).sort().forEach(function (k, i) {
+                    if (i !== 0) { str += ';'; }
+                    str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
+                });
+                return [str];
+            },
             icon: h('i.cptools.cptools-form-poll')
         },
     };
@@ -1656,9 +1701,21 @@ define([
 
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
+        var exportButton = h('button.btn.btn-secondary', Messages.exportButton); // XXX form_exportCSV;
+        var exportCSV = h('div.cp-form-creator-results-export', exportButton);
+        $(exportCSV).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
 
+        $(exportButton).click(function () {
+            var csv = Exporter.results(content, answers, TYPES);
+            if (!csv) { return void UI.warn(Messages.error); }
+            var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
+            var title = Util.fixFileName(suggestion) + '.csv';
+            window.saveAs(new Blob([csv], {
+                type: 'text/csv'
+            }), title);
+        });
 
         var summary = true;
         var form = content.form;
@@ -2315,6 +2372,7 @@ define([
 
     var andThen = function (framework) {
         framework.start();
+        APP.framework = framework;
         var evOnChange = Util.mkEvent();
         var content = {};
 
@@ -2738,6 +2796,17 @@ define([
             checkIntegrity(true);
             return content;
         });
+
+        framework.setFileImporter({ accept: ['.json'] }, function (newContent) {
+            var parsed = JSON.parse(newContent || {});
+            parsed.answers = content.answers;
+            return parsed;
+        });
+
+        framework.setFileExporter(['.json'], function(cb, ext) {
+            Exporter.main(content, cb, ext);
+        }, true);
+
 
     };
 

@@ -18,6 +18,7 @@ define([
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
+    '/kanban/export.js',
 
     'cm/mode/gfm/gfm',
     'cm/addon/edit/closebrackets',
@@ -50,7 +51,8 @@ define([
     ChainPad,
     Marked,
     CodeMirror,
-    jKanban)
+    jKanban,
+    Export)
 {
 
     var verbose = function (x) { console.log(x); };
@@ -287,7 +289,7 @@ define([
                     var fileHost = privateData.fileHost || privateData.origin;
                     var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                     var key = Hash.encodeBase64(secret.keys.cryptKey);
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                    var mt = UI.mediaTag(src, key).outerHTML;
                     editor.replaceSelection(mt);
                 }
             };
@@ -1060,6 +1062,11 @@ define([
             var parsed;
             try { parsed = JSON.parse(content); }
             catch (e) { return void console.error(e); }
+
+            if (parsed && parsed.id && parsed.lists && parsed.cards) {
+                return { content: Export.import(parsed) };
+            }
+
             return { content: parsed };
         });
 

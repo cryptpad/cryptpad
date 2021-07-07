@@ -122,14 +122,11 @@ var createUser = function (config, cb) {
             });
         }));
     }).nThen(function (w) {
-        user.rpc.reset([], w(function (err, hash) {
+        user.rpc.reset([], w(function (err) {
             if (err) {
                 w.abort();
                 user.shutdown();
-                return console.log("RESET_ERR");
-            }
-            if (!hash || hash !== EMPTY_ARRAY_HASH) {
-                throw new Error("EXPECTED EMPTY ARRAY HASH");
+                return console.log("TEST_RESET_ERR");
             }
         }));
     }).nThen(function (w) {
@@ -214,17 +211,17 @@ var createUser = function (config, cb) {
         // TODO check your quota usage
 
     }).nThen(function (w) {
-        user.rpc.unpin([user.mailboxChannel], w(function (err, hash) {
+        user.rpc.unpin([user.mailboxChannel], w(function (err) {
             if (err) {
                 w.abort();
                 return void cb(err);
             }
+        }));
+    }).nThen(function (w) {
+        user.rpc.getServerHash(w(function (err, hash) {
+            console.log(hash);
 
-            if (hash[0] !== EMPTY_ARRAY_HASH) {
-                //console.log('UNPIN_RESPONSE', hash);
-                throw new Error("UNPIN_DIDNT_WORK");
-            }
-            user.latestPinHash = hash[0];
+            user.latestPinHash = hash;
         }));
     }).nThen(function (w) {
         // clean up the pin list to avoid lots of accounts on the server
@@ -304,7 +301,8 @@ nThen(function  (w) {
     }, w(function (err, roster) {
         if (err) {
             w.abort();
-            return void console.trace(err);
+            console.error(err);
+            return void console.error("ROSTER_ERROR");
         }
         oscar.roster = roster;
         oscar.destroy.reg(function () {

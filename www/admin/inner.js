@@ -94,6 +94,7 @@ define([
             'cp-admin-list-my-instance',
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
+            'cp-admin-instance-purpose',
         ],
     };
 
@@ -1852,6 +1853,73 @@ define([
             });
         },
     });
+
+    var sendDecree = function (data, cb) {
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'ADMIN_DECREE',
+            data: data,
+        }, cb);
+    };
+
+    create['instance-purpose'] = function () {
+        var key = 'instance-purpose';
+        var $div = makeBlock(key); // Messages.admin_instancePurposeTitle.admin_instancePurposeHint
+
+        var values = [
+            'noanswer', // Messages.admin_purpose_noanswer
+            'experiment', // Messages.admin_purpose_experiment
+            'personal', // Messages.admin_purpose_personal
+            'education', // Messages.admin_purpose_education
+            'org', // Messages.admin_purpose_org
+            'business', // Messages.admin_purpose_business
+            'public', // Messages.admin_purpose_public
+        ];
+
+        var defaultPurpose = 'noanswer';
+        var purpose = APP.instanceStatus.instancePurpose || defaultPurpose;
+
+        var opts = h('div.cp-admin-radio-container', [
+            values.map(function (key) {
+                var full_key = 'admin_purpose_' + key;
+                return UI.createRadio('cp-instance-purpose-radio', 'cp-instance-purpose-radio-'+key,
+                    Messages[full_key] || Messages._getKey(full_key, [defaultPurpose]),
+                    key === purpose, {
+                        input: { value: key },
+                        label: { class: 'noTitle' }
+                    });
+            })
+        ]);
+
+        var $opts = $(opts);
+        //var $br = $(h('br',));
+        //$div.append($br);
+
+        $div.append(opts);
+
+        var setPurpose = function (value, cb) {
+            sendDecree([
+                'SET_INSTANCE_PURPOSE',
+                [ value]
+            ], cb);
+        };
+
+        $opts.on('change', function () {
+            var val = $opts.find('input:radio:checked').val();
+            console.log(val);
+            //spinner.spin();
+            setPurpose(val, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    //spinner.hide();
+                    return;
+                }
+                //spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        return $div;
+    };
 
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();

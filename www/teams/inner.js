@@ -768,7 +768,7 @@ define([
                     $(demote).hide();
                     describeUser(common, data.curvePublic, {
                         role: role
-                    }, promote);
+                    }, demote);
                 };
                 if (isMe) {
                     return void UI.confirm(Messages.team_demoteMeConfirm, function (yes) {
@@ -901,22 +901,23 @@ define([
             $header.append(invite);
         }
 
-        if (me && (me.role !== 'OWNER')) {
-            var leave = h('button.cp-online.btn.btn-danger', Messages.team_leaveButton);
-            $(leave).click(function () {
-                UI.confirm(Messages.team_leaveConfirm, function (yes) {
-                    if (!yes) { return; }
-                    APP.module.execCommand('LEAVE_TEAM', {
-                        teamId: APP.team
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            return void UI.warn(Messages.error);
-                        }
-                    });
+        var leave = h('button.cp-online.btn.btn-danger', Messages.team_leaveButton);
+        $(leave).click(function () {
+            if (me && me.role === 'OWNER') {
+                return void UI.alert(Messages.team_leaveOwner);
+            }
+            UI.confirm(Messages.team_leaveConfirm, function (yes) {
+                if (!yes) { return; }
+                APP.module.execCommand('LEAVE_TEAM', {
+                    teamId: APP.team
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        return void UI.warn(Messages.error);
+                    }
                 });
             });
-            $header.append(leave);
-        }
+        });
+        $header.append(leave);
 
         var table = h('button.btn.btn-primary', Messages.teams_table);
         $(table).click(function (e) {

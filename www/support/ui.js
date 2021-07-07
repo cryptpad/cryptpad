@@ -31,9 +31,7 @@ define([
 
         if (typeof(ctx.pinUsage) === 'object') {
             // pass pin.usage, pin.limit, and pin.plan if supplied
-            Object.keys(ctx.pinUsage).forEach(function (k) {
-                data.sender[k] = ctx.pinUsage[k];
-            });
+            data.sender.quota = ctx.pinUsage;
         }
 
         data.id = id;
@@ -45,11 +43,14 @@ define([
             data.sender.blockLocation = privateData.blockLocation || '';
             data.sender.teams = Object.keys(teams).map(function (key) {
                 var team = teams[key];
-                if (!teams) { return; }
+                if (!team) { return; }
                 var ret = {};
-                ['edPublic', 'owner', 'viewer', 'hasSecondaryKey', 'validKeys'].forEach(function (k) {
+                ['channel', 'roster', 'numberPads', 'numberSf', 'edPublic', 'curvePublic', 'owner', 'viewer', 'hasSecondaryKey', 'validKeys'].forEach(function (k) {
                     ret[k] = team[k];
                 });
+                if (ctx.teamsUsage && ctx.teamsUsage[key]) {
+                    ret.quota = ctx.teamsUsage[key];
+                }
                 return ret;
             }).filter(Boolean);
 
@@ -430,12 +431,13 @@ define([
         ]);
     };
 
-    var create = function (common, isAdmin, pinUsage) {
+    var create = function (common, isAdmin, pinUsage, teamsUsage) {
         var ui = {};
         var ctx = {
             common: common,
             isAdmin: isAdmin,
             pinUsage: pinUsage || false,
+            teamsUsage: teamsUsage || false,
             adminKeys: Array.isArray(ApiConfig.adminKeys)?  ApiConfig.adminKeys.slice(): [],
         };
 

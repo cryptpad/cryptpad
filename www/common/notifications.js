@@ -8,7 +8,8 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages) {
+    '/lib/datepicker/flatpickr.js',
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Flatpickr) {
 
     var handlers = {};
 
@@ -477,7 +478,7 @@ define([
             var nowDateStr = new Date().toLocaleDateString();
             var startDate = new Date(start);
             if (msg.isAllDay && msg.startDay) {
-                startDate = new Date(msg.startDay);
+                startDate = Flatpickr.parseDate(msg.startDay);
             }
 
             // Missed events

@@ -955,7 +955,7 @@ define([
                 var fileHost = privateData.fileHost || privateData.origin;
                 var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                 var key = Hash.encodeBase64(secret.keys.cryptKey);
-                var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                var mt = UI.mediaTag(src, key).outerHTML;
                 APP.editor.replaceSelection(mt);
             }
         };
@@ -1235,7 +1235,7 @@ define([
                 common.openFilePicker(pickerCfg, function (data) {
                     if (data.type === 'file' && APP.editor) {
                         common.setPadAttribute('atime', +new Date(), null, data.href);
-                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                        var mt = UI.mediaTag(data.src, data.key).outerHTML;
                         APP.editor.replaceSelection(mt);
                         return;
                     }

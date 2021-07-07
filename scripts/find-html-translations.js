@@ -9,6 +9,7 @@ var simpleTags = [
 
     // FIXME
     "<a href='#'>",
+    '<a href="#docs">',
     '<h3>',
     '</h3>',
 
@@ -70,7 +71,7 @@ processLang(EN, 'en', true);
 
 [
   'ar',
-  'bn_BD',
+  //'bn_BD',
   'ca',
   'de',
   'es',
@@ -86,11 +87,15 @@ processLang(EN, 'en', true);
   'ro',
   'ru',
   'sv',
-  'te',
+  //'te',
   'tr',
   'zh',
 ].forEach(function (lang) {
-    var map = require("../www/common/translations/messages." + lang + ".json");
-    if (!Object.keys(map).length) { return; }
-    processLang(map, lang);
+    try {
+        var map = require("../www/common/translations/messages." + lang + ".json");
+        if (!Object.keys(map).length) { return; }
+        processLang(map, lang);
+    } catch (err) {
+        console.error(err);
+    }
 });

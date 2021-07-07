@@ -154,6 +154,38 @@
         color: @cp_markdown-block-fg;
         text-align: left;
     }
+
+    div.cp-inline-img-warning {
+        display: inline-block;
+        padding: 10px;
+        color: @cryptpad_text_col;
+        background-color: @cryptpad_color_red_fader;
+        border: 1px solid @cryptpad_color_red;
+        .cp-inline-img {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .cp-alt-txt {
+            margin-left: 10px;
+            font-family: monospace;
+            font-size: 0.8em;
+            color: fade(@cryptpad_text_col, 90%);
+        }
+        a {
+            color: @cryptpad_text_col;
+            font-size: 0.8em;
+            &.cp-remote-img::before { // .fa.fa-question-circle
+                font-family: FontAwesome;
+                //content: "\f08e\00a0";
+                content: "\f08e\00a0\00a0";
+            }
+            &.cp-learn-more::before { // .fa.fa-external-link
+                font-family: FontAwesome;
+                content: "\f059\00a0";
+                //content: "\f059\00a0\00a0";
+            }
+        }
+    }
 }
 
 .markdown_cryptpad() {

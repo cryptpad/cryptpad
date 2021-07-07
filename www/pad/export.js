@@ -1,12 +1,24 @@
 define([
     'jquery',
     '/common/common-util.js',
+    '/common/diffMarked.js',
+    '/common/hyperscript.js',
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/nthen/index.js',
-], function ($, Util, Hyperjson, nThen) {
+    '/lib/turndown.browser.umd.js'
+], function ($, Util, DiffMd, h, Hyperjson, nThen, Turndown) {
     var module = {
         ext: '.html', // default
-        exts: ['.html', '.doc']
+        exts: ['.html', '.md', '.doc']
+    };
+
+    module.importMd = function (md, common) {
+        var html = DiffMd.render(md, true, false, true);
+        var div = h('div#cp-temp');
+        DiffMd.apply(html, $(div), common);
+        var body = h('body');
+        body.innerHTML = div.innerHTML;
+        return body;
     };
 
     var exportMediaTags = function (inner, cb) {
@@ -76,6 +88,15 @@ define([
                     type: 'application/msword'
                 });
                 return void cb(blob);
+            }
+            if (ext === ".md") {
+                var md = Turndown({
+                    headingStyle: 'atx'
+                }).turndown(toExport);
+                var mdBlob = new Blob([md], {
+                    type: 'text/markdown;charset=utf-8'
+                });
+                return void cb(mdBlob);
             }
             var html = module.getHTML(toExport);
             cb(new Blob([ html ], { type: "text/html;charset=utf-8" }));
