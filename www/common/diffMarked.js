@@ -9,11 +9,13 @@ define([
     '/common/media-tag.js',
     '/customize/messages.js',
     '/common/less.min.js',
+    '/customize/pages.js',
+
     '/common/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
     var DiffMd = {};
 
     var Highlight = window.hljs;
@@ -344,7 +346,7 @@ define([
             ]),
             h('br'),
             h('a.cp-learn-more', {
-                href: 'https://docs.cryptpad.fr/user_guide/security.html#remote-content',
+                href: Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#remote-content'),
             }, [
                 Messages.resources_learnWhy
             ]),
