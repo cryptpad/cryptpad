@@ -1366,5 +1366,7 @@
     "admin_purpose_education": "Usage éducatif, école ou université",
     "admin_purpose_public": "Service gratuit ouvert au public",
     "admin_purpose_business": "Usage en entreprise",
-    "admin_instancePurposeHint": "À quel usage cette instance est-elle destinée ? Votre réponse sera utilisée pour définir la planification de nouvelles fonctionnalités (si votre télémétrie est activée)."
+    "admin_instancePurposeHint": "À quel usage cette instance est-elle destinée ? Votre réponse sera utilisée pour définir la planification de nouvelles fonctionnalités (si votre télémétrie est activée).",
+    "team_leaveOwner": "Veuillez vous rétrograder de votre rôle de propriétaire avant de quitter l'équipe. Notez que les équipes doivent avoir au moins un propriétaire, veuillez en ajouter un autre avant de poursuivre si vous êtes actuellement le seul propriétaire.",
+    "form_exportCSV": "Exporter en CSV"
 }
