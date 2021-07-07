@@ -748,8 +748,8 @@ define([
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
                     var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
-                    mediaTagEmbedder($('<media-tag src="' + src +
-                        '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
+                    var mt = UI.mediaTag(src, data.key);
+                    mediaTagEmbedder($(mt), data);
                 });
             }).appendTo(toolbar.$bottomL).hide();
         };

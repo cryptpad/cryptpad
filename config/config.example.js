@@ -276,4 +276,13 @@ module.exports = {
      *  (false by default)
      */
     verbose: false,
+
+    /*  Surplus information:
+     *
+     *  'installMethod' is included in server telemetry to voluntarily
+     *  indicate how many instances are using unofficial installation methods
+     *  such as Docker.
+     *
+     */
+    installMethod: 'unspecified',
 };

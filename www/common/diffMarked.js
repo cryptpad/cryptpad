@@ -8,11 +8,14 @@ define([
     '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/common/less.min.js',
+    '/customize/pages.js',
+
     '/common/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
     var DiffMd = {};
 
     var Highlight = window.hljs;
@@ -172,12 +175,16 @@ define([
         return h('div.cp-md-toc', content).outerHTML;
     };
 
-    DiffMd.render = function (md, sanitize, restrictedMd) {
+    var noHeadingId = false;
+    DiffMd.render = function (md, sanitize, restrictedMd, noId) {
         Marked.setOptions({
             renderer: restrictedMd ? restrictedRenderer : renderer,
         });
+        noHeadingId = noId;
         var r = Marked(md, {
-            sanitize: sanitize
+            sanitize: sanitize,
+            headerIds: !noId,
+            gfm: true,
         });
 
         // Add Table of Content
@@ -207,7 +214,11 @@ define([
     };
     restrictedRenderer.code = renderer.code;
 
+    var _heading = renderer.heading;
     renderer.heading = function (text, level) {
+        if (noHeadingId) {
+            return _heading.apply(this, arguments);
+        }
         var i = 0;
         var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
         var getId = function () {
@@ -266,9 +277,43 @@ define([
         return '<li>' + text + '</li>\n';
     };
 
+
+    var qualifiedHref = function (href) {
+        if (typeof(window.URL) === 'undefined') { return href; }
+        try {
+            var url = new URL(href, ApiConfig.httpUnsafeOrigin);
+            return url.href;
+        } catch (err) {
+            console.error(err);
+            return href;
+        }
+    };
+
+    var isLocalURL = function (href) {
+        // treat all URLs as remote if you are using an ancient browser
+        if (typeof(window.URL) === 'undefined') { return false; }
+        try {
+            var url = new URL(href, ApiConfig.httpUnsafeOrigin);
+            // FIXME data URLs can be quite large, but that should be addressed
+            // in the source markdown's, not the renderer
+            if (url.protocol === 'data:') { return true; }
+            var localURL = new URL(ApiConfig.httpUnsafeOrigin);
+            return url.host === localURL.host;
+        } catch (err) {
+            return true;
+        }
+    };
+
     renderer.image = function (href, title, text) {
+        if (isLocalURL(href) && href.slice(0, 6) !== '/file/') {
+            return h('img', {
+                src: href,
+                title: title || '',
+                alt: text,
+            }).outerHTML;
+        }
+
         if (href.slice(0,6) === '/file/') {
-            // DEPRECATED
             // Mediatag using markdown syntax should not be used anymore so they don't support
             // password-protected files
             console.log('DEPRECATED: mediatag using markdown syntax!');
@@ -276,19 +321,38 @@ define([
             var secret = Hash.getSecrets('file', parsed.hash);
             var src = (ApiConfig.fileHost || '') +Hash.getBlobPathFromHex(secret.channel);
             var key = Hash.encodeBase64(secret.keys.cryptKey);
-            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
-            if (mediaMap[src]) {
-                mt += mediaMap[src];
-            }
-            mt += '</media-tag>';
-            return mt;
+            var mt = h('media-tag', {
+                src: src,
+                'data-crypto-key': 'cryptpad:' + key,
+            });
+            return mt.outerHTML;
         }
-        var out = '<img src="' + href + '" alt="' + text + '"';
-        if (title) {
-            out += ' title="' + title + '"';
-        }
-        out += this.options.xhtml ? '/>' : '>';
-        return out;
+
+        var warning = h('div.cp-inline-img-warning', [
+            h('div.cp-inline-img', [
+                h('img.cp-inline-img', {
+                    src: '/images/broken.png',
+                    //title: title || '', // FIXME sort out tippy issues (double-title)
+                }),
+                h('p.cp-alt-txt', text),
+            ]),
+            h('span.cp-img-block-notice', {
+            }, Messages.resources_imageBlocked),
+            h('br'),
+            h('a.cp-remote-img', {
+                href: qualifiedHref(href),
+            }, [
+                Messages.resources_openInNewTab
+            ]),
+            h('br'),
+            h('a.cp-learn-more', {
+                href: Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#remote-content'),
+            }, [
+                Messages.resources_learnWhy
+            ]),
+        ]);
+
+        return warning.outerHTML;
     };
     restrictedRenderer.image = renderer.image;
 
@@ -473,6 +537,75 @@ define([
         }
     };
 
+    var applyCSS = function (el, css) {
+        var style = h('style');
+        style.appendChild(document.createTextNode(css));
+        el.innerText = '';
+        el.appendChild(style);
+    };
+
+    // trim non-functional text from less input so that
+    // the compiler is only triggered when there has been a functional change
+    var canonicalizeLess = function (source) {
+        return (source || '')
+        // leading and trailing spaces are irrelevant
+            .trim()
+        // line comments are easy to disregard
+            .replace(/\/\/[^\n]*/g, '')
+        // lines with nothing but spaces and tabs can be ignored
+            .replace(/^[ \t]*$/g, '')
+        // consecutive newlines make no difference
+            .replace(/\n+/g, '');
+    };
+
+    var rendered_less = {};
+    var getRenderedLess = (function () {
+        var timeouts = {};
+        return function (src) {
+            if (!rendered_less[src]) { return; }
+            if (timeouts[src]) {
+                clearTimeout(timeouts[src]);
+            }
+            // avoid memory leaks by deleting cached content
+            // 15s after it was last accessed
+            timeouts[src] = setTimeout(function () {
+                delete rendered_less[src];
+                delete timeouts[src];
+            }, 15000);
+            return rendered_less[src];
+        };
+    }());
+
+    plugins.less = {
+        name: 'less',
+        attr: 'less-src',
+        render: function renderLess ($el, opt) {
+            var src = canonicalizeLess($el.text());
+            if (!src) { return; }
+            var el = $el[0];
+            var rendered = getRenderedLess(src);
+            if (rendered) { return void applyCSS(el, rendered); }
+
+            var scope = opt.scope.attr('id') || 'cp-app-code-preview-content';
+            var scoped_src = '#' + scope + ' { ' + src + '}';
+            //console.error("RENDERING LESS");
+            Less.render(scoped_src, {}, function (err, result) {
+        // the console is the only feedback for users to know that they did something wrong
+        // but less rendering isn't intended so much as a feature but a useful tool to avoid
+        // leaking styles from the preview into the rest of the DOM. This is an improvement.
+                if (err) {
+        // we assume the compiler is deterministic. Something that returns an error once
+        // will do it again, so avoid successive calls by caching a truthy
+        // but non-functional string to block them.
+                    rendered_less[src] = ' ';
+                    return void console.error(err);
+                }
+                var css = rendered_less[src] = result.css;
+                applyCSS(el, css);
+            });
+        },
+    };
+
     var getAvailableCachedElement = function ($content, cache, src) {
         var cached = cache[src];
         if (!Array.isArray(cached)) { return; }
@@ -546,7 +679,8 @@ define([
         // caching their source as you go
         $(newDomFixed).find('pre[data-plugin]').each(function (index, el) {
             if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
-                var plugin = plugins[el.getAttribute('data-plugin')];
+                var type = el.getAttribute('data-plugin');
+                var plugin = plugins[type];
                 if (!plugin) { return; }
                 var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
                 el.setAttribute(plugin.attr, src);
@@ -559,7 +693,8 @@ define([
         var scrollTop = $parent.scrollTop();
         // iterate over rendered mermaid charts
         $content.find('pre[data-plugin]:not([processed="true"])').each(function (index, el) {
-            var plugin = plugins[el.getAttribute('data-plugin')];
+            var type = el.getAttribute('data-plugin');
+            var plugin = plugins[type];
             if (!plugin) { return; }
 
             // retrieve the attached source code which it was drawn
@@ -666,7 +801,11 @@ define([
         if (typeof(patch) === 'string') {
             throw new Error(patch);
         } else {
-            DD.apply($content[0], patch);
+            try {
+                DD.apply($content[0], patch);
+            } catch (err) {
+                console.error(err);
+            }
             var $mts = $content.find('media-tag');
             $mts.each(function (i, el) {
                 var $mt = $(el).contextmenu(function (e) {
@@ -721,9 +860,35 @@ define([
                 if (target) { target.scrollIntoView(); }
             });
 
+            // replace remote images with links to those images
+            $content.find('div.cp-inline-img-warning').each(function (index, el) {
+                if (!el) { return; }
+                var link = el.querySelector('a.cp-remote-img');
+                if (!link) { return; }
+                link.onclick = function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    common.openURL(link.href);
+                };
+            });
+
+            // transform style tags into pre tags with the same content
+            // to be handled by the less rendering plugin
+            $content.find('style').each(function (index, el) {
+                var parent = el.parentElement;
+                var pre = h('pre', {
+                    'data-plugin': 'less',
+                    'less-src': canonicalizeLess(el.innerText),
+                    style: 'display: none',
+                }, el.innerText);
+                parent.replaceChild(pre, el);
+            });
+
             // loop over plugin elements in the rendered content
             $content.find('pre[data-plugin]').each(function (index, el) {
-                var plugin = plugins[el.getAttribute('data-plugin')];
+                var type = el.getAttribute('data-plugin');
+                var plugin = plugins[type];
+
                 if (!plugin) { return; }
                 var $el = $(el);
                 $el.off('contextmenu').on('contextmenu', function (e) {
@@ -742,13 +907,17 @@ define([
                 // you can assume that the index of your rendered charts matches that
                 // of those in the markdown source. 
                 var src = plugin.source[index];
-                el.setAttribute(plugin.attr, src);
+                if (src) {
+                    el.setAttribute(plugin.attr, src);
+                }
                 var cached = getAvailableCachedElement($content, plugin.cache, src);
 
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        plugin.render($el);
+                        plugin.render($el, {
+                            scope: $content,
+                        });
                     } catch (e) { console.error(e); }
                     return;
                 }

@@ -26,23 +26,19 @@ var factory = function (Util, Rpc) {
             exp.send = rpc.send;
 
             // you can ask the server to pin a particular channel for you
-            exp.pin = function (channels, cb) {
+            exp.pin = function (channels, _cb) {
+                var cb = Util.once(Util.mkAsync(_cb));
                 if (!Array.isArray(channels)) {
-                    setTimeout(function () {
-                        cb('[TypeError] pin expects an array');
-                    });
-                    return;
+                    return void cb('[TypeError] pin expects an array');
                 }
                 rpc.send('PIN', channels, cb);
             };
 
             // you can also ask to unpin a particular channel
-            exp.unpin = function (channels, cb) {
+            exp.unpin = function (channels, _cb) {
+                var cb = Util.once(Util.mkAsync(_cb));
                 if (!Array.isArray(channels)) {
-                    setTimeout(function () {
-                        cb('[TypeError] pin expects an array');
-                    });
-                    return;
+                    return void cb('[TypeError] pin expects an array');
                 }
                 rpc.send('UNPIN', channels, cb);
             };
@@ -70,23 +66,12 @@ var factory = function (Util, Rpc) {
             };
 
             // if local and remote hashes don't match, send a reset
-            exp.reset = function (channels, cb) {
+            exp.reset = function (channels, _cb) {
+                var cb = Util.once(Util.mkAsync(_cb));
                 if (!Array.isArray(channels)) {
-                    setTimeout(function () {
-                        cb('[TypeError] pin expects an array');
-                    });
-                    return;
+                    return void cb('[TypeError] pin expects an array');
                 }
-                rpc.send('RESET', channels, function (e, response) {
-                    if (e) {
-                        return void cb(e);
-                    }
-                    if (!response.length) {
-                        console.log(response);
-                        return void cb('INVALID_RESPONSE');
-                    }
-                    cb(e, response[0]);
-                });
+                rpc.send('RESET', channels, cb);
             };
 
             // get the combined size of all channels (in bytes) for all the

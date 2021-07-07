@@ -12,7 +12,7 @@ define(function() {
      * You should never remove the drive from this list.
      */
     AppConfig.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
-                                /*'doc', 'presentation',*/ 'file', /*'todo',*/ 'contacts', 'form'];
+                                /*'doc', 'presentation',*/ 'file', /*'todo',*/ 'contacts', 'form', 'convert'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -21,6 +21,12 @@ define(function() {
      * the app
      */
     AppConfig.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support'];
+
+    // to prevent apps that aren't officially supported from showing up
+    // in the document creation modal
+    AppConfig.hiddenTypes = ['drive', 'teams', 'contacts', 'todo', 'file', 'accounts', 'calendar', 'poll', 'convert',
+    //'doc', 'presentation'
+    ];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge

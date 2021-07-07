@@ -2401,7 +2401,14 @@ define([
             }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
-                return $(common.fixLinks($box.html(msg)));
+                var docsLink = 'https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types';
+                $box.html(msg).find('a[href="#docs"]').each(function () {
+                    $(this).attr({
+                        href: Pages.localizeDocsLink(docsLink),
+                        target: '_blank',
+                    });
+                });
+                return $(common.fixLinks($box));
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
                 $box.hide();
@@ -2564,14 +2571,7 @@ define([
         var getNewPadTypes = function () {
             var arr = [];
             AppConfig.availablePadTypes.forEach(function (type) {
-                if (type === 'drive') { return; }
-                if (type === 'teams') { return; }
-                if (type === 'contacts') { return; }
-                if (type === 'todo') { return; }
-                if (type === 'file') { return; }
-                if (type === 'accounts') { return; }
-                if (type === 'calendar') { return; }
-                if (type === 'poll') { return; } // replaced by forms
+                if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;

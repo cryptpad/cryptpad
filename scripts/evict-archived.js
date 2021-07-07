@@ -56,6 +56,8 @@ var prepareEnv = function (Env, cb) {
 
         Store.create({
             filePath: config.pinPath,
+            // archive pin logs to their own subpath
+            volumeId: 'pins',
         }, w(function (err, _) {
             if (err) {
                 w.abort();

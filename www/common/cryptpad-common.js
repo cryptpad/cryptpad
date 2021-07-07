@@ -1937,6 +1937,17 @@ define([
                     waitFor.abort();
                     return void cb(obj);
                 }
+            }));
+        }).nThen(function (waitFor) {
+            var blockUrl = Block.getBlockUrl(blockKeys);
+            Util.fetch(blockUrl, waitFor(function (err /* block */) {
+                if (err) {
+                    console.error(err);
+                    waitFor.abort();
+                    return cb({
+                        error: err,
+                    });
+                }
                 console.log("new login block written");
                 var newBlockHash = Block.getBlockHash(blockKeys);
                 LocalStore.setBlockHash(newBlockHash);

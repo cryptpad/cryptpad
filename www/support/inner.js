@@ -272,19 +272,27 @@ define([
         APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
         var sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
+    }).nThen(function (waitFor) {
+        metadataMgr = common.getMetadataMgr();
+        privateData = metadataMgr.getPrivateData();
         common.getPinUsage(null, waitFor(function (err, data) {
             if (err) { return void console.error(err); }
             APP.pinUsage = data;
         }));
+        APP.teamsUsage = {};
+        Object.keys(privateData.teams).forEach(function (teamId) {
+            common.getPinUsage(teamId, waitFor(function (err, data) {
+                if (err) { return void console.error(err); }
+                APP.teamsUsage[teamId] = data;
+            }));
+        });
     }).nThen(function (/*waitFor*/) {
         createToolbar();
-        metadataMgr = common.getMetadataMgr();
-        privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.supportPage);
 
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
-        APP.support = Support.create(common, false, APP.pinUsage);
+        APP.support = Support.create(common, false, APP.pinUsage, APP.teamsUsage);
 
         // Content
         var $rightside = APP.$rightside;

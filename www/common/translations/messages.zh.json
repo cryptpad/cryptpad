@@ -139,7 +139,7 @@
     "fm_info_root": "在此建立任何巢狀目錄夾以便於整理分類你的檔案。",
     "fm_info_template": "包含所有工作檔案已存成模版，便於讓你在建立新工作檔案時套用。",
     "fm_info_trash": "清空垃圾筒好讓 CryptDrive 多出一些空間",
-    "fm_info_anonymous": "您没有登录，所以您的文档将在{0}天后过期。清除你的浏览器历史记录可能会使它们消失。<br><a href=\"/register/\">注册</a> (无需个人信息) 或<a href=\"/login/\">登录</a>以无限期地把它们储存在你的硬盘里。 <a href=\"https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types\" target=\"_blank\">阅读更多关于注册帐户</a>。",
+    "fm_info_anonymous": "您没有登录，所以您的文档将在{0}天后过期。清除你的浏览器历史记录可能会使它们消失。<br><a href=\"/register/\">注册</a> (无需个人信息) 或<a href=\"/login/\">登录</a>以无限期地把它们储存在你的硬盘里。 <a href=\"#docs\">阅读更多关于注册帐户</a>。",
     "fm_error_cantPin": "內部伺服器出錯，請重新載入本頁並再試一次。",
     "fc_newfolder": "新資料夾",
     "fc_rename": "重新命名",
