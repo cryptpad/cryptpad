@@ -1470,6 +1470,7 @@ define([
                 if (!Array.isArray(opts.values)) { return; }
                 var map = {};
                 var invMap = {};
+                var sorted = false;
                 var els = opts.values.map(function (data, i) {
                     var uid = Util.uid();
                     map[uid] = data;
@@ -1479,7 +1480,7 @@ define([
                             h('i.fa.fa-ellipsis-v'),
                             h('i.fa.fa-ellipsis-v'),
                         ]),
-                        h('span.cp-form-sort-order', (i+1)),
+                        h('span.cp-form-sort-order', '?'),
                         h('span', data)
                     ]);
                     $(div).data('val', data);
@@ -1494,6 +1495,7 @@ define([
                     $tag.find('.cp-form-type-sort').each(function (i, el) {
                         $(el).find('.cp-form-sort-order').text(i+1);
                     });
+                    sorted = true;
                 };
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
@@ -1516,6 +1518,7 @@ define([
                 return {
                     tag: tag,
                     getValue: function () {
+                        if (!sorted) { return; }
                         return sortable.toArray().map(function (id) {
                             return map[id];
                         });
