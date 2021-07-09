@@ -1492,11 +1492,11 @@ define([
                     els
                 ]);
                 var $tag = $(tag);
-                var reorder = function () {
+                var reorder = function (reset) {
                     $tag.find('.cp-form-type-sort').each(function (i, el) {
-                        $(el).find('.cp-form-sort-order').text(i+1);
+                        $(el).find('.cp-form-sort-order').text(reset ? '?' : i+1);
                     });
-                    sorted = true;
+                    sorted = !reset;
                 };
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
@@ -1525,11 +1525,12 @@ define([
                         });
                     },
                     reset: function () {
+                        Util.shuffleArray(opts.values);
                         var toSort = (opts.values).map(function (val) {
                             return invMap[val];
                         });
                         sortable.sort(toSort);
-                        reorder();
+                        reorder(true);
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
@@ -1889,12 +1890,13 @@ define([
         }
 
         var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
-        var reset = h('button.cp-open.btn.btn-danger-alt', Messages.form_reset);
+        var reset = h('button.cp-open.cp-reset-button.btn.btn-danger-alt', Messages.form_reset);
         $(reset).click(function () {
             if (!Array.isArray(APP.formBlocks)) { return; }
             APP.formBlocks.forEach(function (data) {
                 if (typeof(data.reset) === "function") { data.reset(); }
             });
+            $(reset).attr('disabled', 'disabled');
         });
         var $send = $(send).click(function () {
             $send.attr('disabled', 'disabled');
@@ -2008,6 +2010,7 @@ define([
             delete _answers._userdata;
             evOnChange.reg(function (noBeforeUnload, isSave) {
                 if (noBeforeUnload) { return; }
+                $container.find('.cp-reset-button').removeAttr('disabled');
                 var results = getFormResults();
                 if (isSave) {
                     answers = Util.clone(results || {});
@@ -2360,6 +2363,9 @@ define([
 
         // In view mode, add "Submit" and "reset" buttons
         $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
+        if (!answers) {
+            $container.find('.cp-reset-button').attr('disabled', 'disabled');
+        }
     };
 
     var getTempFields = function () {
