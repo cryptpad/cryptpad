@@ -2289,7 +2289,8 @@ define([
         var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = manager.isPathIn(path, [TRASH]);
-            if (APP.mobile() && !noStyle) { // noStyle means title in search result
+            // we assume that users viewing shared folders may want to see the "bread-crumb"
+            if (!APP.newSharedFolder && APP.mobile() && !noStyle) { // noStyle means title in search result
                 return $container;
             }
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
@@ -3147,7 +3148,8 @@ define([
             if (APP.$burnThisDrive) {
                 APP.toolbar.$bottomR.append(APP.$burnThisDrive);
             }
-            collapseTreeButton();
+            // this button is not useful for unregistered users who do not have a tree worth looking at
+            if (APP.loggedIn) { collapseTreeButton(); }
             return $toolbar;
         };
 
