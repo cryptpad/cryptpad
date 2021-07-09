@@ -1472,7 +1472,7 @@ define([
                 var invMap = {};
                 var sorted = false;
                 Util.shuffleArray(opts.values);
-                var els = opts.values.map(function (data, i) {
+                var els = opts.values.map(function (data) {
                     var uid = Util.uid();
                     map[uid] = data;
                     invMap[data] = uid;
