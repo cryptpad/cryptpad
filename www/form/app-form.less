@@ -464,6 +464,16 @@
             display: flex;
             flex-flow: column;
             position: relative;
+
+            #cp-form-response-msg {
+                background: @cp_form-bg1;
+                margin-bottom: 20px;
+                padding: 10px;
+                p:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
             .cp-form-creator-results-controls {
                 margin-bottom: 20px;
                 //background: @cp_form-bg1;
@@ -677,6 +687,16 @@
                 -ms-overflow-style: none;  /* IE and Edge */
                 scrollbar-width: none;  /* Firefox */
             }
+            .cp-form-poll-option, .cp-poll-time-day {
+                flex-flow: column;
+                text-align: center;
+                .cp-form-weekday-separator {
+                    display: none;
+                }
+            }
+            .cp-poll-time-day {
+                height: 50px;
+            }
         }
         &.cp-form-poll-switch {
             display: flex;
@@ -706,12 +726,21 @@
             }
             .cp-form-poll-option, .cp-poll-switch {
                 width: 200px;
+                .cp-form-weekday-separator {
+                    margin-right: 5px;
+                    margin-left: 5px;
+                }
             }
             .cp-poll-time-day {
                 flex-basis: 40px;
                 border-right: none;
                 border-right: 1px solid @cryptpad_text_col;
                 border-bottom: 0px;
+                flex-flow: column;
+                text-align: center;
+                .cp-form-weekday-separator {
+                    display: none;
+                }
             }
         }
         .cp-form-poll-choice, .cp-form-poll-answer {

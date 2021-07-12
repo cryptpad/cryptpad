@@ -575,6 +575,19 @@ define([
         ];
     };
 
+    var getWeekDays = function (large) {
+        var baseDate = new Date(2017, 0, 1); // just a Sunday
+        var weekDays = [];
+        for(var i = 0; i < 7; i++) {
+            weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
+            baseDate.setDate(baseDate.getDate() + 1);
+        }
+        if (!large) {
+            weekDays = weekDays.map(function (day) { return day.slice(0,3); });
+        }
+        return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
+    };
+
     var makePollTable = function (answers, opts) {
         // Sort date values
         if (opts.type !== "text") {
@@ -583,18 +596,25 @@ define([
             });
         }
         // Create first line with options
+        var allDays = getWeekDays(true);
         var els = opts.values.map(function (data) {
+            var _date;
             if (opts.type === "day") {
-                var _date = new Date(data);
+                _date = new Date(data);
                 data = _date.toLocaleDateString();
             }
             if (opts.type === "time") {
-                var _dateT = new Date(data);
-                data = Flatpickr.formatDate(_dateT, timeFormat);
+                _date = new Date(data);
+                data = Flatpickr.formatDate(_date, timeFormat);
             }
+            var day = allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
                 title: Util.fixHTML(data)
-            }, data);
+            }, [
+                opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
+                opts.type === 'day' ? h('span.cp-form-weekday-separator', ' - ') : undefined,
+                h('span', data)
+            ]);
         });
         // Insert axis switch button
         var switchAxis = h('button.btn.btn-default', [
@@ -611,13 +631,20 @@ define([
             opts.values.forEach(function (d) {
                 var date = new Date(d);
                 var day = date.toLocaleDateString();
-                _days[day] = _days[day] || 0;
-                _days[day]++;
+                _days[day] = {
+                    n: (_days[day] && _days[day].n) || 0,
+                    name: allDays[date.getDay()]
+                };
+                _days[day].n++;
             });
             Object.keys(_days).forEach(function (day) {
                 days.push(h('div.cp-poll-cell.cp-poll-time-day', {
-                    style: 'flex-grow:'+(_days[day]-1)+';'
-                }, day));
+                    style: 'flex-grow:'+(_days[day].n - 1)+';'
+                }, [
+                    h('span.cp-form-weekday', _days[day].name),
+                    h('span.cp-form-weekday-separator', ' - '),
+                    h('span', day)
+                ]));
             });
             lines.unshift(h('div', days));
         }
@@ -1704,6 +1731,12 @@ define([
             return;
         }
 
+        if (content.answers.msg) {
+            var description = h('div.cp-form-creator-results-description#cp-form-response-msg');
+            var $desc = $(description).appendTo($container);
+            DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
+        }
+
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var exportButton = h('button.btn.btn-secondary', Messages.exportButton); // XXX form_exportCSV;
@@ -1835,7 +1868,7 @@ define([
     };
 
     var addResultsButton = function (framework, content) {
-        var $res = $(h('button.cp-toolbar-appmenu', [
+        var $res = $(h('button.cp-toolbar-appmenu.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
             h('span.cp-button-name', Messages.form_results)
         ]));
@@ -2002,6 +2035,18 @@ define([
         var form = content.form;
 
         APP.formBlocks = [];
+
+        if (APP.isClosed && content.answers.privateKey && !APP.isEditor) {
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                var answers = obj && obj.results;
+                if (answers) { APP.answers = answers; }
+                $('body').addClass('cp-app-form-results');
+                $('.cp-toolbar-form-button').remove();
+                renderResults(content, answers);
+            });
+            return;
+        }
 
         var evOnChange = Util.mkEvent();
         if (!APP.isEditor) {
@@ -2453,6 +2498,71 @@ define([
             };
             refreshPublic();
 
+            var responseMsg = h('div.cp-form-response-msg-container');
+            var $responseMsg = $(responseMsg);
+            var refreshResponse = function () {
+                $responseMsg.empty();
+                Messages.form_updateMsg = "Update response message"; // XXX
+                Messages.form_addMsg = "Add response message";
+                Messages.form_responseMsg = "Add a message that will be displayed in the response page.";
+                var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
+                var btn = h('button.btn.btn-secondary', text);
+                $(btn).click(function () {
+                    var editor;
+                    if (!APP.responseModal) {
+                        var t = h('textarea');
+                        var div = h('div', [
+                            h('p', Messages.form_responseMsg),
+                            t
+                        ]);
+                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
+                        editor = APP.responseEditor = cm.editor;
+                        editor.setOption('lineNumbers', true);
+                        editor.setOption('lineWrapping', true);
+                        editor.setOption('styleActiveLine', true);
+                        editor.setOption('readOnly', false);
+                        setTimeout(function () {
+                            editor.setValue(content.answers.msg || '');
+                            editor.refresh();
+                            editor.save();
+                            editor.focus();
+                        });
+
+                        var buttons = [{
+                            className: 'primary',
+                            name: Messages.settings_save,
+                            onClick: function () {
+                                var v = editor.getValue();
+                                content.answers.msg = v.trim(0, 2000); // XXX max length?
+                                framework.localChange();
+                                framework._.cpNfInner.chainpad.onSettle(function () {
+                                    UI.log(Messages.saved);
+                                    refreshResponse();
+                                });
+                            },
+                            //keys: []
+                        }, {
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        }];
+                        APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
+                    } else {
+                        editor = APP.responseEditor;
+                        setTimeout(function () {
+                            editor.setValue(content.answers.msg || '');
+                            editor.refresh();
+                            editor.save();
+                            editor.focus();
+                        });
+                    }
+                    UI.openCustomModal(APP.responseModal);
+                });
+                $responseMsg.append(btn);
+            };
+            refreshResponse();
+
             // Allow anonymous answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
@@ -2548,11 +2658,13 @@ define([
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshEndDate);
+            evOnChange.reg(refreshResponse);
 
             return [
                 endDateContainer,
                 privacyContainer,
                 resultsType,
+                responseMsg
             ];
         };
 
