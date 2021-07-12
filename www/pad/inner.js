@@ -1326,6 +1326,11 @@ define([
                 }));
                 $(waitFor());
             }).nThen(function(waitFor) {
+                // TODO this breaks users' ability to tab out of the editor
+                // but that's a problem in other editors and nobody has complained so far
+                // so we'll include this as-is for now while we search for a good pattern
+                // addresses this issue more generally
+                Ckeditor.config.tabSpaces = 4;
                 Ckeditor.config.toolbarCanCollapse = true;
                 Ckeditor.config.language = Messages._getLanguage();
                 if (screen.height < 800) {
