@@ -536,5 +536,9 @@
     "features_f_storage0_note": "Els documents s'eliminen després de {0} dies d'inactivitat",
     "features_registered": "Registrat",
     "features_f_anon_note": "Amb funcionalitat addicional",
-    "features_title": "Característiques"
+    "features_title": "Característiques",
+    "features_f_social": "Característiques socials",
+    "features_f_devices_note": "Accés al CryptDrive des de tot arreu amb el teu compte",
+    "features_f_devices": "Les teves llibretes en tots els teus dispositius",
+    "features_f_cryptdrive1_note": "Carpetes, carpetes compartides, models, etiquetes"
 }
