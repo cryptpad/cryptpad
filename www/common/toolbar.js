@@ -455,6 +455,17 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
+    createCollapse = function (toolbar) {
+        var $button = $(h('button', [
+            h('i.fa.fa-compress'),
+            h('span.cp-button-name', "COLLAPSE"), // XXX
+        ]));
+        toolbar.$bottomR.append($button);
+        $button.click(function () {
+            toolbar.$top.toggleClass('toolbar-hidden');
+        });
+    };
+
     var initChat = function (toolbar) {
         var $container = $('<div>', {
             id: 'cp-app-contacts-container',
@@ -1334,6 +1345,7 @@ MessengerUI, Messages, Pages) {
         // Create the subelements
         var tb = {};
         tb['userlist'] = createUserList;
+        tb['collapse'] = createCollapse; // XXX
         tb['chat'] = createChat;
         tb['share'] = createShare;
         tb['access'] = createAccess;
@@ -1355,6 +1367,7 @@ MessengerUI, Messages, Pages) {
         tb['pad'] = function () {
             toolbar.$file.show();
             addElement([
+                'collapse', // XXX
                 'chat', 'userlist', 'title', 'useradmin', 'spinner',
                 'newpad', 'share', 'access', 'limit', 'unpinnedWarning',
                 'notifications'

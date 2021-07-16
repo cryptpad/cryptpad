@@ -431,6 +431,10 @@
             }
         }
         .cp-toolbar-top {
+            &.toolbar-hidden {
+                display: none !important;
+            }
+
             @media screen and (max-width: @browser_media-medium-screen),
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
