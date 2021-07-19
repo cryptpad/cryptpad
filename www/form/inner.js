@@ -721,7 +721,7 @@ define([
                 var answer = answerObj.results;
                 if (!answer || !answer.values) { return; }
                 var values = answer.values || {};
-                var res = Number(values[data]) || 0;
+                var res = Number(values[data]) || 0; // XXX inc function ?
                 if (res === 1) { y++; }
                 else if (res === 2) { m++; }
             });
@@ -768,7 +768,7 @@ define([
         };
         refreshBest();
 
-        if (myLine && evOnChange) {
+        if (myLine && evOnChange) { // XXX
             var updateValues = function () {
                 totalEls.forEach(function (cell) {
                     var $c = $(cell);
@@ -776,7 +776,7 @@ define([
                     if (!data) { return; }
                     var y = totals[data].y + ((myTotals[data] || {}).y || 0);
                     var m = totals[data].m + ((myTotals[data] || {}).m || 0);
-                    $c.find('.cp-form-total-yes').text(y);
+                    $c.find('.cp-form-total-yes').text(y); // XXX inc function
                     $c.find('.cp-form-total-maybe').text('('+m+')');
                 });
             };
@@ -977,7 +977,7 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) {
+                Object.keys(answers).forEach(function (author) { // XXX deduplicate these?
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -989,7 +989,7 @@ define([
             },
             icon: h('i.cptools.cptools-form-text')
         },
-        textarea: {
+        textarea: { // XXX
             defaultOpts: {
                 maxLength: 1000
             },
@@ -1043,7 +1043,7 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) {
+                Object.keys(answers).forEach(function (author) { // XXX deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -1117,7 +1117,7 @@ define([
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
-                    count[answer] = count[answer] || 0;
+                    count[answer] = count[answer] || 0; // XXX inc function
                     count[answer]++;
                 });
                 Object.keys(count).forEach(function (value) {
@@ -1220,7 +1220,7 @@ define([
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
                         if (!res || !res.trim()) { return; }
-                        c[res] = c[res] || 0;
+                        c[res] = c[res] || 0; // XXX inc function
                         c[res]++;
                     });
                 });
@@ -1331,7 +1331,7 @@ define([
                     var answer = obj.msg[uid];
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (val) {
-                        count[val] = count[val] || 0;
+                        count[val] = count[val] || 0; // XXX inc function
                         count[val]++;
                     });
                 });
@@ -1446,7 +1446,7 @@ define([
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
                         if (!Array.isArray(res) || !res.length) { return; }
-                        res.forEach(function (v) {
+                        res.forEach(function (v) { // XXX increment function?
                             c[v] = c[v] || 0;
                             c[v]++;
                         });
@@ -1586,7 +1586,7 @@ define([
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (el, i) {
                         var score = l - i;
-                        count[el] = (count[el] || 0) + score;
+                        count[el] = (count[el] || 0) + score; // XXX inc function?
                     });
                 });
                 var sorted = Object.keys(count).sort(function (a, b) {
