@@ -20,6 +20,7 @@ define([
 
         var ROOT = exp.ROOT;
         var FILES_DATA = exp.FILES_DATA;
+        var STATIC_DATA = exp.STATIC_DATA;
         var OLD_FILES_DATA = exp.OLD_FILES_DATA;
         var UNSORTED = exp.UNSORTED;
         var TRASH = exp.TRASH;
@@ -76,6 +77,14 @@ define([
             // If we were given an edit link, encrypt its value if needed
             if (data.href && data.href.indexOf('#') !== -1) { data.href = exp.cryptor.encrypt(data.href); }
             files[FILES_DATA][id] = data;
+            cb(null, id);
+        };
+        exp.pushLink = function (_data, cb) {
+            if (typeof cb !== "function") { cb = function () {}; }
+            if (readOnly) { return void cb('EFORBIDDEN'); }
+            var id = Util.createRandomInteger();
+            var data = clone(_data);
+            files[STATIC_DATA][id] = data;
             cb(null, id);
         };
 
@@ -136,7 +145,7 @@ define([
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
-            exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
+            exp.getFiles([FILES_DATA, SHARED_FOLDERS, STATIC_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
@@ -146,6 +155,8 @@ define([
                     if (exp.isSharedFolder(id)) {
                         delete files[SHARED_FOLDERS][id];
                         if (config.removeProxy) { config.removeProxy(id); }
+                    } else if (files[STATIC_DATA][id]) {
+                        delete files[STATIC_DATA][id];
                     } else {
                         spliceFileData(id);
                     }
@@ -398,7 +409,7 @@ define([
 
             if (!loggedIn && !config.testMode) { return; }
             id = Number(id);
-            var data = files[FILES_DATA][id] || files[SHARED_FOLDERS][id];
+            var data = files[FILES_DATA][id] || files[STATIC_DATA][id] || files[SHARED_FOLDERS][id];
             if (!data || typeof(data) !== "object") { return; }
             var newPath = path, parentEl;
             if (path && !Array.isArray(path)) {
@@ -634,7 +645,7 @@ define([
                         delete element[el];
                     }
                     if (typeof element[el] === "number") {
-                        var data = files[FILES_DATA][element[el]];
+                        var data = files[FILES_DATA][element[el]] || files[STATIC_DATA][element[el]];
                         if (!data) {
                             debug("An element in ROOT doesn't have associated data", element[el], el);
                             delete element[el];
@@ -845,6 +856,25 @@ define([
                 toClean.forEach(function (id) {
                     spliceFileData(id);
                 });
+                var sd = files[STATIC_DATA];
+                var toCleanSD = [];
+                for (var id in sd) {
+                    id = Number(id);
+                    var el2 = sd[id];
+                    if (!el2 || typeof(el2) !== "object" || !el2.href) {
+                        toCleanSD.push(id);
+                        continue;
+                    }
+                    if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
+                        toCleanSD.push(id);
+                        continue;
+                    }
+                }
+                var spliceSD = function (id) {
+                    if (readOnly) { return; }
+                    delete files[STATIC_DATA][id];
+                };
+                toCleanSD.forEach(spliceSD);
             };
             var fixSharedFolders = function () {
                 if (sharedFolder) { return; }
@@ -892,6 +922,12 @@ define([
                     }
                 }
             };
+            var fixStaticData = function () {
+                if (typeof(files[STATIC_DATA]) !== "object") {
+                    debug("STATIC_DATA was not an object");
+                    files[STATIC_DATA] = {};
+                }
+            };
 
 
             var fixDrive = function () {
@@ -900,6 +936,7 @@ define([
                 });
             };
 
+            fixStaticData();
             fixRoot();
             fixTrashRoot();
             fixTemplate();

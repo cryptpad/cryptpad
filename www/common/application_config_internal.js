@@ -119,6 +119,7 @@ define(function() {
         file: 'cptools-file',
         fileupload: 'cptools-file-upload',
         folderupload: 'cptools-folder-upload',
+        link: 'fa-link',
         pad: 'cptools-richtext',
         code: 'cptools-code',
         slide: 'cptools-slide',

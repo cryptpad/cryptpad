@@ -239,7 +239,7 @@ define([
 
         if (isMuted(ctx, data)) { return void cb(true); }
 
-        var channel = Hash.hrefToHexChannelId(content.href, content.password);
+        var channel = content.isStatic ? content.href : Hash.hrefToHexChannelId(content.href, content.password);
         var parsed = Hash.parsePadUrl(content.href);
         var mode = parsed.hashData && parsed.hashData.mode || 'n/a';
 

@@ -1306,9 +1306,14 @@ define([
             getAllStores().forEach(function (s) {
                 s.manager.getSecureFilesList(where).forEach(function (obj) {
                     var data = obj.data;
-                    if (channels.indexOf(data.channel) !== -1) { return; }
+                    if (channels.indexOf(data.channel || data.id) !== -1) { return; }
                     var id = obj.id;
-                    if (data.channel) { channels.push(data.channel); }
+                    if (data.channel) { channels.push(data.channel || data.id); }
+                    // Only include static links if "link" is requested
+                    if (data.static) {
+                        if (types.indexOf('link') !== -1) { list[id] = data; }
+                        return;
+                    }
                     var parsed = Hash.parsePadUrl(data.href || data.roHref);
                     if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                         !isFiltered(parsed.type, data)) {
