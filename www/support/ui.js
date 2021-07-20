@@ -345,7 +345,7 @@ define([
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
         var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
-        var fromPremium = Boolean(content.sender.plan);
+        var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']);
 
         var userData = h('div.cp-support-showdata', [
             Messages.support_showData,
