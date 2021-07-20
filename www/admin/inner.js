@@ -833,7 +833,8 @@ define([
             var premium = t.some(function (msg) {
                 var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
                 if (ed !== _ed) { return; }
-                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']);
+                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']) ||
+                       Util.find(msg, ['content', 'msg', 'content', 'sender', 'quota', 'plan']);
             });
             var lastMsg = t[t.length - 1];
             var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
