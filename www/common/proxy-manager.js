@@ -22,11 +22,11 @@ define([
             // a cached version
             if (Env.folders[id].offline && !lm.cache) {
                 Env.folders[id].offline = false;
+                if (Env.folders[id].userObject.fixFiles) { Env.folders[id].userObject.fixFiles(); }
                 Env.Store.refreshDriveUI();
             }
             return;
         }
-        if (Env.folders[id]) { console.warn(Env.folders[id]); }
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;

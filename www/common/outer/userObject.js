@@ -253,6 +253,12 @@ define([
                 id = Number(id);
                 // Find and maybe update existing pads with the same channel id
                 var d = data[id];
+                // If we were given a static link, copy to STATIC_DATA
+                if (d.static) {
+                    delete d.static;
+                    files[STATIC_DATA][id] = d;
+                    return;
+                }
                 // If we were given an edit link, encrypt its value if needed
                 if (d.href) { d.href = exp.cryptor.encrypt(d.href); }
                 var found = false;
