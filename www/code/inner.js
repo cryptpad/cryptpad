@@ -369,7 +369,7 @@ define([
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is enabled
-                framework.setMediaTagEmbedder(function (mt, data) {
+                framework.setMediaTagEmbedder(function (mt) {
                     editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
                 });

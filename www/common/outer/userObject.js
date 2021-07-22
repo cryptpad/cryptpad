@@ -864,15 +864,15 @@ define([
                 });
                 var sd = files[STATIC_DATA];
                 var toCleanSD = [];
-                for (var id in sd) {
-                    id = Number(id);
-                    var el2 = sd[id];
+                for (var id2 in sd) {
+                    id2 = Number(id2);
+                    var el2 = sd[id2];
                     if (!el2 || typeof(el2) !== "object" || !el2.href) {
-                        toCleanSD.push(id);
+                        toCleanSD.push(id2);
                         continue;
                     }
-                    if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
-                        toCleanSD.push(id);
+                    if ((loggedIn || config.testMode) && rootFiles.indexOf(id2) === -1) {
+                        toCleanSD.push(id2);
                         continue;
                     }
                 }

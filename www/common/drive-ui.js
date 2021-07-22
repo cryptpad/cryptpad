@@ -1113,6 +1113,10 @@ define([
             common.getMediaTagPreview(mts, idx);
         };
 
+        var refresh = APP.refresh = function () {
+            APP.displayDirectory(currentPath);
+        };
+
         // `app`: true (force open wiht the app), false (force open in preview),
         //        falsy (open in preview if default is not using the app)
         var defaultInApp = ['application/pdf'];
@@ -1161,10 +1165,6 @@ define([
             };
             var href = Hash.hashToHref('', type);
             common.openURL(Hash.getNewPadURL(href, obj));
-        };
-
-        var refresh = APP.refresh = function () {
-            APP.displayDirectory(currentPath);
         };
 
 
@@ -1938,7 +1938,7 @@ define([
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
-        }
+        };
         var _addOwnership = function ($span, $state, data) {
             if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
                 var $owned = $ownedIcon.clone().appendTo($state);
@@ -2504,7 +2504,7 @@ define([
             setViewMode(viewMode || 'grid');
             showMode(viewMode);
 
-            $button.click(function (e) {
+            $button.click(function () {
                 var viewMode = getViewMode();
                 var newViewMode = getOppositeViewMode(viewMode);
                 setViewMode(newViewMode);
@@ -3182,11 +3182,11 @@ define([
                         .text(Messages.uploadFolderButton));
                 }
                 // Link
-                var $elementFileUpload = $('<li>', {
+                var $elementLink = $('<li>', {
                     'class': 'cp-app-drive-new-link cp-app-drive-element-row ' +
                         'cp-app-drive-element-grid'
                 }).prepend(getIcon('link')).appendTo($container);
-                $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                $elementLink.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.fm_link));
             }
             // Pads
