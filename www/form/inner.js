@@ -1724,15 +1724,31 @@ define([
 
                 return h('div.cp-form-type-poll', lines);
             },
-            exportCSV: function (answer) {
-                if (answer === false) { return; }
-                if (!answer || !answer.values) { return ['']; }
+            exportCSV: function (answer, form) {
+                var opts = form.opts || TYPES.poll.defaultOpts;
+                var q = form.q || Messages.form_default;
+                if (answer === false) {
+                    var cols = opts.values.map(function (key) {
+                        return q + ' | ' + key;
+                    });
+                    cols.unshift(q);
+                    return cols;
+                }
+                if (!answer || !answer.values) {
+                    var empty = opts.values.map(function () { return ''; });
+                    empty.unshift('');
+                    return empty;
+                }
                 var str = '';
                 Object.keys(answer.values).sort().forEach(function (k, i) {
                     if (i !== 0) { str += ';'; }
                     str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
                 });
-                return [str];
+                var res = opts.values.map(function (key) {
+                    return answer.values[key] || '';
+                });
+                res.unshift(str);
+                return res;
             },
             icon: h('i.cptools.cptools-form-poll')
         },
