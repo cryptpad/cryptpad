@@ -607,7 +607,7 @@ define([
                 _date = new Date(data);
                 data = Flatpickr.formatDate(_date, timeFormat);
             }
-            var day = allDays[_date.getDay()];
+            var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
                 title: Util.fixHTML(data)
             }, [
