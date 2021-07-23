@@ -588,7 +588,9 @@ define([
         return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
 
-    var makePollTable = function (answers, opts) {
+    // "resultsPageObj" is an object with "content" and "answers"
+    // only available when viewing the Responses page
+    var makePollTable = function (answers, opts, resultsPageObj) {
         // Sort date values
         if (opts.type !== "text") {
             opts.values.sort(function (a, b) {
@@ -607,7 +609,7 @@ define([
                 _date = new Date(data);
                 data = Flatpickr.formatDate(_date, timeFormat);
             }
-            var day = allDays[_date.getDay()];
+            var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
                 title: Util.fixHTML(data)
             }, [
@@ -667,13 +669,19 @@ define([
                     }, v);
                     return cell;
                 });
-                els.unshift(h('div.cp-poll-cell.cp-poll-answer-name', {
+                var nameCell;
+                els.unshift(nameCell = h('div.cp-poll-cell.cp-poll-answer-name', {
                     title: Util.fixHTML(name)
                 }, [
                     avatar,
                     h('span', name)
                 ]));
                 bodyEls.push(h('div', els));
+                if (resultsPageObj && (APP.isEditor || APP.isAuditor)) {
+                    $(nameCell).addClass('cp-clickable').click(function () {
+                        APP.renderResults(resultsPageObj.content, resultsPageObj.answers, answerObj.curve);
+                    });
+                }
             });
         }
         var body = h('div.cp-form-poll-body', bodyEls);
@@ -815,6 +823,7 @@ define([
             if (filterCurve && user === filterCurve) { return; }
             try {
                 return {
+                    curve: user,
                     user: answers[user].msg._userdata,
                     results: answers[user].msg[uid]
                 };
@@ -1615,7 +1624,7 @@ define([
                 if (!opts) { opts = TYPES.poll.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
 
-                var lines = makePollTable(answers, opts);
+                var lines = makePollTable(answers, opts, false);
 
                 // Add form
                 var addLine = opts.values.map(function (data) {
@@ -1699,10 +1708,16 @@ define([
                 };
 
             },
-            printResults: function (answers, uid, form) {
+            printResults: function (answers, uid, form, content) {
                 var opts = form[uid].opts || TYPES.poll.defaultOpts;
                 var _answers = getBlockAnswers(answers, uid);
-                var lines = makePollTable(_answers, opts);
+
+                // If content is defined, we'll be able to click on a row to display
+                // all the answers of this user
+                var lines = makePollTable(_answers, opts, content && {
+                    content: content,
+                    answers: answers
+                });
 
                 var total = makePollTotal(_answers, opts);
                 if (total) { lines.push(h('div', total)); }
@@ -1723,7 +1738,7 @@ define([
         },
     };
 
-    var renderResults = function (content, answers) {
+    var renderResults = APP.renderResults = function (content, answers, showUser) {
         var $container = $('div.cp-form-creator-results').empty();
 
         if (!Object.keys(answers || {}).length) {
@@ -1767,7 +1782,9 @@ define([
                 var type = block.type;
                 var model = TYPES[type];
                 if (!model || !model.printResults) { return; }
-                var print = model.printResults(answers, uid, form);
+
+                // Only use content if we're not viewing individual answers
+                var print = model.printResults(answers, uid, form, !header && content);
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 
@@ -1861,10 +1878,19 @@ define([
                     e.preventDefault();
                     APP.common.openURL(Hash.hashToHref(ud.profile, 'profile'));
                 });
+                if (showUser === curve) {
+                    setTimeout(function () {
+                        showUser = undefined;
+                        $(viewButton).click();
+                    });
+                }
                 return div;
             });
             $results.append(els);
         });
+        if (showUser) {
+            $s.click();
+        }
     };
 
     var addResultsButton = function (framework, content) {
@@ -1910,16 +1936,34 @@ define([
     var makeFormControls = function (framework, content, update, evOnChange) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
+        var user = metadataMgr.getUserData();
 
         if (!loggedIn && !content.answers.anonymous) { return; }
 
         var cbox;
+        var anonName, $anonName;
         cbox = UI.createCheckbox('cp-form-anonymous',
                    Messages.form_anonymousBox, true, { mark: { tabindex:1 } });
+        var $anonBox = $(cbox).find('input');
         if (loggedIn) {
             if (!content.answers.anonymous || APP.cantAnon) {
                 $(cbox).hide().find('input').attr('disabled', 'disabled').prop('checked', false);
             }
+        } else {
+            Messages.form_anonName = "Your username"; // XXX
+            Messages.form_answerAs = "Answer as"; // XXX
+            anonName = h('div.cp-form-anon-answer-input', [
+                Messages.form_answerAs,
+                h('input', {
+                    value: user.name || '',
+                    placeholder: Messages.form_anonName
+                })
+            ])
+            $anonName = $(anonName).hide();
+            $anonBox.on('change', function () {
+                if (Util.isChecked($anonBox)) { $anonName.hide(); }
+                else { $anonName.show(); }
+            });
         }
 
         var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
@@ -1937,14 +1981,16 @@ define([
             if (!results) { return; }
 
             var user = metadataMgr.getUserData();
-            if (!Util.isChecked($(cbox).find('input'))) {
+            if (!Util.isChecked($anonBox)) {
                 results._userdata = loggedIn ? {
                     avatar: user.avatar,
                     name: user.name,
                     notifications: user.notifications,
                     curvePublic: user.curvePublic,
                     profile: user.profile
-                } : { name: user.name };
+                } : {
+                    name: $anonName ? $anonName.find('input').val() : user.name
+                };
             }
 
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -2024,7 +2070,10 @@ define([
 
         return h('div.cp-form-send-container', [
             invalid,
-            cbox ? h('div.cp-form-anon-answer', cbox) : undefined,
+            cbox ? h('div.cp-form-anon-answer', [
+                        cbox,
+                        anonName
+                   ]) : undefined,
             reset, send
         ]);
     };

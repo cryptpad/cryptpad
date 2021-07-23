@@ -1925,7 +1925,6 @@ define([
                     var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                     if (data.templateContent) {
                         Cryptget.put(currentPad.hash, JSON.stringify(data.templateContent), function () {
-                            console.error(arguments);
                             startRealtime();
                             cb();
                         }, cryptputCfg);
