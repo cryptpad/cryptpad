@@ -1378,5 +1378,6 @@
     "notification_linkShared": "{0} has shared a link with you: <b>{1}</b>",
     "form_anonName": "Your name",
     "form_answerAs": "Answer as",
-    "fm_link_warning": "Warning: the URL exceeds 200 characters"
+    "fm_link_warning": "Warning: the URL exceeds 200 characters",
+    "fm_link_invalid": "Invalid URL"
 }
