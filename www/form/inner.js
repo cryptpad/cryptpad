@@ -994,7 +994,7 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) { // XXX deduplicate these?
+                Object.keys(answers).forEach(function (author) { // TODO deduplicate these?
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -1006,7 +1006,7 @@ define([
             },
             icon: h('i.cptools.cptools-form-text')
         },
-        textarea: { // XXX
+        textarea: {
             defaultOpts: {
                 maxLength: 1000
             },
@@ -1060,7 +1060,7 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) { // XXX deduplicate these
+                Object.keys(answers).forEach(function (author) { // TODO deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
