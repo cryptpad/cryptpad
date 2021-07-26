@@ -124,6 +124,9 @@ define([
                                     channel: mailbox.notifications,
                                     curvePublic: mailbox.curvePublic
                                 });
+                                if (config.static) {
+                                    Feedback.send("LINK_SHARED_WITH_CONTACT");
+                                }
                                 return;
                             }
                         }
@@ -154,6 +157,7 @@ define([
                             }, function () {
                                 UI.log(Messages.saved);
                             });
+                            Feedback.send("LINK_ADDED_TO_DRIVE");
                             return;
                         }
                         sframeChan.query('Q_STORE_IN_TEAM', {

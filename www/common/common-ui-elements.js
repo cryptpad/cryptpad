@@ -3057,19 +3057,19 @@ define([
         var buttons = [{
             name: Messages.friendRequest_later,
             onClick: function () {
-                // XXX feedback
                 if (clicked) { return true; }
                 clicked = true;
+                Feedback.send('LINK_RECEIVED_LATER');
             },
             keys: [27]
         }, {
             className: 'primary',
             name: Messages.link_open,
             onClick: function () {
-                // XXX feedback
                 if (clicked) { return true; }
                 clicked = true;
                 common.openUnsafeURL(url);
+                Feedback.send("LINK_RECEIVED_OPEN");
             },
             keys: [13]
         }, {
@@ -3088,6 +3088,7 @@ define([
                 }, function () {
                     modal.closeModal();
                     dismiss();
+                    Feedback.send("LINK_RECEIVED_STORE");
                 });
                 return true;
             },

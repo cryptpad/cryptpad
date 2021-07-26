@@ -2785,7 +2785,7 @@ define([
                         name: n,
                         url: u
                     }, refresh);
-                    // XXX feedback
+                    Feedback.send("LINK_CREATED");
                 },
                 keys: [13]
             });
