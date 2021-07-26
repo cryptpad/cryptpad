@@ -1263,7 +1263,10 @@ define([
             Array.prototype.push.apply(result, sfChannels);
         }
 
-        return result;
+        return result.filter(function (channel) {
+            if (typeof(channel) !== 'string') { return; }
+            return [32, 48].indexOf(channel.length) !== -1;
+        });
     };
 
     var addPad = function (Env, path, pad, cb) {
