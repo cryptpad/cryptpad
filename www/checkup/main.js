@@ -714,8 +714,6 @@ define([
         if (isOnion(trimmedUnsafe) && isOnion(trimmedSafe)) { return void cb(true); }
 
         // otherwise expect that both inner and outer domains use HTTPS
-        setWarningClass(msg);
-
         msg.appendChild(h('span', [
             "Both ",
             code('httpUnsafeOrigin'),
