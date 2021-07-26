@@ -1376,5 +1376,6 @@
     "fm_link_url": "URL",
     "fm_link_name_placeholder": "My link",
     "notification_linkShared": "{0} has shared a link with you: <b>{1}</b>",
-    "form_anonName": "Your name"
+    "form_anonName": "Your name",
+    "form_answerAs": "Answer as"
 }
