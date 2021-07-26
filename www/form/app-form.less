@@ -248,6 +248,7 @@
                         text-align: center;
                         margin: 20px 0 30px 0;
                         .cp-form-anon-answer-input {
+                            margin-top: 20px;
                             display: flex;
                             white-space: nowrap;
                             align-items: center;
@@ -680,7 +681,11 @@
             &.cp-clickable {
                 cursor: pointer;
                 &:hover {
-                    transform: scale(1.1);
+                    color: @cryptpad_color_link;
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\00a0\f06e";
+                    }
                 }
             }
         }
