@@ -247,6 +247,14 @@
                     .cp-form-anon-answer {
                         text-align: center;
                         margin: 20px 0 30px 0;
+                        .cp-form-anon-answer-input {
+                            display: flex;
+                            white-space: nowrap;
+                            align-items: center;
+                            input {
+                                margin-left: 10px;
+                            }
+                        }
                     }
                 }
 
@@ -668,6 +676,12 @@
             .cp-avatar {
                 .avatar_main(30px);
                 margin-right: 10px;
+            }
+            &.cp-clickable {
+                cursor: pointer;
+                &:hover {
+                    transform: scale(1.1);
+                }
             }
         }
         .cp-poll-time-day {
