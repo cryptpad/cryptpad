@@ -1970,8 +1970,6 @@ define([
                 $(cbox).hide().find('input').attr('disabled', 'disabled').prop('checked', false);
             }
         } else {
-            Messages.form_anonName = "Your username"; // XXX
-            Messages.form_answerAs = "Answer as"; // XXX
             anonName = h('div.cp-form-anon-answer-input', [
                 Messages.form_answerAs,
                 h('input', {

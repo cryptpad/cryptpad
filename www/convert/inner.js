@@ -192,8 +192,8 @@ define([
         },
     };
 
-    Messages.convertPage = "Convert"; // XXX
-    Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterward."; // XXX
+    Messages.convertPage = "Convert"; // XXX 4.10.0
+    Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterward."; // XXX 4.10.0
 
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];

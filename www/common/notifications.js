@@ -92,7 +92,6 @@ define([
             (type === 'file' ? 'notification_fileShared' :  // Msg.notification_fileSharedTeam
                 'notification_padShared'); // Msg.notification_padSharedTeam
 
-        Messages.notification_linkShared = "{0} has shared a link with you: <b>{1}</b>"; // XXX
         if (msg.content.isStatic) {
             key = 'notification_linkShared'; // Msg.notification_linkShared;
         }
@@ -115,7 +114,6 @@ define([
         };
         content.handler = function() {
             if (msg.content.isStatic) {
-                // XXX feedback
                 UIElements.displayOpenLinkModal(common, {
                     curve: msg.author,
                     href: msg.content.href,

@@ -3034,9 +3034,18 @@ define([
         var name = Util.fixHTML(data.title);
         var url = data.href;
         var user = data.name;
-        Messages.notification_openLink = "You've received a link <b>{0}</b> from {1}:"; // XXX
-        Messages.link_open = "Open URL";
-        Messages.link_store = "Store link in drive";
+        //Messages.link_open = "Open URL";
+            // openLinkInNewTab ("Open Link in New Tab")
+            // fc_open ("Open")
+            // share_linkOpen ("Preview")
+            // resources_openInNewTab ("Open it in a new tab")
+        Messages.link_open = Messages.fc_open; // XXX 4.10.0
+
+        //Messages.link_store = "Store link in drive";
+            // toolbar_storeInDrive ? ("Store in CryptDrive")
+            // autostore_store ? ("Store")
+        Messages.link_store = Messages.toolbar_storeInDrive; // XXX 4.10.0
+
 
         var content = h('div', [
             UI.setHTML(h('p'), Messages._getKey('notification_openLink', [name, user])),
@@ -3069,7 +3078,6 @@ define([
             onClick: function () {
                 if (clicked) { return; }
                 clicked = true;
-                // XXX feedback
                 common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
                     cmd: "addLink",
                     data: {

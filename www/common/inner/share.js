@@ -111,7 +111,6 @@ define([
                         if (mailbox) { // Friend
                             if (friends[curve] && !mailbox.notifications) { return; }
                             if (mailbox.notifications && mailbox.curvePublic) {
-                                // XXX feedback
                                 common.mailbox.sendTo("SHARE_PAD", {
                                     href: href,
                                     isStatic: Boolean(config.static),

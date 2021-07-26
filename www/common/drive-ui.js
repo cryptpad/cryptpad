@@ -1940,7 +1940,6 @@ define([
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
-            // XXX feedback
         };
         var _addOwnership = function ($span, $state, data) {
             if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
@@ -2778,7 +2777,7 @@ define([
                     var u = $url.val().trim();
                     if (!n || !u) { return true; }
                     if (!Util.isValidURL(u)) {
-                        // XXX add style for invalid input? input:invalid
+                        // XXX 4.10.0 add style for invalid input? input:invalid
                         UI.warn(Messages.error);
                         return true;
                     }
