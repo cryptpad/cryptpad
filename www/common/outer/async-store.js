@@ -2062,10 +2062,12 @@ define([
             // Tell all the owners that the pad was deleted from the server
             var curvePublic;
             try {
+                // users in noDrive mode don't have a proxy and
+                // unregistered users don't have a curvePublic
                 curvePublic = store.proxy.curvePublic;
             } catch (err) {
                 console.error(err);
-                return; // XXX anons can't send notifications...
+                return;
             }
             m.forEach(function (obj) {
                 var mb = JSON.parse(obj);

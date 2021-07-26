@@ -1925,7 +1925,11 @@ define([
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
             $element.append($name);
             if (getViewMode() === 'grid') {
-                $element.attr('title', name); // XXX Util.fixHTML
+                //console.error(name, Util.fixHTML(name));
+                // this is only safe because our build of tippy sets titles as
+                // 'textContent' instead of innerHTML, otherwise
+                // we would need to use Util.fixHTML
+                $element.attr('title', name);
             }
 
             var type = Messages.fm_link; // XXX new translation key ("Link")
