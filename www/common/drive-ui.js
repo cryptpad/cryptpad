@@ -42,8 +42,8 @@ define([
     Pages)
 {
 
-    Messages.fm_link = "Link"; // XXX "New Link" ?
-    // XXX check for all occurrences of `fm_link` before changing it
+    Messages.fm_link_new = "New Link"; // XXX
+    Messages.fm_link_type = "Link"; // XXX
 
     var APP = window.APP = {
         editable: false,
@@ -450,7 +450,7 @@ define([
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.link,
                             'data-type': 'link'
-                        }, Messages.fm_link)),
+                        }, Messages.fm_link_new)),
                     ]),
                 ]),
                 $separator.clone()[0],
@@ -1932,7 +1932,7 @@ define([
                 $element.attr('title', name);
             }
 
-            var type = Messages.fm_link; // XXX new translation key ("Link")
+            var type = Messages.fm_link_type;
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);
@@ -2738,8 +2738,8 @@ define([
         };
         var showLinkModal = function () {
             Messages.fm_link_name = "Link name"; // XXX
-            Messages.fm_link_url = "URL";
-            Messages.fm_link_warning = "Warning: URL size...";
+            Messages.fm_link_url = "URL"; // XXX
+            Messages.fm_link_warning = "Warning: URL size..."; // XXX
             var name, url;
             var warning = h('div.alert.alert-warning', [
                 h('i.fa.fa-exclamation-triangle'),
@@ -2869,7 +2869,7 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'cp-app-drive-new-link'},
-                    content: $('<div>').append(getIcon('link')).html() + Messages.fm_link
+                    content: $('<div>').append(getIcon('link')).html() + Messages.fm_link_new
                 });
                 options.push({tag: 'hr'});
             }
@@ -3194,7 +3194,7 @@ define([
                         'cp-app-drive-element-grid'
                 }).prepend(getIcon('link')).appendTo($container);
                 $elementLink.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.fm_link));
+                    .text(Messages.fm_link_type));
             }
             // Pads
             getNewPadTypes().forEach(function (type) {
