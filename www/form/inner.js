@@ -729,7 +729,7 @@ define([
                 var answer = answerObj.results;
                 if (!answer || !answer.values) { return; }
                 var values = answer.values || {};
-                var res = Number(values[data]) || 0; // XXX inc function ?
+                var res = Number(values[data]) || 0;
                 if (res === 1) { y++; }
                 else if (res === 2) { m++; }
             });
@@ -784,7 +784,7 @@ define([
                     if (!data) { return; }
                     var y = totals[data].y + ((myTotals[data] || {}).y || 0);
                     var m = totals[data].m + ((myTotals[data] || {}).m || 0);
-                    $c.find('.cp-form-total-yes').text(y); // XXX inc function
+                    $c.find('.cp-form-total-yes').text(y);
                     $c.find('.cp-form-total-maybe').text('('+m+')');
                 });
             };
@@ -1126,8 +1126,7 @@ define([
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
-                    count[answer] = count[answer] || 0; // XXX inc function
-                    count[answer]++;
+                    Util.inc(count, answer);
                 });
                 Object.keys(count).forEach(function (value) {
                     results.push(h('div.cp-form-results-type-radio-data', [
@@ -1229,8 +1228,7 @@ define([
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
                         if (!res || !res.trim()) { return; }
-                        c[res] = c[res] || 0; // XXX inc function
-                        c[res]++;
+                        Util.inc(c, res);
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
@@ -1340,8 +1338,7 @@ define([
                     var answer = obj.msg[uid];
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (val) {
-                        count[val] = count[val] || 0; // XXX inc function
-                        count[val]++;
+                        Util.inc(count, val);
                     });
                 });
                 Object.keys(count).forEach(function (value) {
@@ -1455,9 +1452,8 @@ define([
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
                         if (!Array.isArray(res) || !res.length) { return; }
-                        res.forEach(function (v) { // XXX increment function?
-                            c[v] = c[v] || 0;
-                            c[v]++;
+                        res.forEach(function (v) {
+                            Util.inc(c, v);
                         });
                     });
                 });
@@ -1595,7 +1591,7 @@ define([
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (el, i) {
                         var score = l - i;
-                        count[el] = (count[el] || 0) + score; // XXX inc function?
+                        Util.inc(count, el, score);
                     });
                 });
                 var sorted = Object.keys(count).sort(function (a, b) {
@@ -1974,7 +1970,7 @@ define([
                     value: user.name || '',
                     placeholder: Messages.form_anonName
                 })
-            ])
+            ]);
             $anonName = $(anonName).hide();
             $anonBox.on('change', function () {
                 if (Util.isChecked($anonBox)) { $anonName.hide(); }
