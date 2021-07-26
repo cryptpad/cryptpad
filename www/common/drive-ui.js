@@ -42,9 +42,6 @@ define([
     Pages)
 {
 
-    Messages.fm_link_new = "New Link"; // XXX
-    Messages.fm_link_type = "Link"; // XXX
-
     var APP = window.APP = {
         editable: false,
         online: false,
@@ -2737,21 +2734,23 @@ define([
             $input.click();
         };
         var showLinkModal = function () {
-            Messages.fm_link_name = "Link name"; // XXX
-            Messages.fm_link_url = "URL"; // XXX
-            Messages.fm_link_warning = "Warning: URL size..."; // XXX
             var name, url;
             var warning = h('div.alert.alert-warning', [
                 h('i.fa.fa-exclamation-triangle'),
                 h('span', Messages.fm_link_warning)
             ]);
             var content = h('p', [
-                warning,
                 h('label', {for: 'cp-app-drive-link-name'}, Messages.fm_link_name),
-                name = h('input#cp-app-drive-link-name', { autocomplete: 'off' }),
+                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder }),
                 h('label', {for: 'cp-app-drive-link-url'}, Messages.fm_link_url),
-                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off' })
+                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url }),
+                warning,
             ]);
+            var setNamePlaceholder = function (val) {
+                val = val.replace(/https*:\/\//, '').replace(/#.*$/, '').slice(0, 16);
+                name.setAttribute('placeholder', val)
+            };
+
             var $warning = $(warning).hide();
             var $url = $(url).on('change keypress keyup keydown', function () {
                 var v = $url.val().trim();
@@ -2759,6 +2758,7 @@ define([
                     $warning.show();
                     return;
                 }
+                setNamePlaceholder(v);
                 $warning.hide();
             });
             var buttons = [{
@@ -2773,7 +2773,8 @@ define([
                 iconClass: '.fa.fa-plus',
                 name: Messages.tag_add,
                 onClick: function () {
-                    var n = $(name).val().trim();
+                    var $name = $(name);
+                    var n = $name.val().trim() || $name.attr('placeholder');
                     var u = $url.val().trim();
                     if (!n || !u) { return true; }
                     if (!Util.isValidURL(u)) {
