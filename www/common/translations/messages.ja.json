@@ -1368,5 +1368,12 @@
     "reminder_time": "<b>{0}</b>が今日の{1}にあります",
     "form_answerWarning": "本人であることが確認されていません",
     "team_leaveOwner": "チームから退出する前に、オーナーの役割から降格してください。チームには最低1人以上のオーナーが必要です。あなたが唯一のオーナーの場合は、別のオーナーを追加してください。",
-    "form_exportCSV": "CSVにエクスポート"
+    "form_exportCSV": "CSVにエクスポート",
+    "fm_link_new": "新しいリンク",
+    "notification_openLink": "{1}からリンク「 <b>{0}</b>」を受け取りました：",
+    "fm_link_type": "リンク",
+    "fm_link_url": "URL",
+    "fm_link_name": "リンク名",
+    "form_anonName": "あなたの名前",
+    "notification_linkShared": "{0}があなたとリンクを共有しました: <b>{1}</b>"
 }
