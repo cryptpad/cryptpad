@@ -20,9 +20,28 @@
   * unregistered users can set their username when they don't want to answer anonymously
   * improve CSV export with polls
   * decrement max choices when it exceeds the number of available options
+  * render form results if possible when the form is closed and you have answered
+  * shuffle form options to limit bias in results
 * remove unused images
 * drive
   * show the bread-crumb and disable the tree in anon drives
+* checkup
+  * http:// for safe/unsafe origin is now an error unless used for an onion or localhost
+  * and only if you are accessing the test via localhost.. to catch all those instances using localhost on prod config
+* feedback keys
+  * `LINK_RECEIVED_LATER`
+  * `LINK_RECEIVED_OPEN`
+  * `LINK_RECEIVED_STORE`
+  * `LINK_CREATED`
+  * `LINK_SHARED_WITH_CONTACT`
+  * `LINK_ADDED_TO_DRIVE`
+  * `BURN_AFTER_READING`
+* teams
+  * guard against a typeError when initializing
+* general
+  * don't try to pin channels with invalid lengths
+  * slight optimization when initializing your drive
+  * Lithuanian translation in progress
 
 # 4.8.0
 
