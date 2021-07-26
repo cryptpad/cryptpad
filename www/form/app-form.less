@@ -681,7 +681,11 @@
             &.cp-clickable {
                 cursor: pointer;
                 &:hover {
-                    transform: scale(1.1);
+                    color: @cryptpad_color_link;
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\00a0\f06e";
+                    }
                 }
             }
         }
