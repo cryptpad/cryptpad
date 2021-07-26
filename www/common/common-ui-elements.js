@@ -1032,10 +1032,19 @@ define([
                 icon: 'fa-picture-o',
                 action: function () {
                     var _cfg = {
-                        types: ['file'],
+                        types: ['file', 'link'],
                         where: ['root']
                     };
                     common.openFilePicker(_cfg, function (data) {
+                        // Embed links
+                        if (data.static) {
+                            var a = h('a', {
+                                href: data.href
+                            }, data.name);
+                            cfg.embed(a, data);
+                            return;
+                        }
+                        // Embed files
                         if (data.type !== 'file') {
                             console.log("Unexpected data type picked " + data.type);
                             return;
@@ -3019,6 +3028,63 @@ define([
             setHTML(h('p'), text),
         ]);
         UI.proposal(content, todo);
+    };
+
+    UIElements.displayOpenLinkModal = function (common, data, dismiss) {
+        var name = Util.fixHTML(data.title);
+        var url = data.href;
+        var user = data.name;
+        Messages.notification_openLink = "You've received a link <b>{0}</b> from {1}:"; // XXX
+        Messages.link_open = "Open URL";
+        Messages.link_store = "Store link in drive";
+
+        var content = h('div', [
+            UI.setHTML(h('p'), Messages._getKey('notification_openLink', [name, user])),
+            h('pre', url),
+            UIElements.getVerifiedFriend(common, data.curve, user)
+        ]);
+        var clicked = false;
+        var modal;
+        var buttons = [{
+            name: Messages.friendRequest_later,
+            onClick: function () {
+                if (clicked) { return true; }
+                clicked = true;
+            },
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.link_open,
+            onClick: function () {
+                if (clicked) { return true; }
+                clicked = true;
+                common.openUnsafeURL(url);
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: Messages.link_store,
+            onClick: function () {
+                if (clicked) { return; }
+                clicked = true;
+                common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
+                    cmd: "addLink",
+                    data: {
+                        name: name,
+                        href: url,
+                        path: ['root']
+                    }
+                }, function () {
+                    modal.closeModal();
+                    dismiss();
+                });
+                return true;
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var _modal = UI.dialog.customModal(content, {buttons: buttons});
+        modal = UI.openCustomModal(_modal);
+        return modal;
     };
 
     UIElements.displayAddOwnerModal = function (common, data) {

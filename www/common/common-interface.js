@@ -1050,6 +1050,7 @@ define([
             var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
             if (type === 'fileupload') { type = 'file'; }
             if (type === 'folderupload') { type = 'file'; }
+            if (type === 'link') { type = 'drive'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
             $icon = $('<span>', {'class': font + ' ' + icon + appClass});
         }
@@ -1061,6 +1062,7 @@ define([
         if (!data) { return $icon; }
         var href = data.href || data.roHref;
         var type = data.type;
+        if (data.static) { type = 'link'; }
         if (!href && !type) { return $icon; }
 
         if (!type) { type = Hash.parsePadUrl(href).type; }

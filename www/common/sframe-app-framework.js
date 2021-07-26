@@ -733,11 +733,20 @@ define([
             if (!common.isLoggedIn()) { return; }
             $embedButton = common.createButton('mediatag', true).click(function () {
                 var cfg = {
-                    types: ['file'],
+                    types: ['file', 'link'],
                     where: ['root']
                 };
                 if ($embedButton.data('filter')) { cfg.filter = $embedButton.data('filter'); }
                 common.openFilePicker(cfg, function (data) {
+                    // Embed links
+                    if (data.static) {
+                        var a = h('a', {
+                            href: data.href
+                        }, data.name);
+                        mediaTagEmbedder($(a), data);
+                        return;
+                    }
+                    // Embed files
                     if (data.type !== 'file') {
                         console.log("Unexpected data type picked " + data.type);
                         return;
