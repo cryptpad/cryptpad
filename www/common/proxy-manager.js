@@ -1045,39 +1045,32 @@ define([
         Env.onSync(cb);
     };
 
+    var COMMANDS = {
+        move: _move,
+        restore: _restore,
+        addFolder: _addFolder,
+        addSharedFolder: _addSharedFolder,
+        addLink: _addLink,
+        restoreSharedFolder: _restoreSharedFolder,
+        convertFolderToSharedFolder: _convertFolderToSharedFolder,
+        delete: _delete,
+        deleteOwned: _deleteOwned,
+        emptyTrash: _emptyTrash,
+        rename: _rename,
+        setFolderData: _setFolderData,
+        updateStaticAccess: _updateStaticAccess,
+    };
+
     var onCommand = function (Env, cmdData, cb) {
         var cmd = cmdData.cmd;
         var data = cmdData.data || {};
-        switch (cmd) {
-            case 'move':
-                _move(Env, data, cb); break;
-            case 'restore':
-                _restore(Env, data, cb); break;
-            case 'addFolder':
-                _addFolder(Env, data, cb); break;
-            case 'addSharedFolder':
-                _addSharedFolder(Env, data, cb); break;
-            case 'addLink':
-                _addLink(Env, data, cb); break;
-            case 'restoreSharedFolder':
-                _restoreSharedFolder(Env, data, cb); break;
-            case 'convertFolderToSharedFolder':
-                _convertFolderToSharedFolder(Env, data, cb); break;
-            case 'delete':
-                _delete(Env, data, cb); break;
-            case 'deleteOwned':
-                _deleteOwned(Env, data, cb); break;
-            case 'emptyTrash':
-                _emptyTrash(Env, data, cb); break;
-            case 'rename':
-                _rename(Env, data, cb); break;
-            case 'setFolderData':
-                _setFolderData(Env, data, cb); break;
-            case 'updateStaticAccess':
-                _updateStaticAccess(Env, data, cb); break;
-            default:
-                cb();
+        var method = COMMANDS[cmd];
+
+        if (typeof(method) === 'function') {
+            return void method(Env, data, cb);
         }
+        // if the command was not handled then call back
+        cb();
     };
 
     // Set the value everywhere the given pad is stored (main and shared folders)
