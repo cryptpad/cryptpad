@@ -935,7 +935,7 @@ define([
                 }
             };
             var fixStaticData = function () {
-                if (Util.isObject(files[STATIC_DATA])) {
+                if (!Util.isObject(files[STATIC_DATA])) {
                     debug("STATIC_DATA was not an object");
                     files[STATIC_DATA] = {};
                 }
