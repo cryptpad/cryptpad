@@ -1774,7 +1774,7 @@ define([
 
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
-        var exportButton = h('button.btn.btn-secondary', Messages.exportButton); // XXX form_exportCSV;
+        var exportButton = h('button.btn.btn-secondary', Messages.form_exportCSV);
         var exportCSV = h('div.cp-form-creator-results-export', exportButton);
         $(exportCSV).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
