@@ -161,6 +161,10 @@
         };
     };
 
+    Util.inc = function (map, key, val) {
+        map[key] = (map[key] || 0) + (typeof(val) === 'number'? val: 1);
+    };
+
     Util.find = function (map, path) {
         var l = path.length;
         for (var i = 0; i < l; i++) {

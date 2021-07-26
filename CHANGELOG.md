@@ -1,3 +1,29 @@
+# WIP
+
+* links
+  * create links in your drive or a team drive
+  * share with contacts
+  * when you receive a link, you can "open", "store", "decide later" or dismiss from the notification dropdown
+  * share with a team (the link is instantly added to the team)
+  * store in your own drive from your team drive
+  * embed a link into a pad
+  * And you can have multiple links to the same target in one drive
+* tabs in ckeditor
+* fix recognition of premium user tickets in the admin support panel
+* forms
+  * disable usage of the indexedDB cache for form results
+  * handle empty messages
+  * fix initial title with form templates
+  * style improvements
+  * guard against a typeError with dates
+  * in the responses page you can click on a user in the polls to get this user's answers to the other questions
+  * unregistered users can set their username when they don't want to answer anonymously
+  * improve CSV export with polls
+  * decrement max choices when it exceeds the number of available options
+* remove unused images
+* drive
+  * show the bread-crumb and disable the tree in anon drives
+
 # 4.8.0
 
 ## Goals

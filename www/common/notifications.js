@@ -115,6 +115,7 @@ define([
         };
         content.handler = function() {
             if (msg.content.isStatic) {
+                // XXX feedback
                 UIElements.displayOpenLinkModal(common, {
                     curve: msg.author,
                     href: msg.content.href,

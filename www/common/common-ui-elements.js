@@ -3048,6 +3048,7 @@ define([
         var buttons = [{
             name: Messages.friendRequest_later,
             onClick: function () {
+                // XXX feedback
                 if (clicked) { return true; }
                 clicked = true;
             },
@@ -3056,6 +3057,7 @@ define([
             className: 'primary',
             name: Messages.link_open,
             onClick: function () {
+                // XXX feedback
                 if (clicked) { return true; }
                 clicked = true;
                 common.openUnsafeURL(url);
@@ -3067,6 +3069,7 @@ define([
             onClick: function () {
                 if (clicked) { return; }
                 clicked = true;
+                // XXX feedback
                 common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
                     cmd: "addLink",
                     data: {

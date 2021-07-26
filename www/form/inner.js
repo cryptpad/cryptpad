@@ -298,6 +298,7 @@ define([
                 del
             ]);
             $(del).click(function () {
+                var $block = $(el).closest('.cp-form-edit-block');
                 $(el).remove();
                 // We've just deleted an item/option so we should be under the MAX limit and
                 // we can show the "add" button again
@@ -305,6 +306,13 @@ define([
                 if (!isItem && $add) {
                     $add.show();
                     if (v.type === "time") { $(addMultiple).show(); }
+                }
+                // decrement the max choices input when there are fewer options than the current maximum
+                if (maxInput) {
+                    var inputs = $block.find('input').length;
+                    var $maxInput = $(maxInput);
+                    var currentMax = Number($maxInput.val());
+                    $maxInput.val(Math.min(inputs, currentMax));
                 }
             });
             return el;
@@ -729,7 +737,7 @@ define([
                 var answer = answerObj.results;
                 if (!answer || !answer.values) { return; }
                 var values = answer.values || {};
-                var res = Number(values[data]) || 0; // XXX inc function ?
+                var res = Number(values[data]) || 0;
                 if (res === 1) { y++; }
                 else if (res === 2) { m++; }
             });
@@ -776,7 +784,7 @@ define([
         };
         refreshBest();
 
-        if (myLine && evOnChange) { // XXX
+        if (myLine && evOnChange) {
             var updateValues = function () {
                 totalEls.forEach(function (cell) {
                     var $c = $(cell);
@@ -784,7 +792,7 @@ define([
                     if (!data) { return; }
                     var y = totals[data].y + ((myTotals[data] || {}).y || 0);
                     var m = totals[data].m + ((myTotals[data] || {}).m || 0);
-                    $c.find('.cp-form-total-yes').text(y); // XXX inc function
+                    $c.find('.cp-form-total-yes').text(y);
                     $c.find('.cp-form-total-maybe').text('('+m+')');
                 });
             };
@@ -986,7 +994,7 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) { // XXX deduplicate these?
+                Object.keys(answers).forEach(function (author) { // TODO deduplicate these?
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -998,7 +1006,7 @@ define([
             },
             icon: h('i.cptools.cptools-form-text')
         },
-        textarea: { // XXX
+        textarea: {
             defaultOpts: {
                 maxLength: 1000
             },
@@ -1052,7 +1060,7 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) { // XXX deduplicate these
+                Object.keys(answers).forEach(function (author) { // TODO deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -1126,8 +1134,7 @@ define([
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
-                    count[answer] = count[answer] || 0; // XXX inc function
-                    count[answer]++;
+                    Util.inc(count, answer);
                 });
                 Object.keys(count).forEach(function (value) {
                     results.push(h('div.cp-form-results-type-radio-data', [
@@ -1229,8 +1236,7 @@ define([
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
                         if (!res || !res.trim()) { return; }
-                        c[res] = c[res] || 0; // XXX inc function
-                        c[res]++;
+                        Util.inc(c, res);
                     });
                 });
                 Object.keys(count).forEach(function (q_uid) {
@@ -1340,8 +1346,7 @@ define([
                     var answer = obj.msg[uid];
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (val) {
-                        count[val] = count[val] || 0; // XXX inc function
-                        count[val]++;
+                        Util.inc(count, val);
                     });
                 });
                 Object.keys(count).forEach(function (value) {
@@ -1455,9 +1460,8 @@ define([
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
                         if (!Array.isArray(res) || !res.length) { return; }
-                        res.forEach(function (v) { // XXX increment function?
-                            c[v] = c[v] || 0;
-                            c[v]++;
+                        res.forEach(function (v) {
+                            Util.inc(c, v);
                         });
                     });
                 });
@@ -1595,7 +1599,7 @@ define([
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (el, i) {
                         var score = l - i;
-                        count[el] = (count[el] || 0) + score; // XXX inc function?
+                        Util.inc(count, el, score);
                     });
                 });
                 var sorted = Object.keys(count).sort(function (a, b) {
@@ -1974,7 +1978,7 @@ define([
                     value: user.name || '',
                     placeholder: Messages.form_anonName
                 })
-            ])
+            ]);
             $anonName = $(anonName).hide();
             $anonBox.on('change', function () {
                 if (Util.isChecked($anonBox)) { $anonName.hide(); }
@@ -2566,10 +2570,11 @@ define([
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
+                if (true) { return; } // XXX 4.10.0
                 $responseMsg.empty();
-                Messages.form_updateMsg = "Update response message"; // XXX
-                Messages.form_addMsg = "Add response message";
-                Messages.form_responseMsg = "Add a message that will be displayed in the response page.";
+                Messages.form_updateMsg = "Update response message"; // XXX 4.10.0
+                Messages.form_addMsg = "Add response message"; // XXX 4.10.0
+                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.10.0
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
@@ -2598,7 +2603,7 @@ define([
                             name: Messages.settings_save,
                             onClick: function () {
                                 var v = editor.getValue();
-                                content.answers.msg = v.trim(0, 2000); // XXX max length?
+                                content.answers.msg = v.trim(0, 2000); // XXX 4.10.0 max length?
                                 framework.localChange();
                                 framework._.cpNfInner.chainpad.onSettle(function () {
                                     UI.log(Messages.saved);
@@ -2624,9 +2629,9 @@ define([
                     }
                     UI.openCustomModal(APP.responseModal);
                 });
-                $responseMsg.append(btn);
+                // $responseMsg.append(btn); // XXX 4.10.0
             };
-            refreshResponse();
+            //refreshResponse();
 
             // Allow anonymous answers
             var privacyContainer = h('div.cp-form-privacy-container');
@@ -2723,7 +2728,7 @@ define([
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshEndDate);
-            evOnChange.reg(refreshResponse);
+            //evOnChange.reg(refreshResponse);
 
             return [
                 endDateContainer,
