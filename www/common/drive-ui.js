@@ -2745,9 +2745,15 @@ define([
                 url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url }),
                 warning,
             ]);
+
+            var protocolPattern = /https*:\/\//;
+            var fragmentPattern = /#.*$/;
             var setNamePlaceholder = function (val) {
-                val = val.replace(/https*:\/\//, '').replace(/#.*$/, '').slice(0, 16);
-                name.setAttribute('placeholder', val)
+                var temp = val.replace(protocolPattern, '').replace(fragmentPattern, '').trim().slice(0, 48);
+                if (!protocolPattern.test(val) || !temp) {
+                    temp = Messages.fm_link_name_placeholder;
+                }
+                name.setAttribute('placeholder', temp);
             };
 
             var $warning = $(warning).hide();
@@ -2778,7 +2784,7 @@ define([
                     if (!n || !u) { return true; }
                     if (!Util.isValidURL(u)) {
                         // XXX 4.10.0 add style for invalid input? input:invalid
-                        UI.warn(Messages.error);
+                        UI.warn(Messages.fm_link_invalid);
                         return true;
                     }
                     manager.addLink(currentPath, {
