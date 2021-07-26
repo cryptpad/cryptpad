@@ -2058,8 +2058,15 @@ define([
             } catch (e) {
                 console.error(e);
             }
+
             // Tell all the owners that the pad was deleted from the server
-            var curvePublic = store.proxy.curvePublic;
+            var curvePublic;
+            try {
+                curvePublic = store.proxy.curvePublic;
+            } catch (err) {
+                console.error(err);
+                return; // XXX anons can't send notifications...
+            }
             m.forEach(function (obj) {
                 var mb = JSON.parse(obj);
                 if (mb.curvePublic === curvePublic) { return; }
