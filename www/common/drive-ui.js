@@ -1939,6 +1939,7 @@ define([
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
+            // XXX feedback
         };
         var _addOwnership = function ($span, $state, data) {
             if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
@@ -2780,6 +2781,7 @@ define([
                         name: n,
                         url: u
                     }, refresh);
+                    // XXX feedback
                 },
                 keys: [13]
             });
