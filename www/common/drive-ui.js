@@ -42,7 +42,8 @@ define([
     Pages)
 {
 
-    Messages.fm_link = "Link"; // XXX
+    Messages.fm_link = "Link"; // XXX "New Link" ?
+    // XXX check for all occurrences of `fm_link` before changing it
 
     var APP = window.APP = {
         editable: false,
@@ -1924,10 +1925,10 @@ define([
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
             $element.append($name);
             if (getViewMode() === 'grid') {
-                $element.attr('title', name);
+                $element.attr('title', name); // XXX Util.fixHTML
             }
 
-            var type = Messages.fm_link;
+            var type = Messages.fm_link; // XXX new translation key ("Link")
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);

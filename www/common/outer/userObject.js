@@ -616,13 +616,18 @@ define([
                 var element = elem || files[ROOT];
                 if (!element) { return console.error("Invalid element in root"); }
                 var nbMetadataFolders = 0;
+                // caching this variables saves a lot of hashmap lookups in this loop
+                var static_data = files[STATIC_DATA];
+                var files_data = files[FILES_DATA];
+                var element_el;
                 for (var el in element) {
-                    if (element[el] === null) {
+                    element_el = element[el];
+                    if (element_el === null) {
                         console.error('element[%s] is null', el);
                         delete element[el];
                         continue;
                     }
-                    if (exp.isFolderData(element[el])) {
+                    if (exp.isFolderData(element_el)) {
                         if (nbMetadataFolders !== 0) {
                             debug("Multiple metadata files in folder");
                             delete element[el];
@@ -630,30 +635,30 @@ define([
                         nbMetadataFolders++;
                         continue;
                     }
-                    if (!exp.isFile(element[el], true) && !exp.isFolder(element[el])) {
-                        debug("An element in ROOT was not a folder nor a file. ", element[el]);
+                    if (!exp.isFile(element_el, true) && !exp.isFolder(element_el)) {
+                        debug("An element in ROOT was not a folder nor a file. ", element_el);
                         delete element[el];
                         continue;
                     }
-                    if (exp.isFolder(element[el])) {
-                        fixRoot(element[el]);
+                    if (exp.isFolder(element_el)) {
+                        fixRoot(element_el);
                         continue;
                     }
-                    if (typeof element[el] === "string") {
+                    if (typeof element_el === "string") {
                         // We have an old file (href) which is not in filesData: add it
                         var id = Util.createRandomInteger();
                         var key = Hash.createChannelId();
-                        files[FILES_DATA][id] = {
-                            href: exp.cryptor.encrypt(element[el]),
+                        files_data[id] = {
+                            href: exp.cryptor.encrypt(element_el),
                             filename: el
                         };
                         element[key] = id;
                         delete element[el];
                     }
-                    if (typeof element[el] === "number") {
-                        var data = files[FILES_DATA][element[el]] || files[STATIC_DATA][element[el]];
+                    if (typeof element_el === "number") {
+                        var data = files_data[element_el] || static_data[element_el];
                         if (!data) {
-                            debug("An element in ROOT doesn't have associated data", element[el], el);
+                            debug("An element in ROOT doesn't have associated data", element_el, el);
                             delete element[el];
                         }
                     }
@@ -862,6 +867,7 @@ define([
                 toClean.forEach(function (id) {
                     spliceFileData(id);
                 });
+                // make sure that links are displayed at least once in your drive if you are going to keep them
                 var sd = files[STATIC_DATA];
                 var toCleanSD = [];
                 for (var id2 in sd) {
@@ -929,7 +935,7 @@ define([
                 }
             };
             var fixStaticData = function () {
-                if (typeof(files[STATIC_DATA]) !== "object") {
+                if (Util.isObject(files[STATIC_DATA])) {
                     debug("STATIC_DATA was not an object");
                     files[STATIC_DATA] = {};
                 }
