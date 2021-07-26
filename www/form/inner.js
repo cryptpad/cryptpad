@@ -298,6 +298,7 @@ define([
                 del
             ]);
             $(del).click(function () {
+                var $block = $(el).closest('.cp-form-edit-block');
                 $(el).remove();
                 // We've just deleted an item/option so we should be under the MAX limit and
                 // we can show the "add" button again
@@ -305,6 +306,13 @@ define([
                 if (!isItem && $add) {
                     $add.show();
                     if (v.type === "time") { $(addMultiple).show(); }
+                }
+                // decrement the max choices input when there are fewer options than the current maximum
+                if (maxInput) {
+                    var inputs = $block.find('input').length;
+                    var $maxInput = $(maxInput);
+                    var currentMax = Number($maxInput.val());
+                    $maxInput.val(Math.min(inputs, currentMax));
                 }
             });
             return el;
@@ -776,7 +784,7 @@ define([
         };
         refreshBest();
 
-        if (myLine && evOnChange) { // XXX
+        if (myLine && evOnChange) {
             var updateValues = function () {
                 totalEls.forEach(function (cell) {
                     var $c = $(cell);
@@ -2564,8 +2572,8 @@ define([
             var refreshResponse = function () {
                 $responseMsg.empty();
                 Messages.form_updateMsg = "Update response message"; // XXX
-                Messages.form_addMsg = "Add response message";
-                Messages.form_responseMsg = "Add a message that will be displayed in the response page.";
+                Messages.form_addMsg = "Add response message"; // XXX
+                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
