@@ -2003,6 +2003,8 @@ define([
 
             sframeChan.on('EV_BURN_AFTER_READING', function () {
                 startRealtime();
+                // feedback fails for users in noDrive mode
+                Utils.Feedback.send("BURN_AFTER_READING", Boolean(cfg.noDrive));
             });
 
             sframeChan.ready();
