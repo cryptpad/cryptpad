@@ -1377,5 +1377,6 @@
     "form_anonName": "あなたの名前",
     "notification_linkShared": "{0}があなたとリンクを共有しました: <b>{1}</b>",
     "fm_link_name_placeholder": "あなたのリンク",
-    "fm_link_warning": "注意：URLが200字を超えています"
+    "fm_link_warning": "注意：URLが200字を超えています",
+    "fm_link_invalid": "URLが無効です"
 }
