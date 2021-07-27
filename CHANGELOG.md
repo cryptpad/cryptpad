@@ -8,7 +8,7 @@ We allocated most of this release cycle towards a schedule of one-on-one user in
 
 It appears our promotion of the checkup page through our recent release notes and the inclusion of a link to it from the instance admin have been moderately successful. We've observed that more instance admins are noticing and fixing some common configuration issues.
 
-This release features some minor changes to one instance configuration test which incorrectly provided an exemption for the use of `http://localhost:3000` as an `httpUnsafeOrigin` value. This exemption was provided because it's valid for local development, however, it suppressed errors when this configuration was used for production instances where it could cause a variety of problems. As usual, we recommend checking your instance's admin page after updating to confirm that you are passing the latest tests. Information about the checkup page is included in [our documentation](https://docs.cryptpad.fr/en/admin_guide/admin_panel.html#network).
+This release features some minor changes to one instance configuration test which incorrectly provided an exemption for the use of `http://localhost:3000` as an `httpUnsafeOrigin` value. This exemption was provided because this value is valid for local development. However, it suppressed errors when this configuration was used for production instances where it could cause a variety of problems. As usual, we recommend checking your instance's admin page after updating to confirm that you are passing the latest tests. Information about the checkup page is included in [our documentation](https://docs.cryptpad.fr/en/admin_guide/admin_panel.html#network).
 
 To update from 4.8.0 to 4.9.0:
 
@@ -20,14 +20,14 @@ To update from 4.8.0 to 4.9.0:
 
 ## Features
 
-* We've added the ability to store URLs in user and team drives as requested in a private support ticket and [this issue](https://github.com/xwiki-labs/cryptpad/issues/732). Links can be shared directly with contacts. Unlike pads, links are not collaborative objects, so updating a link's name will not update the entry in another user's drive if you've already shared it with them. Links are integrated into our apps' _insert_ menu to facilitate quick insertion of links you've stored into your documents. We're interested in measuring how this functionality is used in practice so we can decide whether it's worth spending more time on it, so we've added some telemetry to measure (in aggregate) how often its components are used. We anonymize IP addresses in the logs for CryptPad.fr, but as always, you can disable telemetry via your settings panel.
-* Our rich text editor now supports indentation with the tab key, as per [this ticket](https://github.com/xwiki-labs/cryptpad/issues/634).
+* We've added the ability to store URLs in user and team drives as requested in a private support ticket and [this issue](https://github.com/xwiki-labs/cryptpad/issues/732). Links can be shared directly with contacts. Unlike pads, links are not collaborative objects, so updating a link's name will not update the entry in another user's drive if you've already shared it with them. Links are integrated into our apps' _insert_ menu to facilitate quick insertion of links you've stored into your documents. We're interested in measuring how this functionality is used in practice so we can decide whether it's worth spending more time on it. We have added some telemetry to measure (in aggregate) how often its components are used. We anonymize IP addresses in the logs for CryptPad.fr, but as always, you can disable telemetry via your settings panel.
+* Our rich text editor now supports indentation with the tab key, as per [issue #634](https://github.com/xwiki-labs/cryptpad/issues/634).
 * Forms received another round of improvements to styles, workflows, and some basic survey functionality to yield more accurate results.
   * Ordered lists are now shuffled for each survey participant so that their initial order has less effect on the final results.
-  * CSV export now uses a layout that makes poll options easier to read.
+  * CSV export now uses one column for each option in polls, making them easier to read.
   * Unregistered users can now add a name to their response.
   * Form results are displayed automatically (when available) to those who have answered.
-  * Authors and auditors can now click on some types of answers to jump directly to other answers from the same user.
+  * Authors and auditors can now click on usernames in polls to jump directly to other answers from the same user.
 * Users with very large drives might notice that their account loads slightly faster now, due to some minor optimizations in an integrity check that the client performs when loading accounts.
 
 ## Bugs
