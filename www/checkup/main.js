@@ -710,17 +710,19 @@ define([
     var isOnion = function (host) {
         return /\.onion$/.test(host);
     };
+    var isLocalhost = function (host) {
+        return /^http:\/\/localhost/.test(host);
+    };
+
     assert(function (cb, msg) {
         // provide an exception for development instances
-        if (/http:\/\/localhost/.test(trimmedUnsafe)) { return void cb(true); }
+        if (isLocalhost(trimmedUnsafe) && isLocalhost(window.location.href)) { return void cb(true); }
 
         // if both the main and sandbox domains are onion addresses
         // then the HTTPS requirement is unnecessary
         if (isOnion(trimmedUnsafe) && isOnion(trimmedSafe)) { return void cb(true); }
 
         // otherwise expect that both inner and outer domains use HTTPS
-        setWarningClass(msg);
-
         msg.appendChild(h('span', [
             "Both ",
             code('httpUnsafeOrigin'),

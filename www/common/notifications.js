@@ -92,6 +92,10 @@ define([
             (type === 'file' ? 'notification_fileShared' :  // Msg.notification_fileSharedTeam
                 'notification_padShared'); // Msg.notification_padSharedTeam
 
+        if (msg.content.isStatic) {
+            key = 'notification_linkShared'; // Msg.notification_linkShared;
+        }
+
         var teamNotification = /^team-/.test(data.type) && Number(data.type.slice(5));
         var teamName = '';
         if (teamNotification) {
@@ -109,6 +113,15 @@ define([
             return Messages._getKey(key, [name, title, teamName]);
         };
         content.handler = function() {
+            if (msg.content.isStatic) {
+                UIElements.displayOpenLinkModal(common, {
+                    curve: msg.author,
+                    href: msg.content.href,
+                    name: name,
+                    title: title
+                }, defaultDismiss(common, data));
+                return;
+            }
             var obj = {
                 p: msg.content.isTemplate ? ['template'] : undefined,
                 t: teamNotification || undefined,

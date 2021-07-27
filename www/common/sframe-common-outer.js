@@ -1925,7 +1925,6 @@ define([
                     var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                     if (data.templateContent) {
                         Cryptget.put(currentPad.hash, JSON.stringify(data.templateContent), function () {
-                            console.error(arguments);
                             startRealtime();
                             cb();
                         }, cryptputCfg);
@@ -2004,6 +2003,8 @@ define([
 
             sframeChan.on('EV_BURN_AFTER_READING', function () {
                 startRealtime();
+                // feedback fails for users in noDrive mode
+                Utils.Feedback.send("BURN_AFTER_READING", Boolean(cfg.noDrive));
             });
 
             sframeChan.ready();

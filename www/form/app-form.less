@@ -247,6 +247,15 @@
                     .cp-form-anon-answer {
                         text-align: center;
                         margin: 20px 0 30px 0;
+                        .cp-form-anon-answer-input {
+                            margin-top: 20px;
+                            display: flex;
+                            white-space: nowrap;
+                            align-items: center;
+                            input {
+                                margin-left: 10px;
+                            }
+                        }
                     }
                 }
 
@@ -464,6 +473,16 @@
             display: flex;
             flex-flow: column;
             position: relative;
+
+            #cp-form-response-msg {
+                background: @cp_form-bg1;
+                margin-bottom: 20px;
+                padding: 10px;
+                p:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
             .cp-form-creator-results-controls {
                 margin-bottom: 20px;
                 //background: @cp_form-bg1;
@@ -529,6 +548,7 @@
             .cp-form-individual {
                 background: @cp_form-bg1;
                 padding: 10px;
+                margin-bottom: 20px;
                 & > *:not(:last-child) {
                     margin-right: 10px;
                 }
@@ -540,6 +560,9 @@
                     .fa {
                         margin-right: 5px;
                     }
+                }
+                a, a:visited {
+                    color: @cryptpad_color_link;
                 }
             }
         }
@@ -659,6 +682,16 @@
                 .avatar_main(30px);
                 margin-right: 10px;
             }
+            &.cp-clickable {
+                cursor: pointer;
+                &:hover {
+                    color: @cryptpad_color_link;
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\00a0\f06e";
+                    }
+                }
+            }
         }
         .cp-poll-time-day {
             flex-basis: 100px;
@@ -676,6 +709,16 @@
                 }
                 -ms-overflow-style: none;  /* IE and Edge */
                 scrollbar-width: none;  /* Firefox */
+            }
+            .cp-form-poll-option, .cp-poll-time-day {
+                flex-flow: column;
+                text-align: center;
+                .cp-form-weekday-separator {
+                    display: none;
+                }
+            }
+            .cp-poll-time-day {
+                height: 50px;
             }
         }
         &.cp-form-poll-switch {
@@ -706,12 +749,21 @@
             }
             .cp-form-poll-option, .cp-poll-switch {
                 width: 200px;
+                .cp-form-weekday-separator {
+                    margin-right: 5px;
+                    margin-left: 5px;
+                }
             }
             .cp-poll-time-day {
                 flex-basis: 40px;
                 border-right: none;
                 border-right: 1px solid @cryptpad_text_col;
                 border-bottom: 0px;
+                flex-flow: column;
+                text-align: center;
+                .cp-form-weekday-separator {
+                    display: none;
+                }
             }
         }
         .cp-form-poll-choice, .cp-form-poll-answer {

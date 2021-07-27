@@ -1,3 +1,46 @@
+# 4.9.0
+
+## Goals and announcements
+
+We allocated most of this release cycle towards a schedule of one-on-one user interviews and some broad usage studies leveraging our new Form app. The remainder of our time was spent on some minor improvements. We'll continue at a slightly slower pace of implementation for the coming weeks while we complete our scheduled interviews and take some much-needed vacations.
+
+## Update notes
+
+It appears our promotion of the checkup page through our recent release notes and the inclusion of a link to it from the instance admin have been moderately successful. We've observed that more instance admins are noticing and fixing some common configuration issues.
+
+This release features some minor changes to one instance configuration test which incorrectly provided an exemption for the use of `http://localhost:3000` as an `httpUnsafeOrigin` value. This exemption was provided because it's valid for local development, however, it suppressed errors when this configuration was used for production instances where it could cause a variety of problems. As usual, we recommend checking your instance's admin page after updating to confirm that you are passing the latest tests. Information about the checkup page is included in [our documentation](https://docs.cryptpad.fr/en/admin_guide/admin_panel.html#network).
+
+To update from 4.8.0 to 4.9.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+5. Confirm that your instance is passing all the tests included on the `/checkup/` page
+
+## Features
+
+* We've added the ability to store URLs in user and team drives as requested in a private support ticket and [this issue](https://github.com/xwiki-labs/cryptpad/issues/732). Links can be shared directly with contacts. Unlike pads, links are not collaborative objects, so updating a link's name will not update the entry in another user's drive if you've already shared it with them. Links are integrated into our apps' _insert_ menu to facilitate quick insertion of links you've stored into your documents. We're interested in measuring how this functionality is used in practice so we can decide whether it's worth spending more time on it, so we've added some telemetry to measure (in aggregate) how often its components are used. We anonymize IP addresses in the logs for CryptPad.fr, but as always, you can disable telemetry via your settings panel.
+* Our rich text editor now supports indentation with the tab key, as per [this ticket](https://github.com/xwiki-labs/cryptpad/issues/634).
+* Forms received another round of improvements to styles, workflows, and some basic survey functionality to yield more accurate results.
+  * Ordered lists are now shuffled for each survey participant so that their initial order has less effect on the final results.
+  * CSV export now uses a layout that makes poll options easier to read.
+  * Unregistered users can now add a name to their response.
+  * Form results are displayed automatically (when available) to those who have answered.
+  * Authors and auditors can now click on some types of answers to jump directly to other answers from the same user.
+* Users with very large drives might notice that their account loads slightly faster now, due to some minor optimizations in an integrity check that the client performs when loading accounts.
+
+## Bugs
+
+* We've added a guard against a type error that could be triggered when loading teams under certain rare conditions.
+* Unregistered users' drives now show the "bread-crumb" UI for navigating between folders when viewing a shared folder in read-only mode. We've also suppressed the "Files" button for displaying the tree view which was non-functional for such users.
+* A change in the format of support tickets caused tickets recently created by premium users to not be recognized as such. We've fixed the categorization in the admin panel's support ticket view.
+* We've fixed a number of minor issues with forms:
+  * The maximum number of selectable choices for checkbox questions can no longer exceed the number of available choices.
+  * We guard against a type error that could occur when parsing dates.
+  * Forms imported from templates now have their initial title corrected.
+  * We've disabled the use of our indexedDB caching system for form results, since it was quietly dropping older responses when more than 100 responses had been submitted. We plan to re-enable caching for results once we've updated the eviction metric to better handle the response format.
+
 # 4.8.0
 
 ## Goals
