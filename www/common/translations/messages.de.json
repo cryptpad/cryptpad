@@ -1332,7 +1332,7 @@
     "form_cantFindAnswers": "Deine vorigen Antworten für dieses Formular konnten nicht geladen werden.",
     "form_updateWarning": "Trotzdem aktualisieren",
     "form_submitWarning": "Trotzdem absenden",
-    "form_sent": "Gesendet",
+    "form_sent": "Deine Antwort wurde gesendet",
     "form_update": "Aktualisieren",
     "form_submit": "Absenden",
     "form_type_checkbox": "Mehrfachauswahl",
@@ -1368,5 +1368,16 @@
     "admin_purpose_public": "Zur Bereitstellung eines kostenlosen Dienstes für die Allgemeinheit",
     "resources_learnWhy": "Mehr über die Gründe erfahren",
     "team_leaveOwner": "Bitte entferne dich von der Rolle des Eigentümers, bevor du das Teams verlässt. Beachte, dass Teams mindestens einen Eigentümer haben müssen. Bitte füge daher zunächst einen weiteren Eigentümer hinzu, sofern du derzeit der alleinige Eigentümer bist.",
-    "form_exportCSV": "Als CSV exportieren"
+    "form_exportCSV": "Als CSV exportieren",
+    "form_answerAs": "Antworten als",
+    "notification_openLink": "Du hast einen Link <b>{0}</b> von {1} erhalten:",
+    "fm_link_warning": "Warnung: URL ist länger als 200 Zeichen",
+    "notification_linkShared": "{0} hat einen Link mit dir geteilt: <b>{1}</b>",
+    "fm_link_name": "Bezeichnung des Links",
+    "fm_link_invalid": "Ungültige URL",
+    "form_anonName": "Dein Name",
+    "fm_link_name_placeholder": "Mein Link",
+    "fm_link_url": "URL",
+    "fm_link_type": "Link",
+    "fm_link_new": "Neuer Link"
 }
