@@ -176,7 +176,7 @@ define([
                         validateKey: keys.secondaryValidateKey,
                         owners: [myKeys.edPublic],
                         crypto: crypto,
-                        //Cache: Utils.Cache // XXX
+                        //Cache: Utils.Cache // XXX 4.10.0
                     };
                     var results = {};
                     config.onError = function (info) {
@@ -265,6 +265,7 @@ define([
                     }, function (obj) {
                         if (obj && obj.error) { return void cb(obj); }
                         var messages = obj.messages;
+                        if (!messages.length) { return void cb(); }
                         var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
                             validateKey: data.validateKey,
                             ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),

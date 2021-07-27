@@ -23,6 +23,12 @@ define([
         var $title;
         exp.setToolbar = function (toolbar) {
             $title = toolbar && (toolbar.title || toolbar.pageTitle);
+            if ($title && exp.defaultTitle) {
+                var md = metadataMgr.getMetadata();
+                $title.find('input').prop('placeholder', md.defaultTitle);
+                $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
+                $title.find('input').val(md.title || md.defaultTitle);
+            }
         };
 
         exp.getTitle = function () { return exp.title; };
