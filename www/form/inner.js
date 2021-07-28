@@ -68,13 +68,9 @@ define([
     var APP = window.APP = {
     };
 
-    var is24h = false;
+    var is24h = UIElements.is24h();
     var dateFormat = "Y-m-d H:i";
     var timeFormat = "H:i";
-    try {
-        is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
-    } catch (e) {}
-    is24h = false;
     if (!is24h) {
         dateFormat = "Y-m-d h:i K";
         timeFormat = "h:i K";

@@ -3696,6 +3696,13 @@ define([
         return (pos.bottom < size) && (pos.y > 0);
     };
 
+    UIElements.is24h = function () {
+        try {
+            return !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+        } catch (e) {}
+        return false;
+    };
+
     UIElements.openSnapshotsModal = function (common, load, make, remove) {
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;

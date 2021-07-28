@@ -1472,11 +1472,8 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            var is24h = false;
+            var is24h = UIElements.is24h();
             var dateFormat = "Y-m-d H:i";
-            try {
-                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
-            } catch (e) {}
             if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
             var endPickr = Flatpickr(end, {
