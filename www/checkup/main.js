@@ -255,6 +255,11 @@ define([
             ]));
         }));
 
+        // time out after 30 seconds
+        setTimeout(function () {
+            cb('TIMEOUT');
+        }, 30000);
+
         var bytes = new Uint8Array(Login.requiredBytes);
 
         var opt = Login.allocateBytes(bytes);
@@ -729,8 +734,6 @@ define([
             '. ',
             RESTART_WARNING(),
         ]));
-
-        console.error("HTTPS?", trimmedUnsafe, trimmedSafe);
         cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
     });
 
