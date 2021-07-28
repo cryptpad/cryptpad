@@ -2784,6 +2784,11 @@ define([
         var endDateEl = h('div.alert.alert-warning.cp-burn-after-reading');
         var endDate;
         var endDateTo;
+
+        // numbers greater than this overflow the maximum delay for a setTimeout
+        // which results in it being executed immediately (oops)
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout#maximum_delay_value
+        var MAX_TIMEOUT_DELAY = 2147483647;
         var refreshEndDateBanner = function (force) {
             if (APP.isEditor) { return; }
             var _endDate = content.answers.endDate;
@@ -2804,10 +2809,21 @@ define([
             APP.isClosed = endDate && endDate < (+new Date());
             clearTimeout(endDateTo);
             if (!APP.isClosed && endDate) {
-                setTimeout(function () {
+                // calculate how many ms in the future the poll will be closed
+                var diff = (endDate - +new Date() + 100);
+                // if that value would overflow, then check again in a day
+                // (if the tab is still open)
+                if (diff > MAX_TIMEOUT_DELAY) {
+                    endDateTo = setTimeout(function () {
+                        refreshEndDateBanner(true);
+                    }, 1000 * 3600 * 24);
+                    return;
+                }
+
+                endDateTo = setTimeout(function () {
                     refreshEndDateBanner(true);
-                    $('.cp-form-send-container').find('.cp-open').remove();
-                },(endDate - +new Date() + 100));
+                    $('.cp-form-send-container').find('.cp-open').hide();
+                }, diff);
             }
         };
 
