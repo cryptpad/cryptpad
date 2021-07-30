@@ -1,3 +1,8 @@
+function SUPPORTS_SHARED_MEMORY() {
+    return typeof(SharedArrayBuffer) !== 'undefined';
+}
+
+
 // Support for growable heap + pthreads, where the buffer may change, so JS views
 // must be updated.
 function GROWABLE_HEAP_STORE_I8(ptr, value) {
@@ -1030,7 +1035,7 @@ if (ENVIRONMENT_IS_PTHREAD) {
    "maximum": 1073741824 / WASM_PAGE_SIZE,
    "shared": true
   });
-  if (!(wasmMemory.buffer instanceof SharedArrayBuffer)) {
+  if (Object.prototype.toString.call(wasmMemory.buffer) !== '[object SharedArrayBuffer]') {
    err("requested a shared WebAssembly.Memory but the returned buffer is not a SharedArrayBuffer, indicating that while the browser has SharedArrayBuffer it does not have WebAssembly threads support - you may need to set a flag");
    if (ENVIRONMENT_HAS_NODE) {
     console.log("(on node you may need: --experimental-wasm-threads --experimental-wasm-bulk-memory and also use a recent version)");
@@ -2161,7 +2166,7 @@ var PThread = {
  }),
  receiveObjectTransfer: (function(data) {}),
  allocateUnusedWorkers: (function(numWorkers, onFinishedLoading) {
-  if (typeof SharedArrayBuffer === "undefined") return;
+  if (!SUPPORTS_SHARED_MEMORY()) return;
   var workers = [];
   var numWorkersToCreate = numWorkers;
   if (PThread.preallocatedWorkers.length > 0) {
@@ -2276,7 +2281,7 @@ var PThread = {
   }
  }),
  createNewWorkers: (function(numWorkers) {
-  if (typeof SharedArrayBuffer === "undefined") return [];
+  if (!SUPPORTS_SHARED_MEMORY()) return [];
   var pthreadMainJs = "x2t.worker.js";
   pthreadMainJs = locateFile(pthreadMainJs);
   var newWorkers = [];
@@ -5683,7 +5688,7 @@ function _emscripten_get_sbrk_ptr() {
 }
 Module["_emscripten_get_sbrk_ptr"] = _emscripten_get_sbrk_ptr;
 function _emscripten_has_threading_support() {
- return typeof SharedArrayBuffer !== "undefined";
+ return SUPPORTS_SHARED_MEMORY();
 }
 Module["_emscripten_has_threading_support"] = _emscripten_has_threading_support;
 function _emscripten_is_main_browser_thread() {
@@ -6761,7 +6766,7 @@ function _pthread_self() {
 }
 Module["_pthread_self"] = _pthread_self;
 function _pthread_create(pthread_ptr, attr, start_routine, arg) {
- if (typeof SharedArrayBuffer === "undefined") {
+ if (!SUPPORTS_SHARED_MEMORY()) {
   err("Current environment does not support SharedArrayBuffer, pthreads are not available!");
   return 6;
  }
