@@ -88,7 +88,7 @@ define([
     */
     var supportsSharedArrayBuffers = function () {
         try {
-            return Object.prototype.toString.call(new WebAssembly.Memory({shared: true, initial: 0, maximum: 0}).buffer) === '[object SharedArrayBuffer]';
+            return Object.prototype.toString.call(new window.WebAssembly.Memory({shared: true, initial: 0, maximum: 0}).buffer) === '[object SharedArrayBuffer]';
         } catch (err) {
             console.error(err);
         }
