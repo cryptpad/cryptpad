@@ -1938,7 +1938,9 @@ define([
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext = ['.xlsx', '.ods', '.bin', '.csv', '.pdf'];
+            var ext = ['.xlsx', '.ods', '.bin',
+            //'.csv', // XXX
+            '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
