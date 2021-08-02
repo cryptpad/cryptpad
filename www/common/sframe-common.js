@@ -921,7 +921,7 @@ define([
             });
 
             ctx.sframeChan.on('EV_WORKER_TIMEOUT', function () {
-                UI.errorLoadingScreen(Messages.timeoutError, false, function () {
+                UI.errorLoadingScreen(Messages.timeoutError, false, function () { // XXX mobile users can't necessarily hit 'ESC' as this message suggests. provice a click option
                     funcs.gotoURL('');
                 });
             });
