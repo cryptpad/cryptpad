@@ -708,10 +708,6 @@ define([
         return h('p.cp-notice-other', 'This is expected because Safari and platforms that use its engine lack commonly supported functionality.');
     };
 
-    var chromeGripe = function () {
-        return h('p.cp-notice-other', "This is expected because the developers of Google chrome's engine intentionally disabled support in cross-origin contexts. We are working  on an alternate solution.");
-    };
-
     var browserIssue = function () {
         return h('p.cp-notice-other', 'This test checks for the presence of features in your browser and is not necessarily caused by server misconfiguration.');
     };
@@ -721,6 +717,8 @@ define([
         setWarningClass(msg);
         var notice = h('span', [
             h('p', 'It appears that some features required for Office file format conversion are not present.'),
+            Tools.isSafari()? safariGripe(): undefined,
+            browserIssue(),
         ]);
 
         msg.appendChild(notice);
@@ -765,16 +763,6 @@ define([
             if (responses.SharedArrayBuffer || responses.SharedArrayBufferFallback) {
                 return cb(true);
             }
-
-            if (Tools.isSafari()) {
-                notice.appendChild(safariGripe());
-            }
-            if (Tools.isChrome()) {
-                notice.appendChild(chromeGripe());
-            }
-
-            notice.appendChild(browserIssue());
-
             return void cb(response);
         });
     });
