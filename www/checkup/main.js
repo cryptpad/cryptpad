@@ -902,10 +902,12 @@ define([
 
         return h('div.error', [
             h('h5', obj.message),
-            h('table', [
-                row(["Failed test number", obj.test + 1]),
-                row(["Returned value", h('pre', code(printableValue))]),
-            ]),
+            h('div.table-container',
+                h('table', [
+                    row(["Failed test number", obj.test + 1]),
+                    row(["Returned value", h('pre', code(printableValue))]),
+                ]),
+            ),
         ]);
     };
 
