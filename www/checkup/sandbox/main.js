@@ -1,10 +1,12 @@
 define([
     'jquery',
+    '/common/common-util.js',
+    '/checkup/checkup-tools.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
-], function ($) {
+], function ($, Util, Tools) {
     var postMessage = function (content) {
         window.parent.postMessage(JSON.stringify(content), '*');
     };
@@ -23,6 +25,26 @@ define([
         var url = content.url;
         getHeaders(url, function (err, headers, xhr) {
             cb(xhr.getResponseHeader(content.header));
+        });
+    };
+
+    COMMANDS.CHECK_JS_APIS = function (content, cb) {
+        var globalAPIs = content['globals'] || [];
+        var response = {};
+        globalAPIs.forEach(function (key) {
+            if (Array.isArray(key)) {
+                response[key.join('.')] = Boolean(Util.find(window, key));
+                return;
+            }
+
+            response[key] = Boolean(window[key]);
+        });
+        cb(response);
+    };
+
+    COMMANDS.FANCY_API_CHECKS = function (content, cb) {
+        cb({
+            SharedArrayBufferFallback: Tools.supportsSharedArrayBuffers(),
         });
     };
 

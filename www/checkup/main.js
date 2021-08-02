@@ -13,13 +13,14 @@ define([
     '/common/pinpad.js',
     '/common/outer/network-config.js',
     '/customize/pages.js',
+    '/checkup/checkup-tools.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Pages) {
+            NetConfig, Pages, Tools) {
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -703,6 +704,69 @@ define([
         });
     });
 
+    var safariGripe = function () {
+        return h('p.cp-notice-other', 'This is expected because Safari and platforms that use its engine lack commonly supported functionality.');
+    };
+
+    var browserIssue = function () {
+        return h('p.cp-notice-other', 'This test checks for the presence of features in your browser and is not necessarily caused by server misconfiguration.');
+    };
+
+    assert(function (cb, msg) {
+        cb = Util.once(cb);
+        setWarningClass(msg);
+        var notice = h('span', [
+            h('p', 'It appears that some features required for Office file format conversion are not present.'),
+            Tools.isSafari()? safariGripe(): undefined,
+            browserIssue(),
+        ]);
+
+        msg.appendChild(notice);
+
+        var expected = [
+            'Atomics',
+            'SharedArrayBuffer',
+            'WebAssembly',
+            ['WebAssembly', 'Memory'],
+            ['WebAssembly', 'instantiate'],
+            ['WebAssembly', 'instantiateStreaming'],
+            ['Buffer', 'from'],
+
+            'SharedWorker',
+            'worker',
+            'crossOriginIsolated',
+        ];
+
+        var responses = {};
+
+        nThen(function (w) {
+            deferredPostMessage({
+                command: 'CHECK_JS_APIS',
+                content: {
+                    globals: expected,
+                },
+            }, w(function (response) {
+                Util.extend(responses, response);
+            }));
+
+            deferredPostMessage({
+                command: 'FANCY_API_CHECKS',
+                content: {
+                },
+            }, w(function (response) {
+                Util.extend(responses, response);
+            }));
+        }).nThen(function () {
+            if (!responses.Atomics || !responses.WebAssembly) {
+                return void cb(responses);
+            }
+            if (responses.SharedArrayBuffer || responses.SharedArrayBufferFallback) {
+                return cb(true);
+            }
+            return void cb(response);
+        });
+    });
+
     var isHTTPS = function (host) {
         return /^https:\/\//.test(host);
     };
@@ -831,17 +895,19 @@ define([
     var failureReport = function (obj) {
         var printableValue = obj.output;
         try {
-            printableValue = JSON.stringify(obj.output);
+            printableValue = JSON.stringify(obj.output, null, ' ');
         } catch (err) {
             console.error(err);
         }
 
         return h('div.error', [
             h('h5', obj.message),
-            h('table', [
-                row(["Failed test number", obj.test + 1]),
-                row(["Returned value", code(printableValue)]),
-            ]),
+            h('div.table-container',
+                h('table', [
+                    row(["Failed test number", obj.test + 1]),
+                    row(["Returned value", h('pre', code(printableValue))]),
+                ]),
+            ),
         ]);
     };
 
@@ -849,7 +915,7 @@ define([
     var $progress = $('#cp-progress');
 
     var versionStatement = function () {
-        return h('p', [
+        return h('p.cp--notice-version', [
             "This instance is running ",
             h('span.cp-app-checkup-version',[
                 "CryptPad",
@@ -857,6 +923,16 @@ define([
                 Pages.versionString,
             ]),
             '.',
+        ]);
+    };
+
+    var browserStatement = function () {
+        var name = Tools.guessBrowser();
+        if (!name) { return; }
+        return h('p.cp-notice-browser', [
+            "You appear to be using a ",
+            h('span.cp-app-checkup-browser', name),
+            ' browser to view this page.',
         ]);
     };
 
@@ -870,10 +946,11 @@ define([
 
         var failedDetails = "Details found below";
         var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors or incorrect behaviour.";
-        var details = h('p', failed? failedDetails: successDetails);
+        var details = h('p.cp-notice-details', failed? failedDetails: successDetails);
 
         var summary = h('div.summary.' + statusClass, [
             versionStatement(),
+            browserStatement(),
             h('p', Messages._getKey('assert_numberOfTestsPassed', [
                 state.passed,
                 state.total

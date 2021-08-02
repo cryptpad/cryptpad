@@ -560,7 +560,7 @@
     "form_form": "フォーム",
     "form_editor": "エディタ",
     "form_delete": "削除",
-    "form_sent": "送信しました",
+    "form_sent": "回答を送信しました",
     "form_reset": "リセット",
     "form_update": "更新",
     "form_submit": "送信",
@@ -1378,5 +1378,6 @@
     "notification_linkShared": "{0}があなたとリンクを共有しました: <b>{1}</b>",
     "fm_link_name_placeholder": "あなたのリンク",
     "fm_link_warning": "注意：URLが200字を超えています",
-    "fm_link_invalid": "URLが無効です"
+    "fm_link_invalid": "URLが無効です",
+    "form_answerAs": "名前を記入してください"
 }

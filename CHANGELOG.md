@@ -1,3 +1,10 @@
+# WIP
+
+* Sheet export
+  * most exports broken by Chrome 92, mostly fixed
+  * we discovered that CSV export was not working in any major browser, though it's unclear why. We've disabled CSV export in the meantime
+* some new browser-specific checkup tests to make it easier to detect future regressions in the APIs needed for sheet export
+
 # 4.9.0
 
 ## Goals and announcements
