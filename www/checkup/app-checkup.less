@@ -14,9 +14,13 @@ html, body {
 
     .report {
         font-size: 30px;
-        max-width: 50%;
+        max-width: 26em;
         margin: auto;
         padding-top: 15px;
+    }
+
+    .summary, .failure, .error, .success {
+        margin-bottom: 1em;
     }
 
     .pending {
@@ -46,6 +50,10 @@ html, body {
         td {
             padding: 5px;
             border: 1px solid @cryptpad_text_col;
+            font-size: 60%;
+        }
+        td:nth-child(2) {
+            word-break: break-word;
         }
     }
 
@@ -72,7 +80,12 @@ html, body {
             color: @cryptpad_color_link;
         }
     }
-    .cp-app-checkup-version {
+
+    .cp-notice-browser, .cp-notice-details, .cp-notice-other {
+        font-size: 70%;
+    }
+
+    .cp-app-checkup-version, .cp-app-checkup-browser {
         text-decoration: underline;
     }
 
