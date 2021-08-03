@@ -7,6 +7,9 @@
   * some new browser-specific checkup tests to make it easier to detect future regressions in the APIs
 * drive bug fixes
   * guard against a few possible type errors
+* kanban screen real-estate
+  * narrower 'add board' button
+  * 'Tools' menu to collapse the tag and view mode UI
 
 # 4.9.0
 
