@@ -455,14 +455,26 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
+    //Messages.collapse = Messages.admin_support_collapse;
+    Messages.ui_collapse = "Collapse"; // XXX
+    Messages.ui_expand = "Expand"; // XXX
+
     createCollapse = function (toolbar) {
-        var $button = $(h('button', [
-            h('i.fa.fa-compress'),
-            h('span.cp-button-name', "COLLAPSE"), // XXX
+        var icon = h('i.fa.fa-caret-up');
+        var $icon = $(icon);
+        var text = h('span', Messages.ui_collapse);
+        var $text = $(text);
+        var $button = $(h('button.cp-toolbar-collapse', [
+            icon,
+            h('span.cp-button-name', text),
         ]));
-        toolbar.$bottomR.append($button);
+        toolbar.$bottomR.prepend($button);
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
+            var hidden = toolbar.$top.hasClass('toolbar-hidden');
+            $icon.toggleClass('fa-caret-down fa-caret-up'); //.toggleClass('fa-caret-up');
+            $button.toggleClass('cp-toolbar-button-active');
+            $text.text(Messages[(hidden ? 'ui_expand': 'ui_collapse')]);
         });
     };
 
@@ -1341,7 +1353,7 @@ MessengerUI, Messages, Pages) {
         // Create the subelements
         var tb = {};
         tb['userlist'] = createUserList;
-        tb['collapse'] = createCollapse; // XXX
+        tb['collapse'] = createCollapse;
         tb['chat'] = createChat;
         tb['share'] = createShare;
         tb['access'] = createAccess;
@@ -1363,8 +1375,9 @@ MessengerUI, Messages, Pages) {
         tb['pad'] = function () {
             toolbar.$file.show();
             addElement([
+                'chat',
                 'collapse', // XXX
-                'chat', 'userlist', 'title', 'useradmin', 'spinner',
+                'userlist', 'title', 'useradmin', 'spinner',
                 'newpad', 'share', 'access', 'limit', 'unpinnedWarning',
                 'notifications'
             ], {});
