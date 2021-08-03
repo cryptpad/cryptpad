@@ -367,8 +367,13 @@ define([
                 return '??';
             }
             var data = getFileData(file);
+            if (!data) {
+                error("unable to retrieve data about the requested file: ", file, data);
+                return;
+            }
+            // handle links
             if (data.static) { return data.name; }
-            if (!file || !data || !(data.href || data.roHref)) {
+            if (!file || !(data.href || data.roHref)) {
                 error("getTitle called with a non-existing file id: ", file, data);
                 return;
             }
