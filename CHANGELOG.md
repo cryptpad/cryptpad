@@ -3,7 +3,10 @@
 * Sheet export
   * most exports broken by Chrome 92, mostly fixed
   * we discovered that CSV export was not working in any major browser, though it's unclear why. We've disabled CSV export in the meantime
-* some new browser-specific checkup tests to make it easier to detect future regressions in the APIs needed for sheet export
+  * updated translation to stop referring to Microsoft since we support OpenDocument formats
+  * some new browser-specific checkup tests to make it easier to detect future regressions in the APIs
+* drive bug fixes
+  * guard against a few possible type errors
 
 # 4.9.0
 

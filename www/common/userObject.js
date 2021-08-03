@@ -316,13 +316,24 @@ define([
         // Get data from AllFiles (Cryptpad_RECENTPADS)
         var getFileData = exp.getFileData = function (file, editable) {
             if (!file) { return; }
-            var link = (files[STATIC_DATA] || {})[file];
+            var link;
+            try {
+                link = (files[STATIC_DATA] || {})[file];
+            } catch (err) {
+                console.error(err);
+            }
             if (link) {
                 var _link = editable ? link : Util.clone(link);
                 if (!editable) { _link.static = true; }
                 return _link;
             }
-            var data = files[FILES_DATA][file] || {};
+            var data;
+            try {
+                data = files[FILES_DATA][file] || {};
+            } catch (err) {
+                console.error(err);
+                data = {};
+            }
             if (!editable) {
                 data = JSON.parse(JSON.stringify(data));
                 if (data.href && data.href.indexOf('#') === -1) {
@@ -356,8 +367,13 @@ define([
                 return '??';
             }
             var data = getFileData(file);
+            if (!data) {
+                error("unable to retrieve data about the requested file: ", file, data);
+                return;
+            }
+            // handle links
             if (data.static) { return data.name; }
-            if (!file || !data || !(data.href || data.roHref)) {
+            if (!file || !(data.href || data.roHref)) {
                 error("getTitle called with a non-existing file id: ", file, data);
                 return;
             }
