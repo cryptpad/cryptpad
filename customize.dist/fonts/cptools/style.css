@@ -1,9 +1,10 @@
 @font-face {
   font-family: 'cptools';
-  src:
-    url('fonts/cptools.ttf?n9y2kz') format('truetype'),
-    url('fonts/cptools.woff?n9y2kz') format('woff'),
-    url('fonts/cptools.svg?n9y2kz#cptools') format('svg');
+  src:  url('fonts/cptools.eot?chd5a1');
+  src:  url('fonts/cptools.eot?chd5a1#iefix') format('embedded-opentype'),
+    url('fonts/cptools.ttf?chd5a1') format('truetype'),
+    url('fonts/cptools.woff?chd5a1') format('woff'),
+    url('fonts/cptools.svg?chd5a1#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,17 +26,47 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.cptools-sheet:before {
-  content: "\e908";
+.cptools-form-poll:before {
+  content: "\e910";
 }
-.cptools-slide:before {
-  content: "\e907";
+.cptools-form-poll-maybe:before {
+  content: "\e91e";
+}
+.cptools-form-list-check:before {
+  content: "\e916";
+}
+.cptools-form-grid-check:before {
+  content: "\e917";
+}
+.cptools-form-grid-radio:before {
+  content: "\e918";
+}
+.cptools-form-list-radio:before {
+  content: "\e919";
+}
+.cptools-form-page-break:before {
+  content: "\e91a";
+}
+.cptools-form-paragraph:before {
+  content: "\e91b";
+}
+.cptools-form-text:before {
+  content: "\e91c";
+}
+.cptools-form-list-ordered:before {
+  content: "\e91d";
+}
+.cptools-folder-no-color:before {
+  content: "\e900";
 }
 .cptools-whiteboard:before {
   content: "\e901";
 }
 .cptools-new-template:before {
   content: "\e902";
+}
+.cptools-shared-folder:before {
+  content: "\e903";
 }
 .cptools-file-upload:before {
   content: "\e904";
@@ -46,8 +77,23 @@
 .cptools-poll:before {
   content: "\e906";
 }
+.cptools-slide:before {
+  content: "\e907";
+}
+.cptools-sheet:before {
+  content: "\e908";
+}
+.cptools-folder-open:before {
+  content: "\e909";
+}
 .cptools-kanban:before {
   content: "\e90a";
+}
+.cptools-folder:before {
+  content: "\e90b";
+}
+.cptools-shared-folder-open:before {
+  content: "\e90c";
 }
 .cptools-code:before {
   content: "\e90d";
@@ -58,8 +104,11 @@
 .cptools-file:before {
   content: "\e90f";
 }
-.cptools-destroy:before {
-  content: "\e915";
+.cptools-palette:before {
+  content: "\e911";
+}
+.cptools-folder-upload:before {
+  content: "\e912";
 }
 .cptools-add-bottom:before {
   content: "\e913";
@@ -67,24 +116,6 @@
 .cptools-add-top:before {
   content: "\e914";
 }
-.cptools-folder-upload:before {
-  content: "\e912";
-}
-.cptools-folder-no-color:before {
-  content: "\e900";
-}
-.cptools-shared-folder:before {
-  content: "\e903";
-}
-.cptools-folder-open:before {
-  content: "\e909";
-}
-.cptools-folder:before {
-  content: "\e90b";
-}
-.cptools-shared-folder-open:before {
-  content: "\e90c";
-}
-.cptools-palette:before {
-  content: "\e911";
+.cptools-destroy:before {
+  content: "\e915";
 }

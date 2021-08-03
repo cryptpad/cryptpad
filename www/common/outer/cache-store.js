@@ -49,7 +49,10 @@ define([
                 }
                 cb(null, obj.c);
                 obj.t = +new Date();
-                cache.setItem(id, obj);
+                cache.setItem(id, obj, function (err) {
+                    if (!err) { return; }
+                    console.error(err);
+                });
             });
         });
     };
@@ -81,7 +84,10 @@ define([
                 }
                 cb(null, obj);
                 obj.t = +new Date();
-                cache.setItem(id, obj);
+                cache.setItem(id, obj, function (err) {
+                    if (!err) { return; }
+                    console.error(err);
+                });
             });
         });
     };
@@ -91,7 +97,7 @@ define([
     var checkCheckpoints = function (array) {
         if (!Array.isArray(array)) { return; }
         // Keep the last 100 messages
-        if (array.length > 100) {
+        if (array.length > 100) { // XXX 4.10.0
             array.splice(0, array.length - 100);
         }
         // Remove every message before the first checkpoint

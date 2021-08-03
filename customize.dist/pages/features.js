@@ -8,10 +8,7 @@ define([
     '/api/config',
     '/common/common-ui-elements.js',
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements) {
-    var accounts = {
-        donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL
-    };
+    var accounts = Pages.accounts;
 
     return function () {
         Msg.features_f_apps_note = AppConfig.availablePadTypes.map(function (app) {
@@ -145,10 +142,11 @@ define([
                     ]),
                 ]),
             ]);
-        var availableFeatures =
-            (Config.allowSubscriptions && accounts.upgradeURL && !Config.restrictRegistration) ?
-                [anonymousFeatures, registeredFeatures, premiumFeatures] :
-                [anonymousFeatures, registeredFeatures];
+        var availableFeatures = [
+            anonymousFeatures,
+            registeredFeatures,
+            Pages.areSubscriptionsAllowed() ? premiumFeatures: undefined,
+        ];
 
         return h('div#cp-main', [
             Pages.infopageTopbar(),

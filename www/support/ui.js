@@ -31,9 +31,7 @@ define([
 
         if (typeof(ctx.pinUsage) === 'object') {
             // pass pin.usage, pin.limit, and pin.plan if supplied
-            Object.keys(ctx.pinUsage).forEach(function (k) {
-                data.sender[k] = ctx.pinUsage[k];
-            });
+            data.sender.quota = ctx.pinUsage;
         }
 
         data.id = id;
@@ -45,11 +43,14 @@ define([
             data.sender.blockLocation = privateData.blockLocation || '';
             data.sender.teams = Object.keys(teams).map(function (key) {
                 var team = teams[key];
-                if (!teams) { return; }
+                if (!team) { return; }
                 var ret = {};
-                ['edPublic', 'owner', 'viewer', 'hasSecondaryKey', 'validKeys'].forEach(function (k) {
+                ['channel', 'roster', 'numberPads', 'numberSf', 'edPublic', 'curvePublic', 'owner', 'viewer', 'hasSecondaryKey', 'validKeys'].forEach(function (k) {
                     ret[k] = team[k];
                 });
+                if (ctx.teamsUsage && ctx.teamsUsage[key]) {
+                    ret.quota = ctx.teamsUsage[key];
+                }
                 return ret;
             }).filter(Boolean);
 
@@ -133,9 +134,13 @@ define([
             'account', // Msg.support_cat_account
             'data', // Msg.support_cat_data
             'bug', // Msg.support_cat_bug
+            // TODO report
             'other' // Msg.support_cat_other
         ];
         if (all) { categories.push('all'); } // Msg.support_cat_all
+
+
+
         categories = categories.map(function (key) {
             return {
                 tag: 'a',
@@ -174,6 +179,7 @@ define([
         var catContainer = h('div.cp-dropdown-container' + (title ? '.cp-hidden': ''));
         makeCategoryDropdown(ctx, catContainer, function (key) {
             $(category).val(key);
+            // TODO add a hint suggesting relevant information to include for the chosen category
         });
 
         var attachments, addAttachment;
@@ -339,7 +345,7 @@ define([
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
         var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
-        var fromPremium = Boolean(content.sender.plan);
+        var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']));
 
         var userData = h('div.cp-support-showdata', [
             Messages.support_showData,
@@ -425,12 +431,13 @@ define([
         ]);
     };
 
-    var create = function (common, isAdmin, pinUsage) {
+    var create = function (common, isAdmin, pinUsage, teamsUsage) {
         var ui = {};
         var ctx = {
             common: common,
             isAdmin: isAdmin,
             pinUsage: pinUsage || false,
+            teamsUsage: teamsUsage || false,
             adminKeys: Array.isArray(ApiConfig.adminKeys)?  ApiConfig.adminKeys.slice(): [],
         };
 

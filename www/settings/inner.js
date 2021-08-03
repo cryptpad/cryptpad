@@ -14,6 +14,7 @@ define([
     '/api/config',
     '/common/make-backup.js',
     '/common/common-feedback.js',
+    '/common/common-constants.js',
 
     '/common/jscolor.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -35,7 +36,8 @@ define([
     AppConfig,
     ApiConfig,
     Backup,
-    Feedback
+    Feedback,
+    Constants
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -67,12 +69,13 @@ define([
             'cp-settings-custom-theme',
         ],
         'drive': [
+            'cp-settings-redirect',
             'cp-settings-resettips',
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
-            'cp-settings-trim-history'
+            'cp-settings-trim-history',
             //'cp-settings-drive-reset'
         ],
         'cursor': [ // Msg.settings_cat_cursor
@@ -841,6 +844,45 @@ define([
         return $div;
     };
 
+    create['redirect'] = function () {
+        if (!common.isLoggedIn()) { return; }
+        var $div = $('<div>', { 'class': 'cp-settings-redirect cp-sidebarlayout-element' });
+
+        $('<span>', { 'class': 'label' }).text(Messages.settings_driveRedirectTitle).appendTo($div);
+
+        $('<span>', { 'class': 'cp-sidebarlayout-description' })
+            .append(Messages.settings_driveRedirectHint)
+            .appendTo($div);
+
+        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
+        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
+
+        var $cbox = $(UI.createCheckbox('cp-settings-redirect',
+            Messages.settings_driveRedirect,
+            false, { label: { class: 'noTitle' } }));
+        var $checkbox = $cbox.find('input').on('change', function() {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked') || false;
+            common.setAttribute(['general', Constants.prefersDriveRedirectKey], val, function() {
+                $spinner.hide();
+                $ok.show();
+                sframeChan.query("Q_SET_DRIVE_REDIRECT_PREFERENCE", {
+                    value: val,
+                }, console.log);
+            });
+        });
+
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        if (privateData.prefersDriveRedirect === true) {
+            $checkbox[0].checked = true;
+        }
+        return $div;
+    };
 
     create['resettips'] = function() {
         var $div = $('<div>', { 'class': 'cp-settings-resettips cp-sidebarlayout-element' });

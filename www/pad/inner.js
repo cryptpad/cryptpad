@@ -1115,7 +1115,7 @@ define([
 
             framework._.sfCommon.isPadStored(function(err, val) {
                 if (!val) { return; }
-                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset)');
+                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset), img[src^="data:application/octet-stream"]:not(.cke_reset)');
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
@@ -1169,7 +1169,14 @@ define([
             });
             cb($dom[0]);
         };
-        framework.setFileImporter({ accept: 'text/html' }, function(content, f, cb) {
+        framework.setFileImporter({ accept: ['.md', 'text/html'] }, function(content, f, cb) {
+            if (!f) { return; }
+            if (/\.md$/.test(f.name)) {
+                var mdDom = Exporter.importMd(content, framework._.sfCommon);
+                return importMediaTags(mdDom, function(dom) {
+                    cb(Hyperjson.fromDOM(dom));
+                });
+            }
             importMediaTags(domFromHTML(content).body, function(dom) {
                 cb(Hyperjson.fromDOM(dom));
             });
@@ -1319,7 +1326,13 @@ define([
                 }));
                 $(waitFor());
             }).nThen(function(waitFor) {
+                // TODO this breaks users' ability to tab out of the editor
+                // but that's a problem in other editors and nobody has complained so far
+                // so we'll include this as-is for now while we search for a good pattern
+                // addresses this issue more generally
+                Ckeditor.config.tabSpaces = 4;
                 Ckeditor.config.toolbarCanCollapse = true;
+                Ckeditor.config.language = Messages._getLanguage();
                 if (screen.height < 800) {
                     Ckeditor.config.toolbarStartupExpanded = false;
                     $('meta[name=viewport]').attr('content',

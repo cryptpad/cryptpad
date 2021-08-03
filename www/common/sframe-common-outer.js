@@ -570,7 +570,7 @@ define([
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
-            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar'].indexOf(currentPad.app) !== -1;
+            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
 
             var isDeleted = isNewFile && currentPad.hash.length > 0;
             if (isDeleted) {
@@ -615,6 +615,7 @@ define([
                         newTemplate: Array.isArray(Cryptpad.initialPath)
                                         && Cryptpad.initialPath[0] === "template",
                         feedbackAllowed: Utils.Feedback.state,
+                        prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
@@ -1477,28 +1478,45 @@ define([
                 return 'thumbnail-' + parsed.type + '-' + channel;
             };
             sframeChan.on('Q_CREATE_TEMPLATES', function (type, cb) {
-                Cryptpad.getSecureFilesList({
-                    types: [type],
-                    where: ['template']
-                }, function (err, data) {
-                    // NOTE: Never return data directly!
-                    if (err) { return void cb({error: err}); }
-
-                    var res = [];
-                    nThen(function (waitFor) {
-                        Object.keys(data).map(function (el) {
-                            var k = getKey(data[el].href, data[el].channel);
-                            Utils.LocalStore.getThumbnail(k, waitFor(function (e, thumb) {
-                                res.push({
-                                    id: el,
-                                    name: data[el].filename || data[el].title || '?',
-                                    thumbnail: thumb,
-                                    used: data[el].used || 0
+                var templates;
+                nThen(function (waitFor) {
+                    var next = waitFor();
+                    require([
+                        '/'+type+'/templates.js'
+                    ], function (Templates) {
+                        templates = Templates;
+                        next();
+                    }, function () {
+                        next();
+                    });
+                }).nThen(function () {
+                    Cryptpad.getSecureFilesList({
+                        types: [type],
+                        where: ['template']
+                    }, function (err, data) {
+                        // NOTE: Never return data directly!
+                        if (err) { return void cb({error: err}); }
+                        var res = [];
+                        nThen(function (waitFor) {
+                            Object.keys(data).map(function (el) {
+                                var k = getKey(data[el].href, data[el].channel);
+                                Utils.LocalStore.getThumbnail(k, waitFor(function (e, thumb) {
+                                    res.push({
+                                        id: el,
+                                        name: data[el].filename || data[el].title || '?',
+                                        thumbnail: thumb,
+                                        used: data[el].used || 0
+                                    });
+                                }));
+                            });
+                        }).nThen(function () {
+                            if (Array.isArray(templates)) {
+                                templates.forEach(function (obj) {
+                                    res.push(obj);
                                 });
-                            }));
+                            }
+                            cb({data: res});
                         });
-                    }).nThen(function () {
-                        cb({data: res});
                     });
                 });
             });
@@ -1891,6 +1909,7 @@ define([
                 Utils.rtConfig = rtConfig;
                 var templatePw;
                 nThen(function(waitFor) {
+                    if (data.templateContent) { return; }
                     if (data.templateId) {
                         if (data.templateId === -1) {
                             isTemplate = true;
@@ -1904,6 +1923,13 @@ define([
                     }
                 }).nThen(function () {
                     var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
+                    if (data.templateContent) {
+                        Cryptget.put(currentPad.hash, JSON.stringify(data.templateContent), function () {
+                            startRealtime();
+                            cb();
+                        }, cryptputCfg);
+                        return;
+                    }
                     if (data.template) {
                         // Start OO with a template...
                         // Cryptget and give href, password and content to inner
@@ -1977,6 +2003,8 @@ define([
 
             sframeChan.on('EV_BURN_AFTER_READING', function () {
                 startRealtime();
+                // feedback fails for users in noDrive mode
+                Utils.Feedback.send("BURN_AFTER_READING", Boolean(cfg.noDrive));
             });
 
             sframeChan.ready();

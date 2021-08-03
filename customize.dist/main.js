@@ -12,7 +12,7 @@ define([
         // Make sure we don't display non-translated content (empty button)
         $main.find('#data').removeClass('hidden');
 
-        if (LocalStore.isLoggedIn()) {
+        if (LocalStore.isLoggedIn() && LocalStore.getDriveRedirectPreference()) {
             if (window.location.pathname === '/') {
                 window.location = '/drive/';
                 return;

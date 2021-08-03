@@ -32,6 +32,12 @@ define([
         var teamOwner = data.teamId;
         var title = opts.title;
 
+        var p = priv.propChannels;
+        var otherChan;
+        if (p && p.answersChannel) {
+            otherChan = [p.answersChannel];
+        }
+
         opts = opts || {};
         var redrawAll = function () {};
 
@@ -255,6 +261,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: 'ADD_OWNERS',
                         value: toAddTeams.map(function (obj) { return obj.edPublic; }),
                         teamId: teamOwner
@@ -290,6 +297,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: 'ADD_PENDING_OWNERS',
                         value: toAdd,
                         teamId: teamOwner
@@ -310,6 +318,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: 'ADD_OWNERS',
                         value: [priv.edPublic],
                         teamId: teamOwner
@@ -338,6 +347,7 @@ define([
                     if (!friend) { return; }
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,
+                        channels: otherChan,
                         href: href,
                         calendar: opts.calendar,
                         password: data.password || priv.password,
@@ -417,6 +427,12 @@ define([
         var allowed = data.allowed || [];
         var teamOwner = data.teamId;
 
+        var p = priv.propChannels;
+        var otherChan;
+        if (p && p.answersChannel) {
+            otherChan = [p.answersChannel];
+        }
+
         var redrawAll = function () {};
 
         var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
@@ -495,6 +511,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: 'RM_ALLOWED',
                         value: [ed],
                         teamId: teamOwner
@@ -524,6 +541,7 @@ define([
                 var val = $checkbox.is(':checked');
                 sframeChan.query('Q_SET_PAD_METADATA', {
                     channel: channel,
+                    channels: otherChan,
                     command: 'RESTRICT_ACCESS',
                     value: [Boolean(val)],
                     teamId: teamOwner
@@ -659,6 +677,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: 'ADD_ALLOWED',
                         value: toAdd,
                         teamId: teamOwner
@@ -987,6 +1006,15 @@ define([
                         UI.findCancelButton().click();
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
+
+                    // If this is a form wiht a answer channel, delete it too
+                    var p = priv.propChannels;
+                    if (p.answersChannel) {
+                        sframeChan.query('Q_DELETE_OWNED', {
+                            teamId: typeof(owned) !== "boolean" ? owned : undefined,
+                            channel: p.answersChannel
+                        }, function () {});
+                    }
                 });
                 if (!opts.noEditPassword) { $d.append(h('br')); }
                 $d.append(h('div', [
@@ -1020,7 +1048,7 @@ define([
             var owned = Modal.isOwned(Env, data);
 
             // Request edit access
-            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned && !opts.calendar) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned && !opts.calendar && priv.app !== 'form') {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
@@ -1058,7 +1086,7 @@ define([
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
-            if (owned === true && !opts.calendar) {
+            if (owned === true && !opts.calendar && priv.app !== 'form') {
                 var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
                 var $cbox = $(cbox);
                 var spinner = UI.makeSpinner($cbox);

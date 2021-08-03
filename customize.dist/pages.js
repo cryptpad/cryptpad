@@ -43,6 +43,17 @@ define([
         return Pages.externalLink(el, Pages.localizeDocsLink(href));
     };
 
+    var accounts = Pages.accounts = {
+        donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
+        upgradeURL: AppConfig.upgradeURL
+    };
+
+    Pages.areSubscriptionsAllowed = function () {
+        try {
+            return ApiConfig.allowSubscriptions && accounts.upgradeURL && !ApiConfig.restrictRegistration;
+        } catch (err) { return void console.error(err); }
+    };
+
     var languageSelector = function () {
         var options = [];
         var languages = Msg._languages;
@@ -94,7 +105,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.5.0";
+    Pages.versionString = "v4.9.0";
 
 
     // used for the about menu
@@ -133,7 +144,7 @@ define([
                     footerCol('footer_product', [
                         footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
                         Pages.docsLink,
-                        footLink('/features.html', 'pricing'),
+                        footLink('/features.html', Pages.areSubscriptionsAllowed()? 'pricing': 'features'), // Messages.pricing, Messages.features
                         Pages.githubLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
@@ -204,7 +215,7 @@ define([
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
-                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features),
             ].concat(rightLinks))
         );
     };

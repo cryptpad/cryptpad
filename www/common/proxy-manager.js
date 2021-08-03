@@ -22,11 +22,11 @@ define([
             // a cached version
             if (Env.folders[id].offline && !lm.cache) {
                 Env.folders[id].offline = false;
+                if (Env.folders[id].userObject.fixFiles) { Env.folders[id].userObject.fixFiles(); }
                 Env.Store.refreshDriveUI();
             }
             return;
         }
-        if (Env.folders[id]) { console.warn(Env.folders[id]); }
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
@@ -237,7 +237,15 @@ define([
 
     var getSharedFolderData = function (Env, id) {
         if (!Env.folders[id]) { return {}; }
-        var obj = Env.folders[id].proxy.metadata || {};
+        var proxy = Env.folders[id].proxy;
+
+        // Clean deprecated values
+        if (Object.keys(proxy.metadata || {}).length > 1) {
+            proxy.metadata = { title: proxy.metadata.title };
+        }
+
+        var obj = Util.clone(proxy.metadata || {});
+
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
             if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") { // XXX "deleted folder" for restricted shared folders when viewer in a team
                 continue;
@@ -576,6 +584,24 @@ define([
             });
         });
     };
+    // Add a link
+    var _addLink = function (Env, data, cb) {
+        data = data || {};
+        var resolved = _resolvePath(Env, data.path);
+        if (!resolved || !resolved.userObject) { return void cb({error: 'E_NOTFOUND'}); }
+        var uo = resolved.userObject;
+        var now = +new Date();
+        uo.pushLink({
+            name: data.name,
+            href: data.href,
+            atime: now,
+            ctime: now
+        }, function (e, id) {
+            if (e) { return void cb({error: e}); }
+            uo.add(id, resolved.path);
+            Env.onSync(cb);
+        });
+    };
 
     var _restoreSharedFolder = function (Env, _data, cb) {
         var fId = _data.id;
@@ -810,6 +836,7 @@ define([
             _findChannels(Env, toUnpin).forEach(function (id) {
                 var data = _getFileData(Env, id);
                 var arr = [data.channel];
+                if (data.answersChannel) { arr.push(data.answersChannel); }
                 if (data.rtChannel) { arr.push(data.rtChannel); }
                 if (data.lastVersion) { arr.push(Hash.hrefToHexChannelId(data.lastVersion)); }
                 Array.prototype.push.apply(toKeep, arr);
@@ -1010,35 +1037,40 @@ define([
         });
 
     };
+
+    var _updateStaticAccess = function (Env, id, cb) {
+        var uo = _getUserObjectFromId(Env, id);
+        var sd = uo.getFileData(id, true);
+        sd.atime = +new Date();
+        Env.onSync(cb);
+    };
+
+    var COMMANDS = {
+        move: _move,
+        restore: _restore,
+        addFolder: _addFolder,
+        addSharedFolder: _addSharedFolder,
+        addLink: _addLink,
+        restoreSharedFolder: _restoreSharedFolder,
+        convertFolderToSharedFolder: _convertFolderToSharedFolder,
+        delete: _delete,
+        deleteOwned: _deleteOwned,
+        emptyTrash: _emptyTrash,
+        rename: _rename,
+        setFolderData: _setFolderData,
+        updateStaticAccess: _updateStaticAccess,
+    };
+
     var onCommand = function (Env, cmdData, cb) {
         var cmd = cmdData.cmd;
         var data = cmdData.data || {};
-        switch (cmd) {
-            case 'move':
-                _move(Env, data, cb); break;
-            case 'restore':
-                _restore(Env, data, cb); break;
-            case 'addFolder':
-                _addFolder(Env, data, cb); break;
-            case 'addSharedFolder':
-                _addSharedFolder(Env, data, cb); break;
-            case 'restoreSharedFolder':
-                _restoreSharedFolder(Env, data, cb); break;
-            case 'convertFolderToSharedFolder':
-                _convertFolderToSharedFolder(Env, data, cb); break;
-            case 'delete':
-                _delete(Env, data, cb); break;
-            case 'deleteOwned':
-                _deleteOwned(Env, data, cb); break;
-            case 'emptyTrash':
-                _emptyTrash(Env, data, cb); break;
-            case 'rename':
-                _rename(Env, data, cb); break;
-            case 'setFolderData':
-                _setFolderData(Env, data, cb); break;
-            default:
-                cb();
+        var method = COMMANDS[cmd];
+
+        if (typeof(method) === 'function') {
+            return void method(Env, data, cb);
         }
+        // if the command was not handled then call back
+        cb();
     };
 
     // Set the value everywhere the given pad is stored (main and shared folders)
@@ -1120,8 +1152,8 @@ define([
                     data: uo.getFileData(id)
                 };
             }).filter(function (d) {
-                if (channels.indexOf(d.data.channel) === -1) {
-                    channels.push(d.data.channel);
+                if (channels.indexOf(d.data.channel || d.id) === -1) {
+                    channels.push(d.data.channel || d.id);
                     return true;
                 }
             });
@@ -1176,6 +1208,10 @@ define([
                             result.push(otherChan);
                         }
                     }
+                    // Pin form answers channels
+                    if (data.answersChannel && result.indexOf(data.answersChannel) === -1) {
+                        result.push(data.answersChannel);
+                    }
                     // Pin onlyoffice realtime patches
                     if (data.rtChannel && result.indexOf(data.rtChannel) === -1) {
                         result.push(data.rtChannel);
@@ -1220,7 +1256,10 @@ define([
             Array.prototype.push.apply(result, sfChannels);
         }
 
-        return result;
+        return result.filter(function (channel) {
+            if (typeof(channel) !== 'string') { return; }
+            return [32, 48].indexOf(channel.length) !== -1;
+        });
     };
 
     var addPad = function (Env, path, pad, cb) {
@@ -1370,6 +1409,16 @@ define([
             }
         }, cb);
     };
+    var addLinkInner = function (Env, path, data, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "addLink",
+            data: {
+                path: path,
+                name: data.name,
+                href: data.url
+            }
+        }, cb);
+    };
     var restoreSharedFolderInner = function (Env, fId, password, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "restoreSharedFolder",
@@ -1420,6 +1469,14 @@ define([
         }, cb);
     };
 
+    var updateStaticAccessInner = function (Env, id, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "updateStaticAccess",
+            data: id
+        }, cb);
+
+    };
+
     /* Tools */
 
     var findChannels = _findChannels;
@@ -1435,6 +1492,11 @@ define([
     var getTitle = function (Env, id, type) {
         var uo = _getUserObjectFromId(Env, id);
         return String(uo.getTitle(id, type));
+    };
+
+    var isStaticFile = function (Env, id) {
+        var uo = _getUserObjectFromId(Env, id);
+        return uo.isStaticFile(id);
     };
 
     var isReadOnlyFile = function (Env, id) {
@@ -1478,7 +1540,7 @@ define([
         var files = [];
         var userObjects = _getUserObjects(Env);
         userObjects.forEach(function (uo) {
-            var data = uo.getFiles([UserObject.FILES_DATA]).map(function (id) {
+            var data = uo.getFiles([UserObject.FILES_DATA, UserObject.STATIC_DATA]).map(function (id) {
                 return [Number(id), uo.getFileData(id)];
             });
             Array.prototype.push.apply(files, data);
@@ -1595,17 +1657,20 @@ define([
             emptyTrash: callWithEnv(emptyTrashInner),
             addFolder: callWithEnv(addFolderInner),
             addSharedFolder: callWithEnv(addSharedFolderInner),
+            addLink: callWithEnv(addLinkInner),
             restoreSharedFolder: callWithEnv(restoreSharedFolderInner),
             convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
             deleteOwned: callWithEnv(deleteOwnedInner),
             restore: callWithEnv(restoreInner),
             setFolderData: callWithEnv(setFolderDataInner),
+            updateStaticAccess: callWithEnv(updateStaticAccessInner),
             // Tools
             getFileData: callWithEnv(getFileData),
             find: callWithEnv(find),
             getTitle: callWithEnv(getTitle),
             isReadOnlyFile: callWithEnv(isReadOnlyFile),
+            isStaticFile: callWithEnv(isStaticFile),
             getFiles: callWithEnv(getFiles),
             search: callWithEnv(search),
             getRecentPads: callWithEnv(getRecentPads),

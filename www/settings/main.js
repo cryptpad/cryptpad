@@ -78,6 +78,9 @@ define([
                 }
                 cb();
             });
+            sframeChan.on('Q_SET_DRIVE_REDIRECT_PREFERENCE', function (data, cb) {
+                Cryptpad.setDriveRedirectPreference(data, cb);
+            });
         };
         var category;
         if (window.location.hash) {

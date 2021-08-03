@@ -8,7 +8,8 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages) {
+    '/lib/datepicker/flatpickr.js',
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Flatpickr) {
 
     var handlers = {};
 
@@ -91,6 +92,10 @@ define([
             (type === 'file' ? 'notification_fileShared' :  // Msg.notification_fileSharedTeam
                 'notification_padShared'); // Msg.notification_padSharedTeam
 
+        if (msg.content.isStatic) {
+            key = 'notification_linkShared'; // Msg.notification_linkShared;
+        }
+
         var teamNotification = /^team-/.test(data.type) && Number(data.type.slice(5));
         var teamName = '';
         if (teamNotification) {
@@ -108,6 +113,15 @@ define([
             return Messages._getKey(key, [name, title, teamName]);
         };
         content.handler = function() {
+            if (msg.content.isStatic) {
+                UIElements.displayOpenLinkModal(common, {
+                    curve: msg.author,
+                    href: msg.content.href,
+                    name: name,
+                    title: title
+                }, defaultDismiss(common, data));
+                return;
+            }
             var obj = {
                 p: msg.content.isTemplate ? ['template'] : undefined,
                 t: teamNotification || undefined,
@@ -477,7 +491,7 @@ define([
             var nowDateStr = new Date().toLocaleDateString();
             var startDate = new Date(start);
             if (msg.isAllDay && msg.startDay) {
-                startDate = new Date(msg.startDay);
+                startDate = Flatpickr.parseDate(msg.startDay);
             }
 
             // Missed events

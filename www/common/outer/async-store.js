@@ -112,6 +112,7 @@ define([
         Store.set = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.proxy) { return void cb({ error: 'ENODRIVE' }); }
             var path = data.key.slice();
             var key = path.pop();
             var obj = Util.find(s.proxy, path);
@@ -273,9 +274,9 @@ define([
             }
 
             var pads = data.pads || data;
-            s.rpc.pin(pads, function (e, hash) {
+            s.rpc.pin(pads, function (e) {
                 if (e) { return void cb({error: e}); }
-                cb({hash: hash});
+                cb({});
             });
         };
 
@@ -288,9 +289,9 @@ define([
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             var pads = data.pads || data;
-            s.rpc.unpin(pads, function (e, hash) {
+            s.rpc.unpin(pads, function (e) {
                 if (e) { return void cb({error: e}); }
-                cb({hash: hash});
+                cb({});
             });
         };
 
@@ -393,9 +394,9 @@ define([
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             var list = getCanonicalChannelList(false);
-            store.rpc.reset(list, function (e, hash) {
+            store.rpc.reset(list, function (e) {
                 if (e) { return void cb(e); }
-                cb(null, hash);
+                cb(null);
             });
         };
 
@@ -629,6 +630,7 @@ define([
             if (!proxy.uid) {
                 store.noDriveUid = store.noDriveUid || Hash.createChannelId();
             }
+
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
@@ -655,7 +657,7 @@ define([
                     accountName: proxy.login_name || '',
                     offline: store.proxy && store.offline,
                     teams: teams,
-                    plan: account.plan
+                    plan: account.plan,
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -1226,7 +1228,7 @@ define([
             });
 
             // Add the pad if it does not exist in our drive
-            if (!contains) { // || (ownedByMe && !inMyDrive)) {
+            if (!contains || (data.forceSave && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
@@ -1267,7 +1269,8 @@ define([
             });
             // Let inner know that dropped files shouldn't trigger the popup
             postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
-                stored: true
+                stored: true,
+                inMyDrive: inMyDrive
             });
             nThen(function (waitFor) {
                 sendTo.forEach(function (teamId) {
@@ -1303,9 +1306,14 @@ define([
             getAllStores().forEach(function (s) {
                 s.manager.getSecureFilesList(where).forEach(function (obj) {
                     var data = obj.data;
-                    if (channels.indexOf(data.channel) !== -1) { return; }
+                    if (channels.indexOf(data.channel || data.id) !== -1) { return; }
                     var id = obj.id;
-                    if (data.channel) { channels.push(data.channel); }
+                    if (data.channel) { channels.push(data.channel || data.id); }
+                    // Only include static links if "link" is requested
+                    if (data.static) {
+                        if (types.indexOf('link') !== -1) { list[id] = data; }
+                        return;
+                    }
                     var parsed = Hash.parsePadUrl(data.href || data.roHref);
                     if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                         !isFiltered(parsed.type, data)) {
@@ -2050,8 +2058,17 @@ define([
             } catch (e) {
                 console.error(e);
             }
+
             // Tell all the owners that the pad was deleted from the server
-            var curvePublic = store.proxy.curvePublic;
+            var curvePublic;
+            try {
+                // users in noDrive mode don't have a proxy and
+                // unregistered users don't have a curvePublic
+                curvePublic = store.proxy.curvePublic;
+            } catch (err) {
+                console.error(err);
+                return;
+            }
             m.forEach(function (obj) {
                 var mb = JSON.parse(obj);
                 if (mb.curvePublic === curvePublic) { return; }
@@ -2139,11 +2156,23 @@ define([
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
             var s = getStore(data.teamId);
+            var otherChannels = data.channels;
+            delete data.channels;
             s.rpc.setMetadata(data, function (err, res) {
                 if (err) { return void cb({ error: err }); }
                 if (!Array.isArray(res) || !res.length) { return void cb({}); }
                 cb(res[0]);
             });
+            // If we have other related channels, send the command for them too
+            if (Array.isArray(otherChannels)) {
+                otherChannels.forEach(function (chan) {
+                    var _d = Util.clone(data);
+                    _d.channel = chan;
+                    Store.setPadMetadata(clientId, _d, function () {
+
+                    });
+                });
+            }
         };
 
         // GET_FULL_HISTORY from sframe-common-outer
@@ -2696,7 +2725,12 @@ define([
 
             nThen(function (waitFor) {
                 if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+                if (!proxy.forms) { proxy.forms = {}; }
                 if (!proxy.friends_pending) { proxy.friends_pending = {}; }
+                // Form seed is used to generate a box encryption keypair when
+                // answering a form anonymously
+                if (!proxy.form_seed) { proxy.form_seed = Hash.createChannelId(); }
+
 
                 // Call onCacheReady if the manager is not yet defined
                 if (!manager) {
@@ -3166,6 +3200,10 @@ define([
                 if (ret && ret.error) {
                     initialized = false;
                 }
+
+                var redirect = Constants.prefersDriveRedirectKey;
+                var redirectPreference = Util.find(store, [ 'proxy', 'settings', 'general', redirect, ]);
+                ret[redirect] = redirectPreference;
 
                 callback(ret);
             });

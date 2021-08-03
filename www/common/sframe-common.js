@@ -145,8 +145,7 @@ define([
             var hexFileName = secret.channel;
             var origin = data.fileHost || data.origin;
             var src = origin + Hash.getBlobPathFromHex(hexFileName);
-            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '">' +
-                   '</media-tag>';
+            return UI.mediaTag(src, key).outerHTML;
         }
         return;
     };
@@ -448,13 +447,18 @@ define([
         }
     };
     funcs.createPad = function (cfg, cb) {
+        //var priv = ctx.metadataMgr.getPrivateData();
+        if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
+            return void UI.errorLoadingScreen(Messages.mustLogin);
+        }
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
             password: cfg.password,
             team: cfg.team,
             template: cfg.template,
-            templateId: cfg.templateId
+            templateId: cfg.templateId,
+            templateContent: cfg.templateContent
         }, cb);
     };
 
@@ -917,7 +921,7 @@ define([
             });
 
             ctx.sframeChan.on('EV_WORKER_TIMEOUT', function () {
-                UI.errorLoadingScreen(Messages.timeoutError, false, function () {
+                UI.errorLoadingScreen(Messages.timeoutError, false, function () { // XXX mobile users can't necessarily hit 'ESC' as this message suggests. provice a click option
                     funcs.gotoURL('');
                 });
             });

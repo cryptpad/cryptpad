@@ -936,7 +936,8 @@ define([
         return button;
     };
 
-    var createMdToolbar = function (common, editor) {
+    var createMdToolbar = function (common, editor, cfg) {
+        cfg = cfg || {};
         var $toolbar = $('<div>', {
             'class': 'cp-markdown-toolbar'
         });
@@ -1025,9 +1026,50 @@ define([
                 icon: 'fa-newspaper-o'
             }
         };
+
+        if (typeof(cfg.embed) === "function") {
+            actions.embed = { // Messages.mdToolbar_embed
+                icon: 'fa-picture-o',
+                action: function () {
+                    var _cfg = {
+                        types: ['file', 'link'],
+                        where: ['root']
+                    };
+                    common.openFilePicker(_cfg, function (data) {
+                        // Embed links
+                        if (data.static) {
+                            var a = h('a', {
+                                href: data.href
+                            }, data.name);
+                            cfg.embed(a, data);
+                            return;
+                        }
+                        // Embed files
+                        if (data.type !== 'file') {
+                            console.log("Unexpected data type picked " + data.type);
+                            return;
+                        }
+                        if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
+                        common.setPadAttribute('atime', +new Date(), null, data.href);
+                        var privateDat = common.getMetadataMgr().getPrivateData();
+                        var origin = privateDat.fileHost || privateDat.origin;
+                        var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
+                        cfg.embed(h('media-tag', {
+                            src: src,
+                            'data-crypto-key': 'cryptpad:' + data.key,
+                        }), data);
+                    });
+
+                }
+            };
+        }
+
         var onClick = function () {
             var type = $(this).attr('data-type');
             var texts = editor.getSelections();
+            if (actions[type].action) {
+                return actions[type].action();
+            }
             var newTexts = texts.map(function (str) {
                 str = str || Messages.mdToolbar_defaultText;
                 if (actions[type].apply) {
@@ -1054,7 +1096,7 @@ define([
         }).appendTo($toolbar);
         return $toolbar;
     };
-    UIElements.createMarkdownToolbar = function (common, editor) {
+    UIElements.createMarkdownToolbar = function (common, editor, opts) {
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
         if (readOnly) {
             return {
@@ -1064,7 +1106,7 @@ define([
             };
         }
 
-        var $toolbar = createMdToolbar(common, editor);
+        var $toolbar = createMdToolbar(common, editor, opts);
         var cfg = {
             title: Messages.mdToolbar_button,
             element: $toolbar
@@ -1133,6 +1175,7 @@ define([
             sheet: 'sheets',
             poll: 'poll',
             kanban: 'kanban',
+            form: 'form',
             whiteboard: 'whiteboard',
         };
 
@@ -1472,11 +1515,13 @@ define([
         if (config.isSelect) {
             var pressed = '';
             var to;
+            $container.onChange = Util.mkEvent();
             $container.on('click', 'a', function () {
                 value = $(this).data('value');
                 var $val = $(this);
                 var textValue = $val.html() || value;
                 $button.find('.cp-dropdown-button-title').html(textValue);
+                $container.onChange.fire(textValue, value);
             });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
@@ -1616,7 +1661,7 @@ define([
         var $displayedName = $('<span>', {'class': displayNameCls});
 
         var priv = metadataMgr.getPrivateData();
-        var accountName = priv.accountName;
+        var accountName = Util.fixHTML(priv.accountName);
         var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
@@ -1626,7 +1671,8 @@ define([
             var $userAdminContent = $('<p>');
             if (accountName) {
                 var $userAccount = $('<span>').append(Messages.user_accountName + ': ');
-                $userAdminContent.append($userAccount).append(Util.fixHTML(accountName));
+
+                $userAdminContent.append($userAccount).append(accountName);
                 $userAdminContent.append($('<br>'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
@@ -1849,8 +1895,11 @@ define([
                 },
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
-                    Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                        Common.gotoURL(origin + '/');
+                    UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
+                        if (!yes) { return; }
+                        Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                            Common.gotoURL(origin + '/');
+                        });
                     });
                 },
             });
@@ -2038,14 +2087,9 @@ define([
 
         var $container = $('<div>');
         var i = 0;
+
         var types = AppConfig.availablePadTypes.filter(function (p) {
-            if (p === 'drive') { return; }
-            if (p === 'teams') { return; }
-            if (p === 'contacts') { return; }
-            if (p === 'todo') { return; }
-            if (p === 'file') { return; }
-            if (p === 'accounts') { return; }
-            if (p === 'calendar') { return; }
+            if (AppConfig.hiddenTypes.indexOf(p) !== -1) { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
@@ -2224,7 +2268,7 @@ define([
 
         // Title
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
-        var newPadH3Title = Messages['button_new' + type];
+        var newPadH3Title = Messages['button_new' + type]; // Messages.button_newform
 
         var title = h('div.cp-creation-title', [
             UI.getFileIcon({type: type})[0],
@@ -2414,6 +2458,7 @@ define([
                         'title': name,
                     }).appendTo($container);
                     $span.data('id', obj.id);
+                    if (obj.content) { $span.data('content', obj.content); }
                     if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
                     if (!obj.thumbnail) {
                         $span.append(obj.icon || h('span.cptools.cptools-template'));
@@ -2569,6 +2614,7 @@ define([
 
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
+            var templateContent = $template.data('content') || undefined;
             // Team
             var team;
             if (teamValue) {
@@ -2581,6 +2627,7 @@ define([
                 password: passwordVal,
                 expire: expireVal,
                 templateId: templateId,
+                templateContent: templateContent,
                 team: team
             };
         };
@@ -2624,6 +2671,17 @@ define([
             }
         });
         $creation.focus();
+    };
+
+    UIElements.loginErrorScreenContent = function (common) {
+        var msg = Pages.setHTML(h('span'), Messages.restrictedLoginPrompt);
+        $(msg).find('a').attr({
+            href: '/login/',
+        }).click(function (ev) {
+            ev.preventDefault();
+            common.setLoginRedirect('login');
+        });
+        return msg;
     };
 
     var autoStoreModal = {};
@@ -2673,6 +2731,10 @@ define([
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'ERESTRICTED') {
             msg = Messages.restrictedError;
+            if (!common.isLoggedIn()) {
+                msg = UIElements.loginErrorScreenContent(common);
+            }
+
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         } else if (err.type === 'HASH_NOT_FOUND' && priv.isHistoryVersion) {
             msg = Messages.oo_deletedVersion;
@@ -2833,7 +2895,13 @@ define([
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
-        if (data && data.stored) { return; } // We won't display the popup for dropped files
+        // We won't display the popup for dropped files or already stored pads
+        if (data && data.stored) {
+            if (!data.inMyDrive) {
+                $('.cp-toolbar-storeindrive').show();
+            }
+            return;
+        }
         var priv = common.getMetadataMgr().getPrivateData();
 
         // This pad will be deleted automatically, it shouldn't be stored
@@ -2962,6 +3030,75 @@ define([
         UI.proposal(content, todo);
     };
 
+    UIElements.displayOpenLinkModal = function (common, data, dismiss) {
+        var name = Util.fixHTML(data.title);
+        var url = data.href;
+        var user = data.name;
+        //Messages.link_open = "Open URL";
+            // openLinkInNewTab ("Open Link in New Tab")
+            // fc_open ("Open")
+            // share_linkOpen ("Preview")
+            // resources_openInNewTab ("Open it in a new tab")
+        Messages.link_open = Messages.fc_open; // XXX 4.10.0
+
+        //Messages.link_store = "Store link in drive";
+            // toolbar_storeInDrive ? ("Store in CryptDrive")
+            // autostore_store ? ("Store")
+        Messages.link_store = Messages.toolbar_storeInDrive; // XXX 4.10.0
+
+
+        var content = h('div', [
+            UI.setHTML(h('p'), Messages._getKey('notification_openLink', [name, user])),
+            h('pre', url),
+            UIElements.getVerifiedFriend(common, data.curve, user)
+        ]);
+        var clicked = false;
+        var modal;
+        var buttons = [{
+            name: Messages.friendRequest_later,
+            onClick: function () {
+                if (clicked) { return true; }
+                clicked = true;
+                Feedback.send('LINK_RECEIVED_LATER');
+            },
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.link_open,
+            onClick: function () {
+                if (clicked) { return true; }
+                clicked = true;
+                common.openUnsafeURL(url);
+                Feedback.send("LINK_RECEIVED_OPEN");
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: Messages.link_store,
+            onClick: function () {
+                if (clicked) { return; }
+                clicked = true;
+                common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
+                    cmd: "addLink",
+                    data: {
+                        name: name,
+                        href: url,
+                        path: ['root']
+                    }
+                }, function () {
+                    modal.closeModal();
+                    dismiss();
+                    Feedback.send("LINK_RECEIVED_STORE");
+                });
+                return true;
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var _modal = UI.dialog.customModal(content, {buttons: buttons});
+        modal = UI.openCustomModal(_modal);
+        return modal;
+    };
+
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
         var sframeChan = common.getSframeChannel();
@@ -3012,6 +3149,7 @@ define([
                 // ACCEPT
                 sframeChan.query('Q_SET_PAD_METADATA', {
                     channel: msg.content.channel,
+                    channels: msg.content.channels,
                     command: 'ADD_OWNERS',
                     value: [priv.edPublic]
                 }, function (err, res) {
@@ -3061,6 +3199,7 @@ define([
                     // Remove yourself from the pending owners
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: msg.content.channel,
+                        channels: msg.content.channels,
                         command: 'RM_PENDING_OWNERS',
                         value: [priv.edPublic]
                     }, function (err, res) {
@@ -3077,6 +3216,7 @@ define([
             // Remove yourself from the pending owners
             sframeChan.query('Q_SET_PAD_METADATA', {
                 channel: msg.content.channel,
+                channels: msg.content.channels,
                 command: 'RM_PENDING_OWNERS',
                 value: [priv.edPublic]
             }, function (err, res) {
@@ -3554,6 +3694,13 @@ define([
         var size = $container.outerHeight();
         var pos = el.getBoundingClientRect();
         return (pos.bottom < size) && (pos.y > 0);
+    };
+
+    UIElements.is24h = function () {
+        try {
+            return !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+        } catch (e) {}
+        return false;
     };
 
     UIElements.openSnapshotsModal = function (common, load, make, remove) {

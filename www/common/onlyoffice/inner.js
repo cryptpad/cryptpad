@@ -72,8 +72,31 @@ define([
         return JSONSortify(obj);
     };
 
+    /*  Chrome 92 dropped support for SharedArrayBuffer in cross-origin contexts
+        where window.crossOriginIsolated is false.
+
+        Their blog (https://blog.chromium.org/2021/02/restriction-on-sharedarraybuffers.html)
+        isn't clear about why they're doing this, but since it's related to site-isolation
+        it seems they're trying to do vague security things.
+
+        In any case, there seems to be a workaround where you can still create them
+        by using `new WebAssembly.Memory({shared: true, ...})` instead of `new SharedArrayBuffer`.
+
+        This seems unreliable, but it's better than not being able to export, since
+        we actively rely on postMessage between iframes and therefore can't afford
+        to opt for full isolation.
+    */
+    var supportsSharedArrayBuffers = function () {
+        try {
+            return Object.prototype.toString.call(new window.WebAssembly.Memory({shared: true, initial: 0, maximum: 0}).buffer) === '[object SharedArrayBuffer]';
+        } catch (err) {
+            console.error(err);
+        }
+        return false;
+    };
+
     var supportsXLSX = function () {
-        return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined" || typeof(WebAssembly) === 'undefined');
+        return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() /* || typeof (SharedArrayBuffer) === "undefined" */ || typeof(WebAssembly) === 'undefined');
     };
 
 
@@ -1915,7 +1938,9 @@ define([
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext = ['.xlsx', '.ods', '.bin', '.csv', '.pdf'];
+            var ext = ['.xlsx', '.ods', '.bin',
+            //'.csv', // XXX
+            '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {

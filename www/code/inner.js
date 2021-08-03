@@ -257,8 +257,8 @@ define([
                 'class': 'cp-splitter'
             }).appendTo($previewContainer);
 
-            $preview.on('scroll', function() {
-                splitter.css('top', $preview.scrollTop() + 'px');
+            $previewContainer.on('scroll', function() {
+                splitter.css('top', $previewContainer.scrollTop() + 'px');
             });
 
             var $target = $codeMirrorContainer;
@@ -368,7 +368,7 @@ define([
     var mkFilePicker = function (framework, editor, evModeChange) {
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
-                // Embedding is endabled
+                // Embedding is enabled
                 framework.setMediaTagEmbedder(function (mt) {
                     editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
@@ -507,7 +507,7 @@ define([
                     var fileHost = privateData.fileHost || privateData.origin;
                     var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                     var key = Hash.encodeBase64(secret.keys.cryptKey);
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                    var mt = UI.mediaTag(src, key).outerHTML;
                     editor.replaceSelection(mt);
                 }
             };

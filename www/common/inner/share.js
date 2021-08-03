@@ -90,7 +90,11 @@ define([
                         setTimeout(w);
                     });
                     if (res && /^http/.test(res)) {
-                        href = Hash.getRelativeHref(res);
+                        var _href = Hash.getRelativeHref(res);
+                        if (_href) { href = _href; }
+                        else {
+                            href = res;
+                        }
                         setTimeout(w);
                         return;
                     }
@@ -109,6 +113,7 @@ define([
                             if (mailbox.notifications && mailbox.curvePublic) {
                                 common.mailbox.sendTo("SHARE_PAD", {
                                     href: href,
+                                    isStatic: Boolean(config.static),
                                     password: config.password,
                                     isTemplate: config.isTemplate,
                                     name: myName,
@@ -119,6 +124,9 @@ define([
                                     channel: mailbox.notifications,
                                     curvePublic: mailbox.curvePublic
                                 });
+                                if (config.static) {
+                                    Feedback.send("LINK_SHARED_WITH_CONTACT");
+                                }
                                 return;
                             }
                         }
@@ -135,6 +143,21 @@ define([
                                     return void UI.warn(Messages.error);
                                 }
                             });
+                            return;
+                        }
+                        if (config.static) {
+                            common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
+                                cmd: "addLink",
+                                teamId: team.id,
+                                data: {
+                                    name: title,
+                                    href: href,
+                                    path: ['root']
+                                }
+                            }, function () {
+                                UI.log(Messages.saved);
+                            });
+                            Feedback.send("LINK_ADDED_TO_DRIVE");
                             return;
                         }
                         sframeChan.query('Q_STORE_IN_TEAM', {
@@ -346,6 +369,9 @@ define([
         ] : [
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
         ];
+
+        if (opts.static) { linkContent = []; }
+
         linkContent.push(h('div.cp-spacer'));
         linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
 
@@ -361,7 +387,7 @@ define([
         // warning about sharing links
         // when sharing a version hash, there is a similar warning and we want
         // to avoid alert fatigue
-        if (!opts.versionHash) {
+        if (!opts.versionHash && !opts.static) {
             var localStore = window.cryptpadStore;
             var dismissButton = h('span.fa.fa-times');
             var shareLinkWarning = h('div.alert.alert-warning.dismissable',
@@ -405,6 +431,10 @@ define([
                     var v = opts.getLinkValue({
                         embed: Util.isChecked($link.find('#cp-share-embed'))
                     });
+                    if (opts.static) {
+                        common.openUnsafeURL(v);
+                        return true;
+                    }
                     window.open(v);
                     return true;
                 },
@@ -494,7 +524,20 @@ define([
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
         var versionHash = hashes.viewHash && opts.versionHash;
-        var canBAR = parsed.type !== 'drive' && !versionHash;
+        var isForm = parsed.type === "form"; // && opts.auditorHash;
+        var canBAR = parsed.type !== 'drive' && !versionHash && !isForm;
+
+        var labelEdit = Messages.share_linkEdit;
+        var labelView = Messages.share_linkView;
+
+        var auditor;
+        if (isForm) {
+            labelEdit = Messages.share_formEdit;
+            labelView = Messages.share_formView;
+            auditor = UI.createRadio('accessRights', 'cp-share-form', Messages.share_formAuditor, false, {
+                mark: {tabindex:1},
+            });
+        }
 
         var burnAfterReading = (hashes.viewHash && canBAR) ?
                     UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading, false, {
@@ -505,12 +548,13 @@ define([
             h('label', Messages.share_linkAccess),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
-                           Messages.share_linkView, true, { mark: {tabindex:1} }),
+                            labelView, true, { mark: {tabindex:1} }),
             canPresent ? UI.createRadio('accessRights', 'cp-share-present',
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
-                           Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
-            burnAfterReading
+                            labelEdit, false, { mark: {tabindex:1} }),
+            auditor]),
+            burnAfterReading,
         ]);
 
         // Burn after reading
@@ -548,11 +592,13 @@ define([
             });
         };
         opts.getLinkValue = function (initValue, cb) {
+            if (opts.static) { return opts.static; }
             var val = initValue || {};
             var edit = val.edit !== undefined ? val.edit : Util.isChecked($rights.find('#cp-share-editable-true'));
             var embed = val.embed;
             var present = val.present !== undefined ? val.present : Util.isChecked($rights.find('#cp-share-present'));
             var burnAfterReading = Util.isChecked($rights.find('#cp-share-bar'));
+            var formAuditor = Util.isChecked($rights.find('#cp-share-form'));
             if (versionHash) {
                 edit = false;
                 present = false;
@@ -569,6 +615,9 @@ define([
             }
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash
                                                                        : hashes.viewHash;
+            if (formAuditor && opts.auditorHash) {
+                hash = opts.auditorHash;
+            }
             var href = burnAfterReading ? opts.burnAfterReadingUrl
                                              : (origin + pathname + '#' + hash);
             var parsed = Hash.parsePadUrl(href);
@@ -593,6 +642,9 @@ define([
             $rights.find('#cp-share-editable-false').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-editable-true').attr('checked', true);
+        }
+        if (isForm && !opts.auditorHash) {
+            $rights.find('#cp-share-form').removeAttr('checked').attr('disabled', true);
         }
 
         var getLink = function () {
@@ -665,7 +717,7 @@ define([
         opts.access = true; // Allow the use of the modal even if the pad is not stored
 
         var hashes = opts.hashes;
-        if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
+        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return; }
 
         var teams = getEditableTeams(common, opts);
         opts.teams = teams;
@@ -684,19 +736,23 @@ define([
 
         var $rights = opts.$rights = getRightsHeader(common, opts);
         var resetTab = function () {
+            if (opts.static) { return; }
             $rights.show();
             $rights.find('label.cp-radio').show();
         };
         var onShowEmbed = function () {
+            if (opts.static) { return; }
             $rights.find('#cp-share-bar').closest('label').hide();
             $rights.find('input[type="radio"]:enabled').first().prop('checked', 'checked');
             $rights.find('input[type="radio"]').trigger('change');
         };
         var onShowContacts = function () {
+            if (opts.static) { return; }
             if (!hasFriends || priv.offline) {
                 $rights.hide();
             }
         };
+        if (opts.static) { $rights.hide(); }
 
         var contactsActive = hasFriends && !priv.offline;
         var tabs = [{
@@ -711,13 +767,16 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        }, {
-            getTab: getEmbedTab,
-            title: Messages.share_embedCategory,
-            icon: "fa fa-code",
-            onShow: onShowEmbed,
-            onHide: resetTab
         }];
+        if (!opts.static) {
+            tabs.push({
+                getTab: getEmbedTab,
+                title: Messages.share_embedCategory,
+                icon: "fa fa-code",
+                onShow: onShowEmbed,
+                onHide: resetTab
+            });
+        }
         Modal.getModal(common, opts, tabs, function (err, modal) {
             // Hide the burn-after-reading option by default
             var $modal = $(modal);

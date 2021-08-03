@@ -1,0 +1,27 @@
+{
+    "type": {
+        "pad": "Teks kaya",
+        "sheet": "Lembar Kerja",
+        "teams": "Tim",
+        "contacts": "Kontak",
+        "todo": "Tugas",
+        "media": "Media",
+        "file": "Berkas",
+        "whiteboard": "Papan tulis",
+        "drive": "CryptDrive",
+        "slide": "Presentasi",
+        "kanban": "Kanban",
+        "poll": "Pemilihan",
+        "code": "Kode"
+    },
+    "typeError": "Papan ini tidak sesuai dengan aplikasi yang dipilih",
+    "common_connectionLost": "<b>Koneksi Server Terputus</b><br>Kau sekarang di mode baca hingga koneksi kembali.",
+    "button_newsheet": "Lembar Kerja Baru",
+    "button_newkanban": "Kanban Baru",
+    "button_newwhiteboard": "Papan Tulis Baru",
+    "button_newslide": "Presentasi Baru",
+    "button_newpoll": "Pemilihan Baru",
+    "button_newcode": "papan Kode Baru",
+    "button_newpad": "papan Teks Kaya Baru",
+    "main_title": "Cryptpad: Informasi Aman, Kolaborasi Waktu Nyata"
+}

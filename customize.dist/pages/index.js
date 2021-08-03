@@ -31,7 +31,7 @@ define([
                 [ 'code', Msg.type.code],
                 [ 'slide', Msg.type.slide],
                 [ 'sheet', Msg.type.sheet],
-                [ 'poll', Msg.type.poll],
+                [ 'form', Msg.type.form],
                 [ 'kanban', Msg.type.kanban],
                 [ 'whiteboard', Msg.type.whiteboard],
                 [ 'drive', Msg.type.drive]

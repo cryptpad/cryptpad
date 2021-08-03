@@ -47,7 +47,11 @@ define([
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
 
         var registerClick = function () {
-            var uname = $uname.val();
+            var uname = $uname.val().trim();
+    // trim whitespace surrounding the username since it is otherwise included in key derivation
+    // most people won't realize that its presence is significant
+            $uname.val(uname);
+
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();
 

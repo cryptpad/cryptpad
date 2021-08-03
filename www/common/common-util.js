@@ -9,6 +9,15 @@
         return Array.prototype.slice.call(A, start, end);
     };
 
+    Util.shuffleArray = function (a) {
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = a[i];
+            a[i] = a[j];
+            a[j] = tmp;
+        }
+    };
+
     Util.bake = function (f, args) {
         if (typeof(args) === 'undefined') { args = []; }
         if (!Array.isArray(args)) { args = [args]; }
@@ -150,6 +159,10 @@
             expect: expect,
             handle: handle,
         };
+    };
+
+    Util.inc = function (map, key, val) {
+        map[key] = (map[key] || 0) + (typeof(val) === 'number'? val: 1);
     };
 
     Util.find = function (map, path) {
@@ -559,8 +572,8 @@
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
             '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+            '(\\?[;&a-z\\d%_.~+=-]*)?'); // query string
+            //'(\\#[-a-z\\d_]*)?$','i'); // fragment locator
         return !!pattern.test(str);
     };
 

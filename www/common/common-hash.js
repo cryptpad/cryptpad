@@ -34,6 +34,12 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         var keyPair = Nacl.sign.keyPair.fromSecretKey(privateKey);
         return Nacl.util.encodeBase64(keyPair.publicKey);
     };
+    Hash.getCurvePublicFromPrivate = function (curvePrivateSafeStr) {
+        var curvePrivateStr = Crypto.b64AddSlashes(curvePrivateSafeStr);
+        var privateKey = Nacl.util.decodeBase64(curvePrivateStr);
+        var keyPair = Nacl.box.keyPair.fromSecretKey(privateKey);
+        return Nacl.util.encodeBase64(keyPair.publicKey);
+    };
 
     var getEditHashFromKeys = Hash.getEditHashFromKeys = function (secret) {
         var version = secret.version;
@@ -209,6 +215,17 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         });
         return k ? Crypto.b64AddSlashes(k) : '';
     };
+    var getAuditorKey = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (/^auditor=/.test(data)) {
+                k = data.slice(8);
+                return true;
+            }
+        });
+        return k ? Crypto.b64AddSlashes(k) : '';
+    };
     var getOwnerKey = function (hashArr) {
         var k;
         // Check if we have a ownerKey for this pad
@@ -231,6 +248,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             parsed.present = options.indexOf('present') !== -1;
             parsed.embed = options.indexOf('embed') !== -1;
             parsed.versionHash = getVersionHash(options);
+            parsed.auditorKey = getAuditorKey(options);
             parsed.newPadOpts = getNewPadOpts(options);
             parsed.loginOpts = getLoginOpts(options);
             parsed.ownerKey = getOwnerKey(options);
@@ -272,6 +290,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                     present: parsed.present,
                     ownerKey: parsed.ownerKey,
                     versionHash: parsed.versionHash,
+                    auditorKey: parsed.auditorKey,
                     newPadOpts: parsed.newPadOpts,
                     loginOpts: parsed.loginOpts,
                     password: parsed.password
@@ -297,6 +316,10 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 var versionHash = typeof(opts.versionHash) !== "undefined" ? opts.versionHash : parsed.versionHash;
                 if (versionHash) {
                     hash += 'hash=' + Crypto.b64RemoveSlashes(versionHash) + '/';
+                }
+                var auditorKey = typeof(opts.auditorKey) !== "undefined" ? opts.auditorKey : parsed.auditorKey;
+                if (auditorKey) {
+                    hash += 'auditor=' + Crypto.b64RemoveSlashes(auditorKey) + '/';
                 }
                 if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
                 if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
@@ -619,6 +642,27 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             hashes.fileHash = getFileHashFromKeys(secret);
         }
         return hashes;
+    };
+
+    Hash.getFormData = function (secret, hash, password) {
+        secret = secret || Hash.getSecrets('form', hash, password);
+        var keys = secret && secret.keys;
+        var secondary = keys && keys.secondaryKey;
+        if (!secondary) { return; }
+        var curvePair = Nacl.box.keyPair.fromSecretKey(Nacl.util.decodeUTF8(secondary).slice(0,32));
+        var ret = {};
+        ret.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
+        var privateKey = ret.form_private = Nacl.util.encodeBase64(curvePair.secretKey);
+
+        var auditorHash = Hash.getViewHashFromKeys({
+            version: 1,
+            channel: secret.channel,
+            keys: { viewKeyStr: Nacl.util.encodeBase64(keys.cryptKey) }
+        });
+        var _parsed = Hash.parseTypeHash('pad', auditorHash);
+        ret.form_auditorHash = _parsed.getHash({auditorKey: privateKey});
+
+        return ret;
     };
 
     // STORAGE

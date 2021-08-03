@@ -195,7 +195,7 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
-                team.onRpcReadyEvt.fire();
+                if (team && team.onRpcReadyEvt) { team.onRpcReadyEvt.fire(); }
                 cb();
             }, Cache);
         });
@@ -986,47 +986,60 @@ define([
         var state = team.roster.getState() || {};
         var members = state.members || {};
 
-        // Get pending owners
-        var md = team.listmap.metadata || {};
-        if (Array.isArray(md.pending_owners)) {
-            // Get the members associated to the pending_owners' edPublic and mark them as such
-            md.pending_owners.forEach(function (ed) {
-                var member;
-                Object.keys(members).some(function (curve) {
-                    if (members[curve].edPublic === ed) {
-                        member = members[curve];
-                        return true;
-                    }
-                });
-                if (!member && teamData.owner) {
-                    var removeOwnership = function (chan) {
-                        ctx.Store.setPadMetadata(null, {
-                            channel: chan,
-                            command: 'RM_PENDING_OWNERS',
-                            value: [ed],
-                        }, function () {});
-                    };
-                    removeOwnership(teamData.channel);
-                    removeOwnership(Util.find(teamData, ['keys', 'roster', 'channel']));
-                    removeOwnership(Util.find(teamData, ['keys', 'chat', 'channel']));
+        var md;
+        nThen(function (waitFor) {
+            // Get pending owners
+            ctx.Store.getPadMetadata(null, {
+                channel: teamData.channel
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    md = team.listmap.metadata || {};
                     return;
                 }
-                member.pendingOwner = true;
-            });
-        }
+                md = obj;
+            }));
+        }).nThen(function () {
+            ctx.pending_owners = md.pending_owners;
+            if (Array.isArray(md.pending_owners)) {
+                // Get the members associated to the pending_owners' edPublic and mark them as such
+                md.pending_owners.forEach(function (ed) {
+                    var member;
+                    Object.keys(members).some(function (curve) {
+                        if (members[curve].edPublic === ed) {
+                            member = members[curve];
+                            return true;
+                        }
+                    });
+                    if (!member && teamData.owner) {
+                        var removeOwnership = function (chan) {
+                            ctx.Store.setPadMetadata(null, {
+                                channel: chan,
+                                command: 'RM_PENDING_OWNERS',
+                                value: [ed],
+                            }, function () {});
+                        };
+                        removeOwnership(teamData.channel);
+                        removeOwnership(Util.find(teamData, ['keys', 'roster', 'channel']));
+                        removeOwnership(Util.find(teamData, ['keys', 'chat', 'channel']));
+                        return;
+                    }
+                    member.pendingOwner = true;
+                });
+            }
 
-        // Add online status (using messenger data)
-        if (ctx.store.messenger) {
-            var chatData = team.getChatData();
-            var online = ctx.store.messenger.getOnlineList(chatData.channel) || [];
-            online.forEach(function (curve) {
-                if (members[curve]) {
-                    members[curve].online = true;
-                }
-            });
-        }
+            // Add online status (using messenger data)
+            if (ctx.store.messenger) {
+                var chatData = team.getChatData();
+                var online = ctx.store.messenger.getOnlineList(chatData.channel) || [];
+                online.forEach(function (curve) {
+                    if (members[curve]) {
+                        members[curve].online = true;
+                    }
+                });
+            }
 
-        cb(members);
+            cb(members);
+        });
     };
 
     // Return folders with edit rights available to everybody (decrypted pad href)
@@ -1144,8 +1157,7 @@ define([
         if (!teamData) { return void cb ({error: 'ENOENT'}); }
         var team = ctx.teams[teamId];
         if (!team) { return void cb ({error: 'ENOENT'}); }
-        var md = team.listmap.metadata || {};
-        var isPendingOwner = (md.pending_owners || []).indexOf(user.edPublic) !== -1;
+        var isPendingOwner = user.pendingOwner;
         nThen(function (waitFor) {
             var cmd = isPendingOwner ? 'RM_PENDING_OWNERS' : 'RM_OWNERS';
 
@@ -1364,42 +1376,60 @@ define([
     var describeUser = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
         var team = ctx.teams[teamId];
-        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!teamData || !team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         if (!data.curvePublic || !data.data) { return void cb({error: 'MISSING_DATA'}); }
         var state = team.roster.getState();
         var user = state.members[data.curvePublic];
 
-        // It it is an ownership revocation, we have to set it in pad metadata first
-        if (user.role === "OWNER" && data.data.role !== "OWNER") {
-            revokeOwnership(ctx, teamId, user, function (err) {
-                if (!err) { return void cb(); }
-                console.error(err);
-                return void cb({error: err});
-            });
-            return;
-        }
+        var md;
+        nThen(function (waitFor) {
+            // Get pending owners
+            ctx.Store.getPadMetadata(null, {
+                channel: teamData.channel
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    md = team.listmap.metadata || {};
+                    return;
+                }
+                md = obj;
+            }));
+        }).nThen(function () {
+            user.pendingOwner = Array.isArray(md.pending_owners) &&
+                                md.pending_owners.indexOf(user.edPublic) !== -1;
 
-        // Viewer to editor
-        if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
-            changeEditRights(ctx, teamId, user, true, function (obj) {
-                return void cb(obj);
-            });
-        }
+            // It it is an ownership revocation, we have to set it in pad metadata first
+            if (user.role === "OWNER" && data.data.role !== "OWNER") {
+                revokeOwnership(ctx, teamId, user, function (err) {
+                    if (!err) { return void cb(); }
+                    console.error(err);
+                    return void cb({error: err});
+                });
+                return;
+            }
 
-        // Editor to viewer
-        if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
-            changeEditRights(ctx, teamId, user, false, function (obj) {
-                return void cb(obj);
-            });
-        }
+            // Viewer to editor
+            if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
+                changeEditRights(ctx, teamId, user, true, function (obj) {
+                    return void cb(obj);
+                });
+            }
 
-        var obj = {};
-        obj[data.curvePublic] = data.data;
-        team.roster.describe(obj, function (err) {
-            if (err) { return void cb({error: err}); }
-            cb();
+            // Editor to viewer
+            if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
+                changeEditRights(ctx, teamId, user, false, function (obj) {
+                    return void cb(obj);
+                });
+            }
+
+            var obj = {};
+            obj[data.curvePublic] = data.data;
+            team.roster.describe(obj, function (err) {
+                if (err) { return void cb({error: err}); }
+                cb();
+            });
         });
     };
 
@@ -2010,9 +2040,16 @@ define([
             if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
                 if (!ctx.teams[id]) { return; }
+                var proxy = ctx.teams[id].proxy || {};
+                var nPads = proxy.drive && Object.keys(proxy.drive.filesData || {}).length;
+                var nSf = proxy.drive && Object.keys(proxy.drive.sharedFolders || {}).length;
                 t[id] = {
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
+                    channel: teams[id].channel,
+                    numberPads: nPads,
+                    numberSf: nSf,
+                    roster: Util.find(teams[id], ['keys', 'roster', 'channel']),
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar']),
                     viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),

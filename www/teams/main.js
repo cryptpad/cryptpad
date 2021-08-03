@@ -24,7 +24,10 @@ define([
 
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
                 if (!teamId) { return void cb({error: 'EINVAL'}); }
-                data.teamId = teamId;
+                // a teamId of -1 bypasses guards against modifying your drive
+                // from the team app
+                if (data.teamId !== -1) { data.teamId = teamId; }
+                else { delete data.teamId; }
                 Cryptpad.userObjectCommand(data, cb);
             });
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {

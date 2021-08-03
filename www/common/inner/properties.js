@@ -24,6 +24,7 @@ define([
         if (privateData.propChannels) {
             var p = privateData.propChannels;
             data.channel = data.channel || p.channel;
+            data.answersChannel = data.answersChannel || p.answersChannel;
             data.rtChannel = data.rtChannel || p.rtChannel;
             data.lastVersion = data.lastVersion || p.lastVersion;
             data.lastCpHash = data.lastCpHash || p.lastCpHash;
@@ -75,6 +76,7 @@ define([
         var bytes = 0;
         var historyBytes;
         var chan = [data.channel];
+        if (data.answersChannel) { chan.push(data.answersChannel); }
         if (data.rtChannel) { chan.push(data.rtChannel); }
         if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
 

@@ -16,6 +16,7 @@ define([
     '/support/ui.js',
 
     '/lib/datepicker/flatpickr.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -44,6 +45,7 @@ define([
         'instanceStatus': {}
     };
 
+    var Nacl = window.nacl;
     var common;
     var sFrameChan;
 
@@ -54,6 +56,7 @@ define([
             'cp-admin-archive',
             'cp-admin-unarchive',
             'cp-admin-registration',
+            'cp-admin-email'
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -71,7 +74,8 @@ define([
         ],
         'support': [ // Msg.admin_cat_support
             'cp-admin-support-list',
-            'cp-admin-support-init'
+            'cp-admin-support-init',
+            'cp-admin-support-priv',
         ],
         'broadcast': [ // Msg.admin_cat_broadcast
             'cp-admin-maintenance',
@@ -81,15 +85,28 @@ define([
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
             'cp-admin-performance-profiling',
-        ]
+        ],
+        'network': [ // Msg.admin_cat_network
+            'cp-admin-update-available',
+            'cp-admin-checkup',
+            'cp-admin-block-daily-check',
+            //'cp-admin-provide-aggregate-statistics',
+            'cp-admin-list-my-instance',
+            'cp-admin-consent-to-contact',
+            'cp-admin-remove-donate-button',
+            'cp-admin-instance-purpose',
+        ],
     };
 
     var create = {};
 
+    var keyToCamlCase = function (key) {
+        return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    };
+
     var makeBlock = function (key, addButton) { // Title, Hint, maybeButton
         // Convert to camlCase for translation keys
-        var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-
+        var safeKey = keyToCamlCase(key);
         var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
         $('<label>').text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
@@ -256,7 +273,7 @@ define([
         var $div = makeBlock(key); // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
 
         var state = APP.instanceStatus.restrictRegistration;
-        var $cbox = $(UI.createCheckbox('cp-settings-userfeedback',
+        var $cbox = $(UI.createCheckbox('cp-settings-' + key,
             Messages.admin_registrationTitle,
             state, { label: { class: 'noTitle' } }));
         var spinner = UI.makeSpinner($cbox);
@@ -267,8 +284,11 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['RESTRICT_REGISTRATION', [val]]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
                 APP.updateStatus(function () {
                     spinner.done();
                     state = APP.instanceStatus.restrictRegistration;
@@ -278,6 +298,94 @@ define([
             });
         });
         $cbox.appendTo($div);
+
+        return $div;
+    };
+
+    var makeAdminCheckbox = function (data) {
+        return function () {
+            var state = data.getState();
+            var key = data.key;
+            var $div = makeBlock(key);
+
+            var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
+            var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
+            var $cbox = $(UI.createCheckbox('cp-admin-' + key,
+                Messages[labelKey] || Messages[titleKey],
+                state, { label: { class: 'noTitle' } }));
+            var spinner = UI.makeSpinner($cbox);
+            var $checkbox = $cbox.find('input').on('change', function() {
+                spinner.spin();
+                var val = $checkbox.is(':checked') || false;
+                $checkbox.attr('disabled', 'disabled');
+                data.query(val, function (state) {
+                    spinner.done();
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
+                });
+            });
+            $cbox.appendTo($div);
+            return $div;
+        };
+    };
+
+    // Msg.admin_registrationHint, .admin_registrationTitle, .admin_registrationButton
+    create['registration'] = makeAdminCheckbox({
+        key: 'registration',
+        getState: function () {
+            return APP.instanceStatus.restrictRegistration;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['RESTRICT_REGISTRATION', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.restrictRegistration);
+                });
+            });
+        },
+    });
+
+    create['email'] = function () {
+        var key = 'email';
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton
+        var $button = $div.find('button');
+
+        var input = h('input', {
+            type: 'email',
+            value: ApiConfig.adminEmail || ''
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setlimit-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            if (!$input.val()) { return; }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_ADMIN_EMAIL', [$input.val()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        $button.before(innerDiv);
 
         return $div;
     };
@@ -316,8 +424,11 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['UPDATE_DEFAULT_STORAGE', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); return void console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
                 var limit = getPrettySize(l);
                 $div.find('.cp-admin-defaultlimit-value').text(Messages._getKey('admin_limit', [limit]));
             });
@@ -448,8 +559,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['RM_QUOTA', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
                 APP.refreshLimits();
                 $key.val('');
             });
@@ -462,8 +577,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['SET_QUOTA', data]
-            }, function (e) {
-                if (e) { UI.warn(Messages.error); console.error(e); }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
                 APP.refreshLimits();
                 $key.val('');
             });
@@ -637,8 +756,13 @@ define([
     };
 
     var supportKey = ApiConfig.supportMailbox;
+    var checkAdminKey = function (priv) {
+        if (!supportKey) { return; }
+        return Hash.checkBoxKeyPair(priv, supportKey);
+    };
+
     create['support-list'] = function () {
-        if (!supportKey || !APP.privateKey) { return; }
+        if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
         var $container = makeBlock('support-list'); // Msg.admin_supportListHint, .admin_supportListTitle
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
@@ -709,7 +833,8 @@ define([
             var premium = t.some(function (msg) {
                 var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
                 if (ed !== _ed) { return; }
-                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']);
+                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']) ||
+                       Util.find(msg, ['content', 'msg', 'content', 'sender', 'quota', 'plan']);
             });
             var lastMsg = t[t.length - 1];
             var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
@@ -898,16 +1023,63 @@ define([
         return $container;
     };
 
+    create['support-priv'] = function () {
+        if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
 
-    var checkAdminKey = function (priv) {
-        if (!supportKey) { return; }
-        return Hash.checkBoxKeyPair(priv, supportKey);
+        var $div = makeBlock('support-priv', true); // Msg.admin_supportPrivHint, .admin_supportPrivTitle, .admin_supportPrivButton
+        var $button = $div.find('button').click(function () {
+            $button.remove();
+            var $selectable = $(UI.dialog.selectable(APP.privateKey)).css({ 'max-width': '28em' });
+            $div.append($selectable);
+        });
+        return $div;
     };
-
     create['support-init'] = function () {
         var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
         if (!supportKey) {
-            $div.append(h('p', Messages.admin_supportInitHelp));
+            (function () {
+                $div.append(h('p', Messages.admin_supportInitHelp));
+                var button = h('button.btn.btn-primary', Messages.admin_supportInitGenerate);
+                var $button = $(button).appendTo($div);
+                $div.append($button);
+                var spinner = UI.makeSpinner($div);
+                $button.click(function () {
+                    spinner.spin();
+                    $button.attr('disabled', 'disabled');
+                    var keyPair = Nacl.box.keyPair();
+                    var pub = Nacl.util.encodeBase64(keyPair.publicKey);
+                    var priv = Nacl.util.encodeBase64(keyPair.secretKey);
+                    // Store the private key first. It won't be used until the decree is accepted.
+                    sFrameChan.query("Q_ADMIN_MAILBOX", priv, function (err, obj) {
+                        if (err || (obj && obj.error)) {
+                            console.error(err || obj.error);
+                            UI.warn(Messages.error);
+                            spinner.hide();
+                            return;
+                        }
+                        // Then send the decree
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['SET_SUPPORT_MAILBOX', [pub]]
+                        }, function (e, response) {
+                            $button.removeAttr('disabled');
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                                spinner.hide();
+                                return;
+                            }
+                            spinner.done();
+                            UI.log(Messages.saved);
+                            supportKey = pub;
+                            APP.privateKey = priv;
+                            $('.cp-admin-support-init').hide();
+                            APP.$rightside.append(create['support-list']());
+                            APP.$rightside.append(create['support-priv']());
+                        });
+                    });
+                });
+            })();
             return $div;
         }
         if (!APP.privateKey || !checkAdminKey(APP.privateKey)) {
@@ -937,6 +1109,7 @@ define([
                     APP.privateKey = key;
                     $('.cp-admin-support-init').hide();
                     APP.$rightside.append(create['support-list']());
+                    APP.$rightside.append(create['support-priv']());
                 });
             });
             return $div;
@@ -1030,9 +1203,10 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
-                }, function (e) {
-                    if (e) {
-                        console.error(e);
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         return;
                     }
                     console.log('lastBroadcastHash updated');
@@ -1298,20 +1472,21 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            var is24h = false;
-            try {
-                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
-            } catch (e) {}
+            var is24h = UIElements.is24h();
+            var dateFormat = "Y-m-d H:i";
+            if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
             var endPickr = Flatpickr(end, {
                 enableTime: true,
                 time_24hr: is24h,
+                dateFormat: dateFormat,
                 minDate: new Date()
             });
             Flatpickr(start, {
                 enableTime: true,
                 time_24hr: is24h,
                 minDate: new Date(),
+                dateFormat: dateFormat,
                 onChange: function () {
                     endPickr.set('minDate', new Date($start.val()));
                 }
@@ -1336,9 +1511,10 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_MAINTENANCE', [data]]
-                }, function (e) {
-                    if (e) {
-                        UI.warn(Messages.error); console.error(e);
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         $button.prop('disabled', '');
                         return;
                     }
@@ -1419,7 +1595,7 @@ define([
             var getData = function () {
                 var url = $input.val();
                 if (!Util.isValidURL(url)) {
-                    console.error('Invalid URL');
+                    console.error('Invalid URL', url);
                     return false;
                 }
                 return url;
@@ -1430,10 +1606,11 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_SURVEY_URL', [data]]
-                }, function (e) {
-                    if (e) {
+                }, function (e, response) {
+                    if (e || response.error) {
                         $button.prop('disabled', '');
-                        UI.warn(Messages.error); console.error(e);
+                        UI.warn(Messages.error);
+                        console.error(e, response);
                         return;
                     }
                     // Maintenance applied, send notification
@@ -1529,11 +1706,12 @@ define([
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'GET_WORKER_PROFILES',
             }, function (e, data) {
-                if (e) { return void console.error(e); }
+                if (e || data.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, data);
+                }
                 //console.info(data);
                 $div.find("table").remove();
-
-
                 process(data);
                 $div.append(table);
             });
@@ -1541,6 +1719,202 @@ define([
 
         onRefresh();
         onRefreshPerformance.reg(onRefresh);
+
+        return $div;
+    };
+
+    create['update-available'] = function () { // Messages.admin_updateAvailableTitle.admin_updateAvailableHint.admin_updateAvailableLabel.admin_updateAvailableButton
+        if (!APP.instanceStatus.updateAvailable) { return; }
+        var $div = makeBlock('update-available', true);
+
+        var updateURL = 'https://github.com/xwiki-labs/cryptpad/releases/latest';
+        if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
+            updateURL = APP.instanceStatus.updateAvailable;
+        }
+
+        $div.find('button').click(function () {
+            common.openURL(updateURL);
+        });
+
+        return $div;
+    };
+
+    create['checkup'] = function () {
+        var $div = makeBlock('checkup', true); // Messages.admin_checkupButton.admin_checkupHint.admin_checkupTitle
+        $div.find('button').click(function () {
+            common.openURL('/checkup/');
+        });
+        return $div;
+    };
+
+    create['consent-to-contact'] = makeAdminCheckbox({ // Messages.admin_consentToContactTitle.admin_consentToContactHint.admin_consentToContactLabel
+        key: 'consent-to-contact',
+        getState: function () {
+            return APP.instanceStatus.consentToContact;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['CONSENT_TO_CONTACT', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.consentToContact);
+                });
+            });
+        },
+    });
+
+    create['list-my-instance'] = makeAdminCheckbox({ // Messages.admin_listMyInstanceTitle.admin_listMyInstanceHint.admin_listMyInstanceLabel
+        key: 'list-my-instance',
+        getState: function () {
+            return APP.instanceStatus.listMyInstance;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['LIST_MY_INSTANCE', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.listMyInstance);
+                });
+            });
+        },
+    });
+
+    create['provide-aggregate-statistics'] = makeAdminCheckbox({ // Messages.admin_provideAggregateStatisticsTitle.admin_provideAggregateStatisticsHint.admin_provideAggregateStatisticsLabel
+        key: 'provide-aggregate-statistics',
+        getState: function () {
+            return APP.instanceStatus.provideAggregateStatistics;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['PROVIDE_AGGREGATE_STATISTICS', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.provideAggregateStatistics);
+                });
+            });
+        },
+    });
+
+    create['remove-donate-button'] = makeAdminCheckbox({ // Messages.admin_removeDonateButtonTitle.admin_removeDonateButtonHint.admin_removeDonateButtonLabel
+        key: 'remove-donate-button',
+        getState: function () {
+            return APP.instanceStatus.removeDonateButton;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['REMOVE_DONATE_BUTTON', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.removeDonateButton);
+                });
+            });
+        },
+    });
+
+    create['block-daily-check'] = makeAdminCheckbox({ // Messages.admin_blockDailyCheckTitle.admin_blockDailyCheckHint.admin_blockDailyCheckLabel
+        key: 'block-daily-check',
+        getState: function () {
+            return APP.instanceStatus.blockDailyCheck;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['BLOCK_DAILY_CHECK', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.blockDailyCheck);
+                });
+            });
+        },
+    });
+
+    var sendDecree = function (data, cb) {
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'ADMIN_DECREE',
+            data: data,
+        }, cb);
+    };
+
+    create['instance-purpose'] = function () {
+        var key = 'instance-purpose';
+        var $div = makeBlock(key); // Messages.admin_instancePurposeTitle.admin_instancePurposeHint
+
+        var values = [
+            'noanswer', // Messages.admin_purpose_noanswer
+            'experiment', // Messages.admin_purpose_experiment
+            'personal', // Messages.admin_purpose_personal
+            'education', // Messages.admin_purpose_education
+            'org', // Messages.admin_purpose_org
+            'business', // Messages.admin_purpose_business
+            'public', // Messages.admin_purpose_public
+        ];
+
+        var defaultPurpose = 'noanswer';
+        var purpose = APP.instanceStatus.instancePurpose || defaultPurpose;
+
+        var opts = h('div.cp-admin-radio-container', [
+            values.map(function (key) {
+                var full_key = 'admin_purpose_' + key;
+                return UI.createRadio('cp-instance-purpose-radio', 'cp-instance-purpose-radio-'+key,
+                    Messages[full_key] || Messages._getKey(full_key, [defaultPurpose]),
+                    key === purpose, {
+                        input: { value: key },
+                        label: { class: 'noTitle' }
+                    });
+            })
+        ]);
+
+        var $opts = $(opts);
+        //var $br = $(h('br',));
+        //$div.append($br);
+
+        $div.append(opts);
+
+        var setPurpose = function (value, cb) {
+            sendDecree([
+                'SET_INSTANCE_PURPOSE',
+                [ value]
+            ], cb);
+        };
+
+        $opts.on('change', function () {
+            var val = $opts.find('input:radio:checked').val();
+            console.log(val);
+            //spinner.spin();
+            setPurpose(val, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    //spinner.hide();
+                    return;
+                }
+                //spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
 
         return $div;
     };
@@ -1562,6 +1936,7 @@ define([
         support: 'fa fa-life-ring',
         broadcast: 'fa fa-bullhorn',
         performance: 'fa fa-heartbeat',
+        network: 'fa fa-sitemap', // or fa-university ?
     };
 
     var createLeftside = function () {
@@ -1573,6 +1948,7 @@ define([
         if (active.indexOf('-') !== -1) {
             active = active.split('-')[0];
         }
+        if (!categories[active]) { active = 'general'; }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);

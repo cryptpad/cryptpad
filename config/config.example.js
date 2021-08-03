@@ -122,46 +122,6 @@ module.exports = {
     ],
 */
 
-    /*  CryptPad's administration panel includes a "support" tab
-     *  wherein administrators with a secret key can view messages
-     *  sent from users via the encrypted forms on the /support/ page
-     *
-     *  To enable this functionality:
-     *    run `node ./scripts/generate-admin-keys.js`
-     *    save the public key in your config in the value below
-     *    add the private key via the admin panel
-     *    and back it up in a secure manner
-     *
-     */
-    // supportMailboxPublicKey: "",
-
-    /*  We're very proud that CryptPad is available to the public as free software!
-     *  We do, however, still need to pay our bills as we develop the platform.
-     *
-     *  By default CryptPad will prompt users to consider donating to
-     *  our OpenCollective campaign. We publish the state of our finances periodically
-     *  so you can decide for yourself whether our expenses are reasonable.
-     *
-     *  You can disable any solicitations for donations by setting 'removeDonateButton' to true,
-     *  but we'd appreciate it if you didn't!
-     */
-    //removeDonateButton: false,
-
-    /*  CryptPad will display a point of contact for your instance on its contact page
-     *  (/contact.html) if you provide it below.
-     */
-    adminEmail: 'i.did.not.read.my.config@cryptpad.fr',
-
-    /*
-     *  By default, CryptPad contacts one of our servers once a day.
-     *  This check-in will also send some very basic information about your instance including its
-     *  version and the adminEmail so we can reach you if we are aware of a serious problem.
-     *  We will never sell it or send you marketing mail.
-     *
-     *  If you want to block this check-in and remain set 'blockDailyCheck' to true.
-     */
-    //blockDailyCheck: false,
-
     /* =====================
      *        STORAGE
      * ===================== */
@@ -316,4 +276,13 @@ module.exports = {
      *  (false by default)
      */
     verbose: false,
+
+    /*  Surplus information:
+     *
+     *  'installMethod' is included in server telemetry to voluntarily
+     *  indicate how many instances are using unofficial installation methods
+     *  such as Docker.
+     *
+     */
+    installMethod: 'unspecified',
 };
