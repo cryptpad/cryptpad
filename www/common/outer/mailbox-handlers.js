@@ -238,8 +238,9 @@ define([
         // content.name, content.title, content.href, content.password
 
         if (isMuted(ctx, data)) { return void cb(true); }
-
-        var channel = Hash.hrefToHexChannelId(content.href, content.password);
+        // if the shared content is a 'link' then we can't use the channel to deduplicate notifications
+        // use href instead.
+        var channel = content.isStatic ? content.href : Hash.hrefToHexChannelId(content.href, content.password);
         var parsed = Hash.parsePadUrl(content.href);
         var mode = parsed.hashData && parsed.hashData.mode || 'n/a';
 

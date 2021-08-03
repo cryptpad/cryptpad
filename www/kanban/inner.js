@@ -1006,6 +1006,14 @@ define([
             ]);
             $container.before(container);
 
+            var common = framework._.sfCommon;
+            var $button = common.createButton('toggle', true, {
+                element: $(container),
+            }, function () {
+
+            });
+            framework._.toolbar.$bottomL.append($button);
+
             onRedraw.reg(function () {
                 // Redraw if new tags have been added to items
                 var old = Sortify(existing);

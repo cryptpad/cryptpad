@@ -1306,9 +1306,14 @@ define([
             getAllStores().forEach(function (s) {
                 s.manager.getSecureFilesList(where).forEach(function (obj) {
                     var data = obj.data;
-                    if (channels.indexOf(data.channel) !== -1) { return; }
+                    if (channels.indexOf(data.channel || data.id) !== -1) { return; }
                     var id = obj.id;
-                    if (data.channel) { channels.push(data.channel); }
+                    if (data.channel) { channels.push(data.channel || data.id); }
+                    // Only include static links if "link" is requested
+                    if (data.static) {
+                        if (types.indexOf('link') !== -1) { list[id] = data; }
+                        return;
+                    }
                     var parsed = Hash.parsePadUrl(data.href || data.roHref);
                     if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                         !isFiltered(parsed.type, data)) {
@@ -2053,8 +2058,17 @@ define([
             } catch (e) {
                 console.error(e);
             }
+
             // Tell all the owners that the pad was deleted from the server
-            var curvePublic = store.proxy.curvePublic;
+            var curvePublic;
+            try {
+                // users in noDrive mode don't have a proxy and
+                // unregistered users don't have a curvePublic
+                curvePublic = store.proxy.curvePublic;
+            } catch (err) {
+                console.error(err);
+                return;
+            }
             m.forEach(function (obj) {
                 var mb = JSON.parse(obj);
                 if (mb.curvePublic === curvePublic) { return; }

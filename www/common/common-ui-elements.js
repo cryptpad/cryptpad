@@ -1032,10 +1032,19 @@ define([
                 icon: 'fa-picture-o',
                 action: function () {
                     var _cfg = {
-                        types: ['file'],
+                        types: ['file', 'link'],
                         where: ['root']
                     };
                     common.openFilePicker(_cfg, function (data) {
+                        // Embed links
+                        if (data.static) {
+                            var a = h('a', {
+                                href: data.href
+                            }, data.name);
+                            cfg.embed(a, data);
+                            return;
+                        }
+                        // Embed files
                         if (data.type !== 'file') {
                             console.log("Unexpected data type picked " + data.type);
                             return;
@@ -3021,6 +3030,75 @@ define([
         UI.proposal(content, todo);
     };
 
+    UIElements.displayOpenLinkModal = function (common, data, dismiss) {
+        var name = Util.fixHTML(data.title);
+        var url = data.href;
+        var user = data.name;
+        //Messages.link_open = "Open URL";
+            // openLinkInNewTab ("Open Link in New Tab")
+            // fc_open ("Open")
+            // share_linkOpen ("Preview")
+            // resources_openInNewTab ("Open it in a new tab")
+        Messages.link_open = Messages.fc_open; // XXX 4.10.0
+
+        //Messages.link_store = "Store link in drive";
+            // toolbar_storeInDrive ? ("Store in CryptDrive")
+            // autostore_store ? ("Store")
+        Messages.link_store = Messages.toolbar_storeInDrive; // XXX 4.10.0
+
+
+        var content = h('div', [
+            UI.setHTML(h('p'), Messages._getKey('notification_openLink', [name, user])),
+            h('pre', url),
+            UIElements.getVerifiedFriend(common, data.curve, user)
+        ]);
+        var clicked = false;
+        var modal;
+        var buttons = [{
+            name: Messages.friendRequest_later,
+            onClick: function () {
+                if (clicked) { return true; }
+                clicked = true;
+                Feedback.send('LINK_RECEIVED_LATER');
+            },
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.link_open,
+            onClick: function () {
+                if (clicked) { return true; }
+                clicked = true;
+                common.openUnsafeURL(url);
+                Feedback.send("LINK_RECEIVED_OPEN");
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: Messages.link_store,
+            onClick: function () {
+                if (clicked) { return; }
+                clicked = true;
+                common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
+                    cmd: "addLink",
+                    data: {
+                        name: name,
+                        href: url,
+                        path: ['root']
+                    }
+                }, function () {
+                    modal.closeModal();
+                    dismiss();
+                    Feedback.send("LINK_RECEIVED_STORE");
+                });
+                return true;
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var _modal = UI.dialog.customModal(content, {buttons: buttons});
+        modal = UI.openCustomModal(_modal);
+        return modal;
+    };
+
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
         var sframeChan = common.getSframeChannel();
@@ -3616,6 +3694,13 @@ define([
         var size = $container.outerHeight();
         var pos = el.getBoundingClientRect();
         return (pos.bottom < size) && (pos.y > 0);
+    };
+
+    UIElements.is24h = function () {
+        try {
+            return !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+        } catch (e) {}
+        return false;
     };
 
     UIElements.openSnapshotsModal = function (common, load, make, remove) {

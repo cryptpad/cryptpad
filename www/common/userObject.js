@@ -17,6 +17,7 @@ define([
     var SHARED_FOLDERS_TEMP = module.SHARED_FOLDERS_TEMP = "sharedFoldersTemp"; // Maybe deleted or new password
     var FILES_DATA = module.FILES_DATA = Constants.storageKey;
     var OLD_FILES_DATA = module.OLD_FILES_DATA = Constants.oldStorageKey;
+    var STATIC_DATA = module.STATIC_DATA = 'static';
 
     // Create untitled documents when no name is given
     var getLocaleDate = function () {
@@ -138,6 +139,7 @@ define([
         var NEW_FILE_NAME = Messages.fm_newFile || 'New file';
 
         exp.ROOT = ROOT;
+        exp.STATIC_DATA = STATIC_DATA;
         exp.UNSORTED = UNSORTED;
         exp.TRASH = TRASH;
         exp.TEMPLATE = TEMPLATE;
@@ -236,6 +238,10 @@ define([
             return Boolean(data.roHref && !data.href);
         };
 
+        exp.isStaticFile = function (element) {
+            return Boolean(files[STATIC_DATA] && files[STATIC_DATA][element]);
+        };
+
         var isFolder = exp.isFolder = function (element) {
             if (isFolderData(element)) { return false; }
             return typeof(element) === "object" || isSharedFolder(element);
@@ -310,7 +316,24 @@ define([
         // Get data from AllFiles (Cryptpad_RECENTPADS)
         var getFileData = exp.getFileData = function (file, editable) {
             if (!file) { return; }
-            var data = files[FILES_DATA][file] || {};
+            var link;
+            try {
+                link = (files[STATIC_DATA] || {})[file];
+            } catch (err) {
+                console.error(err);
+            }
+            if (link) {
+                var _link = editable ? link : Util.clone(link);
+                if (!editable) { _link.static = true; }
+                return _link;
+            }
+            var data;
+            try {
+                data = files[FILES_DATA][file] || {};
+            } catch (err) {
+                console.error(err);
+                data = {};
+            }
             if (!editable) {
                 data = JSON.parse(JSON.stringify(data));
                 if (data.href && data.href.indexOf('#') === -1) {
@@ -344,7 +367,13 @@ define([
                 return '??';
             }
             var data = getFileData(file);
-            if (!file || !data || !(data.href || data.roHref)) {
+            if (!data) {
+                error("unable to retrieve data about the requested file: ", file, data);
+                return;
+            }
+            // handle links
+            if (data.static) { return data.name; }
+            if (!file || !(data.href || data.roHref)) {
                 error("getTitle called with a non-existing file id: ", file, data);
                 return;
             }
@@ -474,6 +503,11 @@ define([
                 }
             });
             return ret;
+        };
+        _getFiles[STATIC_DATA] = function () {
+            var ret = [];
+            if (!files[STATIC_DATA]) { return ret; }
+            return Object.keys(files[STATIC_DATA]).map(Number).filter(Boolean);
         };
         _getFiles[FILES_DATA] = function () {
             var ret = [];
@@ -854,6 +888,7 @@ define([
 
         // RENAME
         exp.rename = function (path, newName, cb) {
+            cb = cb || function () {};
             if (sframeChan) {
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "rename",
@@ -891,9 +926,15 @@ define([
             if (isSharedFolder(element)) {
                 data = files[SHARED_FOLDERS][element];
             } else {
-                data = files[FILES_DATA][element];
+                data = files[FILES_DATA][element] || files[STATIC_DATA][element];
             }
             if (!data) { return; }
+            if (files[STATIC_DATA][element]) {
+                if (!newName || !newName.trim()) { return void cb(); }
+                data.name = newName;
+                cb();
+                return;
+            }
             if (!newName || newName.trim() === "") {
                 delete data.filename;
                 if (typeof cb === "function") { cb(); }

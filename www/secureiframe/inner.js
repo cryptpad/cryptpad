@@ -127,6 +127,7 @@ define([
             sframeChan.event("EV_SECURE_ACTION", {
                 type: parsed.type,
                 password: data.password,
+                static: data.static,
                 href: data.url,
                 name: data.name
             });
@@ -214,20 +215,21 @@ define([
                     $container.html('');
                     Object.keys(list).forEach(function (id) {
                         var data = list[id];
-                        var name = data.filename || data.title || '?';
+                        var name = data.filename || data.title || data.name || '?';
                         if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                             return;
                         }
                         var $span = $('<span>', {
                             'class': 'cp-filepicker-content-element',
-                            'title': name,
+                            'title': Util.fixHTML(name),
                         }).appendTo($container);
                         $span.append(UI.getFileIcon(data));
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
+                        if (data.static) { $span.attr('title', Util.fixHTML(data.href)); }
                         $span.click(function () {
                             if (typeof onFilePicked === "function") {
-                                onFilePicked({url: data.href, name: name, password: data.password});
+                                onFilePicked({url: data.href, name: name, static: data.static, password: data.password});
                             }
                         });
 

@@ -20,6 +20,7 @@ define([
 
         var ROOT = exp.ROOT;
         var FILES_DATA = exp.FILES_DATA;
+        var STATIC_DATA = exp.STATIC_DATA;
         var OLD_FILES_DATA = exp.OLD_FILES_DATA;
         var UNSORTED = exp.UNSORTED;
         var TRASH = exp.TRASH;
@@ -76,6 +77,14 @@ define([
             // If we were given an edit link, encrypt its value if needed
             if (data.href && data.href.indexOf('#') !== -1) { data.href = exp.cryptor.encrypt(data.href); }
             files[FILES_DATA][id] = data;
+            cb(null, id);
+        };
+        exp.pushLink = function (_data, cb) {
+            if (typeof cb !== "function") { cb = function () {}; }
+            if (readOnly) { return void cb('EFORBIDDEN'); }
+            var id = Util.createRandomInteger();
+            var data = clone(_data);
+            files[STATIC_DATA][id] = data;
             cb(null, id);
         };
 
@@ -136,7 +145,7 @@ define([
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
-            exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
+            exp.getFiles([FILES_DATA, SHARED_FOLDERS, STATIC_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
@@ -146,6 +155,8 @@ define([
                     if (exp.isSharedFolder(id)) {
                         delete files[SHARED_FOLDERS][id];
                         if (config.removeProxy) { config.removeProxy(id); }
+                    } else if (files[STATIC_DATA][id]) {
+                        delete files[STATIC_DATA][id];
                     } else {
                         spliceFileData(id);
                     }
@@ -242,6 +253,12 @@ define([
                 id = Number(id);
                 // Find and maybe update existing pads with the same channel id
                 var d = data[id];
+                // If we were given a static link, copy to STATIC_DATA
+                if (d.static) {
+                    delete d.static;
+                    files[STATIC_DATA][id] = d;
+                    return;
+                }
                 // If we were given an edit link, encrypt its value if needed
                 if (d.href) { d.href = exp.cryptor.encrypt(d.href); }
                 var found = false;
@@ -398,7 +415,7 @@ define([
 
             if (!loggedIn && !config.testMode) { return; }
             id = Number(id);
-            var data = files[FILES_DATA][id] || files[SHARED_FOLDERS][id];
+            var data = files[FILES_DATA][id] || files[STATIC_DATA][id] || files[SHARED_FOLDERS][id];
             if (!data || typeof(data) !== "object") { return; }
             var newPath = path, parentEl;
             if (path && !Array.isArray(path)) {
@@ -599,13 +616,18 @@ define([
                 var element = elem || files[ROOT];
                 if (!element) { return console.error("Invalid element in root"); }
                 var nbMetadataFolders = 0;
+                // caching this variables saves a lot of hashmap lookups in this loop
+                var static_data = files[STATIC_DATA];
+                var files_data = files[FILES_DATA];
+                var element_el;
                 for (var el in element) {
-                    if (element[el] === null) {
+                    element_el = element[el];
+                    if (element_el === null) {
                         console.error('element[%s] is null', el);
                         delete element[el];
                         continue;
                     }
-                    if (exp.isFolderData(element[el])) {
+                    if (exp.isFolderData(element_el)) {
                         if (nbMetadataFolders !== 0) {
                             debug("Multiple metadata files in folder");
                             delete element[el];
@@ -613,30 +635,30 @@ define([
                         nbMetadataFolders++;
                         continue;
                     }
-                    if (!exp.isFile(element[el], true) && !exp.isFolder(element[el])) {
-                        debug("An element in ROOT was not a folder nor a file. ", element[el]);
+                    if (!exp.isFile(element_el, true) && !exp.isFolder(element_el)) {
+                        debug("An element in ROOT was not a folder nor a file. ", element_el);
                         delete element[el];
                         continue;
                     }
-                    if (exp.isFolder(element[el])) {
-                        fixRoot(element[el]);
+                    if (exp.isFolder(element_el)) {
+                        fixRoot(element_el);
                         continue;
                     }
-                    if (typeof element[el] === "string") {
+                    if (typeof element_el === "string") {
                         // We have an old file (href) which is not in filesData: add it
                         var id = Util.createRandomInteger();
                         var key = Hash.createChannelId();
-                        files[FILES_DATA][id] = {
-                            href: exp.cryptor.encrypt(element[el]),
+                        files_data[id] = {
+                            href: exp.cryptor.encrypt(element_el),
                             filename: el
                         };
                         element[key] = id;
                         delete element[el];
                     }
-                    if (typeof element[el] === "number") {
-                        var data = files[FILES_DATA][element[el]];
+                    if (typeof element_el === "number") {
+                        var data = files_data[element_el] || static_data[element_el];
                         if (!data) {
-                            debug("An element in ROOT doesn't have associated data", element[el], el);
+                            debug("An element in ROOT doesn't have associated data", element_el, el);
                             delete element[el];
                         }
                     }
@@ -845,6 +867,26 @@ define([
                 toClean.forEach(function (id) {
                     spliceFileData(id);
                 });
+                // make sure that links are displayed at least once in your drive if you are going to keep them
+                var sd = files[STATIC_DATA];
+                var toCleanSD = [];
+                for (var id2 in sd) {
+                    id2 = Number(id2);
+                    var el2 = sd[id2];
+                    if (!el2 || typeof(el2) !== "object" || !el2.href) {
+                        toCleanSD.push(id2);
+                        continue;
+                    }
+                    if ((loggedIn || config.testMode) && rootFiles.indexOf(id2) === -1) {
+                        toCleanSD.push(id2);
+                        continue;
+                    }
+                }
+                var spliceSD = function (id) {
+                    if (readOnly) { return; }
+                    delete files[STATIC_DATA][id];
+                };
+                toCleanSD.forEach(spliceSD);
             };
             var fixSharedFolders = function () {
                 if (sharedFolder) { return; }
@@ -892,6 +934,12 @@ define([
                     }
                 }
             };
+            var fixStaticData = function () {
+                if (!Util.isObject(files[STATIC_DATA])) {
+                    debug("STATIC_DATA was not an object");
+                    files[STATIC_DATA] = {};
+                }
+            };
 
 
             var fixDrive = function () {
@@ -900,6 +948,7 @@ define([
                 });
             };
 
+            fixStaticData();
             fixRoot();
             fixTrashRoot();
             fixTemplate();

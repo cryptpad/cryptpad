@@ -878,10 +878,6 @@ MessengerUI, Messages, Pages) {
             'class': "cp-toolbar-link-logo"
         }).append(UIElements.getSvgLogo());
 
-        /*.append($('<img>', {
-            //src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
-            src: '/customize/favicon/main-favicon.png?' + ApiConfig.requireConf.urlArgs
-        }));*/
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {

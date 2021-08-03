@@ -195,7 +195,7 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
-                team.onRpcReadyEvt.fire();
+                if (team && team.onRpcReadyEvt) { team.onRpcReadyEvt.fire(); }
                 cb();
             }, Cache);
         });

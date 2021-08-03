@@ -176,7 +176,7 @@ define([
                         validateKey: keys.secondaryValidateKey,
                         owners: [myKeys.edPublic],
                         crypto: crypto,
-                        //Cache: Utils.Cache // XXX
+                        //Cache: Utils.Cache // XXX 4.10.0
                     };
                     var results = {};
                     config.onError = function (info) {

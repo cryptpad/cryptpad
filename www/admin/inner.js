@@ -833,7 +833,8 @@ define([
             var premium = t.some(function (msg) {
                 var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
                 if (ed !== _ed) { return; }
-                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']);
+                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']) ||
+                       Util.find(msg, ['content', 'msg', 'content', 'sender', 'quota', 'plan']);
             });
             var lastMsg = t[t.length - 1];
             var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
@@ -1471,11 +1472,8 @@ define([
             var end = h('input');
             var $start = $(start);
             var $end = $(end);
-            var is24h = false;
+            var is24h = UIElements.is24h();
             var dateFormat = "Y-m-d H:i";
-            try {
-                is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
-            } catch (e) {}
             if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
             var endPickr = Flatpickr(end, {

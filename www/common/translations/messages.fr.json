@@ -1315,7 +1315,7 @@
     "form_updateWarning": "Mettre à jour avec erreurs",
     "form_submitWarning": "Envoyer avec erreurs",
     "form_delete": "Supprimer",
-    "form_sent": "Envoyé",
+    "form_sent": "Votre réponse a été envoyée",
     "form_reset": "Effacer",
     "form_update": "Mettre à jour",
     "form_submit": "Envoyer",
@@ -1368,5 +1368,16 @@
     "admin_purpose_business": "Usage en entreprise",
     "admin_instancePurposeHint": "À quel usage cette instance est-elle destinée ? Votre réponse sera utilisée pour définir la planification de nouvelles fonctionnalités (si votre télémétrie est activée).",
     "team_leaveOwner": "Veuillez vous rétrograder de votre rôle de propriétaire avant de quitter l'équipe. Notez que les équipes doivent avoir au moins un propriétaire, veuillez en ajouter un autre avant de poursuivre si vous êtes actuellement le seul propriétaire.",
-    "form_exportCSV": "Exporter en CSV"
+    "form_exportCSV": "Exporter en CSV",
+    "fm_link_invalid": "URL invalide",
+    "fm_link_warning": "Attention : l'URL dépasse 200 caractères",
+    "form_answerAs": "Répondre en tant que",
+    "form_anonName": "Votre nom",
+    "notification_linkShared": "{0} a partagé un lien avec vous : <b>{1}</b>",
+    "fm_link_name_placeholder": "Nouveau lien",
+    "fm_link_url": "URL",
+    "fm_link_name": "Titre du lien",
+    "fm_link_type": "Lien",
+    "fm_link_new": "Nouveau Lien",
+    "notification_openLink": "Vous avez reçu un lien <b>{0}</b> de {1} :"
 }

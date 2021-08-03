@@ -247,6 +247,15 @@
                     .cp-form-anon-answer {
                         text-align: center;
                         margin: 20px 0 30px 0;
+                        .cp-form-anon-answer-input {
+                            margin-top: 20px;
+                            display: flex;
+                            white-space: nowrap;
+                            align-items: center;
+                            input {
+                                margin-left: 10px;
+                            }
+                        }
                     }
                 }
 
@@ -539,6 +548,7 @@
             .cp-form-individual {
                 background: @cp_form-bg1;
                 padding: 10px;
+                margin-bottom: 20px;
                 & > *:not(:last-child) {
                     margin-right: 10px;
                 }
@@ -550,6 +560,9 @@
                     .fa {
                         margin-right: 5px;
                     }
+                }
+                a, a:visited {
+                    color: @cryptpad_color_link;
                 }
             }
         }
@@ -668,6 +681,16 @@
             .cp-avatar {
                 .avatar_main(30px);
                 margin-right: 10px;
+            }
+            &.cp-clickable {
+                cursor: pointer;
+                &:hover {
+                    color: @cryptpad_color_link;
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\00a0\f06e";
+                    }
+                }
             }
         }
         .cp-poll-time-day {
