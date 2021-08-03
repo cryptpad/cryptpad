@@ -906,7 +906,7 @@ define([
                 h('table', [
                     row(["Failed test number", obj.test + 1]),
                     row(["Returned value", h('pre', code(printableValue))]),
-                ]),
+                ])
             ),
         ]);
     };
