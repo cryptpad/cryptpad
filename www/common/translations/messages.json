@@ -1230,7 +1230,7 @@
     "genericCopySuccess": "Copied to clipboard",
     "mediatag_defaultImageName": "image",
     "register_registrationIsClosed": "Registration is closed.",
-    "oo_conversionSupport": "Your browser cannot handle conversion to and from Microsoft Office formats. We suggest using a recent version of Firefox or Chrome.",
+    "oo_conversionSupport": "Your browser cannot handle conversion to and from office formats. We suggest using a recent version of Firefox or Chrome.",
     "oo_importBin": "Click OK to import CryptPad's internal .bin format.",
     "admin_emailTitle": "Admin contact email",
     "admin_emailHint": "Set the contact email for your instance here",
