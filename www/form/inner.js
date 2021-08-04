@@ -11,6 +11,7 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/tippy/tippy.min.js',
     '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
@@ -54,6 +55,7 @@ define([
     Hash,
     UI,
     UIElements,
+    tippy,
     Clipboard,
     MT,
     h,
@@ -1826,9 +1828,64 @@ define([
             icon: h('i.cptools.cptools-form-poll')
         },
     };
+    
+    var makeTimeline = APP.makeTimeline = function (answers) {
+        // Here for mockup purpose
+        Object.keys(answers).forEach(function (k) {
+            console.log(answers[k].time);
+            answers[k].time += Math.floor(Math.random() * 10 - 5) * 24 * 3600 * 1000;
+            console.log(answers[k].time);
+        });
+
+        var answersByTime = {};
+        Object.keys(answers).forEach(function (curve) {
+            var obj = answers[curve];
+            var key = new Date(obj.time).toLocaleDateString();
+            if (!answersByTime[key]) {
+                answersByTime[key] = {date: obj.time, count: 1};
+            } else {
+                answersByTime[key].count++;
+            }
+        });
+
+        var dates = Object.keys(answersByTime).sort(function (a, b) {
+            return answersByTime[a].time - answersByTime[b].time;
+        });
+
+        var maxCount = 0;
+
+        Object.keys(answersByTime).forEach(function (date) {
+            var count = answersByTime[date].count;
+            if (count > maxCount) {
+                maxCount = count;
+            }
+        });
+
+        Object.keys(answersByTime).forEach(function (date) {
+            var answer = answersByTime[date];
+            answer.percent = answer.count / maxCount;
+            answer.count = answer.count || "";
+        });
+        
+        console.log(answersByTime);
+        console.log(dates);
+
+        console.log('done');
+
+        return Charts.table(h('tbody',dates.map(function (date) {
+            var count = answersByTime[date].count;
+            var percent = answersByTime[date].percent;
+
+            var bar = h('td.cp-bar', { style: '--size: ' + Number(percent).toFixed(2), "data-tippy-placement": "top", title: `${count} - ${date}` });
+            var dateEl = h('th', { scope: "row" }, date);
+
+            return h('tr', bar, dateEl );
+        })), ["charts-css", "cp-chart-table", "column", "data-spacing-2", "show-labels", "labels-align-center"]);
+    };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) { // XXX hackathon
         var $container = $('div.cp-form-creator-results').empty();
+
 
         if (!Object.keys(answers || {}).length) {
             $container.append(h('div.alert.alert-info', Messages.form_results_empty));
@@ -1845,6 +1902,11 @@ define([
         // https://chartscss.org/charts/column/
         // XXX hackathon set column colours with the cryptpad brand color in app-form.less
 
+        var heading = h('h2#cp-title', `Total answers count: ${Object.keys(answers).length}`);
+        $(heading).appendTo($container);
+        var timeline = h('div.cp-form-creator-results-timeline');
+        var $timeline = $(timeline).appendTo($container);
+        $timeline.append(makeTimeline(answers));
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var exportButton = h('button.btn.btn-secondary', Messages.form_exportCSV);
@@ -1979,6 +2041,7 @@ define([
                 }
                 return div;
             });
+
             $results.append(els);
         });
         if (showUser) {
@@ -2642,64 +2705,6 @@ define([
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
                 if (true) { return; } // XXX 4.10.0
-                $responseMsg.empty();
-                Messages.form_updateMsg = "Update response message"; // XXX 4.10.0
-                Messages.form_addMsg = "Add response message"; // XXX 4.10.0
-                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.10.0
-                var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
-                var btn = h('button.btn.btn-secondary', text);
-                $(btn).click(function () {
-                    var editor;
-                    if (!APP.responseModal) {
-                        var t = h('textarea');
-                        var div = h('div', [
-                            h('p', Messages.form_responseMsg),
-                            t
-                        ]);
-                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
-                        editor = APP.responseEditor = cm.editor;
-                        editor.setOption('lineNumbers', true);
-                        editor.setOption('lineWrapping', true);
-                        editor.setOption('styleActiveLine', true);
-                        editor.setOption('readOnly', false);
-                        setTimeout(function () {
-                            editor.setValue(content.answers.msg || '');
-                            editor.refresh();
-                            editor.save();
-                            editor.focus();
-                        });
-
-                        var buttons = [{
-                            className: 'primary',
-                            name: Messages.settings_save,
-                            onClick: function () {
-                                var v = editor.getValue();
-                                content.answers.msg = v.trim(0, 2000); // XXX 4.10.0 max length?
-                                framework.localChange();
-                                framework._.cpNfInner.chainpad.onSettle(function () {
-                                    UI.log(Messages.saved);
-                                    refreshResponse();
-                                });
-                            },
-                            //keys: []
-                        }, {
-                            className: 'cancel',
-                            name: Messages.cancel,
-                            onClick: function () {},
-                            keys: [27]
-                        }];
-                        APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
-                    } else {
-                        editor = APP.responseEditor;
-                        setTimeout(function () {
-                            editor.setValue(content.answers.msg || '');
-                            editor.refresh();
-                            editor.save();
-                            editor.focus();
-                        });
-                    }
-                    UI.openCustomModal(APP.responseModal);
-                });
                 // $responseMsg.append(btn); // XXX 4.10.0
             };
             //refreshResponse();
