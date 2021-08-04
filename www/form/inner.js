@@ -954,7 +954,7 @@ define([
         },
     };
 
-    var TYPES = {
+    var TYPES = { // XXX insert useful charts for each of type of answer
         input: {
             defaultOpts: {
                 type: 'text'
@@ -988,7 +988,7 @@ define([
                     reset: function () { $tag.val(''); }
                 };
             },
-            printResults: function (answers, uid) {
+            printResults: function (answers, uid) { // XXX each question format has a 'printResults' method
                 var results = [];
                 var empty = 0;
                 Object.keys(answers).forEach(function (author) { // TODO deduplicate these?
@@ -1755,7 +1755,7 @@ define([
         },
     };
 
-    var renderResults = APP.renderResults = function (content, answers, showUser) {
+    var renderResults = APP.renderResults = function (content, answers, showUser) { // XXX
         var $container = $('div.cp-form-creator-results').empty();
 
         if (!Object.keys(answers || {}).length) {
