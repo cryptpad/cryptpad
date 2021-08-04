@@ -15,7 +15,7 @@ define([
             h('tbody', rows.map(function (n) {
                 return h('tr', h('td', {
                     style: '--size: ' + (n / 100),
-                }, n));
+                }, h('span.data', n)));
             })),
         ], [
             'charts-css',
@@ -24,10 +24,18 @@ define([
         ]);
     };
 
-    Charts.row = function (text, count) {
-        return h('tr', h('td', {
-            style: '--size: ' + count,
-        }, text));
+    Charts.row = function (text, count, data) {
+        return h('tr', [
+            h('th', {
+                scope: 'row',
+            }, text),
+            h('td', {
+                style: '--size: ' + count,
+            }, [
+                //text,
+                typeof(data) !== 'undefined'? h('span.data', data): text,
+            ])
+        ]);
     };
 
     // table.charts-css.bar.reverse

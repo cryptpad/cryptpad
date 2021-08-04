@@ -955,6 +955,10 @@ define([
         },
     };
 
+    var arrayMax = function (A) {
+        return Array.isArray(A)? Math.max.apply(null, A): NaN;
+    };
+
     var TYPES = { // XXX hackathon insert useful charts for each of type of answer
         input: {
             defaultOpts: {
@@ -1001,7 +1005,7 @@ define([
                     Util.inc(tally, answer);
                 });
                 var counts = Util.values(tally);
-                var max = Math.max.apply(null, counts);
+                var max = arrayMax(counts);
 
                 if (max < 2) { // there are no duplicates, so just return text
                     Object.keys(answers).forEach(function (author) {
@@ -1020,13 +1024,8 @@ define([
                 // there are duplicates, so return a bar chart
                 var rows = []; // XXX
                 Object.keys(tally).forEach(function (answer) {
-                    console.error('answer: %s, count: %s', answer, tally[answer]);
-                    rows.push(Charts.row(answer, tally[answer] / max));
+                    rows.push(Charts.row(answer, tally[answer] / max, tally[answer]));
                 });
-
-                if (empty) { // XXX
-                    rows.push(row('XXX empty', empty));
-                }
 
                 var table = Charts.table([
                     //h('caption', ''), // XXX
@@ -1035,9 +1034,14 @@ define([
                     'charts-css',
                     'bar',
                     'show-heading',
+                    'show-labels',
+                    'show-data-on-hover',
                 ]);
 
-                return h('div.cp-form-results-type-text', table);
+                return h('div.cp-form-results-type-text', [
+                    table,
+                    empty? getEmpty(empty): undefined,
+                ]);
             },
             icon: h('i.cptools.cptools-form-text')
         },
@@ -1177,11 +1181,11 @@ define([
                 });
 
                 var counts = Util.values(count);
-                var max = Math.max.apply(null, counts);
+                var max = arrayMax(counts);
                 var rows = [];
 
                 Object.keys(count).forEach(function (text) {
-                    rows.push(Charts.row(text, count[text] / max));
+                    rows.push(Charts.row(text, count[text] / max, count[text]));
                 });
 
                 var table = Charts.table([
@@ -1189,7 +1193,9 @@ define([
                 ], [
                     'charts-css',
                     'bar',
+                    'show-labels',
                     //'show-heading',
+                    'show-data-on-hover',
                 ]);
                 return h('div.cp-form-results-type-radio', {
                     style: 'width: 100%',
@@ -1301,9 +1307,39 @@ define([
                         Util.inc(c, res);
                     });
                 });
-                Object.keys(count).forEach(function (q_uid) {
+
+                var max = 0;
+                var count_keys = Object.keys(count);
+                count_keys.forEach(function (q_uid) {
+                    var counts = Object.values(count[q_uid]);
+                    counts.push(max);
+                    max = arrayMax(counts);
+                });
+
+                count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
+
+                    var table = Charts.table([
+                        h('caption', {
+                            style: 'color: var(--msg-color)', // XXX light/dark modes
+                        }, q),
+                        h('tbody', Object.keys(c).map(function (res) {
+                            return Charts.row(res, c[res] / max, c[res]);
+                        })),
+                    ], [
+                        'charts-css',
+                        'bar',
+                        'show-heading',
+                        'show-data-on-hover',
+                        'show-labels',
+
+                    ]);
+
+                    results.push(h('div.cp-form-results-type-multiradio-data', {
+                        style: 'width: 100%',
+                    }, table));
+/*
                     var values = Object.keys(c).map(function (res) {
                         return h('div.cp-form-results-type-radio-data', [
                             h('span.cp-value', res),
@@ -1314,10 +1350,13 @@ define([
                         h('span.cp-mr-q', q),
                         h('span.cp-mr-value', values)
                     ]));
+*/
                 });
                 results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', results);
+                return h('div.cp-form-results-type-radio', {
+                    style: 'width: 100%',
+                }, results);
             },
             exportCSV: function (answer, form) {
                 var opts = form.opts || {};
@@ -1400,7 +1439,7 @@ define([
 
             },
             printResults: function (answers, uid) {
-                // XXX hackathon multiradio https://chartscss.org/components/stacked/
+                // XXX hackathon radio https://chartscss.org/charts/bar/
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1509,7 +1548,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
-                // XXX hackathon
+                // XXX hackathon multicheck
                 // stacked: https://chartscss.org/components/stacked/
                 // or multiple bars: https://chartscss.org/charts/bar/#multiple-datasets
                 var structure = form[uid];
@@ -1531,9 +1570,38 @@ define([
                         });
                     });
                 });
-                Object.keys(count).forEach(function (q_uid) {
+
+                var max = 0;
+                var count_keys = Object.keys(count);
+                count_keys.forEach(function (q_uid) {
+                    var counts = Object.values(count[q_uid]);
+                    counts.push(max);
+                    max = arrayMax(counts);
+                });
+
+                count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
+
+                    var table = Charts.table([
+                        h('caption', {
+                            style: 'color: var(--msg-color)', // XXX light/dark modes
+                        }, q),
+                        h('tbody', Object.keys(c).map(function (res) {
+                            return Charts.row(res, c[res] / max, c[res]);
+                        })),
+                    ], [
+                        'charts-css',
+                        'bar',
+                        'show-heading',
+                        'show-data-on-hover',
+                        'show-labels',
+                    ]);
+
+                    results.push(h('div.cp-form-results-type-multiradio-data', {
+                        style: 'width: 100%',
+                    }, table));
+/*
                     var values = Object.keys(c).map(function (res) {
                         return h('div.cp-form-results-type-radio-data', [
                             h('span.cp-value', res),
@@ -1544,10 +1612,13 @@ define([
                         h('span.cp-mr-q', q),
                         h('span.cp-mr-value', values)
                     ]));
+*/
                 });
                 results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', results);
+                return h('div.cp-form-results-type-radio', {
+                    style: 'width: 100%',
+                }, results);
             },
             exportCSV: function (answer, form) {
                 var opts = form.opts || {};
@@ -1670,6 +1741,29 @@ define([
                         Util.inc(count, el, score);
                     });
                 });
+                var counts = Util.values(count);
+                var max = arrayMax(counts);
+
+                var rows = [];
+                Object.keys(count).forEach(function (text) {
+                    rows.push(Charts.row(text, count[text] / max, count[text]));
+                });
+
+                var table = Charts.table([
+                    h('tbody', rows),
+                ], [
+                    'charts-css',
+                    'bar',
+                    'show-labels',
+                    'show-data-on-hover',
+                    //'show-heading',
+                ]);
+
+                return h('div.cp-form-results-type-radio', {
+                    style: 'width: 100%',
+                }, table);
+
+
                 var sorted = Object.keys(count).sort(function (a, b) {
                     return count[b] - count[a];
                 });
