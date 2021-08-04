@@ -1231,7 +1231,7 @@
     "register_registrationIsClosed": "Die Registrierung ist geschlossen.",
     "mediatag_defaultImageName": "Bild",
     "oo_importBin": "Klicke auf OK, um CryptPads interne Format .bin zu importieren.",
-    "oo_conversionSupport": "Dein Browser unterstützt die Konvertierung von und in Microsoft-Office-Formaten nicht. Wir empfehlen die Verwendung einer aktuellen Version von Firefox oder Chrome.",
+    "oo_conversionSupport": "Dein Browser unterstützt die Konvertierung von und in Office-Dateiformaten nicht. Wir empfehlen die Verwendung einer aktuellen Version von Firefox oder Chrome.",
     "admin_emailTitle": "E-Mail-Adresse der Administratoren",
     "admin_emailHint": "Lege hier die Kontaktadresse für deine Instanz fest",
     "admin_supportPrivHint": "Lasse dir den privaten Schlüssel anzeigen, den andere Administratoren zum Zugriff auf die Support-Tickets benötigen. Ein Formular zur Eingabe dieses Schlüssels wird in ihrem Administrationsbereich angezeigt.",
