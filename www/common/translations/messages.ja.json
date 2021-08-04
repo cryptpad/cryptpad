@@ -807,7 +807,7 @@
     "settings_resetThumbnailsDescription": "ブラウザに保存したサムネイルを削除します。",
     "settings_disableThumbnailsDescription": "新しいパッドを開くと、サムネイルが自動で作成され、ブラウザに保存されます。ここでサムネイルの作成を無効にできます。",
     "fm_info_root": "フォルダを作成してファイルを整理できます。",
-    "oo_conversionSupport": "お使いのブラウザはMicrosoft Officeのフォーマットの変換に対応していません。FirefoxもしくはChromeの最新バージョンの使用を推奨します。",
+    "oo_conversionSupport": "お使いのブラウザは、オフィスソフトウェアのフォーマットの変換に対応していません。FirefoxもしくはChromeの最新バージョンの使用を推奨します。",
     "register_registrationIsClosed": "登録は締め切りました。",
     "settings_notifCalendarHint": "今後のカレンダーのイベントの全ての通知を有効もしくは無効にします。",
     "reminder_inProgressAllDay": "今日: <b>{0}</b>",
