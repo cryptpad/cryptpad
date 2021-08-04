@@ -311,7 +311,7 @@ var httpServer = Env.httpServer = Http.createServer(app);
 nThen(function (w) {
     Fs.exists(__dirname + "/customize", w(function (e) {
         if (e) { return; }
-        console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
+        console.log("CryptPad is customizable, see customize.dist/readme.md for details");
     }));
 }).nThen(function (w) {
     httpServer.listen(config.httpPort,config.httpAddress,function(){
