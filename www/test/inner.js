@@ -1,6 +1,6 @@
 define([
     '/common/hyperscript.js',
-    '/common/common-charts.js',
+    '/common/inner/charts.js',
     '/common/common-util.js',
 ], function (h, Charts, Util) {
     var wrap = function (content) {

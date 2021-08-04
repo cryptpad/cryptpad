@@ -23,6 +23,7 @@ define([
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
+    '/common/inner/charts.js',
 
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
@@ -60,7 +61,7 @@ define([
     DiffMd,
     SFCodeMirror,
     CMeditor,
-    Share, Access, Properties,
+    Share, Access, Properties, Charts,
     Flatpickr,
     Sortable
     )
