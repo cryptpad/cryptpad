@@ -954,7 +954,7 @@ define([
         },
     };
 
-    var TYPES = { // XXX insert useful charts for each of type of answer
+    var TYPES = { // XXX hackathon insert useful charts for each of type of answer
         input: {
             defaultOpts: {
                 type: 'text'
@@ -988,9 +988,11 @@ define([
                     reset: function () { $tag.val(''); }
                 };
             },
-            printResults: function (answers, uid) { // XXX each question format has a 'printResults' method
+            printResults: function (answers, uid) { // XXX hackathon each question format has a 'printResults' method
                 var results = [];
                 var empty = 0;
+                // XXX hackathon charts for text inputs are only useful if we tally duplicated answers
+                // XXX hackathon use horizontal bar charts https://chartscss.org/charts/bar/
                 Object.keys(answers).forEach(function (author) { // TODO deduplicate these?
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1057,6 +1059,9 @@ define([
             printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
+                // XXX hackathon like text inputs, charts are only useful if we tally duplicates
+                // (or if there are duplicates)
+                // https://chartscss.org/charts/bar/
                 Object.keys(answers).forEach(function (author) { // TODO deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1124,6 +1129,7 @@ define([
 
             },
             printResults: function (answers, uid) {
+                // XXX hackathon radio https://chartscss.org/charts/bar/
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1218,6 +1224,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
+                // XXX hackathon multiradio https://chartscss.org/components/stacked/
                 var structure = form[uid];
                 if (!structure) { return; }
                 var opts = structure.opts || TYPES.multiradio.defaultOpts;
@@ -1335,6 +1342,7 @@ define([
 
             },
             printResults: function (answers, uid) {
+                // XXX hackathon multiradio https://chartscss.org/components/stacked/
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1443,6 +1451,9 @@ define([
 
             },
             printResults: function (answers, uid, form) {
+                // XXX hackathon
+                // stacked: https://chartscss.org/components/stacked/
+                // or multiple bars: https://chartscss.org/charts/bar/#multiple-datasets
                 var structure = form[uid];
                 if (!structure) { return; }
                 var opts = structure.opts || TYPES.multicheck.defaultOpts;
@@ -1585,6 +1596,8 @@ define([
 
             },
             printResults: function (answers, uid, form) {
+                // XXX hackathon sortable list
+                // bars again? https://chartscss.org/charts/bar/
                 var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
                 var results = [];
@@ -1710,6 +1723,7 @@ define([
 
             },
             printResults: function (answers, uid, form, content) {
+                // XXX hackathon: not really anything to do here?
                 var opts = form[uid].opts || TYPES.poll.defaultOpts;
                 var _answers = getBlockAnswers(answers, uid);
 
@@ -1755,7 +1769,7 @@ define([
         },
     };
 
-    var renderResults = APP.renderResults = function (content, answers, showUser) { // XXX
+    var renderResults = APP.renderResults = function (content, answers, showUser) { // XXX hackathon
         var $container = $('div.cp-form-creator-results').empty();
 
         if (!Object.keys(answers || {}).length) {
@@ -1768,6 +1782,10 @@ define([
             var $desc = $(description).appendTo($container);
             DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
         }
+
+        // XXX hackathon display answer times as column bar chart with first and last date indicated
+        // https://chartscss.org/charts/column/
+        // XXX hackathon set column colours with the cryptpad brand color in app-form.less
 
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
