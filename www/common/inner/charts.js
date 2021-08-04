@@ -24,11 +24,23 @@ define([
         ]);
     };
 
+    Charts.row = function (text, count) {
+        return h('tr', h('td', {
+            style: '--size: ' + count,
+        }, text));
+    };
+
     // table.charts-css.bar.reverse
-    // Charts.bars
+/*
+    Charts.bars = function (rows) {
+        return Charts.table([
+
+        ], [
 
 
-
+        ]);
+    };
+*/
 
     return Charts;
 });

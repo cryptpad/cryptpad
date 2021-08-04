@@ -1,8 +1,7 @@
 define([
     '/common/hyperscript.js',
     '/common/inner/charts.js',
-    '/common/common-util.js',
-], function (h, Charts, Util) {
+], function (h, Charts) {
     var wrap = function (content) {
         return h('div', {
             style: 'height: 500px; width: 500px; padding: 15px; border: 1px solid #222; margin: 15px;'

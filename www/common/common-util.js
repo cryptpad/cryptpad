@@ -165,6 +165,12 @@
         map[key] = (map[key] || 0) + (typeof(val) === 'number'? val: 1);
     };
 
+    Util.values = function (obj) {
+        return Object.keys(obj).map(function (k) {
+            return obj[k];
+        });
+    };
+
     Util.find = function (map, path) {
         var l = path.length;
         for (var i = 0; i < l; i++) {

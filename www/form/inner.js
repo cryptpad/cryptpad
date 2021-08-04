@@ -38,6 +38,7 @@ define([
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
+    'css!/lib/chart/charts.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
@@ -991,17 +992,52 @@ define([
             printResults: function (answers, uid) { // XXX hackathon each question format has a 'printResults' method
                 var results = [];
                 var empty = 0;
-                // XXX hackathon charts for text inputs are only useful if we tally duplicated answers
-                // XXX hackathon use horizontal bar charts https://chartscss.org/charts/bar/
-                Object.keys(answers).forEach(function (author) { // TODO deduplicate these?
+                var tally = {};
+
+                Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
-                    results.push(h('div.cp-form-results-type-text-data', answer));
+                    Util.inc(tally, answer);
                 });
-                results.push(getEmpty(empty));
+                var counts = Util.values(tally);
+                var max = Math.max.apply(null, counts);
 
-                return h('div.cp-form-results-type-text', results);
+                if (max < 2) { // there are no duplicates, so just return text
+                    Object.keys(answers).forEach(function (author) {
+                        var obj = answers[author];
+                        var answer = obj.msg[uid];
+                        if (!answer || !answer.trim()) { return empty++; }
+                        results.push(h('div.cp-form-results-type-text-data', answer));
+                    });
+                    results.push(getEmpty(empty));
+                    return h('div.cp-form-results-type-text', results);
+                }
+
+                // increase the scale of the bar chart if there are more empty answers than anything else
+                max = Math.max(max, empty);
+
+                // there are duplicates, so return a bar chart
+                var rows = []; // XXX
+                Object.keys(tally).forEach(function (answer) {
+                    console.error('answer: %s, count: %s', answer, tally[answer]);
+                    rows.push(Charts.row(answer, tally[answer] / max));
+                });
+
+                if (empty) { // XXX
+                    rows.push(row('XXX empty', empty));
+                }
+
+                var table = Charts.table([
+                    //h('caption', ''), // XXX
+                    h('tbody', rows)
+                ], [
+                    'charts-css',
+                    'bar',
+                    'show-heading',
+                ]);
+
+                return h('div.cp-form-results-type-text', table);
             },
             icon: h('i.cptools.cptools-form-text')
         },
@@ -1139,15 +1175,37 @@ define([
                     if (!answer || !answer.trim()) { return empty++; }
                     Util.inc(count, answer);
                 });
+
+                var counts = Util.values(count);
+                var max = Math.max.apply(null, counts);
+                var rows = [];
+
+                Object.keys(count).forEach(function (text) {
+                    rows.push(Charts.row(text, count[text] / max));
+                });
+
+                var table = Charts.table([
+                    h('tbody', rows)
+                ], [
+                    'charts-css',
+                    'bar',
+                    //'show-heading',
+                ]);
+                return h('div.cp-form-results-type-radio', {
+                    style: 'width: 100%',
+                }, table);
+
+/*
                 Object.keys(count).forEach(function (value) {
                     results.push(h('div.cp-form-results-type-radio-data', [
                         h('span.cp-value', value),
                         h('span.cp-count', count[value])
                     ]));
                 });
-                results.push(getEmpty(empty));
+                results.push(getEmpty(empty)); // XXX show number of empty answers
 
                 return h('div.cp-form-results-type-radio', results);
+*/
             },
             icon: h('i.cptools.cptools-form-list-radio')
         },
