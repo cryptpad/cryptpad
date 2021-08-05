@@ -1922,18 +1922,19 @@ define([
     };
     
     var makeTimeline = APP.makeTimeline = function (answers) {
-        // Here for mockup purpose
+        
+        // Randomly changing date of answers to get a more realistic example of timeline
         Object.keys(answers).forEach(function (k) { // XXX
-            //console.log(answers[k].time);
             answers[k].time += Math.floor(Math.random() * 10 - 5) * 24 * 3600 * 1000;
-            //console.log(answers[k].time);
         });
 
         var answersByTime = {};
         Object.keys(answers).forEach(function (curve) {
             var obj = answers[curve];
+            // Used to get rid of the milliseconds and get unique date to map counts
             var key = new Date(obj.time).toLocaleDateString();
             if (!answersByTime[key]) {
+                // Original time kept to ensure a good sort order later
                 answersByTime[key] = {date: obj.time, count: 1};
             } else {
                 answersByTime[key].count++;
@@ -1956,14 +1957,12 @@ define([
         Object.keys(answersByTime).forEach(function (date) {
             var answer = answersByTime[date];
             answer.percent = answer.count / maxCount;
+            // Chose an empty string rather than 0 to avoid in the next dev step
+            // to provide the correspondant chart bar with an unecessary tooltip
             answer.count = answer.count || ""; // 0 ?
         });
-/*
-        console.log(answersByTime);
-        console.log(dates);
 
-        console.log('done');
-*/
+        // TODO: Populate the date list with dates which have no answers to get every day between to dates which have ones
 
         return Charts.table(h('tbody',dates.map(function (date) {
             var count = answersByTime[date].count;
