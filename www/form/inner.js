@@ -1942,7 +1942,9 @@ define([
         });
 
         var dates = Object.keys(answersByTime).sort(function (a, b) {
-            return answersByTime[a].time - answersByTime[b].time;
+            var a = answersByTime[a].time;
+            var b = answersByTime[b].time;
+            return b - a;
         });
 
         var maxCount = 0;
