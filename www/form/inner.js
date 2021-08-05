@@ -11,7 +11,6 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
-    '/common/tippy/tippy.min.js',
     '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
@@ -55,7 +54,6 @@ define([
     Hash,
     UI,
     UIElements,
-    tippy,
     Clipboard,
     MT,
     h,
@@ -2799,6 +2797,64 @@ define([
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
                 if (true) { return; } // XXX 4.10.0
+                $responseMsg.empty();
+                Messages.form_updateMsg = "Update response message"; // XXX 4.10.0
+                Messages.form_addMsg = "Add response message"; // XXX 4.10.0
+                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.10.0
+                var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
+                var btn = h('button.btn.btn-secondary', text);
+                $(btn).click(function () {
+                    var editor;
+                    if (!APP.responseModal) {
+                        var t = h('textarea');
+                        var div = h('div', [
+                            h('p', Messages.form_responseMsg),
+                            t
+                        ]);
+                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
+                        editor = APP.responseEditor = cm.editor;
+                        editor.setOption('lineNumbers', true);
+                        editor.setOption('lineWrapping', true);
+                        editor.setOption('styleActiveLine', true);
+                        editor.setOption('readOnly', false);
+                        setTimeout(function () {
+                            editor.setValue(content.answers.msg || '');
+                            editor.refresh();
+                            editor.save();
+                            editor.focus();
+                        });
+
+                        var buttons = [{
+                            className: 'primary',
+                            name: Messages.settings_save,
+                            onClick: function () {
+                                var v = editor.getValue();
+                                content.answers.msg = v.trim(0, 2000); // XXX 4.10.0 max length?
+                                framework.localChange();
+                                framework._.cpNfInner.chainpad.onSettle(function () {
+                                    UI.log(Messages.saved);
+                                    refreshResponse();
+                                });
+                            },
+                            //keys: []
+                        }, {
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        }];
+                        APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
+                    } else {
+                        editor = APP.responseEditor;
+                        setTimeout(function () {
+                            editor.setValue(content.answers.msg || '');
+                            editor.refresh();
+                            editor.save();
+                            editor.focus();
+                        });
+                    }
+                    UI.openCustomModal(APP.responseModal);
+                });
                 // $responseMsg.append(btn); // XXX 4.10.0
             };
             //refreshResponse();
