@@ -460,7 +460,11 @@ MessengerUI, Messages, Pages) {
     Messages.ui_expand = "Expand"; // XXX
 
     createCollapse = function (toolbar) {
-        var icon = h('i.fa.fa-caret-up');
+        var up = 'fa-chevron-up';
+        var down = 'fa-chevron-down';
+        var both = up + ' ' + down;
+
+        var icon = h('i.fa.' + up);
         var $icon = $(icon);
         var text = h('span', Messages.ui_collapse);
         var $text = $(text);
@@ -472,7 +476,7 @@ MessengerUI, Messages, Pages) {
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
-            $icon.toggleClass('fa-caret-down fa-caret-up'); //.toggleClass('fa-caret-up');
+            $icon.toggleClass(both);
             $button.toggleClass('cp-toolbar-button-active');
             $text.text(Messages[(hidden ? 'ui_expand': 'ui_collapse')]);
         });
