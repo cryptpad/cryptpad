@@ -1920,9 +1920,64 @@ define([
             icon: h('i.cptools.cptools-form-poll')
         },
     };
+    
+    var makeTimeline = APP.makeTimeline = function (answers) {
+        // Here for mockup purpose
+        Object.keys(answers).forEach(function (k) {
+            console.log(answers[k].time);
+            answers[k].time += Math.floor(Math.random() * 10 - 5) * 24 * 3600 * 1000;
+            console.log(answers[k].time);
+        });
+
+        var answersByTime = {};
+        Object.keys(answers).forEach(function (curve) {
+            var obj = answers[curve];
+            var key = new Date(obj.time).toLocaleDateString();
+            if (!answersByTime[key]) {
+                answersByTime[key] = {date: obj.time, count: 1};
+            } else {
+                answersByTime[key].count++;
+            }
+        });
+
+        var dates = Object.keys(answersByTime).sort(function (a, b) {
+            return answersByTime[a].time - answersByTime[b].time;
+        });
+
+        var maxCount = 0;
+
+        Object.keys(answersByTime).forEach(function (date) {
+            var count = answersByTime[date].count;
+            if (count > maxCount) {
+                maxCount = count;
+            }
+        });
+
+        Object.keys(answersByTime).forEach(function (date) {
+            var answer = answersByTime[date];
+            answer.percent = answer.count / maxCount;
+            answer.count = answer.count || "";
+        });
+        
+        console.log(answersByTime);
+        console.log(dates);
+
+        console.log('done');
+
+        return Charts.table(h('tbody',dates.map(function (date) {
+            var count = answersByTime[date].count;
+            var percent = answersByTime[date].percent;
+
+            var bar = h('td.cp-bar', { style: '--size: ' + Number(percent).toFixed(2), "data-tippy-placement": "top", title: `${count} - ${date}` });
+            var dateEl = h('th', { scope: "row" }, date);
+
+            return h('tr', bar, dateEl );
+        })), ["charts-css", "cp-chart-table", "column", "data-spacing-2", "show-labels", "labels-align-center"]);
+    };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) { // XXX hackathon
         var $container = $('div.cp-form-creator-results').empty();
+
 
         if (!Object.keys(answers || {}).length) {
             $container.append(h('div.alert.alert-info', Messages.form_results_empty));
@@ -1939,6 +1994,11 @@ define([
         // https://chartscss.org/charts/column/
         // XXX hackathon set column colours with the cryptpad brand color in app-form.less
 
+        var heading = h('h2#cp-title', `Total answers count: ${Object.keys(answers).length}`);
+        $(heading).appendTo($container);
+        var timeline = h('div.cp-form-creator-results-timeline');
+        var $timeline = $(timeline).appendTo($container);
+        $timeline.append(makeTimeline(answers));
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var exportButton = h('button.btn.btn-secondary', Messages.form_exportCSV);
@@ -2073,6 +2133,7 @@ define([
                 }
                 return div;
             });
+
             $results.append(els);
         });
         if (showUser) {
