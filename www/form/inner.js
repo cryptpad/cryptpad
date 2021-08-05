@@ -1170,7 +1170,7 @@ define([
             },
             printResults: function (answers, uid) {
                 // XXX hackathon radio https://chartscss.org/charts/bar/
-                var results = [];
+                //var results = [];
                 var empty = 0;
                 var count = {};
                 Object.keys(answers).forEach(function (author) {
@@ -1729,7 +1729,7 @@ define([
                 // bars again? https://chartscss.org/charts/bar/
                 var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
-                var results = [];
+                //var results = [];
                 var empty = 0;
                 var count = {};
                 Object.keys(answers).forEach(function (author) {
@@ -1763,7 +1763,7 @@ define([
                     style: 'width: 100%',
                 }, table);
 
-
+/*
                 var sorted = Object.keys(count).sort(function (a, b) {
                     return count[b] - count[a];
                 });
@@ -1775,7 +1775,7 @@ define([
                 });
                 results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', results);
+                return h('div.cp-form-results-type-radio', results); */
             },
             icon: h('i.cptools.cptools-form-list-ordered')
         },
@@ -1923,10 +1923,10 @@ define([
     
     var makeTimeline = APP.makeTimeline = function (answers) {
         // Here for mockup purpose
-        Object.keys(answers).forEach(function (k) {
-            console.log(answers[k].time);
+        Object.keys(answers).forEach(function (k) { // XXX
+            //console.log(answers[k].time);
             answers[k].time += Math.floor(Math.random() * 10 - 5) * 24 * 3600 * 1000;
-            console.log(answers[k].time);
+            //console.log(answers[k].time);
         });
 
         var answersByTime = {};
@@ -1956,19 +1956,24 @@ define([
         Object.keys(answersByTime).forEach(function (date) {
             var answer = answersByTime[date];
             answer.percent = answer.count / maxCount;
-            answer.count = answer.count || "";
+            answer.count = answer.count || ""; // 0 ?
         });
-        
+/*
         console.log(answersByTime);
         console.log(dates);
 
         console.log('done');
+*/
 
         return Charts.table(h('tbody',dates.map(function (date) {
             var count = answersByTime[date].count;
             var percent = answersByTime[date].percent;
 
-            var bar = h('td.cp-bar', { style: '--size: ' + Number(percent).toFixed(2), "data-tippy-placement": "top", title: `${count} - ${date}` });
+            var bar = h('td.cp-bar', {
+                style: '--size: ' + Number(percent).toFixed(2),
+                "data-tippy-placement": "top",
+                title: [count, date].join(' - '), // XXX
+            });
             var dateEl = h('th', { scope: "row" }, date);
 
             return h('tr', bar, dateEl );
@@ -1994,7 +1999,7 @@ define([
         // https://chartscss.org/charts/column/
         // XXX hackathon set column colours with the cryptpad brand color in app-form.less
 
-        var heading = h('h2#cp-title', `Total answers count: ${Object.keys(answers).length}`);
+        var heading = h('h2#cp-title', 'Total answers count: ' + Object.keys(answers).length); // XXX
         $(heading).appendTo($container);
         var timeline = h('div.cp-form-creator-results-timeline');
         var $timeline = $(timeline).appendTo($container);
@@ -2133,7 +2138,6 @@ define([
                 }
                 return div;
             });
-
             $results.append(els);
         });
         if (showUser) {
