@@ -5,7 +5,7 @@ define([
     var Charts = {};
 
     Charts.table = function (content, classes) {
-        var classString = Array.isArray(classes)? '.' + classes.join('.'): '';
+        var classString = Array.isArray(classes)? '.' + classes.filter(Boolean).join('.'): '';
         return h('table' + classString, content);
     };
 

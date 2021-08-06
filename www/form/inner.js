@@ -805,7 +805,7 @@ define([
         return total;
     };
 
-    var getEmpty = function (empty) {
+    var getEmpty = function (empty) { // XXX don't include this in the scrollable area
         if (empty) {
             return UI.setHTML(h('div.cp-form-results-type-text-empty'), Messages._getKey('form_notAnswered', [empty]));
         }
@@ -959,7 +959,45 @@ define([
         return Array.isArray(A)? Math.max.apply(null, A): NaN;
     };
 
-    var TYPES = { // XXX hackathon insert useful charts for each of type of answer
+    var CLASSIC_MODE = true;
+    var renderTally = function (tally, empty, caption) {
+        var rows = [];
+        if (CLASSIC_MODE) {
+            Object.keys(tally).forEach(function (value) {
+                rows.push(h('div.cp-form-results-type-radio-data', [ // XXX
+                    h('span.cp-value', value),
+                    h('span.cp-count', tally[value])
+                ]));
+            });
+            if (empty) { rows.push(getEmpty(empty)); }
+            return rows;
+        }
+
+        var counts = Util.values(tally);
+        var max = arrayMax(counts);
+
+        Object.keys(tally).forEach(function (answer) {
+            rows.push(Charts.row(answer, tally[answer] / max, tally[answer]));
+        });
+        var hasCaption = typeof(caption) !== 'undefined';
+        var table = Charts.table([
+            hasCaption ? h('caption', caption): undefined,
+            h('tbody', rows)
+        ], [
+            'charts-css',
+            'bar',
+            hasCaption? 'show-heading': undefined,
+            'show-labels',
+            'show-data-on-hover',
+        ]);
+
+        return [
+            table,
+            empty? getEmpty(empty): undefined,
+        ];
+    };
+
+    var TYPES = {
         input: {
             defaultOpts: {
                 type: 'text'
@@ -993,7 +1031,7 @@ define([
                     reset: function () { $tag.val(''); }
                 };
             },
-            printResults: function (answers, uid) { // XXX hackathon each question format has a 'printResults' method
+            printResults: function (answers, uid) {
                 var results = [];
                 var empty = 0;
                 var tally = {};
@@ -1007,7 +1045,7 @@ define([
                 var counts = Util.values(tally);
                 var max = arrayMax(counts);
 
-                if (max < 2) { // there are no duplicates, so just return text
+                if (CLASSIC_MODE || max < 2) { // there are no duplicates, so just return text
                     Object.keys(answers).forEach(function (author) {
                         var obj = answers[author];
                         var answer = obj.msg[uid];
@@ -1018,30 +1056,8 @@ define([
                     return h('div.cp-form-results-type-text', results);
                 }
 
-                // increase the scale of the bar chart if there are more empty answers than anything else
-                max = Math.max(max, empty);
-
-                // there are duplicates, so return a bar chart
-                var rows = []; // XXX
-                Object.keys(tally).forEach(function (answer) {
-                    rows.push(Charts.row(answer, tally[answer] / max, tally[answer]));
-                });
-
-                var table = Charts.table([
-                    //h('caption', ''), // XXX
-                    h('tbody', rows)
-                ], [
-                    'charts-css',
-                    'bar',
-                    'show-heading',
-                    'show-labels',
-                    'show-data-on-hover',
-                ]);
-
-                return h('div.cp-form-results-type-text', [
-                    table,
-                    empty? getEmpty(empty): undefined,
-                ]);
+                var rendered = renderTally(tally, empty /*, caption */);
+                return h('div.cp-form-results-type-text', rendered);
             },
             icon: h('i.cptools.cptools-form-text')
         },
@@ -1096,12 +1112,9 @@ define([
                     reset: function () { $text.val(''); }
                 };
             },
-            printResults: function (answers, uid) {
+            printResults: function (answers, uid) { // results textarea
                 var results = [];
                 var empty = 0;
-                // XXX hackathon like text inputs, charts are only useful if we tally duplicates
-                // (or if there are duplicates)
-                // https://chartscss.org/charts/bar/
                 Object.keys(answers).forEach(function (author) { // TODO deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1169,8 +1182,7 @@ define([
 
             },
             printResults: function (answers, uid) {
-                // XXX hackathon radio https://chartscss.org/charts/bar/
-                //var results = [];
+                // results radio
                 var empty = 0;
                 var count = {};
                 Object.keys(answers).forEach(function (author) {
@@ -1180,38 +1192,10 @@ define([
                     Util.inc(count, answer);
                 });
 
-                var counts = Util.values(count);
-                var max = arrayMax(counts);
-                var rows = [];
-
-                Object.keys(count).forEach(function (text) {
-                    rows.push(Charts.row(text, count[text] / max, count[text]));
-                });
-
-                var table = Charts.table([
-                    h('tbody', rows)
-                ], [
-                    'charts-css',
-                    'bar',
-                    'show-labels',
-                    //'show-heading',
-                    'show-data-on-hover',
-                ]);
+                var rendered = renderTally(count, empty/*, caption */);
                 return h('div.cp-form-results-type-radio', {
-                    style: 'width: 100%',
-                }, table);
-
-/*
-                Object.keys(count).forEach(function (value) {
-                    results.push(h('div.cp-form-results-type-radio-data', [
-                        h('span.cp-value', value),
-                        h('span.cp-count', count[value])
-                    ]));
-                });
-                results.push(getEmpty(empty)); // XXX show number of empty answers
-
-                return h('div.cp-form-results-type-radio', results);
-*/
+                    style: CLASSIC_MODE? '': 'width: 100%',
+                }, rendered);
             },
             icon: h('i.cptools.cptools-form-list-radio')
         },
@@ -1288,7 +1272,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
-                // XXX hackathon multiradio https://chartscss.org/components/stacked/
+                // results multiradio
                 var structure = form[uid];
                 if (!structure) { return; }
                 var opts = structure.opts || TYPES.multiradio.defaultOpts;
@@ -1320,6 +1304,21 @@ define([
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
 
+
+                    if (CLASSIC_MODE) {
+                        var values = Object.keys(c).map(function (res) {
+                            return h('div.cp-form-results-type-radio-data', [
+                                h('span.cp-value', res),
+                                h('span.cp-count', c[res])
+                            ]);
+                        });
+                        results.push(h('div.cp-form-results-type-multiradio-data', [
+                            h('span.cp-mr-q', q),
+                            h('span.cp-mr-value', values)
+                        ]));
+                        return;
+                    }
+
                     var table = Charts.table([
                         h('caption', {
                             style: 'color: var(--msg-color)', // XXX light/dark modes
@@ -1333,29 +1332,16 @@ define([
                         'show-heading',
                         'show-data-on-hover',
                         'show-labels',
-
                     ]);
 
                     results.push(h('div.cp-form-results-type-multiradio-data', {
                         style: 'width: 100%',
                     }, table));
-/*
-                    var values = Object.keys(c).map(function (res) {
-                        return h('div.cp-form-results-type-radio-data', [
-                            h('span.cp-value', res),
-                            h('span.cp-count', c[res])
-                        ]);
-                    });
-                    results.push(h('div.cp-form-results-type-multiradio-data', [
-                        h('span.cp-mr-q', q),
-                        h('span.cp-mr-value', values)
-                    ]));
-*/
                 });
                 results.push(getEmpty(empty));
 
                 return h('div.cp-form-results-type-radio', {
-                    style: 'width: 100%',
+                    style: CLASSIC_MODE? '': 'width: 100%',
                 }, results);
             },
             exportCSV: function (answer, form) {
@@ -1439,8 +1425,7 @@ define([
 
             },
             printResults: function (answers, uid) {
-                // XXX hackathon radio https://chartscss.org/charts/bar/
-                var results = [];
+                // results checkbox
                 var empty = 0;
                 var count = {};
                 Object.keys(answers).forEach(function (author) {
@@ -1451,15 +1436,9 @@ define([
                         Util.inc(count, val);
                     });
                 });
-                Object.keys(count).forEach(function (value) {
-                    results.push(h('div.cp-form-results-type-radio-data', [
-                        h('span.cp-value', value),
-                        h('span.cp-count', count[value])
-                    ]));
-                });
-                results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', results);
+                var rendered = renderTally(count, empty /*, caption */);
+                return h('div.cp-form-results-type-radio', rendered);
             },
             icon: h('i.cptools.cptools-form-list-check')
         },
@@ -1548,9 +1527,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
-                // XXX hackathon multicheck
-                // stacked: https://chartscss.org/components/stacked/
-                // or multiple bars: https://chartscss.org/charts/bar/#multiple-datasets
+                // results multicheckbox
                 var structure = form[uid];
                 if (!structure) { return; }
                 var opts = structure.opts || TYPES.multicheck.defaultOpts;
@@ -1583,6 +1560,21 @@ define([
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
 
+
+                    if (CLASSIC_MODE) {
+                        var values = Object.keys(c).map(function (res) {
+                            return h('div.cp-form-results-type-radio-data', [
+                                h('span.cp-value', res),
+                                h('span.cp-count', c[res])
+                            ]);
+                        });
+                        results.push(h('div.cp-form-results-type-multiradio-data', [
+                            h('span.cp-mr-q', q),
+                            h('span.cp-mr-value', values)
+                        ]));
+                        return;
+                    }
+
                     var table = Charts.table([
                         h('caption', {
                             style: 'color: var(--msg-color)', // XXX light/dark modes
@@ -1601,23 +1593,11 @@ define([
                     results.push(h('div.cp-form-results-type-multiradio-data', {
                         style: 'width: 100%',
                     }, table));
-/*
-                    var values = Object.keys(c).map(function (res) {
-                        return h('div.cp-form-results-type-radio-data', [
-                            h('span.cp-value', res),
-                            h('span.cp-count', c[res])
-                        ]);
-                    });
-                    results.push(h('div.cp-form-results-type-multiradio-data', [
-                        h('span.cp-mr-q', q),
-                        h('span.cp-mr-value', values)
-                    ]));
-*/
                 });
                 results.push(getEmpty(empty));
 
                 return h('div.cp-form-results-type-radio', {
-                    style: 'width: 100%',
+                    style: CLASSIC_MODE? '': 'width: 100%',
                 }, results);
             },
             exportCSV: function (answer, form) {
@@ -1725,8 +1705,7 @@ define([
 
             },
             printResults: function (answers, uid, form) {
-                // XXX hackathon sortable list
-                // bars again? https://chartscss.org/charts/bar/
+                // results sort
                 var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
                 //var results = [];
@@ -1741,41 +1720,11 @@ define([
                         Util.inc(count, el, score);
                     });
                 });
-                var counts = Util.values(count);
-                var max = arrayMax(counts);
 
-                var rows = [];
-                Object.keys(count).forEach(function (text) {
-                    rows.push(Charts.row(text, count[text] / max, count[text]));
-                });
-
-                var table = Charts.table([
-                    h('tbody', rows),
-                ], [
-                    'charts-css',
-                    'bar',
-                    'show-labels',
-                    'show-data-on-hover',
-                    //'show-heading',
-                ]);
-
+                var rendered = renderTally(count, empty /*, caption */);
                 return h('div.cp-form-results-type-radio', {
-                    style: 'width: 100%',
-                }, table);
-
-/*
-                var sorted = Object.keys(count).sort(function (a, b) {
-                    return count[b] - count[a];
-                });
-                sorted.forEach(function (value) {
-                    results.push(h('div.cp-form-results-type-radio-data', [
-                        h('span.cp-value', value),
-                        h('span.cp-count', count[value])
-                    ]));
-                });
-                results.push(getEmpty(empty));
-
-                return h('div.cp-form-results-type-radio', results); */
+                    style: CLASSIC_MODE? '': 'width: 100%',
+                }, rendered);
             },
             icon: h('i.cptools.cptools-form-list-ordered')
         },
@@ -1875,7 +1824,6 @@ define([
 
             },
             printResults: function (answers, uid, form, content) {
-                // XXX hackathon: not really anything to do here?
                 var opts = form[uid].opts || TYPES.poll.defaultOpts;
                 var _answers = getBlockAnswers(answers, uid);
 
@@ -1920,31 +1868,77 @@ define([
             icon: h('i.cptools.cptools-form-poll')
         },
     };
-    
-    var makeTimeline = APP.makeTimeline = function (answers) {
-        
-        // Randomly changing date of answers to get a more realistic example of timeline
-        Object.keys(answers).forEach(function (k) { // XXX
-            answers[k].time += Math.floor(Math.random() * 10 - 5) * 24 * 3600 * 1000;
-        });
 
-        var answersByTime = {};
+    var getDay = function (d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    };
+
+    var ONE_DAY = 1000 *  60 * 60 * 24;
+
+    var getDayArray = function (a, b) {
+        // coerce inputs to numbers
+        var r_a = +getDay(new Date(a));
+        var r_b = +getDay(new Date(b));
+        var A = [ r_a ];
+        var next = r_a + ONE_DAY;
+        while (next <= r_b) {
+            A.push(next);
+            next += ONE_DAY;
+        }
+        return A;
+    };
+
+    var makeTimeline = APP.makeTimeline = function (answers) {
+        // Randomly changing date of answers to get a more realistic example of timeline
+        var tally = {};
+
+        //var answersByTime = {};
         Object.keys(answers).forEach(function (curve) {
             var obj = answers[curve];
-            // Used to get rid of the milliseconds and get unique date to map counts
-            var key = new Date(obj.time).toLocaleDateString();
-            if (!answersByTime[key]) {
-                // Original time kept to ensure a good sort order later
-                answersByTime[key] = {date: obj.time, count: 1};
-            } else {
-                answersByTime[key].count++;
-            }
+            var day = getDay(new Date(obj.time));
+            Util.inc(tally, +day);
         });
 
+        var times = Object.keys(tally).map(Number).filter(Boolean);
+
+        var max_count = arrayMax(Util.values(tally));
+
+        var min_day = Math.min.apply(null, times);
+        var max_day = arrayMax(times);
+        var days = getDayArray(new Date(min_day), new Date(max_day));
+
+        return Charts.table(h('tbody', days.map(function (time) {
+            var count = tally[time] || 0;
+            var percent = count / max_count;
+            var date = new Date(time).toLocaleDateString();
+
+            var bar = h('td.cp-bar', {
+                style: '--size: ' + Number(percent).toFixed(2),
+                "data-tippy-placement": "top",
+                title: [count, date].join(' - '), // XXX
+            });
+            var dateEl = h('th', { scope: "row" }, date);
+
+            return h('tr', bar, dateEl );
+        })), [
+            "charts-css",
+            "cp-chart-table",
+            "column",
+            //"data-spacing-2",
+            //"show-labels",
+            //"labels-align-center"
+        ]);
+/*
+
+        return;
+
+        var max = arrayMax(times);
+        var min = Math.min.apply(null, times);
+
         var dates = Object.keys(answersByTime).sort(function (a, b) {
-            var a = answersByTime[a].time;
-            var b = answersByTime[b].time;
-            return b - a;
+            var a_time = answersByTime[a].time;
+            var b_time = answersByTime[b].time;
+            return b_time - a_time;
         });
 
         var maxCount = 0;
@@ -1978,10 +1972,10 @@ define([
             var dateEl = h('th', { scope: "row" }, date);
 
             return h('tr', bar, dateEl );
-        })), ["charts-css", "cp-chart-table", "column", "data-spacing-2", "show-labels", "labels-align-center"]);
+        })), ["charts-css", "cp-chart-table", "column", "data-spacing-2", "show-labels", "labels-align-center"]); */
     };
 
-    var renderResults = APP.renderResults = function (content, answers, showUser) { // XXX hackathon
+    var renderResults = APP.renderResults = function (content, answers, showUser) {
         var $container = $('div.cp-form-creator-results').empty();
 
 
@@ -1995,10 +1989,6 @@ define([
             var $desc = $(description).appendTo($container);
             DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
         }
-
-        // XXX hackathon display answer times as column bar chart with first and last date indicated
-        // https://chartscss.org/charts/column/
-        // XXX hackathon set column colours with the cryptpad brand color in app-form.less
 
         var heading = h('h2#cp-title', 'Total answers count: ' + Object.keys(answers).length); // XXX
         $(heading).appendTo($container);
