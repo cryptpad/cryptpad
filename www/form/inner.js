@@ -1888,8 +1888,8 @@ define([
         return A;
     };
 
-    Messages.form_timelineLabel = "{0} ({1})";
-    Messages.form_totalResponses = "Total responses: {0}";
+    Messages.form_timelineLabel = "{0} ({1})"; // XXX
+    Messages.form_totalResponses = "Total responses: {0}"; // XXX
 
     var makeTimeline = APP.makeTimeline = function (answers) {
         // Randomly changing date of answers to get a more realistic example of timeline
