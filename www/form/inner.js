@@ -1888,6 +1888,9 @@ define([
         return A;
     };
 
+    Messages.form_timelineLabel = "{0} ({1})";
+    Messages.form_totalResponses = "Total responses: {0}";
+
     var makeTimeline = APP.makeTimeline = function (answers) {
         // Randomly changing date of answers to get a more realistic example of timeline
         var tally = {};
@@ -1915,7 +1918,7 @@ define([
             var bar = h('td.cp-bar', {
                 style: '--size: ' + Number(percent).toFixed(2),
                 "data-tippy-placement": "top",
-                title: [count, date].join(' - '), // XXX
+                title: Messages._getKey('form_timelineLabel', [date, count])
             });
             var dateEl = h('th', { scope: "row" }, date);
 
@@ -1928,58 +1931,14 @@ define([
             //"show-labels",
             //"labels-align-center"
         ]);
-/*
-
-        return;
-
-        var max = arrayMax(times);
-        var min = Math.min.apply(null, times);
-
-        var dates = Object.keys(answersByTime).sort(function (a, b) {
-            var a_time = answersByTime[a].time;
-            var b_time = answersByTime[b].time;
-            return b_time - a_time;
-        });
-
-        var maxCount = 0;
-
-        Object.keys(answersByTime).forEach(function (date) {
-            var count = answersByTime[date].count;
-            if (count > maxCount) {
-                maxCount = count;
-            }
-        });
-
-        Object.keys(answersByTime).forEach(function (date) {
-            var answer = answersByTime[date];
-            answer.percent = answer.count / maxCount;
-            // Chose an empty string rather than 0 to avoid in the next dev step
-            // to provide the correspondant chart bar with an unecessary tooltip
-            answer.count = answer.count || ""; // 0 ?
-        });
-
-        // TODO: Populate the date list with dates which have no answers to get every day between to dates which have ones
-
-        return Charts.table(h('tbody',dates.map(function (date) {
-            var count = answersByTime[date].count;
-            var percent = answersByTime[date].percent;
-
-            var bar = h('td.cp-bar', {
-                style: '--size: ' + Number(percent).toFixed(2),
-                "data-tippy-placement": "top",
-                title: [count, date].join(' - '), // XXX
-            });
-            var dateEl = h('th', { scope: "row" }, date);
-
-            return h('tr', bar, dateEl );
-        })), ["charts-css", "cp-chart-table", "column", "data-spacing-2", "show-labels", "labels-align-center"]); */
     };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) {
         var $container = $('div.cp-form-creator-results').empty();
 
+        var answerCount = Object.keys(answers || {}).length;
 
-        if (!Object.keys(answers || {}).length) {
+        if (!answerCount) {
             $container.append(h('div.alert.alert-info', Messages.form_results_empty));
             return;
         }
@@ -1990,7 +1949,7 @@ define([
             DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
         }
 
-        var heading = h('h2#cp-title', 'Total answers count: ' + Object.keys(answers).length); // XXX
+        var heading = h('h2#cp-title', Messages._getKey('form_totalResponses', [answerCount]));
         $(heading).appendTo($container);
         var timeline = h('div.cp-form-creator-results-timeline');
         var $timeline = $(timeline).appendTo($container);
