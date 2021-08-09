@@ -1379,5 +1379,7 @@
     "fm_link_name": "Titre du lien",
     "fm_link_type": "Lien",
     "fm_link_new": "Nouveau Lien",
-    "notification_openLink": "Vous avez reçu un lien <b>{0}</b> de {1} :"
+    "notification_openLink": "Vous avez reçu un lien <b>{0}</b> de {1} :",
+    "ui_expand": "Développer",
+    "ui_collapse": "Réduire"
 }
