@@ -1379,5 +1379,8 @@
     "form_anonName": "Your name",
     "form_answerAs": "Answer as",
     "fm_link_warning": "Warning: the URL exceeds 200 characters",
-    "fm_link_invalid": "Invalid URL"
+    "fm_link_invalid": "Invalid URL",
+    "ui_collapse": "Collapse",
+    "ui_expand": "Expand",
+    "form_totalResponses": "Total responses: {0}"
 }
