@@ -14,6 +14,25 @@ define([
         return false;
     };
 
+    var OS_HINTS = {
+        "Win": "Windows",
+        "Mac": "MacOS",
+        "X11": "UNIX",
+        "Linux": "Linux",
+    };
+
+    Tools.guessOS = function () {
+        var result = "UNKNOWN";
+        if (!window.navigator || !window.navigator.appVersion) { return result; }
+        result = window.navigator.appVersion;
+        console.log(result);
+        Object.keys(OS_HINTS).some(function (key) {
+            if (result.indexOf(key) === -1) { return; }
+            result = OS_HINTS[key]; // else
+            return true;
+        });
+        return result;
+    };
 
     Tools.isSafari = function () {
         return navigator.vendor.match(/apple/i);

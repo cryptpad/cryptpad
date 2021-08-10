@@ -1379,5 +1379,8 @@
     "fm_link_name_placeholder": "Mein Link",
     "fm_link_url": "URL",
     "fm_link_type": "Link",
-    "fm_link_new": "Neuer Link"
+    "fm_link_new": "Neuer Link",
+    "form_totalResponses": "Antworten insgesamt: {0}",
+    "ui_expand": "Ausklappen",
+    "ui_collapse": "Einklappen"
 }
