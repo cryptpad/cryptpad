@@ -1167,6 +1167,13 @@ define([
         Store
     */
 
+    var excludeInvalidIdentifiers = function (result) {
+        return result.filter(function (channel) {
+            if (typeof(channel) !== 'string') { return; }
+            return [32, 48].indexOf(channel.length) !== -1;
+        });
+    };
+
     // Get the list of channels filtered by a type (expirable channels, owned channels, pin list)
     var getChannelsList = function (Env, type) {
         var result = [];
@@ -1228,8 +1235,8 @@ define([
             }
         };
 
-        if (type === 'owned' && !Env.edPublic) { return result; }
-        if (type === 'pin' && !Env.edPublic) { return result; }
+        if (type === 'owned' && !Env.edPublic) { return excludeInvalidIdentifiers(result); }
+        if (type === 'pin' && !Env.edPublic) { return excludeInvalidIdentifiers(result); }
 
         // Get the list of user objects
         var userObjects = _getUserObjects(Env);
@@ -1256,10 +1263,7 @@ define([
             Array.prototype.push.apply(result, sfChannels);
         }
 
-        return result.filter(function (channel) {
-            if (typeof(channel) !== 'string') { return; }
-            return [32, 48].indexOf(channel.length) !== -1;
-        });
+        return excludeInvalidIdentifiers(result);
     };
 
     var addPad = function (Env, path, pad, cb) {
