@@ -13,7 +13,8 @@
         "file": "Archivo",
         "media": "Media",
         "sheet": "Hoja de Cálculo",
-        "teams": "Equipos"
+        "teams": "Equipos",
+        "form": "Formulario"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronizando",
