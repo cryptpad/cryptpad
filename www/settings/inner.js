@@ -542,12 +542,12 @@ define([
                     }
                     // Owned drive
                     if (data.state === true) {
-                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
-                        UI.alert(Messages.settings_deleted, function() {
-                            common.gotoURL('/');
+                        return void sframeChan.query('Q_SETTINGS_LOGOUT_PROPERLY', null, function() {
+                            UI.alert(Messages.settings_deleted, function() {
+                                common.gotoURL('/');
+                            });
+                            spinner.done();
                         });
-                        spinner.done();
-                        return;
                     }
                     // Not owned drive
                     var msg = h('div.cp-app-settings-delete-alert', [

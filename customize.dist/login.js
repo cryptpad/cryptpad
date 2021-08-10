@@ -463,6 +463,7 @@ define([
         var proceed = function (result) {
             hashing = false;
             if (test && typeof test === "function" && test()) { return; }
+            LocalStore.clearLoginToken();
             Realtime.whenRealtimeSyncs(result.realtime, function () {
                 Exports.redirect();
             });
