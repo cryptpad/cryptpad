@@ -1379,5 +1379,8 @@
     "fm_link_name_placeholder": "あなたのリンク",
     "fm_link_warning": "注意：URLが200字を超えています",
     "fm_link_invalid": "URLが無効です",
-    "form_answerAs": "名前を記入してください"
+    "form_answerAs": "名前を記入してください",
+    "form_totalResponses": "回答数：{0}",
+    "ui_expand": "広げる",
+    "ui_collapse": "折りたたむ"
 }
