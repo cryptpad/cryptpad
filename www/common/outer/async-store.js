@@ -775,7 +775,10 @@ define([
                     }
                 });
             }
-            return list;
+            return list.filter(function (channel) {
+                if (typeof(channel) !== 'string') { return; }
+                return [32, 48].indexOf(channel.length) !== -1;
+            });
         };
         var removeOwnedPads = function (waitFor) {
             // Delete owned pads
