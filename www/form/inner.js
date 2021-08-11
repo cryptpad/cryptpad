@@ -1956,9 +1956,11 @@ define([
         $timeline.append(makeTimeline(answers));
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
-        var exportButton = h('button.btn.btn-secondary', Messages.form_exportCSV);
-        var exportCSV = h('div.cp-form-creator-results-export', exportButton);
-        $(exportCSV).appendTo($container);
+        var exportButton = h('button.btn.btn-primary', [
+            h('i.fa.fa-download'),
+            Messages.form_exportCSV
+        ]);
+        $(exportButton).appendTo($controls);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
 
@@ -1975,7 +1977,7 @@ define([
         var summary = true;
         var form = content.form;
 
-        var switchMode = h('button.btn.btn-primary', Messages.form_showIndividual);
+        var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
 
         var show = function (answers, header) {
