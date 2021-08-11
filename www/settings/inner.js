@@ -651,7 +651,7 @@ define([
                     done: function($dialog) {
                         $dialog.find('> div').addClass('half');
                     },
-                }, true);
+                });
         };
 
         $(form).find('button').click(function() {

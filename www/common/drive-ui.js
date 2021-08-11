@@ -1733,7 +1733,7 @@ define([
                     removeSelected();
                     refresh();
                 });
-            }, null, true);
+            });
         };
 
 
