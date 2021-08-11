@@ -110,7 +110,7 @@ define([
         if (lessEngine) {
             cb(lessEngine);
         } else {
-            require(['/common/less.min.js'], function (Less) {
+            require(['/lib/less.min.js'], function (Less) {
                 if (lessEngine) { return void cb(lessEngine); }
                 lessEngine = Less;
                 Less.functions.functionRegistry.add('LessLoader_currentFile', function () {

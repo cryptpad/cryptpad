@@ -8,13 +8,13 @@ define([
     '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
     '/customize/messages.js',
-    '/common/less.min.js',
+    '/lib/less.min.js',
     '/customize/pages.js',
 
-    '/common/highlight/highlight.pack.js',
+    '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-    'css!/common/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
+    'css!/lib/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
 ],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
     var DiffMd = {};
 
@@ -424,7 +424,7 @@ define([
     // Only allow iframe, video and audio with local source
     var checkSrc = function (root) {
         if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
-        return root.getAttribute && /^(blob\:|\/common\/pdfjs)/.test(root.getAttribute('src'));
+        return root.getAttribute && /^(blob\:|\/lib\/pdfjs)/.test(root.getAttribute('src'));
     };
 
     var removeForbiddenTags = function (root) {

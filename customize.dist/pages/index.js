@@ -5,7 +5,7 @@ define([
     '/common/common-feedback.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
-    '/common/textFit.min.js',
+    '/lib/textFit.min.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
@@ -67,6 +67,7 @@ define([
 
         icons.forEach(function (a) {
             setTimeout(function () {
+                // ensure that text in our app icons doesn't overflow
                 TextFit($(a).find('.pad-button-text')[0], {minFontSize: 13, maxFontSize: 18});
             });
         });

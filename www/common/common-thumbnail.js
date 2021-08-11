@@ -145,7 +145,7 @@ define([
         video.src = url;
     };
     Thumb.fromPdfBlob = function (blob, cb) {
-        require.config({paths: {'pdfjs-dist': '/common/pdfjs'}});
+        require.config({paths: {'pdfjs-dist': '/lib/pdfjs'}});
         require(['pdfjs-dist/build/pdf'], function (PDFJS) {
             var url = URL.createObjectURL(blob);
             var makeThumb = function (page) {

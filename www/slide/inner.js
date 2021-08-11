@@ -261,9 +261,10 @@ define([
             $textarea.val(invalidStyle || slideOptionsTmp.styleLess || slideOptionsTmp.style);
             window.setTimeout(function () { $textarea.focus(); }, 0);
 
-            require(['/bower_components/less/dist/less.min.js'], function () { });
+            var lessPath = '/lib/less.min.js';
+            require([lessPath], function () { });
             var parseLess = function (less, cb) {
-                require(['/bower_components/less/dist/less.min.js'], function (Less) {
+                require([lessPath], function (Less) {
                     Less.render(less, {}, function(err, css) {
                         if (err) { return void cb(err); }
                         cb(undefined, css.css);

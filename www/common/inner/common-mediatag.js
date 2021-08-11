@@ -20,7 +20,7 @@ define([
     // This file is loaded by sframe-common so the following config is used in all the inner apps
     if (MediaTag) {
         MediaTag.setDefaultConfig('pdf', {
-            viewer: '/common/pdfjs/web/viewer.html'
+            viewer: '/lib/pdfjs/web/viewer.html'
         });
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
