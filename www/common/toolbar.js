@@ -456,29 +456,33 @@ MessengerUI, Messages, Pages) {
     };
 
     //Messages.collapse = Messages.admin_support_collapse;
-    Messages.ui_collapse = "Collapse"; // XXX
-    Messages.ui_expand = "Expand"; // XXX
+    Messages.toolbar_collapse = "Collapse toolbar"; // XXX
+    Messages.toolbar_expand = "Expand toolbar"; // XXX
 
     createCollapse = function (toolbar) {
-        var up = 'fa-chevron-up';
-        var down = 'fa-chevron-down';
-        var both = up + ' ' + down;
+        var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
+        var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
 
-        var icon = h('i.fa.' + up);
-        var $icon = $(icon);
-        var text = h('span', Messages.ui_collapse);
-        var $text = $(text);
-        var $button = $(h('button.cp-toolbar-collapse', [
-            icon,
-            h('span.cp-button-name', text),
+        var $button = $(h('button.cp-toolbar-collapse',[
+            up,
+            down
         ]));
+        var $up = $(up);
+        var $down = $(down);
         toolbar.$bottomR.prepend($button);
+        $down.hide();
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
-            $icon.toggleClass(both);
+            $button.attr('title', Messages[(hidden ? 'ui_expand': 'ui_collapse')]);
             $button.toggleClass('cp-toolbar-button-active');
-            $text.text(Messages[(hidden ? 'ui_expand': 'ui_collapse')]);
+            if (hidden) {
+                $up.hide();
+                $down.show();
+            } else {
+                $up.show();
+                $down.hide();
+            }
         });
     };
 
