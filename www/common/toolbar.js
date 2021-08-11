@@ -474,7 +474,6 @@ MessengerUI, Messages, Pages) {
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
-            $button.attr('title', Messages[(hidden ? 'ui_expand': 'ui_collapse')]);
             $button.toggleClass('cp-toolbar-button-active');
             if (hidden) {
                 $up.hide();
