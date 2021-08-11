@@ -579,7 +579,8 @@ define([
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-change-password-current',
-                placeholder: Messages.settings_changePasswordCurrent
+                placeholder: Messages.settings_changePasswordCurrent,
+                autocomplete: 'current-password',
             }, true),
             h('br'),
             UI.passwordInput({

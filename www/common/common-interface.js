@@ -867,7 +867,8 @@ define([
     UI.passwordInput = function (opts, displayEye) {
         opts = opts || {};
         var attributes = merge({
-            type: 'password'
+            type: 'password',
+            autocomplete: 'new-password', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
