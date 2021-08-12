@@ -102,7 +102,7 @@
     "KB": "KB",
     "GB": "GB",
     "MB": "MB",
-    "storageStatus": "Lagring:<br /><b>{0}</b> använd av <b>{1}</b>",
+    "storageStatus": "Lagring:<br><b>{0}</b> använd av <b>{1}</b>",
     "upgradeAccount": "Uppgradera konto",
     "upgrade": "Uppgradera",
     "language": "Språk",

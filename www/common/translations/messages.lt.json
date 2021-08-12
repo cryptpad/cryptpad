@@ -46,7 +46,7 @@
     "KB": "KB",
     "GB": "GB",
     "MB": "MB",
-    "storageStatus": "Saugykla: <br /> <b> {0} </b> sunaudota iš <b> {1} </b>",
+    "storageStatus": "Saugykla: <br> <b> {0} </b> sunaudota iš <b> {1} </b>",
     "upgrade": "Atnaujinti",
     "upgradeAccount": "Atnaujinti paskyrą",
     "language": "Kalba",

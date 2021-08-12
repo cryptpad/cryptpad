@@ -265,7 +265,7 @@
     "formattedKB": "{0} KB",
     "formattedGB": "{0} GB",
     "formattedMB": "{0} MB",
-    "storageStatus": "Lagringsplass:<br /><b>{0}</b> brukt, av <b>{1}</b>",
+    "storageStatus": "Lagringsplass:<br><b>{0}</b> brukt, av <b>{1}</b>",
     "padNotPinnedVariable": "Denne dokumentet utløper etter {4] dager med inaktivitet, {0}logg inn{1} eller {2}registrer deg{3} for å bevare det.",
     "history_restoreTitle": "Gjenopprett den valgte dokumentversjonen",
     "history_closeTitle": "Lukk historikken",
