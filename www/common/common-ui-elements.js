@@ -919,10 +919,13 @@ define([
                 }, [
                     h('i.fa.' + icon),
                     h('span.cp-toolbar-name'+drawerCls, data.text)
-                ])).click(common.prepareFeedback(data.name || 'DEFAULT'));
-                if (callback) {
-                    button.click(callback);
-                }
+                ]));
+                var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
+                button[0].addEventListener('click', function () {
+                    feedbackHandler();
+                    if (typeof(callback) !== 'function') { return; }
+                    callback();
+                });
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
