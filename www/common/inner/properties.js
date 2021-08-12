@@ -170,7 +170,8 @@ define([
                     teamId: typeof(owned) === "number" && owned
                 }, function (obj) {
                     spinner.hide();
-                    if (obj && obj.error) {
+                    if (obj && obj.error || obj.warning) {
+                        console.error(obj.warning);
                         $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
                         return;
                     }
