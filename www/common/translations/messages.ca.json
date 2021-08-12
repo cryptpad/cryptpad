@@ -418,7 +418,7 @@
     "settings_deleteButton": "Suprimir el vostre compte",
     "settings_deleteModal": "Envieu la següent informació a qui administri el vostre CryptPad per tal que les vostres dades siguin esborrades del servidor.",
     "settings_deleted": "El vostre compte ha estat suprimit. Premeu D'acord per tornar a la pàgina inicial.",
-    "storageStatus": "Emmagatzematge:<br /><b>{0}</b> utilitzats de <b>{1}</b>",
+    "storageStatus": "Emmagatzematge:<br><b>{0}</b> utilitzats de <b>{1}</b>",
     "settings_anonymous": "No heu iniciat la sessió. Els paràmetres només s'aplicaran al navegador actual.",
     "settings_publicSigningKey": "Clau pública de signatura",
     "settings_logoutEverywhereButton": "Tanca la sessió",

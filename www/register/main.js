@@ -45,6 +45,7 @@ define([
         var test;
 
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
+        var br = function () { return h('br'); };
 
         var registerClick = function () {
             var uname = $uname.val().trim();
@@ -61,10 +62,13 @@ define([
             if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
                 var emailWarning = [
                     Messages.register_emailWarning0,
+                    br(), br(),
                     Messages.register_emailWarning1,
+                    br(), br(),
                     Messages.register_emailWarning2,
+                    br(), br(),
                     Messages.register_emailWarning3,
-                ].join('<br><br>');
+                ];
 
                 Feedback.send("EMAIL_USERNAME_WARNING", true);
 
@@ -72,7 +76,7 @@ define([
                     if (!yes) { return; }
                     I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = true;
                     registerClick();
-                }, {}, true);
+                });
             }
 
             /* basic validation */

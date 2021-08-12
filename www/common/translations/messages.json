@@ -62,7 +62,7 @@
     "language": "Language",
     "upgrade": "Upgrade",
     "upgradeAccount": "Upgrade account",
-    "storageStatus": "Storage:<br /><b>{0}</b> used out of <b>{1}</b>",
+    "storageStatus": "Storage:<br><b>{0}</b> used out of <b>{1}</b>",
     "MB": "MB",
     "GB": "GB",
     "KB": "KB",
@@ -701,7 +701,7 @@
     "share_linkFriends": "Share with contacts",
     "share_withFriends": "Share",
     "notifications_dismiss": "Dismiss",
-    "fm_info_sharedFolderHistory": "This is only the history of your shared folder: <b>{0}</b><br/>Your CryptDrive will stay in read-only mode while you navigate.",
+    "fm_info_sharedFolderHistory": "This is only the history of your shared folder: <b>{0}</b><br>Your CryptDrive will stay in read-only mode while you navigate.",
     "supportPage": "Support",
     "admin_cat_support": "Support",
     "admin_supportInitHelp": "Your server is not yet configured to have a support mailbox. If you want a support mailbox to receive messages from your users, you should ask your server administrator to run the script located in \"./scripts/generate-admin-keys.js\", then store the public key in the \"config.js\" file and send you the private key.",
@@ -1379,5 +1379,8 @@
     "form_anonName": "Your name",
     "form_answerAs": "Answer as",
     "fm_link_warning": "Warning: the URL exceeds 200 characters",
-    "fm_link_invalid": "Invalid URL"
+    "fm_link_invalid": "Invalid URL",
+    "ui_collapse": "Collapse",
+    "ui_expand": "Expand",
+    "form_totalResponses": "Total responses: {0}"
 }

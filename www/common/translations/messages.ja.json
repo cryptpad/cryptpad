@@ -86,7 +86,7 @@
     "settings_trimHistoryTitle": "履歴の削除",
     "trimHistory_success": "履歴を削除しました",
     "trimHistory_button": "履歴を削除",
-    "storageStatus": "ストレージ使用量：<br /><b>{1}</b> の内 <b>{0}</b>",
+    "storageStatus": "ストレージ使用量：<br><b>{1}</b> の内 <b>{0}</b>",
     "formattedKB": "{0} KB",
     "formattedGB": "{0} GB",
     "formattedMB": "{0} MB",
@@ -807,7 +807,7 @@
     "settings_resetThumbnailsDescription": "ブラウザに保存したサムネイルを削除します。",
     "settings_disableThumbnailsDescription": "新しいパッドを開くと、サムネイルが自動で作成され、ブラウザに保存されます。ここでサムネイルの作成を無効にできます。",
     "fm_info_root": "フォルダを作成してファイルを整理できます。",
-    "oo_conversionSupport": "お使いのブラウザはMicrosoft Officeのフォーマットの変換に対応していません。FirefoxもしくはChromeの最新バージョンの使用を推奨します。",
+    "oo_conversionSupport": "お使いのブラウザは、オフィスソフトウェアのフォーマットの変換に対応していません。FirefoxもしくはChromeの最新バージョンの使用を推奨します。",
     "register_registrationIsClosed": "登録は締め切りました。",
     "settings_notifCalendarHint": "今後のカレンダーのイベントの全ての通知を有効もしくは無効にします。",
     "reminder_inProgressAllDay": "今日: <b>{0}</b>",
@@ -1149,7 +1149,7 @@
     "support_disabledTitle": "サポートは有効になっていません",
     "admin_supportListHint": "ユーザーからサポートのメールボックスに送信されたチケットの一覧です。管理者はメッセージと回答を閲覧できます。終了したチケットは再開することができます。終了したチケットについては削除する（隠す）ことができますが、他の管理者には引き続き表示されます。",
     "drive_sfPassword": "共有フォルダ「 {0} 」は利用できません。オーナーにより削除されたか、新しいパスワードで保護されています。CryptDriveから削除するか、新しいパスワードを使ってアクセスを回復できます。",
-    "fm_info_sharedFolderHistory": "これは共有フォルダの履歴です: <b>{0}</b><br/>CryptDriveは閲覧モードを継続します。",
+    "fm_info_sharedFolderHistory": "これは共有フォルダの履歴です: <b>{0}</b><br>CryptDriveは閲覧モードを継続します。",
     "notification_folderShared": "{0}があなたとフォルダを共有しました: <b>{1}</b>",
     "convertFolderToSF_SFChildren": "このフォルダは共有フォルダを含んでいるため、共有フォルダに変更できません。続けるには、このフォルダを共有フォルダの外に移動してください。",
     "sharedFolders_share": "このリンクを登録ユーザーと共有すると、共有フォルダへのアクセスが可能になります。相手がリンクを開くと、CryptDriveに共有フォルダが追加されます。",
@@ -1379,5 +1379,8 @@
     "fm_link_name_placeholder": "あなたのリンク",
     "fm_link_warning": "注意：URLが200字を超えています",
     "fm_link_invalid": "URLが無効です",
-    "form_answerAs": "名前を記入してください"
+    "form_answerAs": "名前を記入してください",
+    "form_totalResponses": "回答数：{0}",
+    "ui_expand": "広げる",
+    "ui_collapse": "折りたたむ"
 }

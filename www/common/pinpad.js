@@ -133,7 +133,7 @@ var factory = function (Util, Rpc) {
 
             exp.removeOwnedChannel = function (channel, cb) {
                 if (typeof(channel) !== 'string' || [32,48].indexOf(channel.length) === -1) {
-                    // can't use this on files because files can't be owned...
+                    console.error('invalid channel to remove', channel);
                     return void cb('INVALID_ARGUMENTS');
                 }
                 rpc.send('REMOVE_OWNED_CHANNEL', channel, function (e, response) {

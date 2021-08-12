@@ -57,6 +57,10 @@ define([
                     });
                 });
             });
+            sframeChan.on('Q_SETTINGS_LOGOUT_PROPERLY', function (data, cb) {
+                Utils.LocalStore.clearLoginToken();
+                cb();
+            });
             sframeChan.on('Q_SETTINGS_DRIVE_RESET', function (data, cb) {
                 Cryptpad.resetDrive(cb);
             });

@@ -6,7 +6,7 @@ require([
     console.log(MediaTag);
     console.log($('media-tag'));
     if (typeof MediaTag === "function") {
-        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+        MediaTag.PdfPlugin.viewer = '/lib/pdfjs/web/viewer.html';
 
         var config = {
             allowed: ['download'],

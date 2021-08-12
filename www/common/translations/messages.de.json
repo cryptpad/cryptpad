@@ -677,7 +677,7 @@
     "share_linkFriends": "Mit Kontakten teilen",
     "share_withFriends": "Teilen",
     "notifications_dismiss": "Verbergen",
-    "fm_info_sharedFolderHistory": "Dies ist nur der Verlauf deines geteilten Ordners: <b>{0}</b><br/>Dein CryptDrive bleibt beim Navigieren im Nur-Lesen-Modus.",
+    "fm_info_sharedFolderHistory": "Dies ist nur der Verlauf deines geteilten Ordners: <b>{0}</b><br>Dein CryptDrive bleibt beim Navigieren im Nur-Lesen-Modus.",
     "fc_expandAll": "Alle ausklappen",
     "fc_collapseAll": "Alle einklappen",
     "fc_color": "Farbe ändern",
@@ -822,7 +822,7 @@
     "properties_passwordWarningFile": "Das Passwort wurde erfolgreich geändert. Allerdings konnten die Daten in deinem CryptDrive nicht aktualisiert werden. Möglicherweise musst du die alte Version der Datei manuell entfernen.",
     "properties_passwordSuccessFile": "Das Passwort wurde geändert.",
     "driveOfflineError": "Die Verbindung zu CryptPad ist verloren gegangen. Änderungen an diesem Pad werden nicht in deinem CryptDrive gespeichert. Bitte schließe alle CryptPad-Tabs und versuche es in einem neuen Fenster erneut. ",
-    "storageStatus": "Speicher:<br /><b>{0}</b> von <b>{1}</b> belegt",
+    "storageStatus": "Speicher:<br><b>{0}</b> von <b>{1}</b> belegt",
     "teams_table": "Rollen",
     "teams_table_generic": "Rollen und Berechtigungen",
     "teams_table_generic_view": "Ansehen: Zugriff auf Ordner und Pads (nur Lesen)",
@@ -1231,7 +1231,7 @@
     "register_registrationIsClosed": "Die Registrierung ist geschlossen.",
     "mediatag_defaultImageName": "Bild",
     "oo_importBin": "Klicke auf OK, um CryptPads interne Format .bin zu importieren.",
-    "oo_conversionSupport": "Dein Browser unterstützt die Konvertierung von und in Microsoft-Office-Formaten nicht. Wir empfehlen die Verwendung einer aktuellen Version von Firefox oder Chrome.",
+    "oo_conversionSupport": "Dein Browser unterstützt die Konvertierung von und in Office-Dateiformaten nicht. Wir empfehlen die Verwendung einer aktuellen Version von Firefox oder Chrome.",
     "admin_emailTitle": "E-Mail-Adresse der Administratoren",
     "admin_emailHint": "Lege hier die Kontaktadresse für deine Instanz fest",
     "admin_supportPrivHint": "Lasse dir den privaten Schlüssel anzeigen, den andere Administratoren zum Zugriff auf die Support-Tickets benötigen. Ein Formular zur Eingabe dieses Schlüssels wird in ihrem Administrationsbereich angezeigt.",
@@ -1379,5 +1379,8 @@
     "fm_link_name_placeholder": "Mein Link",
     "fm_link_url": "URL",
     "fm_link_type": "Link",
-    "fm_link_new": "Neuer Link"
+    "fm_link_new": "Neuer Link",
+    "form_totalResponses": "Antworten insgesamt: {0}",
+    "ui_expand": "Ausklappen",
+    "ui_collapse": "Einklappen"
 }

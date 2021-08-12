@@ -542,12 +542,12 @@ define([
                     }
                     // Owned drive
                     if (data.state === true) {
-                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {});
-                        UI.alert(Messages.settings_deleted, function() {
-                            common.gotoURL('/');
+                        return void sframeChan.query('Q_SETTINGS_LOGOUT_PROPERLY', null, function() {
+                            UI.alert(Messages.settings_deleted, function() {
+                                common.gotoURL('/');
+                            });
+                            spinner.done();
                         });
-                        spinner.done();
-                        return;
                     }
                     // Not owned drive
                     var msg = h('div.cp-app-settings-delete-alert', [
@@ -579,7 +579,8 @@ define([
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-change-password-current',
-                placeholder: Messages.settings_changePasswordCurrent
+                placeholder: Messages.settings_changePasswordCurrent,
+                autocomplete: 'current-password',
             }, true),
             h('br'),
             UI.passwordInput({
@@ -650,7 +651,7 @@ define([
                     done: function($dialog) {
                         $dialog.find('> div').addClass('half');
                     },
-                }, true);
+                });
         };
 
         $(form).find('button').click(function() {

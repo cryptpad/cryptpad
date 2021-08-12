@@ -82,6 +82,10 @@ define([
         } catch (err) { return; }
     };
 
+    LocalStore.clearLoginToken = function () {
+        localStorage.removeItem(Constants.loginToken);
+    };
+
     LocalStore.setDriveRedirectPreference = function (bool) {
         localStorage.setItem(Constants.redirectToDriveKey, Boolean(bool));
     };

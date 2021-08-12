@@ -13,6 +13,12 @@
     * 'Tools' menu to collapse the tag and view mode UI
   * general
     * main toolbar collapse
+* clear login token
+  1. when you delete your account
+  2. when logging in
+* remove unused files
+  * /common/noscriptfix.js
+* include vendor and appVersion in support ticket data
 
 # 4.9.0
 

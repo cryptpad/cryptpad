@@ -919,10 +919,13 @@ define([
                 }, [
                     h('i.fa.' + icon),
                     h('span.cp-toolbar-name'+drawerCls, data.text)
-                ])).click(common.prepareFeedback(data.name || 'DEFAULT'));
-                if (callback) {
-                    button.click(callback);
-                }
+                ]));
+                var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
+                button[0].addEventListener('click', function () {
+                    feedbackHandler();
+                    if (typeof(callback) !== 'function') { return; }
+                    callback();
+                });
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
@@ -3701,6 +3704,21 @@ define([
             return !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
         } catch (e) {}
         return false;
+    };
+
+    UIElements.fixInlineBRs = function (htmlString) {
+        if (!htmlString && typeof(htmlString) === 'string') { return; }
+        var lines = htmlString.split('<br>');
+        if (lines.length === 1) { return lines; }
+        var len = lines.length - 1;
+        var result = [];
+        for (var i = 0; i <= len; i++) {
+            result.push(lines[i]);
+            if (i < len) {
+                result.push(h('br'));
+            }
+        }
+        return result;
     };
 
     UIElements.openSnapshotsModal = function (common, load, make, remove) {

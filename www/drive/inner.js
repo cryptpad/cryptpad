@@ -279,10 +279,11 @@ define([
                     tippy: Messages.fm_burnThisDriveButton,
                     drawer: false
                 }, function () {
-                    UI.confirm(Messages.fm_burnThisDrive, function (yes) {
+                    var confirmContent = UIElements.fixInlineBRs(Messages.fm_burnThisDrive);
+                    UI.confirm(confirmContent, function (yes) {
                         if (!yes) { return; }
                         common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
-                    }, null, true);
+                    });
                 });
             }
 

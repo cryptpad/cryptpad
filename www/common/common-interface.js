@@ -15,15 +15,15 @@ define([
     '/common/common-notifier.js',
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/common/tippy/tippy.min.js',
+    '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
     '/common/test.js',
 
-    '/common/jquery-ui/jquery-ui.min.js',
+    '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
-    'css!/common/tippy/tippy.css',
-    'css!/common/jquery-ui/jquery-ui.min.css'
+    'css!/lib/tippy/tippy.css',
+    'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
             Alertify, Tippy, h, Loading, Test) {
     var UI = {};
@@ -867,7 +867,8 @@ define([
     UI.passwordInput = function (opts, displayEye) {
         opts = opts || {};
         var attributes = merge({
-            type: 'password'
+            type: 'password',
+            autocomplete: 'new-password', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);

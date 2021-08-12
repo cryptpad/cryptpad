@@ -39,7 +39,9 @@ define([
 
         var teams = privateData.teams || {};
         if (!ctx.isAdmin) {
-            data.sender.userAgent = window.navigator && window.navigator.userAgent;
+            data.sender.userAgent = Util.find(window, ['navigator', 'userAgent']);
+            data.sender.vendor = Util.find(window, ['navigator', 'vendor']);
+            data.sender.appVersion = Util.find(window, ['navigator', 'appVersion']);
             data.sender.blockLocation = privateData.blockLocation || '';
             data.sender.teams = Object.keys(teams).map(function (key) {
                 var team = teams[key];

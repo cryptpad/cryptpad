@@ -932,7 +932,9 @@ define([
         return h('p.cp-notice-browser', [
             "You appear to be using a ",
             h('span.cp-app-checkup-browser', name),
-            ' browser to view this page.',
+            ' browser on ',
+            h('span.underline', Tools.guessOS()),
+            ' to view this page.',
         ]);
     };
 
