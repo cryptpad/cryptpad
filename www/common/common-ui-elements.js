@@ -3703,6 +3703,21 @@ define([
         return false;
     };
 
+    UIElements.fixInlineBRs = function (htmlString) {
+        if (!htmlString && typeof(htmlString) === 'string') { return; }
+        var lines = htmlString.split('<br>');
+        if (lines.length === 1) { return lines; }
+        var len = lines.length - 1;
+        var result = [];
+        for (var i = 0; i <= len; i++) {
+            result.push(lines[i]);
+            if (i < len) {
+                result.push(h('br'));
+            }
+        }
+        return result;
+    };
+
     UIElements.openSnapshotsModal = function (common, load, make, remove) {
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;

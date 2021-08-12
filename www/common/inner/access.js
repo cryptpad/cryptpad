@@ -981,11 +981,11 @@ define([
                                     common.gotoURL(_href);
                                 }, {force: true});
                             }
-                            return void UI.alert(Messages.properties_passwordSuccess, function () {
+                            return void UI.alert(UIElements.fixInlineBRs(Messages.properties_passwordSuccess), function () {
                                 if (!isSharedFolder) {
                                     common.gotoURL(_href);
                                 }
-                            }, {force: true});
+                            });
                         });
                     });
                 });
