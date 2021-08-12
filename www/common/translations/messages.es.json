@@ -13,7 +13,8 @@
         "file": "Archivo",
         "media": "Media",
         "sheet": "Hoja de Cálculo",
-        "teams": "Equipos"
+        "teams": "Equipos",
+        "form": "Formulario"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronizando",
@@ -563,7 +564,7 @@
     "features_f_subscribe_note": "Se necesita una cuenta registrada para suscribirse",
     "four04_pageNotFound": "No pudimos encontrar la página que estabas buscando.",
     "help_genericMore": "Obtenga más información sobre cómo CryptPad puede funcionar para usted leyendo nuestras <a> Preguntas frecuentes </a>",
-    "storageStatus": "Almacenamiento:<br /><b>{0}</b> usado de <b>{1}</b>",
+    "storageStatus": "Almacenamiento:<br><b>{0}</b> usado de <b>{1}</b>",
     "settings_cursorColorTitle": "Color de puntero",
     "mdToolbar_button": "Mostrar u ocultar la barra de herramientas de Markdown",
     "creation_404": "Este pad ya no existe. Utilice el siguiente formulario para crear un nuevo pad.",

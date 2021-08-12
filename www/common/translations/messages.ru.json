@@ -442,7 +442,7 @@
     "fc_openInCode": "Открыть в редакторе кода",
     "fm_morePads": "Ещё",
     "uploadFolderButton": "Загрузить папку",
-    "storageStatus": "Хранилище:<br /><b>{0}</b> использовано из <b>{1}</b>",
+    "storageStatus": "Хранилище:<br><b>{0}</b> использовано из <b>{1}</b>",
     "padNotPinnedVariable": "Этот документ исчезнет через {4} дней неактивности, {0}войдите{1} или {2}зарегистируйтесь{3} чтобы сохранить его.",
     "creation_passwordValue": "Пароль",
     "creation_owners": "Владельцы",

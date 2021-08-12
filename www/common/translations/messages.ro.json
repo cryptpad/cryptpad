@@ -443,7 +443,7 @@
     "fc_color": "Schimbă culoarea",
     "fm_morePads": "Mai mult",
     "uploadFolderButton": "Încarcă dosar",
-    "storageStatus": "Capacitate de stocare:<br /><b>{0}</b> utilizat din <b>{1}</b>",
+    "storageStatus": "Capacitate de stocare:<br><b>{0}</b> utilizat din <b>{1}</b>",
     "fc_collapseAll": "Restrânge",
     "settings_padSpellcheckLabel": "Activați verificarea ortografică",
     "settings_padSpellcheckHint": "Această opțiune vă permite să activați verificarea ortografică în editorul de text. Erorile de ortografie vor fi subliniate cu roșu și va trebui să țineți apăsată tasta Ctrl sau tasta Meta în timp ce faceți clic dreapta pentru a vedea opțiunile corecte.",

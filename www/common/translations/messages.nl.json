@@ -131,7 +131,7 @@
     "KB": "KB",
     "GB": "GB",
     "MB": "MB",
-    "storageStatus": "Opslag:<br /><b>{0}</b> verbruikt van <b>{1}</b>",
+    "storageStatus": "Opslag:<br><b>{0}</b> verbruikt van <b>{1}</b>",
     "upgradeAccount": "Account opwaarderen",
     "upgrade": "Opwaarderen",
     "language": "Taal",
