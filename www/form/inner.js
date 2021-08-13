@@ -964,7 +964,7 @@ define([
         var rows = [];
         if (CLASSIC_MODE) {
             Object.keys(tally).forEach(function (value) {
-                rows.push(h('div.cp-form-results-type-radio-data', [ // XXX
+                rows.push(h('div.cp-form-results-type-radio-data', [
                     h('span.cp-value', value),
                     h('span.cp-count', tally[value])
                 ]));
@@ -1321,7 +1321,7 @@ define([
 
                     var table = Charts.table([
                         h('caption', {
-                            style: 'color: var(--msg-color)', // XXX light/dark modes
+                            style: 'color: var(--msg-color)',
                         }, q),
                         h('tbody', Object.keys(c).map(function (res) {
                             return Charts.row(res, c[res] / max, c[res]);
@@ -1577,7 +1577,7 @@ define([
 
                     var table = Charts.table([
                         h('caption', {
-                            style: 'color: var(--msg-color)', // XXX light/dark modes
+                            style: 'color: var(--msg-color)',
                         }, q),
                         h('tbody', Object.keys(c).map(function (res) {
                             return Charts.row(res, c[res] / max, c[res]);
