@@ -324,7 +324,7 @@
     "settings_autostoreMaybe": "Handmatig (altijd vragen)",
     "settings_autostoreNo": "Handmatig (nooit vragen)",
     "settings_autostoreYes": "Automatisch",
-    "settings_autostoreHint": "<b>Automatisch</b> Alle geopende werkomgevingen worden automatisch opgeslagen in uw CryptDrive.<br><b>Handmatig (altijd vragen)</b> Als u een werkomgeving nog niet hebt opgeslagen, zult u gevraagd worden of u het in uw CryptDrive wilt opslaan.<br><b>Handmatig (nooit vragen)</b> Werkomgevingen worden niet automatisch opgeslagen in uw Cryptpad. The optie om op te slaan wordt verborgen.",
+    "settings_autostoreHint": "<b>Automatisch</b> Alle geopende werkomgevingen worden automatisch opgeslagen in uw CryptDrive.<br><b>Handmatig (altijd vragen)</b> Als u een werkomgeving nog niet hebt opgeslagen, zult u gevraagd worden of u het in uw CryptDrive wilt opslaan.<br><b>Handmatig (nooit vragen)</b> Werkomgevingen worden niet automatisch opgeslagen in uw CryptDrive. The optie om op te slaan wordt verborgen.",
     "settings_autostoreTitle": "Opslag van werkomgevingen in CryptDrive",
     "settings_importDone": "Importeren voltooid",
     "settings_importConfirm": "Weet u zeker dat u de recente pads van uw browser in uw geregistreerde CryptDrive wilt importeren?",

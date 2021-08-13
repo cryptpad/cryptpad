@@ -1258,7 +1258,7 @@
     "admin_consentToContactTitle": "Consentement à la prise de contact",
     "admin_checkupButton": "Exécuter le diagnostic",
     "admin_updateAvailableTitle": "Nouvelles versions",
-    "admin_updateAvailableHint": "Une nouvelle version de Cryptpad est disponible",
+    "admin_updateAvailableHint": "Une nouvelle version de CryptPad est disponible",
     "admin_checkupHint": "CryptPad est doté d'une page qui diagnostique automatiquement les problèmes de configuration courants et suggère comment les corriger si nécessaire.",
     "admin_checkupTitle": "Valider la configuration de l'instance",
     "admin_updateAvailableButton": "Lire les notes de mise à jour",
