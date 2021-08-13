@@ -456,12 +456,12 @@ MessengerUI, Messages, Pages) {
     };
 
     //Messages.collapse = Messages.admin_support_collapse;
-    Messages.toolbar_collapse = "Collapse toolbar"; // XXX
-    Messages.toolbar_expand = "Expand toolbar"; // XXX
+    Messages.ui_collapse = "Collapse toolbar"; // XXX
+    Messages.ui_expand = "Expand toolbar"; // XXX
 
     createCollapse = function (toolbar) {
-        var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
-        var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
+        var up = h('i.fa.fa-chevron-up', {title: Messages.ui_collapse});
+        var down = h('i.fa.fa-chevron-down', {title: Messages.ui_expand});
 
         var $button = $(h('button.cp-toolbar-collapse',[
             up,

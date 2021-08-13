@@ -971,6 +971,14 @@
             }
         }
         button.cp-toolbar-collapse {
+/*
+        XXX this button toggles between two states and uses two titles for either state.
+        tippy doesn't work well with this, so the titles are applied to two icons
+        and we display the relevant one. Unfortunately, the hoverable area for the inner icon
+        is very small, which makes it unlikely that you'll see the title unless
+        you hover perfectly. The same is true of the drive's grid/list view toggle.
+*/
+
             .fa {
                 margin-right: 0px;
             }
