@@ -2,7 +2,7 @@ So you want to write a realtime collaborative application?
 
 This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoratative document**.
 
-[XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [Cryptpad](https://github.com/xwiki-labs/cryptpad)) of collaborative editors  which employ end to end encryption.
+[XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [CryptPad](https://github.com/xwiki-labs/cryptpad)) of collaborative editors  which employ end to end encryption.
 This guide will refer to the techniques used in the prototypes developed therein.
 
 Let's start with an overview of the components involved.
@@ -75,7 +75,7 @@ Chainpad can handle out of order messages, but it performs best when its message
 
 By architecting your system such that all clients send to a server which then relays to other clients, you guarantee that a particular chain of patches is consistent between the participants of your session.
 
-Cryptpad is capable of using a variety of data stores.
+CryptPad is capable of using a variety of data stores.
 Which data store your instance employs can be [easily configured](https://github.com/xwiki-labs/cryptpad/blob/master/config.example.js).
 
 You simply need to write an adaptor which conforms to a simple API.
@@ -85,7 +85,7 @@ Whether you decide to use a single server, or distribute messages across a netwo
 
 ## Transport
 
-Cryptpad was initially written to use [websockets](https://en.wikipedia.org/wiki/WebSocket) for transportation of messages.
+CryptPad was initially written to use [websockets](https://en.wikipedia.org/wiki/WebSocket) for transportation of messages.
 
 Since a relay server is indispensable in this model, that server doubles as the **History Keeper**, and implements a datastore.
 
@@ -202,7 +202,7 @@ That isn't to say that there are no tradeoffs when keeping that information from
 
 ### Our Encryption Scheme
 
-The encryption scheme employed by Cryptpad is a [symmetric encryption](https://en.wikipedia.org/wiki/Symmetric-key_algorithm) which utilizes a single [pre-shared-key](https://en.wikipedia.org/wiki/Pre-shared_key) known by all participants.
+The encryption scheme employed by CryptPad is a [symmetric encryption](https://en.wikipedia.org/wiki/Symmetric-key_algorithm) which utilizes a single [pre-shared-key](https://en.wikipedia.org/wiki/Pre-shared_key) known by all participants.
 
 Encryption is complex, and poorly understood by the majority of those who use it on a daily basis.
 Pre-shared-keys are among the weakest possible cryptographic tools available today, however, few if any other encryption schemes scale to any number of users.
