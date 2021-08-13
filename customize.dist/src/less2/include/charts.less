@@ -1,4 +1,58 @@
 .charts_main() {
+
+    // basic functional things
+    table.cp-charts.column {
+        box-sizing: border-box;
+        display: flex;
+        height: 100%;
+        overflow-x: auto;
+        tbody {
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+            min-width: 100%;
+
+            tr {
+                position: relative;
+                display: flex;
+                justify-content: flex-start;
+
+                flex-direction: row;
+                flex-shrink: 1;
+                flex-grow: 1;
+                justify-content: flex-start;
+
+                align-items: flex-end;
+
+                td {
+                    display: flex;
+                    height: calc(100% * var(--size));
+                    align-items: flex-start;
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+
+    // styles
+    table.cp-charts.column {
+        //border: 1px solid white;
+        tbody {
+            tr {
+                max-width: 30px;
+
+                td {
+                    min-width: 3px;
+                    border: 1px solid @cryptpad_color_brand;
+                    background: @cryptpad_color_brand;
+                    margin: 1px;
+                }
+            }
+        }
+    }
+
+
+
     &.bar {
         th {
             //width: 200px !important;

@@ -38,7 +38,7 @@ define([
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
-    'css!/lib/chart/charts.min.css',
+    //'css!/lib/chart/charts.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
@@ -1910,27 +1910,29 @@ define([
         var max_day = arrayMax(times);
         var days = getDayArray(new Date(min_day), new Date(max_day));
 
-        return Charts.table(h('tbody', days.map(function (time) {
-            var count = tally[time] || 0;
-            var percent = count / max_count;
-            var date = new Date(time).toLocaleDateString();
+        if (days.length < 2) { return; }
 
-            var bar = h('td.cp-bar', {
-                style: '--size: ' + Number(percent).toFixed(2),
-                "data-tippy-placement": "top",
-                title: Messages._getKey('form_timelineLabel', [date, count])
-            });
-            var dateEl = h('th', { scope: "row" }, date);
+        return h('div.timeline-container', {
+            //style: 'width: 100%; height: 200px;',
 
-            return h('tr', bar, dateEl );
-        })), [
-            "charts-css",
-            "cp-chart-table",
-            "column",
-            //"data-spacing-2",
-            //"show-labels",
-            //"labels-align-center"
-        ]);
+
+        }, h('table.cp-charts.column.cp-chart-timeline.cp-chart-table',
+                h('tbody', days.map(function (time) {
+                    var count = tally[time] || 0;
+                    var percent = count / max_count;
+                    var date = new Date(time).toLocaleDateString();
+
+                    var bar = h('td', {
+                        style: '--size: ' + Number(percent).toFixed(2),
+                        //"data-tippy-placement": "top",
+                        title: Messages._getKey('form_timelineLabel', [date, count])
+                    });
+                    //var dateEl = h('th', { scope: "row" }, date);
+
+                    return h('tr', bar/* dateEl*/ );
+                }))
+            )
+        );
     };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) {
