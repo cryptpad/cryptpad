@@ -20,7 +20,7 @@ The most recent version and all past release notes can be found [here](https://g
 
 ## Setup using Docker
 
-See [Cryptpad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with Cryptpad in Docker. This repository is maintained by the community and not officially supported.
+See [CryptPad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with CryptPad in Docker. This repository is maintained by the community and not officially supported.
 
 # Security
 
@@ -72,7 +72,7 @@ CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), 
 
 We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.fr/en/how_to_contribute.html). 
 
-If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
+If you have any questions or comments, or if you're interested in contributing to CryptPad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
 
 # License
 

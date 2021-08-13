@@ -1,5 +1,5 @@
 {
-    "main_title": "Cryptpad: Wspólne edytowanie w czasie rzeczywistym, bez wiedzy specjalistycznej",
+    "main_title": "CryptPad: Wspólne edytowanie w czasie rzeczywistym, bez wiedzy specjalistycznej",
     "type": {
         "pad": "Pad",
         "code": "Kod",
@@ -46,10 +46,10 @@
     "button_newcode": "STWÓRZ PAD DO KODU",
     "button_newpoll": "STWÓRZ GŁOSOWANIE",
     "button_newslide": "STWÓRZ PREZENTACJĘ",
-    "tos_title": "Warunki korzystania z usług Cryptpad",
+    "tos_title": "Warunki korzystania z usług CryptPad",
     "tos_legal": "Prosimy abyś nie był złośliwy, obelżywy i nie wykorzystywał tego oprogramowania do celow niezgodnych z prawem.",
     "tos_availability": "Mamy nadzieję iż uznasz tę usługę za przydatną, lecz dostępność i wydajność nie mogą być przez nas gwarantowane. Prosimy, abyś eksportował swoje dane regularnie.",
-    "tos_e2ee": "Dokumenty Cryptpad mogą być odczytywane i modyfikowane przez każdego kto może zgadnąć lub w inny sposób uzyskać identyfikator dokumentu. Polecamy korzystania z oprogramowania szyfrującego end-to-end (e2ee) do udostępniania linków URL. Nie będziesz rościł sobie żadnych wierzytelności w wypadku gdy taki URL dostanie się w niepowołane ręce.",
+    "tos_e2ee": "Dokumenty CryptPad mogą być odczytywane i modyfikowane przez każdego kto może zgadnąć lub w inny sposób uzyskać identyfikator dokumentu. Polecamy korzystania z oprogramowania szyfrującego end-to-end (e2ee) do udostępniania linków URL. Nie będziesz rościł sobie żadnych wierzytelności w wypadku gdy taki URL dostanie się w niepowołane ręce.",
     "tos_logs": "Metadane dostarczane przez twoją przeglądarkę do serwera mogą być zapisywane i przechowywane w celu utrzymywania serwisu.",
     "tos_3rdparties": "Nie dostarczamy indywidualizowanych danych do osób trzecich, poza sytuacjami dyktowanymi prawnie.",
     "header_logoTitle": "Przejdź na stronę główną"

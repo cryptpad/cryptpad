@@ -526,6 +526,7 @@ define([
         var button;
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
+        data = data || {};
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -835,8 +836,8 @@ define([
                 button = $(h('button.cp-toolbar-tools', {
                     //title: data.title || '', // TODO display if the label text is collapsed
                 }, [
-                    h('i.fa.fa-wrench'),
-                    h('span.cp-toolbar-name', Messages.toolbar_tools)
+                    h('i.fa.' + (data.icon || 'fa-wrench')),
+                    h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
                 ])).click(common.prepareFeedback(type));
                 /*
                 window.setTimeout(function () {
@@ -902,7 +903,6 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    data = data || {};
                     if (typeof(data.load) !== "function" || typeof(data.make) !== "function") {
                         return;
                     }
@@ -910,7 +910,6 @@ define([
                 });
                 break;
             default:
-                data = data || {};
                 var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
                 var icon = data.icon || "fa-question";
                 button = $(h('button', {

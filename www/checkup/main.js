@@ -915,7 +915,7 @@ define([
     var $progress = $('#cp-progress');
 
     var versionStatement = function () {
-        return h('p.cp--notice-version', [
+        return h('p.cp-notice-version', [
             "This instance is running ",
             h('span.cp-app-checkup-version',[
                 "CryptPad",

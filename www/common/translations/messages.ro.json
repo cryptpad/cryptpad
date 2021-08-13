@@ -433,7 +433,7 @@
     "settings_autostoreMaybe": "Manual (întreabă întotdeauna)",
     "settings_autostoreNo": "Manual (nu mai întreba)",
     "settings_autostoreYes": "Automat",
-    "settings_autostoreHint": "<b>Automat</b> Toate documentele accesate sunt stocate în CryptDrive-ul dumneavoastră.<br><b>Manual (întreabă întotdeauna)</b> Dacă nu ai stocat încă un document, vei fi întrebat dacă dorești să îl stochezi în Cryptdrive-ul tău.<br><b>Manual (nu mai întreba)</b> Documentele nu sunt stocate automat în Cryptpad-ul tău. Opțiunea de a le stoca ulterior va fi ascunsă.",
+    "settings_autostoreHint": "<b>Automat</b> Toate documentele accesate sunt stocate în CryptDrive-ul dumneavoastră.<br><b>Manual (întreabă întotdeauna)</b> Dacă nu ai stocat încă un document, vei fi întrebat dacă dorești să îl stochezi în Cryptdrive-ul tău.<br><b>Manual (nu mai întreba)</b> Documentele nu sunt stocate automat în CryptDrive-ul tău. Opțiunea de a le stoca ulterior va fi ascunsă.",
     "settings_autostoreTitle": "Capacitatea de stocare a documentelor în CryptDrive",
     "register_emailWarning2": "Nu veți putea să vă resetați parola folosind adresa de e-mail, așa cum puteți cu multe alte servicii.",
     "register_emailWarning1": "Poți proceda astfel dacă doreşti, însă nici o notificare nu va fi transmisă server-ului nostru.",

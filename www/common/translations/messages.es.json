@@ -1,5 +1,5 @@
 {
-    "main_title": "Cryptpad: Zero Knowledge, Editor Colaborativo en Tiempo Real",
+    "main_title": "CryptPad: Zero Knowledge, Editor Colaborativo en Tiempo Real",
     "type": {
         "pad": "Texto enriquecido",
         "code": "Código",
@@ -52,10 +52,10 @@
     "button_newcode": "Crear nuevo pad de código",
     "button_newpoll": "Crear nueva encuesta",
     "button_newslide": "Crear nueva presentación",
-    "tos_title": "Condiciones de servicio Cryptpad",
+    "tos_title": "Condiciones de servicio CryptPad",
     "tos_legal": "Por favor, no seas malicioso, abusivo o hagas algo ilegal.",
     "tos_availability": "Esperamos que este servicio te parezca útil, pero nuestra disponibilidad o rendimiento no pueden ser garantizados. Por favor, exporta tus datos regularmente.",
-    "tos_e2ee": "Los documentos Cryptpad pueden ser leídos o modificados por cualquiera que pueda adivinar o que pueda tener el enlace. Recomendamos que utilices mensajes cifrados de punto a punto (e2ee) para compartir URLs, no asumimos ninguna responsabilidad en el evento de alguna fuga.",
+    "tos_e2ee": "Los documentos CryptPad pueden ser leídos o modificados por cualquiera que pueda adivinar o que pueda tener el enlace. Recomendamos que utilices mensajes cifrados de punto a punto (e2ee) para compartir URLs, no asumimos ninguna responsabilidad en el evento de alguna fuga.",
     "tos_logs": "Los metadatos entregados por el navegador al servidor pueden ser almacenados para la mantenencia del servicio.",
     "tos_3rdparties": "No proveemos datos individualizados a terceros a menos de ser obligados por la ley.",
     "header_logoTitle": "Volver a tu CryptDrive",
@@ -468,7 +468,7 @@
     "register_emailWarning1": "Puedes hacerlo si usted quiere, pero no se enviara a nuestros servidores.",
     "register_emailWarning2": "No podrá restablecer su contraseña utilizando su correo electrónico como puede hacerlo con muchos otros servicios.",
     "register_emailWarning3": "Si de todos modos entiende y desea utilizar su correo electrónico para su nombre de usuario, haga clic en Aceptar.",
-    "settings_autostoreHint": "<b> Automático </b> Todos los pads que visita se almacenan en su CryptDrive. <br> <b> Manual (siempre pregunte) </b> Si aún no ha guardado un pad, se le preguntará si desea para almacenarlos en su CryptDrive. <br> <b> Manual (nunca preguntar) </b> Los Pads no se almacenan automáticamente en su Cryptpad. La opción para almacenarlos estará oculta.",
+    "settings_autostoreHint": "<b> Automático </b> Todos los pads que visita se almacenan en su CryptDrive. <br> <b> Manual (siempre pregunte) </b> Si aún no ha guardado un pad, se le preguntará si desea para almacenarlos en su CryptDrive. <br> <b> Manual (nunca preguntar) </b> Los Pads no se almacenan automáticamente en su CryptDrive. La opción para almacenarlos estará oculta.",
     "settings_driveDuplicateTitle": "Pads de propiedad duplicadas",
     "settings_driveDuplicateHint": "Cuando mueve sus propias Pads a una carpeta compartida, se guarda una copia en su CryptDrive para asegurarse de que conserva su control sobre ella. Puedes ocultar archivos duplicados. Solo la versión compartida será visible, a menos que se elimine, en cuyo caso el original se mostrará en su ubicación anterior.",
     "settings_padWidthHint": "Cambia entre el modo de página (por defecto) que limita el ancho del editor de texto, y el uso del ancho total de la pantalla.",

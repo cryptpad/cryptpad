@@ -404,7 +404,7 @@
     "settings_importConfirm": "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?",
     "settings_importDone": "Import completed",
     "settings_autostoreTitle": "Pad storage in CryptDrive",
-    "settings_autostoreHint": "<b>Automatic</b> All the pads you visit are stored in your CryptDrive.<br><b>Manual (always ask)</b> If you have not stored a pad yet, you will be asked if you want to store them in your CryptDrive.<br><b>Manual (never ask)</b> Pads are not stored automatically in your Cryptpad. The option to store them will be hidden.",
+    "settings_autostoreHint": "<b>Automatic</b> All the pads you visit are stored in your CryptDrive.<br><b>Manual (always ask)</b> If you have not stored a pad yet, you will be asked if you want to store them in your CryptDrive.<br><b>Manual (never ask)</b> Pads are not stored automatically in your CryptDrive. The option to store them will be hidden.",
     "settings_autostoreYes": "Automatic",
     "settings_autostoreNo": "Manual (never ask)",
     "settings_autostoreMaybe": "Manual (always ask)",

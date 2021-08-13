@@ -1,5 +1,5 @@
 {
-    "main_title": "Cryptpad: Zero Knowledge, Edição Colaborativa em Tempo Real",
+    "main_title": "CryptPad: Zero Knowledge, Edição Colaborativa em Tempo Real",
     "type": {
         "pad": "Notas",
         "code": "Código",
@@ -212,7 +212,7 @@
     "contact": "Contact",
     "terms": "ToS",
     "blog": "Blog",
-    "tos_title": "Termos de serviço doCryptpad",
+    "tos_title": "Termos de serviço do CryptPad",
     "tos_legal": "Pedimos encarecidamente que, como usuário desta plataforma, você evite a prática de quaisquer atos ilegais e que evite a utilização maliciosa e/ou abusiva desta plataforma.",
     "tos_availability": "Nós esperamos que você ache este serviço útil, porém nós não podemos garantir a disponibilidade constante ou a alta performance do mesmo. Por favor, mantenha um backup dos seus dados como forma de segurança adicional.",
     "tos_e2ee": "Os documentos do CryptPad podem ser modificados por qualquer um que conseguir adivinhar ou obter de qualquer forma o seu identificador único. Nós recomendamos que você utilize criptografia ponto a ponto de mensagens (e2ee) sempre que possível para compartilhar suas URL's. Nós não assumimos qualquer responsabilidade sobre chaves e/ou URL’s e seus respectivos conteúdos vazadas para o público.",
@@ -363,7 +363,7 @@
     "settings_autostoreNo": "Manual (nunca perguntar)",
     "settings_autostoreMaybe": "Manual (sempre perguntar)",
     "settings_autostoreYes": "Automático",
-    "settings_autostoreHint": "<b>Automatico</b> Todos os blocos que visitou estão armazenados no seu CryptDrive.<br><b>Manual (sempre pergunta)<b> Se você não armazenou um bloco ainda, você será questionado se quer armazenar no seu CryptDrive.<br><b>Manual (nunca pergunta)</b> Blocos não são armazenados automaticamente no seu CryptPad. A opção para armazena-los estará escondida.",
+    "settings_autostoreHint": "<b>Automatico</b> Todos os blocos que visitou estão armazenados no seu CryptDrive.<br><b>Manual (sempre pergunta)<b> Se você não armazenou um bloco ainda, você será questionado se quer armazenar no seu CryptDrive.<br><b>Manual (nunca pergunta)</b> Blocos não são armazenados automaticamente no seu CryptDrive. A opção para armazena-los estará escondida.",
     "settings_autostoreTitle": "Bloco armazenado no CryptDrive",
     "settings_resetThumbnailsDone": "Todas as miniaturas foram apagadas.",
     "settings_resetThumbnailsDescription": "Limpar todos as miniaturas de blocos armazenadas no seu navegador.",

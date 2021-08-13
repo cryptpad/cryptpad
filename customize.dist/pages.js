@@ -105,7 +105,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v4.9.0";
+    Pages.versionString = "v4.10.0";
 
 
     // used for the about menu
