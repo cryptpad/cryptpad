@@ -1,4 +1,38 @@
-# WIP
+# 4.10.0
+
+## Goals
+
+
+## Update notes
+
+## Features
+
+* screen real-estate
+  * kanban
+    * narrower 'add board' button
+    * 'Tools' menu to collapse the tag and view mode UI
+  * general
+    * main toolbar collapse
+* remove unused files
+  * /common/noscriptfix.js
+* more detailed inventory of dependencies
+  * see cryptpad/www/lib/changelog.md
+* include vendor and appVersion in support ticket data
+* log when trimming history
+* rewrite some translation keys to use a single syntax for BR tags
+* translations
+  * more linting
+  * standardized capitalization of "CryptPad"
+  * avoid raw injection of HTML strictly for adding line breaks
+  * remove some unnecessary cases of raw HTML injection
+* checkup
+  * better styles
+  * improved formatting for returned values in failed tests
+  * display browser and OS for when people send us screenshots instead of URLs
+  * test for support of some features in the browser (inside the sandbox)
+* mark password inputs as _new passwords_ so that browsers don't suggest you input and share your account password
+
+## Bug fixes
 
 * Sheet export
   * most exports broken by Chrome 92, mostly fixed
@@ -7,18 +41,14 @@
   * some new browser-specific checkup tests to make it easier to detect future regressions in the APIs
 * drive bug fixes
   * guard against a few possible type errors
-* screen real-estate
-  * kanban
-    * narrower 'add board' button
-    * 'Tools' menu to collapse the tag and view mode UI
-  * general
-    * main toolbar collapse
+  * "burn this drive" button works again in Firefox
 * clear login token
   1. when you delete your account
   2. when logging in
-* remove unused files
-  * /common/noscriptfix.js
-* include vendor and appVersion in support ticket data
+* use single version of less.js on the client
+* abort subsequent actions when metadata fails to load during owned channel archival
+* handle warnings when trimming history (not just errors)
+* filter channel ids with invalid lengths when generating a list of all channels you use
 
 # 4.9.0
 
