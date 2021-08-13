@@ -1507,7 +1507,16 @@ define([
                 var map = {};
                 var invMap = {};
                 var sorted = false;
-                Util.shuffleArray(opts.values);
+                if (!APP.isEditor) {
+/*  There is probably a more reliable check for this, but if we always
+    shuffle the values then authors reorder the results in the data structure
+    every time they reload. If multiple authors are present then this leads
+    to fights over what the content should be, which tends to trick chainpad
+    into concatenating strings, which quickly turns the sortable list
+    into complete nonsense.
+*/
+                    Util.shuffleArray(opts.values); // XXX
+                }
                 var els = opts.values.map(function (data) {
                     var uid = Util.uid();
                     map[uid] = data;
