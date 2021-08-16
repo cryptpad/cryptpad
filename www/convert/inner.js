@@ -8,7 +8,6 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-interface.js',
-    '/common/common-util.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -23,8 +22,7 @@ define([
     SFCommon,
     h,
     Messages,
-    UI,
-    Util
+    UI
     )
 {
     var APP = {};
@@ -32,126 +30,21 @@ define([
     var common;
     var sFrameChan;
 
-    var debug = console.debug;
-
-    var x2tReady = Util.mkEvent(true);
-    var x2tInitialized = false;
-    var x2tInit = function(x2t) {
-        debug("x2t mount");
-        // x2t.FS.mount(x2t.MEMFS, {} , '/');
-        x2t.FS.mkdir('/working');
-        x2t.FS.mkdir('/working/media');
-        x2t.FS.mkdir('/working/fonts');
-        x2tInitialized = true;
-        x2tReady.fire();
-        //fetchFonts(x2t);
-        debug("x2t mount done");
-    };
-    var getX2t = function (cb) {
-        require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
-            var x2t = window.Module;
-            x2t.run();
-            if (x2tInitialized) {
-                debug("x2t runtime already initialized");
-                return void x2tReady.reg(function () {
-                    cb(x2t);
-                });
-            }
-
-            x2t.onRuntimeInitialized = function() {
-                debug("x2t in runtime initialized");
-                // Init x2t js module
-                x2tInit(x2t);
-                x2tReady.reg(function () {
-                    cb(x2t);
-                });
-            };
-        });
-    };
-        /*
-            Converting Data
-
-            This function converts a data in a specific format to the outputformat
-            The filename extension needs to represent the input format
-            Example: fileName=cryptpad.bin outputFormat=xlsx
-        */
-        var getFormatId = function (ext) {
-            // Sheets
-            if (ext === 'xlsx') { return 257; }
-            if (ext === 'xls') { return 258; }
-            if (ext === 'ods') { return 259; }
-            if (ext === 'csv') { return 260; }
-            if (ext === 'pdf') { return 513; }
-            // Docs
-            if (ext === 'docx') { return 65; }
-            if (ext === 'doc') { return 66; }
-            if (ext === 'odt') { return 67; }
-            if (ext === 'txt') { return 69; }
-            if (ext === 'html') { return 70; }
-
-            // Slides
-            if (ext === 'pptx') { return 129; }
-            if (ext === 'ppt') { return 130; }
-            if (ext === 'odp') { return 131; }
-
-            return;
-        };
-        var getFromId = function (ext) {
-            var id = getFormatId(ext);
-            if (!id) { return ''; }
-            return '<m_nFormatFrom>'+id+'</m_nFormatFrom>';
-        };
-        var getToId = function (ext) {
-            var id = getFormatId(ext);
-            if (!id) { return ''; }
-            return '<m_nFormatTo>'+id+'</m_nFormatTo>';
-        };
-    var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
-        debug("Converting Data for " + fileName + " to " + outputFormat);
-
-        var inputFormat = fileName.split('.').pop();
-
-        x2t.FS.writeFile('/working/' + fileName, data);
-        var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                    + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
-                    + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
-                    + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
-                    + getFromId(inputFormat)
-                    + getToId(outputFormat)
-                    + "<m_bIsNoBase64>false</m_bIsNoBase64>"
-                    + "</TaskQueueDataConvert>";
-        // writing params file to mounted working disk (in memory)
-        x2t.FS.writeFile('/working/params.xml', params);
-        // running conversion
-        x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
-        // reading output file from working disk (in memory)
-        var result;
-        try {
-            result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
-        } catch (e) {
-            console.error(e, x2t.FS);
-            debug("Failed reading converted file");
-            UI.warn(Messages.error);
-            return "";
-        }
-        return result;
-    };
     var x2tConverter = function (typeSrc, typeTarget) {
         return function (data, name, cb) {
-            getX2t(function (x2t) {
-                if (typeSrc === 'ods') {
-                    data = x2tConvertDataInternal(x2t, data, name, 'xlsx');
-                    name += '.xlsx';
+            var sframeChan = common.getSframeChannel();
+            sframeChan.query('Q_OO_CONVERT', {
+                data: data,
+                fileName: name,
+                outputFormat: typeTarget,
+            }, function (err, obj) {
+                if (err || !obj || !obj.data) {
+                    UI.warn(Messages.error);
+                    cb();
                 }
-                if (typeSrc === 'odt') {
-                    data = x2tConvertDataInternal(x2t, data, name, 'docx');
-                    name += '.docx';
-                }
-                if (typeSrc === 'odp') {
-                    data = x2tConvertDataInternal(x2t, data, name, 'pptx');
-                    name += '.pptx';
-                }
-                cb(x2tConvertDataInternal(x2t, data, name, typeTarget));
+                cb(obj.data, obj.images);
+            }, {
+                raw: true
             });
         };
     };
