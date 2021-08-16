@@ -1967,7 +1967,7 @@ define([
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
 
-        var show = function (answers, header) { // XXX
+        var show = function (answers, header) {
             var elements = content.order.map(function (uid) {
                 var block = form[uid];
                 var type = block.type;
@@ -1975,7 +1975,7 @@ define([
                 if (!model || !model.printResults) { return; }
 
                 // Only use content if we're not viewing individual answers
-                var print = model.printResults(answers, uid, form, !header && content); // XXX
+                var print = model.printResults(answers, uid, form, !header && content);
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 
@@ -1992,7 +1992,7 @@ define([
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
         };
-        show(answers); // XXX
+        show(answers);
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
@@ -2050,7 +2050,7 @@ define([
                 }
                 var span = UI.setHTML(h('span'), text);
                 var viewButton = h('button.btn.btn-secondary.small', Messages.form_viewButton);
-                var div = h('div.cp-form-individual', [span, viewButton, warning, badge]); // XXX
+                var div = h('div.cp-form-individual', [span, viewButton, warning, badge]);
                 $(viewButton).click(function () {
                     var res = {};
                     res[curve] = obj;
@@ -2059,7 +2059,7 @@ define([
                         summary = true;
                         $s.click();
                     });
-                    var header = h('div.cp-form-individual', [ // XXX
+                    var header = h('div.cp-form-individual', [
                         span.cloneNode(true),
                         back
                     ]);
