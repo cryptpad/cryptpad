@@ -2739,11 +2739,11 @@ define([
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
-                if (true) { return; } // XXX 4.10.0
+                if (true) { return; } // XXX 4.11.0
                 $responseMsg.empty();
-                Messages.form_updateMsg = "Update response message"; // XXX 4.10.0
-                Messages.form_addMsg = "Add response message"; // XXX 4.10.0
-                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.10.0
+                Messages.form_updateMsg = "Update response message"; // XXX 4.11.0
+                Messages.form_addMsg = "Add response message"; // XXX 4.11.0
+                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.11.0
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
@@ -2772,7 +2772,7 @@ define([
                             name: Messages.settings_save,
                             onClick: function () {
                                 var v = editor.getValue();
-                                content.answers.msg = v.trim(0, 2000); // XXX 4.10.0 max length?
+                                content.answers.msg = v.trim(0, 2000); // XXX 4.11.0 max length?
                                 framework.localChange();
                                 framework._.cpNfInner.chainpad.onSettle(function () {
                                     UI.log(Messages.saved);
@@ -2798,7 +2798,7 @@ define([
                     }
                     UI.openCustomModal(APP.responseModal);
                 });
-                // $responseMsg.append(btn); // XXX 4.10.0
+                // $responseMsg.append(btn); // XXX 4.11.0
             };
             //refreshResponse();
 

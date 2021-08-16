@@ -3041,12 +3041,12 @@ define([
             // fc_open ("Open")
             // share_linkOpen ("Preview")
             // resources_openInNewTab ("Open it in a new tab")
-        Messages.link_open = Messages.fc_open; // XXX 4.10.0
+        Messages.link_open = Messages.fc_open; // XXX 4.11.0
 
         //Messages.link_store = "Store link in drive";
             // toolbar_storeInDrive ? ("Store in CryptDrive")
             // autostore_store ? ("Store")
-        Messages.link_store = Messages.toolbar_storeInDrive; // XXX 4.10.0
+        Messages.link_store = Messages.toolbar_storeInDrive; // XXX 4.11.0
 
 
         var content = h('div', [

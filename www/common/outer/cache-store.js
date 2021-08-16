@@ -97,7 +97,7 @@ define([
     var checkCheckpoints = function (array) {
         if (!Array.isArray(array)) { return; }
         // Keep the last 100 messages
-        if (array.length > 100) { // XXX 4.10.0
+        if (array.length > 100) { // XXX 4.11.0
             array.splice(0, array.length - 100);
         }
         // Remove every message before the first checkpoint
