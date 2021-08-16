@@ -23,7 +23,6 @@ define([
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
-    '/common/inner/charts.js',
 
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
@@ -38,7 +37,6 @@ define([
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
-    //'css!/lib/chart/charts.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
@@ -62,7 +60,7 @@ define([
     DiffMd,
     SFCodeMirror,
     CMeditor,
-    Share, Access, Properties, Charts,
+    Share, Access, Properties,
     Flatpickr,
     Sortable
     )
@@ -805,7 +803,7 @@ define([
         return total;
     };
 
-    var getEmpty = function (empty) { // XXX don't include this in the scrollable area
+    var getEmpty = function (empty) { // TODO don't include this in the scrollable area
         if (empty) {
             return UI.setHTML(h('div.cp-form-results-type-text-empty'), Messages._getKey('form_notAnswered', [empty]));
         }
@@ -959,42 +957,28 @@ define([
         return Array.isArray(A)? Math.max.apply(null, A): NaN;
     };
 
-    var CLASSIC_MODE = true;
-    var renderTally = function (tally, empty, caption) {
-        var rows = [];
-        if (CLASSIC_MODE) {
-            Object.keys(tally).forEach(function (value) {
-                rows.push(h('div.cp-form-results-type-radio-data', [
-                    h('span.cp-value', value),
-                    h('span.cp-count', tally[value])
-                ]));
-            });
-            if (empty) { rows.push(getEmpty(empty)); }
-            return rows;
-        }
+    var barGraphic = function (itemScale) {
+        return h('span.cp-bar-container', h('div.cp-bar', {
+            style: 'width: ' + (itemScale * 100) + '%',
+        }, ' '));
+    };
 
+    var renderTally = function (tally, empty, showBar) {
+        var rows = [];
         var counts = Util.values(tally);
         var max = arrayMax(counts);
+        Object.keys(tally).forEach(function (value) {
+            var itemCount = tally[value];
+            var itemScale = (itemCount / max);
 
-        Object.keys(tally).forEach(function (answer) {
-            rows.push(Charts.row(answer, tally[answer] / max, tally[answer]));
+            rows.push(h('div.cp-form-results-type-radio-data', [
+                h('span.cp-value', value),
+                h('span.cp-count', itemCount),
+                showBar? barGraphic(itemScale): undefined,
+            ]));
         });
-        var hasCaption = typeof(caption) !== 'undefined';
-        var table = Charts.table([
-            hasCaption ? h('caption', caption): undefined,
-            h('tbody', rows)
-        ], [
-            'charts-css',
-            'bar',
-            hasCaption? 'show-heading': undefined,
-            'show-labels',
-            'show-data-on-hover',
-        ]);
-
-        return [
-            table,
-            empty? getEmpty(empty): undefined,
-        ];
+        if (empty) { rows.push(getEmpty(empty)); }
+        return rows;
     };
 
     var TYPES = {
@@ -1042,10 +1026,10 @@ define([
                     if (!answer || !answer.trim()) { return empty++; }
                     Util.inc(tally, answer);
                 });
-                var counts = Util.values(tally);
-                var max = arrayMax(counts);
+                //var counts = Util.values(tally);
+                //var max = arrayMax(counts);
 
-                if (CLASSIC_MODE || max < 2) { // there are no duplicates, so just return text
+                //if (max < 2) { // there are no duplicates, so just return text
                     Object.keys(answers).forEach(function (author) {
                         var obj = answers[author];
                         var answer = obj.msg[uid];
@@ -1054,10 +1038,11 @@ define([
                     });
                     results.push(getEmpty(empty));
                     return h('div.cp-form-results-type-text', results);
-                }
-
-                var rendered = renderTally(tally, empty /*, caption */);
+                //}
+/*
+                var rendered = renderTally(tally, empty);
                 return h('div.cp-form-results-type-text', rendered);
+*/
             },
             icon: h('i.cptools.cptools-form-text')
         },
@@ -1181,10 +1166,11 @@ define([
                 };
 
             },
-            printResults: function (answers, uid) {
+            printResults: function (answers, uid, form, content) {
                 // results radio
                 var empty = 0;
                 var count = {};
+                var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1192,10 +1178,8 @@ define([
                     Util.inc(count, answer);
                 });
 
-                var rendered = renderTally(count, empty/*, caption */);
-                return h('div.cp-form-results-type-radio', {
-                    style: CLASSIC_MODE? '': 'width: 100%',
-                }, rendered);
+                var rendered = renderTally(count, empty, showBars);
+                return h('div.cp-form-results-type-radio', rendered);
             },
             icon: h('i.cptools.cptools-form-list-radio')
         },
@@ -1304,21 +1288,20 @@ define([
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
 
-
-                    if (CLASSIC_MODE) {
-                        var values = Object.keys(c).map(function (res) {
-                            return h('div.cp-form-results-type-radio-data', [
-                                h('span.cp-value', res),
-                                h('span.cp-count', c[res])
-                            ]);
-                        });
-                        results.push(h('div.cp-form-results-type-multiradio-data', [
-                            h('span.cp-mr-q', q),
-                            h('span.cp-mr-value', values)
-                        ]));
-                        return;
-                    }
-
+                    var values = Object.keys(c).map(function (res) {
+                        var itemCount = c[res];
+                        return h('div.cp-form-results-type-radio-data', [
+                            h('span.cp-value', res),
+                            h('span.cp-count', itemCount),
+                            //barGraphic((itemCount / max) * 100)
+                        ]);
+                    });
+                    results.push(h('div.cp-form-results-type-multiradio-data', [
+                        h('span.cp-mr-q', q),
+                        h('span.cp-mr-value', values)
+                    ]));
+                    return;
+/*
                     var table = Charts.table([
                         h('caption', {
                             style: 'color: var(--msg-color)',
@@ -1337,12 +1320,11 @@ define([
                     results.push(h('div.cp-form-results-type-multiradio-data', {
                         style: 'width: 100%',
                     }, table));
+*/
                 });
                 results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', {
-                    style: CLASSIC_MODE? '': 'width: 100%',
-                }, results);
+                return h('div.cp-form-results-type-radio', results);
             },
             exportCSV: function (answer, form) {
                 var opts = form.opts || {};
@@ -1424,10 +1406,11 @@ define([
                 };
 
             },
-            printResults: function (answers, uid) {
+            printResults: function (answers, uid, form, content) {
                 // results checkbox
                 var empty = 0;
                 var count = {};
+                var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1437,7 +1420,7 @@ define([
                     });
                 });
 
-                var rendered = renderTally(count, empty /*, caption */);
+                var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-form-results-type-radio', rendered);
             },
             icon: h('i.cptools.cptools-form-list-check')
@@ -1560,21 +1543,17 @@ define([
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
 
-
-                    if (CLASSIC_MODE) {
-                        var values = Object.keys(c).map(function (res) {
-                            return h('div.cp-form-results-type-radio-data', [
-                                h('span.cp-value', res),
-                                h('span.cp-count', c[res])
-                            ]);
-                        });
-                        results.push(h('div.cp-form-results-type-multiradio-data', [
-                            h('span.cp-mr-q', q),
-                            h('span.cp-mr-value', values)
-                        ]));
-                        return;
-                    }
-
+                    var values = Object.keys(c).map(function (res) {
+                        return h('div.cp-form-results-type-radio-data', [
+                            h('span.cp-value', res),
+                            h('span.cp-count', c[res])
+                        ]);
+                    });
+                    results.push(h('div.cp-form-results-type-multiradio-data', [
+                        h('span.cp-mr-q', q),
+                        h('span.cp-mr-value', values)
+                    ]));
+/*
                     var table = Charts.table([
                         h('caption', {
                             style: 'color: var(--msg-color)',
@@ -1593,12 +1572,11 @@ define([
                     results.push(h('div.cp-form-results-type-multiradio-data', {
                         style: 'width: 100%',
                     }, table));
+*/
                 });
                 results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', {
-                    style: CLASSIC_MODE? '': 'width: 100%',
-                }, results);
+                return h('div.cp-form-results-type-radio', results);
             },
             exportCSV: function (answer, form) {
                 var opts = form.opts || {};
@@ -1636,7 +1614,7 @@ define([
     into concatenating strings, which quickly turns the sortable list
     into complete nonsense.
 */
-                    Util.shuffleArray(opts.values); // XXX
+                    Util.shuffleArray(opts.values);
                 }
                 var els = opts.values.map(function (data) {
                     var uid = Util.uid();
@@ -1713,13 +1691,14 @@ define([
                 };
 
             },
-            printResults: function (answers, uid, form) {
+            printResults: function (answers, uid, form, content) {
                 // results sort
                 var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
                 //var results = [];
                 var empty = 0;
                 var count = {};
+                var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1730,10 +1709,8 @@ define([
                     });
                 });
 
-                var rendered = renderTally(count, empty /*, caption */);
-                return h('div.cp-form-results-type-radio', {
-                    style: CLASSIC_MODE? '': 'width: 100%',
-                }, rendered);
+                var rendered = renderTally(count, empty, showBars);
+                return h('div.cp-form-results-type-radio', rendered);
             },
             icon: h('i.cptools.cptools-form-list-ordered')
         },
@@ -1897,8 +1874,7 @@ define([
         return A;
     };
 
-    Messages.form_timelineLabel = "{0} ({1})"; // XXX
-    Messages.form_totalResponses = "Total responses: {0}"; // XXX
+    Messages.form_timelineLabel = "{0} ({1})"; // TODO investigate whether this needs translation
 
     var makeTimeline = APP.makeTimeline = function (answers) {
         // Randomly changing date of answers to get a more realistic example of timeline
@@ -1991,7 +1967,7 @@ define([
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
 
-        var show = function (answers, header) {
+        var show = function (answers, header) { // XXX
             var elements = content.order.map(function (uid) {
                 var block = form[uid];
                 var type = block.type;
@@ -1999,7 +1975,7 @@ define([
                 if (!model || !model.printResults) { return; }
 
                 // Only use content if we're not viewing individual answers
-                var print = model.printResults(answers, uid, form, !header && content);
+                var print = model.printResults(answers, uid, form, !header && content); // XXX
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 
@@ -2016,7 +1992,7 @@ define([
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
         };
-        show(answers);
+        show(answers); // XXX
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
@@ -2074,7 +2050,7 @@ define([
                 }
                 var span = UI.setHTML(h('span'), text);
                 var viewButton = h('button.btn.btn-secondary.small', Messages.form_viewButton);
-                var div = h('div.cp-form-individual', [span, viewButton, warning, badge]);
+                var div = h('div.cp-form-individual', [span, viewButton, warning, badge]); // XXX
                 $(viewButton).click(function () {
                     var res = {};
                     res[curve] = obj;
@@ -2083,7 +2059,7 @@ define([
                         summary = true;
                         $s.click();
                     });
-                    var header = h('div.cp-form-individual', [
+                    var header = h('div.cp-form-individual', [ // XXX
                         span.cloneNode(true),
                         back
                     ]);

@@ -455,10 +455,6 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
-    //Messages.collapse = Messages.admin_support_collapse;
-    Messages.ui_collapse = "Collapse toolbar"; // XXX
-    Messages.ui_expand = "Expand toolbar"; // XXX
-
     createCollapse = function (toolbar) {
         var up = h('i.fa.fa-chevron-up', {title: Messages.ui_collapse});
         var down = h('i.fa.fa-chevron-down', {title: Messages.ui_expand});
@@ -1383,7 +1379,7 @@ MessengerUI, Messages, Pages) {
             toolbar.$file.show();
             addElement([
                 'chat',
-                'collapse', // XXX
+                'collapse',
                 'userlist', 'title', 'useradmin', 'spinner',
                 'newpad', 'share', 'access', 'limit', 'unpinnedWarning',
                 'notifications'
