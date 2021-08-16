@@ -1939,7 +1939,7 @@ define([
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin',
-            //'.csv', // XXX
+            //'.csv', // XXX 4.11.0
             '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
