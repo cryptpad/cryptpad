@@ -68,7 +68,7 @@ var processLang = function (map, lang, primary) {
         if (typeof(s) !== 'string') { return; }
         var usesHTML;
 
-        s.replace(/<.*?>/g, function (html) {
+        s.replace(/<[\s\S]*?>/g, function (html) {
             if (simpleTags.indexOf(html) !== -1) { return; }
             announce();
             usesHTML = true;
