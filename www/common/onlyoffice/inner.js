@@ -254,6 +254,10 @@ define([
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var title = common.getMetadataMgr().getMetadataLazy().title;
+            if (APP.downloadType) {
+                type = APP.downloadType;
+                title = "download";
+            }
             var file = {};
             switch(type) {
                 case 'doc':
@@ -727,6 +731,7 @@ define([
             var cp = hashes[cpId] || {};
 
             var minor = Number(s[1]) + 1;
+            if (APP.isDownload) { minor = undefined; }
 
             var toHash = cp.hash || 'NONE';
             var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
@@ -735,6 +740,7 @@ define([
                 channel: content.channel,
                 lastKnownHash: fromHash,
                 toHash: toHash,
+                isDownload: APP.isDownload
             }, function (err, data) {
                 if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
                 if (!Array.isArray(data.messages)) {
@@ -786,6 +792,7 @@ define([
                     }
                     var file = getFileType();
                     var type = common.getMetadataMgr().getPrivateData().ooType;
+                    if (APP.downloadType) { type = APP.downloadType; }
                     var blob = loadInitDocument(type, true);
                     ooChannel.queue = messages;
                     resetData(blob, file);
@@ -1345,6 +1352,35 @@ define([
             });
         };
 
+        var x2tConvertData = function (data, fileName, format, cb) {
+            var sframeChan = common.getSframeChannel();
+            var e = getEditor();
+            var fonts = e.FontLoader.fontInfos;
+            var files = e.FontLoader.fontFiles.map(function (f) {
+                return { 'Id': f.Id, };
+            });
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            sframeChan.query('Q_OO_CONVERT', {
+                data: data,
+                type: type,
+                fileName: fileName,
+                outputFormat: format,
+                images: window.frames[0].AscCommon.g_oDocumentUrls.urls || {},
+                fonts: fonts,
+                fonts_files: files,
+                mediasSources: getMediasSources(),
+                mediasData: mediasData
+            }, function (err, obj) {
+                if (err || !obj || !obj.data) {
+                    UI.warn(Messages.error);
+                    return void cb();
+                }
+                cb(obj.data, obj.images);
+            }, {
+                raw: true
+            });
+        };
+
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
@@ -1425,6 +1461,13 @@ define([
                             });
                         }
                     },
+                    "onError": function () {
+                        console.error(arguments);
+                        if (APP.isDownload) {
+                            var sframeChan = common.getSframeChannel();
+                            sframeChan.event('EV_OOIFRAME_DONE', '');
+                        }
+                    },
                     "onDocumentReady": function () {
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
@@ -1503,6 +1546,16 @@ define([
                                 });
                             }
                         }
+
+                        if (APP.isDownload) {
+                            var bin = getContent();
+                            x2tConvertData(bin, 'filename.bin', file.type, function (xlsData) {
+                                var sframeChan = common.getSframeChannel();
+                                sframeChan.event('EV_OOIFRAME_DONE', xlsData, {raw: true});
+                            });
+                            return;
+                        }
+
 
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
@@ -1699,35 +1752,6 @@ define([
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
-        };
-
-        var x2tConvertData = function (data, fileName, format, cb) {
-            var sframeChan = common.getSframeChannel();
-            var e = getEditor();
-            var fonts = e.FontLoader.fontInfos;
-            var files = e.FontLoader.fontFiles.map(function (f) {
-                return { 'Id': f.Id, };
-            });
-            var type = common.getMetadataMgr().getPrivateData().ooType;
-            sframeChan.query('Q_OO_CONVERT', {
-                data: data,
-                type: type,
-                fileName: fileName,
-                outputFormat: format,
-                images: window.frames[0].AscCommon.g_oDocumentUrls.urls || {},
-                fonts: fonts,
-                fonts_files: files,
-                mediasSources: getMediasSources(),
-                mediasData: mediasData
-            }, function (err, obj) {
-                if (err || !obj || !obj.data) {
-                    UI.warn(Messages.error);
-                    return void cb();
-                }
-                cb(obj.data, obj.images);
-            }, {
-                raw: true
-            });
         };
 
         APP.printPdf = function (obj, cb) {
@@ -2193,6 +2217,39 @@ define([
             });
         };
 
+        sframeChan.on('EV_OOIFRAME_REFRESH', function (data) {
+            // We want to get the "bin" content of a sheet from its json in order to download
+            // something useful from a non-onlyoffice app (download from drive or settings).
+            // We don't want to initialize a full pad in async-store because we only need a
+            // static version, so we can use "openVersionHash" which is based on GET_HISTORY_RANGE
+            APP.isDownload = data.downloadId;
+            APP.downloadType = data.type;
+            var json = data && data.json;
+            if (!json || !json.content) {
+                return void sframeChan.event('EV_OOIFRAME_DONE', '');
+            }
+            content = json.content;
+            readOnly = true;
+            var version = (!content.version || content.version === 1) ? 'v1/' :
+                          (content.version <= 3 ? 'v2b/' : CURRENT_VERSION+'/');
+            var s = h('script', {
+                type:'text/javascript',
+                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+            });
+            $('#cp-app-oo-editor').append(s);
+
+            var hashes = content.hashes || {};
+            var idx = sortCpIndex(hashes);
+            var lastIndex = idx[idx.length - 1];
+
+            // We're going to open using "openVersionHash" to avoid reimplementing existing code.
+            // To do so, we're using a version corresponding to the latest checkpoint with a
+            // minor version of 0. "openVersionHash" knows that it needs to give us the latest
+            // version when "APP.isDownload" is true.
+            var sheetVersion = lastIndex + '.0';
+            openVersionHash(sheetVersion);
+        });
+
         config.onInit = function (info) {
             var privateData = metadataMgr.getPrivateData();
             metadataMgr.setDegraded(false); // FIXME degraded moded unsupported (no cursor channel)
@@ -2506,6 +2563,7 @@ define([
                     readOnly = true;
                 }
             }
+            // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
 
             // If the sheet is locked by an offline user, remove it
             if (content && content.saveLock && !isUserOnline(content.saveLock)) {

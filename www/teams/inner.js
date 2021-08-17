@@ -1131,7 +1131,7 @@ define([
                         Feedback.send('FULL_TEAMDRIVE_EXPORT_COMPLETE');
                         saveAs(blob, filename);
                     }, errors);
-                }, ui.update, common.getCache);
+                }, ui.update, common.getCache, common.getSframeChannel());
                 ui.onCancel(function() {
                     ui.close();
                     bu.stop();

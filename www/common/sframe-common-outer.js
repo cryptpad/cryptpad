@@ -72,6 +72,7 @@ define([
         var SFrameChannel;
         var sframeChan;
         var SecureIframe;
+        var OOIframe;
         var Messaging;
         var Notifier;
         var Utils = {
@@ -98,6 +99,7 @@ define([
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
                 '/secureiframe/main.js',
+                '/common/onlyoffice/ooiframe.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -112,7 +114,7 @@ define([
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
+            _SecureIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -120,6 +122,7 @@ define([
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 SecureIframe = _SecureIframe;
+                OOIframe = _OOIframe;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -571,6 +574,7 @@ define([
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
+            var ooDownloadData = {};
 
             var isDeleted = isNewFile && currentPad.hash.length > 0;
             if (isDeleted) {
@@ -1031,6 +1035,51 @@ define([
                         }
                     }, cb);
                 });
+                sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
+                    var nSecret = secret;
+                    if (cfg.isDrive) {
+                        // Shared folder or user hash or fs hash
+                        var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                        if (data.sharedFolder) { hash = data.sharedFolder.hash; }
+                        if (hash) {
+                            var password = (data.sharedFolder && data.sharedFolder.password) || undefined;
+                            nSecret = Utils.Hash.getSecrets('drive', hash, password);
+                        }
+                    }
+                    if (data.href) {
+                        var _parsed = Utils.Hash.parsePadUrl(data.href);
+                        nSecret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, data.password);
+                    }
+                    if (data.isDownload && ooDownloadData[data.isDownload]) {
+                        var ooData = ooDownloadData[data.isDownload];
+                        delete ooDownloadData[data.isDownload];
+                        nSecret = Utils.Hash.getSecrets('sheet', ooData.hash, ooData.password);
+                    }
+                    var channel = nSecret.channel;
+                    var validate = nSecret.keys.validateKey;
+                    var crypto = Crypto.createEncryptor(nSecret.keys);
+                    Cryptpad.getHistoryRange({
+                        channel: data.channel || channel,
+                        validateKey: validate,
+                        toHash: data.toHash,
+                        lastKnownHash: data.lastKnownHash
+                    }, function (data) {
+                        cb({
+                            isFull: data.isFull,
+                            messages: data.messages.map(function (obj) {
+                                // The 3rd parameter "true" means we're going to skip signature validation.
+                                // We don't need it since the message is already validated serverside by hk
+                                return {
+                                    msg: crypto.decrypt(obj.msg, true, true),
+                                    serverHash: obj.serverHash,
+                                    author: obj.author,
+                                    time: obj.time
+                                };
+                            }),
+                            lastKnownHash: data.lastKnownHash
+                        });
+                    });
+                });
             };
             addCommonRpc(sframeChan, isSafe);
 
@@ -1272,46 +1321,6 @@ define([
                     });
                 });
             });
-            sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
-                var nSecret = secret;
-                if (cfg.isDrive) {
-                    // Shared folder or user hash or fs hash
-                    var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
-                    if (data.sharedFolder) { hash = data.sharedFolder.hash; }
-                    if (hash) {
-                        var password = (data.sharedFolder && data.sharedFolder.password) || undefined;
-                        nSecret = Utils.Hash.getSecrets('drive', hash, password);
-                    }
-                }
-                if (data.href) {
-                    var _parsed = Utils.Hash.parsePadUrl(data.href);
-                    nSecret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, data.password);
-                }
-                var channel = nSecret.channel;
-                var validate = nSecret.keys.validateKey;
-                var crypto = Crypto.createEncryptor(nSecret.keys);
-                Cryptpad.getHistoryRange({
-                    channel: data.channel || channel,
-                    validateKey: validate,
-                    toHash: data.toHash,
-                    lastKnownHash: data.lastKnownHash
-                }, function (data) {
-                    cb({
-                        isFull: data.isFull,
-                        messages: data.messages.map(function (obj) {
-                            // The 3rd parameter "true" means we're going to skip signature validation.
-                            // We don't need it since the message is already validated serverside by hk
-                            return {
-                                msg: crypto.decrypt(obj.msg, true, true),
-                                serverHash: obj.serverHash,
-                                author: obj.author,
-                                time: obj.time
-                            };
-                        }),
-                        lastKnownHash: data.lastKnownHash
-                    });
-                });
-            });
 
             // Store
             sframeChan.on('Q_DRIVE_GETDELETED', function (data, cb) {
@@ -1459,6 +1468,38 @@ define([
 
             sframeChan.on('EV_SHARE_OPEN', function (data) {
                 initSecureModal('share', data || {});
+            });
+
+            // OO iframe
+            var OOIframeObject = {};
+            var initOOIframe = function (cfg, cb) {
+                if (!OOIframeObject.$iframe) {
+                    var config = {};
+                    config.addCommonRpc = addCommonRpc;
+                    config.modules = {
+                        Cryptpad: Cryptpad,
+                        SFrameChannel: SFrameChannel,
+                        Utils: Utils
+                    };
+                    OOIframeObject.$iframe = $('<iframe>', {id: 'sbox-oo-iframe'}).appendTo($('body')).hide();
+                    OOIframeObject.modal = OOIframe.create(config);
+                }
+                OOIframeObject.modal.refresh(cfg, function (data) {
+                    cb(data);
+                });
+            };
+
+            sframeChan.on('Q_OOIFRAME_OPEN', function (data, cb) {
+                if (!data) { return void cb(); }
+
+                // Extract unsafe data (href and password) before sending it to onlyoffice
+                var padData = data.padData;
+                delete data.padData;
+                var uid = Utils.Util.uid();
+                ooDownloadData[uid] = padData;
+                data.downloadId = uid;
+
+                initOOIframe(data || {}, cb);
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {

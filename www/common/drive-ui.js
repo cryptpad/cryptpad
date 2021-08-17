@@ -1275,7 +1275,7 @@ define([
                         hide.push('preview');
                     }
                     if ($element.is('.cp-border-color-sheet')) {
-                        hide.push('download');
+                        //hide.push('download'); // XXX if we don't want to enable this feature yet
                     }
                     if ($element.is('.cp-app-drive-static')) {
                         hide.push('access', 'hashtag', 'properties', 'download');

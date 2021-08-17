@@ -28,7 +28,7 @@ define([
         return n;
     };
 
-    var transform = function (ctx, type, sjson, cb) {
+    var transform = function (ctx, type, sjson, cb, padData) {
         var result = {
             data: sjson,
             ext: '.json',
@@ -45,7 +45,7 @@ define([
                 result.ext = Exporter.ext || '';
                 result.data = data;
                 cb(result);
-            });
+            }, null, ctx.sframeChan, padData);
         }, function () {
             cb(result);
         });
@@ -117,6 +117,10 @@ define([
         var opts = {
             password: pData.password
         };
+        var padData = {
+            hash: parsed.hash,
+            password: pData.password
+        };
         var handler = ctx.sframeChan.on("EV_CRYPTGET_PROGRESS", function (data) {
             if (data.hash !== parsed.hash) { return; }
             updateProgress.progress(data.progress);
@@ -136,14 +140,14 @@ define([
                 if (cancelled) { return; }
                 if (!res.data) { return; }
                 var dl = function () {
-                    saveAs(res.data, Util.fixFileName(name));
+                    saveAs(res.data, Util.fixFileName(name)+(res.ext || ''));
                 };
                 cb(null, {
                     metadata: res.metadata,
                     content: res.data,
                     download: dl
                 });
-            });
+            }, padData);
         });
         return {
             cancel: cancel
@@ -228,6 +232,9 @@ define([
                             zip.file(fileName, res.data, opts);
                             console.log('DONE ---- ' + fileName);
                             setTimeout(done, 500);
+                        }, {
+                            hash: parsed.hash,
+                            password: fData.password
                         });
                     });
                 };
@@ -292,7 +299,7 @@ define([
     };
 
     // Main function. Create the empty zip and fill it starting from drive.root
-    var create = function (data, getPad, fileHost, cb, progress, cache) {
+    var create = function (data, getPad, fileHost, cb, progress, cache, sframeChan) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
         var ctx = {
@@ -307,7 +314,8 @@ define([
             updateProgress: progress,
             max: 0,
             done: 0,
-            cache: cache
+            cache: cache,
+            sframeChan: sframeChan
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         progress('reading', -1); // Msg.settings_export_reading
@@ -358,7 +366,7 @@ define([
             else if (state === "done") {
                 updateProgress.folderProgress(3);
             }
-        }, ctx.cache);
+        }, ctx.cache, ctx.sframeChan);
     };
 
     var createExportUI = function (origin) {
