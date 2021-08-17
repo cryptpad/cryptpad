@@ -1,7 +1,8 @@
 define([
+    '/api/config',
     '/bower_components/nthen/index.js',
     '/common/common-util.js',
-], function (nThen, Util) {
+], function (ApiConfig, nThen, Util) {
     var X2T = {};
 
     var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v4';
@@ -14,7 +15,8 @@ define([
         var x2tReady = Util.mkEvent(true);
         var fetchFonts = function (x2t, obj, cb) {
             if (!obj.fonts) { return void cb(); }
-            var path = '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
+            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
+            var ver = '?' + ApiConfig.requireConf.urlArgs;
             var fonts = obj.fonts;
             var files = obj.fonts_files;
             var suffixes = {
@@ -33,7 +35,7 @@ define([
                         var file = files[font[k]];
 
                         var name = font.Name + suffixes[k] + '.ttf';
-                        Util.fetch(path + file.Id, waitFor(function (err, buffer) {
+                        Util.fetch(path + file.Id + ver, waitFor(function (err, buffer) {
                             if (buffer) {
                                 x2t.FS.writeFile('/working/fonts/' + name, buffer);
                             }
