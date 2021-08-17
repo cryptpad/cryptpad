@@ -42,6 +42,8 @@ define([
             data.sender.userAgent = Util.find(window, ['navigator', 'userAgent']);
             data.sender.vendor = Util.find(window, ['navigator', 'vendor']);
             data.sender.appVersion = Util.find(window, ['navigator', 'appVersion']);
+            data.sender.appVersion = Util.find(window, ['screen', 'width']);
+            data.sender.appVersion = Util.find(window, ['screen', 'height']);
             data.sender.blockLocation = privateData.blockLocation || '';
             data.sender.teams = Object.keys(teams).map(function (key) {
                 var team = teams[key];
