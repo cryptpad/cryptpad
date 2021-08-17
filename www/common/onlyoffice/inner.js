@@ -1722,7 +1722,7 @@ define([
             }, function (err, obj) {
                 if (err || !obj || !obj.data) {
                     UI.warn(Messages.error);
-                    cb();
+                    return void cb();
                 }
                 cb(obj.data, obj.images);
             }, {
