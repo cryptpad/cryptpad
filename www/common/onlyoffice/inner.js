@@ -1357,6 +1357,10 @@ define([
             });
         };
 
+        // When download a sheet from the drive, we must wait for all the images
+        // to be downloaded and decrypted before converting to xlsx
+        var downloadImages = {};
+
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
@@ -1528,8 +1532,15 @@ define([
                             if (!supportsXLSX()) {
                                 return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
                             }
-                            x2tConvertData(bin, 'filename.bin', file.type, function (xlsData) {
-                                sframeChan.event('EV_OOIFRAME_DONE', xlsData, {raw: true});
+                            nThen(function (waitFor) {
+                                // wait for all the images to be loaded before converting
+                                Object.keys(downloadImages).forEach(function (name) {
+                                    downloadImages[name].reg(waitFor());
+                                });
+                            }).nThen(function () {
+                                x2tConvertData(bin, 'filename.bin', file.type, function (xlsData) {
+                                    sframeChan.event('EV_OOIFRAME_DONE', xlsData, {raw: true});
+                                });
                             });
                             return;
                         }
@@ -1674,6 +1685,7 @@ define([
 
                 var mediasSources = getMediasSources();
                 var data = mediasSources[name];
+                downloadImages[name] = Util.mkEvent(true);
 
                 if (typeof data === 'undefined') {
                     debug("CryptPad - could not find matching media for " + name);
@@ -1707,6 +1719,7 @@ define([
                                 // store media blobUrl and content for cache and export
                                 var mediaData = { blobUrl : blobUrl, content : "" };
                                 mediasData[data.src] = mediaData;
+                                downloadImages[name].fire();
                                 var reader = new FileReader();
                                 reader.onloadend = function () {
                                     debug("MediaData set");
@@ -2202,6 +2215,7 @@ define([
             // static version, so we can use "openVersionHash" which is based on GET_HISTORY_RANGE
             APP.isDownload = data.downloadId;
             APP.downloadType = data.type;
+            downloadImages = {};
             var json = data && data.json;
             if (!json || !json.content) {
                 return void sframeChan.event('EV_OOIFRAME_DONE', '');
