@@ -1382,5 +1382,7 @@
     "fm_link_invalid": "Invalid URL",
     "ui_collapse": "Collapse",
     "ui_expand": "Expand",
-    "form_totalResponses": "Total responses: {0}"
+    "form_totalResponses": "Total responses: {0}",
+    "support_premiumPriority": "Premium users help support improvements to CryptPad's usability and benefit from prioritized responses to their support tickets.",
+    "support_premiumLink": "View subscription options"
 }
