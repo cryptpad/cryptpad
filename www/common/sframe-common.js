@@ -921,9 +921,10 @@ define([
             });
 
             ctx.sframeChan.on('EV_WORKER_TIMEOUT', function () {
-                UI.errorLoadingScreen(Messages.timeoutError, false, function () { // XXX 4.11.0 mobile users can't necessarily hit 'ESC' as this message suggests. provice a click option
-                    funcs.gotoURL('');
-                });
+                var message = UI.setHTML(h('span'), Messages.timeoutError);
+                var cb = Util.once(function () { funcs.gotoURL(''); });
+                $(message).find('em').on('touchend', cb);
+                UI.errorLoadingScreen(message, false, cb);
             });
 
             ctx.sframeChan.on('EV_CHROME_68', function () {
