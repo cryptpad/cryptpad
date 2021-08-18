@@ -638,7 +638,8 @@ define([
                             title: Cryptpad.fromFileData.title
                         } : undefined,
                         burnAfterReading: burnAfterReading,
-                        storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined)
+                        storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined),
+                        supportsWasm: Utils.Util.supportsWasm()
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;

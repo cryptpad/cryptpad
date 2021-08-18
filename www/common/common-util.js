@@ -616,6 +616,10 @@
                      getColor().toString(16);
     };
 
+    Util.supportsWasm = function () {
+        return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined" || typeof(WebAssembly) === 'undefined');
+    };
+
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {

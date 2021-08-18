@@ -138,6 +138,10 @@ define([
 
         var startOO = function () {};
 
+        var supportsXLSX = function () {
+            return privateData.supportsWasm;
+        };
+
         var getMediasSources = APP.getMediasSources =  function() {
             content.mediasSources = content.mediasSources || {};
             return content.mediasSources;
