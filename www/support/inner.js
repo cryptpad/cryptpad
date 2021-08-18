@@ -45,6 +45,7 @@ define([
             'cp-support-list',
         ],
         'new': [ // Msg.support_cat_new
+            'cp-support-subscribe',
             'cp-support-language',
             'cp-support-form',
         ],
@@ -166,28 +167,31 @@ define([
         return $div;
     };
 
-    Messages.support_premiumPriority = "Premium users help support improvements to CryptPad's usability and benefit from prioritized responses to their support tickets."; // XXX
-    Messages.support_premiumLink = 'View subscription options.'; // XXX
+    create['subscribe'] = function () {
+        if (!Pages.areSubscriptionsAllowed()) { return; }
+        var url = Pages.accounts.upgradeURL;
+        var accountsLink = h('a', {
+            href: url,
+        }, Messages.support_premiumLink);
+        $(accountsLink).click(function (ev) {
+            ev.preventDefault();
+            common.openURL(url);
+        });
+
+        return $(h('div.cp-support-subscribe.cp-sidebarlayout-element', [
+            h('div.alert.alert-info', [
+                Messages.support_premiumPriority,
+                ' ',
+                accountsLink,
+            ]),
+        ]));
+    };
 
     // Create a new tickets
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true); // Msg.support_formHint, .support_formTitle, .support_formButton
         Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.fr/en/user_guide/index.html');
-
-        var accountsLink = h('a', {
-            href: Pages.accounts.upgradeURL,
-        }, Messages.support_premiumLink,);
-
-        var premium = h("div.alert.alert-info", [
-            Messages.support_premiumPriority,
-            ' ',
-            accountsLink,
-        ]);
-
-        if (Pages.areSubscriptionsAllowed()) {
-            $div.find('.cp-sidebarlayout-description').append(premium);
-        }
 
         var form = APP.support.makeForm();
 
