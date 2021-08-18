@@ -53,7 +53,6 @@ MessengerUI, Messages, Pages) {
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
     var USERNAME_CLS = Bar.constants.username = 'cp-toolbar-user-name';
     /*var READONLY_CLS = */Bar.constants.readonly = 'cp-toolbar-readonly';
-    var USERBUTTON_CLS = Bar.constants.changeUsername = "cp-toolbar-user-rename";
 
     // Create the toolbar element
 
@@ -1029,35 +1028,12 @@ MessengerUI, Messages, Pages) {
         var userMenuCfg = {
             $initBlock: $userAdmin,
         };
-        if (!config.hideDisplayName) {
-            $.extend(true, userMenuCfg, {
-                displayNameCls: USERNAME_CLS,
-                changeNameButtonCls: USERBUTTON_CLS,
-            });
-        }
         if (config.readOnly !== 1) {
             userMenuCfg.displayName = 1;
             userMenuCfg.displayChangeName = 1;
         }
-        /*if (config.displayed.indexOf('userlist') !== -1) {
-            userMenuCfg.displayChangeName = 0;
-        }*/
         Common.createUserAdminMenu(userMenuCfg);
         $userAdmin.find('> button').attr('title', Messages.userAccountButton);
-
-        var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
-        $userButton.click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var myData = metadataMgr.getUserData();
-            var lastName = myData.name;
-            UI.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
-                if (newName === null && typeof(lastName) === "string") { return; }
-                if (newName === null) { newName = ''; }
-                else { Feedback.send('NAME_CHANGED'); }
-                setDisplayName(newName);
-            });
-        });
 
         return $userAdmin;
     };
