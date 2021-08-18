@@ -126,7 +126,7 @@ define([
             updateProgress.progress(data.progress);
             if (data.progress === 1) {
                 handler.stop();
-                updateProgress.progress2(1);
+                updateProgress.progress2(2);
             }
         });
         ctx.get({
@@ -142,6 +142,7 @@ define([
                 var dl = function () {
                     saveAs(res.data, Util.fixFileName(name)+(res.ext || ''));
                 };
+                updateProgress.progress2(1);
                 cb(null, {
                     metadata: res.metadata,
                     content: res.data,
@@ -199,9 +200,16 @@ define([
                 });
             };
 
+            var timeout = 60000;
+            // OO pads can only be converted one at a time so we have to give them a
+            // bigger timeout value in case there are 5 of them in the current queue
+            if (['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1) {
+                timeout = 180000;
+            }
+
             to = setTimeout(function () {
                 error('TIMEOUT');
-            }, 60000);
+            }, timeout);
 
             setTimeout(function () {
                 if (ctx.stop) { return; }

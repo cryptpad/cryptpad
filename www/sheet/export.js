@@ -14,6 +14,7 @@ define([], function () {
             var blob = new Blob([u8], {type: "application/bin;charset=utf-8"});
             cb(blob);
         }, {
+            timeout: 600000,
             raw: true
         });
     };
