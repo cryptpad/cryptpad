@@ -1255,7 +1255,7 @@ define([
                 };
 
             },
-            printResults: function (answers, uid, form) {
+            printResults: function (answers, uid, form, content) {
                 // results multiradio
                 var structure = form[uid];
                 if (!structure) { return; }
@@ -1263,6 +1263,7 @@ define([
                 var results = [];
                 var empty = 0;
                 var count = {};
+                var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1293,34 +1294,13 @@ define([
                         return h('div.cp-form-results-type-radio-data', [
                             h('span.cp-value', res),
                             h('span.cp-count', itemCount),
-                            //barGraphic((itemCount / max) * 100)
+                            showBars? barGraphic((itemCount / max)): undefined,
                         ]);
                     });
                     results.push(h('div.cp-form-results-type-multiradio-data', [
                         h('span.cp-mr-q', q),
                         h('span.cp-mr-value', values)
                     ]));
-                    return;
-/*
-                    var table = Charts.table([
-                        h('caption', {
-                            style: 'color: var(--msg-color)',
-                        }, q),
-                        h('tbody', Object.keys(c).map(function (res) {
-                            return Charts.row(res, c[res] / max, c[res]);
-                        })),
-                    ], [
-                        'charts-css',
-                        'bar',
-                        'show-heading',
-                        'show-data-on-hover',
-                        'show-labels',
-                    ]);
-
-                    results.push(h('div.cp-form-results-type-multiradio-data', {
-                        style: 'width: 100%',
-                    }, table));
-*/
                 });
                 results.push(getEmpty(empty));
 
@@ -1509,7 +1489,7 @@ define([
                 };
 
             },
-            printResults: function (answers, uid, form) {
+            printResults: function (answers, uid, form, content ) {
                 // results multicheckbox
                 var structure = form[uid];
                 if (!structure) { return; }
@@ -1517,6 +1497,7 @@ define([
                 var results = [];
                 var empty = 0;
                 var count = {};
+                var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1544,35 +1525,17 @@ define([
                     var c = count[q_uid];
 
                     var values = Object.keys(c).map(function (res) {
+                        var val = c[res];
                         return h('div.cp-form-results-type-radio-data', [
                             h('span.cp-value', res),
-                            h('span.cp-count', c[res])
+                            h('span.cp-count', val),
+                            showBars? barGraphic(val / max) : undefined,
                         ]);
                     });
                     results.push(h('div.cp-form-results-type-multiradio-data', [
                         h('span.cp-mr-q', q),
-                        h('span.cp-mr-value', values)
+                        h('span.cp-mr-value', values),
                     ]));
-/*
-                    var table = Charts.table([
-                        h('caption', {
-                            style: 'color: var(--msg-color)',
-                        }, q),
-                        h('tbody', Object.keys(c).map(function (res) {
-                            return Charts.row(res, c[res] / max, c[res]);
-                        })),
-                    ], [
-                        'charts-css',
-                        'bar',
-                        'show-heading',
-                        'show-data-on-hover',
-                        'show-labels',
-                    ]);
-
-                    results.push(h('div.cp-form-results-type-multiradio-data', {
-                        style: 'width: 100%',
-                    }, table));
-*/
                 });
                 results.push(getEmpty(empty));
 
