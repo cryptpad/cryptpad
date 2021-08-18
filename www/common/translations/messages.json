@@ -79,7 +79,7 @@
     "exportButton": "Export",
     "exportButtonTitle": "Export this pad to a local file",
     "exportPrompt": "What would you like to name your file?",
-    "changeNamePrompt": "Change your name (leave empty to be known as 'Guest'): ",
+    "changeNamePrompt": "Change your name (leave empty to be anonymous): ",
     "user_rename": "Change display name",
     "user_displayName": "Display name",
     "user_accountName": "Account name",
