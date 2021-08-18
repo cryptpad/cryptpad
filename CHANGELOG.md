@@ -1,3 +1,18 @@
+# 4.11.0 (WIP)
+
+## Goals
+
+## Update notes
+
+## Features
+
+* unify unregistered/non-registered/anonymous terminology as 'guest'
+* prompt users that need support to subscribe
+* include bar graphs for multiple-answer form questions
+
+## Bug fixes
+
+
 # 4.10.0
 
 ## Goals
