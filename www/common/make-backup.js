@@ -41,8 +41,8 @@ define([
         }
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
-            Exporter.main(json, function (data) {
-                result.ext = Exporter.ext || '';
+            Exporter.main(json, function (data, _ext) {
+                result.ext = _ext || Exporter.ext || '';
                 result.data = data;
                 cb(result);
             }, null, ctx.sframeChan, padData);

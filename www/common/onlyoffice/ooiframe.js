@@ -116,6 +116,7 @@ define([
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
                             secureIframe: true,
+                            supportsWasm: Utils.Util.supportsWasm()
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
