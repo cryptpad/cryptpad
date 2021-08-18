@@ -176,7 +176,7 @@ define([
                         validateKey: keys.secondaryValidateKey,
                         owners: [myKeys.edPublic],
                         crypto: crypto,
-                        //Cache: Utils.Cache // XXX 4.11.0
+                        //Cache: Utils.Cache // TODO enable cache for form responses when the cache stops evicting old answers
                     };
                     var results = {};
                     config.onError = function (info) {

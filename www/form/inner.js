@@ -2702,7 +2702,6 @@ define([
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
-                if (true) { return; } // XXX 4.11.0
                 $responseMsg.empty();
                 Messages.form_updateMsg = "Update response message"; // XXX 4.11.0
                 Messages.form_addMsg = "Add response message"; // XXX 4.11.0
@@ -2713,12 +2712,23 @@ define([
                     var editor;
                     if (!APP.responseModal) {
                         var t = h('textarea');
+                        var p = h('p', Messages.form_responseMsg);
                         var div = h('div', [
-                            h('p', Messages.form_responseMsg),
-                            t
+                            p,
+                            h('div.cp-form-response-modal', t),
                         ]);
-                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
+                        var cm = window.my_cm = SFCodeMirror.create("gfm", CMeditor, t);
                         editor = APP.responseEditor = cm.editor;
+                        var markdownTb = APP.common.createMarkdownToolbar(editor, {
+                            embed: function (mt) {
+                                editor.focus();
+                                editor.replaceSelection($(mt)[0].outerHTML);
+                            }
+                        });
+                        $(markdownTb.toolbar).insertAfter($(p));
+                        $(markdownTb.toolbar).show();
+
+                        cm.configureTheme(APP.common, function () {});
                         editor.setOption('lineNumbers', true);
                         editor.setOption('lineWrapping', true);
                         editor.setOption('styleActiveLine', true);
@@ -2735,7 +2745,7 @@ define([
                             name: Messages.settings_save,
                             onClick: function () {
                                 var v = editor.getValue();
-                                content.answers.msg = v.trim(0, 2000); // XXX 4.11.0 max length?
+                                content.answers.msg = v.slice(0, 2000); // XXX 4.11.0 max length?
                                 framework.localChange();
                                 framework._.cpNfInner.chainpad.onSettle(function () {
                                     UI.log(Messages.saved);
@@ -2761,9 +2771,9 @@ define([
                     }
                     UI.openCustomModal(APP.responseModal);
                 });
-                // $responseMsg.append(btn); // XXX 4.11.0
+                $responseMsg.append(btn);
             };
-            //refreshResponse();
+            refreshResponse();
 
             // Allow anonymous answers
             var privacyContainer = h('div.cp-form-privacy-container');

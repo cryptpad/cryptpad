@@ -440,7 +440,6 @@
                     }
                 }
                 .cp-form-edit-block {
-
                     button.btn-secondary {
                         margin-left: 30px;
                         margin-bottom: 5px;
@@ -486,6 +485,9 @@
                 padding: 10px;
                 p:last-child {
                     margin-bottom: 0;
+                }
+                * {
+                    max-width: 100%;
                 }
             }
 
@@ -830,6 +832,11 @@
         }
         div.cp-form-poll-answer {
             color: @cp_form-poll-yes-color;
+        }
+    }
+    .cp-form-response-modal {
+        .CodeMirror {
+            border: 1px solid @cp_forms-border;
         }
     }
 
