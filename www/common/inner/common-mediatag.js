@@ -79,21 +79,48 @@ define([
         });
     };
 
-    MT.displayAvatar = function (common, $container, href, name, _cb) {
+    // https://emojipedia.org/nature/
+    var ANIMALS = [ '🙈', '🦀', '🐞', '🦋', '🐬', '🐋', '🐢', '🦉', '🦆', '🐧', '🦡', '🦘', '🦨', '🦦', '🦥', '🐼', '🐻', '🦝', '🦄', '🐄', '🐷', '🐐', '🦙', '🦒', '🐘', '🦏', '🐁', '🐹', '🐰', '🦫', '🦔', '🐨'];
+
+    var getRandomAnimal = function () {
+        return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+    };
+
+    var getPseudorandomAnimal = function (seed) {
+        if (typeof(seed) !== 'string') { return getRandomAnimal(); }
+        seed = seed.replace(/\D/g, '').slice(0, 10);
+        seed = parseInt(seed);
+        if (!seed) { return getRandomAnimal(); }
+        return ANIMALS[seed % ANIMALS.length];
+    };
+
+    MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var displayDefault = function () {
+            if (avatars[uid]) {
+                var nodes = $.parseHTML(avatars[uid]);
+                var $el = $(nodes[0]);
+                $container.append($el);
+                return void cb($el);
+            }
+            var animal = false;
+
             name = (name || "").trim() || Messages.anonymous;
             var parts = name.split(/\s+/);
             var text;
-            if (parts.length > 1) {
+            if (name === Messages.anonymous) {
+                text =  getPseudorandomAnimal(uid);
+                animal = true;
+            } else if (parts.length > 1) {
                 text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
             } else {
                 text = Util.getFirstCharacter(name);
                 text += Util.getFirstCharacter(name.replace(text, ''));
             }
 
-            var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
+            var $avatar = $('<span>', {'class': 'cp-avatar-default' + (animal? ' animal': '')}).text(text);
             $container.append($avatar);
+            avatars[uid] = $avatar[0].outerHTML;
             if (cb) { cb(); }
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
@@ -105,6 +132,7 @@ define([
             $container.append($el);
             return void cb($el);
         }
+
 
         var centerImage = function ($img, $image) {
             var img = $image[0];

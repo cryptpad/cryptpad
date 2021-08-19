@@ -361,9 +361,10 @@ MessengerUI, Messages, Pages) {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
-            Common.displayAvatar($span, data.avatar, name, function () {
+            console.error("AVATAR", $span, data.uid);
+            Common.displayAvatar($span, data.avatar, name, function () { // XXX pass a little more info so we can display better (pseudo-random) defaults
                 $span.append($rightCol);
-            });
+            }, data.uid);
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
