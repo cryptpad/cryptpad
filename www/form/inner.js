@@ -1388,6 +1388,10 @@ define([
                                 $el.prop('checked', true);
                             }
                         });
+                        var selected = $tag.find('input:checked').length;
+                        if (selected >= opts.max) {
+                            $tag.find('input:not(:checked)').attr('disabled', 'disabled');
+                        }
                     }
                 };
 
@@ -2671,14 +2675,22 @@ define([
             return;
         }
 
+        // If the form is already submitted, show an info message
+        Messages.form_alreadyAnswered = "You've submitted answers to this form on {0}"; // XXX
+        if (answers) {
+            $container.prepend(h('div.alert.alert-info',
+                Messages._getKey('form_alreadyAnswered', [
+                    new Date(answers._time).toLocaleString()])));
+            // XXX make the page read-only?
+        }
+
         // In view mode, add "Submit" and "reset" buttons
+        $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
+
         // Embed mode is enforced so we add the title at the top and a CryptPad logo
         // at the bottom
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.prepend(h('h1.cp-form-view-title', title));
-
-        $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
-
         var logo = h('div.cp-form-view-logo', [
             h('img', {
                 src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
@@ -2690,6 +2702,7 @@ define([
             framework._.sfCommon.gotoURL('/drive/');
         });
         $container.append(logo);
+
         if (!answers) {
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
         }
@@ -3156,7 +3169,7 @@ define([
             }
 
             // If the results are public and there is at least one doodle, fetch the results now
-            if (content.answers.privateKey && Object.keys(content.form).some(function (uid) {
+            if (0 && content.answers.privateKey && Object.keys(content.form).some(function (uid) {
                     return content.form[uid].type === "poll";
                 })) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
@@ -3186,6 +3199,7 @@ define([
                         var myAnswersObj = answers[curve1] || answers[curve2] || undefined;
                         if (myAnswersObj) {
                             myAnswers = myAnswersObj.msg;
+                            myAnswers._time = myAnswersObj.time;
                         }
                     }
                     // If we have a non-anon answer, we can't answer anonymously later

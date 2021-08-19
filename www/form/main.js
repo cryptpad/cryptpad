@@ -272,8 +272,10 @@ define([
                             my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
                             their_public: Nacl.util.decodeBase64(data.publicKey)
                         });
-                        res.content._isAnon = answer.anonymous;
-                        cb(JSON.parse(res.content));
+                        var parsed = JSON.parse(res.content);
+                        parsed._isAnon = answer.anonymous;
+                        parsed._time = messages[0].time;
+                        cb(parsed);
                     });
 
                 });
