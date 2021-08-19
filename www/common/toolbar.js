@@ -53,6 +53,7 @@ MessengerUI, Messages, Pages) {
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
     var USERNAME_CLS = Bar.constants.username = 'cp-toolbar-user-name';
     /*var READONLY_CLS = */Bar.constants.readonly = 'cp-toolbar-readonly';
+    var USERBUTTON_CLS = Bar.constants.changeUsername = "cp-toolbar-user-rename";
 
     // Create the toolbar element
 
@@ -1028,6 +1029,12 @@ MessengerUI, Messages, Pages) {
         var userMenuCfg = {
             $initBlock: $userAdmin,
         };
+        if (!config.hideDisplayName) {
+            $.extend(true, userMenuCfg, {
+                displayNameCls: USERNAME_CLS,
+                changeNameButtonCls: USERBUTTON_CLS,
+            });
+        }
         if (config.readOnly !== 1) {
             userMenuCfg.displayName = 1;
             userMenuCfg.displayChangeName = 1;
