@@ -1404,6 +1404,9 @@ define([
                 if (!APP.loggedIn) {
                     hide.push('openparent');
                     hide.push('rename');
+                    hide.push('openinsheet');
+                    hide.push('openindoc');
+                    hide.push('openinpresentation');
                 }
 
                 filter = function ($el, className) {

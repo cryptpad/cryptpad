@@ -477,10 +477,10 @@ define([
             startOO(blob, type, true);
         };
 
-        var saveToServer = function () {
+        var saveToServer = function (blob, title) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = getContent();
-            if (!text) {
+            if (!text && !blob) {
                 setEditable(false, true);
                 sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
                     'chainpad',
@@ -491,9 +491,9 @@ define([
                 });
                 return;
             }
-            var blob = new Blob([text], {type: 'plain/text'});
+            blob = blob || new Blob([text], {type: 'plain/text'});
             var file = getFileType();
-            blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+            blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
                 index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
@@ -2713,7 +2713,7 @@ define([
                                         var u8Xlsx = new Uint8Array(buffer);
                                         x2tImportData(u8Xlsx, data.title, 'bin', function (bin) {
                                             var blob = new Blob([bin], {type: 'text/plain'});
-                                            startOO(blob, getFileType());
+                                            saveToServer(blob, data.title);
                                             Title.updateTitle(title);
                                             UI.removeLoadingScreen();
                                         });
