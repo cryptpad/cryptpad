@@ -82,7 +82,16 @@ define([
     MT.displayAvatar = function (common, $container, href, name, _cb) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var displayDefault = function () {
-            var text = Util.getFirstCharacter(name || Messages.anonymous);
+            name = (name || "").trim() || Messages.anonymous;
+            var parts = name.split(/\s+/);
+            var text;
+            if (parts.length > 1) {
+                text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
+            } else {
+                text = Util.getFirstCharacter(name);
+                text += Util.getFirstCharacter(name.replace(text, ''));
+            }
+
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
