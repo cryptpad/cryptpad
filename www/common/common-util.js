@@ -573,6 +573,26 @@
         return false;
     };
 
+    // Tell if a file is spreadsheet from its metadata={title, fileType}
+    Util.isSpreadsheet = function (type, name) {
+        return (type &&
+                    (type === 'application/vnd.oasis.opendocument.spreadsheet' ||
+                    type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))
+                || (name && (name.endsWith('.xlsx') || name.endsWith('.ods')));
+    };
+    Util.isOfficeDoc = function (type, name) {
+        return (type &&
+                    (type === 'application/vnd.oasis.opendocument.text' ||
+                    type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
+                || (name && (name.endsWith('.docx') || name.endsWith('.odt')));
+    };
+    Util.isPresentation = function (type, name) {
+        return (type &&
+                    (type === 'application/vnd.oasis.opendocument.presentation' ||
+                    type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'))
+                || (name && (name.endsWith('.pptx') || name.endsWith('.odp')));
+    };
+
     Util.isValidURL = function (str) {
         var pattern = new RegExp('^(https?:\\/\\/)'+ // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name

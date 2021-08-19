@@ -1331,8 +1331,8 @@ define([
         var x2tConvertData = function (data, fileName, format, cb) {
             var sframeChan = common.getSframeChannel();
             var e = getEditor();
-            var fonts = e.FontLoader.fontInfos;
-            var files = e.FontLoader.fontFiles.map(function (f) {
+            var fonts = e && e.FontLoader.fontInfos;
+            var files = e && e.FontLoader.fontFiles.map(function (f) {
                 return { 'Id': f.Id, };
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -1341,7 +1341,7 @@ define([
                 type: type,
                 fileName: fileName,
                 outputFormat: format,
-                images: window.frames[0].AscCommon.g_oDocumentUrls.urls || {},
+                images: (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
                 fonts: fonts,
                 fonts_files: files,
                 mediasSources: getMediasSources(),
@@ -2643,9 +2643,99 @@ define([
                     return;
                 }
 
-                loadDocument(newDoc, useNewDefault);
-                setEditable(!readOnly);
-                UI.removeLoadingScreen();
+                var next = function () {
+                    loadDocument(newDoc, useNewDefault);
+                    setEditable(!readOnly);
+                    UI.removeLoadingScreen();
+                };
+
+                if (privateData.isNewFile && privateData.fromFileData) {
+                    try {
+                    (function () {
+                        var data = privateData.fromFileData;
+
+                        var type = data.fileType;
+                        var title = data.title;
+                        // Fix extension if the file was renamed
+                        if (Util.isSpreadsheet(type) && !Util.isSpreadsheet(data.title)) {
+                            if (type === 'application/vnd.oasis.opendocument.spreadsheet') {
+                                data.title += '.ods';
+                            }
+                            if (type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                                data.title += '.xlsx';
+                            }
+                        }
+                        if (Util.isOfficeDoc(type) && !Util.isOfficeDoc(data.title)) {
+                            if (type === 'application/vnd.oasis.opendocument.text') {
+                                data.title += '.odt';
+                            }
+                            if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                                data.title += '.docx';
+                            }
+                        }
+                        if (Util.isPresentation(type) && !Util.isPresentation(data.title)) {
+                            if (type === 'application/vnd.oasis.opendocument.presentation') {
+                                data.title += '.odp';
+                            }
+                            if (type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+                                data.title += '.pptx';
+                            }
+                        }
+
+                        var href = data.href;
+                        var password = data.password;
+                        var parsed = Hash.parsePadUrl(href);
+                        var secret = Hash.getSecrets('file', parsed.hash, password);
+                        var hexFileName = secret.channel;
+                        var fileHost = privateData.fileHost || privateData.origin;
+                        var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+                        var key = secret.keys && secret.keys.cryptKey;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', src, true);
+                        xhr.responseType = 'arraybuffer';
+                        xhr.onload = function () {
+                            if (/^4/.test('' + this.status)) {
+                                // fallback to empty sheet
+                                console.error(this.status);
+                                return void next();
+                            }
+                            var arrayBuffer = xhr.response;
+                            if (arrayBuffer) {
+                                var u8 = new Uint8Array(arrayBuffer);
+                                FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                                    if (err) {
+                                        // fallback to empty sheet
+                                        console.error(err);
+                                        return void next();
+                                    }
+                                    var blobXlsx = decrypted.content;
+                                    new Response(blobXlsx).arrayBuffer().then(function (buffer) {
+                                        var u8Xlsx = new Uint8Array(buffer);
+                                        x2tImportData(u8Xlsx, data.title, 'bin', function (bin) {
+                                            var blob = new Blob([bin], {type: 'text/plain'});
+                                            startOO(blob, getFileType());
+                                            Title.updateTitle(title);
+                                            UI.removeLoadingScreen();
+                                        });
+                                    });
+                                });
+                            }
+                        };
+                        xhr.onerror = function (err) {
+                            // fallback to empty sheet
+                            console.error(err);
+                            next();
+                        };
+                        xhr.send(null);
+                    })();
+                    } catch (e) {
+                        console.error(e);
+                        next();
+                    }
+                    return;
+                }
+
+                next();
             });
         };
 

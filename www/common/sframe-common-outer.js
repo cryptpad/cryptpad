@@ -574,6 +574,7 @@ define([
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
+            var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
             var ooDownloadData = {};
 
             var isDeleted = isNewFile && currentPad.hash.length > 0;
@@ -634,9 +635,9 @@ define([
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
                         devMode: localStorage.CryptPad_dev === "1",
-                        fromFileData: Cryptpad.fromFileData ? {
+                        fromFileData: Cryptpad.fromFileData ? (isOO ? Cryptpad.fromFileData : {
                             title: Cryptpad.fromFileData.title
-                        } : undefined,
+                        }) : undefined,
                         burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined),
                         supportsWasm: Utils.Util.supportsWasm()
@@ -2016,7 +2017,7 @@ define([
                         return;
                     }
                     // if we open a new code from a file
-                    if (Cryptpad.fromFileData) {
+                    if (Cryptpad.fromFileData && !isOO) {
                         Cryptpad.useFile(Cryptget, function (err) {
                             if (err) {
                                 // TODO: better messages in case of expired, deleted, etc.?
