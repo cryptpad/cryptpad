@@ -64,7 +64,9 @@ MessengerUI, Messages, Pages) {
         if (!config.$container) { return; }
         var $container = config.$container;
 
-        var isEmbed = Bar.isEmbed = config.metadataMgr.getPrivateData().isEmbed;
+        var priv = config.metadataMgr.getPrivateData();
+        var isEmbed = Bar.isEmbed = priv.isEmbed ||
+                (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash);
         if (isEmbed) {
             $container.hide();
         }

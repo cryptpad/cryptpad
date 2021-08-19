@@ -1,6 +1,7 @@
 define([
     'jquery',
     'json.sortify',
+    '/api/config',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
@@ -42,6 +43,7 @@ define([
 ], function (
     $,
     Sortify,
+    ApiConfig,
     Crypto,
     Framework,
     Toolbar,
@@ -2608,7 +2610,24 @@ define([
         }
 
         // In view mode, add "Submit" and "reset" buttons
+        // Embed mode is enforced so we add the title at the top and a CryptPad logo
+        // at the bottom
+        var title = framework._.title.title || framework._.title.defaultTitle;
+        $container.prepend(h('h1.cp-form-view-title', title));
+
         $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
+
+        var logo = h('div.cp-form-view-logo', [
+            h('img', {
+                src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
+                alt:'CryptPad_logo'
+            }),
+            h('span', 'CryptPad')
+        ]);
+        $(logo).click(function () {
+            framework._.sfCommon.gotoURL('/drive/');
+        });
+        $container.append(logo);
         if (!answers) {
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
         }
@@ -2672,6 +2691,22 @@ define([
         }
 
         var makeFormSettings = function () {
+            Messages.form_preview = "Preview participant page"; // XXX
+            Messages.form_geturl = "Copy participant link"; // XXX
+            var previewBtn = h('button.btn.btn-primary', Messages.form_preview);
+            var participantBtn = h('button.btn.btn-primary', Messages.form_geturl);
+            var preview = h('div.cp-forms-results-participant', [previewBtn, participantBtn]);
+            $(previewBtn).click(function () {
+                sframeChan.event('EV_OPEN_VIEW_URL');
+            });
+            $(participantBtn).click(function () {
+                sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
+                    if (success) { return void UI.log(Messages.shareSuccess); }
+                    UI.warn(Messages.error);
+                });
+            });
+
+
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
             var $results = $(resultsType);
@@ -2873,6 +2908,7 @@ define([
             //evOnChange.reg(refreshResponse);
 
             return [
+                preview,
                 endDateContainer,
                 privacyContainer,
                 resultsType,
