@@ -1115,6 +1115,7 @@ define([
             icon: h('i.cptools.cptools-form-paragraph')
         },
         radio: {
+            compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
                 values: [1,2].map(function (i) {
                     return Messages._getKey('form_defaultOption', [i]);
@@ -1186,6 +1187,7 @@ define([
             icon: h('i.cptools.cptools-form-list-radio')
         },
         multiradio: {
+            compatible: ['multiradio', 'multicheck'],
             defaultOpts: {
                 items: [1,2].map(function (i) {
                     return {
@@ -1325,6 +1327,7 @@ define([
             icon: h('i.cptools.cptools-form-grid-radio')
         },
         checkbox: {
+            compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
                 max: 3,
                 values: [1, 2, 3].map(function (i) {
@@ -1341,6 +1344,7 @@ define([
                     $(cbox).find('input').data('val', data);
                     return cbox;
                 });
+                if (!opts.max) { opts.max = TYPES.checkbox.defaultOpts.max; }
                 var tag = h('div', [
                     h('div.cp-form-max-options', Messages._getKey('form_maxOptions', [opts.max])),
                     h('div.radio-group.cp-form-type-checkbox', els)
@@ -1408,6 +1412,7 @@ define([
             icon: h('i.cptools.cptools-form-list-check')
         },
         multicheck: {
+            compatible: ['multiradio', 'multicheck'],
             defaultOpts: {
                 max: 3,
                 items: [1,2].map(function (i) {
@@ -1436,6 +1441,8 @@ define([
                     els.unshift(h('div.cp-form-multiradio-item', item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
+
+                if (!opts.max) { opts.max = TYPES.multicheck.defaultOpts.max; }
 
                 lines.forEach(function (l) {
                     $(l).find('input').on('change', function () {
@@ -1560,6 +1567,7 @@ define([
             icon: h('i.cptools.cptools-form-grid-check')
         },
         sort: {
+            compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
                 values: [1,2].map(function (i) {
                     return Messages._getKey('form_defaultOption', [i]);
@@ -2389,6 +2397,9 @@ define([
 
             APP.formBlocks.push(data);
 
+            Messages.form_preview = "Preview:"; // XXX
+            var previewDiv = h('div.cp-form-preview', Messages.form_preview);
+
             if (editable) {
                 // Drag handle
                 dragHandle = h('span.cp-form-block-drag-handle', [
@@ -2446,6 +2457,7 @@ define([
 
                 // Delete question
                 var edit = h('span');
+                var changeType;
                 var del = h('button.btn.btn-danger-alt', [
                     h('i.fa.fa-trash-o'),
                     h('span', Messages.form_delete)
@@ -2475,6 +2487,7 @@ define([
                             $(editContainer).empty();
                             $(editButtons).show();
                             $(data.tag).show();
+                            $(previewDiv).show();
                             return;
                         }
                         $(editContainer).empty();
@@ -2492,6 +2505,7 @@ define([
                     };
                     var onEdit = function (tmp) {
                         data.editing = true;
+                        $(previewDiv).hide();
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave, tmp, framework));
                         $(editButtons).hide();
@@ -2506,10 +2520,57 @@ define([
                             onEdit(temp[uid]);
                         });
                     }
+
+                    Messages.form_changeType = "Change type"; // XXX
+                    Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
+                    if (Array.isArray(model.compatible)) {
+                        changeType = h('button.btn.btn-secondary', [
+                            h('i.fa.fa-question'),
+                            h('span', Messages.form_changeType)
+                        ]);
+                        $(changeType).click(function () {
+                            var name = Util.uid();
+                            var els = model.compatible.map(function (data, i) {
+                                var text = Messages['form_type_'+data];
+                                if (!text) { return; }
+                                var radio = UI.createRadio(name, 'cp-form-changetype-'+i,
+                                           text, data===type, { mark: { tabindex:1 } });
+                                $(radio).find('input').data('val', data);
+                                return radio;
+                            });
+                            var tag = h('div.radio-group', els);
+                            var changeTypeContent = [
+                                h('p', Messages.form_changeTypeConfirm),
+                                tag
+                            ];
+                            UI.confirm(changeTypeContent, function (yes) {
+                                if (!yes) { return; }
+                                var res;
+                                els.some(function (el) {
+                                    var $i = $(el).find('input');
+                                    if (Util.isChecked($i)) {
+                                        res = $i.data('val');
+                                        return true;
+                                    }
+                                });
+                                if (res === type || !TYPES[res]) { return; }
+                                model = TYPES[res];
+                                type = res;
+                                if (!data) { data = {}; }
+                                block.type = res;
+                                framework.localChange();
+                                var $oldTag = $(data.tag);
+                                framework._.cpNfInner.chainpad.onSettle(function () {
+                                    data = model.get(block.opts, _answers, null, evOnChange);
+                                    $oldTag.before(data.tag).remove();
+                                });
+                            });
+                        });
+                    }
                 }
 
                 editButtons = h('div.cp-form-edit-buttons-container', [
-                    edit, del
+                    edit, changeType, del
                 ]);
             }
             var editableCls = editable ? ".editable" : "";
@@ -2519,6 +2580,7 @@ define([
                 APP.isEditor ? dragHandle : undefined,
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
+                    isStatic || !APP.isEditor ? undefined : previewDiv,
                     data.tag,
                     editButtons
                 ]),
