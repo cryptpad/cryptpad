@@ -50,4 +50,56 @@
             }
         }
     }
+
+    .cp-charts-cell {
+        border: 1px solid @cp_form-border;
+        display: table-cell;
+        padding: 5px 10px;
+        background: @cp_form-bg2;
+    }
+
+   .cp-form-results-type-radio {
+        .cp-form-results-type-multiradio-data {
+            display: flex;
+            flex-flow: column;
+        }
+        .cp-form-results-type-radio-data {
+            display: table-row;
+            border: 1px solid @cp_form-border;
+            & > span {
+                .cp-charts-cell();
+            }
+        }
+    }
+
+    .cp-charts.cp-bar-table, .cp-charts.cp-text-table {
+        display: table;
+        width: 100%;
+        .cp-charts-row {
+            display: table-row;
+            border: 1px solid @cp_form-border;
+            &.full {
+                display: flex;
+                flex-flow: column;
+            }
+
+            & > span {
+                .cp-charts-cell();
+                display: table-cell;
+                &.cp-value {
+                    min-width: 200px;
+                }
+                &.cp-bar-container {
+                    width: 99%;
+                    padding: 0px;
+                    position: relative;
+                    .cp-bar {
+                        position: absolute;
+                        background: @cryptpad_color_brand;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
 }

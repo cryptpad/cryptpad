@@ -519,69 +519,9 @@
                 i { margin-right: 5px; }
                 background: fade(@cryptpad_text_col, 15%);
             }
-            .cp-form-results-type-text {
-                max-height: 300px;
+            .cp-form-results-contained {
+                max-height: 350px; // enough for 10 table entries
                 overflow: auto;
-                .cp-form-results-type-text-data {
-                    padding: 5px 10px;
-                    background: @cp_form-bg2;
-                    &:not(:last-child) { margin-bottom: 1px; }
-                }
-            }
-            .cp-form-results-type-textarea-data {
-                white-space: pre-wrap;
-                padding: 5px 10px;
-                background: @cp_form-bg2;
-                &:not(:last-child) { margin-bottom: 1px; }
-            }
-
-            .cp-form-results-cell() {
-                border: 1px solid @cp_form-border;
-                display: table-cell;
-                padding: 5px 10px;
-                background: @cp_form-bg2;
-            }
-
-            .cp-form-results-type-multiradio-data {
-                .cp-mr-q {
-                    font-weight: bold;
-                    padding: 5px 10px;
-                    .cp-form-results-cell();
-                }
-                &:not(:first-child) {
-                    .cp-mr-q {
-                        margin-top: 15px;
-                    }
-                }
-            }
-
-           .cp-form-results-type-radio {
-                display: table;
-                width: 100%;
-                .cp-form-results-type-multiradio-data {
-                    display: flex;
-                    flex-flow: column;
-                }
-                .cp-form-results-type-radio-data {
-                    display: table-row;
-                    border: 1px solid @cp_form-border;
-                    & > span {
-                        .cp-form-results-cell();
-                        &.cp-value {
-                            min-width: 200px;
-                        }
-                        &.cp-bar-container {
-                            width: 99%;
-                            padding: 0px;
-                            position: relative;
-                            .cp-bar {
-                                position: absolute;
-                                background: @cryptpad_color_brand;
-                                height: 100%;
-                            }
-                        }
-                    }
-                }
             }
             .cp-form-individual {
                 background: @cp_form-bg1;
