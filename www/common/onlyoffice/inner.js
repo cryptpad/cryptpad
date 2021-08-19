@@ -726,7 +726,7 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var initialCp = major === 0;
+                var initialCp = major === 0 || !cp.hash;
                 var messages = (data.messages || []).slice(initialCp ? 0 : 1, minor);
 
                 messages.forEach(function (obj) {
@@ -1719,11 +1719,11 @@ define([
                                 // store media blobUrl and content for cache and export
                                 var mediaData = { blobUrl : blobUrl, content : "" };
                                 mediasData[data.src] = mediaData;
-                                downloadImages[name].fire();
                                 var reader = new FileReader();
                                 reader.onloadend = function () {
                                     debug("MediaData set");
                                     mediaData.content = reader.result;
+                                    downloadImages[name].fire();
                                 };
                                 reader.readAsArrayBuffer(res.content);
                                 debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
