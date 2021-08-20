@@ -356,9 +356,24 @@
 
                     .cp-form-block-question {
                         margin-bottom: 5px;
+                        display: flex;
                         .cp-form-block-question-number {
                             font-weight: bold;
                             margin-right: 10px;
+                        }
+                        .cp-form-block-question-text {
+                            flex: 1;
+                        }
+                        .cp-form-required-tag {
+                            background: fade(@cryptpad_text_col, 15%);
+                            padding: 5px;
+                            margin-top: -10px;
+                            margin-right: -10px;
+                            &.cp-is-empty {
+                                padding: 3px;
+                                border: 2px solid @cryptpad_color_red;
+                                color: @cp_form-invalid;
+                            }
                         }
                     }
                     .cp-form-block-content {
@@ -548,8 +563,8 @@
             .cp-form-creator-results-content {
                 padding-bottom: 100px;
                 .cp-form-block {
-                        background: @cp_form-bg1;
-                        padding: 10px;
+                    background: @cp_form-bg1;
+                    padding: 10px;
                 }
             }
             .cp-form-block-question {

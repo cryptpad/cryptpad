@@ -1004,6 +1004,7 @@ define([
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
+                    isEmpty: function () { return !$tag.val().trim(); },
                     getValue: function () {
                         //var invalid = $tag.is(':invalid');
                         //if (invalid) { return; }
@@ -1091,6 +1092,7 @@ define([
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
+                    isEmpty: function () { return !$text.val().trim(); },
                     getValue: function () { return $text.val().slice(0, opts.maxLength); },
                     setValue: function (val) {
                         $text.val(val);
@@ -1148,6 +1150,7 @@ define([
                 });
                 return {
                     tag: tag,
+                    isEmpty: function () { return !this.getValue(); },
                     getValue: function () {
                         var res;
                         els.some(function (el) {
@@ -1241,6 +1244,12 @@ define([
                 });
                 return {
                     tag: tag,
+                    isEmpty: function () {
+                        var v = this.getValue();
+                        return !Object.keys(v).length || Object.keys(v).some(function (uid) {
+                            return !v[uid];
+                        });
+                    },
                     getValue: function () {
                         var res = {};
                         var l = lines.slice(1);
@@ -1384,6 +1393,10 @@ define([
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
+                    isEmpty: function () {
+                        var v = this.getValue();
+                        return !v.length;
+                    },
                     getValue: function () {
                         var res = [];
                         els.forEach(function (el) {
@@ -1495,6 +1508,12 @@ define([
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
+                    isEmpty: function () {
+                        var v = this.getValue();
+                        return Object.keys(v).some(function (uid) {
+                            return !v[uid].length;
+                        });
+                    },
                     getValue: function () {
                         var res = {};
                         var l = lines.slice(1);
@@ -1659,13 +1678,14 @@ define([
                     forceFallback: true,
                     store: {
                         set: function () {
-                            evOnChange.fire();
                             reorder();
+                            evOnChange.fire();
                         }
                     }
                 });
                 return {
                     tag: tag,
+                    isEmpty: function () { return !this.getValue(); },
                     getValue: function () {
                         if (!sorted) { return; }
                         return sortable.toArray().map(function (id) {
@@ -2215,6 +2235,7 @@ define([
                 if (typeof(data.reset) === "function") { data.reset(); }
             });
             $(reset).attr('disabled', 'disabled');
+            evOnChange.fire();
         });
         var $send = $(send).click(function () {
             $send.attr('disabled', 'disabled');
@@ -2266,6 +2287,9 @@ define([
             reset = undefined;
         }
 
+        Messages.form_requiredWarning = "These questions need an answer:"; // XXX
+        var errors = h('div.cp-form-invalid-warning');
+        var $errors = $(errors);
         var invalid = h('div.cp-form-invalid-warning');
         var $invalid = $(invalid);
         if (evOnChange) {
@@ -2274,7 +2298,28 @@ define([
                 priv = metadataMgr.getPrivateData();
                 origin = priv.origin;
             }
-            evOnChange.reg(function () {
+
+            var gotoQuestion = function (el) {
+                var $el = $(el).closest('.cp-form-block');
+                var number = $el.find('.cp-form-block-question-number').text();
+                var a = h('a', {
+                    href: origin + '#' + Messages._getKey('form_invalidQuestion', [number])
+                }, Messages._getKey('form_invalidQuestion', [number]));
+                $(a).click(function (e) {
+                    e.preventDefault();
+                    if (!$el.is(':visible')) {
+                        var pages = $el.closest('.cp-form-page').index();
+                        if (APP.refreshPage) { APP.refreshPage(pages + 1); }
+                    }
+                    $el[0].scrollIntoView();
+                });
+                return h('li', a);
+            };
+
+            if (APP.checkInvalidEvt) { evOnChange.unreg(APP.checkInvalidEvt); }
+            if (APP.checkErrorEvt) { evOnChange.unreg(APP.checkErrorEvt); }
+            // Check invalid inputs
+            APP.checkInvalidEvt = function () {
                 var $container = $('div.cp-form-creator-content');
                 var $inputs = $container.find('input:invalid');
                 if (!$inputs.length) {
@@ -2284,21 +2329,7 @@ define([
                 $send.text(update ? Messages.form_updateWarning : Messages.form_submitWarning);
                 var lis = [];
                 $inputs.each(function (i, el) {
-                    var $el = $(el).closest('.cp-form-block');
-                    var number = $el.find('.cp-form-block-question-number').text();
-                    var a = h('a', {
-                        href: origin + '#' + Messages._getKey('form_invalidQuestion', [number])
-                    }, Messages._getKey('form_invalidQuestion', [number]));
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        if (!$el.is(':visible')) {
-                            var pages = $el.closest('.cp-form-page').index();
-                            if (APP.refreshPage) { APP.refreshPage(pages + 1); }
-                        }
-                        $el[0].scrollIntoView();
-                    });
-                    var li = h('li', a);
-                    lis.push(li);
+                    lis.push(gotoQuestion(el));
                 });
                 var list = h('ul', lis);
                 var content = [
@@ -2306,12 +2337,47 @@ define([
                     list
                 ];
                 $invalid.empty().append(content);
-            });
+            };
+            // Check empty required questions
+            APP.checkErrorEvt = function () {
+                if (!Array.isArray(APP.formBlocks)) { return; }
+                var form = content.form;
+                var errorBlocks = APP.formBlocks.filter(function (data) {
+                    var uid = data.uid;
+                    var block = form[uid];
+                    if (!data.isEmpty) { return; }
+                    if (!block) { return; }
+                    if (!block.opts || !block.opts.required) { return; }
+                    console.error(data.getValue());
+                    var isEmpty = data.isEmpty();
+                    var $el = $(data.tag).closest('.cp-form-block');
+                    $el.find('.cp-form-required-tag').toggleClass('cp-is-empty', isEmpty);
+                    return isEmpty;
+                });
+                if (!errorBlocks.length) {
+                    $send.removeAttr('disabled');
+                    return void $errors.empty();
+                }
+                $send.attr('disabled', 'disabled');
+                var lis = [];
+                errorBlocks.forEach(function (data) {
+                    lis.push(gotoQuestion(data.tag));
+                });
+                var list = h('ul', lis);
+                var divContent = [
+                    h('span', Messages.form_requiredWarning),
+                    list
+                ];
+                $errors.empty().append(divContent);
+            };
+            evOnChange.reg(APP.checkInvalidEvt);
+            evOnChange.reg(APP.checkErrorEvt);
             evOnChange.fire(true);
         }
 
         return h('div.cp-form-send-container', [
             invalid,
+            errors,
             cbox ? h('div.cp-form-anon-answer', [
                         cbox,
                         anonName
@@ -2465,10 +2531,17 @@ define([
             }
 
 
+            Messages.form_required = "Required"; // XXX
+            var requiredTag;
+            if (block.opts && block.opts.required) {
+                requiredTag = h('span.cp-form-required-tag', Messages.form_required);
+            }
+
             var dragHandle;
             var q = h('div.cp-form-block-question', [
                 h('span.cp-form-block-question-number', (n++)+'.'),
-                h('span', block.q || Messages.form_default)
+                h('span.cp-form-block-question-text', block.q || Messages.form_default),
+                requiredTag
             ]);
             // Static blocks don't have questions ("q" is not used) so we can decrement n
             if (isStatic) { n--; }
@@ -2479,6 +2552,38 @@ define([
 
             Messages.form_preview = "Preview:"; // XXX
             var previewDiv = h('div.cp-form-preview', Messages.form_preview);
+
+            Messages.form_required_on = "Required answer";
+            Messages.form_required_off = "Optional answer";
+            // Required radio displayed only for types that have an "isEmpty" function
+            var requiredDiv;
+            if (APP.isEditor && !isStatic && data.isEmpty) {
+                if (!block.opts) { block.opts = {}; }
+                var isRequired = Boolean(block.opts.required);
+                var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on',
+                        Messages.form_required_on, isRequired, {
+                            input: { value: 1 },
+                            mark: { tabindex:1 }
+                        });
+                var radioOff = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-off',
+                        Messages.form_required_off, !isRequired, {
+                            input: { value: 0 },
+                            mark: { tabindex:1 }
+                        });
+                var radioContainer = h('div.cp-form-required-radio', [radioOn, radioOff]);
+                requiredDiv = h('div.cp-form-required', [
+                    radioContainer
+                ]);
+                $(radioContainer).find('input[type="radio"]').on('change', function() {
+                    var val = $('input:radio[name="cp-form-required-'+uid+'"]:checked').val();
+                    val = Number(val) || 0;
+                    block.opts.required = Boolean(val);
+                    framework.localChange();
+                    framework._.cpNfInner.chainpad.onSettle(function () {
+                        UI.log(Messages.saved);
+                    });
+                });
+            }
 
             if (editable) {
                 // Drag handle
@@ -2568,6 +2673,7 @@ define([
                             $(editButtons).show();
                             $(data.tag).show();
                             $(previewDiv).show();
+                            $(requiredDiv).show();
                             return;
                         }
                         $(editContainer).empty();
@@ -2576,6 +2682,8 @@ define([
                         var $oldTag = $(data.tag);
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             $(editButtons).show();
+                            $(previewDiv).show();
+                            $(requiredDiv).show();
                             UI.log(Messages.saved);
                             _answers = getBlockAnswers(APP.answers, uid);
                             data = model.get(newOpts, _answers, null, evOnChange);
@@ -2585,6 +2693,7 @@ define([
                     };
                     var onEdit = function (tmp) {
                         data.editing = true;
+                        $(requiredDiv).hide();
                         $(previewDiv).hide();
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave, tmp, framework));
@@ -2660,7 +2769,8 @@ define([
                 APP.isEditor ? dragHandle : undefined,
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
-                    isStatic || !APP.isEditor ? undefined : previewDiv,
+                    APP.isEditor && !isStatic ? requiredDiv : undefined,
+                    APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
                     editButtons
                 ]),
@@ -2780,8 +2890,8 @@ define([
 
         if (!answers) {
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
-    }
-};
+        }
+    };
 
     var getTempFields = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
