@@ -566,7 +566,7 @@ define([
                 attributes: {
                     'class': 'fa fa-trash-o',
                 },
-                content: h('span', Messages.kanban_delete),
+                content: h('span', Messages.kanban_delete), // XXX delete key is misleading... "Remove" ? `poll_remove`, `fc_remove`
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -586,8 +586,9 @@ define([
                         }, function (err) {
                             if (err) {
                                 console.error(err);
-                                UI.warn(Messages.error);
+                                return void UI.warn(Messages.error);
                             }
+                            renderCalendar();
                         });
                     });
                 }
@@ -722,7 +723,7 @@ define([
                 if (!calendars.length) { return; }
                 var team = privateData.teams[teamId];
                 var avatar = h('span.cp-avatar');
-                common.displayAvatar($(avatar), team.avatar, team.displayName);
+                common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: team.name}, team.name)
