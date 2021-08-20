@@ -266,6 +266,7 @@ define([
                         if (obj && obj.error) { return void cb(obj); }
                         var messages = obj.messages;
                         if (!messages.length) { return void cb(); }
+                        if (obj.lastKnownHash !== answer.hash) { return void cb(); }
                         var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
                             validateKey: data.validateKey,
                             ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),

@@ -127,6 +127,10 @@
                 & > div:not(:last-child) {
                     margin-bottom: 20px;
                 }
+                .cp-forms-results-participant {
+                    display: flex;
+                    flex-flow: column;
+                }
             }
             div.cp-form-filler-container {
                 width: 300px;
@@ -311,6 +315,12 @@
                     padding: 10px;
                     &:not(:last-child) {
                         margin-bottom: 20px;
+                    }
+
+                    .cp-form-disabled {
+                        .cp-form-poll-choice, .cp-form-type-sort {
+                            cursor: not-allowed !important;
+                        }
                     }
 
                     .cp-form-preview {
@@ -501,6 +511,12 @@
                     }
                 }
             }
+        }
+        div.cp-form-creator-answered {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
         }
         div.cp-form-creator-results {
             display: flex;
