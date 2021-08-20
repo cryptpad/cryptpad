@@ -3244,7 +3244,8 @@ define([
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey,
-                    privateKey: key
+                    privateKey: key,
+                    cantEdit: content.answers.cantEdit
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
@@ -3263,7 +3264,8 @@ define([
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
-                    publicKey: content.answers.publicKey
+                    publicKey: content.answers.publicKey,
+                    cantEdit: content.answers.cantEdit
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
@@ -3289,6 +3291,7 @@ define([
                     validateKey: content.answers.validateKey,
                     publicKey: content.answers.publicKey,
                     privateKey: content.answers.privateKey,
+                    cantEdit: content.answers.cantEdit
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }

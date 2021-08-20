@@ -221,6 +221,8 @@ define([
                                 delete results[parsed._proof.key];
                             }
                         }
+                        // XXX If "allow edition" is disabled, don't override here?
+                        // if (data.cantEdit && results[senderCurve]) { return; }
                         results[senderCurve] = {
                             msg: parsed,
                             hash: hash,
