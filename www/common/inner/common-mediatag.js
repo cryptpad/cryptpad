@@ -80,7 +80,7 @@ define([
     };
 
     // https://emojipedia.org/nature/
-    var ANIMALS = [ '🙈', '🦀', '🐞', '🦋', '🐬', '🐋', '🐢', '🦉', '🦆', '🐧', '🦡', '🦘', '🦨', '🦦', '🦥', '🐼', '🐻', '🦝', '🦄', '🐄', '🐷', '🐐', '🦙', '🦒', '🐘', '🦏', '🐁', '🐹', '🐰', '🦫', '🦔', '🐨'];
+    var ANIMALS = '🙈 🦀 🐞 🦋 🐬 🐋 🐢 🦉 🦆 🐧 🦡 🦘 🦨 🦦 🦥 🐼 🐻 🦝 🦓 🐄 🐷 🐐 🦙 🦒 🐘 🦏 🐁 🐹 🐰 🦫 🦔 🐨 🐱 🐺 👺 👹 👽 👾 🤖'.split(/\s+/);
 
     var getRandomAnimal = function () {
         return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
@@ -94,14 +94,13 @@ define([
         return ANIMALS[seed % ANIMALS.length];
     };
 
+    var animal_avatars = {};
     MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var displayDefault = function () {
-            if (avatars[uid]) {
-                var nodes = $.parseHTML(avatars[uid]);
-                var $el = $(nodes[0]);
-                $container.append($el);
-                return void cb($el);
+            var animal_avatar;
+            if (uid && animal_avatars[uid]) {
+                animal_avatar = animal_avatars[uid]
             }
             var animal = false;
 
@@ -109,7 +108,11 @@ define([
             var parts = name.split(/\s+/);
             var text;
             if (name === Messages.anonymous) {
-                text =  getPseudorandomAnimal(uid);
+                if (animal_avatar) {
+                    text = animal_avatar;
+                } else {
+                    text = animal_avatar = getPseudorandomAnimal(uid);
+                }
                 animal = true;
             } else if (parts.length > 1) {
                 text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
@@ -120,7 +123,9 @@ define([
 
             var $avatar = $('<span>', {'class': 'cp-avatar-default' + (animal? ' animal': '')}).text(text);
             $container.append($avatar);
-            avatars[uid] = $avatar[0].outerHTML;
+            if (uid && animal) {
+                animal_avatars[uid] = animal_avatar;
+            }
             if (cb) { cb(); }
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
