@@ -2147,11 +2147,12 @@ define([
             $container.hide();
             if (viewOnly) {
                 $formContainer.find('.cp-form-send-container .cp-open').hide();
-                Object.keys(APP.blocks).forEach(function (uid) {
-                    var b = APP.blocks[uid];
-                    if (!b.setEditable) { return; }
-                    b.setEditable(false);
-                });
+                if (Array.isArray(APP.formBlocks)) {
+                    APP.formBlocks.forEach(function (b) {
+                        if (!b.setEditable) { return; }
+                        b.setEditable(false);
+                    });
+                }
             }
         });
 
@@ -2453,7 +2454,7 @@ define([
                 name = user.name;
             }
 
-            var data = APP.blocks[uid] = model.get(block.opts, _answers, name, evOnChange);
+            var data = model.get(block.opts, _answers, name, evOnChange);
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -2577,7 +2578,7 @@ define([
                             $(editButtons).show();
                             UI.log(Messages.saved);
                             _answers = getBlockAnswers(APP.answers, uid);
-                            data = APP.blocks[uid] = model.get(newOpts, _answers, null, evOnChange);
+                            data = model.get(newOpts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
                         });
@@ -2640,7 +2641,7 @@ define([
                                 framework.localChange();
                                 var $oldTag = $(data.tag);
                                 framework._.cpNfInner.chainpad.onSettle(function () {
-                                    data = APP.blocks[uid] = model.get(block.opts, _answers, null, evOnChange);
+                                    data = model.get(block.opts, _answers, null, evOnChange);
                                     $oldTag.before(data.tag).remove();
                                 });
                             });
