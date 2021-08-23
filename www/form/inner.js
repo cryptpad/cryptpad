@@ -259,9 +259,9 @@ define([
             if (placeholder) {
                 input.placeholder = val;
                 input.value = '';
-                $(input).change(function () {
-                    input.placeholder = '';
-                    $(input).off(change);
+                $(input).on('keypress', function () {
+                    $(input).removeAttr('placeholder');
+                    $(input).off('keypress');
                 });
             }
             if (uid) { $(input).data('uid', uid); }
@@ -1204,7 +1204,7 @@ define([
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
-                    if (!answer || !answer.trim()) { return empty++; }
+                    if (!answer || !answer.trim || !answer.trim()) { return empty++; }
                     Util.inc(count, answer);
                 });
 
@@ -1271,6 +1271,7 @@ define([
                             $el.find('input').each(function (i, input) {
                                 var $i = $(input);
                                 if (res[uid]) { return; }
+                                res[uid] = undefined;
                                 if (Util.isChecked($i)) { res[uid] = $i.data('val'); }
                             });
                         });
@@ -1315,7 +1316,7 @@ define([
                     Object.keys(answer).forEach(function (q_uid) {
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
-                        if (!res || !res.trim()) { return; }
+                        if (!res || !res.trim || !res.trim()) { return; }
                         Util.inc(c, res);
                     });
                 });
@@ -1420,7 +1421,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () {
+                        $(tag).find('input').removeAttr('checked');
+                        checkDisabled();
+                    },
                     setEditable: function (state) {
                         if (state) { checkDisabled(); }
                         else { $tag.find('input').attr('disabled', 'disabled'); }
@@ -1452,6 +1456,7 @@ define([
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
+                    if (answer && typeof(answer) === "string") { answer = [answer]; }
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (val) {
                         Util.inc(count, val);
@@ -1542,7 +1547,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () {
+                        $(tag).find('input').removeAttr('checked');
+                        lines.forEach(checkDisabled);
+                    },
                     setEditable: function (state) {
                         if (state) { lines.forEach(checkDisabled); }
                         else { $(tag).find('input').attr('disabled', 'disabled'); }
@@ -1582,6 +1590,7 @@ define([
                     Object.keys(answer).forEach(function (q_uid) {
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
+                        if (res && typeof(res) === "string") { res = [res]; }
                         if (!Array.isArray(res) || !res.length) { return; }
                         res.forEach(function (v) {
                             Util.inc(c, v);
@@ -1745,6 +1754,7 @@ define([
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
+                    if (answer && typeof(answer) === "string") { answer = [answer]; }
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (el, i) {
                         var score = l - i;
@@ -1769,6 +1779,7 @@ define([
                 if (!opts) { opts = TYPES.poll.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
 
+                if (APP.isEditor) { answers = {}; }
                 var lines = makePollTable(answers, opts, false);
 
                 var disabled = false;
