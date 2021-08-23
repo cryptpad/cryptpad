@@ -1138,7 +1138,7 @@ define([
                 var name = Util.uid();
                 var els = opts.values.map(function (data, i) {
                     var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
-                               data, false, { mark: { tabindex:1 } });
+                               data, false, {});
                     $(radio).find('input').data('val', data);
                     return radio;
                 });
@@ -1223,7 +1223,7 @@ define([
                     var item = itemData.v;
                     var els = opts.values.map(function (data, i) {
                         var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
-                                   '', false, { mark: { tabindex:1 } });
+                                   '', false, {});
                         $(radio).find('input').data('uid', name);
                         $(radio).find('input').data('val', data);
                         return radio;
@@ -1367,7 +1367,7 @@ define([
                 var name = Util.uid();
                 var els = opts.values.map(function (data, i) {
                     var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
-                               data, false, { mark: { tabindex:1 } });
+                               data, false, {});
                     $(cbox).find('input').data('val', data);
                     return cbox;
                 });
@@ -1472,7 +1472,7 @@ define([
                     var item = itemData.v;
                     var els = opts.values.map(function (data, i) {
                         var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
-                                   '', false, { mark: { tabindex:1 } });
+                                   '', false, {});
                         $(cbox).find('input').data('uid', name);
                         $(cbox).find('input').data('val', data);
                         return cbox;
@@ -2206,7 +2206,7 @@ define([
         var cbox;
         var anonName, $anonName;
         cbox = UI.createCheckbox('cp-form-anonymous',
-                   Messages.form_anonymousBox, true, { mark: { tabindex:1 } });
+                   Messages.form_anonymousBox, true, {});
         var $anonBox = $(cbox).find('input');
         if (loggedIn) {
             if (!content.answers.anonymous || APP.cantAnon) {
@@ -2562,12 +2562,10 @@ define([
                 var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on',
                         Messages.form_required_on, isRequired, {
                             input: { value: 1 },
-                            mark: { tabindex:1 }
                         });
                 var radioOff = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-off',
                         Messages.form_required_off, !isRequired, {
                             input: { value: 0 },
-                            mark: { tabindex:1 }
                         });
                 var radioContainer = h('div.cp-form-required-radio', [radioOn, radioOff]);
                 requiredDiv = h('div.cp-form-required', [
@@ -2722,7 +2720,7 @@ define([
                                 var text = Messages['form_type_'+data];
                                 if (!text) { return; }
                                 var radio = UI.createRadio(name, 'cp-form-changetype-'+i,
-                                           text, data===type, { mark: { tabindex:1 } });
+                                           text, data===type, {});
                                 $(radio).find('input').data('val', data);
                                 return radio;
                             });
@@ -3078,12 +3076,10 @@ define([
                 var radioOn = UI.createRadio('cp-form-privacy', 'cp-form-privacy-on',
                         Messages.form_anonymous_on, Boolean(anonymous), {
                             input: { value: 1 },
-                            mark: { tabindex:1 }
                         });
                 var radioOff = UI.createRadio('cp-form-privacy', 'cp-form-privacy-off',
                         Messages.form_anonymous_off, !anonymous, {
                             input: { value: 0 },
-                            mark: { tabindex:1 }
                         });
                 var radioContainer = h('div.cp-form-privacy-radio', [radioOn, radioOff]);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
@@ -3110,12 +3106,10 @@ define([
                 var radioOn = UI.createRadio('cp-form-editable', 'cp-form-editable-on',
                         Messages.form_anonymous_on, Boolean(editable), {
                             input: { value: 1 },
-                            mark: { tabindex:1 }
                         });
                 var radioOff = UI.createRadio('cp-form-editable', 'cp-form-editable-off',
                         Messages.form_anonymous_off, !editable, {
                             input: { value: 0 },
-                            mark: { tabindex:1 }
                         });
                 var radioContainer = h('div.cp-form-editable-radio', [radioOn, radioOff]);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
