@@ -1059,7 +1059,7 @@ define([
                 maxLength: 1000
             },
             get: function (opts, a, n, evOnChange) {
-                if (!opts) { opts = TYPES.textarea.defaultOpts; }
+                if (!opts || typeof(opts.maxLength) === "undefined") { opts = TYPES.textarea.defaultOpts; }
                 var text = h('textarea', {maxlength: opts.maxLength});
                 var $text = $(text);
                 var charCount = h('div.cp-form-type-textarea-charcount');
@@ -1099,8 +1099,8 @@ define([
                         updateChar();
                     },
                     setEditable: function (state) {
-                        if (state) { $(tag).removeAttr('disabled'); }
-                        else { $(tag).attr('disabled', 'disabled'); }
+                        if (state) { $(tag).find('textarea').removeAttr('disabled'); }
+                        else { $(tag).find('textarea').attr('disabled', 'disabled'); }
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
@@ -2348,7 +2348,6 @@ define([
                     if (!data.isEmpty) { return; }
                     if (!block) { return; }
                     if (!block.opts || !block.opts.required) { return; }
-                    console.error(data.getValue());
                     var isEmpty = data.isEmpty();
                     var $el = $(data.tag).closest('.cp-form-block');
                     $el.find('.cp-form-required-tag').toggleClass('cp-is-empty', isEmpty);
