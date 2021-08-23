@@ -1271,6 +1271,7 @@ define([
                             $el.find('input').each(function (i, input) {
                                 var $i = $(input);
                                 if (res[uid]) { return; }
+                                res[uid] = undefined;
                                 if (Util.isChecked($i)) { res[uid] = $i.data('val'); }
                             });
                         });
@@ -1420,7 +1421,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () {
+                        $(tag).find('input').removeAttr('checked');
+                        checkDisabled();
+                    },
                     setEditable: function (state) {
                         if (state) { checkDisabled(); }
                         else { $tag.find('input').attr('disabled', 'disabled'); }
@@ -1543,7 +1547,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () {
+                        $(tag).find('input').removeAttr('checked');
+                        lines.forEach(checkDisabled);
+                    },
                     setEditable: function (state) {
                         if (state) { lines.forEach(checkDisabled); }
                         else { $(tag).find('input').attr('disabled', 'disabled'); }
