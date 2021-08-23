@@ -2573,7 +2573,7 @@ define([
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
-                if (!block.opts) { block.opts = {}; }
+                if (!block.opts) { block.opts = TYPES[type].defaultOpts; }
                 var isRequired = Boolean(block.opts.required);
                 var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on',
                         Messages.form_required_on, isRequired, {
