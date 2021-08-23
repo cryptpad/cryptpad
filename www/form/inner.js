@@ -259,9 +259,9 @@ define([
             if (placeholder) {
                 input.placeholder = val;
                 input.value = '';
-                $(input).change(function () {
-                    input.placeholder = '';
-                    $(input).off(change);
+                $(input).on('keypress', function () {
+                    $(input).removeAttr('placeholder');
+                    $(input).off('keypress');
                 });
             }
             if (uid) { $(input).data('uid', uid); }
