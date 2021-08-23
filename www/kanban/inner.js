@@ -563,12 +563,12 @@ define([
                 "12": {
                     "id": 12,
                     "title": Messages.kanban_working,
-                    "item": [3, 4]
+                    "item": [],
                 },
                 "13": {
                     "id": 13,
                     "title": Messages.kanban_done,
-                    "item": [5, 6]
+                    "item": [],
                 }
             },
             items: items
