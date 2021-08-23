@@ -2950,10 +2950,16 @@ define([
         }
 
         var makeFormSettings = function () {
-            Messages.form_preview = "Preview participant page"; // XXX
-            Messages.form_geturl = "Copy participant link"; // XXX
-            var previewBtn = h('button.btn.btn-primary', Messages.form_preview);
-            var participantBtn = h('button.btn.btn-primary', Messages.form_geturl);
+            Messages.form_preview = "Preview form"; // XXX
+            Messages.form_geturl = "Copy link"; // XXX
+            var previewBtn = h('button.btn.btn-primary', [
+                h('i.fa.fa-eye'),
+                Messages.form_preview
+            ]);
+            var participantBtn = h('button.btn.btn-primary',[
+                h('i.fa.fa-link'),
+                Messages.form_geturl
+            ]);
             var preview = h('div.cp-forms-results-participant', [previewBtn, participantBtn]);
             $(previewBtn).click(function () {
                 sframeChan.event('EV_OPEN_VIEW_URL');
