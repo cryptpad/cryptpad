@@ -189,7 +189,7 @@ define([
             saveAndCancel
         ];
     };
-    var editOptions = function (v, setCursorGetter, cb, tmp) {
+    var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var add = h('button.btn.btn-secondary', [
             h('i.fa.fa-plus'),
             h('span', Messages.form_add_option)
@@ -254,8 +254,16 @@ define([
         // Show existing options
         var $add, $addItem;
         var addMultiple;
-        var getOption = function (val, isItem, uid) {
+        var getOption = function (val, placeholder, isItem, uid) {
             var input = h('input', {value:val});
+            if (placeholder) {
+                input.placeholder = val;
+                input.value = '';
+                $(input).change(function () {
+                    input.placeholder = '';
+                    $(input).off(change);
+                });
+            }
             if (uid) { $(input).data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
@@ -316,7 +324,7 @@ define([
             });
             return el;
         };
-        var inputs = v.values.map(function (val) { return getOption(val, false); });
+        var inputs = v.values.map(function (val) { return getOption(val, isDefaultOpts, false); });
         inputs.push(add);
 
         var container = h('div.cp-form-edit-block', inputs);
@@ -332,7 +340,7 @@ define([
         var containerItems;
         if (v.items) {
             var inputsItems = v.items.map(function (itemData) {
-                return getOption(itemData.v, true, itemData.uid);
+                return getOption(itemData.v, isDefaultOpts, true, itemData.uid);
             });
             inputsItems.push(addItem);
             containerItems = h('div.cp-form-edit-block', inputsItems);
@@ -385,7 +393,7 @@ define([
             });
             $(addMultipleButton).click(function () {
                 multiplePickr.selectedDates.some(function (date) {
-                    $add.before(getOption(date, false));
+                    $add.before(getOption(date, false, false));
                     var l = $container.find('input').length;
                     $(maxInput).attr('max', l);
                     if (l >= MAX_OPTIONS) {
@@ -440,7 +448,7 @@ define([
         // "Add option" button handler
         $add = $(add).click(function () {
             var txt = v.type ? '' : Messages.form_newOption;
-            $add.before(getOption(txt, false));
+            $add.before(getOption(txt, true, false));
             var l = $container.find('input').length;
             $(maxInput).attr('max', l);
             if (l >= MAX_OPTIONS) { $add.hide(); }
@@ -448,7 +456,7 @@ define([
 
         // If multiline block, handle "Add item" button
         $addItem = $(addItem).click(function () {
-            $addItem.before(getOption(Messages.form_newItem, true, Util.uid()));
+            $addItem.before(getOption(Messages.form_newItem, true, true, Util.uid()));
             if ($(containerItems).find('input').length >= MAX_ITEMS) { $addItem.hide(); }
         });
         if ($container.find('input').length >= MAX_OPTIONS) { $add.hide(); }
@@ -460,12 +468,13 @@ define([
             var active = document.activeElement;
             var cursor = {};
             $container.find('input').each(function (i, el) {
+                var val = $(el).val() || el.placeholder || '';
                 if (el === active && !el._flatpickr) {
-                    cursor.el= $(el).val();
+                    cursor.el = val;
                     cursor.start = el.selectionStart;
                     cursor.end = el.selectionEnd;
                 }
-                values.push($(el).val());
+                values.push(val);
             });
             if (v.type === "day") {
                 var dayPickr = $(calendarView).find('input')[0]._flatpickr;
@@ -492,9 +501,10 @@ define([
                         cursor.start = el.selectionStart;
                         cursor.end = el.selectionEnd;
                     }
+                    var val = $(el).val() || el.placeholder || '';
                     items.push({
                         uid: $(el).data('uid'),
-                        v: $(el).val()
+                        v: val
                     });
                 });
                 _content.items = items;
@@ -517,7 +527,7 @@ define([
                 });
             } else {
                 $container.find('input').each(function (i, el) {
-                    var val = $(el).val().trim();
+                    var val = ($(el).val() || el.placeholder || '').trim();
                     if (v.type === "day" || v.type === "time") {
                         var f = el._flatpickr;
                         if (f && f.selectedDates && f.selectedDates.length) {
@@ -538,7 +548,7 @@ define([
             if (v.items) {
                 var items = [];
                 $(containerItems).find('input').each(function (i, el) {
-                    var val = $(el).val().trim();
+                    var val = ($(el).val() || el.placeholder || '').trim();
                     var uid = $(el).data('uid');
                     if (!items.some(function (i) { return i.uid === uid; })) {
                         items.push({
@@ -1133,12 +1143,13 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
+                var isDefaultOpts = !opts;
                 if (!opts) { opts = TYPES.radio.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
                 var els = opts.values.map(function (data, i) {
                     var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
-                               data, false, { mark: { tabindex:1 } });
+                               data, false, {});
                     $(radio).find('input').data('val', data);
                     return radio;
                 });
@@ -1169,7 +1180,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
+                        return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
@@ -1216,6 +1227,7 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
+                var isDefaultOpts = !opts;
                 if (!opts) { opts = TYPES.multiradio.defaultOpts; }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
@@ -1223,7 +1235,7 @@ define([
                     var item = itemData.v;
                     var els = opts.values.map(function (data, i) {
                         var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
-                                   '', false, { mark: { tabindex:1 } });
+                                   '', false, {});
                         $(radio).find('input').data('uid', name);
                         $(radio).find('input').data('val', data);
                         return radio;
@@ -1271,7 +1283,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
+                        return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
@@ -1362,12 +1374,13 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
+                var isDefaultOpts = !opts;
                 if (!opts) { opts = TYPES.checkbox.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
                 var els = opts.values.map(function (data, i) {
                     var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
-                               data, false, { mark: { tabindex:1 } });
+                               data, false, {});
                     $(cbox).find('input').data('val', data);
                     return cbox;
                 });
@@ -1414,7 +1427,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
+                        return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
@@ -1465,6 +1478,7 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
+                var isDefaultOpts = !opts;
                 if (!opts) { opts = TYPES.multicheck.defaultOpts; }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
@@ -1472,7 +1486,7 @@ define([
                     var item = itemData.v;
                     var els = opts.values.map(function (data, i) {
                         var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
-                                   '', false, { mark: { tabindex:1 } });
+                                   '', false, {});
                         $(cbox).find('input').data('uid', name);
                         $(cbox).find('input').data('val', data);
                         return cbox;
@@ -1535,7 +1549,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
+                        return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
@@ -1628,6 +1642,7 @@ define([
                 })
             },
             get: function (opts, a, n, evOnChange) {
+                var isDefaultOpts = !opts;
                 if (!opts) { opts = TYPES.sort.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var map = {};
@@ -1706,7 +1721,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
+                        return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
@@ -1750,6 +1765,7 @@ define([
                 })
             },
             get: function (opts, answers, username, evOnChange) {
+                var isDefaultOpts = !opts;
                 if (!opts) { opts = TYPES.poll.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
 
@@ -1827,7 +1843,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-                        return editOptions(v, setCursorGetter, cb, tmp);
+                        return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (res) {
@@ -2206,7 +2222,7 @@ define([
         var cbox;
         var anonName, $anonName;
         cbox = UI.createCheckbox('cp-form-anonymous',
-                   Messages.form_anonymousBox, true, { mark: { tabindex:1 } });
+                   Messages.form_anonymousBox, true, {});
         var $anonBox = $(cbox).find('input');
         if (loggedIn) {
             if (!content.answers.anonymous || APP.cantAnon) {
@@ -2557,17 +2573,15 @@ define([
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
-                if (!block.opts) { block.opts = {}; }
+                if (!block.opts) { block.opts = TYPES[type].defaultOpts; }
                 var isRequired = Boolean(block.opts.required);
                 var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on',
                         Messages.form_required_on, isRequired, {
                             input: { value: 1 },
-                            mark: { tabindex:1 }
                         });
                 var radioOff = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-off',
                         Messages.form_required_off, !isRequired, {
                             input: { value: 0 },
-                            mark: { tabindex:1 }
                         });
                 var radioContainer = h('div.cp-form-required-radio', [radioOn, radioOff]);
                 requiredDiv = h('div.cp-form-required', [
@@ -2722,7 +2736,7 @@ define([
                                 var text = Messages['form_type_'+data];
                                 if (!text) { return; }
                                 var radio = UI.createRadio(name, 'cp-form-changetype-'+i,
-                                           text, data===type, { mark: { tabindex:1 } });
+                                           text, data===type, {});
                                 $(radio).find('input').data('val', data);
                                 return radio;
                             });
@@ -3084,12 +3098,10 @@ define([
                 var radioOn = UI.createRadio('cp-form-privacy', 'cp-form-privacy-on',
                         Messages.form_anonymous_on, Boolean(anonymous), {
                             input: { value: 1 },
-                            mark: { tabindex:1 }
                         });
                 var radioOff = UI.createRadio('cp-form-privacy', 'cp-form-privacy-off',
                         Messages.form_anonymous_off, !anonymous, {
                             input: { value: 0 },
-                            mark: { tabindex:1 }
                         });
                 var radioContainer = h('div.cp-form-privacy-radio', [radioOn, radioOff]);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
@@ -3116,12 +3128,10 @@ define([
                 var radioOn = UI.createRadio('cp-form-editable', 'cp-form-editable-on',
                         Messages.form_anonymous_on, Boolean(editable), {
                             input: { value: 1 },
-                            mark: { tabindex:1 }
                         });
                 var radioOff = UI.createRadio('cp-form-editable', 'cp-form-editable-off',
                         Messages.form_anonymous_off, !editable, {
                             input: { value: 0 },
-                            mark: { tabindex:1 }
                         });
                 var radioContainer = h('div.cp-form-editable-radio', [radioOn, radioOff]);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
