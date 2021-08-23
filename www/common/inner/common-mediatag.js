@@ -100,7 +100,7 @@ define([
         var displayDefault = function () {
             var animal_avatar;
             if (uid && animal_avatars[uid]) {
-                animal_avatar = animal_avatars[uid]
+                animal_avatar = animal_avatars[uid];
             }
             var animal = false;
 
