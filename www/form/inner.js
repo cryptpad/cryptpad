@@ -1204,7 +1204,7 @@ define([
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
-                    if (!answer || !answer.trim()) { return empty++; }
+                    if (!answer || !answer.trim || !answer.trim()) { return empty++; }
                     Util.inc(count, answer);
                 });
 
@@ -1315,7 +1315,7 @@ define([
                     Object.keys(answer).forEach(function (q_uid) {
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
-                        if (!res || !res.trim()) { return; }
+                        if (!res || !res.trim || !res.trim()) { return; }
                         Util.inc(c, res);
                     });
                 });
@@ -1452,6 +1452,7 @@ define([
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
+                    if (answer && typeof(answer) === "string") { answer = [answer]; }
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (val) {
                         Util.inc(count, val);
@@ -1582,6 +1583,7 @@ define([
                     Object.keys(answer).forEach(function (q_uid) {
                         var c = count[q_uid] = count[q_uid] || {};
                         var res = answer[q_uid];
+                        if (res && typeof(res) === "string") { res = [res]; }
                         if (!Array.isArray(res) || !res.length) { return; }
                         res.forEach(function (v) {
                             Util.inc(c, v);
@@ -1745,6 +1747,7 @@ define([
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
+                    if (answer && typeof(answer) === "string") { answer = [answer]; }
                     if (!Array.isArray(answer) || !answer.length) { return empty++; }
                     answer.forEach(function (el, i) {
                         var score = l - i;
@@ -1769,6 +1772,7 @@ define([
                 if (!opts) { opts = TYPES.poll.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
 
+                if (APP.isEditor) { answers = {}; }
                 var lines = makePollTable(answers, opts, false);
 
                 var disabled = false;
