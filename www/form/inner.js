@@ -2223,6 +2223,10 @@ define([
         });
         return results;
     };
+
+    Messages.form_anonAnswer = "All answers to this form are anonymous"; // XXX
+    Messages.form_authAnswer = "You can't answer anonymously to this form"; // XXX
+
     var makeFormControls = function (framework, content, update, evOnChange) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
@@ -2234,23 +2238,45 @@ define([
         var anonName, $anonName;
         cbox = UI.createCheckbox('cp-form-anonymous',
                    Messages.form_anonymousBox, true, {});
-        var $anonBox = $(cbox).find('input');
-        if (loggedIn) {
-            if (!content.answers.anonymous || APP.cantAnon) {
-                $(cbox).hide().find('input').attr('disabled', 'disabled').prop('checked', false);
+        var $cbox = $(cbox);
+        var $anonBox = $cbox.find('input');
+        if (content.answers.makeAnonymous) {
+            // If we make all answers anonymous, hide the checkbox and display a message
+            $cbox.hide();
+            $anonBox.attr('disabled', 'disabled').prop('checked', true);
+            setTimeout(function () {
+                // We need to wait for cbox to be added into the DOM before using .after()
+                $cbox.after(h('div.alert.alert-info', Messages.form_anonAnswer));
+            });
+        } else if (content.answers.anonymous) {
+            // Answers aren't anonymous and guests are allowed
+            // Guests can set a username and logged in users can answer anonymously
+            if (!loggedIn) {
+                anonName = h('div.cp-form-anon-answer-input', [
+                    Messages.form_answerAs,
+                    h('input', {
+                        value: user.name || '',
+                        placeholder: Messages.form_anonName
+                    })
+                ]);
+                $anonName = $(anonName).hide();
+                $anonBox.on('change', function () {
+                    if (Util.isChecked($anonBox)) { $anonName.hide(); }
+                    else { $anonName.show(); }
+                });
+            } else if (APP.cantAnon) {
+                // You've already answered with your credentials
+                $cbox.hide();
+                $anonBox.attr('disabled', 'disabled').prop('checked', false);
             }
         } else {
-            anonName = h('div.cp-form-anon-answer-input', [
-                Messages.form_answerAs,
-                h('input', {
-                    value: user.name || '',
-                    placeholder: Messages.form_anonName
-                })
-            ]);
-            $anonName = $(anonName).hide();
-            $anonBox.on('change', function () {
-                if (Util.isChecked($anonBox)) { $anonName.hide(); }
-                else { $anonName.show(); }
+            // Answers don't have to be anonymous and only logged in users can answer
+            // ==> they have to answer with their keys so we know their name too
+            $cbox.hide();
+            $anonBox.attr('disabled', 'disabled').prop('checked', false);
+            setTimeout(function () {
+                // We need to wait for cbox to be added into the DOM before using .after()
+                $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
         }
 
@@ -2270,7 +2296,7 @@ define([
             if (!results) { return; }
 
             var user = metadataMgr.getUserData();
-            if (!Util.isChecked($anonBox)) {
+            if (!Util.isChecked($anonBox) && !content.answers.makeAnonymous) {
                 results._userdata = loggedIn ? {
                     avatar: user.avatar,
                     name: user.name,
@@ -2286,7 +2312,8 @@ define([
             sframeChan.query('Q_FORM_SUBMIT', {
                 mailbox: content.answers,
                 results: results,
-                anonymous: !loggedIn || Util.isChecked($(cbox).find('input'))
+                anonymous: content.answers.makeAnonymous || !loggedIn
+                            || (Util.isChecked($anonBox) && !APP.cantAnon) // use ephemeral keys
             }, function (err, data) {
                 $send.attr('disabled', 'disabled');
                 if (err || (data && data.error)) {
@@ -2305,6 +2332,7 @@ define([
                 $send.removeAttr('disabled');
                 //UI.alert(Messages.form_sent); // XXX not needed anymore?
                 $send.text(Messages.form_update);
+                APP.hasAnswered = true;
                 showAnsweredPage(framework, content, { '_time': +new Date() });
             });
         });
@@ -2343,10 +2371,8 @@ define([
                 return h('li', a);
             };
 
-            if (APP.checkInvalidEvt) { evOnChange.unreg(APP.checkInvalidEvt); }
-            if (APP.checkErrorEvt) { evOnChange.unreg(APP.checkErrorEvt); }
             // Check invalid inputs
-            APP.checkInvalidEvt = function () {
+            evOnChange.reg(function () {
                 var $container = $('div.cp-form-creator-content');
                 var $inputs = $container.find('input:invalid');
                 if (!$inputs.length) {
@@ -2364,9 +2390,9 @@ define([
                     list
                 ];
                 $invalid.empty().append(content);
-            };
+            });
             // Check empty required questions
-            APP.checkErrorEvt = function () {
+            evOnChange.reg(function () {
                 if (!Array.isArray(APP.formBlocks)) { return; }
                 var form = content.form;
                 var errorBlocks = APP.formBlocks.filter(function (data) {
@@ -2395,9 +2421,7 @@ define([
                     list
                 ];
                 $errors.empty().append(divContent);
-            };
-            evOnChange.reg(APP.checkInvalidEvt);
-            evOnChange.reg(APP.checkErrorEvt);
+            });
             evOnChange.fire(true);
         }
 
@@ -2886,7 +2910,7 @@ define([
         }
 
         // If the form is already submitted, show an info message
-        if (answers) {
+        if (APP.hasAnswered) {
             showAnsweredPage(framework, content, answers);
             $container.prepend(h('div.alert.alert-info',
                 Messages._getKey('form_alreadyAnswered', [
@@ -2895,6 +2919,20 @@ define([
 
         // In view mode, add "Submit" and "reset" buttons
         $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
+
+        // In view mode, tell the user and answers are forced to be anonymous or authenticated
+        if (!APP.isEditor) {
+            var infoTxt;
+            var loggedIn = framework._.sfCommon.isLoggedIn();
+            if (content.answers.makeAnonymous) {
+                infoTxt = Messages.form_anonAnswer;
+            } else if (!content.answers.anonymous && loggedIn) {
+                infoTxt = Messages.form_authAnswer;
+            }
+            if (infoTxt) {
+                $container.prepend(h('div.alert.alert-info', infoTxt));
+            }
+        }
 
         // Embed mode is enforced so we add the title at the top and a CryptPad logo
         // at the bottom
@@ -3094,7 +3132,30 @@ define([
             };
             refreshResponse();
 
-            // Allow anonymous answers
+            // Make answers anonymous
+            Messages.form_makeAnon = "Make all answers anonymous"; // XXX
+            var anonContainer = h('div.cp-form-anon-container');
+            var $anon = $(anonContainer);
+            var refreshAnon = function () {
+                $anon.empty();
+                var anonymous = content.answers.makeAnonymous;
+                var cbox = UI.createCheckbox('cp-form-make-anon',
+                           Messages.form_makeAnon, anonymous, {});
+                var radioContainer = h('div.cp-form-anon-radio', [cbox]);
+                var $r = $(radioContainer).find('input').on('change', function() {
+                    var val = Util.isChecked($r);
+                    content.answers.makeAnonymous = val;
+                    framework.localChange();
+                    framework._.cpNfInner.chainpad.onSettle(function () {
+                        UI.log(Messages.saved);
+                    });
+                });
+                $anon.append(h('div.cp-form-actions', radioContainer));
+            };
+            refreshAnon();
+
+            // XXX UPDATE KEYS "form_anonyous_on", "form_anonymous_off" and "form_anonymous"
+            // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
             var refreshPrivacy = function () {
@@ -3216,6 +3277,7 @@ define([
 
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
+            evOnChange.reg(refreshAnon);
             evOnChange.reg(refreshEditable);
             evOnChange.reg(refreshEndDate);
             //evOnChange.reg(refreshResponse);
@@ -3224,6 +3286,7 @@ define([
                 preview,
                 endDateContainer,
                 privacyContainer,
+                anonContainer,
                 editableContainer,
                 resultsType,
                 responseMsg
@@ -3414,7 +3477,7 @@ define([
             }
 
             // If the results are public and there is at least one doodle, fetch the results now
-            if (0 && content.answers.privateKey && Object.keys(content.form).some(function (uid) {
+            if (content.answers.privateKey && Object.keys(content.form).some(function (uid) {
                     return content.form[uid].type === "poll";
                 })) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
@@ -3444,6 +3507,7 @@ define([
                     if (answers) {
                         var myAnswersObj = answers[curve1] || answers[curve2] || undefined;
                         if (myAnswersObj) {
+                            APP.hasAnswered = true;
                             myAnswers = myAnswersObj.msg;
                             myAnswers._time = myAnswersObj.time;
                         }
@@ -3478,6 +3542,7 @@ define([
                 var answers;
                 if (obj && !obj.error) {
                     answers = obj;
+                    APP.hasAnswered = true;
                     // If we have a non-anon answer, we can't answer anonymously later
                     if (!obj._isAnon) { APP.cantAnon = true; }
 
