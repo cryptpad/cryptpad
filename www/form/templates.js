@@ -11,7 +11,7 @@ define([
     d8.setMilliseconds(0);
     var d14 = new Date(d8);
     d14.setHours(14);
-    [0,1,2].forEach(function (el) {
+    [0,1,2].forEach(function () {
         d8.setDate(d8.getDate() + 1);
         d14.setDate(d14.getDate() + 1);
         pollValues.push(+d8);

@@ -151,6 +151,17 @@
                     flex-flow: column;
                 }
             }
+            div.cp-form-creator-content {
+                .cp-form-block-type {
+                    margin-top: -35px;
+                    &.editable {
+                        cursor: pointer;
+                    }
+                    .fa-caret-down {
+                        margin-left: 5px;
+                    }
+                }
+            }
             div.cp-form-creator-content, div.cp-form-creator-results {
                 max-width: 1000px;
                 min-width: 300px;
@@ -337,6 +348,7 @@
                     .cp-form-block-drag-handle {
                         display: flex;
                         flex-flow: column;
+                        height: 25px;
                         align-items: center;
                         color: @cp_sidebar-hint;
                         i {
@@ -573,14 +585,6 @@
             .cp-form-block-question {
                 margin-bottom: 5px;
             }
-            .cp-form-block-type {
-                float: right;
-                padding: 5px;
-                margin-top: -10px;
-                margin-right: -10px;
-                i { margin-right: 5px; }
-                background: fade(@cryptpad_text_col, 15%);
-            }
             .cp-form-results-type-text {
                 max-height: 300px;
                 overflow: auto;
@@ -665,6 +669,14 @@
                     color: @cryptpad_color_link;
                 }
             }
+        }
+        .cp-form-block-type {
+            float: right;
+            padding: 5px;
+            margin-top: -10px;
+            margin-right: -10px;
+            i { margin-right: 5px; }
+            background: fade(@cryptpad_text_col, 15%);
         }
     }
 

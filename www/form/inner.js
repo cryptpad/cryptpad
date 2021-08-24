@@ -2633,6 +2633,7 @@ define([
                 });
             }
 
+            var changeType;
             if (editable) {
                 // Drag handle
                 dragHandle = h('span.cp-form-block-drag-handle', [
@@ -2690,7 +2691,6 @@ define([
 
                 // Delete question
                 var edit = h('span');
-                var changeType;
                 var del = h('button.btn.btn-danger-alt', [
                     h('i.fa.fa-trash-o'),
                     h('span', Messages.form_delete)
@@ -2758,12 +2758,18 @@ define([
                         });
                     }
 
-                    Messages.form_changeType = "Change type"; // XXX
+                    changeType = h('div.cp-form-block-type', [
+                        model.icon.cloneNode(),
+                        h('span', Messages['form_type_'+type])
+                    ]);
+
+                    //Messages.form_changeType = "Change type"; // XXX
                     Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
                     if (Array.isArray(model.compatible)) {
-                        changeType = h('button.btn.btn-secondary', [
-                            h('i.fa.fa-question'),
-                            h('span', Messages.form_changeType)
+                        changeType = h('div.cp-form-block-type.editable', [
+                            model.icon.cloneNode(),
+                            h('span', Messages['form_type_'+type]),
+                            h('i.fa.fa-caret-down')
                         ]);
                         $(changeType).click(function () {
                             var name = Util.uid();
@@ -2807,7 +2813,7 @@ define([
                 }
 
                 editButtons = h('div.cp-form-edit-buttons-container', [
-                    edit, changeType, del
+                    edit, del
                 ]);
             }
             var editableCls = editable ? ".editable" : "";
@@ -2815,6 +2821,7 @@ define([
                 'data-id':uid
             }, [
                 APP.isEditor ? dragHandle : undefined,
+                changeType,
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
@@ -2890,7 +2897,7 @@ define([
         if (editable) {
             APP.mainSortable = Sortable.create($container[0], {
                 direction: "vertical",
-                filter: "input, button, .CodeMirror, .cp-form-type-sort",
+                filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
                 preventOnFilter: false,
                 draggable: ".cp-form-block",
                 //forceFallback: true,
