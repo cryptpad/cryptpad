@@ -2765,6 +2765,7 @@ define([
 
                     //Messages.form_changeType = "Change type"; // XXX
                     Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
+                    Messages.form_breakAnswers = "Changing the type may corrupt existing answers";
                     if (Array.isArray(model.compatible)) {
                         changeType = h('div.cp-form-block-type.editable', [
                             model.icon.cloneNode(),
@@ -2783,6 +2784,9 @@ define([
                             });
                             var tag = h('div.radio-group', els);
                             var changeTypeContent = [
+                                APP.answers && Object.keys(APP.answers).length ?
+                                    h('div.alert.alert-warning', Messages.form_breakAnswers) :
+                                    undefined,
                                 h('p', Messages.form_changeTypeConfirm),
                                 tag
                             ];
