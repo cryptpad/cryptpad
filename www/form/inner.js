@@ -3420,11 +3420,11 @@ define([
                     framework.localChange();
                 }
                 if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
-                    content.answers = {
-                        channel: Hash.createChannelId(),
-                        publicKey: priv.form_public,
-                        validateKey: priv.form_answerValidateKey
-                    };
+                    // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+                    content.answers = content.answers || {};
+                    content.answers.channel = Hash.createChannelId();
+                    content.answers.publicKey = priv.form_public;
+                    content.answers.validateKey = priv.form_answerValidateKey;
                     framework.localChange();
                 }
                 checkIntegrity();

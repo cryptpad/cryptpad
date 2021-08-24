@@ -649,7 +649,7 @@ define([
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
-                    'class': 'fa fa-bookmark cp-toolbar-icon-template',
+                    'class': 'cptools cptools-new-template cp-toolbar-icon-template',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
                 if (data.rt) {
                     button
@@ -2431,15 +2431,16 @@ define([
                 }
                 return b.used - a.used;
             });
-            if (!appCfg.noTemplates) {
+            /*if (!appCfg.noTemplates) {
                 allData.unshift({
                     name: Messages.creation_newTemplate,
                     id: -1,
                     //icon: h('span.fa.fa-bookmark')
                     icon: h('span.cptools.cptools-new-template')
                 });
-            }
+            }*/
             if (!privateData.newTemplate) {
+                Messages.creation_noTemplate = "Blank document"; // XXX update key
                 allData.unshift({
                     name: Messages.creation_noTemplate,
                     id: 0,
