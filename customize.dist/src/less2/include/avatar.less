@@ -40,7 +40,13 @@
             color: @cp_avatar-fg;
             font-size: @avatar-font-size;
             font-size: var(--avatar-font-size);
-            text-transform: capitalize;
+            .animal {
+                font-size: 20px;
+                // scale animal avatar to be somewhat larger, because:
+                // 1. emojis are wider than most latin characters
+                // 2. they should occupy the width of two average characters
+                font-size: calc(var(--avatar-width) * (6/5));
+            }
         }
         media-tag {
             min-height: @avatar-width;
