@@ -1993,9 +1993,11 @@ define([
         var loadingAvatar;
         var to;
         var oldUrl = '';
+        var oldUid = undefined;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             var privateData = metadataMgr.getPrivateData();
+            var uid = myData.uid;
             if (!priv.plan && privateData.plan) {
                 config.$initBlock.empty();
                 metadataMgr.off('change', updateButton);
@@ -2013,15 +2015,16 @@ define([
             var newName = myData.name;
             var url = myData.avatar;
             $displayName.text(newName || Messages.anonymous);
-            if (accountName && oldUrl !== url) {
+            if ((accountName && oldUrl !== url) || !accountName && uid !== oldUid) {
                 $avatar.html('');
                 Common.displayAvatar($avatar, url,
                         newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
+                    oldUid = uid;
                     $userAdmin.find('> button').removeClass('cp-avatar');
                     if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
-                });
+                }, uid);
                 return;
             }
             loadingAvatar = false;

@@ -94,6 +94,21 @@ define([
         return ANIMALS[seed % ANIMALS.length];
     };
 
+    var getPrettyInitials = function (name) {
+        var parts = name.split(/\s+/);
+        var text;
+        if (parts.length > 1) {
+            text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
+        } else {
+            text = Util.getFirstCharacter(name);
+            var second = Util.getFirstCharacter(name.replace(text, ''));
+            if (second && second !== '?') {
+                text += second;
+            }
+        }
+        return text;
+    };
+
     var animal_avatars = {};
     MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
@@ -105,20 +120,16 @@ define([
             var animal = false;
 
             name = (name || "").trim() || Messages.anonymous;
-            var parts = name.split(/\s+/);
             var text;
-            if (name === Messages.anonymous) {
+            if (name === Messages.anonymous && uid) {
                 if (animal_avatar) {
                     text = animal_avatar;
                 } else {
                     text = animal_avatar = getPseudorandomAnimal(uid);
                 }
                 animal = true;
-            } else if (parts.length > 1) {
-                text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
             } else {
-                text = Util.getFirstCharacter(name);
-                text += Util.getFirstCharacter(name.replace(text, ''));
+                text = getPrettyInitials(name);
             }
 
             var $avatar = $('<span>', {'class': 'cp-avatar-default' + (animal? ' animal': '')}).text(text);

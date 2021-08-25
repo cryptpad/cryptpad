@@ -362,7 +362,7 @@ MessengerUI, Messages, Pages) {
                 });
             }
             console.error("AVATAR", $span, data.uid);
-            Common.displayAvatar($span, data.avatar, name, function () { // XXX pass a little more info so we can display better (pseudo-random) defaults
+            Common.displayAvatar($span, data.avatar, name, function () {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
