@@ -157,8 +157,10 @@ define([
         var icons = Object.keys(users).map(function (key, i) {
             var data = users[key];
             var name = data.displayName || data.name || Messages.anonymous;
-            var avatar = h('span.cp-usergrid-avatar.cp-avatar');
-            common.displayAvatar($(avatar), data.avatar, name);
+            var avatar = h('span.cp-usergrid-avatar.cp-avatar', {
+                'aria-hidden': true, // XXX aria
+            });
+            common.displayAvatar($(avatar), data.avatar, name); // XXX
             var removeBtn, el;
             if (config.remove) {
                 removeBtn = h('span.fa.fa-times');
@@ -1989,11 +1991,11 @@ define([
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
-        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
+        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title'); // XXX alt="User menu"
         var loadingAvatar;
         var to;
         var oldUrl = '';
-        var oldUid = undefined;
+        var oldUid;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             var privateData = metadataMgr.getPrivateData();
@@ -2024,6 +2026,8 @@ define([
                     $userAdmin.find('> button').removeClass('cp-avatar');
                     if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
+
+                    // XXX alt="User menu"
                 }, uid);
                 return;
             }
@@ -2306,7 +2310,7 @@ define([
             var teams = Object.keys(privateData.teams).map(function (id) {
                 var data = privateData.teams[id];
                 var avatar = h('span.cp-creation-team-avatar.cp-avatar');
-                common.displayAvatar($(avatar), data.avatar, data.name);
+                common.displayAvatar($(avatar), data.avatar, data.name); // XXX
                 return h('div.cp-creation-team', {
                     'data-id': id,
                     title: data.name,

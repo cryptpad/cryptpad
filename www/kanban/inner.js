@@ -59,7 +59,7 @@ define([
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
     var onCursorUpdate = Util.mkEvent();
-    var remoteCursors = {};
+    var remoteCursors = {}; // XXX
 
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
@@ -95,7 +95,7 @@ define([
 
     var getAvatar = function (cursor, noClear) {
         // Tippy
-        var html = MT.getCursorAvatar(cursor);
+        var html = MT.getCursorAvatar(cursor); // XXX
 
         var l = Util.getFirstCharacter(cursor.name || Messages.anonymous);
 
@@ -103,10 +103,10 @@ define([
         if (cursor.color) {
             text = 'color:'+getTextColor(cursor.color)+';';
         }
-        var avatar = h('span.cp-cursor.cp-tippy-html', {
+        var avatar = h('span.cp-cursor.cp-tippy-html', { // XXX
             style: "background-color: " + (cursor.color || 'red') + ";"+text,
             'data-cptippy-html': true,
-            title: html
+            title: html, // XXX "{0} is editing"
         }, l);
         if (!noClear) {
             cursor.clear = function () {
@@ -852,7 +852,7 @@ define([
             getAvatar: getAvatar,
             openLink: openLink,
             getTags: getExistingTags,
-            cursors: remoteCursors,
+            cursors: remoteCursors, // XXX
             boards: boards,
             _boards: Util.clone(boards),
         });
@@ -1101,7 +1101,7 @@ define([
             $container.find('.kanban-edit-item').remove();
         });
 
-        var getCursor = function () {
+        var getCursor = function () { // XXX
             if (!kanban || !kanban.inEditMode) { return; }
             try {
                 var id = kanban.inEditMode;
@@ -1204,7 +1204,7 @@ define([
             var remoteContent = newContent.content;
 
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
-                var cursor = getCursor();
+                var cursor = getCursor(); // XXX
                 verbose("Content is different.. Applying content");
                 kanban.options.boards = remoteContent;
                 updateBoards(framework, kanban, remoteContent);
@@ -1261,11 +1261,11 @@ define([
         });
 
         var myCursor = {};
-        onCursorUpdate.reg(function (data) {
+        onCursorUpdate.reg(function (data) { // XXX
             myCursor = data;
             framework.updateCursor();
         });
-        framework.onCursorUpdate(function (data) {
+        framework.onCursorUpdate(function (data) { // XXX
             if (!data) { return; }
             if (data.reset) {
                 Object.keys(remoteCursors).forEach(function (id) {
@@ -1293,7 +1293,7 @@ define([
             if (!cursor.item && !cursor.board) { return; }
 
             // Add new cursor
-            var avatar = getAvatar(cursor);
+            var avatar = getAvatar(cursor); // XXX
             var $item = $('.kanban-item[data-eid="'+cursor.item+'"]');
             var $board = $('.kanban-board[data-id="'+cursor.board+'"]');
             if ($item.length) {

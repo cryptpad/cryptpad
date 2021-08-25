@@ -511,7 +511,7 @@ define([
                 framework.updateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
-        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        framework.onCursorUpdate(CodeMirror.setRemoteCursor); // XXX
         framework.setCursorGetter(CodeMirror.getCursor);
         editor.on('cursorActivity', updateCursor);
 

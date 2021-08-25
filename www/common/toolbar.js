@@ -356,12 +356,13 @@ MessengerUI, Messages, Pages) {
                 });
             }
             if (data.profile) {
+                // XXX title to visit their profile "Visit {0}'s profile"
+                // Messages.contacts_info3 "Double-click their icon to view their profile",
                 $span.addClass('cp-userlist-clickable');
                 $span.click(function () {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
-            console.error("AVATAR", $span, data.uid);
             Common.displayAvatar($span, data.avatar, name, function () {
                 $span.append($rightCol);
             }, data.uid);

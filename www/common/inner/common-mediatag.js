@@ -132,7 +132,12 @@ define([
                 text = getPrettyInitials(name);
             }
 
-            var $avatar = $('<span>', {'class': 'cp-avatar-default' + (animal? ' animal': '')}).text(text);
+            var $avatar = $('<span>', {
+                'class': 'cp-avatar-default' + (animal? ' animal': ''),
+                // XXX prevents screenreaders from trying to describe this
+                alt: '',
+                'aria-hidden': true,
+            }).text(text);
             $container.append($avatar);
             if (uid && animal) {
                 animal_avatars[uid] = animal_avatar;
@@ -184,7 +189,7 @@ define([
                 var $img = $(mt).appendTo($container);
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
-                    centerImage($img, $image);
+                    centerImage($img, $image); // XXX add alt="" (unless the media-tag has an alt attr)
                 });
             });
         }
