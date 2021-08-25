@@ -171,7 +171,7 @@ define([
             if (!Object.keys(_friends).length) {
                 var friendText;
                 if (!friendKeys.length) {
-                    console.error(UIElements.noContactsMessage(common));
+                    //console.error(UIElements.noContactsMessage(common));
                     var findContacts = UIElements.noContactsMessage(common);
                     friendText = h('span.cp-app-prop-content',
                         findContacts.content
@@ -772,7 +772,8 @@ define([
                 if (friend.edPublic !== ed || c === 'me') { return; }
                 _owners[friend.edPublic] = {
                     name: friend.displayName,
-                    avatar: friend.avatar
+                    avatar: friend.avatar,
+                    uid: friend.uid,
                 };
                 return true;
             })) {
@@ -782,6 +783,10 @@ define([
             _owners[ed] = {
                 avatar: '?',
                 name: Messages.owner_unknownUser,
+                // TODO a possible enhancement is to use data from the context
+                // ie. if you have opened the access modal from within the pad
+                // its owner might be present or they might have left some data
+                // in the pad itself (as is the case of the uid in rich text comments)
             };
             strangers++;
         });
