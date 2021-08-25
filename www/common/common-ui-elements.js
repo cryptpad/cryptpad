@@ -3456,7 +3456,8 @@ define([
                 name: f.displayName,
                 curvePublic: f.curvePublic,
                 profile: f.profile,
-                notifications: f.notifications
+                notifications: f.notifications,
+                uid: f.uid,
             };
         });
     };
@@ -3555,7 +3556,7 @@ define([
         };
         // Set the value to receive from the autocomplete
         var toInsert = function (data, key) {
-            var name = data.name.replace(/[^a-zA-Z0-9]+/g, "-");
+            var name = (data.name.replace(/[^a-zA-Z0-9]+/g, "-") || "").trim() || Messages.anonymous; // XXX
             return "[@"+name+"|"+key+"]";
         };
 
@@ -3608,18 +3609,20 @@ define([
                     var avatar = h('span.cp-avatar', {
                         contenteditable: false
                     });
-                    common.displayAvatar($(avatar), data.avatar, data.name);
+
+                    var displayName = (data.name || "").trim() || Messages.anonymous;
+                    common.displayAvatar($(avatar), data.avatar, displayName); // XXX
                     return h('span.cp-mentions', {
                         'data-curve': data.curvePublic,
                         'data-notifications': data.notifications,
                         'data-profile': data.profile,
-                        'data-name': Util.fixHTML(data.name),
+                        'data-name': Util.fixHTML(displayName),
                         'data-avatar': data.avatar || "",
                     }, [
                         avatar,
                         h('span.cp-mentions-name', {
                             contenteditable: false
-                        }, data.name)
+                        }, displayName)
                     ]);
                 };
             }
@@ -3651,7 +3654,7 @@ define([
                     }).map(function (key) {
                         var data = sources[key];
                         return {
-                            label: data.name,
+                            label: (data.name || "").trim() || Messages.anonymous,
                             value: key
                         };
                     });
@@ -3686,10 +3689,12 @@ define([
             var obj = sources[key];
             if (!obj) { return; }
             var avatar = h('span.cp-avatar');
-            common.displayAvatar($(avatar), obj.avatar, obj.name);
+            var displayName = (obj.name || "").trim() || Messages.anonymous;
+
+            common.displayAvatar($(avatar), obj.avatar, displayName, Util.noop, obj.uid); // XXX
             var li = h('li.cp-autocomplete-value', [
                 avatar,
-                h('span', obj.name)
+                h('span', displayName),
             ]);
             return $(li).appendTo(ul);
         };
