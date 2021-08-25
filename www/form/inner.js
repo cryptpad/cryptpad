@@ -74,6 +74,10 @@ define([
     var is24h = UIElements.is24h();
     var dateFormat = "Y-m-d H:i";
     var timeFormat = "H:i";
+
+    var evCheckConditions = Util.mkEvent();
+    var evShowConditions = Util.mkEvent();
+
     if (!is24h) {
         dateFormat = "Y-m-d h:i K";
         timeFormat = "h:i K";
@@ -848,6 +852,7 @@ define([
         }).filter(Boolean);
     };
 
+    Messages.form_type_section = "Conditional section"; // XXX
     var STATIC_TYPES = {
         md: {
             defaultOpts: {
@@ -963,6 +968,55 @@ define([
             },
             printResults: function () { return; },
             icon: h('i.cptools.cptools-form-page-break')
+        },
+        section: {
+            defaultOpts: {
+                questions: []
+            },
+            get: function (opts, a, n, ev, block) {
+                var sortable = h('div.cp-form-section-sortable');
+                var tag = h('div.cp-form-section-edit', [
+                    h('i.fa.fa-question'),
+                    h('span', Messages.form_type_section),
+                    h('hr'),
+                    sortable
+                ]);
+                if (APP.isEditor) {
+                    if (!opts) { opts = block.opts = STATIC_TYPES.section.defaultOpts; }
+                    Sortable.create(sortable, {
+                        group: {
+                            name: 'nested',
+                            put: function (to, from, el) {
+                                // Make sure sections dan't be dropped into other sections
+                                return $(el).attr('data-type') !== 'section';
+                            }
+                        },
+                        direction: "vertical",
+                        filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
+                        preventOnFilter: false,
+                        draggable: ".cp-form-block",
+                        //forceFallback: true,
+                        fallbackTolerance: 5,
+                        onStart: function () {
+                            var $container = $('div.cp-form-creator-content');
+                            $container.find('.cp-form-creator-add-inline').remove();
+                        },
+                        store: {
+                            set: function (s) {
+                                opts.questions = s.toArray();
+                                setTimeout(APP.framework.localChange);
+                                if (APP.updateAddInline) { APP.updateAddInline(); }
+                            }
+                        }
+                    });
+                }
+                return {
+                    tag: tag,
+                    noViewMode: true
+                };
+            },
+            printResults: function () { return; },
+            icon: h('i.fa.fa-question')
         },
     };
 
@@ -1157,7 +1211,7 @@ define([
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 $(tag).find('input[type="radio"]').on('change', function () {
-                    evOnChange.fire();
+                    evOnChange.fire(false, false, true);
                 });
                 return {
                     tag: tag,
@@ -2435,6 +2489,64 @@ define([
             reset, send
         ]);
     };
+    var getSections = function (content) {
+        var uids = Object.keys(content.form).filter(function (uid) {
+            return content.form[uid].type === 'section';
+        });
+        return uids;
+    };
+    var getSectionFromQ = function (content, uid) {
+        var arr = content.order;
+        var idx = content.order.indexOf(uid);
+        if (idx === -1) { // If it's not in the main array, check in sections
+            getSections(content).some(function (_uid) {
+                var block = content.form[_uid];
+                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+                var _idx = block.opts.questions.indexOf(uid);
+                if (_idx !== -1) {
+                    arr = block.opts.questions;
+                    idx = _idx;
+                    return true;
+                }
+            });
+        }
+
+        return {
+            arr: arr,
+            idx: idx
+        };
+    };
+    var removeQuestion = function (content, uid) {
+        delete content.form[uid];
+        var idx = content.order.indexOf(uid);
+        if (idx !== -1) {
+            content.order.splice(idx, 1);
+        } else {
+            getSections(content).some(function (_uid) {
+                var block = content.form[_uid];
+                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+                var _idx = block.opts.questions.indexOf(uid);
+                if (_idx !== -1) {
+                    block.opts.questions.splice(_idx, 1);
+                    return true;
+                }
+            });
+        }
+    };
+    var getFullOrder = function (content) {
+        var order = content.order.slice();
+        getSections(content).forEach(function (uid) {
+            var block = content.form[uid];
+            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+            var idx = order.indexOf(uid);
+            if (idx === -1) { return; }
+            idx++;
+            block.opts.questions.forEach(function (el, i) {
+                order.splice(idx+i, 0, el);
+            });
+        });
+        return order;
+    };
     var updateForm = function (framework, content, editable, answers, temp) {
         var $container = $('div.cp-form-creator-content');
         if (!$container.length) { return; } // Not ready
@@ -2479,28 +2591,45 @@ define([
         }
 
 
-        var getFormCreator = function (uid) {
+        var getFormCreator = function (uid, inSection) {
             if (!APP.isEditor) { return; }
             var full = !uid;
+            var arr = content.order;
             var idx = content.order.indexOf(uid);
+            if (!full) {
+                if (inSection) {
+                    var section = content.form[uid];
+                    section.opts = section.opts || STATIC_TYPES.section.opts;
+                    arr = section.opts.questions;
+                } else {
+                    var obj = getSectionFromQ(content, uid);
+                    arr = obj.arr;
+                    idx = obj.idx;
+                }
+            }
             var addControl = function (type) {
                 var btn = h('button.btn.btn-secondary', {
-                    title: full ? '' : Messages['form_type_'+type]
+                    title: full ? '' : Messages['form_type_'+type],
+                    'data-type': type
                 }, [
                     (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
                     full ? h('span', Messages['form_type_'+type]) : undefined
                 ]);
                 $(btn).click(function () {
                     var uid = Util.uid();
+
+                    // Make sure we can't create a section inside another one
+                    if (type === 'section' && arr !== content.order) { return; }
+
                     content.form[uid] = {
                         //q: Messages.form_default,
                         //opts: opts
                         type: type,
                     };
-                    if (full) {
-                        content.order.push(uid);
+                    if (full || inSection) {
+                        arr.push(uid);
                     } else {
-                        content.order.splice(idx, 0, uid);
+                        arr.splice(idx, 0, uid);
                     }
                     framework.localChange();
                     updateForm(framework, content, true);
@@ -2541,19 +2670,29 @@ define([
 
         };
 
-        var updateAddInline = function () {
+        var updateAddInline = APP.updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
+            // Add before existing question
             $container.find('.cp-form-block').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
+            });
+            // Add to section
+            $container.find('.cp-form-section-sortable').each(function (i, el) {
+                var $el = $(el);
+                var uid = $el.closest('.cp-form-block').attr('data-id');
+                $el.append(getFormCreator(uid, true));
             });
         };
 
 
         var elements = [];
         var n = 1; // Question number
-        content.order.forEach(function (uid) {
+
+        var order = getFullOrder(content);
+
+        order.forEach(function (uid, blockIdx) {
             var block = form[uid];
             var type = block.type;
             var model = TYPES[type] || STATIC_TYPES[type];
@@ -2570,7 +2709,7 @@ define([
                 name = user.name;
             }
 
-            var data = model.get(block.opts, _answers, name, evOnChange);
+            var data = model.get(block.opts, _answers, name, evOnChange, block);
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -2579,7 +2718,10 @@ define([
                 elements.push(data);
                 return;
             }
-
+            if (data.noViewMode && !editable) {
+                elements.push(data);
+                return;
+            }
 
             Messages.form_required = "Required"; // XXX
             var requiredTag;
@@ -2606,7 +2748,7 @@ define([
             Messages.form_required_on = "Required answer";
             Messages.form_required_off = "Optional answer";
             // Required radio displayed only for types that have an "isEmpty" function
-            var requiredDiv;
+            var requiredDiv, conditionalDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
                 if (!block.opts) { block.opts = TYPES[type].defaultOpts; }
                 var isRequired = Boolean(block.opts.required);
@@ -2630,6 +2772,272 @@ define([
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
                     });
+                });
+            }
+
+            if (APP.isEditor && blockIdx && type === "section") {
+                var getConditionsValues = function () {
+                    order = getFullOrder(content);
+                    var blockIdx = order.indexOf(uid);
+                    var blocks = order.slice(0, blockIdx); // Get all previous questions
+                    var values = blocks.map(function(uid) {
+                        var block = form[uid];
+                        var type = block.type;
+                        if (['radio'].indexOf(type) === -1) { return; }
+                        if (type === 'radio') {
+                            return {
+                                uid: uid,
+                                q: block.q || Messages.form_default,
+                                values: block.opts ? block.opts.values : TYPES.radio.defaultOpts.values
+                            };
+                        }
+                    }).filter(Boolean);
+                    return values;
+                };
+                Messages.form_conditional_add = "Add condition OR";
+                Messages.form_conditional_addAnd = "Add condition AND";
+                var addCondition = h('button.btn.btn-default', [
+                    h('i.fa.fa-plus'),
+                    h('span', Messages.form_conditional_add)
+                ]);
+                var $addC = $(addCondition);
+                var getConditions;
+                var getAddAndButton = function ($container, rules) {
+                    var btn = h('button.btn.btn-default.cp-form-add-and', [
+                        h('i.fa.fa-plus'),
+                        h('span', Messages.form_conditional_addAnd)
+                    ]);
+                    $(btn).click(function () {
+                        getConditions($container, true, rules);
+                    });
+                    $container.append(btn);
+                };
+                getConditions = function ($container, isNew, rules, condition) {
+                    var content = h('div.cp-form-condition');
+                    var $content = $(content);
+                    var values = getConditionsValues();
+                    var qOptions = values.map(function (obj) {
+                        return {
+                            tag: 'a',
+                            attributes: {
+                                'class': 'cp-form-condition-question',
+                                'data-value': obj.uid,
+                                'href': '#',
+                            },
+                            content: obj.q
+                        };
+                    });
+                    var qConfig = {
+                        text: '', // Button initial text
+                        options: qOptions, // Entries displayed in the menu
+                        isSelect: true,
+                        caretDown: true,
+                        buttonCls: 'btn btn-secondary'
+                    };
+                    var qSelect = UIElements.createDropdown(qConfig);
+                    Messages.form_condition_is = 'is'; // XXX
+                    Messages.form_condition_isnot = 'is not'; // XXX
+
+                    var isOn = !condition || condition.is !== 0;
+                    var iOptions = [{
+                        tag: 'a',
+                        attributes: {
+                            'data-value': 1,
+                            'href': '#',
+                        },
+                        content: Messages.form_condition_is
+                    }, {
+                        tag: 'a',
+                        attributes: {
+                            'data-value': 0,
+                            'href': '#',
+                        },
+                        content: Messages.form_condition_isnot
+                    }];
+                    var iConfig = {
+                        options: iOptions, // Entries displayed in the menu
+                        isSelect: true,
+                        caretDown: true,
+                        buttonCls: 'btn btn-secondary'
+                    };
+                    var iSelect = UIElements.createDropdown(iConfig);
+                    iSelect.setValue(isOn ? 1 : 0);
+                    $(iSelect).hide();
+
+                    $content.append(qSelect).append(iSelect);
+                    if ($container.find('button.cp-form-add-and').length) {
+                        $container.find('button.cp-form-add-and').before($content);
+                    } else {
+                        $container.append($content);
+                    }
+
+                    var isChange;
+                    qSelect.onChange.reg(function (prettyVal, val, init) {
+                        $(iSelect).show();
+                        var res;
+                        values.some(function (obj) {
+                            if (String(obj.uid) === String(val)) {
+                                res = obj.values;
+                                return true;
+                            }
+                        });
+                        $content.find('.cp-form-condition-values').remove();
+                        if (!res) { return; }
+                        var vOptions = res.map(function (str) {
+                            return {
+                                tag: 'a',
+                                attributes: {
+                                    'class': 'cp-form-condition-value',
+                                    'data-value': str,
+                                    'href': '#',
+                                },
+                                content: str
+                            };
+                        });
+                        var vConfig = {
+                            text: '', // Button initial text
+                            options: vOptions, // Entries displayed in the menu
+                            //left: true, // Open to the left of the button
+                            //container: $(type),
+                            isSelect: true,
+                            caretDown: true,
+                            buttonCls: 'btn btn-secondary'
+                        };
+                        var vSelect = UIElements.createDropdown(vConfig);
+                        vSelect.addClass('cp-form-condition-values');
+                        if ($content.find('.cp-condition-remove').length) {
+                            $content.find('.cp-condition-remove').before(vSelect);
+                        } else {
+                            $content.append(vSelect);
+                        }
+
+                        var onChange = function () {
+                            var w = block.opts.when = block.opts.when || [];
+
+                            condition = condition || {};
+                            condition.q = val;
+                            condition.is = Number(iSelect.getValue());
+                            condition.v = vSelect.getValue();
+
+                            var wasNew = isNew;
+                            if (isNew) {
+                                if (!Array.isArray(rules)) { // new set of rules (OR)
+                                    rules = [condition];
+                                    w.push(rules);
+                                    getAddAndButton($container, rules);
+                                } else {
+                                    rules.push(condition);
+                                }
+                                isNew = false;
+                            }
+
+                            framework.localChange();
+                            framework._.cpNfInner.chainpad.onSettle(function () {
+                                UI.log(Messages.saved);
+                                if (wasNew) { $addC.show(); }
+                            });
+
+                        };
+
+                        if (isChange) { iSelect.onChange.unreg(isChange); }
+                        isChange = function () {
+                            if (!vSelect.getValue()) { return; }
+                            onChange();
+                        };
+                        iSelect.onChange.reg(isChange);
+
+                        vSelect.onChange.reg(function () {
+                            if (!$content.find('.cp-condition-remove').length) {
+                                var remove = h('button.btn.btn-danger-alt.cp-condition-remove', [
+                                    h('i.fa.fa-times')
+                                ]);
+                                $(remove).click(function () {
+                                    var w = block.opts.when = block.opts.when || [];
+                                    var deleteRule = false;
+                                    if (rules.length === 1) {
+                                        var rIdx = w.indexOf(rules);
+                                        w.splice(rIdx, 1);
+                                        deleteRule = true;
+                                    } else {
+                                        var idx = rules.indexOf(condition);
+                                        rules.splice(idx, 1);
+                                    }
+                                    framework.localChange();
+                                    framework._.cpNfInner.chainpad.onSettle(function () {
+                                        if (deleteRule) {
+                                            $content.closest('.cp-form-condition-rule').remove();
+                                            return;
+                                        }
+                                        $content.remove();
+                                    });
+                                }).appendTo($content);
+                            }
+                            onChange();
+                        });
+
+                        if (condition && condition.v && init) {
+                            vSelect.setValue(condition.v);
+                            vSelect.onChange.fire(condition.v, condition.v);
+                        }
+
+                    });
+                    if (condition && condition.q) {
+                        qSelect.setValue(condition.q); // XXX check if exists? or integrity
+                        qSelect.onChange.fire(condition.q, condition.q, true);
+                    }
+
+
+                };
+                Messages.form_conditional = "Only show this question when:"; // XXX
+
+                conditionalDiv = h('div.cp-form-conditional', [
+                    h('div', Messages.form_conditional),
+                    addCondition
+                ]);
+                var $condition = $(conditionalDiv);
+                var redraw = function () {
+                    var w = block.opts.when = block.opts.when || [];
+                    w.forEach(function (rules) {
+                        var rulesC = h('div.cp-form-condition-rule');
+                        var $rulesC = $(rulesC);
+                        getAddAndButton($rulesC, rules);
+                        rules.forEach(function (obj) {
+                            getConditions($rulesC, false, rules, obj);
+                        });
+                        $addC.before($rulesC); // XXX
+                    });
+                };
+                redraw();
+
+                $addC.click(function () {
+                    $addC.hide();
+                    var rulesC = h('div.cp-form-condition-rule');
+                    var $rulesC = $(rulesC);
+                    getConditions($rulesC, true);
+                    $addC.before($rulesC);
+                });
+                if (getConditionsValues().length) {
+                    $condition.show();
+                } else {
+                    $condition.hide();
+                }
+                evShowConditions.reg(function () {
+                    if (getConditionsValues().length) {
+                        $condition.show();
+                    } else {
+                        $condition.hide();
+                    }
+                });
+                evCheckConditions.reg(function (_uid) {
+                    if (uid !== _uid) { return; }
+                    // If our conditions are invalid, redraw them
+                    if (getConditionsValues().length) {
+                        $condition.show();
+                    } else {
+                        $condition.hide();
+                    }
+                    $condition.find('.cp-form-condition-rule').remove();
+                    redraw();
                 });
             }
 
@@ -2699,9 +3107,7 @@ define([
                     classes: 'btn-danger',
                     new: true
                 }, function () {
-                    delete content.form[uid];
-                    var idx = content.order.indexOf(uid);
-                    content.order.splice(idx, 1);
+                    removeQuestion(content, uid);
                     $('.cp-form-block[data-id="'+uid+'"]').remove();
                     framework.localChange();
                     updateAddInline();
@@ -2763,7 +3169,6 @@ define([
                         h('span', Messages['form_type_'+type])
                     ]);
 
-                    //Messages.form_changeType = "Change type"; // XXX
                     Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
                     Messages.form_breakAnswers = "Changing the type may corrupt existing answers";
                     if (Array.isArray(model.compatible)) {
@@ -2822,13 +3227,15 @@ define([
             }
             var editableCls = editable ? ".editable" : "";
             elements.push(h('div.cp-form-block'+editableCls, {
-                'data-id':uid
+                'data-id':uid,
+                'data-type':type
             }, [
                 APP.isEditor ? dragHandle : undefined,
                 changeType,
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
+                    APP.isEditor ? conditionalDiv : undefined,
                     APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
                     editButtons
@@ -2896,10 +3303,40 @@ define([
         }
 
         $container.empty().append(_content);
+
+        getSections(content).forEach(function (uid) {
+            var block = content.form[uid];
+            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+            var $block = $container.find('.cp-form-block[data-id="'+uid+'"] .cp-form-section-sortable');
+            block.opts.questions.forEach(function (_uid) {
+                $container.find('.cp-form-block[data-id="'+_uid+'"]').appendTo($block);
+            });
+        });
         updateAddInline();
+
+        // In view mode, hide sections when conditions aren't met
+        evOnChange.reg(function (reset, save, condition) {
+            if (!reset && !condition) { return; }
+            var results = getFormResults();
+            getSections(content).forEach(function (uid) {
+                var block = content.form[uid];
+                if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) { return; }
+                var w = block.opts.when;
+                var show = !w.length || w.some(function (rules) {
+                    return rules.every(function (rule) {
+                        return rule.is ? results[rule.q] === rule.v
+                                       : results[rule.q] !== rule.v;
+                    });
+                });
+                block.opts.questions.forEach(function (_uid) {
+                    $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
+                });
+            });
+        });
 
         if (editable) {
             APP.mainSortable = Sortable.create($container[0], {
+                group: 'nested',
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
                 preventOnFilter: false,
@@ -2912,7 +3349,7 @@ define([
                 store: {
                     set: function (s) {
                         content.order = s.toArray();
-                        framework.localChange();
+                        setTimeout(framework.localChange);
                         updateAddInline();
                     }
                 }
@@ -2931,7 +3368,7 @@ define([
         // In view mode, add "Submit" and "reset" buttons
         $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
 
-        // In view mode, tell the user and answers are forced to be anonymous or authenticated
+        // In view mode, tell the user if answers are forced to be anonymous or authenticated
         if (!APP.isEditor) {
             var infoTxt;
             var loggedIn = framework._.sfCommon.isLoggedIn();
@@ -3313,20 +3750,76 @@ define([
         var checkIntegrity = function (getter) {
             if (!content.order || !content.form) { return; }
             var changed = false;
-            content.order.forEach(function (uid) {
-                if (!content.form[uid]) {
-                    var idx = content.order.indexOf(uid);
-                    content.order.splice(idx, 1);
-                    changed = true;
-                }
+            var deduplicate = [];
+            // Check if the questions in the lists (content.order or sections) exist in
+            // content.form and remove duplicates
+            var check1 = function (arr) {
+                arr.forEach(function (uid) {
+                    if (!content.form[uid] || deduplicate.indexOf(uid) !== -1) {
+                        var idx = arr.indexOf(uid);
+                        arr.splice(idx, 1);
+                        changed = true;
+                        return;
+                    }
+                    deduplicate.push(uid);
+                });
+            };
+            check1(content.order);
+            getSections(content).forEach(function (uid) {
+                var block = content.form[uid];
+                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+                check1(block.opts.questions);
             });
+
+            // Make sure all the questions are displayed in the main list or a section and add
+            // the missing ones
             Object.keys(content.form).forEach(function (uid) {
-                var idx = content.order.indexOf(uid);
+                var idx = deduplicate.indexOf(uid);
                 if (idx === -1) {
                     changed = true;
                     content.order.push(uid);
                 }
             });
+
+            // Check if conditions on sections are valid
+            var order = getFullOrder(content);
+            getSections(content).forEach(function (uid) {
+                var block = content.form[uid];
+                if (!block.opts || !Array.isArray(block.opts.when)) { return; }
+                var sectionIdx = order.indexOf(uid);
+                if (sectionIdx === -1) { return; }
+                var available = order.slice(0, sectionIdx);
+                var errors = false;
+                block.opts.when.forEach(function (rules) {
+                    if (!Array.isArray(rules)) {
+                        var idx = block.opts.when.indexOf(rules);
+                        block.opts.when.splice(idx, 1);
+                        errors = true;
+                        return;
+                    }
+                    rules.forEach(function (obj) {
+                        var idx = available.indexOf(obj.q);
+                        // If this question doesn't exist before the section, remove the condition
+                        if (!obj.q || idx === -1) {
+                            var cIdx = rules.indexOf(obj);
+                            rules.splice(cIdx, 1);
+                            errors = true;
+                            return;
+                        }
+                    });
+                    if (!rules.length) {
+                        var rIdx = block.opts.when.indexOf(rules);
+                        block.opts.when.splice(rIdx, 1);
+                        errors = true;
+                    }
+                });
+                if (errors) {
+                    evCheckConditions.fire(uid);
+                    changed = true;
+                }
+            });
+
+            evShowConditions.fire();
 
             if (!getter && changed) { framework.localChange(); }
         };

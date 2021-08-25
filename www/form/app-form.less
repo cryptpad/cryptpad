@@ -10,6 +10,7 @@
         @bg-color: @colortheme_apps[form]
     );
 
+
     display: flex;
     flex-flow: column;
     font: @colortheme_app-font;
@@ -159,6 +160,41 @@
                     }
                     .fa-caret-down {
                         margin-left: 5px;
+                    }
+                }
+
+
+                .cp-form-conditional {
+                    .cp-form-condition {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        & > *:not(:first-child) {
+                            margin-left: 40px;
+                        }
+                        .cp-dropdown-container button {
+                            max-width: 200px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                    .cp-form-condition-rule {
+                        padding-bottom: 20px;
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid @cryptpad_text_col;
+                    }
+                }
+
+                div.cp-form-section-sortable {
+                    min-height: 300px;
+                    border: 4px dotted white; // XXX
+                    padding: 20px;
+                    background: @cp_app-bg;
+                    .cp-form-creator-add-inline {
+                        button[data-type="section"] {
+                            display: none;
+                        }
                     }
                 }
             }
