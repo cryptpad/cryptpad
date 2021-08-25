@@ -694,9 +694,7 @@ define([
         });
     };
 
-    var getDisplayName = function (name) {
-        return (typeof(name) === 'string'? name: "").trim() || Messages.anonymous;
-    };
+    var getDisplayName = UI.getDisplayName;
     var makeMember = function (common, data, me, roster) {
         if (!data.curvePublic) { return; }
 
