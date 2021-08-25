@@ -2603,8 +2603,9 @@ define([
             Messages.form_preview = "Preview:"; // XXX
             var previewDiv = h('div.cp-form-preview', Messages.form_preview);
 
-            Messages.form_required_on = "Required answer";
-            Messages.form_required_off = "Optional answer";
+            Messages.form_required_answer = "Answer: "
+            Messages.form_required_on = "required";
+            Messages.form_required_off = "optional";
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
@@ -2618,7 +2619,11 @@ define([
                         Messages.form_required_off, !isRequired, {
                             input: { value: 0 },
                         });
-                var radioContainer = h('div.cp-form-required-radio', [radioOn, radioOff]);
+                var radioContainer = h('div.cp-form-required-radio', [
+                    h('span', Messages.form_required_answer),
+                    radioOff,
+                    radioOn
+                ]);
                 requiredDiv = h('div.cp-form-required', [
                     radioContainer
                 ]);
