@@ -43,9 +43,15 @@ define([
         });
     };
 
+    var animal_avatars = {};
     MT.getCursorAvatar = function (cursor) {
+        var uid = cursor.uid;
         var html = '<span class="cp-cursor-avatar">';
-        html += (cursor.avatar && avatars[cursor.avatar]) || '';
+        if (cursor.avatar && avatars[cursor.avatar]) {
+            html += (cursor.avatar && avatars[cursor.avatar]) || '';
+        } else if (animal_avatars[uid]) {
+            html += animal_avatars[uid] + ' ';
+        }
         html += Util.fixHTML(cursor.name) + '</span>';
         return html;
     };
@@ -109,7 +115,6 @@ define([
         return text;
     };
 
-    var animal_avatars = {};
     MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var displayDefault = function () {

@@ -509,6 +509,7 @@ define([
             var cursor = {};
             cursor.selectionStart = cursorToPos(editor.getCursor('from'), doc);
             cursor.selectionEnd = cursorToPos(editor.getCursor('to'), doc);
+            cursor.uid = exp.uid; // FIXME this is inefficient for the network but it's unlikely to trigger errors
             return cursor;
         };
 

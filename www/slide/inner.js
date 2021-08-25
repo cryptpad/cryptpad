@@ -459,7 +459,9 @@ define([
     var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
 
         var common = framework._.sfCommon;
-        var privateData = common.getMetadataMgr().getPrivateData();
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        CodeMirror.uid = metadataMgr.getUserData().uid;
 
         var $contentContainer = $('#cp-app-slide-editor');
         var $modal = $('#cp-app-slide-modal');
