@@ -85,28 +85,16 @@ define([
     var MAX_OPTIONS = 15;
     var MAX_ITEMS = 10;
 
-    var saveAndCancelOptions = function (getRes, cb) {
-        // Cancel changes
-        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-        $(cancelBlock).click(function () { cb(); });
+    var saveAndCancelOptions = function (cb) {
+        Messages.form_preview_button = "Preview"; // XXX
+        var cancelBlock = h('button.btn.btn-secondary.cp-form-preview-button',
+                            Messages.form_preview_button);
+        $(cancelBlock).click(function () { cb(undefined, true); });
 
-        // Save changes
-        var saveBlock = h('button.btn.btn-primary', [
-            h('i.fa.fa-floppy-o'),
-            h('span', Messages.settings_save)
-        ]);
-
-        $(saveBlock).click(function () {
-            $(saveBlock).attr('disabled', 'disabled');
-            cb(getRes());
-        });
-
-        return h('div.cp-form-edit-save', [cancelBlock, saveBlock]);
+        return cancelBlock;
     };
-    var editTextOptions = function (opts, setCursorGetter, cb, tmp) {
-        if (tmp && tmp.content && Sortify(opts) === Sortify(tmp.old)) {
-            opts = tmp.content;
-        }
+    var editTextOptions = function (opts, setCursorGetter, cb) {
+        var evOnSave = Util.mkEvent();
 
         var maxLength, getLengthVal;
         if (opts.maxLength) {
@@ -129,8 +117,8 @@ define([
 
             var $l = $(lengthInput).on('input', Util.throttle(function () {
                 $l.val(getLengthVal());
+                evOnSave.fire();
             }, 500));
-
         }
 
         var type, typeSelect;
@@ -163,16 +151,11 @@ define([
                 h('span', Messages.form_textType),
                 typeSelect[0]
             ]);
+            typeSelect.onChange.reg(evOnSave.fire());
         }
 
         setCursorGetter(function () {
-            return {
-                old: (tmp && tmp.old) || opts,
-                content: {
-                    maxLength: getLengthVal ? getLengthVal() : undefined,
-                    type: typeSelect ? typeSelect.getValue() : undefined
-                }
-            };
+            return {};
         });
 
         var getSaveRes = function () {
@@ -181,7 +164,14 @@ define([
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
         };
-        var saveAndCancel = saveAndCancelOptions(getSaveRes, cb);
+
+        evOnSave.reg(function () {
+            var res = getSaveRes();
+            if (!res) { return; }
+            cb(res);
+        });
+
+        var saveAndCancel = saveAndCancelOptions(cb);
 
         return [
             maxLength,
@@ -190,6 +180,8 @@ define([
         ];
     };
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
+        var evOnSave = Util.mkEvent();
+
         var add = h('button.btn.btn-secondary', [
             h('i.fa.fa-plus'),
             h('span', Messages.form_add_option)
@@ -200,11 +192,17 @@ define([
         ]);
 
         var cursor;
+        if (tmp && tmp.cursor) {
+            cursor = tmp.cursor;
+        }
+        /*
         if (tmp && tmp.content && Sortify(v) === Sortify(tmp.old)) {
             v = tmp.content;
             cursor = tmp.cursor;
         }
+        */
 
+        // Checkbox: max options
         var maxOptions, maxInput;
         if (typeof(v.max) === "number") {
             maxInput = h('input', {
@@ -217,8 +215,12 @@ define([
                 h('span', Messages.form_editMax),
                 maxInput
             ]);
+            $(maxInput).on('input', function () {
+                setTimeout(evOnSave.fire);
+            });
         }
 
+        // Poll: type (text/day/time)
         var type, typeSelect;
         if (v.type) {
             // Messages.form_poll_text.form_poll_day.form_poll_time
@@ -321,6 +323,8 @@ define([
                     var currentMax = Number($maxInput.val());
                     $maxInput.val(Math.min(inputs, currentMax));
                 }
+
+                evOnSave.fire();
             });
 
             if (!v.type || v.type === "text") {
@@ -334,6 +338,10 @@ define([
                     }
                 });
             }
+
+            $(input).on('input', function () {
+                evOnSave.fire();
+            });
 
             return el;
         };
@@ -367,7 +375,8 @@ define([
 
         // Calendar...
         var calendarView;
-        if (v.type) {
+        if (v.type) { // Polls
+            // Calendar inline for "day" type
             var calendarInput = h('input');
             calendarView = h('div', calendarInput);
             var calendarDefault = v.type === "day" ? v.values.map(function (time) {
@@ -379,12 +388,13 @@ define([
                 mode: 'multiple',
                 inline: true,
                 defaultDate: calendarDefault,
-                appendTo: calendarView
+                appendTo: calendarView,
+                onChange: function () {
+                    evOnSave.fire();
+                }
             });
-        }
 
-        // Calendar time
-        if (v.type) {
+            // Calendar popup for "time"
             var multipleInput = h('input', {placeholder: Messages.form_addMultipleHint});
             var multipleClearButton = h('button.btn', Messages.form_clear);
             var addMultipleButton = h('button.btn', [
@@ -416,6 +426,7 @@ define([
                     }
                 });
                 multiplePickr.clear();
+                evOnSave.fire();
             });
         }
 
@@ -444,6 +455,7 @@ define([
             typeSelect.onChange.reg(function (prettyVal, val) {
                 v.type = val;
                 refreshView();
+                setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
                     $(add).click();
@@ -555,9 +567,10 @@ define([
                     else { duplicates = true; }
                 });
             }
-            values = values.filter(Boolean); // Block empty or undeinfed options
+            values = values.filter(Boolean); // Block empty or undefined options
             if (!values.length) {
-                return void UI.warn(Messages.error);
+                return;
+                //return void UI.warn(Messages.error); // XXX not anymore with autosave?
             }
             var res = { values: values };
 
@@ -575,12 +588,13 @@ define([
                     }
                     else { duplicates = true; }
                 });
+                items = items.filter(Boolean);
                 res.items = items;
             }
 
             // Show duplicates warning
             if (duplicates) {
-                UI.warn(Messages.form_duplicates);
+                UI.warn(Messages.form_duplicates); // XXX
             }
 
             // If checkboxes, get the maximum number of values the users can select
@@ -597,7 +611,13 @@ define([
             return res;
         };
 
-        var saveAndCancel = saveAndCancelOptions(getSaveRes, cb);
+        evOnSave.reg(function () {
+            var res = getSaveRes();
+            if (!res) { return; }
+            cb(res);
+        });
+
+        var saveAndCancel = saveAndCancelOptions(cb);
 
         return [
             type,
@@ -892,8 +912,7 @@ define([
 
                         var text = opts.text;
                         var cursor;
-                        if (tmp && tmp.content && tmp.old.text === text) {
-                            text = tmp.content.text;
+                        if (tmp && tmp.cursor) {
                             cursor = tmp.cursor;
                         }
 
@@ -922,23 +941,15 @@ define([
                             cm.configureTheme(APP.common, function () {});
                         }
                         // Cancel changes
-                        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-                        $(cancelBlock).click(function () {
-                            cb();
-                        });
-                        // Save changes
-                        var saveBlock = h('button.btn.btn-primary', [
-                            h('i.fa.fa-floppy-o'),
-                            h('span', Messages.settings_save)
-                        ]);
+                        var cancelBlock = saveAndCancelOptions(cb);
 
                         var getContent = function () {
                             return {
                                 text: editor.getValue()
                             };
                         };
-                        $(saveBlock).click(function () {
-                            $(saveBlock).attr('disabled', 'disabled');
+
+                        editor.on('change', function () {
                             cb(getContent());
                         });
 
@@ -958,7 +969,7 @@ define([
 
                         return [
                             block,
-                            h('div.cp-form-edit-save', [cancelBlock, saveBlock])
+                            cancelBlock
                         ];
                     },
                     getCursor: function () { return cursorGetter(); },
@@ -2643,7 +2654,7 @@ define([
             Messages.form_preview = "Preview:"; // XXX
             var previewDiv = h('div.cp-form-preview', Messages.form_preview);
 
-            Messages.form_required_answer = "Answer: "
+            Messages.form_required_answer = "Answer: ";
             Messages.form_required_on = "required";
             Messages.form_required_off = "optional";
             // Required radio displayed only for types that have an "isEmpty" function
@@ -2759,30 +2770,29 @@ define([
                         h('span', Messages.form_editBlock)
                     ]);
                     editContainer = h('div');
-                    var onSave = function (newOpts) {
-                        data.editing = false;
-                        if (!newOpts) { // Cancel edit
+                    var onSave = function (newOpts, close) {
+                        if (close) { // Cancel edit
+                            data.editing = false;
                             $(editContainer).empty();
-                            $(editButtons).show();
-                            $(data.tag).show();
+                            var $oldTag = $(data.tag);
+                            $(edit).show();
                             $(previewDiv).show();
                             $(requiredDiv).show();
-                            return;
-                        }
-                        $(editContainer).empty();
-                        block.opts = newOpts;
-                        framework.localChange();
-                        var $oldTag = $(data.tag);
-                        framework._.cpNfInner.chainpad.onSettle(function () {
-                            $(editButtons).show();
-                            $(previewDiv).show();
-                            $(requiredDiv).show();
-                            UI.log(Messages.saved);
+
+                            $(editButtons).find('.cp-form-preview-button').remove();
+
                             _answers = getBlockAnswers(APP.answers, uid);
-                            data = model.get(newOpts, _answers, null, evOnChange);
+                            data = model.get(block.opts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
-                        });
+                            return;
+                        }
+                        if (!newOpts) {
+                            // invalid options, nothing to save
+                            return;
+                        }
+                        block.opts = newOpts;
+                        framework.localChange();
                     };
                     var onEdit = function (tmp) {
                         data.editing = true;
@@ -2790,7 +2800,10 @@ define([
                         $(previewDiv).hide();
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave, tmp, framework));
-                        $(editButtons).hide();
+
+                        $(editContainer).find('.cp-form-preview-button').prependTo(editButtons);
+
+                        $(edit).hide();
                     };
                     $(edit).click(function () {
                         onEdit();
@@ -2876,9 +2889,9 @@ define([
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
                     APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
+                    editContainer,
                     editButtons
                 ]),
-                editContainer
             ]));
         });
 
@@ -3631,7 +3644,11 @@ define([
             var answers, temp;
             if (!APP.isEditor) { answers = getFormResults(); }
             else { temp = getTempFields(); }
+
+            var $main = $('.cp-form-creator-container');
+            var sTop = $main.scrollTop();
             updateForm(framework, content, APP.isEditor, answers, temp);
+            $main.scrollTop(sTop);
         });
 
         framework.setContentGetter(function () {
