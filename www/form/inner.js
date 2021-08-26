@@ -3138,9 +3138,9 @@ define([
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
                 $responseMsg.empty();
-                Messages.form_updateMsg = "Update response message"; // XXX 4.11.0
-                Messages.form_addMsg = "Add response message"; // XXX 4.11.0
-                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.11.0
+                Messages.form_updateMsg = "Update submit message"; // XXX 4.11.0
+                Messages.form_addMsg = "Add submit message"; // XXX 4.11.0
+                Messages.form_responseMsg = "Add a message that will be displayed after participants submit the form."; // XXX 4.11.0
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
@@ -3176,6 +3176,12 @@ define([
                         });
 
                         var buttons = [{
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        },
+                        {
                             className: 'primary',
                             name: Messages.settings_save,
                             onClick: function () {
@@ -3188,11 +3194,6 @@ define([
                                 });
                             },
                             //keys: []
-                        }, {
-                            className: 'cancel',
-                            name: Messages.cancel,
-                            onClick: function () {},
-                            keys: [27]
                         }];
                         APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
                     } else {
