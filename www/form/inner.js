@@ -258,15 +258,16 @@ define([
         var addMultiple;
         var getOption = function (val, placeholder, isItem, uid) {
             var input = h('input', {value:val});
+            var $input = $(input);
             if (placeholder) {
                 input.placeholder = val;
                 input.value = '';
-                $(input).on('keypress', function () {
-                    $(input).removeAttr('placeholder');
-                    $(input).off('keypress');
+                $input.on('keypress', function () {
+                    $input.removeAttr('placeholder');
+                    $input.off('keypress');
                 });
             }
-            if (uid) { $(input).data('uid', uid); }
+            if (uid) { $input.data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
             if (v.type && v.type !== 'text') {
@@ -334,14 +335,26 @@ define([
             });
 
             if (!v.type || v.type === "text") {
-                $(input).keyup(function (e) {
-                    if (e.which === 13) {
-                        if (isItem && $addItem && $addItem.is(':visible')) { $addItem.click(); }
-                        if (!isItem && $add && $add.is(':visible')) { $add.click(); }
-                    }
-                    if (e.which === 27 && !$(input).val()) {
-                        $(del).click();
-                    }
+                $input.keyup(function (e) {
+                    try {
+                        if (e.which === 13) {
+                            var $line = $input.closest('.cp-form-edit-block-input');
+                            if ($input.closest('.cp-form-edit-block')
+                                    .find('.cp-form-edit-block-input').last()[0] === $line[0]) {
+                                // If we're the last input, add a new one
+                                if (isItem && $addItem && $addItem.is(':visible')) {
+                                    $addItem.click();
+                                }
+                                if (!isItem && $add && $add.is(':visible')) { $add.click(); }
+                            } else {
+                                // Otherwise focus the next one
+                                $line.next().find('input').focus();
+                            }
+                        }
+                        if (e.which === 27 && !$(input).val()) {
+                            $(del).click();
+                        }
+                    } catch (err) { console.error(err); }
                 });
             }
 
@@ -510,7 +523,6 @@ define([
                 }
             });
             if (v.items) {
-                var items = [];
                 $(containerItems).find('input').each(function (i, el) {
                     var val = $(el).val() || el.placeholder || '';
                     if (el === active) {
@@ -898,10 +910,11 @@ define([
                             editor = tmp.editor;
                         }
 
+                        var cm;
                         if (!block || !editor) {
                             var t = h('textarea');
                             block = h('div.cp-form-edit-options-block', [t]);
-                            var cm = SFCodeMirror.create("gfm", CMeditor, t);
+                            cm = SFCodeMirror.create("gfm", CMeditor, t);
                             editor = cm.editor;
                             editor.setOption('lineNumbers', true);
                             editor.setOption('lineWrapping', true);
@@ -921,7 +934,7 @@ define([
                             editor.focus();
                         });
 
-                        if (APP.common && !(tmp && tmp.block)) {
+                        if (APP.common && !(tmp && tmp.block) && cm) {
                             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                                 embed: function (mt) {
                                     editor.focus();
