@@ -322,6 +322,19 @@ define([
                     $maxInput.val(Math.min(inputs, currentMax));
                 }
             });
+
+            if (!v.type || v.type === "text") {
+                $(input).keyup(function (e) {
+                    if (e.which === 13) {
+                        if (isItem && $addItem && $addItem.is(':visible')) { $addItem.click(); }
+                        if (!isItem && $add && $add.is(':visible')) { $add.click(); }
+                    }
+                    if (e.which === 27 && !$(input).val()) {
+                        $(del).click();
+                    }
+                });
+            }
+
             return el;
         };
         var inputs = v.values.map(function (val) { return getOption(val, isDefaultOpts, false); });
@@ -448,7 +461,9 @@ define([
         // "Add option" button handler
         $add = $(add).click(function () {
             var txt = v.type ? '' : Messages.form_newOption;
-            $add.before(getOption(txt, true, false));
+            var el = getOption(txt, true, false);
+            $add.before(el);
+            $(el).find('input').focus();
             var l = $container.find('input').length;
             $(maxInput).attr('max', l);
             if (l >= MAX_OPTIONS) { $add.hide(); }
@@ -456,7 +471,9 @@ define([
 
         // If multiline block, handle "Add item" button
         $addItem = $(addItem).click(function () {
-            $addItem.before(getOption(Messages.form_newItem, true, true, Util.uid()));
+            var el = getOption(Messages.form_newItem, true, true, Util.uid());
+            $addItem.before(el);
+            $(el).find('input').focus();
             if ($(containerItems).find('input').length >= MAX_ITEMS) { $addItem.hide(); }
         });
         if ($container.find('input').length >= MAX_OPTIONS) { $add.hide(); }
