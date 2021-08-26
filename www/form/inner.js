@@ -3225,6 +3225,7 @@ define([
             refreshAnon();
 
             // XXX UPDATE KEYS "form_anonyous_on", "form_anonymous_off" and "form_anonymous"
+            Messages.form_anonymous = "Guest access (not logged in)"; // XXX existing key
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
@@ -3255,7 +3256,7 @@ define([
             refreshPrivacy();
 
             // Allow responses edition
-            Messages.form_editable = "Allow users to edit their responses"; // XXX
+            Messages.form_editable = "Editing after submit"; // XXX
             var editableContainer = h('div.cp-form-editable-container');
             var $editable = $(editableContainer);
             var refreshEditable = function () {
