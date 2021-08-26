@@ -1455,7 +1455,7 @@ define([
                 };
                 $tag.find('input').on('change', function () {
                     checkDisabled();
-                    evOnChange.fire();
+                    evOnChange.fire(false, false, true);
                 });
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
@@ -2373,8 +2373,13 @@ define([
         return !w.length || w.some(function (rules) {
             return rules.every(function (rule) {
                 var res = findResult(rule.q);
-                return rule.is ? res === rule.v
-                               : res !== rule.v;
+                // Checkbox
+                if (Array.isArray(res)) {
+                    var idx = res.indexOf(rule.v);
+                    return rule.is ? idx !== -1 : idx === -1;
+                }
+                // Radio
+                return rule.is ? res === rule.v : res !== rule.v;
             });
         });
     };
@@ -2834,14 +2839,21 @@ define([
                     var values = blocks.map(function(uid) {
                         var block = form[uid];
                         var type = block.type;
-                        if (['radio'].indexOf(type) === -1) { return; }
+                        if (['radio', 'checkbox'].indexOf(type) === -1) { return; }
+                        var obj = {
+                            uid: uid,
+                            type: type,
+                            q: block.q || Messages.form_default
+                        };
                         if (type === 'radio') {
-                            return {
-                                uid: uid,
-                                q: block.q || Messages.form_default,
-                                values: block.opts ? block.opts.values : TYPES.radio.defaultOpts.values
-                            };
+                            obj.values = block.opts ? block.opts.values
+                                                    : TYPES.radio.defaultOpts.values
                         }
+                        if (type === 'checkbox') {
+                            obj.values = block.opts ? block.opts.values
+                                                    : TYPES.checkbox.defaultOpts.values
+                        }
+                        return obj;
                     }).filter(Boolean);
                     return values;
                 };
@@ -2888,6 +2900,8 @@ define([
                     var qSelect = UIElements.createDropdown(qConfig);
                     Messages.form_condition_is = 'is'; // XXX
                     Messages.form_condition_isnot = 'is not'; // XXX
+                    Messages.form_condition_has = 'has'; // XXX
+                    Messages.form_condition_hasnot = 'has not'; // XXX
 
                     var isOn = !condition || condition.is !== 0;
                     var iOptions = [{
@@ -2925,13 +2939,25 @@ define([
                     var isChange;
                     qSelect.onChange.reg(function (prettyVal, val, init) {
                         $(iSelect).show();
-                        var res;
+                        var res, type;
                         values.some(function (obj) {
                             if (String(obj.uid) === String(val)) {
                                 res = obj.values;
+                                type = obj.type;
                                 return true;
                             }
                         });
+
+                        var $selDiv = $(iSelect);
+                        if (type === 'checkbox') {
+                            $selDiv.find('[data-value="0"]').text(Messages.form_condition_hasnot);
+                            $selDiv.find('[data-value="1"]').text(Messages.form_condition_has);
+                        } else {
+                            $selDiv.find('[data-value="0"]').text(Messages.form_condition_isnot);
+                            $selDiv.find('[data-value="1"]').text(Messages.form_condition_is);
+                        }
+                        iSelect.setValue(iSelect.getValue());
+
                         $content.find('.cp-form-condition-values').remove();
                         if (!res) { return; }
                         var vOptions = res.map(function (str) {

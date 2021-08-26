@@ -1588,7 +1588,7 @@ define([
                 });
             };
             $container.getValue = function () {
-                return value || '';
+                return typeof(value) === "undefined" ? '' : value;
             };
         }
 
