@@ -2271,7 +2271,7 @@ define([
     var getFormResults = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
-        APP.formBlocks.forEach(function (data) {
+        APP.formBlocks.some(function (data) {
             if (!data.getValue) { return; }
             results[data.uid] = data.getValue();
         });
@@ -2280,6 +2280,104 @@ define([
 
     Messages.form_anonAnswer = "All answers to this form are anonymous"; // XXX
     Messages.form_authAnswer = "You can't answer anonymously to this form"; // XXX
+
+    var getSections = function (content) {
+        var uids = Object.keys(content.form).filter(function (uid) {
+            return content.form[uid].type === 'section';
+        });
+        return uids;
+    };
+    var getSectionFromQ = function (content, uid) {
+        var arr = content.order;
+        var idx = content.order.indexOf(uid);
+        var sectionUid;
+        if (idx === -1) { // If it's not in the main array, check in sections
+            getSections(content).some(function (_uid) {
+                var block = content.form[_uid];
+                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+                var _idx = block.opts.questions.indexOf(uid);
+                if (_idx !== -1) {
+                    arr = block.opts.questions;
+                    sectionUid = _uid;
+                    idx = _idx;
+                    return true;
+                }
+            });
+        }
+
+        return {
+            uid: sectionUid,
+            arr: arr,
+            idx: idx
+        };
+    };
+    var removeQuestion = function (content, uid) {
+        delete content.form[uid];
+        var idx = content.order.indexOf(uid);
+        if (idx !== -1) {
+            content.order.splice(idx, 1);
+        } else {
+            getSections(content).some(function (_uid) {
+                var block = content.form[_uid];
+                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+                var _idx = block.opts.questions.indexOf(uid);
+                if (_idx !== -1) {
+                    block.opts.questions.splice(_idx, 1);
+                    return true;
+                }
+            });
+        }
+    };
+    var getFullOrder = function (content) {
+        var order = content.order.slice();
+        getSections(content).forEach(function (uid) {
+            var block = content.form[uid];
+            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+            var idx = order.indexOf(uid);
+            if (idx === -1) { return; }
+            idx++;
+            block.opts.questions.forEach(function (el, i) {
+                order.splice(idx+i, 0, el);
+            });
+        });
+        return order;
+    };
+
+    var checkResults = {};
+    var checkCondition = function (block) {
+        if (!block || block.type !== 'section') { return; }
+        if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
+            return true;
+        }
+
+        // This function may be called multiple times synchronously to check the conditions
+        // of multiple sections. These sections may require the result of the same question
+        // so we store the results in an object outside.
+        // To make sure the results are cleared on the next change in the form, we
+        // clear it just after the current synchronous actions are done.
+        setTimeout(function () { checkResults = {}; });
+
+        var results = checkResults;
+        var findResult = function (uid) {
+            if (results.hasOwnProperty(uid)) { return results[uid]; }
+            APP.formBlocks.some(function (data) {
+                if (!data.getValue) { return; }
+                if (data.uid === uid) {
+                    results[uid] = data.getValue();
+                    return true;
+                }
+            });
+            return results[uid];
+        };
+        var w = block.opts.when;
+        return !w.length || w.some(function (rules) {
+            return rules.every(function (rule) {
+                var res = findResult(rule.q);
+                return rule.is ? res === rule.v
+                               : res !== rule.v;
+            });
+        });
+    };
 
     var makeFormControls = function (framework, content, update, evOnChange) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
@@ -2455,6 +2553,17 @@ define([
                     if (!data.isEmpty) { return; }
                     if (!block) { return; }
                     if (!block.opts || !block.opts.required) { return; }
+
+                    // Don't require questions that are in a hidden section
+                    var section = getSectionFromQ(content, uid);
+                    if (section.uid) {
+                        // Check if section is hidden
+                        var sBlock = form[section.uid];
+                        var visible = checkCondition(sBlock);
+                        if (!visible) { return; }
+                    }
+
+
                     var isEmpty = data.isEmpty();
                     var $el = $(data.tag).closest('.cp-form-block');
                     $el.find('.cp-form-required-tag').toggleClass('cp-is-empty', isEmpty);
@@ -2488,64 +2597,6 @@ define([
                    ]) : undefined,
             reset, send
         ]);
-    };
-    var getSections = function (content) {
-        var uids = Object.keys(content.form).filter(function (uid) {
-            return content.form[uid].type === 'section';
-        });
-        return uids;
-    };
-    var getSectionFromQ = function (content, uid) {
-        var arr = content.order;
-        var idx = content.order.indexOf(uid);
-        if (idx === -1) { // If it's not in the main array, check in sections
-            getSections(content).some(function (_uid) {
-                var block = content.form[_uid];
-                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
-                var _idx = block.opts.questions.indexOf(uid);
-                if (_idx !== -1) {
-                    arr = block.opts.questions;
-                    idx = _idx;
-                    return true;
-                }
-            });
-        }
-
-        return {
-            arr: arr,
-            idx: idx
-        };
-    };
-    var removeQuestion = function (content, uid) {
-        delete content.form[uid];
-        var idx = content.order.indexOf(uid);
-        if (idx !== -1) {
-            content.order.splice(idx, 1);
-        } else {
-            getSections(content).some(function (_uid) {
-                var block = content.form[_uid];
-                if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
-                var _idx = block.opts.questions.indexOf(uid);
-                if (_idx !== -1) {
-                    block.opts.questions.splice(_idx, 1);
-                    return true;
-                }
-            });
-        }
-    };
-    var getFullOrder = function (content) {
-        var order = content.order.slice();
-        getSections(content).forEach(function (uid) {
-            var block = content.form[uid];
-            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
-            var idx = order.indexOf(uid);
-            if (idx === -1) { return; }
-            idx++;
-            block.opts.questions.forEach(function (el, i) {
-                order.splice(idx+i, 0, el);
-            });
-        });
-        return order;
     };
     var updateForm = function (framework, content, editable, answers, temp) {
         var $container = $('div.cp-form-creator-content');
@@ -3317,17 +3368,13 @@ define([
         // In view mode, hide sections when conditions aren't met
         evOnChange.reg(function (reset, save, condition) {
             if (!reset && !condition) { return; }
-            var results = getFormResults();
             getSections(content).forEach(function (uid) {
                 var block = content.form[uid];
-                if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) { return; }
-                var w = block.opts.when;
-                var show = !w.length || w.some(function (rules) {
-                    return rules.every(function (rule) {
-                        return rule.is ? results[rule.q] === rule.v
-                                       : results[rule.q] !== rule.v;
-                    });
-                });
+                if (block.type !== 'section') { return; }
+                if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
+                    return;
+                }
+                var show = checkCondition(block);
                 block.opts.questions.forEach(function (_uid) {
                     $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
                 });
