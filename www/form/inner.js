@@ -2777,7 +2777,6 @@ define([
                             var $oldTag = $(data.tag);
                             $(edit).show();
                             $(previewDiv).show();
-                            $(requiredDiv).show();
 
                             $(editButtons).find('.cp-form-preview-button').remove();
 
@@ -2796,7 +2795,6 @@ define([
                     };
                     var onEdit = function (tmp) {
                         data.editing = true;
-                        $(requiredDiv).hide();
                         $(previewDiv).hide();
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave, tmp, framework));
