@@ -252,10 +252,12 @@ define([
     funcs.getAuthorId = function(authors, curve, tokenId) {
         var existing = Object.keys(authors || {}).map(Number);
         var uid;
-        if (!funcs.isLoggedIn()) {
+        var loggedIn = funcs.isLoggedIn();
+        if (!loggedIn && !tokenId) { return authorUid(existing); }
+        if (!loggedIn) {
             existing.some(function (id) {
-                var author = authors[id] || {};
-                if (author.uid !== tokenId) { return; }
+                var author = authors[id];
+                if (!author || author.uid !== tokenId) { return; }
                 uid = Number(id);
                 return true;
             });
