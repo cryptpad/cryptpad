@@ -19,7 +19,9 @@ define([
     '/customize/application_config.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
+    '/common/text-cursor.js',
     'cm/lib/codemirror',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -61,7 +63,9 @@ define([
     AppConfig,
     DiffMd,
     SFCodeMirror,
+    TextCursor,
     CMeditor,
+    ChainPad,
     Share, Access, Properties,
     Flatpickr,
     Sortable
@@ -195,12 +199,6 @@ define([
         if (tmp && tmp.cursor) {
             cursor = tmp.cursor;
         }
-        /*
-        if (tmp && tmp.content && Sortify(v) === Sortify(tmp.old)) {
-            v = tmp.content;
-            cursor = tmp.cursor;
-        }
-        */
 
         // Checkbox: max options
         var maxOptions, maxInput;
@@ -287,6 +285,12 @@ define([
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
                 if (v.type && v.type !== 'text') { return; }
+                try {
+                    var ops = ChainPad.Diff.diff(cursor.el, val);
+                    ['start', 'end'].forEach(function (attr) {
+                        cursor[attr] = TextCursor.transformCursor(cursor[attr], ops);
+                    });
+                } catch (e) { console.error(e); }
                 input.selectionStart = cursor.start || 0;
                 input.selectionEnd = cursor.end || 0;
                 setTimeout(function () { input.focus(); });
@@ -493,7 +497,6 @@ define([
 
         // Set cursor getter (to handle remote changes to the form)
         setCursorGetter(function () {
-            var values = [];
             var active = document.activeElement;
             var cursor = {};
             $container.find('input').each(function (i, el) {
@@ -503,44 +506,21 @@ define([
                     cursor.start = el.selectionStart;
                     cursor.end = el.selectionEnd;
                 }
-                values.push(val);
             });
-            if (v.type === "day") {
-                var dayPickr = $(calendarView).find('input')[0]._flatpickr;
-                values = dayPickr.selectedDates.map(function (date) {
-                    return +date;
-                });
-            }
-            var _content = {values: values};
-
-            if (maxInput) {
-                _content.max = Number($(maxInput).val()) || 1;
-            }
-
-            if (typeSelect) {
-                _content.type = typeSelect.getValue();
-            }
-
             if (v.items) {
                 var items = [];
                 $(containerItems).find('input').each(function (i, el) {
+                    var val = $(el).val() || el.placeholder || '';
                     if (el === active) {
                         cursor.item = true;
                         cursor.uid= $(el).data('uid');
                         cursor.start = el.selectionStart;
                         cursor.end = el.selectionEnd;
+                        cursor.el = val;
                     }
-                    var val = $(el).val() || el.placeholder || '';
-                    items.push({
-                        uid: $(el).data('uid'),
-                        v: val
-                    });
                 });
-                _content.items = items;
             }
             return {
-                old: (tmp && tmp.old) || v,
-                content: _content,
                 cursor: cursor
             };
         });
@@ -901,14 +881,8 @@ define([
                 return {
                     tag: tag,
                     edit: function (cb, tmp) {
-                        var t = h('textarea');
-                        var block = h('div.cp-form-edit-options-block', [t]);
-                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
-                        var editor = cm.editor;
-                        editor.setOption('lineNumbers', true);
-                        editor.setOption('lineWrapping', true);
-                        editor.setOption('styleActiveLine', true);
-                        editor.setOption('readOnly', false);
+                        // Cancel changes
+                        var cancelBlock = saveAndCancelOptions(cb);
 
                         var text = opts.text;
                         var cursor;
@@ -916,20 +890,36 @@ define([
                             cursor = tmp.cursor;
                         }
 
+                        var block, editor;
+                        if (tmp && tmp.block) {
+                            block = tmp.block;
+                            editor = tmp.editor;
+                        }
+
+                        if (!block || !editor) {
+                            var t = h('textarea');
+                            block = h('div.cp-form-edit-options-block', [t]);
+                            var cm = SFCodeMirror.create("gfm", CMeditor, t);
+                            editor = cm.editor;
+                            editor.setOption('lineNumbers', true);
+                            editor.setOption('lineWrapping', true);
+                            editor.setOption('styleActiveLine', true);
+                            editor.setOption('readOnly', false);
+                        }
+
                         setTimeout(function () {
-                            editor.setValue(text);
-                            if (cursor) {
-                                if (Sortify(cursor.start) === Sortify(cursor.end)) {
-                                    editor.setCursor(cursor.start);
-                                } else {
-                                    editor.setSelection(cursor.start, cursor.end);
-                                }
+                            editor.focus();
+                            if (!(tmp && tmp.editor)) {
+                                editor.setValue(text);
+                            } else {
+                                SFCodeMirror.setValueAndCursor(editor, editor.getValue(), text);
                             }
                             editor.refresh();
                             editor.save();
                             editor.focus();
                         });
-                        if (APP.common) {
+
+                        if (APP.common && !(tmp && tmp.block)) {
                             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                                 embed: function (mt) {
                                     editor.focus();
@@ -940,8 +930,6 @@ define([
                             $(markdownTb.toolbar).show();
                             cm.configureTheme(APP.common, function () {});
                         }
-                        // Cancel changes
-                        var cancelBlock = saveAndCancelOptions(cb);
 
                         var getContent = function () {
                             return {
@@ -949,9 +937,13 @@ define([
                             };
                         };
 
-                        editor.on('change', function () {
+                        if (tmp && tmp.onChange) {
+                            editor.off('change', tmp.onChange);
+                        }
+                        var on = function () {
                             cb(getContent());
-                        });
+                        };
+                        editor.on('change', on);
 
                         cursorGetter = function () {
                             if (document.activeElement && block.contains(document.activeElement)) {
@@ -961,9 +953,10 @@ define([
                                 };
                             }
                             return {
-                                old: opts,
-                                content: getContent(),
-                                cursor: cursor
+                                cursor: cursor,
+                                block: block,
+                                editor: editor,
+                                onChange: on
                             };
                         };
 
