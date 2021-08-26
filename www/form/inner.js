@@ -91,8 +91,10 @@ define([
 
     var saveAndCancelOptions = function (cb) {
         Messages.form_preview_button = "Preview"; // XXX
-        var cancelBlock = h('button.btn.btn-secondary.cp-form-preview-button',
-                            Messages.form_preview_button);
+        var cancelBlock = h('button.btn.btn-default.cp-form-preview-button',[
+                            h('i.fa.fa-eye'),
+                            Messages.form_preview_button
+                        ]);
         $(cancelBlock).click(function () { cb(undefined, true); });
 
         return cancelBlock;
