@@ -1734,7 +1734,8 @@ define([
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
-                        var toSort = (val || []).map(function (val) {
+                        if (!Array.isArray(val)) { val = []; }
+                        var toSort = val.map(function (val) {
                             return invMap[val];
                         });
                         sortable.sort(toSort);
