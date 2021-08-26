@@ -3477,7 +3477,7 @@ define([
             UI.alert(content);
         };
 
-        framework.onReady(function () {
+        framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
 
             if (APP.isEditor) {
@@ -3501,6 +3501,9 @@ define([
                     framework.localChange();
                 }
                 checkIntegrity();
+            }
+            if (isNew && content.answers && typeof(content.answers.anonymous) === "undefined") {
+                content.answers.anonymous = true;
             }
 
             sframeChan.event('EV_FORM_PIN', {channel: content.answers.channel});
