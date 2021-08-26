@@ -1312,6 +1312,7 @@ define([
                 $item.find('.cp-kanban-cursors').append(avatar);
                 return;
             }
+            var $board = $('.kanban-board[data-id="'+cursor.board+'"]');
             if ($board.length) {
                 remoteCursors[id] = cursor;
                 $board.find('header .cp-kanban-cursors').append(avatar);
