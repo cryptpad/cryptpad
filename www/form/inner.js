@@ -2949,6 +2949,13 @@ define([
             if (infoTxt) {
                 $container.prepend(h('div.alert.alert-info', infoTxt));
             }
+
+            if (!loggedIn && !content.answers.anonymous) {
+                APP.formBlocks.forEach(function (b) {
+                    if (!b.setEditable) { return; }
+                    b.setEditable(false);
+                });
+            }
         }
 
         // Embed mode is enforced so we add the title at the top and a CryptPad logo
