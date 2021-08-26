@@ -1992,12 +1992,6 @@ define([
             return;
         }
 
-        if (content.answers.msg) {
-            var description = h('div.cp-form-creator-results-description#cp-form-response-msg');
-            var $desc = $(description).appendTo($container);
-            DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
-        }
-
         var heading = h('h2#cp-title', Messages._getKey('form_totalResponses', [answerCount]));
         $(heading).appendTo($container);
         var timeline = h('div.cp-form-creator-results-timeline');
@@ -2206,12 +2200,40 @@ define([
 
         if (answers._time) { APP.lastAnswerTime = answers._time; }
 
+        // If responses are public, show button to view them
+        var responses;
+        if (content.answers.privateKey) {
+            responses = h('button.btn.btn-default', Messages.form_results);
+            $(responses).click(function () {
+                var sframeChan = framework._.sfCommon.getSframeChannel();
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                    var answers = obj && obj.results;
+                    if (answers) { APP.answers = answers; }
+                    $('body').addClass('cp-app-form-results');
+                    renderResults(content, answers);
+                    $container.hide();
+                });
+            });
+        }
+
+        var description = h('div.cp-form-creator-results-description#cp-form-response-msg');
+        if (content.answers.msg) {
+            var $desc = $(description);
+            DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
+        }
+
+        var actions = h('div.cp-form-submit-actions', [
+            action,
+            responses || undefined
+        ]);
+
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.append(h('div.cp-form-submit-success', [
             h('h3.cp-form-view-title', title),
+            description,
             h('div.alert.alert-info', Messages._getKey('form_alreadyAnswered', [
                     new Date(APP.lastAnswerTime).toLocaleString()])),
-            action
+            actions
         ]));
     };
 
