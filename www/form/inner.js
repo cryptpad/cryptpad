@@ -2777,6 +2777,7 @@ define([
                             var $oldTag = $(data.tag);
                             $(edit).show();
                             $(previewDiv).show();
+                            $(requiredDiv).hide();
 
                             $(editButtons).find('.cp-form-preview-button').remove();
 
@@ -2795,6 +2796,7 @@ define([
                     };
                     var onEdit = function (tmp) {
                         data.editing = true;
+                        $(requiredDiv).show();
                         $(previewDiv).hide();
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave, tmp, framework));
@@ -2806,6 +2808,7 @@ define([
                     $(edit).click(function () {
                         onEdit();
                     });
+                    $(requiredDiv).hide();
 
                     // If we were editing this field, recover our unsaved changes
                     if (temp && temp[uid]) {
