@@ -8,4 +8,5 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jscolor v2.0.5](https://jscolor.com/) for providing a consistent color picker across all browsers
 * [jquery.ui 1.12.1](https://jqueryui.com/) for its 'autocomplete' extension which is used for our tag picker
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
+* [qrcode.js](https://github.com/davidshimjs/qrcodejs) from [this commit](https://github.com/davidshimjs/qrcodejs/commit/06c7a5e134f116402699f03cda5819e10a0e5787) since the repo doesn't use tags
 
