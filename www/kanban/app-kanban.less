@@ -159,6 +159,14 @@
             margin-right: 5px;
             .tools_unselectable();
             cursor: default;
+            &.cp-cursor.cp-tippy-html {
+                background-color: var(--red);
+                // XXX figure out how to inherit this from avatar.less
+                font-size: 11px; // 20px / 1.8 as per avatar.less..
+                &.animal {
+                    font-size: 14px; // 20px / 1.8 * (6/5)...
+                }
+            }
         }
     }
     .kanban-item {

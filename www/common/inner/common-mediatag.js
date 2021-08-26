@@ -46,6 +46,7 @@ define([
     var animal_avatars = {};
     MT.getCursorAvatar = function (cursor) {
         var uid = cursor.uid;
+        // TODO it would be nice to have "{0} is editing" instead of just their name
         var html = '<span class="cp-cursor-avatar">';
         if (cursor.avatar && avatars[cursor.avatar]) {
             html += (cursor.avatar && avatars[cursor.avatar]) || '';
@@ -100,7 +101,7 @@ define([
         return ANIMALS[seed % ANIMALS.length];
     };
 
-    var getPrettyInitials = function (name) {
+    var getPrettyInitials = MT.getPrettyInitials = function (name) {
         var parts = name.split(/\s+/);
         var text;
         if (parts.length > 1) {

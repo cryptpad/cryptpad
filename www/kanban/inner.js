@@ -59,7 +59,7 @@ define([
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
     var onCursorUpdate = Util.mkEvent();
-    var remoteCursors = {}; // XXX
+    var remoteCursors = {};
 
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
@@ -95,18 +95,27 @@ define([
 
     var getAvatar = function (cursor, noClear) {
         // Tippy
-        var html = MT.getCursorAvatar(cursor); // XXX
+        var html = MT.getCursorAvatar(cursor);
 
-        var l = Util.getFirstCharacter(cursor.name || Messages.anonymous);
+        var name = UI.getDisplayName(cursor.name);
+
+        var l;
+        var animal = '';
+        if (cursor.name === Messages.anonymous && typeof(cursor.uid) === 'string') {
+            l = MT.getPseudorandomAnimal(cursor.uid);
+            animal = '.animal';
+        } else {
+            l = MT.getPrettyInitials(name);
+        }
 
         var text = '';
         if (cursor.color) {
-            text = 'color:'+getTextColor(cursor.color)+';';
+            text = 'background-color:' + cursor.color + '; color:'+getTextColor(cursor.color)+';';
         }
-        var avatar = h('span.cp-cursor.cp-tippy-html', { // XXX
-            style: "background-color: " + (cursor.color || 'red') + ";"+text,
+        var avatar = h('span.cp-cursor.cp-tippy-html' + animal, {
+            style: text,
             'data-cptippy-html': true,
-            title: html, // XXX "{0} is editing"
+            title: html,
         }, l);
         if (!noClear) {
             cursor.clear = function () {
@@ -852,7 +861,7 @@ define([
             getAvatar: getAvatar,
             openLink: openLink,
             getTags: getExistingTags,
-            cursors: remoteCursors, // XXX
+            cursors: remoteCursors,
             boards: boards,
             _boards: Util.clone(boards),
         });
@@ -1062,6 +1071,7 @@ define([
         var kanban;
         var $container = $('#cp-app-kanban-content');
 
+        var myData = framework._.cpNfInner.metadataMgr.getUserData();
         var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
         if (!privateData.isEmbed) {
             mkHelpMenu(framework);
@@ -1101,7 +1111,7 @@ define([
             $container.find('.kanban-edit-item').remove();
         });
 
-        var getCursor = function () { // XXX
+        var getCursor = function () {
             if (!kanban || !kanban.inEditMode) { return; }
             try {
                 var id = kanban.inEditMode;
@@ -1204,7 +1214,7 @@ define([
             var remoteContent = newContent.content;
 
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
-                var cursor = getCursor(); // XXX
+                var cursor = getCursor();
                 verbose("Content is different.. Applying content");
                 kanban.options.boards = remoteContent;
                 updateBoards(framework, kanban, remoteContent);
@@ -1261,11 +1271,13 @@ define([
         });
 
         var myCursor = {};
-        onCursorUpdate.reg(function (data) { // XXX
+        onCursorUpdate.reg(function (data) {
+            console.log('onCursorUpdate', data);
             myCursor = data;
+            myCursor.uid = myData.uid;
             framework.updateCursor();
         });
-        framework.onCursorUpdate(function (data) { // XXX
+        framework.onCursorUpdate(function (data) {
             if (!data) { return; }
             if (data.reset) {
                 Object.keys(remoteCursors).forEach(function (id) {
@@ -1293,9 +1305,8 @@ define([
             if (!cursor.item && !cursor.board) { return; }
 
             // Add new cursor
-            var avatar = getAvatar(cursor); // XXX
+            var avatar = getAvatar(cursor);
             var $item = $('.kanban-item[data-eid="'+cursor.item+'"]');
-            var $board = $('.kanban-board[data-id="'+cursor.board+'"]');
             if ($item.length) {
                 remoteCursors[id] = cursor;
                 $item.find('.cp-kanban-cursors').append(avatar);
