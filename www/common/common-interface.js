@@ -1482,5 +1482,24 @@ define([
         });
     };
 
+/*  QR code generation is synchronous once the library is loaded
+    so this could be syncronous if we load the library separately.
+    It could also just return the rendered code instead of displaying
+    it in an alert.
+
+    to test:
+    require(['/common/common-interface.js'], function (UI) { UI.createQRCode('https://cryptpad.fr'); });
+*/
+    UI.createQRCode = function (data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb || Util.noop));
+        require(['/lib/qrcode.min.js'], function () {
+            var div = h('div');
+            var code = new window.QRCode(div, data);
+            // code._el === div
+            UI.alert(div, cb);
+        });
+    };
+
+
     return UI;
 });
