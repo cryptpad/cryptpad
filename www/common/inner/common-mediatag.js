@@ -92,7 +92,7 @@ define([
         return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
     };
 
-    var getPseudorandomAnimal = function (seed) {
+    var getPseudorandomAnimal = MT.getPseudorandomAnimal = function (seed) {
         if (typeof(seed) !== 'string') { return getRandomAnimal(); }
         seed = seed.replace(/\D/g, '').slice(0, 10);
         seed = parseInt(seed);
