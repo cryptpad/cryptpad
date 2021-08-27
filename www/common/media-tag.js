@@ -73,6 +73,7 @@ var factory = function () {
              * @param {object}   cfg     Object {Plugins, allowed, download, pdf} containing infos about plugins
              * @param {function} cb      Callback function: (err, pluginElement) => {}
              */
+             // XXX add alt attributes if present in metadata
             text: function (metadata, url, content, cfg, cb) {
                 var plainText = document.createElement('div');
                 plainText.className = "plain-text-reader";

@@ -356,6 +356,8 @@ MessengerUI, Messages, Pages) {
                 });
             }
             if (data.profile) {
+                // XXX title to visit their profile "Visit {0}'s profile"
+                // Messages.contacts_info3 "Double-click their icon to view their profile",
                 $span.addClass('cp-userlist-clickable');
                 $span.click(function () {
                     Common.openURL(origin+'/profile/#' + data.profile);
@@ -363,7 +365,7 @@ MessengerUI, Messages, Pages) {
             }
             Common.displayAvatar($span, data.avatar, name, function () {
                 $span.append($rightCol);
-            });
+            }, data.uid);
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
@@ -1215,18 +1217,31 @@ MessengerUI, Messages, Pages) {
         }
     };
 
+    var getFancyGuestName = function (name, uid) {
+        name = UI.getDisplayName(name);
+        if (name === Messages.anonymous && uid) {
+            var animal = MT.getPseudorandomAnimal(uid);
+            if (animal) {
+                name = animal + ' ' + name;
+            }
+        }
+        return name;
+    };
+
     // Notifications
     var initNotifications = function (toolbar, config) {
         // Display notifications when users are joining/leaving the session
         var oldUserData;
         if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
-        var notify = function(type, name, oldname) {
+        var notify = function(type, name, oldname, uid) {
             if (toolbar.isAlone) { return; }
             // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
             if (typeof name === "undefined") { return; }
-            name = name || Messages.anonymous;
             if (Config.disableUserlistNotifications) { return; }
+            name = getFancyGuestName(name, uid);
+            oldname = getFancyGuestName(oldname, uid);
+
             switch(type) {
                 case 1:
                     UI.log(Messages._getKey("notifyJoined", [name]));
@@ -1275,7 +1290,7 @@ MessengerUI, Messages, Pages) {
                         delete oldUserData[u];
                         if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) { return; }
                         if (userPresent(u, temp, newdata || oldUserData) < 1) {
-                            notify(-1, temp.name);
+                            notify(-1, temp.name, undefined, temp.uid);
                         }
                     }
                 }
@@ -1295,10 +1310,10 @@ MessengerUI, Messages, Pages) {
                     if (typeof oldUserData[k] === "undefined") {
                         // if the same uid is already present in the userdata, don't notify
                         if (!userPresent(k, newdata[k], oldUserData)) {
-                            notify(1, newdata[k].name);
+                            notify(1, newdata[k].name, undefined, newdata[k].uid);
                         }
                     } else if (oldUserData[k].name !== newdata[k].name) {
-                        notify(0, newdata[k].name, oldUserData[k].name);
+                        notify(0, newdata[k].name, oldUserData[k].name, newdata[k].uid);
                     }
                 }
             }

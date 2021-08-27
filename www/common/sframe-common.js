@@ -249,11 +249,20 @@ define([
         if (existing.indexOf(n) !== -1) { n = 0; }
         return n;
     };
-    funcs.getAuthorId = function(authors, curve) {
+    funcs.getAuthorId = function(authors, curve, tokenId) {
         var existing = Object.keys(authors || {}).map(Number);
-        if (!funcs.isLoggedIn()) { return authorUid(existing); }
-
         var uid;
+        var loggedIn = funcs.isLoggedIn();
+        if (!loggedIn && !tokenId) { return authorUid(existing); }
+        if (!loggedIn) {
+            existing.some(function (id) {
+                var author = authors[id];
+                if (!author || author.uid !== tokenId) { return; }
+                uid = Number(id);
+                return true;
+            });
+            return uid || authorUid(existing);
+        }
         existing.some(function(id) {
             var author = authors[id] || {};
             if (author.curvePublic !== curve) { return; }

@@ -156,9 +156,11 @@ define([
 
         var icons = Object.keys(users).map(function (key, i) {
             var data = users[key];
-            var name = data.displayName || data.name || Messages.anonymous;
-            var avatar = h('span.cp-usergrid-avatar.cp-avatar');
-            common.displayAvatar($(avatar), data.avatar, name);
+            var name = UI.getDisplayName(data.displayName || data.name);
+            var avatar = h('span.cp-usergrid-avatar.cp-avatar', {
+                'aria-hidden': true, // XXX aria
+            });
+            common.displayAvatar($(avatar), data.avatar, name, Util.noop, data.uid);
             var removeBtn, el;
             if (config.remove) {
                 removeBtn = h('span.fa.fa-times');
@@ -1989,13 +1991,16 @@ define([
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
-        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
+        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title'); // XXX alt="User menu"
         var loadingAvatar;
         var to;
         var oldUrl = '';
+        var oldUid;
+        var oldName;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             var privateData = metadataMgr.getPrivateData();
+            var uid = myData.uid;
             if (!priv.plan && privateData.plan) {
                 config.$initBlock.empty();
                 metadataMgr.off('change', updateButton);
@@ -2010,18 +2015,21 @@ define([
                 return;
             }
             loadingAvatar = true;
-            var newName = myData.name;
+            var newName = UI.getDisplayName(myData.name);
             var url = myData.avatar;
-            $displayName.text(newName || Messages.anonymous);
-            if (accountName && oldUrl !== url) {
+            $displayName.text(newName);
+            if ((accountName && oldUrl !== url) || !accountName && uid !== oldUid || oldName !== newName) {
                 $avatar.html('');
-                Common.displayAvatar($avatar, url,
-                        newName || Messages.anonymous, function ($img) {
+                Common.displayAvatar($avatar, url, newName, function ($img) {
                     oldUrl = url;
+                    oldUid = uid;
+                    oldName = newName;
                     $userAdmin.find('> button').removeClass('cp-avatar');
                     if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
-                });
+
+                    // XXX alt="User menu"
+                }, uid);
                 return;
             }
             loadingAvatar = false;
@@ -2303,6 +2311,7 @@ define([
             var teams = Object.keys(privateData.teams).map(function (id) {
                 var data = privateData.teams[id];
                 var avatar = h('span.cp-creation-team-avatar.cp-avatar');
+                // We assume that teams always have a non-empty name, so we don't need a UID
                 common.displayAvatar($(avatar), data.avatar, data.name);
                 return h('div.cp-creation-team', {
                     'data-id': id,
@@ -3106,7 +3115,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
-        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var name = Util.fixHTML(UI.getDisplayName(msg.content.user.displayName));
         var title = Util.fixHTML(msg.content.title);
 
         var text = Messages._getKey('owner_add', [name, title]);
@@ -3238,7 +3247,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
-        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var name = Util.fixHTML(UI.getDisplayName(msg.content.user.displayName));
         var title = Util.fixHTML(msg.content.title);
 
         var text = Messages._getKey('owner_team_add', [name, title]);
@@ -3353,13 +3362,15 @@ define([
         var verified = h('p');
         var $verified = $(verified);
 
+        name = UI.getDisplayName(name);
         if (priv.friends && priv.friends[curve]) {
             $verified.addClass('cp-notifications-requestedit-verified');
             var f = priv.friends[curve];
             $verified.append(h('span.fa.fa-certificate'));
             var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-            $verified.append(h('p', Messages._getKey('isContact', [f.displayName])));
-            common.displayAvatar($avatar, f.avatar, f.displayName);
+            name = UI.getDisplayName(f.displayName);
+            $verified.append(h('p', Messages._getKey('isContact', [name])));
+            common.displayAvatar($avatar, f.avatar, name, Util.noop, f.uid);
         } else {
             $verified.append(Messages._getKey('isNotContact', [name]));
         }
@@ -3369,7 +3380,7 @@ define([
     UIElements.displayInviteTeamModal = function (common, data) {
         var msg = data.content.msg;
 
-        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var name = Util.fixHTML(UI.getDisplayName(msg.content.user.displayName));
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
 
         var verified = UIElements.getVerifiedFriend(common, msg.author, name);
@@ -3453,7 +3464,8 @@ define([
                 name: f.displayName,
                 curvePublic: f.curvePublic,
                 profile: f.profile,
-                notifications: f.notifications
+                notifications: f.notifications,
+                uid: f.uid,
             };
         });
     };
@@ -3552,7 +3564,7 @@ define([
         };
         // Set the value to receive from the autocomplete
         var toInsert = function (data, key) {
-            var name = data.name.replace(/[^a-zA-Z0-9]+/g, "-");
+            var name = UI.getDisplayName(data.name.replace(/[^a-zA-Z0-9]+/g, "-"));
             return "[@"+name+"|"+key+"]";
         };
 
@@ -3605,18 +3617,20 @@ define([
                     var avatar = h('span.cp-avatar', {
                         contenteditable: false
                     });
-                    common.displayAvatar($(avatar), data.avatar, data.name);
+
+                    var displayName = UI.getDisplayName(data.name);
+                    common.displayAvatar($(avatar), data.avatar, displayName); // XXX
                     return h('span.cp-mentions', {
                         'data-curve': data.curvePublic,
                         'data-notifications': data.notifications,
                         'data-profile': data.profile,
-                        'data-name': Util.fixHTML(data.name),
+                        'data-name': Util.fixHTML(displayName),
                         'data-avatar': data.avatar || "",
                     }, [
                         avatar,
                         h('span.cp-mentions-name', {
                             contenteditable: false
-                        }, data.name)
+                        }, displayName)
                     ]);
                 };
             }
@@ -3648,7 +3662,7 @@ define([
                     }).map(function (key) {
                         var data = sources[key];
                         return {
-                            label: data.name,
+                            label: UI.getDisplayName(data.name),
                             value: key
                         };
                     });
@@ -3683,10 +3697,12 @@ define([
             var obj = sources[key];
             if (!obj) { return; }
             var avatar = h('span.cp-avatar');
-            common.displayAvatar($(avatar), obj.avatar, obj.name);
+            var displayName = UI.getDisplayName(obj.name);
+
+            common.displayAvatar($(avatar), obj.avatar, displayName, Util.noop, obj.uid);
             var li = h('li.cp-autocomplete-value', [
                 avatar,
-                h('span', obj.name)
+                h('span', displayName),
             ]);
             return $(li).appendTo(ul);
         };

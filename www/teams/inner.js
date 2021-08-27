@@ -693,6 +693,8 @@ define([
             redrawRoster(common);
         });
     };
+
+    var getDisplayName = UI.getDisplayName;
     var makeMember = function (common, data, me, roster) {
         if (!data.curvePublic) { return; }
 
@@ -701,11 +703,12 @@ define([
             return user.role === "OWNER" && user.curvePublic !== me.curvePublic && !user.pendingOwner;
         });
 
+        var displayName = getDisplayName(data.displayName);
         // Avatar
         var avatar = h('span.cp-avatar.cp-team-member-avatar');
-        common.displayAvatar($(avatar), data.avatar, data.displayName);
+        common.displayAvatar($(avatar), data.avatar, displayName, Util.noop, data.uid);
         // Name
-        var name = h('span.cp-team-member-name', data.displayName);
+        var name = h('span.cp-team-member-name', displayName);
         if (data.pendingOwner) {
             $(name).append(h('em', {
                 title: Messages.team_pendingOwnerTitle
@@ -789,7 +792,7 @@ define([
                 title: Messages.team_rosterKick
             });
             $(remove).click(function () {
-                UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(data.displayName)]), function (yes) {
+                UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(displayName)]), function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('REMOVE_USER', {
                         pending: data.pending,
@@ -1073,6 +1076,9 @@ define([
                     metadata: obj
                 }, function () {
                     $avatar.empty();
+                    // the UI is not supposed to allow admins to remove team names
+                    // so we expect that it will be there. Failing that the initials
+                    // from the default name will be displayed
                     common.displayAvatar($avatar, data.url);
                 });
             });
@@ -1191,10 +1197,11 @@ define([
 
     var displayUser = function (common, data) {
         var avatar = h('span.cp-teams-invite-from-avatar.cp-avatar');
-        common.displayAvatar($(avatar), data.avatar, data.displayName);
+        var name = getDisplayName(data.displayName);
+        common.displayAvatar($(avatar), data.avatar, name);
         return h('div.cp-teams-invite-from-author', [
             avatar,
-            h('span.cp-teams-invite-from-name', data.displayName)
+            h('span.cp-teams-invite-from-name', name)
         ]);
     };
 
@@ -1319,20 +1326,21 @@ define([
         nThen(function (waitFor) {
             // Get preview content.
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
-                if (json && (json.error || !Object.keys(json).length)) {
+                if (json && (json.error || !Object.keys(json).length)) { // XXX team invite links are triggering this every time for me?
                     $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
                     waitFor.abort();
                     $div.empty();
                     return;
                 }
+                // XXX nothing guarantees that author, teamName, or message exist in json
                 $div.empty();
                 $div.append(h('div.cp-teams-invite-from', [
-                    Messages.team_inviteFrom || 'From:',
+                    Messages.team_inviteFrom,
                     displayUser(common, json.author)
                 ]));
                 $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
                     Messages._getKey('team_inviteFromMsg',
-                    [Util.fixHTML(json.author.displayName),
+                    [Util.fixHTML(getDisplayName(json.author.displayName)),
                     Util.fixHTML(json.teamName)])));
                 if (json.message) {
                     $div.append(h('div.cp-teams-invite-message', json.message));
@@ -1449,10 +1457,10 @@ define([
             // Update the name in the user menu
             var $displayName = $bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {
-                var name = metadataMgr.getUserData().name || Messages.anonymous;
+                var name = getDisplayName(metadataMgr.getUserData().name);
                 $displayName.text(name);
             });
-            $displayName.text(user.name || Messages.anonymous);
+            $displayName.text(getDisplayName(user.name));
 
             // Load the Team module
             var onEvent = function (obj) {

@@ -190,9 +190,11 @@ define([
         markup.message = function (msg) {
             if (msg.type !== 'MSG') { return; }
             var curvePublic = msg.author;
+            // FIXME this assignment looks like it has some holes in its logic
+            // but I'm scared to touch it because it looks like it was hacked to fix some bugs
             var name = (typeof msg.name !== "undefined" || !contactsData[msg.author]) ?
                             (msg.name || Messages.anonymous) :
-                            contactsData[msg.author].displayName;
+                            contactsData[msg.author].displayName || Messages.anonymous;
             var d = msg.time ? new Date(msg.time) : undefined;
             var day = d ? d.toLocaleDateString() : '';
             var hour = d ? d.toLocaleTimeString() : '';
@@ -239,7 +241,7 @@ define([
             });
 
             var chan = state.channels[id];
-            var displayName = chan.name;
+            var displayName = UI.getDisplayName(chan.name || chan.displayName);
 
             var fetching = false;
             var $moreHistory = $(moreHistory).click(function () {
@@ -364,7 +366,7 @@ define([
                         avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
-                });
+                }, friend.uid);
             }
 
             var sending = false;
@@ -544,7 +546,7 @@ define([
                 title: Messages.contacts_online
             });
             var rightCol = h('span.cp-app-contacts-right-col', [
-                h('span.cp-app-contacts-name', [room.name]),
+                h('span.cp-app-contacts-name', [room.isFriendChat? UI.getDisplayName(room.name): room.name]),
                 h('span.cp-app-contacts-icons', [
                     room.isFriendChat ? mute : undefined,
                     room.isFriendChat ? unmute : undefined,
@@ -609,7 +611,7 @@ define([
                         avatars[friendData.avatar] = $img[0].outerHTML;
                     }
                     $room.append(rightCol);
-                });
+                }, friendData.uid);
             }
             $room.append(status);
             return $room;
@@ -631,9 +633,9 @@ define([
             var el_message = markup.message(message);
 
             if (message.type === 'MSG') {
-                var name = typeof message.name !== "undefined" ?
-                        (message.name || Messages.anonymous) :
-                        contactsData[message.author].displayName;
+                var name = UI.getDisplayName(typeof message.name !== "undefined" ?
+                        message.name:
+                        contactsData[message.author].displayName);
                 common.notify({
                     title: name,
                     msg: message.text,
@@ -826,6 +828,11 @@ define([
             }
         };
 
+/*  The following block is for a disabled feature which allows users to switch
+    between pad chat (when in the context of a pad) and direct chats with their
+    contacts.
+*/
+/*
         common.getMetadataMgr().onTitleChange(function () {
             var padChat = common.getPadChat();
             var md = common.getMetadataMgr().getMetadata();
@@ -839,11 +846,14 @@ define([
             $lAvatar.find('.cp-avatar-default, media-tag').remove();
 
             var $div = $('<div>');
+            // There should always be a title here (defaultTitle if nothing else)
+            // so we don't ever need to supply a uid for an animal avatar
             common.displayAvatar($div, null, name, function () {
                 $mAvatar.html($div.html());
                 $lAvatar.find('.cp-app-contacts-right-col').before($div.html());
             });
         });
+*/
 
         // TODO room
         // var onJoinRoom
@@ -878,7 +888,7 @@ define([
                         h('i.fa.fa-bell'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
-                    common.displayAvatar($(avatar), data.avatar, data.name);
+                    common.displayAvatar($(avatar), data.avatar, data.name, Util.noop, data.uid);
                     $(button).click(function () {
                         unmuteUser(curve, button);
                         execCommand('UNMUTE_USER', curve, function (e, data) {
@@ -894,7 +904,7 @@ define([
                     });
                     return h('div.cp-contacts-muted-user', [
                         h('span', avatar),
-                        h('span', data.name),
+                        h('span', UI.getDisplayName(data.name)),
                         button
                     ]);
                 });
