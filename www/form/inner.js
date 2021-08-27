@@ -2754,7 +2754,7 @@ define([
                 q = h('div.cp-form-input-block', [inputQ]);
 
                 // Delete question
-                var edit = h('span');
+                var fakeEdit = h('span');
                 var del = h('button.btn.btn-danger-alt', [
                     h('i.fa.fa-trash-o'),
                     h('span', Messages.form_delete)
@@ -2771,12 +2771,15 @@ define([
                     updateAddInline();
                 });
 
+                editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
+
                 // Values
                 if (data.edit) {
-                    edit = h('button.btn.btn-default.cp-form-edit-button', [
+                    var edit = h('button.btn.btn-default.cp-form-edit-button', [
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
                     ]);
+                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, del ]);
                     editContainer = h('div');
                     var onSave = function (newOpts, close) {
                         if (close) { // Cancel edit
@@ -2820,9 +2823,7 @@ define([
 
                     // If we were editing this field, recover our unsaved changes
                     if (temp && temp[uid]) {
-                        setTimeout(function () {
-                            onEdit(temp[uid]);
-                        });
+                        onEdit(temp[uid]);
                     }
 
                     changeType = h('div.cp-form-block-type', [
@@ -2882,10 +2883,6 @@ define([
                         });
                     }
                 }
-
-                editButtons = h('div.cp-form-edit-buttons-container', [
-                    edit, del
-                ]);
             }
             var editableCls = editable ? ".editable" : "";
             elements.push(h('div.cp-form-block'+editableCls, {
