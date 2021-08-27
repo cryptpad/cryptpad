@@ -787,6 +787,7 @@ define([
                 // ie. if you have opened the access modal from within the pad
                 // its owner might be present or they might have left some data
                 // in the pad itself (as is the case of the uid in rich text comments)
+                // TODO or just implement "Acquaintances"
             };
             strangers++;
         });

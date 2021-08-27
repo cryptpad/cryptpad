@@ -99,12 +99,15 @@ define([
 
         var name = UI.getDisplayName(cursor.name);
 
-        var l;
+        var l; // label?
         var animal = '';
         if (cursor.name === Messages.anonymous && typeof(cursor.uid) === 'string') {
             l = MT.getPseudorandomAnimal(cursor.uid);
-            animal = '.animal';
-        } else {
+            if (l) {
+                animal = '.animal';
+            }
+        }
+        if (!l) {
             l = MT.getPrettyInitials(name);
         }
 
@@ -1071,7 +1074,6 @@ define([
         var kanban;
         var $container = $('#cp-app-kanban-content');
 
-        var myData = framework._.cpNfInner.metadataMgr.getUserData();
         var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
         if (!privateData.isEmbed) {
             mkHelpMenu(framework);

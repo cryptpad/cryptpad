@@ -1996,6 +1996,7 @@ define([
         var to;
         var oldUrl = '';
         var oldUid;
+        var oldName;
         var updateButton = function () {
             var myData = metadataMgr.getUserData();
             var privateData = metadataMgr.getPrivateData();
@@ -2017,11 +2018,12 @@ define([
             var newName = UI.getDisplayName(myData.name);
             var url = myData.avatar;
             $displayName.text(newName);
-            if ((accountName && oldUrl !== url) || !accountName && uid !== oldUid) {
+            if ((accountName && oldUrl !== url) || !accountName && uid !== oldUid || oldName !== newName) {
                 $avatar.html('');
                 Common.displayAvatar($avatar, url, newName, function ($img) {
                     oldUrl = url;
                     oldUid = uid;
+                    oldName = newName;
                     $userAdmin.find('> button').removeClass('cp-avatar');
                     if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;

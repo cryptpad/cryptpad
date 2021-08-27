@@ -6,12 +6,13 @@ define([
     '/common/hyperscript.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/croppie/croppie.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/croppie/croppie.css',
-], function ($, Util, Hash, UI, h, MediaTag, Messages) {
+], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
 
     var Nacl = window.nacl;
@@ -49,7 +50,7 @@ define([
         // TODO it would be nice to have "{0} is editing" instead of just their name
         var html = '<span class="cp-cursor-avatar">';
         if (cursor.avatar && avatars[cursor.avatar]) {
-            html += (cursor.avatar && avatars[cursor.avatar]) || '';
+            html += avatars[cursor.avatar];
         } else if (animal_avatars[uid]) {
             html += animal_avatars[uid] + ' ';
         }
@@ -87,18 +88,20 @@ define([
     };
 
     // https://emojipedia.org/nature/
-    var ANIMALS = '🙈 🦀 🐞 🦋 🐬 🐋 🐢 🦉 🦆 🐧 🦡 🦘 🦨 🦦 🦥 🐼 🐻 🦝 🦓 🐄 🐷 🐐 🦙 🦒 🐘 🦏 🐁 🐹 🐰 🦫 🦔 🐨 🐱 🐺 👺 👹 👽 👾 🤖'.split(/\s+/);
+    var ANIMALS = AppConfig.emojiAvatars || [];
 
-    var getRandomAnimal = function () {
+    var getRandomAnimal = function () { // XXX should never actually happen?
+        if (!ANIMALS.length) { return ''; }
         return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
     };
 
     var getPseudorandomAnimal = MT.getPseudorandomAnimal = function (seed) {
+        if (!ANIMALS.length) { return ''; }
         if (typeof(seed) !== 'string') { return getRandomAnimal(); }
-        seed = seed.replace(/\D/g, '').slice(0, 10);
+        seed = seed.replace(/\D/g, '').slice(0, 10); // XXX possible optimization for on-wire uid
         seed = parseInt(seed);
         if (!seed) { return getRandomAnimal(); }
-        return ANIMALS[seed % ANIMALS.length];
+        return ANIMALS[seed % ANIMALS.length] || '';
     };
 
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
@@ -123,29 +126,27 @@ define([
             if (uid && animal_avatars[uid]) {
                 animal_avatar = animal_avatars[uid];
             }
-            var animal = false;
 
-            name = (name || "").trim() || Messages.anonymous;
+            name = UI.getDisplayName(name);
             var text;
-            if (name === Messages.anonymous && uid) {
+            if (ANIMALS.length && name === Messages.anonymous && uid) {
                 if (animal_avatar) {
                     text = animal_avatar;
                 } else {
                     text = animal_avatar = getPseudorandomAnimal(uid);
                 }
-                animal = true;
             } else {
                 text = getPrettyInitials(name);
             }
 
             var $avatar = $('<span>', {
-                'class': 'cp-avatar-default' + (animal? ' animal': ''),
+                'class': 'cp-avatar-default' + (animal_avatar? ' animal': ''),
                 // XXX prevents screenreaders from trying to describe this
                 alt: '',
                 'aria-hidden': true,
             }).text(text);
             $container.append($avatar);
-            if (uid && animal) {
+            if (uid && animal_avatar) {
                 animal_avatars[uid] = animal_avatar;
             }
             if (cb) { cb(); }
