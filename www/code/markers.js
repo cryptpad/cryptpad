@@ -4,7 +4,8 @@ define([
     '/customize/messages.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/common/inner/common-mediatag.js',
-], function (Util, SFCodeMirror, Messages, ChainPad, MT) {
+    '/common/common-interface.js',
+], function (Util, SFCodeMirror, Messages, ChainPad, MT, UI) {
     var Markers = {};
 
     /* TODO Known Issues
@@ -39,7 +40,7 @@ define([
             });
         }
         uid = Number(uid);
-        var name = Util.fixHTML((author.name || "").trim());
+        var name = Util.fixHTML(UI.getDisplayName(author.name));
         var animal;
         if ((!name || name === Messages.anonymous) && typeof(author.uid) === 'string') {
             animal = MT.getPseudorandomAnimal(author.uid);

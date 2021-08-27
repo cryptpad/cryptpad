@@ -37,7 +37,7 @@ define([
         $(el).remove();
     };
 
-    Cursor.create = function (inner, hjsonToDom, cursorModule, uid) {
+    Cursor.create = function (inner, hjsonToDom, cursorModule) {
         var exp = {};
 
         var cursors = {};
@@ -147,12 +147,6 @@ define([
             var cursorObj = data.cursor;
 
             if (!cursorObj.selectionStart) { return; }
-            if (cursorObj.name === Messages.anonymous) {
-                // save a little bit of data from going over the wire...
-                // remote clients will interpret this as Messages.anonymous (in their UI language)
-                cursorObj.name = '';
-                cursorObj.uid = uid;
-            }
 
             // 1. Transform the cursor to get the offset relative to our doc
             // 2. Turn it into a range

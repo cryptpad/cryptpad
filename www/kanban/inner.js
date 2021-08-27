@@ -1272,9 +1272,7 @@ define([
 
         var myCursor = {};
         onCursorUpdate.reg(function (data) {
-            console.log('onCursorUpdate', data);
             myCursor = data;
-            myCursor.uid = myData.uid;
             framework.updateCursor();
         });
         framework.onCursorUpdate(function (data) {

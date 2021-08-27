@@ -678,7 +678,6 @@ define([
 
         var metadataMgr = framework._.sfCommon.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        var myData = metadataMgr.getUserData();
         var common = framework._.sfCommon;
         var APP = window.APP;
 
@@ -705,7 +704,7 @@ define([
         var cursor = module.cursor = Cursor(inner);
 
         // Display other users cursor
-        var cursors = Cursors.create(inner, hjsonToDom, cursor, myData.uid);
+        var cursors = Cursors.create(inner, hjsonToDom, cursor);
 
         var openLink = function(e) {
             var el = e.currentTarget;
