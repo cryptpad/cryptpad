@@ -3116,7 +3116,7 @@ define([
                 });
             });
 
-
+            Messages.form_makePublicWarning = "Are you sure you want to make responses to this form public? Past and future responses will be visible by participants. This cannot be undone." // XXX existing key
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
             var $results = $(resultsType);
@@ -3150,7 +3150,7 @@ define([
                 $responseMsg.empty();
                 Messages.form_updateMsg = "Update submit message"; // XXX 4.11.0
                 Messages.form_addMsg = "Add submit message"; // XXX 4.11.0
-                Messages.form_responseMsg = "Add a message that will be displayed after participants submit the form."; // XXX 4.11.0
+                Messages.form_responseMsg = "This message will be displayed after participants submit the form."; // XXX 4.11.0
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
@@ -3222,7 +3222,7 @@ define([
             refreshResponse();
 
             // Make answers anonymous
-            Messages.form_makeAnon = "Make all answers anonymous"; // XXX
+            Messages.form_makeAnon = "Anonymous responses"; // XXX
             var anonContainer = h('div.cp-form-anon-container');
             var $anon = $(anonContainer);
             var refreshAnon = function () {
@@ -3244,6 +3244,7 @@ define([
             refreshAnon();
 
             // XXX UPDATE KEYS "form_anonyous_on", "form_anonymous_off" and "form_anonymous"
+            Messages.form_anonymous = "Guest access (not logged in)"; // XXX existing key
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
@@ -3274,7 +3275,7 @@ define([
             refreshPrivacy();
 
             // Allow responses edition
-            Messages.form_editable = "Allow users to edit their responses"; // XXX
+            Messages.form_editable = "Editing after submit"; // XXX
             var editableContainer = h('div.cp-form-editable-container');
             var $editable = $(editableContainer);
             var refreshEditable = function () {
@@ -3374,8 +3375,8 @@ define([
             return [
                 preview,
                 endDateContainer,
-                privacyContainer,
                 anonContainer,
+                privacyContainer,
                 editableContainer,
                 resultsType,
                 responseMsg
