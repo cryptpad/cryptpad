@@ -7,10 +7,31 @@
 ## Features
 
 * unify unregistered/non-registered/anonymous terminology as 'guest'
-* prompt users that need support to subscribe
-* include bar graphs for multiple-answer form questions
+* support
+  * prompt users that need support to subscribe
+  * refactor debugging data generation to easily show users what data is included
+* form improvements
+  * include bar graphs for multiple-answer form questions
+  * move the tally of empty responses to the top of each question's summary (rather than the bottom)
+* bar charts on the admin page's 'Performance' tab
+* enhancements for guest users and registered users without names or avatars
+  * two initials for users with a custom name but no avatar (previously one initial, always capitalized)
+  * animal avatars as defaults instead of indistinguishable initials (A for Anonymous, G for Guest)
+    * configurable via `AppConfig.emojiAvatars = []`
+  * authorship data for guests in rich text comments, code editor author data
+  * emojis in cursor tooltips for guests (rich text, code, slide, kanban)
+  * emojis in the share and access modals for contacts with empty names
+* script to identify unnecessary duplication of translations
+
 
 ## Bug fixes
+
+* fix empty name fields in various places across the platform where we did not fall back to "anonymous/guest"
+  * teams
+  * contacts
+  * ???
+* clarified a comment in the nginx config about _professional support_
+* handled an edge case in ICS import to calendars where DTEND was not defined (use duration or consider it an "all-day" event
 
 
 # 4.10.0
