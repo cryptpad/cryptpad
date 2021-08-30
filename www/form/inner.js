@@ -3648,6 +3648,29 @@ define([
 
         });
 
+        // Only redraw once every 500ms on remote change.
+        // If we try to redraw in the first 500ms following a redraw, we'll
+        // redraw again when the timer allows it. If we call "redrawRemote"
+        // repeatedly, we'll only "redraw" once with the latest content.
+        var _redraw = Util.notAgainForAnother(updateForm, 500);
+        var redrawTo;
+        var redrawRemote = function () {
+            var $main = $('.cp-form-creator-container');
+            var args = Array.prototype.slice.call(arguments);
+            var sTop = $main.scrollTop();
+            var until = _redraw.apply(null, args);
+            if (until) {
+                clearTimeout(redrawTo);
+                redrawTo = setTimeout(function (){
+                    sTop = $main.scrollTop();
+                    _redraw.apply(null, args);
+                    $main.scrollTop(sTop);
+                }, until+1);
+                return;
+            }
+            // Only restore scroll if we were able to redraw
+            $main.scrollTop(sTop);
+        };
         framework.onContentUpdate(function (newContent) {
             content = newContent;
             evOnChange.fire();
@@ -3656,10 +3679,7 @@ define([
             if (!APP.isEditor) { answers = getFormResults(); }
             else { temp = getTempFields(); }
 
-            var $main = $('.cp-form-creator-container');
-            var sTop = $main.scrollTop();
-            updateForm(framework, content, APP.isEditor, answers, temp);
-            $main.scrollTop(sTop);
+            redrawRemote(framework, content, APP.isEditor, answers, temp);
         });
 
         framework.setContentGetter(function () {
