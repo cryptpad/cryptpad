@@ -48,12 +48,14 @@ var findDuplicates = function (map) {
     return canonical;
 };
 
+/*
 var logDuplicates = function (duplicates) {
     // indicate which strings are duplicated and could potentially be changed to use one key
     Object.keys(duplicates).forEach(function (val) {
         console.log('\"%s\" => %s', val, JSON.stringify(duplicates[val]));
     });
 };
+*/
 
 var FULL_LANGUAGES = {
     EN: Util.clone(require("../../www/common/translations/messages.json")),
