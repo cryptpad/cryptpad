@@ -2874,6 +2874,7 @@ define([
                                 framework.localChange();
                                 var $oldTag = $(data.tag);
                                 framework._.cpNfInner.chainpad.onSettle(function () {
+                                    $(changeType).find('span').text(Messages['form_type_'+type]);
                                     data = model.get(block.opts, _answers, null, evOnChange);
                                     $oldTag.before(data.tag).remove();
                                 });
