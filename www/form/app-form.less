@@ -16,6 +16,31 @@
     color: @cryptpad_text_col;
     background-color: @cp_app-bg;
 
+    @palette0: @cp_kanban-color0; // Default bg color for header
+    @kanban-colors: @cp_kanban-colors;
+    .kanban-colors(@kanban-colors; @index) when (@index > 0){
+        // loop through the @colors
+        .kanban-colors(@kanban-colors; (@index - 1));
+        @color: extract(@kanban-colors, @index);
+        // make a numbered class selector for each color
+        .cp-form-palette-color@{index}{
+            &.cp-form-palette {
+                background-color: @color !important;
+            }
+            .cp-form-block { // XXX
+                background-color: fade(@color, 50%) !important;
+            }
+        }
+    }
+    // call the loop
+    .kanban-colors(@kanban-colors; length(@kanban-colors));
+
+    .cp-form-palette-nocolor {
+        &.cp-form-palette {
+            background-color: @palette0 !important;
+        }
+    }
+
     div.alert.cp-burn-after-reading {
         margin: 10px !important;
     }
@@ -134,6 +159,22 @@
                     flex-flow: column;
                     button {
                         margin-bottom: 20px;
+                    }
+                }
+
+                .cp-form-color-container {
+                    display: flex;
+                    justify-content: space-between;
+                    .cp-form-palette {
+                        display: inline-block;
+                        border-radius: 50%;
+                        height: 30px;
+                        width: 30px;
+                        text-align: center;
+                        line-height: 30px;
+                        color: @cp_kanban-fg;
+                        border: 1px solid fade(@cp_kanban-fg, 40%);
+                        cursor: pointer;
                     }
                 }
             }

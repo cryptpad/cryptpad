@@ -2501,6 +2501,10 @@ define([
 
         APP.formBlocks = [];
 
+        $container.attr('class', 'cp-form-creator-content');
+        var color = content.answers.color || 'nocolor';
+        $container.addClass('cp-form-palette-'+color);
+
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
@@ -2884,6 +2888,7 @@ define([
                 }
             }
             var editableCls = editable ? ".editable" : "";
+            var colorCls = '.cp-form-palette-'+color;
             elements.push(h('div.cp-form-block'+editableCls, {
                 'data-id':uid
             }, [
@@ -3349,7 +3354,9 @@ define([
                         var d = picker.parseDate(datePicker.value);
                         content.answers.endDate = +d;
                         framework.localChange();
-                        refreshEndDate();
+                        framework._.cpNfInner.chainpad.onSettle(function () {
+                            refreshEndDate();
+                        });
                     });
                     var confirmContent = h('div', [
                         h('div', Messages.form_setEnd),
@@ -3366,12 +3373,48 @@ define([
             };
             refreshEndDate();
 
+            Messages.form_colors = "Color theme"; // XXX
+            var colorContainer = h('div.cp-form-color-container');
+            var colorTheme = h('div.cp-form-color-theme-container', [
+                h('span', Messages.form_colors),
+                colorContainer
+            ]);
+            var $colors = $(colorContainer);
+            var refreshColorTheme = function () {
+                $colors.empty();
+                var palette = ['nocolor'];
+                for (var i=1; i<=8; i++) { palette.push('color'+i); }
+                var color = content.answers.color || 'nocolor';
+                var selectedColor = color;
+                palette.forEach(function (_color) {
+                    var $color = $(h('span.cp-form-palette.fa'));
+                    $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
+                    if (selectedColor === _color) { $color.addClass('fa-check'); }
+                    $color.click(function () {
+                        if (_color === selectedColor) { return; }
+                        content.answers.color = _color;
+                        framework.localChange();
+                        framework._.cpNfInner.chainpad.onSettle(function () {
+                            UI.log(Messages.saved);
+                            selectedColor = _color;
+                            $colors.find('.cp-form-palette').removeClass('fa-check');
+                            $color.addClass('fa-check');
+
+                            var $container = $('div.cp-form-creator-content');
+                            $container.attr('class', 'cp-form-creator-content');
+                            $container.addClass('cp-form-palette-'+_color);
+                        });
+                    }).appendTo($colors);
+                });
+            };
+            refreshColorTheme();
 
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshAnon);
             evOnChange.reg(refreshEditable);
             evOnChange.reg(refreshEndDate);
+            evOnChange.reg(refreshColorTheme);
             //evOnChange.reg(refreshResponse);
 
             return [
@@ -3381,7 +3424,8 @@ define([
                 privacyContainer,
                 editableContainer,
                 resultsType,
-                responseMsg
+                responseMsg,
+                colorTheme
             ];
         };
 
