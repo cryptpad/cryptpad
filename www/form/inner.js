@@ -564,7 +564,6 @@ define([
             values = values.filter(Boolean); // Block empty or undefined options
             if (!values.length) {
                 return;
-                //return void UI.warn(Messages.error); // XXX not anymore with autosave?
             }
             var res = { values: values };
 
@@ -588,7 +587,7 @@ define([
 
             // Show duplicates warning
             if (duplicates) {
-                UI.warn(Messages.form_duplicates); // XXX
+                UI.warn(Messages.form_duplicates); // XXX autosave
             }
 
             // If checkboxes, get the maximum number of values the users can select
@@ -2831,9 +2830,8 @@ define([
                         h('span', Messages['form_type_'+type])
                     ]);
 
-                    //Messages.form_changeType = "Change type"; // XXX
                     Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
-                    Messages.form_breakAnswers = "Changing the type may corrupt existing answers";
+                    Messages.form_corruptAnswers = "Changing the type may corrupt existing answers";
                     if (Array.isArray(model.compatible)) {
                         changeType = h('div.cp-form-block-type.editable', [
                             model.icon.cloneNode(),
@@ -2853,7 +2851,7 @@ define([
                             var tag = h('div.radio-group', els);
                             var changeTypeContent = [
                                 APP.answers && Object.keys(APP.answers).length ?
-                                    h('div.alert.alert-warning', Messages.form_breakAnswers) :
+                                    h('div.alert.alert-warning', Messages.form_corruptAnswers) :
                                     undefined,
                                 h('p', Messages.form_changeTypeConfirm),
                                 tag
@@ -3065,9 +3063,12 @@ define([
         var $body = $('body');
 
         var $toolbarContainer = $('#cp-toolbar');
-        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        $toolbarContainer.after(helpMenu.menu);
-        framework._.toolbar.$drawer.append(helpMenu.button);
+
+        if (APP.isEditor || priv.form_auditorKey) {
+            var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+            $toolbarContainer.after(helpMenu.menu);
+            framework._.toolbar.$drawer.append(helpMenu.button);
+        }
 
         var offlineEl = h('div.alert.alert-danger.cp-burn-after-reading', Messages.disconnected);
         framework.onEditableChange(function (editable) {
