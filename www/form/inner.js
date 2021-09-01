@@ -19,7 +19,9 @@ define([
     '/customize/application_config.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
+    '/common/text-cursor.js',
     'cm/lib/codemirror',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -61,7 +63,9 @@ define([
     AppConfig,
     DiffMd,
     SFCodeMirror,
+    TextCursor,
     CMeditor,
+    ChainPad,
     Share, Access, Properties,
     Flatpickr,
     Sortable
@@ -89,28 +93,18 @@ define([
     var MAX_OPTIONS = 15;
     var MAX_ITEMS = 10;
 
-    var saveAndCancelOptions = function (getRes, cb) {
-        // Cancel changes
-        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-        $(cancelBlock).click(function () { cb(); });
+    var saveAndCancelOptions = function (cb) {
+        Messages.form_preview_button = "Preview"; // XXX
+        var cancelBlock = h('button.btn.btn-default.cp-form-preview-button',[
+                            h('i.fa.fa-eye'),
+                            Messages.form_preview_button
+                        ]);
+        $(cancelBlock).click(function () { cb(undefined, true); });
 
-        // Save changes
-        var saveBlock = h('button.btn.btn-primary', [
-            h('i.fa.fa-floppy-o'),
-            h('span', Messages.settings_save)
-        ]);
-
-        $(saveBlock).click(function () {
-            $(saveBlock).attr('disabled', 'disabled');
-            cb(getRes());
-        });
-
-        return h('div.cp-form-edit-save', [cancelBlock, saveBlock]);
+        return cancelBlock;
     };
-    var editTextOptions = function (opts, setCursorGetter, cb, tmp) {
-        if (tmp && tmp.content && Sortify(opts) === Sortify(tmp.old)) {
-            opts = tmp.content;
-        }
+    var editTextOptions = function (opts, setCursorGetter, cb) {
+        var evOnSave = Util.mkEvent();
 
         var maxLength, getLengthVal;
         if (opts.maxLength) {
@@ -133,8 +127,8 @@ define([
 
             var $l = $(lengthInput).on('input', Util.throttle(function () {
                 $l.val(getLengthVal());
+                evOnSave.fire();
             }, 500));
-
         }
 
         var type, typeSelect;
@@ -167,16 +161,11 @@ define([
                 h('span', Messages.form_textType),
                 typeSelect[0]
             ]);
+            typeSelect.onChange.reg(evOnSave.fire());
         }
 
         setCursorGetter(function () {
-            return {
-                old: (tmp && tmp.old) || opts,
-                content: {
-                    maxLength: getLengthVal ? getLengthVal() : undefined,
-                    type: typeSelect ? typeSelect.getValue() : undefined
-                }
-            };
+            return {};
         });
 
         var getSaveRes = function () {
@@ -185,7 +174,14 @@ define([
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
         };
-        var saveAndCancel = saveAndCancelOptions(getSaveRes, cb);
+
+        evOnSave.reg(function () {
+            var res = getSaveRes();
+            if (!res) { return; }
+            cb(res);
+        });
+
+        var saveAndCancel = saveAndCancelOptions(cb);
 
         return [
             maxLength,
@@ -194,6 +190,8 @@ define([
         ];
     };
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
+        var evOnSave = Util.mkEvent();
+
         var add = h('button.btn.btn-secondary', [
             h('i.fa.fa-plus'),
             h('span', Messages.form_add_option)
@@ -204,11 +202,11 @@ define([
         ]);
 
         var cursor;
-        if (tmp && tmp.content && Sortify(v) === Sortify(tmp.old)) {
-            v = tmp.content;
+        if (tmp && tmp.cursor) {
             cursor = tmp.cursor;
         }
 
+        // Checkbox: max options
         var maxOptions, maxInput;
         if (typeof(v.max) === "number") {
             maxInput = h('input', {
@@ -221,8 +219,12 @@ define([
                 h('span', Messages.form_editMax),
                 maxInput
             ]);
+            $(maxInput).on('input', function () {
+                setTimeout(evOnSave.fire);
+            });
         }
 
+        // Poll: type (text/day/time)
         var type, typeSelect;
         if (v.type) {
             // Messages.form_poll_text.form_poll_day.form_poll_time
@@ -260,15 +262,16 @@ define([
         var addMultiple;
         var getOption = function (val, placeholder, isItem, uid) {
             var input = h('input', {value:val});
+            var $input = $(input);
             if (placeholder) {
                 input.placeholder = val;
                 input.value = '';
-                $(input).on('keypress', function () {
-                    $(input).removeAttr('placeholder');
-                    $(input).off('keypress');
+                $input.on('keypress', function () {
+                    $input.removeAttr('placeholder');
+                    $input.off('keypress');
                 });
             }
-            if (uid) { $(input).data('uid', uid); }
+            if (uid) { $input.data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
             if (v.type && v.type !== 'text') {
@@ -289,6 +292,12 @@ define([
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
                 if (v.type && v.type !== 'text') { return; }
+                try {
+                    var ops = ChainPad.Diff.diff(cursor.el, val);
+                    ['start', 'end'].forEach(function (attr) {
+                        cursor[attr] = TextCursor.transformCursor(cursor[attr], ops);
+                    });
+                } catch (e) { console.error(e); }
                 input.selectionStart = cursor.start || 0;
                 input.selectionEnd = cursor.end || 0;
                 setTimeout(function () { input.focus(); });
@@ -325,7 +334,38 @@ define([
                     var currentMax = Number($maxInput.val());
                     $maxInput.val(Math.min(inputs, currentMax));
                 }
+
+                evOnSave.fire();
             });
+
+            if (!v.type || v.type === "text") {
+                $input.keyup(function (e) {
+                    try {
+                        if (e.which === 13) {
+                            var $line = $input.closest('.cp-form-edit-block-input');
+                            if ($input.closest('.cp-form-edit-block')
+                                    .find('.cp-form-edit-block-input').last()[0] === $line[0]) {
+                                // If we're the last input, add a new one
+                                if (isItem && $addItem && $addItem.is(':visible')) {
+                                    $addItem.click();
+                                }
+                                if (!isItem && $add && $add.is(':visible')) { $add.click(); }
+                            } else {
+                                // Otherwise focus the next one
+                                $line.next().find('input').focus();
+                            }
+                        }
+                        if (e.which === 27 && !$(input).val()) {
+                            $(del).click();
+                        }
+                    } catch (err) { console.error(err); }
+                });
+            }
+
+            $(input).on('input', function () {
+                evOnSave.fire();
+            });
+
             return el;
         };
         var inputs = v.values.map(function (val) { return getOption(val, isDefaultOpts, false); });
@@ -358,7 +398,8 @@ define([
 
         // Calendar...
         var calendarView;
-        if (v.type) {
+        if (v.type) { // Polls
+            // Calendar inline for "day" type
             var calendarInput = h('input');
             calendarView = h('div', calendarInput);
             var calendarDefault = v.type === "day" ? v.values.map(function (time) {
@@ -370,12 +411,13 @@ define([
                 mode: 'multiple',
                 inline: true,
                 defaultDate: calendarDefault,
-                appendTo: calendarView
+                appendTo: calendarView,
+                onChange: function () {
+                    evOnSave.fire();
+                }
             });
-        }
 
-        // Calendar time
-        if (v.type) {
+            // Calendar popup for "time"
             var multipleInput = h('input', {placeholder: Messages.form_addMultipleHint});
             var multipleClearButton = h('button.btn', Messages.form_clear);
             var addMultipleButton = h('button.btn', [
@@ -407,6 +449,7 @@ define([
                     }
                 });
                 multiplePickr.clear();
+                evOnSave.fire();
             });
         }
 
@@ -435,6 +478,7 @@ define([
             typeSelect.onChange.reg(function (prettyVal, val) {
                 v.type = val;
                 refreshView();
+                setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
                     $(add).click();
@@ -452,7 +496,9 @@ define([
         // "Add option" button handler
         $add = $(add).click(function () {
             var txt = v.type ? '' : Messages.form_newOption;
-            $add.before(getOption(txt, true, false));
+            var el = getOption(txt, true, false);
+            $add.before(el);
+            $(el).find('input').focus();
             var l = $container.find('input').length;
             $(maxInput).attr('max', l);
             if (l >= MAX_OPTIONS) { $add.hide(); }
@@ -460,7 +506,9 @@ define([
 
         // If multiline block, handle "Add item" button
         $addItem = $(addItem).click(function () {
-            $addItem.before(getOption(Messages.form_newItem, true, true, Util.uid()));
+            var el = getOption(Messages.form_newItem, true, true, Util.uid());
+            $addItem.before(el);
+            $(el).find('input').focus();
             if ($(containerItems).find('input').length >= MAX_ITEMS) { $addItem.hide(); }
         });
         if ($container.find('input').length >= MAX_OPTIONS) { $add.hide(); }
@@ -468,7 +516,6 @@ define([
 
         // Set cursor getter (to handle remote changes to the form)
         setCursorGetter(function () {
-            var values = [];
             var active = document.activeElement;
             var cursor = {};
             $container.find('input').each(function (i, el) {
@@ -478,44 +525,20 @@ define([
                     cursor.start = el.selectionStart;
                     cursor.end = el.selectionEnd;
                 }
-                values.push(val);
             });
-            if (v.type === "day") {
-                var dayPickr = $(calendarView).find('input')[0]._flatpickr;
-                values = dayPickr.selectedDates.map(function (date) {
-                    return +date;
-                });
-            }
-            var _content = {values: values};
-
-            if (maxInput) {
-                _content.max = Number($(maxInput).val()) || 1;
-            }
-
-            if (typeSelect) {
-                _content.type = typeSelect.getValue();
-            }
-
             if (v.items) {
-                var items = [];
                 $(containerItems).find('input').each(function (i, el) {
+                    var val = $(el).val() || el.placeholder || '';
                     if (el === active) {
                         cursor.item = true;
                         cursor.uid= $(el).data('uid');
                         cursor.start = el.selectionStart;
                         cursor.end = el.selectionEnd;
+                        cursor.el = val;
                     }
-                    var val = $(el).val() || el.placeholder || '';
-                    items.push({
-                        uid: $(el).data('uid'),
-                        v: val
-                    });
                 });
-                _content.items = items;
             }
             return {
-                old: (tmp && tmp.old) || v,
-                content: _content,
                 cursor: cursor
             };
         });
@@ -542,9 +565,9 @@ define([
                     else { duplicates = true; }
                 });
             }
-            values = values.filter(Boolean); // Block empty or undeinfed options
+            values = values.filter(Boolean); // Block empty or undefined options
             if (!values.length) {
-                return void UI.warn(Messages.error);
+                return;
             }
             var res = { values: values };
 
@@ -562,12 +585,13 @@ define([
                     }
                     else { duplicates = true; }
                 });
+                items = items.filter(Boolean);
                 res.items = items;
             }
 
             // Show duplicates warning
             if (duplicates) {
-                UI.warn(Messages.form_duplicates);
+                UI.warn(Messages.form_duplicates); // XXX autosave
             }
 
             // If checkboxes, get the maximum number of values the users can select
@@ -584,7 +608,13 @@ define([
             return res;
         };
 
-        var saveAndCancel = saveAndCancelOptions(getSaveRes, cb);
+        evOnSave.reg(function () {
+            var res = getSaveRes();
+            if (!res) { return; }
+            cb(res);
+        });
+
+        var saveAndCancel = saveAndCancelOptions(cb);
 
         return [
             type,
@@ -869,36 +899,46 @@ define([
                 return {
                     tag: tag,
                     edit: function (cb, tmp) {
-                        var t = h('textarea');
-                        var block = h('div.cp-form-edit-options-block', [t]);
-                        var cm = SFCodeMirror.create("gfm", CMeditor, t);
-                        var editor = cm.editor;
-                        editor.setOption('lineNumbers', true);
-                        editor.setOption('lineWrapping', true);
-                        editor.setOption('styleActiveLine', true);
-                        editor.setOption('readOnly', false);
+                        // Cancel changes
+                        var cancelBlock = saveAndCancelOptions(cb);
 
                         var text = opts.text;
                         var cursor;
-                        if (tmp && tmp.content && tmp.old.text === text) {
-                            text = tmp.content.text;
+                        if (tmp && tmp.cursor) {
                             cursor = tmp.cursor;
                         }
 
+                        var block, editor;
+                        if (tmp && tmp.block) {
+                            block = tmp.block;
+                            editor = tmp.editor;
+                        }
+
+                        var cm;
+                        if (!block || !editor) {
+                            var t = h('textarea');
+                            block = h('div.cp-form-edit-options-block', [t]);
+                            cm = SFCodeMirror.create("gfm", CMeditor, t);
+                            editor = cm.editor;
+                            editor.setOption('lineNumbers', true);
+                            editor.setOption('lineWrapping', true);
+                            editor.setOption('styleActiveLine', true);
+                            editor.setOption('readOnly', false);
+                        }
+
                         setTimeout(function () {
-                            editor.setValue(text);
-                            if (cursor) {
-                                if (Sortify(cursor.start) === Sortify(cursor.end)) {
-                                    editor.setCursor(cursor.start);
-                                } else {
-                                    editor.setSelection(cursor.start, cursor.end);
-                                }
+                            editor.focus();
+                            if (!(tmp && tmp.editor)) {
+                                editor.setValue(text);
+                            } else {
+                                SFCodeMirror.setValueAndCursor(editor, editor.getValue(), text);
                             }
                             editor.refresh();
                             editor.save();
                             editor.focus();
                         });
-                        if (APP.common) {
+
+                        if (APP.common && !(tmp && tmp.block) && cm) {
                             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                                 embed: function (mt) {
                                     editor.focus();
@@ -909,26 +949,20 @@ define([
                             $(markdownTb.toolbar).show();
                             cm.configureTheme(APP.common, function () {});
                         }
-                        // Cancel changes
-                        var cancelBlock = h('button.btn.btn-secondary', Messages.cancel);
-                        $(cancelBlock).click(function () {
-                            cb();
-                        });
-                        // Save changes
-                        var saveBlock = h('button.btn.btn-primary', [
-                            h('i.fa.fa-floppy-o'),
-                            h('span', Messages.settings_save)
-                        ]);
 
                         var getContent = function () {
                             return {
                                 text: editor.getValue()
                             };
                         };
-                        $(saveBlock).click(function () {
-                            $(saveBlock).attr('disabled', 'disabled');
+
+                        if (tmp && tmp.onChange) {
+                            editor.off('change', tmp.onChange);
+                        }
+                        var on = function () {
                             cb(getContent());
-                        });
+                        };
+                        editor.on('change', on);
 
                         cursorGetter = function () {
                             if (document.activeElement && block.contains(document.activeElement)) {
@@ -938,15 +972,16 @@ define([
                                 };
                             }
                             return {
-                                old: opts,
-                                content: getContent(),
-                                cursor: cursor
+                                cursor: cursor,
+                                block: block,
+                                editor: editor,
+                                onChange: on
                             };
                         };
 
                         return [
                             block,
-                            h('div.cp-form-edit-save', [cancelBlock, saveBlock])
+                            cancelBlock
                         ];
                     },
                     getCursor: function () { return cursorGetter(); },
@@ -1788,7 +1823,8 @@ define([
                     },
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
-                        var toSort = (val || []).map(function (val) {
+                        if (!Array.isArray(val)) { val = []; }
+                        var toSort = val.map(function (val) {
                             return invMap[val];
                         });
                         sortable.sort(toSort);
@@ -2045,12 +2081,6 @@ define([
             return;
         }
 
-        if (content.answers.msg) {
-            var description = h('div.cp-form-creator-results-description#cp-form-response-msg');
-            var $desc = $(description).appendTo($container);
-            DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
-        }
-
         var heading = h('h2#cp-title', Messages._getKey('form_totalResponses', [answerCount]));
         $(heading).appendTo($container);
         var timeline = h('div.cp-form-creator-results-timeline');
@@ -2259,12 +2289,40 @@ define([
 
         if (answers._time) { APP.lastAnswerTime = answers._time; }
 
+        // If responses are public, show button to view them
+        var responses;
+        if (content.answers.privateKey) {
+            responses = h('button.btn.btn-default', Messages.form_results);
+            $(responses).click(function () {
+                var sframeChan = framework._.sfCommon.getSframeChannel();
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                    var answers = obj && obj.results;
+                    if (answers) { APP.answers = answers; }
+                    $('body').addClass('cp-app-form-results');
+                    renderResults(content, answers);
+                    $container.hide();
+                });
+            });
+        }
+
+        var description = h('div.cp-form-creator-results-description#cp-form-response-msg');
+        if (content.answers.msg) {
+            var $desc = $(description);
+            DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
+        }
+
+        var actions = h('div.cp-form-submit-actions', [
+            action,
+            responses || undefined
+        ]);
+
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.append(h('div.cp-form-submit-success', [
             h('h3.cp-form-view-title', title),
+            description,
             h('div.alert.alert-info', Messages._getKey('form_alreadyAnswered', [
                     new Date(APP.lastAnswerTime).toLocaleString()])),
-            action
+            actions
         ]));
     };
 
@@ -2809,8 +2867,9 @@ define([
             Messages.form_preview = "Preview:"; // XXX
             var previewDiv = h('div.cp-form-preview', Messages.form_preview);
 
-            Messages.form_required_on = "Required answer";
-            Messages.form_required_off = "Optional answer";
+            Messages.form_required_answer = "Answer: ";
+            Messages.form_required_on = "required";
+            Messages.form_required_off = "optional";
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv, conditionalDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
@@ -2824,7 +2883,11 @@ define([
                         Messages.form_required_off, !isRequired, {
                             input: { value: 0 },
                         });
-                var radioContainer = h('div.cp-form-required-radio', [radioOn, radioOff]);
+                var radioContainer = h('div.cp-form-required-radio', [
+                    h('span', Messages.form_required_answer),
+                    radioOff,
+                    radioOn
+                ]);
                 requiredDiv = h('div.cp-form-required', [
                     radioContainer
                 ]);
@@ -3183,7 +3246,7 @@ define([
                 q = h('div.cp-form-input-block', [inputQ]);
 
                 // Delete question
-                var edit = h('span');
+                var fakeEdit = h('span');
                 var del = h('button.btn.btn-danger-alt', [
                     h('i.fa.fa-trash-o'),
                     h('span', Messages.form_delete)
@@ -3198,55 +3261,59 @@ define([
                     updateAddInline();
                 });
 
+                editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
+
                 // Values
                 if (data.edit) {
-                    edit = h('button.btn.btn-default.cp-form-edit-button', [
+                    var edit = h('button.btn.btn-default.cp-form-edit-button', [
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
                     ]);
+                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, del ]);
                     editContainer = h('div');
-                    var onSave = function (newOpts) {
-                        data.editing = false;
-                        if (!newOpts) { // Cancel edit
+                    var onSave = function (newOpts, close) {
+                        if (close) { // Cancel edit
+                            data.editing = false;
                             $(editContainer).empty();
-                            $(editButtons).show();
-                            $(data.tag).show();
+                            var $oldTag = $(data.tag);
+                            $(edit).show();
                             $(previewDiv).show();
-                            $(requiredDiv).show();
-                            return;
-                        }
-                        $(editContainer).empty();
-                        block.opts = newOpts;
-                        framework.localChange();
-                        var $oldTag = $(data.tag);
-                        framework._.cpNfInner.chainpad.onSettle(function () {
-                            $(editButtons).show();
-                            $(previewDiv).show();
-                            $(requiredDiv).show();
-                            UI.log(Messages.saved);
+                            $(requiredDiv).hide();
+
+                            $(editButtons).find('.cp-form-preview-button').remove();
+
                             _answers = getBlockAnswers(APP.answers, uid);
-                            data = model.get(newOpts, _answers, null, evOnChange);
+                            data = model.get(block.opts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
-                        });
+                            return;
+                        }
+                        if (!newOpts) {
+                            // invalid options, nothing to save
+                            return;
+                        }
+                        block.opts = newOpts;
+                        framework.localChange();
                     };
                     var onEdit = function (tmp) {
                         data.editing = true;
-                        $(requiredDiv).hide();
+                        $(requiredDiv).show();
                         $(previewDiv).hide();
                         $(data.tag).hide();
                         $(editContainer).append(data.edit(onSave, tmp, framework));
-                        $(editButtons).hide();
+
+                        $(editContainer).find('.cp-form-preview-button').prependTo(editButtons);
+
+                        $(edit).hide();
                     };
                     $(edit).click(function () {
                         onEdit();
                     });
+                    $(requiredDiv).hide();
 
                     // If we were editing this field, recover our unsaved changes
                     if (temp && temp[uid]) {
-                        setTimeout(function () {
-                            onEdit(temp[uid]);
-                        });
+                        onEdit(temp[uid]);
                     }
 
                     changeType = h('div.cp-form-block-type', [
@@ -3255,7 +3322,7 @@ define([
                     ]);
 
                     Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
-                    Messages.form_breakAnswers = "Changing the type may corrupt existing answers";
+                    Messages.form_corruptAnswers = "Changing the type may corrupt existing answers";
                     if (Array.isArray(model.compatible)) {
                         changeType = h('div.cp-form-block-type.editable', [
                             model.icon.cloneNode(),
@@ -3275,7 +3342,7 @@ define([
                             var tag = h('div.radio-group', els);
                             var changeTypeContent = [
                                 APP.answers && Object.keys(APP.answers).length ?
-                                    h('div.alert.alert-warning', Messages.form_breakAnswers) :
+                                    h('div.alert.alert-warning', Messages.form_corruptAnswers) :
                                     undefined,
                                 h('p', Messages.form_changeTypeConfirm),
                                 tag
@@ -3298,6 +3365,7 @@ define([
                                 framework.localChange();
                                 var $oldTag = $(data.tag);
                                 framework._.cpNfInner.chainpad.onSettle(function () {
+                                    $(changeType).find('span').text(Messages['form_type_'+type]);
                                     data = model.get(block.opts, _answers, null, evOnChange);
                                     $oldTag.before(data.tag).remove();
                                 });
@@ -3305,10 +3373,6 @@ define([
                         });
                     }
                 }
-
-                editButtons = h('div.cp-form-edit-buttons-container', [
-                    edit, del
-                ]);
             }
             var editableCls = editable ? ".editable" : "";
             elements.push(h('div.cp-form-block'+editableCls, {
@@ -3323,9 +3387,9 @@ define([
                     APP.isEditor ? conditionalDiv : undefined,
                     APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
+                    editContainer,
                     editButtons
                 ]),
-                editContainer
             ]));
         });
 
@@ -3461,6 +3525,13 @@ define([
             if (infoTxt) {
                 $container.prepend(h('div.alert.alert-info', infoTxt));
             }
+
+            if (!loggedIn && !content.answers.anonymous) {
+                APP.formBlocks.forEach(function (b) {
+                    if (!b.setEditable) { return; }
+                    b.setEditable(false);
+                });
+            }
         }
 
         // Embed mode is enforced so we add the title at the top and a CryptPad logo
@@ -3512,9 +3583,12 @@ define([
         var $body = $('body');
 
         var $toolbarContainer = $('#cp-toolbar');
-        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        $toolbarContainer.after(helpMenu.menu);
-        framework._.toolbar.$drawer.append(helpMenu.button);
+
+        if (APP.isEditor || priv.form_auditorKey) {
+            var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+            $toolbarContainer.after(helpMenu.menu);
+            framework._.toolbar.$drawer.append(helpMenu.button);
+        }
 
         var offlineEl = h('div.alert.alert-danger.cp-burn-after-reading', Messages.disconnected);
         framework.onEditableChange(function (editable) {
@@ -3563,7 +3637,7 @@ define([
                 });
             });
 
-
+            Messages.form_makePublicWarning = "Are you sure you want to make responses to this form public? Past and future responses will be visible by participants. This cannot be undone." // XXX existing key
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
             var $results = $(resultsType);
@@ -3595,9 +3669,9 @@ define([
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
                 $responseMsg.empty();
-                Messages.form_updateMsg = "Update response message"; // XXX 4.11.0
-                Messages.form_addMsg = "Add response message"; // XXX 4.11.0
-                Messages.form_responseMsg = "Add a message that will be displayed in the response page."; // XXX 4.11.0
+                Messages.form_updateMsg = "Update submit message"; // XXX 4.11.0
+                Messages.form_addMsg = "Add submit message"; // XXX 4.11.0
+                Messages.form_responseMsg = "This message will be displayed after participants submit the form."; // XXX 4.11.0
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
@@ -3633,6 +3707,12 @@ define([
                         });
 
                         var buttons = [{
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        },
+                        {
                             className: 'primary',
                             name: Messages.settings_save,
                             onClick: function () {
@@ -3645,11 +3725,6 @@ define([
                                 });
                             },
                             //keys: []
-                        }, {
-                            className: 'cancel',
-                            name: Messages.cancel,
-                            onClick: function () {},
-                            keys: [27]
                         }];
                         APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
                     } else {
@@ -3668,7 +3743,7 @@ define([
             refreshResponse();
 
             // Make answers anonymous
-            Messages.form_makeAnon = "Make all answers anonymous"; // XXX
+            Messages.form_makeAnon = "Anonymous responses"; // XXX
             var anonContainer = h('div.cp-form-anon-container');
             var $anon = $(anonContainer);
             var refreshAnon = function () {
@@ -3690,6 +3765,7 @@ define([
             refreshAnon();
 
             // XXX UPDATE KEYS "form_anonyous_on", "form_anonymous_off" and "form_anonymous"
+            Messages.form_anonymous = "Guest access (not logged in)"; // XXX existing key
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
@@ -3720,7 +3796,7 @@ define([
             refreshPrivacy();
 
             // Allow responses edition
-            Messages.form_editable = "Allow users to edit their responses"; // XXX
+            Messages.form_editable = "Editing after submit"; // XXX
             var editableContainer = h('div.cp-form-editable-container');
             var $editable = $(editableContainer);
             var refreshEditable = function () {
@@ -3820,8 +3896,8 @@ define([
             return [
                 preview,
                 endDateContainer,
-                privacyContainer,
                 anonContainer,
+                privacyContainer,
                 editableContainer,
                 resultsType,
                 responseMsg
@@ -3989,7 +4065,7 @@ define([
             UI.alert(content);
         };
 
-        framework.onReady(function () {
+        framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
 
             if (APP.isEditor) {
@@ -4013,6 +4089,9 @@ define([
                     framework.localChange();
                 }
                 checkIntegrity();
+            }
+            if (isNew && content.answers && typeof(content.answers.anonymous) === "undefined") {
+                content.answers.anonymous = true;
             }
 
             sframeChan.event('EV_FORM_PIN', {channel: content.answers.channel});
@@ -4146,6 +4225,29 @@ define([
 
         });
 
+        // Only redraw once every 500ms on remote change.
+        // If we try to redraw in the first 500ms following a redraw, we'll
+        // redraw again when the timer allows it. If we call "redrawRemote"
+        // repeatedly, we'll only "redraw" once with the latest content.
+        var _redraw = Util.notAgainForAnother(updateForm, 500);
+        var redrawTo;
+        var redrawRemote = function () {
+            var $main = $('.cp-form-creator-container');
+            var args = Array.prototype.slice.call(arguments);
+            var sTop = $main.scrollTop();
+            var until = _redraw.apply(null, args);
+            if (until) {
+                clearTimeout(redrawTo);
+                redrawTo = setTimeout(function (){
+                    sTop = $main.scrollTop();
+                    _redraw.apply(null, args);
+                    $main.scrollTop(sTop);
+                }, until+1);
+                return;
+            }
+            // Only restore scroll if we were able to redraw
+            $main.scrollTop(sTop);
+        };
         framework.onContentUpdate(function (newContent) {
             content = newContent;
             evOnChange.fire();
@@ -4153,7 +4255,8 @@ define([
             var answers, temp;
             if (!APP.isEditor) { answers = getFormResults(); }
             else { temp = getTempFields(); }
-            updateForm(framework, content, APP.isEditor, answers, temp);
+
+            redrawRemote(framework, content, APP.isEditor, answers, temp);
         });
 
         framework.setContentGetter(function () {

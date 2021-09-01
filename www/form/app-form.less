@@ -17,6 +17,10 @@
     color: @cryptpad_text_col;
     background-color: @cp_app-bg;
 
+    div.alert.cp-burn-after-reading {
+        margin: 10px !important;
+    }
+
     #cp-app-form-editor {
         flex: 1;
         display: flex;
@@ -85,17 +89,16 @@
         div.cp-form-view-logo {
             align-items: center;
             justify-content: center;
-            max-height: 140px;
-            font-size: 50px;
+            font-size: 40px;
             display: flex;
             font-family: "IBM Plex Mono";
             .tools_unselectable();
-            color: @cp_sidebar-hint;
-            padding: 20px;
+            color: @cryptpad_color_grey_500;
+            padding: 20px 20px 150px 20px;
             cursor: pointer;
             img {
-                max-height: 100%;
-                margin-right: 20px;
+                max-height: 60px;
+                margin: 0px 20px;
             }
         }
 
@@ -377,8 +380,6 @@
                         color: @cp_sidebar-hint;
                         margin-bottom: 10px;
                         padding: 0;
-                        text-align: center;
-                        font-weight: bold;
                     }
 
                     .cp-form-block-drag-handle {
@@ -432,6 +433,17 @@
                         p {
                             a {
                                 color: @cryptpad_color_link;
+                            }
+                        }
+                        .cp-form-required-radio {
+                            flex-direction: row;
+                            display: flex;
+                            margin-bottom: 20px;
+                            span {
+                                margin-right: 10px;
+                                &.cp-radio-mark {
+                                    margin-right: 5px;
+                                }
                             }
                         }
                         .cp-form-page-break-edit {

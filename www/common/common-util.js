@@ -437,7 +437,7 @@
             var now = +new Date();
             if (last && now <= last + t) { return t - (now - last); }
             last = now;
-            f();
+            f.apply(null, Util.slice(arguments));
             return null;
         };
     };
