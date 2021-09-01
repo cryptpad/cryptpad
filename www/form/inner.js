@@ -2184,7 +2184,7 @@ define([
     var addResultsButton = function (framework, content, answers) {
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
-        var $res = $(h('button.btn.btn-primary.cp-toolbar-form-button', [
+        var $res = $(h('button.btn.btn-default.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
@@ -2198,7 +2198,7 @@ define([
                 $('body').addClass('cp-app-form-results');
                 renderResults(content, answers);
                 $res.remove();
-                var $editor = $(h('button.btn.btn-primary', [
+                var $editor = $(h('button.btn.btn-default', [
                     h('i.fa.fa-pencil'),
                     h('span.cp-button-name', Messages.form_editor)
                 ]));
