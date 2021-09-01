@@ -116,8 +116,19 @@
                     width: 100% !important;
                     .cp-form-creator-settings {
                         display: flex;
-                        justify-content: space-evenly;
+                        justify-content: space-between;
                         flex-wrap: wrap;
+                        div {
+                            flex-basis: 33.333333%;
+                            padding-right: 20px;
+                        }
+                    }
+                }
+                @media screen and (max-width: 600px) {
+                    .cp-form-creator-settings {
+                        div {
+                            flex-basis: 50%;
+                        }
                     }
                 }
             }
@@ -337,6 +348,7 @@
                 .cp-form-block {
                     background: @cp_form-bg1;
                     padding: 10px;
+                    box-shadow: 0px 0px 15px @cp_shadow-color;
                     &:not(:last-child) {
                         margin-bottom: 20px;
                     }
@@ -699,7 +711,7 @@
             margin-top: -10px;
             margin-right: -10px;
             i { margin-right: 5px; }
-            background: fade(@cryptpad_text_col, 15%);
+            background: fade(@cryptpad_text_col, 10%);
         }
     }
 
