@@ -25,7 +25,9 @@
   * emojis in cursor tooltips for guests (rich text, code, slide, kanban)
   * emojis in the share and access modals for contacts with empty names
 * script to identify unnecessary duplication of translations
-
+* improvements to upload and media-tag UI
+  * support for adding descriptive text at upload time
+  * preview of uploaded media in the upload modal
 
 ## Bug fixes
 
