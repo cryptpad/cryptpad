@@ -2301,9 +2301,9 @@ define([
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.append(h('div.cp-form-submit-success', [
             h('h3.cp-form-view-title', title),
-            description,
             h('div.alert.alert-info', Messages._getKey('form_alreadyAnswered', [
                     new Date(APP.lastAnswerTime).toLocaleString()])),
+            description,
             actions
         ]));
         $container.append(getLogo());
