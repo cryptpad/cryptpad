@@ -273,4 +273,19 @@
             }
         }
     }
+    #cp-upload-preview-container {
+        max-width: 100%;
+        max-height: 300px;
+        overflow: auto;
+        media-tag {
+            max-width: 100%;
+            iframe {
+                // pdfs don't take the full width unless we tell them to
+                width: 100%;
+            }
+            & > * {
+                max-width: 100%;
+            }
+        }
+    }
 }

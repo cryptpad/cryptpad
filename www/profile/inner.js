@@ -341,6 +341,8 @@ define([
         });
     };
 
+    Messages.profile_defaultAlt = "Default profile picture"; // XXX
+
     var displayAvatar = function (val) {
         var sframeChan = common.getSframeChannel();
         var $span = APP.$avatar;
@@ -349,7 +351,7 @@ define([
             $('<img>', {
                 src: '/customize/images/avatar.png',
                 title: Messages.profile_avatar,
-                alt: 'Avatar' // XXX translate this "Default profile picture"
+                alt: Messages.profile_defaultAlt,
             }).appendTo($span);
             return;
         }

@@ -1658,6 +1658,7 @@ define([
         UI.openCustomModal(modal);
     };
 
+    Messages.toolbar_userMenuAlt = "User menu"; // XXX
     UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
@@ -1990,6 +1991,9 @@ define([
         */
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
+        $userAdmin.attr({ // XXX is this on the right element?
+            alt: Messages.toolbar_userMenuAlt,
+        });
 
         var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
         var loadingAvatar;
