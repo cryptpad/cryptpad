@@ -2226,7 +2226,7 @@ define([
             h('span', 'CryptPad')
         ]);
         $(logo).click(function () {
-            framework._.sfCommon.gotoURL('/drive/');
+            APP.framework._.sfCommon.gotoURL('/');
         });
         return logo;
     };
