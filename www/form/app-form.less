@@ -678,7 +678,10 @@
                     & > span {
                         .cp-form-results-cell();
                         &.cp-value {
-                            min-width: 200px;
+                            max-width: 200px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                         &.cp-bar-container {
                             width: 99%;
