@@ -2235,6 +2235,8 @@ define([
     Messages.form_editAnswer = "Edit my responses"; // XXX
     Messages.form_viewAnswer = "View my responses"; // XXX
     var showAnsweredPage = function (framework, content, answers) {
+        if (APP.submitPage) { return; }
+        APP.submitPage = true;
         var $formContainer = $('div.cp-form-creator-content').hide();
         var $container = $('div.cp-form-creator-answered').empty().css('display', '');
 
