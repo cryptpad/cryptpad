@@ -2175,11 +2175,18 @@ define([
         }
     };
 
-    var addResultsButton = function (framework, content) {
+    var getAnswersLength = function (answers) {
+        return Object.keys(answers || {}).filter(function (key) {
+            return key && key.slice(0,1) !== "_";
+        }).length;
+    };
+    Messages.form_results = "Responses ({0})"; // XXX update key
+    var addResultsButton = function (framework, content, answers) {
         var $container = $('.cp-forms-results-participant');
+        var l = getAnswersLength(answers);
         var $res = $(h('button.btn.btn-primary.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
-            h('span.cp-button-name', Messages.form_results)
+            h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
         $res.click(function () {
             $res.attr('disabled', 'disabled');
@@ -2198,7 +2205,10 @@ define([
                 $editor.click(function () {
                     $('body').removeClass('cp-app-form-results');
                     $editor.remove();
-                    addResultsButton(framework, content);
+                    sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                        var answers = obj && obj.results;
+                        addResultsButton(framework, content, answers);
+                    });
                 });
                 $container.prepend($editor);
             });
@@ -2239,12 +2249,18 @@ define([
         // If responses are public, show button to view them
         var responses;
         if (content.answers.privateKey) {
+            var l = getAnswersLength(answers);
             responses = h('button.btn.btn-default', [
                 h('i.fa.fa-bar-chart'),
-                h('span.cp-button-name', Messages.form_results)
+                h('span.cp-button-name', Messages._getKey('form_results', [l]))
             ]);
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                var answers = obj && obj.results;
+                var l = getAnswersLength(answers);
+                $(responses).find('.cp-button-name').text(Messages._getKey('form_results', [l]));
+            });
             $(responses).click(function () {
-                var sframeChan = framework._.sfCommon.getSframeChannel();
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
@@ -3559,7 +3575,6 @@ define([
             }
 
             if (APP.isEditor) {
-                addResultsButton(framework, content);
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
@@ -3567,6 +3582,7 @@ define([
                     cantEdit: content.answers.cantEdit
                 }, function (err, obj) {
                     var answers = obj && obj.results;
+                    addResultsButton(framework, content, answers);
                     if (answers) { APP.answers = answers; }
                     checkIntegrity(false);
                     updateForm(framework, content, true);
