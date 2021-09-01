@@ -3871,7 +3871,7 @@ define([
                         return;
                     }
                     rules.forEach(function (obj) {
-                        var idx = available.indexOf(obj.q);
+                        var idx = available.indexOf(String(obj.q));
                         // If this question doesn't exist before the section, remove the condition
                         if (!obj.q || idx === -1) {
                             var cIdx = rules.indexOf(obj);
