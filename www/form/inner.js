@@ -2987,6 +2987,7 @@ define([
         updateAddInline();
 
         if (editable) {
+            if (APP.mainSortable) { APP.mainSortable.destroy(); }
             APP.mainSortable = Sortable.create($container[0], {
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
