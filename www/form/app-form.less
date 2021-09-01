@@ -117,8 +117,19 @@
                     width: 100% !important;
                     .cp-form-creator-settings {
                         display: flex;
-                        justify-content: space-evenly;
+                        justify-content: space-between;
                         flex-wrap: wrap;
+                        div {
+                            flex-basis: 33.333333%;
+                            padding-right: 20px;
+                        }
+                    }
+                }
+                @media screen and (max-width: 600px) {
+                    .cp-form-creator-settings {
+                        div {
+                            flex-basis: 50%;
+                        }
                     }
                 }
             }
@@ -198,6 +209,13 @@
                         button[data-type="section"] {
                             display: none;
                         }
+                    }
+                }
+            }
+            div.cp-form-creator-results {
+                .cp-form-block {
+                    .cp-form-block-content {
+                        overflow-x: auto;
                     }
                 }
             }
@@ -366,6 +384,7 @@
                 .cp-form-block {
                     background: @cp_form-bg1;
                     padding: 10px;
+                    box-shadow: 0px 0px 15px @cp_shadow-color;
                     &:not(:last-child) {
                         margin-bottom: 20px;
                     }
@@ -429,7 +448,6 @@
                         }
                     }
                     .cp-form-block-content {
-                        overflow-x: auto;
                         p {
                             a {
                                 color: @cryptpad_color_link;
@@ -595,6 +613,11 @@
             align-items: center;
             justify-content: center;
             flex: 1;
+            .cp-form-submit-actions {
+                button:not(:last-child) {
+                    margin-right: 10px;
+                }
+            }
         }
         div.cp-form-creator-results {
             display: flex;
@@ -724,7 +747,7 @@
             margin-top: -10px;
             margin-right: -10px;
             i { margin-right: 5px; }
-            background: fade(@cryptpad_text_col, 15%);
+            background: fade(@cryptpad_text_col, 10%);
         }
     }
 

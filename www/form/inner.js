@@ -161,7 +161,7 @@ define([
                 h('span', Messages.form_textType),
                 typeSelect[0]
             ]);
-            typeSelect.onChange.reg(evOnSave.fire());
+            typeSelect.onChange.reg(evOnSave.fire);
         }
 
         setCursorGetter(function () {
@@ -2229,10 +2229,18 @@ define([
         }
     };
 
-    var addResultsButton = function (framework, content) {
-        var $res = $(h('button.cp-toolbar-appmenu.cp-toolbar-form-button', [
+    var getAnswersLength = function (answers) {
+        return Object.keys(answers || {}).filter(function (key) {
+            return key && key.slice(0,1) !== "_";
+        }).length;
+    };
+    Messages.form_results = "Responses ({0})"; // XXX update key
+    var addResultsButton = function (framework, content, answers) {
+        var $container = $('.cp-forms-results-participant');
+        var l = getAnswersLength(answers);
+        var $res = $(h('button.btn.btn-primary.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
-            h('span.cp-button-name', Messages.form_results)
+            h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
         $res.click(function () {
             $res.attr('disabled', 'disabled');
@@ -2244,20 +2252,23 @@ define([
                 $('body').addClass('cp-app-form-results');
                 renderResults(content, answers);
                 $res.remove();
-                var $editor = $(h('button.cp-toolbar-appmenu', [
+                var $editor = $(h('button.btn.btn-primary', [
                     h('i.fa.fa-pencil'),
-                    h('span.cp-button-name', APP.isEditor ? Messages.form_editor : Messages.form_form)
+                    h('span.cp-button-name', Messages.form_editor)
                 ]));
                 $editor.click(function () {
                     $('body').removeClass('cp-app-form-results');
                     $editor.remove();
-                    addResultsButton(framework, content);
+                    sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                        var answers = obj && obj.results;
+                        addResultsButton(framework, content, answers);
+                    });
                 });
-                framework._.toolbar.$bottomL.append($editor);
+                $container.prepend($editor);
             });
 
         });
-        framework._.toolbar.$bottomL.append($res);
+        $container.prepend($res);
     };
 
     Messages.form_alreadyAnswered = "You've responded to this form on {0}"; // XXX
@@ -2267,7 +2278,7 @@ define([
         var $formContainer = $('div.cp-form-creator-content').hide();
         var $container = $('div.cp-form-creator-answered').empty().css('display', '');
 
-        var viewOnly = content.answers.cantEdit;
+        var viewOnly = content.answers.cantEdit || APP.isClosed;
         var action = h('button.btn.btn-primary', [
             viewOnly ? h('i.fa.fa-bar-chart') : h('i.fa.fa-pencil'),
             h('span', viewOnly ? Messages.form_viewAnswer : Messages.form_editAnswer)
@@ -2292,9 +2303,18 @@ define([
         // If responses are public, show button to view them
         var responses;
         if (content.answers.privateKey) {
-            responses = h('button.btn.btn-default', Messages.form_results);
+            var l = getAnswersLength(answers);
+            responses = h('button.btn.btn-default', [
+                h('i.fa.fa-bar-chart'),
+                h('span.cp-button-name', Messages._getKey('form_results', [l]))
+            ]);
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                var answers = obj && obj.results;
+                var l = getAnswersLength(answers);
+                $(responses).find('.cp-button-name').text(Messages._getKey('form_results', [l]));
+            });
             $(responses).click(function () {
-                var sframeChan = framework._.sfCommon.getSframeChannel();
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
@@ -2544,10 +2564,7 @@ define([
                 }
                 evOnChange.fire(false, true);
                 window.onbeforeunload = undefined;
-                if (!update && content.answers.privateKey) {
-                    // Add results button
-                    addResultsButton(framework, content);
-                }
+
                 $send.removeAttr('disabled');
                 //UI.alert(Messages.form_sent); // XXX not needed anymore?
                 $send.text(Messages.form_update);
@@ -2677,7 +2694,7 @@ define([
 
         APP.formBlocks = [];
 
-        if (APP.isClosed && content.answers.privateKey && !APP.isEditor) {
+        if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                 var answers = obj && obj.results;
@@ -3584,10 +3601,11 @@ define([
 
         var $toolbarContainer = $('#cp-toolbar');
 
-        if (APP.isEditor || priv.form_auditorKey) {
-            var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-            $toolbarContainer.after(helpMenu.menu);
-            framework._.toolbar.$drawer.append(helpMenu.button);
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+        $toolbarContainer.after(helpMenu.menu);
+        framework._.toolbar.$drawer.append(helpMenu.button);
+        if (!APP.isEditor && !priv.form_auditorKey) {
+            $(helpMenu.menu).hide();
         }
 
         var offlineEl = h('div.alert.alert-danger.cp-burn-after-reading', Messages.disconnected);
@@ -3637,7 +3655,7 @@ define([
                 });
             });
 
-            Messages.form_makePublicWarning = "Are you sure you want to make responses to this form public? Past and future responses will be visible by participants. This cannot be undone." // XXX existing key
+            Messages.form_makePublicWarning = "Are you sure you want to make responses to this form public? Past and future responses will be visible by participants. This cannot be undone."; // XXX existing key
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
             var $results = $(resultsType);
@@ -4124,7 +4142,6 @@ define([
             }
 
             if (APP.isEditor) {
-                addResultsButton(framework, content);
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
@@ -4132,6 +4149,7 @@ define([
                     cantEdit: content.answers.cantEdit
                 }, function (err, obj) {
                     var answers = obj && obj.results;
+                    addResultsButton(framework, content, answers);
                     if (answers) { APP.answers = answers; }
                     checkIntegrity(false);
                     updateForm(framework, content, true);
@@ -4185,9 +4203,6 @@ define([
                     // If we have a non-anon answer, we can't answer anonymously later
                     if (answers[curve1]) { APP.cantAnon = true; }
 
-                    // Add results button
-                    if (myAnswers) { addResultsButton(framework, content); }
-
                     updateForm(framework, content, false, myAnswers);
                 });
                 return;
@@ -4215,9 +4230,6 @@ define([
                     APP.hasAnswered = true;
                     // If we have a non-anon answer, we can't answer anonymously later
                     if (!obj._isAnon) { APP.cantAnon = true; }
-
-                    // Add results button
-                    if (content.answers.privateKey) { addResultsButton(framework, content); }
                 }
                 checkIntegrity(false);
                 updateForm(framework, content, false, answers);
