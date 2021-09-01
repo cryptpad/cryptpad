@@ -1020,7 +1020,7 @@ define([
             var itemScale = (itemCount / max);
 
             rows.push(h('div.cp-form-results-type-radio-data', [
-                h('span.cp-value', value),
+                h('span.cp-value', {'title': value}, value),
                 h('span.cp-count', itemCount),
                 showBar? barGraphic(itemScale): undefined,
             ]));
