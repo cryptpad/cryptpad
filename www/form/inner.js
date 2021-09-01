@@ -2500,8 +2500,10 @@ define([
                 });
                 var list = h('ul', lis);
                 var divContent = [
-                    h('span', Messages.form_requiredWarning),
-                    list
+                    h('div.alert.alert-danger', [
+                        Messages.form_requiredWarning,
+                        list
+                    ])
                 ];
                 $errors.empty().append(divContent);
             });
