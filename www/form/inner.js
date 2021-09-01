@@ -2436,6 +2436,10 @@ define([
                 $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
         }
+        if (update && content.answers.cantEdit) {
+            $cbox.hide();
+            anonName = undefined;
+        }
 
         var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
         var reset = h('button.cp-open.cp-reset-button.btn.btn-danger-alt', Messages.form_reset);
@@ -2491,6 +2495,10 @@ define([
                 $send.text(Messages.form_update);
                 APP.hasAnswered = true;
                 showAnsweredPage(framework, content, { '_time': +new Date() });
+                if (content.answers.cantEdit) {
+                    $cbox.hide();
+                    if ($anonName) { $anonName.hide(); }
+                }
             });
         });
 
