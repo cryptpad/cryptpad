@@ -235,9 +235,6 @@ define([
         };
     };
 
-    funcs.getAuthorId = function () { // XXX
-    };
-
     var authorUid = function(existing) {
         if (!Array.isArray(existing)) { existing = []; }
         var n;
@@ -263,7 +260,7 @@ define([
             });
             return uid || authorUid(existing);
         }
-        // XXX this should check for a matching curvePublic / uid if:
+        // TODO this should check for a matching curvePublic / uid if:
         // 1. you are logged in OR
         // 2. you have a token
         // so that users that register recognize comments from before

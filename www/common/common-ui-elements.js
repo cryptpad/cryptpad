@@ -1991,7 +1991,7 @@ define([
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
-        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title'); // XXX alt="User menu"
+        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
         var loadingAvatar;
         var to;
         var oldUrl = '';
