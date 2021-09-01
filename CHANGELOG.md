@@ -4,6 +4,9 @@
 
 ## Update notes
 
+* warning about lack of support for internet explorer
+  * existing support will get worse over time. please update.
+
 ## Features
 
 * unify unregistered/non-registered/anonymous terminology as 'guest'
