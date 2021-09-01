@@ -3064,7 +3064,7 @@ define([
 
         var content = h('div', [
             UI.setHTML(h('p'), Messages._getKey('notification_openLink', [name, user])),
-            h('pre', url),
+            h('pre.cp-link-preview', url),
             UIElements.getVerifiedFriend(common, data.curve, user)
         ]);
         var clicked = false;
