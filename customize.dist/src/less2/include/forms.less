@@ -112,8 +112,10 @@
         border-radius: 0;
         transition: none;
 
-        .fa, .cptools {
-            margin-right: 5px;
+        i, .fa, .cptools {
+            &:not(:last-child) {
+                margin-right: 5px;
+            }
         }
         .cptools {
             vertical-align: middle;

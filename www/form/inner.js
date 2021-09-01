@@ -2935,11 +2935,11 @@ define([
                         };
                         if (type === 'radio') {
                             obj.values = block.opts ? block.opts.values
-                                                    : TYPES.radio.defaultOpts.values
+                                                    : TYPES.radio.defaultOpts.values;
                         }
                         if (type === 'checkbox') {
                             obj.values = block.opts ? block.opts.values
-                                                    : TYPES.checkbox.defaultOpts.values
+                                                    : TYPES.checkbox.defaultOpts.values;
                         }
                         return obj;
                     }).filter(Boolean);
@@ -2964,6 +2964,9 @@ define([
                     $container.append(btn);
                 };
                 getConditions = function ($container, isNew, rules, condition) {
+                    Messages.form_condition_q = "Choose a question"; // XXX
+                    Messages.form_condition_v = "Choose a value"; // XXX
+
                     var content = h('div.cp-form-condition');
                     var $content = $(content);
                     var values = getConditionsValues();
@@ -2979,7 +2982,7 @@ define([
                         };
                     });
                     var qConfig = {
-                        text: '', // Button initial text
+                        text: Messages.form_condition_q, // Button initial text
                         options: qOptions, // Entries displayed in the menu
                         isSelect: true,
                         caretDown: true,
@@ -3017,7 +3020,16 @@ define([
                     iSelect.setValue(isOn ? 1 : 0);
                     $(iSelect).hide();
 
-                    $content.append(qSelect).append(iSelect);
+                    var remove = h('button.btn.btn-danger-alt.cp-condition-remove', [
+                        h('i.fa.fa-times')
+                    ]);
+                    $(remove).on('click', function () {
+                        $content.remove();
+                        if ($container.is(':empty')) { $container.remove(); }
+                        $addC.show();
+                    });
+
+                    $content.append(qSelect).append(iSelect).append(remove);
                     if ($container.find('button.cp-form-add-and').length) {
                         $container.find('button.cp-form-add-and').before($content);
                     } else {
@@ -3060,7 +3072,7 @@ define([
                             };
                         });
                         var vConfig = {
-                            text: '', // Button initial text
+                            text: Messages.form_condition_v, // Button initial text
                             options: vOptions, // Entries displayed in the menu
                             //left: true, // Open to the left of the button
                             //container: $(type),
@@ -3070,11 +3082,7 @@ define([
                         };
                         var vSelect = UIElements.createDropdown(vConfig);
                         vSelect.addClass('cp-form-condition-values');
-                        if ($content.find('.cp-condition-remove').length) {
-                            $content.find('.cp-condition-remove').before(vSelect);
-                        } else {
-                            $content.append(vSelect);
-                        }
+                        $content.append(vSelect).append(remove);
 
                         var onChange = function () {
                             var w = block.opts.when = block.opts.when || [];
@@ -3112,31 +3120,26 @@ define([
                         iSelect.onChange.reg(isChange);
 
                         vSelect.onChange.reg(function () {
-                            if (!$content.find('.cp-condition-remove').length) {
-                                var remove = h('button.btn.btn-danger-alt.cp-condition-remove', [
-                                    h('i.fa.fa-times')
-                                ]);
-                                $(remove).click(function () {
-                                    var w = block.opts.when = block.opts.when || [];
-                                    var deleteRule = false;
-                                    if (rules.length === 1) {
-                                        var rIdx = w.indexOf(rules);
-                                        w.splice(rIdx, 1);
-                                        deleteRule = true;
-                                    } else {
-                                        var idx = rules.indexOf(condition);
-                                        rules.splice(idx, 1);
+                            $(remove).off('click').click(function () {
+                                var w = block.opts.when = block.opts.when || [];
+                                var deleteRule = false;
+                                if (rules.length === 1) {
+                                    var rIdx = w.indexOf(rules);
+                                    w.splice(rIdx, 1);
+                                    deleteRule = true;
+                                } else {
+                                    var idx = rules.indexOf(condition);
+                                    rules.splice(idx, 1);
+                                }
+                                framework.localChange();
+                                framework._.cpNfInner.chainpad.onSettle(function () {
+                                    if (deleteRule) {
+                                        $content.closest('.cp-form-condition-rule').remove();
+                                        return;
                                     }
-                                    framework.localChange();
-                                    framework._.cpNfInner.chainpad.onSettle(function () {
-                                        if (deleteRule) {
-                                            $content.closest('.cp-form-condition-rule').remove();
-                                            return;
-                                        }
-                                        $content.remove();
-                                    });
-                                }).appendTo($content);
-                            }
+                                    $content.remove();
+                                });
+                            }).appendTo($content);
                             onChange();
                         });
 
