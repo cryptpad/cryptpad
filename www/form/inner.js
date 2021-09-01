@@ -3500,6 +3500,7 @@ define([
         });
 
         if (editable) {
+            if (APP.mainSortable) { APP.mainSortable.destroy(); }
             APP.mainSortable = Sortable.create($container[0], {
                 group: 'nested',
                 direction: "vertical",
