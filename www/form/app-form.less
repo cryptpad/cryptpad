@@ -165,6 +165,13 @@
                     }
                 }
             }
+            div.cp-form-creator-results {
+                .cp-form-block {
+                    .cp-form-block-content {
+                        overflow-x: auto;
+                    }
+                }
+            }
             div.cp-form-creator-content, div.cp-form-creator-results {
                 max-width: 1000px;
                 min-width: 300px;
@@ -393,7 +400,6 @@
                         }
                     }
                     .cp-form-block-content {
-                        overflow-x: auto;
                         p {
                             a {
                                 color: @cryptpad_color_link;
@@ -559,6 +565,11 @@
             align-items: center;
             justify-content: center;
             flex: 1;
+            .cp-form-submit-actions {
+                button:not(:last-child) {
+                    margin-right: 10px;
+                }
+            }
         }
         div.cp-form-creator-results {
             display: flex;
