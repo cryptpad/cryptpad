@@ -532,7 +532,13 @@
                         &> button {
                             height: @toolbar_line-height;
                             width: @toolbar_line-height;
-                            span { font-size: unset; }
+                            span {
+                                .avatar_vars(36px);
+                                font-size: @avatar-font-size;
+                                .animal {
+                                    font-size: @avatar-font-size-animal;
+                                }
+                            }
                         }
                         &> button.cp-avatar.cp-avatar {
                             media-tag {
@@ -862,7 +868,6 @@
                         align-items: center;
                         .animal {
                             font-size: @avatar-font-size-animal;
-
                         }
                     }
                     &.cp-avatar {

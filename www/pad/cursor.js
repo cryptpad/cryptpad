@@ -42,7 +42,7 @@ define([
 
         var cursors = {};
 
-    // XXX despite the name of this function this doesn't actually render as a tippy tooltip
+    // FIXME despite the name of this function this doesn't actually render as a tippy tooltip
     // that means that emojis will use the system font that shows up in native tooltips
     // so this might be of limited value/aesthetic appeal compared to other apps' cursors
         var makeTippy = function (cursor) {

@@ -90,17 +90,12 @@ define([
     // https://emojipedia.org/nature/
     var ANIMALS = AppConfig.emojiAvatars || [];
 
-    var getRandomAnimal = function () { // XXX should never actually happen?
-        if (!ANIMALS.length) { return ''; }
-        return ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
-    };
-
     var getPseudorandomAnimal = MT.getPseudorandomAnimal = function (seed) {
         if (!ANIMALS.length) { return ''; }
-        if (typeof(seed) !== 'string') { return getRandomAnimal(); }
-        seed = seed.replace(/\D/g, '').slice(0, 10); // XXX possible optimization for on-wire uid
+        if (typeof(seed) !== 'string') { return; }
+        seed = seed.replace(/\D/g, '').slice(0, 10); // TODO possible optimization for on-wire uid
         seed = parseInt(seed);
-        if (!seed) { return getRandomAnimal(); }
+        if (!seed) { return; }
         return ANIMALS[seed % ANIMALS.length] || '';
     };
 
@@ -141,7 +136,7 @@ define([
 
             var $avatar = $('<span>', {
                 'class': 'cp-avatar-default' + (animal_avatar? ' animal': ''),
-                // XXX prevents screenreaders from trying to describe this
+                // this prevents screenreaders from trying to describe this
                 alt: '',
                 'aria-hidden': true,
             }).text(text);
@@ -196,7 +191,7 @@ define([
                 var $img = $(mt).appendTo($container);
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
-                    centerImage($img, $image); // XXX add alt="" (unless the media-tag has an alt attr)
+                    centerImage($img, $image);
                 });
             });
         }

@@ -18,7 +18,7 @@ define([
             curvePublic: proxy.curvePublic,
             notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar,
-            uid: proxy.uid, // XXX test without this and see if it breaks things
+            uid: proxy.uid,
         };
         if (hash === false) { delete data.channel; }
         return data;
