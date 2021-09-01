@@ -2217,6 +2217,20 @@ define([
         $container.prepend($res);
     };
 
+    var getLogo = function () {
+        var logo = h('div.cp-form-view-logo', [
+            h('img', {
+                src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
+                alt:'CryptPad_logo'
+            }),
+            h('span', 'CryptPad')
+        ]);
+        $(logo).click(function () {
+            framework._.sfCommon.gotoURL('/drive/');
+        });
+        return logo;
+    };
+
     Messages.form_alreadyAnswered = "You've responded to this form on {0}"; // XXX
     Messages.form_editAnswer = "Edit my responses"; // XXX
     Messages.form_viewAnswer = "View my responses"; // XXX
@@ -2290,6 +2304,7 @@ define([
                     new Date(APP.lastAnswerTime).toLocaleString()])),
             actions
         ]));
+        $container.append(getLogo());
     };
 
     var getFormResults = function () {
@@ -2989,6 +3004,7 @@ define([
         updateAddInline();
 
         if (editable) {
+            if (APP.mainSortable) { APP.mainSortable.destroy(); }
             APP.mainSortable = Sortable.create($container[0], {
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
@@ -3046,17 +3062,7 @@ define([
         // at the bottom
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.prepend(h('h1.cp-form-view-title', title));
-        var logo = h('div.cp-form-view-logo', [
-            h('img', {
-                src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
-                alt:'CryptPad_logo'
-            }),
-            h('span', 'CryptPad')
-        ]);
-        $(logo).click(function () {
-            framework._.sfCommon.gotoURL('/drive/');
-        });
-        $container.append(logo);
+        $container.append(getLogo());
 
         if (!answers) {
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
