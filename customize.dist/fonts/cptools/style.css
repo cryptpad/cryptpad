@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'cptools';
-  src:  url('fonts/cptools.eot?chd5a1');
-  src:  url('fonts/cptools.eot?chd5a1#iefix') format('embedded-opentype'),
-    url('fonts/cptools.ttf?chd5a1') format('truetype'),
-    url('fonts/cptools.woff?chd5a1') format('woff'),
-    url('fonts/cptools.svg?chd5a1#cptools') format('svg');
+  src:  url('fonts/cptools.eot?6tk5ck');
+  src:  url('fonts/cptools.eot?6tk5ck#iefix') format('embedded-opentype'),
+    url('fonts/cptools.ttf?6tk5ck') format('truetype'),
+    url('fonts/cptools.woff?6tk5ck') format('woff'),
+    url('fonts/cptools.svg?6tk5ck#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -14,7 +14,7 @@
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'cptools' !important;
   display: inline-block;
-  speak: none;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -26,6 +26,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.cptools-form-conditional:before {
+  content: "\e900";
+}
 .cptools-form-poll:before {
   content: "\e910";
 }
@@ -57,65 +60,65 @@
   content: "\e91d";
 }
 .cptools-folder-no-color:before {
-  content: "\e900";
-}
-.cptools-whiteboard:before {
   content: "\e901";
 }
-.cptools-new-template:before {
+.cptools-whiteboard:before {
   content: "\e902";
 }
-.cptools-shared-folder:before {
+.cptools-new-template:before {
   content: "\e903";
 }
-.cptools-file-upload:before {
+.cptools-shared-folder:before {
   content: "\e904";
 }
-.cptools-template:before {
+.cptools-file-upload:before {
   content: "\e905";
 }
-.cptools-poll:before {
+.cptools-template:before {
   content: "\e906";
 }
-.cptools-slide:before {
+.cptools-poll:before {
   content: "\e907";
 }
-.cptools-sheet:before {
+.cptools-slide:before {
   content: "\e908";
 }
-.cptools-folder-open:before {
+.cptools-sheet:before {
   content: "\e909";
 }
-.cptools-kanban:before {
+.cptools-folder-open:before {
   content: "\e90a";
 }
-.cptools-folder:before {
+.cptools-kanban:before {
   content: "\e90b";
 }
-.cptools-shared-folder-open:before {
+.cptools-folder:before {
   content: "\e90c";
 }
-.cptools-code:before {
+.cptools-shared-folder-open:before {
   content: "\e90d";
 }
-.cptools-richtext:before {
+.cptools-code:before {
   content: "\e90e";
 }
-.cptools-file:before {
+.cptools-richtext:before {
   content: "\e90f";
 }
-.cptools-palette:before {
+.cptools-file:before {
   content: "\e911";
 }
-.cptools-folder-upload:before {
+.cptools-palette:before {
   content: "\e912";
 }
-.cptools-add-bottom:before {
+.cptools-folder-upload:before {
   content: "\e913";
 }
-.cptools-add-top:before {
+.cptools-add-bottom:before {
   content: "\e914";
 }
-.cptools-destroy:before {
+.cptools-add-top:before {
   content: "\e915";
+}
+.cptools-destroy:before {
+  content: "\e91f";
 }

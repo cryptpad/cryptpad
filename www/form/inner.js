@@ -1048,7 +1048,7 @@ define([
                 };
             },
             printResults: function () { return; },
-            icon: h('i.fa.fa-question')
+            icon: h('i.cptools.cptools-form-conditional')
         },
     };
 
