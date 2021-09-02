@@ -2292,7 +2292,7 @@ define([
         var $container = $('div.cp-form-creator-answered').empty().css('display', '');
 
         var viewOnly = content.answers.cantEdit || APP.isClosed;
-        var action = h('button.btn.btn-primary', [
+        var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
             viewOnly ? h('i.fa.fa-bar-chart') : h('i.fa.fa-pencil'),
             h('span', viewOnly ? Messages.form_viewAnswer : Messages.form_editAnswer)
         ]);
@@ -2313,19 +2313,20 @@ define([
 
         if (answers._time) { APP.lastAnswerTime = answers._time; }
 
+        Messages.form_viewAllAnswers = "View all responses ({0})"; // XXX
         // If responses are public, show button to view them
         var responses;
         if (content.answers.privateKey) {
             var l = getAnswersLength(answers);
-            responses = h('button.btn.btn-default', [
+            responses = h('button.btn.btn-secondary', [
                 h('i.fa.fa-bar-chart'),
-                h('span.cp-button-name', Messages._getKey('form_results', [l]))
+                h('span.cp-button-name', Messages._getKey('form_viewAllAnswers', [l]))
             ]);
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                 var answers = obj && obj.results;
                 var l = getAnswersLength(answers);
-                $(responses).find('.cp-button-name').text(Messages._getKey('form_results', [l]));
+                $(responses).find('.cp-button-name').text(Messages._getKey('form_viewAllAnswers', [l]));
             });
             $(responses).click(function () {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
@@ -2973,14 +2974,14 @@ define([
                 };
                 Messages.form_conditional_add = "Add condition OR";
                 Messages.form_conditional_addAnd = "Add condition AND";
-                var addCondition = h('button.btn.btn-default', [
+                var addCondition = h('button.btn.btn-secondary', [
                     h('i.fa.fa-plus'),
                     h('span', Messages.form_conditional_add)
                 ]);
                 var $addC = $(addCondition);
                 var getConditions;
                 var getAddAndButton = function ($container, rules) {
-                    var btn = h('button.btn.btn-default.cp-form-add-and', [
+                    var btn = h('button.btn.btn-secondary.cp-form-add-and', [
                         h('i.fa.fa-plus'),
                         h('span', Messages.form_conditional_addAnd)
                     ]);
@@ -3012,7 +3013,7 @@ define([
                         options: qOptions, // Entries displayed in the menu
                         isSelect: true,
                         caretDown: true,
-                        buttonCls: 'btn btn-secondary'
+                        buttonCls: 'btn btn-default'
                     };
                     var qSelect = UIElements.createDropdown(qConfig);
                     Messages.form_condition_is = 'is'; // XXX
@@ -3040,7 +3041,7 @@ define([
                         options: iOptions, // Entries displayed in the menu
                         isSelect: true,
                         caretDown: true,
-                        buttonCls: 'btn btn-secondary'
+                        buttonCls: 'btn btn-default'
                     };
                     var iSelect = UIElements.createDropdown(iConfig);
                     iSelect.setValue(isOn ? 1 : 0);
@@ -3104,7 +3105,7 @@ define([
                             //container: $(type),
                             isSelect: true,
                             caretDown: true,
-                            buttonCls: 'btn btn-secondary'
+                            buttonCls: 'btn btn-default'
                         };
                         var vSelect = UIElements.createDropdown(vConfig);
                         vSelect.addClass('cp-form-condition-values');
@@ -3788,7 +3789,7 @@ define([
             refreshResponse();
 
             // Make answers anonymous
-            Messages.form_makeAnon = "Anonymous responses"; // XXX
+            Messages.form_makeAnon = "Anonymize responses"; // XXX
             var anonContainer = h('div.cp-form-anon-container');
             var $anon = $(anonContainer);
             var refreshAnon = function () {
