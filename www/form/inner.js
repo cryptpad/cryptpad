@@ -3399,14 +3399,21 @@ define([
                     });
                     var save = h('button.btn.btn-primary', Messages.settings_save);
                     $(save).click(function () {
+                        if (dataPicker.value === '') {
+                            return void refreshEndDate();
+                        }
                         var d = picker.parseDate(datePicker.value);
                         content.answers.endDate = +d;
                         framework.localChange();
                         refreshEndDate();
                     });
+                    var cancel = h('button.btn.btn-danger', h('i.fa.fa-times'));
+                    $(cancel).click(function () {
+                        refreshEndDate();
+                    });
                     var confirmContent = h('div', [
                         h('div', Messages.form_setEnd),
-                        h('div.cp-form-input-block', [datePicker, save]),
+                        h('div.cp-form-input-block', [datePicker, save, cancel]),
                     ]);
                     $button.after(confirmContent);
                     $button.remove();
