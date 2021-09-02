@@ -2346,6 +2346,7 @@ define([
         } else if (content.answers.anonymous) {
             // Answers aren't anonymous and guests are allowed
             // Guests can set a username and logged in users can answer anonymously
+            var $anon;
             if (!loggedIn) {
                 anonName = h('div.cp-form-anon-answer-input', [
                     Messages.form_answerAs,
@@ -2355,14 +2356,23 @@ define([
                     })
                 ]);
                 $anonName = $(anonName).hide();
-                $anonBox.on('change', function () {
-                    if (Util.isChecked($anonBox)) { $anonName.hide(); }
-                    else { $anonName.show(); }
-                });
             } else if (APP.cantAnon) {
                 // You've already answered with your credentials
                 $cbox.hide();
                 $anonBox.attr('disabled', 'disabled').prop('checked', false);
+            }
+            if (!anonName) {
+                anonName = h('div.cp-form-anon-answer-input', [
+                    Messages.form_answerAs,
+                    h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
+                ]);
+            }
+            if (!APP.cantAnon) {
+                var $anon = $(anonName).hide();
+                $anonBox.on('change', function () {
+                    if (Util.isChecked($anonBox)) { $anon.hide(); }
+                    else { $anon.show(); }
+                });
             }
         } else {
             // Answers don't have to be anonymous and only logged in users can answer
@@ -2374,7 +2384,7 @@ define([
                 $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
         }
-        if (update && content.answers.cantEdit) {
+        if (update && content.answers.cantEdit || APP.isClosed) {
             $cbox.hide();
             anonName = undefined;
         }
@@ -3034,6 +3044,13 @@ define([
             $container.prepend(h('div.alert.alert-info',
                 Messages._getKey('form_alreadyAnswered', [
                     new Date(answers._time || APP.lastAnswerTime).toLocaleString()])));
+        }
+
+        if (APP.isClosed) {
+            APP.formBlocks.forEach(function (b) {
+                if (!b.setEditable) { return; }
+                b.setEditable(false);
+            });
         }
 
         // In view mode, add "Submit" and "reset" buttons
