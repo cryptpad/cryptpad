@@ -1011,8 +1011,6 @@ define([
             get: function (opts, a, n, ev, block) {
                 var sortable = h('div.cp-form-section-sortable');
                 var tag = h('div.cp-form-section-edit', [
-                    h('i.fa.fa-question'),
-                    h('span', Messages.form_type_section),
                     sortable
                 ]);
                 if (APP.isEditor) {
@@ -3311,6 +3309,11 @@ define([
 
                 editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
 
+                    changeType = h('div.cp-form-block-type', [
+                        model.icon.cloneNode(),
+                        h('span', Messages['form_type_'+type])
+                    ]);
+
                 // Values
                 if (data.edit) {
                     var edit = h('button.btn.btn-default.cp-form-edit-button', [
@@ -3363,11 +3366,6 @@ define([
                     if (temp && temp[uid]) {
                         onEdit(temp[uid]);
                     }
-
-                    changeType = h('div.cp-form-block-type', [
-                        model.icon.cloneNode(),
-                        h('span', Messages['form_type_'+type])
-                    ]);
 
                     Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
                     Messages.form_corruptAnswers = "Changing the type may corrupt existing answers";
