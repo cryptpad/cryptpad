@@ -1021,8 +1021,8 @@ define([
             var common = framework._.sfCommon;
             var $button = common.createButton('toggle', true, {
                 element: $(container),
-                //icon: 'fa-tags', // FIXME
-                //text: Messages.fm_tagsName, // FIXME
+                icon: 'fa-tags',
+                text: Messages.fm_tagsName,
             }, function () {
                 $button.toggleClass('cp-toolbar-button-active');
 
