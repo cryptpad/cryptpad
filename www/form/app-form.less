@@ -179,12 +179,15 @@
 
 
                 .cp-form-conditional {
+                    .cp-form-conditional-hint {
+                        margin-bottom: 10px;
+                    }
                     .cp-form-condition {
                         display: flex;
                         align-items: center;
-                        justify-content: center;
+                        margin-bottom: 10px;
                         & > *:not(:first-child) {
-                            margin-left: 40px;
+                            margin-left: 10px;
                         }
                         .cp-dropdown-container button {
                             max-width: 200px;
@@ -202,8 +205,9 @@
 
                 div.cp-form-section-sortable {
                     min-height: 300px;
-                    border: 4px dotted white; // XXX
+                    border: 2px dashed @cryptpad_text_col; // XXX
                     padding: 20px;
+                    margin-top: 10px;
                     background: @cp_app-bg;
                     .cp-form-creator-add-inline {
                         button[data-type="section"] {
