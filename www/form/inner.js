@@ -3920,7 +3920,7 @@ define([
                         framework.localChange();
                         refreshEndDate();
                     });
-                    var cancel = h('button.btn.btn-danger', h('i.fa.fa-times'));
+                    var cancel = h('button.btn.btn-danger', h('i.fa.fa-times.nomargin'));
                     $(cancel).click(function () {
                         refreshEndDate();
                     });
