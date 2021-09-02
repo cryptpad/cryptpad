@@ -1013,7 +1013,6 @@ define([
                 var tag = h('div.cp-form-section-edit', [
                     h('i.fa.fa-question'),
                     h('span', Messages.form_type_section),
-                    h('hr'),
                     sortable
                 ]);
                 if (APP.isEditor) {
@@ -3156,10 +3155,10 @@ define([
 
 
                 };
-                Messages.form_conditional = "Only show this question when:"; // XXX
+                Messages.form_conditional = "Only show this section when:"; // XXX
 
                 conditionalDiv = h('div.cp-form-conditional', [
-                    h('div', Messages.form_conditional),
+                    h('div.cp-form-conditional-hint', Messages.form_conditional),
                     addCondition
                 ]);
                 var $condition = $(conditionalDiv);
