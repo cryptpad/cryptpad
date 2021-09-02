@@ -119,17 +119,24 @@
                         display: flex;
                         justify-content: space-between;
                         flex-wrap: wrap;
-                        div {
+                        & > div {
                             flex-basis: 33.333333%;
                             padding-right: 20px;
                         }
                     }
                 }
-                @media screen and (max-width: 600px) {
-                    .cp-form-creator-settings {
-                        div {
-                            flex-basis: 50%;
-                        }
+            }
+            @media screen and (max-width: 600px) and (min-width: 400px) {
+                .cp-form-creator-settings {
+                    & > div {
+                        flex-basis: 50% !important;
+                    }
+                }
+            }
+            @media screen and (max-width: 400px) {
+                .cp-form-creator-settings {
+                    & > div {
+                        flex-basis: 100% !important;
                     }
                 }
             }
