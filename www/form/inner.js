@@ -1074,7 +1074,7 @@ define([
             var itemScale = (itemCount / max);
 
             rows.push(h('div.cp-form-results-type-radio-data', [
-                h('span.cp-value', value),
+                h('span.cp-value', {'title': value}, value),
                 h('span.cp-count', itemCount),
                 showBar? barGraphic(itemScale): undefined,
             ]));
@@ -2238,7 +2238,7 @@ define([
     var addResultsButton = function (framework, content, answers) {
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
-        var $res = $(h('button.btn.btn-primary.cp-toolbar-form-button', [
+        var $res = $(h('button.btn.btn-default.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
@@ -2252,7 +2252,7 @@ define([
                 $('body').addClass('cp-app-form-results');
                 renderResults(content, answers);
                 $res.remove();
-                var $editor = $(h('button.btn.btn-primary', [
+                var $editor = $(h('button.btn.btn-default', [
                     h('i.fa.fa-pencil'),
                     h('span.cp-button-name', Messages.form_editor)
                 ]));
@@ -2271,10 +2271,26 @@ define([
         $container.prepend($res);
     };
 
+    var getLogo = function () {
+        var logo = h('div.cp-form-view-logo', [
+            h('img', {
+                src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
+                alt:'CryptPad_logo'
+            }),
+            h('span', 'CryptPad')
+        ]);
+        $(logo).click(function () {
+            APP.framework._.sfCommon.gotoURL('/');
+        });
+        return logo;
+    };
+
     Messages.form_alreadyAnswered = "You've responded to this form on {0}"; // XXX
     Messages.form_editAnswer = "Edit my responses"; // XXX
     Messages.form_viewAnswer = "View my responses"; // XXX
     var showAnsweredPage = function (framework, content, answers) {
+        if (APP.submitPage) { return; }
+        APP.submitPage = true;
         var $formContainer = $('div.cp-form-creator-content').hide();
         var $container = $('div.cp-form-creator-answered').empty().css('display', '');
 
@@ -2339,11 +2355,12 @@ define([
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.append(h('div.cp-form-submit-success', [
             h('h3.cp-form-view-title', title),
-            description,
             h('div.alert.alert-info', Messages._getKey('form_alreadyAnswered', [
                     new Date(APP.lastAnswerTime).toLocaleString()])),
+            description,
             actions
         ]));
+        $container.append(getLogo());
     };
 
     var getFormResults = function () {
@@ -2486,6 +2503,7 @@ define([
         } else if (content.answers.anonymous) {
             // Answers aren't anonymous and guests are allowed
             // Guests can set a username and logged in users can answer anonymously
+            var $anon;
             if (!loggedIn) {
                 anonName = h('div.cp-form-anon-answer-input', [
                     Messages.form_answerAs,
@@ -2495,14 +2513,23 @@ define([
                     })
                 ]);
                 $anonName = $(anonName).hide();
-                $anonBox.on('change', function () {
-                    if (Util.isChecked($anonBox)) { $anonName.hide(); }
-                    else { $anonName.show(); }
-                });
             } else if (APP.cantAnon) {
                 // You've already answered with your credentials
                 $cbox.hide();
                 $anonBox.attr('disabled', 'disabled').prop('checked', false);
+            }
+            if (!anonName) {
+                anonName = h('div.cp-form-anon-answer-input', [
+                    Messages.form_answerAs,
+                    h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
+                ]);
+            }
+            if (!APP.cantAnon) {
+                var $anon = $(anonName).hide();
+                $anonBox.on('change', function () {
+                    if (Util.isChecked($anonBox)) { $anon.hide(); }
+                    else { $anon.show(); }
+                });
             }
         } else {
             // Answers don't have to be anonymous and only logged in users can answer
@@ -2514,7 +2541,7 @@ define([
                 $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
         }
-        if (update && content.answers.cantEdit) {
+        if (update && content.answers.cantEdit || APP.isClosed) {
             $cbox.hide();
             anonName = undefined;
         }
@@ -2668,8 +2695,10 @@ define([
                 });
                 var list = h('ul', lis);
                 var divContent = [
-                    h('span', Messages.form_requiredWarning),
-                    list
+                    h('div.alert.alert-danger', [
+                        Messages.form_requiredWarning,
+                        list
+                    ])
                 ];
                 $errors.empty().append(divContent);
             });
@@ -3531,6 +3560,13 @@ define([
                     new Date(answers._time || APP.lastAnswerTime).toLocaleString()])));
         }
 
+        if (APP.isClosed) {
+            APP.formBlocks.forEach(function (b) {
+                if (!b.setEditable) { return; }
+                b.setEditable(false);
+            });
+        }
+
         // In view mode, add "Submit" and "reset" buttons
         $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
 
@@ -3559,17 +3595,7 @@ define([
         // at the bottom
         var title = framework._.title.title || framework._.title.defaultTitle;
         $container.prepend(h('h1.cp-form-view-title', title));
-        var logo = h('div.cp-form-view-logo', [
-            h('img', {
-                src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
-                alt:'CryptPad_logo'
-            }),
-            h('span', 'CryptPad')
-        ]);
-        $(logo).click(function () {
-            framework._.sfCommon.gotoURL('/drive/');
-        });
-        $container.append(logo);
+        $container.append(getLogo());
 
         if (!answers) {
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
@@ -3887,14 +3913,21 @@ define([
                     });
                     var save = h('button.btn.btn-primary', Messages.settings_save);
                     $(save).click(function () {
+                        if (dataPicker.value === '') {
+                            return void refreshEndDate();
+                        }
                         var d = picker.parseDate(datePicker.value);
                         content.answers.endDate = +d;
                         framework.localChange();
                         refreshEndDate();
                     });
+                    var cancel = h('button.btn.btn-danger', h('i.fa.fa-times'));
+                    $(cancel).click(function () {
+                        refreshEndDate();
+                    });
                     var confirmContent = h('div', [
                         h('div', Messages.form_setEnd),
-                        h('div.cp-form-input-block', [datePicker, save]),
+                        h('div.cp-form-input-block', [datePicker, save, cancel]),
                     ]);
                     $button.after(confirmContent);
                     $button.remove();

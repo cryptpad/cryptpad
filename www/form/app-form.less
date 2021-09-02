@@ -218,6 +218,12 @@
                         overflow-x: auto;
                     }
                 }
+                .cp-form-creator-results-timeline {
+                    margin-bottom: 20px;
+                    table.cp-charts.column {
+                        overflow-x: initial;
+                    }
+                }
             }
             div.cp-form-creator-content, div.cp-form-creator-results {
                 max-width: 1000px;
@@ -344,6 +350,10 @@
                                 color: @cryptpad_color_link;
                             }
                         }
+                        .alert-danger {
+                            font-size: 1rem;
+                            padding: 10px;
+                        }
                     }
                     .cp-form-anon-answer {
                         text-align: center;
@@ -356,6 +366,10 @@
                             input {
                                 margin-left: 10px;
                             }
+                        }
+                        .cp-form-anon-answer-registered {
+                            font-style: italic;
+                            margin-left: 10px;
                         }
                     }
                 }
@@ -613,10 +627,15 @@
             align-items: center;
             justify-content: center;
             flex: 1;
+            flex-flow: column;
             .cp-form-submit-actions {
                 button:not(:last-child) {
                     margin-right: 10px;
                 }
+            }
+            .cp-form-view-logo {
+                margin-top: 100px;
+                padding-bottom: 20px;
             }
         }
         div.cp-form-creator-results {
@@ -638,7 +657,6 @@
 
             .cp-form-creator-results-controls {
                 margin-bottom: 20px;
-                margin-top: 20px;
                 //background: @cp_form-bg1;
                 //padding: 10px;
                 button {
@@ -701,20 +719,28 @@
                 }
                 .cp-form-results-type-radio-data {
                     display: table-row;
-                    border: 1px solid @cp_form-border;
+                    border: 1px solid transparent;
                     & > span {
                         .cp-form-results-cell();
                         &.cp-value {
+                            max-width: 200px;
                             min-width: 200px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                         &.cp-bar-container {
                             width: 99%;
                             padding: 0px;
                             position: relative;
+                            background: transparent;
+                            border-left-width: 15px;
+                            border-right-width: 15px;
                             .cp-bar {
                                 position: absolute;
-                                background: @cryptpad_color_brand;
-                                height: 100%;
+                                background: fade(@cryptpad_text_col, 50%);
+                                height: 50%;
+                                top: 25%;
                             }
                         }
                     }
