@@ -3047,7 +3047,7 @@ define([
                     $(iSelect).hide();
 
                     var remove = h('button.btn.btn-danger-alt.cp-condition-remove', [
-                        h('i.fa.fa-times')
+                        h('i.fa.fa-times.nomargin')
                     ]);
                     $(remove).on('click', function () {
                         $content.remove();
