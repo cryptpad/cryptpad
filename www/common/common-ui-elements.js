@@ -527,6 +527,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
+        Messages.toolbar_preview = "Preview"; // XXX
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -753,7 +754,7 @@ define([
                     //title: Messages.previewButtonTitle, // TODO display if the label text is collapsed
                 }, [
                     h('i.fa.fa-eye'),
-                    h('span.cp-toolbar-name', Messages.share_linkOpen)
+                    h('span.cp-toolbar-name', Messages.toolbar_preview)
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'print':

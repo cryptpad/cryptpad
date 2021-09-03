@@ -1,7 +1,7 @@
 define([
     '/customize/messages.js'
 ], function (Messages) {
-    Messages.form_type_poll = "Quick poll"; // XXX update key
+    Messages.form_template_poll = "Quick poll"; // XXX update key
     var pollValues = [];
     var d8 = new Date();
     d8.setDate(d8.getDate() - d8.getDay() + 7); // set sunday
@@ -24,7 +24,7 @@ define([
     return [{
         id: 'a',
         used: 1,
-        name: Messages.form_type_poll,
+        name: Messages.form_template_poll,
         content: {
             answers: {
                 anonymous: true,
