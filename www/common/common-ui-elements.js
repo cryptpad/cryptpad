@@ -1579,10 +1579,14 @@ define([
                 }, 1000);
             });
 
-            $container.setValue = function (val, name) {
+            $container.setValue = function (val, name, sync) {
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
                 var textValue = name || $val.html() || val;
+                if (sync) {
+                    $button.find('.cp-dropdown-button-title').html(textValue);
+                    return;
+                }
                 setTimeout(function () {
                     $button.find('.cp-dropdown-button-title').html(textValue);
                 });
