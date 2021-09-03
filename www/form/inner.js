@@ -2972,8 +2972,8 @@ define([
                     }).filter(Boolean);
                     return values;
                 };
-                Messages.form_conditional_add = "Add condition OR";
-                Messages.form_conditional_addAnd = "Add condition AND";
+                Messages.form_conditional_add = "Add condition OR"; // XXX
+                Messages.form_conditional_addAnd = "Add condition AND"; // XXX
                 var addCondition = h('button.btn.btn-secondary', [
                     h('i.fa.fa-plus'),
                     h('span', Messages.form_conditional_add)
