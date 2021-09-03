@@ -2932,10 +2932,14 @@ define([
                 return;
             }
 
-            Messages.form_required = "Required"; // XXX
+            // XXX
+            Messages.form_required_answer = "Answer: ";
+            Messages.form_required_on = "Required";
+            Messages.form_required_off = "Optional";
+
             var requiredTag;
             if (block.opts && block.opts.required) {
-                requiredTag = h('span.cp-form-required-tag', Messages.form_required);
+                requiredTag = h('span.cp-form-required-tag', Messages.form_required_on);
             }
 
             var dragHandle;
@@ -2954,9 +2958,6 @@ define([
             Messages.form_preview = "Preview:"; // XXX
             var previewDiv = h('div.cp-form-preview', Messages.form_preview);
 
-            Messages.form_required_answer = "Answer: ";
-            Messages.form_required_on = "required";
-            Messages.form_required_off = "optional";
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv, conditionalDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
