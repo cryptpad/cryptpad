@@ -918,7 +918,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         define([
             '/common/common-util.js',
             '/common/common-hash.js',
-            '/bower_components/chainpad-netflux/chainpad-netflux.js',
+            'chainpad-netflux',
             'json.sortify',
             '/bower_components/nthen/index.js',
             '/bower_components/chainpad-crypto/crypto.js',

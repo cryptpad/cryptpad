@@ -14,9 +14,9 @@ define([
     '/common/cryptget.js',
     '/common/outer/cache-store.js',
 
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    'chainpad-listmap',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad-netflux/chainpad-netflux.js',
+    'chainpad-netflux',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
