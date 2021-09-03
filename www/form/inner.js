@@ -2069,7 +2069,7 @@ define([
     };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) {
-        var $container = $('div.cp-form-creator-results').empty();
+        var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var answerCount = Object.keys(answers || {}).length;
 
@@ -2286,10 +2286,17 @@ define([
     Messages.form_editAnswer = "Edit my responses"; // XXX
     Messages.form_viewAnswer = "View my responses"; // XXX
     var showAnsweredPage = function (framework, content, answers) {
-        if (APP.submitPage) { return; }
-        APP.submitPage = true;
         var $formContainer = $('div.cp-form-creator-content').hide();
+        var $resContainer = $('div.cp-form-creator-results').hide();
         var $container = $('div.cp-form-creator-answered').empty().css('display', '');
+
+        if (APP.answeredInForm) {
+            $container.hide();
+            $formContainer.css('display', '');
+        } else if (APP.answeredInResponses) {
+            $container.hide();
+            $resContainer.css('display', '');
+        }
 
         var viewOnly = content.answers.cantEdit || APP.isClosed;
         var action = h('button.btn.btn-primary', [
@@ -2300,6 +2307,7 @@ define([
         $(action).click(function () {
             $formContainer.css('display', '');
             $container.hide();
+            APP.answeredInForm = true;
             if (viewOnly) {
                 $formContainer.find('.cp-form-send-container .cp-open').hide();
                 if (Array.isArray(APP.formBlocks)) {
@@ -2329,6 +2337,7 @@ define([
             });
             $(responses).click(function () {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                    APP.answeredInResponses = true;
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
                     $('body').addClass('cp-app-form-results');
@@ -2593,6 +2602,7 @@ define([
                 //UI.alert(Messages.form_sent); // XXX not needed anymore?
                 $send.text(Messages.form_update);
                 APP.hasAnswered = true;
+                APP.answeredInForm = false;
                 showAnsweredPage(framework, content, { '_time': +new Date() });
                 if (content.answers.cantEdit) {
                     $cbox.hide();
