@@ -305,7 +305,7 @@ define([
             if (isItem) {
                 if (cursor && cursor.uid === uid && cursor.item) { setCursor(); }
             } else {
-                if (cursor && cursor.el === val && !cursor.item) { setCursor(); }
+                else if (cursor && cursor.el === val && !cursor.item) { setCursor(); }
             }
 
             var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
@@ -493,6 +493,17 @@ define([
                 setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
+                    if (val === "time") {
+                        var time = new Date();
+                        time.setHours(14);
+                        time.setMinutes(0);
+                        time.setSeconds(0);
+                        time.setMilliseconds(0);
+                        var el = getOption(+time, false, false);
+                        $add.before(el);
+                        $(el).find('input').focus();
+                        return;
+                    }
                     $(add).click();
                     return;
                 }
@@ -547,6 +558,18 @@ define([
                         cursor.start = el.selectionStart;
                         cursor.end = el.selectionEnd;
                         cursor.el = val;
+                    }
+                });
+            }
+            if (v.type === "time") {
+                $container.find('input').each(function (i, el) {
+                    var f = el._flatpickr;
+                    if (!f || !f.isOpen) { return; }
+                    var rect = el.getBoundingClientRect();
+                    cursor = {
+                        flatpickr: true,
+                        val: +f.selectedDates[0],
+                        y: rect && rect.y
                     }
                 });
             }
@@ -3103,6 +3126,7 @@ define([
         if (!$container.length) { return; } // Not ready
 
         var form = content.form;
+        $('body').find('.flatpickr-calendar').remove();
 
         APP.formBlocks = [];
 
@@ -3620,7 +3644,8 @@ define([
         // If we had a condition dropdown displayed, we're going to make sure
         // it doesn't move on the screen after the redraw
         // To do so, we need to adjust the "scrollTop" value saved before redrawing
-        getSections(content).forEach(function (uid) {
+        getSections(content).some(function (uid) {
+            if (!temp) { return true; }
             var block = content.form[uid];
             if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
             var $block = $container.find('.cp-form-block[data-id="'+uid+'"] .cp-form-section-sortable');
@@ -3638,7 +3663,34 @@ define([
                     var diff = pos - tmp.y;
                     APP.sTop += diff;
                 }
+                return true;
             }
+        });
+        // Fix cursor with flatpickr
+        APP.formBlocks.some(function (b) {
+            if (!temp) { return true; }
+            var uid = b.uid;
+            var block = form[uid];
+            if (!block) { return; }
+            if (block.type !== "poll") { return; }
+            var opts = block.opts;
+            if (!opts) { return; }
+            if (opts.type !== "time") { return; }
+            var tmp = temp[uid];
+            if (!tmp || !tmp.cursor || !tmp.cursor.flatpickr) { return; }
+            var $block = $container.find('.cp-form-block[data-id="'+uid+'"]');
+            var $i = $block.find('.flatpickr-input[value="'+tmp.cursor.val+'"]');
+            if (!$i.length) { return; }
+            APP.afterScroll = function () {
+                $i[0]._flatpickr.open();
+                delete APP.afterScroll;
+            };
+            var pos = $i && $i.length && $i[0].getBoundingClientRect().y;
+            if (typeof(pos) === "number" && typeof(tmp.cursor.y) === "number") {
+                var diff = pos - tmp.cursor.y;
+                APP.sTop += diff;
+            }
+            return true;
         });
 
         if (editable) {
@@ -4424,11 +4476,13 @@ define([
                     APP.sTop = $main.scrollTop();
                     _redraw.apply(null, args);
                     $main.scrollTop(APP.sTop);
+                    if (typeof(APP.afterScroll) === "function") { APP.afterScroll(); }
                 }, until+1);
                 return;
             }
             // Only restore scroll if we were able to redraw
             $main.scrollTop(APP.sTop);
+            if (typeof(APP.afterScroll) === "function") { APP.afterScroll(); }
         };
         framework.onContentUpdate(function (newContent) {
             content = newContent;
