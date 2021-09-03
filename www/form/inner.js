@@ -374,11 +374,16 @@ define([
         var container = h('div.cp-form-edit-block', inputs);
         var $container = $(container);
 
-        Sortable.create(container, {
+        var sortableOption = Sortable.create(container, {
             direction: "vertical",
             handle: ".cp-form-handle",
             draggable: ".cp-form-edit-block-input",
             forceFallback: true,
+            store: {
+                set: function () {
+                    evOnSave.fire();
+                }
+            }
         });
 
         var containerItems;
@@ -393,6 +398,11 @@ define([
                 handle: ".cp-form-handle",
                 draggable: ".cp-form-edit-block-input",
                 forceFallback: true,
+                store: {
+                    set: function () {
+                        evOnSave.fire();
+                    }
+                }
             });
         }
 
@@ -456,6 +466,8 @@ define([
         var refreshView = function () {
             if (!v.type) { return; }
             var $calendar = $(calendarView);
+            sortableOption.option("disabled", v.type !== "text");
+            $container.toggleClass('cp-no-sortable', v.type !== "text");
             if (v.type !== "day") {
                 $calendar.hide();
                 $container.show();
