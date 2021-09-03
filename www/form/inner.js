@@ -2759,19 +2759,6 @@ define([
         var getFormCreator = function (uid, inSection) {
             if (!APP.isEditor) { return; }
             var full = !uid;
-            var arr = content.order;
-            var idx = content.order.indexOf(uid);
-            if (!full) {
-                if (inSection) {
-                    var section = content.form[uid];
-                    section.opts = section.opts || STATIC_TYPES.section.opts;
-                    arr = section.opts.questions;
-                } else {
-                    var obj = getSectionFromQ(content, uid);
-                    arr = obj.arr;
-                    idx = obj.idx;
-                }
-            }
             var addControl = function (type) {
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
@@ -2781,20 +2768,36 @@ define([
                     full ? h('span', Messages['form_type_'+type]) : undefined
                 ]);
                 $(btn).click(function () {
-                    var uid = Util.uid();
+                    // Get the array in which we want to create the new block
+                    // and the position in this array
+                    var arr = content.order;
+                    var idx = content.order.indexOf(uid);
+                    if (!full) {
+                        if (inSection) {
+                            var section = content.form[uid];
+                            section.opts = section.opts || STATIC_TYPES.section.opts;
+                            arr = section.opts.questions;
+                        } else {
+                            var obj = getSectionFromQ(content, uid);
+                            arr = obj.arr;
+                            idx = obj.idx;
+                        }
+                    }
+
+                    var _uid = Util.uid();
 
                     // Make sure we can't create a section inside another one
                     if (type === 'section' && arr !== content.order) { return; }
 
-                    content.form[uid] = {
+                    content.form[_uid] = {
                         //q: Messages.form_default,
                         //opts: opts
                         type: type,
                     };
                     if (full || inSection) {
-                        arr.push(uid);
+                        arr.push(_uid);
                     } else {
-                        arr.splice(idx, 0, uid);
+                        arr.splice(idx, 0, _uid);
                     }
                     framework.localChange();
                     updateForm(framework, content, true);
@@ -2843,7 +2846,7 @@ define([
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
             });
-            // Add to section
+            // Add to the end of a section
             $container.find('.cp-form-section-sortable').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.closest('.cp-form-block').attr('data-id');
@@ -2945,7 +2948,7 @@ define([
                 });
             }
 
-            if (APP.isEditor && blockIdx && type === "section") {
+            if (APP.isEditor && type === "section") {
                 var getConditionsValues = function () {
                     order = getFullOrder(content);
                     var blockIdx = order.indexOf(uid);
@@ -3509,22 +3512,6 @@ define([
         });
         updateAddInline();
 
-        // In view mode, hide sections when conditions aren't met
-        evOnChange.reg(function (reset, save, condition) {
-            if (!reset && !condition) { return; }
-            getSections(content).forEach(function (uid) {
-                var block = content.form[uid];
-                if (block.type !== 'section') { return; }
-                if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
-                    return;
-                }
-                var show = checkCondition(block);
-                block.opts.questions.forEach(function (_uid) {
-                    $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
-                });
-            });
-        });
-
         if (editable) {
             if (APP.mainSortable) { APP.mainSortable.destroy(); }
             APP.mainSortable = Sortable.create($container[0], {
@@ -3549,6 +3536,22 @@ define([
             return;
         }
 
+        // In view mode, hide sections when conditions aren't met
+        evOnChange.reg(function (reset, save, condition) {
+            if (!reset && !condition) { return; }
+            getSections(content).forEach(function (uid) {
+                var block = content.form[uid];
+                if (block.type !== 'section') { return; }
+                if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
+                    return;
+                }
+                var show = checkCondition(block);
+                block.opts.questions.forEach(function (_uid) {
+                    $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
+                });
+            });
+        });
+
         // If the form is already submitted, show an info message
         if (APP.hasAnswered) {
             showAnsweredPage(framework, content, answers);
@@ -3568,24 +3571,22 @@ define([
         $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
 
         // In view mode, tell the user if answers are forced to be anonymous or authenticated
-        if (!APP.isEditor) {
-            var infoTxt;
-            var loggedIn = framework._.sfCommon.isLoggedIn();
-            if (content.answers.makeAnonymous) {
-                infoTxt = Messages.form_anonAnswer;
-            } else if (!content.answers.anonymous && loggedIn) {
-                infoTxt = Messages.form_authAnswer;
-            }
-            if (infoTxt) {
-                $container.prepend(h('div.alert.alert-info', infoTxt));
-            }
+        var infoTxt;
+        var loggedIn = framework._.sfCommon.isLoggedIn();
+        if (content.answers.makeAnonymous) {
+            infoTxt = Messages.form_anonAnswer;
+        } else if (!content.answers.anonymous && loggedIn) {
+            infoTxt = Messages.form_authAnswer;
+        }
+        if (infoTxt) {
+            $container.prepend(h('div.alert.alert-info', infoTxt));
+        }
 
-            if (!loggedIn && !content.answers.anonymous) {
-                APP.formBlocks.forEach(function (b) {
-                    if (!b.setEditable) { return; }
-                    b.setEditable(false);
-                });
-            }
+        if (!loggedIn && !content.answers.anonymous) {
+            APP.formBlocks.forEach(function (b) {
+                if (!b.setEditable) { return; }
+                b.setEditable(false);
+            });
         }
 
         // Embed mode is enforced so we add the title at the top and a CryptPad logo
