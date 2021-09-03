@@ -1286,7 +1286,10 @@ define([
                 // results radio
                 var empty = 0;
                 var count = {};
-                var showBars = Boolean(content);
+
+                var opts = form[uid].opts || TYPES.radio.defaultOpts;
+                (opts.values || []).forEach(function (v) { count[v] = 0; });
+
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1294,6 +1297,7 @@ define([
                     Util.inc(count, answer);
                 });
 
+                var showBars = Boolean(content);
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-form-results-type-radio', rendered);
             },
@@ -1393,6 +1397,7 @@ define([
                 var results = [];
                 var empty = 0;
                 var count = {};
+
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
@@ -1400,7 +1405,11 @@ define([
                     if (!answer || !Object.keys(answer).length) { return empty++; }
                     //count[answer] = count[answer] || {};
                     Object.keys(answer).forEach(function (q_uid) {
-                        var c = count[q_uid] = count[q_uid] || {};
+                        var c = count[q_uid];
+                        if (!c) {
+                            count[q_uid] = c = {};
+                            (opts.values || []).forEach(function (v) { c[v] = 0; });
+                        }
                         var res = answer[q_uid];
                         if (!res || !res.trim || !res.trim()) { return; }
                         Util.inc(c, res);
@@ -1538,6 +1547,10 @@ define([
                 // results checkbox
                 var empty = 0;
                 var count = {};
+
+                var opts = form[uid].opts || TYPES.checkbox.defaultOpts;
+                (opts.values || []).forEach(function (v) { count[v] = 0; });
+
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
@@ -1674,7 +1687,11 @@ define([
                     var answer = obj.msg[uid];
                     if (!answer || !Object.keys(answer).length) { return empty++; }
                     Object.keys(answer).forEach(function (q_uid) {
-                        var c = count[q_uid] = count[q_uid] || {};
+                        var c = count[q_uid];
+                        if (!c) {
+                            count[q_uid] = c = {};
+                            (opts.values || []).forEach(function (v) { c[v] = 0; });
+                        }
                         var res = answer[q_uid];
                         if (res && typeof(res) === "string") { res = [res]; }
                         if (!Array.isArray(res) || !res.length) { return; }
@@ -1837,6 +1854,7 @@ define([
                 //var results = [];
                 var empty = 0;
                 var count = {};
+                (opts.values || []).forEach(function (v) { count[v] = 0; });
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
