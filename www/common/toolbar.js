@@ -459,9 +459,11 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
+    Messages.toolbar_collapse = "Collapse toolbar"; // XXX 4.11.0
+    Messages.toolbar_expand = "Expand toolbar"; // XXX 4.11.0
     createCollapse = function (toolbar) {
-        var up = h('i.fa.fa-chevron-up', {title: Messages.ui_collapse});
-        var down = h('i.fa.fa-chevron-down', {title: Messages.ui_expand});
+        var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
+        var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
 
         var $button = $(h('button.cp-toolbar-collapse',[
             up,
