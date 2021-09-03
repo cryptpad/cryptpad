@@ -2485,7 +2485,7 @@ define([
         });
     };
 
-    var makeFormControls = function (framework, content, update, evOnChange) {
+    var makeFormControls = function (framework, content, evOnChange) {
         var loggedIn = framework._.sfCommon.isLoggedIn();
         var metadataMgr = framework._.cpNfInner.metadataMgr;
         var user = metadataMgr.getUserData();
@@ -2547,12 +2547,12 @@ define([
                 $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
         }
-        if (update && content.answers.cantEdit || APP.isClosed) {
+        if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
             $cbox.hide();
             anonName = undefined;
         }
 
-        var send = h('button.cp-open.btn.btn-primary', update ? Messages.form_update : Messages.form_submit);
+        var send = h('button.cp-open.btn.btn-primary', APP.hasAnswered ? Messages.form_update : Messages.form_submit);
         var reset = h('button.cp-open.cp-reset-button.btn.btn-danger-alt', Messages.form_reset);
         $(reset).click(function () {
             if (!Array.isArray(APP.formBlocks)) { return; }
@@ -2650,10 +2650,10 @@ define([
                 var $container = $('div.cp-form-creator-content');
                 var $inputs = $container.find('input:invalid');
                 if (!$inputs.length) {
-                    $send.text(update ? Messages.form_update : Messages.form_submit);
+                    $send.text(APP.hasAnswered ? Messages.form_update : Messages.form_submit);
                     return void $invalid.empty();
                 }
-                $send.text(update ? Messages.form_updateWarning : Messages.form_submitWarning);
+                $send.text(APP.hasAnswered ? Messages.form_updateWarning : Messages.form_submitWarning);
                 var lis = [];
                 $inputs.each(function (i, el) {
                     lis.push(gotoQuestion(el));
@@ -3578,7 +3578,7 @@ define([
         }
 
         // In view mode, add "Submit" and "reset" buttons
-        $container.append(makeFormControls(framework, content, Boolean(answers), evOnChange));
+        $container.append(makeFormControls(framework, content, evOnChange));
 
         // In view mode, tell the user if answers are forced to be anonymous or authenticated
         var infoTxt;
