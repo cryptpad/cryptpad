@@ -1438,18 +1438,25 @@ define([
             window.setTimeout(function () { $innerblock.hide(); }, 0);
         };
 
-        config.options.forEach(function (o) {
-            if (!isValidOption(o)) { return; }
-            if (isElement(o)) { return $innerblock.append($(o)); }
-            var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
-            $el.appendTo($innerblock);
-            if (typeof(o.action) === 'function') {
-                $el.click(function (e) {
-                    var close = o.action(e);
-                    if (close) { hide(); }
-                });
-            }
-        });
+        var setOptions = function (options) {
+            options.forEach(function (o) {
+                if (!isValidOption(o)) { return; }
+                if (isElement(o)) { return $innerblock.append($(o)); }
+                var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
+                $el.appendTo($innerblock);
+                if (typeof(o.action) === 'function') {
+                    $el.click(function (e) {
+                        var close = o.action(e);
+                        if (close) { hide(); }
+                    });
+                }
+            });
+        };
+        setOptions(config.options);
+        $container.setOptions = function (options) {
+            $innerblock.empty();
+            setOptions(options);
+        };
 
         $container.append($button).append($innerblock);
 
