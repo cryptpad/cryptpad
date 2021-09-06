@@ -7,6 +7,14 @@
 * warning about lack of support for internet explorer
   * existing support will get worse over time. please update.
 
+To update from 4.10.0 to 4.11.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+5. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
+
 ## Features
 
 * unify unregistered/non-registered/anonymous terminology as 'guest'
