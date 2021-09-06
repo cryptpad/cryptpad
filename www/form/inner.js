@@ -459,7 +459,7 @@ define([
             });
             $(addMultipleButton).click(function () {
                 multiplePickr.selectedDates.some(function (date) {
-                    $add.before(getOption(date, false, false));
+                    $add.before(getOption(date, false, false, Util.uid()));
                     var l = $container.find('input').length;
                     $(maxInput).attr('max', l);
                     if (l >= MAX_OPTIONS) {
@@ -509,7 +509,7 @@ define([
                         time.setMinutes(0);
                         time.setSeconds(0);
                         time.setMilliseconds(0);
-                        var el = getOption(+time, false, false);
+                        var el = getOption(+time, false, false, Util.uid());
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
@@ -529,7 +529,7 @@ define([
         // "Add option" button handler
         $add = $(add).click(function () {
             var txt = v.type ? '' : Messages.form_newOption;
-            var el = getOption(txt, true, false);
+            var el = getOption(txt, true, false, Util.uid());
             $add.before(el);
             $(el).find('input').focus();
             var l = $container.find('input').length;
