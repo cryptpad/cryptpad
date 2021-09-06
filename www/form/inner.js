@@ -582,7 +582,7 @@ define([
                         flatpickr: true,
                         val: +f.selectedDates[0],
                         y: rect && rect.y
-                    }
+                    };
                 });
             }
             return {
@@ -607,8 +607,9 @@ define([
                             val = +f.selectedDates[0];
                         }
                     }
+                    var uid = $(el).data('uid');
                     var hasUid = values.some(function (i) { return i.uid === uid; });
-                    var uid = hasUid ? Util.uid : $(el).data('uid');
+                    if (hasUid) { uid = Util.uid(); }
                     values.push({
                         uid: uid,
                         v: val
@@ -625,7 +626,7 @@ define([
                     var val = ($(el).val() || el.placeholder || '').trim();
                     var uid = $(el).data('uid');
                     var hasUid = items.some(function (i) { return i.uid === uid; });
-                    var uid = hasUid ? Util.uid : $(el).data('uid');
+                    if (hasUid) { uid = Util.uid(); }
                     items.push({
                         uid: uid,
                         v: val
@@ -912,6 +913,12 @@ define([
         return res;
     };
 
+    var getSections = function (content) {
+        var uids = Object.keys(content.form).filter(function (uid) {
+            return content.form[uid].type === 'section';
+        });
+        return uids;
+    };
     var getFullOrder = function (content) {
         var order = content.order.slice();
         getSections(content).forEach(function (uid) {
@@ -940,6 +947,25 @@ define([
             } catch (e) { console.error(e); }
         }).filter(Boolean);
     };
+
+    // When there is a change to the form, we need to check if we can still add
+    // conditions to the different sections
+    evShowConditions.reg(function () {
+        (APP.formBlocks || []).forEach(function (block) {
+            if (!block || !block.updateState) { return; }
+            block.updateState();
+        });
+    });
+    // When a section contains a condition that is now invalid (the question has been moved
+    // or deleted locally), we need to redraw the list of conditions for this section
+    evCheckConditions.reg(function (_uid) {
+        (APP.formBlocks || []).some(function (block) {
+            if (block.uid && block.uid !== _uid) { return; }
+            if (!block || !block.updateState) { return; }
+            return block.updateState(true, _uid);
+        });
+    });
+
 
     Messages.form_type_section = "Conditional section"; // XXX
     var STATIC_TYPES = {
@@ -1100,14 +1126,16 @@ define([
                             type: type,
                             q: block.q || Messages.form_default
                         };
+                        var val;
                         if (type === 'radio') {
-                            obj.values = block.opts ? block.opts.values
-                                                    : TYPES.radio.defaultOpts.values;
+                            val = block.opts ? block.opts.values
+                                             : APP.TYPES.radio.defaultOpts.values;
                         }
                         if (type === 'checkbox') {
-                            obj.values = block.opts ? block.opts.values
-                                                    : TYPES.checkbox.defaultOpts.values;
+                            val = block.opts ? block.opts.values
+                                             : APP.TYPES.checkbox.defaultOpts.values;
                         }
+                        obj.values = extractValues(val);
                         return obj;
                     }).filter(Boolean);
                     return values;
@@ -1131,6 +1159,7 @@ define([
                     $container.append(btn);
                     return $b;
                 };
+                var values = getConditionsValues();
                 getConditions = function ($container, isNew, rules, condition, $btn) {
                     Messages.form_condition_q = "Choose a question"; // XXX
                     Messages.form_condition_v = "Choose a value"; // XXX
@@ -1168,7 +1197,6 @@ define([
 
                     onChange();
 
-                    var values = getConditionsValues();
                     var qOptions = values.map(function (obj) {
                         return {
                             tag: 'a',
@@ -1254,7 +1282,6 @@ define([
                         $container.append($content);
                     }
 
-                    var isChange;
                     qSelect.onChange.reg(function (prettyVal, val, init) {
                         qSelect.find('button').removeClass('btn-secondary')
                             .addClass('btn-default');
@@ -1373,35 +1400,17 @@ define([
                 };
                 redraw();
 
+                Messages.form_condition_hint = "To make this section conditional, please add a choice or checkbox question above it."; // XXX
+                var hintDiv = h('div.cp-form-conditional-hint', [
+                    h('div.cp-form-conditional-hint', Messages.form_condition_hint)
+                ]);
+                var $hint = $(hintDiv).prependTo(tag);
+
                 $addC.click(function () {
                     var rulesC = h('div.cp-form-condition-rule');
                     var $rulesC = $(rulesC);
                     getConditions($rulesC, true);
                     $addC.before($rulesC);
-                });
-                if (getConditionsValues().length) {
-                    $condition.show();
-                } else {
-                    $condition.hide();
-                }
-                // XXX unreg these 2 events
-                evShowConditions.reg(function () {
-                    if (getConditionsValues().length) {
-                        $condition.show();
-                    } else {
-                        $condition.hide();
-                    }
-                });
-                evCheckConditions.reg(function (_uid) {
-                    if (uid !== _uid) { return; }
-                    // If our conditions are invalid, redraw them
-                    if (getConditionsValues().length) {
-                        $condition.show();
-                    } else {
-                        $condition.hide();
-                    }
-                    $condition.find('.cp-form-condition-rule').remove();
-                    redraw();
                 });
 
                 var cursorGetter = function () {
@@ -1444,7 +1453,89 @@ define([
                         }
                     }
                 });
+
+                // If "needRedraw" is false, we only want to know if we can add conditions and
+                // if we can't, make sure we delete incomplete conditions before hiding the button
+                // If "needRedraw" is true, it means we ant to redraw a section because some
+                // conditions are invalid
+                var updateState = function (needRedraw, _uid) {
+                    if (needRedraw && uid !== _uid) { return; }
+
+                    values = getConditionsValues();
+                    var available = values.length;
+                    if (available) {
+                        $condition.show();
+                        $hint.hide();
+                    } else {
+                        $condition.hide();
+                        $hint.show();
+                    }
+
+                    if (needRedraw) {
+                        $condition.find('.cp-form-condition-rule').remove();
+                        redraw();
+                        return true;
+                    } else {
+                        if (available) {
+                            // Questions may have moved. We need to redraw our dropdowns
+                            // to make sure we use the correct list
+                            $condition.find('.cp-form-condition').each(function (i, el) {
+                                // Update question dropdown
+                                var $q = $(el).find('.cp-dropdown-container[data-drop="q"]');
+                                var drop = $q[0] && $q[0].dropdown;
+                                if (!drop) { return; }
+                                var qOptions = values.map(function (obj) {
+                                    return {
+                                        tag: 'a',
+                                        attributes: {
+                                            'class': 'cp-form-condition-question',
+                                            'data-value': obj.uid,
+                                            'href': '#',
+                                        },
+                                        content: obj.q
+                                    };
+                                });
+                                drop.setOptions(qOptions);
+
+                                // Update values dropdown
+                                var $v = $(el).find('.cp-dropdown-container[data-drop="v"]');
+                                if (!$v.length) { return; }
+                                var dropV = $v[0] && $v[0].dropdown;
+                                if (!dropV) { return; }
+                                var val = drop.getValue();
+                                var res, type;
+                                values.some(function (obj) {
+                                    if (String(obj.uid) === String(val)) {
+                                        res = obj.values;
+                                        type = obj.type;
+                                        return true;
+                                    }
+                                });
+                                var vOptions = res.map(function (str) {
+                                    return {
+                                        tag: 'a',
+                                        attributes: {
+                                            'class': 'cp-form-condition-value',
+                                            'data-value': str,
+                                            'href': '#',
+                                        },
+                                        content: str
+                                    };
+                                });
+                                dropV.setOptions(vOptions);
+                            });
+                        } else {
+                            // We don't have invalid condition but we may have incomplete
+                            // conditions to delete
+                            block.opts.when = [];
+                            $condition.find('.cp-form-condition-rule').remove();
+                        }
+                    }
+                };
+                updateState();
+
                 return {
+                    updateState: updateState,
                     tag: tag,
                     noViewMode: true,
                     getCursor: cursorGetter,
@@ -1483,7 +1574,7 @@ define([
         return rows;
     };
 
-    var TYPES = {
+    var TYPES = APP.TYPES = {
         input: {
             defaultOpts: {
                 type: 'text'
@@ -1628,7 +1719,10 @@ define([
             compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
                 values: [1,2].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
+                    return {
+                        uid: Util.uid(),
+                        v: Messages._getKey('form_defaultOption', [i])
+                    };
                 })
             },
             get: function (opts, a, n, evOnChange) {
@@ -1691,7 +1785,7 @@ define([
                 var count = {};
 
                 var opts = form[uid].opts || TYPES.radio.defaultOpts;
-                (opts.values || []).forEach(function (v) { count[v] = 0; });
+                extractValues(opts.values).forEach(function (v) { count[v] = 0; });
 
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
@@ -1716,7 +1810,10 @@ define([
                     };
                 }),
                 values: [1,2].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
+                    return {
+                        uid: Util.uid(),
+                        v: Messages._getKey('form_defaultOption', [i])
+                    };
                 })
             },
             get: function (opts, a, n, evOnChange) {
@@ -1811,7 +1908,7 @@ define([
                         var c = count[q_uid];
                         if (!c) {
                             count[q_uid] = c = {};
-                            (opts.values || []).forEach(function (v) { c[v] = 0; });
+                            extractValues(opts.values).forEach(function (v) { c[v] = 0; });
                         }
                         var res = answer[q_uid];
                         if (!res || !res.trim || !res.trim()) { return; }
@@ -1869,7 +1966,10 @@ define([
             defaultOpts: {
                 max: 3,
                 values: [1, 2, 3].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
+                    return {
+                        uid: Util.uid(),
+                        v: Messages._getKey('form_defaultOption', [i])
+                    };
                 })
             },
             get: function (opts, a, n, evOnChange) {
@@ -1952,7 +2052,7 @@ define([
                 var count = {};
 
                 var opts = form[uid].opts || TYPES.checkbox.defaultOpts;
-                (opts.values || []).forEach(function (v) { count[v] = 0; });
+                extractValues(opts.values || []).forEach(function (v) { count[v] = 0; });
 
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
@@ -1981,7 +2081,10 @@ define([
                     };
                 }),
                 values: [1,2,3].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
+                    return {
+                        uid: Util.uid(),
+                        v: Messages._getKey('form_defaultOption', [i])
+                    };
                 })
             },
             get: function (opts, a, n, evOnChange) {
@@ -2093,7 +2196,7 @@ define([
                         var c = count[q_uid];
                         if (!c) {
                             count[q_uid] = c = {};
-                            (opts.values || []).forEach(function (v) { c[v] = 0; });
+                            extractValues(opts.values || []).forEach(function (v) { c[v] = 0; });
                         }
                         var res = answer[q_uid];
                         if (res && typeof(res) === "string") { res = [res]; }
@@ -2153,7 +2256,10 @@ define([
             compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
                 values: [1,2].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
+                    return {
+                        uid: Util.uid(),
+                        v: Messages._getKey('form_defaultOption', [i])
+                    };
                 })
             },
             get: function (opts, a, n, evOnChange) {
@@ -2257,7 +2363,7 @@ define([
                 //var results = [];
                 var empty = 0;
                 var count = {};
-                (opts.values || []).forEach(function (v) { count[v] = 0; });
+                extractValues(opts.values || []).forEach(function (v) { count[v] = 0; });
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
@@ -2279,7 +2385,10 @@ define([
             defaultOpts: {
                 type: 'text', // Text or Days or Time
                 values: [1, 2, 3].map(function (i) {
-                    return Messages._getKey('form_defaultOption', [i]);
+                    return {
+                        uid: Util.uid(),
+                        v: Messages._getKey('form_defaultOption', [i])
+                    };
                 })
             },
             get: function (opts, answers, username, evOnChange) {
@@ -2804,12 +2913,6 @@ define([
     Messages.form_anonAnswer = "All answers to this form are anonymous"; // XXX
     Messages.form_authAnswer = "You can't answer anonymously to this form"; // XXX
 
-    var getSections = function (content) {
-        var uids = Object.keys(content.form).filter(function (uid) {
-            return content.form[uid].type === 'section';
-        });
-        return uids;
-    };
     var getSectionFromQ = function (content, uid) {
         var arr = content.order;
         var idx = content.order.indexOf(uid);
@@ -2939,7 +3042,7 @@ define([
                 ]);
             }
             if (!APP.cantAnon) {
-                var $anon = $(anonName).hide();
+                $anon = $(anonName).hide();
                 $anonBox.on('change', function () {
                     if (Util.isChecked($anonBox)) { $anon.hide(); }
                     else { $anon.show(); }
@@ -3279,7 +3382,7 @@ define([
 
         var order = getFullOrder(content);
 
-        order.forEach(function (uid, blockIdx) {
+        order.forEach(function (uid) {
             var block = form[uid];
             var type = block.type;
             var model = TYPES[type] || STATIC_TYPES[type];
@@ -3344,7 +3447,7 @@ define([
             Messages.form_required_on = "required";
             Messages.form_required_off = "optional";
             // Required radio displayed only for types that have an "isEmpty" function
-            var requiredDiv, conditionalDiv;
+            var requiredDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
                 if (!block.opts) { block.opts = TYPES[type].defaultOpts; }
                 var isRequired = Boolean(block.opts.required);
@@ -4104,7 +4207,7 @@ define([
                     });
                     var save = h('button.btn.btn-primary', Messages.settings_save);
                     $(save).click(function () {
-                        if (dataPicker.value === '') {
+                        if (datePicker.value === '') {
                             return void refreshEndDate();
                         }
                         var d = picker.parseDate(datePicker.value);
