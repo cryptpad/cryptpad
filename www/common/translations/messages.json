@@ -1390,7 +1390,7 @@
     "profile_defaultAlt": "Default profile picture",
     "upload_modal_alt": "Alt text",
     "upload_addOptionalAlt": "Add descriptive text (optional)",
-    "form_template_poll": "Quick Poll",
+    "form_template_poll": "Quick Scheduling Poll",
     "form_preview_button": "Preview",
     "form_alreadyAnswered": "You responded to this form on {0}",
     "form_editAnswer": "Edit my responses",
@@ -1421,7 +1421,8 @@
     "form_condition_hasnot": "has not",
     "form_conditional": "Only show this section when:",
     "form_conditional_add": "Add OR condition",
-    "form_conditional_addAnd": "Add AND condition\n",
+    "form_conditional_addAnd": "Add AND condition",
     "userlist_visitProfile": "Visit profile",
-    "form_colors": "Color theme"
+    "form_colors": "Color theme",
+    "form_conditional_hint": "To make this section conditional, please add a choice or checkbox question above it"
 }
