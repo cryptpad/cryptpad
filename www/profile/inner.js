@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    'chainpad-listmap',
     '/common/toolbar.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -348,8 +348,8 @@ define([
         if (!val) {
             $('<img>', {
                 src: '/customize/images/avatar.png',
-                title: Messages.profile_avatar,
-                alt: 'Avatar'
+                title: Messages.profile_avatar, // XXX
+                alt: Messages.profile_defaultAlt,
             }).appendTo($span);
             return;
         }
@@ -391,7 +391,7 @@ define([
                 }, function () {
                     sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
                         if (err || err2) { return void UI.log(err || err2); }
-                        displayAvatar(data.url);
+                        displayAvatar(data.url); // XXX add "Profile picture"
                     });
                 });
             };

@@ -87,6 +87,7 @@ var factory = function () {
             image: function (metadata, url, content, cfg, cb) {
                 var img = document.createElement('img');
                 img.setAttribute('src', url);
+                img.setAttribute('alt', metadata.alt || "");
                 img.blob = content;
                 cb(void 0, img);
             },
@@ -94,15 +95,19 @@ var factory = function () {
                 var video = document.createElement('video');
                 video.setAttribute('src', url);
                 video.setAttribute('controls', true);
+                // https://discuss.codecademy.com/t/can-we-use-an-alt-attribute-with-the-video-tag/300322/4
+                video.setAttribute('title', metadata.alt || "");
                 cb(void 0, video);
             },
             audio: function (metadata, url, content, cfg, cb) {
                 var audio = document.createElement('audio');
                 audio.setAttribute('src', url);
                 audio.setAttribute('controls', true);
+                audio.setAttribute('alt', metadata.alt || "");
                 cb(void 0, audio);
             },
             pdf: function (metadata, url, content, cfg, cb) {
+                // XXX alt text
                 var iframe = document.createElement('iframe');
                 if (cfg.pdf.viewer) { // PDFJS
                     var viewerUrl = cfg.pdf.viewer + '?file=' + url;
@@ -115,6 +120,7 @@ var factory = function () {
             download: function (metadata, url, content, cfg, cb) {
                 var btn = document.createElement('button');
                 btn.setAttribute('class', 'btn btn-default');
+                btn.setAttribute('alt', metadata.alt || "");
                 btn.innerHTML = '<i class="fa fa-save"></i>' + cfg.download.text + '<br>' +
                                 (metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '');
                 btn.addEventListener('click', function () {
@@ -542,7 +548,7 @@ var factory = function () {
 
     // Process
     var process = function (mediaObject, decrypted, cfg, cb) {
-        var metadata = decrypted.metadata;
+        var metadata = decrypted.metadata || {};
         var blob = decrypted.content;
 
         var mediaType = getType(mediaObject, metadata, cfg);
@@ -596,6 +602,15 @@ var factory = function () {
         });
     };
 
+    var initHandlers = function () {
+        return {
+            'progress': [],
+            'complete': [],
+            'metadata': [],
+            'error': []
+        };
+    };
+
     // Initialize a media-tag
     var init = function (el, cfg) {
         cfg = cfg || {};
@@ -613,13 +628,7 @@ var factory = function () {
             };
         }
 
-        var handlers = cfg.handlers || {
-            'progress': [],
-            'complete': [],
-            'metadata': [],
-            'error': []
-        };
-
+        var handlers = cfg.handlers || initHandlers();
         var mediaObject = el._mediaObject = {
             handlers: handlers,
             tag: el
@@ -761,6 +770,24 @@ var factory = function () {
     };
 
     init.fetchDecryptedMetadata = fetchDecryptedMetadata;
+
+    init.preview = function (content, metadata, cfg, cb) {
+        cfg = cfg || {};
+        addMissingConfig(cfg, config);
+        var handlers = cfg.handlers || initHandlers();
+        var el = document.createElement('media-tag');
+        var mediaObject = el._mediaObject = {
+            handlers: handlers,
+            tag: el,
+        };
+        process(mediaObject, {
+            metadata: metadata,
+            content: content
+        }, cfg, function (err) {
+            if (err) { return void cb(err); }
+            cb(void 0, el);
+        });
+    };
 
     return init;
 };

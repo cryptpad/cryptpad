@@ -895,10 +895,31 @@ define([
         return total;
     };
 
-    var getEmpty = function (empty) { // TODO don't include this in the scrollable area
-        if (empty) {
-            return UI.setHTML(h('div.cp-form-results-type-text-empty'), Messages._getKey('form_notAnswered', [empty]));
-        }
+    var multiAnswerSubHeading = function (content) {
+        return h('span.cp-charts-row', h('td.cp-charts-cell', {
+            colspan: 3,
+            style: 'font-weight: bold;',
+        }, content));
+    };
+
+    var getEmpty = function (empty) {
+        if (!empty) { return; }
+        var msg = UI.setHTML(h('span.cp-form-results-empty-text'), Messages._getKey('form_notAnswered', [empty]));
+        return multiAnswerSubHeading(msg);
+    };
+
+    var barGraphic = function (itemScale) {
+        return h('span.cp-bar-container', h('div.cp-bar', {
+            style: 'width: ' + (itemScale * 100) + '%',
+        }, ' '));
+    };
+
+    var barRow = function (value, count, max, showBar) {
+        return h('div.cp-charts-row', [
+            h('span.cp-value', value),
+            h('span.cp-count', count),
+            showBar? barGraphic((count / max)): undefined,
+        ]);
     };
 
     var findItem = function (items, uid) {
@@ -1550,27 +1571,21 @@ define([
         return Array.isArray(A)? Math.max.apply(null, A): NaN;
     };
 
-    var barGraphic = function (itemScale) {
-        return h('span.cp-bar-container', h('div.cp-bar', {
-            style: 'width: ' + (itemScale * 100) + '%',
-        }, ' '));
-    };
-
     var renderTally = function (tally, empty, showBar) {
         var rows = [];
         var counts = Util.values(tally);
         var max = arrayMax(counts);
+        if (empty) { rows.push(getEmpty(empty)); }
         Object.keys(tally).forEach(function (value) {
             var itemCount = tally[value];
             var itemScale = (itemCount / max);
 
-            rows.push(h('div.cp-form-results-type-radio-data', [
+            rows.push(h('div.cp-charts-row', [
                 h('span.cp-value', {'title': value}, value),
                 h('span.cp-count', itemCount),
                 showBar? barGraphic(itemScale): undefined,
             ]));
         });
-        if (empty) { rows.push(getEmpty(empty)); }
         return rows;
     };
 
@@ -1613,34 +1628,35 @@ define([
                     reset: function () { $tag.val(''); }
                 };
             },
-            printResults: function (answers, uid) {
+            printResults: function (answers, uid) { // results text
                 var results = [];
                 var empty = 0;
                 var tally = {};
 
+                var isEmpty = function (answer) {
+                    console.error("EMPTY?", JSON.stringify(answer));
+                    return !answer || !answer.trim();
+                };
+
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
-                    if (!answer || !answer.trim()) { return empty++; }
+                    if (isEmpty(answer)) { return empty++; }
                     Util.inc(tally, answer);
                 });
                 //var counts = Util.values(tally);
                 //var max = arrayMax(counts);
 
                 //if (max < 2) { // there are no duplicates, so just return text
+                    results.push(getEmpty(empty));
                     Object.keys(answers).forEach(function (author) {
                         var obj = answers[author];
                         var answer = obj.msg[uid];
                         if (!answer || !answer.trim()) { return empty++; }
-                        results.push(h('div.cp-form-results-type-text-data', answer));
+                        results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                     });
-                    results.push(getEmpty(empty));
-                    return h('div.cp-form-results-type-text', results);
+                    return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
                 //}
-/*
-                var rendered = renderTally(tally, empty);
-                return h('div.cp-form-results-type-text', rendered);
-*/
             },
             icon: h('i.cptools.cptools-form-text')
         },
@@ -1707,11 +1723,11 @@ define([
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
-                    results.push(h('div.cp-form-results-type-textarea-data', answer));
+                    results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                 });
-                results.push(getEmpty(empty));
+                results.unshift(getEmpty(empty));
 
-                return h('div.cp-form-results-type-text', results);
+                return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
             },
             icon: h('i.cptools.cptools-form-paragraph')
         },
@@ -1796,7 +1812,7 @@ define([
 
                 var showBars = Boolean(content);
                 var rendered = renderTally(count, empty, showBars);
-                return h('div.cp-form-results-type-radio', rendered);
+                return h('div.cp-charts.cp-bar-table', rendered);
             },
             icon: h('i.cptools.cptools-form-list-radio')
         },
@@ -1924,26 +1940,17 @@ define([
                     max = arrayMax(counts);
                 });
 
+                results.push(getEmpty(empty));
                 count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
-
-                    var values = Object.keys(c).map(function (res) {
-                        var itemCount = c[res];
-                        return h('div.cp-form-results-type-radio-data', [
-                            h('span.cp-value', res),
-                            h('span.cp-count', itemCount),
-                            showBars? barGraphic((itemCount / max)): undefined,
-                        ]);
+                    results.push(multiAnswerSubHeading(q));
+                    Object.keys(c).forEach(function (res) {
+                        results.push(barRow(res, c[res], max, showBars));
                     });
-                    results.push(h('div.cp-form-results-type-multiradio-data', [
-                        h('span.cp-mr-q', q),
-                        h('span.cp-mr-value', values)
-                    ]));
                 });
-                results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', results);
+                return h('div.cp-charts.cp-bar-table', results);
             },
             exportCSV: function (answer, form) {
                 var opts = form.opts || {};
@@ -2066,7 +2073,7 @@ define([
                 });
 
                 var rendered = renderTally(count, empty, showBars);
-                return h('div.cp-form-results-type-radio', rendered);
+                return h('div.cp-charts.cp-bar-table', rendered);
             },
             icon: h('i.cptools.cptools-form-list-check')
         },
@@ -2188,10 +2195,19 @@ define([
                 var empty = 0;
                 var count = {};
                 var showBars = Boolean(content);
+
+                var isEmpty = function (answer) {
+                    if (!answer) { return true; }
+                    return !Object.keys(answer).some(function (k) {
+                        var A = answer[k];
+                        return Array.isArray(A) && A.length;
+                    });
+                };
+
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
-                    if (!answer || !Object.keys(answer).length) { return empty++; }
+                    if (isEmpty(answer)) { return empty++; }
                     Object.keys(answer).forEach(function (q_uid) {
                         var c = count[q_uid];
                         if (!c) {
@@ -2215,26 +2231,17 @@ define([
                     max = arrayMax(counts);
                 });
 
+                results.push(getEmpty(empty));
                 count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
                     var c = count[q_uid];
-
-                    var values = Object.keys(c).map(function (res) {
-                        var val = c[res];
-                        return h('div.cp-form-results-type-radio-data', [
-                            h('span.cp-value', res),
-                            h('span.cp-count', val),
-                            showBars? barGraphic(val / max) : undefined,
-                        ]);
+                    results.push(multiAnswerSubHeading(q));
+                    Object.keys(c).forEach(function (res) {
+                        results.push(barRow(res, c[res], max, showBars));
                     });
-                    results.push(h('div.cp-form-results-type-multiradio-data', [
-                        h('span.cp-mr-q', q),
-                        h('span.cp-mr-value', values),
-                    ]));
                 });
-                results.push(getEmpty(empty));
 
-                return h('div.cp-form-results-type-radio', results);
+                return h('div.cp-charts.cp-bar-table', results);
             },
             exportCSV: function (answer, form) {
                 var opts = form.opts || {};
@@ -2360,7 +2367,6 @@ define([
                 // results sort
                 var opts = form[uid].opts || TYPES.sort.defaultOpts;
                 var l = (opts.values || []).length;
-                //var results = [];
                 var empty = 0;
                 var count = {};
                 extractValues(opts.values || []).forEach(function (v) { count[v] = 0; });
@@ -2377,7 +2383,7 @@ define([
                 });
 
                 var rendered = renderTally(count, empty, showBars);
-                return h('div.cp-form-results-type-radio', rendered);
+                return h('div.cp-charts.cp-bar-table', rendered);
             },
             icon: h('i.cptools.cptools-form-list-ordered')
         },

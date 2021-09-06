@@ -53,6 +53,7 @@ MessengerUI, Messages, Pages) {
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
     var USERNAME_CLS = Bar.constants.username = 'cp-toolbar-user-name';
     /*var READONLY_CLS = */Bar.constants.readonly = 'cp-toolbar-readonly';
+    var USERBUTTON_CLS = Bar.constants.changeUsername = "cp-toolbar-user-rename";
 
     // Create the toolbar element
 
@@ -250,6 +251,7 @@ MessengerUI, Messages, Pages) {
         var friendRequests = Common.getFriendRequests(); // Friend requests received
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
+            var safeName = Util.fixHTML(name);
             var $span = $('<span>', {'class': 'cp-avatar'});
             if (data.color && showColors) {
                 $span.css('border-color', data.color);
@@ -324,7 +326,7 @@ MessengerUI, Messages, Pages) {
                     $('<button>', {
                         'class': 'fa fa-bell cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
-                        'title': Messages._getKey('friendRequest_received', [Util.fixHTML(name)]),
+                        'title': Messages._getKey('friendRequest_received', [safeName]),
                     }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
@@ -335,7 +337,7 @@ MessengerUI, Messages, Pages) {
                         'class': 'fa fa-user-plus cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
-                            Util.fixHTML(name)
+                            safeName,
                         ])
                     }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
@@ -357,14 +359,16 @@ MessengerUI, Messages, Pages) {
                 });
             }
             if (data.profile) {
+                // Messages.contacts_info3 "Double-click their icon to view their profile",
                 $span.addClass('cp-userlist-clickable');
+                $span.attr('title', Messages._getKey('userlist_visitProfile', [name]));
                 $span.click(function () {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
             Common.displayAvatar($span, data.avatar, name, function () {
                 $span.append($rightCol);
-            });
+            }, data.uid);
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
@@ -457,8 +461,8 @@ MessengerUI, Messages, Pages) {
     };
 
     createCollapse = function (toolbar) {
-        var up = h('i.fa.fa-chevron-up', {title: Messages.ui_collapse});
-        var down = h('i.fa.fa-chevron-down', {title: Messages.ui_expand});
+        var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
+        var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
 
         var $button = $(h('button.cp-toolbar-collapse',[
             up,
@@ -1030,12 +1034,21 @@ MessengerUI, Messages, Pages) {
         var userMenuCfg = {
             $initBlock: $userAdmin,
         };
+        if (!config.hideDisplayName) {
+            $.extend(true, userMenuCfg, {
+                displayNameCls: USERNAME_CLS,
+                changeNameButtonCls: USERBUTTON_CLS,
+            });
+        }
         if (config.readOnly !== 1) {
             userMenuCfg.displayName = 1;
             userMenuCfg.displayChangeName = 1;
         }
         Common.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('> button').attr('title', Messages.userAccountButton);
+        $userAdmin.find('> button').attr({
+            title: Messages.userAccountButton,
+            alt: Messages.userAccountButton,
+        });
 
         return $userAdmin;
     };
@@ -1210,18 +1223,31 @@ MessengerUI, Messages, Pages) {
         }
     };
 
+    var getFancyGuestName = function (name, uid) {
+        name = UI.getDisplayName(name);
+        if (name === Messages.anonymous && uid) {
+            var animal = MT.getPseudorandomAnimal(uid);
+            if (animal) {
+                name = animal + ' ' + name;
+            }
+        }
+        return name;
+    };
+
     // Notifications
     var initNotifications = function (toolbar, config) {
         // Display notifications when users are joining/leaving the session
         var oldUserData;
         if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
-        var notify = function(type, name, oldname) {
+        var notify = function(type, name, oldname, uid) {
             if (toolbar.isAlone) { return; }
             // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
             if (typeof name === "undefined") { return; }
-            name = name || Messages.anonymous;
             if (Config.disableUserlistNotifications) { return; }
+            name = getFancyGuestName(name, uid);
+            oldname = getFancyGuestName(oldname, uid);
+
             switch(type) {
                 case 1:
                     UI.log(Messages._getKey("notifyJoined", [name]));
@@ -1270,7 +1296,7 @@ MessengerUI, Messages, Pages) {
                         delete oldUserData[u];
                         if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) { return; }
                         if (userPresent(u, temp, newdata || oldUserData) < 1) {
-                            notify(-1, temp.name);
+                            notify(-1, temp.name, undefined, temp.uid);
                         }
                     }
                 }
@@ -1290,10 +1316,10 @@ MessengerUI, Messages, Pages) {
                     if (typeof oldUserData[k] === "undefined") {
                         // if the same uid is already present in the userdata, don't notify
                         if (!userPresent(k, newdata[k], oldUserData)) {
-                            notify(1, newdata[k].name);
+                            notify(1, newdata[k].name, undefined, newdata[k].uid);
                         }
                     } else if (oldUserData[k].name !== newdata[k].name) {
-                        notify(0, newdata[k].name, oldUserData[k].name);
+                        notify(0, newdata[k].name, oldUserData[k].name, newdata[k].uid);
                     }
                 }
             }

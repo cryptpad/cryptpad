@@ -1673,34 +1673,51 @@ define([
         var $div = makeBlock('performance-profiling'); // Msg.admin_performanceProfilingHint, .admin_performanceProfilingTitle
 
         var onRefresh = function () {
-            var body = h('tbody');
+            var createBody = function () {
+                 return h('div#profiling-chart.cp-charts.cp-bar-table', [
+                    h('span.cp-charts-row.heading', [
+                        h('span', Messages.admin_performanceKeyHeading),
+                        h('span', Messages.admin_performanceTimeHeading),
+                        h('span', Messages.admin_performancePercentHeading),
+                        //h('span', ''), //Messages.admin_performancePercentHeading),
+                    ]),
+                ]);
+            };
 
-            var table = h('table#cp-performance-table', [
-                h('thead', [
-                    h('th', Messages.admin_performanceKeyHeading),
-                    h('th', Messages.admin_performanceTimeHeading),
-                    h('th', Messages.admin_performancePercentHeading),
-                ]),
-                body,
-            ]);
-            var appendRow = function (key, time, percent) {
-                console.log("[%s] %ss running time (%s%)", key, time, percent);
-                body.appendChild(h('tr', [ key, time, percent ].map(function (x) {
-                    return h('td', x);
-                })));
+            var body = createBody();
+            var appendRow = function (key, time, percent, scaled) {
+                //console.log("[%s] %ss running time (%s%)", key, time, percent);
+                body.appendChild(h('span.cp-charts-row', [
+                    h('span', key),
+                    h('span', time),
+                    //h('span', percent),
+                    h('span.cp-bar-container', [
+                        h('span.cp-bar.profiling-percentage', {
+                            style: 'width: ' + scaled + '%',
+                        }, ' ' ),
+                        h('span.profiling-label', percent + '%'),
+                    ]),
+                ]));
             };
             var process = function (_o) {
+                $('#profiling-chart').remove();
+                body = createBody();
                 var o = _o[0];
                 var sorted = Object.keys(o).sort(function (a, b) {
                   if (o[b] - o[a] <= 0) { return -1; }
                   return 1;
                 });
+
+                var values = sorted.map(function (k) { return o[k]; });
                 var total = 0;
-                sorted.forEach(function (k) { total += o[k]; });
+                values.forEach(function (value) { total += value; });
+                var max = Math.max.apply(null, values);
+
                 sorted.forEach(function (k) {
                     var percent = Math.floor((o[k] / total) * 1000) / 10;
-                    appendRow(k, o[k], percent);
+                    appendRow(k, o[k], percent, (o[k] / max) * 100);
                 });
+                $div.append(h('div.width-constrained', body));
             };
 
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -1710,10 +1727,7 @@ define([
                     UI.warn(Messages.error);
                     return void console.error(e, data);
                 }
-                //console.info(data);
-                $div.find("table").remove();
                 process(data);
-                $div.append(table);
             });
         };
 

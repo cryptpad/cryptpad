@@ -125,7 +125,7 @@ define([
                 var noDriveAnswered = false;
                 nThen(function (w) {
                     require([
-                        '/bower_components/chainpad-netflux/chainpad-netflux.js',
+                        'chainpad-netflux',
                         '/common/pinpad.js',
                     ], w(function (_CPNetflux, _Pinpad) {
                         CPNetflux = _CPNetflux;

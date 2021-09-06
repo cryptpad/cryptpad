@@ -3,7 +3,9 @@ define([
     '/common/sframe-common-codemirror.js',
     '/customize/messages.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Util, SFCodeMirror, Messages, ChainPad) {
+    '/common/inner/common-mediatag.js',
+    '/common/common-interface.js',
+], function (Util, SFCodeMirror, Messages, ChainPad, MT, UI) {
     var Markers = {};
 
     /* TODO Known Issues
@@ -38,7 +40,17 @@ define([
             });
         }
         uid = Number(uid);
-        var name = Util.fixHTML(author.name || Messages.anonymous);
+        var name = Util.fixHTML(UI.getDisplayName(author.name));
+        var animal;
+        if ((!name || name === Messages.anonymous) && typeof(author.uid) === 'string') {
+            animal = MT.getPseudorandomAnimal(author.uid);
+            if (animal) {
+                name = animal + ' ' + Messages.anonymous;
+            } else {
+                name = Messages.anonymous;
+            }
+        }
+
         var col = Util.hexToRGB(author.color);
         var rgba = 'rgba('+col[0]+','+col[1]+','+col[2]+','+Env.opacity+');';
         return Env.editor.markText(from, to, {
@@ -520,7 +532,8 @@ define([
         Env.authormarks.authors[Env.myAuthorId] = {
             name: userData.name,
             curvePublic: userData.curvePublic,
-            color: userData.color
+            color: userData.color,
+            uid: userData.uid,
         };
         if (!old || (old.name === userData.name && old.color === userData.color)) { return; }
         return true;
