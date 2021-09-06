@@ -3306,10 +3306,13 @@ define([
                 return;
             }
 
-            Messages.form_required = "Required"; // XXX
+            // XXX
+            Messages.form_required_answer = "Answer: ";
+            Messages.form_required_on = "Required";
+            Messages.form_required_off = "Optional";
             var requiredTag;
             if (block.opts && block.opts.required) {
-                requiredTag = h('span.cp-form-required-tag', Messages.form_required);
+                requiredTag = h('span.cp-form-required-tag', Messages.form_required_on);
             }
 
             var dragHandle;

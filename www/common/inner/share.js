@@ -420,12 +420,12 @@ define([
                 embed: Util.isChecked($link.find('#cp-share-embed'))
             }));
         });
-
+        Messages.share_linkOpen = "Open link"; // XXX
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
                 className: 'secondary cp-nobar',
-                name: Messages.share_linkOpen,
+                name: Messages.share_linkOpen, // XXX add fa-eye icon
                 onClick: function () {
                     opts.saveValue();
                     var v = opts.getLinkValue({
@@ -441,7 +441,7 @@ define([
                 keys: [[13, 'ctrl']]
             }, {
                 className: 'primary cp-nobar',
-                name: Messages.share_linkCopy,
+                name: Messages.share_linkCopy, // XXX add fa-link icon
                 onClick: function () {
                     opts.saveValue();
                     var v = opts.getLinkValue({
