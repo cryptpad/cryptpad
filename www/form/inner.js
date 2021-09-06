@@ -93,6 +93,14 @@ define([
     var MAX_OPTIONS = 15;
     var MAX_ITEMS = 10;
 
+    var extractValues = function (values) {
+        if (!Array.isArray(values)) { return []; }
+        return values.map(function (obj) {
+            if (typeof(obj) === "string") { return obj; }
+            return obj.v;
+        });
+    };
+
     var saveAndCancelOptions = function (cb) {
         Messages.form_preview_button = "Preview"; // XXX
         var cancelBlock = h('button.btn.btn-default.cp-form-preview-button',[
@@ -368,7 +376,8 @@ define([
 
             return el;
         };
-        var inputs = v.values.map(function (val) { return getOption(val, isDefaultOpts, false); });
+        // TODO uid
+        var inputs = extractValues(v.values).map(function (val) { return getOption(val, isDefaultOpts, false); });
         inputs.push(add);
 
         var container = h('div.cp-form-edit-block', inputs);
@@ -412,7 +421,7 @@ define([
             // Calendar inline for "day" type
             var calendarInput = h('input');
             calendarView = h('div', calendarInput);
-            var calendarDefault = v.type === "day" ? v.values.map(function (time) {
+            var calendarDefault = v.type === "day" ? extractValues(v.values).map(function (time) {
                 if (!time) { return; }
                 var d = new Date(time);
                 if (!isNaN(d)) { return d; }
@@ -679,13 +688,13 @@ define([
     var makePollTable = function (answers, opts, resultsPageObj) {
         // Sort date values
         if (opts.type !== "text") {
-            opts.values.sort(function (a, b) {
+            extractValues(opts.values).sort(function (a, b) { // TODO uid
                 return +new Date(a) - +new Date(b);
             });
         }
         // Create first line with options
         var allDays = getWeekDays(true);
-        var els = opts.values.map(function (data) {
+        var els = extractValues(opts.values).map(function (data) { // TODO uid
             var _date;
             if (opts.type === "day") {
                 _date = new Date(data);
@@ -716,7 +725,7 @@ define([
         if (opts.type === "time") {
             var days = [h('div.cp-poll-cell')];
             var _days = {};
-            opts.values.forEach(function (d) {
+            extractValues(opts.values).forEach(function (d) {
                 var date = new Date(d);
                 var day = date.toLocaleDateString();
                 _days[day] = {
@@ -747,7 +756,7 @@ define([
                 var avatar = h('span.cp-avatar');
                 APP.common.displayAvatar($(avatar), Util.find(answerObj, ['user', 'avatar']), name);
                 var values = answer.values || {};
-                var els = opts.values.map(function (data) {
+                var els = extractValues(opts.values).map(function (data) {
                     var res = values[data] || 0;
                     var v = (Number(res) === 1) ? h('i.fa.fa-check.cp-yes') : undefined;
                     var cell = h('div.cp-poll-cell.cp-form-poll-answer', {
@@ -785,7 +794,7 @@ define([
         var myTotals = {};
         var updateMyTotals = function () {
             if (!myLine) { return; }
-            opts.values.forEach(function (data) {
+            extractValues(opts.values).forEach(function (data) {
                 myLine.some(function (el) {
                     if ($(el).data('option') !== data) { return; }
                     var res = Number($(el).attr('data-value')) || 0;
@@ -808,7 +817,7 @@ define([
 
             });
         };
-        var totalEls = opts.values.map(function (data) {
+        var totalEls = extractValues(opts.values).map(function (data) {
             var y = 0; // Yes
             var m = 0; // Maybe
             answers.forEach(function (answerObj) {
@@ -1627,7 +1636,7 @@ define([
                 if (!opts) { opts = TYPES.radio.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
-                var els = opts.values.map(function (data, i) {
+                var els = extractValues(opts.values).map(function (data, i) {
                     var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
                                data, false, {});
                     $(radio).find('input').data('val', data);
@@ -1717,7 +1726,7 @@ define([
                 var lines = opts.items.map(function (itemData) {
                     var name = itemData.uid;
                     var item = itemData.v;
-                    var els = opts.values.map(function (data, i) {
+                    var els = extractValues(opts.values).map(function (data, i) {
                         var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
                                    '', false, {});
                         $(radio).find('input').data('uid', name);
@@ -1727,7 +1736,7 @@ define([
                     els.unshift(h('div.cp-form-multiradio-item', item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
-                var header = opts.values.map(function (v) { return h('span', v); });
+                var header = extractValues(opts.values).map(function (v) { return h('span', v); });
                 header.unshift(h('span'));
                 lines.unshift(h('div.cp-form-multiradio-header', header));
 
@@ -1868,7 +1877,7 @@ define([
                 if (!opts) { opts = TYPES.checkbox.defaultOpts; }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
-                var els = opts.values.map(function (data, i) {
+                var els = extractValues(opts.values).map(function (data, i) {
                     var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
                                data, false, {});
                     $(cbox).find('input').data('val', data);
@@ -1982,7 +1991,7 @@ define([
                 var lines = opts.items.map(function (itemData) {
                     var name = itemData.uid;
                     var item = itemData.v;
-                    var els = opts.values.map(function (data, i) {
+                    var els = extractValues(opts.values).map(function (data, i) {
                         var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
                                    '', false, {});
                         $(cbox).find('input').data('uid', name);
@@ -2011,7 +2020,7 @@ define([
                     });
                 });
 
-                var header = opts.values.map(function (v) { return h('span', v); });
+                var header = extractValues(opts.values).map(function (v) { return h('span', v); });
                 header.unshift(h('span'));
                 lines.unshift(h('div.cp-form-multiradio-header', header));
 
@@ -2164,7 +2173,7 @@ define([
 */
                     Util.shuffleArray(opts.values);
                 }
-                var els = opts.values.map(function (data) {
+                var els = extractValues(opts.values).map(function (data) {
                     var uid = Util.uid();
                     map[uid] = data;
                     invMap[data] = uid;
@@ -2215,7 +2224,7 @@ define([
                     },
                     reset: function () {
                         Util.shuffleArray(opts.values);
-                        var toSort = (opts.values).map(function (val) {
+                        var toSort = extractValues(opts.values).map(function (val) {
                             return invMap[val];
                         });
                         sortable.sort(toSort);
@@ -2283,7 +2292,7 @@ define([
 
                 var disabled = false;
                 // Add form
-                var addLine = opts.values.map(function (data) {
+                var addLine = extractValues(opts.values).map(function (data) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
                         h('i.fa.fa-times.cp-no'),
                         h('i.fa.fa-check.cp-yes'),
@@ -2389,7 +2398,7 @@ define([
                 var opts = form.opts || TYPES.poll.defaultOpts;
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
-                    var cols = opts.values.map(function (key) {
+                    var cols = extractValues(opts.values).map(function (key) {
                         return q + ' | ' + key;
                     });
                     cols.unshift(q);
@@ -2405,7 +2414,7 @@ define([
                     if (i !== 0) { str += ';'; }
                     str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
                 });
-                var res = opts.values.map(function (key) {
+                var res = extractValues(opts.values).map(function (key) {
                     return answer.values[key] || '';
                 });
                 res.unshift(str);
