@@ -1691,7 +1691,7 @@ define([
                 var count = {};
 
                 var opts = form[uid].opts || TYPES.radio.defaultOpts;
-                (opts.values || []).forEach(function (v) { count[v] = 0; });
+                extractValues(opts.values).forEach(function (v) { count[v] = 0; });
 
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
@@ -1811,7 +1811,7 @@ define([
                         var c = count[q_uid];
                         if (!c) {
                             count[q_uid] = c = {};
-                            (opts.values || []).forEach(function (v) { c[v] = 0; });
+                            extractValues(opts.values).forEach(function (v) { c[v] = 0; });
                         }
                         var res = answer[q_uid];
                         if (!res || !res.trim || !res.trim()) { return; }
@@ -1952,7 +1952,7 @@ define([
                 var count = {};
 
                 var opts = form[uid].opts || TYPES.checkbox.defaultOpts;
-                (opts.values || []).forEach(function (v) { count[v] = 0; });
+                extractValues(opts.values || []).forEach(function (v) { count[v] = 0; });
 
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
@@ -2093,7 +2093,7 @@ define([
                         var c = count[q_uid];
                         if (!c) {
                             count[q_uid] = c = {};
-                            (opts.values || []).forEach(function (v) { c[v] = 0; });
+                            extractValues(opts.values || []).forEach(function (v) { c[v] = 0; });
                         }
                         var res = answer[q_uid];
                         if (res && typeof(res) === "string") { res = [res]; }
@@ -2257,7 +2257,7 @@ define([
                 //var results = [];
                 var empty = 0;
                 var count = {};
-                (opts.values || []).forEach(function (v) { count[v] = 0; });
+                extractValues(opts.values || []).forEach(function (v) { count[v] = 0; });
                 var showBars = Boolean(content);
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
