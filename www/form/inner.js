@@ -85,7 +85,7 @@ define([
     var extractValues = function (values) {
         if (!Array.isArray(values)) { return []; }
         return values.map(function (obj) {
-            if (typeof(obj) === "string") { return obj; }
+            if (!Util.isObject(obj)) { return obj; }
             return obj.v;
         });
     };
