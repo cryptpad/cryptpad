@@ -305,7 +305,7 @@ define([
             if (isItem) {
                 if (cursor && cursor.uid === uid && cursor.item) { setCursor(); }
             } else {
-                else if (cursor && cursor.el === val && !cursor.item) { setCursor(); }
+                if (cursor && cursor.el === val && !cursor.item) { setCursor(); }
             }
 
             var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
