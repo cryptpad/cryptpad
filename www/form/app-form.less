@@ -734,42 +734,14 @@
                 }
             }
 
-           .cp-form-results-type-radio {
-                display: table;
-                width: 100%;
-                .cp-form-results-type-multiradio-data {
-                    display: flex;
-                    flex-flow: column;
-                }
-                .cp-form-results-type-radio-data {
-                    display: table-row;
-                    border: 1px solid transparent;
-                    & > span {
-                        .cp-form-results-cell();
-                        &.cp-value {
-                            max-width: 200px;
-                            min-width: 200px;
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                        }
-                        &.cp-bar-container {
-                            width: 99%;
-                            padding: 0px;
-                            position: relative;
-                            background: transparent;
-                            border-left-width: 15px;
-                            border-right-width: 15px;
-                            .cp-bar {
-                                position: absolute;
-                                background: fade(@cryptpad_text_col, 50%);
-                                height: 50%;
-                                top: 25%;
-                            }
-                        }
+            .cp-charts {
+                .cp-bar-container {
+                    .cp-bar {
+                        background-color: @cryptpad_color_link;
                     }
                 }
             }
+
             .cp-form-results-contained {
                 max-height: 350px; // enough for 10 table entries
                 overflow: auto;
