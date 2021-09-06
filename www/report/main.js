@@ -10,7 +10,7 @@ define([
     '/common/cryptpad-common.js',
     '/common/outer/cache-store.js',
     '/common/common-interface.js',
-    '/bower_components/chainpad-netflux/chainpad-netflux.js',
+    'chainpad-netflux',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/userObject.js',
     '/common/clipboard.js',
