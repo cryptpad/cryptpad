@@ -93,12 +93,13 @@ define([
     var MAX_OPTIONS = 15;
     var MAX_ITEMS = 10;
 
+    var getOptionValue = function (obj) {
+        if (!Util.isObject(obj)) { return obj; }
+        return obj.v;
+    };
     var extractValues = function (values) {
         if (!Array.isArray(values)) { return []; }
-        return values.map(function (obj) {
-            if (typeof(obj) === "string") { return obj; }
-            return obj.v;
-        });
+        return values.map(getOptionValue);
     };
 
     var saveAndCancelOptions = function (cb) {
@@ -310,10 +311,9 @@ define([
                 input.selectionEnd = cursor.end || 0;
                 setTimeout(function () { input.focus(); });
             };
-            if (isItem) {
-                if (cursor && cursor.uid === uid && cursor.item) { setCursor(); }
-            } else {
-                if (cursor && cursor.el === val && !cursor.item) { setCursor(); }
+
+            if (cursor && cursor.uid === uid && Boolean(cursor.item) === Boolean(isItem)) {
+                setCursor();
             }
 
             var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
@@ -376,8 +376,9 @@ define([
 
             return el;
         };
-        // TODO uid
-        var inputs = extractValues(v.values).map(function (val) { return getOption(val, isDefaultOpts, false); });
+        var inputs = v.values.map(function (data) {
+            return getOption(data.v, isDefaultOpts, false, data.uid);
+        });
         inputs.push(add);
 
         var container = h('div.cp-form-edit-block', inputs);
@@ -553,9 +554,11 @@ define([
             $container.find('input').each(function (i, el) {
                 var val = $(el).val() || el.placeholder || '';
                 if (el === active && !el._flatpickr) {
-                    cursor.el = val;
+                    cursor.item = false;
+                    cursor.uid= $(el).data('uid');
                     cursor.start = el.selectionStart;
                     cursor.end = el.selectionEnd;
+                    cursor.el = val;
                 }
             });
             if (v.items) {
@@ -590,7 +593,6 @@ define([
         var getSaveRes = function () {
             // Get values
             var values = [];
-            var duplicates = false;
             if (v.type === "day") {
                 var dayPickr = $(calendarView).find('input')[0]._flatpickr;
                 values = dayPickr.selectedDates.map(function (date) {
@@ -605,13 +607,14 @@ define([
                             val = +f.selectedDates[0];
                         }
                     }
-                    if (val && values.indexOf(val) === -1) { values.push(val); }
-                    else { duplicates = true; }
+                    var hasUid = values.some(function (i) { return i.uid === uid; });
+                    var uid = hasUid ? Util.uid : $(el).data('uid');
+                    values.push({
+                        uid: uid,
+                        v: val
+                    });
+                    if (hasUid) { $(el).data('uid', uid); }
                 });
-            }
-            values = values.filter(Boolean); // Block empty or undefined options
-            if (!values.length) {
-                return;
             }
             var res = { values: values };
 
@@ -621,21 +624,16 @@ define([
                 $(containerItems).find('input').each(function (i, el) {
                     var val = ($(el).val() || el.placeholder || '').trim();
                     var uid = $(el).data('uid');
-                    if (!items.some(function (i) { return i.uid === uid; })) {
-                        items.push({
-                            uid: $(el).data('uid'),
-                            v: val
-                        });
-                    }
-                    else { duplicates = true; }
+                    var hasUid = items.some(function (i) { return i.uid === uid; });
+                    var uid = hasUid ? Util.uid : $(el).data('uid');
+                    items.push({
+                        uid: uid,
+                        v: val
+                    });
+                    if (hasUid) { $(el).data('uid', uid); }
                 });
                 items = items.filter(Boolean);
                 res.items = items;
-            }
-
-            // Show duplicates warning
-            if (duplicates) {
-                UI.warn(Messages.form_duplicates); // XXX autosave
             }
 
             // If checkboxes, get the maximum number of values the users can select
@@ -688,13 +686,15 @@ define([
     var makePollTable = function (answers, opts, resultsPageObj) {
         // Sort date values
         if (opts.type !== "text") {
-            extractValues(opts.values).sort(function (a, b) { // TODO uid
+            opts.values.sort(function (_a, _b) {
+                var a = getOptionValue(_a);
+                var b = getOptionValue(_b);
                 return +new Date(a) - +new Date(b);
             });
         }
         // Create first line with options
         var allDays = getWeekDays(true);
-        var els = extractValues(opts.values).map(function (data) { // TODO uid
+        var els = extractValues(opts.values).map(function (data) {
             var _date;
             if (opts.type === "day") {
                 _date = new Date(data);
@@ -4224,6 +4224,26 @@ define([
             });
 
             evShowConditions.fire();
+
+            // Migrate opts.values from string to object
+            if (!content.version) {
+                Object.keys(content.form).forEach(function (uid) {
+                    var block = content.form[uid];
+                    var values = Util.find(block, ['opts', 'values']);
+                    if (!Array.isArray(values)) { return; }
+                    if (block.opts.type === 'day') { return; }
+                    block.opts.values = values.map(function (data) {
+                        if (Util.isObject(data)) { return data; }
+                        return {
+                            uid: Util.uid(),
+                            v: data || Messages.form_newOption
+                        };
+                    });
+                });
+                content.version = 1;
+                changed = true;
+            }
+
 
             if (!getter && changed) { framework.localChange(); }
         };
