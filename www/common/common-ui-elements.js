@@ -158,7 +158,7 @@ define([
             var data = users[key];
             var name = UI.getDisplayName(data.displayName || data.name);
             var avatar = h('span.cp-usergrid-avatar.cp-avatar', {
-                'aria-hidden': true, // XXX aria
+                'aria-hidden': true,
             });
             common.displayAvatar($(avatar), data.avatar, name, Util.noop, data.uid);
             var removeBtn, el;
@@ -1658,7 +1658,6 @@ define([
         UI.openCustomModal(modal);
     };
 
-    Messages.toolbar_userMenuAlt = "User menu"; // XXX
     UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
@@ -1991,9 +1990,6 @@ define([
         */
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
-        $userAdmin.attr({ // XXX is this on the right element?
-            alt: Messages.toolbar_userMenuAlt,
-        });
 
         var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
         var loadingAvatar;
@@ -2031,8 +2027,6 @@ define([
                     $userAdmin.find('> button').removeClass('cp-avatar');
                     if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
-
-                    // XXX alt="User menu"
                 }, uid);
                 return;
             }
@@ -3049,18 +3043,6 @@ define([
         var name = Util.fixHTML(data.title);
         var url = data.href;
         var user = data.name;
-        //Messages.link_open = "Open URL";
-            // openLinkInNewTab ("Open Link in New Tab")
-            // fc_open ("Open")
-            // share_linkOpen ("Preview")
-            // resources_openInNewTab ("Open it in a new tab")
-        Messages.link_open = Messages.fc_open; // XXX 4.11.0
-
-        //Messages.link_store = "Store link in drive";
-            // toolbar_storeInDrive ? ("Store in CryptDrive")
-            // autostore_store ? ("Store")
-        Messages.link_store = Messages.toolbar_storeInDrive; // XXX 4.11.0
-
 
         var content = h('div', [
             UI.setHTML(h('p'), Messages._getKey('notification_openLink', [name, user])),
@@ -3079,7 +3061,7 @@ define([
             keys: [27]
         }, {
             className: 'primary',
-            name: Messages.link_open,
+            name: Messages.fc_open,
             onClick: function () {
                 if (clicked) { return true; }
                 clicked = true;
@@ -3089,7 +3071,7 @@ define([
             keys: [13]
         }, {
             className: 'primary',
-            name: Messages.link_store,
+            name: Messages.toolbar_storeInDrive,
             onClick: function () {
                 if (clicked) { return; }
                 clicked = true;

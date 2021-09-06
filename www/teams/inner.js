@@ -1099,7 +1099,7 @@ define([
             if (!val) {
                 var $img = $('<img>', {
                     src: '/customize/images/avatar.png',
-                    title: Messages.profile_avatar,
+                    title: Messages.profile_avatar, // XXX
                     alt: 'Avatar'
                 });
                 var mt = h('media-tag', $img[0]);

@@ -566,7 +566,7 @@ define([
                 attributes: {
                     'class': 'fa fa-trash-o',
                 },
-                content: h('span', Messages.kanban_delete), // XXX delete key is misleading... "Remove" ? `poll_remove`, `fc_remove`
+                content: h('span', Messages.poll_remove),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];

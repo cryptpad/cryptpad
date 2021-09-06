@@ -315,9 +315,6 @@ define([
             return manualStore;
         };
 
-        Messages.upload_modal_alt = "Alt text"; // XXX
-        Messages.upload_addOptionalAlt = "Add descriptive text (optional)"; // XXX
-
         var fileUploadModal = function (defaultFileName, cb, preview) {
             var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(defaultFileName) || [];
             var ext = parsedName[2] || "";
@@ -332,9 +329,8 @@ define([
                                    Messages._getKey('upload_modal_filename', [ext])),
                 h('input#cp-upload-name', {type: 'text', placeholder: defaultFileName, value: defaultFileName}),
 
-                h('label', {for: 'cp-upload-alt'}, Messages.upload_addOptionalAlt), // XXX alt text for uploads
+                h('label', {for: 'cp-upload-alt'}, Messages.upload_addOptionalAlt),
                 h('input#cp-upload-alt', {type: 'text', placeholder: Messages.upload_modal_alt}),
-
 
                 h('label', {for: 'cp-upload-password'}, Messages.addOptionalPassword),
                 UI.passwordInput({id: 'cp-upload-password'}),

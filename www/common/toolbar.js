@@ -164,7 +164,6 @@ MessengerUI, Messages, Pages) {
         });
     };
     var showColors = false;
-    Messages.userlist_visitProfile = "Visit {0}'s profile"; // XXX "'s" is incorrect for names that end in "s" in English... don't care?
     var updateUserList = function (toolbar, config, forceOffline) {
         if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
         if (toolbar.isAlone) { return; }
@@ -459,8 +458,6 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
-    Messages.toolbar_collapse = "Collapse toolbar"; // XXX 4.11.0
-    Messages.toolbar_expand = "Expand toolbar"; // XXX 4.11.0
     createCollapse = function (toolbar) {
         var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
         var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
@@ -1046,7 +1043,10 @@ MessengerUI, Messages, Pages) {
             userMenuCfg.displayChangeName = 1;
         }
         Common.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('> button').attr('title', Messages.userAccountButton);
+        $userAdmin.find('> button').attr({
+            title: Messages.userAccountButton,
+            alt: Messages.userAccountButton,
+        });
 
         return $userAdmin;
     };
