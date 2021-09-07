@@ -3243,9 +3243,16 @@ define([
 
         APP.formBlocks = [];
 
-        $container.attr('class', 'cp-form-creator-content');
         var color = content.answers.color || 'nocolor';
-        $container.addClass('cp-form-palette-'+color);
+        var $body = $('body');
+        $body[0].classList.forEach(function (cls) {
+            if (/^cp-form-palette/.test(cls)) {
+                $body.removeClass(cls);
+            }
+        });
+        $body.addClass('cp-form-palette-'+color);
+
+        $container.attr('class', 'cp-form-creator-content');
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -4249,9 +4256,13 @@ define([
                             $colors.find('.cp-form-palette').removeClass('fa-check');
                             $color.addClass('fa-check');
 
-                            var $container = $('div.cp-form-creator-content');
-                            $container.attr('class', 'cp-form-creator-content');
-                            $container.addClass('cp-form-palette-'+_color);
+                            var $body = $('body');
+                            $body[0].classList.forEach(function (cls) {
+                                if (/^cp-form-palette/.test(cls)) {
+                                    $body.removeClass(cls);
+                                }
+                            });
+                            $body.addClass('cp-form-palette-'+_color);
                         });
                     }).appendTo($colors);
                 });

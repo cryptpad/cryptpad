@@ -29,18 +29,23 @@
             &.cp-form-palette {
                 background-color: @color !important;
             }
-            .cp-form-block { // XXX
-                background-color: fade(@color, 50%) !important;
+        }
+        &.cp-form-palette-color@{index}{
+            #cp-app-form-editor {
+                background-color: fade(@color, 50%);
             }
         }
     }
     // call the loop
     .kanban-colors(@kanban-colors; length(@kanban-colors));
 
-    .cp-form-palette-nocolor {
-        &.cp-form-palette {
+    .cp-form-palette {
+        &.cp-form-palette-nocolor {
             background-color: @palette0 !important;
         }
+    }
+    &.cp-form-palette-nocolor {
+        background-color: @cp_app-bg !important;
     }
 
     div.alert.cp-burn-after-reading {
