@@ -2602,6 +2602,10 @@ define([
     var renderResults = APP.renderResults = function (content, answers, showUser) {
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
+        var framework = APP.framework;
+        var title = framework._.title.title || framework._.title.defaultTitle;
+        $container.append(h('h1.cp-form-view-title', title));
+
         var answerCount = Object.keys(answers || {}).length;
 
         if (!answerCount) {
