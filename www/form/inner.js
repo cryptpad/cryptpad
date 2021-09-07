@@ -3052,8 +3052,13 @@ define([
             $anonBox.attr('disabled', 'disabled').prop('checked', false);
             setTimeout(function () {
                 // We need to wait for cbox to be added into the DOM before using .after()
+                if (content.answers.cantEdit) { return; }
                 $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
+            anonName = h('div.cp-form-anon-answer-input', [
+                Messages.form_answerAs,
+                h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
+            ]);
         }
         if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
             $cbox.hide();
@@ -3857,7 +3862,7 @@ define([
         var loggedIn = framework._.sfCommon.isLoggedIn();
         if (content.answers.makeAnonymous) {
             infoTxt = Messages.form_anonAnswer;
-        } else if (!content.answers.anonymous && loggedIn) {
+        } else if (!content.answers.anonymous && loggedIn && !content.answers.cantEdit) {
             infoTxt = Messages.form_authAnswer;
         }
         if (infoTxt) {
