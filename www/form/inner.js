@@ -3670,7 +3670,6 @@ define([
                 }
             }
             var editableCls = editable ? ".editable" : "";
-            var colorCls = '.cp-form-palette-'+color;
             elements.push(h('div.cp-form-block'+editableCls, {
                 'data-id':uid,
                 'data-type':type
