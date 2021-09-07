@@ -10,6 +10,7 @@
         @bg-color: @colortheme_apps[form]
     );
 
+    @cp_form_bar_color: fade(@cryptpad_color_link, 75%); // Color for the response chart bars
 
     display: flex;
     flex-flow: column;
@@ -242,6 +243,10 @@
                     margin-bottom: 20px;
                     table.cp-charts.column {
                         overflow-x: initial;
+                        td {
+                            background-color: @cp_form_bar_color;
+                            border-color: @cp_form_bar_color;
+                        }
                     }
                 }
             }
@@ -752,7 +757,7 @@
                     }
                     .cp-bar-container {
                         .cp-bar {
-                            background-color: fade(@cryptpad_color_link, 75%);
+                            background-color: @cp_form_bar_color;
                         }
                     }
                 }
