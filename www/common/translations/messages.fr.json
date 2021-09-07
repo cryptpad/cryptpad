@@ -1274,7 +1274,7 @@
     "form_clear": "Effacer",
     "form_addMultipleHint": "Ajouter plusieurs dates et heures",
     "form_addMultiple": "Tout ajouter",
-    "form_anonymous_blocked": "Les réponses anonymes sont bloquées pour ce formulaire. Merci de vous <a href=\"/login/\">connecter</a> ou de vous <a href=\"/register/\">enregistrer</a> pour répondre.",
+    "form_anonymous_blocked": "Les réponses de visiteurs sont bloquées pour ce formulaire. Merci de vous <a href=\"/login/\">connecter</a> ou de vous <a href=\"/register/\">enregistrer</a> pour répondre.",
     "form_add_item": "Ajouter un objet",
     "form_add_option": "Ajouter une option",
     "form_newItem": "Nouvel objet",
