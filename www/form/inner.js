@@ -4229,7 +4229,6 @@ define([
             };
             refreshEndDate();
 
-            Messages.form_colors = "Color theme"; // XXX
             var colorLine1 = h('div');
             var colorLine2 = h('div');
             var colorContainer = h('div.cp-form-color-container', [
