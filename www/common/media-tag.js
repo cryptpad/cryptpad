@@ -107,7 +107,6 @@ var factory = function () {
                 cb(void 0, audio);
             },
             pdf: function (metadata, url, content, cfg, cb) {
-                // XXX alt text
                 var iframe = document.createElement('iframe');
                 if (cfg.pdf.viewer) { // PDFJS
                     var viewerUrl = cfg.pdf.viewer + '?file=' + url;

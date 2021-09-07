@@ -421,7 +421,6 @@ define([
                 embed: Util.isChecked($link.find('#cp-share-embed'))
             }));
         });
-        Messages.share_linkOpen = "Open link"; // XXX
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
