@@ -76,6 +76,15 @@
     #C9FFFE,
     #C8D6FF,
     #E4CAFF;
+@cp_palette-dark:
+    darken(extract(@cp_palette, 1), 50%),
+    darken(extract(@cp_palette, 2), 51%),
+    darken(extract(@cp_palette, 3), 52%),
+    darken(extract(@cp_palette, 4), 61%),
+    darken(extract(@cp_palette, 5), 57%),
+    darken(extract(@cp_palette, 6), 65%),
+    darken(extract(@cp_palette, 7), 50%),
+    darken(extract(@cp_palette, 8), 50%);
 
 @cryptpad_color_link: @cryptpad_color_brand;
 
@@ -439,3 +448,5 @@
 @cp_form-poll-maybe: @cryptpad_color_grey_300;
 @cp_form-poll-yes-color: @cryptpad_color_green;
 @cp_form-invalid: @cryptpad_color_red;
+@cp_form-palette: @cp_palette;
+@cp_form-palette2: @cp_palette-dark;

@@ -4230,19 +4230,27 @@ define([
             refreshEndDate();
 
             Messages.form_colors = "Color theme"; // XXX
-            var colorContainer = h('div.cp-form-color-container');
+            var colorLine1 = h('div');
+            var colorLine2 = h('div');
+            var colorContainer = h('div.cp-form-color-container', [
+                colorLine1,
+                colorLine2
+            ]);
             var colorTheme = h('div.cp-form-color-theme-container', [
                 h('span', Messages.form_colors),
                 colorContainer
             ]);
             var $colors = $(colorContainer);
             var refreshColorTheme = function () {
-                $colors.empty();
+                $(colorLine1).empty();
+                $(colorLine2).empty();
                 var palette = ['nocolor'];
                 for (var i=1; i<=8; i++) { palette.push('color'+i); }
                 var color = content.answers.color || 'nocolor';
                 var selectedColor = color;
-                palette.forEach(function (_color) {
+                var currentContainer = colorLine1;
+                palette.forEach(function (_color, i) {
+                    if (i === 5) { currentContainer = colorLine2; }
                     var $color = $(h('span.cp-form-palette.fa'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
                     if (selectedColor === _color) { $color.addClass('fa-check'); }
@@ -4264,7 +4272,7 @@ define([
                             });
                             $body.addClass('cp-form-palette-'+_color);
                         });
-                    }).appendTo($colors);
+                    }).appendTo(currentContainer);
                 });
             };
             refreshColorTheme();

@@ -18,13 +18,18 @@
     color: @cryptpad_text_col;
     background-color: @cp_app-bg;
 
+    .alert {
+        font-size: 1rem;
+        &.alert-info {
+            color: @cryptpad_text_col !important;
+        }
+    }
+
     @palette0: @cp_kanban-color0; // Default bg color for header
-    @kanban-colors: @cp_kanban-colors;
-    .kanban-colors(@kanban-colors; @index) when (@index > 0){
-        // loop through the @colors
-        .kanban-colors(@kanban-colors; (@index - 1));
-        @color: extract(@kanban-colors, @index);
-        // make a numbered class selector for each color
+    @form-colors: @cp_form-palette;
+    .form-colors(@form-colors; @index) when (@index > 0){
+        .form-colors(@form-colors; (@index - 1));
+        @color: extract(@form-colors, @index);
         .cp-form-palette-color@{index}{
             &.cp-form-palette {
                 background-color: @color !important;
@@ -36,8 +41,38 @@
             }
         }
     }
-    // call the loop
-    .kanban-colors(@kanban-colors; length(@kanban-colors));
+    .form-colors(@form-colors; length(@form-colors));
+
+    @form-colors2: @cp_form-palette2;
+    .checkmark-colors(@form-colors2; @index) when (@index > 0){
+        .checkmark-colors(@form-colors2; (@index - 1));
+        @color: extract(@form-colors2, @index);
+        &.cp-form-palette-color@{index}{
+            .cp-form-block {
+                .cp-radio input:checked ~ .cp-radio-mark, .cp-checkmark input:checked ~ .cp-checkmark-mark {
+                    background-color: @color !important;
+                    border-color: @color !important;
+                }
+                input, textarea {
+                    border-color: @color !important;
+                }
+            }
+            .cp-form-block-question-text {
+                color: @color !important;
+            }
+            .cp-form-type-sort:hover {
+                color: @color !important;
+                .cp-form-sort-order {
+                    border-color: @color !important;
+                }
+            }
+            .cp-form-input-block {
+                input { color: @color !important; }
+                border-bottom-color: @color !important;
+            }
+        }
+    }
+    .checkmark-colors(@form-colors2; length(@form-colors2));
 
     .cp-form-palette {
         &.cp-form-palette-nocolor {
@@ -196,19 +231,31 @@
                 }
 
                 .cp-form-color-container {
-                    display: flex;
-                    justify-content: space-between;
-                    .cp-form-palette {
-                        display: inline-block;
-                        border-radius: 50%;
-                        height: 30px;
-                        width: 30px;
-                        text-align: center;
-                        line-height: 30px;
-                        color: @cp_kanban-fg;
-                        border: 1px solid fade(@cp_kanban-fg, 40%);
-                        cursor: pointer;
+                    & > div {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 5px;
+                        &:last-child {
+                            justify-content: space-evenly;
+                        }
+                        .cp-form-palette {
+                            display: inline-block;
+                            border-radius: 50%;
+                            height: 30px;
+                            width: 30px;
+                            text-align: center;
+                            line-height: 30px;
+                            color: @cp_kanban-fg;
+                            border: 1px solid fade(@cp_kanban-fg, 40%);
+                            cursor: pointer;
+                        }
                     }
+                }
+
+                .cp-form-response-msg-container button {
+                    white-space: initial;
+                    line-height: 25px;
+                    padding: 5.5px 6px;
                 }
             }
             div.cp-form-filler-container {
