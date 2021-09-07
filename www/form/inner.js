@@ -2813,7 +2813,7 @@ define([
         $(logo).click(function () {
             APP.framework._.sfCommon.gotoURL('/');
         });
-        var footer = h('div.cp-form-view-footer', [logo])
+        var footer = h('div.cp-form-view-footer', [logo]);
         return footer;
     };
 
