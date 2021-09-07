@@ -529,7 +529,6 @@ define([
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
-        Messages.toolbar_preview = "Preview"; // XXX
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -2459,7 +2458,6 @@ define([
                 });
             }*/
             if (!privateData.newTemplate) {
-                Messages.creation_noTemplate = "Blank document"; // XXX update key
                 allData.unshift({
                     name: Messages.creation_noTemplate,
                     id: 0,
