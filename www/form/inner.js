@@ -2980,7 +2980,7 @@ define([
             if (results.hasOwnProperty(uid)) { return results[uid]; }
             APP.formBlocks.some(function (data) {
                 if (!data.getValue) { return; }
-                if (data.uid === uid) {
+                if (data.uid === String(uid)) {
                     results[uid] = data.getValue();
                     return true;
                 }
