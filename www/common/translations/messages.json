@@ -1319,7 +1319,7 @@
     "form_newItem": "New item",
     "form_add_option": "Add option",
     "form_add_item": "Add item",
-    "form_anonymous_blocked": "Anonymous responses are blocked for this form. You must <a href=\"/login/\">log in</a> or <a href=\"/register/\">register</a> to submit answers.",
+    "form_anonymous_blocked": "Guest responses are blocked for this form. You must <a href=\"/login/\">log in</a> or <a href=\"/register/\">register</a> to submit answers.",
     "form_addMultiple": "Add all",
     "form_addMultipleHint": "Add multiple dates and times",
     "form_clear": "Clear",
