@@ -3437,7 +3437,7 @@ define([
 
             APP.formBlocks.push(data);
 
-            var previewDiv = h('div.cp-form-preview', Messages.form_preview);
+            var previewDiv = h('div.cp-form-preview', Messages.form_preview_button);
 
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv;
