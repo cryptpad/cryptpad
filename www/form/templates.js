@@ -1,7 +1,6 @@
 define([
     '/customize/messages.js'
 ], function (Messages) {
-    Messages.form_template_poll = "Quick poll"; // XXX update key
     var pollValues = [];
     var d8 = new Date();
     d8.setDate(d8.getDate() - d8.getDay() + 7); // set sunday

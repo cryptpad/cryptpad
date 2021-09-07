@@ -1404,7 +1404,7 @@ define([
                         rules.forEach(function (obj) {
                             getConditions($rulesC, false, rules, obj, $b);
                         });
-                        $addC.before($rulesC); // XXX
+                        $addC.before($rulesC);
                     });
                 };
                 redraw();
@@ -3112,7 +3112,6 @@ define([
                 window.onbeforeunload = undefined;
 
                 $send.removeAttr('disabled');
-                //UI.alert(Messages.form_sent); // XXX not needed anymore?
                 $send.text(Messages.form_update);
                 APP.hasAnswered = true;
                 APP.answeredInForm = false;
@@ -4090,7 +4089,6 @@ define([
             };
             refreshAnon();
 
-            // XXX UPDATE KEYS "form_anonyous_on", "form_anonymous_off" and "form_anonymous"
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
