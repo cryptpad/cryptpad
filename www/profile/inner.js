@@ -348,7 +348,7 @@ define([
         if (!val) {
             $('<img>', {
                 src: '/customize/images/avatar.png',
-                title: Messages.profile_avatar, // XXX
+                title: Messages.profile_defaultAlt,
                 alt: Messages.profile_defaultAlt,
             }).appendTo($span);
             return;
@@ -391,7 +391,7 @@ define([
                 }, function () {
                     sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
                         if (err || err2) { return void UI.log(err || err2); }
-                        displayAvatar(data.url); // XXX add "Profile picture"
+                        displayAvatar(data.url);
                     });
                 });
             };

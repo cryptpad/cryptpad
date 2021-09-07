@@ -3616,7 +3616,7 @@ define([
                     });
 
                     var displayName = UI.getDisplayName(data.name);
-                    common.displayAvatar($(avatar), data.avatar, displayName); // XXX
+                    common.displayAvatar($(avatar), data.avatar, displayName);
                     return h('span.cp-mentions', {
                         'data-curve': data.curvePublic,
                         'data-notifications': data.notifications,

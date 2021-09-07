@@ -1099,8 +1099,8 @@ define([
             if (!val) {
                 var $img = $('<img>', {
                     src: '/customize/images/avatar.png',
-                    title: Messages.profile_avatar, // XXX
-                    alt: 'Avatar'
+                    title: Messages.profile_defaultAlt,
+                    alt: Messages.profile_defaultAlt,
                 });
                 var mt = h('media-tag', $img[0]);
                 $avatar.append(mt);
@@ -1323,16 +1323,23 @@ define([
             });
         };
 
+        var isValidInvitationLinkContent = function (json) {
+            if (!json) { return false; }
+            if (json.error || !Object.keys(json).length) { return false; }
+            if (!json.author) { return false; }
+            return true;
+        };
+
         nThen(function (waitFor) {
             // Get preview content.
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
-                if (json && (json.error || !Object.keys(json).length)) { // XXX team invite links are triggering this every time for me?
+                if (!isValidInvitationLinkContent(json)) {
                     $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
                     waitFor.abort();
                     $div.empty();
                     return;
                 }
-                // XXX nothing guarantees that author, teamName, or message exist in json
+                // FIXME nothing guarantees that teamName or author.displayName exist in json
                 $div.empty();
                 $div.append(h('div.cp-teams-invite-from', [
                     Messages.team_inviteFrom,
