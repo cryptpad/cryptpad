@@ -794,9 +794,7 @@ var factory = function () {
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory();
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define([
-            '/bower_components/es6-promise/es6-promise.min.js'
-        ], function () {
+        define([], function () {
             return factory();
         });
     } else {
