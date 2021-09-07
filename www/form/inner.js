@@ -1516,14 +1516,15 @@ define([
                                         content: obj.q
                                     };
                                 });
+                                var val = drop.getValue();
                                 drop.setOptions(qOptions);
+                                drop.setValue(val);
 
                                 // Update values dropdown
                                 var $v = $(el).find('.cp-dropdown-container[data-drop="v"]');
                                 if (!$v.length) { return; }
                                 var dropV = $v[0] && $v[0].dropdown;
                                 if (!dropV) { return; }
-                                var val = drop.getValue();
                                 var res, type;
                                 values.some(function (obj) {
                                     if (String(obj.uid) === String(val)) {
@@ -1543,7 +1544,14 @@ define([
                                         content: str
                                     };
                                 });
+                                var valV = dropV.getValue();
                                 dropV.setOptions(vOptions);
+                                if (valV && res.indexOf(valV) === -1) {
+                                    dropV.setValue('', Messages.form_condition_v);
+                                    dropV.onChange.fire();
+                                    dropV.find('button').removeClass('btn-default')
+                                        .addClass('btn-secondary');
+                                }
                             });
                         } else {
                             // We don't have invalid condition but we may have incomplete
