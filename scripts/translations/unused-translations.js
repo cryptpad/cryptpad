@@ -1,4 +1,4 @@
-var Messages = require("../www/common/translations/messages.json");
+var Messages = require("../../www/common/translations/messages.json");
 var Exec = require("child_process").exec;
 
 var ignoreLines = function (source, pattern) {
