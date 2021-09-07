@@ -360,6 +360,7 @@
                         color: @cp_form-invalid;
                         ul {
                             list-style-type: disclosure-closed;
+                            margin-bottom: 5px;
                         }
                         li {
                             text-align: left;
@@ -735,9 +736,21 @@
             }
 
             .cp-charts {
-                .cp-bar-container {
-                    .cp-bar {
-                        background-color: @cryptpad_color_link;
+                .cp-charts-row {
+                    .cp-grid-sub-question {
+                        background: transparent;
+                    }
+                    .cp-value {
+                        min-width: 200px;
+                        max-width: 200px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    .cp-bar-container {
+                        .cp-bar {
+                            background-color: fade(@cryptpad_color_link, 75%);
+                        }
                     }
                 }
             }

@@ -895,7 +895,7 @@ define([
     };
 
     var multiAnswerSubHeading = function (content) {
-        return h('span.cp-charts-row', h('td.cp-charts-cell', {
+        return h('span.cp-charts-row', h('td.cp-charts-cell.cp-grid-sub-question', {
             colspan: 3,
             style: 'font-weight: bold;',
         }, content));
