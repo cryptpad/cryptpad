@@ -1629,7 +1629,6 @@ define([
                 var tally = {};
 
                 var isEmpty = function (answer) {
-                    console.error("EMPTY?", JSON.stringify(answer));
                     return !answer || !answer.trim();
                 };
 
