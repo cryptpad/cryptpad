@@ -6,6 +6,8 @@
 
 * warning about lack of support for internet explorer
   * existing support will get worse over time. please update.
+  * we only support IE for the home page and related info pages. Apps with complex functionality assume you are using a regularly updated browser.
+* this release includes new clientside dependencies. Don't forget to run `bower update`
 
 To update from 4.10.0 to 4.11.0:
 
@@ -24,6 +26,41 @@ To update from 4.10.0 to 4.11.0:
 * form improvements
   * include bar graphs for multiple-answer form questions
   * move the tally of empty responses to the top of each question's summary (rather than the bottom)
+  * conditionally displayed sections depending on the state of previous answers
+  * nicer participant view without CryptPad toolbar or popups
+  * response page to with customizable message to thank those that have responded
+  * more granular form controls and clearer text
+    * anonymization settings for answers
+    * optional restriction of a form to registered users only
+  * real-time form authorship.
+    * changes are saved as you type, so you no longer need to "save" each question.
+    * co-author surveys with other users and edit the same question concurrently.
+    * avoid redrawing active parts of the UI when other authors make a change (datepicker UI, dropdowns, etc.)
+    * redraw no more than once every 500ms for performance reasons
+    * preserve current scroll position when other users make changes
+  * easier access to basic for form authors in the left sidebar:
+    * preview a form
+    * copy the participant link
+    * view existing responses
+  * more intuitive display of answers
+    * bar charts throughout, wherever applicable
+    * options with no answers are still displayed with zero results in the summary rather than not being displayed at all
+    * options are displayed according to the order of their appearance in the original question, rather than according to the order in which participants chose them
+    * the number of empty answers is displayed above the scrollable section of each answer's summary rather than at the bottom
+  * more intuitive controls and default options
+    * placeholders for text inputs instead of pre-filled fields
+    * "enter" creates a new field
+    * "esc" clears an empty field
+    * easy navigation using the tab key
+  * convert between related question types:
+    * radio, checkbox, ranked choices
+    * multi-radio, multi-check
+  * more form validation options:
+    * required questions
+    * validated question types
+    * summarize invalid answers at the bottom of the form. jump to the relevant question when clicked.
+  * CryptPad logo displayed at the bottom of the participant page which links to the home page
+  * we've pre-filled some options in our "simple scheduling poll" template.
 * bar charts on the admin page's 'Performance' tab
 * enhancements for guest users and registered users without names or avatars
   * two initials for users with a custom name but no avatar (previously one initial, always capitalized)
@@ -36,6 +73,9 @@ To update from 4.10.0 to 4.11.0:
 * improvements to upload and media-tag UI
   * support for adding descriptive text at upload time
   * preview of uploaded media in the upload modal
+* our link creation UI from 4.9.0 now highlights the URL input field as you type to indicate whether the current URL value is valid
+* the share menu now makes its primary actions more clear, with explicit text ("copy link" instead of just "copy") on its main buttons, as well as icons that better match button UI on the rest of the platform.
+* we're working towards better accessibility for screen readers with better alt-text and `aria-` attributes to suppress descriptions of strictly visual UI features.
 
 ## Bug fixes
 
@@ -45,6 +85,8 @@ To update from 4.10.0 to 4.11.0:
   * ???
 * clarified a comment in the nginx config about _professional support_
 * handled an edge case in ICS import to calendars where DTEND was not defined (use duration or consider it an "all-day" event
+* links shared by contacts could be previewed in a modal when viewing their notification. The color of the previewed link was overridden by some bootstrap styles. we now use a better color.
+* better validation for team invite links where badly formed invite content could have triggered a type error.
 
 
 # 4.10.0
