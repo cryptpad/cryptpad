@@ -91,19 +91,22 @@
         .cp-form-view-title {
             margin-bottom: 20px;
         }
-        div.cp-form-view-logo {
+        div.cp-form-view-footer {
+            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            display: flex;
-            font-family: "IBM Plex Mono";
-            .tools_unselectable();
-            color: @cryptpad_color_grey_500;
             padding: 20px 20px 150px 20px;
-            cursor: pointer;
-            img {
-                max-height: 60px;
-                margin: 0px 20px;
+            div.cp-form-view-logo {
+                padding: 10px;
+                font-size: 40px;
+                font-family: "IBM Plex Mono";
+                .tools_unselectable();
+                color: @cryptpad_color_grey_500;
+                cursor: pointer;
+                img {
+                    max-height: 60px;
+                    margin: 0px 20px;
+                }
             }
         }
 

@@ -2813,7 +2813,8 @@ define([
         $(logo).click(function () {
             APP.framework._.sfCommon.gotoURL('/');
         });
-        return logo;
+        var footer = h('div.cp-form-view-footer', [logo])
+        return footer;
     };
 
     var showAnsweredPage = function (framework, content, answers) {
