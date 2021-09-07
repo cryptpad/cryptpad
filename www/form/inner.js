@@ -103,7 +103,6 @@ define([
     };
 
     var saveAndCancelOptions = function (cb) {
-        Messages.form_preview_button = "Preview"; // XXX
         var cancelBlock = h('button.btn.btn-default.cp-form-preview-button',[
                             h('i.fa.fa-eye'),
                             Messages.form_preview_button
@@ -988,7 +987,6 @@ define([
     });
 
 
-    Messages.form_type_section = "Conditional section"; // XXX
     var STATIC_TYPES = {
         md: {
             defaultOpts: {
@@ -1161,8 +1159,6 @@ define([
                     }).filter(Boolean);
                     return values;
                 };
-                Messages.form_conditional_add = "Add condition OR"; // XXX
-                Messages.form_conditional_addAnd = "Add condition AND"; // XXX
                 var addCondition = h('button.btn.btn-secondary', [
                     h('i.fa.fa-plus'),
                     h('span', Messages.form_conditional_add)
@@ -1182,9 +1178,6 @@ define([
                 };
                 var values = getConditionsValues();
                 getConditions = function ($container, isNew, rules, condition, $btn) {
-                    Messages.form_condition_q = "Choose a question"; // XXX
-                    Messages.form_condition_v = "Choose a value"; // XXX
-
                     condition = condition || {};
                     condition.uid = condition.uid || Util.uid();
 
@@ -1239,10 +1232,6 @@ define([
                     qSelect = UIElements.createDropdown(qConfig);
                     qSelect[0].dropdown = qSelect;
                     $(qSelect).attr('data-drop', 'q');
-                    Messages.form_condition_is = 'is'; // XXX
-                    Messages.form_condition_isnot = 'is not'; // XXX
-                    Messages.form_condition_has = 'has'; // XXX
-                    Messages.form_condition_hasnot = 'has not'; // XXX
 
                     var isOn = !condition || condition.is !== 0;
                     var iOptions = [{
@@ -1400,7 +1389,6 @@ define([
                     if (tmp.type === 'q') { qSelect.click(); }
                     else if (tmp.type === 'i') { iSelect.click(); }
                 };
-                Messages.form_conditional = "Only show this section when:"; // XXX
 
                 var conditionalDiv = h('div.cp-form-conditional', [
                     h('div.cp-form-conditional-hint', Messages.form_conditional),
@@ -1421,7 +1409,6 @@ define([
                 };
                 redraw();
 
-                Messages.form_condition_hint = "To make this section conditional, please add a choice or checkbox question above it."; // XXX
                 var hintDiv = h('div.cp-form-conditional-hint', [
                     h('div.cp-form-conditional-hint', Messages.form_condition_hint)
                 ]);
@@ -2775,7 +2762,6 @@ define([
             return key && key.slice(0,1) !== "_";
         }).length;
     };
-    Messages.form_results = "Responses ({0})"; // XXX update key
     var addResultsButton = function (framework, content, answers) {
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
@@ -2826,9 +2812,6 @@ define([
         return logo;
     };
 
-    Messages.form_alreadyAnswered = "You've responded to this form on {0}"; // XXX
-    Messages.form_editAnswer = "Edit my responses"; // XXX
-    Messages.form_viewAnswer = "View my responses"; // XXX
     var showAnsweredPage = function (framework, content, answers) {
         var $formContainer = $('div.cp-form-creator-content').hide();
         var $resContainer = $('div.cp-form-creator-results').hide();
@@ -2865,7 +2848,6 @@ define([
 
         if (answers._time) { APP.lastAnswerTime = answers._time; }
 
-        Messages.form_viewAllAnswers = "View all responses ({0})"; // XXX
         // If responses are public, show button to view them
         var responses;
         if (content.answers.privateKey) {
@@ -2923,9 +2905,6 @@ define([
         });
         return results;
     };
-
-    Messages.form_anonAnswer = "All answers to this form are anonymous"; // XXX
-    Messages.form_authAnswer = "You can't answer anonymously to this form"; // XXX
 
     var getSectionFromQ = function (content, uid) {
         var arr = content.order;
@@ -3141,7 +3120,6 @@ define([
             reset = undefined;
         }
 
-        Messages.form_requiredWarning = "These questions need an answer:"; // XXX
         var errors = h('div.cp-form-invalid-warning');
         var $errors = $(errors);
         var invalid = h('div.cp-form-invalid-warning');
@@ -3432,10 +3410,6 @@ define([
                 return;
             }
 
-            // XXX
-            Messages.form_required_answer = "Answer: ";
-            Messages.form_required_on = "Required";
-            Messages.form_required_off = "Optional";
             var requiredTag;
             if (block.opts && block.opts.required) {
                 requiredTag = h('span.cp-form-required-tag', Messages.form_required_on);
@@ -3454,12 +3428,8 @@ define([
 
             APP.formBlocks.push(data);
 
-            Messages.form_preview = "Preview:"; // XXX
             var previewDiv = h('div.cp-form-preview', Messages.form_preview);
 
-            Messages.form_required_answer = "Answer: ";
-            Messages.form_required_on = "required";
-            Messages.form_required_off = "optional";
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
@@ -3628,8 +3598,6 @@ define([
                         onEdit(temp[uid]);
                     }
 
-                    Messages.form_changeTypeConfirm = "Select the new type of this question and click OK."; // XXX
-                    Messages.form_corruptAnswers = "Changing the type may corrupt existing answers";
                     if (Array.isArray(model.compatible)) {
                         changeType = h('div.cp-form-block-type.editable', [
                             model.icon.cloneNode(),
@@ -3972,8 +3940,6 @@ define([
         }
 
         var makeFormSettings = function () {
-            Messages.form_preview = "Preview form"; // XXX
-            Messages.form_geturl = "Copy link"; // XXX
             var previewBtn = h('button.btn.btn-primary', [
                 h('i.fa.fa-eye'),
                 Messages.form_preview
@@ -3993,7 +3959,6 @@ define([
                 });
             });
 
-            Messages.form_makePublicWarning = "Are you sure you want to make responses to this form public? Past and future responses will be visible by participants. This cannot be undone."; // XXX existing key
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
             var $results = $(resultsType);
@@ -4025,9 +3990,6 @@ define([
             var $responseMsg = $(responseMsg);
             var refreshResponse = function () {
                 $responseMsg.empty();
-                Messages.form_updateMsg = "Update submit message"; // XXX 4.11.0
-                Messages.form_addMsg = "Add submit message"; // XXX 4.11.0
-                Messages.form_responseMsg = "This message will be displayed after participants submit the form."; // XXX 4.11.0
                 var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
                 var btn = h('button.btn.btn-secondary', text);
                 $(btn).click(function () {
@@ -4099,7 +4061,6 @@ define([
             refreshResponse();
 
             // Make answers anonymous
-            Messages.form_makeAnon = "Anonymize responses"; // XXX
             var anonContainer = h('div.cp-form-anon-container');
             var $anon = $(anonContainer);
             var refreshAnon = function () {
@@ -4121,7 +4082,6 @@ define([
             refreshAnon();
 
             // XXX UPDATE KEYS "form_anonyous_on", "form_anonymous_off" and "form_anonymous"
-            Messages.form_anonymous = "Guest access (not logged in)"; // XXX existing key
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
@@ -4152,7 +4112,6 @@ define([
             refreshPrivacy();
 
             // Allow responses edition
-            Messages.form_editable = "Editing after submit"; // XXX
             var editableContainer = h('div.cp-form-editable-container');
             var $editable = $(editableContainer);
             var refreshEditable = function () {
