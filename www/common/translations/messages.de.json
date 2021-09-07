@@ -1323,7 +1323,7 @@
     "form_answerName": "Antwort von {0} am {1}",
     "form_answerAnonymous": "Anonyme Antwort am {0}",
     "form_anonymousBox": "Anonym antworten",
-    "form_anonymous_blocked": "Anonyme Antworten sind in diesem Formular nicht erlaubt. Du musst dich <a href=\"/login/\">einloggen</a> oder <a href=\"/register/\">registrieren</a>, um Antworten abzusenden.",
+    "form_anonymous_blocked": "Antworten von Gästen sind in diesem Formular nicht erlaubt. Du musst dich <a href=\"/login/\">einloggen</a> oder <a href=\"/register/\">registrieren</a>, um Antworten abzusenden.",
     "form_anonymous_off": "Blockiert",
     "form_invalidWarning": "Es gibt fehlerhafte Antworten:",
     "form_notAnswered": "<b>{0}</b> leere Antworten",
