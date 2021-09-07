@@ -622,7 +622,7 @@
     "markdown_toc": "Contenido",
     "survey": "Encuesta de CryptPad",
     "crowdfunding_popup_no": "Ahora no",
-    "crowdfunding_popup_text": "<h3 >¡Necesitamos tu ayuda!</h3>Para garantizar que CryptPad se desarrolle activamente, considera apoyar el proyecto a través de la página OpenCollective, donde puedes ver nuestra <b>Hoja de ruta</b> y <b>Objetivos de financiación</b>.",
+    "crowdfunding_popup_text": "<h3>¡Necesitamos tu ayuda!</h3>Para garantizar que CryptPad se desarrolle activamente, considera apoyar el proyecto a través de la página OpenCollective, donde puedes ver nuestra <b>Hoja de ruta</b> y <b>Objetivos de financiación</b>.",
     "autostore_notAvailable": "Tienes que guardar el bloc en tu CryptDrive antes de usar esta función.",
     "autostore_forceSave": "Guarda el fichero en tu CryptDrive",
     "autostore_saved": "El bloc se guardó correctamente en tu CryptDrive!",
