@@ -6,7 +6,7 @@ define([
     '/common/outer/cache-store.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    'chainpad-listmap',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
 ], function (Util, Hash, Constants, Realtime, Cache, Messages, nThen, Listmap, Crypto, ChainPad) {

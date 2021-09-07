@@ -2759,6 +2759,7 @@ define([
             var $warning = $(warning).hide();
             var $url = $(url).on('change keypress keyup keydown', function () {
                 var v = $url.val().trim();
+                $url.toggleClass('cp-input-invalid', !Util.isValidURL(v));
                 if (v.length > 200) {
                     $warning.show();
                     return;
@@ -2783,7 +2784,6 @@ define([
                     var u = $url.val().trim();
                     if (!n || !u) { return true; }
                     if (!Util.isValidURL(u)) {
-                        // XXX 4.11.0 add style for invalid input? input:invalid
                         UI.warn(Messages.fm_link_invalid);
                         return true;
                     }

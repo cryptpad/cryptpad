@@ -273,4 +273,28 @@
             }
         }
     }
+    #cp-upload-preview-container {
+        max-width: 100%;
+        max-height: 300px;
+        overflow: auto;
+        // XXX these styles yield weird results for tall, thin images
+        // maybe img { object-fit: contain; } or scale-down are options
+        // but they have problems too
+        media-tag {
+            max-width: 100%;
+            iframe {
+                // pdfs don't take the full width unless we tell them to
+                width: 100%;
+            }
+            & > * {
+                max-width: 100%;
+            }
+        }
+    }
+    input#cp-app-drive-link-url {
+        &.cp-input-invalid {
+            border: 2px solid @cryptpad_color_red;
+            color: @cp_form-invalid;
+        }
+    }
 }

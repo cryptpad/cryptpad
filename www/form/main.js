@@ -125,7 +125,7 @@ define([
                 var noDriveAnswered = false;
                 nThen(function (w) {
                     require([
-                        '/bower_components/chainpad-netflux/chainpad-netflux.js',
+                        'chainpad-netflux',
                         '/common/pinpad.js',
                     ], w(function (_CPNetflux, _Pinpad) {
                         CPNetflux = _CPNetflux;
@@ -268,16 +268,20 @@ define([
                         var messages = obj.messages;
                         if (!messages.length) { return void cb(); }
                         if (obj.lastKnownHash !== answer.hash) { return void cb(); }
-                        var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
-                            validateKey: data.validateKey,
-                            ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
-                            my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
-                            their_public: Nacl.util.decodeBase64(data.publicKey)
-                        });
-                        var parsed = JSON.parse(res.content);
-                        parsed._isAnon = answer.anonymous;
-                        parsed._time = messages[0].time;
-                        cb(parsed);
+                        try {
+                            var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
+                                validateKey: data.validateKey,
+                                ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
+                                my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
+                                their_public: Nacl.util.decodeBase64(data.publicKey)
+                            });
+                            var parsed = JSON.parse(res.content);
+                            parsed._isAnon = answer.anonymous;
+                            parsed._time = messages[0].time;
+                            cb(parsed);
+                        } catch (e) {
+                            cb({error: e});
+                        }
                     });
 
                 });

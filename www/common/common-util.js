@@ -75,7 +75,9 @@
                 handlers.push(cb);
             },
             unreg: function (cb) {
-                if (handlers.indexOf(cb) === -1) { throw new Error("Not registered"); }
+                if (handlers.indexOf(cb) === -1) {
+                    return void console.error("event handler was already unregistered");
+                }
                 handlers.splice(handlers.indexOf(cb), 1);
             },
             fire: function () {
