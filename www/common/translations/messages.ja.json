@@ -1412,5 +1412,8 @@
     "form_changeTypeConfirm": "新しい設問の種類を選択してください。",
     "form_required_answer": "回答： ",
     "form_requiredWarning": "以下の設問は回答が必須です：",
-    "form_alreadyAnswered": "このフォームに{0}に回答しました"
+    "form_alreadyAnswered": "このフォームに{0}に回答しました",
+    "form_conditional_hint": "このセクションを秘密にするには、その上に選択あるいはチェックボックスの設問を追加してください",
+    "form_editable": "送信後の編集",
+    "form_responseMsg": "参加者がフォームを送信すると以下のメッセージが表示されます。"
 }
