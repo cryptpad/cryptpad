@@ -16,6 +16,9 @@ define([
             cm: '/bower_components/codemirror',
             'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
             'tui-date-picker': '/lib/calendar/date-picker',
+            'netflux-client': '/bower_components/netflux-websocket/netflux-client',
+            'chainpad-netflux': '/bower_components/chainpad-netflux/chainpad-netflux',
+            'chainpad-listmap': '/bower_components/chainpad-listmap/chainpad-listmap',
         },
         map: {
             '*': {

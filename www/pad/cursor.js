@@ -3,7 +3,9 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UIElements, UI, ChainPad) {
+    '/customize/messages.js',
+    '/common/inner/common-mediatag.js',
+], function ($, UIElements, UI, ChainPad, Messages, MT) {
     var Cursor = {};
 
     Cursor.isCursor = function (el) {
@@ -40,8 +42,17 @@ define([
 
         var cursors = {};
 
+    // FIXME despite the name of this function this doesn't actually render as a tippy tooltip
+    // that means that emojis will use the system font that shows up in native tooltips
+    // so this might be of limited value/aesthetic appeal compared to other apps' cursors
         var makeTippy = function (cursor) {
-            return cursor.name;
+            if (typeof(cursor.uid) === 'string' && (!cursor.name || cursor.name === Messages.anonymous)) {
+                var animal = MT.getPseudorandomAnimal(cursor.uid);
+                if (animal) {
+                    return animal + ' ' + Messages.anonymous;
+                }
+            }
+            return cursor.name || Messages.anonymous;
         };
 
         var makeCursor = function (id, cursor) {

@@ -1,4 +1,4 @@
-var EN = require("../www/common/translations/messages.json");
+var EN = require("../../www/common/translations/messages.json");
 
 var simpleTags = [
     '<br>',
@@ -118,7 +118,7 @@ processLang(EN, 'en', true);
   'zh',
 ].forEach(function (lang) {
     try {
-        var map = require("../www/common/translations/messages." + lang + ".json");
+        var map = require("../../www/common/translations/messages." + lang + ".json");
         if (!Object.keys(map).length) { return; }
         processLang(map, lang);
     } catch (err) {

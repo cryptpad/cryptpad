@@ -62,7 +62,6 @@ define([
         }
         var configTb = {
             displayed: displayed,
-            //hideDisplayName: true,
             $container: $bar,
             metadataMgr: metadataMgr,
             sfCommon: common,

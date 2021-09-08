@@ -10,11 +10,87 @@
         @bg-color: @colortheme_apps[form]
     );
 
+    @cp_form_bar_color: fade(@cryptpad_color_link, 75%); // Color for the response chart bars
+
     display: flex;
     flex-flow: column;
     font: @colortheme_app-font;
     color: @cryptpad_text_col;
     background-color: @cp_app-bg;
+
+    .alert {
+        font-size: 1rem;
+        &.alert-info {
+            color: @cryptpad_text_col !important;
+        }
+    }
+
+    @palette0: @cp_kanban-color0; // Default bg color for header
+    @form-colors: @cp_form-palette;
+    .form-colors(@form-colors; @index) when (@index > 0){
+        .form-colors(@form-colors; (@index - 1));
+        @color: extract(@form-colors, @index);
+        .cp-form-palette-color@{index}{
+            &.cp-form-palette {
+                background-color: @color !important;
+            }
+        }
+        &.cp-form-palette-color@{index}{
+            #cp-app-form-editor {
+                background-color: fade(@color, 50%);
+            }
+        }
+    }
+    .form-colors(@form-colors; length(@form-colors));
+
+    @form-colors2: @cp_form-palette2;
+    .checkmark-colors(@form-colors2; @index) when (@index > 0){
+        .checkmark-colors(@form-colors2; (@index - 1));
+        @color: extract(@form-colors2, @index);
+        &.cp-form-palette-color@{index}{
+            .cp-form-block {
+                .cp-radio input:checked ~ .cp-radio-mark, .cp-checkmark input:checked ~ .cp-checkmark-mark {
+                    background-color: @color !important;
+                    border-color: @color !important;
+                }
+                input, textarea {
+                    border-color: @color !important;
+                }
+            }
+            .cp-form-block-question-text, .cp-form-block-question-number {
+                color: @color !important;
+            }
+            .cp-form-type-sort:hover {
+                color: @color !important;
+                .cp-form-sort-order {
+                    border-color: @color !important;
+                }
+            }
+            .cp-form-input-block {
+                input { color: @color !important; }
+                border-bottom-color: @color !important;
+            }
+        }
+    }
+    .checkmark-colors(@form-colors2; length(@form-colors2));
+
+    .cp-form-palette {
+        &.cp-form-palette-nocolor {
+            background-color: @palette0 !important;
+        }
+    }
+    &.cp-form-palette-nocolor {
+        background-color: @cp_app-bg !important;
+    }
+
+    div.alert.cp-burn-after-reading {
+        margin: 10px !important;
+    }
+
+    & > .flatpickr-calendar {
+        animation: none !important;
+        -webkit-animation: none !important;
+    }
 
     #cp-app-form-editor {
         flex: 1;
@@ -54,7 +130,7 @@
         .cp-form-block {
             cursor: default !important;
             .cp-form-block-drag-handle {
-                display: none !important;
+                visibility: hidden;
             }
         }
     }
@@ -78,6 +154,28 @@
             display: flex;
         }
 
+        .cp-form-view-title {
+            margin-bottom: 20px;
+        }
+        div.cp-form-view-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 20px 150px 20px;
+            div.cp-form-view-logo {
+                padding: 10px;
+                font-size: 40px;
+                font-family: "IBM Plex Mono";
+                .tools_unselectable();
+                color: @cryptpad_color_grey_500;
+                cursor: pointer;
+                img {
+                    max-height: 60px;
+                    margin: 0px 20px;
+                }
+            }
+        }
+
         div.cp-form-creator-container {
             display: flex;
             flex: 1;
@@ -93,19 +191,71 @@
                     width: 100% !important;
                     .cp-form-creator-settings {
                         display: flex;
-                        justify-content: space-evenly;
+                        justify-content: space-between;
                         flex-wrap: wrap;
+                        & > div {
+                            flex-basis: 33.333333%;
+                            padding-right: 20px;
+                        }
+                    }
+                }
+            }
+            @media screen and (max-width: 600px) and (min-width: 400px) {
+                .cp-form-creator-settings {
+                    & > div {
+                        flex-basis: 50% !important;
+                    }
+                }
+            }
+            @media screen and (max-width: 400px) {
+                .cp-form-creator-settings {
+                    & > div {
+                        flex-basis: 100% !important;
                     }
                 }
             }
 
             .cp-form-creator-settings {
-                padding: 30px;
                 .cp-form-actions {
                     margin-top: 5px;
                 }
                 & > div:not(:last-child) {
                     margin-bottom: 20px;
+                }
+                .cp-forms-results-participant {
+                    display: flex;
+                    flex-flow: column;
+                    button {
+                        margin-bottom: 20px;
+                    }
+                }
+
+                .cp-form-color-container {
+                    & > div {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 5px;
+                        &:last-child {
+                            justify-content: space-evenly;
+                        }
+                        .cp-form-palette {
+                            display: inline-block;
+                            border-radius: 50%;
+                            height: 30px;
+                            width: 30px;
+                            text-align: center;
+                            line-height: 30px;
+                            color: @cp_kanban-fg;
+                            border: 1px solid fade(@cp_kanban-fg, 40%);
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                .cp-form-response-msg-container button {
+                    white-space: initial;
+                    line-height: 25px;
+                    padding: 5.5px 6px;
                 }
             }
             div.cp-form-filler-container {
@@ -115,6 +265,7 @@
             }
             div.cp-form-creator-control {
                 padding: 10px;
+                margin-top: 10px;
                 display: flex;
                 flex-flow: column;
                 width: 300px;
@@ -122,6 +273,74 @@
                     margin-top: 20px;
                     display: flex;
                     flex-flow: column;
+                }
+            }
+            div.cp-form-creator-content {
+                .cp-form-block-type {
+                    margin-top: -35px;
+                    &.editable {
+                        cursor: pointer;
+                    }
+                    .fa-caret-down {
+                        margin-left: 5px;
+                    }
+                }
+
+
+                .cp-form-conditional {
+                    .cp-form-conditional-hint {
+                        margin-bottom: 10px;
+                    }
+                    .cp-form-condition {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 10px;
+                        flex-wrap: wrap;
+                        & > * {
+                            margin-right: 10px;
+                        }
+                        .cp-dropdown-container button {
+                            max-width: 200px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                    .cp-form-condition-rule {
+                        padding-bottom: 20px;
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid @cryptpad_text_col;
+                    }
+                }
+
+                div.cp-form-section-sortable {
+                    min-height: 300px;
+                    border: 2px dashed @cryptpad_text_col;
+                    padding: 20px;
+                    margin-top: 20px;
+                    background: @cp_app-bg;
+                    .cp-form-creator-add-inline {
+                        button[data-type="section"] {
+                            display: none;
+                        }
+                    }
+                }
+            }
+            div.cp-form-creator-results {
+                .cp-form-block {
+                    .cp-form-block-content {
+                        overflow-x: auto;
+                    }
+                }
+                .cp-form-creator-results-timeline {
+                    margin-bottom: 20px;
+                    table.cp-charts.column {
+                        overflow-x: initial;
+                        td {
+                            background-color: @cp_form_bar_color;
+                            border-color: @cp_form_bar_color;
+                        }
+                    }
                 }
             }
             div.cp-form-creator-content, div.cp-form-creator-results {
@@ -242,12 +461,17 @@
                         color: @cp_form-invalid;
                         ul {
                             list-style-type: disclosure-closed;
+                            margin-bottom: 5px;
                         }
                         li {
                             text-align: left;
                             a {
                                 color: @cryptpad_color_link;
                             }
+                        }
+                        .alert-danger {
+                            font-size: 1rem;
+                            padding: 10px;
                         }
                     }
                     .cp-form-anon-answer {
@@ -261,6 +485,10 @@
                             input {
                                 margin-left: 10px;
                             }
+                        }
+                        .cp-form-anon-answer-registered {
+                            font-style: italic;
+                            margin-left: 10px;
                         }
                     }
                 }
@@ -289,13 +517,27 @@
                 .cp-form-block {
                     background: @cp_form-bg1;
                     padding: 10px;
+                    box-shadow: 0px 0px 15px @cp_shadow-color;
                     &:not(:last-child) {
                         margin-bottom: 20px;
+                    }
+
+                    .cp-form-disabled {
+                        .cp-form-poll-choice, .cp-form-type-sort {
+                            cursor: not-allowed !important;
+                        }
+                    }
+
+                    .cp-form-preview {
+                        color: @cp_sidebar-hint;
+                        margin-bottom: 10px;
+                        padding: 0;
                     }
 
                     .cp-form-block-drag-handle {
                         display: flex;
                         flex-flow: column;
+                        height: 25px;
                         align-items: center;
                         color: @cp_sidebar-hint;
                         i {
@@ -318,16 +560,41 @@
 
                     .cp-form-block-question {
                         margin-bottom: 5px;
+                        display: flex;
                         .cp-form-block-question-number {
                             font-weight: bold;
                             margin-right: 10px;
                         }
+                        .cp-form-block-question-text {
+                            flex: 1;
+                        }
+                        .cp-form-required-tag {
+                            background: fade(@cryptpad_text_col, 15%);
+                            padding: 5px;
+                            margin-top: -10px;
+                            margin-right: -10px;
+                            &.cp-is-empty {
+                                padding: 3px;
+                                border: 2px solid @cryptpad_color_red;
+                                color: @cp_form-invalid;
+                            }
+                        }
                     }
                     .cp-form-block-content {
-                        overflow-x: auto;
                         p {
                             a {
                                 color: @cryptpad_color_link;
+                            }
+                        }
+                        .cp-form-required-radio {
+                            flex-direction: row;
+                            display: flex;
+                            margin-bottom: 20px;
+                            span {
+                                margin-right: 10px;
+                                &.cp-radio-mark {
+                                    margin-right: 5px;
+                                }
                             }
                         }
                         .cp-form-page-break-edit {
@@ -440,7 +707,12 @@
                     }
                 }
                 .cp-form-edit-block {
-
+                    &.cp-no-sortable {
+                        .cp-form-handle {
+                            visibility: hidden;
+                            cursor: default;
+                        }
+                    }
                     button.btn-secondary {
                         margin-left: 30px;
                         margin-bottom: 5px;
@@ -475,6 +747,22 @@
                 }
             }
         }
+        div.cp-form-creator-answered {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            flex-flow: column;
+            .cp-form-submit-actions {
+                button:not(:last-child) {
+                    margin-right: 10px;
+                }
+            }
+            .cp-form-view-logo {
+                margin-top: 100px;
+                padding-bottom: 20px;
+            }
+        }
         div.cp-form-creator-results {
             display: flex;
             flex-flow: column;
@@ -487,11 +775,13 @@
                 p:last-child {
                     margin-bottom: 0;
                 }
+                * {
+                    max-width: 100%;
+                }
             }
 
             .cp-form-creator-results-controls {
                 margin-bottom: 20px;
-                margin-top: 20px;
                 //background: @cp_form-bg1;
                 //padding: 10px;
                 button {
@@ -502,20 +792,12 @@
             .cp-form-creator-results-content {
                 padding-bottom: 100px;
                 .cp-form-block {
-                        background: @cp_form-bg1;
-                        padding: 10px;
+                    background: @cp_form-bg1;
+                    padding: 10px;
                 }
             }
             .cp-form-block-question {
                 margin-bottom: 5px;
-            }
-            .cp-form-block-type {
-                float: right;
-                padding: 5px;
-                margin-top: -10px;
-                margin-right: -10px;
-                i { margin-right: 5px; }
-                background: fade(@cryptpad_text_col, 15%);
             }
             .cp-form-results-type-text {
                 max-height: 300px;
@@ -532,35 +814,51 @@
                 background: @cp_form-bg2;
                 &:not(:last-child) { margin-bottom: 1px; }
             }
-            .cp-form-results-type-radio {
-                display: table;
-                .cp-form-results-type-multiradio-data {
-                    display: flex;
-                    flex-flow: column;
+
+            .cp-form-results-cell() {
+                border: 1px solid @cp_form-border;
+                display: table-cell;
+                padding: 5px 10px;
+                background: @cp_form-bg2;
+            }
+
+            .cp-form-results-type-multiradio-data {
+                .cp-mr-q {
+                    font-weight: bold;
+                    padding: 5px 10px;
+                    .cp-form-results-cell();
+                    background: transparent;
                 }
-                .cp-form-results-type-radio-data {
-                    display: table-row;
-                    border: 1px solid @cp_form-border;
-                    & > span {
-                        border: 1px solid @cp_form-border;
-                        display: table-cell;
-                        padding: 5px 10px;
-                        background: @cp_form-bg2;
-                        &.cp-value {
-                            min-width: 200px;
-                        }
-                        &.cp-bar-container {
-                            width: 99%;
-                            padding: 0px;
-                            position: relative;
-                            .cp-bar {
-                                position: absolute;
-                                background: @cryptpad_color_brand;
-                                height: 100%;
-                            }
+                &:not(:first-child) {
+                    .cp-mr-q {
+                        margin-top: 15px;
+                    }
+                }
+            }
+
+            .cp-charts {
+                .cp-charts-row {
+                    .cp-grid-sub-question {
+                        background: transparent;
+                    }
+                    .cp-value {
+                        min-width: 200px;
+                        max-width: 200px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    .cp-bar-container {
+                        .cp-bar {
+                            background-color: @cp_form_bar_color;
                         }
                     }
                 }
+            }
+
+            .cp-form-results-contained {
+                max-height: 350px; // enough for 10 table entries
+                overflow: auto;
             }
             .cp-form-individual {
                 background: @cp_form-bg1;
@@ -582,6 +880,14 @@
                     color: @cryptpad_color_link;
                 }
             }
+        }
+        .cp-form-block-type {
+            float: right;
+            padding: 5px;
+            margin-top: -10px;
+            margin-right: -10px;
+            i { margin-right: 5px; }
+            background: fade(@cryptpad_text_col, 10%);
         }
     }
 
@@ -811,6 +1117,11 @@
         }
         div.cp-form-poll-answer {
             color: @cp_form-poll-yes-color;
+        }
+    }
+    .cp-form-response-modal {
+        .CodeMirror {
+            border: 1px solid @cp_forms-border;
         }
     }
 

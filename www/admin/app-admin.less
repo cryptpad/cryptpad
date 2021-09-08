@@ -1,12 +1,14 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/support.less';
+@import (reference) '../../customize/src/less2/include/charts.less';
 
 &.cp-app-admin {
 
     .framework_min_main();
     .sidebar-layout_main();
     .support_main();
+    .charts_main();
 
     .cp-hidden {
         display: none !important;
@@ -293,6 +295,28 @@
                 }
             }
         }
+    }
+    span.cp-bar.profiling-percentage {
+        text-align: center;
+        padding: 5px;
+    }
+    span.profiling-label {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        text-align: center;
+        padding: 5px;
+    }
+    #profiling-chart {
+        .cp-bar-container {
+            max-width: 400px;
+        }
+    }
+    .width-constrained {
+        max-width: 800px;
+    }
+    .cp-charts-row.heading {
+        font-weight: bold;
     }
 }
 

@@ -41,6 +41,10 @@ define([
         return e;
     };
 
+    UI.getDisplayName = function (name) {
+        return (typeof(name) === 'string'? name: "").trim() || Messages.anonymous;
+    };
+
     // FIXME almost everywhere this is used would also be
     // a good candidate for sframe-common's getMediatagFromHref
     UI.mediaTag = function (src, key) {

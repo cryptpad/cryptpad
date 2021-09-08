@@ -97,16 +97,28 @@ define([
         // Tippy
         var html = MT.getCursorAvatar(cursor);
 
-        var l = Util.getFirstCharacter(cursor.name || Messages.anonymous);
+        var name = UI.getDisplayName(cursor.name);
+
+        var l; // label?
+        var animal = '';
+        if (cursor.name === Messages.anonymous && typeof(cursor.uid) === 'string') {
+            l = MT.getPseudorandomAnimal(cursor.uid);
+            if (l) {
+                animal = '.animal';
+            }
+        }
+        if (!l) {
+            l = MT.getPrettyInitials(name);
+        }
 
         var text = '';
         if (cursor.color) {
-            text = 'color:'+getTextColor(cursor.color)+';';
+            text = 'background-color:' + cursor.color + '; color:'+getTextColor(cursor.color)+';';
         }
-        var avatar = h('span.cp-cursor.cp-tippy-html', {
-            style: "background-color: " + (cursor.color || 'red') + ";"+text,
+        var avatar = h('span.cp-cursor.cp-tippy-html' + animal, {
+            style: text,
             'data-cptippy-html': true,
-            title: html
+            title: html,
         }, l);
         if (!noClear) {
             cursor.clear = function () {
@@ -563,12 +575,12 @@ define([
                 "12": {
                     "id": 12,
                     "title": Messages.kanban_working,
-                    "item": [3, 4]
+                    "item": [],
                 },
                 "13": {
                     "id": 13,
                     "title": Messages.kanban_done,
-                    "item": [5, 6]
+                    "item": [],
                 }
             },
             items: items
@@ -1009,8 +1021,8 @@ define([
             var common = framework._.sfCommon;
             var $button = common.createButton('toggle', true, {
                 element: $(container),
-                //icon: 'fa-tags', // FIXME
-                //text: Messages.fm_tagsName, // FIXME
+                icon: 'fa-tags',
+                text: Messages.fm_tagsName,
             }, function () {
                 $button.toggleClass('cp-toolbar-button-active');
 
@@ -1295,12 +1307,12 @@ define([
             // Add new cursor
             var avatar = getAvatar(cursor);
             var $item = $('.kanban-item[data-eid="'+cursor.item+'"]');
-            var $board = $('.kanban-board[data-id="'+cursor.board+'"]');
             if ($item.length) {
                 remoteCursors[id] = cursor;
                 $item.find('.cp-kanban-cursors').append(avatar);
                 return;
             }
+            var $board = $('.kanban-board[data-id="'+cursor.board+'"]');
             if ($board.length) {
                 remoteCursors[id] = cursor;
                 $board.find('header .cp-kanban-cursors').append(avatar);

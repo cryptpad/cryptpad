@@ -45,6 +45,7 @@ define([
             'cp-support-list',
         ],
         'new': [ // Msg.support_cat_new
+            'cp-support-subscribe',
             'cp-support-language',
             'cp-support-form',
         ],
@@ -164,6 +165,26 @@ define([
             ])
         );
         return $div;
+    };
+
+    create['subscribe'] = function () {
+        if (!Pages.areSubscriptionsAllowed()) { return; }
+        var url = Pages.accounts.upgradeURL;
+        var accountsLink = h('a', {
+            href: url,
+        }, Messages.support_premiumLink);
+        $(accountsLink).click(function (ev) {
+            ev.preventDefault();
+            common.openURL(url);
+        });
+
+        return $(h('div.cp-support-subscribe.cp-sidebarlayout-element', [
+            h('div.alert.alert-info', [
+                Messages.support_premiumPriority,
+                ' ',
+                accountsLink,
+            ]),
+        ]));
     };
 
     // Create a new tickets
