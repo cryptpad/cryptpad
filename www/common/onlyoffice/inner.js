@@ -1097,6 +1097,16 @@ define([
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
+
+            var editor = getEditor();
+            console.error(type, APP.themeChanged, b, b.guid, editor.GetPresentation().Presentation.themeLock.Id, typeof(b.guid));
+            if (type === "presentation" && APP.themeChanged && b &&
+                b.guid === editor.GetPresentation().Presentation.themeLock.Id) {
+                console.error('OK');
+                APP.themeLocked = APP.themeChanged;
+                APP.themeChanged = undefined;
+            }
+
             // Prepare callback
             if (cpNfInner) {
                 var waitLock = APP.waitLock = Util.mkEvent(true);
@@ -1236,6 +1246,11 @@ define([
                     if (APP.onStrictSaveChanges && !force) { return; }
                     // We only need to release locks for sheets
                     if (type !== "sheet" && obj.type === "releaseLock") { return; }
+                    if (type === "presentation" && obj.type === "cp_theme") {
+                        // XXX
+                        console.error(obj);
+                        return;
+                    }
 
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
@@ -1297,6 +1312,15 @@ define([
                                 };
                                 APP.onStrictSaveChanges();
                                 return;
+                            }
+                            console.error(APP.isFast, APP.themeLocked);
+                            var AscCommon = window.frames[0] && window.frames[0].AscCommon;
+                            if (Util.find(AscCommon, ['CollaborativeEditing','m_bFast'])
+                                        && APP.themeLocked) {
+                                obj = APP.themeLocked;
+                                APP.themeLocked = undefined;
+                                obj.type = "cp_theme";
+                                console.error(obj);
                             }
                             // We're sending our changes to netflux
                             handleChanges(obj, send);
@@ -1629,6 +1653,33 @@ define([
                 });
             };
 
+            APP.changeTheme = function (id, selected) {
+                var slides;
+                // If "selected" is undefined, apply to selection if more than one
+                // slide is selected.
+                // If it's true, apply to the selected slides
+                // If it's false, apply to the entire presentation
+                var editor = getEditor();
+                if (typeof(selected) === "undefined") {
+                    slides = editor.WordControl.Thumbnails.GetSelectedArray();
+                    if (slides.length === 1) { slides = undefined; }
+                } else if (selected) {
+                    slides = editor.WordControl.Thumbnails.GetSelectedArray();
+                }
+                APP.themeChanged = {
+                    slides: slides,
+                    id: id
+                };
+                console.error(slides, id);
+                // XXX ChangeTheme(themeId, selectedSlides)
+                // editor.WordControl.Thumbnails.GetSelectedArray()
+                // editor.WordControl.Thumbnails.SelectPage(id)
+                /*
+                editor.WordControl.Thumbnails.m_arrPages.forEach(function (obj) {
+                    obj.IsSelected = [0,1].indexOf(obj.pageIndex) !== -1
+                });
+                */
+            };
             APP.openURL = function (url) {
                 common.openUnsafeURL(url);
             };
