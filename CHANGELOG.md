@@ -2,7 +2,7 @@
 
 ## Goals
 
-Our main goal for this release was to update our Forms app to address common needs and points of confusion from this summer's survey and the one-on-one interviews conducted with volunteers. Many of these points were limited to forms itself, but some were closely related with some other concepts in the platform and prompted us to make some considerable changes throughout.
+Our main goal for this release was to update our Forms app to address feedback gathered in the research we conducted over the summer (survey and one-on-one interviews with volunteers). Many of these points were limited to forms itself, but some were closely related with some other concepts in the platform and prompted us to make some considerable changes throughout.
 
 ## Update notes
 
@@ -28,7 +28,7 @@ To update from 4.10.0 to 4.11.0:
   * We chose a list of emojis that we hoped nobody would find objectionable ('🙈 🦀 🐞 🦋 🐬 🐋 🐢 🦉 🦆 🐧 🦡 🦘 🦨 🦦 🦥 🐼 🐻 🦝 🦓 🐄 💮️ 🐙️ 🌸️ 🌻️ 🐝️ 🐐 🦙 🦒 🐘 🦏 🐁 🐹 🐰 🦫 🦔 🐨 🐱 🐺 👺 👹 👽 👾 🤖'), but we realize that cultures and contexts differ widely. As such, we've made this configurable on a per-instance basis. A custom list of emojis can be set in `customize/application_config.js` as an array of single-emoji strings (`AppConfig.emojiAvatars = ['🥦', '🧄', '🍄', '🌶️'];`) or as an empty array if you prefer not to display any emojis (`AppConfig.emojiAvatars = [];`). See [our admin docs](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config) for more info on customization.
   * Users can edit their display name inline in the user list or on their settings page, in which case their avatar will be one or two letters from their name (their first two initials if their name contains at least one space, otherwise the first two letters of their name).
   * Once these initial improvements had been made to the user list, the lack of support for emoji avatars in a number of places felt very conspicuous, so we've done our best to implement them consistently across every social aspect of the platform. Default emoji avatars are also displayed in comments in the rich text editor, in authorship data in our code/markdown editor, in tooltips when you hover over the marker for remote users' cursor location, in the "currently editing" indicator for Kanban cards, in the share and access menus, and in the "contacts" app.
-* The file upload dialog now includes a preview of the media that you are about to upload (as long as it's something CryptPad is capable of displaying) as well as a text field for describing the media. Descriptive text is added to the file's encrypted metadata and is applied to rendered media as `alt` or `title` attributes wherever applicable. This coincides with a broader effort to improve keyboard navigation and add support for screenreaders.
+* The file upload dialog now includes a preview of the media that you are about to upload (as long as it's something CryptPad is capable of displaying) as well as a text field for describing the media. Descriptive text is added to the file's encrypted metadata and is applied to rendered media as `alt` or `title` attributes wherever applicable. This coincides with a broader effort to improve keyboard navigation and add support for screen-readers.
 * The link creation UI from 4.9.0 now highlights the URL input field as you type to indicate whether the current URL value is valid, rather than simply displaying an error when you submit.
 * The 'Performance' tab of the admin panel has reused the bar chart UI we added for displaying the results of forms.
 * We've written a small script to help us identify translated strings that are consistently duplicated across the four languages into which CryptPad has been fully translated (English, French, German, Japanese). We plan to use this to remove unnecessary strings in an upcoming release and make it easier to translate the platform into new languages.
@@ -41,7 +41,7 @@ To update from 4.10.0 to 4.11.0:
   * Form authorship supports real-time editing more broadly than before:
     * Changes are saved as you type, so you no longer need to manually save each question.
     * Multiple authors can edit edit the same question concurrently without overwriting each other's work.
-    * We avoid redrawing active parts of the UI when other authors make a change, so remote actions won't interfere with your local datepicker, dropdown selections, etc.
+    * We avoid redrawing active parts of the UI when other authors make a change, so remote actions won't interfere with your local date-picker, dropdown selections, etc.
     * The UI is redrawn no more than once every 500ms for performance reasons.
     * We do our best to preserve current scroll position when other users make changes so authors don't accidentally click on the wrong elements.
   * Authors have easier access to basic functionality in the left sidebar that allows them to _preview_ a form, copy the participant link, and view existing responses with a single click.
@@ -53,7 +53,7 @@ To update from 4.10.0 to 4.11.0:
     * Options are displayed according to the order of their appearance in the original question, rather than according to the order in which participants chose them.
   * Form authors can conveniently change a question's type wherever its content can be automatically converted to a related format (radio, checkbox, ranked choices).
   * There are more options for form validation, such as required questions and new types of questions with automatic validation. Invalid answers are summarized at the bottom of the form. Clicking summaries jumps to the relevant question.
-  * CryptPad logo is included at the bottom of the participant page and links to the home page so that partipants can create their own forms or learn more about how data is encrypted.
+  * CryptPad logo is included at the bottom of the participant page and links to the home page so that participants can create their own forms or learn more about how data is encrypted.
   * We now pre-fill some options in our "simple scheduling poll" template, suggesting some basic options for the upcoming week and better indicating how the poll is intended to be used.
   * Lastly, authors can assign color themes to their form for some basic visual customization.
 
