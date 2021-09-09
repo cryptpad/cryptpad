@@ -1,93 +1,69 @@
-# 4.11.0 (WIP)
+# 4.11.0
 
 ## Goals
 
+Our main goal for this release was to update our Forms app to address common needs and points of confusion from this summer's survey and the one-on-one interviews conducted with volunteers. Many of these points were limited to forms itself, but some were closely related with some other concepts in the platform and prompted us to make some considerable changes throughout.
+
 ## Update notes
 
-* warning about lack of support for internet explorer
-  * existing support will get worse over time. please update.
-  * we only support IE for the home page and related info pages. Apps with complex functionality assume you are using a regularly updated browser.
-* this release includes new clientside dependencies. Don't forget to run `bower update`
+As of this release we are dropping support for Internet Explorer 11 we learned that even Microsoft stopped supporting it in their own Office 365 platform. This means that we can finally start using some newer browser features that are available in every other modern browser and simplify parts of our code, making it smaller and faster to load for everyone else.
+
+4.11 doesn't require any manual configuration if you're updating from 4.10, so this should be a fairly simple release. There is a new customization option that is described in the following features section, however, this is entirely optional.
 
 To update from 4.10.0 to 4.11.0:
 
 1. Stop your server
 2. Get the latest code with git
 3. Install the latest dependencies with `bower update` and `npm i`
+  * this release requires new client-side dependencies, so **don't forget this step**
 4. Restart your server
 5. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
 
 ## Features
 
-* unify unregistered/non-registered/anonymous terminology as 'guest'
-* support
-  * prompt users that need support to subscribe
-  * refactor debugging data generation to easily show users what data is included
-* form improvements
-  * include bar graphs for multiple-answer form questions
-  * move the tally of empty responses to the top of each question's summary (rather than the bottom)
-  * conditionally displayed sections depending on the state of previous answers
-  * nicer participant view without CryptPad toolbar or popups
-  * response page to with customizable message to thank those that have responded
-  * more granular form controls and clearer text
-    * anonymization settings for answers
-    * optional restriction of a form to registered users only
-  * real-time form authorship.
-    * changes are saved as you type, so you no longer need to "save" each question.
-    * co-author surveys with other users and edit the same question concurrently.
-    * avoid redrawing active parts of the UI when other authors make a change (datepicker UI, dropdowns, etc.)
-    * redraw no more than once every 500ms for performance reasons
-    * preserve current scroll position when other users make changes
-  * easier access to basic for form authors in the left sidebar:
-    * preview a form
-    * copy the participant link
-    * view existing responses
-  * more intuitive display of answers
-    * bar charts throughout, wherever applicable
-    * options with no answers are still displayed with zero results in the summary rather than not being displayed at all
-    * options are displayed according to the order of their appearance in the original question, rather than according to the order in which participants chose them
-    * the number of empty answers is displayed above the scrollable section of each answer's summary rather than at the bottom
-  * more intuitive controls and default options
-    * placeholders for text inputs instead of pre-filled fields
-    * "enter" creates a new field
-    * "esc" clears an empty field
-    * easy navigation using the tab key
-  * convert between related question types:
-    * radio, checkbox, ranked choices
-    * multi-radio, multi-check
-  * more form validation options:
-    * required questions
-    * validated question types
-    * summarize invalid answers at the bottom of the form. jump to the relevant question when clicked.
-  * CryptPad logo displayed at the bottom of the participant page which links to the home page
-  * we've pre-filled some options in our "simple scheduling poll" template.
-* bar charts on the admin page's 'Performance' tab
-* enhancements for guest users and registered users without names or avatars
-  * two initials for users with a custom name but no avatar (previously one initial, always capitalized)
-  * animal avatars as defaults instead of indistinguishable initials (A for Anonymous, G for Guest)
-    * configurable via `AppConfig.emojiAvatars = []`
-  * authorship data for guests in rich text comments, code editor author data
-  * emojis in cursor tooltips for guests (rich text, code, slide, kanban)
-  * emojis in the share and access modals for contacts with empty names
-* script to identify unnecessary duplication of translations
-* improvements to upload and media-tag UI
-  * support for adding descriptive text at upload time
-  * preview of uploaded media in the upload modal
-* our link creation UI from 4.9.0 now highlights the URL input field as you type to indicate whether the current URL value is valid
-* the share menu now makes its primary actions more clear, with explicit text ("copy link" instead of just "copy") on its main buttons, as well as icons that better match button UI on the rest of the platform.
-* we're working towards better accessibility for screen readers with better alt-text and `aria-` attributes to suppress descriptions of strictly visual UI features.
+* We've changed the platform's default display name from "Anonymous" to "Guest" and have also replaced existing mentions of "Unregistered" or "Non-registered" users with this terminology.
+  * The term "Anonymous" was only ever intended to convey the classical sense of the word ("without name or attribution") rather than the stricter modern sense "indistinguishable from a meaningfully large set of other individuals". To be clear, this is a change of terminology, not behaviour. To prevent your IP address from being revealed to the host server while using CryptPad the best option has always been, and continues to be [Tor browser](https://www.torproject.org/download/).
+  * Going forward, if you see "anonymize" in CryptPad (such as in forms), you can take it to mean that extra efforts are being taken to make protocol-level metadata indistinguishable from that of other users, while "Guest" means only that you haven't registered or have removed your display name.
+* While we were reconsidering the notion of guest accounts we decided that it would be useful to be able to distinguish one guest from another. We decided to implement this by hooking into the existing system for displaying users' profile pictures by mapping a list of emojis to guests' randomly generated identifiers.
+  * We chose a list of emojis that we hoped nobody would find objectionable ('🙈 🦀 🐞 🦋 🐬 🐋 🐢 🦉 🦆 🐧 🦡 🦘 🦨 🦦 🦥 🐼 🐻 🦝 🦓 🐄 💮️ 🐙️ 🌸️ 🌻️ 🐝️ 🐐 🦙 🦒 🐘 🦏 🐁 🐹 🐰 🦫 🦔 🐨 🐱 🐺 👺 👹 👽 👾 🤖'), but we realize that cultures and contexts differ widely. As such, we've made this configurable on a per-instance basis. A custom list of emojis can be set in `customize/application_config.js` as an array of single-emoji strings (`AppConfig.emojiAvatars = ['🥦', '🧄', '🍄', '🌶️'];`) or as an empty array if you prefer not to display any emojis (`AppConfig.emojiAvatars = [];`). See [our admin docs](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config) for more info on customization.
+  * Users can edit their display name inline in the user list or on their settings page, in which case their avatar will be one or two letters from their name (their first two initials if their name contains at least one space, otherwise the first two letters of their name).
+  * Once these initial improvements had been made to the user list, the lack of support for emoji avatars in a number of places felt very conspicuous, so we've done our best to implement them consistently across every social aspect of the platform. Default emoji avatars are also displayed in comments in the rich text editor, in authorship data in our code/markdown editor, in tooltips when you hover over the marker for remote users' cursor location, in the "currently editing" indicator for Kanban cards, in the share and access menus, and in the "contacts" app.
+* The file upload dialog now includes a preview of the media that you are about to upload (as long as it's something CryptPad is capable of displaying) as well as a text field for describing the media. Descriptive text is added to the file's encrypted metadata and is applied to rendered media as `alt` or `title` attributes wherever applicable. This coincides with a broader effort to improve keyboard navigation and add support for screenreaders.
+* The link creation UI from 4.9.0 now highlights the URL input field as you type to indicate whether the current URL value is valid, rather than simply displaying an error when you submit.
+* The 'Performance' tab of the admin panel has reused the bar chart UI we added for displaying the results of forms.
+* We've written a small script to help us identify translated strings that are consistently duplicated across the four languages into which CryptPad has been fully translated (English, French, German, Japanese). We plan to use this to remove unnecessary strings in an upcoming release and make it easier to translate the platform into new languages.
+* The "share" menu now makes its primary actions more clear, with explicit text ("copy link" instead of just "copy") on its main buttons, as well as icons that better match button UI on the rest of the platform.
+* Finally, this release introduces our "v2" forms update with many usability enhancements:
+  * Forms can now include questions which are displayed based on the condition of participants' earlier answers.
+  * The participant view of forms no longer displays CryptPad's toolbar and popups and instead uses a full-page view. CryptPad's logo is included at the bottom of the page and acts as a link to the home page.
+  * Form authors can set a custom message to be displayed to participants once they have submitted a response.
+  * Some more advanced form settings are available for authors, and we've clarified the descriptions of existing options ("Anonymize responses", "Guest access", "Editing after submission").
+  * Form authorship supports real-time editing more broadly than before:
+    * Changes are saved as you type, so you no longer need to manually save each question.
+    * Multiple authors can edit edit the same question concurrently without overwriting each other's work.
+    * We avoid redrawing active parts of the UI when other authors make a change, so remote actions won't interfere with your local datepicker, dropdown selections, etc.
+    * The UI is redrawn no more than once every 500ms for performance reasons.
+    * We do our best to preserve current scroll position when other users make changes so authors don't accidentally click on the wrong elements.
+  * Authors have easier access to basic functionality in the left sidebar that allows them to _preview_ a form, copy the participant link, and view existing responses with a single click.
+  * The form creation presents better default options (placeholders instead of pre-filled fields for text inputs) and offers intuitive controls, such as "enter" to create a new field, "esc" to clear an empty field, and "tab" to navigate with just the keyboard.
+  * The summary of existing responses is presented more intuitively:
+    * The tally of empty responses is now displayed at the top of each question's summary rather than the bottom.
+    * Bar charts are used throughout, wherever applicable.
+    * Options with no answers are still displayed with zero results in the summary rather than not being displayed at all.
+    * Options are displayed according to the order of their appearance in the original question, rather than according to the order in which participants chose them.
+  * Form authors can conveniently change a question's type wherever its content can be automatically converted to a related format (radio, checkbox, ranked choices).
+  * There are more options for form validation, such as required questions and new types of questions with automatic validation. Invalid answers are summarized at the bottom of the form. Clicking summaries jumps to the relevant question.
+  * CryptPad logo is included at the bottom of the participant page and links to the home page so that partipants can create their own forms or learn more about how data is encrypted.
+  * We now pre-fill some options in our "simple scheduling poll" template, suggesting some basic options for the upcoming week and better indicating how the poll is intended to be used.
+  * Lastly, authors can assign color themes to their form for some basic visual customization.
 
 ## Bug fixes
 
-* fix empty name fields in various places across the platform where we did not fall back to "anonymous/guest"
-  * teams
-  * contacts
-  * ???
-* clarified a comment in the nginx config about _professional support_
-* handled an edge case in ICS import to calendars where DTEND was not defined (use duration or consider it an "all-day" event
-* links shared by contacts could be previewed in a modal when viewing their notification. The color of the previewed link was overridden by some bootstrap styles. we now use a better color.
-* better validation for team invite links where badly formed invite content could have triggered a type error.
-
+* While implementing and testing the display of emojis as avatars for guests we found several instances (in teams, chat, and the contacts app) where the UI did not fall back to the default display name.
+* We've clarified a comment in our example NGINX file which recommended that admins contact us if they are using CryptPad in a production environment. It now indicates that they should do so _if they require professional support_.
+* We now handle an edge case in ICS import to calendars where DTEND was not defined. When a duration is specified we calculate the end of the event relative to the provided start time, and otherwise consider it a "full-day" event as per the ICS specification.
+* Users can share links directly with contacts, but we noticed that the color of the previewed link was overridden by some styles from bootstrap, resulting in very low contrast. We now use a standard CryptPad color which is clearly legible in both light and dark mode.
+* Finally, we've applied some stricter validation to the encrypted content of team invite links which could have previously resulted in type errors.
 
 # 4.10.0
 
