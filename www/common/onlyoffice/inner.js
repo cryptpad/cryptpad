@@ -56,11 +56,12 @@ define([
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
     };
 
-    var CHECKPOINT_INTERVAL = 100;
+    var CHECKPOINT_INTERVAL = 20;
+    var FORCE_CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 4;
+    var NEW_VERSION = 4; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
-    var CURRENT_VERSION = 'v4';
+    var CURRENT_VERSION = 'v4'; // Path to the current onlyoffice version
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
@@ -478,6 +479,9 @@ define([
             delete APP.refreshPopup;
             clearTimeout(APP.refreshRoTo);
 
+            // Don't create the initial checkpoint indefinitely in a loop
+            delete APP.initCheckpoint;
+
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
@@ -539,8 +543,9 @@ define([
             var locked = content.saveLock;
             var lastCp = getLastCp();
 
-            var needCp = force || ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0 ||
-                        (ooChannel.cpIndex - (lastCp.index || 0)) > CHECKPOINT_INTERVAL;
+            var currentIdx = ooChannel.cpIndex;
+            var needCp = force || (currentIdx - (lastCp.index || 0)) > FORCE_CHECKPOINT_INTERVAL;
+
             if (!needCp) { return; }
 
             if (!locked || !isUserOnline(locked) || force) {
@@ -1526,8 +1531,13 @@ define([
                             } catch (e) {}
                         }
 
-                        if (lock && !readOnly) {
+                        if (lock && !readOnly) { // Lock = !history && migrate
                             onMigrateRdy.fire();
+                        }
+
+                        if (APP.initCheckpoint) {
+                            getEditor().asc_setRestriction(true);
+                            makeCheckpoint(true);
                         }
 
                         // Check if history can/should be trimmed
@@ -2728,6 +2738,21 @@ define([
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
+
+                // If we have more than CHECKPOINT_INTERVAL patches in the initial history
+                // and we're the only editor in the pad, make a checkpoint
+                var userData = metadataMgr.getMetadata().users;
+                var v = metadataMgr.getViewers();
+                var m = metadataMgr.getChannelMembers().filter(function (str) {
+                    return str.length === 32;
+                }).length;
+                if ((m - v) === 1 && !readOnly) {
+                    var l = ooChannel.queue.length;
+                    var lastCp = getLastCp();
+                    var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
+                    APP.initCheckpoint = needCp;
+                }
+
 
                 common.openPadChat(APP.onLocal);
 
