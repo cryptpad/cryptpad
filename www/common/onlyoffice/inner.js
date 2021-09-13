@@ -1077,17 +1077,31 @@ define([
                 return;
             }
             var type = common.getMetadataMgr().getPrivateData().ooType;
-
-            content.locks = content.locks || {};
-            // Send the lock to other users
+            var b = obj.block && obj.block[0];
             var msg = {
                 time: now(),
                 user: myUniqueOOId,
-                block: obj.block && obj.block[0],
+                block: b
             };
+
+            var editor = getEditor();
+            if (type === "presentation" && (APP.themeChanged || APP.themeRemote) && b &&
+                b.guid === editor.GetPresentation().Presentation.themeLock.Id) {
+                APP.themeLocked = APP.themeChanged;
+                APP.themeChanged = undefined;
+                var fakeLocks = getLock();
+                fakeLocks[Util.uid()] = msg;
+                send({
+                    type: "getLock",
+                    locks: fakeLocks
+                });
+                return;
+            }
+
+            content.locks = content.locks || {};
+            // Send the lock to other users
             var myId = getId();
             content.locks[myId] = content.locks[myId] || {};
-            var b = obj.block && obj.block[0];
             if (type === "sheet" || typeof(b) !== "string") {
                 var uid = Util.uid();
                 content.locks[myId][uid] = msg;
@@ -1097,15 +1111,6 @@ define([
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
-
-            var editor = getEditor();
-            console.error(type, APP.themeChanged, b, b.guid, editor.GetPresentation().Presentation.themeLock.Id, typeof(b.guid));
-            if (type === "presentation" && APP.themeChanged && b &&
-                b.guid === editor.GetPresentation().Presentation.themeLock.Id) {
-                console.error('OK');
-                APP.themeLocked = APP.themeChanged;
-                APP.themeChanged = undefined;
-            }
 
             // Prepare callback
             if (cpNfInner) {
@@ -1148,7 +1153,7 @@ define([
             APP.realtime.sync();
         };
 
-        var parseChanges = function (changes) {
+        var parseChanges = function (changes, isObj) {
             try {
                 changes = JSON.parse(changes);
             } catch (e) {
@@ -1157,7 +1162,7 @@ define([
             return changes.map(function (change) {
                 return {
                     docid: "fresh",
-                    change: '"' + change + '"',
+                    change: isObj ? change : '"' + change + '"',
                     time: now(),
                     user: myUniqueOOId,
                     useridoriginal: String(myOOId)
@@ -1188,11 +1193,16 @@ define([
                 return;
             }
 
+            var changes = obj.changes;
+            if (obj.type === "cp_theme") {
+                changes = JSON.stringify([JSON.stringify(obj)]);
+            }
+
             // Send the changes
             content.locks = content.locks || {};
             rtChannel.sendMsg({
                 type: "saveChanges",
-                changes: parseChanges(obj.changes),
+                changes: parseChanges(changes, obj.type === "cp_theme"),
                 changesIndex: ooChannel.cpIndex || 0,
                 locks: getUserLock(getId(), true),
                 excelAdditionalInfo: obj.excelAdditionalInfo
@@ -1322,6 +1332,16 @@ define([
                                 obj.type = "cp_theme";
                                 console.error(obj);
                             }
+                            if (APP.themeRemote) {
+                                delete APP.themeRemote;
+                                send({
+                                    type: "unSaveLock",
+                                    index: ooChannel.cpIndex,
+                                    time: +new Date()
+                                });
+                                return;
+                            }
+
                             // We're sending our changes to netflux
                             handleChanges(obj, send);
                             // If we're alone, clean up the medias
@@ -1653,32 +1673,13 @@ define([
                 });
             };
 
-            APP.changeTheme = function (id, selected) {
-                var slides;
-                // If "selected" is undefined, apply to selection if more than one
-                // slide is selected.
-                // If it's true, apply to the selected slides
-                // If it's false, apply to the entire presentation
-                var editor = getEditor();
-                if (typeof(selected) === "undefined") {
-                    slides = editor.WordControl.Thumbnails.GetSelectedArray();
-                    if (slides.length === 1) { slides = undefined; }
-                } else if (selected) {
-                    slides = editor.WordControl.Thumbnails.GetSelectedArray();
-                }
+            APP.remoteTheme = function () {
+                APP.themeRemote = true;
+            };
+            APP.changeTheme = function (id) {
                 APP.themeChanged = {
-                    slides: slides,
                     id: id
                 };
-                console.error(slides, id);
-                // XXX ChangeTheme(themeId, selectedSlides)
-                // editor.WordControl.Thumbnails.GetSelectedArray()
-                // editor.WordControl.Thumbnails.SelectPage(id)
-                /*
-                editor.WordControl.Thumbnails.m_arrPages.forEach(function (obj) {
-                    obj.IsSelected = [0,1].indexOf(obj.pageIndex) !== -1
-                });
-                */
             };
             APP.openURL = function (url) {
                 common.openUnsafeURL(url);
