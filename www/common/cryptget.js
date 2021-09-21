@@ -1,7 +1,7 @@
 define([
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/bower_components/netflux-websocket/netflux-client.js',
+    'chainpad-netflux',
+    'netflux-client',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',

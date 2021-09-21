@@ -43,18 +43,21 @@ define([
 
     var canonicalize = function(t) { return t.replace(/\r\n/g, '\n'); };
 
-    var getAuthorId = function(Env, curve) {
-        return Env.common.getAuthorId(Env.comments.authors, curve);
+    var getAuthorId = function(Env, curve, uid) {
+        return Env.common.getAuthorId(Env.comments.authors, curve, uid);
     };
 
-    // Return the author ID  and add/update the data for registered users
-    // Return the username for unregistered users
+    // Return the author ID  and add/update user data
+    // associate data with a curvePublic for registered users and the uid otherwise
     var updateAuthorData = function(Env, onChange) {
         var userData = Env.metadataMgr.getUserData();
+        var myAuthorId;
         if (!Env.common.isLoggedIn()) {
-            return userData.name;
+            myAuthorId = getAuthorId(Env, undefined, userData.uid);
+        } else {
+            myAuthorId = getAuthorId(Env, userData.curvePublic);
         }
-        var myAuthorId = getAuthorId(Env, userData.curvePublic);
+
         var data = Env.comments.authors[myAuthorId] = Env.comments.authors[myAuthorId] || {};
         var old = Sortify(data);
         data.name = userData.name;
@@ -62,6 +65,8 @@ define([
         data.profile = userData.profile;
         data.curvePublic = userData.curvePublic;
         data.notifications = userData.notifications;
+        data.uid = userData.uid;
+
         if (typeof(onChange) === "function" && Sortify(data) !== old) {
             onChange();
         }
@@ -82,6 +87,9 @@ define([
         var userData = Env.metadataMgr.getUserData();
         var privateData = Env.metadataMgr.getPrivateData();
         var others = {};
+
+
+        // XXX mentioned users should be excluded from the list of notified recipients to avoid notifying them twice
         // Get all the other registered users with a mailbox
         thread.m.forEach(function(obj) {
             var u = obj.u;
@@ -93,7 +101,8 @@ define([
                 curvePublic: author.curvePublic,
                 comment: obj.m,
                 content: obj.v,
-                notifications: author.notifications
+                notifications: author.notifications,
+                uid: author.uid,
             };
         });
         // Send the notification
@@ -146,7 +155,7 @@ define([
             'aria-required': true,
             contenteditable: true,
         });
-        Env.common.displayAvatar($(avatar), userData.avatar, name);
+        Env.common.displayAvatar($(avatar), userData.avatar, name, Util.noop, userData.uid);
 
         var cancel = h('button.btn.btn-cancel', {
             tabindex: 1
@@ -224,7 +233,9 @@ define([
 
         if (Env.common.isLoggedIn()) {
             var authors = {};
-            Object.keys((Env.comments && Env.comments.authors) ||  {}).forEach(function(id) {
+            Object.keys((Env.comments && Env.comments.authors) ||  {})
+            .filter(function (id) { return Util.find(Env, ['commments', 'authors', id, 'curvePublic']); })
+            .forEach(function(id) {
                 var obj = Util.clone(Env.comments.authors[id]);
                 authors[obj.curvePublic] = obj;
             });
@@ -369,7 +380,7 @@ define([
                 var name = Util.fixHTML(author.name || Messages.anonymous);
                 var date = new Date(msg.t);
                 var avatar = h('span.cp-avatar');
-                Env.common.displayAvatar($(avatar), author.avatar, name);
+                Env.common.displayAvatar($(avatar), author.avatar, name, Util.noop, author.uid);
                 if (author.profile) {
                     $(avatar).click(function(e) {
                         Env.common.openURL(Hash.hashToHref(author.profile, 'profile'));
@@ -393,7 +404,7 @@ define([
                     }
                     cleanMentions($el);
                     var avatar = h('span.cp-avatar');
-                    Env.common.displayAvatar($(avatar), avatarUrl, name);
+                    Env.common.displayAvatar($(avatar), avatarUrl, name, Util.noop, author.uid);
                     $el.append([
                         avatar,
                         h('span.cp-mentions-name', name)

@@ -76,6 +76,7 @@ define([
         var shareButton = {
             className: 'primary cp-share-with-friends',
             name: Messages.share_withFriends,
+            iconClass: '.fa.fa-shhare-alt',
             onClick: function () {
                 var href;
                 nThen(function (waitFor) {
@@ -420,12 +421,12 @@ define([
                 embed: Util.isChecked($link.find('#cp-share-embed'))
             }));
         });
-
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
                 className: 'secondary cp-nobar',
                 name: Messages.share_linkOpen,
+                iconClass: '.fa.fa-eye',
                 onClick: function () {
                     opts.saveValue();
                     var v = opts.getLinkValue({
@@ -442,6 +443,7 @@ define([
             }, {
                 className: 'primary cp-nobar',
                 name: Messages.share_linkCopy,
+                iconClass: '.fa.fa-link',
                 onClick: function () {
                     opts.saveValue();
                     var v = opts.getLinkValue({
@@ -496,6 +498,7 @@ define([
             {
                 className: 'primary',
                 name: Messages.share_linkCopy,
+                iconClass: '.fa.fa-link',
                 onClick: function () {
                     Feedback.send('SHARE_EMBED');
                     var v = opts.getEmbedValue();
@@ -870,6 +873,7 @@ define([
             {
                 className: 'primary',
                 name: Messages.share_linkCopy,
+                iconClass: '.fa.fa-link',
                 onClick: function () {
                     var v = opts.getLinkValue();
                     var success = Clipboard.copy(v);
@@ -915,6 +919,7 @@ define([
         }, {
             className: 'primary',
             name: Messages.share_mediatagCopy,
+            iconClass: '.fa.fa-link',
             onClick: function () {
                 var v = common.getMediatagFromHref(opts.fileData);
                 var success = Clipboard.copy(v);

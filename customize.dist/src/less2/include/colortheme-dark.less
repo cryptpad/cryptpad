@@ -68,6 +68,25 @@
 @cryptpad_color_yellow_fader: fade(#FFE69C, 15%); // not in light theme
 @cryptpad_color_lighter_blue: #d2e1f2;
 
+@cp_palette:
+    #FFD4D4,
+    #FFDECA,
+    #FFE69C,
+    #DBFFB7,
+    #AFFDC2,
+    #C9FFFE,
+    #C8D6FF,
+    #E4CAFF;
+@cp_palette-dark:
+    darken(desaturate(extract(@cp_palette, 1),60%), 60%),
+    darken(desaturate(extract(@cp_palette, 2),60%), 60%),
+    darken(desaturate(extract(@cp_palette, 3),55%), 60%),
+    darken(desaturate(extract(@cp_palette, 4),55%), 70%),
+    darken(desaturate(extract(@cp_palette, 5),60%), 65%),
+    darken(desaturate(extract(@cp_palette, 6),60%), 70%),
+    darken(desaturate(extract(@cp_palette, 7),60%), 60%),
+    darken(desaturate(extract(@cp_palette, 8),70%), 60%);
+
 @cryptpad_color_link:@cryptpad_color_brand_300;
 
 // Premium plans colors
@@ -353,15 +372,7 @@
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
 @cp_kanban-color0: @cryptpad_color_grey_600;
-@cp_kanban-colors:
-    darken(desaturate(#FFD4D4,60%), 60%),
-    darken(desaturate(#FFDECA,60%), 60%),
-    darken(desaturate(#FFE69C,55%), 60%),
-    darken(desaturate(#DBFFB7,55%), 70%),
-    darken(desaturate(#AFFDC2,60%), 65%),
-    darken(desaturate(#C9FFFE,60%), 70%),
-    darken(desaturate(#C8D6FF,60%), 60%),
-    darken(desaturate(#E4CAFF,70%), 60%);
+@cp_kanban-colors: @cp_palette-dark;
 
 // Notifications
 @cp_notif-hover: fade(@cryptpad_color_black, 10%);
@@ -438,3 +449,5 @@
 @cp_form-poll-maybe: @cryptpad_color_grey_700;
 @cp_form-poll-yes-color: @cryptpad_color_green;
 @cp_form-invalid: @cryptpad_color_light_red;
+@cp_form-palette: @cp_palette-dark;
+@cp_form-palette2: @cp_palette;

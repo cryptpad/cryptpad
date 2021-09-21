@@ -67,6 +67,25 @@
 @cryptpad_color_yellow_fade: fade(#FFE69C, 50%); // different from dark
 @cryptpad_color_lighter_blue: #d2e1f2;
 
+@cp_palette:
+    #FFD4D4,
+    #FFDECA,
+    #FFE69C,
+    #DBFFB7,
+    #AFFDC2,
+    #C9FFFE,
+    #C8D6FF,
+    #E4CAFF;
+@cp_palette-dark:
+    darken(extract(@cp_palette, 1), 50%),
+    darken(extract(@cp_palette, 2), 51%),
+    darken(extract(@cp_palette, 3), 52%),
+    darken(extract(@cp_palette, 4), 61%),
+    darken(extract(@cp_palette, 5), 57%),
+    darken(extract(@cp_palette, 6), 65%),
+    darken(extract(@cp_palette, 7), 50%),
+    darken(extract(@cp_palette, 8), 50%);
+
 @cryptpad_color_link: @cryptpad_color_brand;
 
 // Premium plans colors
@@ -299,7 +318,7 @@
 @cp_usergrid-selected-fg: @cryptpad_color_white;
 
 // Other
-@cp_shadow-color: fade(@cryptpad_color_black, 40%);
+@cp_shadow-color: fade(@cryptpad_color_black, 30%);
 
 // Apps
 @cp_app-bg: @cryptpad_color_grey_100;
@@ -352,15 +371,7 @@
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
 @cp_kanban-color0: @cryptpad_color_grey_400;
-@cp_kanban-colors:
-    #FFD4D4,
-    #FFDECA,
-    #FFE69C,
-    #DBFFB7,
-    #AFFDC2,
-    #C9FFFE,
-    #C8D6FF,
-    #E4CAFF;
+@cp_kanban-colors: @cp_palette;
 
 // Notifications
 @cp_notif-hover: fade(@cryptpad_color_black, 10%);
@@ -428,8 +439,8 @@
 @cp_calendar-now-fg: @cryptpad_color_grey_200;
 
 // Forms
-@cp_form-bg1: @cryptpad_color_grey_200;
-@cp_form-bg2: @cryptpad_color_grey_100;
+@cp_form-bg1: @cryptpad_color_grey_50;
+@cp_form-bg2: @cryptpad_color_grey_200;
 @cp_form-border: @cryptpad_color_grey_200;
 @cp_form-poll-color: @cryptpad_color_grey_800;
 @cp_form-poll-no: fade(@cryptpad_color_light_red, 75%);
@@ -437,3 +448,5 @@
 @cp_form-poll-maybe: @cryptpad_color_grey_300;
 @cp_form-poll-yes-color: @cryptpad_color_green;
 @cp_form-invalid: @cryptpad_color_red;
+@cp_form-palette: @cp_palette;
+@cp_form-palette2: @cp_palette-dark;

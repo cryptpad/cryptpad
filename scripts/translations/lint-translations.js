@@ -1,4 +1,4 @@
-var EN = require("../www/common/translations/messages.json");
+var EN = require("../../www/common/translations/messages.json");
 
 var simpleTags = [
     '<br>',
@@ -68,7 +68,7 @@ var processLang = function (map, lang, primary) {
         if (typeof(s) !== 'string') { return; }
         var usesHTML;
 
-        s.replace(/<.*?>/g, function (html) {
+        s.replace(/<[\s\S]*?>/g, function (html) {
             if (simpleTags.indexOf(html) !== -1) { return; }
             announce();
             usesHTML = true;
@@ -118,7 +118,7 @@ processLang(EN, 'en', true);
   'zh',
 ].forEach(function (lang) {
     try {
-        var map = require("../www/common/translations/messages." + lang + ".json");
+        var map = require("../../www/common/translations/messages." + lang + ".json");
         if (!Object.keys(map).length) { return; }
         processLang(map, lang);
     } catch (err) {

@@ -532,7 +532,13 @@
                         &> button {
                             height: @toolbar_line-height;
                             width: @toolbar_line-height;
-                            span { font-size: unset; }
+                            span {
+                                .avatar_vars(36px);
+                                font-size: @avatar-font-size;
+                                .animal {
+                                    font-size: @avatar-font-size-animal;
+                                }
+                            }
                         }
                         &> button.cp-avatar.cp-avatar {
                             media-tag {
@@ -855,10 +861,14 @@
                     span {
                         text-align: center;
                         width: 100%;
-                        font-size: 48px;
+                        .avatar_vars(72px);
+                        font-size: @avatar-font-size;
                         display: inline-flex;
                         justify-content: center;
                         align-items: center;
+                        .animal {
+                            font-size: @avatar-font-size-animal;
+                        }
                     }
                     &.cp-avatar {
                         .avatar_main(64px);
