@@ -120,8 +120,10 @@ define([
             type: 'file'
         });
         APP.$rightside.append([hint, picker]);
+        Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :("; // XXX
 
         $(picker).on('change', function () {
+            APP.$rightside.find('button, div.notice').remove();
             var file = picker.files[0];
             var name = file && file.name;
             var reader = new FileReader();
@@ -140,6 +142,9 @@ define([
 
                         }).appendTo(APP.$rightside);
                     });
+                } else {
+                    var notice = h('div.notice', Messages.convert_unsupported);
+                    APP.$rightside.append(notice);
                 }
             };
             reader.readAsArrayBuffer(file, 'application/octet-stream');
