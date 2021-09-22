@@ -1699,7 +1699,7 @@ define([
                     return void callback("");
                 }
 
-                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].src;
+                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
                 if (blobUrl) {
                     debug("CryptPad Image already loaded " + blobUrl);
                     return void callback(blobUrl);
@@ -1724,7 +1724,11 @@ define([
                             try {
                                 var blobUrl = URL.createObjectURL(res.content);
                                 // store media blobUrl and content for cache and export
-                                var mediaData = { blobUrl : blobUrl, content : "" };
+                                var mediaData = {
+                                    blobUrl : blobUrl,
+                                    content : "",
+                                    name: name
+                                };
                                 mediasData[data.src] = mediaData;
                                 var reader = new FileReader();
                                 reader.onloadend = function () {
@@ -2458,6 +2462,26 @@ define([
                     makeCheckpoint(true);
                 });
                 $save.appendTo(toolbar.$bottomM);
+
+                var $dlMedias = common.createButton('', true, {
+                    name: 'dlmedias',
+                    icon: 'fa-download',
+                }, function () {
+                    require(['/bower_components/jszip/dist/jszip.min.js'], function (JsZip) {
+                        var zip = new JsZip();
+                        Object.keys(mediasData || {}).forEach(function (url) {
+                            var obj = mediasData[url];
+                            var b = new Blob([obj.content]);
+                            zip.file(obj.name, b, {binary: true});
+                        });
+                        setTimeout(function () {
+                            zip.generateAsync({type: 'blob'}).then(function (content) {
+                                saveAs(content, 'media.zip');
+                            });
+                        }, 100);
+                    });
+                }).attr('title', "Download medias");
+                $dlMedias.appendTo(toolbar.$bottomM);
             }
 
             if (!privateData.ooVersionHash) {
