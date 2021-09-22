@@ -171,7 +171,7 @@ define([
             $block.append(h('p', text));
 
             // Add filter input
-            var $filter = $(h('p.cp-modal-form')).appendTo($block);
+            var $filter = $(h('p.cp-modal-form')).hide().appendTo($block);
             var to;
             var $input = $('<input>', {
                 type: 'text',
@@ -211,6 +211,7 @@ define([
             updateContainer = function () {
                 var filter = $input.val().trim();
                 var todo = function (err, list) {
+                    $filter.show();
                     if (err) { return void console.error(err); }
                     $container.html('');
                     Object.keys(list).forEach(function (id) {
