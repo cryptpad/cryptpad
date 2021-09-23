@@ -1156,6 +1156,14 @@ define([
         };
 
         var handleChanges = function (obj, send) {
+            if (APP.history) {
+                send({
+                    type: "unSaveLock",
+                    index: ooChannel.cpIndex,
+                    time: +new Date()
+                });
+                return;
+            }
             // Add a new entry to the pendingChanges object.
             // If we can't send the patch within 30s, force a page reload
             var uid = Util.uid();
