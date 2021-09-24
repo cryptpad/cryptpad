@@ -20,6 +20,7 @@ define([
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
     '/common/outer/worker-channel.js',
+    '/common/outer/x2t.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
 
@@ -47,7 +48,8 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    Channel)
+    Channel,
+    X2T)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -60,7 +62,7 @@ define([
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 4;
     var PENDING_TIMEOUT = 30000;
-    var CURRENT_VERSION = 'v4';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION;
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
@@ -71,34 +73,6 @@ define([
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
-
-    /*  Chrome 92 dropped support for SharedArrayBuffer in cross-origin contexts
-        where window.crossOriginIsolated is false.
-
-        Their blog (https://blog.chromium.org/2021/02/restriction-on-sharedarraybuffers.html)
-        isn't clear about why they're doing this, but since it's related to site-isolation
-        it seems they're trying to do vague security things.
-
-        In any case, there seems to be a workaround where you can still create them
-        by using `new WebAssembly.Memory({shared: true, ...})` instead of `new SharedArrayBuffer`.
-
-        This seems unreliable, but it's better than not being able to export, since
-        we actively rely on postMessage between iframes and therefore can't afford
-        to opt for full isolation.
-    */
-    var supportsSharedArrayBuffers = function () {
-        try {
-            return Object.prototype.toString.call(new window.WebAssembly.Memory({shared: true, initial: 0, maximum: 0}).buffer) === '[object SharedArrayBuffer]';
-        } catch (err) {
-            console.error(err);
-        }
-        return false;
-    };
-
-    var supportsXLSX = function () {
-        return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() /* || typeof (SharedArrayBuffer) === "undefined" */ || typeof(WebAssembly) === 'undefined');
-    };
-
 
     var toolbar;
     var cursor;
@@ -135,6 +109,10 @@ define([
         var mediasData = {};
 
         var startOO = function () {};
+
+        var supportsXLSX = function () {
+            return privateData.supportsWasm;
+        };
 
         var getMediasSources = APP.getMediasSources =  function() {
             content.mediasSources = content.mediasSources || {};
@@ -256,6 +234,10 @@ define([
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var title = common.getMetadataMgr().getMetadataLazy().title;
+            if (APP.downloadType) {
+                type = APP.downloadType;
+                title = "download";
+            }
             var file = {};
             switch(type) {
                 case 'doc':
@@ -499,10 +481,10 @@ define([
             startOO(blob, type, true);
         };
 
-        var saveToServer = function () {
+        var saveToServer = function (blob, title) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = getContent();
-            if (!text) {
+            if (!text && !blob) {
                 setEditable(false, true);
                 sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
                     'chainpad',
@@ -513,9 +495,9 @@ define([
                 });
                 return;
             }
-            var blob = new Blob([text], {type: 'plain/text'});
+            blob = blob || new Blob([text], {type: 'plain/text'});
             var file = getFileType();
-            blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+            blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
                 index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
@@ -729,6 +711,7 @@ define([
             var cp = hashes[cpId] || {};
 
             var minor = Number(s[1]) + 1;
+            if (APP.isDownload) { minor = undefined; }
 
             var toHash = cp.hash || 'NONE';
             var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
@@ -737,6 +720,7 @@ define([
                 channel: content.channel,
                 lastKnownHash: fromHash,
                 toHash: toHash,
+                isDownload: APP.isDownload
             }, function (err, data) {
                 if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
                 if (!Array.isArray(data.messages)) {
@@ -746,7 +730,7 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var initialCp = major === 0;
+                var initialCp = major === 0 || !cp.hash;
                 var messages = (data.messages || []).slice(initialCp ? 0 : 1, minor);
 
                 messages.forEach(function (obj) {
@@ -788,6 +772,7 @@ define([
                     }
                     var file = getFileType();
                     var type = common.getMetadataMgr().getPrivateData().ooType;
+                    if (APP.downloadType) { type = APP.downloadType; }
                     var blob = loadInitDocument(type, true);
                     ooChannel.queue = messages;
                     resetData(blob, file);
@@ -1422,6 +1407,39 @@ define([
             });
         };
 
+        var x2tConvertData = function (data, fileName, format, cb) {
+            var sframeChan = common.getSframeChannel();
+            var e = getEditor();
+            var fonts = e && e.FontLoader.fontInfos;
+            var files = e && e.FontLoader.fontFiles.map(function (f) {
+                return { 'Id': f.Id, };
+            });
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            sframeChan.query('Q_OO_CONVERT', {
+                data: data,
+                type: type,
+                fileName: fileName,
+                outputFormat: format,
+                images: (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
+                fonts: fonts,
+                fonts_files: files,
+                mediasSources: getMediasSources(),
+                mediasData: mediasData
+            }, function (err, obj) {
+                if (err || !obj || !obj.data) {
+                    UI.warn(Messages.error);
+                    return void cb();
+                }
+                cb(obj.data, obj.images);
+            }, {
+                raw: true
+            });
+        };
+
+        // When download a sheet from the drive, we must wait for all the images
+        // to be downloaded and decrypted before converting to xlsx
+        var downloadImages = {};
+
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
@@ -1502,6 +1520,13 @@ define([
                             });
                         }
                     },
+                    "onError": function () {
+                        console.error(arguments);
+                        if (APP.isDownload) {
+                            var sframeChan = common.getSframeChannel();
+                            sframeChan.event('EV_OOIFRAME_DONE', '');
+                        }
+                    },
                     "onDocumentReady": function () {
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
@@ -1580,6 +1605,25 @@ define([
                                 });
                             }
                         }
+
+                        if (APP.isDownload) {
+                            var bin = getContent();
+                            if (!supportsXLSX()) {
+                                return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
+                            }
+                            nThen(function (waitFor) {
+                                // wait for all the images to be loaded before converting
+                                Object.keys(downloadImages).forEach(function (name) {
+                                    downloadImages[name].reg(waitFor());
+                                });
+                            }).nThen(function () {
+                                x2tConvertData(bin, 'filename.bin', file.type, function (xlsData) {
+                                    sframeChan.event('EV_OOIFRAME_DONE', xlsData, {raw: true});
+                                });
+                            });
+                            return;
+                        }
+
 
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
@@ -1720,6 +1764,7 @@ define([
 
                 var mediasSources = getMediasSources();
                 var data = mediasSources[name];
+                downloadImages[name] = Util.mkEvent(true);
 
                 if (typeof data === 'undefined') {
                     debug("CryptPad - could not find matching media for " + name);
@@ -1757,6 +1802,7 @@ define([
                                 reader.onloadend = function () {
                                     debug("MediaData set");
                                     mediaData.content = reader.result;
+                                    downloadImages[name].fire();
                                 };
                                 reader.readAsArrayBuffer(res.content);
                                 debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
@@ -1778,239 +1824,52 @@ define([
             makeChannel();
         };
 
-        var x2tReady = Util.mkEvent(true);
-        var fetchFonts = function (x2t) {
-            var path = '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
-            var e = getEditor();
-            var fonts = e.FontLoader.fontInfos;
-            var files = e.FontLoader.fontFiles;
-            var suffixes = {
-                indexR: '',
-                indexB: '_Bold',
-                indexBI: '_Bold_Italic',
-                indexI: '_Italic',
-            };
-            nThen(function (waitFor) {
-                fonts.forEach(function (font) {
-                    // Check if the font is already loaded
-                    if (!font.NeedStyles) { return; }
-                    // Pick the variants we need (regular, bold, italic)
-                    ['indexR', 'indexB', 'indexI', 'indexBI'].forEach(function (k) {
-                        if (typeof(font[k]) !== "number" || font[k] === -1) { return; } // No matching file
-                        var file = files[font[k]];
-
-                        var name = font.Name + suffixes[k] + '.ttf';
-                        Util.fetch(path + file.Id, waitFor(function (err, buffer) {
-                            if (buffer) {
-                                x2t.FS.writeFile('/working/fonts/' + name, buffer);
-                            }
-                        }));
-                    });
-                });
-            }).nThen(function () {
-                x2tReady.fire();
-            });
-        };
-
-        var x2tInitialized = false;
-        var x2tInit = function(x2t) {
-            debug("x2t mount");
-            // x2t.FS.mount(x2t.MEMFS, {} , '/');
-            x2t.FS.mkdir('/working');
-            x2t.FS.mkdir('/working/media');
-            x2t.FS.mkdir('/working/fonts');
-            x2tInitialized = true;
-            fetchFonts(x2t);
-            debug("x2t mount done");
-        };
-        var getX2T = function (cb) {
-            // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
-                var x2t = window.Module;
-                x2t.run();
-                if (x2tInitialized) {
-                    debug("x2t runtime already initialized");
-                    return void x2tReady.reg(function () {
-                        cb(x2t);
-                    });
-                }
-
-                x2t.onRuntimeInitialized = function() {
-                    debug("x2t in runtime initialized");
-                    // Init x2t js module
-                    x2tInit(x2t);
-                    x2tReady.reg(function () {
-                        cb(x2t);
-                    });
-                };
-            });
-        };
-
-
-        /*
-            Converting Data
-
-            This function converts a data in a specific format to the outputformat
-            The filename extension needs to represent the input format
-            Example: fileName=cryptpad.bin outputFormat=xlsx
-        */
-        var getFormatId = function (ext) {
-            // Sheets
-            if (ext === 'xlsx') { return 257; }
-            if (ext === 'xls') { return 258; }
-            if (ext === 'ods') { return 259; }
-            if (ext === 'csv') { return 260; }
-            if (ext === 'pdf') { return 513; }
-            return;
-        };
-        var getFromId = function (ext) {
-            var id = getFormatId(ext);
-            if (!id) { return ''; }
-            return '<m_nFormatFrom>'+id+'</m_nFormatFrom>';
-        };
-        var getToId = function (ext) {
-            var id = getFormatId(ext);
-            if (!id) { return ''; }
-            return '<m_nFormatTo>'+id+'</m_nFormatTo>';
-        };
-        var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
-            debug("Converting Data for " + fileName + " to " + outputFormat);
-
-            // PDF
-            var pdfData = '';
-            if (outputFormat === "pdf" && typeof(data) === "object" && data.bin && data.buffer) {
-                // Add conversion rules
-                pdfData = "<m_bIsNoBase64>false</m_bIsNoBase64>" +
-                          "<m_sFontDir>/working/fonts/</m_sFontDir>";
-                // writing file to mounted working disk (in memory)
-                x2t.FS.writeFile('/working/' + fileName, data.bin);
-                x2t.FS.writeFile('/working/pdf.bin', data.buffer);
-            } else {
-                // writing file to mounted working disk (in memory)
-                x2t.FS.writeFile('/working/' + fileName, data);
-            }
-
-            // Adding images
-            Object.keys(window.frames[0].AscCommon.g_oDocumentUrls.urls || {}).forEach(function (_mediaFileName) {
-                var mediaFileName = _mediaFileName.substring(6);
-                var mediasSources = getMediasSources();
-                var mediaSource = mediasSources[mediaFileName];
-                var mediaData = mediaSource ? mediasData[mediaSource.src] : undefined;
-                if (mediaData) {
-                    debug("Writing media data " + mediaFileName);
-                    debug("Data");
-                    var fileData = mediaData.content;
-                    x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
-                } else {
-                    debug("Could not find media content for " + mediaFileName);
-                }
-            });
-
-
-            var inputFormat = fileName.split('.').pop();
-
-            var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                        + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
-                        + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
-                        + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
-                        + pdfData
-                        + getFromId(inputFormat)
-                        + getToId(outputFormat)
-                        + "<m_bIsNoBase64>false</m_bIsNoBase64>"
-                        + "</TaskQueueDataConvert>";
-            // writing params file to mounted working disk (in memory)
-            x2t.FS.writeFile('/working/params.xml', params);
-            // running conversion
-            x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
-            // reading output file from working disk (in memory)
-            var result;
-            try {
-                result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
-            } catch (e) {
-                debug("Failed reading converted file");
-                UI.removeModals();
-                UI.warn(Messages.error);
-                return "";
-            }
-            return result;
-        };
-
         APP.printPdf = function (obj, cb) {
-            getX2T(function (x2t) {
-                //var e = getEditor();
-                //var d = e.asc_nativePrint(undefined, undefined, 0x100 + opts.printType).ImData;
-                var bin = getContent();
-                var xlsData = x2tConvertDataInternal(x2t, {
-                    buffer: obj.data,
-                    bin: bin
-                }, 'output.bin', 'pdf');
-                if (xlsData) {
-                    var md = common.getMetadataMgr().getMetadataLazy();
-                    var type = common.getMetadataMgr().getPrivateData().ooType;
-                    var title = md.title || md.defaultTitle || type;
-                    var blob = new Blob([xlsData], {type: "application/pdf"});
-                    //var url = URL.createObjectURL(blob, { type: "application/pdf" });
-                    saveAs(blob, title+'.pdf');
-                    //window.open(url);
-                    cb({
-                        "type":"save",
-                        "status":"ok",
-                        //"data":url + "?disposition=inline&ooname=output.pdf"
-                    });
-                    /*
-                    ooChannel.send({
-                        "type":"documentOpen",
-                        "data": {
-                            "type":"save",
-                            "status":"ok",
-                            "data":url + "?disposition=inline&ooname=output.pdf"
-                        }
-                    });
-                    */
-                }
+            var bin = getContent();
+            x2tConvertData({
+                buffer: obj.data,
+                bin: bin
+            }, 'output.bin', 'pdf', function (xlsData) {
+                if (!xlsData) { return; }
+                var md = common.getMetadataMgr().getMetadataLazy();
+                var type = common.getMetadataMgr().getPrivateData().ooType;
+                var title = md.title || md.defaultTitle || type;
+                var blob = new Blob([xlsData], {type: "application/pdf"});
+                saveAs(blob, title+'.pdf');
+                cb({
+                    "type":"save",
+                    "status":"ok",
+                });
             });
         };
 
-        var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
+        var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
-            var xlsData;
 
             // PDF
             if (type === "sheet" && extension === "pdf") {
                 var e = getEditor();
                 var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
-                xlsData = x2tConvertDataInternal(x2t, {
+                x2tConvertData({
                     buffer: d.data,
                     bin: data
-                }, filename, extension);
-                if (xlsData) {
-                    var _blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
-                    UI.removeModals();
-                    saveAs(_blob, finalFilename);
-                }
+                }, filename, extension, function (res) {
+                    if (res) {
+                        var _blob = new Blob([res], {type: "application/bin;charset=utf-8"});
+                        UI.removeModals();
+                        saveAs(_blob, finalFilename);
+                    }
+                });
                 return;
             }
-            if (type === "sheet" && extension !== 'xlsx') {
-                xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
-                filename += '.xlsx';
-            } else if (type === "presentation" && extension !== "pptx") {
-                xlsData = x2tConvertDataInternal(x2t, data, filename, 'pptx');
-                filename += '.pptx';
-            } else if (type === "doc" && extension !== "docx") {
-                xlsData = x2tConvertDataInternal(x2t, data, filename, 'docx');
-                filename += '.docx';
-            }
-            xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
-            if (xlsData) {
-                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
-                UI.removeModals();
-                saveAs(blob, finalFilename);
-            }
-        };
-
-        var x2tSaveAndConvertData = function(data, filename, extension, finalName) {
-            getX2T(function (x2t) {
-                x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalName);
+            x2tConvertData(data, filename, extension, function (xlsData) {
+                if (xlsData) {
+                    var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                    UI.removeModals();
+                    saveAs(blob, finalFilename);
+                    return;
+                }
+                UI.warn(Messages.error);
             });
         };
 
@@ -2083,32 +1942,29 @@ define([
             $select.find('button').addClass('btn');
         };
 
-        var x2tImportImagesInternal = function(x2t, images, i, callback) {
+        var x2tImportImagesInternal = function(images, i, callback) {
             if (i >= images.length) {
                 callback();
             } else {
                 debug("Import image " + i);
                 var handleFileData = {
-                    name: images[i],
+                    name: images[i].name,
                     mediasSources: getMediasSources(),
                     callback: function() {
                         debug("next image");
-                        x2tImportImagesInternal(x2t, images, i+1, callback);
+                        x2tImportImagesInternal(images, i+1, callback);
                     },
                 };
-                var filePath = "/working/media/" + images[i];
-                debug("Import filename " + filePath);
-                var fileData = x2t.FS.readFile("/working/media/" + images[i], { encoding : "binary" });
-                debug("Importing data");
+                var fileData = images[i].data;
                 debug("Buffer");
                 debug(fileData.buffer);
                 var blob = new Blob([fileData.buffer], {type: 'image/png'});
-                blob.name = images[i];
+                blob.name = images[i].name;
                 APP.FMImages.handleFile(blob, handleFileData);
             }
         };
 
-        var x2tImportImages = function (x2t, callback) {
+        var x2tImportImages = function (images, callback) {
             if (!APP.FMImages) {
                 var fmConfigImages = {
                     noHandlers: true,
@@ -2134,14 +1990,8 @@ define([
 
             // Import Images
             debug("Import Images");
-            var files = x2t.FS.readdir("/working/media/");
-            var images = [];
-            files.forEach(function (file) {
-                if (file !== "." && file !== "..") {
-                    images.push(file);
-                }
-            });
-            x2tImportImagesInternal(x2t, images, 0, function() {
+            debug(images);
+            x2tImportImagesInternal(images, 0, function() {
                 debug("Sync media sources elements");
                 debug(getMediasSources());
                 APP.onLocal();
@@ -2151,26 +2001,12 @@ define([
         };
 
 
-        var x2tConvertData = function (x2t, data, filename, extension, callback) {
-            var convertedContent;
-            // Convert from ODF format:
-            // first convert to Office format then to the selected extension
-            if (filename.endsWith(".ods")) {
-                console.log(x2t, data, filename, extension);
-                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
-                console.log(convertedContent);
-                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
-            } else if (filename.endsWith(".odt")) {
-                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "docx");
-                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".docx", extension);
-            } else if (filename.endsWith(".odp")) {
-                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "pptx");
-                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".pptx", extension);
-            } else {
-                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
-            }
-            x2tImportImages(x2t, function() {
-                callback(convertedContent);
+        var x2tImportData = function (data, filename, extension, callback) {
+            x2tConvertData(new Uint8Array(data), filename, extension, function (binData, images) {
+                if (!binData) { return void UI.warn(Messages.error); }
+                x2tImportImages(images, function() {
+                    callback(binData);
+                });
             });
         };
 
@@ -2224,10 +2060,8 @@ define([
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             setTimeout(function () {
-                getX2T(function (x2t) {
-                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(c) {
-                        importFile(c);
-                    });
+                x2tImportData(new Uint8Array(content), filename.name, "bin", function(c) {
+                    importFile(c);
                 });
             }, 100);
         };
@@ -2452,6 +2286,40 @@ define([
                 }
             });
         };
+
+        sframeChan.on('EV_OOIFRAME_REFRESH', function (data) {
+            // We want to get the "bin" content of a sheet from its json in order to download
+            // something useful from a non-onlyoffice app (download from drive or settings).
+            // We don't want to initialize a full pad in async-store because we only need a
+            // static version, so we can use "openVersionHash" which is based on GET_HISTORY_RANGE
+            APP.isDownload = data.downloadId;
+            APP.downloadType = data.type;
+            downloadImages = {};
+            var json = data && data.json;
+            if (!json || !json.content) {
+                return void sframeChan.event('EV_OOIFRAME_DONE', '');
+            }
+            content = json.content;
+            readOnly = true;
+            var version = (!content.version || content.version === 1) ? 'v1/' :
+                          (content.version <= 3 ? 'v2b/' : CURRENT_VERSION+'/');
+            var s = h('script', {
+                type:'text/javascript',
+                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+            });
+            $('#cp-app-oo-editor').append(s);
+
+            var hashes = content.hashes || {};
+            var idx = sortCpIndex(hashes);
+            var lastIndex = idx[idx.length - 1];
+
+            // We're going to open using "openVersionHash" to avoid reimplementing existing code.
+            // To do so, we're using a version corresponding to the latest checkpoint with a
+            // minor version of 0. "openVersionHash" knows that it needs to give us the latest
+            // version when "APP.isDownload" is true.
+            var sheetVersion = lastIndex + '.0';
+            openVersionHash(sheetVersion);
+        });
 
         config.onInit = function (info) {
             var privateData = metadataMgr.getPrivateData();
@@ -2766,6 +2634,7 @@ define([
                     readOnly = true;
                 }
             }
+            // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
 
             // If the sheet is locked by an offline user, remove it
             if (content && content.saveLock && !isUserOnline(content.saveLock)) {
@@ -2853,9 +2722,99 @@ define([
                     return;
                 }
 
-                loadDocument(newDoc, useNewDefault);
-                setEditable(!readOnly);
-                UI.removeLoadingScreen();
+                var next = function () {
+                    loadDocument(newDoc, useNewDefault);
+                    setEditable(!readOnly);
+                    UI.removeLoadingScreen();
+                };
+
+                if (privateData.isNewFile && privateData.fromFileData) {
+                    try {
+                    (function () {
+                        var data = privateData.fromFileData;
+
+                        var type = data.fileType;
+                        var title = data.title;
+                        // Fix extension if the file was renamed
+                        if (Util.isSpreadsheet(type) && !Util.isSpreadsheet(data.title)) {
+                            if (type === 'application/vnd.oasis.opendocument.spreadsheet') {
+                                data.title += '.ods';
+                            }
+                            if (type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                                data.title += '.xlsx';
+                            }
+                        }
+                        if (Util.isOfficeDoc(type) && !Util.isOfficeDoc(data.title)) {
+                            if (type === 'application/vnd.oasis.opendocument.text') {
+                                data.title += '.odt';
+                            }
+                            if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                                data.title += '.docx';
+                            }
+                        }
+                        if (Util.isPresentation(type) && !Util.isPresentation(data.title)) {
+                            if (type === 'application/vnd.oasis.opendocument.presentation') {
+                                data.title += '.odp';
+                            }
+                            if (type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+                                data.title += '.pptx';
+                            }
+                        }
+
+                        var href = data.href;
+                        var password = data.password;
+                        var parsed = Hash.parsePadUrl(href);
+                        var secret = Hash.getSecrets('file', parsed.hash, password);
+                        var hexFileName = secret.channel;
+                        var fileHost = privateData.fileHost || privateData.origin;
+                        var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+                        var key = secret.keys && secret.keys.cryptKey;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', src, true);
+                        xhr.responseType = 'arraybuffer';
+                        xhr.onload = function () {
+                            if (/^4/.test('' + this.status)) {
+                                // fallback to empty sheet
+                                console.error(this.status);
+                                return void next();
+                            }
+                            var arrayBuffer = xhr.response;
+                            if (arrayBuffer) {
+                                var u8 = new Uint8Array(arrayBuffer);
+                                FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                                    if (err) {
+                                        // fallback to empty sheet
+                                        console.error(err);
+                                        return void next();
+                                    }
+                                    var blobXlsx = decrypted.content;
+                                    new Response(blobXlsx).arrayBuffer().then(function (buffer) {
+                                        var u8Xlsx = new Uint8Array(buffer);
+                                        x2tImportData(u8Xlsx, data.title, 'bin', function (bin) {
+                                            var blob = new Blob([bin], {type: 'text/plain'});
+                                            saveToServer(blob, data.title);
+                                            Title.updateTitle(title);
+                                            UI.removeLoadingScreen();
+                                        });
+                                    });
+                                });
+                            }
+                        };
+                        xhr.onerror = function (err) {
+                            // fallback to empty sheet
+                            console.error(err);
+                            next();
+                        };
+                        xhr.send(null);
+                    })();
+                    } catch (e) {
+                        console.error(e);
+                        next();
+                    }
+                    return;
+                }
+
+                next();
             });
         };
 

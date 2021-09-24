@@ -575,6 +575,26 @@
         return false;
     };
 
+    // Tell if a file is spreadsheet from its metadata={title, fileType}
+    Util.isSpreadsheet = function (type, name) {
+        return (type &&
+                    (type === 'application/vnd.oasis.opendocument.spreadsheet' ||
+                    type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))
+                || (name && (name.endsWith('.xlsx') || name.endsWith('.ods')));
+    };
+    Util.isOfficeDoc = function (type, name) {
+        return (type &&
+                    (type === 'application/vnd.oasis.opendocument.text' ||
+                    type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
+                || (name && (name.endsWith('.docx') || name.endsWith('.odt')));
+    };
+    Util.isPresentation = function (type, name) {
+        return (type &&
+                    (type === 'application/vnd.oasis.opendocument.presentation' ||
+                    type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'))
+                || (name && (name.endsWith('.pptx') || name.endsWith('.odp')));
+    };
+
     Util.isValidURL = function (str) {
         var pattern = new RegExp('^(https?:\\/\\/)'+ // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -616,6 +636,32 @@
         return '#' + getColor().toString(16) +
                      getColor().toString(16) +
                      getColor().toString(16);
+    };
+
+    /*  Chrome 92 dropped support for SharedArrayBuffer in cross-origin contexts
+        where window.crossOriginIsolated is false.
+
+        Their blog (https://blog.chromium.org/2021/02/restriction-on-sharedarraybuffers.html)
+        isn't clear about why they're doing this, but since it's related to site-isolation
+        it seems they're trying to do vague security things.
+
+        In any case, there seems to be a workaround where you can still create them
+        by using `new WebAssembly.Memory({shared: true, ...})` instead of `new SharedArrayBuffer`.
+
+        This seems unreliable, but it's better than not being able to export, since
+        we actively rely on postMessage between iframes and therefore can't afford
+        to opt for full isolation.
+    */
+    var supportsSharedArrayBuffers = function () {
+        try {
+            return Object.prototype.toString.call(new window.WebAssembly.Memory({shared: true, initial: 0, maximum: 0}).buffer) === '[object SharedArrayBuffer]';
+        } catch (err) {
+            console.error(err);
+        }
+        return false;
+    };
+    Util.supportsWasm = function () {
+        return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() || typeof(WebAssembly) === 'undefined');
     };
 
     if (typeof(module) !== 'undefined' && module.exports) {

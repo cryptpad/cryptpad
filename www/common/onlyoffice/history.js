@@ -119,7 +119,7 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var initialCp = cpIndex === sortedCp.length;
+                var initialCp = cpIndex === sortedCp.length || !cp.hash;
 
                 var messages = (data.messages || []).slice(initialCp ? 0 : 1);
 

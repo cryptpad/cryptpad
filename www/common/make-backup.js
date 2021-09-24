@@ -28,7 +28,7 @@ define([
         return n;
     };
 
-    var transform = function (ctx, type, sjson, cb) {
+    var transform = function (ctx, type, sjson, cb, padData) {
         var result = {
             data: sjson,
             ext: '.json',
@@ -41,11 +41,11 @@ define([
         }
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
-            Exporter.main(json, function (data) {
-                result.ext = Exporter.ext || '';
+            Exporter.main(json, function (data, _ext) {
+                result.ext = _ext || Exporter.ext || '';
                 result.data = data;
                 cb(result);
-            });
+            }, null, ctx.sframeChan, padData);
         }, function () {
             cb(result);
         });
@@ -117,12 +117,16 @@ define([
         var opts = {
             password: pData.password
         };
+        var padData = {
+            hash: parsed.hash,
+            password: pData.password
+        };
         var handler = ctx.sframeChan.on("EV_CRYPTGET_PROGRESS", function (data) {
             if (data.hash !== parsed.hash) { return; }
             updateProgress.progress(data.progress);
             if (data.progress === 1) {
                 handler.stop();
-                updateProgress.progress2(1);
+                updateProgress.progress2(2);
             }
         });
         ctx.get({
@@ -136,14 +140,15 @@ define([
                 if (cancelled) { return; }
                 if (!res.data) { return; }
                 var dl = function () {
-                    saveAs(res.data, Util.fixFileName(name));
+                    saveAs(res.data, Util.fixFileName(name)+(res.ext || ''));
                 };
+                updateProgress.progress2(1);
                 cb(null, {
                     metadata: res.metadata,
                     content: res.data,
                     download: dl
                 });
-            });
+            }, padData);
         });
         return {
             cancel: cancel
@@ -195,9 +200,16 @@ define([
                 });
             };
 
+            var timeout = 60000;
+            // OO pads can only be converted one at a time so we have to give them a
+            // bigger timeout value in case there are 5 of them in the current queue
+            if (['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1) {
+                timeout = 180000;
+            }
+
             to = setTimeout(function () {
                 error('TIMEOUT');
-            }, 60000);
+            }, timeout);
 
             setTimeout(function () {
                 if (ctx.stop) { return; }
@@ -228,6 +240,9 @@ define([
                             zip.file(fileName, res.data, opts);
                             console.log('DONE ---- ' + fileName);
                             setTimeout(done, 500);
+                        }, {
+                            hash: parsed.hash,
+                            password: fData.password
                         });
                     });
                 };
@@ -292,7 +307,7 @@ define([
     };
 
     // Main function. Create the empty zip and fill it starting from drive.root
-    var create = function (data, getPad, fileHost, cb, progress, cache) {
+    var create = function (data, getPad, fileHost, cb, progress, cache, sframeChan) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
         var ctx = {
@@ -307,7 +322,8 @@ define([
             updateProgress: progress,
             max: 0,
             done: 0,
-            cache: cache
+            cache: cache,
+            sframeChan: sframeChan
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         progress('reading', -1); // Msg.settings_export_reading
@@ -358,7 +374,7 @@ define([
             else if (state === "done") {
                 updateProgress.folderProgress(3);
             }
-        }, ctx.cache);
+        }, ctx.cache, ctx.sframeChan);
     };
 
     var createExportUI = function (origin) {

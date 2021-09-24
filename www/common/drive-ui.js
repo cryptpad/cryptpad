@@ -89,7 +89,10 @@ define([
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faPreview = 'fa-eye';
-    var faOpenInCode = 'cptools-code';
+    var faOpenInCode = AppConfig.applicationsIcon.code;
+    var faOpenInSheet = AppConfig.applicationsIcon.sheet;
+    var faOpenInDoc = AppConfig.applicationsIcon.doc;
+    var faOpenInPresentation = AppConfig.applicationsIcon.presentation;
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
@@ -332,6 +335,9 @@ define([
     };
 
 
+    Messages.fc_openInSheet = "Edit in Sheet"; // XXX
+    Messages.fc_openInDoc = "Edit in Document"; // XXX
+    Messages.fc_openInPresentation = "Edit in Presentation"; // XXX
     var createContextMenu = function () {
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
@@ -356,6 +362,18 @@ define([
                     'tabindex': '-1',
                     'data-icon': faOpenInCode,
                 }, Messages.fc_openInCode)),
+                h('li', h('a.cp-app-drive-context-openinsheet.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faOpenInSheet,
+                }, Messages.fc_openInSheet)),
+                h('li', h('a.cp-app-drive-context-openindoc.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faOpenInDoc,
+                }, Messages.fc_openInDoc)),
+                h('li', h('a.cp-app-drive-context-openinpresentation.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faOpenInPresentation,
+                }, Messages.fc_openInPresentation)),
                 h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-cloud-upload',
@@ -1275,7 +1293,7 @@ define([
                         hide.push('preview');
                     }
                     if ($element.is('.cp-border-color-sheet')) {
-                        hide.push('download');
+                        //hide.push('download'); // XXX if we don't want to enable this feature yet
                     }
                     if ($element.is('.cp-app-drive-static')) {
                         hide.push('access', 'hashtag', 'properties', 'download');
@@ -1293,6 +1311,18 @@ define([
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
                         }
+                        if (!metadata || !Util.isSpreadsheet(metadata.fileType, metadata.title)
+                            || !priv.supportsWasm) {
+                            hide.push('openinsheet');
+                        }
+                        if (!metadata || !Util.isOfficeDoc(metadata.fileType, metadata.title)
+                            || !priv.supportsWasm) {
+                            hide.push('openindoc');
+                        }
+                        if (!metadata || !Util.isPresentation(metadata.fileType, metadata.title)
+                            || !priv.supportsWasm) {
+                            hide.push('openinpresentation');
+                        }
                         if (metadata.channel && metadata.channel.length < 48) {
                             hide.push('preview');
                         }
@@ -1309,6 +1339,9 @@ define([
                         containsFolder = true;
                         hide.push('openro');
                         hide.push('openincode');
+                        hide.push('openinsheet');
+                        hide.push('openindoc');
+                        hide.push('openinpresentation');
                         hide.push('hashtag');
                         //hide.push('delete');
                         hide.push('makeacopy');
@@ -1324,6 +1357,9 @@ define([
                         hide.push('savelocal');
                         hide.push('openro');
                         hide.push('openincode');
+                        hide.push('openinsheet');
+                        hide.push('openindoc');
+                        hide.push('openinpresentation');
                         hide.push('properties', 'access');
                         hide.push('hashtag');
                         hide.push('makeacopy');
@@ -1355,7 +1391,8 @@ define([
                     hide.push('download');
                     hide.push('share');
                     hide.push('savelocal');
-                    hide.push('openincode'); // can't because of race condition
+                    //hide.push('openincode'); // can't because of race condition
+                    //hide.push('openinsheet'); // can't because of race condition
                     hide.push('makeacopy');
                     hide.push('preview');
                 }
@@ -1367,6 +1404,9 @@ define([
                 if (!APP.loggedIn) {
                     hide.push('openparent');
                     hide.push('rename');
+                    hide.push('openinsheet');
+                    hide.push('openindoc');
+                    hide.push('openinpresentation');
                 }
 
                 filter = function ($el, className) {
@@ -1380,11 +1420,12 @@ define([
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'preview', 'openincode', 'expandall', 'collapseall',
-                            'color', 'download', 'share', 'savelocal', 'rename', 'delete', 'makeacopy',
+                            'color', 'download', 'share', 'savelocal', 'rename', 'delete',
+                            'makeacopy', 'openinsheet', 'openindoc', 'openinpresentation',
                             'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'preview', 'openincode', 'share', 'download', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy', 'savelocal', 'rename'];
+                    show = ['open', 'openro', 'preview', 'openincode', 'openinsheet', 'openindoc', 'openinpresentation', 'share', 'download', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy', 'savelocal', 'rename'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -4349,6 +4390,21 @@ define([
             });
         };
 
+        var openInApp = function (paths, app) {
+            var p = paths[0];
+            var el = manager.find(p.path);
+            var path = currentPath;
+            if (path[0] !== ROOT) { path = [ROOT]; }
+            var _metadata = manager.getFileData(el);
+            var _simpleData = {
+                title: _metadata.filename || _metadata.title,
+                href: _metadata.href || _metadata.roHref,
+                fileType: _metadata.fileType,
+                password: _metadata.password,
+                channel: _metadata.channel,
+            };
+            openIn(app, path, APP.team, _simpleData);
+        };
 
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
@@ -4436,20 +4492,19 @@ define([
             }
             else if ($this.hasClass('cp-app-drive-context-openincode')) {
                 if (paths.length !== 1) { return; }
-                var p = paths[0];
-                el = manager.find(p.path);
-                (function () {
-                    var path = currentPath;
-                    if (path[0] !== ROOT) { path = [ROOT]; }
-                    var _metadata = manager.getFileData(el);
-                    var _simpleData = {
-                        title: _metadata.filename || _metadata.title,
-                        href: _metadata.href || _metadata.roHref,
-                        password: _metadata.password,
-                        channel: _metadata.channel,
-                    };
-                    openIn('code', path, APP.team, _simpleData);
-                })();
+                openInApp(paths, 'code');
+            }
+            else if ($this.hasClass('cp-app-drive-context-openinsheet')) {
+                if (paths.length !== 1) { return; }
+                openInApp(paths, 'sheet');
+            }
+            else if ($this.hasClass('cp-app-drive-context-openindoc')) {
+                if (paths.length !== 1) { return; }
+                openInApp(paths, 'doc');
+            }
+            else if ($this.hasClass('cp-app-drive-context-openinpresentation')) {
+                if (paths.length !== 1) { return; }
+                openInApp(paths, 'presentation');
             }
             else if ($this.hasClass('cp-app-drive-context-expandall') ||
                      $this.hasClass('cp-app-drive-context-collapseall')) {
