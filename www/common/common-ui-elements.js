@@ -2268,6 +2268,7 @@ define([
 
         var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
+        var fromContent = privateData.fromContent;
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
@@ -2523,6 +2524,14 @@ define([
                     if (err || (res && res.error)) { return; }
                     todo(res.data);
                 });
+            }
+            else if (fromContent) {
+                allData = [{
+                    name: fromContent.title,
+                    id: 0,
+                    icon: h('span.cptools.cptools-poll'),
+                }];
+                redraw(0);
             }
             else {
                 redraw(0);

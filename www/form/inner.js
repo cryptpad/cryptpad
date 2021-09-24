@@ -2647,7 +2647,12 @@ define([
         $(export2Button).click(function () {
             var arr = Exporter.results(content, answers, TYPES, true);
             if (!arr) { return void UI.warn(Messages.error); }
-            console.error(arr);
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            var title = framework._.title.title || framework._.title.defaultTitle;
+            sframeChan.event('EV_EXPORT_SHEET', {
+                title: title,
+                content: arr
+            });
         });
 
         var summary = true;

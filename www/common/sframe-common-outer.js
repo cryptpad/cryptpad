@@ -300,6 +300,13 @@ define([
                     }));
                 };
 
+                if (sessionStorage.CP_formExportSheet && parsed.type === 'sheet') {
+                    try {
+                        Cryptpad.fromContent = JSON.parse(sessionStorage.CP_formExportSheet);
+                    } catch (e) { console.error(e); }
+                    delete sessionStorage.CP_formExportSheet;
+                }
+
                 // New pad options
                 var options = parsed.getOptions();
                 if (options.newPadOpts) {
@@ -639,6 +646,7 @@ define([
                         fromFileData: Cryptpad.fromFileData ? (isOO ? Cryptpad.fromFileData : {
                             title: Cryptpad.fromFileData.title
                         }) : undefined,
+                        fromContent: Cryptpad.fromContent,
                         burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined),
                         supportsWasm: Utils.Util.supportsWasm()

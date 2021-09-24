@@ -1440,10 +1440,15 @@ define([
         // to be downloaded and decrypted before converting to xlsx
         var downloadImages = {};
 
+        var firstOO = true;
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = !APP.history && (APP.migrate);
+
+            var fromContent = metadataMgr.getPrivateData().fromContent;
+            if (!firstOO) { fromContent = undefined; }
+            firstOO = false;
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -1604,6 +1609,11 @@ define([
                                     ooChannel.lastHash = hash;
                                 });
                             }
+                        }
+
+                        if (fromContent && !lock && Array.isArray(fromContent.content)) {
+                            console.warn(fromContent);
+                            makePatch(fromContent.content);
                         }
 
                         if (APP.isDownload) {
