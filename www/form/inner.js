@@ -2637,6 +2637,19 @@ define([
             }), title);
         });
 
+        // Export in "sheet"
+        Messages.form_exportSheet = "Export in spreadsheet"; // XXX
+        var export2Button = h('button.btn.btn-primary', [
+            h('i.fa.fa-download'),
+            Messages.form_exportSheet
+        ]);
+        $(export2Button).appendTo($controls);
+        $(export2Button).click(function () {
+            var arr = Exporter.results(content, answers, TYPES, true);
+            if (!arr) { return void UI.warn(Messages.error); }
+            console.error(arr);
+        });
+
         var summary = true;
         var form = content.form;
 
