@@ -1803,9 +1803,9 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
-                ext = ['.pptx', /*'.odp',*/ '.bin'];
+                ext = ['.pptx', '.odp', '.bin'];
             } else if (type==="doc") {
-                ext = ['.docx', /*'.odt',*/ '.bin'];
+                ext = ['.docx', '.odt', '.bin'];
             }
 
             if (!supportsXLSX()) {
