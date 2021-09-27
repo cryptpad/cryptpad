@@ -87,8 +87,10 @@ define([
             chan.wc = wc;
             chan.sendMsg = function (msg, cb) {
                 cb = cb || function () {};
+                var hash = msg.slice(0, 64);
                 wc.bcast(msg).then(function () {
                     chan.history.push(msg);
+                    chan.lastKnownHash = hash;
                     cb();
                 }, function (err) {
                     cb({error: err});
