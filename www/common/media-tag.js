@@ -82,7 +82,11 @@ var factory = function () {
                     plainText.innerText = e.srcElement.result;
                     cb(void 0, plainText);
                 });
-                reader.readAsText(content);
+                try {
+                    reader.readAsText(content);
+                } catch (err) {
+                    cb(err);
+                }
             },
             image: function (metadata, url, content, cfg, cb) {
                 var img = document.createElement('img');
