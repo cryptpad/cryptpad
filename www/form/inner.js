@@ -2628,7 +2628,7 @@ define([
         var $results = $(results).appendTo($container);
 
         $(exportButton).click(function () {
-            var csv = Exporter.results(content, answers, TYPES);
+            var csv = Exporter.results(content, answers, TYPES, getFullOrder(content));
             if (!csv) { return void UI.warn(Messages.error); }
             var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
             var title = Util.fixFileName(suggestion) + '.csv';
@@ -2645,7 +2645,7 @@ define([
         ]);
         $(export2Button).appendTo($controls);
         $(export2Button).click(function () {
-            var arr = Exporter.results(content, answers, TYPES, true);
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), true);
             if (!arr) { return void UI.warn(Messages.error); }
             var sframeChan = framework._.sfCommon.getSframeChannel();
             var title = framework._.title.title || framework._.title.defaultTitle;
@@ -2662,7 +2662,8 @@ define([
         $controls.hide().append(switchMode);
 
         var show = function (answers, header) {
-            var elements = content.order.map(function (uid) {
+            var order = getFullOrder(content);
+            var elements = order.map(function (uid) {
                 var block = form[uid];
                 var type = block.type;
                 var model = TYPES[type];
