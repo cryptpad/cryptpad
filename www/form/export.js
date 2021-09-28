@@ -13,14 +13,14 @@ define([
         value += '"' + vv + '"';
         return value;
     };
-    Export.results = function (content, answers, TYPES) {
+    Export.results = function (content, answers, TYPES, order) {
         if (!content || !content.form) { return; }
         var csv = "";
         var form = content.form;
 
         var questions = [Messages.form_poll_time, Messages.share_formView];
 
-        content.order.forEach(function (key) {
+        order.forEach(function (key) {
             var obj = form[key];
             if (!obj) { return; }
             var type = obj.type;
@@ -44,7 +44,7 @@ define([
             var user = msg._userdata || {};
             csv += escapeCSV(time);
             csv += ',' + escapeCSV(user.name || Messages.anonymous);
-            content.order.forEach(function (key) {
+            order.forEach(function (key) {
                 var type = form[key].type;
                 if (!TYPES[type]) { return; } // Ignore static types
                 if (TYPES[type].exportCSV) {
