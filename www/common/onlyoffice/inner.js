@@ -1790,7 +1790,16 @@ define([
             if (ext === 'ods') { return 259; }
             if (ext === 'csv') { return 260; }
             if (ext === 'pdf') { return 513; }
-            return;
+            // Docs
+            if (ext === 'docx') { return 65; }
+            if (ext === 'doc') { return 66; }
+            if (ext === 'odt') { return 67; }
+            if (ext === 'txt') { return 69; }
+            if (ext === 'html') { return 70; }
+            // Slides
+            if (ext === 'pptx') { return 129; }
+            if (ext === 'ppt') { return 130; }
+            if (ext === 'odp') { return 131; }
         };
         var getFromId = function (ext) {
             var id = getFormatId(ext);
@@ -1878,24 +1887,24 @@ define([
                     var type = common.getMetadataMgr().getPrivateData().ooType;
                     var title = md.title || md.defaultTitle || type;
                     var blob = new Blob([xlsData], {type: "application/pdf"});
-                    //var url = URL.createObjectURL(blob, { type: "application/pdf" });
+                    if (privateData.app !== "sheet") {
+                        UI.removeModals();
+                        var url = URL.createObjectURL(blob, { type: "application/pdf" });
+                        cb({
+                            "type":"save",
+                            "status":"ok",
+                            "data": url
+                        });
+                        saveAs(blob, title+'.pdf');
+                        return;
+                    }
                     saveAs(blob, title+'.pdf');
-                    //window.open(url);
                     cb({
                         "type":"save",
                         "status":"ok",
-                        //"data":url + "?disposition=inline&ooname=output.pdf"
                     });
-                    /*
-                    ooChannel.send({
-                        "type":"documentOpen",
-                        "data": {
-                            "type":"save",
-                            "status":"ok",
-                            "data":url + "?disposition=inline&ooname=output.pdf"
-                        }
-                    });
-                    */
+
+
                 }
             });
         };
@@ -1903,10 +1912,10 @@ define([
         var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var xlsData;
+            var e = getEditor();
 
             // PDF
             if (type === "sheet" && extension === "pdf") {
-                var e = getEditor();
                 var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
                 xlsData = x2tConvertDataInternal(x2t, {
                     buffer: d.data,
@@ -1919,15 +1928,9 @@ define([
                 }
                 return;
             }
-            if (type === "sheet" && extension !== 'xlsx') {
-                xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
-                filename += '.xlsx';
-            } else if (type === "presentation" && extension !== "pptx") {
-                xlsData = x2tConvertDataInternal(x2t, data, filename, 'pptx');
-                filename += '.pptx';
-            } else if (type === "doc" && extension !== "docx") {
-                xlsData = x2tConvertDataInternal(x2t, data, filename, 'docx');
-                filename += '.docx';
+            if (extension === "pdf") {
+                return void e.asc_Print({
+                });
             }
             xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
             if (xlsData) {
@@ -1952,9 +1955,9 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
-                ext = ['.pptx', /*'.odp',*/ '.bin'];
+                ext = ['.pptx', '.odp', '.bin', '.pdf'];
             } else if (type==="doc") {
-                ext = ['.docx', /*'.odt',*/ '.bin'];
+                ext = ['.docx', '.odt', '.bin', '.pdf'];
             }
 
             if (!supportsXLSX()) {
