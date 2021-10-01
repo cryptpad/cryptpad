@@ -249,6 +249,30 @@ define([
                     });
                 }
             };
+            if (ext === 'bin') {
+                var reader2 = new FileReader();
+                reader2.onload = function (e) {
+                    var str = e.target.result;
+                    var type = str.slice(0,4);
+                    var c = CONVERTERS['bin'] = {};
+
+                    if (type === "XLSY") {
+                        c.ods = x2tConverter('bin', 'ods');
+                        c.xlsx = x2tConverter('bin', 'xlsx');
+                    } else if (type === "PPTY") {
+                        c.odp = x2tConverter('bin', 'odp');
+                        c.pptx = x2tConverter('bin', 'pptx');
+                    } else if (type === "DOCY") {
+                        c.odt = x2tConverter('bin', 'odt');
+                        c.docx = x2tConverter('bin', 'docx');
+                    } else {
+                        return void console.error('Unsupported');
+                    }
+
+                    reader.readAsArrayBuffer(file, 'application/octet-stream');
+                };
+                return void reader2.readAsText(file);
+            }
             reader.readAsArrayBuffer(file, 'application/octet-stream');
         });
 
