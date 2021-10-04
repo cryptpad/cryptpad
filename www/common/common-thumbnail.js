@@ -196,7 +196,7 @@ define([
         reader.readAsText(blob);
     };
     Thumb.fromBlob = function (blob, _cb) {
-        var cb = Util.once(_cb);
+        var cb = Util.once(Util.mkAsync(_cb));
         // The blob is already in memory, it should be super-fast to make a thumbnail
         // ==> 1s timeout
         setTimeout(function () {

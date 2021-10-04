@@ -1,54 +1,150 @@
+# 4.11.0 (WIP)
+
+## Goals
+
+## Update notes
+
+* warning about lack of support for internet explorer
+  * existing support will get worse over time. please update.
+  * we only support IE for the home page and related info pages. Apps with complex functionality assume you are using a regularly updated browser.
+* this release includes new clientside dependencies. Don't forget to run `bower update`
+
+To update from 4.10.0 to 4.11.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+5. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
+
+## Features
+
+* unify unregistered/non-registered/anonymous terminology as 'guest'
+* support
+  * prompt users that need support to subscribe
+  * refactor debugging data generation to easily show users what data is included
+* form improvements
+  * include bar graphs for multiple-answer form questions
+  * move the tally of empty responses to the top of each question's summary (rather than the bottom)
+  * conditionally displayed sections depending on the state of previous answers
+  * nicer participant view without CryptPad toolbar or popups
+  * response page to with customizable message to thank those that have responded
+  * more granular form controls and clearer text
+    * anonymization settings for answers
+    * optional restriction of a form to registered users only
+  * real-time form authorship.
+    * changes are saved as you type, so you no longer need to "save" each question.
+    * co-author surveys with other users and edit the same question concurrently.
+    * avoid redrawing active parts of the UI when other authors make a change (datepicker UI, dropdowns, etc.)
+    * redraw no more than once every 500ms for performance reasons
+    * preserve current scroll position when other users make changes
+  * easier access to basic for form authors in the left sidebar:
+    * preview a form
+    * copy the participant link
+    * view existing responses
+  * more intuitive display of answers
+    * bar charts throughout, wherever applicable
+    * options with no answers are still displayed with zero results in the summary rather than not being displayed at all
+    * options are displayed according to the order of their appearance in the original question, rather than according to the order in which participants chose them
+    * the number of empty answers is displayed above the scrollable section of each answer's summary rather than at the bottom
+  * more intuitive controls and default options
+    * placeholders for text inputs instead of pre-filled fields
+    * "enter" creates a new field
+    * "esc" clears an empty field
+    * easy navigation using the tab key
+  * convert between related question types:
+    * radio, checkbox, ranked choices
+    * multi-radio, multi-check
+  * more form validation options:
+    * required questions
+    * validated question types
+    * summarize invalid answers at the bottom of the form. jump to the relevant question when clicked.
+  * CryptPad logo displayed at the bottom of the participant page which links to the home page
+  * we've pre-filled some options in our "simple scheduling poll" template.
+* bar charts on the admin page's 'Performance' tab
+* enhancements for guest users and registered users without names or avatars
+  * two initials for users with a custom name but no avatar (previously one initial, always capitalized)
+  * animal avatars as defaults instead of indistinguishable initials (A for Anonymous, G for Guest)
+    * configurable via `AppConfig.emojiAvatars = []`
+  * authorship data for guests in rich text comments, code editor author data
+  * emojis in cursor tooltips for guests (rich text, code, slide, kanban)
+  * emojis in the share and access modals for contacts with empty names
+* script to identify unnecessary duplication of translations
+* improvements to upload and media-tag UI
+  * support for adding descriptive text at upload time
+  * preview of uploaded media in the upload modal
+* our link creation UI from 4.9.0 now highlights the URL input field as you type to indicate whether the current URL value is valid
+* the share menu now makes its primary actions more clear, with explicit text ("copy link" instead of just "copy") on its main buttons, as well as icons that better match button UI on the rest of the platform.
+* we're working towards better accessibility for screen readers with better alt-text and `aria-` attributes to suppress descriptions of strictly visual UI features.
+
+## Bug fixes
+
+* fix empty name fields in various places across the platform where we did not fall back to "anonymous/guest"
+  * teams
+  * contacts
+  * ???
+* clarified a comment in the nginx config about _professional support_
+* handled an edge case in ICS import to calendars where DTEND was not defined (use duration or consider it an "all-day" event
+* links shared by contacts could be previewed in a modal when viewing their notification. The color of the previewed link was overridden by some bootstrap styles. we now use a better color.
+* better validation for team invite links where badly formed invite content could have triggered a type error.
+
+
 # 4.10.0
 
 ## Goals
 
+August is typically a quiet month for CryptPad's development team, as members of our team and many of our users take their (northern hemisphere) summer holidays. We took the opportunity to catch up on some regular maintentance and to review and some prototype branches of our code that had been ready for integration for some time.
+
+It seems that some browser developers thought to do the same thing, because we noticed some significant regressions in some APIs that we rely on. Some of our time went towards addressing the resulting bugs and restructuring some code to avoid future regressions for browser behaviour that seem likely to be changed again in the near future.
 
 ## Update notes
 
+4.10.0 includes some minor changes to [the checkup page](https://docs.cryptpad.fr/fr/admin_guide/installation.html#diagnostics). Some admins have included screenshots of this page in bug reports or requests for support along with details of problems they suspect of being related. Because we've observed that the root of many issues is the browser (sometimes in addition to the server) we have decided to include details about the browser in this page's summary.
+
+Up until now the checkup page only tested observable behaviour of the server such as HTTP headers on particular resources, configuration parameters distributed to the client, and the availability of essential resources. This practice meant that a report for an instance should have been the same regardless of the device that was used to generate the report. In light of a serious regression in Chrome (and all its derivatives) we decided that objectiveness was less important than utility and introduced some tests which check whether the client running the diagnostics interprets the provided server configuration. Terrible browsers (ie. every browser that is available on iOS) will fail these tests every time because they don't implement the expected APIs, but we've tried to detect these cases and warn that they are expected.
+
+For the most part you (as an admin) will not need to do anything special for this release as a result. If you notice weird issues on particular browsers in the future, however, it might be helpful to view this page from the affected browser/device and include any information that is provided in bug reports.
+
+To update from 4.9.0 to 4.10.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+5. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
+
 ## Features
 
-* screen real-estate
-  * kanban
-    * narrower 'add board' button
-    * 'Tools' menu to collapse the tag and view mode UI
-  * general
-    * main toolbar collapse
-* remove unused files
-  * /common/noscriptfix.js
-* more detailed inventory of dependencies
-  * see cryptpad/www/lib/changelog.md
-* include vendor and appVersion in support ticket data
-* log when trimming history
-* rewrite some translation keys to use a single syntax for BR tags
-* translations
-  * more linting
-  * standardized capitalization of "CryptPad"
-  * avoid raw injection of HTML strictly for adding line breaks
-  * remove some unnecessary cases of raw HTML injection
-* checkup
-  * better styles
-  * improved formatting for returned values in failed tests
-  * display browser and OS for when people send us screenshots instead of URLs
-  * test for support of some features in the browser (inside the sandbox)
-* mark password inputs as _new passwords_ so that browsers don't suggest you input and share your account password
+As noted above, web standards and the browsers that implement them are constantly changing. Web applications like CryptPad which use new and advanced browser features are particularly prone to regressions even when we use browser features exactly as intended and advertized. The "Features" section of each release's notes typically highlights visible things, like clickable buttons or improvements to the interface. This point is included as a reminder that _regular maintenance is at least as important to an open-source software project_, even though it gets little attention and far less funding. The funding bodies that have generously supported our work typically award grants for research and the development of novel features, but we are sorely in need of increased support to allow us the flexibility to deal with unanticipated problems as they arise. If you are fortunate enough to have some disposable income and value the work that keeps CryptPad functional we would greatly appreciate a one-time or recurring donation to [our OpenCollative campaign](https://opencollective.com/cryptpad/contribute).
+
+* This release coincided the yearly seminar of [XWiki (our parent organization)](https://www.xwiki.com) which always features a day-long hackathon. This year our team was joined by [@aemi-dev](https://github.com/aemi-dev) who has been working as an intern within XWiki's product team. Together we worked on adding some data visualization to our recently introduced _Form_ app. The improvements include a timeline to visualize how many responses were submitted to the form during each day and bar charts for a variety of question types to complement the existing tally of results. There's still more work to be done in this direction, but we established some useful foundations during our relatively short session.
+* Frequent users of small screens will be pleased to hear that CryptPad's app toolbar now includes a button to collapse the upper segment of the toolbar which includes CryptPad's logo, the current document's title, status indicator (saved, editing, disconnected, etc.), and the user administration menu.
+* Likewise, Kanban users may note that the app's toolbar also features a "Tools" menu (like that in the markdown editor) which toggles display of the controls which filter board items by tag and select view state (detailed or brief).
+* Password fields that are specific to files and documents now have the `autocomplete="new-password"` attribute applied to prevent browsers and integrated password managers from suggesting that users enter their account password. This lowers the risk that users will inadvertently reveal their account password in the future. Additionally, Firefox will now prompt users to use a high-entropy password instead.
+* Our integrated support ticket functionality automatically includes some commonly needed information about the user's account and browser. As of this release this data will also include the browser's `vendor` and `appVersion`, which are useful hints about the host browser and OS (which we almost always have to ask about when the ticket is for a bug report). This data will also include the browser's current width and height, as some issues only occur at particular resolutions and can otherwise be difficult to reproduce.
+* We reviewed a range of third-party dependencies that are included in our repository and updated `cryptpad/www/lib/changelog.md` to better indicate their exact version, source, and any CryptPad-specific modifications we've made to them.
+  * We found `less.js` had been duplicated, with one version (provided by bower) being used for custom styles in our slide editor while the rest of the platform used a custom version that fixed an apparent bug in the _reference import_ syntax. We've standardized on our custom version and removed the alternative from our `bower.json` file.
+  * We also identified a few files that were no longer in use and removed them. There's still more work to be done to document the exact versions and source of some dependencies, so we've made this process a part of our regular release checklist.
+* During a manual review we noticed some inconsistencies between different translations of CryptPad and have automated these checks by adding them to a script which we use to review translations before each release. These have helped us standardize things like the capitalization of "CryptPad", the syntax for some basic markup like `<br>` tags, and the consistent use of both dialect-specific suffixes in English and punctuation rules in French. We have only added tests for languages in which members of our team are fluent, so if you maintain a translation in another language and can suggest additional qualities we could test we would welcome your suggestions.
+* The improved consistency of our translations has also enabled us to construct some translated UI components programmatically without directly using their inline HTML. This provides an extra layer of security in the event that
+  1. malicious code was included in a translation file
+  2. our tests failed to identify the code before it was included in a release
+  3. the release was deployed by an admin that had failed to take advantage of the sandboxing system that prevents the injection of scripts into the UI
 
 ## Bug fixes
 
-* Sheet export
-  * most exports broken by Chrome 92, mostly fixed
-  * we discovered that CSV export was not working in any major browser, though it's unclear why. We've disabled CSV export in the meantime
-  * updated translation to stop referring to Microsoft since we support OpenDocument formats
-  * some new browser-specific checkup tests to make it easier to detect future regressions in the APIs
-* drive bug fixes
-  * guard against a few possible type errors
-  * "burn this drive" button works again in Firefox
-* clear login token
-  1. when you delete your account
-  2. when logging in
-* use single version of less.js on the client
-* abort subsequent actions when metadata fails to load during owned channel archival
-* handle warnings when trimming history (not just errors)
-* filter channel ids with invalid lengths when generating a list of all channels you use
+* The Chrome development team made some changes related to the availability of the `SharedArrayBuffer` API in cross-site-isolated contexts such as that of our sandboxing system which resulted in it being disabled despite the fact that our usage conformed to a specification that should have been supported. We use this modern browser feature (where available) to convert spreadsheets between different formats in the browser itself, whereas other services (even those advertizing their use of encryption for documents) send users' content to their server for conversion. Since Chrome's engine is used as the basis for a wide variety of other browsers, this broke sheet export everywhere except Firefox (which correctly implements the specification). Luckily, we found a simple workaround to use the same underlying feature using an alternate syntax that they had failed to disable. This is only a short-term solution as we have no expectation that it will continue to work, so we are actively investigating making this conversion a trusted process that will be run outside of our sandboxing system.
+* On the topic of spreadsheet conversion, we updated our translations of the warning that is displayed in our conversion UI when the required browser features are not available. Rather than referring to "Microsoft Office formats" we now refer to _"Office formats"_ since we offer support for ODS in addition to XLSX.
+* We found that CSV export mysteriously stopped working as well (seemingly everywhere, not just Chrome and derivatives). We're still not sure why this is the case, but the option is disabled in the UI until we can find and fix the problem.
+* The _drive_ app includes a button that lets guest users wipe their personal data from their browser's session. We noticed that this button did nothing after approximately 50% of page loads in Firefox, suggesting there was an unpredictable quality related to either how the button was being created or how "click handlers" were declared. We traced it back to the jQuery library and rewrote the handler to use "VanillaJS". We don't have the time or budget to dig into why it stopped working, so unless someone else can figure it out for us then you, dear reader, may never learn the answer to this mystery.
+* While investigating the drive we also added some guards against some possible type errors.
+* We noticed that the `loginToken` attribute was not correctly removed from clients' localStorage when they deleted their account. The value of this token is random and is of no use to attackers (especially when the token belongs to a deleted account), but it was a cause of some inconvenience to us when testing account deletion, as the mismatch between the token stored locally and in accounts (after login) required us to login in a second time before. We've updated the related code to:
+  1. correctly delete the token when you delete an account from the settings page
+  2. ensure that no such token is present when logging in
+* Document ids with invalid lengths are excluded from accounts' lists of "pinned documents" (those which should not be deleted from the server). We recently implemented a similar fix, but found that this list could be constructed in more than one way depending on the context.
+* We identified and fixed two problems with our "history trim" functionality (accessible via documents' "Properties" menu):
+  1. In the extremely unlikely event that a user requested that the server trim the history of a document and its metadata failed to load, the server would respond to the user with an error but did not correctly abort from the subsequent process to trim the document's history. In theory this could have been used by non-owners to archive parts of the documents history, however, we have no reason to believe that this was possible in practice. In any case, the flaw has been corrected.
+  2. Complex documents like spreadsheets that use more than one channel to store different types of content would trim their respective histories in parallel, however, in such cases any errors were returned to the calling function as a list of warnings rather than a singular error. This format was not handled by the UI, resulting in an apparent success in cases of a partial or complete failure for such document types.
 
 # 4.9.0
 

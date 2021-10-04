@@ -6,12 +6,13 @@ define([
     '/common/hyperscript.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/croppie/croppie.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/croppie/croppie.css',
-], function ($, Util, Hash, UI, h, MediaTag, Messages) {
+], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
 
     var Nacl = window.nacl;
@@ -43,9 +44,16 @@ define([
         });
     };
 
+    var animal_avatars = {};
     MT.getCursorAvatar = function (cursor) {
+        var uid = cursor.uid;
+        // TODO it would be nice to have "{0} is editing" instead of just their name
         var html = '<span class="cp-cursor-avatar">';
-        html += (cursor.avatar && avatars[cursor.avatar]) || '';
+        if (cursor.avatar && avatars[cursor.avatar]) {
+            html += avatars[cursor.avatar];
+        } else if (animal_avatars[uid]) {
+            html += animal_avatars[uid] + ' ';
+        }
         html += Util.fixHTML(cursor.name) + '</span>';
         return html;
     };
@@ -79,12 +87,63 @@ define([
         });
     };
 
-    MT.displayAvatar = function (common, $container, href, name, _cb) {
+    // https://emojipedia.org/nature/
+    var ANIMALS = AppConfig.emojiAvatars || [];
+
+    var getPseudorandomAnimal = MT.getPseudorandomAnimal = function (seed) {
+        if (!ANIMALS.length) { return ''; }
+        if (typeof(seed) !== 'string') { return; }
+        seed = seed.replace(/\D/g, '').slice(0, 10); // TODO possible optimization for on-wire uid
+        seed = parseInt(seed);
+        if (!seed) { return; }
+        return ANIMALS[seed % ANIMALS.length] || '';
+    };
+
+    var getPrettyInitials = MT.getPrettyInitials = function (name) {
+        var parts = name.split(/\s+/);
+        var text;
+        if (parts.length > 1) {
+            text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
+        } else {
+            text = Util.getFirstCharacter(name);
+            var second = Util.getFirstCharacter(name.replace(text, ''));
+            if (second && second !== '?') {
+                text += second;
+            }
+        }
+        return text;
+    };
+
+    MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
         var displayDefault = function () {
-            var text = Util.getFirstCharacter(name || Messages.anonymous);
-            var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
+            var animal_avatar;
+            if (uid && animal_avatars[uid]) {
+                animal_avatar = animal_avatars[uid];
+            }
+
+            name = UI.getDisplayName(name);
+            var text;
+            if (ANIMALS.length && name === Messages.anonymous && uid) {
+                if (animal_avatar) {
+                    text = animal_avatar;
+                } else {
+                    text = animal_avatar = getPseudorandomAnimal(uid);
+                }
+            } else {
+                text = getPrettyInitials(name);
+            }
+
+            var $avatar = $('<span>', {
+                'class': 'cp-avatar-default' + (animal_avatar? ' animal': ''),
+                // this prevents screenreaders from trying to describe this
+                alt: '',
+                'aria-hidden': true,
+            }).text(text);
             $container.append($avatar);
+            if (uid && animal_avatar) {
+                animal_avatars[uid] = animal_avatar;
+            }
             if (cb) { cb(); }
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
@@ -96,6 +155,7 @@ define([
             $container.append($el);
             return void cb($el);
         }
+
 
         var centerImage = function ($img, $image) {
             var img = $image[0];

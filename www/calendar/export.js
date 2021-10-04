@@ -123,6 +123,7 @@ define([
                 var jcalData = ICAL.parse(content);
                 vcalendar = new ICAL.Component(jcalData);
             } catch (e) {
+                console.error(e);
                 return void cb(e);
             }
 
@@ -147,6 +148,18 @@ define([
                 var isAllDay = false;
                 var start = ev.getFirstPropertyValue('dtstart');
                 var end = ev.getFirstPropertyValue('dtend');
+                var duration = ev.getFirstPropertyValue('duration');
+                if (!end && !duration) {
+                    if (start.isDate) {
+                        end = start.clone();
+                        end.adjust(1); // Add one day
+                    } else {
+                        end = start.clone();
+                    }
+                } else if (!end) {
+                    end = start.clone();
+                    end.addDuration(duration);
+                }
                 if (start.isDate && end.isDate) {
                     isAllDay = true;
                     start = String(start);
@@ -175,7 +188,7 @@ define([
                         hidden.push(al.toString());
                     }
                     var trigger = al.getFirstPropertyValue('trigger');
-                    var minutes = -trigger.toSeconds() / 60;
+                    var minutes = trigger ? (-trigger.toSeconds() / 60) : 0;
                     if (reminders.indexOf(minutes) === -1) { reminders.push(minutes); }
                 });
 

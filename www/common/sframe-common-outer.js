@@ -623,6 +623,7 @@ define([
                         prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        canEdit: hashes && hashes.editHash,
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         notifications: notifs,
@@ -1790,6 +1791,22 @@ define([
                         error: e
                     });
                 });
+            });
+
+            sframeChan.on('Q_COPY_VIEW_URL', function (data, cb) {
+                require(['/common/clipboard.js'], function (Clipboard) {
+                    var url = window.location.origin +
+                                Utils.Hash.hashToHref(hashes.viewHash, 'form');
+                    var success = Clipboard.copy(url);
+                    cb(success);
+                });
+            });
+            sframeChan.on('EV_OPEN_VIEW_URL', function () {
+                var url = Utils.Hash.hashToHref(hashes.viewHash, 'form');
+                var a = window.open(url);
+                if (!a) {
+                    sframeChan.event('EV_POPUP_BLOCKED');
+                }
             });
 
             if (cfg.messaging) {

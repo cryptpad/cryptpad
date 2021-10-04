@@ -10,14 +10,12 @@ define([
     '/customize/messages.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages) {
 
-    var send = function (ctx, id, type, data, dest) {
+    var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
-        var supportKey = ApiConfig.supportMailbox;
-        var supportChannel = Hash.getChannelIdFromKey(supportKey);
         var metadataMgr = common.getMetadataMgr();
-        var user = metadataMgr.getUserData();
         var privateData = metadataMgr.getPrivateData();
-
+        var user = metadataMgr.getUserData();
+        var teams = privateData.teams || {};
         data = data || {};
 
         data.sender = {
@@ -34,14 +32,12 @@ define([
             data.sender.quota = ctx.pinUsage;
         }
 
-        data.id = id;
-        data.time = +new Date();
-
-        var teams = privateData.teams || {};
         if (!ctx.isAdmin) {
             data.sender.userAgent = Util.find(window, ['navigator', 'userAgent']);
             data.sender.vendor = Util.find(window, ['navigator', 'vendor']);
             data.sender.appVersion = Util.find(window, ['navigator', 'appVersion']);
+            data.sender.screenWidth = Util.find(window, ['screen', 'width']);
+            data.sender.screenHeight = Util.find(window, ['screen', 'height']);
             data.sender.blockLocation = privateData.blockLocation || '';
             data.sender.teams = Object.keys(teams).map(function (key) {
                 var team = teams[key];
@@ -55,7 +51,25 @@ define([
                 }
                 return ret;
             }).filter(Boolean);
+        }
 
+        return data;
+    };
+
+    var send = function (ctx, id, type, data, dest) {
+        var common = ctx.common;
+        var supportKey = ApiConfig.supportMailbox;
+        var supportChannel = Hash.getChannelIdFromKey(supportKey);
+        var metadataMgr = common.getMetadataMgr();
+        var user = metadataMgr.getUserData();
+        var privateData = metadataMgr.getPrivateData();
+
+        data = getDebuggingData(ctx, data);
+
+        data.id = id;
+        data.time = +new Date();
+
+        if (!ctx.isAdmin) {
             // "dest" is the recipient that is not the admin support mailbox.
             // In the support page, make sure dest is always ourselves.
             dest.channel = privateData.support;
@@ -472,6 +486,10 @@ define([
         ui.makeCloseMessage = function (content, hash) {
             return makeCloseMessage(ctx, content, hash);
         };
+        ui.getDebuggingData = function (data) {
+            return getDebuggingData(ctx, data);
+        };
+
         return ui;
     };
 

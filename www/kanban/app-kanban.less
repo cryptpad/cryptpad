@@ -159,6 +159,14 @@
             margin-right: 5px;
             .tools_unselectable();
             cursor: default;
+            &.cp-cursor.cp-tippy-html {
+                .avatar_vars(20px);
+                background-color: var(--red);
+                font-size: @avatar-font-size;
+                &.animal {
+                    font-size: @avatar-font-size-animal;
+                }
+            }
         }
     }
     .kanban-item {

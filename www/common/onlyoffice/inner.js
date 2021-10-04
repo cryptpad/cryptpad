@@ -1062,17 +1062,31 @@ define([
                 return;
             }
             var type = common.getMetadataMgr().getPrivateData().ooType;
-
-            content.locks = content.locks || {};
-            // Send the lock to other users
+            var b = obj.block && obj.block[0];
             var msg = {
                 time: now(),
                 user: myUniqueOOId,
-                block: obj.block && obj.block[0],
+                block: b
             };
+
+            var editor = getEditor();
+            if (type === "presentation" && (APP.themeChanged || APP.themeRemote) && b &&
+                b.guid === editor.GetPresentation().Presentation.themeLock.Id) {
+                APP.themeLocked = APP.themeChanged;
+                APP.themeChanged = undefined;
+                var fakeLocks = getLock();
+                fakeLocks[Util.uid()] = msg;
+                send({
+                    type: "getLock",
+                    locks: fakeLocks
+                });
+                return;
+            }
+
+            content.locks = content.locks || {};
+            // Send the lock to other users
             var myId = getId();
             content.locks[myId] = content.locks[myId] || {};
-            var b = obj.block && obj.block[0];
             if (type === "sheet" || typeof(b) !== "string") {
                 var uid = Util.uid();
                 content.locks[myId][uid] = msg;
@@ -1082,6 +1096,7 @@ define([
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
+
             // Prepare callback
             if (cpNfInner) {
                 var waitLock = APP.waitLock = Util.mkEvent(true);
@@ -1123,7 +1138,7 @@ define([
             APP.realtime.sync();
         };
 
-        var parseChanges = function (changes) {
+        var parseChanges = function (changes, isObj) {
             try {
                 changes = JSON.parse(changes);
             } catch (e) {
@@ -1132,7 +1147,7 @@ define([
             return changes.map(function (change) {
                 return {
                     docid: "fresh",
-                    change: '"' + change + '"',
+                    change: isObj ? change : '"' + change + '"',
                     time: now(),
                     user: myUniqueOOId,
                     useridoriginal: String(myOOId)
@@ -1163,11 +1178,16 @@ define([
                 return;
             }
 
+            var changes = obj.changes;
+            if (obj.type === "cp_theme") {
+                changes = JSON.stringify([JSON.stringify(obj)]);
+            }
+
             // Send the changes
             content.locks = content.locks || {};
             rtChannel.sendMsg({
                 type: "saveChanges",
-                changes: parseChanges(obj.changes),
+                changes: parseChanges(changes, obj.type === "cp_theme"),
                 changesIndex: ooChannel.cpIndex || 0,
                 locks: getUserLock(getId(), true),
                 excelAdditionalInfo: obj.excelAdditionalInfo
@@ -1221,6 +1241,11 @@ define([
                     if (APP.onStrictSaveChanges && !force) { return; }
                     // We only need to release locks for sheets
                     if (type !== "sheet" && obj.type === "releaseLock") { return; }
+                    if (type === "presentation" && obj.type === "cp_theme") {
+                        // XXX
+                        console.error(obj);
+                        return;
+                    }
 
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
@@ -1283,6 +1308,25 @@ define([
                                 APP.onStrictSaveChanges();
                                 return;
                             }
+                            console.error(APP.isFast, APP.themeLocked);
+                            var AscCommon = window.frames[0] && window.frames[0].AscCommon;
+                            if (Util.find(AscCommon, ['CollaborativeEditing','m_bFast'])
+                                        && APP.themeLocked) {
+                                obj = APP.themeLocked;
+                                APP.themeLocked = undefined;
+                                obj.type = "cp_theme";
+                                console.error(obj);
+                            }
+                            if (APP.themeRemote) {
+                                delete APP.themeRemote;
+                                send({
+                                    type: "unSaveLock",
+                                    index: ooChannel.cpIndex,
+                                    time: +new Date()
+                                });
+                                return;
+                            }
+
                             // We're sending our changes to netflux
                             handleChanges(obj, send);
                             // If we're alone, clean up the medias
@@ -1673,6 +1717,14 @@ define([
                 });
             };
 
+            APP.remoteTheme = function () {
+                APP.themeRemote = true;
+            };
+            APP.changeTheme = function (id) {
+                APP.themeChanged = {
+                    id: id
+                };
+            };
             APP.openURL = function (url) {
                 common.openUnsafeURL(url);
             };
@@ -1692,7 +1744,7 @@ define([
                     return void callback("");
                 }
 
-                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].src;
+                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
                 if (blobUrl) {
                     debug("CryptPad Image already loaded " + blobUrl);
                     return void callback(blobUrl);
@@ -1717,7 +1769,11 @@ define([
                             try {
                                 var blobUrl = URL.createObjectURL(res.content);
                                 // store media blobUrl and content for cache and export
-                                var mediaData = { blobUrl : blobUrl, content : "" };
+                                var mediaData = {
+                                    blobUrl : blobUrl,
+                                    content : "",
+                                    name: name
+                                };
                                 mediasData[data.src] = mediaData;
                                 var reader = new FileReader();
                                 reader.onloadend = function () {
@@ -1798,7 +1854,7 @@ define([
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin',
-            //'.csv', // XXX
+            //'.csv', // XXX 4.11.0
             '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
@@ -2274,6 +2330,26 @@ define([
                     makeCheckpoint(true);
                 });
                 $save.appendTo(toolbar.$bottomM);
+
+                var $dlMedias = common.createButton('', true, {
+                    name: 'dlmedias',
+                    icon: 'fa-download',
+                }, function () {
+                    require(['/bower_components/jszip/dist/jszip.min.js'], function (JsZip) {
+                        var zip = new JsZip();
+                        Object.keys(mediasData || {}).forEach(function (url) {
+                            var obj = mediasData[url];
+                            var b = new Blob([obj.content]);
+                            zip.file(obj.name, b, {binary: true});
+                        });
+                        setTimeout(function () {
+                            zip.generateAsync({type: 'blob'}).then(function (content) {
+                                saveAs(content, 'media.zip');
+                            });
+                        }, 100);
+                    });
+                }).attr('title', "Download medias");
+                $dlMedias.appendTo(toolbar.$bottomM);
             }
 
             if (!privateData.ooVersionHash) {

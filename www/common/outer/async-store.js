@@ -26,9 +26,9 @@ define([
 
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
-    '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
-    '/bower_components/netflux-websocket/netflux-client.js',
+    'chainpad-netflux',
+    'chainpad-listmap',
+    'netflux-client',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,

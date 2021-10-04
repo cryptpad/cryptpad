@@ -6,7 +6,7 @@ define([
 
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    'chainpad-listmap',
     '/bower_components/chainpad/chainpad.dist.js',
 ], function (Hash, Util, UserObject, Cache,
              nThen, Crypto, Listmap, ChainPad) {

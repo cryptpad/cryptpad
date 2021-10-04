@@ -235,9 +235,6 @@ define([
         };
     };
 
-    funcs.getAuthorId = function () {
-    };
-
     var authorUid = function(existing) {
         if (!Array.isArray(existing)) { existing = []; }
         var n;
@@ -249,11 +246,25 @@ define([
         if (existing.indexOf(n) !== -1) { n = 0; }
         return n;
     };
-    funcs.getAuthorId = function(authors, curve) {
+    funcs.getAuthorId = function(authors, curve, tokenId) {
         var existing = Object.keys(authors || {}).map(Number);
-        if (!funcs.isLoggedIn()) { return authorUid(existing); }
-
         var uid;
+        var loggedIn = funcs.isLoggedIn();
+        if (!loggedIn && !tokenId) { return authorUid(existing); }
+        if (!loggedIn) {
+            existing.some(function (id) {
+                var author = authors[id];
+                if (!author || author.uid !== tokenId) { return; }
+                uid = Number(id);
+                return true;
+            });
+            return uid || authorUid(existing);
+        }
+        // TODO this should check for a matching curvePublic / uid if:
+        // 1. you are logged in OR
+        // 2. you have a token
+        // so that users that register recognize comments from before
+        // they registered as their own (same uid)
         existing.some(function(id) {
             var author = authors[id] || {};
             if (author.curvePublic !== curve) { return; }
@@ -921,9 +932,10 @@ define([
             });
 
             ctx.sframeChan.on('EV_WORKER_TIMEOUT', function () {
-                UI.errorLoadingScreen(Messages.timeoutError, false, function () { // XXX mobile users can't necessarily hit 'ESC' as this message suggests. provice a click option
-                    funcs.gotoURL('');
-                });
+                var message = UI.setHTML(h('span'), Messages.timeoutError);
+                var cb = Util.once(function () { funcs.gotoURL(''); });
+                $(message).find('em').on('touchend', cb);
+                UI.errorLoadingScreen(message, false, cb);
             });
 
             ctx.sframeChan.on('EV_CHROME_68', function () {

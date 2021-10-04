@@ -3,7 +3,7 @@ define([
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-realtime.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    'chainpad-listmap',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
 ], function (Util, Hash, Constants, Realtime, Listmap, Crypto, ChainPad) {

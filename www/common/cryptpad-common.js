@@ -161,7 +161,7 @@ define([
 
     common.makeNetwork = function (cb) {
         require([
-            '/bower_components/netflux-websocket/netflux-client.js',
+            'netflux-client',
             '/common/outer/network-config.js'
         ], function (Netflux, NetConfig) {
             var wsUrl = NetConfig.getWebsocketURL();
