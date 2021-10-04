@@ -51,7 +51,14 @@ define([
                         Cryptpad.setPadAttribute('answersChannel', data.channel, function () {});
                     });
                 });
-
+            });
+            sframeChan.on('EV_EXPORT_SHEET', function (data) {
+                if (!data || !Array.isArray(data.content)) { return; }
+                sessionStorage.CP_formExportSheet = JSON.stringify(data);
+                var href = Utils.Hash.hashToHref('', 'sheet');
+                var a = window.open(href);
+                if (!a) { sframeChan.event('EV_POPUP_BLOCKED'); }
+                delete sessionStorage.CP_formExportSheet;
             });
             var getAnonymousKeys = function (formSeed, channel) {
                 var array = Nacl.util.decodeBase64(formSeed + channel);

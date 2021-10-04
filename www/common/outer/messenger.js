@@ -617,11 +617,11 @@ define([
             return void cb({error: 'NO_SUCH_CHANNEL'});
         }
 
-        var proxy = ctx.store.proxy;
+        var proxy = ctx.store.proxy || {};
         var msg = [Types.message, proxy.curvePublic, +new Date(), payload];
         if (!channel.isFriendChat) {
             var name = proxy[Constants.displayNameKey] ||
-                        Messages.anonymous + '#' + proxy.uid.slice(0,5);
+                        Messages.anonymous + '#' + (proxy.uid || ctx.store.noDriveUid).slice(0,5);
             msg.push(name);
         }
         var msgStr = JSON.stringify(msg);

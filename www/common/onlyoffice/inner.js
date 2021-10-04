@@ -123,9 +123,13 @@ define([
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
         };
 
+        var getWindow = function () {
+            return window.frames && window.frames[0];
+        };
         var getEditor = function () {
-            if (!window.frames || !window.frames[0]) { return; }
-            return window.frames[0].editor || window.frames[0].editorCell;
+            var w = getWindow();
+            if (!w) { return; }
+            return w.editor || w.editorCell;
         };
 
         var setEditable = function (state, force) {
@@ -1156,6 +1160,14 @@ define([
         };
 
         var handleChanges = function (obj, send) {
+            if (APP.history) {
+                send({
+                    type: "unSaveLock",
+                    index: ooChannel.cpIndex,
+                    time: +new Date()
+                });
+                return;
+            }
             // Add a new entry to the pendingChanges object.
             // If we can't send the patch within 30s, force a page reload
             var uid = Util.uid();
@@ -1218,6 +1230,73 @@ define([
                 delete content.locks[getId()];
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
                 APP.onLocal();
+            });
+        };
+
+        APP.testArr = [
+            ['a','b',1,'d'],
+            ['e',undefined,'g','h']
+        ];
+        var makePatch = APP.makePatch = function (arr) {
+            var w = getWindow();
+            if (!w) { return; }
+            // Define OO classes
+            var AscCommonExcel = w.AscCommonExcel;
+            var CellValueData = AscCommonExcel.UndoRedoData_CellValueData;
+            var CCellValue = AscCommonExcel.CCellValue;
+            //var History = w.AscCommon.History;
+            var AscCH = w.AscCH;
+            var Asc = w.Asc;
+            var UndoRedoData_CellSimpleData = AscCommonExcel.UndoRedoData_CellSimpleData;
+            var editor = getEditor();
+
+            var Id = editor.GetSheet(0).worksheet.Id;
+            //History.Create_NewPoint();
+            var patches = [];
+            arr.forEach(function (arr2, i) {
+                arr2.forEach(function (v, j) {
+                    var obj = {};
+                    if (typeof(v) === "string") { obj.text = v; obj.type = 1; }
+                    else if (typeof(v) === "number") { obj.number = v; obj.type = 0; }
+                    else { return; }
+                    var newValue = new CellValueData(undefined, new CCellValue(obj));
+                    var nCol = j;
+                    var nRow = i;
+                    var patch = new AscCommonExcel.UndoRedoItemSerializable(AscCommonExcel.g_oUndoRedoCell, AscCH.historyitem_Cell_ChangeValue, Id,
+                        new Asc.Range(nCol, nRow, nCol, nRow),
+                        new UndoRedoData_CellSimpleData(nRow, nCol, undefined, newValue), undefined);
+                    patches.push(patch);
+                    /*
+                    History.Add(AscCommonExcel.g_oUndoRedoCell, AscCH.historyitem_Cell_ChangeValue, Id,
+                        new Asc.Range(nCol, nRow, nCol, nRow),
+                        new UndoRedoData_CellSimpleData(nRow, nCol, undefined, newValue), undefined, true);
+                    */
+                });
+            });
+            var oMemory = new w.AscCommon.CMemory();
+            var aRes = [];
+            patches.forEach(function (item) {
+                editor.GetSheet(0).worksheet.workbook._SerializeHistoryBase64(oMemory, item, aRes);
+            });
+
+            // Make the patch
+            var msg = {
+                type: "saveChanges",
+                changes: parseChanges(JSON.stringify(aRes)),
+                changesIndex: ooChannel.cpIndex || 0,
+                locks: getUserLock(getId(), true),
+                excelAdditionalInfo: null
+            };
+
+            // Send the patch
+            rtChannel.sendMsg(msg, null, function (err, hash) {
+                if (err) {
+                    return void console.error(err);
+                }
+                // Apply it on our side
+                ooChannel.send(msg);
+                ooChannel.lastHash = hash;
+                ooChannel.cpIndex++;
             });
         };
 
@@ -1405,10 +1484,15 @@ define([
         // to be downloaded and decrypted before converting to xlsx
         var downloadImages = {};
 
+        var firstOO = true;
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = !APP.history && (APP.migrate);
+
+            var fromContent = metadataMgr.getPrivateData().fromContent;
+            if (!firstOO) { fromContent = undefined; }
+            firstOO = false;
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -1569,6 +1653,11 @@ define([
                                     ooChannel.lastHash = hash;
                                 });
                             }
+                        }
+
+                        if (fromContent && !lock && Array.isArray(fromContent.content)) {
+                            console.warn(fromContent);
+                            makePatch(fromContent.content);
                         }
 
                         if (APP.isDownload) {

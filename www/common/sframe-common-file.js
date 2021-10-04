@@ -330,7 +330,7 @@ define([
                 h('input#cp-upload-name', {type: 'text', placeholder: defaultFileName, value: defaultFileName}),
 
                 h('label', {for: 'cp-upload-alt'}, Messages.upload_addOptionalAlt),
-                h('input#cp-upload-alt', {type: 'text', placeholder: Messages.upload_modal_alt}),
+                h('input#cp-upload-alt', {type: 'text', placeholder: Messages.upload_modal_alt, autocomplete: 'off'}),
 
                 h('label', {for: 'cp-upload-password'}, Messages.addOptionalPassword),
                 UI.passwordInput({id: 'cp-upload-password'}),

@@ -897,7 +897,7 @@
     "mdToolbar_embed": "タイトルを埋め込む",
     "copyToClipboard": "クリップボードにコピー",
     "form_anonymousBox": "匿名で回答",
-    "form_anonymous_blocked": "匿名の回答はブロックされています。回答には <a href=\"/login/\">ログイン</a>もしくは<a href=\"/register/\">登録</a>が必要です。",
+    "form_anonymous_blocked": "ゲストの回答はブロックされています。回答には <a href=\"/login/\">ログイン</a>もしくは<a href=\"/register/\">登録</a>が必要です。",
     "form_add_item": "項目を追加",
     "form_type_radio": "選択肢",
     "form_makePublicWarning": "回答を公開してよろしいですか？これは取り消せません。",
@@ -1075,7 +1075,7 @@
     "form_add_option": "オプションを追加",
     "form_newItem": "新しい項目",
     "form_newOption": "新しいオプション",
-    "form_anonymous": "匿名の回答",
+    "form_anonymous": "ゲストアクセス（未ログイン）",
     "form_removeEnd": "締切日を削除",
     "form_setEnd": "締切日を設定",
     "form_isPrivate": "回答は公開されていません",
@@ -1412,5 +1412,9 @@
     "form_changeTypeConfirm": "新しい設問の種類を選択してください。",
     "form_required_answer": "回答： ",
     "form_requiredWarning": "以下の設問は回答が必須です：",
-    "form_alreadyAnswered": "このフォームに{0}に回答しました"
+    "form_alreadyAnswered": "このフォームに{0}に回答しました",
+    "form_conditional_hint": "このセクションを秘密にするには、その上に選択あるいはチェックボックスの設問を追加してください",
+    "form_editable": "送信後の編集",
+    "form_responseMsg": "参加者がフォームを送信すると以下のメッセージが表示されます。",
+    "form_type_section": "条件のセクション"
 }
