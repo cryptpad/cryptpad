@@ -2790,14 +2790,11 @@ define([
 
                 // If we have more than CHECKPOINT_INTERVAL patches in the initial history
                 // and we're the only editor in the pad, make a checkpoint
-                var userData = metadataMgr.getMetadata().users;
                 var v = metadataMgr.getViewers();
                 var m = metadataMgr.getChannelMembers().filter(function (str) {
                     return str.length === 32;
                 }).length;
                 if ((m - v) === 1 && !readOnly) {
-                    var l = ooChannel.queue.length;
-                    var lastCp = getLastCp();
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
                 }

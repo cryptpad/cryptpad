@@ -8,7 +8,8 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-interface.js',
-
+    '/common/common-util.js',
+    '/common/outer/worker-channel.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -22,66 +23,269 @@ define([
     SFCommon,
     h,
     Messages,
-    UI
+    UI,
+    Util,
+    Channel
     )
 {
-    var APP = {};
+    var APP = window.APP = {};
 
     var common;
     var sFrameChan;
 
-    var x2tConverter = function (typeSrc, typeTarget) {
+    var getFileType = function (type) {
+        var file = {};
+        switch(type) {
+            case 'doc':
+                file.type = 'docx';
+                file.title = 'document.docx';
+                file.doc = 'text';
+                break;
+            case 'sheet':
+                file.type = 'xlsx';
+                file.title = 'spreadsheet.xlsx';
+                file.doc = 'spreadsheet';
+                break;
+            case 'slide':
+                file.type = 'pptx';
+                file.title = 'presentation.pptx';
+                file.doc = 'presentation';
+                break;
+        }
+        return file;
+    };
+
+    APP.getImageURL = function(name, callback) {
+        if (name && /^data:image/.test(name)) { return void callback(''); }
+
+        if (!Array.isArray(APP.images)) { return void callback(''); }
+
+        APP.images.some(function (obj) {
+            if (obj.name !== name) { return; }
+            var blob = new Blob([obj.data], {type: "application/bin;charset=utf-8"});
+            var blobUrl = URL.createObjectURL(blob);
+            callback(blobUrl);
+            return true;
+        });
+    };
+
+    var ooChannel = {};
+    var makeChannel = function () {
+        var msgEv = Util.mkEvent();
+        var iframe = $('#cp-sidebarlayout-rightside > iframe')[0].contentWindow;
+        window.addEventListener('message', function (msg) {
+            if (msg.source !== iframe) { return; }
+            msgEv.fire(msg);
+        });
+        var postMsg = function (data) { iframe.postMessage(data, '*'); };
+        Channel.create(msgEv, postMsg, function (chan) {
+            var send = ooChannel.send = function (obj) { chan.event('CMD', obj); };
+
+            chan.on('CMD', function (obj) {
+                if (obj.type !== "auth") { return; }
+                send({
+                    type: "authChanges",
+                    changes: []
+                });
+                send({
+                    type: "auth",
+                    result: 1,
+                    sessionId: 'cryptpad',
+                    participants:[],
+                    locks: [],
+                    changes: [],
+                    changesIndex: 0,
+                    indexUser: 0,
+                    buildVersion: "5.2.6",
+                    buildNumber: 2,
+                    licenseType: 3,
+                });
+                send({
+                    type: "documentOpen",
+                    data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
+                });
+            });
+        });
+    };
+
+    var loadOO = function (blob, type, name, cb) {
+        var s = h('script', {
+            type:'text/javascript',
+            src: '/common/onlyoffice/v4/web-apps/apps/api/documents/api.js'
+        });
+        var file = getFileType(type);
+        APP.$rightside.append(s);
+        var url = URL.createObjectURL(blob);
+
+        var getWindow = function () {
+            return window.frames && window.frames[0];
+        };
+        var getEditor = function () {
+            var w = getWindow();
+            if (!w) { return; }
+            return w.editor || w.editorCell;
+        };
+        var getContent = function () {
+            try {
+                return getEditor().asc_nativeGetFile();
+            } catch (e) {
+                console.error(e);
+                return;
+            }
+        };
+
+        var ooconfig = {
+            "document": {
+                "fileType": file.type,
+                "key": "fresh",
+                "title": file.title,
+                "url": url,
+                "permissions": { "print": true, }
+            },
+            "documentType": file.doc,
+            "editorConfig": {
+                "user": {
+                    "id": "0",
+                    "firstname": Messages.anonymous,
+                    "name": Messages.anonymous,
+                },
+                "mode": "view",
+                "lang": "en"
+            },
+            "events": {
+                "onDocumentReady": function () {
+                    console.error('READY');
+                    var e = getEditor();
+
+                    var x2tConvertData = function (data, name, typeTarget, cb) {
+                        var fonts = e && e.FontLoader.fontInfos;
+                        var files = e && e.FontLoader.fontFiles.map(function (f) {
+                            return { 'Id': f.Id, };
+                        });
+                        var sframeChan = common.getSframeChannel();
+                        sframeChan.query('Q_OO_CONVERT', {
+                            data: data,
+                            fileName: name,
+                            outputFormat: typeTarget,
+                            images: (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
+                            fonts: fonts,
+                            fonts_files: files,
+                        }, cb, {
+                            raw: true
+                        });
+                    };
+                    APP.printPdf = function (obj) {
+                        var bin = getContent();
+                        x2tConvertData({
+                            buffer: obj.data,
+                            bin: bin
+                        }, 'output.bin', 'pdf', function (err, obj) {
+                            if (!obj || !obj.data) { return; }
+                            var blob = new Blob([obj.data], {type: "application/pdf"});
+                            cb(blob);
+                        });
+                    };
+
+                    setTimeout(function () {
+                        if (file.type === "xlsx") {
+                            var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
+                            APP.printPdf({
+                                data: d.data
+                            });
+                            return;
+                        }
+                        return void e.asc_Print({});
+                    });
+                }
+            }
+        };
+
+        APP.docEditor = new window.DocsAPI.DocEditor("cp-oo-placeholder", ooconfig);
+        makeChannel();
+    };
+
+    var convertData = function (data, name, typeTarget, cb) {
+        var sframeChan = common.getSframeChannel();
+        sframeChan.query('Q_OO_CONVERT', {
+            data: data,
+            fileName: name,
+            outputFormat: typeTarget,
+        }, cb, {
+            raw: true
+        });
+
+    };
+    var x2tConverter = function (typeSrc, typeTarget, type) {
         return function (data, name, cb) {
-            var sframeChan = common.getSframeChannel();
-            sframeChan.query('Q_OO_CONVERT', {
-                data: data,
-                fileName: name,
-                outputFormat: typeTarget,
-            }, function (err, obj) {
+            if (typeTarget === 'pdf') {
+                // Converting to PDF? we need to load OO from a bin
+                var next = function () {
+                    var blob = new Blob([data], {type: "application/bin;charset=utf-8"});
+                    loadOO(blob, type, name, function (blob) {
+                        cb(blob);
+                    });
+                };
+                if (typeSrc === 'bin') { return next(); }
+                convertData(data, name, 'bin', function (err, obj) {
+                    if (err || !obj || !obj.data) {
+                        UI.warn(Messages.error);
+                        return void cb();
+                    }
+                    name += '.bin';
+                    data = obj.data;
+                    APP.images = obj.images;
+                    next();
+                });
+                return;
+            }
+            convertData(data, name, typeTarget, function (err, obj) {
                 if (err || !obj || !obj.data) {
                     UI.warn(Messages.error);
-                    cb();
+                    return void cb();
                 }
                 cb(obj.data, obj.images);
-            }, {
-                raw: true
             });
         };
     };
 
     var CONVERTERS = {
         xlsx: {
-            //pdf: x2tConverter('xlsx', 'pdf'),
-            ods: x2tConverter('xlsx', 'ods'),
-            bin: x2tConverter('xlsx', 'bin'),
+            pdf: x2tConverter('xlsx', 'pdf', 'sheet'),
+            ods: x2tConverter('xlsx', 'ods', 'sheet'),
+            bin: x2tConverter('xlsx', 'bin', 'sheet'),
         },
         ods: {
-            //pdf: x2tConverter('ods', 'pdf'),
-            xlsx: x2tConverter('ods', 'xlsx'),
-            bin: x2tConverter('ods', 'bin'),
+            pdf: x2tConverter('ods', 'pdf', 'sheet'),
+            xlsx: x2tConverter('ods', 'xlsx', 'sheet'),
+            bin: x2tConverter('ods', 'bin', 'sheet'),
         },
         odt: {
-            docx: x2tConverter('odt', 'docx'),
-            txt: x2tConverter('odt', 'txt'),
-            bin: x2tConverter('odt', 'bin'),
+            docx: x2tConverter('odt', 'docx', 'doc'),
+            txt: x2tConverter('odt', 'txt', 'doc'),
+            bin: x2tConverter('odt', 'bin', 'doc'),
+            pdf: x2tConverter('odt', 'pdf', 'doc'),
         },
         docx: {
-            odt: x2tConverter('docx', 'odt'),
-            txt: x2tConverter('docx', 'txt'),
-            bin: x2tConverter('docx', 'bin'),
+            odt: x2tConverter('docx', 'odt', 'doc'),
+            txt: x2tConverter('docx', 'txt', 'doc'),
+            bin: x2tConverter('docx', 'bin', 'doc'),
+            pdf: x2tConverter('docx', 'pdf', 'doc'),
         },
         txt: {
-            odt: x2tConverter('txt', 'odt'),
-            docx: x2tConverter('txt', 'docx'),
-            bin: x2tConverter('txt', 'bin'),
+            odt: x2tConverter('txt', 'odt', 'doc'),
+            docx: x2tConverter('txt', 'docx', 'doc'),
+            bin: x2tConverter('txt', 'bin', 'doc'),
+            pdf: x2tConverter('txt', 'pdf', 'doc'),
         },
         odp: {
-            pptx: x2tConverter('odp', 'pptx'),
-            bin: x2tConverter('odp', 'bin'),
+            pptx: x2tConverter('odp', 'pptx', 'slide'),
+            bin: x2tConverter('odp', 'bin', 'slide'),
+            pdf: x2tConverter('odp', 'pdf', 'slide'),
         },
         pptx: {
-            odp: x2tConverter('pptx', 'odp'),
-            bin: x2tConverter('pptx', 'bin'),
+            odp: x2tConverter('pptx', 'odp', 'slide'),
+            bin: x2tConverter('pptx', 'bin', 'slide'),
+            pdf: x2tConverter('pptx', 'pdf', 'slide'),
         },
     };
 
@@ -109,6 +313,7 @@ define([
         APP.$toolbar = $('#cp-toolbar');
         APP.$leftside = $('<div>', {id: 'cp-sidebarlayout-leftside'}).appendTo(APP.$container);
         APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
+        $(h('div#cp-oo-placeholder')).appendTo(APP.$rightside);
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
@@ -150,14 +355,17 @@ define([
                     var c = CONVERTERS['bin'] = {};
 
                     if (type === "XLSY") {
-                        c.ods = x2tConverter('bin', 'ods');
-                        c.xlsx = x2tConverter('bin', 'xlsx');
+                        c.ods = x2tConverter('bin', 'ods', 'sheet');
+                        c.xlsx = x2tConverter('bin', 'xlsx', 'sheet');
+                        c.pdf = x2tConverter('bin', 'pdf', 'sheet');
                     } else if (type === "PPTY") {
-                        c.odp = x2tConverter('bin', 'odp');
-                        c.pptx = x2tConverter('bin', 'pptx');
+                        c.odp = x2tConverter('bin', 'odp', 'slide');
+                        c.pptx = x2tConverter('bin', 'pptx', 'slide');
+                        c.pdf = x2tConverter('bin', 'pdf', 'slide');
                     } else if (type === "DOCY") {
-                        c.odt = x2tConverter('bin', 'odt');
-                        c.docx = x2tConverter('bin', 'docx');
+                        c.odt = x2tConverter('bin', 'odt', 'doc');
+                        c.docx = x2tConverter('bin', 'docx', 'doc');
+                        c.pdf = x2tConverter('bin', 'pdf', 'doc');
                     } else {
                         return void console.error('Unsupported');
                     }

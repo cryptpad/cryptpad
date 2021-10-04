@@ -178,6 +178,7 @@ define([
         };
 
         var convert = function (obj, cb) {
+            console.error(obj);
             getX2T(function (x2t) {
                 // Fonts
                 fetchFonts(x2t, obj, function () {
