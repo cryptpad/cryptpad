@@ -1912,6 +1912,17 @@ define([
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var title = md.title || md.defaultTitle || type;
                 var blob = new Blob([xlsData], {type: "application/pdf"});
+                if (privateData.app !== "sheet") {
+                    UI.removeModals();
+                    var url = URL.createObjectURL(blob, { type: "application/pdf" });
+                    cb({
+                        "type":"save",
+                        "status":"ok",
+                        "data": url
+                    });
+                    saveAs(blob, title+'.pdf');
+                    return;
+                }
                 saveAs(blob, title+'.pdf');
                 cb({
                     "type":"save",
@@ -1922,10 +1933,10 @@ define([
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
+            var e = getEditor();
 
             // PDF
             if (type === "sheet" && extension === "pdf") {
-                var e = getEditor();
                 var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
                 x2tConvertData({
                     buffer: d.data,
@@ -1938,6 +1949,9 @@ define([
                     }
                 });
                 return;
+            }
+            if (extension === "pdf") {
+                return void e.asc_Print({});
             }
             x2tConvertData(data, filename, extension, function (xlsData) {
                 if (xlsData) {
@@ -1959,9 +1973,9 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
-                ext = ['.pptx', /*'.odp',*/ '.bin'];
+                ext = ['.pptx', '.odp', '.bin', '.pdf'];
             } else if (type==="doc") {
-                ext = ['.docx', /*'.odt',*/ '.bin'];
+                ext = ['.docx', '.odt', '.bin', '.pdf'];
             }
 
             if (!supportsXLSX()) {
