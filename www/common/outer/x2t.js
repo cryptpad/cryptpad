@@ -53,6 +53,7 @@ define([
             x2t.FS.mkdir('/working');
             x2t.FS.mkdir('/working/media');
             x2t.FS.mkdir('/working/fonts');
+            x2t.FS.mkdir('/working/themes');
             x2tInitialized = true;
             x2tReady.fire();
             debug("x2t mount done");
@@ -135,11 +136,29 @@ define([
 
             // Adding images
             Object.keys(images || {}).forEach(function (_mediaFileName) {
-                var mediaFileName = _mediaFileName.substring(6);
+                if (/\.bin$/.test(_mediaFileName)) { return; }
                 var mediasSources = obj.mediasSources || {};
                 var mediasData = obj.mediasData || {};
+                var mediaData = mediasData[_mediaFileName];
+                var mediaFileName;
+                if (mediaData) { // Theme image
+                    var path = _mediaFileName.split('/');
+                    mediaFileName = path.pop();
+                    var theme = path[path.indexOf('themes') + 1];
+                    try {
+                        x2t.FS.mkdir('/working/themes/'+theme);
+                        x2t.FS.mkdir('/working/themes/'+theme+'/media');
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                    x2t.FS.writeFile('/working/themes/'+theme+'/media/' + mediaFileName, new Uint8Array(mediaData.content));
+                    debug("Writing media data " + mediaFileName + " at /working/themes/"+theme+"/media/");
+                    return;
+                }
+                // mediaData is undefined, check mediasSources
+                mediaFileName = _mediaFileName.substring(6);
                 var mediaSource = mediasSources[mediaFileName];
-                var mediaData = mediaSource ? mediasData[mediaSource.src] : undefined;
+                mediaData = mediaSource ? mediasData[mediaSource.src] : undefined;
                 if (mediaData) {
                     debug("Writing media data " + mediaFileName);
                     debug("Data");
@@ -156,6 +175,7 @@ define([
             var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                         + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
                         + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
+                        + "<m_sThemeDir>/working/themes</m_sThemeDir>"
                         + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
                         + pdfData
                         + getFromId(inputFormat)

@@ -1393,7 +1393,6 @@ define([
                                 APP.onStrictSaveChanges();
                                 return;
                             }
-                            console.error(APP.isFast, APP.themeLocked);
                             var AscCommon = window.frames[0] && window.frames[0].AscCommon;
                             if (Util.find(AscCommon, ['CollaborativeEditing','m_bFast'])
                                         && APP.themeLocked) {
@@ -1465,6 +1464,15 @@ define([
                 return { 'Id': f.Id, };
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
+            var images = (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {};
+            var theme = e && window.frames[0].AscCommon.g_image_loader.map_image_index;
+            if (theme) {
+                Object.keys(theme).forEach(function (url) {
+                    if (!/^(\/|blob:|data:)/.test(url)) {
+                        images[url] = url;
+                    }
+                });
+            }
             sframeChan.query('Q_OO_CONVERT', {
                 data: data,
                 type: type,
@@ -1818,12 +1826,23 @@ define([
             };
 
             APP.remoteTheme = function () {
-                APP.themeRemote = true;
+                /*
+                    APP.themeRemote = true;
+                */
             };
             APP.changeTheme = function (id) {
+                /*
+                // XXX disabled:
+Uncaught TypeError: Cannot read property 'calculatedType' of null
+    at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
+                */
+
+                id = id;
+                /*
                 APP.themeChanged = {
                     id: id
                 };
+                */
             };
             APP.openURL = function (url) {
                 common.openUnsafeURL(url);
@@ -1840,6 +1859,20 @@ define([
                 downloadImages[name] = Util.mkEvent(true);
 
                 if (typeof data === 'undefined') {
+                    if (/^http/.test(name) && /slide\/themes\/theme/.test(name)) {
+                        Util.fetch(name, function (err, u8) {
+                            if (err) { return; }
+                            mediasData[name] = {
+                                blobUrl: name,
+                                content: u8,
+                                name: name
+                            };
+                            var b = new Blob([u8], {type: "image/jpeg"});
+                            var blobUrl = URL.createObjectURL(b);
+                            return void callback(blobUrl);
+                        });
+                        return;
+                    }
                     debug("CryptPad - could not find matching media for " + name);
                     return void callback("");
                 }
@@ -1912,22 +1945,17 @@ define([
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var title = md.title || md.defaultTitle || type;
                 var blob = new Blob([xlsData], {type: "application/pdf"});
-                if (privateData.app !== "sheet") {
-                    UI.removeModals();
-                    var url = URL.createObjectURL(blob, { type: "application/pdf" });
-                    cb({
-                        "type":"save",
-                        "status":"ok",
-                        "data": url
-                    });
-                    saveAs(blob, title+'.pdf');
-                    return;
-                }
-                saveAs(blob, title+'.pdf');
+                UI.removeModals();
+                var url = URL.createObjectURL(blob, { type: "application/pdf" });
                 cb({
                     "type":"save",
                     "status":"ok",
+                    "data": url
                 });
+                if (APP.exportingPDF) {
+                    saveAs(blob, title+'.pdf');
+                }
+                delete APP.exportingPDF;
             });
         };
 
@@ -1951,6 +1979,7 @@ define([
                 return;
             }
             if (extension === "pdf") {
+                APP.exportingPDF = 1;
                 return void e.asc_Print({});
             }
             x2tConvertData(data, filename, extension, function (xlsData) {
