@@ -625,7 +625,7 @@ define([
         // DRIVE
         var currentPath = APP.currentPath = LS.getLastOpenedFolder();
         if (APP.newSharedFolder) {
-            var newSFPaths = manager.findFile(APP.newSharedFolder);
+            var newSFPaths = manager.findFile(Number(APP.newSharedFolder));
             if (newSFPaths.length) {
                 currentPath = newSFPaths[0];
             }
@@ -654,6 +654,8 @@ define([
                 displayedCategories = [FILES_DATA];
                 currentPath = [FILES_DATA];
             }
+        } else if (priv.isEmbed && APP.newSharedFolder) {
+            displayedCategories = [ROOT, TRASH];
         }
 
         APP.editable = !APP.readOnly;
@@ -2354,6 +2356,7 @@ define([
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
                 if (skipNext) { skipNext = false; return; }
+                if (APP.newSharedFolder && priv.isEmbed && p === ROOT && !idx) { return; }
                 var name = p;
 
                 if (manager.isFile(el) && isInTrashRoot && idx === 1) {
@@ -2394,7 +2397,7 @@ define([
                 addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
-                else {
+                else if (!(APP.newSharedFolder && priv.isEmbed && idx === 1)) {
                     var $span2 = $('<span>', {
                         'class': 'cp-app-drive-path-element cp-app-drive-path-separator'
                     }).text(' / ');
@@ -4062,17 +4065,28 @@ define([
         var createTree = function ($container, path) {
             var root = manager.find(path);
 
+            var isRoot = manager.comparePath([ROOT], path);
+            var rootName = ROOT_NAME;
+            if (APP.newSharedFolder && priv.isEmbed && isRoot) {
+                var newSFPaths = manager.findFile(Number(APP.newSharedFolder));
+                if (newSFPaths.length) {
+                    path = newSFPaths[0];
+                    path.push(ROOT);
+                    root = manager.find(path);
+                    rootName = manager.getSharedFolderData(APP.newSharedFolder).title;
+                }
+            }
+
             // don't try to display what doesn't exist
             if (!root) { return; }
 
             // Display the root element in the tree
-            var displayingRoot = manager.comparePath([ROOT], path);
-            if (displayingRoot) {
-                var isRootOpened = manager.comparePath([ROOT], currentPath);
+            if (isRoot) {
+                var isRootOpened = manager.comparePath(path.slice(), currentPath);
                 var $rootIcon = manager.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, true, isRootOpened);
+                var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
                     $rootElement.find('.cp-app-drive-icon-expcol').css('visibility', 'hidden');
                 }
