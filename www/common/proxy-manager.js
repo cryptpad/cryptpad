@@ -548,6 +548,8 @@ define([
                     var secret = Hash.getSecrets('drive', parsed.hash, folderData.password);
                     SF.upgrade(secret.channel, secret);
                     Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                    waitFor.abort();
+                    return void cb(folderId);
                 }
                 if (err) {
                     waitFor.abort();

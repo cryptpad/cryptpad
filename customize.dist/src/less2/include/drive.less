@@ -286,7 +286,9 @@
                     display: none;
                 }
                 input {
-                    width: ~"calc(100% - 30px)";
+                    //width: ~"calc(100% - 30px)";
+                    flex: 1;
+                    min-width: 0;
                     padding: 0 10px;
                     border: 0;
                     height: auto;
@@ -298,8 +300,9 @@
                     .leftside-menu-category_main();
                     width: ~"calc(100% + 5px)";
                     margin: 0;
-                    margin-bottom: -6px;
-                    display: inline-block;
+                    //margin-bottom: -6px;
+                    display: flex;
+                    align-items: center;
                     cursor: pointer;
                     margin-left: -5px;
                     padding-left: 5px;
@@ -308,6 +311,12 @@
                         min-width: 0;
                         width: 25px;
                         margin-right: 0px;
+                    }
+                    .cp-app-drive-element {
+                        flex: 1;
+                        min-width: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                 }
             }
