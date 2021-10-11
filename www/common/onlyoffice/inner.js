@@ -1512,6 +1512,8 @@ define([
             // defined but never used
             //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
 
+            var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
+
             // Config
             APP.ooconfig = {
                 "document": {
@@ -1538,7 +1540,7 @@ define([
                         "name": metadataMgr.getUserData().name || Messages.anonymous,
                     },
                     "mode": "edit",
-                    "lang": (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2)
+                    "lang": lang
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {
@@ -1667,10 +1669,17 @@ define([
                                     ooChannel.lastHash = hash;
                                 });
                             }
+
+                            if (APP.startNew) {
+                                var w = getWindow();
+                                if (lang === "fr") { lang = 'fr-fr'; }
+                                var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
+                                getEditor().asc_setDefaultLanguage(l);
+                            }
                         }
+                        delete APP.startNew;
 
                         if (fromContent && !lock && Array.isArray(fromContent.content)) {
-                            console.warn(fromContent);
                             makePatch(fromContent.content);
                         }
 
@@ -2733,6 +2742,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             } else {
                 Title.updateTitle(Title.defaultTitle);
             }
+
+            APP.startNew = isNew;
 
             var version = CURRENT_VERSION + '/';
             var msg;
