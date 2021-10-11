@@ -11,6 +11,7 @@ define(['/customize/application_config.js'], function (AppConfig) {
         storageKey: 'filesData',
         tokenKey: 'loginToken',
         prefersDriveRedirectKey: 'prefersDriveRedirect',
+        isPremiumKey: 'isPremiumUser',
         displayPadCreationScreen: 'displayPadCreationScreen',
         deprecatedKey: 'deprecated',
         MAX_TEAMS_SLOTS: AppConfig.maxTeamsSlots || 5,

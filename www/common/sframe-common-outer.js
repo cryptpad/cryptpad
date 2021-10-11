@@ -664,6 +664,13 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
+                    // XXX PREMIUM
+                    var priv = metaObj.priv;
+                    var p = Utils.Util.checkPremiumApp(parsed.type, AppConfig.premiumTypes, priv.plan, additionalPriv.loggedIn);
+                    if (p === 0 || p === -1) {
+                        additionalPriv.premiumOnly = true;
+                    }
+
                     if (isSafe) {
                         additionalPriv.hashes = hashes;
                         additionalPriv.password = password;
@@ -673,6 +680,10 @@ define([
 
                     if (cfg.addData) {
                         cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
+                    }
+
+                    if (metaObj && metaObj.priv && typeof(metaObj.priv.plan) === "string") {
+                        Utils.LocalStore.setPremium(metaObj.priv.plan);
                     }
 
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);

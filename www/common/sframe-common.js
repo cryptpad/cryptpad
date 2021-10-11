@@ -907,6 +907,15 @@ define([
                     }, {forefront: true});
                     return;
                 }
+                // XXX PREMIUM
+                Messages.premiumOnly = "Premium only for now..."; // XXX
+                var blocked = privateData.premiumOnly && privateData.isNewFile;
+                if (blocked) {
+                    UI.alert(Messages.premiumOnly, function () {
+                        funcs.gotoURL('/drive/');
+                    }, {forefront: true});
+                    return;
+                }
             } catch (e) {
                 console.error("Can't check permissions for the app");
             }

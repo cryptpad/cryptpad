@@ -638,6 +638,17 @@
                      getColor().toString(16);
     };
 
+    Util.checkPremiumApp = function (app, premiumTypes, plan, loggedIn) {
+        // If this is not a premium app, don't disable it
+        if (!Array.isArray(premiumTypes) || !premiumTypes.includes(app)) { return 2; }
+        // This is a premium app
+        // if you're not logged in, disbale it
+        if (!loggedIn) { return -1; }
+        // if you're logged in, enable it only if you're a premium user
+        return plan ? 1 : 0;
+
+    };
+
     /*  Chrome 92 dropped support for SharedArrayBuffer in cross-origin contexts
         where window.crossOriginIsolated is false.
 

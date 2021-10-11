@@ -120,6 +120,15 @@
                     background-color: @cp_dropdown-bg-active;
                     color: @cp_dropdown-fg;
                 }
+
+                // XXX PREMIUM
+                &.cp-app-hidden {
+                    display: none;
+                }
+                &.cp-app-disabled {
+                    cursor: not-allowed !important;
+                    opacity: 0.5;
+                }
             }
             &> span {
                 box-sizing: border-box;

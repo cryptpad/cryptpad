@@ -338,7 +338,11 @@ define([
     Messages.fc_openInSheet = "Edit in Sheet"; // XXX
     Messages.fc_openInDoc = "Edit in Document"; // XXX
     Messages.fc_openInPresentation = "Edit in Presentation"; // XXX
-    var createContextMenu = function () {
+    var createContextMenu = function (priv) {
+        // XXX PREMIUM
+        // XXX "Edit in Document" and "New Document"  (and presentation)
+        var premiumP = Util.checkPremiumApp('presentation', AppConfig.premiumTypes, priv.plan, priv.loggedIn);
+        var premiumD = Util.checkPremiumApp('doc', AppConfig.premiumTypes, priv.plan, priv.loggedIn);
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
                 'role': 'menu',
@@ -366,11 +370,11 @@ define([
                     'tabindex': '-1',
                     'data-icon': faOpenInSheet,
                 }, Messages.fc_openInSheet)),
-                h('li', h('a.cp-app-drive-context-openindoc.dropdown-item', {
+                premiumD === -1 ? undefined : h('li', h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': faOpenInDoc,
                 }, Messages.fc_openInDoc)),
-                h('li', h('a.cp-app-drive-context-openinpresentation.dropdown-item', {
+                premiumP === -1 ? undefined : h('li', h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': faOpenInPresentation,
                 }, Messages.fc_openInPresentation)),
@@ -446,6 +450,16 @@ define([
                             'data-icon': AppConfig.applicationsIcon.sheet,
                             'data-type': 'sheet'
                         }, Messages.button_newsheet)),
+                        premiumD === -1 ? undefined : h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.doc,
+                            'data-type': 'doc'
+                        }, Messages.button_newdoc)),
+                        premiumP === -1 ? undefined : h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.presentation,
+                            'data-type': 'presentation'
+                        }, Messages.button_newpresentation)),
                         h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.whiteboard,
@@ -631,7 +645,7 @@ define([
         var $content = APP.$content = $("#cp-app-drive-content");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
-        var $contextMenu = createContextMenu().appendTo($appContainer);
+        var $contextMenu = createContextMenu(priv).appendTo($appContainer);
 
         var $contentContextMenu = $("#cp-app-drive-context-content");
         var $defaultContextMenu = $("#cp-app-drive-context-default");
@@ -2929,6 +2943,15 @@ define([
                     'data-type': type,
                     'href': '#'
                 };
+
+                // XXX PREMIUM
+                var premium = Util.checkPremiumApp(type, AppConfig.premiumTypes, priv.plan, priv.loggedIn);
+                if (premium === -1) {
+                    attributes.class += ' cp-app-hidden cp-app-disabled';
+                } else if (premium === 0) {
+                    attributes.class += ' cp-app-disabled';
+                }
+
                 options.push({
                     tag: 'a',
                     attributes: attributes,
@@ -3255,6 +3278,14 @@ define([
                 $element.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.type[type]));
                 $element.attr('data-type', type);
+
+                // XXX PREMIUM
+                var premium = Util.checkPremiumApp(type, AppConfig.premiumTypes, priv.plan, priv.loggedIn);
+                if (premium === -1) {
+                    $element.addClass('cp-app-hidden cp-app-disabled');
+                } else if (premium === 0) {
+                    $element.addClass('cp-app-disabled');
+                }
             });
 
             $container.find('.cp-app-drive-element-row').click(function () {

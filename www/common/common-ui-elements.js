@@ -2087,6 +2087,7 @@ define([
     };
 
 
+
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
         if ($(".cp-app-drive-element-row.cp-app-drive-new-ghost").length !== 0) {
@@ -2113,6 +2114,9 @@ define([
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
         });
+
+        var priv = common.getMetadataMgr().getPrivateData();
+
         types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
@@ -2125,6 +2129,13 @@ define([
                 $modal.hide();
                 common.openURL('/' + p + '/');
             });
+            // XXX PREMIUM
+            var premium = Util.checkPremiumApp(p, AppConfig.premiumTypes, priv.plan, priv.loggedIn);
+            if (premium === -1) {
+                $element.addClass('cp-app-hidden cp-app-disabled');
+            } else if (premium === 0) {
+                $element.addClass('cp-app-disabled');
+            }
         });
 
         var selected = -1;
