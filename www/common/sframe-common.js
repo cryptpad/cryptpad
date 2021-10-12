@@ -908,10 +908,12 @@ define([
                     return;
                 }
                 // XXX PREMIUM
-                Messages.premiumOnly = "Premium only for now..."; // XXX
+                Messages.premiumOnly = "Creating new documents in this application is currently limited to subscribers on {0}. This is an early-access experimental application for testing purposes, and should not yet be trusted with important data. It will soon become available to everyone on {0}."; // XXX
                 var blocked = privateData.premiumOnly && privateData.isNewFile;
                 if (blocked) {
-                    UI.alert(Messages.premiumOnly, function () {
+                    var domain = ApiConfig.httpUnsafeOrigin || 'CryptPad';
+                    if (/^http/.test(domain)) { domain = domain.replace(/^https?\:\/\//, ''); }
+                    UI.errorLoadingScreen(Messages._getKey('premiumOnly', [domain]), null, function () {
                         funcs.gotoURL('/drive/');
                     }, {forefront: true});
                     return;

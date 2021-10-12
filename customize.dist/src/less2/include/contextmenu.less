@@ -55,7 +55,12 @@
                     color: @cp_context-fg;
                 }
                 .fa, .cptools {
-                    margin-right: 10px;
+                    &:first-child {
+                        margin-right: 10px;
+                    }
+                    &.cptools:not(:first-child) {
+                        vertical-align: middle;
+                    }
                     color: @cp_context-icon;
                     width: 16px;
                 }
