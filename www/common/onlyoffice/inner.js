@@ -2125,7 +2125,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
         var x2tImportData = function (data, filename, extension, callback) {
             x2tConvertData(new Uint8Array(data), filename, extension, function (binData, images) {
-                if (!binData) { return void UI.warn(Messages.error); }
+                if (!binData) { return void callback(); }
                 x2tImportImages(images, function() {
                     callback(binData);
                 });
@@ -2183,6 +2183,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             setTimeout(function () {
                 x2tImportData(new Uint8Array(content), filename.name, "bin", function(c) {
+                    if (!c) {
+                        UI.removeModals();
+                        return void UI.warn(Messages.error);
+                    }
                     importFile(c);
                 });
             }, 100);
@@ -2947,6 +2951,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                     new Response(blobXlsx).arrayBuffer().then(function (buffer) {
                                         var u8Xlsx = new Uint8Array(buffer);
                                         x2tImportData(u8Xlsx, data.title, 'bin', function (bin) {
+                                            if (!bin) {
+                                                return void UI.errorLoadingScreen(Messages.error);
+                                            }
                                             var blob = new Blob([bin], {type: 'text/plain'});
                                             saveToServer(blob, data.title);
                                             Title.updateTitle(title);
