@@ -335,14 +335,21 @@ define([
     };
 
 
-    Messages.fc_openInSheet = "Edit in Sheet"; // XXX
-    Messages.fc_openInDoc = "Edit in Document"; // XXX
-    Messages.fc_openInPresentation = "Edit in Presentation"; // XXX
+    Messages.fc_openIn = "Open in {0}"; // XXX
+    // delete fc_openInCode // XXX
     var createContextMenu = function (priv) {
         // XXX PREMIUM
         // XXX "Edit in Document" and "New Document"  (and presentation)
         var premiumP = Util.checkPremiumApp('presentation', AppConfig.premiumTypes, priv.plan, priv.loggedIn);
         var premiumD = Util.checkPremiumApp('doc', AppConfig.premiumTypes, priv.plan, priv.loggedIn);
+        var getOpenIn = function (app) {
+            var icon = AppConfig.applicationsIcon[app];
+            var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
+            var html = '<i class="'+cls+'"></i>' + Messages.type[app];
+            console.error(html);
+            console.error(Messages._getKey('fc_openIn', [html]));
+            return Messages._getKey('fc_openIn', [html]);
+        };
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
                 'role': 'menu',
@@ -362,22 +369,22 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, h('span.cp-text', Messages.fc_open_ro))),
-                h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
+                h('li', UI.setHTML(h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faOpenInCode,
-                }, Messages.fc_openInCode)),
-                h('li', h('a.cp-app-drive-context-openinsheet.dropdown-item', {
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('code'))),
+                h('li', UI.setHTML(h('a.cp-app-drive-context-openinsheet.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faOpenInSheet,
-                }, Messages.fc_openInSheet)),
-                premiumD === -1 ? undefined : h('li', h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('sheet'))),
+                premiumD === -1 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
-                    'data-icon': faOpenInDoc,
-                }, Messages.fc_openInDoc)),
-                premiumP === -1 ? undefined : h('li', h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('doc'))),
+                premiumP === -1 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
-                    'data-icon': faOpenInPresentation,
-                }, Messages.fc_openInPresentation)),
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('presentation'))),
                 h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-cloud-upload',
