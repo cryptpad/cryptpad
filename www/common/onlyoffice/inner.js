@@ -1955,16 +1955,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var title = md.title || md.defaultTitle || type;
                 var blob = new Blob([xlsData], {type: "application/pdf"});
                 UI.removeModals();
-                var url = URL.createObjectURL(blob, { type: "application/pdf" });
-                cb({
-                    "type":"save",
-                    "status":"ok",
-                    "data": url
-                });
-                if (APP.exportingPDF) {
-                    saveAs(blob, title+'.pdf');
-                }
-                delete APP.exportingPDF;
+                cb();
+                saveAs(blob, APP.exportPdfName || title+'.pdf');
+                delete APP.exportPdfName;
             });
         };
 
@@ -1980,7 +1973,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     bin: data
                 }, filename, extension, function (res) {
                     if (res) {
-                        var _blob = new Blob([res], {type: "application/bin;charset=utf-8"});
+                        var _blob = new Blob([res], {type: "application/pdf;charset=utf-8"});
                         UI.removeModals();
                         saveAs(_blob, finalFilename);
                     }
@@ -1988,7 +1981,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return;
             }
             if (extension === "pdf") {
-                APP.exportingPDF = 1;
+                APP.exportPdfName = finalFilename;
                 return void e.asc_Print({});
             }
             x2tConvertData(data, filename, extension, function (xlsData) {
