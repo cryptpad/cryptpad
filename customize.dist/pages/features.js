@@ -7,7 +7,8 @@ define([
     '/customize/pages.js',
     '/api/config',
     '/common/common-ui-elements.js',
-], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements) {
+    '/common/common-constants.js',
+], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants) {
     var accounts = Pages.accounts;
 
     return function () {

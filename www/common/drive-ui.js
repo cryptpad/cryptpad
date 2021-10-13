@@ -89,10 +89,6 @@ define([
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faPreview = 'fa-eye';
-    var faOpenInCode = AppConfig.applicationsIcon.code;
-    var faOpenInSheet = AppConfig.applicationsIcon.sheet;
-    var faOpenInDoc = AppConfig.applicationsIcon.doc;
-    var faOpenInPresentation = AppConfig.applicationsIcon.presentation;
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';

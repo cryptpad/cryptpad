@@ -2115,8 +2115,6 @@ define([
             return true;
         });
 
-        var priv = common.getMetadataMgr().getPrivateData();
-
         types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
