@@ -40,15 +40,15 @@ define([
 
     return function () {
         var icons = [
-                [ 'pad', Msg.type.pad],
-                [ 'code', Msg.type.code],
-                [ 'slide', Msg.type.slide],
                 [ 'sheet', Msg.type.sheet],
                 [ 'doc', Msg.type.doc],
                 [ 'presentation', Msg.type.presentation],
+                [ 'pad', Msg.type.pad],
+                [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
                 [ 'kanban', Msg.type.kanban],
                 [ 'whiteboard', Msg.type.whiteboard],
+                [ 'slide', Msg.type.slide],
                 [ 'drive', Msg.type.drive]
             ].filter(function (x) {
                 return isAvailableType(x[0]);

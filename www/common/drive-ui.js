@@ -348,6 +348,13 @@ define([
             var html = '<i class="'+cls+'"></i>' + Messages.type[app];
             return Messages._getKey('fc_openIn', [html]);
         };
+        var isAppEnabled = function (app) {
+            if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
+            var registered = common.isLoggedIn() || !(AppConfig.registeredOnlyTypes || []).includes(app);
+            var restricted = common.checkRestrictedApp(app) < 0;
+            if (restricted === 0) { return 0; }
+            return AppConfig.availablePadTypes.includes(app) && registered && !restricted;
+        };
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
                 'role': 'menu',
@@ -367,22 +374,22 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, h('span.cp-text', Messages.fc_open_ro))),
-                h('li', UI.setHTML(h('a.cp-app-drive-context-openincode.dropdown-item', {
+                isAppEnabled('code') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
-                }), getOpenIn('code'))),
-                h('li', UI.setHTML(h('a.cp-app-drive-context-openinsheet.dropdown-item', {
+                }), getOpenIn('code'))) : undefined,
+                isAppEnabled('sheet') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openinsheet.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
-                }), getOpenIn('sheet'))),
-                premiumD < 0 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                }), getOpenIn('sheet'))) : undefined,
+                isAppEnabled('doc') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
-                }), getOpenIn('doc'))),
-                premiumP < 0 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                }), getOpenIn('doc'))) : undefined,
+                isAppEnabled('presentation') ?  h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
-                }), getOpenIn('presentation'))),
+                }), getOpenIn('presentation'))) : undefined,
                 h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-cloud-upload',
@@ -429,57 +436,57 @@ define([
                     'data-icon': faUploadFolder,
                 }, Messages.uploadFolderButton)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                isAppEnabled('pad') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.pad,
                     'data-type': 'pad'
-                }, Messages.button_newpad)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                }, Messages.button_newpad)) : undefined,
+                isAppEnabled('code') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.code,
                     'data-type': 'code'
-                }, Messages.button_newcode)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                }, Messages.button_newcode)) : undefined,
+                isAppEnabled('sheet') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.slide,
-                    'data-type': 'slide'
-                }, Messages.button_newslide)),
+                    'data-icon': AppConfig.applicationsIcon.sheet,
+                    'data-type': 'sheet'
+                }, Messages.button_newsheet)) : undefined,
                 h('li.dropdown-submenu', [
                     h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
                         'tabindex': '-1',
                         'data-icon': "fa-plus",
                     }, Messages.fm_morePads),
                     h("ul.dropdown-menu", [
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.sheet,
-                            'data-type': 'sheet'
-                        }, Messages.button_newsheet)),
-                        premiumD === -1 ? undefined : h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                        isAppEnabled('doc') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.doc,
                             'data-type': 'doc'
-                        }, Messages.button_newdoc)),
-                        premiumP === -1 ? undefined : h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                        }, Messages.button_newdoc)) : undefined,
+                        isAppEnabled('presentation') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.presentation,
                             'data-type': 'presentation'
-                        }, Messages.button_newpresentation)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                        }, Messages.button_newpresentation)) : undefined,
+                        isAppEnabled('whiteboard') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.whiteboard,
                             'data-type': 'whiteboard'
-                        }, Messages.button_newwhiteboard)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                        }, Messages.button_newwhiteboard)) : undefined,
+                        isAppEnabled('kanban') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.kanban,
                             'data-type': 'kanban'
-                        }, Messages.button_newkanban)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                        }, Messages.button_newkanban)) : undefined,
+                        isAppEnabled('form') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.poll,
-                            'data-type': 'poll'
-                        }, Messages.button_newpoll)),
+                            'data-icon': AppConfig.applicationsIcon.form,
+                            'data-type': 'form'
+                        }, Messages.button_newform)) : undefined,
+                        isAppEnabled('slide') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.slide,
+                            'data-type': 'slide'
+                        }, Messages.button_newslide)) : undefined,
                         h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.link,
