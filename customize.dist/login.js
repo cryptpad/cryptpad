@@ -437,6 +437,7 @@ define([
         });
     };
     Exports.redirect = function () {
+        return;
         if (redirectTo) {
             var h = redirectTo;
             var loginOpts = {};
