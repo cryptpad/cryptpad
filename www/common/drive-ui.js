@@ -337,17 +337,15 @@ define([
 
     Messages.fc_openIn = "Open in {0}"; // XXX
     // delete fc_openInCode // XXX
-    var createContextMenu = function (priv) {
+    var createContextMenu = function (common) {
         // XXX PREMIUM
         // XXX "Edit in Document" and "New Document"  (and presentation)
-        var premiumP = Util.checkPremiumApp('presentation', AppConfig.premiumTypes, priv.plan, priv.loggedIn);
-        var premiumD = Util.checkPremiumApp('doc', AppConfig.premiumTypes, priv.plan, priv.loggedIn);
+        var premiumP = common.checkRestrictedApp('presentation');
+        var premiumD = common.checkRestrictedApp('doc');
         var getOpenIn = function (app) {
             var icon = AppConfig.applicationsIcon[app];
             var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
             var html = '<i class="'+cls+'"></i>' + Messages.type[app];
-            console.error(html);
-            console.error(Messages._getKey('fc_openIn', [html]));
             return Messages._getKey('fc_openIn', [html]);
         };
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
@@ -377,11 +375,11 @@ define([
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
                 }), getOpenIn('sheet'))),
-                premiumD === -1 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                premiumD < 0 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
                 }), getOpenIn('doc'))),
-                premiumP === -1 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                premiumP < 0 ? undefined : h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
                 }), getOpenIn('presentation'))),
@@ -652,7 +650,7 @@ define([
         var $content = APP.$content = $("#cp-app-drive-content");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
-        var $contextMenu = createContextMenu(priv).appendTo($appContainer);
+        var $contextMenu = createContextMenu(common).appendTo($appContainer);
 
         var $contentContextMenu = $("#cp-app-drive-context-content");
         var $defaultContextMenu = $("#cp-app-drive-context-default");
@@ -2952,8 +2950,8 @@ define([
                 };
 
                 // XXX PREMIUM
-                var premium = Util.checkPremiumApp(type, AppConfig.premiumTypes, priv.plan, priv.loggedIn);
-                if (premium === -1) {
+                var premium = common.checkRestrictedApp(type);
+                if (premium < 0) {
                     attributes.class += ' cp-app-hidden cp-app-disabled';
                 } else if (premium === 0) {
                     attributes.class += ' cp-app-disabled';
@@ -3287,8 +3285,8 @@ define([
                 $element.attr('data-type', type);
 
                 // XXX PREMIUM
-                var premium = Util.checkPremiumApp(type, AppConfig.premiumTypes, priv.plan, priv.loggedIn);
-                if (premium === -1) {
+                var premium = common.checkRestrictedApp(type);
+                if (premium < 0) {
                     $element.addClass('cp-app-hidden cp-app-disabled');
                 } else if (premium === 0) {
                     $element.addClass('cp-app-disabled');

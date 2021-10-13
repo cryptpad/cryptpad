@@ -666,9 +666,13 @@ define([
 
                     // XXX PREMIUM
                     var priv = metaObj.priv;
-                    var p = Utils.Util.checkPremiumApp(parsed.type, AppConfig.premiumTypes, priv.plan, additionalPriv.loggedIn);
+                    var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,
+                              Utils.Constants.earlyAccessApps, priv.plan, additionalPriv.loggedIn);
                     if (p === 0 || p === -1) {
                         additionalPriv.premiumOnly = true;
+                    }
+                    if (p === -2) {
+                        additionalPriv.earlyAccessBlocked = true;
                     }
 
                     if (isSafe) {

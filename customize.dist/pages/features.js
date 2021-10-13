@@ -14,6 +14,8 @@ define([
         Msg.features_f_apps_note = AppConfig.availablePadTypes.map(function (app) {
             if (AppConfig.registeredOnlyTypes.indexOf(app) !== -1) { return; }
             if (AppConfig.premiumTypes && AppConfig.premiumTypes.includes(app)) { return; }
+            if (Constants.earlyAccessApps && Constants.earlyAccessApps.includes(app) &&
+                  AppConfig.enableEarlyAccess) { return; }
             return Msg.type[app];
         }).filter(function (x) { return x; }).join(', ');
         var premiumButton = h('a', {

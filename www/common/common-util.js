@@ -638,11 +638,17 @@
                      getColor().toString(16);
     };
 
-    Util.checkPremiumApp = function (app, premiumTypes, plan, loggedIn) {
+    Util.checkRestrictedApp = function (app, AppConfig, earlyTypes, plan, loggedIn) {
+        // If this is an early access app, make sure this instance allows them
+        if (Array.isArray(earlyTypes) && earlyTypes.includes(app) && !AppConfig.enableEarlyAccess) {
+            return -2;
+        }
+
+        var premiumTypes = AppConfig.premiumTypes;
         // If this is not a premium app, don't disable it
         if (!Array.isArray(premiumTypes) || !premiumTypes.includes(app)) { return 2; }
         // This is a premium app
-        // if you're not logged in, disbale it
+        // if you're not logged in, disable it
         if (!loggedIn) { return -1; }
         // if you're logged in, enable it only if you're a premium user
         return plan ? 1 : 0;

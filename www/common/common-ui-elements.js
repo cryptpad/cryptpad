@@ -2130,8 +2130,8 @@ define([
                 common.openURL('/' + p + '/');
             });
             // XXX PREMIUM
-            var premium = Util.checkPremiumApp(p, AppConfig.premiumTypes, priv.plan, priv.loggedIn);
-            if (premium === -1) {
+            var premium = common.checkRestrictedApp(p);
+            if (premium < 0) {
                 $element.addClass('cp-app-hidden cp-app-disabled');
             } else if (premium === 0) {
                 $element.addClass('cp-app-disabled');
