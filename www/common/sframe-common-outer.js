@@ -2016,7 +2016,7 @@ define([
                     if (data.template) {
                         // Start OO with a template...
                         // Cryptget and give href, password and content to inner
-                        if (parsed.type === "sheet") {
+                        if (isOO) {
                             var then = function () {
                                 startRealtime(rtConfig);
                                 cb();
