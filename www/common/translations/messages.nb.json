@@ -15,13 +15,6 @@
         "drive": "CryptDrive",
         "whiteboard": "Tavle"
     },
-    "button_newpad": "Nytt tekstdokument",
-    "button_newcode": "Nytt kode-dokument",
-    "button_newpoll": "Ny avstemming",
-    "button_newslide": "Ny presentasjon",
-    "button_newwhiteboard": "Ny tavle",
-    "button_newkanban": "Ny Kanban",
-    "button_newsheet": "Nytt regneark",
     "common_connectionLost": "<b>Tjener frakoblet</b><br>I lesemodus til tilkoblingen gjenopprettes.",
     "typeError": "Dette dokumentet er ikke kompatibelt med det valgte programmet",
     "onLogout": "Du er utlogget, {0}klikk her{1} for å logge inn<br>eller trykk <em>Esc</em> for å se dokumentet i lesemodus.",

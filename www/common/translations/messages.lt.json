@@ -86,13 +86,6 @@
     "onLogout": "Jūs esate prisijungęs, {0}Spausti čia{1}Prisjungti čia<br>arba spausti <em>Escape</em> pasiekti savo pad tik skaityti.",
     "typeError": "Šis Pad nesuderinama su pasirinkta programa",
     "common_connectionLost": "<b> serverio sujungimas prarastas<b><br> Tik skaitymo rėžimas kol sujungimas atsiras.",
-    "button_newsheet": "Naujas Lapas",
-    "button_newkanban": "Naujas kanbanas",
-    "button_newwhiteboard": "Nauja Lenta",
-    "button_newslide": "Nauja prezentacija",
-    "button_newpoll": "Nauja apklausa",
-    "button_newcode": "Naujas Kodas",
-    "button_newpad": "Naujas Tekstas",
     "type": {
         "form": "Forma",
         "teams": "Komandos",

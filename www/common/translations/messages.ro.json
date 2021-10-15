@@ -1,10 +1,5 @@
 {
     "main_title": "CryptPad: Zero Knowledge, Colaborare în timp real",
-    "button_newpad": "Filă Text Nouă",
-    "button_newcode": "Filă Cod Nouă",
-    "button_newpoll": "Sondaj Nou",
-    "button_newslide": "Prezentare Nouă",
-    "button_newwhiteboard": "Fila Desen Nouă",
     "common_connectionLost": "<b>S-a pierdut conexiunea la server</b><br>Până la restabilirea conexiunii, vei fi în modul citire",
     "typeError": "Această filă nu este compatibilă cu aplicația aleasă",
     "onLogout": "Nu mai ești autentificat, {0}apasă aici{1} să te autentifici<br>sau apasă <em>Escape</em>să accesezi fila în modul citire.",
@@ -212,7 +207,6 @@
         "kanban": "Foaie Kanban",
         "teams": "Echipe"
     },
-    "button_newkanban": "Kanban nou",
     "padNotPinned": "Aceasta filă va expira după 3 luni de inactivitate, {0}autentifică-te{1} sau {2}înregistrează-te{3} pentru a o păstra.",
     "expiredError": "Această filă a expirat și nu mai este disponibilă.",
     "deletedError": "Această filă a fost ștearsă de către proprietarul ei și nu mai este disponibilă.",
@@ -298,7 +292,6 @@
     "kanban_done": "Realizat",
     "kanban_working": "În curs",
     "kanban_addBoard": "Adaugă un board",
-    "button_newsheet": "Foaie de calcul noua",
     "viewEmbedTag": "Pentru a incorpora acest pad, include acest iframe oriunde in pagina dorita. Il poti stiliza utilizand atribute CSS sau HTML.",
     "fileEmbedScript": "Pentru a include acest fisier, include acest script in pagina ta pentru a incarca Media",
     "pad_mediatagBorder": "Latimea marginii (px)",

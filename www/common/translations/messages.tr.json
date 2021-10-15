@@ -1,10 +1,5 @@
 {
     "common_connectionLost": "<b>Sunucu Bağlantısı Kesildi</b><br>Bağlantı geri gelene kadar salt-okunur moddasınız.",
-    "button_newwhiteboard": "Yeni Beyaz tahta",
-    "button_newslide": "Yeni Sunum",
-    "button_newpoll": "Yeni Anket",
-    "button_newcode": "Yeni Kod padi",
-    "button_newpad": "Yeni Zengin Metin padi",
     "type": {
         "teams": "Ekipler",
         "contacts": "Kişiler",

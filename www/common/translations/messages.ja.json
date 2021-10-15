@@ -1,12 +1,5 @@
 {
     "common_connectionLost": "<b>サーバーとの接続が切断しました</b><br>再接続するまで閲覧モードになります。",
-    "button_newsheet": "新規スプレッドシート",
-    "button_newkanban": "新規カンバン",
-    "button_newwhiteboard": "新規ホワイトボード",
-    "button_newslide": "新規プレゼンテーション",
-    "button_newpoll": "新規投票・アンケート",
-    "button_newcode": "新規コードファイル",
-    "button_newpad": "新規リッチテキスト",
     "type": {
         "teams": "チーム",
         "contacts": "連絡先",
