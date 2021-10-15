@@ -14,7 +14,9 @@
         "contacts": "Contacts",
         "sheet": "Sheet",
         "teams": "Teams",
-        "form": "Form"
+        "form": "Form",
+        "doc": "Document",
+        "presentation": "Presentation"
     },
     "common_connectionLost": "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.",
     "typeError": "This document is not compatible with the selected application",
@@ -1417,5 +1419,7 @@
     "form_conditional_addAnd": "Add AND condition",
     "userlist_visitProfile": "Visit profile",
     "form_colors": "Color theme",
-    "form_conditional_hint": "To make this section conditional, please add a choice or checkbox question above it"
+    "form_conditional_hint": "To make this section conditional, please add a choice or checkbox question above it",
+    "creation_new": "New {0}",
+    "fc_openIn": "Open in {0}"
 }
