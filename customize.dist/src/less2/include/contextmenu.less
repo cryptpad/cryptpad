@@ -55,9 +55,19 @@
                     color: @cp_context-fg;
                 }
                 .fa, .cptools {
-                    margin-right: 10px;
+                    &:first-child {
+                        margin-right: 10px;
+                    }
+                    &.cptools:not(:first-child) {
+                        vertical-align: middle;
+                    }
                     color: @cp_context-icon;
                     width: 16px;
+                }
+                // XXX PREMIUM
+                &.cp-app-disabled {
+                    cursor: not-allowed !important;
+                    opacity: 0.5;
                 }
             }
         }

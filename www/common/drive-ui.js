@@ -89,7 +89,6 @@ define([
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faPreview = 'fa-eye';
-    var faOpenInCode = 'cptools-code';
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
@@ -332,7 +331,26 @@ define([
     };
 
 
-    var createContextMenu = function () {
+    Messages.fc_openIn = "Open in {0}"; // XXX
+    // delete fc_openInCode // XXX
+    var createContextMenu = function (common) {
+        // XXX PREMIUM
+        // XXX "Edit in Document" and "New Document"  (and presentation)
+        var premiumP = common.checkRestrictedApp('presentation');
+        var premiumD = common.checkRestrictedApp('doc');
+        var getOpenIn = function (app) {
+            var icon = AppConfig.applicationsIcon[app];
+            var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
+            var html = '<i class="'+cls+'"></i>' + Messages.type[app];
+            return Messages._getKey('fc_openIn', [html]);
+        };
+        var isAppEnabled = function (app) {
+            if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
+            var registered = common.isLoggedIn() || !(AppConfig.registeredOnlyTypes || []).includes(app);
+            var restricted = common.checkRestrictedApp(app) < 0;
+            if (restricted === 0) { return 0; }
+            return AppConfig.availablePadTypes.includes(app) && registered && !restricted;
+        };
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
                 'role': 'menu',
@@ -352,10 +370,22 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, h('span.cp-text', Messages.fc_open_ro))),
-                h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
+                isAppEnabled('code') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faOpenInCode,
-                }, Messages.fc_openInCode)),
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('code'))) : undefined,
+                isAppEnabled('sheet') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openinsheet.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('sheet'))) : undefined,
+                isAppEnabled('doc') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('doc'))) : undefined,
+                isAppEnabled('presentation') ?  h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-arrows',
+                }), getOpenIn('presentation'))) : undefined,
                 h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-cloud-upload',
@@ -402,47 +432,57 @@ define([
                     'data-icon': faUploadFolder,
                 }, Messages.uploadFolderButton)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                isAppEnabled('pad') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.pad,
                     'data-type': 'pad'
-                }, Messages.button_newpad)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                }, Messages.button_newpad)) : undefined,
+                isAppEnabled('code') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.code,
                     'data-type': 'code'
-                }, Messages.button_newcode)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                }, Messages.button_newcode)) : undefined,
+                isAppEnabled('sheet') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.slide,
-                    'data-type': 'slide'
-                }, Messages.button_newslide)),
+                    'data-icon': AppConfig.applicationsIcon.sheet,
+                    'data-type': 'sheet'
+                }, Messages.button_newsheet)) : undefined,
                 h('li.dropdown-submenu', [
                     h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
                         'tabindex': '-1',
                         'data-icon': "fa-plus",
                     }, Messages.fm_morePads),
                     h("ul.dropdown-menu", [
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                        isAppEnabled('doc') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.sheet,
-                            'data-type': 'sheet'
-                        }, Messages.button_newsheet)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'data-icon': AppConfig.applicationsIcon.doc,
+                            'data-type': 'doc'
+                        }, Messages.button_newdoc)) : undefined,
+                        isAppEnabled('presentation') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.presentation,
+                            'data-type': 'presentation'
+                        }, Messages.button_newpresentation)) : undefined,
+                        isAppEnabled('whiteboard') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.whiteboard,
                             'data-type': 'whiteboard'
-                        }, Messages.button_newwhiteboard)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                        }, Messages.button_newwhiteboard)) : undefined,
+                        isAppEnabled('kanban') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.kanban,
                             'data-type': 'kanban'
-                        }, Messages.button_newkanban)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                        }, Messages.button_newkanban)) : undefined,
+                        isAppEnabled('form') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.poll,
-                            'data-type': 'poll'
-                        }, Messages.button_newpoll)),
+                            'data-icon': AppConfig.applicationsIcon.form,
+                            'data-type': 'form'
+                        }, Messages.button_newform)) : undefined,
+                        isAppEnabled('slide') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.slide,
+                            'data-type': 'slide'
+                        }, Messages.button_newslide)) : undefined,
                         h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.link,
@@ -613,7 +653,7 @@ define([
         var $content = APP.$content = $("#cp-app-drive-content");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
-        var $contextMenu = createContextMenu().appendTo($appContainer);
+        var $contextMenu = createContextMenu(common).appendTo($appContainer);
 
         var $contentContextMenu = $("#cp-app-drive-context-content");
         var $defaultContextMenu = $("#cp-app-drive-context-default");
@@ -625,7 +665,7 @@ define([
         // DRIVE
         var currentPath = APP.currentPath = LS.getLastOpenedFolder();
         if (APP.newSharedFolder) {
-            var newSFPaths = manager.findFile(APP.newSharedFolder);
+            var newSFPaths = manager.findFile(Number(APP.newSharedFolder));
             if (newSFPaths.length) {
                 currentPath = newSFPaths[0];
             }
@@ -654,6 +694,8 @@ define([
                 displayedCategories = [FILES_DATA];
                 currentPath = [FILES_DATA];
             }
+        } else if (priv.isEmbed && APP.newSharedFolder) {
+            displayedCategories = [ROOT, TRASH];
         }
 
         APP.editable = !APP.readOnly;
@@ -1275,7 +1317,7 @@ define([
                         hide.push('preview');
                     }
                     if ($element.is('.cp-border-color-sheet')) {
-                        hide.push('download');
+                        //hide.push('download'); // XXX if we don't want to enable this feature yet
                     }
                     if ($element.is('.cp-app-drive-static')) {
                         hide.push('access', 'hashtag', 'properties', 'download');
@@ -1293,6 +1335,18 @@ define([
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
                         }
+                        if (!metadata || !Util.isSpreadsheet(metadata.fileType, metadata.title)
+                            || !priv.supportsWasm) {
+                            hide.push('openinsheet');
+                        }
+                        if (!metadata || !Util.isOfficeDoc(metadata.fileType, metadata.title)
+                            || !priv.supportsWasm) {
+                            hide.push('openindoc');
+                        }
+                        if (!metadata || !Util.isPresentation(metadata.fileType, metadata.title)
+                            || !priv.supportsWasm) {
+                            hide.push('openinpresentation');
+                        }
                         if (metadata.channel && metadata.channel.length < 48) {
                             hide.push('preview');
                         }
@@ -1309,6 +1363,9 @@ define([
                         containsFolder = true;
                         hide.push('openro');
                         hide.push('openincode');
+                        hide.push('openinsheet');
+                        hide.push('openindoc');
+                        hide.push('openinpresentation');
                         hide.push('hashtag');
                         //hide.push('delete');
                         hide.push('makeacopy');
@@ -1324,6 +1381,9 @@ define([
                         hide.push('savelocal');
                         hide.push('openro');
                         hide.push('openincode');
+                        hide.push('openinsheet');
+                        hide.push('openindoc');
+                        hide.push('openinpresentation');
                         hide.push('properties', 'access');
                         hide.push('hashtag');
                         hide.push('makeacopy');
@@ -1355,7 +1415,8 @@ define([
                     hide.push('download');
                     hide.push('share');
                     hide.push('savelocal');
-                    hide.push('openincode'); // can't because of race condition
+                    //hide.push('openincode'); // can't because of race condition
+                    //hide.push('openinsheet'); // can't because of race condition
                     hide.push('makeacopy');
                     hide.push('preview');
                 }
@@ -1367,6 +1428,9 @@ define([
                 if (!APP.loggedIn) {
                     hide.push('openparent');
                     hide.push('rename');
+                    hide.push('openinsheet');
+                    hide.push('openindoc');
+                    hide.push('openinpresentation');
                 }
 
                 filter = function ($el, className) {
@@ -1380,11 +1444,12 @@ define([
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'preview', 'openincode', 'expandall', 'collapseall',
-                            'color', 'download', 'share', 'savelocal', 'rename', 'delete', 'makeacopy',
+                            'color', 'download', 'share', 'savelocal', 'rename', 'delete',
+                            'makeacopy', 'openinsheet', 'openindoc', 'openinpresentation',
                             'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'preview', 'openincode', 'share', 'download', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy', 'savelocal', 'rename'];
+                    show = ['open', 'openro', 'preview', 'openincode', 'openinsheet', 'openindoc', 'openinpresentation', 'share', 'download', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy', 'savelocal', 'rename'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -2354,6 +2419,7 @@ define([
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
                 if (skipNext) { skipNext = false; return; }
+                if (APP.newSharedFolder && priv.isEmbed && p === ROOT && !idx) { return; }
                 var name = p;
 
                 if (manager.isFile(el) && isInTrashRoot && idx === 1) {
@@ -2394,7 +2460,7 @@ define([
                 addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
-                else {
+                else if (!(APP.newSharedFolder && priv.isEmbed && idx === 1)) {
                     var $span2 = $('<span>', {
                         'class': 'cp-app-drive-path-element cp-app-drive-path-separator'
                     }).text(' / ');
@@ -2885,6 +2951,15 @@ define([
                     'data-type': type,
                     'href': '#'
                 };
+
+                // XXX PREMIUM
+                var premium = common.checkRestrictedApp(type);
+                if (premium < 0) {
+                    attributes.class += ' cp-app-hidden cp-app-disabled';
+                } else if (premium === 0) {
+                    attributes.class += ' cp-app-disabled';
+                }
+
                 options.push({
                     tag: 'a',
                     attributes: attributes,
@@ -3211,6 +3286,14 @@ define([
                 $element.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.type[type]));
                 $element.attr('data-type', type);
+
+                // XXX PREMIUM
+                var premium = common.checkRestrictedApp(type);
+                if (premium < 0) {
+                    $element.addClass('cp-app-hidden cp-app-disabled');
+                } else if (premium === 0) {
+                    $element.addClass('cp-app-disabled');
+                }
             });
 
             $container.find('.cp-app-drive-element-row').click(function () {
@@ -4062,17 +4145,28 @@ define([
         var createTree = function ($container, path) {
             var root = manager.find(path);
 
+            var isRoot = manager.comparePath([ROOT], path);
+            var rootName = ROOT_NAME;
+            if (APP.newSharedFolder && priv.isEmbed && isRoot) {
+                var newSFPaths = manager.findFile(Number(APP.newSharedFolder));
+                if (newSFPaths.length) {
+                    path = newSFPaths[0];
+                    path.push(ROOT);
+                    root = manager.find(path);
+                    rootName = manager.getSharedFolderData(APP.newSharedFolder).title;
+                }
+            }
+
             // don't try to display what doesn't exist
             if (!root) { return; }
 
             // Display the root element in the tree
-            var displayingRoot = manager.comparePath([ROOT], path);
-            if (displayingRoot) {
-                var isRootOpened = manager.comparePath([ROOT], currentPath);
+            if (isRoot) {
+                var isRootOpened = manager.comparePath(path.slice(), currentPath);
                 var $rootIcon = manager.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, true, isRootOpened);
+                var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
                     $rootElement.find('.cp-app-drive-icon-expcol').css('visibility', 'hidden');
                 }
@@ -4349,6 +4443,21 @@ define([
             });
         };
 
+        var openInApp = function (paths, app) {
+            var p = paths[0];
+            var el = manager.find(p.path);
+            var path = currentPath;
+            if (path[0] !== ROOT) { path = [ROOT]; }
+            var _metadata = manager.getFileData(el);
+            var _simpleData = {
+                title: _metadata.filename || _metadata.title,
+                href: _metadata.href || _metadata.roHref,
+                fileType: _metadata.fileType,
+                password: _metadata.password,
+                channel: _metadata.channel,
+            };
+            openIn(app, path, APP.team, _simpleData);
+        };
 
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
@@ -4436,20 +4545,19 @@ define([
             }
             else if ($this.hasClass('cp-app-drive-context-openincode')) {
                 if (paths.length !== 1) { return; }
-                var p = paths[0];
-                el = manager.find(p.path);
-                (function () {
-                    var path = currentPath;
-                    if (path[0] !== ROOT) { path = [ROOT]; }
-                    var _metadata = manager.getFileData(el);
-                    var _simpleData = {
-                        title: _metadata.filename || _metadata.title,
-                        href: _metadata.href || _metadata.roHref,
-                        password: _metadata.password,
-                        channel: _metadata.channel,
-                    };
-                    openIn('code', path, APP.team, _simpleData);
-                })();
+                openInApp(paths, 'code');
+            }
+            else if ($this.hasClass('cp-app-drive-context-openinsheet')) {
+                if (paths.length !== 1) { return; }
+                openInApp(paths, 'sheet');
+            }
+            else if ($this.hasClass('cp-app-drive-context-openindoc')) {
+                if (paths.length !== 1) { return; }
+                openInApp(paths, 'doc');
+            }
+            else if ($this.hasClass('cp-app-drive-context-openinpresentation')) {
+                if (paths.length !== 1) { return; }
+                openInApp(paths, 'presentation');
             }
             else if ($this.hasClass('cp-app-drive-context-expandall') ||
                      $this.hasClass('cp-app-drive-context-collapseall')) {

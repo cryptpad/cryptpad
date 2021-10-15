@@ -25,6 +25,7 @@ define([
     '/common/common-interface.js',
     '/common/common-feedback.js',
     '/common/common-language.js',
+    '/common/common-constants.js',
     '/bower_components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
 ], function (
@@ -53,6 +54,7 @@ define([
     UI,
     Feedback,
     Language,
+    Constants,
     localForage,
     h
 ) {
@@ -729,6 +731,12 @@ define([
                 ApiConfig.adminKeys.indexOf(privateData.edPublic) !== -1;
     };
 
+    funcs.checkRestrictedApp = function (app) {
+        var ea = Constants.earlyAccessApps;
+        var priv = ctx.metadataMgr.getPrivateData();
+        return Util.checkRestrictedApp(app, AppConfig, ea, priv.plan, priv.loggedIn);
+    };
+
     funcs.mailbox = {};
 
     Object.freeze(funcs);
@@ -906,6 +914,25 @@ define([
                         funcs.setLoginRedirect('login');
                     }, {forefront: true});
                     return;
+                }
+                // XXX PREMIUM
+                Messages.premiumOnly = "Creating new documents in this application is currently limited to subscribers on {0}. This is an early-access experimental application for testing purposes, and should not yet be trusted with important data. It will soon become available to everyone on {0}."; // XXX
+                var blocked = privateData.premiumOnly && privateData.isNewFile;
+                if (blocked) {
+                    var domain = ApiConfig.httpUnsafeOrigin || 'CryptPad';
+                    if (/^http/.test(domain)) { domain = domain.replace(/^https?\:\/\//, ''); }
+                    UI.errorLoadingScreen(Messages._getKey('premiumOnly', [domain]), null, function () {
+                        funcs.gotoURL('/drive/');
+                    }, {forefront: true});
+                    return;
+                }
+                if (privateData.earlyAccessBlocked) {
+                    Messages.earlyAccessBlocked = "This application is not ready yet, come back later."; // XXX
+                    UI.errorLoadingScreen(Messages.earlyAccessBlocked, null, function () {
+                        funcs.gotoURL('/drive/');
+                    }, {forefront: true});
+                    return;
+
                 }
             } catch (e) {
                 console.error("Can't check permissions for the app");

@@ -513,7 +513,8 @@ define([
                         options: types, // Entries displayed in the menu
                         isSelect: true,
                         initialValue: '.ics',
-                        common: common
+                        common: common,
+                        buttonCls: 'btn',
                     };
                     var $select = UIElements.createDropdown(dropdownConfig);
                     UI.prompt(Messages.exportPrompt,

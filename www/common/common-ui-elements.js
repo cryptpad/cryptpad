@@ -2087,6 +2087,7 @@ define([
     };
 
 
+
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
         if ($(".cp-app-drive-element-row.cp-app-drive-new-ghost").length !== 0) {
@@ -2113,6 +2114,7 @@ define([
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
         });
+
         types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
@@ -2125,6 +2127,13 @@ define([
                 $modal.hide();
                 common.openURL('/' + p + '/');
             });
+            // XXX PREMIUM
+            var premium = common.checkRestrictedApp(p);
+            if (premium < 0) {
+                $element.addClass('cp-app-hidden cp-app-disabled');
+            } else if (premium === 0) {
+                $element.addClass('cp-app-disabled');
+            }
         });
 
         var selected = -1;
@@ -2268,6 +2277,7 @@ define([
 
         var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
+        var fromContent = privateData.fromContent;
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
@@ -2523,6 +2533,14 @@ define([
                     if (err || (res && res.error)) { return; }
                     todo(res.data);
                 });
+            }
+            else if (fromContent) {
+                allData = [{
+                    name: fromContent.title,
+                    id: 0,
+                    icon: h('span.cptools.cptools-poll'),
+                }];
+                redraw(0);
             }
             else {
                 redraw(0);

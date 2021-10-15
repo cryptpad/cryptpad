@@ -118,13 +118,21 @@
             padding: 10px 10px 0px 10px;
             //height: @icons-size - @icons-text-size;
         }
-        &.cp-app-disabled {
-            cursor: not-allowed !important;
-            opacity: 0.5;
-        }
         .pad-button-text {
             color: @cryptpad_text_col;
             padding: 5px;
+        }
+    }
+    .cp-index-appitem {
+        // XXX PREMIUM
+        &.cp-app-hidden {
+            display: none;
+        }
+        &.cp-app-disabled {
+            div {
+                cursor: not-allowed !important;
+            }
+            opacity: 0.5;
         }
     }
     h4 {

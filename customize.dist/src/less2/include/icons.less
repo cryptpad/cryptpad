@@ -38,5 +38,15 @@
                 display: none;
             }
         }
+
+        // XXX PREMIUM
+        &.cp-app-hidden {
+            display: none !important;
+        }
+        &.cp-app-disabled {
+            cursor: not-allowed !important;
+            .fa, .cptools { cursor: not-allowed !important; }
+            opacity: 0.5;
+        }
     }
 }

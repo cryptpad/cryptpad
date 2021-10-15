@@ -2637,6 +2637,24 @@ define([
             }), title);
         });
 
+        // Export in "sheet"
+        Messages.form_exportSheet = "Export to spreadsheet"; // XXX
+        var export2Button = h('button.btn.btn-primary', [
+            h('i.cptools.cptools-sheet'),
+            Messages.form_exportSheet
+        ]);
+        $(export2Button).appendTo($controls);
+        $(export2Button).click(function () {
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), true);
+            if (!arr) { return void UI.warn(Messages.error); }
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            var title = framework._.title.title || framework._.title.defaultTitle;
+            sframeChan.event('EV_EXPORT_SHEET', {
+                title: title,
+                content: arr
+            });
+        });
+
         var summary = true;
         var form = content.form;
 
