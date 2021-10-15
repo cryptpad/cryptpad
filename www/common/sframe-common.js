@@ -916,7 +916,6 @@ define([
                     return;
                 }
                 // XXX PREMIUM
-                Messages.premiumOnly = "Creating new documents in this application is currently limited to subscribers on {0}. This is an early-access experimental application for testing purposes, and should not yet be trusted with important data. It will soon become available to everyone on {0}."; // XXX
                 var blocked = privateData.premiumOnly && privateData.isNewFile;
                 if (blocked) {
                     var domain = ApiConfig.httpUnsafeOrigin || 'CryptPad';
@@ -927,7 +926,6 @@ define([
                     return;
                 }
                 if (privateData.earlyAccessBlocked) {
-                    Messages.earlyAccessBlocked = "This application is not ready yet, come back later."; // XXX
                     UI.errorLoadingScreen(Messages.earlyAccessBlocked, null, function () {
                         funcs.gotoURL('/drive/');
                     }, {forefront: true});

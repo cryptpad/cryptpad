@@ -661,7 +661,6 @@ define([
                 var text = Math.round(progressValue * 100) + '%';
                 text += progressValue === 1 ? '' : ' (' + Messages.download_step2 + '...)';
                 if (progressValue === 2) {
-                    Messages.download_step3 = "Converting..."; // XXX
                     text = Messages.download_step3;
                     progressValue = 1;
                 }

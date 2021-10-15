@@ -331,7 +331,6 @@ define([
     };
 
 
-    Messages.fc_openIn = "Open in {0}"; // XXX
     // delete fc_openInCode // XXX
     var createContextMenu = function (common) {
         // XXX PREMIUM

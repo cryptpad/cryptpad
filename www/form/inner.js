@@ -2638,7 +2638,6 @@ define([
         });
 
         // Export in "sheet"
-        Messages.form_exportSheet = "Export to spreadsheet"; // XXX
         var export2Button = h('button.btn.btn-primary', [
             h('i.cptools.fa-file-excel-o'),
             Messages.form_exportSheet
