@@ -15,13 +15,6 @@
         "teams": "Teams",
         "form": "Lomake"
     },
-    "button_newpad": "Uusi Teksti-padi",
-    "button_newcode": "Uusi Koodi-padi",
-    "button_newpoll": "Uusi Kysely",
-    "button_newslide": "Uusi Esitys",
-    "button_newwhiteboard": "Uusi Tussitaulu",
-    "button_newkanban": "Uusi Kanban",
-    "button_newsheet": "Uusi Taulukko",
     "common_connectionLost": "<b>Yhteys palvelimelle katkennut</b><br>Sovellus on vain luku-tilassa, kunnes yhteys palaa.",
     "typeError": "Tämä padi ei ole yhteensopiva valitun sovelluksen kanssa",
     "onLogout": "Olet kirjautunut ulos, {0}napsauta tästä{1} kirjautuaksesi sisään tai paina <em>Esc-näppäintä</em> käyttääksesi padia vain luku-tilassa.",

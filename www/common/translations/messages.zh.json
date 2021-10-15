@@ -16,11 +16,6 @@
         "contacts": "联系我们",
         "form": "从"
     },
-    "button_newpad": "富文件檔案",
-    "button_newcode": "新代碼檔案",
-    "button_newpoll": "新投票調查",
-    "button_newslide": "新簡報",
-    "button_newwhiteboard": "新白板",
     "common_connectionLost": "<b>伺服器連線中斷</b><br>現在是唯讀狀態，直到連線恢復正常。",
     "typeError": "這個編輯檔與所選的應用程式並不相容",
     "onLogout": "你已登出, {0}點擊這裏{1} 來登入<br>或按<em>Escape</em> 來以唯讀模型使用你的編輯檔案",
@@ -250,7 +245,5 @@
     "pad_mediatagPreview": "预览",
     "historyText": "历史",
     "help_button": "帮助",
-    "button_newsheet": "新工作表",
-    "button_newkanban": "新看板",
     "mdToolbar_tutorial": "https://www.markdowntutorial.com/zh-cn/"
 }

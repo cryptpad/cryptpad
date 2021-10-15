@@ -15,13 +15,6 @@
         "sheet": "Fogli",
         "teams": "Teams"
     },
-    "button_newpad": "Nuovo pad di Testo",
-    "button_newcode": "Nuovo pad di Codice",
-    "button_newpoll": "Nuovo Sondaggio",
-    "button_newslide": "Nuova Presentazione",
-    "button_newwhiteboard": "Nuova lavagna",
-    "button_newkanban": "Nuovo Kanban",
-    "button_newsheet": "Nuovo Foglio",
     "common_connectionLost": "<b>Connessione al server persa</b><br>Rimarrai in modalità solo lettura finché la connessione non sarà ripristinata.",
     "typeError": "Questo pad non è compatibile con l'applicazione selezionata",
     "onLogout": "Sei uscito, {0}clicca qui{1} per entrare<br>o premi <em>Esc</em> per accedere al tuo pad in modalità di sola lettura.",

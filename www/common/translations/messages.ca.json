@@ -16,13 +16,6 @@
         "teams": "Equips",
         "form": "Formulari"
     },
-    "button_newpad": "Nou document",
-    "button_newcode": "Nova pàgina de codi",
-    "button_newpoll": "Nova enquesta",
-    "button_newslide": "Nova presentació",
-    "button_newwhiteboard": "Nova pissarra",
-    "button_newkanban": "Nou tauler Kanban",
-    "button_newsheet": "Nou full",
     "common_connectionLost": "<b>S'ha perdut la connexió amb el servidor</b><br>Fins que la connexió no torni, esteu en mode només de lectura.",
     "typeError": "Aquest document és incompatible amb l'aplicació seleccionada",
     "onLogout": "Esteu fora del vostre compte, {0}cliqueu aquí{1} per iniciar la sessió<br>o premeu <em>Esc</em> per accedir al vostre document en mode només de lectura.",

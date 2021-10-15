@@ -17,12 +17,6 @@
     "onLogout": "Jste odhlášení, {0}klikněte zde{1} pro přihlášení<br>nebo zmáčkněte <em>Escape</em> pro čtení dokumentu.",
     "typeError": "Tento dokument není kompatibilní s vybranou aplikací",
     "common_connectionLost": "<b>Spojení se serverem ztraceno</b><br>Nyní jste v režimu čtení, dokud nebude spojení obnoveno.",
-    "button_newsheet": "Nová tabulka",
-    "button_newwhiteboard": "Nová tabule",
-    "button_newslide": "Nová prezentace",
-    "button_newpoll": "Nové hlasování",
-    "button_newcode": "Nový kód",
-    "button_newpad": "Nový formátovaný dokument",
     "type": {
         "teams": "Týmy",
         "sheet": "Tabulka",
