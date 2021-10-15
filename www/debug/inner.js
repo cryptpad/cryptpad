@@ -728,7 +728,7 @@ define([
                 displayDoc(hjson);
             }
 
-            metadataMgr.updateTitle('');
+            //metadataMgr.updateTitle('');
 
             initializing = false;
             $('#cp-app-debug-history').show();

@@ -653,12 +653,15 @@ define([
                 button = $('<button>', {
                     'class': 'cptools cptools-new-template cp-toolbar-icon-template',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
-                if (data.rt) {
+                if (data.rt || data.callback) {
                     button
                     .click(function () {
                         var title = data.getTitle() || document.title;
                         var todo = function (val) {
                             if (typeof(val) !== "string") { return; }
+                            if (data.callback) {
+                                return void data.callback(val);
+                            }
                             var toSave = data.rt.getUserDoc();
                             if (val.trim()) {
                                 val = val.trim();

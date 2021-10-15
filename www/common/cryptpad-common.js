@@ -728,18 +728,26 @@ define([
         var optsPut = {};
         if (p.type === 'poll') { optsPut.initialState = '{}'; }
         // PPP: add password as cryptput option
-        Cryptput(hash, data.toSave, function (e) {
-            if (e) { throw new Error(e); }
-            postMessage("ADD_PAD", {
-                teamId: data.teamId,
-                href: href,
-                title: data.title,
-                path: ['template']
-            }, function (obj) {
-                if (obj && obj.error) { return void cb(obj.error); }
-                cb();
-            });
-        }, optsPut);
+        Nthen(function (w) {
+            common.getEdPublic(null, w(function (obj) {
+                if (obj && obj.error) { return; }
+                optsPut.owners = [obj];
+            }));
+        }).nThen(function () {
+            Cryptput(hash, data.toSave, function (e) {
+                if (e) { throw new Error(e); }
+                postMessage("ADD_PAD", {
+                    teamId: data.teamId,
+                    href: href,
+                    title: data.title,
+                    owners: optsPut.owners,
+                    path: ['template']
+                }, function (obj) {
+                    if (obj && obj.error) { return void cb(obj.error); }
+                    cb();
+                });
+            }, optsPut);
+        });
     };
 
     common.isTemplate = function (href, cb) {

@@ -222,6 +222,7 @@ define([
 
         // Make sure a former tab on the same worker doesn't have remaining locks
         var checkClients = function (clients) {
+            if (!clients) { return; }
             Object.keys(content.ids).forEach(function (id) {
                 var tabId = Number(id.slice(33)); // remove the netflux ID and the "-"
                 if (clients.indexOf(tabId) === -1) {
@@ -375,6 +376,37 @@ define([
         };
 
         var onUploaded = function (ev, data, err) {
+            if (ev.newTemplate) {
+                if (err) {
+                    console.error(err);
+                    return void UI.warn(Messages.error);
+                }
+                var _content = ev.newTemplate;
+                _content.hashes = {};
+                _content.hashes[1] = {
+                    file: data.url,
+                    index: 0,
+                    version: NEW_VERSION
+                };
+                _content.version = NEW_VERSION;
+                _content.channel = Hash.createChannelId();
+                _content.ids = {};
+                sframeChan.query('Q_SAVE_AS_TEMPLATE', {
+                    toSave: JSON.stringify({
+                        content: _content,
+                        metadata: {
+                            title: '',
+                            defaultTitle: ev.title
+                        }
+                    }),
+                    title: ev.title
+                }, function () {
+                    UI.alert(Messages.templateSaved);
+                    Feedback.send('OO_TEMPLATE_CREATED');
+                });
+                return;
+            }
+
             content.saveLock = undefined;
             if (err) {
                 console.error(err);
@@ -1419,10 +1451,15 @@ define([
                             });
                             if (m.length === 1 && APP.loadingImage <= 0) {
                                 try {
-                                    var docs = window.frames[0].AscCommon.g_oDocumentUrls.urls || {};
+                                    // "docs" contains the correct images that we've just uploaded
+                                    // "docs2" contains the correct images from the .bin checkpoint
+                                    // both of them are not reliable in the other case
+                                    var docs = getWindow().AscCommon.g_oDocumentUrls.urls;
+                                    var docs2 = getEditor().ImageLoader.map_image_index;
                                     var mediasSources = getMediasSources();
                                     Object.keys(mediasSources).forEach(function (name) {
-                                        if (!docs['media/'+name]) {
+                                        if (!docs && !docs2) { return; }
+                                        if (!docs['media/'+name] && !docs2[name]) {
                                             delete mediasSources[name];
                                         }
                                     });
@@ -1559,7 +1596,7 @@ define([
                                   // New OO:
                                   'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
                                   '#slot-btn-insequation { display: none !important; }' + // Insert equation
-                                  '#asc-gen125 { display: none !important; }' + // Disable presenter mode
+                                  //'#asc-gen125 { display: none !important; }' + // Disable presenter mode
                                   //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
                                   '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                                   '#panel-info { display: none !important; }' + // Same but content
@@ -2329,10 +2366,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (editor) {
                 try { getEditor().asc_setRestriction(true); } catch (e) {}
             }
-            var content = parsed.content;
+            var _content = parsed.content;
 
             // Get checkpoint
-            var hashes = content.hashes || {};
+            var hashes = _content.hashes || {};
+            var medias = _content.mediasSources;
             var idx = sortCpIndex(hashes);
             var lastIndex = idx[idx.length - 1];
             var lastCp = hashes[lastIndex] || {};
@@ -2342,10 +2380,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             // Last hash
             var fromHash = 'NONE';
 
+            content.mediasSources = medias;
+
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 href: href,
                 password: pw,
-                channel: content.channel,
+                channel: _content.channel,
                 lastKnownHash: fromHash,
                 toHash: toHash,
             }, function (err, data) {
@@ -2609,6 +2649,29 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
                 if ($template && typeof($template.appendTo) === 'function') {
                     $template.appendTo(toolbar.$drawer);
+                }
+
+                // Save as template
+                if (!metadataMgr.getPrivateData().isTemplate) {
+                    var templateObj = {
+                        //rt: cpNfInner.chainpad,
+                        getTitle: function () { return cpNfInner.metadataMgr.getMetadata().title; },
+                        callback: function (title) {
+                            var newContent = {};
+                            newContent.mediasSources = content.mediasSources;
+                            var text = getContent();
+                            var blob = new Blob([text], {type: 'plain/text'});
+                            var file = getFileType();
+                            blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+                            var data = {
+                                newTemplate: newContent,
+                                title: title
+                            };
+                            APP.FM.handleFile(blob, data);
+                        }
+                    };
+                    var $templateButton = common.createButton('template', true, templateObj);
+                    toolbar.$drawer.append($templateButton);
                 }
             })();
             }
