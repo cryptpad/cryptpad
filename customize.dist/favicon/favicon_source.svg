@@ -7,7 +7,7 @@
    id="svg942"
    sodipodi:docname="favicon_source.svg"
    inkscape:version="1.1.1 (1:1.1+202109281949+c3084ef5ed)"
-   inkscape:export-filename="/home/david/cryptpad/customize.dist/favicon/main-favicon-docs.png"
+   inkscape:export-filename="/home/david/cryptpad/customize.dist/favicon/alt-favicon-document.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -96,12 +96,12 @@
      id="namedview944"
      showgrid="false"
      inkscape:zoom="0.819555"
-     inkscape:cx="-41.485928"
-     inkscape:cy="396.55667"
+     inkscape:cx="60.398631"
+     inkscape:cy="380.6944"
      inkscape:window-x="26"
      inkscape:window-y="23"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g369"
+     inkscape:current-layer="g952"
      inkscape:document-rotation="0"
      inkscape:pagecheckerboard="0" />
   <g
@@ -305,6 +305,49 @@
              d="m 127,42.651 h 4.2265 l 4.2333,22.354 h -12.693 z"
              style="fill:#5170b5;fill-opacity:1"
              id="path365" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="g956"
+     inkscape:label="[export] shield [OO_pres]"
+     style="display:none">
+    <g
+       id="g954"
+       transform="matrix(1.4853714,0,0,1.4853714,12.798765,-0.61151946)">
+      <g
+         transform="translate(-125.38,-26.449)"
+         id="g952">
+        <path
+           d="m 128.98,30.355 0.55499,39.644 h 33.141 l 0.004,-39.644 z"
+           style="fill:#c65d27;fill-opacity:0.396078"
+           id="path937" />
+        <path
+           d="m 162.69,70 0.003,43.946 c 12.825,-5.8796 32.762,-17.077 33.127,-43.157 l 0.0108,-0.78911 z"
+           style="fill:#c65d27;fill-opacity:0.396078"
+           id="path939" />
+        <path
+           d="m 128.98,30.355 h 44.386 L 195.78,51.181 V 76.08 c 0,26.166 -21.414,32.228 -33.117,38.409 -12.815,-5.8945 -32.794,-12.329 -33.117,-38.409 z"
+           style="fill:none;stroke:#c65d27;stroke-width:5.2922;stroke-opacity:1"
+           id="path941" />
+        <path
+           d="m 171.32,29.811 v 23.04 h 24.575"
+           style="fill:none;stroke:#c65d27;stroke-width:5.2917;stroke-opacity:1"
+           id="path943" />
+        <g
+           transform="matrix(1.1107,0,0,1.1107,18.926,21.932)"
+           style="fill:#c65d27;fill-opacity:1"
+           id="g950">
+          <path
+             d="m 137.23,42.719 a 8.1185,8.1185 0 0 1 -8.1185,8.1185 8.1185,8.1185 0 0 1 -8.1185,-8.1185 8.1185,8.1185 0 0 1 8.1185,-8.1185 8.1185,8.1185 0 0 1 8.1185,8.1185 z"
+             style="fill:#c65d27;fill-opacity:1"
+             id="path946" />
+          <path
+             d="m 127,42.651 h 4.2265 l 4.2333,22.354 h -12.693 z"
+             style="fill:#c65d27;fill-opacity:1"
+             id="path948" />
         </g>
       </g>
     </g>
@@ -578,7 +621,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="dot"
-     style="display:none">
+     style="display:inline">
     <circle
        style="fill:#ff0000;fill-opacity:1;stroke-width:7.93754"
        id="path968"
