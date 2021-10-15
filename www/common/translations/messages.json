@@ -16,13 +16,6 @@
         "teams": "Teams",
         "form": "Form"
     },
-    "button_newpad": "New Rich Text pad XXX remove key and use app name in menu",
-    "button_newcode": "New Code pad XXX remove key and use app name in menu",
-    "button_newpoll": "New Poll XXX remove key and use app name in menu",
-    "button_newslide": "New Presentation XXX remove key and use app name in menu",
-    "button_newwhiteboard": "New Whiteboard XXX remove key and use app name in menu",
-    "button_newkanban": "New Kanban XXX remove key and use app name in menu",
-    "button_newsheet": "New Sheet XXX remove key and use app name in menu",
     "common_connectionLost": "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.",
     "typeError": "This document is not compatible with the selected application",
     "onLogout": "You are logged out, {0}click here{1} to log in<br>or press <em>Escape</em> to access your document in read-only mode.",
