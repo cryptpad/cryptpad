@@ -138,7 +138,7 @@ define(function() {
         kanban: 'cptools-kanban',
         doc: 'fa-file-word-o',
         presentation: 'fa-file-powerpoint-o',
-        sheet: 'cptools-sheet',
+        sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
     };
