@@ -222,6 +222,7 @@ define([
 
         // Make sure a former tab on the same worker doesn't have remaining locks
         var checkClients = function (clients) {
+            if (!clients) { return; }
             Object.keys(content.ids).forEach(function (id) {
                 var tabId = Number(id.slice(33)); // remove the netflux ID and the "-"
                 if (clients.indexOf(tabId) === -1) {
@@ -389,9 +390,14 @@ define([
                 };
                 _content.version = NEW_VERSION;
                 _content.channel = Hash.createChannelId();
+                _content.ids = {};
                 sframeChan.query('Q_SAVE_AS_TEMPLATE', {
                     toSave: JSON.stringify({
-                        content: _content
+                        content: _content,
+                        metadata: {
+                            title: '',
+                            defaultTitle: ev.title
+                        }
                     }),
                     title: ev.title
                 }, function () {
