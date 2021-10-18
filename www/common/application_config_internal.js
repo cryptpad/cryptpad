@@ -11,7 +11,7 @@ define(function() {
      * redirected to the drive.
      * You should never remove the drive from this list.
      */
-    AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
+    AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'kanban', 'code', 'slide', 'poll', 'whiteboard',
                                 'file', 'contacts', 'form', 'convert'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
