@@ -22,10 +22,10 @@ define(function() {
      */
     AppConfig.registeredOnlyTypes = ['file', 'contacts', 'notifications', 'support'];
 
-    /* New application may be introduced in an "early access" state which can contain
+    /* New applications may be introduced in an "early access" state which can contain
      * bugs and can cause loss of user content. You can enable these applications on your
      * CryptPad instance to test them and report bugs to the developers or keep them
-     * disable until they are officialy considered safe.
+     * disabled until they are officially considered safe.
      */
     AppConfig.enableEarlyAccess = false;
 
