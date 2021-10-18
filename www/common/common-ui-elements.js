@@ -2302,6 +2302,10 @@ define([
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
         var newPadH3Title = Messages._getKey('creation_new',[Messages.type[type]]);
 
+        var early = common.checkRestrictedApp(type);
+        var domain = Config.httpUnsafeOrigin || 'CryptPad';
+        if (/^http/.test(domain)) { domain = domain.replace(/^https?\:\/\//, ''); }
+
         var title = h('div.cp-creation-title', [
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
@@ -2310,6 +2314,12 @@ define([
             ])
         ]);
         $creation.append(title);
+
+        if (early === 1) {
+            $creation.append(h('div.cp-creation-early.alert.alert-warning', Messages._getKey('premiumAccess', [
+                domain
+            ])));
+        }
         //var colorClass = 'cp-icon-color-'+type;
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
