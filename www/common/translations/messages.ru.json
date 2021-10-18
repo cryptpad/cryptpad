@@ -433,7 +433,6 @@
     "settings_logoutEverywhereTitle": "Выйти везде",
     "settings_logoutEverywhereButton": "Выйти",
     "settings_anonymous": "Вы не вошли в систему. Настройки будут специфичны для данного браузера.",
-    "fc_openInCode": "Открыть в редакторе кода",
     "fm_morePads": "Ещё",
     "uploadFolderButton": "Загрузить папку",
     "storageStatus": "Хранилище:<br><b>{0}</b> использовано из <b>{1}</b>",
