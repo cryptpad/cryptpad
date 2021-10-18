@@ -20,8 +20,6 @@ define([
         return AppConfig.availablePadTypes.indexOf(x) !== -1;
     };
 
-
-    // XXX PREMIUM
     var checkEarlyAccess = function (x) {
         // Check if this is an early access app and if they are allowed.
         // Check if this is a premium app and if you're premium

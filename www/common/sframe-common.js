@@ -915,7 +915,6 @@ define([
                     }, {forefront: true});
                     return;
                 }
-                // XXX PREMIUM
                 var blocked = privateData.premiumOnly && privateData.isNewFile;
                 if (blocked) {
                     var domain = ApiConfig.httpUnsafeOrigin || 'CryptPad';

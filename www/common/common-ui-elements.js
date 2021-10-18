@@ -2130,7 +2130,6 @@ define([
                 $modal.hide();
                 common.openURL('/' + p + '/');
             });
-            // XXX PREMIUM
             var premium = common.checkRestrictedApp(p);
             if (premium < 0) {
                 $element.addClass('cp-app-hidden cp-app-disabled');

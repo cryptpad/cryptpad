@@ -672,7 +672,6 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
-                    // XXX PREMIUM
                     var priv = metaObj.priv;
                     var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,
                               Utils.Constants.earlyAccessApps, priv.plan, additionalPriv.loggedIn);

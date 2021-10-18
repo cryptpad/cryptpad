@@ -343,10 +343,7 @@ define([
             return arr;
         };
 
-    // delete fc_openInCode // XXX
     var createContextMenu = function (common) {
-        // XXX PREMIUM
-        // XXX "Edit in Document" and "New Document"  (and presentation)
         var getOpenIn = function (app) {
             var icon = AppConfig.applicationsIcon[app];
             var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
@@ -1289,9 +1286,6 @@ define([
                         //hide.push('download');
                         hide.push('openincode');
                         hide.push('preview');
-                    }
-                    if ($element.is('.cp-border-color-sheet')) {
-                        //hide.push('download'); // XXX if we don't want to enable this feature yet
                     }
                     if ($element.is('.cp-app-drive-static')) {
                         hide.push('access', 'hashtag', 'properties', 'download');
@@ -2914,7 +2908,6 @@ define([
                     'href': '#'
                 };
 
-                // XXX PREMIUM
                 var premium = common.checkRestrictedApp(type);
                 if (premium < 0) {
                     attributes.class += ' cp-app-hidden cp-app-disabled';
@@ -3249,7 +3242,6 @@ define([
                     .text(Messages.type[type]));
                 $element.attr('data-type', type);
 
-                // XXX PREMIUM
                 var premium = common.checkRestrictedApp(type);
                 if (premium < 0) {
                     $element.addClass('cp-app-hidden cp-app-disabled');
