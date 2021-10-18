@@ -37,7 +37,11 @@ define([
     var cachePut = function (k, v, cb) {
         if (window.cryptpadCache) { return void window.cryptpadCache.put(k, v, cb); }
         setTimeout(function () {
-            localStorage['LESS_CACHE|' + key + '|' + k] = v;
+            try {
+                localStorage['LESS_CACHE|' + key + '|' + k] = v;
+            } catch (err) {
+                console.error(err);
+            }
             if (cb) { cb(); }
         });
     };

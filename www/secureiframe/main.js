@@ -125,7 +125,11 @@ define([
 
                 sframeChan.on('EV_CACHE_PUT', function (x) {
                     Object.keys(x).forEach(function (k) {
-                        localStorage['CRYPTPAD_CACHE|' + k] = x[k];
+                        try {
+                            localStorage['CRYPTPAD_CACHE|' + k] = x[k];
+                        } catch (err) {
+                            console.error(err);
+                        }
                     });
                 });
                 sframeChan.on('EV_LOCALSTORE_PUT', function (x) {
@@ -134,7 +138,11 @@ define([
                             delete localStorage['CRYPTPAD_STORE|' + k];
                             return;
                         }
-                        localStorage['CRYPTPAD_STORE|' + k] = x[k];
+                        try {
+                            localStorage['CRYPTPAD_STORE|' + k] = x[k];
+                        } catch (err) {
+                            console.error(err);
+                        }
                     });
                 });
 

@@ -8,6 +8,14 @@ define([
 ], function (Constants, Hash, Cache, localForage, AppConfig, Util) {
     var LocalStore = {};
 
+    var safeSet = function (key, val) {
+        try {
+            localStorage.setItem(key, val);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     LocalStore.setThumbnail = function (key, value, cb) {
         localForage.setItem(key, value, cb);
     };
@@ -21,7 +29,7 @@ define([
 
     LocalStore.setFSHash = function (hash) {
         var sHash = Hash.serializeHash(hash);
-        localStorage[Constants.fileHashKey] = sHash;
+        safeSet(Constants.fileHashKey, sHash);
     };
     LocalStore.getFSHash = function () {
         var hash = localStorage[Constants.fileHashKey];
@@ -33,7 +41,7 @@ define([
 
         if (hash) {
             var sHash = Hash.serializeHash(hash);
-            if (sHash !== hash) { localStorage[Constants.fileHashKey] = sHash; }
+            if (sHash !== hash) { safeSet(Constants.fileHashKey, sHash); }
         }
 
         return hash;
@@ -49,7 +57,7 @@ define([
 
         if (hash) {
             var sHash = Hash.serializeHash(hash);
-            if (sHash !== hash) { localStorage[Constants.userHashKey] = sHash; }
+            if (sHash !== hash) { safeSet(Constants.userHashKey, sHash); }
         }
 
         return hash;
@@ -57,7 +65,7 @@ define([
 
     LocalStore.setUserHash = function (hash) {
         var sHash = Hash.serializeHash(hash);
-        localStorage[Constants.userHashKey] = sHash;
+        safeSet(Constants.userHashKey, sHash);
     };
 
     LocalStore.getBlockHash = function () {
@@ -65,7 +73,7 @@ define([
     };
 
     LocalStore.setBlockHash = function (hash) {
-        localStorage[Constants.blockHashKey] = hash;
+        safeSet(Constants.blockHashKey, hash);
     };
 
     LocalStore.getAccountName = function () {
@@ -87,7 +95,7 @@ define([
     };
 
     LocalStore.setDriveRedirectPreference = function (bool) {
-        localStorage.setItem(Constants.redirectToDriveKey, Boolean(bool));
+        safeSet(Constants.redirectToDriveKey, Boolean(bool));
     };
 
     LocalStore.getPremium = function () {
@@ -96,15 +104,15 @@ define([
         } catch (err) { return; }
     };
     LocalStore.setPremium = function (bool) {
-        localStorage.setItem(Constants.isPremiumKey, Boolean(bool));
+        safeSet(Constants.isPremiumKey, Boolean(bool));
     };
 
     LocalStore.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
         hash = Hash.serializeHash(hash);
-        localStorage.setItem(Constants.userHashKey, hash);
-        localStorage.setItem(Constants.userNameKey, name);
+        safeSet(Constants.userHashKey, hash);
+        safeSet(Constants.userNameKey, name);
         if (cb) { cb(); }
     };
     var logoutHandlers = [];
