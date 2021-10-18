@@ -330,26 +330,41 @@ define([
         return $(".cp-app-drive-element-selected");
     };
 
+        var getNewPadTypes = function () {
+            var arr = [];
+            AppConfig.availablePadTypes.forEach(function (type) {
+                if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
+                if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
+                    AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
+                    return;
+                }
+                arr.push(type);
+            });
+            return arr;
+        };
 
     // delete fc_openInCode // XXX
     var createContextMenu = function (common) {
         // XXX PREMIUM
         // XXX "Edit in Document" and "New Document"  (and presentation)
-        var premiumP = common.checkRestrictedApp('presentation');
-        var premiumD = common.checkRestrictedApp('doc');
         var getOpenIn = function (app) {
             var icon = AppConfig.applicationsIcon[app];
             var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
             var html = '<i class="'+cls+'"></i>' + Messages.type[app];
             return Messages._getKey('fc_openIn', [html]);
         };
+        var restricted = {};
+        var enabled = [];
         var isAppEnabled = function (app) {
-            if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
-            var registered = common.isLoggedIn() || !(AppConfig.registeredOnlyTypes || []).includes(app);
-            var restricted = common.checkRestrictedApp(app) < 0;
-            if (restricted === 0) { return 0; }
-            return AppConfig.availablePadTypes.includes(app) && registered && !restricted;
+            return enabled.includes(app);
         };
+        getNewPadTypes().forEach(function (app) {
+            if (!Array.isArray(AppConfig.availablePadTypes)) { return void enabled.push(app); }
+            var registered = common.isLoggedIn() || !(AppConfig.registeredOnlyTypes || []).includes(app);
+            restricted[app] = common.checkRestrictedApp(app);
+            var e = AppConfig.availablePadTypes.includes(app) && registered && restricted[app] >= 0;
+            if (e) { enabled.push(app); }
+        });
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
                 'role': 'menu',
@@ -377,11 +392,11 @@ define([
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
                 }), getOpenIn('sheet'))) : undefined,
-                isAppEnabled('doc') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                isAppEnabled('doc') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (restricted.doc === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
                 }), getOpenIn('doc'))) : undefined,
-                isAppEnabled('presentation') ?  h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
+                isAppEnabled('presentation') ?  h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (restricted.presentation === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
                 }), getOpenIn('presentation'))) : undefined,
@@ -431,63 +446,23 @@ define([
                     'data-icon': faUploadFolder,
                 }, Messages.uploadFolderButton)),
                 $separator.clone()[0],
-                isAppEnabled('pad') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.pad,
-                    'data-type': 'pad'
-                }, Messages.button_newpad)) : undefined,
-                isAppEnabled('code') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.code,
-                    'data-type': 'code'
-                }, Messages.button_newcode)) : undefined,
-                isAppEnabled('sheet') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.sheet,
-                    'data-type': 'sheet'
-                }, Messages.button_newsheet)) : undefined,
+                    'data-icon': AppConfig.applicationsIcon.link,
+                    'data-type': 'link'
+                }, Messages.fm_link_new)),
                 h('li.dropdown-submenu', [
                     h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
                         'tabindex': '-1',
                         'data-icon': "fa-plus",
-                    }, Messages.fm_morePads),
-                    h("ul.dropdown-menu", [
-                        isAppEnabled('doc') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumD === 0 ? '.cp-app-disabled' : ''), {
+                    }, Messages.fm_newFile),
+                    h("ul.dropdown-menu", getNewPadTypes().map(function (app) {
+                        return isAppEnabled(app) ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (restricted[app] === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.doc,
-                            'data-type': 'doc'
-                        }, Messages.button_newdoc)) : undefined,
-                        isAppEnabled('presentation') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (premiumP === 0 ? '.cp-app-disabled' : ''), {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.presentation,
-                            'data-type': 'presentation'
-                        }, Messages.button_newpresentation)) : undefined,
-                        isAppEnabled('whiteboard') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.whiteboard,
-                            'data-type': 'whiteboard'
-                        }, Messages.button_newwhiteboard)) : undefined,
-                        isAppEnabled('kanban') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.kanban,
-                            'data-type': 'kanban'
-                        }, Messages.button_newkanban)) : undefined,
-                        isAppEnabled('form') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.form,
-                            'data-type': 'form'
-                        }, Messages.button_newform)) : undefined,
-                        isAppEnabled('slide') ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.slide,
-                            'data-type': 'slide'
-                        }, Messages.button_newslide)) : undefined,
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.link,
-                            'data-type': 'link'
-                        }, Messages.fm_link_new)),
-                    ]),
+                            'data-icon': AppConfig.applicationsIcon[app],
+                            'data-type': app
+                        }, Messages.type[app])) : undefined;
+                    })),
                 ]),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
@@ -1270,7 +1245,7 @@ define([
                     if (className === 'uploadfiles') { return; }
                     if (className === 'uploadfolder') { return !APP.allowFolderUpload; }
                     if (className === 'newdoc') {
-                        return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                        return;
                     }
                 };
             } else {
@@ -2680,18 +2655,6 @@ define([
             });
         };
 
-        var getNewPadTypes = function () {
-            var arr = [];
-            AppConfig.availablePadTypes.forEach(function (type) {
-                if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
-                if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
-                    AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
-                    return;
-                }
-                arr.push(type);
-            });
-            return arr;
-        };
         var showUploadFilesModal = function () {
             var $input = $('<input>', {
                 'type': 'file',
