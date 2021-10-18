@@ -44,9 +44,9 @@ define([
                 [ 'doc', Msg.type.doc],
                 [ 'presentation', Msg.type.presentation],
                 [ 'pad', Msg.type.pad],
+                [ 'kanban', Msg.type.kanban],
                 [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
-                [ 'kanban', Msg.type.kanban],
                 [ 'whiteboard', Msg.type.whiteboard],
                 [ 'slide', Msg.type.slide],
                 [ 'drive', Msg.type.drive]
