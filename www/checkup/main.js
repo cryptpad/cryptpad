@@ -830,6 +830,33 @@ define([
         });
     });
 
+    assert(function (cb, msg) { // XXX
+        // check that the sandbox domain is included in connect-src
+        msg.appendChild(h('span', [
+            "This instance's ",
+            code("Content-Security-Policy"),
+            " headers do not include the sandboxed domain (",
+            code(trimmedSafe),
+            ") in ",
+            code("connect-src"),
+            ". This can cause problems with fonts when printing office documents.",
+            " This is probably due to an incorrectly configured reverse proxy.",
+            " See the provided NGINX configuration file for an example of how to set this header correctly.",
+        ]));
+
+        $.ajax(cacheBuster('/'), {
+            dataType: 'text',
+            complete: function (xhr) {
+                var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
+                var connect = (CSP && CSP['connect-src']) || "";
+                if (connect.includes(trimmedSafe)) {
+                    return void cb(true);
+                }
+                cb(CSP);
+            },
+        });
+    });
+
 /*
     assert(function (cb, msg) {
         setWarningClass(msg);

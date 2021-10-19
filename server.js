@@ -23,28 +23,24 @@ var fancyURL = function (domain, path) {
     return false;
 };
 
+var deriveSandboxOrigin = function (unsafe, port) {
+    var url = new URL(unsafe);
+    url.port = port;
+    return url.origin;
+};
+
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin' (a truthy string)
     if (!Env.httpUnsafeOrigin || typeof(Env.httpUnsafeOrigin) !== 'string') {
         throw new Error("No 'httpUnsafeOrigin' provided");
     }
 
-    // fall back to listening on a local address
-    // if httpAddress is not a string
-    if (typeof(config.httpAddress) !== 'string') {
-        config.httpAddress = '127.0.0.1';
-    }
-
-    // listen on port 3000 if a valid port number was not provided
-    if (typeof(config.httpPort) !== 'number' || config.httpPort > 65535) {
-        config.httpPort = 3000;
-    }
-
     if (typeof(Env.httpSafeOrigin) !== 'string') {
         Env.NO_SANDBOX = true;
-        if (typeof(config.httpSafePort) !== 'number') {
-            config.httpSafePort = config.httpPort + 1;
+        if (typeof(Env.httpSafePort) !== 'number') {
+            Env.httpSafePort = Env.httpPort + 1;
         }
+        Env.httpSafeOrigin = deriveSandboxOrigin(Env.httpUnsafeOrigin, Env.httpSafePort);
     }
 }());
 
@@ -77,7 +73,7 @@ var setHeaders = (function () {
         }
     } else {
         // use the default CSP headers constructed with your domain
-        headers['Content-Security-Policy'] = Default.contentSecurity(Env.httpUnsafeOrigin);
+        headers['Content-Security-Policy'] = Default.contentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
     }
 
     const padHeaders = Util.clone(headers);
@@ -239,14 +235,14 @@ var makeRouteCache = function (template, cacheName) {
 var serveConfig = makeRouteCache(function (host) {
     return [
         'define(function(){',
-        'var obj = ' + JSON.stringify({
+        'return ' + JSON.stringify({
             requireConf: {
                 waitSeconds: 600,
                 urlArgs: 'ver=' + Env.version + cacheString(),
             },
             removeDonateButton: (Env.removeDonateButton === true),
             allowSubscriptions: (Env.allowSubscriptions === true),
-            websocketPath: config.externalWebsocketURL,
+            websocketPath: Env.websocketPath,
             httpUnsafeOrigin: Env.httpUnsafeOrigin,
             adminEmail: Env.adminEmail,
             adminKeys: Env.admins,
@@ -256,16 +252,8 @@ var serveConfig = makeRouteCache(function (host) {
             maxUploadSize: Env.maxUploadSize,
             premiumUploadSize: Env.premiumUploadSize,
             restrictRegistration: Env.restrictRegistration,
+            httpSafeOrigin: Env.httpSafeOrigin,
         }, null, '\t'),
-        'obj.httpSafeOrigin = ' + (function () {
-            if (Env.httpSafeOrigin) { return '"' + Env.httpSafeOrigin + '"'; }
-            if (config.httpSafePort) {
-                return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
-                    config.httpSafePort + "'); }())";
-            }
-            return 'window.location.origin';
-        }()),
-        'return obj',
         '});'
     ].join(';\n')
 }, 'configCache');
@@ -314,11 +302,11 @@ nThen(function (w) {
         console.log("CryptPad is customizable, see customize.dist/readme.md for details");
     }));
 }).nThen(function (w) {
-    httpServer.listen(config.httpPort,config.httpAddress,function(){
-        var host = config.httpAddress;
+    httpServer.listen(Env.httpPort, Env.httpAddress, function(){
+        var host = Env.httpAddress;
         var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
 
-        var port = config.httpPort;
+        var port = Env.httpPort;
         var ps = port === 80? '': ':' + port;
 
         var roughAddress = 'http://' + hostName + ps;
@@ -336,8 +324,8 @@ nThen(function (w) {
         }
     });
 
-    if (config.httpSafePort) {
-        Http.createServer(app).listen(config.httpSafePort, config.httpAddress, w());
+    if (Env.httpSafePort) {
+        Http.createServer(app).listen(Env.httpSafePort, Env.httpAddress, w());
     }
 }).nThen(function () {
     var wsConfig = { server: httpServer };
@@ -348,7 +336,7 @@ nThen(function (w) {
         config.log = _log;
 
         if (Env.OFFLINE_MODE) { return; }
-        if (config.externalWebsocketURL) { return; }
+        if (Env.websocketPath) { return; }
 
         require("./lib/api").create(Env);
     });
