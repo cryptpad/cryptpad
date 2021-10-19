@@ -1303,6 +1303,14 @@ define([
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
                         }
+
+                        if (metadata && /\/(doc|presentation|sheet)\//.test(metadata.href)) {
+                            console.error(metadata); // XXX
+                            hide.push('openinsheet');
+                            hide.push('openindoc');
+                            hide.push('openinpresentation');
+                        }
+
                         if (!metadata || !Util.isSpreadsheet(metadata.fileType, metadata.title)
                             || !priv.supportsWasm) {
                             hide.push('openinsheet');
