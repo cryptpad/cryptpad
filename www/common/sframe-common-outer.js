@@ -676,8 +676,9 @@ define([
                     }
 
                     var priv = metaObj.priv;
+                    var _plan = priv.offline ? Utils.LocalStore.getPremium() : priv.plan;
                     var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,
-                              Utils.Constants.earlyAccessApps, priv.plan, additionalPriv.loggedIn);
+                              Utils.Constants.earlyAccessApps, _plan, additionalPriv.loggedIn);
                     if (p === 0 || p === -1) {
                         additionalPriv.premiumOnly = true;
                     }
