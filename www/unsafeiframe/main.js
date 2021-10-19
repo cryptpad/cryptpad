@@ -9,44 +9,23 @@ define([
     var requireConfig = RequireConfig();
 
     var ready = false;
-    var currentCb;
-    var queue = [];
 
     var create = function (config) {
         // Loaded in load #2
         var sframeChan;
-        var refresh = function (data, cb) {
-            if (currentCb) {
-                queue.push({data: data, cb: cb});
-                return;
-            }
-            if (!ready) {
-                ready = function () {
-                    refresh(data, cb);
-                };
-                return;
-            }
-            currentCb = cb;
-            sframeChan.event('EV_OOIFRAME_REFRESH', data);
-        };
         nThen(function (waitFor) {
             $(waitFor());
         }).nThen(function (waitFor) {
-            var lang = Messages._languageUsed;
-            var themeKey = 'CRYPTPAD_STORE|colortheme';
             var req = {
                 cfg: requireConfig,
                 req: [ '/common/loading.js' ],
                 pfx: window.location.origin,
-                theme: localStorage[themeKey],
-                themeOS: localStorage[themeKey+'_default'],
-                lang: lang
             };
             window.rc = requireConfig;
             window.apiconf = ApiConfig;
-            $('#sbox-oo-iframe').attr('src',
-                ApiConfig.httpSafeOrigin + '/sheet/inner.html?' + requireConfig.urlArgs +
-                    '#' + encodeURIComponent(JSON.stringify(req)));
+            $('#sbox-unsafe-iframe').attr('src',
+                ApiConfig.httpUnsafeOrigin + '/unsafeiframe/inner.html?' + requireConfig.urlArgs +
+                    '#' + encodeURIComponent(JSON.stringify(req))).attr("sandbox", "");
 
             // This is a cheap trick to avoid loading sframe-channel in parallel with the
             // loading screen setup.
@@ -70,7 +49,7 @@ define([
                 // First, we have to answer to this message, otherwise we're going to block
                 // sframe-boot.js. Then we can start the channel.
                 var msgEv = Utils.Util.mkEvent();
-                var iframe = $('#sbox-oo-iframe')[0].contentWindow;
+                var iframe = $('#sbox-unsafe-iframe')[0].contentWindow;
                 var postMsg = function (data) {
                     iframe.postMessage(data, '*');
                 };
@@ -97,7 +76,6 @@ define([
                 window.addEventListener('message', whenReady);
             }).nThen(function () {
                 var updateMeta = function () {
-                    //console.log('EV_METADATA_UPDATE');
                     var metaObj;
                     nThen(function (waitFor) {
                         Cryptpad.getMetadata(waitFor(function (err, n) {
@@ -115,8 +93,6 @@ define([
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
-                            secureIframe: true,
-                            supportsWasm: Utils.Util.supportsWasm()
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -128,28 +104,6 @@ define([
 
                 config.addCommonRpc(sframeChan, true);
 
-                Cryptpad.padRpc.onMetadataEvent.reg(function (data) {
-                    sframeChan.event('EV_RT_METADATA', data);
-                });
-
-                sframeChan.on('EV_OOIFRAME_DONE', function (data) {
-                    if (queue.length) {
-                        setTimeout(function () {
-                            var first = queue.shift();
-                            refresh(first.data, first.cb);
-                        });
-                    }
-                    if (!currentCb) { return; }
-                    currentCb(data);
-                    currentCb = undefined;
-                });
-
-                // X2T
-                sframeChan.on('Q_OO_CONVERT', function (obj, cb) {
-                    obj.modal = 'x2t';
-                    Utils.initUnsafeIframe(obj, cb);
-                });
-
                 sframeChan.onReady(function () {
                     if (ready === true) { return; }
                     if (typeof ready === "function") {
@@ -159,6 +113,17 @@ define([
                 });
             });
         });
+        var refresh = function (data, cb) {
+            if (!ready) {
+                ready = function () {
+                    refresh(data, cb);
+                };
+                return;
+            }
+            sframeChan.query('Q_COMMAND', data, function (err, obj) {
+                cb(obj);
+            }, {raw: true});
+        };
         return {
             refresh: refresh
         };

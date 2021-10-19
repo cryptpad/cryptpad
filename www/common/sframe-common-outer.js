@@ -72,6 +72,7 @@ define([
         var SFrameChannel;
         var sframeChan;
         var SecureIframe;
+        var UnsafeIframe;
         var OOIframe;
         var Messaging;
         var Notifier;
@@ -99,6 +100,7 @@ define([
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
                 '/secureiframe/main.js',
+                '/unsafeiframe/main.js',
                 '/common/onlyoffice/ooiframe.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
@@ -114,7 +116,7 @@ define([
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
+            _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -122,6 +124,7 @@ define([
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 SecureIframe = _SecureIframe;
+                UnsafeIframe = _UnsafeIframe;
                 OOIframe = _OOIframe;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
@@ -1502,6 +1505,26 @@ define([
             sframeChan.on('EV_SHARE_OPEN', function (data) {
                 initSecureModal('share', data || {});
             });
+
+            // Unsafe iframe
+            var UnsafeObject = {};
+            Utils.initUnsafeIframe = function (cfg, cb) {
+                if (!UnsafeObject.$iframe) {
+                    var config = {};
+                    config.addCommonRpc = addCommonRpc;
+                    config.modules = {
+                        Cryptpad: Cryptpad,
+                        SFrameChannel: SFrameChannel,
+                        Utils: Utils
+                    };
+                    UnsafeObject.$iframe = $('<iframe>', {id: 'sbox-unsafe-iframe'}).appendTo($('body')).hide();
+                    UnsafeObject.modal = UnsafeIframe.create(config);
+                }
+                UnsafeObject.modal.refresh(cfg, function (data) {
+                    console.error(data);
+                    cb(data);
+                });
+            };
 
             // OO iframe
             var OOIframeObject = {};

@@ -145,16 +145,9 @@ define([
             });
 
             // X2T
-            var x2t;
-            var onConvert = function (obj, cb) {
-                x2t.convert(obj, cb);
-            };
             sframeChan.on('Q_OO_CONVERT', function (obj, cb) {
-                if (x2t) { return void onConvert(obj, cb); }
-                require(['/common/outer/x2t.js'], function (X2T) {
-                    x2t = X2T.start();
-                    onConvert(obj, cb);
-                });
+                obj.modal = 'x2t';
+                Utils.initUnsafeIframe(obj, cb);
             });
 
 
