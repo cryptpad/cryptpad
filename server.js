@@ -80,7 +80,7 @@ var setHeaders = (function () {
     if (typeof(config.padContentSecurity) === 'string') {
         padHeaders['Content-Security-Policy'] = config.padContentSecurity;
     } else {
-        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(Env.httpUnsafeOrigin);
+        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
@@ -110,6 +110,7 @@ var setHeaders = (function () {
             const h = [
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/(sheet|presentation|doc)\/inner\.html.*/,
+                    /^\/unsafeiframe\/inner\.html.*$/,
                 ].some((regex) => {
                     return regex.test(req.url);
                 }) ? padHeaders : headers;
