@@ -58,8 +58,8 @@ define([
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
     };
 
-    var CHECKPOINT_INTERVAL = 20; // XXX
-    var FORCE_CHECKPOINT_INTERVAL = 50; // XXX
+    var CHECKPOINT_INTERVAL = 100;
+    var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 4; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;

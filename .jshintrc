@@ -12,6 +12,7 @@
     "unused": true,
     "futurehostile":true,
     "browser": true,
+    "esversion": 6,
     "predef": [
         "console",
         "define",

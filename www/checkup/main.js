@@ -685,6 +685,7 @@ define([
         });
     });
 
+/*
     assert(function (cb, msg) {
         var url = '/sheet/inner.html';
         msg.appendChild(h('span', [
@@ -703,6 +704,7 @@ define([
             cb(content === 'same-origin');
         });
     });
+*/
 
     var safariGripe = function () {
         return h('p.cp-notice-other', 'This is expected because Safari and platforms that use its engine lack commonly supported functionality.');
@@ -802,10 +804,10 @@ define([
     });
 
     [
-        'sheet',
-        'presentation',
-        'doc',
-        'convert',
+        //'sheet',
+        //'presentation',
+        //'doc',
+        //'convert',
     ].forEach(function (url) {
         assert(function (cb, msg) {
             var header = 'cross-origin-opener-policy';
@@ -830,7 +832,7 @@ define([
         });
     });
 
-    assert(function (cb, msg) { // XXX
+    assert(function (cb, msg) {
         // check that the sandbox domain is included in connect-src
         msg.appendChild(h('span', [
             "This instance's ",

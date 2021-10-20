@@ -4,8 +4,8 @@ define([
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
-    '/customize/messages.js',
-], function (nThen, ApiConfig, $, RequireConfig, Messages) {
+    //'/customize/messages.js',
+], function (nThen, ApiConfig, $, RequireConfig /*, Messages */) {
     var requireConfig = RequireConfig();
 
     var ready = false;
