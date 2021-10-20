@@ -6,10 +6,10 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-util.js',
-    '/common/common-hash.js',
-    '/common/hyperscript.js',
-    'json.sortify',
-    '/customize/messages.js',
+    //'/common/common-hash.js',
+    //'/common/hyperscript.js',
+    //'json.sortify',
+    //'/customize/messages.js',
 ], function (
     $,
     Crypto,
@@ -17,19 +17,19 @@ define([
     SFCommon,
     UI,
     UIElements,
-    Util,
+    Util /*,
     Hash,
     h,
     Sortify,
-    Messages)
+    Messages */)
 {
     var APP = window.APP = {};
 
     var andThen = function (common) {
-        var metadataMgr = common.getMetadataMgr();
+        //var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
-        var $body = $('body');
-        var displayed;
+        //var $body = $('body');
+        //var displayed;
 
         var create = {};
 

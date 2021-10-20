@@ -17,7 +17,7 @@ define([
             category = window.location.hash.slice(1);
             window.location.hash = '';
         }
-        var addRpc = function (sframeChan) {
+        var addRpc = function (sframeChan, CryptPad, Utils) {
             // X2T
             sframeChan.on('Q_OO_CONVERT', function (obj, cb) {
                 obj.modal = 'x2t';
