@@ -4839,7 +4839,7 @@ define([
                 APP.selectedFiles = paths[0].path.slice(-1);
             }
             APP.hideMenu();
-        })};
+        }); };
 
         metadataMgr.onChange(function () {
             var priv = metadataMgr.getPrivateData();
