@@ -1309,7 +1309,6 @@ define([
                         }
 
                         if (metadata && /\/(doc|presentation|sheet)\//.test(metadata.href)) {
-                            console.error(metadata); // XXX
                             hide.push('openinsheet');
                             hide.push('openindoc');
                             hide.push('openinpresentation');
