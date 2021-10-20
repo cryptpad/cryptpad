@@ -344,6 +344,10 @@ define([
         };
 
     var createContextMenu = function (common) {
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
+
+        APP.premiumPlan = priv.plan;
         var getOpenIn = function (app) {
             var icon = AppConfig.applicationsIcon[app];
             var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
@@ -4353,10 +4357,6 @@ define([
             Access.getAccessModal(common, opts, cb);
         };
 
-        if (!APP.loggedIn) {
-            $contextMenu.find('.cp-app-drive-context-delete').attr('data-icon', faDelete)
-                .html($contextMenu.find('.cp-app-drive-context-remove').html());
-        }
         var deleteOwnedPaths = function (paths, pathsList) {
             pathsList = pathsList || [];
             if (paths) {
@@ -4421,7 +4421,7 @@ define([
             openIn(app, path, APP.team, _simpleData);
         };
 
-        $contextMenu.on("click", "a", function(e) {
+        var addContextEvent = function () { $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $contextMenu.data('paths');
             var pathsList = [];
@@ -4840,7 +4840,21 @@ define([
                 APP.selectedFiles = paths[0].path.slice(-1);
             }
             APP.hideMenu();
+        })};
+
+        metadataMgr.onChange(function () {
+            var priv = metadataMgr.getPrivateData();
+            if (priv.plan !== APP.premiumPlan) {
+                $contextMenu.remove();
+                $contextMenu = createContextMenu(common).appendTo($appContainer);
+                if (!APP.loggedIn) {
+                    $contextMenu.find('.cp-app-drive-context-delete').attr('data-icon', faDelete)
+                        .html($contextMenu.find('.cp-app-drive-context-remove').html());
+                }
+                addContextEvent();
+            }
         });
+
 
         // Chrome considers the double-click means "select all" in the window
         $content.on('mousedown', function (e) {

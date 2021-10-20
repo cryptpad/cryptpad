@@ -657,7 +657,7 @@ define([
                     accountName: proxy.login_name || '',
                     offline: store.proxy && store.offline,
                     teams: teams,
-                    plan: account.plan,
+                    plan: store.ready ? (account.plan || '') : undefined,
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
