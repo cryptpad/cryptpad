@@ -32,8 +32,16 @@ define([
             var done = waitFor();
             var onMsg = function (msg) {
                 if (!msg || !msg.data) { return; }
-                var data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
-                if (data.q !== 'READY') { return; }
+                var data;
+                try {
+                    data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
+                } catch (err) {
+                    console.error(err);
+                    console.info(msg);
+                    return;
+                }
+
+                if (!data || data.q !== 'READY') { return; }
                 window.removeEventListener('message', onMsg);
                 var _done = done;
                 done = function () { };
