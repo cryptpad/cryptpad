@@ -1,3 +1,94 @@
+# 4.12.0
+
+## Goals
+
+Our primary goal for this release was to improve support for office file formats in CryptPad by
+
+1. integrating OnlyOffice's word processor and presentation editor and
+2. introducing more intuitive workflows that allow users to convert and open uploaded office files directly from their drives
+
+## Update notes
+
+This release requires configuration changes to work correctly. We've updated our example NGINX config file to apply the required HTTP headers where appropriate.
+
+You can compare the updated example against that of a previous CryptPad version by running something like `git diff -U2 4.11.0 docs/` to generate a diff:
+
+```diff
+diff --git a/docs/example.nginx.conf b/docs/example.nginx.conf
+index 14a3d4fc2..ea21e3ba7 100644
+--- a/docs/example.nginx.conf
++++ b/docs/example.nginx.conf
+@@ -65,5 +65,5 @@ server {
+ 
+     set $coop '';
+-    if ($uri ~ ^\/(sheet|presentation|doc|convert)\/.*$) { set $coop 'same-origin'; }
++    #if ($uri ~ ^\/(sheet|presentation|doc|convert)\/.*$) { set $coop 'same-origin'; }
+ 
+     # Enable SharedArrayBuffer in Firefox (for .xlsx export)
+@@ -91,5 +91,5 @@ server {
+ 
+     # connect-src restricts URLs which can be loaded using script interfaces
+-    set $connectSrc "'self' https://${main_domain} ${main_domain} https://${api_domain} blob: wss://${api_domain} ${api_domain} ${files_domain}";
++    set $connectSrc "'self' https://${main_domain} ${main_domain} https://${api_domain} blob: wss://${api_domain} ${api_domain} ${files_domain} https://${sandbox_domain}";
+ 
+     # fonts can be loaded from data-URLs or the main domain
+@@ -121,8 +121,13 @@ server {
+     # they unfortunately still require exceptions to the sandboxing to work correctly.
+     if ($uri ~ ^\/(sheet|doc|presentation)\/inner.html.*$) { set $unsafe 1; }
+-    if ($uri ~ ^\/common\/onlyoffice\/.*\/index\.html.*$) { set $unsafe 1; }
++    if ($uri ~ ^\/common\/onlyoffice\/.*\/.*\.html.*$) { set $unsafe 1; }
+ 
+     # everything except the sandbox domain is a privileged scope, as they might be used to handle keys
+     if ($host != $sandbox_domain) { set $unsafe 0; }
++    # this iframe is an exception. Office file formats are converted outside of the sandboxed scope
++    # because of bugs in Chromium-based browsers that incorrectly ignore headers that are supposed to enable
++    # the use of some modern APIs that we require when javascript is run in a cross-origin context.
++    # We've applied other sandboxing techniques to mitigate the risk of running WebAssembly in this privileged scope
++    if ($uri ~ ^\/unsafeiframe\/inner\.html.*$) { set $unsafe 1; }
+ 
+     # privileged contexts allow a few more rights than unprivileged contexts, though limits are still applied
+```
+
+We've also updated the checkup page to test for the expected server behaviour and suggest helpful steps for correcting misconfiguration issues. You can access this diagnostic page at `https://<your-cryptpad-domain>/checkup/`.
+
+Our team has limited resources, so we've chosen to introduce the new (and **experimental**) office editors gradually to avoid getting overwhelmed by support tickets as was the case when we introduced the current spreadsheet editor in 2019. In order to support this we've implemented an **early access** system which _optionally_ restricts the use of these editors to premium subscribers. We will enable this system on CryptPad.fr, but admins of independent instances can enable them at their discretion.
+
+To enable the use of the OnlyOffice Document and Presentation editor for everyone on your instance, edit your [customize/application_config.js](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config) file to include `AppConfig.enableEarlyAccess = true;`.
+
+If you wish to avoid a rush of support tickets from your users by limiting early access to users with custom quota increases, add another line like so `Constants.earlyAccessApps = ['doc', 'presentation'];`.
+
+As these editors become more stable we plan to enable them by default on third-party instances. Keep in mind, these editors may be unstable and users may lose their work. Our team will fix bugs given sufficient information to reproduce them, but we will not take the time to help you recover lost data unless you have taken a support contract with us.
+
+To update from 4.11.0 to 4.12.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Apply the recommended changes to your NGINX config (don't forget to **reload NGINX**)
+  * optionally edit your `application_config.js` file to enable early access apps. restart your server or use the admin panel's _Flush cache_ button for this to take effect.
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+6. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
+
+## Features
+
+* It took a lot of experimentation, reading of specification documents, and reverse-engineering of undocumented workarounds to avoid browser-specific regressions, but we've gotten our client-side engine for office file format conversion to work as intended in the context of user or team drives. This means that as long as you are using a relatively modern browser (not Safari or anything on iOS) you should be able to do things like:
+  * right-click and open uploaded XLSX or ODS files in our OnlyOffice Sheet integration,
+  * implicitly convert editable sheets to XLSX individually (using the _download_ option) or as part of a collection when you download your full drive or one of its subtrees,
+  * perform similar workflows with DOCX, ODT, PPT, and ODP files.
+* As mentioned above, admins that enable _early access_ editors will be able try out the word processor and presentation editor. These editors use OnlyOffice _client-side_ components, but have had their server-side components completely replaced, just as with our Sheet integration. Nobody else has packaged OnlyOffice's editors in this manner, so this is **experimental technology** and we recommend that you **back up your documents regularly**!
+* The form app now includes an option to open collected results in a new spreadsheet for advanced analysis.
+
+## Bug fixes
+
+* We finally tracked down a sneaky bug that was responsible for scrambling users' spreadsheets. The issue was triggered when they were disconnected and reconnected after editing the sheet by themself, usually for an extended period. A bug in the reconnection logic caused their earlier changes to the sheet to be replayed a second time, typically to disastrous effect if they had inserted rows in the meantime. A minor patch guards against this possibility, making sheets (and the newer office editors) far more stable.
+* We noticed that the OnlyOffice editors' _print to PDF_ functionality behaved differently depending on the user's preferences for downloads and file-type handling. In some cases the resulting PDF would be opened in an invisible iframe. In addition to the intentional download prompt we meant to trigger, some users would be implicitly shown a second prompt to download the contents of the iframe. We suppressed the creation of the hidden iframe and now download the generated PDF directly using a single, more modern method.
+* It was reported that responses to conditional sections of forms were not included in their results. Our patch has been tested in production and has been verified to correct the issue.
+* The recently introduced file upload preview was capable of throwing an error under certain circumstances when previewing text files, which prevented them from being uploaded. We now guard against these errors and fall back to _no preview_.
+* The chat box in pads failed to load for guests using the _no-drive_ mode which we introduced as an optimization to reduce load time for one-time visitors. An attempt to access a data structure that did not exist caused a type error, which resulted in the chat interface appearing to load indefinitely.
+* Loading a shared folder by its link now causes it to be displayed in the context of your drive, rather than loading it in the background but displaying your last accessed folder instead.
+* We now guard against _DOMException_ errors whenever we try to write data into localStorage, as this is capable of triggering a _QuotaExceeded_ error which we has been observed to occur more frequently lately.
+* When attempting to use an editor's _Insert_ menu to embed uploaded media in a document, we now wait until all thumbnails are loaded before displaying the menu. This is intended to avoid circumstances where the user attempts to click the menu's _upload_ button but accidentally chooses a previously uploaded media file when the position of the button changes.
+
 # 4.11.0
 
 ## Goals

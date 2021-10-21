@@ -4841,6 +4841,7 @@ define([
             APP.hideMenu();
         }); };
 
+        addContextEvent();
         metadataMgr.onChange(function () {
             var priv = metadataMgr.getPrivateData();
             if (priv.plan !== APP.premiumPlan) {
