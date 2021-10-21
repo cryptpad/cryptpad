@@ -993,7 +993,7 @@ define([
                 text: Messages.form_description_default
             },
             get: function (opts) {
-                if (!opts) { opts = STATIC_TYPES.md.defaultOpts; }
+                if (!opts) { opts = Util.clone(STATIC_TYPES.md.defaultOpts); }
                 var tag = h('div', {
                     id: 'form'+Util.uid()
                 }, opts.text);
@@ -1125,7 +1125,7 @@ define([
                 }
 
                 var block = data.block;
-                if (!opts) { opts = block.opts = STATIC_TYPES.section.defaultOpts; }
+                if (!opts) { opts = block.opts = Util.clone(STATIC_TYPES.section.defaultOpts); }
                 var content = data.content;
                 var uid = data.uid;
                 var form = content.form;
@@ -1148,11 +1148,11 @@ define([
                         var val;
                         if (type === 'radio') {
                             val = block.opts ? block.opts.values
-                                             : APP.TYPES.radio.defaultOpts.values;
+                                             : Util.clone(APP.TYPES.radio.defaultOpts.values);
                         }
                         if (type === 'checkbox') {
                             val = block.opts ? block.opts.values
-                                             : APP.TYPES.checkbox.defaultOpts.values;
+                                             : Util.clone(APP.TYPES.checkbox.defaultOpts.values);
                         }
                         obj.values = extractValues(val);
                         return obj;
@@ -1590,7 +1590,7 @@ define([
                 type: 'text'
             },
             get: function (opts, a, n, evOnChange) {
-                if (!opts) { opts = TYPES.input.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.input.defaultOpts); }
                 // Messages.form_input_ph_email.form_input_ph_url
                 var tag = h('input', {
                     type: opts.type,
@@ -1659,7 +1659,7 @@ define([
                 maxLength: 1000
             },
             get: function (opts, a, n, evOnChange) {
-                if (!opts || typeof(opts.maxLength) === "undefined") { opts = TYPES.textarea.defaultOpts; }
+                if (!opts || typeof(opts.maxLength) === "undefined") { opts = Util.clone(TYPES.textarea.defaultOpts); }
                 var text = h('textarea', {maxlength: opts.maxLength});
                 var $text = $(text);
                 var charCount = h('div.cp-form-type-textarea-charcount');
@@ -1737,7 +1737,7 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 var isDefaultOpts = !opts;
-                if (!opts) { opts = TYPES.radio.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.radio.defaultOpts); }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
                 var els = extractValues(opts.values).map(function (data, i) {
@@ -1794,7 +1794,7 @@ define([
                 var empty = 0;
                 var count = {};
 
-                var opts = form[uid].opts || TYPES.radio.defaultOpts;
+                var opts = form[uid].opts || Util.clone(TYPES.radio.defaultOpts);
                 extractValues(opts.values).forEach(function (v) { count[v] = 0; });
 
                 Object.keys(answers).forEach(function (author) {
@@ -1828,7 +1828,7 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 var isDefaultOpts = !opts;
-                if (!opts) { opts = TYPES.multiradio.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.multiradio.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
                     var name = itemData.uid;
@@ -1903,7 +1903,7 @@ define([
                 // results multiradio
                 var structure = form[uid];
                 if (!structure) { return; }
-                var opts = structure.opts || TYPES.multiradio.defaultOpts;
+                var opts = structure.opts || Util.clone(TYPES.multiradio.defaultOpts);
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -1975,7 +1975,7 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 var isDefaultOpts = !opts;
-                if (!opts) { opts = TYPES.checkbox.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.checkbox.defaultOpts); }
                 if (!Array.isArray(opts.values)) { return; }
                 var name = Util.uid();
                 var els = extractValues(opts.values).map(function (data, i) {
@@ -2052,7 +2052,7 @@ define([
                 var empty = 0;
                 var count = {};
 
-                var opts = form[uid].opts || TYPES.checkbox.defaultOpts;
+                var opts = form[uid].opts || Util.clone(TYPES.checkbox.defaultOpts);
                 extractValues(opts.values || []).forEach(function (v) { count[v] = 0; });
 
                 var showBars = Boolean(content);
@@ -2090,7 +2090,7 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 var isDefaultOpts = !opts;
-                if (!opts) { opts = TYPES.multicheck.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.multicheck.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
                     var name = itemData.uid;
@@ -2184,7 +2184,7 @@ define([
                 // results multicheckbox
                 var structure = form[uid];
                 if (!structure) { return; }
-                var opts = structure.opts || TYPES.multicheck.defaultOpts;
+                var opts = structure.opts || Util.clone(TYPES.multicheck.defaultOpts);
                 var results = [];
                 var empty = 0;
                 var count = {};
@@ -2265,7 +2265,7 @@ define([
             },
             get: function (opts, a, n, evOnChange) {
                 var isDefaultOpts = !opts;
-                if (!opts) { opts = TYPES.sort.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.sort.defaultOpts); }
                 if (!Array.isArray(opts.values)) { return; }
                 var map = {};
                 var invMap = {};
@@ -2359,7 +2359,7 @@ define([
             },
             printResults: function (answers, uid, form, content) {
                 // results sort
-                var opts = form[uid].opts || TYPES.sort.defaultOpts;
+                var opts = form[uid].opts || Util.clone(TYPES.sort.defaultOpts);
                 var l = (opts.values || []).length;
                 var empty = 0;
                 var count = {};
@@ -2393,7 +2393,7 @@ define([
             },
             get: function (opts, answers, username, evOnChange) {
                 var isDefaultOpts = !opts;
-                if (!opts) { opts = TYPES.poll.defaultOpts; }
+                if (!opts) { opts = Util.clone(TYPES.poll.defaultOpts); }
                 if (!Array.isArray(opts.values)) { return; }
 
                 if (APP.isEditor) { answers = {}; }
@@ -2488,7 +2488,7 @@ define([
 
             },
             printResults: function (answers, uid, form, content) {
-                var opts = form[uid].opts || TYPES.poll.defaultOpts;
+                var opts = form[uid].opts || Util.clone(TYPES.poll.defaultOpts);
                 var _answers = getBlockAnswers(answers, uid);
 
                 // If content is defined, we'll be able to click on a row to display
@@ -2504,7 +2504,7 @@ define([
                 return h('div.cp-form-type-poll', lines);
             },
             exportCSV: function (answer, form) {
-                var opts = form.opts || TYPES.poll.defaultOpts;
+                var opts = form.opts || Util.clone(TYPES.poll.defaultOpts);
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
                     var cols = extractValues(opts.values).map(function (key) {
@@ -3470,7 +3470,7 @@ define([
             // Required radio displayed only for types that have an "isEmpty" function
             var requiredDiv;
             if (APP.isEditor && !isStatic && data.isEmpty) {
-                if (!block.opts) { block.opts = TYPES[type].defaultOpts; }
+                if (!block.opts) { block.opts = Util.clone(TYPES[type].defaultOpts); }
                 var isRequired = Boolean(block.opts.required);
                 var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on',
                         Messages.form_required_on, isRequired, {
