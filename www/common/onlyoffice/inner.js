@@ -506,6 +506,19 @@ define([
             }
             myUniqueOOId = undefined;
             setMyId();
+            var editor = getEditor();
+            if (editor) {
+                var app = common.getMetadataMgr().getPrivateData().ooType;
+                var d;
+                if (app === 'doc') {
+                    d = editor.GetDocument().Document;
+                } else if (app === 'presentation') {
+                    d = editor.GetPresentation().Presentation;
+                }
+                if (d) {
+                    APP.oldCursor = d.GetSelectionState();
+                }
+            }
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
@@ -1712,6 +1725,21 @@ define([
                                 if (lang === "fr") { lang = 'fr-fr'; }
                                 var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
                                 getEditor().asc_setDefaultLanguage(l);
+                            }
+
+                            if (APP.oldCursor) {
+                                var app = common.getMetadataMgr().getPrivateData().ooType;
+                                var d;
+                                if (app === 'doc') {
+                                    d = getEditor().GetDocument().Document;
+                                } else if (app === 'presentation') {
+                                    d = getEditor().GetPresentation().Presentation;
+                                }
+                                if (d) {
+                                    d.SetSelectionState(APP.oldCursor);
+                                    d.UpdateSelection();
+                                }
+                                delete APP.oldCursor;
                             }
                         }
                         delete APP.startNew;
