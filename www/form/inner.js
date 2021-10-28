@@ -90,7 +90,7 @@ define([
     // multi-line radio, checkboxes, and possibly other things have a max number of items
     // we'll consider increasing this restriction if people are unhappy with it
     // but as a general rule we expect users will appreciate having simpler questions
-    var MAX_OPTIONS = 15;
+    var MAX_OPTIONS = 25;
     var MAX_ITEMS = 10;
 
     var getOptionValue = function (obj) {
