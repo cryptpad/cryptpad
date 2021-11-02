@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>XLOOKUP Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>XLOOKUP Function</h1>
+			<p>The <b>XLOOKUP</b> function is one of the lookup and reference functions. It is used to perform the search for a specific item by row both horizontally and vertically. The result is returned in another column and can accommodate two-dimensional datasets.</p>
+			<p>The <b>XLOOKUP</b> function syntax is:</p>
+			<p style="text-indent: 150px;"><b><em>XLOOKUP (lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])</em></b></p>
+			<p><em>where</em></p>
+			<p style="text-indent: 50px;"><b><em>lookup_value</em></b> is a value to search for.</p>
+			<p style="text-indent: 50px;"><b><em>lookup_array</em></b> is an array or range to search in.</p>
+			<p style="text-indent: 50px;"><b><em>return_array</em></b> is an array or range to return the results to.</p>
+			<p style="text-indent: 50px;"><b><em>if_not_found</em></b> is an optional argument. If there is no search result, the argument returns the text stated in [if_not_found]. In case the text is not specified, the “N/A” is returned.</p>
+			<p style="text-indent: 50px;"><b><em>match_mode</em></b> is an optional argument. The following values are available: 
+			<ul>
+				<li><b><em>0</em></b> (set by default) returns the exact match; if there is no match, the “N/A” is returned instead.</li>
+				<li><b><em>-1</em></b> returns the exact match; if there is none, the next smaller item is returned.</li>
+				<li><b><em>1</em></b> returns the exact match; if there is none, the next larger item is returned.</li>
+				<li><b><em>2</em></b> is a wildcard match.</li>
+				</ul>
+			</p>
+			<p style="text-indent: 50px;"><b><em>search_mode</em></b> is an optional argument. The following values are available:
+			<ul>
+				<li><b><em>1</em></b> starts a search at the first item (set by default).</li>
+				<li><b><em>-1</em></b> starts a reverse search, i.e. at the last item.</li>
+				<li><b><em>2</em></b> starts a binary search with the <b><em>lookup_array</em></b> sorted in ascending order. If not sorted, invalid results will be returned.</li>
+				<li><b><em>-2</em></b> starts a binary search with the <b><em>lookup_array</em></b> sorted in descending order. If not sorted, invalid results will be returned.</li>	
+			</ul>
+			</p>
+			<p class="note">
+				Wildcard characters include the question mark (?) that matches a single character and the asterisk (*) that matches multiple characters. If you want to find a question mark or asterisk, type a tilde (~) before the character.
+			</p>
+			<p>To apply the <b>XLOOKUP</b> function,</p>
+			<ol>
+				<li>select the cell where you wish to display the result,</li>
+				<li>
+					click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+					<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+					<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+				</li>
+				<li>select the <b>Lookup and Reference</b> function group from the list,</li>
+				<li>click the <b>XLOOKUP</b> function,</li>
+				<li>enter the required arguments in the <b>Function Arguments</b> window,</li>
+				<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="XLOOKUP Function" src="../images/xlookup.png" /></p>
+		</div>
+	</body>
+</html>

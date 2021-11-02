@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formeln in Tabellen verwenden</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Fügen Sie Formeln in Tabellenzellen ein, um einfache Berechnungen der Daten durchzuführen" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Formeln in Tabellen verwenden</h1>
+            <h3>Fügen Sie eine Formel ein</h3>
+            <p>Im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> sie können einfache Berechnungen für Daten in Tabellenzellen durchführen, indem Sie Formeln hinzufügen. So fügen Sie eine Formel in eine Tabellenzelle ein:</p>
+			<ol>
+				<li>Platzieren Sie den Zeiger in der Zelle, in der Sie das Ergebnis anzeigen möchten.</li>
+                <li>Klicken Sie in der rechten Seitenleiste auf die Schaltfläche <b>Formel hinzufügen</b>.</li>
+				<li>Geben Sie im sich öffnenden Fenster <b>Formeleinstellungen</b> die erforderliche Formel in das Feld <b>Formel</b> ein.<p>Sie können eine benötigte Formel manuell eingeben, indem Sie die allgemeinen mathematischen Operatoren (+, -, *, /) verwenden, z. B. <em> =A1*B2</em> oder verwenden Sie die Dropdown-Liste <b>Funktion einfügen</b>, um eine der eingebetteten Funktionen auszuwählen, z. B. <em>=PRODUKT (A1, B2)</em>.</p>
+                <p><img alt="Formel einfügen" src="../images/formula_settings.png" /></p>					
+				</li>
+                <li>Geben Sie die erforderlichen Argumente manuell in den Klammern im Feld <b>Formel</b> an. Wenn die Funktion mehrere Argumente erfordert, müssen diese durch Kommas getrennt werden.</li>
+                <li>Verwenden Sie die Dropdown-Liste <b>Zahlenformat</b>, wenn Sie das Ergebnis in einem bestimmten Zahlenformat anzeigen möchten.</li>
+                <li><b>OK</b> klicken.</li>
+			</ol>
+            <p>Das Ergebnis wird in der ausgewählten Zelle angezeigt.</p>
+            <p>Um die hinzugefügte Formel zu bearbeiten, wählen Sie das Ergebnis in der Zelle aus und klicken Sie auf die Schaltfläche <b>Formel hinzufügen</b> in der rechten Seitenleiste, nehmen Sie die erforderlichen Änderungen im Fenster <b>Formeleinstellungen</b> vor und klicken Sie auf <b>OK</b>.</p>
+            <hr />
+            <h3>Verweise auf Zellen hinzufügen</h3>
+            <p>Mit den folgenden Argumenten können Sie schnell Verweise auf Zellbereiche hinzufügen:</p>
+            <ul>
+                <li><b>OBEN</b> - Ein Verweis auf alle Zellen in der Spalte über der ausgewählten Zelle</li>
+                <li><b>LINKS</b> - Ein Verweis auf alle Zellen in der Zeile links von der ausgewählten Zelle</li>
+                <li><b>UNTEN</b> - Ein Verweis auf alle Zellen in der Spalte unter der ausgewählten Zelle</li>
+                <li><b>RECHTS</b> - Ein Verweis auf alle Zellen in der Zeile rechts von der ausgewählten Zelle</li>
+            </ul>
+            <p>Diese Argumente können mit Funktionen AVERAGE, COUNT, MAX, MIN, PRODUCT und SUM (MITTELWERT, ANZAHL, MAX, MIN, PRODUKT, SUMME) verwendet werden.</p>
+            <p>Sie können auch manuell Verweise auf eine bestimmte Zelle (z. B. <em>A1</em>) oder einen Zellbereich (z. B. <em>A1: B3</em>) eingeben.</p>
+            <h3>Verwenden Sie Lesezeichen</h3>
+            <p>Wenn Sie bestimmten Zellen in Ihrer Tabelle <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">Lesezeichen</a> hinzugefügt haben, können Sie diese Lesezeichen als Argumente bei der Eingabe von Formeln verwenden.</p>
+            <p>Platzieren Sie im Fenster Formeleinstellungen den Mauszeiger in den Klammern im Eingabefeld <b>Formel</b>, in dem das Argument hinzugefügt werden soll, und wählen Sie in der Dropdown-Liste <b>Lesezeichen einfügen</b> eines der zuvor hinzugefügten Lesezeichen aus.</p>
+            <h3>Formelergebnisse aktualisieren</h3>
+            <p>Wenn Sie einige Werte in den Tabellenzellen ändern, müssen Sie die Formelergebnisse manuell aktualisieren:</p>
+            <ul>
+                <li>Um ein einzelnes Formelergebnis zu aktualisieren, wählen Sie das gewünschte Ergebnis aus und drücken Sie <b>F9</b> oder klicken Sie mit der rechten Maustaste auf das Ergebnis und verwenden Sie die Option <b>Feld aktualisieren</b> im Menü.</li>
+                <li>Um mehrere Formelergebnisse zu aktualisieren, wählen Sie die erforderlichen Zellen oder die gesamte Tabelle aus und drücken Sie <b>F9</b>.</li>
+            </ul>
+            <hr />
+            <h3>Eingebettete Funktionen</h3>
+            <p>Sie können die folgenden mathematischen, statistischen und logischen Standardfunktionen verwenden:</p>
+            <table>
+                <tr>
+                    <td width="20%"><b>Kategorie</b></td>
+                    <td width="20%"><b>Funktion</b></td>
+                    <td width="35%"><b>Beschreibung</b></td>
+                    <td width="25%"><b>Beispiel</b></td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>ABS(x)</td>
+                    <td>Mit dieser Funktion wird der Absolutwert einer Zahl zurückgegeben.</td>
+                    <td>=ABS(-10)<br />Rückgabe 10</td>
+                </tr>
+                <tr>
+                    <td>Logisches</td>
+                    <td>AND(logisch1, logisch2, ...) (UND)</td>
+                    <td>Mit dieser Funktion wird überprüft, ob der von Ihnen eingegebene logische Wert WAHR oder FALSCH ist. Die Funktion gibt 1 (WAHR) zurück, wenn alle Argumente WAHR sind.</td>
+                    <td>=AND (1&gt;0,1&gt;3)<br />Rückgabe 0</td>
+                </tr>
+                <tr>
+                    <td>Statistisches</td>
+                    <td>AVERAGE (MITTELWERT) (Argumentliste)</td>
+                    <td> Mit dieser Funktion wird der Datenbereich analysiert und der Durchschnittswert ermittelt.</td>
+                    <td>=AVERAGE (4,10)<br />Rückgabe 7</td>
+                </tr>
+                <tr>
+                    <td>Statistisches</td>
+                    <td>COUNT (ANZAHL) (Argumentliste)</td>
+                    <td>Mit dieser Funktion wird die Anzahl der ausgewählten Zellen gezählt, die Zahlen enthalten, wobei leere Zellen oder den Text ignorieren werden.</td>
+                    <td>=COUNT(A1: B3)<br />Rückgabe 6</td>
+                </tr>
+                <tr>
+                    <td>Logisches</td>
+                    <td>DEFINED () (DEFINIERT)</td>
+                    <td>Die Funktion wertet aus, ob ein Wert in der Zelle definiert ist. Die Funktion gibt 1 zurück, wenn der Wert fehlerfrei definiert und berechnet wurde, und 0, wenn der Wert nicht fehlerhaft definiert oder berechnet wurde.</td>
+                    <td>=DEFINED(A1)</td>
+                </tr>
+                <tr>
+                    <td>Logisches</td>
+                    <td>FALSE () (FALSCH) </td>
+                    <td>Die Funktion gibt 0 (FALSCH) zurück und benötigt kein Argument.</td>
+                    <td>=FALSE<br />Rückgabe 0</td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>INT (x) (GANZZAHL)</td>
+                    <td>Mit dieser Funktion wird der ganzzahlige Teil der angegebenen Zahl analysiert und zurückgegeben.</td>
+                    <td>=INT(2,5)<br />Rückgabe 2</td>
+                </tr>
+                <tr>
+                    <td>Statistisches</td>
+                    <td>MAX (Nummer1, Nummer2, ...)</td>
+                    <td>Mit dieser Funktion wird der Datenbereich analysiert und die größte Anzahl ermittelt.</td>
+                    <td>=MAX(15,18,6)<br />Rückgabe 18</td>
+                </tr>
+                <tr>
+                    <td>Statistisches</td>
+                    <td>MIN(Nummer1, Nummer2,...)</td>
+                    <td>Mit dieser Funktion wird der Datenbereich analysiert und die kleinste Nummer ermittelt.</td>
+                    <td>=MIN(15,18,6)<br />Rückgabe 6</td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>MOD (x, y) (REST)</td>
+                    <td>Mit dieser Funktion wird der Rest nach der Division einer Zahl durch den angegebenen Divisor zurückgegeben.</td>
+                    <td>=MOD (6,3)<br />Rückgabe 0</td>
+                </tr>
+                <tr>
+                    <td>Logisches</td>
+                    <td>NOT (NICHT) (logisch)</td>
+                    <td>Mit dieser Funktion wird überprüft, ob der von Ihnen eingegebene logische Wert WAHR oder FALSCH ist. Die Funktion gibt 1 (WAHR) zurück, wenn das Argument FALSCH ist, und 0 (FALSCH), wenn das Argument WAHR ist.</td>
+                    <td>=NOT(2&lt;5)<br />Rückgabe 0</td>
+                </tr>
+                <tr>
+                    <td>Logisches</td>
+                    <td>ODER OR(logisch1, logisch2, ...) (ODER)</td>
+                    <td>Mit dieser Funktion wird überprüft, ob der von Ihnen eingegebene logische Wert WAHR oder FALSCH ist. Die Funktion gibt 0 (FALSCH) zurück, wenn alle Argumente FALSCH sind.</td>
+                    <td>=OR(1&gt;0,1&gt;3)<br />Rückgabe 1</td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>PRODUCT (PRODUKT) (Argumentliste)</td>
+                    <td> Mit dieser Funktion werden alle Zahlen im ausgewählten Zellbereich multipliziert und das Produkt zurückgegeben.</td>
+                    <td>=PRODUKT(2,5)<br />Rückgabe 10</td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>ROUND(x, num_digits) (RUNDEN) </td>
+                    <td>Mit dieser Funktion wird die Zahl auf die gewünschte Anzahl von Stellen gerundet.</td>
+                    <td>=ROUND(2,25,1)<br />Rückgabe 2.3</td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>SIGN(x) (VORZEICHEN)</td>
+                    <td>Mit dieser Funktion wird das Vorzeichen einer Zahl zurückgegeben. Wenn die Zahl positiv ist, gibt die Funktion <b>1</b> zurück. Wenn die Zahl negativ ist, gibt die Funktion <b>-1</b> zurück. Wenn die Zahl <b>0</b> ist, gibt die Funktion <b>0</b> zurück.</td>
+                    <td>SIGN(-12)<br />Rückgabe -1</td>
+                </tr>
+                <tr>
+                    <td>Mathematisches</td>
+                    <td>SUM (SUMME) (Argumentliste)</td>
+                    <td>Mit dieser Funktion werden alle Zahlen im ausgewählten Zellenbereich addiert und das Ergebnis zurückgegeben.</td>
+                    <td>=SUM(5,3,2)<br />Rückgabe 10</td>
+                </tr>
+                <tr>
+                    <td>Logisches</td>
+                    <td>TRUE() (WAHR)</td>
+                    <td>Die Funktion gibt 1 (WAHR) zurück und benötigt kein Argument.</td>
+                    <td>=TRUE<br />gibt 1 zurück</td>
+                </tr>
+            </table>             
+		</div>
+	</body>
+</html>

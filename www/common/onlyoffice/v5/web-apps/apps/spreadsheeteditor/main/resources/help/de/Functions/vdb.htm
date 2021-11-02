@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>VDB-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>VDB-Funktion</h1>
+            <p>Die Funktion <b>VDB</b> gehört zur Gruppe der Finanzmathematischen Funktionen. Sie gibt die degressive Abschreibung eines Wirtschaftsguts für eine bestimmte Periode oder Teilperiode zurück.</p>
+            <p>Die Formelsyntax der Funktion <b>VDB</b> ist:</p>
+            <p style="text-indent: 150px;"><b><em>VDB(Ansch_Wert;Restwert;Nutzungsdauer;Anfang;Ende;[Faktor];[Nicht_wechseln])</em></b></p>
+            <p><em>Dabei gilt:</em></p>
+            <p style="text-indent: 50px;"><b><em>Ansch_Wert</em></b> sind die Anschaffungskosten des Anlageguts.</p>
+            <p style="text-indent: 50px;"><b><em>Restwert</em></b> ist der Restwert, den das Anlagegut am Ende der Nutzungsdauer hat.</p>
+            <p style="text-indent: 50px;"><b><em>Nutzungsdauer</em></b> ist die Anzahl der Perioden, über die das Wirtschaftsgut abgeschrieben wird.</p>
+            <p style="text-indent: 50px;"><b><em>Anfang</em></b> ist der Anfangszeitraum, für den Sie die Abschreibung berechnen möchten. Der Wert muss in derselben Zeiteinheit vorliegen wie <em>Nutzungsdauer</em>.</p>
+            <p style="text-indent: 50px;"><b><em>Ende</em></b> ist der Endzeitraum, für den Sie die Abschreibung berechnen möchten. Der Wert muss in derselben Zeiteinheit vorliegen wie <em>Nutzungsdauer</em>.</p>
+            <p style="text-indent: 50px;"><b><em>Faktor</em></b> ist die Rate, um die der Restbuchwert abnimmt. Dieses Argument ist optional. Fehlt das Argument Faktor, nimmt die Funktion den <b><em>Faktor</em></b> 2 an.</p>
+            <p style="text-indent: 50px;"><b><em>Nicht_wechseln</em></b> ist ein optionales Argument, mit dem angegeben wird, ob zur linearen Abschreibung gewechselt werden soll, wenn der dabei berechnete Abschreibungsbetrag größer ist als der bei der geometrischen Abschreibung. Ist Nicht_wechseln mit FALSCH belegt oder nicht angegeben, verwendet die Funktion das Verfahren der linearen Abschreibung, wenn der dabei berechnete Abschreibungsbetrag größer ist als der bei der geometrischen Abschreibung. Ist Nicht_wechseln mit WAHR belegt verwendet die Funktion das verfahren der geometrischen Abschreibung.</p>
+            <p class="note"><b>Hinweis:</b> Alle Argumente müssen positive Zahlen sein.</p>
+            <p>Die Argumente werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+            <p>Anwendung der Funktion <b>VDB</b>.</p>
+            <ol>
+                <li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+                <li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+                <li>Wählen Sie die Gruppe <b>Finanzmathematische</b> Funktionen aus der Liste aus.</li>
+                <li>Klicken Sie auf die Funktion <b>VDB</b>.</li>
+                <li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+                <li>Drücken Sie die <b>Eingabetaste</b>.</li>
+            </ol>
+            <p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+            <p style="text-indent: 150px;"><img alt="VDB-Funktion" src="../images/vdb.png" /></p>
+        </div>
+	</body>
+</html>

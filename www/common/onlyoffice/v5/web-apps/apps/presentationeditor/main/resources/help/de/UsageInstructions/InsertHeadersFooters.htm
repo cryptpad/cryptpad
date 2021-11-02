@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fußzeilen einfügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Fügen Sie die Fußzeilen sowie Datum und Uhrzeit, Foliennummer ein." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Fußzeilen einfügen</h1>
+            <p>Die Fußzeilen fügen weitere Information auf den ausgegebenen Folien hin, z.B. Datum und Uhrzeit, Foliennummer oder Text.</p>
+			<p>Um eine Fußzeile einzufügen im <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a>:</p>
+			<ol>
+			<li>öffnen Sie die Registerkarte <b>Einfügen</b>,</li>
+            <li>klicken Sie die Schaltfläche <img alt="" src="../images/header_footer_icon.png" /> <b>Fußzeile bearbeiten</b> in der oberen Symbolleiste an,</li>
+            <li>das Fenster <b>Fußzeileneinstellungen</b> wird geöffnet. Markieren Sie die Kästchen mit den Daten, die Sie in die Fußzeile einfügen möchten. Die Änderungen werden im Vorschaufenster rechts angezeigt.
+                <ul>
+                    <li>
+                        markieren Sie das Kästchen <b>Datum und Uhrzeit</b>, um das Datum und die Uhrzeit im ausgewählten Format einzufügen. Das Datum wird links in der Fußzeile eingefügt.
+                        <p>Wählen Sie das gewünschte Datumsformat aus:</p>
+                        <ul>
+                            <li>
+                                <b>Automatisch aktualisieren</b> - markieren Sie das Optionsfeld, um das Datum und die Uhrzeit automatisch entsprechend dem aktuellen Datum und der aktuellen Uhrzeit zu aktualisieren.
+                                <p>Wählen Sie das gewünschte Datums- und Uhrzeit<b>format</b> und die <b>Sprache</b> aus den Listen aus.</p>
+                            </li>
+                            <li><b>Fixiert</b> - markieren Sie das Optionsfeld, um das Datum und die Uhrzeit automatisch nicht zu aktualisieren.</li>
+                        </ul>
+                    </li>
+                    <li>Markieren Sie das Kästchen <b>Foliennummer</b>, um die aktive Foliennummer einzufügen. Die Foliennummer wird rechts in der Fußzeile eingefügt.</li>
+                    <li>Markieren Sie das Kästchen <b>Text in der Fußzeile</b>, um einen Text einzufügen. Geben Sie den gewünschten Text im Feld nach unten ein. Der Text wird in der Fußzeile zentriert.</li>
+                </ul>
+                <p><img alt="Fußzeile - Einstellungen" src="../images/header_footer_settings.png" /></p>
+            </li>
+            <li>Markieren Sie gegebenenfalls das Kästchen <b>Nicht auf der Titelfolie</b> anzeigen,</li>
+            <li>Klicken Sie die Schaltfläche <b>Auf alle anwenden</b> an, um die Änderungen auf alle Folien anzuwenden, oder die Schaltfläche <b>Anwenden</b>, um die Änderungen nur für die aktive Folie anzunehmen.</li>
+			</ol>
+            <p>Um das Datum und die Uhrzeit oder die Foliennummer schnell in der Fußzeile der aktiven Folie einzufügen, verwenden Sie die Optionen <b>Foliennummer anzeigen</b> und <b>Datum und Uhrzeit anzeigen</b> im Abschnitt <b>Folieneinstellungen</b> in der rechten Randleiste. Die aktivierten Einstellungen werden nur für die aktive Folie angenommen. Das eingefügte Datum und die Uhrzeit oder die Foliennummer können Sie später im Fenster <b>Fußzeileneinstellungen</b> konfigurieren.</p>
+            <p>Um die eingefügte Fußzeile zu bearbeiten, klicken Sie die Schaltfläche <img alt="Fußzeile bearbeiten - Symbol" src="../images/header_footer_icon.png" /> <b>Fußzeile bearbeiten</b> in der oberen Symbolleiste an, konfigurieren Sie die gewünschte Einstellungen im Fenster <b>Fußzeileneinstellungen</b> und klicken Sie auf <b>Anwenden</b> oder <b>Auf alle anwenden</b>, um die Änderungen zu speichern.</p>
+            <h3>Das Datum und die Uhrzeit oder die Foliennummer im Textfeld einfügen</h3>
+            <p>Sie können das Datum und die Uhrzeit oder die Foliennummer im aktiven Textfeld durch die entsprechenden Schaltflächen auf der Registerkarte <b>Einfügen</b> in der oberen Symbolleiste einfügen.</p>
+            <h5>Das Datum und die Uhrzeit einfügen</h5>
+            <ol>
+                <li>Positionieren Sie den Mauscursor im Textfeld, wo Sie das Datum und die Uhrzeit einfügen möchten,</li>
+                <li>klicken Sie die Schaltfläche <img alt="Datum und Uhrzeit - Symbol" src="../images/date_time_icon.png" /> <b>Datum und Uhrzeit</b> auf der Registerkarte <b>Einfügen</b> in der oberen Symbolleiste an,</li>
+                <li>wählen Sie die gewünschte <b>Sprache</b> aus der Liste aus und bestimmen Sie das gewünschte <b>Format</b> für das Datum und die Uhrzeit im Fenster <b>Datum und Uhrzeit</b>,
+                <p><img alt="Datum und Uhrzeit - Einstellungen" src="../images/date_time_settings.png" /></p>
+                </li>
+                <li>markieren Sie gegebenenfalls die Kästchen <b>Automatisch aktualisieren</b> oder <b>Als Standard setzen</b>, um das Datums- und Uhrzeitformat entsprechend der ausgewählten Sprache zu konfigurieren,</li>
+                <li>klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</li>
+            </ol>
+            <p>Das Datum und die Uhrzeit oder die Foliennummer werden entsprechend der Cursorposition eingefügt. Um das Datum und die Uhrzeit zu bearbeiten,</p>
+            <ol>
+                <li>wählen Sie das eingefügte Datum und die Uhrzeit im Textfeld aus,</li>
+                <li>klicken Sie die Schaltfläche <img alt="Datum und Uhrzeit" src="../images/date_time_icon.png" /> <b>Datum und Uhrzeit</b> auf der Registerkarte <b>Einfügen</b> in der oberen Symbolleiste an,</li>
+                <li>wählen Sie das gewünschte Format im Fenster <b>Datum und Uhrzeit</b>,</li>
+                <li>klicken Sie auf <b>OK</b>.</li>
+            </ol>
+            <h5>Die Foliennummer einfügen</h5>
+            <ol>
+                <li>Positionieren Sie den Mauscursor im Textfeld, wo Sie die Foliennummer einfügen möchten.</li>
+                <li>Klicken Sie die Schaltfläche <img alt="Foliennummer - Symbol" src="../images/slide_number_icon.png" /> Foliennummer auf der Registerkarte <b>Einfügen</b> in der oberen Symbolleiste an.</li>
+                <li>Markieren Sie das Kästchen <b>Foliennummer</b> im Fenster <b>Fußzeileneinstellungen</b>.</li>
+                <li>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</li>
+            </ol>
+            <p>Die Foliennummer wird entsprechend der Cursorposition eingefügt.</p>
+		</div>
+	</body>
+</html>

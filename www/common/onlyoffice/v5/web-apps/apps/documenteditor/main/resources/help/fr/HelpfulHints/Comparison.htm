@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Compare documents</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Consignes sur la comparaison et la fusion de deux documents" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Comparer les documents</h1>
+        <p class="note"><b>Remarque</b>: cette option est disponible uniquement dans la version <b>payante</b> de la <em>suite bureautique en ligne</em> à partir de <b>Document Server</b> v. <b>5.5</b>. Pour savoir comment activer cette fonctionnalité sur <em>version de bureau</em>, veuillez consulter <a target="_blank" href="http://helpcenter.onlyoffice.com/installation/desktop-pro-features.aspx" onclick="onhyperlinkclick(this)">cette article</a>.</p>
+        <p>Si vous devez comparer et fusionner deux documents, vous pouvez utiliser la fonction de <b>Comparaison</b> de documents dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>. Il permet d’afficher les différences entre deux documents et de fusionner les documents en acceptant les modifications une par une ou toutes en même temps.</p>
+        <p>Après avoir comparé et fusionné deux documents, le résultat sera stocké sur le portail en tant que nouvelle version du fichier original.<!-- (in the <em>online version</em> of editors)-->. <!--In the desktop version, when you click the <b>Save</b> button, the dialog window will appear where you will be suggested to save a new file.--></p>
+        <p>Si vous n’avez pas besoin de fusionner les documents qui sont comparés, vous pouvez rejeter toutes les modifications afin que le document d’origine reste inchangé.</p>
+        
+        <h3 id="choosedocument">Choisissez un document à comparer</h3>
+        <p>Pour comparer deux documents, ouvrez le document d’origine et sélectionnez le deuxième à comparer :</p>
+        <ol>
+            <li>Basculez vers l’onglet <b>Collaboration</b> dans la barre d’outils supérieure et appuyez sur le <img alt="Bouton Comparer" src="../images/comparebutton.png" /> bouton <b>Comparer</b>,</li>
+            <li>
+                Sélectionnez l’une des options suivantes pour charger le document :
+                <ul>
+                    <li>L’option <b>Document à partir du fichier</b> ouvrira la fenêtre de dialogue standard pour la sélection de fichiers. Parcourez le disque dur de votre ordinateur pour le fichier <em>DOCX</em> nécessaire et cliquez sur le bouton <b>Ouvrir</b>.</li>
+                    <li>
+                        L’option <b>Document à partir de l’URL</b> ouvrira la fenêtre dans laquelle vous pouvez saisir un lien vers le fichier stocké dans le stockage Web tiers (par exemple, Nextcloud) si vous disposez des droits d’accès correspondants. Le lien doit être un <b>lien direct pour télécharger le fichier</b>. Une fois le lien spécifié, cliquez sur le bouton <b>OK</b>.
+                        <p class="note"><b>Remarque</b> : le lien direct permet de télécharger le fichier directement sans l’ouvrir dans un navigateur Web. Par exemple, pour obtenir un lien direct  dans Nextcloud, recherchez le document nécessaire dans la liste des fichiers, sélectionnez l’option <b>Détails</b> dans le menu fichier. Cliquez sur l’icône <b>Copier le lien direct (ne fonctionne que pour les utilisateurs qui ont accès à ce fichier/dossier)</b> à droite du nom du fichier dans le panneau de détails. Pour savoir comment obtenir un lien direct pour télécharger le fichier dans un autre stockage Web tiers, reportez-vous à la documentation de service tiers correspondant.</p>
+                    </li>
+                    <li class="onlineDocumentFeatures"> L’option <b>Document à partir du stockage</b> <!--(available in the <em>online version</em> only)--> ouvrira la fenêtre <b>Sélectionnez la source de données</b>. Il affiche la liste de tous les documents DOCX stockés sur votre portail pour lesquels vous disposez des droits d’accès correspondants. Pour naviguer entre les sections du module <b>Documents</b>, utilisez le menu dans la partie gauche de la fenêtre. Sélectionnez le document <em>DOCX</em> nécessaire et cliquez sur le bouton <b>OK</b>.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Lorsque le deuxième document à comparer est sélectionné, le processus de comparaison démarre et le document peut être ouvert en mode <b>Révision</b>. Toutes modifications sont mises en surbrillance avec une couleur, et vous pouvez afficher les modifications, naviguer entre elles, les accepter ou les rejeter une par une ou toutes les modifications à la fois. Il est également possible de changer le mode d’affichage et de voir le document avant la comparaison, en cours de comparaison, ou après la comparaison si vous acceptez toutes les modifications.</p>
+
+        <h3 id="displaymode">Choisissez le mode d’affichage des modifications</h3>
+        <p>Cliquez sur le <img alt="Bouton Mode d’affichage" src="../images/review_displaymode.png" /> bouton <b>Mode d’affichage</b> dans la barre d’outils supérieure et sélectionnez l’un des modes disponibles dans la liste :</p>
+        <ul>
+            <li>
+                <b>Balisage</b> - cette option est sélectionnée par défaut. Il est utilisé pour afficher le document <b>en cours de comparaison</b>. Ce mode permet à la fois de visualiser les modifications et de modifier le document.
+                <p><img alt="Comparer les document - Annotation" src="../images/compare_markup.png" /></p>
+            </li>
+            <li>
+                <b>Final</b> - ce mode est utilisé pour afficher le document <b>après la comparaison</b> comme si toutes les modifications avaient été acceptées. Cette option n’accepte pas réellement toutes les modifications, elle vous permet uniquement de voir à quoi ressemblera le document si vous les acceptez. Dans ce mode, vous ne pouvez pas éditer le document.
+                <p><img alt="Comparer les document - Final" src="../images/compare_final.png" /></p>
+            </li>
+            <li>
+                <b>Original</b> - ce mode est utilisé pour afficher le document <b>avant la comparaison</b> comme si toutes les modifications avaient été rejetées. Cette option ne rejette pas réellement toutes les modifications, elle vous permet uniquement d’afficher le document sans modifications. Dans ce mode, vous ne pouvez pas éditer le document.
+                <p><img alt="Comparer les document - Original" src="../images/compare_original.png" /></p>
+            </li>
+        </ul>
+
+        <h3 id="managechanges">Accepter ou rejeter les modifications</h3>
+        <p>Utilisez les boutons <img alt="Bouton Précédent" src="../images/review_previous.png" /> <b>Précédent</b> et <img alt="To Next Change button" src="../images/review_next.png" /> <b>Suivant</b> dans la barre d’outils supérieure pour naviguer parmi les modifications.</p>
+        <p>Pour accepter la modification actuellement sélectionnée, vous pouvez :</p>
+        <ul>
+            <li>Cliquer sur le <img alt="Bouton Accepter" src="../images/review_accepttoptoolbar.png" /> bouton <b>Accepter</b> dans la barre d’outils supérieure, ou</li>
+            <li>Cliquer sur la flèche vers le bas sous le bouton <b>Accepter</b> et sélectionner l’option <b>Accepter la modification actuelle</b> (dans ce cas, la modification sera acceptée et vous passerez à la modification suivante), ou</li>
+            <li>Cliquer sur le <img alt="Bouton Accepter" src="../images/review_accept.png" /> bouton <b>Accepter</b> de la fenêtre contextuelle de modification.</li>
+        </ul>
+        <p>Pour accepter rapidement toutes les modifications, cliquez sur la flèche vers le bas sous le <img alt="Bouton Accepter" src="../images/review_accepttoptoolbar.png" /> bouton <b>Accepter</b> et sélectionnez l’option <b>Accepter toutes les modifications</b>.</p>
+        <p>Pour rejeter la modification en cours, vous pouvez :</p>
+        <ul>
+            <li>Cliquer sur le <img alt="Bouton Rejeter" src="../images/review_rejecttoptoolbar.png" /> bouton <b>Rejeter</b> dans la barre d’outils supérieure, ou</li>
+            <li>Cliquer sur la flèche vers le bas sous le bouton <b>Rejeter</b> et sélectionner l’option <b>Rejeter la Modification Actuelle</b> (dans ce cas, la modification sera rejetée et vous passerez à la prochaine modification disponible, ou</li>
+            <li>Cliquer sur le <img alt="Bouton Rejeter" src="../images/review_reject.png" /> bouton <b>Rejeter</b> de fenêtre contextuelle de modification.</li>
+        </ul>
+        <p>Pour rejeter rapidement toutes les modifications, cliquez sur la flèche vers le bas sous le <img alt="Bouton Rejeter" src="../images/review_rejecttoptoolbar.png" /> bouton <b>Rejeter</b> et sélectionnez l’option <b>Refuser tous les changements</b>.</p>
+
+        <h3 id="comparisonnotes">Informations supplémentaires sur la fonction de comparaison</h3>
+        <h5>Méthode de comparaison</h5>
+        <p>Les documents sont comparés <b>par des mots</b>. Si un mot contient un changement d’au moins un caractère (par exemple, si un caractère a été supprimé ou remplacé), dans le résultat, la différence sera affichée  comme le changement du mot entier, pas le caractère.</p>
+        <p>L’image ci-dessous illustre le cas où le fichier d’origine contient le mot « caractères » et le document de comparaison contient le mot « Caractères ».</p>
+        <p><img alt="Comparer les documents - méthode" src="../images/compare_method.png" /></p>
+
+        <h5>Auteur du document</h5>
+        <p>Lorsque le processus de comparaison est lancé, le deuxième document de comparaison est chargé et comparé au document actuel.</p>
+        <ul>
+            <li>Si le document chargé contient des données qui ne sont pas représentées dans le document d’origine, les données seront marquées comme ajoutées par un réviseur.</li>
+            <li>Si le document d’origine contient des données qui ne sont représentées dans le document chargé, les données seront marquées comme supprimées par un réviseur.</li>
+        </ul>
+        <p>Si les auteurs de documents originaux et chargés sont la même personne, le réviseur est le même utilisateur. Son nom est affiché dans la bulle de changement.</p>
+        <p>Si les auteurs de deux fichiers sont des utilisateurs différents, l’auteur du deuxième fichier chargé à des fins de comparaison est l’auteur des modifications ajoutées/supprimées.</p>
+        
+        <h5>Présence des modifications suivies dans le document comparé</h5>
+        <p>Si le document d’origine contient des modifications apportées en mode révision, elles seront acceptées dans le processus de comparaison. Lorsque vous choisissez le deuxième fichier à comparer, vous verrez le message d’avertissement correspondant.</p>
+        <p>Dans ce cas, lorsque vous choisissez le mode d’affichage <b>Original</b>, le document ne contient aucune modification.</p>
+    </div>
+</body>
+</html>

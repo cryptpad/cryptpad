@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Duplikate entfernen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Entfernen Sie die Duplikate in dem ausgewählten Zellbereich" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Duplikate entfernen</h1>
+            <p>Im <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a> sie können die Duplikate im ausgewälten Zellbereich oder in der <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">formatierten Tabelle</a> entfernen.</p>
+            <p>Um die Duplikate zu entfernen:</p>
+            <ol>
+                <li>Wählen Sie den gewünschten Zellbereich mit den Duplikaten aus.</li>
+                <li>Öffnen Sie die Registerkarte <b>Daten</b> und klicken Sie die Schaltfläche <img alt="Duplikate entfernen" src="../images/removeduplicates_icon.png" /> <b>Entferne Duplikate</b> an.
+                <p>Falls Sie die Duplikate in der formatierten Tabelle entfernen möchten, verwenden Sie die Option <img alt="Duplikate entfernen" src="../images/removeduplicates.png" /> <b>Entferne Duplikate</b> in der rechten Randleiste.</p>
+                <p>Wenn Sie einen bestimmten Teil des Datenbereichs auswählen, ein Warnfenster wird geöffnet, wo Sie auswählen, ob Sie die Auswahl erweitern möchten, um den ganzen Datenbereich zu erfassen, oder ob Sie nur den aktiven ausgewälten Datenbereich bearbeiten möchten. Klicken Sie die Option <b>Erweitern</b> oder <b>Im ausgewählten Bereich zu entfernen</b> an. Wenn Sie die Option <b>Im ausgewählten Bereich zu entfernen</b> auswählen, werden die Duplikate in den angrenzenden Zellen nicht entfernt.</p>
+                <p><img alt="Duplikate entfernen - Warnfenster" src="../images/removeduplicates_warning.png" /></p>
+                <p>Das Fenster <b>Entferne Duplikate</b> wird geöffnet:</p>
+                    <p><img alt="Entferne Duplikate" src="../images/removeduplicates_window.png" /></p>
+                </li>
+                <li>Markieren Sie die Kästchen, die Sie brauchen, im Fenster <b>Entferne Duplikate</b>:
+                <ul>
+                    <li><b>Meine Daten haben Kopfzeilen</b> - markieren Sie das Kästchen, um die Kopfzeilen mit Spalten auszuschließen.</li>
+                    <li><b>Spalten</b> - die Option <b>Alles auswählen</b> ist standardmäßig aktiviert. Um nir die bestimmten Spalten zu bearbeiten, deaktivieren Sie das Kästchen.</li>
+                </ul>
+                </li>
+                <li>Klicken Sie <b>OK</b> an.</li>
+            </ol>            
+            <p>Die Duplikate in den ausgewälten Zellbereichen werden entfernt und das Fenster mit der entfernten Duplikatenanzahl und den gebliebenen Werten wird geöffnet:</p>
+            <p><img alt="Entferte Duplikate" src="../images/removeduplicates_result.png" /></p>
+            <p>Verwenden Sie die Schaltfläche <b>Rückgängig machen</b> <img alt="Rückgängig machen" src="../images/undo.png" /> nach oben oder drücken Sie die Tastenkombination <em>Strg+Z</em>, um die Änderungen aufzuheben.</p>
+            
+		</div>
+	</body>
+</html>

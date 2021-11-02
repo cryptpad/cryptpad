@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction PREVISION.ETS.CARACTERESAISONNIER</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction PREVISION.ETS.CARACTERESAISONNIER</h1>
+			<p>La fonction <b>PREVISION.ETS.CARACTERESAISONNIER</b> est l'une des fonctions statistiques. Elle est utilisée pour retourner la durée du modèle de répétition détecté par application pour la série chronologique spécifiée.</p>
+			<p>La syntaxe de la fonction <b>PREVISION.ETS.CARACTERESAISONNIER</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>PREVISION.ETS.CARACTERESAISONNIER (valeurs, chronologie, [saisie_semiautomatique_données], [agrégation])</em></b></p> 
+			<p><em>où</em></p>
+				<p style="text-indent: 50px;"><b><em>valeurs</em></b> est une plage de valeurs historiques pour lesquelles vous voulez prédire un nouveau point.</p>
+                <p style="text-indent: 50px;"><b><em>chronologie</em></b> est une plage de valeurs date / heure qui correspondent aux valeurs historiques. La plage de la <b><em>chronologie</em></b> doit être de la même taille que la plage de <b><em>valeurs</em></b>. Les valeurs date/heure doivent avoir un pas constant entre elles (bien que jusqu'à 30% des valeurs manquantes puissent être traitées comme spécifié par l'argument <b><em>saisie_semiautomatique_données</em></b> et que les valeurs dupliquées puissent être agrégées comme spécifié par l'argument  ).</p>
+                <p style="text-indent: 50px;"><b><em>saisie_semiautomatique_données</em></b> est une valeur numérique qui spécifie comment traiter les points de données manquants dans la plage de données de la <b><em>chronologie</em></b>. C'est un argument facultatif. Les valeurs possibles sont listées dans le tableau ci-dessous.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Valeur numérique</b></td>
+                    <td><b>Comportement</b></td>
+                </tr>
+                <tr>
+                    <td>1 ou omise</td>
+                    <td>Les points manquants sont calculés comme la moyenne des points voisins.</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>Les points manquants sont traités comme des valeurs nulles.</td>
+                </tr>
+            </table>
+                <p style="text-indent: 50px;"><b><em>agrégation</em></b> est une valeur numérique qui spécifie quelle fonction doit être utilisée pour agréger des valeurs de temps identiques dans la plage de données <b><em>chronologie</em></b>. C'est un argument facultatif. Les valeurs possibles sont listées dans le tableau ci-dessous.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Valeur numérique</b></td>
+                    <td><b>Fonctions</b></td>
+                </tr>
+                <tr>
+                    <td>1 ou omise</td>
+                    <td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">MOYENNE</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">NB</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">NBVAL</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="../Functions/median.htm" onclick="onhyperlinkclick(this)">MEDIANE</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SOMME</a></td>
+                </tr>
+            </table> 
+			<p>Pour appliquer la fonction <b>PREVISION.ETS.CARACTERESAISONNIER</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Statistique</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>PREVISION.ETS.CARACTERESAISONNIER</b>,</li>
+			<li>insérez les arguments requis en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction PREVISION.ETS.CARACTERESAISONNIER" src="../images/forecast-ets-seasonality.png" /></p>
+		</div>
+	</body>
+</html>

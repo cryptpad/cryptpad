@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ajouter des bordures et l'arrière-plan d'une cellule</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Paramétrage du style de cellule en ajoutant et mettant en forme l'arrière-plan et les bordures" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ajouter des bordures et l'arrière-plan d'une cellule</h1>            
+            <h3>Ajouter l'arrière-plan d'une cellule</h3>
+            <p>Pour ajouter et mettre en forme l'arrière-plan d'une cellule dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>,</p>
+            <ol>
+                <li> sélectionnez une cellule ou une plage de cellules avec la souris ou la feuille de calcul entière en appuyant <b>Ctrl+A</b> sur le clavier,
+                    <p class="note"><b>Remarque</b>: vous pouvez également sélectionner plusieurs cellules ou plages non adjacentes en maintenant la touche <b>Ctrl</b> enfoncée tout en sélectionnant les cellules/plages à l'aide de la souris.</p>
+                </li>
+                <li>pour remplir la cellule avec une couleur unie, cliquez sur l'icône <b>Couleur d'arrière plan</b> <img alt="L'icône Couleur d'arrière plan" src="../images/backgroundcolor.png" /> sous l'onglet <b>Accueil</b> de la barre d'outil supérieure et sélectionnez la couleur appropriée. 
+                </li>
+                <li>pour utiliser des options de remplissage telles que <I>remplissage en dégradé</I> ou <I>modèle</I>, cliquez sur l'icône <b>Paramètres de cellule</b> <img alt="L'icône Paramètres de cellule" src="../images/cellsettings_rightpanel.png" /> depuis la barre latérale droite et sélectionnez la section <b>Remplissage</b>:
+                    <ul>
+                        <li>
+                            <b>Couleur de remplissage</b> - sélectionnez cette option pour spécifier la couleur unie à utiliser pour remplir les cellules sélectionnées.
+                            <p><img alt="Couleur de remplissage" src="../images/cell_fill_color.png" /></p>
+                            <p id="color">Cliquez sur la case de couleur et sélectionnez une des palettes:</p>
+                            <p><img alt="Palette" src="../images/palette.png" /></p>
+                            <ul>
+                                <li><b>Couleurs de thème</b> - les couleurs qui correspondent à la palette de couleurs sélectionnée de la feuille de calcul.</li>
+                                <li><b>Couleurs standard</b> - le jeu de couleurs par défaut. Le jeu de couleurs sélectionnée ne les affecte pas.</li>
+                                <li>
+                                    <b>Couleur personnalisée</b> - choisissez cette option si il n'y a pas de couleur nécessaire dans les palettes disponibles. Sélectionnez la gamme de couleurs nécessaire en déplaçant le curseur vertical et définissez la couleur spécifique en faisant glisser le sélecteur de couleur dans le grand champ de couleur carré. Une fois que vous sélectionnez une couleur avec le sélecteur de couleur, les valeurs de couleur appropriées RGB et sRGB seront affichées dans les champs à droite. Vous pouvez également spécifier une couleur sur la base du modèle de couleur RGB en entrant les valeurs numériques nécessaires dans les champs <b>R</b>, <b>G</b>, <b>B</b> (rouge, vert, bleu) ou saisir le code hexadécimal dans le champ sRGB marqué par le signe <b>#</b>. La couleur sélectionnée apparaît dans la case de prévisualisation <b>Nouveau</b>. Si l'objet a déjà été rempli d'une couleur personnalisée, cette couleur sera affichée dans la case <b>Actuel</b> que vous puissiez comparer les couleurs originales et modifiées. Lorsque la couleur est spécifiée, cliquez sur le bouton <b>Ajouter</b>:
+                                    <p><img alt="Palette - Couleur personnalisée" src="../images/palette_custom.png" /></p>
+                                    <p>La couleur personnalisée sera appliquée à l'élément sélectionné et sera ajoutée dans la palette <b>Couleur personnalisée</b> du menu.</p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li> <b>Remplissage en dégradé</b> - remplir les cellules sélectionnées avec deux couleurs et une transition en douceur appliquée.
+                            <p><img alt="Remplissage en dégradé" src="../images/cell_fill_gradient.png" /></p>
+                            <ul>
+                                <li><b>Angle</b> - spécifiez manuellement l'angle précis de la direction du dégradé (transition se fait en ligne de dégradé sous un certain angle).</li>
+                                <li><b>Direction</b> - choisissez un modèle prédéfini du menu. Les directions disponibles: du haut à gauche vers le bas à droite (<em>45&deg;</em>), de haut en bas (<em>90&deg;</em>), du haut à droite vers le bas à gauche (<em>135&deg;</em>), de droite à gauche (<em>180&deg;</em>), du bas à droite vers le haut à gauche (<em>225&deg;</em>), du bas en haut (<em>270&deg;</em>), du bas à gauche vers le haut à droite (<em>315&deg;</em>), de gauche à droite (<em>0&deg;</em>).</li>
+                                <li>
+                                    <b>Point de dégradé</b> est le point d'arrêt de d'une couleur et de la transition entre les couleurs.
+                                    <ul>
+                                        <li>Utilisez le bouton <b>Ajouter un point de dégradé</b> <img alt="Ajouter un point de dégradé" src="../images/addgradientpoint.png" /> ou le curseur de dégradé pour ajouter un point de dégradé. Vous pouvez ajouter 10 points de dégradé. Le nouveau arrêt de couleur n'affecte pas l'aspect actuel du dégradé. Utilisez le bouton <b>Supprimer un point de dégradé</b>  <img alt="Supprimer un point de dégradé" src="../images/removegradientpoint.png" /> pour supprimer un certain point de dégradé.</li>
+                                        <li>Faites glisser le curseur de déragé pour changer l'emplacement des points de dégradé ou spécifiez la <b>Position</b> en pourcentage pour l'emplacement plus précis.</li>
+                                        <li>Pour choisir la couleur au dégradé, cliquez sur l'arrêt concerné sur le curseur de dégradé, ensuite cliquez sur <b>Couleur</b> pour sélectionner la couleur appropriée.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <b>Modèle</b> - sélectionnez cette option pour remplir la cellule sélectionnée avec un modèle à deux couleurs composé des éléments répétés.
+                            <p><img alt="Remplissage avec un modèle" src="../images/cell_fill_pattern.png" /></p>
+                            <ul>
+                                <li><b>Modèle</b> - sélectionnez un des modèles prédéfinis du menu.</li>
+                                <li><b>Couleur de premier plan</b> - cliquez sur cette palette de couleurs pour changer la couleur des éléments du modèle.</li>
+                                <li><b>Couleur d'arrière-plan</b> - cliquez sur cette palette de couleurs pour changer de l'arrière-plan du modèle.</li>
+                            </ul>
+                        </li>
+                        <li><b>Pas de remplissage</b> - sélectionnez cette option si vous ne voulez pas utiliser un remplissage.</li>
+                    </ul>
+                </li>
+            </ol>
+                        
+            <h3 id="cell_borders">Ajouter des bordures</h3>
+			<p>Pour ajouter et mettre en forme des bordures dans une feuille de calcul,</p>
+			<ol>
+				<li>sélectionnez une cellule, une plage de cellules avec la souris ou la feuille de calcul entière en utilisant le raccourci clavier <b>Ctrl+A</b>,
+                <p class="note"><b>Remarque</b>: vous pouvez également sélectionner plusieurs cellules ou plages non adjacentes en maintenant la touche <b>Ctrl</b> enfoncée tout en sélectionnant les cellules/plages à l'aide de la souris.</p>
+                </li>
+				<li>cliquez sur l'icône <b>Bordures</b> <img alt="L'icône Bordures" src="../images/addborders.png" /> située sous l'onglet <b>Accueil</b> de la barre d'outils supérieure ou cliquez sur l'icône <b>Paramètres de cellule</b> <img alt="L'icône Paramètres de cellule" src="../images/cellsettings_rightpanel.png" /> dans la barre latérale droite et utiliser la section <b>Style des bordures</b>,
+                <p><img alt="L'onglet Paramètres de cellule" src="../images/cellsettingstab.png" /></p>
+                </li>
+				<li>sélectionnez le style de bordure à ajouter: 
+                <ol>
+                    <li>ouvrez le sous-menu <b>Style des bordures</b> <img alt="L'icône Style des bordures" src="../images/borderstyle.png" /> et choisissez parmi les options disponibles, </li>
+                    <li>ouvrez le sous-menu <b>Couleur de bordure</b> <img alt="L'icône Couleur de bordures" src="../images/bordercolor.png" /> ou utilisez la palette de <b>Couleur</b> dans la barre latérale droite et sélectionnez la couleur dont vous avez besoin dans la palette.</li>
+                    <li>sélectionnez l'un des modèles de bordure disponibles: <b>Bordures extérieures</b> <img alt="L'icône Bordures extérieures" src="../images/outsideborders.png" />, <b>Toutes les bordures</b> <img alt="L'icône Toutes les bordures" src="../images/allborders.png" />, <b>Bordures supérieures</b> <img alt="L'icône Bordures supérieures" src="../images/topborders.png" />, <b>Bordures inférieures</b> <img alt="L'icône Bordures inférieures" src="../images/bottomborders.png" />, <b>Bordures gauches</b> <img alt="L'icône Bordures gauches" src="../images/leftborders.png" />, <b>Bordures droites</b> <img alt="L'icône Bordures droites" src="../images/rightborders.png" />, <b>Pas de bordures</b> <img alt="L'icône Pas de bordures" src="../images/noborders.png" />, <b>Bordures intérieures</b> <img alt="L'icône Bordures intérieures" src="../images/insideborders.png" />, <b>Bordures intérieures verticales</b> <img alt="L'icône Bordures intérieures verticales" src="../images/insideverticalborders.png" />, <b>Bordures intérieures horizontales</b> <img alt="L'icône Bordures intérieures horizontales" src="../images/insidehorizontalborders.png" />, <b>Bordure diagonale ascendante</b> <img alt="L'icône Bordure diagonale ascendante" src="../images/diagonal_up_border.png" />, <b>Bordure diagonale descendante<b> <img alt="L'icône Bordure diagonale descendante" src="../images/diagonal_down_border.png" />.</li>
+                </ol>
+                </li>
+			</ol>
+		</div>
+	</body>
+</html>

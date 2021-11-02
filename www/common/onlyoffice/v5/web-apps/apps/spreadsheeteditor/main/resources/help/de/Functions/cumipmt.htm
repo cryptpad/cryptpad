@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>KUMZINSZ-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>KUMZINSZ-Funktion</h1>
+			<p>Die Funktion <b>KUMZINSZ</b> gehört zur Gruppe der Finanzmathematischen Funktionen. Sie berechnet die kumulierten Zinsen, die zwischen zwei Perioden zu zahlen sind.</p>
+			<p>Die Formelsyntax der Funktion <b>KUMZINSZ</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>KUMZINSZ(Zins;Zzr;Bw;Zeitraum_Anfang;Zeitraum_Ende;F)</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+				<p style="text-indent: 50px;"><b><em>Zins</em></b> ist die Effektivverzinsung für die Investition.</p> 
+				<p style="text-indent: 50px;"><b><em>Zzr</em></b> ist die Gesamtanzahl der Zahlungszeiträume.</p> 
+				<p style="text-indent: 50px;"><b><em>Bw</em></b> ist der Barwert oder der heutige Gesamtwert einer Reihe zukünftiger Zahlungen.</p>
+                <p style="text-indent: 50px;"><b><em>Zeitraum_Anfang</em></b> ist die erste in die Berechnung einfließende Periode. Der Wert muss zwischen <b><em>1</em></b> und <b><em>Zzr</em></b> liegen.</p>
+                <p style="text-indent: 50px;"><b><em>Zeitraum_Ende</em></b> ist die letzte in die Berechnung einfließende Periode. Der Wert muss zwischen <b><em>1</em></b> und <b><em>Zzr</em></b> liegen.</p>
+				<p style="text-indent: 50px;"><b><em>F</em></b> gibt an, wann die Zahlungen fällig sind. Fehlt das Argument oder ist auf 0 festgelegt, nimmt die Funktion an, dass die Zahlungen am Ende der Periode fällig sind. Ist <b><em>F</em></b> mit 1 angegeben, sind die Zahlungen zum Anfang der Periode fällig.</p>
+			<p class="note"><b>Hinweis:</b> für alle Argumente werden die Beträge, die Sie zahlen, beispielsweise Einlagen für Sparguthaben oder andere Abhebungen, durch negative Zahlen dargestellt. Beträge, die Sie erhalten, beispielsweise Dividendenzahlungen und andere Einlagen, werden durch positive Zahlen dargestellt. Sie sollten unbedingt darauf achten, dass Sie für Zins und Zzr zueinander passende Zeiteinheiten verwenden. Verwenden Sie beispielsweise bei monatliche Zahlungen N%/12 für Zins und N*12 für Zzr, für vierteljährliche Zahlungen N%/4 für Zins and N*4 für Zzr und für jährliche Zahlungen N% für Zins und N für Zzr.</p>
+			<p>Die Argumente werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>KUMZINSZ</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Finanzmathematische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>KUMZINSZ</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="KUMZINSZ-Funktion" src="../images/cumipmt.png" /></p>
+		</div>
+	</body>
+</html>

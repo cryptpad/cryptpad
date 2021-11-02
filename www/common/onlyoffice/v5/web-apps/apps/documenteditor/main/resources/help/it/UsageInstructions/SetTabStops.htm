@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Impostare le tabulazioni</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Set tab stops" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Impostare le tabulazioni</h1>
+        <p>Nell'Editor documenti è possibile modificare le tabulazioni, ovvero la posizione in cui il cursore avanza quando si preme il tasto <b>Tab</b> sulla tastiera.</p>
+        <p>Per impostare le tabulazioni è possibile utilizzare il righello orizzontale:</p>
+        <ol>
+            <li>
+                Selezionare il tipo di tabulazione necessario facendo clic sul pulsante <img alt="Sinistra" src="../images/tabstopleft.png" /> nell'angolo superiore sinistro dell'area di lavoro. Sono disponibili i seguenti tre tipi di tabulazioni:
+                <ul>
+                    <li><b>Sinistra</b> <img alt="Sinistra" src="../images/tabstopleft.png" /> - allinea il testo sul lato sinistro nella posizione di tabulazione; il testo si sposta a destra dalla tabulazione durante la digitazione. Tale punto di tabulazione sarà indicato sul righello orizzontale dal marcatore <img alt="Sinistra" src="../images/tabstopleft_marker.png" />.</li>
+                    <li><b>Centrata</b> <img alt="Centrata" src="../images/tabstopcenter.png" /> - centra il testo nella posizione di tabulazione. Tale tabulazione sarà indicata sul righello orizzontale dal marcatore <img alt="Centrata" src="../images/tabstopcenter_marker.png" />.</li>
+                    <li><b>Destra</b> <img alt="Destra" src="../images/tabstopright.png" /> - allinea il testo dal lato destro nella posizione di tabulazione; il testo si sposta a sinistra dalla tabulazione durante la digitazione. Tale punto di tabulazione sarà indicato sul righello orizzontale dal marcatore <img alt="Destra" src="../images/tabstopright_marker.png" />.</li>
+                </ul>
+            </li>
+            <li>
+                Fare clic sul bordo inferiore del righello in cui si desidera posizionare la tabulazione. Trascinarlo lungo il righello per modificarne la posizione. Per rimuovere la tabulazione aggiunta, trascinarla fuori dal righello.
+                <p><img alt="Righello orizzontale - Tabulazioni" src="../images/tabstops_ruler.png" /></p>
+            </li>
+        </ol>
+        <hr />
+        <p>È inoltre possibile utilizzare la finestra delle proprietà del paragrafo per regolare le tabulazioni. Fare clic con il tasto destro del mouse, selezionare l'opzione <b>Impostazioni avanzate del paragrafo</b> nel menu o utilizzare il collegamento <b>Mostra impostazioni avanzate</b> nella barra laterale destra e passare alla scheda <b>Tabulazioni</b> nella finestra <b>Paragrafo - Impostazioni avanzate</b> aperta.</p>
+        <img alt="Paragrafo - Impostazioni avanzate - Tabulazioni" src="../images/paradvsettings_tab.png" />
+        <p>È possibile impostare i seguenti parametri:</p>
+        <ul>
+            <li><b>Tabulazione predefinita</b> è impostata su 1,25 cm. È possibile ridurre o aumentare questo valore utilizzando i pulsanti freccia o immettere quello necessario nella casella.</li>
+            <li><b>Posizione tabulazione</b> - consente di impostare tabulazioni personalizzate. Immettere il valore necessario in questa casella, regolarlo in modo più preciso utilizzando i pulsanti freccia e premere il pulsante <b>Specifica</b>. La posizione di tabulazione personalizzata verrà aggiunta all'elenco nel campo sottostante. Se in precedenza sono state aggiunte alcune tabulazioni utilizzando il righello, tutte queste posizioni verranno visualizzate anche nell'elenco.</li>
+            <li><b>Allineamento</b> - consente di impostare il tipo di allineamento necessario per ciascuna delle posizioni di tabulazione nell'elenco precedente. Selezionare la posizione di tabulazione desiderata nell'elenco, scegliere l'opzione <b>Sinistra</b>, <b>Centrata</b> o <b>Destra</b> dall'elenco a discesa e premere il pulsante <b>Specifica</b>.</li>
+            <li>
+                <b>Leader</b> - consente di scegliere un carattere utilizzato per creare una direttrice per ciascuna delle posizioni di tabulazione. Una direttrice è una riga di caratteri (punti o trattini) che riempie lo spazio tra le tabulazioni. Selezionare la posizione di tabulazione desiderata nell'elenco, scegliere il tipo di direttrice dall'elenco a discesa e premere il pulsante <b>Specifica</b>.
+                <p>Per eliminare i punti di tabulazione dall'elenco selezionare un punto di tabulazione e premere il pulsante <b>Elimina</b> o <b>Elimina tutto</b>.</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

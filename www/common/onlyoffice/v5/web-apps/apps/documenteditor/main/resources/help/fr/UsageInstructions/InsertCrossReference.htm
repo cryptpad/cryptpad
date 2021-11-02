@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Insertion de renvoi</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Utiliser les renvois pour créer les liens vers d'autres parties du même document." />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Insertion de renvoi</h1>
+        <p>Dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, les renvois permettent de créer les liens vers d'autres parties du même document telles que les diagrammes ou les tableaux. Le renvoi apparaît sous la forme d'un lien hypertexte.</p>
+        <h2>Créer un renvoi</h2>
+        <ol>
+            <li>Positionnez le curseur dans le texte à l'endroit où vous souhaitez insérer un renvoi.</li>
+            <li>Passez à l'onglet <B>Références</B> et cliquez sur l'icône <B>Renvoi</B>.</li>
+            <li>
+                Paramétrez le renvoi dans la fenêtre contextuelle <B>Renvoi</B>.
+                <p><img alt="La fenêtre Renvoi." src="../images/cross_refference_window.png" /></p>
+                <ul>
+                    <li>Dans la liste déroulante <B>Type de référence</B> spécifiez l'élément vers lequel on veut renvoyer, par exemple, l'objet numéroté (option par défaut),&nbsp;<em>en-tête, signet, note de bas de page, note de fin, équation, figure,</em>&nbsp;et&nbsp;<em>tableau</em>. Sélectionnez l'élément approprié.</li>
+                    <li>
+                        Dans la liste <B>Insérer la référence à</B> spécifiez les informations que vous voulez insérer dans le document. Votre choix dépend de la nature des éléments que vous avez choisi dans la liste <B>Type de référence</B>. Par exemple, pour l'option <B>En-tête</B> on peut spécifier les informations suivantes: <I>Texte de l'en-tête, Numéro de page, Numéro de l'en-tête, Numéro de l'en-tête (pas de contexte), Numéro de l'en-tête (contexte global), Au-dessus/au-dessous.</I> <details class="details-example"><summary>La liste complète des options dépend du type de référence choisi:</summary>
+                            <table class="cross-reference">
+                                <tr>
+                                    <th>Type de référence</th>
+                                    <th>Insérer la référence à</th>
+                                    <th style="text-align: left;">Description</th>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Objet numéroté</td>
+                                    <td style="text-align: left;">Numéro de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de page du l'objet numéroté</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de paragraphe</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de paragraphe du l'objet numéroté</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de paragraphe (pas de contexte)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de paragraphe abrégé. On fait la référence à un élément spécifique de la liste numérotée, par exemple vous faites une référence seulement à 1 au lieu de 4.1.1.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de paragraphe (contexte global)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de paragraphe complet, par exemple 4.1.1.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Texte du paragraphe</td>
+                                    <td style="text-align: left;">Pour insérer la valeur textuelle du paragraphe, par exemple pour 4.1.1. Conditions générales on fait référence seulement à Conditions générales</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Au-dessus/au-dessous</td>
+                                    <td style="text-align: left;">Pour insérer automatiquement des mots Au-dessus ou Au-dessous en fonction de la position de l'élément.</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">En-tête</td>
+                                    <td style="text-align: left;">Texte de l'en-tête</td>
+                                    <td style="text-align: left;">Pour insérer le texte complet de l'en-tête</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de page d'un en-tête</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de l'en-tête</td>
+                                    <td style="text-align: left;">Pour insérer la numérotation consécutive de l'en-tête</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de l'en-tête (pas de contexte)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de l'en-tête abrégé. Assurez-vous de placer le curseur dans la section à laquelle vous souhaiter faire une référence, par exemple, vous êtes dans la section 4 et vous souhaiter faire référence à l'en-tête 4.B alors au lieu de 4.B  s'affiche seulement B.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de l'en-tête (contexte global)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de l'en-tête complet même si le curseur est dans la même section</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Au-dessus/au-dessous</td>
+                                    <td style="text-align: left;">Pour insérer automatiquement des mots Au-dessus ou Au-dessous en fonction de la position de l'élément.</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Signet</td>
+                                    <td style="text-align: left;">Le texte du signet</td>
+                                    <td style="text-align: left;">Pour insérer le texte complet du signet</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de page du signet</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de paragraphe</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de paragraphe du signet</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de paragraphe (pas de contexte)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de paragraphe abrégé. On fait la référence seulement à un élément spécifique, par exemple vous faites une référence seulement à 1 au lieu de 4.1.1.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de paragraphe (contexte global)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de paragraphe complet, par exemple 4.1.1.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Au-dessus/au-dessous</td>
+                                    <td style="text-align: left;">Pour insérer automatiquement des mots Au-dessus ou Au-dessous en fonction de la position de l'élément.</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4">Note de bas de page</td>
+                                    <td style="text-align: left;">Numéro de la note de bas de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de la note de bas de page</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de page de la note de bas de page</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Au-dessus/au-dessous</td>
+                                    <td style="text-align: left;">Pour insérer automatiquement des mots Au-dessus ou Au-dessous en fonction de la position de l'élément.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Le numéro de la note de bas de page (mis en forme)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de la note de bas de page mis en forme d'une note de bas de page. La numérotation de notes de bas de page existantes n'est pas affectée</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4">Note de fin</td>
+                                    <td style="text-align: left;">Le numéro de la note de fin</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de la note de fin</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de page de la note de fin</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Au-dessus/au-dessous</td>
+                                    <td style="text-align: left;">Pour insérer automatiquement des mots Au-dessus ou Au-dessous en fonction de la position de l'élément.</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Le numéro de la note de fin (mis en forme)</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de la note de fin mis en forme d'une note de fin. La numérotation de notes de fin existantes n'est pas affectée</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="5">Équation / Figure / Tableau</td>
+                                    <td style="text-align: left;">La légende complète</td>
+                                    <td style="text-align: left;">Pour insérer le texte complet de la légende</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seulement l'étiquette et le numéro</td>
+                                    <td style="text-align: left;">Pour insérer l'étiquette et le numéro de l'objet, par exemple, Tableau 1.1</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seulement le texte de la légende</td>
+                                    <td style="text-align: left;">Pour insérer seulement le texte de la légende</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Numéro de page</td>
+                                    <td style="text-align: left;">Pour insérer le numéro de la page comportant du l'objet référencé</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Au-dessus/au-dessous</td>
+                                    <td style="text-align: left;">Pour insérer automatiquement des mots Au-dessus ou Au-dessous en fonction de la position de l'élément.</td>
+                                </tr>
+                            </table>
+                        </details> <br />
+                    </li>
+
+                    <li>Pour faire apparaître une référence comme un lien actif, cochez la case <B>Insérer en tant que lien hypertexte</B>.</li>
+                    <li>Pour spécifier la position de l'élément référencé, cochez la case <B>Inclure au-dessus/au-dessous</B> (si disponible). ONLYOFFICE Document Editor insère automatiquement des mots &ldquo;<em>au-dessus</em>&rdquo; ou &ldquo;<em>au-dessous</em>&rdquo; en fonction de la position de l'élément.</li>
+                    <li>Pour spécifier le séparateur, cochez la case à droite <B>Séparer les numéros</B> <B>avec</B>. Il faut spécifier le séparateur pour les références dans le contexte global.</li>
+                    <li>Dans la zone <B>Pour quel en-tête</B> choisissez l&rsquo;élément spécifique auquel renvoyer en fonction de la <B>Type référence</B> choisi, par exemple: pour l'option <B>En-tête</B> on va afficher la liste complète des en-têtes dans ce document.</li>
+                </ul>
+            </li>
+            <li>Pour créer le renvoi cliquez sur <B>Insérer</B>.</li>
+        </ol>
+        <h2>Supprimer des renvois</h2>
+        <p>Pour supprimer un renvoi, sélectionnez le renvoi que vous souhaitez supprimer et appuyez sur la touche <B>Suppr</B>.</p>
+    </div>
+</body>
+</html>

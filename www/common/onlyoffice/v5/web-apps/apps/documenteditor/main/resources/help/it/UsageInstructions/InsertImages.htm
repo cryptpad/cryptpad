@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Inserire immagini</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Inserire immagini" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Inserire immagini</h1>
+        <p>Nell'Editor di documenti è possibile inserire nel documento immagini nei formati più diffusi. Sono supportati i seguenti formati di immagine: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+        <h3>Inserire un'immagine</h3>
+        <p>Per inserire un'immagine nel testo del documento,</p>
+        <ol>
+            <li>posizionare il cursore nel punto in cui si desidera inserire l'immagine,</li>
+            <li>passare alla scheda <b>Inserisci</b> della barra degli strumenti superiore,</li>
+            <li>fare clic sull'icona <img alt="Immagine" src="../images/image.png" /> <b>Immagine</b> nella barra degli strumenti in alto,</li>
+            <li>
+                selezionare una delle seguenti opzioni per caricare l'immagine:
+                <ul>
+                    <li>l'opzione <b>Immagine da file</b> aprirà la finestra di dialogo standard per la selezione del file. Sfogliare l'unità disco rigido del computer per il file necessario e fare clic sul pulsante <b>Apri</b></li>
+                    <li>l'opzione <b>Immagine da URL</b> aprirà la finestra in cui è possibile inserire l'indirizzo web dell'immagine necessario e fare clic sul pulsante <b>OK</b></li>
+                    <li class="onlineDocumentFeatures"> l'opzione <b>Immagine da archiviazione</b> aprirà la finestra <b>Seleziona origine dati</b>. Selezionare un'immagine memorizzata sul tuo portale e fai clic sul pulsante <b>OK</b></li>
+                </ul>
+            </li>
+            <li>una volta aggiunta l'immagine, è possibile modificarne le dimensioni, le proprietà e la posizione.</li>
+        </ol>
+        <p>È anche possibile aggiungere una didascalia all'immagine. Per saperne di più su come lavorare con le didascalie per le immagini, puoi fare riferimento a <a href="../UsageInstructions/AddCaption.htm" onclick="onhyperlinkclick(this)">questo articolo</a>.</p>
+        <h3>Spostare e ridimensionare le immagini</h3>
+        <p><img class="floatleft" alt="Spostare le immagini" src="../images/moving_image.png" />Per modificare le dimensioni dell'immagine, trascinare i quadratini <img alt="quadratini" src="../images/resize_square.png" /> situati sui bordi. Per mantenere le proporzioni originali dell'immagine selezionata durante il ridimensionamento, tenere premuto il tasto <b>Maiusc</b> e trascinare una delle icone agli angoli.</p>
+        <p>Per modificare la posizione dell'immagine, utilizzare l'icona <img alt="Freccia" src="../images/arrow.png" /> che appare dopo aver posizionato il cursore del mouse sull'immagine. Trascinare l'immagine nella posizione desiderata senza rilasciare il pulsante del mouse.</p>
+        <p>Quando si sposta l'immagine, vengono visualizzate linee guida che consentono di posizionare con precisione l'oggetto sulla pagina (se è selezionato uno stile di disposizione diverso da quello in linea).</p>
+        <p>Per ruotare l'immagine, posizionare il cursore del mouse sulla maniglia di rotazione <img alt="rotazione" src="../images/greencircle.png" /> e trascinala in senso orario o antiorario. Per vincolare l'angolo di rotazione a incrementi di 15 gradi, tenete premuto il tasto <b>Maiusc</b> durante la rotazione.</p>
+        <p class="note">
+            <b>Nota</b>: l'elenco delle scorciatoie da tastiera che possono essere utilizzate quando si lavora con gli oggetti è disponibile <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithobjects" onclick="onhyperlinkclick(this)">qui</a>.
+        </p>
+        <hr />
+        <h3>Regolare le impostazioni dell'immagine</h3>
+        <p><img class="floatleft" alt="Impostazioni immagine" src="../images/right_image.png" />Alcune delle impostazioni dell'immagine possono essere modificate utilizzando la scheda <b>Impostazioni immagine</b> della barra laterale destra.  Per attivarla clicca sull'immagine e scegli l'icona <b>Impostazioni immagine</b> <img alt="Impostazioni immagine" src="../images/image_settings_icon.png" /> a destra. Qui è possibile modificare le seguenti proprietà:</p>
+        <ul style="margin-left: 280px;">
+            <li>
+                <b>Dimensione</b> viene utilizzata per visualizzare la <b>Larghezza</b> e l'<b>Altezza</b> dell'immagine corrente. Se necessario, è possibile ripristinare le dimensioni effettive dell'immagine facendo clic sul pulsante <b>Dimensioni effettive</b>. Il pulsante <b>Adatta al margine</b> consente di ridimensionare l'immagine, in modo da occupare tutto lo spazio tra il margine sinistro e quello destro della pagina.
+                <p>Il pulsante <b>Ritaglia</b> viene utilizzato per ritagliare l'immagine. Fare clic sul pulsante <b>Ritaglia</b> per attivare le maniglie di ritaglio che appaiono agli angoli dell'immagine e al centro di ciascun lato. Trascinare manualmente le maniglie per impostare l'area di ritaglio.  È possibile spostare il cursore del mouse sul bordo dell'area di ritaglio in modo che si trasformi nell'icona  <img alt="Freccia" src="../images/arrow.png" /> e trascinare l'area.</p>
+                <ul>
+                    <li>Per ritagliare un solo lato, trascinare la maniglia situata al centro di questo lato.</li>
+                    <li>Per ritagliare contemporaneamente due lati adiacenti, trascinare una delle maniglie d'angolo.</li>
+                    <li>Per ritagliare equamente due lati opposti dell'immagine, tenere premuto il tasto <em>Ctrl</em> mentre si trascina la maniglia al centro di uno di questi lati.</li>
+                    <li>Per ritagliare equamente tutti i lati dell'immagine, tenere premuto il tasto <em>Ctrl</em> quando si trascina una delle maniglie d'angolo.</li>
+                </ul>
+                <p>Quando l'area di ritaglio è specificata, fare di nuovo clic sul pulsante <b>Ritaglia</b> o premere il tasto <em>Esc</em> oppure fare clic in un punto qualsiasi al di fuori dell'area di ritaglio per applicare le modifiche.</p>
+                <p>Dopo aver selezionato l'area di ritaglio, è anche possibile utilizzare le opzioni <b>Riempimento</b> e <b>Adatta</b> disponibili dal menu a discesa <b>Ritaglia</b>. Fare di nuovo clic sul pulsante <b>Ritaglia</b> e selezionare l'opzione desiderata:</p>
+                <ul>
+                    <li>Se si seleziona l'opzione <b>Riempimento</b> , la parte centrale dell'immagine originale verrà mantenuta e utilizzata per riempire l'area di ritaglio selezionata, mentre altre parti dell'immagine verranno rimosse.</li>
+                    <li>Se si seleziona l'opzione <b>Adatta</b>, , l'immagine verrà ridimensionata in modo da adattarla all'altezza o alla larghezza dell'area di ritaglio. Nessuna parte dell'immagine originale verrà rimossa, ma potrebbero apparire spazi vuoti all'interno dell'area di ritaglio selezionata.</li>
+                </ul>
+            </li>
+            <li>
+                <b>Rotazione</b> viene utilizzata per ruotare l'immagine di 90 gradi in senso orario o antiorario, nonché per capovolgere l'immagine orizzontalmente o verticalmente. Fare clic su uno dei pulsanti:
+                <ul>
+                    <li><img alt="Ruota in senso antiorario" src="../images/rotatecounterclockwise.png" /> per ruotare l'immagine di 90 gradi in senso antiorario</li>
+                    <li><img alt="Ruotare in senso orario" src="../images/rotateclockwise.png" /> per ruotare l'immagine di 90 gradi in senso orario</li>
+                    <li><img alt="Rifletti orizzontalmente" src="../images/fliplefttoright.png" /> per capovolgere l'immagine orizzontalmente (da sinistra a destra)</li>
+                    <li><img alt="Rifletti verticalmente" src="../images/flipupsidedown.png" /> per capovolgere l'immagine verticalmente (sottosopra)</li>
+                </ul>
+            </li>
+            <li><b>Stile di siposizione</b> viene utilizzato per selezionare uno stile di disposizione del testo tra quelli disponibili - in linea, quadrato, ravvicinato, all’interno, sopra e sotto, davantial testo, dietro al testo (per ulteriori informazioni vedere la descrizione delle impostazioni avanzate di seguito).</li>
+            <li><b>Sostituisci immagine</b> viene utilizzata per sostituire l'immagine corrente caricandone un'altra <b>Da file</b> o <b>Da URL</b>.</li>
+        </ul>
+        <p>Alcune di queste opzioni si possono trovare anche nel <b>menu di scelta rapida</b>. Le opzioni del menu sono:</p>
+        <ul style="margin-left: 280px;">
+            <li><b>Taglia, Copia, Incolla</b> - opzioni standard utilizzate per tagliare o copiare un testo/oggetto selezionato e incollare un passaggio di testo o un oggetto precedentemente tagliato/copiato nella posizione corrente del cursore.</li>
+            <li><b>Disponi</b> viene utilizzata per portare l'immagine selezionata in primo piano, inviarla sullo sfondo, spostarsi avanti o indietro, nonché raggruppare o separare le immagini per eseguire operazioni con più di esse contemporaneamente. Per ulteriori informazioni su come disporre gli oggetti è possibile fare riferimento a <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">questa pagina</a>.</li>
+            <li><b>Allinea</b> viene utilizzata per allineare l'immagine a sinistra, al centro, a destra, in alto, al centro, in basso. Per ulteriori informazioni su come allineare gli oggetti è possibile fare riferimento a <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">questa pagina</a>.</li>
+            <li><b>Stile di siposizione</b> viene utilizzato per selezionare uno stile di disposizione del testo tra quelli disponibili - in linea, quadrato, ravvicinato, all’interno, sopra e sotto, davantial testo, dietro al testo - modificare il contorno di avvolgimento. L'opzione <b>Modifica contorno avvolgimento</b> è disponibile solo se si seleziona uno stile di disposizione diverso da In linea . Trascinare i punti di ritorno a capo per personalizzare il contorno. Per creare un nuovo punto di avvolgimento, fare clic in un punto qualsiasi della linea rossa e trascinarlo nella posizione desiderata. <img alt="Modifica contorno avvolgimento" src="../images/wrap_boundary.png" /></li>
+            <li><b>Ruota</b> viene utilizzata per ruotare l'immagine di 90 gradi in senso orario o antiorario, nonché per capovolgere l'immagine orizzontalmente o verticalmente.</li>
+            <li><b>Ritaglia</b> viene utilizzata per applicare una delle opzioni di ritaglio: <b>Ritaglia</b>, <b>Riempimento</b> o <b>Adatta</b>. Selezionare l'opzione <b>Ritaglia</b> dal sottomenu, quindi trascinare le maniglie di ritaglio per impostare l'area di ritaglio e fare nuovamente clic su una di queste tre opzioni dal sottomenu per applicare le modifiche.</li>
+            <li><b>Dimensione reale</b> viene utilizzato per modificare le dimensioni correnti dell'immagine in quella effettiva.</li>
+            <li><b>Sostituisci immagine</b> viene utilizzata per sostituire l'immagine corrente caricandone un'altra <b>Da file</b> o <b>Da URL</b>.</li>
+            <li><b>Impostazioni avanzate dell'immagine</b> viene utilizzata per aprire la finestra "Immagine - Impostazioni avanzate".</li>
+        </ul>
+        <p><img class="floatleft" alt="Impostazioni forma" src="../images/right_image_shape.png" /> Quando l'immagine è selezionata, l'icona <b>Impostazioni forma</b> <img alt="Impostazioni forma" src="../images/shape_settings_icon.png" /> è disponibile anche sulla destra. È possibile fare clic su questa icona per aprire la scheda <b>Impostazioni forma</b> nella barra laterale destra e regolare il tipo di <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>tratto</b></a>, , le dimensioni e il colore della forma, nonché modificare il tipo di forma selezionando un'altra forma dal menu <b>Cambia forma automatica</b>. La forma dell'immagine cambierà di conseguenza.</p>
+        <p>Nella scheda <b>Impostazioni forma</b>, è inoltre possibile utilizzare l'opzione <b>Mostra ombreggiatura</b> per aggiungere un'ombreggiatura all'immagine.</p>
+        <hr />
+        <h3>Regolare le impostazioni avanzate dell'immagine</h3>
+        <p>Per modificare le impostazioni avanzate dell'immagine, fare clic sull'immagine con il pulsante destro del mouse e selezionare l'opzione <b>Impostazioni avanzate dell’immagine</b> dal menu di scelta rapida o fare semplicemente clic sul collegamento <b>Mostra impostazioni avanzate</b> nella barra laterale destra. Si aprirà la finestra delle proprietà dell'immagine:</p>
+        <p><img alt="Impostazioni avanzate dell’immagine - Dimensione" src="../images/image_properties.png" /></p>
+        <p>La scheda <b>Dimensione</b> contiene i seguenti parametri:</p>
+        <ul>
+            <li><b>Larghezza</b> e <b>Altezza</b> - utilizzare queste opzioni per modificare la larghezza e/o l'altezza dell'immagine. Se si fa clic sul pulsante <b>Proporzioni costanti</b> <img alt="Proporzioni costanti" src="../images/constantproportions.png" /> (in questo caso ha questo aspetto <img alt="Proporzioni costanti" src="../images/constantproportionsactivated.png" />), la larghezza e l'altezza verranno modificate insieme mantenendo le proporzioni originali dell'immagine. Per ripristinare le dimensioni effettive dell'immagine aggiunta, fare clic sul pulsante <b>Dimensioni effettive</b>.</li>
+        </ul>
+        <p><img alt="Impostazioni avanzate dell’immagine - Rotazione" src="../images/image_properties_4.png" /></p>
+        <p>La scheda <b>Rotazione</b> contiene i seguenti parametri:</p>
+        <ul>
+            <li><b>Angolo</b> - utilizzare questa opzione per ruotare l'immagine di un angolo esattamente specificato. Immettere il valore necessario misurato in gradi nel campo o regolarlo utilizzando le frecce a destra.</li>
+            <li><b>Capovolto</b> - selezionare la casella <b>Orizzontalmente</b> per capovolgere l'immagine orizzontalmente (da sinistra a destra) o selezionare la casella <b>Verticalmente</b> per capovolgere l'immagine verticalmente (sottosopra).</li>
+        </ul>
+        <p><img alt="Impostazioni avanzate dell’immagine - Disposizione testo" src="../images/image_properties_1.png" /></p>
+        <p>La scheda <b>Disposizione testo</b> contiene i seguenti parametri:</p>
+        <ul>
+            <li>
+                <b>Stile di disposizione</b> - utilizzare questa opzione per modificare il modo in cui l'immagine viene posizionata rispetto al testo: sarà una parte del testo (nel caso in cui si seleziona lo stile In linea) o bypassata da esso da tutti i lati (se si seleziona uno degli altri stili).
+                <ul>
+                    <li>
+                        <p><img alt="Stile di disposizione - In linea" src="../images/wrappingstyle_inline.png" /> <b>In linea</b> - l'immagine è considerata una parte del testo, come un carattere, quindi quando il testo si sposta, si sposta anche l'immagine. In questo caso le opzioni di posizionamento sono inaccessibili.</p>
+                        <p>Se si seleziona uno dei seguenti stili, l'immagine può essere spostata indipendentemente dal testo e posizionata esattamente sulla pagina:</p>
+                    </li>
+                    <li><p><img alt="Stile di disposizione - Quadrato" src="../images/wrappingstyle_square.png" /> <b>Quadrato</b> - il testo avvolge il riquadro rettangolare che delimita l'immagine.</p></li>
+                    <li><p><img alt="Stile di disposizione - Ravvicinato" src="../images/wrappingstyle_tight.png" /> <b>Ravvicinato</b> - il testo avvolge i bordi dell'immagine reale.</p></li>
+                    <li><p><img alt="Stile di disposizione - All’intero" src="../images/wrappingstyle_through.png" /> <b>All’intero</b> - il testo va a capo attorno ai bordi dell'immagine e riempie lo spazio bianco aperto all'interno dell'immagine. Per visualizzare l'effetto, utilizzare l'opzione <b>Modifica contorno avvolgimento</b> dal menu di scelta rapida.</p></li>
+                    <li><p><img alt="Stile di disposizione - Sopra e sotto" src="../images/wrappingstyle_topandbottom.png" /> <b>Sopra e sotto</b> - il testo è solo sopra e sotto l'immagine.</p></li>
+                    <li><p><img alt="Stile di disposizione - Davanti al testo" src="../images/wrappingstyle_infront.png" /> <b>Davanti al testo</b> - l'immagine si sovrappone al testo.</p></li>
+                    <li><p><img alt="Stile di disposizione - Dietro al testo" src="../images/wrappingstyle_behind.png" /> <b>Dietro al testo</b> - il testo si sovrappone all'immagine.</p></li>
+                </ul>
+            </li>
+        </ul>
+        <p>Se si seleziona lo stile quadrato, ravvicinato, all’interno o sopra e sotto, sarà possibile impostare alcuni parametri aggiuntivi: <b>distanza dal testo</b> su tutti i lati (in alto, in basso, a sinistra, a destra).</p>
+        <p id="position"><img alt="Impostazioni avanzate dell’immagine - Posizione" src="../images/image_properties_2.png" /></p>
+        <p>La scheda <b>Posizione</b> è disponibile solo se si seleziona uno stile di disposizione diverso da quello in linea. Questa scheda contiene i seguenti parametri che variano a seconda dello stile di disposizione selezionato:</p>
+        <ul>
+            <li>
+                La sezione <b>Orizzontale</b> consente di selezionare uno dei seguenti tre tipi di posizionamento dell'immagine:
+                <ul>
+                    <li><b>Allineamento</b> (a sinistra, al centro, a destra) <b>rispetto a</b> carattere, colonna, margine sinistro, margini, pagina o margine destro,</li>
+                    <li><b>Posizione</b> assoluta misurata in unità assolute, ad esempio <b>Centimetri</b>/<b>Punti</b>/<b>Pollici </b> (a seconda dell'opzione specificata nella scheda <b>File</b> -> <b>Impostazioni avanzate...</b>) <b>a destra</b> del carattere, colonna, margine sinistro, margini, pagina o margine destro,</li>
+                    <li><b>Posizione relativa</b> misurata in percentuale <b>rispetto al</b> margine sinistro, ai margini, alla pagina o al margine destro.</li>
+                </ul>
+            </li>
+            <li>
+                La sezione <b>Verticale</b> consente di selezionare uno dei seguenti tre tipi di posizionamento dell'immagine:
+                <ul>
+                    <li><b>Allineamento</b> (in alto, al centro, in basso) <b>rispetto a</b> riga, margini, margine inferiore, paragrafo, pagina o margine superiore,</li>
+                    <li><b>Posizione</b> assoluta misurata in unità assolute, ad esempio <b>Centimetri</b>/<b>Punti</b>/<b>Pollici </b> (a seconda dell'opzione specificata nella scheda <b>File</b> -> <b>Impostazioni avanzate...</b>) <b>sotto</b> la linea, i margini, il margine inferiore, il paragrafo, la pagina o il margine superiore,</li>
+                    <li><b>Posizione relativa</b> misurata in percentuale <b>rispetto a</b> margini, al margine inferiore, alla pagina o al margine superiore.</li>
+                </ul>
+            </li>
+            <li><b>Sposta oggetto con testo</b> controlla se l'immagine si sposta mentre il testo a cui è ancorata si sposta.</li>
+            <li><b>Consenti sovrapposizione</b> controlla se due immagini si sovrappongono o meno se trascinate una accanto all'altra sulla pagina.</li>
+        </ul>
+        <p><img alt="Impostazioni avanzate dell’immagine - Testo alternativo" src="../images/image_properties_3.png" /></p>
+        <p>La scheda <b>Testo alternativo</b> consente di specificare un <b>Titolo</b> e una <b>Descrizione</b> che verranno letti alle persone con disabilità visive o cognitive per aiutarle a capire meglio quali informazioni ci sono nell'immagine.</p>
+    </div>
+</body>
+</html>

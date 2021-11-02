@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction de recherche</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Description des fonctions de recherche et de remplacement dans Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Fonctions de recherche et remplacement</h1>
+			<p><b>Pour rechercher</b> des caractères, des mots ou des phrases dans <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a>, cliquez sur l'icône <img alt="Icône Recherche" src="../images/searchicon.png" /> située sur la barre latérale gauche ou utilisez la combinaison de touches <em>Ctrl+F</em>.</p>
+			<p>La fenêtre <b>Rechercher et remplacer</b> s'ouvre :</p><img alt="Fenêtre Rechercher et remplacer" src="../images/search_window.png" /><ol>
+			<li>Saisissez votre enquête dans le champ correspondant.</li>
+                <li>Spécifiez les paramètres de recherche en cliquant sur l'icône <img alt="icône Options de recherche" src="../images/search_options.png" /> et en cochant les options nécessaires :<ul>
+                        <li><b>Respecter la casse</b> sert à trouver les occurrences saisies de la même casse (par exemple, si votre enquête est 'Editeur' et cette option est sélectionnée, les mots tels que 'éditeur' ou 'EDITEUR' etc. ne seront pas trouvés). Pour désactiver cette option décochez la case.</li><!--<li><b>Highlight results</b> - is used to highlight all found occurrences at once. To disable this option and remove the highlight click the option once again.</li>--></ul>
+                </li>
+			<li>Cliquez sur un des <b>boutons à flèche</b> à droite. La recherche sera effectuée vers le début de la présentation (si vous cliquez sur le bouton <img alt="Flèche gauche" src="../images/searchupbutton.png" />) ou vers la fin de la présentation (si vous cliquez sur le bouton <img alt="Flèche droite" src="../images/searchdownbutton.png" />) à partir de la position actuelle. <!--<p class="note"><b>Note</b>: when the <b>Highlight results</b> option is enabled, use these buttons to navigate through the highlighted results.</p>--></li>
+			</ol>
+			<p>La première diapositive contenant les caractères saisis dans la direction sélectionnée sera activée dans la liste des diapositives et affichée avec les caractères requis dans la zone de travail. Si ce n'est pas la diapositive que vous cherchez, cliquez sur le bouton à flèche encore une fois pour passer à la diapositive suivante contenant les caractères saisis.</p>
+            <p><b>Pour remplacer</b> une ou plusieurs occurrences des caractères saisis, cliquez sur le lien <b>Remplacer</b> au-dessous du champ d'entrée ou utilisez la combinaison de touches <em>Ctrl+H</em>. La fenêtre <b>Rechercher et remplacer</b> change :</p>
+            <p><img alt="Fenêtre Rechercher et remplacer" src="../images/search_replace_window.png" /></p>
+            <ol>
+                <li>Saisissez le texte du remplacement dans le champ au-dessous.</li>
+                <li>Cliquez sur le bouton <b>Remplacer</b> pour remplacer l'occurrence actuellement sélectionnée ou le bouton <b>Remplacer tout</b> pour remplacer toutes occurrences trouvées.</li>
+            </ol>
+            <p>Pour masquer le champ de remplacement, cliquez sur le lien <b>Masquer le remplacement</b>.</p> 
+		</div>
+	</body>
+</html>

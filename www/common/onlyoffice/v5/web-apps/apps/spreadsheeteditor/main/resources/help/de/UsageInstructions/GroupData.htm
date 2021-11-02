@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten gruppieren</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Gruppieren Sie die Zeilen und die Spalten, um die Daten zu strukturieren." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Daten gruppieren</h1>
+            <p>Mithilfe der Gruppierung von Zeilen- und Spalten können Sie die Arbeit mit einer großen Datenmenge vereinfachen. Im <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a> sie können gruppierte Zeilen und Spalten reduzieren oder erweitern, um nur die erforderlichen Daten anzuzeigen. Es ist auch möglich, die mehrstufige Struktur für die gruppierten Zeilen / Spalten zu erstellen. Die Gruppierung kann man auch aufheben.</p>
+            <h3>Zeilen und Spalten gruppieren</h3>
+            <p>Um die Zeilen und Spalten zu gruppieren:</p>
+            <ol>
+                <li>Wählen Sie den Zellbereich aus, den Sie gruppieren wollen.</li>
+                <li>Öffnen Sie die Registerkarte <b>Daten</b> und verwenden Sie eine der Optionen:
+                <ul>
+                    <li>klicken Sie die Schaltfläche <img alt="Group icon" src="../images/groupicon.png" /> <b>Gruppieren</b> an, wählen Sie die Option <b>Zeilen</b> oder <b>Spalten</b> im geöffneten <b>Gruppieren</b>-Fenster aus und klicken Sie <b>OK</b> an,
+                        <p><img alt="Gruppieren-Fenster" src="../images/groupewindow.png" /></p>
+                    </li>
+                    <li>klicken Sie den Abwärtspfeil unter der <img alt="Gruppieren-Symbol" src="../images/groupicon.png" /> <b>Gruppieren</b>-Schaltfläche an und wählen Sie die Option <b>Zeilen gruppieren</b> aus, oder</li>
+                    <li>klicken Sie den Abwärtspfeil unter der <img alt="Gruppieren-Symbol" src="../images/groupicon.png" /> <b>Gruppieren</b>-Schaltfläche an und wählen Sie die Option <b>Spalten gruppieren</b> aus.</li>
+                </ul>
+                </li>
+            </ol>            
+            <p>Die ausgewählten Zeilen und Spalten werden gruppiert und die Gliederung wird links (Zeilen) oder nach oben (Spalten) angezeigt.</p>
+            <p><img alt="Gruppierte Zeilen und Spalten" src="../images/groupedrows.png" /></p>
+            <p>Um die gruppierten Zeilen und Spalten auszublenden, klicken Sie das <img alt="Gruppierte Zeilen-Symbol reduzieren" src="../images/collapserowsicon.png" /> <b>Reduzieren</b>-Symbol an. Um die reduzierten Zeilen und Spalten anzuzeigen, klicken Sie das <img alt="Reduzierte Zeilen erweitern-Symbol" src="../images/expandrowsicon.png" /> <b>Erweitern</b>-Symbol an.</p>
+            <h5>Die Gliederung ändern</h5>
+            <p>Um die Gliederung der gruppierten Zeilen und Spalten zu ändern, verwenden Sie die Optionen aus dem <b>Gruppieren</b> Drop-Down-Menü. Die Optionen <b>Hauptzeilen unter Detaildaten</b> und <b>Hauptspalten rechts von Detaildaten</b> werden standardmäßig aktiviert. Sie lassen die Position der Schaltflächen <b>Reduzieren</b> <img alt="Gruppierte Zeilen reduzieren - Symbol" src="../images/collapserowsicon.png" /> und <b>Erweitern</b> <img alt="Reduzierte Zeilen erweitern - Symbol" src="../images/expandrowsicon.png" /> ändern:</p>
+            <ul>
+                <li>Deselektieren Sie die Option <b>Hauptzeilen unter Detaildaten</b>, damit die Hauptzeilen oben angezeigt sind.</li>
+                <li>Deselektieren Sie die Option <b>Hauptspalten rechts von Detaildaten</b>, damit die Hauptspalten links angezeigt sind.</li>
+            </ul>
+            <h5>Mehrstufige Gruppen erstellen</h5>
+            <p>Um die mehrstufige Struktur zu erstellen, wählen Sie den Zellbereich innerhalb von den zuvor gruppierten Zeilen oder Spalten aus und gruppieren Sie den neuen Zellbereich (oben genannt). Jetzt können Sie die Gruppen mithilfe der Symbolen mit Nummern für Stufen <img alt="Stufe Nummer Symbol" src="../images/levelnumbericons.png" /> reduzieren oder erweitern.</p>
+            <p>Z.B., wenn Sie eine verschachtelte Gruppe innerhalb von der übergeordneten Gruppe erstellen, stehen 3 Stufen zur Verfügung. Man kann bis 8 Stufen erstellen.</p>
+            <p><img alt="Mehrstufige Struktur" src="../images/multilevelstructure.png" /></p>
+            <ul>
+                <li>Klicken Sie das Symbol für die erste Stufe <img alt="Erste Stufe Symbol" src="../images/firstlevelicon.png" /> an, um nur die erste Gruppe zu öffnen:
+                    <p><img alt="Erste Stufe" src="../images/firstlevel.png" /></p>
+                </li>
+                <li>Klicken Sie das Symbol für die zweite Stufe <img alt="Zweite Stufe Symbol" src="../images/secondlevelicon.png" /> an, um die Daten der übergeordneten Gruppe anzuzeigen:
+                    <p><img alt="Zweite Stufe" src="../images/secondlevel.png" /></p>
+                </li>
+                <li>Klicken Sie das Symbol für die dritte Stufe <img alt="Dritte Stufe Symbol" src="../images/thirdlevelicon.png" /> an, um alle Daten anzuzeigen:
+                <p><img alt="Dritte Stufe" src="../images/thirdlevel.png" /></p>
+                </li>
+            </ul>
+            <p>Man kann auch die Schaltfläche <img alt="Gruppierte Zeilen reduzieren - Symbol" src="../images/collapserowsicon.png" /> <b>Reduzieren</b> und <img alt="Reduzierte Zeilen erweitern - Symbol" src="../images/expandrowsicon.png" /> <b>Erweitern</b> innerhalb von der Gliederung anklicken, um die Daten auf jeder Stufe anzuzeigen oder zu reduzieren.</p>
+            <h3>Zeilen- und Spaltengruppierung aufheben</h3>
+            <p>Um die Zeilen- und Spaltengliederung aufzuheben:</p>
+            <ol>
+                <li>Wählen Sie den Zellbereich aus, deren Gruppierung aufgehoben werden soll.</li>
+                <li>
+                    Öffnen Sie die Registerkarte <b>Daten</b> und verwenden Sie eine der gewünschten Optionen:
+                    <ul>
+                        <li>klicken Sie die Schaltfläche <img alt="Gruppierung aufheben" src="../images/ungroupicon.png" /> <b>Gruppierung aufheben</b> an, wählen Sie die Option <b>Zeilen</b> oder <b>Spalten</b> im geöffneten <b>Gruppieren</b>-Fenster aus und klicken Sie <b>OK</b> an,
+                            <p><img alt="Gruppieren-Fenster" src="../images/groupewindow.png" /></p>
+                        </li>
+                        <li>klicken Sie den Abwärtspfeil unter der Schaltfläche <img alt="Gruppieren-Symbol" src="../images/ungroupicon.png" /> <b>Gruppierung aufheben</b> an und wählen Sie die Option <b>Gruppierung von Zeilen aufheben</b> aus, um die Zeilengruppierung aufzuheben und die Zeilengliederung zu entfernen,</li>
+                        <li>klicken Sie den Abwärtspfeil unter der Schaltfläche <img alt="Gruppieren-Symbol" src="../images/ungroupicon.png" /> <b>Gruppierung aufheben</b> an und wählen Sie die Option <b>Gruppierung von Spalten aufheben</b> aus, um die Spaltengruppierung aufzuheben und die Spaltengliederung zu entfernen,</li>
+                        <li>klicken Sie den Abwärtspfeil unter der Schaltfläche <img alt="Gruppieren-Symbol" src="../images/ungroupicon.png" /> <b>Gruppierung aufheben</b> an und wählen Sie die Option <b>Gliederung entfernen</b> aus, um die Zeilen- und Spaltengliederung zu entfernen, ohne die aktiven Gruppen zu löschen.</li>
+                    </ul>
+                </li>
+            </ol>
+		</div>
+	</body>
+</html>

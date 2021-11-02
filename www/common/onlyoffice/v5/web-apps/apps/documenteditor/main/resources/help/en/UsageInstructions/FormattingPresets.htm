@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Apply formatting styles</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Apply formatting styles: normal, heading, quote, list, etc." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Apply formatting styles</h1>
+            <p>Each formatting style is a set of predefined formatting options: (font size, color, line spacing, alignment etc.). The styles in the <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> allow you to quickly format different parts of the document (headings, subheadings, lists, normal text, quotes) instead of applying several formatting options individually each time. This also ensures the consistent appearance of the whole document.</p>
+            <p>You can also use styles to create a <a href="../UsageInstructions/CreateTableOfContents.htm" onclick="onhyperlinkclick(this)">table of contents</a> or a <a href="../UsageInstructions/AddTableofFigures.htm" onclick="onhyperlinkclick(this)">table of figures</a>.</p>
+            <p class="note">Applying a style depends on whether this style is a paragraph style (normal, no spacing, headings, list paragraph etc.), or a text style (based on the font type, size, color). It also depends on whether a text passage is selected, or the mouse cursor is placed on a word. In some cases you might need to select the required style from the style library twice, so that it can be applied correctly: when you click the style in the style panel for the first time, the paragraph style properties are applied. When you click it for the second time, the text properties are applied.</p>
+            <h3>Use default styles</h3>
+            <p>To apply one of the available text formatting styles,</p>
+			<ol>
+                <li>place the cursor within the required paragraph, or select several paragraphs,</li>
+                <li>select the required style from the style gallery on the right on the <b>Home</b> tab of the top toolbar.</li>
+			</ol>
+			<p>The following formatting styles are available: normal, no spacing, heading 1-9, title, subtitle, quote, intense quote, list paragraph, footer, header, footnote text.</p>
+			<p><img alt="Formatting styles" src="../images/formattingpresets.png" /></p>
+            <h3>Edit existing styles and create new ones</h3>
+            <p><b>To change an existing style:</b></p>
+            <ol>
+                <li>Apply the necessary style to a paragraph.</li>
+                <li>Select the paragraph text and change all the formatting parameters you need.</li>
+                <li>Save the changes made:
+                <ul>
+                    <li>right-click the edited text, select the <b>Formatting as Style</b> option and then choose the <b>Update 'StyleName' Style</b> option ('StyleName' corresponds to the style you've applied at the step 1),</li>
+                    <li>or select the edited text passage with the mouse, drop-down the style gallery, right-click the style you want to change and select the <b>Update from selection</b> option.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>Once the style is modified, all the paragraphs in the document formatted with this style will change their appearance correspondingly.</p>
+            <p><b>To create a completely new style:</b></p>
+            <ol>
+                <li>Format a text passage as you need.</li>
+                <li>Select an appropriate way to save the style:
+                    <ul>
+                        <li>right-click the edited text, select the <b>Formatting as Style</b> option and then choose the <b>Create new Style</b> option,</li>
+                        <li>or select the edited text passage with the mouse, drop-down the style gallery and click the <b>New style from selection</b> option.</li>
+                    </ul>
+                </li>
+                <li>Set the new style parameters in the opened <b>Create New Style</b> window:
+                    <p><img alt="Create New Style window" src="../images/createnewstylewindow.png" /></p>
+                    <ul>
+                        <li>Specify the new style name in the text entry field.</li>
+                        <li>Select the desired style for the subsequent paragraph from the <b>Next paragraph style</b> list. It's also possible to choose the <b>Same as created new style</b> option.</li>
+                        <li>Click the <b>OK</b> button.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>The created style will be added to the style gallery.</p>
+            <p><b>Manage your custom styles:</b></p>
+            <ul>
+                <li>To restore the default settings of a certain style you've changed, right-click the style you want to restore and select the <b>Restore to default</b> option.</li>
+                <li>To restore the default settings of all the styles you've changed, right-click any default style in the style gallery and select the <b>Restore all to default styles</b> option.
+                    <p><img alt="Edited style menu" src="../images/editedstylemenu.png" /></p>
+                </li>
+                <li>To delete one of the new styles you've created, right-click the style you want to delete and select the <b>Delete style</b> option.</li>
+                <li>To delete all the new styles you've created, right-click any new style you've created and select the <b>Delete all custom styles</b> option.
+                    <p><img alt="Custom style menu" src="../images/customstylemenu.png" /></p>
+                </li>
+            </ul>
+		</div>
+	</body>
+</html>

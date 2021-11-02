@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Supprimer les valeurs dupliquées</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Supprimer les valeurs dupliquées d'une plage de données spécifiée." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Supprimer les valeurs dupliquées</h1>
+            <p>Dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, vous pouvez supprimer les données dupliquées d'une plage de données ou <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">d'un tableau mis en forme</a>.</p>
+            <p>Pour supprimer les valeurs en double:</p>
+            <ol>
+                <li>Sélectionnez la plage de données appropriée avec doublons.</li>
+                <li>Passez à l'onglet <b>Données</b> et cliquez le bouton <img alt="Supprimer les valeurs dupliquées" src="../images/removeduplicates_icon.png" /> <b>Supprimer les valeurs dupliquées </b>dans la barre d'outils supérieure.
+                <p>Pour supprimer les valeurs en double d'un tableau mis en forme, vous pouvez aussi utiliser l'option <img alt="Supprimer les valeurs dupliquées" src="../images/removeduplicates.png" /> <b>Supprimer les valeurs dupliquées</b> sur la barre latérale droite.</p>
+                <p>Lorsque vous sélectionnez une partie des données, une fenêtre d'avertissement est affichée vous demandant si vous voulez d'étendre la sélection afin que toutes les données soient inclues ou de continuer avec la sélection en cours. Appuyez sur <b>Développer </b>ou <b>Déplacer dans sélectionnés</b>. Si vous choisissez l'option <b><b>Développer</b></b>, les valeurs en double dans les cellules adjacentes à la zone sélectionnée ne seront pas supprimés.</p>
+                <p><img alt="L'avertissement à Supprimer les valeurs dupliquées" src="../images/removeduplicates_warning.png" /></p>
+                <p> La fenêtre <b>Supprimer les valeurs dupliquées</b> s'affiche:</p>
+                    <p><img alt="Supprimer les valeurs dupliquées" src="../images/removeduplicates_window.png" /></p>
+                </li>
+                <li>Cochez la case appropriée dans la fenêtre <b>Supprimer les valeurs dupliquées</b>:
+                <ul>
+                    <li><b>Mes données ont des en-têtes</b> - cochez cette case-ci pour retirer les en-têtes des colonnes de la sélection.</li>
+                    <li><b>Colonnes</b> - continuez avec l'option <b>Sélectionner tout,</b> qui est activée par défaut ou décochez cette case et sélectionnez seulement les colonnes appropriées.</li>
+                </ul>
+                </li>
+                <li>Cliquez sur <b>OK</b>.</li>
+            </ol>            
+            <p>Les valeurs en double sont supprimées et la fenêtre s'affiche indiquant le nombre de valeurs en double qui ont été supprimées et le nombre de valeurs uniques restantes.</p>
+            <p><img alt="Les valeurs en double supprimées" src="../images/removeduplicates_result.png" /></p>
+            <p>Si vous voulez récupérer les données supprimées, utiliser l'icône <b>Annuler</b> <img alt="L'icône Annuler" src="../images/undo.png" /> dans la barre d'outils supérieure ou la combinaison de touches <I>CTRL+Z</I>.</p>
+            
+		</div>
+	</body>
+</html>

@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Die Funktion ZELLE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Die ZELLE Funktion</h1>
+			<p>Die Funktion <b>ZELLE</b> ist eine Informationsfunktion. Durch diese Funktion werden Informationen zur Formatierung, zur Position oder zum Inhalt einer Zelle zurückgegeben.</p>
+			<p>Die Syntax für die Funktion <b>ZELLE</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>ZELLE(info_type, [reference])</em></b></p> 
+            <p>wo:</p>
+            <p style="text-indent: 50px;"><b><em>info_type</em></b> ist ein Textwert mit der Zelleninformation, die Sie bekommen möchten. Dieses Argument ist erforderlich. Die Werte sind in der Tabelle nach unten gegeben.</p>
+            <p style="text-indent: 50px;"><b><em>[reference]</em></b> ist eine Zelle, über die Sie Information bekommen möchten. Fehlt dieses Argument, wird die Information nur für die zuletzt geänderte Zelle zurückgegeben. Wenn das Argument <em>reference</em> einen Zellbereich ist, wird die Information für die obere linke Zelle des Bereichs zurückgegeben.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Textwert</b></td>
+                    <td><b>Informationstyp</b></td>
+                </tr>
+                <tr>
+                    <td>"Adresse"</td>
+                    <td>Gibt den Bezug in der Zelle zurück.</td>
+                </tr>
+                <tr>
+                    <td>"Spalte"</td>
+                    <td>Gibt die Spaltennummer der Zellposition zurück.</td>
+                </tr>
+                <tr>
+                    <td>"Farbe"</td>
+                    <td>Gibt den Wert 1 zurück, wenn die Zelle für negative Werte farbig formatiert ist; andernfalls wird 0 zurückgegeben.</td>
+                </tr>
+                <tr>
+                    <td>"Inhalt"</td>
+                    <td>Gibt den Wert der Zelle zurück.</td>
+                </tr>
+                <tr>
+                    <td>"Dateiname"</td>
+                    <td>Gibt den Dateinamen der Datei mit der Zelle zurück.</td>
+                </tr>
+                <tr>
+                    <td>"Format"</td>
+                    <td>Gibt den Textwert zurück, der dem Nummerformat der Zelle entspricht. Die Textwerte sind in der Tabelle nach unten gegeben.</td>
+                </tr>
+                <tr>
+                    <td>"Klammern"</td>
+                    <td>Gibt den Wert 1 zurück, wenn die Zelle für positive oder alle Werte mit Klammern formatiert ist; andernfalls wird 0 zurückgegeben.</td>
+                </tr>
+                <tr>
+                    <td>"Präfix"</td>
+                    <td>Gibt ein einfaches Anführungszeichen (') zurück, wenn die Zelle linksbündigen Text enthält, ein doppeltes Anführungszeichen ("), wenn die Zelle rechtsbündigen Text enthält, ein Zirkumflexzeichen (^), wenn die Zelle zentrierten Text enthält, einen umgekehrten Schrägstrich (\), wenn die Zelle ausgefüllten Text enthält, und eine leere Textzeichenfolge (""), wenn die Zelle etwas anderes enthält.</td>
+                </tr>
+                <tr>
+                    <td>"Schutz"</td>
+                    <td>Gibt 0 zurück, wenn die Zelle nicht gesperrt ist; gibt 1 zurück, wenn die Zelle gesperrt ist.</td>
+                </tr>
+                <tr>
+                    <td>"Zeile"</td>
+                    <td>Gibt die Zeilennummer der Zellposition zurück.</td>
+                </tr>
+                <tr>
+                    <td>"Typ"</td>
+                    <td>Gibt "b" für die leere Zelle, "l" für einen Textwert und "v" für die anderen Werte in der Zelle zurück.</td>
+                </tr>
+                <tr>
+                    <td>"Breite"</td>
+                    <td>Gibt die Breite der Zelle zurück, gerundet auf eine ganze Zahl.</td>
+                </tr>
+            </table>
+            <p>Sehen Sie die Textwerte, die für das Argument <em>"Format"</em> zurückgegeben werden</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Nummerformat</b></td>
+                    <td><b>Zurückgegebener Textwert</b></td>
+                </tr>
+                <tr>
+                    <td>Standard</td>
+                    <td>G</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>F0</td>
+                </tr>
+                <tr>
+                    <td>#,##0</td>
+                    <td>,0</td>
+                </tr>
+                <tr>
+                    <td>0.00</td>
+                    <td>F2</td>
+                </tr>
+                <tr>
+                    <td>#,##0.00</td>
+                    <td>,2</td>
+                </tr>
+                <tr>
+                    <td>$#,##0_);($#,##0)</td>
+                    <td>C0</td>
+                </tr>
+                <tr>
+                    <td>$#,##0_);[Rot]($#,##0)</td>
+                    <td>C0-</td>
+                </tr>
+                <tr>
+                    <td>$#,##0.00_);($#,##0.00)</td>
+                    <td>C2</td>
+                </tr>
+                <tr>
+                    <td>$#,##0.00_);[Rot]($#,##0.00)</td>
+                    <td>C2-</td>
+                </tr>
+                <tr>
+                    <td>0%</td>
+                    <td>P0</td>
+                </tr>
+                <tr>
+                    <td>0.00%</td>
+                    <td>P2</td>
+                </tr>
+                <tr>
+                    <td>0.00E+00</td>
+                    <td>S2</td>
+                </tr>
+                <tr>
+                    <td># ?/? oder # ??/??</td>
+                    <td>G</td>
+                </tr>
+                <tr>
+                    <td>m/t/jj oder m/t/jj h:mm oder mm/tt/jj</td>
+                    <td>D4</td>
+                </tr>
+                <tr>
+                    <td>t-mmm-jj oder tt-mmm-jj</td>
+                    <td>D1</td>
+                </tr>
+                <tr>
+                    <td>t-mmm oder tt-mmm</td>
+                    <td>D2</td>
+                </tr>
+                <tr>
+                    <td>mmm-jj</td>
+                    <td>D3</td>
+                </tr>
+                <tr>
+                    <td>mm/tt</td>
+                    <td>D5</td>
+                </tr>
+                <tr>
+                    <td>h:mm AM/PM</td>
+                    <td>D7</td>
+                </tr>
+                <tr>
+                    <td>h:mm:ss AM/PM</td>
+                    <td>D6</td>
+                </tr>
+                <tr>
+                    <td>h:mm</td>
+                    <td>D9</td>
+                </tr>
+                <tr>
+                    <td>h:mm:ss</td>
+                    <td>D8</td>
+                </tr>
+            </table>
+            <p>Um die Funktion <b>ZELLE</b> zu verwenden,</p>
+			<ol>
+			<li>wählen Sie die Zelle für das Ergebnis aus,</li>
+			<li>klicken Sie die Schaltfläche <b>Funktion einfügen</b> <img alt="Funktion einfügen - Symbol" src="../images/insertfunction.png" /> in der oberen Symbolleiste an,
+				<br />oder klicken Sie auf die ausgewählte Zelle mit der rechten Maustaste und wählen Sie die Option <b>Funktion einfügen</b> im Menü aus,
+				<br />oder klicken Sie auf die Schaltfläche <img alt="Funktion Symbol" src="../images/function.png" /> in der Registerkarte Formel,
+			</li>
+			<li>wählen Sie die Gruppe <b>Information</b> in der Liste aus,</li>
+			<li>klicken Sie die Funktion <b>ZELLE</b> an,</li>
+			<li>geben Sie das erforderliche Argument ein,</li>
+			<li>drucken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der ausgewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="ZELLE Funktion" src="../images/cell.png" /></p>
+		</div>
+	</body>
+</html>
