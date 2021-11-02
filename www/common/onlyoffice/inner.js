@@ -61,7 +61,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 4; // version of the .bin, patches and ChainPad formats
+    var NEW_VERSION = 5; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
