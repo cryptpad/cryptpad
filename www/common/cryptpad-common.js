@@ -972,7 +972,7 @@ define([
                 data.teamId = common.initialTeam;
             }
             data.forceSave = 1;
-            delete common.initialTeam;
+            //delete common.initialTeam;
         }
         if (common.initialPath) {
             if (!data.path) {

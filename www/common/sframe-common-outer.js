@@ -1295,6 +1295,7 @@ define([
             });
 
             sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
+                data.teamId = Cryptpad.initialTeam;
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
