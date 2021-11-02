@@ -2856,8 +2856,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
-            } else if (content && content.version <= 3) { // V2 or V3
-                version = 'v2b/';
+            } else if (content && content.version <= 4) { // V2 or V3
+                version = content.version <= 3 ? 'v2b/' : 'v4/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {
