@@ -2911,7 +2911,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
 
             var useNewDefault = content.version && content.version >= 2;
-            openRtChannel(function () {
+            openRtChannel(Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3069,7 +3069,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 next();
-            });
+            }));
         };
 
         config.onError = function (err) {
