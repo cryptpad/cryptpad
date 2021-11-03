@@ -2639,7 +2639,7 @@ define([
 
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
-            h('i.cptools.fa-file-excel-o'),
+            h('i.fa.fa-file-excel-o'),
             Messages.form_exportSheet
         ]);
         $(export2Button).appendTo($controls);
