@@ -2049,6 +2049,14 @@ define([
                         }, cryptputCfg);
                         return;
                     }
+                    if (Cryptpad.fromFileData && isOO && Cryptpad.fromFileData.href) {
+                        var d = Cryptpad.fromFileData;
+                        var _p = Utils.Hash.parsePadUrl(d.href);
+                        if (_p.type === currentPad.app) {
+                            data.template = d.href;
+                            templatePw = d.password;
+                        }
+                    }
                     if (data.template) {
                         // Start OO with a template...
                         // Cryptget and give href, password and content to inner

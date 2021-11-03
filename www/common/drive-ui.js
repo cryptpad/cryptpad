@@ -1331,7 +1331,7 @@ define([
                         if (metadata.channel && metadata.channel.length < 48) {
                             hide.push('preview');
                         }
-                        if (!metadata.channel || metadata.channel.length > 32 || metadata.rtChannel) {
+                        if (!metadata.channel || metadata.channel.length > 32) {
                             hide.push('makeacopy'); // Not for blobs
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
