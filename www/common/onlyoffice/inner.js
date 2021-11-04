@@ -1644,22 +1644,24 @@ define([
                     },
                     "onDocumentReady": function () {
 
-                        if (content.version === 4 && NEW_VERSION === 5) {
+                        // Cancel migration from v4 et v5 if there is no charts
+                        if (APP.migrate && content.version === 4 && NEW_VERSION === 5) {
                             var skip = false;
                             // Skip if there is no chart in the document
                             if (getEditor()) {
                                 var app = common.getMetadataMgr().getPrivateData().ooType;
-                                var d;
+                                var d, hasChart;
                                 if (app === 'doc') {
-                                    console.error('ici');
                                     d = getEditor().GetDocument();
+                                    hasChart = d.GetAllCharts().length;
                                 } else if (app === 'presentation') {
-                                    //d = getEditor().GetPresentation();
-                                    // XXX can't skip until we find a chart detector
+                                    hasChart = d.Slides.some(function (slide) {
+                                        return slide.getDrawingObjects().some(function (obj) {
+                                            return obj instanceof getWindow().AscFormat.CChartSpace;
+                                        });
+                                    });
                                 }
-                                if (d) {
-                                    skip = !d.GetAllCharts().length;
-                                }
+                                if (!hasChart) { skip = true; }
                             }
                             if (skip) {
                                 delete content.migration;
@@ -1675,7 +1677,6 @@ define([
                                 return;
                             }
                         }
-
 
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
@@ -2945,7 +2946,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
 
             var useNewDefault = content.version && content.version >= 2;
-            openRtChannel(function () {
+            openRtChannel(Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3103,7 +3104,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 next();
-            });
+            }));
         };
 
         config.onError = function (err) {

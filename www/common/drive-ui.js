@@ -1158,10 +1158,12 @@ define([
                 return void previewMediaTag(data);
             }
 
+            var obj = { t: APP.team };
+
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
             if (useUnsafe === true || APP.newSharedFolder) {
-                return void window.open(APP.origin + href);
+                return void common.openURL(Hash.getNewPadURL(href, obj));
             }
 
             // Get hidden hash
@@ -1170,7 +1172,7 @@ define([
             if (isRo) { opts.view = true; }
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
-            window.open(APP.origin + hiddenHref);
+            common.openURL(Hash.getNewPadURL(hiddenHref, obj));
         };
         var openIn = function (type, path, team, fData) {
             var obj = {
@@ -1329,7 +1331,7 @@ define([
                         if (metadata.channel && metadata.channel.length < 48) {
                             hide.push('preview');
                         }
-                        if (!metadata.channel || metadata.channel.length > 32 || metadata.rtChannel) {
+                        if (!metadata.channel || metadata.channel.length > 32) {
                             hide.push('makeacopy'); // Not for blobs
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
