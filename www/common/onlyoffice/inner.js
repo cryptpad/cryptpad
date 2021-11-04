@@ -2858,19 +2858,28 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
             } else if (content && content.version <= 4) { // V2 or V3
                 version = content.version <= 3 ? 'v2b/' : 'v4/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
+                var skip = false;
+                if (content.version === 4 && NEW_VERSION === 5) {
+                    // Skip if there is no chart in the document
+                    skip = !getEditor().GetDocument().GetAllCharts().length;
+                }
+                if (skip) {
+                    content.version = NEW_VERSION;
                 } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
+                    APP.migrate = true;
+                    // Registedred ~~users~~ editors can start the migration
+                    if (common.isLoggedIn() && !readOnly) {
+                        content.migration = true;
+                        APP.onLocal();
                     } else {
-                        $('#cp-app-oo-editor').prepend(msg);
+                        msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                        if (APP.helpMenu) {
+                            $(APP.helpMenu.menu).after(msg);
+                        } else {
+                            $('#cp-app-oo-editor').prepend(msg);
+                        }
+                        readOnly = true;
                     }
-                    readOnly = true;
                 }
             }
             // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
