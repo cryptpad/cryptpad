@@ -1643,6 +1643,40 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
+
+                        if (content.version === 4 && NEW_VERSION === 5) {
+                            var skip = false;
+                            // Skip if there is no chart in the document
+                            if (getEditor()) {
+                                var app = common.getMetadataMgr().getPrivateData().ooType;
+                                var d;
+                                if (app === 'doc') {
+                                    console.error('ici');
+                                    d = getEditor().GetDocument();
+                                } else if (app === 'presentation') {
+                                    //d = getEditor().GetPresentation();
+                                    // XXX can't skip until we find a chart detector
+                                }
+                                if (d) {
+                                    skip = !d.GetAllCharts().length;
+                                }
+                            }
+                            if (skip) {
+                                delete content.migration;
+                                content.version = NEW_VERSION;
+                                APP.onLocal();
+                                APP.realtime.onSettle(function () {
+                                    UI.removeModals();
+                                    UI.alert(Messages.oo_sheetMigration_complete, function () {
+                                        common.gotoURL();
+                                    });
+                                    return;
+                                });
+                                return;
+                            }
+                        }
+
+
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
                         onMigrateRdy.reg(function () {
@@ -2858,28 +2892,19 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
             } else if (content && content.version <= 4) { // V2 or V3
                 version = content.version <= 3 ? 'v2b/' : 'v4/';
-                var skip = false;
-                if (content.version === 4 && NEW_VERSION === 5) {
-                    // Skip if there is no chart in the document
-                    skip = !getEditor().GetDocument().GetAllCharts().length;
-                }
-                if (skip) {
-                    content.version = NEW_VERSION;
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
                 } else {
-                    APP.migrate = true;
-                    // Registedred ~~users~~ editors can start the migration
-                    if (common.isLoggedIn() && !readOnly) {
-                        content.migration = true;
-                        APP.onLocal();
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
                     } else {
-                        msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                        if (APP.helpMenu) {
-                            $(APP.helpMenu.menu).after(msg);
-                        } else {
-                            $('#cp-app-oo-editor').prepend(msg);
-                        }
-                        readOnly = true;
+                        $('#cp-app-oo-editor').prepend(msg);
                     }
+                    readOnly = true;
                 }
             }
             // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
