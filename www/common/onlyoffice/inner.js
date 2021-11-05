@@ -1654,7 +1654,7 @@ define([
                         if (app === 'doc') {
                             d = getEditor().GetDocument();
                             hasChart = d.GetAllCharts().length || d.Document.Content.some(function (obj) {
-                                return obj instanceof AscCommonWord.CTable;
+                                return obj instanceof getWindow().AscCommonWord.CTable;
                             });
                             if (hasChart) { Feedback.send('OO_DOC_CHART', true); }
                         } else if (app === 'presentation') {
