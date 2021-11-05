@@ -1638,13 +1638,15 @@ define([
                         var d, hasChart;
                         if (app === 'doc') {
                             d = getEditor().GetDocument();
-                            hasChart = d.GetAllCharts().length;
+                            hasChart = d.GetAllCharts().length || d.Document.Content.some(function (obj) {
+                                return obj instanceof AscCommonWord.CTable;
+                            });
                             if (hasChart) { Feedback.send('OO_DOC_CHART', true); }
                         } else if (app === 'presentation') {
                             d = getEditor().GetPresentation().Presentation;
                             hasChart = d.Slides.some(function (slide) {
                                 return slide.getDrawingObjects().some(function (obj) {
-                                    return obj instanceof getWindow().AscFormat.CChartSpace;
+                                    return obj instanceof getWindow().AscFormat.CChartSpace || obj instanceof getWindow().AscFormat.CGraphicFrame;
                                 });
                             });
                             if (hasChart) { Feedback.send('OO_SLIDE_CHART', true); }
