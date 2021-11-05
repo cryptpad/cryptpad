@@ -3698,16 +3698,25 @@ define([
                                     }
                                 });
                                 if (res === type || !TYPES[res]) { return; }
+                                var oldOpts = model.defaultOpts || {};
                                 model = TYPES[res];
+                                Object.keys(oldOpts).forEach(function (v) {
+                                    var opts = model.defaultOpts || {};
+                                    if (!opts[v]) { delete (block.opts || {})[v]; }
+                                });
                                 type = res;
                                 if (!data) { data = {}; }
                                 block.type = res;
+
                                 framework.localChange();
+                                var wasEditing = data.editing;
+                                onSave(null, true);
                                 var $oldTag = $(data.tag);
                                 framework._.cpNfInner.chainpad.onSettle(function () {
                                     $(changeType).find('span').text(Messages['form_type_'+type]);
                                     data = model.get(block.opts, _answers, null, evOnChange);
                                     $oldTag.before(data.tag).remove();
+                                    if (wasEditing) { $(edit).click(); }
                                 });
                             });
                         });
