@@ -1601,6 +1601,8 @@ define([
                                   //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#slot-btn-inschart { display: none !important; }' + // XXX XXX
                                   '#slot-btn-insertchart { display: none !important; }' + // XXX XXX
+                                  '#slot-btn-instable { display: none !important; }' + // XXX XXX
+                                  '#slot-btn-inserttable { display: none !important; }' + // XXX XXX
                                   //'#fm-btn-save { display: none !important; }' +
                                   //'#panel-settings-general tr.autosave { display: none !important; }' +
                                   //'#panel-settings-general tr.coauth { display: none !important; }' +
