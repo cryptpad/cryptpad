@@ -1815,7 +1815,7 @@ define([
             defaultOpts: {
                 items: [1,2].map(function (i) {
                     return {
-                        uid: Util.uid(),
+                        //uid: Util.uid(),
                         v: Messages._getKey('form_defaultItem', [i])
                     };
                 }),
@@ -1831,6 +1831,10 @@ define([
                 if (!opts) { opts = Util.clone(TYPES.multiradio.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
+                    if (!itemData.uid) {
+                        itemData.uid = Util.uid();
+                        if (APP.isEditor) { APP.framework.localChange(); }
+                    }
                     var name = itemData.uid;
                     var item = itemData.v;
                     var els = extractValues(opts.values).map(function (data, i) {
@@ -3340,9 +3344,11 @@ define([
                     // Make sure we can't create a section inside another one
                     if (type === 'section' && arr !== content.order) { return; }
 
+                    var model = TYPES[type] || STATIC_TYPES[type];
+                    if (!model) { return; }
                     content.form[_uid] = {
                         //q: Messages.form_default,
-                        //opts: opts
+                        opts: Util.clone(model.defaultOpts),
                         type: type,
                     };
                     if (full || inSection) {
