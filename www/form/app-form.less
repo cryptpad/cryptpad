@@ -477,13 +477,19 @@
                     .cp-form-anon-answer {
                         text-align: center;
                         margin: 20px 0 30px 0;
+                        .cp-form-required-radio.cp-radio-required {
+                            background: fade(@cryptpad_text_col, 15%);
+                            padding: 3px;
+                            border: 2px solid @cryptpad_color_red;
+                            color: @cp_form-invalid;
+                        }
                         .cp-form-anon-answer-input {
-                            margin-top: 20px;
                             display: flex;
                             white-space: nowrap;
                             align-items: center;
                             input {
                                 margin-left: 10px;
+                                display: inline-block;
                             }
                         }
                         .cp-form-anon-answer-registered {
