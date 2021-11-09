@@ -1815,7 +1815,7 @@ define([
             defaultOpts: {
                 items: [1,2].map(function (i) {
                     return {
-                        uid: Util.uid(),
+                        //uid: Util.uid(),
                         v: Messages._getKey('form_defaultItem', [i])
                     };
                 }),
@@ -1831,6 +1831,10 @@ define([
                 if (!opts) { opts = Util.clone(TYPES.multiradio.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
                 var lines = opts.items.map(function (itemData) {
+                    if (!itemData.uid) {
+                        itemData.uid = Util.uid();
+                        if (APP.isEditor) { APP.framework.localChange(); }
+                    }
                     var name = itemData.uid;
                     var item = itemData.v;
                     var els = extractValues(opts.values).map(function (data, i) {
@@ -2719,7 +2723,7 @@ define([
                 var answer = obj.msg;
                 var date = new Date(obj.time).toLocaleString();
                 var text, warning, badge;
-                if (!answer._userdata || !answer._userdata.name) {
+                if (!answer._userdata || (!answer._userdata.name && !answer._userdata.curvePublic)) {
                     text = Messages._getKey('form_answerAnonymous', [date]);
                 } else {
                     var ud = answer._userdata;
@@ -3018,69 +3022,83 @@ define([
 
         if (!loggedIn && !content.answers.anonymous) { return; }
 
-        var cbox;
-        var anonName, $anonName;
-        cbox = UI.createCheckbox('cp-form-anonymous',
-                   Messages.form_anonymousBox, true, {});
-        var $cbox = $(cbox);
-        var $anonBox = $cbox.find('input');
+        var $anonName;
+        var anonRadioOn = UI.createRadio('cp-form-anon', 'cp-form-anon-on',
+                Messages.form_anonymousBox, false, {
+                    input: { value: 1 },
+                });
+        var anonOffContent = h('span');
+        var anonRadioOff = UI.createRadio('cp-form-anon', 'cp-form-anon-off',
+                anonOffContent, false, {
+                    input: { value: 0 },
+                });
+        Messages.form_answerChoice = "Please choose how you would like to answer this form: "; // XXX
+        var radioContainer = h('div.cp-form-required-radio', [
+            Messages.form_answerChoice,
+            anonRadioOn,
+            anonRadioOff,
+        ]);
+        var $radio = $(radioContainer);
+
+
         if (content.answers.makeAnonymous) {
             // If we make all answers anonymous, hide the checkbox and display a message
-            $cbox.hide();
-            $anonBox.attr('disabled', 'disabled').prop('checked', true);
+            $radio.hide();
+            $(anonRadioOn).find('input').prop('checked', true);
             setTimeout(function () {
                 // We need to wait for cbox to be added into the DOM before using .after()
-                $cbox.after(h('div.alert.alert-info', Messages.form_anonAnswer));
+                $radio.after(h('div.alert.alert-info', Messages.form_anonAnswer));
             });
         } else if (content.answers.anonymous) {
             // Answers aren't anonymous and guests are allowed
             // Guests can set a username and logged in users can answer anonymously
-            var $anon;
             if (!loggedIn) {
-                anonName = h('div.cp-form-anon-answer-input', [
+                $(anonOffContent).append(h('span.cp-form-anon-answer-input', [
                     Messages.form_answerAs,
                     h('input', {
                         value: user.name || '',
                         placeholder: Messages.form_anonName
                     })
-                ]);
-                $anonName = $(anonName).hide();
+                ]));
+                $anonName = $(anonOffContent).find('input');
+                var $off = $(anonRadioOff).find('input[type="radio"]');
+                $anonName.on('click input', function () {
+                    if (!Util.isChecked($off)) { $off.prop('checked', true); }
+                });
             } else if (APP.cantAnon) {
                 // You've already answered with your credentials
-                $cbox.hide();
-                $anonBox.attr('disabled', 'disabled').prop('checked', false);
+                $(anonRadioOn).find('input').attr('disabled', 'disabled');
+                $(anonRadioOff).find('input[type="radio"]').prop('checked', true);
             }
-            if (!anonName) {
-                anonName = h('div.cp-form-anon-answer-input', [
+            if (!$anonName) {
+                $(anonOffContent).append(h('div.cp-form-anon-answer-input', [
                     Messages.form_answerAs,
                     h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
-                ]);
+                ]));
             }
-            if (!APP.cantAnon) {
-                $anon = $(anonName).hide();
-                $anonBox.on('change', function () {
-                    if (Util.isChecked($anonBox)) { $anon.hide(); }
-                    else { $anon.show(); }
+            if (!$radio.find('input[type="radio"]:checked').length) {
+                $radio.addClass('cp-radio-required');
+                $radio.find('input[type="radio"]').on('change', function () {
+                    $radio.removeClass('cp-radio-required');
                 });
             }
         } else {
             // Answers don't have to be anonymous and only logged in users can answer
             // ==> they have to answer with their keys so we know their name too
-            $cbox.hide();
-            $anonBox.attr('disabled', 'disabled').prop('checked', false);
+            $(anonRadioOn).find('input').attr('disabled', 'disabled');
+            $(anonRadioOff).find('input[type="radio"]').prop('checked', true);
             setTimeout(function () {
                 // We need to wait for cbox to be added into the DOM before using .after()
                 if (content.answers.cantEdit) { return; }
-                $cbox.after(h('div.alert.alert-info', Messages.form_authAnswer));
+                $radio.after(h('div.alert.alert-info', Messages.form_authAnswer));
             });
-            anonName = h('div.cp-form-anon-answer-input', [
+            $(anonOffContent).append(h('div.cp-form-anon-answer-input', [
                 Messages.form_answerAs,
                 h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
-            ]);
+            ]));
         }
         if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
-            $cbox.hide();
-            anonName = undefined;
+            $radio.hide();
         }
 
         var send = h('button.cp-open.btn.btn-primary', APP.hasAnswered ? Messages.form_update : Messages.form_submit);
@@ -3094,12 +3112,18 @@ define([
             evOnChange.fire();
         });
         var $send = $(send).click(function () {
+            if (!$radio.find('input[type="radio"]:checked').length) {
+                return UI.warn(Messages.error);
+            }
+
             $send.attr('disabled', 'disabled');
             var results = getFormResults();
             if (!results) { return; }
 
+            var wantName = Util.isChecked($(anonRadioOff).find('input[type="radio"]'));
+
             var user = metadataMgr.getUserData();
-            if (!Util.isChecked($anonBox) && !content.answers.makeAnonymous) {
+            if (wantName && !content.answers.makeAnonymous) {
                 results._userdata = loggedIn ? {
                     avatar: user.avatar,
                     name: user.name,
@@ -3107,7 +3131,7 @@ define([
                     curvePublic: user.curvePublic,
                     profile: user.profile
                 } : {
-                    name: $anonName ? $anonName.find('input').val() : user.name
+                    name: $anonName ? $anonName.val() : user.name
                 };
             }
 
@@ -3116,7 +3140,7 @@ define([
                 mailbox: content.answers,
                 results: results,
                 anonymous: content.answers.makeAnonymous || !loggedIn
-                            || (Util.isChecked($anonBox) && !APP.cantAnon) // use ephemeral keys
+                            || (!wantName && !APP.cantAnon) // use ephemeral keys
             }, function (err, data) {
                 $send.attr('disabled', 'disabled');
                 if (err || (data && data.error)) {
@@ -3125,6 +3149,11 @@ define([
                     }
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
+                }
+                if (results._userdata && loggedIn) {
+                    $(anonRadioOn).find('input').attr('disabled', 'disabled');
+                    $(anonRadioOff).find('input[type="radio"]').prop('checked', true);
+                    APP.cantAnon = true;
                 }
                 evOnChange.fire(false, true);
                 window.onbeforeunload = undefined;
@@ -3135,8 +3164,7 @@ define([
                 APP.answeredInForm = false;
                 showAnsweredPage(framework, content, { '_time': +new Date() });
                 if (content.answers.cantEdit) {
-                    $cbox.hide();
-                    if ($anonName) { $anonName.hide(); }
+                    $(radioContainer).hide();
                 }
             });
         });
@@ -3242,12 +3270,11 @@ define([
         }
 
         return h('div.cp-form-send-container', [
-            invalid,
             errors,
-            cbox ? h('div.cp-form-anon-answer', [
-                        cbox,
-                        anonName
-                   ]) : undefined,
+            invalid,
+            h('div.cp-form-anon-answer', [
+                radioContainer
+            ]),
             reset, send
         ]);
     };
@@ -3340,9 +3367,11 @@ define([
                     // Make sure we can't create a section inside another one
                     if (type === 'section' && arr !== content.order) { return; }
 
+                    var model = TYPES[type] || STATIC_TYPES[type];
+                    if (!model) { return; }
                     content.form[_uid] = {
                         //q: Messages.form_default,
-                        //opts: opts
+                        opts: Util.clone(model.defaultOpts),
                         type: type,
                     };
                     if (full || inSection) {

@@ -188,7 +188,7 @@ define([
                         hidden.push(al.toString());
                     }
                     var trigger = al.getFirstPropertyValue('trigger');
-                    var minutes = trigger ? (-trigger.toSeconds() / 60) : 0;
+                    var minutes = trigger && trigger.toSeconds ? (-trigger.toSeconds() / 60) : 0;
                     if (reminders.indexOf(minutes) === -1) { reminders.push(minutes); }
                 });
 

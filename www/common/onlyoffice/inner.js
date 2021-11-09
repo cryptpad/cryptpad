@@ -1588,6 +1588,8 @@ define([
                                   //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#slot-btn-inschart { display: none !important; }' + // XXX XXX
                                   '#slot-btn-insertchart { display: none !important; }' + // XXX XXX
+                                  '#slot-btn-instable { display: none !important; }' + // XXX XXX
+                                  '#slot-btn-inserttable { display: none !important; }' + // XXX XXX
                                   //'#fm-btn-save { display: none !important; }' +
                                   //'#panel-settings-general tr.autosave { display: none !important; }' +
                                   //'#panel-settings-general tr.coauth { display: none !important; }' +
@@ -1638,13 +1640,15 @@ define([
                         var d, hasChart;
                         if (app === 'doc') {
                             d = getEditor().GetDocument();
-                            hasChart = d.GetAllCharts().length;
+                            hasChart = d.GetAllCharts().length || d.Document.Content.some(function (obj) {
+                                return obj instanceof getWindow().AscCommonWord.CTable;
+                            });
                             if (hasChart) { Feedback.send('OO_DOC_CHART', true); }
                         } else if (app === 'presentation') {
                             d = getEditor().GetPresentation().Presentation;
                             hasChart = d.Slides.some(function (slide) {
                                 return slide.getDrawingObjects().some(function (obj) {
-                                    return obj instanceof getWindow().AscFormat.CChartSpace;
+                                    return obj instanceof getWindow().AscFormat.CChartSpace || obj instanceof getWindow().AscFormat.CGraphicFrame;
                                 });
                             });
                             if (hasChart) { Feedback.send('OO_SLIDE_CHART', true); }
