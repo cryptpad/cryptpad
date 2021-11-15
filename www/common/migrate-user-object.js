@@ -111,7 +111,7 @@ define([
             }
         }).nThen(function (waitFor) {
             var addChannelId = function () {
-                var data = userObject.drive.filesData;
+                var data = userObject.drive.filesData || {};
                 var el, parsed;
                 var n = nThen(function () {});
                 var padsLength = Object.keys(data).length;
