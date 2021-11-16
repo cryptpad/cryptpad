@@ -3032,7 +3032,6 @@ define([
                 anonOffContent, false, {
                     input: { value: 0 },
                 });
-        Messages.form_answerChoice = "Please choose how you would like to answer this form: "; // XXX
         var radioContainer = h('div.cp-form-required-radio', [
             Messages.form_answerChoice,
             anonRadioOn,
