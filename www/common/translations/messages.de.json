@@ -1423,5 +1423,7 @@
     "fc_openIn": "In {0} öffnen",
     "premiumOnly": "Die Erstellung neuer Dokumente in dieser Anwendung ist derzeit nur für Abonnenten auf {0} möglich. Dies ist eine experimentelle Anwendung für Testzwecke. Sie wird bald für jeden Benutzer auf {0} verfügbar sein.",
     "premiumAccess": "Als Abonnent auf {0} kannst du in dieser Anwendung neue Dokumente erstellen. Bitte beachte, dass es sich um eine experimentelle Anwendung handelt, der man noch keine wichtigen Daten anvertrauen sollte.",
-    "earlyAccessBlocked": "Diese Anwendung ist auf dieser Instanz noch nicht verfügbar"
+    "earlyAccessBlocked": "Diese Anwendung ist auf dieser Instanz noch nicht verfügbar",
+    "form_exportSheet": "In Tabelle exportieren",
+    "form_answerChoice": "Bitte wähle aus, wie du dieses Formular beantworten möchtest:"
 }

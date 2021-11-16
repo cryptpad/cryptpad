@@ -1424,5 +1424,6 @@
     "fc_openIn": "Ouvrir avec {0}",
     "creation_new": "Créer : {0}",
     "premiumAccess": "En tant qu'abonné sur {0}, vous pouvez créer de nouveaux documents dans cette application en accès restreint. Veuillez noter qu'elle est expérimentale et qu'il n'est pas recommandé d'y stocker des données importantes.",
-    "form_exportSheet": "Exporter vers Tableur"
+    "form_exportSheet": "Exporter vers Tableur",
+    "form_answerChoice": "Veuillez choisir comment vous souhaitez répondre à ce formulaire :"
 }

@@ -1424,5 +1424,6 @@
     "premiumOnly": "Creating new documents in this application is currently limited to subscribers on {0}. This is an early-access experimental application for testing purposes. It will soon become available to everyone on {0}.",
     "earlyAccessBlocked": "This application is not available yet on this instance",
     "premiumAccess": "As a subscriber on {0}, you can create new documents in this early-access application. Please be aware that it is experimental and should not yet be trusted with important data.",
-    "form_exportSheet": "Export to Sheet"
+    "form_exportSheet": "Export to Sheet",
+    "form_answerChoice": "Please choose how you would like to answer this form:"
 }
