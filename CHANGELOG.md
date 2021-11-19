@@ -1,3 +1,13 @@
+# 4.12.1
+
+This minor release contains a few bug fixes based on feedback we received and adjustments to prepare for the update to OnlyOffice 6.4.
+
+* We noticed that charts and tables in the Document and Presentation (early access) applications cause conflicts with the upcoming OnlyOffice update. They are now disabled until the next release.
+* We found that the button to export form results to a CryptPad sheet was empty so we added the missing text.
+* Several issues were reported with the Forms application and are now fixed. This patch will prevent conditional sections from losing their content (questions and conditions) while editing the form. The "max options" selector won't be displayed anymore when converting "checkbox" questions to other types. The first two lines of a "choice grid" weren't always registered when submitting a form and this patch fixes it for newly created choice grids.
+* Some calendars created with external tools couldn't be imported in CryptPad due to notifications settings. We've changed the "import" script to make sure the event could still be imported but without the problematic notification.
+* We've received conflicting feedback about the privacy settings in forms. In the existing system, the users had to untick a box to submit with their name but, depending on the context, it's not always a good solution to make a form result anonymous by default. Similarly submitting form results with the username by default isn't privacy-friendly. We implemented a new system to prompt users to choose between submitting anonymously or with their name (unless one of the options is disabled).
+
 # 4.12.0
 
 ## Goals
