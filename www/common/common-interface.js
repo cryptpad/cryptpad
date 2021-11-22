@@ -18,14 +18,14 @@ define([
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
-    '/common/test.js',
+    //'/common/test.js',
 
     '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, h, Loading, Test) {
+            Alertify, Tippy, h, Loading/*, Test */) {
     var UI = {};
 
     /*
@@ -994,7 +994,7 @@ define([
         // Release the test blocker, hopefully every test has been registered.
         // This test is created in sframe-boot2.js
         cb = cb || function () {};
-        if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
+        //if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
 
         var $loading = $('#' + LOADING);
         $loading.addClass("cp-loading-hidden"); // Hide the loading screen

@@ -27,7 +27,7 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     '/common/sframe-app-framework.js',
     '/common/cursor.js',
-    '/common/TypingTests.js',
+    //'/common/TypingTests.js',
     '/customize/messages.js',
     '/pad/links.js',
     '/pad/comments.js',
@@ -42,8 +42,8 @@ define([
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/bower_components/chainpad/chainpad.dist.js',
-    '/customize/application_config.js',
-    '/common/test.js',
+    //'/customize/application_config.js',
+    //'/common/test.js',
 
     '/lib/diff-dom/diffDOM.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -57,7 +57,7 @@ define([
     Hyperjson,
     Framework,
     Cursor,
-    TypingTest,
+    //TypingTest,
     Messages,
     Links,
     Comments,
@@ -71,9 +71,9 @@ define([
     UI,
     UIElements,
     h,
-    ChainPad,
+    ChainPad/*,
     AppConfig,
-    Test
+    Test */
 ) {
     var DiffDom = window.diffDOM;
 
@@ -1249,6 +1249,7 @@ define([
         // export the typing tests to the window.
         // call like `test = easyTest()`
         // terminate the test like `test.cancel()`
+        /*
         window.easyTest = function() {
             cursor.update();
             //var start = cursor.Range.start;
@@ -1257,6 +1258,7 @@ define([
             framework.localChange();
             return test;
         };
+        */
 
 
         // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
@@ -1509,6 +1511,7 @@ define([
             Links.init(Ckeditor, editor, openLinkSetting);
             require(['/pad/csp.js'], waitFor());
         }).nThen(function( /*waitFor*/ ) {
+            /*
 
             function launchAnchorTest(test) {
                 // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
@@ -1572,16 +1575,17 @@ define([
                     if (editor.status === "ready") {
                         window.clearInterval(intervalHandle);
                         console.log("Editor is ready.");
-                        tryAndTestExport();
+                        tryAndTestExport(); // XXX
                     } else {
                         console.log("Waiting for editor to be ready.");
                     }
                 }, 100);
             }
+            /*
             Test(function(test) {
 
                 launchAnchorTest(test);
-            });
+            });*/
             andThen2(editor, Ckeditor, framework);
         });
     };

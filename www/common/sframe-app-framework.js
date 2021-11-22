@@ -38,8 +38,8 @@ define([
     Feedback,
     Snapshots,
     AppConfig,
-    ChainPad,
-    Test)
+    ChainPad /*,
+    /* Test */)
 {
     var SaveAs = window.saveAs;
 
@@ -87,6 +87,7 @@ define([
         var contentContainer = options.contentContainer ||
             (function () { throw new Error("contentContainer must be specified"); }());
 
+/*
         Test(function (t) {
             console.log("Here is the test");
             evOnReady.reg(function () {
@@ -96,6 +97,7 @@ define([
                 });
             });
         });
+*/
 
         var onLocal;
         var textContentGetter;
@@ -779,7 +781,7 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
-            Test.registerInner(common.getSframeChannel());
+            //Test.registerInner(common.getSframeChannel());
             common.handleNewFile(waitFor);
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
