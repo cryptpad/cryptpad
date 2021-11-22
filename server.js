@@ -139,7 +139,7 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 
 app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
-        Express.static(Path.join(__dirname, Env.paths.blob), {
+        Express.static(Env.paths.blob, {
             setHeaders: function (res, path, stat) {
                 res.set('Access-Control-Allow-Origin', '*');
                 res.set('Access-Control-Allow-Headers', 'Content-Length');
@@ -169,31 +169,32 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(Express.static(__dirname + '/www'));
+app.use(Express.static(Path.resolve('www')));
 
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
 
 var mainPages = config.mainPages || Default.mainPages();
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
-app.get(mainPagePattern, Express.static(__dirname + '/customize'));
-app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
+app.get(mainPagePattern, Express.static(Path.resolve('customize')));
+app.get(mainPagePattern, Express.static(Path.resolve('customize.dist')));
 
-app.use("/blob", Express.static(Path.join(__dirname, Env.paths.blob), {
+app.use("/blob", Express.static(Env.paths.blob, {
     maxAge: Env.DEV_MODE? "0d": "365d"
 }));
-app.use("/datastore", Express.static(Path.join(__dirname, Env.paths.data), {
+app.use("/datastore", Express.static(Env.paths.data, {
     maxAge: "0d"
 }));
-app.use("/block", Express.static(Path.join(__dirname, Env.paths.block), {
+
+app.use("/block", Express.static(Env.paths.block, {
     maxAge: "0d",
 }));
 
-app.use("/customize", Express.static(__dirname + '/customize'));
-app.use("/customize", Express.static(__dirname + '/customize.dist'));
-app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
-app.use(/^\/[^\/]*$/, Express.static('customize'));
-app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
+app.use("/customize", Express.static(Path.resolve('customize')));
+app.use("/customize", Express.static(Path.resolve('customize.dist')));
+app.use("/customize.dist", Express.static(Path.resolve('customize.dist')));
+app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize')));
+app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize.dist')));
 
 // if dev mode: never cache
 var cacheString = function () {
@@ -279,8 +280,8 @@ var serveBroadcast = makeRouteCache(function (host) {
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
-var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
-var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
+var four04_path = Path.resolve('customize.dist/404.html');
+var custom_four04_path = Path.resolve('customize/404.html');
 
 var send404 = function (res, path) {
     if (!path && path !== four04_path) { path = four04_path; }
@@ -299,7 +300,7 @@ app.use(function (req, res, next) {
 var httpServer = Env.httpServer = Http.createServer(app);
 
 nThen(function (w) {
-    Fs.exists(__dirname + "/customize", w(function (e) {
+    Fs.exists(Path.resolve("customize"), w(function (e) {
         if (e) { return; }
         console.log("CryptPad is customizable, see customize.dist/readme.md for details");
     }));
