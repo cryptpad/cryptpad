@@ -9,3 +9,5 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jquery.ui 1.12.1](https://jqueryui.com/) for its 'autocomplete' extension which is used for our tag picker
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
 * [mermaidjs 8.4.8](https://mermaid-js.github.io/mermaid/#/) extends our markdown integration to support a variety of diagram types
+* [Fabricjs 4.6.0](https://github.com/fabricjs/fabric.js) and [Fabric-history](https://github.com/lyzerk/fabric-history) for the whiteboard app
+
