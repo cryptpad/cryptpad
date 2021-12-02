@@ -1546,6 +1546,16 @@ define([
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var images = (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {};
+
+            // Fix race condition which could drop images sometimes
+            // ==> make sure each image has a 'media/image_name.ext' entry as well
+            Object.keys(images).forEach(function (img) {
+                if (/^media\//.test(img)) { return; }
+                if (images['media/'+img]) { return; }
+                images['media/'+img] = images[img];
+            });
+
+            // Add theme images
             var theme = e && window.frames[0].AscCommon.g_image_loader.map_image_index;
             if (theme) {
                 Object.keys(theme).forEach(function (url) {
@@ -1554,6 +1564,7 @@ define([
                     }
                 });
             }
+
             sframeChan.query('Q_OO_CONVERT', {
                 data: data,
                 type: type,
