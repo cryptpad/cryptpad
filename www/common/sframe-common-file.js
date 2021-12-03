@@ -698,7 +698,7 @@ define([
             var ctx = {
                 fileHost: privateData.fileHost,
                 get: common.getPad,
-                sframeChan: sframeChan,
+                sframeChan: common.getSframeChannel(),
                 cache: common.getCache()
             };
 

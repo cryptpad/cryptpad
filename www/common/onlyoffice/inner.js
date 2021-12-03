@@ -1406,15 +1406,17 @@ define([
                             }
                             break;
                         case "cursor":
-                            cursor.updateCursor({
-                                type: "cursor",
-                                messages: [{
-                                    cursor: obj.cursor,
-                                    time: +new Date(),
-                                    user: myUniqueOOId,
-                                    useridoriginal: myOOId
-                                }]
-                            });
+                            if (cursor && cursor.updateCursor) {
+                                cursor.updateCursor({
+                                    type: "cursor",
+                                    messages: [{
+                                        cursor: obj.cursor,
+                                        time: +new Date(),
+                                        user: myUniqueOOId,
+                                        useridoriginal: myOOId
+                                    }]
+                                });
+                            }
                             break;
                         case "getLock":
                             handleLock(obj, send);
