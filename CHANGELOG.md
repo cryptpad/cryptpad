@@ -2,7 +2,8 @@
 
 ## Goals
 
-Update dependencies
+* Update dependencies
+* fix bugs
 
 ## Update notes
 
@@ -18,11 +19,35 @@ To update from 4.12.0 or 4.12.1 to 4.13.0:
 
 * more mermaid diagram types
 * update fabricjs to support various drawing tablets
-* OnlyOffice
+* new version of OnlyOffice
+* additional iframe sandboxing measures where appropriate
+  * secureiframe
 
 ## Bug fixes
 
 * prompt guests to log in or register when viewing a shared folder with edit rights
+* fix border styles on horizontal dividers in dropdowns
+* update json-schema to avoid some prototype pollution
+* avoid breaking code documents with `\`\`\`__proto__` code blocks
+* template creation issues
+  * don't delete `common.initialTeam` ???
+    * used for `Q_SAVE_AS_TEMPLATE`
+  * use passwords where appropriate
+* OnlyOffice
+  * avoid type errors in OnlyOffice if no cursor exists
+  * try to recover old cursor?
+  * respond to OnlyOffice presentation editor with image URLs when present
+  * ensure that images are correctly loaded when exporting via x2t and add theme images
+  * re-enable chart and table insertion buttons in the UI
+  * only open the realtime-channel once
+  * log to the console if x2t fails to run ?
+* guard against type errors in user object migration
+* avoid previewing PDFs in the upload modal (due to incompatibility with improved sandboxing measures?)
+* avoid sframeChan undefined error
+* forms
+  * adjust display styles for buttons
+  * reset default options
+  * re-enter editing status if form autosave interrupts activity
 
 # 4.12.1
 
