@@ -132,6 +132,18 @@
             g.legend text, text.pieTitleText {
                 fill: @cp_markdown-block-fg;
             }
+            g.legend rect {
+                stroke: black !important;
+                stroke-width: 1px;
+            }
+        }
+        &[mermaid-source^="erDiagram"] {
+            rect.er:not(.relationshipLabelBox) {
+                fill: #ECECFF;
+            }
+            g text.er {
+                fill: #333;
+            }
         }
     }
     pre.markmap {
