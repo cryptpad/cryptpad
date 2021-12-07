@@ -215,7 +215,7 @@ define([
             var tabId = metadataMgr.getNetfluxId() + '-' + obj.id;
             if (content.ids[tabId]) {
                 delete content.ids[tabId];
-                delete content.locks[tabId];
+                if (content.locks) { delete content.locks[tabId]; }
                 APP.onLocal();
             }
         };
