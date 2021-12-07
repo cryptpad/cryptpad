@@ -4,7 +4,7 @@
         "pad": "Texto enriquecido",
         "code": "Código",
         "poll": "Encuesta",
-        "slide": "Presentación",
+        "slide": "Diapositivas Markdown",
         "whiteboard": "Pizarra",
         "contacts": "Contactos",
         "kanban": "Kanban",
@@ -14,7 +14,9 @@
         "media": "Media",
         "sheet": "Hoja de Cálculo",
         "teams": "Equipos",
-        "form": "Formulario"
+        "form": "Formulario",
+        "presentation": "Presentación",
+        "doc": "Documento"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronizando",
@@ -298,7 +300,7 @@
     "settings_codeIndentation": "Indentación del editor de código (espacios)",
     "settings_codeUseTabs": "Utilizar tabulaciones en vez de espacios",
     "main_catch_phrase": "Paquete de colaboración<br> de extremo a extremo encriptado y de código abierto",
-    "padNotPinned": "Esta nota expirará luego de 3 meses de inactividad, {0}ingresar{1} o {2}registrarse{3}para conservar.",
+    "padNotPinned": "Este documento expirará tras 3 meses de inactividad, {0}ingresar{1} o {2}registrarse{3}para conservarlo.",
     "anonymousStoreDisabled": "El administrador de esta instancia de CryptPad ha deshabilitado al almacenamiento para usuarios anónimos. Debes iniciar sesión para poder usar CryptDrive.",
     "expiredError": "Este pad ha expirado y ya no está disponible.",
     "deletedError": "Este documento ha sido borrado y ya no se encuentra disponible.",
