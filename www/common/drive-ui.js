@@ -3908,6 +3908,7 @@ define([
             }
 
             if (APP.readOnly && !APP.loggedIn) {
+                // XXX this incorrectly prompts guests to login/register even when they lack editing rights.
                 (function () {
                     var $banner = $(Pages.setHTML(h('div.cp-app-drive-content-info-box'), Messages.fm_info_sharedFolder));
                     $banner.find('[href="/login/"], [href="/register/"]').click(function (ev) {
