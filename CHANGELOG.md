@@ -1,3 +1,29 @@
+# 4.13.0
+
+## Goals
+
+Update dependencies
+
+## Update notes
+
+To update from 4.12.0 or 4.12.1 to 4.13.0:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+5. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
+
+## Features
+
+* more mermaid diagram types
+* update fabricjs to support various drawing tablets
+* OnlyOffice
+
+## Bug fixes
+
+* prompt guests to log in or register when viewing a shared folder with edit rights
+
 # 4.12.1
 
 This minor release contains a few bug fixes based on feedback we received and adjustments to prepare for the update to OnlyOffice 6.4.
