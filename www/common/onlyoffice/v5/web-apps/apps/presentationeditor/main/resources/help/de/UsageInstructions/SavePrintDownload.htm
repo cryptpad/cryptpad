@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Präsentation speichern/drucken/herunterladen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your presentations in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Präsentation speichern/drucken<span class="onlineDocumentFeatures">/herunterladen</span></h1>
+            <h3>Speichern</h3>
+            <p class="onlineDocumentFeatures">Standardmäßig speichert der <b>Online-</b><a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> Ihre Datei während der Bearbeitung automatisch alle 2 Sekunden, um Datenverluste im Falle eines unerwarteten Progammabsturzes zu verhindern. Wenn Sie die Datei im <b>Schnellmodus</b> co-editieren, fordert der Timer 25 Mal pro Sekunde Aktualisierungen an und speichert vorgenommene Änderungen. Wenn Sie die Datei im Modus <b>Strikt</b> co-editieren, werden Änderungen automatisch alle 10 Minuten gespeichert. Sie können den bevorzugten Co-Modus nach Belieben auswählen oder die Funktion <b>AutoSpeichern</b> auf der Seite <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Erweiterte Einstellungen</a> deaktivieren.</p>
+            <p>Aktuelle Präsentation manuell im aktuellen Format im aktuellen Verzeichnis speichern:</p>
+            <ul>
+                <li>Verwenden Sie das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/save.png" /> im linken Bereich der Kopfzeile des Editors oder</li>
+                <li>drücken Sie die Tasten <b>STRG+S</b> oder</li>
+                <li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Speichern</b>.</li>
+            </ul>
+            <p class="note desktopDocumentFeatures">Um Datenverluste durch ein unerwartetes Schließen des Programms zu verhindern, können Sie in der <em>Desktop-Version</em> die Option <b>AutoWiederherstellen</b> auf der Seite <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Erweiterte Einstellungen</a> aktivieren.</p>
+            <div class="desktopDocumentFeatures">
+                <p>In der <em>Desktop-Version</em> können Sie die Präsentation unter einem anderen Namen, an einem neuen Speicherort oder in einem anderen Format speichern.</p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Speichern als...</b>.</li>
+                    <li>Wählen Sie das gewünschte Format aus: PPTX, ODP, PDF, PDF/A. Sie können auch die Option <b>Präsentationsvorlage</b> (POTX oder OTP) auswählen.</li>
+                </ol>
+            </div>
+            <div class="onlineDocumentFeatures">
+                <h3>Herunterladen</h3>
+                <p>In der <em>Online-Version</em> können Sie die daraus resultierende Präsentation auf der Festplatte Ihres Computers speichern.</p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Herunterladen als...</b>.</li>
+                    <li>Wählen Sie das gewünschte Format aus: PPTX, PDF, ODP, POTX, PDF/A, OTP.</li>
+                </ol>
+                <h3>Kopie speichern</h3>
+                <p>In der <em>Online-Version</em> können Sie die eine Kopie der Datei in Ihrem Portal speichern.</p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Kopie Speichern als...</b>.</li>
+                    <li>Wählen Sie das gewünschte Format aus: PPTX, PDF, ODP, POTX, PDF/A, OTP.</li>
+                    <li>Wählen Sie den gewünschten Speicherort auf dem Portal aus und klicken Sie <b>Speichern</b>.</li>
+                </ol>
+            </div>
+            <h3 id="print">Drucken</h3>
+            <p>Aktuelle Präsentation drucken:</p>
+            <ul>
+                <li>Klicken Sie auf das Symbol <b>Drucken</b> <img alt="Drucken" src="../images/print.png" /> im linken Bereich der Kopfzeile des Editors oder</li>
+                <li>nutzen Sie die Tastenkombination <b>STRG+P</b> oder</li>
+                <li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Drucken</b>.</li>
+            </ul>
+            <div class="note">
+                Der Firefox-Browser ermöglicht das Drucken, ohne das Dokument zuerst als PDF-Datei herunterzuladen.
+            </div>
+            <p><span class="desktopDocumentFeatures">In der <em>Desktop-Version</em> wird die Datei direkt gedruckt.</span><span class="onlineDocumentFeatures">In der <em>Online-Version</em> wird basierend auf der Präsentation eine PDF-Datei erstellt. Diese können Sie öffnen und drucken oder auf der Festplatte des Computers oder einem Wechseldatenträger speichern und später drucken. Einige Browser (z. B. Chrome und Opera) unterstützen Direktdruck.</span></p>
+        </div>
+	</body>
+</html>

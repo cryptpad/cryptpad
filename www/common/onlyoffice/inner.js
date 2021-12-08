@@ -61,7 +61,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 4; // version of the .bin, patches and ChainPad formats
+    var NEW_VERSION = 5; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
@@ -1687,6 +1687,41 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
+/*
+                        // Cancel migration from v4 et v5 if there is no charts
+                        if (APP.migrate && content.version === 4 && NEW_VERSION === 5) {
+                            var skip = false;
+                            // Skip if there is no chart in the document
+                            if (getEditor()) {
+                                var app = common.getMetadataMgr().getPrivateData().ooType;
+                                var d, hasChart;
+                                if (app === 'doc') {
+                                    d = getEditor().GetDocument();
+                                    hasChart = d.GetAllCharts().length;
+                                } else if (app === 'presentation') {
+                                    hasChart = d.Slides.some(function (slide) {
+                                        return slide.getDrawingObjects().some(function (obj) {
+                                            return obj instanceof getWindow().AscFormat.CChartSpace;
+                                        });
+                                    });
+                                }
+                                if (!hasChart) { skip = true; }
+                            }
+                            if (skip) {
+                                delete content.migration;
+                                content.version = NEW_VERSION;
+                                APP.onLocal();
+                                APP.realtime.onSettle(function () {
+                                    UI.removeModals();
+                                    UI.alert(Messages.oo_sheetMigration_complete, function () {
+                                        common.gotoURL();
+                                    });
+                                    return;
+                                });
+                                return;
+                            }
+                        }
+*/
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
                         onMigrateRdy.reg(function () {
@@ -2900,8 +2935,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
-            } else if (content && content.version <= 3) { // V2 or V3
-                version = 'v2b/';
+            } else if (content && content.version <= 4) { // V2 or V3
+                version = content.version <= 3 ? 'v2b/' : 'v4/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {

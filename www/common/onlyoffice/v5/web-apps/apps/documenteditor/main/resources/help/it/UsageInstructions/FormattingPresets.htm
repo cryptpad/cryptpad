@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Applicare stili di formattazione</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Applicare stili di formattazione: normal, heading, quote, list, etc." />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Applicare stili di formattazione</h1>
+        <p>Ogni stile di formattazione è un insieme di opzioni di formattazione predefinite: (dimensione del carattere, colore, interlinea, allineamento, ecc.). Gli stili consentono di formattare rapidamente diverse parti del documento (intestazioni, sottotitoli, elenchi, testo normale, citazioni) invece di applicare diverse opzioni di formattazione singolarmente ogni volta. Ciò garantisce anche un aspetto coerente in tutto il documento.</p>
+        <p class="note">L'applicazione dello stile dipende dal fatto che uno stile sia uno stile di paragrafo (normale, senza spaziatura, intestazioni, elenco paragrafo ecc.), o dallo stile del testo (in base al tipo di carattere, alla dimensione, al colore), nonché dal fatto che sia selezionato un passaggio di testo o che il cursore del mouse sia posizionato all'interno di una parola. In alcuni casi potrebbe essere necessario selezionare due volte lo stile necessario dalla libreria di stili in modo che possa essere applicato correttamente: quando si fa clic per la prima volta sullo stile nel pannello degli stili, vengono applicate le proprietà dello stile di paragrafo. Quando si fa clic per la seconda volta, vengono applicate le proprietà del testo.</p>
+        <h3>Utilizzare gli stili predefiniti</h3>
+        <p>Per applicare uno degli stili di formattazione del testo disponibili,</p>
+        <ol>
+            <li>posizionare il cursore all'interno del paragrafo che interessa o selezionare diversi paragrafi a cui si desidera applicare uno degli stili di formattazione,</li>
+            <li>selezionare lo stile necessario dalla raccolta stili a destra nella scheda <b>Home</b> della barra degli strumenti superiore.</li>
+        </ol>
+        <p>Sono disponibili i seguenti stili di formattazione: normale, senza spaziatura, titolo 1-9, titolo, sottotitolo, citazione, citazione profonda, elenco paragrafo, piè di pagina, intestazione, testo della nota a piè di pagina.</p>
+        <p><img alt="Stili di formattazione" src="../images/formattingpresets.png" /></p>
+        <h3>Modificare gli stili esistenti e crearne di nuovi</h3>
+        <p><b>Per modificare uno stile esistente:</b></p>
+        <ol>
+            <li>Applicare lo stile necessario a un paragrafo.</li>
+            <li>Selezionare il testo del paragrafo e modificare tutti i parametri di formattazione di cui si ha bisogno.</li>
+            <li>
+                Salvare le modifiche apportate:
+                <ul>
+                    <li>selezionare l'opzione <b>Formatta come stile</b> e quindi scegliere l'opzione <b>Aggiorna stile 'NomeStile'</b> ('NomeStile' corrisponde allo stile applicato al passaggio 1),</li>
+                    <li>oppure selezionare il passaggio di testo modificato con il mouse, fare scorrere la galleria di stili, fare clic con il pulsante destro del mouse sullo stile che si desidera modificare e selezionare l'opzione <b>Aggiorna da selezione</b>.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Una volta modificato lo stile, tutti i paragrafi all'interno del documento formattati utilizzando questo stile cambieranno di conseguenza.</p>
+        <p><b>Per creare uno stile completamente nuovo:</b></p>
+        <ol>
+            <li>Formattare un passaggio di testo di cui si ha bisogno.</li>
+            <li>
+                Selezionare un modo appropriato per salvare lo stile:
+                <ul>
+                    <li>Fare clic con il pulsante destro del mouse sul testo modificato, selezionare l'opzione <b>Formatta come stile</b>, quindi scegliere l'opzione <b>Crea nuovo stile</b>,</li>
+                    <li>oppure seleziona il passaggio di testo modificato con il mouse, fai scorrere la galleria di stili e fai clic sull'opzione <b>Nuovo stile da selezione</b>.</li>
+                </ul>
+            </li>
+            <li>
+                Impostare i nuovi parametri dello stile nella finestra <b>Crea nuovo stile</b> che si apre:
+                <p><img alt="Crea nuovo stile" src="../images/createnewstylewindow.png" /></p>
+                <ul>
+                    <li>Specificare il nome del nuovo stile nel campo di immissione testo.</li>
+                    <li>Selezionare lo stile desiderato per il paragrafo successivo dall'elenco <b>Stile paragrafo successivo</b>. È anche possibile scegliere l'opzione <b>Come il nuovo stile creato</b>.</li>
+                    <li>Fare clic sul pulsante <b>OK</b>.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Lo stile creato verrà aggiunto alla galleria degli stili.</p>
+        <p><b>Gestire gli stili personalizzati:</b></p>
+        <ul>
+            <li>Per ripristinare le impostazioni predefinite di un determinato stile modificato, fare clic con il pulsante destro del mouse sullo stile da ripristinare e selezionare l'opzione <b>Ripristina predefinito</b>.</li>
+            <li>
+                Per ripristinare le impostazioni predefinite di tutti gli stili modificati, fare clic con il pulsante destro del mouse su uno stile predefinito nella raccolta stili e selezionare l'opzione <b>Ripristina tutti gli stili predefiniti</b>.
+                <p><img alt="Edited style menu" src="../images/editedstylemenu.png" /></p>
+            </li>
+            <li>Per eliminare uno dei nuovi stili creati, fare clic con il pulsante destro del mouse sullo stile da eliminare e selezionare l'opzione <b>Elimina stile</b>.</li>
+            <li>
+                Per eliminare tutti i nuovi stili creati, fare clic con il pulsante destro del mouse su qualsiasi nuovo stile creato e selezionare l'opzione <b>Elimina tutti gli stili personalizzati</b>.
+                <p><img alt="Custom style menu" src="../images/customstylemenu.png" /></p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

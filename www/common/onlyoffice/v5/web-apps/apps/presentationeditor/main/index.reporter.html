@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html style="width:100%; height:100%;overflow: hidden;">
+<head>
+    <title>Presenter View</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=IE8"/>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="icon" href="resources/img/favicon.ico" type="image/x-icon" />
+
+    <!-- splash -->        
+
+    <style>
+        .loadmask {
+            left: 0;
+            top: 0;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            border: none;
+            background: #f0f0f0;
+            background: var(--canvas-background, #f0f0f0);
+            z-index: 10000;
+        }
+
+        .loadmask > .brendpanel {
+            width: 100%;
+            height: 56px;
+            background: #aa5252;
+            background: var(--toolbar-header-presentation, #aa5252);
+        }
+
+        .loadmask > .brendpanel > div {
+            display: flex;
+            align-items: center;
+        }
+
+        .loadmask > .brendpanel .spacer {
+            margin-left: auto;
+        }
+
+        .loadmask > .brendpanel .circle {
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            border-radius: 12px;
+            margin: 4px 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loadmask > .brendpanel .rect {
+            vertical-align: middle;
+            width: 50px;
+            height: 12px;
+            border-radius: 3px;
+            margin: 0 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loadmask > .placeholder {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            margin: 0 100px;
+        }
+
+        .loadmask > .placeholder .slide-h {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+            max-width: 1350px;
+            width: 100%;
+        }
+        .loadmask > .placeholder .slide-v {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            padding-bottom: 80%;
+        }
+
+        .loadmask > .placeholder .slide-container {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: #fff;
+            background: var(--canvas-content-background, #fff);
+            border: 1px solid #ccc;
+            border: var(--scaled-one-px-value, 1px) solid var(--canvas-page-border, #ccc);
+
+            -webkit-animation: flickerAnimation 2s infinite ease-in-out;
+            -moz-animation: flickerAnimation 2s infinite ease-in-out;
+            -o-animation: flickerAnimation 2s infinite ease-in-out;
+            animation: flickerAnimation 2s infinite ease-in-out;
+        }
+
+        .loadmask > .placeholder .slide-container > .line {
+            height: 20%;
+            margin: 0 120px;
+            border-radius: 6px;
+            background: #f5f5f5;
+        }
+
+        .loadmask > .placeholder .slide-container > .line.empty {
+            background: transparent;
+        }
+
+        .loadmask > .placeholder .slide-container > .line:nth-child(1) {
+            height: 30%;
+            margin: 80px 80px 0;
+        }
+
+        @keyframes flickerAnimation {
+            0%   { opacity:1; }
+            50%  { opacity:0.3; }
+            100% { opacity:1; }
+        }
+        @-o-keyframes flickerAnimation{
+            0%   { opacity:1; }
+            50%  { opacity:0.3; }
+            100% { opacity:1; }
+        }
+        @-moz-keyframes flickerAnimation{
+            0%   { opacity:1; }
+            50%  { opacity:0.3; }
+            100% { opacity:1; }
+        }
+        @-webkit-keyframes flickerAnimation{
+            0%   { opacity:1; }
+            50%  { opacity:0.3; }
+            100% { opacity:1; }
+        }
+    </style>
+
+    <script>
+        // don't add zoom for mobile devices
+
+        var userAgent = navigator.userAgent.toLowerCase(),
+            check = function(regex){ return regex.test(userAgent); },
+            stopLoading = false;
+        if (!check(/opera/) && (check(/msie/) || check(/trident/))) {
+            var m = /msie (\d+\.\d+)/.exec(userAgent);
+            if (m && parseFloat(m[1]) < 10.0) {
+                document.write('<div class="app-error-panel">' +
+                                '<div class="message-block">' +
+                                    '<div class="message-inner">' +
+                                        '<div class="title">Your browser is not supported.</div>' +
+                                        '<div class="text">Sorry, Presentation Editor is currently only supported in the latest versions of the Chrome, Firefox, Safari or Internet Explorer web browsers.</div>' +
+                                    '</div>' +
+                                '</div></div>');
+                stopLoading = true;
+            }
+        }
+
+        function getUrlParams() {
+            var e,
+                a = /\+/g,  // Regex for replacing addition symbol with a space
+                r = /([^&=]+)=?([^&]*)/g,
+                d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+                q = window.location.search.substring(1),
+                urlParams = {};
+
+            while (e = r.exec(q))
+                urlParams[d(e[1])] = d(e[2]);
+
+            return urlParams;
+        }
+
+        function encodeUrlParam(str) {
+            return str.replace(/&/g, '&amp;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+        }
+
+        var params = getUrlParams(),
+            lang = (params["lang"] || 'en').split(/[\-\_]/)[0],
+            presenter = 'Presenter View';
+
+        window.frameEditorId = params["frameEditorId"];
+        window.parentOrigin = params["parentOrigin"];
+
+        if ( lang == 'bg') { presenter = 'Изглед на презентатора';}
+        else if ( lang == 'cs') { presenter = 'Zobrazení přednášejícího';}
+        else if ( lang == 'de') { presenter = 'Referentenansicht';}
+        else if ( lang == 'es') { presenter = 'Vista del presentador';}
+        else if ( lang == 'fr') { presenter = 'Mode présentateur';}
+        else if ( lang == 'it') { presenter = 'Visualizzazione del presenter';}
+        else if ( lang == 'pl') { presenter = 'Widok Prezentera';}
+        else if ( lang == 'pt') { presenter = 'Vista de apresentador';}
+        else if ( lang == 'ru') { presenter = 'Режим докладчика';}
+        else if ( lang == 'sk') { presenter = 'Režim prezentácie';}
+        else if ( lang == 'zh') { presenter = '演示者视图';}
+        window.document.title = presenter;
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-mask" class="loadmask"><div class="placeholder"><div class="slide-h"><div class="slide-v"><div class="slide-container"><div class="line"></div><div class="line empty"></div><div class="line"></div></div></div></div></div></div>
+    <div id="viewport"></div>
+
+    <script>
+        if (stopLoading) {
+            document.body.removeChild(document.getElementById('loading-mask'));
+        }
+    </script>
+
+    <script>
+        window.requireTimeourError = function(){
+            var reqerr;
+
+            if ( lang == 'de')      reqerr = 'Die Verbindung ist zu langsam, einige Komponenten konnten nicht geladen werden. Aktualisieren Sie bitte die Seite.';
+            else if ( lang == 'es') reqerr = 'La conexión es muy lenta, algunos de los componentes no han podido cargar. Por favor recargue la página.';
+            else if ( lang == 'fr') reqerr = 'La connexion est trop lente, certains des composants n\'ons pas pu être chargé. Veuillez recharger la page.';
+            else if ( lang == 'ru') reqerr = 'Слишком медленное соединение, не удается загрузить некоторые компоненты. Пожалуйста, обновите страницу.';
+            else reqerr = 'The connection is too slow, some of the components could not be loaded. Please reload the page.';
+
+            return reqerr;
+        };
+
+        var requireTimeoutID = setTimeout(function(){
+            window.alert(window.requireTimeourError());
+            window.location.reload();
+        }, 30000);
+
+        var require = {
+            waitSeconds: 30,
+            callback: function(){
+                clearTimeout(requireTimeoutID);
+            }
+        };
+    </script>
+
+    <div id="editor_sdk" style="position: absolute;width: 100%;height: 100%;"></div>
+
+    <script data-main="app.reporter" src="../../../vendor/requirejs/require.js"></script>
+
+</body>
+</html>

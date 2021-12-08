@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Utiliser des formules dans les tableaux</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Ajouter des formules dans les cellules du tableau pour effectuer des calculs simples" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Utiliser des formules dans les tableaux</h1>
+            <h3>Insérer une formule</h3>
+			<p>Dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, vous pouvez effectuer des calculs simples sur les données des cellules de table en ajoutant des formules. Pour insérer une formule dans une cellule du tableau,</p>
+			<ol>
+				<li>placez le curseur dans la cellule où vous voulez afficher le résultat,</li>
+                <li>cliquez sur le bouton <b>Ajouter une formule</b> dans la barre latérale de droite,</li>
+				<li>dans la fenêtre <b>Paramètres de formule</b> qui s'ouvre, saisissez la formule nécessaire dans la zone <b>Formule</b>.<p>Vous pouvez saisir une formule manuellement à l'aide des opérateurs mathématiques courants (+, -, *, /), par exemple <em>=A1*B2</em> ou utiliser la liste déroulante <b>Coller une fonction</b> pour sélectionner une des fonctions intégrées, par exemple <em>=PRODUIT(A1,B2)</em>.</p>
+                <p><img alt="Ajouter une formule" src="../images/formula_settings.png" /></p>					
+				</li>
+                <li>spécifier manuellement les arguments nécessaires entre parenthèses dans le champ <b>Formule</b>. Si la fonction nécessite plusieurs arguments, ils doivent être séparés par des virgules.</li>
+                <li>utilisez la liste déroulante <b>Format de nombre</b> si vous voulez afficher le résultat dans un certain format numérique,</li>
+				<li>cliquez sur <b>OK</b>.</li>
+			</ol>
+            <p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+            <p>Pour modifier la formule ajoutée, sélectionnez le résultat dans la cellule et cliquez sur le bouton <b>Ajouter une formule</b> dans la barre latérale droite, effectuez les modifications nécessaires dans la fenêtre <b>Paramètres de formule</b> et cliquez sur <b>OK</b>.</p>
+            <hr />
+            <h3>Ajouter des références aux cellules</h3>
+            <p>Vous pouvez utiliser les arguments suivants pour ajouter rapidement des références à des plages de cellules :</p>
+            <ul>
+                <li><b>HAUT</b> - une référence à toutes les cellules de la colonne au-dessus de la cellule sélectionnée</li>
+                <li><b>GAUCHE</b> - une référence à toutes les cellules de la ligne située à gauche de la cellule sélectionnée</li>
+                <li><b>BAS</b> - une référence à toutes les cellules de la colonne sous la cellule sélectionnée</li>
+                <li><b>DROITE</b> - une référence à toutes les cellules de la ligne à droite de la cellule sélectionnée</li>
+            </ul>
+            <p>Ces arguments peuvent être utilisés avec les fonctions MOYENNE, NB, MAX, MIN, PRODUIT, SOMME.</p>
+            <p>Vous pouvez également saisir manuellement des références à une cellule donnée (par exemple, <em>A1</em>) ou à une plage de cellules (par exemple, <em>A1:B3</em>).</p>
+            <h3>Utiliser des signets</h3>
+            <p>Si vous avez ajouté des <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">signets</a> à certaines cellules de votre tableau, vous pouvez utiliser ces signets comme arguments lorsque vous saisissez des formules.</p>
+            <p>Dans la fenêtre <b>Paramètres de formule</b>, placez le curseur entre parenthèses dans la zone de saisie du champ <b>Formule</b> où vous voulez que l'argument soit ajouté et utilisez la liste déroulante <b>Insérer le signets</b> pour sélectionner un des signets préalablement ajoutés.</p>
+            <h3>Mise à jour des résultats de la formule</h3>
+            <p>Si vous modifiez certaines valeurs dans les cellules du tableau, vous devez mettre à jour manuellement les résultats de formule :</p>
+            <ul>
+                <li>Pour mettre à jour un résultat de formule unique, sélectionnez le résultat nécessaire et appuyez sur <b>F9</b> ou cliquez avec le bouton droit de la souris sur le résultat et utilisez l'option <b>Mettre à jour un champ</b> dans le menu.</li>
+                <li>Pour mettre à jour plusieurs résultats de formule, sélectionnez les cellules nécessaires ou la table entière et appuyez sur <b>F9</b>.</li>
+            </ul>
+            <hr />
+            <h3>Fonctions intégrées</h3>
+            <p>Vous pouvez utiliser les fonctions mathématiques, statistiques et logiques standard suivantes :</p>
+            <table>
+                <tr>
+                    <td width="20%"><b>Catégorie</b></td>
+                    <td width="20%"><b>Fonctions</b></td>
+                    <td width="35%"><b>Description</b></td>
+                    <td width="25%"><b>Exemple</b></td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>ABS(nombre)</td>
+                    <td>La fonction est utilisée pour afficher la valeur absolue d'un nombre.</td>
+                    <td>=ABS(-10)<br />Renvoie 10</td>
+                </tr>
+                <tr>
+                    <td>Logique</td>
+                    <td>ET(logical1, logical2, ...)</td>
+                    <td>La fonction sert à vérifier si la valeur logique saisie est VRAI ou FAUX. La fonction affiche 1 (VRAI) si tous les arguments sont VRAI</td>
+                    <td>=ET(1&gt;0,1&gt;3)<br />Renvoie 0</td>
+                </tr>
+                <tr>
+                    <td>Statistique</td>
+                    <td>MOYENNE(argument-list)</td>
+                    <td>La fonction est utilisée pour analyser la plage de données et trouver la valeur moyenne..</td>
+                    <td>=MOYENNE(4,10)<br />Renvoie 7</td>
+                </tr>
+                <tr>
+                    <td>Statistique</td>
+                    <td>NB(plage)</td>
+                    <td>La fonction est utilisée pour compter le nombre de cellules sélectionnées qui contiennent des nombres en ignorant les cellules vides ou avec du texte.</td>
+                    <td>=NB(A1:B3)<br />Renvoie 6</td>
+                </tr>
+                <tr>
+                    <td>Logique</td>
+                    <td>DEFINED()</td>
+                    <td>La fonction évalue si une valeur est définie dans la cellule. La fonction renvoie 1 si la valeur est définie et calculée sans erreur et renvoie 0 si la valeur n'est pas définie ou calculée avec erreur.</td>
+                    <td>=DEFINED(A1)</td>
+                </tr>
+                <tr>
+                    <td>Logique</td>
+                    <td>FAUX()</td>
+                    <td>La fonction renvoie 0 (FAUX) et ne nécessite <b>pas</b> d’argument.</td>
+                    <td>=FAUX<br />Renvoie 0</td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>ENT(nombre)</td>
+                    <td>La fonction est utilisée pour analyser et retourner la partie entière du nombre spécifié.</td>
+                    <td>=ENT(2,5)<br />Renvoie 2</td>
+                </tr>
+                <tr>
+                    <td>Statistique</td>
+                    <td>MAX(number1, number2, ...)</td>
+                    <td>La fonction est utilisée pour analyser la plage de données et trouver le plus grand nombre.</td>
+                    <td>=MAX(15,18,6)<br />Renvoie 18</td>
+                </tr>
+                <tr>
+                    <td>Statistique</td>
+                    <td>MIN(number1, number2, ...)</td>
+                    <td>La fonction est utilisée pour analyser la plage de données et trouver le plus petit nombre.</td>
+                    <td>=MIN(15,18,3)<br />Renvoie 6</td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>MOD(x, y)</td>
+                    <td>La fonction est utilisée pour retourner le reste après la division d'un nombre par le diviseur spécifié.</td>
+                    <td>=MOD(6,3)<br />Renvoie 0</td>
+                </tr>
+                <tr>
+                    <td>Logique</td>
+                    <td>PAS(logical)</td>
+                    <td>La fonction sert à vérifier si la valeur logique saisie est VRAI ou FAUX. La fonction retourne 1 (VRAI) si l'argument est FAUX et 0 (FAUX) si l'argument est VRAI.</td>
+                    <td>=PAS(2&lt;5)<br />Renvoie 0</td>
+                </tr>
+                <tr>
+                    <td>Logique</td>
+                    <td>OU(logical1, logical2, ...)</td>
+                    <td>La fonction sert à vérifier si la valeur logique saisie est VRAI ou FAUX. La fonction renvoie faux 0 (FAUX) si tous les arguments sont FAUX.</td>
+                    <td>=OU(1&gt;0,1&gt;3)<br />Renvoie 1</td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>PRODUIT(number1, number2, ...)</td>
+                    <td>La fonction est utilisée pour multiplier tous les nombres dans la plage de cellules sélectionnée et renvoyer le produit.</td>
+                    <td>=PRODUIT(2,5)<br />Renvoie 10</td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>ARRONDI(number, num_digits)</td>
+                    <td>La fonction est utilisée pour arrondir un nombre à un nombre de décimales spécifié.</td>
+                    <td>=ARRONDI(2,25,1)<br />Renvoie 2,3</td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>SIGNE(number)</td>
+                    <td>La fonction est utilisée pour renvoyer le signe d’un nombre. Si le nombre est positif, la fonction renvoie <b>1</b>. Si le nombre est négatif, la fonction renvoie <b>-1</b>. Si le nombre est <b>0</b>, la fonction renvoie <b>0</b>.</td>
+                    <td>=SIGNE(-12)<br />Renvoie -1</td>
+                </tr>
+                <tr>
+                    <td>Mathématique</td>
+                    <td>SOMME(number1, number2, ...)</td>
+                    <td>La fonction est utilisée pour additionner tous les nombres contenus dans une plage de cellules et renvoyer le résultat.</td>
+                    <td>=SOMME(5,3,2)<br />Renvoie 10</td>
+                </tr>
+                <tr>
+                    <td>Logique</td>
+                    <td>VRAI()</td>
+                    <td>La fonction renvoie 1 (VRAI) et n'exige <b>aucun</b> argument.</td>
+                    <td>=VRAI<br />Renvoie 1</td>
+                </tr>
+            </table>             
+		</div>
+	</body>
+</html>

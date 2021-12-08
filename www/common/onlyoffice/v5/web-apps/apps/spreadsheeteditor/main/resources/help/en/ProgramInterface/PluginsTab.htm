@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Plugins tab</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Spreadsheet Editor user interface - Plugins tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Plugins tab</h1>
+            <p>The <b>Plugins</b> tab in the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> allows accessing the advanced editing features using the available third-party components. With this tab, you can also use macros to simplify routine operations.</p>
+            <div class="onlineDocumentFeatures">
+                <p>The corresponding window of the Online Spreadsheet Editor:</p>
+                <p><img alt="Plugins tab" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>The corresponding window of the Desktop Spreadsheet Editor:</p>
+                <p><img alt="Plugins tab" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">The <b>Settings</b> button allows you to open the window where you can view and manage all the installed plugins and add your own ones.</p>
+            <p>The <b>Macros</b> button allows you to open the window where you can create and run your own macros. To learn more about macros, please refer to our <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">API Documentation</a>.</p>
+            <p>Currently, the following plugins are available:</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Send</b> allows to send the spreadsheet via email using the default desktop mail client (available in the <em>desktop version</em> only),</li>
+                <li><a href="../UsageInstructions/HighlightedCode.htm" onclick="onhyperlinkclick(this)">Highlight code</a> allows to highlight syntax of the code selecting the necessary language, style, background color,</li>
+                <li><a href="../UsageInstructions/PhotoEditor.htm" onclick="onhyperlinkclick(this)">Photo Editor</a> allows to edit images: crop, flip, rotate them, draw lines and shapes, add icons and text, load a mask and apply filters such as Grayscale, Invert, Sepia, Blur, Sharpen, Emboss, etc.,</li>
+                <li><a href="../UsageInstructions/Thesaurus.htm" onclick="onhyperlinkclick(this)">Thesaurus</a> allows to search for synonyms and antonyms of a word and replace it with the selected one,</li>
+                <li><a href="../UsageInstructions/Translator.htm" onclick="onhyperlinkclick(this)">Translator</a> allows to translate the selected text into other languages,
+                    <p class="note"><b>Note</b>: this plugin doesn't work in Internet Explorer.</p>
+                </li>
+                <li><a href="../UsageInstructions/YouTube.htm" onclick="onhyperlinkclick(this)">YouTube</a> allows to embed YouTube videos into your spreadsheet.</li>
+            </ul>
+            <p>To learn more about plugins please refer to our <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">API Documentation</a>. All the existing open-source plugin examples are currently available on <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a>.</p>
+		</div>
+	</body>
+</html>

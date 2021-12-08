@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Usare formule nelle tabelle</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Insert formulas into the table cells to perform simple calculations on data" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Usare formule nelle tabelle</h1>
+        <h3>Inserire una formula</h3>
+        <p>È possibile eseguire semplici calcoli sui dati nelle celle della tabella aggiungendo formule. Per inserire una formula in una cella di una tabella,</p>
+        <ol>
+            <li>posizionare il cursore all'interno della cella in cui si desidera visualizzare il risultato,</li>
+            <li>fare clic sul pulsante <b>Aggiungi formula</b> nella barra laterale destra,</li>
+            <li>
+                nella finestra <b>Impostazioni formula</b> visualizzata immettere la formula necessaria nel campo <b>Formula</b>.
+                <p>È possibile immettere manualmente una formula necessaria utilizzando gli operatori matematici comuni, (+, -, *, /), ad esempio <em>=A1*B2</em> o utilizzare l'elenco a discesa <b>Incolla funzione</b> per selezionare una delle funzioni incorporate, ad esempio <em>=PRODUCT(A1,B2)</em>.</p>
+                <p><img alt="Inserire una formula" src="../images/formula_settings.png" /></p>
+            </li>
+            <li>specificare manualmente gli argomenti necessari tra parentesi nel campo <b>Formula</b>. Se la funzione richiede diversi argomenti, devono essere separati da virgole.</li>
+            <li>utilizzare l'elenco a discesa <b>Formato numero</b> se si desidera visualizzare il risultato in un determinato formato numerico,</li>
+            <li>fare clic su <b>OK</b>.</li>
+        </ol>
+        <p>Il risultato verrà visualizzato nella cella selezionata.</p>
+        <p>Per modificare la formula aggiunta, seleziona il risultato nella cella e fai clic sul pulsante <b>Aggiungi formula</b> nella barra laterale destra, apporta le modifiche necessarie nella finestra <b>Impostazioni formula</b> e fai clic su <b>OK</b>.</p>
+        <hr />
+        <h3>Aggiungere riferimenti alle celle</h3>
+        <p>È possibile utilizzare i seguenti argomenti per aggiungere rapidamente riferimenti agli intervalli di celle:</p>
+        <ul>
+            <li><b>SOPRA</b> - un riferimento a tutte le celle nella colonna sopra la cella selezionata</li>
+            <li><b>SINISTRA</b> - un riferimento a tutte le celle nella riga a sinistra della cella selezionata</li>
+            <li><b>SOTTO</b> - un riferimento a tutte le celle nella colonna sotto la cella selezionata</li>
+            <li><b>DESTRA</b> - un riferimento a tutte le celle nella riga a destra della cella selezionata</li>
+        </ul>
+        <p>Questi argomenti possono essere utilizzati con le funzioni AVERAGE, COUNT, MAX, MIN, PRODUCT, SUM.</p>
+        <p>È inoltre possibile immettere manualmente i riferimenti a una determinata cella (ad esempio, <em>A1</em>) o a un intervallo di celle (ad esempio, <em>A1:B3</em>).</p>
+        <h3>Utilizzare i segnalibri</h3>
+        <p>Se sono stati aggiunti alcuni <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">segnalibri</a> a determinate celle all'interno della tabella, è possibile utilizzare questi segnalibri come argomenti quando si immettono formule.</p>
+        <p>Nella finestra <b>Impostazioni formula</b>, posizionare il cursore tra parentesi nel campo di immissione <b>Formula</b> in cui si desidera aggiungere l'argomento e utilizzare l'elenco a discesa <b>Incolla segnalibro</b> per selezionare uno dei segnalibri aggiunti in precedenza.</p>
+        <h3>Aggiornare i risultati delle formule</h3>
+        <p>Se vengono modificati alcuni valori nelle celle della tabella, sarà necessario aggiornare manualmente i risultati delle formule:</p>
+        <ul>
+            <li>Per aggiornare un singolo risultato della formula, selezionare il risultato necessario e premere <b>F9</b> o fare clic con il pulsante destro del mouse sul risultato e utilizzare l'opzione <b>Aggiorna campo</b> dal menu.</li>
+            <li>Per aggiornare diversi risultati di formule, seleziona le celle necessarie o l'intera tabella e premi <b>F9</b>.</li>
+        </ul>
+        <hr />
+        <h3>Funzioni incorporate</h3>
+        <p>È possibile utilizzare le seguenti funzioni matematiche, statistiche e logiche standard:</p>
+        <table>
+            <tr>
+                <td width="20%"><b>Categoria</b></td>
+                <td width="20%"><b>Funzione</b></td>
+                <td width="35%"><b>Descrizione</b></td>
+                <td width="25%"><b>Esempio</b></td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>ABS(x)</td>
+                <td>La funzione viene utilizzata per restituire il valore assoluto di un numero.</td>
+                <td>=ABS(-10)<br />Restituisce 10</td>
+            </tr>
+            <tr>
+                <td>Logica</td>
+                <td>AND(Logica1, Logica2, ...)</td>
+                <td>La funzione viene utilizzata per verificare se il valore logico immesso è VERO o FALSO. La funzione restituisce 1 (VERO) se tutti gli argomenti sono VERI.</td>
+                <td>=AND(1&gt;0,1&gt;3)<br />Restituisce 0</td>
+            </tr>
+            <tr>
+                <td>Statistica</td>
+                <td>AVERAGE(argument-list)</td>
+                <td>La funzione viene utilizzata per analizzare l'intervallo di dati e trovare il valore medio.</td>
+                <td>=AVERAGE(4,10)<br />Restituisce 7</td>
+            </tr>
+            <tr>
+                <td>Statistica</td>
+                <td>COUNT(argument-list)</td>
+                <td>La funzione viene utilizzata per contare il numero delle celle selezionate che contengono numeri ignorando le celle vuote o quelle che contengono testo.</td>
+                <td>=COUNT(A1:B3)<br />Restituisce 6</td>
+            </tr>
+            <tr>
+                <td>Logica</td>
+                <td>DEFINED()</td>
+                <td>La funzione valuta se è definito un valore nella cella. La funzione restituisce 1 se il valore è definito e calcolato senza errori e restituisce 0 se il valore non è definito o calcolato con un errore.</td>
+                <td>=DEFINED(A1)</td>
+            </tr>
+            <tr>
+                <td>Logica</td>
+                <td>FALSE()</td>
+                <td>La funzione restituisce 0 (FALSO) e <b>non</b> richiede alcun argomento.</td>
+                <td>=FALSE<br />Restituisce 0</td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>INT(x)</td>
+                <td>La funzione viene utilizzata per analizzare e restituire la parte intera del numero specificato.</td>
+                <td>=INT(2.5)<br />Restituisce 2</td>
+            </tr>
+            <tr>
+                <td>Statistica</td>
+                <td>MAX(number1, number2, ...)</td>
+                <td>La funzione viene utilizzata per analizzare l'intervallo di dati e trovare il numero più grande.</td>
+                <td>=MAX(15,18,6)<br />Restituisce 18</td>
+            </tr>
+            <tr>
+                <td>Statistica</td>
+                <td>MIN(number1, number2, ...)</td>
+                <td>La funzione viene utilizzata per analizzare l'intervallo di dati e trovare il numero più piccolo.</td>
+                <td>=MIN(15,18,6)<br />Restituisce 6</td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>MOD(x, y)</td>
+                <td>La funzione viene utilizzata per restituire il resto dopo la divisione di un numero per il divisore specificato.</td>
+                <td>=MOD(6,3)<br />Restituisce 0</td>
+            </tr>
+            <tr>
+                <td>Logica</td>
+                <td>NOT(Logical)</td>
+                <td>La funzione viene utilizzata per verificare se il valore logico immesso è VERO o FALSO. La funzione restituisce 1 (VERO) se l'argomento è FALSO e 0 (FALSO) se l'argomento è VERO.</td>
+                <td>=NOT(2&lt;5)<br />Restituisce 0</td>
+            </tr>
+            <tr>
+                <td>Logica</td>
+                <td>OR(Logical1, Logical2, ...)</td>
+                <td>La funzione viene utilizzata per verificare se il valore logico immesso è VERO o FALSO. La funzione restituisce 0 (FALSE) se tutti gli argomenti sono FALSI.</td>
+                <td>=OR(1&gt;0,1&gt;3)<br />Restituisce 1</td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>PRODUCT(argument-list)</td>
+                <td>La funzione viene utilizzata per moltiplicare tutti i numeri nell'intervallo di celle selezionato e restituire il prodotto.</td>
+                <td>=PRODUCT(2,5)<br />Restituisce 10</td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>ROUND(x, num_digits)</td>
+                <td>La funzione viene utilizzata per arrotondare il numero al numero di cifre desiderato.</td>
+                <td>=ROUND(2.25,1)<br />Restituisce 2.3</td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>SIGN(x)</td>
+                <td>La funzione viene utilizzata per restituire il segno di un numero. Se il numero è positivo, la funzione restituisce <b>1</b>. Se il numero è negativo, la funzione restituisce <b>-1</b>. Se il numero è <b>0</b>, la funzione restituisce <b>0</b>.</td>
+                <td>=SIGN(-12)<br />Restituisce -1</td>
+            </tr>
+            <tr>
+                <td>Matematica</td>
+                <td>SUM(argument-list)</td>
+                <td>La funzione viene utilizzata per sommare tutti i numeri nell'intervallo di celle selezionato e restituire il risultato.</td>
+                <td>=SUM(5,3,2)<br />Restituisce 10</td>
+            </tr>
+            <tr>
+                <td>Logica</td>
+                <td>TRUE()</td>
+                <td>La funzione restituisce 1 (VERO) e <b>non</b> richiede alcun argomento.</td>
+                <td>=TRUE<br />Restituisce 1</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

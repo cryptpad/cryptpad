@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>La fonction DROITEREG</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>La fonction DROITEREG</h1>
+			<p>La fonction <B>DROITEREG</B> est l'une des fonctions statistiques. Calcule les statistiques pour un modèle linéaire par la méthode des moindres carrés, afin de calculer une relation linéaire qui s'ajuste au plus près à vos données, puis renvoie une matrice décrivant cette droite. Dans la mesure où cette fonction renvoie une matrice de valeurs, elle doit être tapée sous la forme d’une formule matricielle.</p>
+			<p>La syntaxe de la fonction <B>DROITEREG est comme suit:</B></p> 
+			<p style="text-indent: 150px;"><b><em>DROITEREG(y_connus, [x_connus], [constante], [statistiques])</em></b></p> 
+			<p>où:</p>
+            <p style="text-indent: 50px;"><b><em>y_connus</em></b> est la série des valeurs y déjà connues par la relation <em>y = mx + b</em>. C'est un argument obligatoire.</p>
+            <p style="text-indent: 50px;"><b><em>x_connus</em></b> est la série des valeurs x déjà connues par la relation <em>y = mx + b</em>. C'est un argument obligatoire. Si l’argument <I>x_connus</I> est omis, il est supposé égal à la matrice {1.2.3....}, de même ordre que l’argument <I>y_connus</I>.</p>
+            <p style="text-indent: 50px;"><b><em>constante</em></b> est une valeur qui indique si la constante <em>b</em> doit être égale à <em>0</em>. C'est un argument facultatif. Si l'argument constante est <I>VRAI</I> ou omis, la constante b est calculée normalement. Si l'argument constante est <I>FAUX</I>, b est égal à 0.</p>
+            <p style="text-indent: 50px;"><b><em>statistiques</em></b> est une valeur logique indiquant si des statistiques de régression supplémentaires doivent être renvoyées. C'est un argument facultatif. Si l'argument statistique est <I>VRAI</I>, la fonction renvoie des statistiques de régression supplémentaires. Si l'argument statistique est <I>FAUX</I> ou omis, la fonction ne renvoie pas des statistiques de régression supplémentaires.</p>
+            <p>Pour utiliser la fonction <B>DROITEREG</B>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous voulez afficher le résultat,</li>
+			<li>appuyez sur l'icône <B>Insérer une fonction</B> <img alt="L'icône Insérer fonction" src="../images/insertfunction.png" /> de la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule et choisissez l'option <B>Insérer une fonction</B> dans le menu, <br />ou cliquez sur l'icône <img alt="L'icône Fonction" src="../images/function.png" /> de la barre de formule,
+			</li>
+			<li>sélectionnez le groupe de fonctions <B>Statistiques</B> dans la liste,</li>
+			<li>appuyez sur la fonction <B>DROITEREG</B>,</li>
+			<li>saisissez les arguments appropriés écrits avec des virgules pour les séparer ou sélectionnez une plage de cellules avec votre souris, <!--<p><img alt="LINEST Function" src="../images/linest-arg.png" /></p>-->
+			</li>
+			<li>appuyez sur la touche <B>Entrée</B>.</li>
+			</ol>
+			<p>La première valeur de la matrice résultante s'affiche dans la cellule choisie.</p>
+			<p style="text-indent: 150px;"><img alt="La fonction DROITEREG" src="../images/linest.png" /></p>
+		</div>
+	</body>
+</html>

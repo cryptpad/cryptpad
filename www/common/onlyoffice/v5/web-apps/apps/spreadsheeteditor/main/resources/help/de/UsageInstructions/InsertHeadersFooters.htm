@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kopf- und Fußzeilen einfügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Einfügen Sie die Kopf- und Fußzeilen, um weitere Information auf dem ausgegebenen Blatt anzuzeigen." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Kopf- und Fußzeilen einfügen</h1>
+            <p>Die Kopf- und Fußzeilen fügen weitere Information auf den ausgegebenen Blättern ein, z.B. Datum und Uhrzeit, Seitennummer, Blattname usw. Kopf- und Fußzeilen sind nur auf dem ausgegebenen Blatt angezeigt.</p>
+			<p>Um eine Kopf- und Fußzeile einzufügen im <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a>:</p>
+            <ol>
+                <li>öffnen Sie die Registerkarte <b>Einfügen</b> oder <b>Layout</b>,</li>
+                <li>klicken Sie die Schaltfläche <img alt="Kopf- und Fußzeile bearbeiten" src="../images/header_footer_icon.png" /> <b>Kopf- und Fußzeile</b> an,</li>
+                <li>
+                    im geöffneten Fenster <b>Kopf- und Fußzeileneinstellungen</b> konfigurieren Sie die folgenden Einstellungen:
+                    <ul>
+                        <li>markieren Sie das Kästchen <b>Erste Seite anders</b>, um eine andere Kopf- oder Fußzeile auf der ersten Seite einzufügen, oder ganz keine Kopf- oder Fußzeile da zu haben. Die Registerkarte <b>Erste Seite</b> ist unten angezeigt.</li>
+                        <li>markieren Sie das Kästchen <b>Gerade und ungerade Seiten anders</b>, um verschiedene Kopf- und Fußzeilen auf den geraden und ungeraden Seiten einzufügen. Die Registerkarten <b>Gerade Seite</b> und <b>Ungerade Seite</b> sind unten angezeigt.</li>
+                        <li>die Option <b>Mit Dokument skalieren</b> skaliert die Kopf- und Fußzeilen mit dem Dokument zusammen. Diese Option wird standardmäßig aktiviert.</li>
+                        <li>die Option <b>An Seitenrändern ausrichten</b> richtet die linke/rechte Kopf- und Fußzeile mit dem linken/rechten Seitenrand aus. Diese Option wird standardmäßig aktiviert.</li>
+                    </ul>
+                    <p><img alt="Kopf- und Fußzeileneinstellungen" src="../images/header_footer_settings.png" /></p>
+                </li>
+                <li>fügen Sie die gewünschten Daten ein. Abhängig von den ausgewählten Optionen können Sie die Einstellungen für <b>Alle Seiten</b> konfigurieren oder die Kopf-/Fußzeile für die erste Seite sowie für ungerade und gerade Seiten konfigurieren. Öffnen Sie die erforderliche Registerkarte und konfigurieren Sie die verfügbaren Parameter. Sie können eine der vorgefertigten Voreinstellungen verwenden oder die erforderlichen Daten manuell in das linke, mittlere und rechte Kopf-/Fußzeilenfeld einfügen:
+                    <ul>
+                        <li>
+                            wählen Sie eine der <b>Voreinstellungen</b> aus: <em>Seite 1</em>; <em>Seite 1 von ?</em>; <em>Sheet1</em>; <em>Vertraulich, DD/MM/JJJJ, Seite 1</em>; <em>Spreadsheet name.xlsx</em>; <em>Sheet1, Seite 1</em>; <em>Sheet1, Vertraulich, Seite 1</em>; <em>Spreadsheet name.xlsx, Seite 1</em>; <em>Seite 1, Sheet1</em>; <em>Seite 1, Spreadsheet name.xlsx</em>; <em>Author, Seite 1, DD/MM/JJJJ</em>; <em>Vorbereitet von, DD/MM/JJJJ, Seite 1</em>.
+                            <p>Die entsprechende Variables werden eingefügt.</p>
+                        </li>
+                        <li>stellen Sie den Kursor im linken, mittleren oder rechten Feld der Kopf- oder Fußzeile und verwenden Sie das Menü <b>Einfügen</b>, um die Variables <em>Seitenzahl</em>, <em>Anzahl der Seiten</em>, <em>Datum</em>, <em>Uhrzeit</em>, <em>Dateiname</em>, <em>Blattname</em> einzufügen.</li>
+                    </ul>
+                </li>
+                <li>formatieren Sie den in der Kopf- oder Fußzeile eingefügten Text mithilfe der entsprechenden Steuerelementen. Ändern Sie die standardmäßige Schriftart, Größe, Farbe, Stil (fett, kursiv, unterstrichen, durchgestrichen, tifgestellt, hochgestellt).</li>
+                <li>klicken Sie <b>OK</b> an, um die Änderungen anzunehmen.</li>
+            </ol>
+            <p>Um die eingefügten Kopf- und Fußzeilen zu bearbeiten, klicken Sie <img alt="Kopf- und Fußzeile bearbeiten Symbol" src="../images/header_footer_icon.png" /> <b>Kopf- und Fußzeile bearbeiten</b> an, ändern Sie die Einstellungen im Fenster <b>Kopf- und Fußzeileneinstellungen</b> und klicken Sie <b>OK</b> an, um die Änderungen anzunehmen.</p>
+            <p>Kopf- und Fußzeilen sind nur auf dem ausgegebenen Blatt angezeigt.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Enregistrer / exporter / imprimer votre document</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Enregistrer / télécharger / imprimer votre document au formats disponibles." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Enregistrer /<span class="onlineDocumentFeatures">exporter /</span>imprimer votre document</h1>
+            <h3>Enregistrement</h3>
+            <p class="onlineDocumentFeatures">Par défaut, <a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> en ligne enregistre automatiquement votre fichier toutes les 2 secondes afin de prévenir la perte des données en cas de fermeture inattendue de l'éditeur. Si vous co-éditez le fichier en mode<b> Rapide</b>, le minuteur récupère les mises à jour 25 fois par seconde et enregistre les modifications si elles ont été effectuées. Lorsque le fichier est co-édité en mode <b>Strict</b>, les modifications sont automatiquement sauvegardées à des intervalles de 10 minutes. Si nécessaire, vous pouvez facilement changer la périodicité de <b>l'enregistrement automatique</b> ou même désactiver cette fonction sur la page <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a> .</p>
+			<p>Pour enregistrer manuellement votre document actuel dans le format et l'emplacement actuels,</p>
+			<ul>
+				<li>cliquez sur l'icône <b>Enregistrer</b> <img alt="L'icône Enregistrer" src="../images/save.png" /> dans la partie gauche de l'en-tête de l'éditeur, ou</li>
+				<li>utilisez la combinaison des touches <b>Ctrl+S</b>, ou</li>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Enregistrer</b>.</li>
+			</ul>
+			<p class="note desktopDocumentFeatures">Dans la version de <i>bureau</i>, pour éviter la perte de données en cas de fermeture inattendue du programme, vous pouvez activer l'option <b>Récupération automatique</b> sur la page <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a> .</p>
+            <div class="desktopDocumentFeatures">
+                <p>Dans la <i>version de</i> <i>bureau</i>, vous pouvez enregistrer le document sous un autre nom, dans un nouvel emplacement ou format,</p>
+                <ol>
+                    <li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+                    <li>sélectionnez l'option <b>Enregistrer sous...</b>,</li>
+                    <li>sélectionnez l'un des formats disponibles selon vos besoins: DOCX, ODT, RTF, TXT, PDF, PDF/A, HTML, FB2, EPUB. Vous pouvez également choisir l'option <b>Modèle de document</b> (DOTX or OTT).</li>
+                </ol>
+            </div>
+			<div class="onlineDocumentFeatures">
+            <h3>Téléchargement en cours</h3>
+			<p>Dans la version <i>en ligne</i>, vous pouvez télécharger le document résultant sur le disque dur de votre ordinateur,</p>
+			<ol>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option <b>Télécharger comme...</b>,</li>
+				<li>sélectionnez l'un des formats disponibles selon vos besoins: DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML, FB2, EPUB.</li>
+			</ol>
+                <h3>Enregistrer une copie</h3>
+                <p>Dans la version <i>en ligne</i>, vous pouvez enregistrer une copie du fichier sur votre portail,</p>
+                <ol>
+                    <li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+                    <li>sélectionnez l'option <b>Enregistrer la copie sous...</b>,</li>
+                    <li>sélectionnez l'un des formats disponibles selon vos besoins: DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML, FB2, EPUB,</li>
+                    <li>sélectionnez un emplacement pour le fichier sur le portail et appuyez sur <b>Enregistrer</b>.</li>
+                </ol>
+			</div>
+            <h3 id="print">Impression</h3>
+			<p>Pour imprimer le document actif,</p>
+			<ul>
+				<li>cliquez sur l'icône <b>Imprimer le fichier</b> <img alt="L'icône Imprimer" src="../images/print.png" /> dans la partie gauche de l'en-tête de l'éditeur, ou</li>
+				<li>utilisez la combinaison des touches <b>Ctrl+P</b>, ou</li>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Imprimer</b>.</li>
+			</ul>
+			<div class="note">
+				Le navigateur Firefox permet d'imprimer sans télécharger le document au format .pdf d'avance.
+			</div>
+            <p>Il est aussi possible d'imprimer un fragment de texte en utilisant l'option <b>Imprimer la sélection</b> du menu contextuel en mode <b>Édition</b> aussi que en mode <b>Affichage</b> (cliquez avec le <b>bouton droit de la souris</b> et choisissez <b>Imprimer la sélection</b>).</p>
+			<p><span class="desktopDocumentFeatures">Dans la <i>version de</i> <i>bureau</i>, le fichier sera imprimé directement.</span> <span class="onlineDocumentFeatures">Dans la <i>version en ligne</i>, un fichier PDF sera généré à partir du document. Vous pouvez l'ouvrir et l'imprimer, ou l'enregistrer sur le disque dur de l'ordinateur ou sur un support amovible pour l'imprimer plus tard. Certains navigateurs (par ex. Chrome et Opera) supportent l'impression directe.</span></p>
+		</div>
+	</body>
+</html>

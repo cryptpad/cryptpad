@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Funzione YEARFRAC</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Funzione YEARFRAC</h1>
+			<p>La funzione <b>YEARFRAC</b> è una delle funzioni della categoria Data e ora. Si usa per restituire la frazione di un anno rappresentata dal numero di giorni completi dalla data di inzio alla data di fine calcolato sulla base specificata.</p>
+			<p>La sintassi della funzione <b>YEARFRAC</b> è:</p> 
+			<p style="text-indent: 150px;"><b><em>YEARFRAC(start-date, end-date [,basis])</em></b></p> 
+			<p><em>dove</em></p> 
+			<p style="text-indent: 50px;"><b><em>start-date</em></b> è il numero rappresentante la prima data del periodo, inserita per mezzo della funzione <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> o un'altra funzione della categoria Data e ora.</p>
+			<p style="text-indent: 50px;"><b><em>end-date</em></b> è il numero rappresentante l'ultima data del periodo, inserita per mezzo della funzione <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> o un'altra funzione della categoria Data e ora.</p>
+			<p style="text-indent: 50px;"><b><em>basis</em></b> è la base usata per il conto dei giorni, un valore numerico maggiore o uguale a 0, ma minore o uguale a 4. Può essere una delle seguenti:</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Valore numerico</b></td>
+					<td><b>Base per il conto</b></td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>US (NASD) 30/360</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>Effettivo/effettivo</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Effettivo/360</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Effettivo/365</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Europeo 30/360</td>
+				</tr>
+			</table>
+			<p class="note"><b>Note</b>: se <b><em>start-date</em></b>, <b><em>end-date</em></b> o <b><em>basis</em></b> è un valore decimale, la funzione ignora i numeri a destra della virgola decimale.
+			</p>
+			<p>Per applicare la funzione <b>YEARFRAC</b>,</p>
+			<ol>
+			<li>selezionate la cella dove desiderate visualizzare il risultato,</li>
+			<li>cliccate sull'icona <b>Inserisci funzione</b> <img alt="Inserisci funzione" src="../images/insertfunction.png" /> sulla barra degli strumenti superiore,
+				<br />o cliccate con il tasto destro del mouse sulla cella scelta e selezionate l'opzione <b>Inserisci funzione</b> dal menu contestuale,
+				<br />o cliccate sull'icona <img alt="Funzione" src="../images/function.png" /> prima della barra della formula,
+			</li>
+			<li>selezionate il gruppo di funzioni <b>Data e ora</b> dall'elenco,</li>
+			<li>cliccate sulla funzione <b>YEARFRAC</b>,</li>
+			<li>inserite gli argomenti richiesti separati da virgola,</li>
+			<li>premete il tasto <b>Enter</b>.</li>
+			</ol>
+			<p>Il risultato sarà visualizzato nella cella scelta.</p>
+			<p style="text-indent: 150px;"><img alt="Funzione YEARFRAC" src="../images/yearfrac.png" /></p>
+		</div>
+	</body>
+</html>

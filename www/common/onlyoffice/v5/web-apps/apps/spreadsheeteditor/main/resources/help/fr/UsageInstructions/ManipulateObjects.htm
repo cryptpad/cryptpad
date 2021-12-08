@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Manipuler des objets</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Déplacer, faire pivoter, redimensionner, modifier la forme et organiser des formes automatiques, des images et des graphiques." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Manipuler des objets</h1>
+			<p>Dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, vous pouvez redimensionner,  arranger des formes, des images et des graphiques insérés dans votre classeur.</p>
+            <p class="note"><b>Note</b> : la liste des raccourcis clavier qui peuvent être utilisés lorsque vous travaillez avec des objets est disponible <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithobjects" onclick="onhyperlinkclick(this)">ici</a>.</p>
+			<h3>Redimensionner des objets</h3>
+			<p>Pour changer la <b>taille</b> d'une forme automatique/image/graphique, faites glisser les petits carreaux <img alt="Icône Carreaux" src="../images/resize_square.png" /> situés sur les bords de l'objet. Pour garder les proportions de l'objet sélectionné lors du redimensionnement, maintenez la touche <b>Maj</b> enfoncée et faites glisser l'une des icônes de coin.</p>
+            <p class="note"><b>Remarque</b> : pour redimensionner des graphiques et des images vous pouvez également utiliser la barre latérale droite. Pour l'activer il vous suffit de sélectionner un objet avec la souris. Pour l'ouvrir, cliquez sur l'icône <b>Paramètres du graphique</b> <img alt="Paramètres du graphique" src="../images/chartsettingsicon.png" /> ou <b>Paramètres de l'image</b> <img alt="Paramètres de l'image" src="../images/image_settings_icon.png" /> à droite.</p>
+			<p><img alt="Conserver les proportions" src="../images/maintain_proportions.png" /></p>
+			<h3>Déplacer des objets</h3>
+			<p>Pour modifier la <b>position</b> d'une forme automatique/image/graphique, utilisez l'icône <img alt="Flèche" src="../images/arrow.png" /> qui apparaît si vous placez le curseur de votre souris sur l'objet. Faites glisser l'objet vers la position nécessaire sans relâcher le bouton de la souris. Pour déplacer l'objet par incrément équivaut à un pixel, maintenez la touche <b>Ctrl</b> enfoncée et utilisez les flèches du clavier. Pour déplacer l'objet strictement à l'horizontale/verticale et l'empêcher de se déplacer dans une direction perpendiculaire, maintenez la touche <b>Maj</b> enfoncée lors du glissement.</p>
+			<h3>Faire pivoter des objets</h3>
+			<p>Pour <b>faire pivoter</b> manuellement une forme automatique/image, placez le curseur de la souris sur la poignée de rotation <img alt="Poignée de rotation" src="../images/greencircle.png" /> et faites-la glisser vers la droite ou vers la gauche. Pour limiter la rotation de l'angle à des incréments de 15 degrés, maintenez la touche <b>Maj</b> enfoncée.</p>
+            <p>Pour faire pivoter une forme ou une image de 90 degrés dans le sens inverse des aiguilles d'une montre/dans le sens des aiguilles d'une montre ou le retourner horizontalement/verticalement, vous pouvez utiliser la section <b>Rotation</b> de la barre latérale droite qui sera activée lorsque vous aurez sélectionné l'objet nécessaire. Pour l'ouvrir, cliquez sur l'icône <b>Paramètres de la forme</b> <img alt="Paramètres de la forme" src="../images/shape_settings_icon.png" /> ou <b>Paramètres de l'image</b> <img alt="Paramètres de l'image" src="../images/image_settings_icon.png" /> à droite. Cliquez sur l'un des boutons :</p>
+            <ul>
+                <li><img alt="icône Pivoter dans le sens inverse des aiguilles d'une montre" src="../images/rotatecounterclockwise.png" /> pour faire pivoter l’objet de 90 degrés dans le sens inverse des aiguilles d'une montre</li>
+                <li><img alt="icône Pivoter dans le sens des aiguilles d'une montre" src="../images/rotateclockwise.png" /> pour faire pivoter l’objet de 90 degrés dans le sens des aiguilles d'une montre</li>
+                <li><img alt="icône Retourner horizontalement" src="../images/fliplefttoright.png" /> pour retourner l’objet horizontalement (de gauche à droite)</li>
+                <li><img alt="icône Retourner verticalement" src="../images/flipupsidedown.png" /> pour retourner l’objet verticalement (à l'envers)</li>
+            </ul>
+            <p>Il est également possible de cliquer avec le bouton droit de la souris sur l'image ou la forme, de choisir l'option <b>Faire pivoter</b> dans le menu contextuel, puis d'utiliser une des options de rotation disponibles.</p>
+            <p>Pour faire pivoter une forme ou une image selon un angle exactement spécifié, cliquez sur le lien <b>Afficher les paramètres avancés</b> dans la barre latérale droite et utilisez l'onglet <b>Rotation</b> de la fenêtre <b>Paramètres avancés</b>. Spécifiez la valeur nécessaire mesurée en degrés dans le champ <b>Angle</b> et cliquez sur <b>OK</b>.</p>
+            <h3>Modifier des formes automatiques</h3>
+			<p>Lors de la modification des formes, par exemple des Flèches figurées ou les légendes, l'icône jaune en forme de diamant <img alt="Icône jaune en forme de diamant" src="../images/yellowdiamond.png" /> est aussi disponible. Elle vous permet d'ajuster certains aspects de la forme, par exemple, la longueur de la pointe d'une flèche.</p>
+			<p><img alt="Modifier les formes automatiques" src="../images/reshaping.png" /></p>
+            <h3>Aligner des objets</h3>
+            <p>Pour <b>aligner</b> <em>deux ou plusieurs</em> objets sélectionnés les uns par rapport aux autres, maintenez la touche <b>Ctrl</b> enfoncée tout en sélectionnant les objets avec la souris, puis cliquez sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type d'alignement souhaité dans la liste :</p>
+            <ul>
+                <li><b>Aligner à gauche</b> <img alt="icône Aligner à gauche" src="../images/alignobjectleft.png" /> - pour aligner les objets les uns par rapport aux autres par le bord gauche de l'objet le plus à gauche,</li>
+                <li><b>Aligner au centre</b> <img alt="icône Aligner au centre" src="../images/alignobjectcenter.png" /> - pour aligner les objets l'un par rapport à l'autre par leurs centres,</li>
+                <li><b>Aligner à droite</b> <img alt="icône Aligner à droite" src="../images/alignobjectright.png" /> - pour aligner les objets les uns par rapport aux autres par le bord droit de l'objet le plus à droite,</li>
+                <li><b>Aligner en haut</b> <img alt="icône Aligner en haut" src="../images/alignobjecttop.png" /> - pour aligner les objets les uns par rapport aux autres par le bord supérieur de l'objet le plus haut,</li>
+                <li><b>Aligner au milieu</b> <img alt="icône Aligner au milieu" src="../images/alignobjectmiddle.png" /> - pour aligner les objets l'un par rapport à l'autre par leur milieu,</li>
+                <li><b>Aligner en bas</b> <img alt="icône Aligner en bas" src="../images/alignobjectbottom.png" /> - pour aligner les objets les uns par rapport aux autres par le bord inférieur de l'objet le plus bas.</li>
+            </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Aligner</b> dans le menu contextuel, puis utiliser une des options d’alignement disponibles.</p>
+            <p class="note"><b>Remarque </b>: les options d'alignement sont désactivées si vous sélectionnez moins de deux objets.</p>
+            <h3>Distribuer des objets</h3>
+            <p>Pour <b>distribuer</b> horizontalement ou verticalement <em>trois ou plusieurs</em> objets sélectionnés entre deux objets sélectionnés les plus à l'extérieur de manière à ce que la distance égale apparaisse entre eux, cliquez sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type de distribution nécessaire dans la liste :</p>
+                    <ul>
+                        <li><b>Distribuer horizontalement</b> <img alt="icône Distribuer horizontalement" src="../images/distributehorizontally.png" /> - pour répartir uniformément les objets entre les objets sélectionnés les plus à gauche et les plus à droite.</li>
+                        <li><b>Distribuer verticalement</b> <img alt="icône Distribuer verticalement" src="../images/distributevertically.png" /> - pour répartir les objets de façon égale entre les objets sélectionnés les plus en haut et les plus en bas.</li>
+                    </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Aligner</b> dans le menu contextuel, puis utiliser une des options de distribution disponibles.</p>
+            <p class="note"><b>Remarque </b>: les options de distribution sont désactivées si vous sélectionnez moins de trois objets.</p>
+            <h3>Grouper plusieurs objets</h3>
+            <p>Pour manipuler plusieurs objets à la fois, vous pouvez les <b>grouper</b>. Maintenez la touche <b>Ctrl</b> enfoncée tout en sélectionnant les objets avec la souris, puis cliquez sur la flèche à côté de l'icône <img alt="icône Grouper" src="../images/group_toptoolbar.png" /> <b>Grouper</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez l'option voulue depuis la liste :</p>
+            <ul>
+                <li><b>Grouper</b> <img alt="icône Grouper" src="../images/group.png" /> - pour combiner plusieurs objets de sorte que vous puissiez les faire pivoter, déplacer, redimensionner, aligner, organiser, copier, coller, mettre en forme simultanément comme un objet unique.</li>
+                <li><b>Dissocier</b> <img alt="icône Dissocier" src="../images/ungroup.png" /> - pour dissocier le groupe sélectionné d'objets préalablement combinés.</li>
+            </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Ordonner</b> dans le menu contextuel, puis utiliser l'option <b>Grouper</b> ou <b>Dissocier</b>.</p>
+            <p class="note"><b>Remarque </b>: l'option <b>Grouper</b> est désactivée si vous sélectionnez moins de deux objets. L'option <b>Dégrouper</b> n'est disponible que lorsqu'un groupe des objets précédemment joints est sélectionné.</p>
+            <p><img alt="Grouper plusieurs objets" src="../images/grouping.png" /></p>
+            <h3 id="arrange">Organiser plusieurs objets</h3>
+            <p>Pour organiser l'objet ou les objets sélectionnés (c'est à dire pour modifier leur ordre lorsque plusieurs objets se chevauchent), vous pouvez utiliser les icônes <B>Déplacer vers l'avant</B> <img alt="L'icône Déplacer vers l'avant" src="../images/bringforward_toptoolbar.png" /> et <B>Envoyer vers l'arrière</B> <img alt="L'icône Envoyer vers l'arrière" src="../images/sendbackward_toptoolbar.png" /> dans l'onglet <B>Mise en page</B> de la barre d'outils supérieure et sélectionner le type d'ordre voulu dans la liste.</p>
+            <p>Pour déplacer un ou plusieurs objets sélectionnés vers l'avant, cliquez sur la flèche en regard de l'icône <B>Déplacer vers l'avant</B> <img alt="L'icône Déplacer vers l'avant" src="../images/bringforward_toptoolbar.png" /> dans l'onglet <B>Mise en page</B> de la barre d'outils supérieure et sélectionnez le type d'organisation appropriée dans la liste:</p>
+            <ul>
+                <li><b>Mettre au premier plan</b> <img alt="L'icône Mettre au premier plan" src="../images/bringtofront.png" /> pour placer l'objet ou les objets devant tous les autres,</li>
+                <li><B>Déplacer vers l'avant</B> <img alt="L'icône Déplacer vers l'avant" src="../images/bringforward.png" /> pour déplacer l'objet ou les objets d'un niveau vers l'avant.</li>
+            </ul>
+            <p>Pour déplacer un ou plusieurs objets sélectionnés vers l'arrière, cliquez sur la flèche en regard de l'icône <B>Envoyer vers l'arrière</B> <img alt="L'icône Envoyer vers l'arrière" src="../images/sendbackward_toptoolbar.png" /> dans l'onglet <B>Mise en page</B> de la barre d'outils supérieure et sélectionnez le type d'organisation appropriée dans la liste:</p>
+            <ul>
+                <li><b>Mettre en arrière plan</b> <img alt="L'icône Mettre en arrière plan" src="../images/sendtoback.png" /> pour placer l'objet ou les objets derrière tous les autres,</li>
+                <li><B>Reculer</B> <img alt="L'icône Reculer" src="../images/sendbackward.png" /> pour déplacer l'objet ou les objets d'un niveau vers l'arrière.</li>
+            </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <B>Organiser</B> dans le menu contextuel, puis utiliser une des options de distribution disponibles.</p>			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert references</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The description of Mendeley, Zotero and EasyBib plugins for ONLYOFFICE editors, which allow to insert references into documents" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Insert references</h1>
+        <p>ONLYOFFICE <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> supports <b>Mendeley</b>, <b>Zotero</b> and <b>EasyBib</b> reference managers to insert references into your document.</p>
+
+        <h2 id="Mendeley_block">Mendeley</h2>
+        <h3>Connect ONLYOFFICE to Mendeley</h3>
+        <ol>
+            <li>Login to your <b>Mendeley</b> account.</li>
+            <li>In your document, switch to the <b>Plugins</b> tab and choose <img alt="Mendeley plugin icon" src="../images/mendeley.png" /> <b>Mendeley</b>, a sidebar will open on the left side of your document.
+            <li>
+                Click the <b>Copy Link and Open Form</b> button.<br />
+                The browser opens a form on the Mendeley site. Complete this form and note the Application ID for ONLYOFFICE.
+            </li>
+            <li>Switch back to your document.</li>
+            <li>Enter the Application ID and click <b>Save</b>.</li>
+            <li>Click <b>Login</b>.</li>
+            <li>Click <b>Proceed</b>.</li>
+        </ol>
+        <p>Now ONLYOFFICE is connected to your Mendeley account.</p>
+        <h3>Inserting references</h3>
+        <ol>
+            <li>Open the document and place the cursor on the spot where you want to insert the reference(s).</li>
+            <li>Switch to the <b>Plugins</b> tab and choose <img alt="Mendeley plugin icon" src="../images/mendeley.png" /> <b>Mendeley</b>.</li>
+            <li>Enter a search text and hit <b>Enter</b> on your keyboard.</li>
+            <li>Click one or more check-boxes.</li>
+            <li>[Optional] Enter a new search text and click on one or more check-boxes.</li>
+            <li>Choose the reference style from the <b>Style</b> pull-down menu.</li>
+            <li>Click the <b>Insert Bibliography</b> button.</li>
+        </ol>
+
+        <h2 id="Zotero_block">Zotero</h2>
+        <h3>Connect ONLYOFFICE to Zotero</h3>
+        <ol>
+            <li>Login to your <b>Zotero</b> account.</li>
+            <li>In your document, switch to the <b>Plugins</b> tab and choose <img alt="Zotero plugin icon" src="../images/zotero.png" /> <b>Zotero</b>, a sidebar will open on the left side of your document.</li>
+            <li>Click the <b>Zotero API settings</b> link.</li>
+            <li>On the Zotero site, create a new key for Zotero, copy it and save it for later use.</li>
+            <li>Switch to your document and paste the API key.</li>
+            <li>Click <b>Save</b>.</li>
+        </ol>
+        <p>Now ONLYOFFICE is connected to your Zotero account.</p>
+        <h3>Inserting references</h3>
+        <ol>
+            <li>Open the document and place the cursor on the spot where you want to insert the reference(s).</li>
+            <li>Switch to the <b>Plugins</b> tab and choose <img alt="Zotero plugin icon" src="../images/zotero.png" /> <b>Zotero</b>.</li>
+            <li>Enter a search text and hit <b>Enter</b> on your keyboard.</li>
+            <li>Click one or more check-boxes.</li>
+            <li>[Optional] Enter a new search text and click on one or more check-boxes.</li>
+            <li>Choose the reference style from the <b>Style</b> pull-down menu.</li>
+            <li>Click the <b>Insert Bibliography</b> button.</li>
+        </ol>
+
+        <h2 id="EasyBib_block">EasyBib</h2>
+        <ol>
+            <li>Open the document and place the cursor on the spot where you want to insert the reference(s).</li>
+            <li>Switch to the <b>Plugins</b> tab and choose <img alt="EasyBib plugin icon" src="../images/easybib.png" /> <b>EasyBib</b>.</li>
+            <li>Select the type of source you want to find.</li>
+            <li>Enter a search text and hit <b>Enter</b> on your keyboard.</li>
+            <li>Click '+' on the right side of the suitable Book/Journal article/Website. It will be added to Bibliography.</li>
+            <li>Select references style.</li>
+            <li>Click the <b>Add Bibliography to Doc</b> to insert the references.</li>
+        </ol>
+        <img class="gif" alt="Easybib plugin gif" src="../images/easybib_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

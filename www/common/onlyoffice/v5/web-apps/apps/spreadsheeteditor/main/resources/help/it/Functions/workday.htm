@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Funzione WORKDAY</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Funzione WORKDAY</h1>
+			<p>La funzione <b>WORKDAY</b> è una delle funzioni della categoria Data e ora. Si usa per restituire la data che viene al numero di giorni indicato (day-offset) prima o dopo la data di inizio specificata, esclusi weekend e date considerate come giorni festivi.</p>
+			<p>La sintassi della funzione <b>WORKDAY</b> è:</p> 
+			<p style="text-indent: 150px;"><b><em>WORKDAY(start-day, day-offset [,holidays])</em></b></p> 
+			<p><em>dove</em></p> 
+			<p style="text-indent: 50px;"><b><em>start-day</em></b> è il numero rappresentante la prima data del periodo, inserita per mezzo della funzione <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> o un'altra funzione della categoria Data e ora.</p>
+			<p style="text-indent: 50px;"><b><em>day-offset</em></b> è il numero di gionate lavorative prima o dopo <b><em>start-day</em></b>. Se <b><em>day-offset</em></b> è un numero negativo, la funzione restituisce il numero di serie della data che viene prima della determinata <b>start-date</b>. Se <b><em>day-offset</em></b> è un numero positivo, la funzione restituisce il numero di serie della data dopo la determinata <b>start-date</b>.</p>
+			<p style="text-indent: 50px;"><b><em>holidays</em></b> sono le giornate non lavorative. E' un argomento opzionale.</p>
+			<p>I valori possono essere inseriti a mano o inclusi nelle cella alle quale fate riferimento.</p>
+			<p>Per applicare la funzione <b>WORKDAY</b>,</p>
+			<ol>
+			<li>selezionate la cella dove desiderate visualizzare il risultato,</li>
+			<li>cliccate sull'icona <b>Inserisci funzione</b> <img alt="Inserisci funzione" src="../images/insertfunction.png" /> sulla barra degli strumenti superiore,
+				<br />o cliccate con il tasto destro del mouse sulla cella scelta e selezionate l'opzione <b>Inserisci funzione</b> dal menu contestuale,
+				<br />o cliccate sull'icona <img alt="Funzione" src="../images/function.png" /> prima della barra della formula,
+			</li>
+			<li>selezionate il gruppo di funzioni <b>Data e ora</b> dall'elenco,</li>
+			<li>cliccate sulla funzione <b>WORKDAY</b>,</li>
+			<li>inserite gli argomenti richiesti separati da virgola,</li>
+			<li>premete il tasto <b>Enter</b>.</li>
+			</ol>
+			<p>Il risultato sarà visualizzato nella cella scelta.</p>
+			<p style="text-indent: 150px;"><img alt="Funzione WORKDAY" src="../images/workday.png" /></p>
+		</div>
+	</body>
+</html>
