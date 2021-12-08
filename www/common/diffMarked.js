@@ -36,7 +36,7 @@ define([
         init: function () {
             require([
                 'mermaid',
-                'css!/code/mermaid-new.css'
+                //'css!/code/mermaid-new.css' // XXX
             ], function (_Mermaid) {
                 console.debug("loaded mermaid");
                 if (Mermaid.__stubbed) {
@@ -202,7 +202,7 @@ define([
 
     renderer.code = function (code, language) {
         if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
-        if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
+        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
