@@ -153,8 +153,9 @@ define([], function () {
     out.registerInner = function () { };
     out.registerOuter = function () { };
 
-    if (document.cookie.indexOf('test=') === 0) {
-        try {
+
+    try {
+        if (document.cookie.indexOf('test=') === 0) {
             var x = JSON.parse(decodeURIComponent(document.cookie.replace('test=', '')));
             if (x.test === 'auto') {
                 out.options = x.opts;
@@ -165,8 +166,8 @@ define([], function () {
                 enableManual();
                 console.log("Enable manual testing " + window.origin);
             }
-        } catch (e) { }
-    }
+        }
+    } catch (e) { }
 
     return out;
 });
