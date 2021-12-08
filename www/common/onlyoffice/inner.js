@@ -1687,41 +1687,6 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
-/*
-                        // Cancel migration from v4 et v5 if there is no charts
-                        if (APP.migrate && content.version === 4 && NEW_VERSION === 5) {
-                            var skip = false;
-                            // Skip if there is no chart in the document
-                            if (getEditor()) {
-                                var app = common.getMetadataMgr().getPrivateData().ooType;
-                                var d, hasChart;
-                                if (app === 'doc') {
-                                    d = getEditor().GetDocument();
-                                    hasChart = d.GetAllCharts().length;
-                                } else if (app === 'presentation') {
-                                    hasChart = d.Slides.some(function (slide) {
-                                        return slide.getDrawingObjects().some(function (obj) {
-                                            return obj instanceof getWindow().AscFormat.CChartSpace;
-                                        });
-                                    });
-                                }
-                                if (!hasChart) { skip = true; }
-                            }
-                            if (skip) {
-                                delete content.migration;
-                                content.version = NEW_VERSION;
-                                APP.onLocal();
-                                APP.realtime.onSettle(function () {
-                                    UI.removeModals();
-                                    UI.alert(Messages.oo_sheetMigration_complete, function () {
-                                        common.gotoURL();
-                                    });
-                                    return;
-                                });
-                                return;
-                            }
-                        }
-*/
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
                         onMigrateRdy.reg(function () {
