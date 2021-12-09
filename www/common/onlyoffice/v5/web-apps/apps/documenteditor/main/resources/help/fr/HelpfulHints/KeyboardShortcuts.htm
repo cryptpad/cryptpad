@@ -1,0 +1,696 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Raccourcis clavier</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="La liste des principaux raccourcis claviers à connaître pour un accès rapide à certaines fonctions de Document Editor." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+        <script type="text/javascript" src="../search/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../search/js/keyboard-switch.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Raccourcis clavier</h1>
+            <p>La liste des raccourcis clavier pour exécuter certaines fonctions de <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> plus vite et facile à l'aide du clavier.</p>
+            <ul class="shortcut_variants">
+                <li class="shortcut_toggle pc_option left_option">Windows/Linux</li><!--
+                --><li class="shortcut_toggle mac_option right_option">Mac OS</li>
+            </ul>
+			<table class="keyboard_shortcuts_table">
+				<tr>
+					<th colspan="4" class="keyboard_section">Traitement du document</th>
+				</tr>
+				<tr>
+					<td>Ouvrir le panneau "Fichier"</td>
+					<td><kbd>Alt</kbd>+<kbd>F</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>F</kbd></td>
+					<td>Ouvrir le volet <b>Fichier</b> pour enregistrer, télécharger, imprimer le document actuel, afficher ses informations, créer un nouveau document ou ouvrir un existant, accéder à l'aide de Document Editor ou aux paramètres avancés.</td>
+				</tr>
+				<tr>
+					<td>Ouvrir la fenêtre "Rechercher et remplacer"</td>
+					<td><kbd>Ctrl</kbd>+<kbd>F</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>F</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>F</kbd></td>
+					<td>Ouvrir la fenêtre <b>Rechercher et remplacer</b> pour commencer à chercher un caractère/mot/phrase dans le document actuellement édité.</td>
+				</tr>
+                <tr>
+                    <td>Ouvrir la fenêtre "Rechercher et remplacer" avec le champ de remplacement</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>H</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>H</kbd></td>
+                    <td>Ouvrir la fenêtre <b>Rechercher et remplacer</b> avec le champ de remplacement pour remplacer une ou plusieurs occurrences des caractères trouvés.</td>
+                </tr>
+                <tr>
+                    <td>Répéter la dernière action « Rechercher ».</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>F4</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>F4</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>G</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>F4</kbd></td>
+                    <td>Répéter l'action de <b>Rechercher</b> qui a été effectuée avant d'appuyer sur la combinaison de touches.</td>
+                </tr>
+				<tr>
+					<td>Ouvir le panneau "Commentaires"</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>H</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>H</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>H</kbd></td>
+					<td>Ouvrir le volet <b>Commentaires</b> pour ajouter votre commentaire ou pour répondre aux commentaires des autres utilisateurs.</td>
+				</tr>
+				<tr>
+					<td>Ouvrir le champ de commentaires</td>
+					<td><kbd>Alt</kbd>+<kbd>H</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>H</kbd></td>
+					<td>Ouvrir un champ de saisie où vous pouvez ajouter le texte de votre commentaire.</td>
+				</tr>
+				<tr class="onlineDocumentFeatures">
+					<td>Ouvrir le panneau "Chat"</td>
+					<td><kbd>Alt</kbd>+<kbd>Q</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Q</kbd></td>
+					<td>Ouvrir le panneau <b>Chat</b> et envoyer un message.</td>
+				</tr>
+				<tr>
+					<td>Enregistrer le document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>S</kbd></td>
+					<td>Enregistrer toutes les modifications dans le document actuellement modifié à l'aide de Document Editor. Le fichier actif sera enregistré avec son nom de fichier actuel, son emplacement et son format de fichier.</td>
+				</tr>
+				<tr>
+					<td>Imprimer le document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>P</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>P</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>P</kbd></td>
+					<td>Imprimer le document avec l'une des imprimantes disponibles ou l'enregistrer sous forme de fichier.</td>
+				</tr>
+				<tr>
+					<td>Enregistrer (Télécharger comme)</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>S</kbd></td>
+					<td>Ouvrir l'onglet <b>Télécharger comme</b> pour enregistrer le document actuellement affiché sur le disque dur de l'ordinateur dans l'un des formats pris en charge : DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML.</td>
+				</tr>
+				<tr>
+					<td>Plein écran</td>
+					<td><kbd>F11</kbd></td>
+					<td><!--<kbd>&#8984; Cmd</kbd>+<kbd>^ Ctrl</kbd>+<kbd>F</kbd>--></td>
+					<td>Passer à l'affichage plein écran pour adapter Document Editor à votre écran.</td>
+				</tr>
+                <tr>
+                    <td>Menu d'aide</td>
+                    <td><kbd>F1</kbd></td>
+                    <td><kbd>F1</kbd></td>
+                    <td>Ouvrir le menu <b>Aide</b> de Document Editor</td>
+                </tr>
+                <tr>
+                    <td>Ouvrir un fichier existant (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>O</kbd></td>
+					<td></td>
+                    <td>L’onglet <b>Ouvrir fichier local</b> dans <b>Desktop Editors</b>, ouvre la boîte de dialogue standard qui permet de sélectionner un fichier existant.</td>
+                </tr>
+                <tr>
+                    <td>Fermer un fichier (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>F4</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>W</kbd></td>
+                    <td>Fermer la fenêtre du document en cours de modification dans <b>Desktop Editors</b>.</td>
+                </tr>
+                <tr>
+                    <td>Menu contextuel de l’élément</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>F10</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>F10</kbd></td>
+                    <td>Ouvrir le <b>menu contextuel</b> de l'élément sélectionné.</td>
+                </tr>
+				<tr>
+				    <td>Réinitialiser le niveau de zoom</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>0</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>0</kbd> or <kbd>&#8984; Cmd</kbd>+<kbd>0</kbd></td>
+                    <td>Réinitialiser le niveau de zoom du document actuel par défaut à 100%.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Navigation</th>
+				</tr>
+				<tr>
+					<td>Sauter au début de la ligne</td>
+					<td><kbd>Début</kbd></td>
+					<td><kbd>Début</kbd></td>
+					<td>Placer le curseur au début de la ligne en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Sauter au début du document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Début</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Début</kbd></td>
+					<td>Placer le curseur au début du document en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Sauter à la fin de la ligne</td>
+					<td><kbd>Fin</kbd></td>
+					<td><kbd>Fin</kbd></td>
+					<td>Placer le curseur à la fin de la ligne en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Sauter à la fin du document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Fin</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Fin</kbd></td>
+					<td>Placer le curseur à la fin du document en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Sauter au début de la page précédente</td>
+					<td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Pg. préc</kbd></td>
+					<td></td>
+					<td>Placez le curseur au tout début de la page qui précède la page en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Sauter au début de la page suivante</td>
+					<td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Pg. suiv</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>Pg. suiv</kbd></td>
+					<td>Placez le curseur au tout début de la page qui suit la page en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Faire défiler vers le bas</td>
+					<td><kbd>Pg. suiv</kbd></td>
+					<td><kbd>Pg. suiv</kbd>,<br /><kbd>⌥ Option</kbd>+<kbd>Fn</kbd>+<kbd>↑</kbd></td>
+					<td>Faire défiler le document vers le bas d'une page visible.</td>
+				</tr>
+				<tr>
+					<td>Faire défiler vers le haut</td>
+					<td><kbd>Pg. préc</kbd></td>
+					<td><kbd>Pg. préc</kbd>,<br /><kbd>⌥ Option</kbd>+<kbd>Fn</kbd>+<kbd>↓</kbd></td>
+					<td>Faire défiler le document vers le haut d'une page visible.</td>
+				</tr>
+				<tr>
+					<td>Page suivante</td>
+					<td><kbd>Alt</kbd>+<kbd>Pg. suiv</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Pg. suiv</kbd></td>
+					<td>Passer à la page suivante du document en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Page précédente</td>
+					<td><kbd>Alt</kbd>+<kbd>Pg. préc</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Pg. préc</kbd></td>
+					<td>Passer à la page précédente du document en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Zoom avant</td>
+					<td><kbd>Ctrl</kbd>+<kbd>+</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>=</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>=</kbd></td>
+					<td>Agrandir le zoom du document en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Zoom arrière</td>
+					<td><kbd>Ctrl</kbd>+<kbd>-</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>-</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>-</kbd></td>
+					<td>Réduire le zoom du document en cours d'édition.</td>
+				</tr>
+                <tr>
+                    <td>Déplacer un caractère vers la gauche</td>
+                    <td><kbd>←</kbd></td>
+                    <td><kbd>←</kbd></td>
+                    <td>Déplacer le curseur d'un caractère vers la gauche.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer un caractère vers la droite</td>
+                    <td><kbd>→</kbd></td>
+                    <td><kbd>→</kbd></td>
+                    <td>Déplacer le curseur d'un caractère vers la droite.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer vers le début d'un mot ou un mot vers la gauche</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>←</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd></td>
+                    <td>Déplacer le curseur au début d'un mot ou d'un mot vers la gauche.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer un caractère vers la droite</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>→</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>→</kbd></td>
+                    <td>Déplacer le curseur d'un mot vers la droite.</td>
+                </tr>
+				<!--<tr>
+                    <td>Move one paragraph up</td>
+                    <td>Ctrl+Up arrow</td>
+                    <td>Move the cursor one paragraph up.</td>
+                </tr>
+                <tr>
+                    <td>Move one paragraph down</td>
+                    <td>Ctrl+Down arrow</td>
+                    <td>Move the cursor one paragraph down.</td>
+                </tr>-->
+				<tr>
+                    <td>Déplacer une ligne vers le haut </td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Déplacer le curseur d'une ligne vers le haut.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer une ligne vers le bas</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Déplacer le curseur d'une ligne vers le bas.</td>
+                </tr>
+				<tr>
+					<td>Naviguer entre les contrôles dans un dialogue modal</td>
+					<td><kbd>↹ Tab</kbd>/<kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+					<td><kbd>↹ Tab</kbd>/<kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+					<td>Naviguer entre les contrôles pour mettre en évidence le contrôle précédent ou suivant dans les dialogues modaux.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Écriture</th>
+				</tr>
+				<tr>
+					<td>Terminer le paragraphe</td>
+					<td><kbd>↵ Entrée</kbd></td>
+					<td><kbd>↵ Retour</kbd></td>
+					<td>Terminer le paragraphe actuel et commencer un nouveau.</td>
+				</tr>
+				<tr>
+					<td>Ajouter un saut de ligne</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>↵ Entrée</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>↵ Retour</kbd></td>
+					<td>Ajouter un saut de ligne sans commencer un nouveau paragraphe.</td>
+				</tr>
+				<tr>
+					<td>Supprimer</td>
+					<td><kbd>← Retour arrière</kbd>,<br /><kbd>Supprimer</kbd></td>
+					<td><kbd>← Retour arrière</kbd>,<br /><kbd>Supprimer</kbd></td>
+					<td>Supprimer un caractère à gauche (<kbd>← Retour arrière</kbd>) ou vers la droite (<kbd>Supprimer</kbd>) du curseur.</td>
+				</tr>
+				<tr>
+					<td>Supprimer le mot à gauche du curseur</td>
+					<td><kbd>Ctrl</kbd>+<kbd>← Retour arrière</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>← Retour arrière</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>← Retour arrière</kbd></td>
+					<td>Supprimer un mot à gauche du curseur.</td>
+				</tr>
+				<tr>
+					<td>Supprimer le mot à droite du curseur</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Supprimer</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Supprimer</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Supprimer</kbd></td>
+					<td>Supprimer un mot à droite du curseur.</td>
+				</tr>
+				<tr>
+					<td>Créer un espace insécable</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>␣ Barre d'espace</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>␣ Barre d'espace</kbd></td>
+					<td>Créer un espace entre les caractères qui ne peuvent pas être utilisés pour passer à la ligne suivante.</td>
+				</tr>
+				<tr>
+					<td>Créer un trait d'union insécable</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>_</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>Trait d'union</kbd></td>
+					<td>Créer un trait d'union entre les caractères qui ne peuvent pas être utilisés pour passer à la ligne suivante.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Annuler et Rétablir</th>
+				</tr>
+				<tr>
+					<td>Annuler</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Z</kbd></td>
+					<td>Inverser la dernière action effectuée.</td>
+				</tr>
+				<tr>
+					<td>Rétablir</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>Z</kbd></td>
+					<td>Répéter la dernière action annulée.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Couper, Copier et Coller</th>
+				</tr>
+				<tr>
+					<td>Couper</td>
+					<td><kbd>Ctrl</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Maj</kbd>+<kbd>Supprimer</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Maj</kbd>+<kbd>Supprimer</kbd></td>
+					<td>Supprimer le fragment du texte sélectionné et l'envoyer vers le presse-papiers. Le texte copié peut être inséré ensuite à un autre endroit dans le même document, dans un autre document, ou dans un autre programme.</td>
+				</tr>
+				<tr>
+					<td>Copier</td>
+					<td><kbd>Ctrl</kbd>+<kbd>C</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>Inser</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>C</kbd></td>
+					<td>Envoyer le fragment du texte sélectionné et l'envoyer vers le presse-papiers. Le texte copié peut être inséré ensuite à un autre endroit dans le même document, dans un autre document, ou dans un autre programme.</td>
+				</tr>
+				<tr>
+					<td>Coller</td>
+					<td><kbd>Ctrl</kbd>+<kbd>V</kbd>,<br /><kbd>⇧ Maj</kbd>+<kbd>Inser</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>V</kbd></td>
+					<td>Insérer le fragment du texte précédemment copié du presse-papiers à la position actuelle du texte. Le texte peut être copié précédemment à partir du même document, à partir d'un autre document, ou provenant d'un autre programme.</td>
+				</tr>
+				<tr>
+					<td>Insérer un lien hypertexte</td>
+					<td><kbd>Ctrl</kbd>+<kbd>K</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>K</kbd></td>
+					<td>Insérer un lien hypertexte qui peut être utilisé pour accéder à une adresse web.</td>
+				</tr>
+				<tr>
+					<td>Copier le style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>C</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>C</kbd></td>
+					<td>Copier la mise en forme du fragment sélectionné du texte en cours d'édition. La mise en forme copiée peut être ensuite appliquée à un autre texte dans le même document.</td>
+				</tr>
+				<tr>
+					<td>Appliquer le style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>V</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>V</kbd></td>
+					<td>Appliquer la mise en forme précédemment copiée dans le texte du document en cours d'édition.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="textselection"></a>Sélection de texte</th>
+				</tr>
+				<tr>
+					<td>Sélectionner tout</td>
+					<td><kbd>Ctrl</kbd>+<kbd>A</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>A</kbd></td>
+					<td>Sélectionner tout le texte du document avec des tableaux et des images.</td>
+				</tr>
+				<tr>
+					<td>Sélectionner une plage</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td>Sélectionner le texte caractère par caractère.</td>
+				</tr>
+				<tr>
+					<td>Sélectionner depuis le curseur jusqu'au début de la ligne</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>Début</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>Début</kbd></td>
+					<td>Sélectionner le fragment du texte depuis le curseur jusqu'au début de la ligne actuelle.</td>
+				</tr>
+				<tr>
+					<td>Sélectionner depuis le curseur jusqu'à la fin de la ligne</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>Fin</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>Fin</kbd></td>
+					<td>Sélectionner le fragment du texte depuis le curseur jusqu'à la fin de la ligne actuelle.</td>
+				</tr>
+                <tr>
+                    <td>Sélectionner un caractère à droite</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>→</kbd></td>
+                    <td>Sélectionner un caractère à droite de la position du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner un caractère à gauche</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>←</kbd></td>
+                    <td>Sélectionner un caractère à gauche de la position du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner jusqu'à la fin d'un mot</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>→</kbd></td>
+					<td></td>
+                    <td>Sélectionner un fragment de texte depuis le curseur jusqu'à la fin d'un mot.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner au début d'un mot</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>←</kbd></td>
+					<td></td>
+                    <td>Sélectionner un fragment de texte depuis le curseur jusqu'au début d'un mot.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner une ligne vers le haut</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↑</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↑</kbd></td>
+                    <td>Sélectionner une ligne vers le haut (avec le curseur au début d'une ligne).</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner une ligne vers le bas</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↓</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↓</kbd></td>
+                    <td>Sélectionner une ligne vers le bas (avec le curseur au début d'une ligne).</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner la page vers le haut</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>Pg. préc</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>Pg. préc</kbd></td>
+                    <td>Sélectionner la partie de page de la position du curseur à la partie supérieure de l'écran.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner la page vers le bas</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>Pg. suiv</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>Pg. suiv</kbd></td>
+                    <td>Sélectionner la partie de page de la position du curseur à la partie inférieure de l'écran.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Style de texte</th>
+				</tr>
+				<tr>
+					<td>Gras</td>
+					<td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>B</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>B</kbd></td>
+					<td>Mettre la police du fragment de texte sélectionné en gras pour lui donner plus de poids.</td>
+				</tr>
+				<tr>
+					<td>Italique</td>
+					<td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>I</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>I</kbd></td>
+					<td>Mettre la police du fragment de texte sélectionné en italique pour lui donner une certaine inclinaison à droite.</td>
+				</tr>
+				<tr>
+					<td>Souligné</td>
+					<td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>U</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>U</kbd></td>
+					<td>Souligner le fragment de texte sélectionné avec la ligne qui passe sous les lettres.</td>
+				</tr>
+                <tr>
+                    <td>Barré</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>5</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>5</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>5</kbd></td>
+                    <td>Souligner le fragment de texte sélectionné avec la ligne qui passe sous les lettres.</td>
+                </tr>
+				<tr>
+					<td>Indice</td>
+					<td><kbd>Ctrl</kbd>+<kbd>.</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&gt;</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&gt;</kbd></td>
+					<td>Rendre le fragment du texte sélectionné plus petit et le placer à la partie inférieure de la ligne du texte, par exemple comme dans les formules chimiques.</td>
+				</tr>
+				<tr>
+					<td>Exposant</td>
+					<td><kbd>Ctrl</kbd>+<kbd>,</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&lt;</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&lt;</kbd></td>
+					<td>Sélectionner le fragment du texte et le placer sur la partie supérieure de la ligne de texte, par exemple comme dans les fractions.</td>
+				</tr>
+				<tr>
+					<td>Style Titre 1</td>
+					<td><kbd>Alt</kbd>+<kbd>1</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>1</kbd></td>
+					<td>Appliquer le style Titre 1 au fragment du texte sélectionné.</td>
+				</tr>
+				<tr>
+					<td>Style Titre 2</td>
+					<td><kbd>Alt</kbd>+<kbd>2</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>2</kbd></td>
+					<td>Appliquer le style Titre 2 au fragment du texte sélectionné.</td>
+				</tr>
+				<tr>
+					<td>Style Titre 3</td>
+					<td><kbd>Alt</kbd>+<kbd>3</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>3</kbd></td>
+					<td>Appliquer le style Titre 3 au fragment du texte sélectionné.</td>
+				</tr>
+				<tr>
+					<td>Liste à puces</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>L</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>L</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>L</kbd></td>
+					<td>Créer une liste à puces non numérotée du fragment de texte sélectionné ou créer une nouvelle liste.</td>
+				</tr>
+				<tr>
+					<td>Supprimer la mise en forme</td>
+					<td><kbd>Ctrl</kbd>+<kbd>␣ Barre d'espace</kbd></td>
+					<td></td>
+					<td>Supprimer la mise en forme du fragment du texte sélectionné.</td>
+				</tr>
+				<tr>
+					<td>Agrandir la police</td>
+					<td><kbd>Ctrl</kbd>+<kbd>]</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>]</kbd></td>
+					<td>Augmenter la taille de la police du fragment de texte sélectionné de 1 point.</td>
+				</tr>
+				<tr>
+					<td>Réduire la police</td>
+					<td><kbd>Ctrl</kbd>+<kbd>[</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>[</kbd></td>
+					<td>Réduire la taille de la police du fragment de texte sélectionné de 1 point.</td>
+				</tr>
+				<tr>
+					<td>Alignement centré/à gauche</td>
+					<td><kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>E</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>E</kbd></td>
+					<td>Passer de l'alignement centré à l'alignement à gauche.</td>
+				</tr>
+				<tr>
+					<td>Justifié/à gauche</td>
+					<td><kbd>Ctrl</kbd>+<kbd>J</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>L</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>J</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>J</kbd></td>
+					<td>Passer de l'alignement justifié à gauche.</td>
+				</tr>
+				<tr>
+					<td>Alignement à droite/à gauche</td>
+					<td><kbd>Ctrl</kbd>+<kbd>R</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>R</kbd></td>
+					<td>Passer de l'aligné à droite à l'aligné à gauche.</td>
+				</tr>
+				<!--<tr>
+					<td>Align left</td>
+					<td>Ctrl+L</td>
+					<td>Align left with the text lined up by the left side of the page, the right side remains unaligned. If your text is initially left-aligned</td>
+				</tr>-->
+				<tr>
+                    <td>Appliquer la mise en forme de l'indice (espacement automatique)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>=</kbd></td>
+					<td></td>
+                    <td>Appliquer la mise en forme d'indice au fragment de texte sélectionné.</td>
+                </tr>
+                <tr>
+                    <td>Appliquer la mise en forme d’exposant (espacement automatique)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>+</kbd></td>
+					<td></td>
+                    <td>Appliquer la mise en forme d'exposant au fragment de texte sélectionné.</td>
+                </tr>
+                <tr>
+                    <td>Insérer des sauts de page</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↵ Entrée</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>↵ Retour</kbd></td>
+                    <td>Insérer un saut de page à la position actuelle du curseur.</td>
+                </tr>
+				<tr>
+					<td>Augmenter le retrait</td>
+					<td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+					<td>Augmenter le retrait gauche.</td>
+				</tr>
+                <tr>
+                    <td>Réduire le retrait</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>M</kbd></td>
+                    <td>Diminuer le retrait gauche.</td>
+                </tr>
+                <tr>
+                    <td>Ajouter un numéro de page</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>P</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>P</kbd></td>
+                    <td>Ajoutez le numéro de page actuel à la position actuelle du curseur.</td>
+                </tr>
+				<!--<tr>
+                    <td>Add dash</td>
+                    <td>Num-</td>
+                    <td>Add a dash.</td>
+                </tr>-->
+				<tr>
+					<td>Caractères non imprimables</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>Num8</kbd></td>
+					<td></td>
+					<td>Afficher ou masque l'affichage des caractères non imprimables.</td>
+				</tr>
+                <tr>
+                    <td>Supprimer un caractère à gauche</td>
+                    <td><kbd>← Retour arrière</kbd></td>
+                    <td><kbd>← Retour arrière</kbd></td>
+                    <td>Supprimer un caractère à gauche du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Supprimer un caractère à droite</td>
+                    <td><kbd>Supprimer</kbd></td>
+                    <td><kbd>Supprimer</kbd></td>
+                    <td>Supprimer un caractère à droite du curseur.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="workwithobjects"></a>Modification des objets</th>
+				</tr>
+				<tr>
+					<td>Limiter le déplacement</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser</td>
+					<td>Limiter le déplacement de l'objet sélectionné horizontalement ou verticalement.</td>
+				</tr>
+				<tr>
+					<td>Régler une rotation de 15 degrés</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors de la rotation)</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors de la rotation)</td>
+					<td>Contraindre une rotation à un angle de 15 degrés.</td>
+				</tr>
+				<tr>
+					<td>Conserver les proportions</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors du redimensionnement)</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors du redimensionnement)</td>
+					<td>Conserver les proportions de l'objet sélectionné lors du redimensionnement.</td>
+				</tr>
+                <tr>
+                    <td>Tracer une ligne droite ou une flèche</td>
+                    <td><kbd>⇧ Maj</kbd> + faire glisser (lors du tracé de lignes/flèches)</td>
+                    <td><kbd>⇧ Maj</kbd> + faire glisser (lors du tracé de lignes/flèches)</td>
+                    <td>Tracer une ligne droite ou une flèche verticale/horizontale/inclinée de 45 degrés.</td>
+                </tr>
+				<tr>
+					<td>Mouvement par incréments de 1 pixel</td>
+					<td><kbd>Ctrl</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+					<td></td>
+					<td>Maintenez la touche <kbd>Ctrl</kbd> enfoncée en faisant glisser et utilisez les flèches pour déplacer l'objet sélectionné d'un pixel à la fois.</td>
+				</tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithtables"></a>Utilisation des tableaux</th>
+                </tr>
+                <tr>
+                    <td>Passer à la cellule suivante d’une ligne</td>
+                    <td><kbd>↹ Tab</kbd></td>
+                    <td><kbd>↹ Tab</kbd></td>
+                    <td>Aller à la cellule suivante d’une ligne de tableau.</td>
+                </tr>
+                <tr>
+                    <td>Passer à la cellule précédente d’une ligne</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Aller à la cellule précédente d’une ligne de tableau.</td>
+                </tr>
+                <tr>
+                    <td>Passer à la ligne suivante</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Aller à la ligne suivante d’un tableau.</td>
+                </tr>
+                <tr>
+                    <td>Passer à la ligne précédente</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Aller à la ligne précédente d’un tableau.</td>
+                </tr>
+                <tr>
+                    <td>Commencer un nouveau paragraphe</td>
+                    <td><kbd>↵ Entrée</kbd></td>
+                    <td><kbd>↵ Retour</kbd></td>
+                    <td>Commencer un nouveau paragraphe dans une cellule.</td>
+                </tr>
+                <tr>
+                    <td>Ajouter une nouvelle ligne</td>
+                    <td><kbd>↹ Tab</kbd> dans la cellule inférieure droite du tableau.</td>
+                    <td><kbd>↹ Tab</kbd> dans la cellule inférieure droite du tableau.</td>
+                    <td>Ajouter une nouvelle ligne au bas du tableau.</td>
+                </tr>
+                
+                <tr>
+                    <th colspan="4" class="keyboard_section">Insertion des caractères spéciaux</th>
+                </tr>
+				<!--<tr>
+                    <td>Insert the Euro sign</td>
+                    <td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+                    <td>Insert the Euro sign (€) at the current cursor position.</td>
+                </tr>-->
+				<tr>
+                    <td>Insérer une formule</td>
+                    <td><kbd>Alt</kbd>+<kbd>=</kbd></td>
+					<td></td>
+                    <td>Insérer une formule à la position actuelle du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Ins&eacute;rer un tiret sur cadratin</td>
+                    <td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Verr.num-</kbd></td>
+                    <td></td>
+                    <td>Ins&eacute;rer un tiret sur cadratin &lsquo;&mdash;&rsquo; dans le document actuel &agrave; droite du curseur.</td>
+                </tr>
+                <tr>
+				    <td>Ins&eacute;rer un trait d'union ins&eacute;cable </td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>_</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>Trait d&rsquo;union</kbd></td>
+                    <td>Ins&eacute;rer un trait d'union ins&eacute;cable &lsquo;&mdash;&rsquo; dans le document actuel &agrave; droite du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Ins&eacute;rer un espace ins&eacute;cable</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>␣  Barre d'espace</kbd></td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>␣  Barre d'espace</kbd></td>
+                    <td>Ins&eacute;rer un espace ins&eacute;cable &lsquo;o&rsquo; dans le document actuel &agrave; droite du curseur.</td>
+                </tr>
+			</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Guarde/imprima/descargue su hoja de cálculo</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your spreadsheet in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Guarde/imprima<span class="onlineDocumentFeatures">/descargue</span> su hoja de cálculo</h1>
+            <h3>Guardando</h3>
+            <p class="onlineDocumentFeatures">Por defecto, el <b>Editor de hojas de cálculo</b> en línea guarda automáticamente el archivo cada 2 segundos cuando trabaja en él, evitando la pérdida de datos en caso de cierre inesperado del programa. Si co-edita el archivo en el modo <b>Rápido</b>, el tiempo requerido para actualizaciones es de 25 cada segundo y guarda los cambios si estos se han producido. Si el archivo se está editando por varias prsonas a la vez, los cambios se guardan cada 10 minutos. Se puede fácilmente desactivar la función <b>Autoguardado</b> en la página <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes avanzados</a>.</p>
+			<p>Para guardar la hoja de cálculo actual de forma manual en el formato y la ubicación actuales,</p>
+			<ul>
+				<li>haga clic en el icono <img alt="Icono Guardar" src="../images/save.png" /> <b>Guardar</b> en la parte izquierda de la cabecera del editor, o bien</li>
+				<li>use la combinación de las teclas <b>Ctrl+S</b>, o</li>
+				<li>pulse el icono <b>Archivo</b> en la barra izquierda lateral y seleccione la opción <b>Guardar</b>.</li>
+			</ul>
+            <p class="note desktopDocumentFeatures"><b>Nota</b>: en la <em>versión de escritorio</em>, para evitar la pérdida de datos en caso de cierre inesperado del programa, puede activar la opción <b>Autorecuperación</b> en la página de <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes avanzados </a>.</p>
+            <div class="desktopDocumentFeatures">
+                <p>En la <em>versión de escritorio</em>, puede guardar la hoja de cálculo con otro nombre, en una nueva ubicación o formato,</p>
+                <ol>
+                    <li>haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior,</li>
+                    <li>seleccione la opción <b>Guardar como...</b>,</li>
+                    <li>elija uno de los formatos disponibles: XLSX, ODS, CSV, PDF, PDF/A. También puede seleccionar la opción <b>Plantilla de hoja de cálculo</b> (XLTX o OTS).</li>
+                </ol>
+            </div>
+            <div class="onlineDocumentFeatures">
+            <h3>Descargando</h3>
+			<p>En la <em>versión en línea</em>, puede descargar la hoja de cálculo creada en el disco duro de su ordenador,</p>
+			<ol>
+				<li>haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior,</li>
+				<li>seleccione la opción <b>Descargar como</b>,</li>
+				<li>elija uno de los formatos disponibles: XLSX, PDF, ODS, CSV, XLTX, PDF/A, OTS.<p class="note"><b>Nota</b>: si selecciona el formato CSV, todas las características (formato de letra, fórmulas etc.) excepto el texto plano no se guardarán en el archivo CSV. Si continua el guardado, la ventana <b>Elegir Opciones CSV</b> se abrirá. de manera predeterminada, <em>Unicode (UTF-8)</em> se usa como el tipo de <b>Codificación</b>. El <b>Delimitador</b> por defecto es <em>coma</em> (,), pero también están disponibles las siguientes opciones: <em>punto y coma</em> (;), <em>dos puntos</em> (:), <em>Tabulación</em>, <em>Espacio</em> y <em>Otro</em> (esta opción le permite establecer un carácter delimitador personalizado).</p>
+                </li>
+			</ol>
+                <h3>Guardando una copia</h3>
+                <p>En la <em>versión en línea</em>, puede guardar una copia del archivo en su portal,</p>
+                <ol>
+                    <li>haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior,</li>
+                    <li>seleccione la opción <b>Guardar copia como...</b>,</li>
+                    <li>elija uno de los formatos disponibles: XLSX, PDF, ODS, CSV, XLTX, PDF/A, OTS,</li>
+                    <li>seleccione una ubicación para el archivo en el portal y pulse <b>Guardar</b>.</li>
+                </ol>
+            </div>
+            <h3 id="print">Imprimiendo</h3>
+			<p>Para imprimir la hoja de cálculo actual,</p>
+			<ul>
+				<li>haga clic en el icono <img alt="Icono Imprimir" src="../images/print.png" /> <b>Imprimir</b> en la parte izquierda de la cabecera del editor, o bien</li>
+				<li>use la combinación de las teclas <b>Ctrl+P</b>, o</li>
+				<li>pulse el icono <b>Archivo</b> en la barra izquierda lateral y seleccione la opción <b>Imprimir</b>.</li>
+			</ul>
+			<p>La ventana de <b>Ajustes de impresión</b> se abrirá, y podrá cambiar los ajustes de impresión de defecto. Haga clic en el botón <b>Mostrar detalles</b> al final de la ventana para mostrar todos los parámetros.</p>
+            <p class="note"><b>Nota</b>: usted también puede cambiar los ajustes de impresión en la página <b>Ajustes avanzados...</b>: pulse la pestaña <b>Archivo</b> de la barra de herramientas superior, y siga <b>Ajustes avanzados...</b> &gt;&gt; <b>Ajustes de página</b>.<br />Algunos de estos ajustes (<b>Márgenes</b>, <b>Orientación</b> y <b>Tamaño</b> de página, así como el <b>Área de impresión</b>) también están disponibles en la pestaña <b>Diseño</b> de la barra de herramientas superior.</p>
+			<p><img alt="Ventana de ajustes de impresión" src="../images/printsettingswindow.png" /></p>
+			<p>Aquí usted puede ajustar los parámetros siguientes:</p>
+			<ul>
+			<li><b>Área de impresión</b> - especifique lo que quiere imprimir: toda la <b>Hoja actual</b>, <b>Todas las hojas</b> de su hoja de cálculo o el rango de celdas previamente seleccionado (<b>Selección</b>),<p>Si ha definido previamente un área de impresión constante pero desea imprimir toda la hoja, marque la casilla <b>IIgnorar área de impresión</b>.</p>
+            </li>
+			<li><b>Ajustes de la hoja</b> - especifica ajustes de impresión individuales para cada hoja de forma separada, si tiene seleccionada la opción <b>Todas las hojas</b> en la lista desplegable <b>Rano de impresión</b>,</li>
+            <li><b>Tamaño de página</b> - seleccione uno de los tamaños disponibles en la lista desplegable,</li>
+			<li><b>Orientación de la página</b> - seleccione la opción <b>Vertical</b> si usted quiere imprimir la página verticalmente, o use la opción <b>Horizontal</b> para imprimirla horizontalmente,</li>
+			<li><b>Escalada</b> - si no quiere que algunas columnas o filas se impriman en una segunda página, puede minimizar los contenidos de la hoja para que ocupen solo una página si selecciona la opción correspondiente: <b>Ajustar hoja en una página</b>, <b>Ajustar todas las columnas en una página</b> o <b>Ajustar todas las filas en una página</b>. Deje la opción <b>Tamaño actual</b> para imprimir la hoja sin ajustar.</li>
+            <li><b>Márgenes</b> - especifique la distancia entre datos de la hoja de cálculo y los bordes de la página imprimible cambiando los tamaños predeterminados en los campos <b>Superior</b>, <b>Inferior</b>, <b>Izquierdo</b> y <b>Derecho</b>,</li>
+			<li><b>Imprimir</b> - especifique elementos de la hoja que quiere imprimir marcando las casillas correspondientes: <b>Imprimir Cuadricula</b> y <b>Imprimir títulos de filas y columnas</b>.</li>
+			</ul>
+            <p><span class="desktopDocumentFeatures">En la <em>versión de escritorio</em>, el archivo se imprimirá directamente.</span> <span class="onlineDocumentFeatures">En la <em>versión en línea</em>, se generará un archivo PDF a partir del documento. Puede abrirlo e imprimirlo, o guardarlo en el disco duro de su ordenador o en un medio extraíble para imprimirlo más tarde. Algunos navegadores (como Chrome y Opera) permiten la impresión directa.</span></p>
+            <h6 id="printarea">Configurar un área de impresión</h6>
+            <p>Si desea imprimir únicamente el rango de celdas seleccionado en lugar de una hoja de trabajo completa, puede utilizar la opción <b>Selección</b> de la lista desplegable <b>Imprimir rango</b>. Cuando se guarda el cuaderno de trabajo, este ajuste no se guarda, sino que está destinado a ser utilizado una sola vez.</p>
+            <p>Si un rango de celdas debe imprimirse con frecuencia, puede establecer un área de impresión constante en la hoja de trabajo. Cuando se guarda el cuaderno de trabajo, también se guarda el área de impresión, que se podrá utilizar la próxima vez que abra la hoja de cálculo. También es posible establecer varias áreas de impresión constantes en una hoja, y en este caso cada área se imprimirá en una página separada.</p>
+            <p>Para establecer un área de impresión:</p>
+            <ol>
+                <li>seleccione el rango de celdas deseado en la hoja de trabajo. Para seleccionar varios rangos de celdas, mantenga pulsada la tecla <em>Ctrl</em>,</li>
+                <li>cambie a la pestaña <b>Diseño</b> de la barra de herramientas superior,</li>
+                <li>haga clic en la flecha que aparece al lado del botón <img alt="Icono de área de impresión" src="../images/printareabutton.png" /> <b>Área de impresión</b> y seleccione la opción <b>Establecer área de impresión</b>.</li>
+            </ol>
+            <p>El área de impresión creada se guarda al guardar la hoja de trabajo. La próxima vez que abra el archivo, se imprimirá el área de impresión especificada.</p>
+            <p class="note"><b>Nota</b>: al crear un área de impresión, también se crea automáticamente un <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">rango de nombre</a> <em>Área_de_Impresión</em>, que se muestra en el <b>Organizador de nombres</b>. Para resaltar los bordes de todas las áreas de impresión de la hoja de trabajo actual, puede hacer clic en la flecha del cuadro de nombre situado a la izquierda de la barra de fórmulas y seleccionar el nombre <em>Área_de_Impresión</em> de la lista de nombres.</p>
+            <p>Para añadir celdas a un área de impresión:</p>
+            <ol>
+                <li>abra la hoja de trabajo correspondiente donde se añadirá el área de impresión,</li>
+                <li>seleccionar el rango de celdas deseado en la hoja de trabajo,</li>
+                <li>cambie a la pestaña <b>Diseño</b> de la barra de herramientas superior,</li>
+                <li>haga clic en la flecha que aparece al lado del botón <img alt="Icono de área de impresión" src="../images/printareabutton.png" /> <b>Área de impresión</b> y seleccione la opción <b>Añadir al área de impresión</b>.</li>
+            </ol>
+            <p><!--If the selected cell range is adjacent to the existing print area, it will be added to this print area. If the selected cell range is not adjacent to the existing print area,--> Una nueva área de impresión será añadida. Cada área de impresión se imprimirá en una página diferente.</p>
+            <p>Para eliminar un área de impresión:</p>
+            <ol>
+                <li>abra la hoja de trabajo correspondiente donde se añadirá el área de impresión,</li>
+                <li>cambie a la pestaña <b>Diseño</b> de la barra de herramientas superior,</li>
+                <li>haga clic en la flecha que aparece al lado del botón <img alt="Icono de área de impresión" src="../images/printareabutton.png" /> <b>Área de impresión</b> y seleccione la opción <b>Eliminar área de impresión</b>.</li>
+            </ol>
+            <p>Todas las áreas de impresión existentes en esta hoja serán eliminadas. Después se imprimirá toda la hoja.</p>
+		</div>
+	</body>
+</html>

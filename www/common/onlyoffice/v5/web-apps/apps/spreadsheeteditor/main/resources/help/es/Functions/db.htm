@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DB</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Función DB</h1>
+            <p>La función <b>DB</b> es una función financiera. Se usa para calcular la depreciación de un activo para un periodo contable especificado usando el método de balanza decreciente fijo.</p>
+            <p>La sintaxis de la función <b>DB</b> es:</p>
+            <p style="text-indent: 150px;"><b><em>DB(coste, residuo, vida, periodo[, [mes]])</em></b></p>
+            <p><em>donde</em></p>
+            <p style="text-indent: 50px;"><b><em>coste</em></b> es el precio del activo.</p>
+            <p style="text-indent: 50px;"><b><em>residuo</em></b> es el valor residual del activo al final de su vida.</p>
+            <p style="text-indent: 50px;"><b><em>vida</em></b> es el número total de periodos en la vida del activo.</p>
+            <p style="text-indent: 50px;"><b><em>periodo</em></b> es el periodo para el que usted quiere calcular la depreciación. El valor debe expresarse usando las mismas unidades de medida como para <em>vida</em>.</p>
+            <p style="text-indent: 50px;"><b><em>mes</em></b> es el número de meses en el primer año. Es un argumento opcional. Si se omite, la función <b><em>mes</em></b> será igual a 12.</p>
+            <p>Los valores pueden ser introducidos manualmente o incluidos en las celdas a las que usted hace referencia.</p>
+            <p>Para aplicar la función <b>DB</b>,</p>
+            <ol>
+                <li>seleccione la celda donde usted quiere ver el resultado,</li>
+                <li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+                <li>seleccione el grupo de funciones <b>Financiero</b> en la lista,</li>
+                <li>haga clic en la función <b>DB</b>,</li>
+                <li>introduzca los argumentos correspondientes separados por comas,</li>
+                <li>pulse el botón <b>Enter</b>.</li>
+            </ol>
+            <p>El resultado se mostrará en la celda elegida.</p>
+            <p style="text-indent: 150px;"><img alt="Función DB" src="../images/db.png" /></p>
+        </div>
+	</body>
+</html>

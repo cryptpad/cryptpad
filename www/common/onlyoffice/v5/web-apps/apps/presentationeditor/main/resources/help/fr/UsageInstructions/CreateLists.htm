@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer des listes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Créer des listes à puces et des listes numérotées" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Créer des listes</h1>
+            <p>Pour créer une liste dans <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a>,</p>
+            <ol>
+                <li>placez le curseur dans le bloc de texte à la position où vous voulez commencer la liste (cela peut être une nouvelle ligne ou le texte déjà saisi),</li>
+                <li>passez à l'onglet <b>Accueil</b> de la barre d'outils supérieure,</li>
+                <li>
+                    sélectionnez le type de liste à créer :
+                    <ul>
+                        <li><b>Liste non ordonnée</b> avec des marqueurs est créée à l'aide de l'icône <b>Puces</b> <img alt="L'icône Liste non ordonnée" src="../images/bullets.png" /> de la barre c</li>
+                        <li>
+                            <b>Liste ordonnée</b> avec numérotage spécial est créée à l'aide de l'icône <b>Numérotation</b> <img alt="L'icône Liste ordonnée" src="../images/numbering.png" /> de la barre d'outils supérieure.
+                            <p class="note"><b>Remarque</b>: cliquez sur la flèche vers le bas à côté de l'icône <b>Puces</b> ou <b>Numérotation</b> pour sélectionner le format de puces ou de numérotation souhaité.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>appuyez sur la touche <b>Entrée</b> à la fin de la ligne pour ajouter un nouvel élément à la liste. Pour terminer la liste, appuyez sur la touche <b>Retour arrière</b> et continuez le travail.</li>
+            </ol>
+            <p>Il est aussi possible de modifier le retrait et l'imbrication des listes en utilisant des icônes <b>Diminuer le retrait</b> <img alt="L'icône Diminuer le retrait" src="../images/decreaseindent.png" /> et <b>Augmenter le retrait</b> <img alt="L'icône Augmenter le retrait" src="../images/increaseindent.png" /> sous l'onglet <b>Acceuil</b> de la barre barre d'outils supérieure.</p>
+            <p class="note"><b>Remarque</b>: on peut configurer les paramètres du retrait et de l'espacement supplémentaire sur la barre latérale droite dans la fenêtre Paramètres avancés. Pour en savoir plus, consultez <a href="InsertText.htm" onclick="onhyperlinkclick(this)">Insertion en mise en forme du texte</a> .</p>
+
+            <h3>Configurer les paramètres de la liste</h3>
+            <p>Pour configurer les paramètres de la liste comme la puce, la taille et la couleur:</p>
+            <ol>
+                <li>cliquez sur l'élément de la liste actuelle ou sélectionnez le texte à partir duquel vous souhaitez créer une liste,</li>
+                <li>cliquez sur l'icône <b>Puces</b> <img alt="L'icône Liste non ordonnée" src="../images/bullets.png" /> ou <b>Numérotation</b> <img alt="L'icône Liste ordonnée" src="../images/numbering.png" /> sous l'onglet <b>Accueil</b> dans la barre d'outils en haut,</li>
+                <li>sélectionnez l'option <b>Paramètres de la liste</b>,</li>
+                <li>
+                    la fenêtre <b>Paramètres de la liste</b> s'affiche. La fenêtre Paramètres de la liste à puces se présente sous cet aspect:
+                    <p><img alt="La fenêtre Paramètres de la liste à puces" src="../images/bulletedlistsettings.png" /></p>
+                    <p>La fenêtre Paramètres de la liste numérotée se présente sous cet aspect:</p>
+                    <p><img alt="La fenêtre Paramètres de la liste numérotée" src="../images/orderedlistsettings.png" /></p>
+                    <p>Pour la liste à puces on peut choisir le caractère à utiliser comme <b>puce </b>et pour la liste numérotée on peut choisir le numérotation à <b>Commencer par</b>. Les options <b>Alignement</b> et <b>Couleur</b> sont identiques pour toutes les listes soit à puces soit numérotée.</p>
+                    <ul>
+                        <li><b>Taille</b> - permet d'ajuster la taille des puces/numéros en fonction de la talle actuelle du texte. la taille peut être configuré de 25% à 400%.</li>
+                        <li><b>Couleur</b> -  permet de choisir la couleur des puces/numéros. Vous pouvez choisir une des <I>couleurs de thème</I>, ou des <I>couleurs standard</I> de la palette ou définissez la Couleur personnalisée.</li>
+                        <li><b>Puce</b> - permet de sélectionner le caractère approprié pour les éléments de la liste. Lorsque vous appuyez sur le champ Puce, la fenêtre <b>Symbole</b> va apparaître dans laquelle vous pouvez choisir parmi les caractères disponibles. Pour les listes à puces, vous pouvez aussi ajouter un nouveau symbole  Veuillez consulter <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">cet article</a>pour en savoir plus sur utilisation des symboles.</li>
+                        <li><b>Comencer par</b> - permet de saisir le numéro par lequel commence la liste.</li>
+                    </ul>
+                </li>
+                <li>Cliquez sur <b>OK</b> pour appliquer toutes les modifications et fermer la fenêtre.</li>
+            </ol>        
+        </div>
+	</body>
+</html>

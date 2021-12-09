@@ -61,7 +61,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 4; // version of the .bin, patches and ChainPad formats
+    var NEW_VERSION = 5; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
@@ -215,7 +215,7 @@ define([
             var tabId = metadataMgr.getNetfluxId() + '-' + obj.id;
             if (content.ids[tabId]) {
                 delete content.ids[tabId];
-                delete content.locks[tabId];
+                if (content.locks) { delete content.locks[tabId]; }
                 APP.onLocal();
             }
         };
@@ -2912,8 +2912,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
-            } else if (content && content.version <= 3) { // V2 or V3
-                version = 'v2b/';
+            } else if (content && content.version <= 4) { // V2 or V3
+                version = content.version <= 3 ? 'v2b/' : 'v4/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {

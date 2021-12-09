@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>ADRESSE-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>ADRESSE-Funktion</h1>
+			<p>Die Funktion <b>ADRESSE</b> gehört zur Gruppe der Nachschlage- und Verweisfunktionen. Sie gibt einen Bezug auf eine einzelne Zelle in einem Tabellenblatt als Text zurück.</p>
+			<p>Die Formelsyntax der Funktion <b>ADRESSE</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>ADRESSE(Zeile;Spalte;[Abs];[A1];[Tabellenname])</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><em><b>Zeile</b></em> ist ein numerischer Wert, der die Zeilennummer angibt, die für den Zellbezug verwendet werden soll.</p>
+			<p style="text-indent: 50px;"><em><b>Spalte</b></em> ist ein numerischer Wert, der die Spaltennummer angibt, die für den Zellbezug verwendet werden soll.</p>
+			<p style="text-indent: 50px;"><em><b>Abs</b></em> ist ein numerischer Wert, der angibt, welcher Bezugstyp zurückgegeben werden soll. Die folgenden Typen stehen zur Auswahl:</p>
+				<table style="width: 40%">
+				<tr>
+					<td><b>Zahlenwert</b></td>
+					<td><b>Bedeutung</b></td>
+				</tr>
+				<tr>
+					<td>1 oder nicht angegeben</td>
+					<td>Absolut</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Zeile absolut; Spalte relativ</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Zeile relativ; Spalte absolut</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Relativ</td>
+				</tr>
+			</table>
+			<p><em><b>A1</b></em> ist ein optionaler Wahrheitswert. WAHR oder FALSCH. Ist das A1-Argument mit WAHR belegt oder nicht angegeben, liegt der von der Funktion ADRESSE gelieferte <b><em>Bezug</em></b> in A1-Schreibweise vor.  Ist das A1-Argument mit FALSCH belegt, liegt der von der Funktion ADRESSE gelieferte <b><em>Bezug</em></b> in der Z1S1-Schreibweise vor.</p>
+			<p><em><b>Tabellenname</b></em> ist ein Textwert, der den Namen des Arbeitsblatts angibt, das als externer Bezug verwendet werden soll. Das Argument ist optional. Wird das Argument ausgelassen, wird kein solcher Name verwendet, und die von der Funktion zurückgegebene Adresse bezieht sich auf eine Zelle in der aktuellen Tabelle.</p>
+			<p>Die Argumente können manuell eingegeben werden oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>ADRESSE</b>.</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Nachschlage- und Verweisfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>ADRESSE</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="ADRESSE-Funktion" src="../images/address.png" /></p>
+		</div>
+	</body>
+</html>

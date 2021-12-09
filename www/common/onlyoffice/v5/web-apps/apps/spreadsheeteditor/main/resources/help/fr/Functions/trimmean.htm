@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction MOYENNE.REDUITE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction MOYENNE.REDUITE</h1>
+			<p>La fonction <b>MOYENNE.REDUITE</b> est l'une des fonctions statistiques. Elle est utilisée pour renvoyer la moyenne de l'intérieur d'un ensemble de données. <b>MOYENNE.REDUITE</b> calcule la moyenne prise en excluant un pourcentage de points de données des queues supérieure et inférieure d'un ensemble de données.</p>
+			<p>La syntaxe de la fonction <b>MOYENNE.REDUITE</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>MOYENNE.REDUITE(array, percent)</em></b></p> 
+            <p><em>où</em></p>
+            <p style="text-indent: 50px;"><b><em>array</em></b> est la plage de valeurs numériques à découper pour calculer la moyenne.</p>
+            <p style="text-indent: 50px;"><b><em>percent</em></b> est un pourcentage total de points de données à exclure du calcul. Une valeur numérique supérieure ou égale à 0 mais inférieure ou égale à 1. Le nombre de points de données exclus est arrondi au multiple de 2 le plus proche. Par exemple, si  contient 30 valeurs et  vaut 0,1, 10 % de 30 points est 3. Cette valeur est arrondie à 2, donc 1 point est retiré de chaque queue de l'ensemble de données : 1 à partir du haut et 1 à partir du bas de l'ensemble.</p>
+            <p>Les données peuvent être saisies à la main ou incluses dans les cellules auxquelles il est fait référence.</p>
+			<p>Pour appliquer la fonction <b>MOYENNE.REDUITE</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Statistique</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>MOYENNE.REDUITE</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules ou sélectionnez une plage de cellules avec la souris,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction MOYENNE.REDUITE" src="../images/trimmean.png" /></p>
+		</div>
+	</body>
+</html>

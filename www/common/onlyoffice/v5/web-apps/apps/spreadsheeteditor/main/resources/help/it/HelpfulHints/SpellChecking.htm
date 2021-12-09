@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spell-checking</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Spell check the text in your language while editing a spreadsheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Spell-checking</h1>
+			<p><b>Spreadsheet Editor</b> allows you to check the spelling of the text in a certain language and correct mistakes while editing. In the <em>desktop version</em>, it's also possible to add words into a custom dictionary which is common for all three editors.</p>
+			<p>Click the <img alt="Spell checking icon" src="../images/spellcheckdeactivated.png" /> <b>Spell checking</b> icon at the left sidebar to open the spell checking panel.</p>
+            <p><img alt="Spell checking panel" src="../images/spellchecking_panel.png" /></p>
+            <p>The upper left cell that contains a misspelled text value will be automatically selected on the current worksheet. The first misspelled word will be displayed in the spell checking field, and the suggested similar words spelled correctly will appear in the field below. </p>
+            <p>Use the <img alt="Go to the next word" src="../images/go_to_the_next_word.png" /> <b>Go to the next word</b> button to navigate between misspelled word.</p>
+            <h5>Replace misspelled words</h5>
+            <p>To <b>replace</b> the currently selected misspelled word with the suggested one, choose one of the suggested similar words spelled correctly and use the <b>Change</b> option:</p>
+            <ul>
+                <li>click the <b>Change</b> button, or</li>
+                <li>click the downward arrow next to the <b>Change</b> button and select the <b>Change</b> option.</li>
+            </ul>
+            <p>The current word will be replaced and you will proceed to the next misspelled word.</p>
+            <p>To quickly replace all the identical words repeated on the worksheet, click the downward arrow next to the the <b>Change</b> button and select the <b>Change all</b> option.</p>
+            <h5>Ignore words</h5>
+            <p>To skip the current word:</p>
+            <ul>
+                <li>click the <b>Ignore</b> button, or</li>
+                <li>click the downward arrow next to the <b>Ignore</b> button and select the <b>Ignore</b> option.</li>
+            </ul>
+            <p>The current word will be skipped and you will proceed to the next misspelled word.</p>
+            <p>To skip all the all the identical words repeated on the worksheet, click the downward arrow next to the <b>Ignore</b> button and select the <b>Ignore all</b> option.</p>         
+            <p>If the current word is missed in the dictionary, you can add it to the custom dictionary using the <b>Add to Dictionary</b> button at the spell checking panel. This word will not be treated as a mistake next time. This option is available in the <em>desktop version</em>.</p>
+            <p>The <b>Dictionary Language</b> which is used for spell checking is displayed in the list below. You can change it, if necessary.</p>
+            <p>Once you verify all the words on the worksheet, the <b>Spellcheck has been complete</b> message will appear at the spell checking panel.</p>			
+            <p>To close the spell checking panel, click the <img alt="Spell checking icon" src="../images/spellcheckactivated.png" /> <b>Spell checking</b> icon at the left sidebar.</p>
+            <h5>Change the spell check settings</h5>
+            <p>To change the spell check settings, go to the spreadsheet editor advanced settings (<b>File</b> tab -> <b>Advanced Settings...</b>) and switch to the <b>Spell checking</b> tab. Here you can adjust the following parameters:</p> 
+            <p><img alt="Spell checking settings" src="../images/spellchecking_settings.png" /></p>
+            <ul>
+                <li><b>Dictionary language</b> - select one of the available languages from the list. The <b>Dictionary Language</b> at the spell checking panel will be changed correspondingly.</li>
+                <li><b>Ignore words in UPPERCASE</b> - check this option to ignore words written in capital letters, e.g. acronyms like <em>SMB</em>.</li>
+                <li><b>Ignore words with numbers</b> - check this option to ignore words containing numbers, e.g. acronyms like <em>B2B</em>.</li>
+            </ul>
+            <p>To save the changes you made, click the <b>Apply</b> button.</p>           
+		</div>
+	</body>
+</html>

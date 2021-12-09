@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Impostare il tipo, la dimensione e il colore del carattere</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Change the following text formatting parameters: font type, size, and color" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Impostare il tipo, la dimensione e il colore del carattere</h1>
+        <p>È possibile selezionare il tipo di carattere, la dimensione e il colore utilizzando le icone corrispondenti situate nella scheda <b>Home</b> della barra degli strumenti superiore.</p>
+        <p class="note"><b>Nota</b>: nel caso in cui si desidera applicare la formattazione al testo già presente nel documento, selezionarlo con il mouse o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">utilizzando la tastiera</a> e applicare la formattazione.</p>
+        <table>
+            <tr>
+                <td width="10%">Font</td>
+                <td width="15%"><img alt="Font" src="../images/fontfamily.png" /></td>
+                <td>Viene utilizzato per selezionare uno dei font dall'elenco di quelli disponibili. <span class="desktopDocumentFeatures">Se un font richiesto non è disponibile nell'elenco, puoi scaricarlo e installarlo sul tuo sistema operativo, dopodiché il font sarà disponibile per l'uso nella <em>versione desktop</em>.</span></td>
+            </tr>
+            <tr>
+                <td>Dimensione carattere</td>
+                <td><img alt="Dimensione carattere" src="../images/fontsize.png" /></td>
+                <td>Viene utilizzato per selezionare tra i valori di dimensione del carattere preimpostati dall'elenco a discesa (i valori predefiniti sono: 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 and 96). È anche possibile inserire manualmente un valore personalizzato nel campo della dimensione del carattere e quindi premere <em>Invio</em>.</td>
+            </tr>
+            <tr>
+                <td>Aumenta dimensione carattere</td>
+                <td><img alt="Aumenta dimensione carattere" src="../images/larger.png" /></td>
+                <td>Viene utilizzato per modificare la dimensione del carattere rendendolo più grande di un punto ogni volta che si preme il pulsante.</td>
+            </tr>
+            <tr>
+                <td>Riduci dimensione carattere</td>
+                <td><img alt="Riduci dimensione carattere" src="../images/smaller.png" /></td>
+                <td>Viene utilizzato per modificare la dimensione del carattere rendendolo più piccolo di un punto ogni volta che si preme il pulsante.</td>
+            </tr>
+            <tr>
+                <td>Colore di evidenziazione</td>
+                <td><img alt="Colore di evidenziazione" src="../images/highlightcolor.png" /></td>
+                <td>Viene utilizzato per contrassegnare frasi, locuzioni, parole o persino caratteri separati aggiungendo una banda colorata che imita l'effetto dell’evidenziatore attorno al testo. È possibile selezionare la parte necessaria del testo e quindi fare clic sulla freccia verso il basso accanto all'icona per selezionare un colore sulla tavolozza (questo set di colori non dipende dalla <b>Combinazione di colori</b> selezionata e include 16 colori) - il colore verrà applicato alla selezione del testo. In alternativa, è possibile scegliere prima un colore di evidenziazione e quindi iniziare a selezionare il testo con il mouse - il puntatore del mouse sarà simile a questo <img alt="Puntatore del mouse sarà simile a questo" src="../images/highlight_color_mouse_pointer.png" /> e sarà possibile evidenziare diverse parti del testo in sequenza. Per interrompere l'evidenziazione basta fare di nuovo clic sull'icona. Per cancellare il colore di evidenziazione, scegliere l'opzione <b>Nessun riempimento</b>. <b>Il colore di evidenziazione</b> è diverso dal <a href="../UsageInstructions/BackgroundColor.htm" onclick="onhyperlinkclick(this)"><b>Colore di sfondo</b></a> <img alt="Colore di sfondo" src="../images/backgroundcolor.png" /> poiché quest'ultimo viene applicato all'intero paragrafo e riempie completamente tutto lo spazio del paragrafo dal margine sinistro della pagina al margine destro della pagina.</td>
+            </tr>
+            <tr>
+                <td>Colore carattere</td>
+                <td><img alt="Colore carattere" src="../images/fontcolor.png" /></td>
+                <td>Viene utilizzato per modificare il colore delle lettere/caratteri nel testo. Per impostazione predefinita, il colore automatico del carattere è impostato in un nuovo documento vuoto. Viene visualizzato come carattere nero sullo sfondo bianco. Se si modifica il colore di sfondo in nero, il colore del carattere si trasformerà automaticamente in bianco per mantenere il testo chiaramente visibile. Per scegliere un colore diverso, fare clic sulla freccia verso il basso accanto all'icona e selezionare un colore tra le tavolozze disponibili (i colori nella tavolozza <b>Colori tema</b> dipendono dalla <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">combinazione di colori</a>). Dopo aver modificato il colore del carattere predefinito, è possibile utilizzare l'opzione <b>Automatico</b> nella finestra delle tavolozze dei colori per ripristinare rapidamente il colore automatico per il passaggio di testo selezionato.</td>
+            </tr>
+        </table>
+        <p class="note"><b>Nota</b>: per saperne di più sul lavoro con le tavolozze dei colori, fare riferimento a <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">questa pagina</a>.</p>
+    </div>
+</body>
+</html>

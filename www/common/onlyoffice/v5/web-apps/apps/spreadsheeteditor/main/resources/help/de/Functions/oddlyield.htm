@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>UNREGLE.REND-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>UNREGLE.REND-Funktion</h1>
+            <p>Die Funktion <b>UNREGLE.REND</b> gehört zur Gruppe der Finanzmathematischen Funktionen. Sie gibt die Rendite eines Wertpapiers mit einem unregelmäßigen letzten Zinstermin unabhängig von der Dauer zurück</p>
+            <p>Die Formelsyntax der Funktion <b>UNREGLE.REND</b> ist:</p>
+            <p style="text-indent: 150px;"><b><em>UNREGLE.REND(Abrechnung;Fälligkeit;Letzter_Zinstermin;Zins;Kurs;Rückzahlung;Häufigkeit;[Basis])</em></b></p>
+            <p><em>Dabei gilt:</em></p>
+            <p style="text-indent: 50px;"><b><em>Abrechnung</em></b> ist der Abrechnungstermin des Wertpapierkaufs.</p>
+            <p style="text-indent: 50px;"><b><em>Fälligkeit</em></b> ist der Fälligkeitstermin des Wertpapiers.</p>
+            <p style="text-indent: 50px;"><b><em>Letzter_Zinstermin</em></b> ist der letzte Zinstermin des Wertpapiers vor dem Fälligkeitstermin. Dieses Datum muss vor dem Abwicklungsdatum liegen.</p>
+            <p style="text-indent: 50px;"><b><em>Zins</em></b> ist der Zinssatz des Wertpapiers.</p>
+            <p style="text-indent: 50px;"><b><em>Kurs</em></b> ist der Kurs des Wertpapiers pro 100 € Nennwert.</p>
+            <p style="text-indent: 50px;"><b><em>Rückzahlung</em></b> ist der Rückzahlungswert des Wertpapiers pro 100 € Nennwert.</p>
+            <p style="text-indent: 50px;"><b><em>Häufigkeit</em></b> ist die Anzahl der Zinszahlungen pro Jahr. Die möglichen Werte sind: 1 für jährliche Zahlungen; 2 für halbjährliche Zahlungen; 4 für vierteljährliche Zahlungen.</p>
+            <p style="text-indent: 50px;"><b><em>Basis</em></b> ist die zu verwendende Jahresbasis. Ein nummerischer Wert, größer oder gleich 0 und kleiner oder gleich 4. Dieses Argument ist optional. Mögliche Basiswerte:</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Basis</b></td>
+                    <td><b>Datumssystem</b></td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>US (NASD) 30/360</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Tatsächlich/tatsächlich</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Tatsächlich/360</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Tatsächlich/365</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Europäisch 30/360</td>
+                </tr>
+            </table>
+            <p class="note"><b>Hinweis:</b> Daten müssen mit der Funktion DATUM eingegeben werden.</p>
+            <p>Die nummerischen Werte werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+            <p>Anwendung der Funktion <b>UNREGLE.REND</b>.</p>
+            <ol>
+                <li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+                <li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+                <li>Wählen Sie die Gruppe <b>Finanzmathematische</b> Funktionen aus der Liste aus.</li>
+                <li>Klicken Sie auf die Funktion <b>UNREGLE.REND</b>.</li>
+                <li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+                <li>Drücken Sie die <b>Eingabetaste</b>.</li>
+            </ol>
+            <p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+            <p style="text-indent: 150px;"><img alt="UNREGLE.REND-Funktion" src="../images/oddlyield.png" /></p>
+        </div>
+	</body>
+</html>

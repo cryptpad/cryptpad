@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>XVERWEIS-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>XVERWEIS-Funktion</h1>
+			<p>Die <b>XVERWEIS-Funktion</b> ist eine der Such- und Referenzfunktionen. Sie wird verwendet, um die Suche nach einem bestimmten Element sowohl horizontal, als auch vertikal durchzuführen. Das Ergebnis wird in einer anderen Spalte zurückgegeben und kann zweidimensionale Datensätze aufnehmen.</p>
+			<p>Die Formelsyntax der Funktion <b>XVERWEIS</b> ist:</p>
+			<p style="text-indent: 150px;"><b><em>XVERWEIS (Suchkriterium; Suchmatrix; Rückgabematrix; [wenn_nicht_gefunden]; [Vergleichsmodus]; [Suchmodus])</em></b></p>
+			<p><em>dabei gilt</em></p>
+			<p style="text-indent: 50px;"><b><em>Suchkriterium</em></b> ist der Wert, nach dem gesucht werden soll.</p>
+			<p style="text-indent: 50px;"><b><em>Suchmatrix</em></b> ist das Array/der Bereich, das/der durchsucht werden soll.</p>
+			<p style="text-indent: 50px;"><b><em>Rückgabematrix</em></b> ist das Array/der Bereich, das/der zurückgegeben werden soll.</p>
+			<p style="text-indent: 50px;"><b><em>[wenn_nicht_gefunden]</em></b> ist ein optionales Argument. Wenn keine gültige Übereinstimmung gefunden wird, wird der von Ihnen bereitgestellte "[wenn_nicht_gefunden]"-Text oder standardmäßige „N/A“ zurückgegeben.</p>
+			<p style="text-indent: 50px;"><b><em>[Vergleichsmodus]</em></b> ist ein optionales Argument.
+				<ul>
+					<li><b><em>0</em></b> (standardmäßig) gibt die genaue Übereinstimmung zurück; wenn keine gefunden wird, wird „N/A“ zurückgegeben.</li>
+					<li><b><em>-1</em></b> gibt die genaue Übereinstimmung zurück; wenn keine gefunden wird, wird das nächstkleinere Element zurückgegeben.</li>
+					<li><b><em>1</em></b> gibt die genaue Übereinstimmung zurück; wenn keine gefunden wird, wird das nächstgrößere Element zurückgegeben.</li>
+					<li><b><em>2</em></b> ist eine Platzhalterübereinstimmung.</li>
+				</ul>
+			</p>
+			<p style="text-indent: 50px;"><b><em>[Suchmodus]</em></b> ist ein optionales Argument.
+				<ul>
+					<li><b><em>1</em></b> führt eine Suche durch, die beim ersten Element beginnt (standardmäßig).</li>
+					<li><b><em>-1</em></b> führt eine umgekehrte Suche durch, die beim letzten Element beginnt. </li>
+					<li><b><em>2</em></b> führt eine Binärsuche durch, die darauf basiert, dass eine <b><em>Suchmatrix</em></b> in aufsteigender Reihenfolge sortiert ist. Ist diese nicht so sortiert, werden ungültige Ergebnisse zurückgegeben.</li>
+					<li><b><em>-2</em></b> führt eine Binärsuche durch, die darauf basiert, dass eine <b><em>Suchmatrix</em></b> in absteigender Reihenfolge sortiert ist. Ist diese nicht so sortiert, werden ungültige Ergebnisse zurückgegeben.</li>
+				</ul>
+			</p>
+			<p class="note">
+				Die Platzhalterzeichen enthalten das Fragezeichen (?), das einem einzelnen Zeichen entspricht, und das Sternchen (*), das mehreren Zeichen entspricht. Wenn Sie ein Fragezeichen oder ein Sternchen suchen, geben Sie vor dem Zeichen eine Tilde (~) ein.
+			</p>
+			<p>Anwendung der Funktion <b>XVERWEIS</b>:</p>
+			<ol>
+				<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+				<li>
+					Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen Symbol" src="../images/insertfunction.png" /> auf der oberen Symbolleiste,
+					<br /> oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextmenü aus,
+					<br /> oder klicken Sie auf das Symbol <img alt="Funktion Symbol" src="../images/function.png" /> auf der Formelleiste.
+				</li>
+				<li>Wählen Sie die Funktionsgruppe <b>Nachschlage- und Verweisfunktionen</b> aus der Liste aus.</li>
+				<li>Klicken Sie auf die Funktion <b>XVERWEIS</b>.</li>
+				<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+				<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="XVERWEIS Funktion" src="../images/xlookup.png" /></p>
+		</div>
+	</body>
+</html>

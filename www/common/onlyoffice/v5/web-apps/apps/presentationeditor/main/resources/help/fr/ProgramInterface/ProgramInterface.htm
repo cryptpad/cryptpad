@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Présentation de l'interface utilisateur de Presentation Editor</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Présentation de l'interface utilisateur de Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Présentation de l'interface utilisateur de Presentation Editor</h1>
+        <p> <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)">Presentation Editor</a> utilise une interface à onglets dans laquelle les commandes d'édition sont regroupées en onglets par fonctionnalité.</p>
+            <div class="onlineDocumentFeatures">
+                <p>La fenêtre principale de l'éditeur en ligne Presentation Editor:</p>
+                <p><img alt="Fenêtre de l'éditeur en ligne Presentation Editor" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>La fenêtre principale de l'éditeur de bureau Presentation Editor:</p>
+                <p><img alt="Fenêtre de l'éditeur de bureau Presentation Editor" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>L'interface de l'éditeur est composée des éléments principaux suivants:</p>
+            <ol>
+                <li>
+                    <b>L'en-tête de l'éditeur</b> affiche le logo, <span class="desktopDocumentFeatures">les onglets de présentations ouvertes et leurs titres</span> et les onglets du menu.
+                    <p>Dans la partie gauche de <b>l'en-tête de l'éditeur</b> se trouvent les boutons <b>Enregistrer</b>, <b>Imprimer le fichier</b>, <b>Annuler</b> et <b>Rétablir</b>.</p>
+                    <p><img alt="Icônes dans l'en-tête de l'éditeur" src="../images/interface/leftpart.png" /></p>
+                    <p>Dans la partie droite de <b>l'en-tête de l'éditeur</b>, le nom de l'utilisateur est affiché ainsi que les icônes suivantes:</p>
+                    <ul>
+                        <li><img alt="Ouvrir l'emplacement du fichier" src="../images/gotodocuments.png" /> <b>Ouvrir l'emplacement du fichier</b> - <span class="desktopDocumentFeatures">dans la <I>version de bureau</I>, elle permet d'ouvrir le dossier où le fichier est stocké dans la fenêtre <b>Explorateur de fichiers</b>.</span> <span class="onlineDocumentFeatures"> Dans la <I>version en ligne</I>, elle permet d'ouvrir le dossier du module <b>Documents</b> où le fichier est stocké dans un nouvel onglet du navigateur.</span></li>
+                        <li><img alt="L'icône Paramètres d'affichage" src="../images/viewsettingsicon.png" /> <b>Paramètres d'affichage</b> - permet de configurer   <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">les Paramètres d'affichage</a> et d'accéder aux <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a> de l'éditeur.</li>
+                        <li class="onlineDocumentFeatures"><img alt="L'icône Gérer les droits d'accès au document" src="../images/access_rights.png" /> <b>Gérer les droits d'accès au document</b> - (disponible uniquement dans la <I>version en ligne</I>) permet de <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">définir les droits d'accès</a> aux documents stockés dans le cloud.</li>
+                        <li><img alt="Icône favoris" src="../images/favorites_icon.png" /> <b>Marquer en tant que favori</b> - cliquez sur l'étoile pour ajouter le fichier aux favoris et pour le retrouver rapidement. Ce n'est qu'un fichier de raccourcis car le fichier lui-même est dans l'emplacement de stockage d'origine. Le fichier réel n'est pas supprimé quand vous le supprimez de Favoris. </li>
+                        </ul>
+                </li>
+                <li>
+                    La barre d'outils supérieure affiche un ensemble de commandes d'édition en fonction de l'onglet de menu sélectionné. Actuellement, les onglets suivants sont disponibles: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Fichier</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Accueil</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Insertion</a>, <a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Collaboration</a>, <span class="desktopDocumentFeatures">Protection,</span> <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Modules complémentaires</a>.
+                    <p>Des options Copier <img alt="L'icône Copier" src="../images/copy.png" /> et Coller <img alt="L'icône Coller" src="../images/paste.png" /> sont toujours disponibles dans la partie gauche de la <b>Barre d'outils supérieure</b>, quel que soit l'onglet sélectionné.</p>
+                </li>
+                <li>La <b>Barre d'état</b>  en bas de la fenêtre de l'éditeur contient l'icône <a href="../UsageInstructions/PreviewPresentation.htm" onclick="onhyperlinkclick(this)">Démarrer le diaporama</a> et certains <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">outils de navigation</a>: l'indicateur de numéro de diapositive et les boutons de zoom.  La Barre d'état affiche également certaines notifications (telles que Toutes les modifications enregistrées, etc.) et permet de <a href="../HelpfulHints/SpellChecking.htm" onclick="onhyperlinkclick(this)">définir la langue du texte et d'activer la vérification orthographique</a>.</li>
+                <li>
+                    La <b>barre latérale gauche</b> contient les icônes suivantes:
+                    <ul>
+                        <li><img alt="L'icône Rechercher" src="../images/searchicon.png" /> - permet d'utiliser l'outil <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Rechercher et remplacer</a> ,</li>
+                        <li><img alt="L'icône Commentaires" src="../images/commentsicon.png" /> - permet d'ouvrir le panneau <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Commentaires</a> ,</li>
+                        <li class="onlineDocumentFeatures"><img alt="L'icône Chat" src="../images/chaticon.png" /> - (disponible dans la <I>version en ligne</I> seulement) permet d'ouvrir le panneau de <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chat</a> ,</li>
+                        <li class="onlineDocumentFeatures"><img alt="L'icône Rétroaction et assistance" src="../images/feedbackicon.png" /> - (disponible dans la<I> version en ligne</I> seulement)  permet de contacter notre équipe d'assistance technique,</li>
+                        <li class="onlineDocumentFeatures"><img alt="L'icône À propos" src="../images/abouticon.png" /> - (disponible dans la <I>version en ligne</I> seulement) permet de visualiser les informations sur le programme.</li>
+                    </ul>
+                </li>
+                <li>La <b>barre latérale droite</b> permet d'ajuster les paramètres supplémentaires de différents objets. Lorsque vous sélectionnez un objet particulier sur une diapositive, l'icône correspondante est activée dans la barre latérale droite. Cliquez sur cette icône pour développer la barre latérale droite.</li>
+                <li>Les <b>Règles</b> horizontales et verticales vous aident à placer des objets sur une diapositive et permettent de définir des tabulations et des retraits de paragraphe dans les zones de texte.</li>
+                <li>La <b>Zone de travail</b> permet d'afficher le contenu de la présentation, d'entrer et de modifier les données.</li>
+                <li>La <b>Barre de défilement</b> sur la droite permet de faire défiler la présentation de haut en bas.</li>
+            </ol>
+            <p>Pour plus de commodité, vous pouvez masquer certains composants et les afficher à nouveau lorsque cela est nécessaire. Pour en savoir plus sur l'ajustement des paramètres d'affichage, reportez-vous à <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+           
+		</div>
+	</body>
+</html>

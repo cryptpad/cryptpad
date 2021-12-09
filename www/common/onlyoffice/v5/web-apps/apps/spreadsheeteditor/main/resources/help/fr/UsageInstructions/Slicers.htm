@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer des segments dans les tableaux mis en forme d'après un modèle</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Créer des segments dans les tableaux mis en forme d'après un modèle pour filtrer les données rapidement." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Créer des segments dans les tableaux mis en forme d'après un modèle</h1>
+            <h3>Créer un nouveau segment</h3>
+			<p>Une fois que vous avez créer dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> ou <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">un tableau mis en forme d'après un modèle</a>, vous pouvez créer des segments pour filtrer les données rapidement. Pour ce faire,</p>
+			<ol>
+				<li>sélectionnez au moins une cellule dans le tableau mis en forme avec la souris et appuyez sur l'icône <b>Paramètres du tableau</b> <img alt="L'icône Paramètres du tableau" src="../images/table_settings_icon.png" /> à droite.</li>
+				<li>Cliquez sur <img alt="Insérer segments" src="../images/insertslicer.png" /> <b><b>Insérer un segment</b></b> sous l'onglet  <b>Paramètres du tableau</b> dans la barre latérale droite. Vous pouvez également passer à l'onglet <b>Insérer</b> dans la barre d'outils supérieure et y appuyer sur le bouton <img alt="Insérer segments" src="../images/slicer_icon.png" /> <b>Segment</b>. La fenêtre <b>Insérer segments</b> s'affiche:
+                <p><img alt="Insérer segments" src="../images/insertslicer_window.png" /></p>
+                </li>
+				<li>Dans la fenêtre <b>Insérer segments</b>, activez les cases à cocher de colonnes appropriées.</li>
+				<li>Cliquez sur <b>OK</b>.</li>
+			</ol>
+            <p>Un segment est inséré dans toutes les colonnes que vous avez sélectionnées. Si vous avez ajouté plusieurs segments, ceux-ci se superposent. Une fois ajouté, on peut modifier <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">la taille et l'emplacement</a> aussi que les paramètres du segment.</p>
+            <p><img alt="Segment" src="../images/slicer.png" /></p>
+            <p>Un segment comporte des boutons sur lesquels vous pouvez cliquer pour filtrer les données du tableau mis en forme. Les boutons correspondants aux cellules vides portent les étiquettes<em> (vide)</em> . Lorsque vous appuyer sur le bouton du segment, tous les autres boutons sont désactivés et la colonne visée du tableau source est filtrée pour afficher seulement les éléments choisis.</p>
+            <p><img alt="Segment" src="../images/slicer_filter.png" /></p>
+            <p>Lorsque vous ajoutez plusieurs segments, la modification d'un segment peut affecter les éléments d'un autre. Lorsqu'il y a plusieurs filtres dans un même segment, les éléments qui ne contiennent pas de données peuvent apparaître dans un autre segment (couleur de fond plus claire):</p>
+            <p><img alt="Segments -  les éléments qui ne contiennent pas de données" src="../images/slicer_nodata.png" /></p>
+            <p>Vous pouvez modifier le façon d'affichage des éléments qui ne contiennent pas de données dans les paramètres du segment.</p>
+            <p>Pour sélectionner plusieurs boutons de segment, utiliser l'icône <img alt="L'icône Sélection multiple" src="../images/multiselect.png" /> <b>Sélection multiple</b> dans le coin supérieur droit du segment ou appuyez sur la combinaison de touches <em>Alt+S</em>. Sélectionnez les boutons du segment en cochant les cases une par une.</p>
+            <p>Pour effacer le filtre du segment, appuyez sur l'icône <img alt="L'icône Annuler les filtres" src="../images/slicer_clearfilter.png" /> <b><b>Annuler les filtres</b></b> dans le coin supérieur droit du segment ou appuyez sur <em>Alt+C</em>.</p>
+            
+            <h3>Modifier les segments</h3>
+            <p>On peut modifier certains paramètres sous l'onglet <b>Paramètres des segments</b> sur la barre latérale droite qui s'affiche quand vous sélectionnez le segment avec la souris.</p>
+            <p>Cliquez sur l'icône <img alt="L'icône Paramètres des segments" src="../images/slicer_settings.png" /> pour masquer ou afficher cet onglet.</p>
+            <p><img alt="L'onglet Paramètres des segments" src="../images/right_slicer.png" /></p>
+            <h4>Modifier la taille et l'emplacement du segment</h4>
+            <p>Les options <b>Largeur</b> et <b>Hauteur</b> vous permettons de modifier la largeur et la taille du segment. Lorsque le bouton <b><b>Proportions constantes  </b></b> <img alt="L'icône Proportions constantes" src="../images/constantproportions.png" /> est activé (dans ce cas elle se présente comme ça) <img alt="L'icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), le rapport largeur/hauteur d'origine s'ajuste  proportionnellement.</p>
+            <p>La section <b>Position</b> permet de modifier la position du segment <b>Horizontal</b> et/ou <b>Vertical</b>.</p>
+            <p>L'option <b>Désactiver le redimensionnement et le déplacement</b> permet d'empêcher le segment d'être redimensionné ou déplacé. Lorsque cette option active, les options <b>Largeur,</b> <b>Hauteur</b>, <b>Position</b> et <b>Boutons</b> sont désactivées.</p>            
+            <h4>Modifier la mise en forme et le style du segment</h4>
+            <p>La section <b>Boutons</b> permet de déterminer le nombre de <b>Colonnes</b> et de configurer la <b>Largeur</b> et la <b>Hauteur</b> des boutons. Par défaut, un segment comporte une colonne. Les éléments en texte court peuvent être affichée sur deux ou plusieurs colonnes:</p>
+            <p><img alt="Segment - deux colonnes" src="../images/slicer_columns.png" /></p>
+            <p>Si vous modifiez la largeur du bouton, la largeur du segment change en conséquence. Si vous modifiez la hauteur du bouton, une barre de défilement est insérée au segment:</p>
+            <p><img alt="Segment - Barre de défilement" src="../images/slicer_scroll.png" /></p>
+            <p>La section <b>Style</b> vous permet de choisir l'un des styles de segment prédéfinis.</p>
+                        
+            <h4>Utiliser les fonctionnalités de tri et de filtrage</h4>
+            <ul>
+                <li><b>Croissant  (A à Z)</b> s'utilise pour trier les données par ordre alphabétique de A à Z ou par valeurs numériques du plus petit au plus grand.</li>
+                <li><b>Décroissant  (Z à A)</b> s'utilise pour trier les données par ordre alphabétique décroissant de A à Z ou par valeurs numériques du plus grand au plus petit.</li>
+            </ul>
+            <p><b>Masquer les éléments vides</b> permet de masquer les éléments qui ne contiennent pas de données dans le segment. Lorsque cette option est active, les options <b>Indiquer visuellement les éléments sans données</b> et <b>Afficher les éléments sans données à la fin</b> sont désactivées.</p>
+            <p>Lorsque l'option <b>Masquer les éléments vides</b> est désactivé, on peut utiliser les options suivantes:</p>
+            <ul>
+                <li><b>Indiquer visuellement les éléments sans données</b> pour afficher les éléments sans données sous format différent (couleur de fond plus claire). Si cette option est désactivée, le format de tous les éléments reste le même.</li>
+                <li><b>Afficher les éléments sans données à la fin</b> permet d'afficher les éléments qui ne contiennent pas de données à la fin de la liste. Si cette option est désactivée, tous les éléments sont affichés dans l'ordre du tableau source.</li>
+            </ul>
+                        
+            <h3>Configurer les paramètres avancés des segments</h3>
+            <p>Pour changer les paramètres avancés du segment, cliquez sur le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Segment - Paramètres avancés s'ouvre:</p>
+            <p><img alt="Segment - Paramètres avancés" src="../images/slicer_properties.png" /></p>
+            <p>L'onglet<b> Style et taille</b> comprend les options suivantes:</p>
+            <ul>
+                <li>L'option <b>En-tête</b> permet de modifier l'en-tête du segment. Il faut désactiver l'option <b>Afficher l'en-tête</b> si vous ne souhaitez pas afficher l'en-tête du segment.</li>
+                <li>La section <b>Style</b> vous permet de choisir l'un des styles de segment prédéfinis.</li>
+                <li>Les options <b>Largeur</b> et <b>Hauteur</b> vous permettons de modifier la largeur et la taille du segment. Lorsque le bouton <b><b>Proportions constantes  </b></b> <img alt="L'icône Proportions constantes" src="../images/constantproportions.png" /> est activé (dans ce cas elle se présente comme ça) <img alt="L'icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), le rapport largeur/hauteur d'origine s'ajuste  proportionnellement.</li>
+                <li>La section <b>Boutons</b> permet de déterminer le nombre de <b>Colonnes</b> et de configurer la <b>Largeur</b> et la <b>Hauteur</b> des boutons.</li>
+            </ul>
+            <p><img alt="Segment - Paramètres avancés" src="../images/slicer_properties2.png" /></p>
+            <p>L'onglet<b> Trier et filtrer</b> comprend les options suivantes:</p>
+            <ul>
+                <li><b>Croissant  (A à Z)</b> s'utilise pour trier les données par ordre alphabétique de A à Z ou par valeurs numériques du plus petit au plus grand.</li>
+                <li><b>Décroissant  (Z à A)</b> s'utilise pour trier les données par ordre alphabétique décroissant de A à Z ou par valeurs numériques du plus grand au plus petit.</li>
+            </ul>
+            <p><b>Masquer les éléments vides</b> permet de masquer les éléments qui ne contiennent pas de données dans le segment. Lorsque cette option est active, les options <b>Indiquer visuellement les éléments sans données</b> et <b>Afficher les éléments sans données à la fin</b> sont désactivées.</p>
+            <p>Lorsque l'option <b>Masquer les éléments vides</b> est désactivé, on peut utiliser les options suivantes:</p>
+            <ul>
+                <li><b>Indiquer visuellement les éléments sans données</b> pour afficher les éléments sans données sous format différent (couleur de fond plus claire).</li>
+                <li><b>Afficher les éléments sans données à la fin</b> permet d'afficher les éléments qui ne contiennent pas de données à la fin de la liste.</li>
+            </ul>
+            <p><img alt="Segment - Paramètres avancés" src="../images/slicer_properties3.png" /></p>
+            <p>L'onglet<b> Références</b> comprend les options suivantes:</p>
+            <ul>
+                <li>L'option <b>Nom de source</b> vous permet de visualiser le nom du champ tel qu'il apparait à l'en-tête de colonne dans l'ensemble de données sources.</li>
+                <li>L'option <b>Utiliser le nom dans les formules</b> permet de visualiser le nom du segment dans le <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)"><b>Gestionnaire de noms</b></a>. </li>
+                <li>L'option <b>Nom</b> permet de définir un nom personnalisé pour le rendre plus compréhensible et significatif.</li>
+            </ul>
+            <p><img alt="Segment - Paramètres avancés" src="../images/slicer_properties4.png" /></p>
+            <p>L'onglet<b> Alignement dans une cellule</b> comprend les options suivantes:</p>
+            <ul>
+                <li><b>Déplacer et dimensionner avec des cellules</b> - cette option permet de placé le segment derrière la cellule. Quand une cellule se déplace (par exemple: insertion ou suppression des lignes/colonnes), le segment se déplace aussi. Quand vous ajustez la largeur ou la hauteur de la cellule, la dimension du segment s'ajuste aussi.</li>
+                <li><b>Déplacer sans dimensionner avec les cellules</b> - cette option permet de placé le segment derrière la cellule mais d'empêcher son redimensionnement. Quand une cellule se déplace, le segment se déplace aussi, mais si vous redimensionnez la cellule, le segment demeure inchangé.</li>
+                <li><b>Ne pas déplacer et dimensionner avec les cellules</b> - cette option empêche le déplacement ou redimensionnement du segment si la position ou la dimension de la cellule restent inchangées.</li>
+            </ul>
+            <p><img alt="Segment - Paramètres avancés" src="../images/slicer_properties5.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du segment.</p>
+            
+            <h3>Supprimer un segment</h3>
+            <p>Pour supprimer un segment,</p>
+            <ol>
+                <li>cliquez pour le sélectionner.</li>
+                <li>Appuyez sur la touche de <b>Suppression</b>.</li>
+            </ol>
+		</div>
+	</body>
+</html>

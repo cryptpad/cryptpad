@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction ADRESSE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction ADRESSE</h1>
+			<p>La fonction <b>ADRESSE</b> est l'une des fonctions de recherche et de référence. Elle est utilisée pour renvoyer une représentation textuelle de l'adresse d'une cellule.</p>
+			<p>La syntaxe de la fonction <b>ADRESSE</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>ADRESSE(row-number, col-number[ , [ref-type] [, [A1-ref-type-flag] [, sheet name]]])</em></b></p> 
+			<p><em>où</em></p> 
+			<p style="text-indent: 50px;"><em><b>row-number</b></em> est un numéro de ligne à utiliser dans une adresse de cellule.</p>
+			<p style="text-indent: 50px;"><em><b>col-number</b></em> est un numéro de colonne à utiliser dans une adresse de cellule.</p>
+			<p style="text-indent: 50px;"><em><b>ref-type</b></em> est un type de référence. Il peut s'agir de l'une des valeurs numériques suivantes :</p>
+				<table style="width: 40%">
+				<tr>
+					<td><b>Valeur numérique</b></td>
+					<td><b>Signification</b></td>
+				</tr>
+				<tr>
+					<td>1 ou omise</td>
+					<td>Référencement absolu</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Ligne absolue ; colonne relative</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Ligne relative ; colonne absolue</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Référencement relatif</td>
+				</tr>
+			</table>
+			<p><em><b>A1-ref-type-flag</b></em> est une valeur logique optionnelle : TRUE (VRAI) ou FALSE (FAUX). Si elle est définie sur TRUE (VRAI) ou omise, la fonction analysera <b><em>ref-text</em></b> comme une référence de style A1. Si elle est définie sur FALSE (FAUX), la fonction interprétera <b><em>ref-text</em></b> comme une référence de style R1C1.</p>
+			<p><em><b>sheet name</b></em>  est le nom de la feuille à utiliser dans une adresse de cellule. C'est un argument facultatif. En cas d'omission, la fonction renvoie l'adresse de la cellule sans mentionner le nom de la feuille.</p>
+			<p>Ces arguments peuvent être saisis à la main ou inclus dans les cellules auxquelles il est fait référence.</p>
+			<p>Pour appliquer la fonction <b>ADRESSE</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Recherche et référence</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>ADRESSE</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction ADRESSE" src="../images/address.png" /></p>
+		</div>
+	</body>
+</html>

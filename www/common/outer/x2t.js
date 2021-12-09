@@ -5,7 +5,7 @@ define([
 ], function (ApiConfig, nThen, Util) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v4';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v5';
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);

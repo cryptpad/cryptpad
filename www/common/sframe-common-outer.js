@@ -80,7 +80,7 @@ define([
             nThen: nThen
         };
         var AppConfig;
-        var Test;
+        //var Test;
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
@@ -113,11 +113,11 @@ define([
                 '/common/outer/local-store.js',
                 '/common/outer/cache-store.js',
                 '/customize/application_config.js',
-                '/common/test.js',
+                //'/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
+            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -139,7 +139,7 @@ define([
                 Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
-                Test = _Test;
+                //Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -715,7 +715,7 @@ define([
                 sframeChan.event('EV_LOGOUT');
             });
 
-            Test.registerOuter(sframeChan);
+            //Test.registerOuter(sframeChan);
 
             Cryptpad.onNewVersionReconnect.reg(function () {
                 sframeChan.event("EV_NEW_VERSION");
@@ -2138,8 +2138,8 @@ define([
 
             Utils.Feedback.reportAppUsage();
 
-            if (!realtime && !Test.testing) { return; }
-            if (isNewFile && cfg.useCreationScreen && !Test.testing) { return; }
+            if (!realtime /*&& !Test.testing*/) { return; }
+            if (isNewFile && cfg.useCreationScreen /* && !Test.testing */) { return; }
             if (burnAfterReading) { return; }
             //if (isNewFile && Utils.LocalStore.isLoggedIn()
             //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }

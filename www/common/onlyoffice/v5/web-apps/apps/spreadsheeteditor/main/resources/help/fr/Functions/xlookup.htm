@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction XLOOKUP</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Fonction XLOOKUP</h1>
+			<p>La fonction <B>XLOOKUP</B> (<B>RECHERCHEX)</B> est l'une des fonctions de recherche et de référence. Elle est utilisée pour rechercher des éléments par ligne verticalement et horizontalement. Cette fonction permet de renvoyer un résultat dans une autre colonne et de prendre en charge des feuilles de calcul à deux dimensions.</p>
+			<p>Le syntaxe de la fonction <B>XLOOKUP</B>:</p>
+			<p style="text-indent: 150px;"><b><em>XLOOKUP (lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])</em></b></p>
+			<p><em>où:</em></p>
+			<p style="text-indent: 50px;"><B><em>valeur_cherchée</em></B> est une valeur à chercher.</p>
+			<p style="text-indent: 50px;"><b><em>lookup_array</em></b> est matrice ou plage à rechercher.</p>
+			<p style="text-indent: 50px;"><b><em>return_array</em></b> est matrice ou plage à renvoyer.</p>
+			<p style="text-indent: 50px;"><b><em>if_not_found</em></b> est un argument facultatif. Lorsqu'aucune résultat n'est trouvée, cet argument renvoie le texte [if_not_found] que vous définissez. Si le texte est manquant, la #N/A est renvoyée.</p>
+			<p style="text-indent: 50px;"><b><em>match_mode</em></b> est un argument facultatif. Les valeurs disponibles:
+			<ul>
+				<li><B><I>0</I></B> (par défaut) renvoie une correspondance exacte, si aucune n'a été trouvée la  #N/A est renvoyée.</li>
+				<li><B><I>-1</I></B> renvoie une correspondance exacte, si aucune information n'a été trouvée, l'élément le plus petit suivant est renvoyé.</li>
+				<li><B><I>1</I></B> renvoie une correspondance exacte, si aucune information n'a été trouvée, l'élément plus grand suivant est renvoyé.</li>
+				<li><B><I>2</I></B> est une correspondance avec caractère générique.</li>
+				</ul>
+			</p>
+			<p style="text-indent: 50px;"><b><em>search_mode</em></b> est un argument facultatif. Les valeurs disponibles:
+			<ul>
+				<li><B><I>1</I></B> la recherche est effectuée à partir du premier élément (valeurnpar défaut).</li>
+				<li><B><I>-1</I></B> une recherche inverse est effectuée, c-à-d à partir du dernier élément.</li>
+				<li><B><I>2</I></B> une recherche binaire est effectuée quand <B><I>lookup_array</I></B> est triée dans l'ordre croissant. S'il n'est pas trié, des résultats non valides seront renvoyés.</li>
+				<li><B>-2</B> une recherche binaire est effectuée quand<B><I> lookup_array</I></B> est triée dans l'ordre décroissant. S'il n'est pas trié, des résultats non valides seront renvoyés.</li>	
+			</ul>
+			</p>
+			<p class="note">
+				Des caractères génériques sont (?) le point d'interrogation pour rechercher un seul caractère et (*) l'astérisque pour rechercher plusieurs caractères. Quand vous recherchez le point d'interrogation ou l'astérisque, saisissez un tilde (~) avant le caractère.
+			</p>
+			<p>Pour appliquer la fonction <b>XLOOKUP</b>,</p>
+			<ol>
+				<li>sélectionnez la cellule où vous voulez afficher le résultat,</li>
+				<li>
+					appuyez sur l'icône <B>Insérer une fonction</B> <img alt="L'icône Insérer fonction" src="../images/insertfunction.png" /> de la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule et choisissez l'option <B>Insérer une fonction</B> dans le menu, <br />ou cliquez sur l'icône <img alt="L'icône Fonction" src="../images/function.png" /> de la barre de formule,
+				</li>
+				<li>sélectionnez le groupe de fonctions <B>Recherche et référence</B> depuis la liste,</li>
+				<li>cliquez sur la fonction <b>XLOOKUP</b>,</li>
+				<li>saisissez les arguments requis dans la fenêtre <b>Argument de formule</b>,</li>
+				<li>appuyez sur la touche <B>Entrée</B>.</li>
+			</ol>
+			<p>Le résultat s'affiche dans la cellule choisie.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction XLOOKUP" src="../images/xlookup.png" /></p>
+		</div>
+	</body>
+</html>

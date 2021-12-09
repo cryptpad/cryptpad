@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cambiar la justificación del texto</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Change the text wrapping style to specify the way the object is positioned relative to the text." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Cambiar la justificación del texto</h1>
+            <p>La opción de <b>Justificación de estilo</b> determina la manera en la que el objeto se posiciona en relación con el texto. Puede cambiar el estilo de justificación del texto por objetos insertados, como <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">formas</a>, <a href="../UsageInstructions/InsertImages.htm" onclick="onhyperlinkclick(this)">imágenes</a>, <a href="../UsageInstructions/InsertCharts.htm#" onclick="onhyperlinkclick(this)">gráficos</a>, <a href="../UsageInstructions/InsertTextObjects.htm" onclick="onhyperlinkclick(this)">cuadros de texto</a> o <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">tablas</a>.</p>
+            <h3>Cambie la justificación del texto por formas, imágenes, gráficos, cuadros de texto</h3>
+            <p>Para cambiar el estilo de justificación de estilo actual:</p>
+            <ol>
+                <li>seleccione un objeto separado en la página haciendo clic izquierdo en este. Para seleccionar un cuadro de texto, haga clic en su borde y no en el texto.</li>
+                <li>abra los ajustes de justificación de texto:<ul>
+                        <li>cambie a la pestaña de <b>Formato</b> de la barra de herramientas y haga clic en la flecha de al lado del <img alt="Icono de justificación" src="../images/wrapping_toptoolbar.png" /> icono de <b>Justificación</b>, o</li>
+                        <li>haga clic derecho en el objeto y seleccione la opción de <b>Estilo de justificación</b> del menú contextual, o</li>
+                        <li>haga clic en el objeto, seleccione la opción de <b>Ajustes avanzados</b> y cambie a la pestaña de <b>Texto justificado</b> de los objetos de la ventana de <b>Ajustes avanzados</b>.</li>
+                    </ul>
+                </li>
+                <li>seleccione los estilos de justificación necesarios:<ul>
+                        <li>
+                            <p><img alt="Ajuste de texto - alineado" src="../images/wrappingstyle_inline_toptoolbar.png" /> <b>Alineado</b> - el objeto se considera una parte del texto, como un carácter, así cuando se mueve el texto, la imagen se moverá también. En este caso no se puede acceder a las opciones de posición.</p>
+                            <p>Si selecciona uno de estos estilos, el objeto se moverá independientemente del texto y se posicionará en la página:</p>
+                        </li>
+                        <li><p><img alt="Ajuste de texto - cuadrado" src="../images/wrappingstyle_square_toptoolbar.png" /> <b>Cuadrado</b> - el texto rodea una caja rectangular que limita la imagen.</p></li>
+                        <li><p><img alt="Ajuste de texto - estrecho" src="../images/wrappingstyle_tight_toptoolbar.png" /> <b>Ajustado</b> - el texto rodea los bordes reales de la imagen.</p></li>
+                        <li><p><img alt="Ajuste de texto - a través" src="../images/wrappingstyle_through_toptoolbar.png" /> <b>A través</b> - el texto rodea los bordes y rellena el espacio en blanco del objeto. Para que se muestre este efecto, utilice la opción <b>Editar límite de ajuste</b> en el menú contextual.</p></li>
+                        <li><p><img alt="Estilo de justificación - superior e inferior" src="../images/wrappingstyle_topandbottom_toptoolbar.png" /> <b>Superior e inferior</b> - el texto se sitúa solo arriba y debajo de la imagen.</p></li>
+                        <li><p><img alt="Estilo de justificación- adelante" src="../images/wrappingstyle_infront_toptoolbar.png" /> <b>Adelante</b> - el objeto solapa el texto.</p></li>
+                        <li><p><img alt="Ajuste de texto - detrás" src="../images/wrappingstyle_behind_toptoolbar.png" /> <b>Detrás</b> - el texto solapa el objeto.</p></li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Si selecciona el estilo <b>Cuadrado</b>, <b>Ajustado</b>, <b>a través</b>, o <b>superior e inferior</b>, podrá establecer unos parámetros adicionales - <b>Distancia del texto</b> en todas partes (superior, inferior, izquierda, derecha). Para acceder a estos parámetros, haga clic derecho en el objeto, seleccione la opción de <b>Ajustes avanzados</b> y cambie a la pestaña de <b>Texto justificado</b> de los objetos de la ventana de <b>Ajustes avanzados</b>. Fije los valores necesarios y haga clic en <b>OK</b>.</p>
+            <p>Si selecciona un estilo de justificación diferente a <b>En línea</b>, la pestaña <b>Posición</b> también está disponible en la ventana del objeto de <b>Ajustes avanzados</b>. Para saber más sobre estos parámetros, refiérase a las páginas correspondientes con las instrucciones sobre cómo trabajar con <a href="../UsageInstructions/InsertAutoshapes.htm#position" onclick="onhyperlinkclick(this)">formas</a>, <a href="../UsageInstructions/InsertImages.htm#position" onclick="onhyperlinkclick(this)">imágenes</a> o <a href="../UsageInstructions/InsertCharts.htm#position" onclick="onhyperlinkclick(this)">gráficos</a>.</p>
+            <p>Si selecciona un estilo de justificación diferente a <b>En línea</b>, también puede editar los límites de justificación para <b>imágenes</b> o <b>formas</b>. Haga clic derecho en el objeto, seleccione la opción de <b>Estilo de justificación</b> del menú contextual y haga clic en la opción <b>Editar límites de justificación</b>. Arrastre puntos de ajuste para personalizar el borde. Para crear un punto de ajuste nuevo, haga clic en cualquier lugar de la línea roja y arrástrela a la posición necesaria. <img alt="Editar límite de ajuste" src="../images/wrap_boundary.png" /></p>
+            <h3>Cambiar la justificación de texto para tablas</h3>
+            <p>Para <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">tablas</a>, los siguientes estilos de justificación están disponibles: <b>Tabla en línea</b> y <b>Tabla de flujo</b>.</p>
+            <p>Para cambiar el estilo de justificación de estilo actual:</p>
+            <ol>
+                <li>Haga clic derecho en la tabla y seleccione la opción de <b>Ajustes Avanzados de la Tabla</b>,</li>
+                <li>pase a la pestaña <b>Ajuste de Texto</b> en la ventana <b>Tabla - Ajustes Avanzados</b>,</li>
+                <li>seleccione una de las opciones siguientes:<ul>
+                        <li><b>Tabla en Línea</b> se usa para seleccionar estilo en línea (cuando el texto se interrumpe por la tabla) y también el tipo de alineación: a la izquierda, centro, a la derecha.</li>
+                        <li><b>Tabla de Flujo</b> se usa para seleccionar el estilo de flujo cuando el texto está rodeando la tabla).</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Usando la pestaña de <b>Justificación de texto</b> de la ventana de <b>Tabla - ajustes avanzados</b>, puede ajustar los parámetros adicionales siguientes:</p>
+            <ul>
+                <li>Para tablas en línea, puede fijar la tabla con tipo de <b>Alineación</b> (izquierda, centro o derecha) e <b>Indentación izquierda</b>.</li>
+                <li>Para tablas variables, puede especificar la <b>distancia desde el texto</b> y la <b>posición</b> de la tabla en la pestaña <a href="../UsageInstructions/InsertTables.htm#position" onclick="onhyperlinkclick(this)">Posición</a>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des contrôles de contenu</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insérer des contrôles de contenu pour créer un formulaire avec des champs de saisie à remplir par d'autres utilisateurs, ou d'empêcher toute modification ou suppression des certains éléments du document." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des contrôles de contenu</h1>
+            <p>Les contrôles de contenu sont des objets comportant du contenu spécifique tel que le texte, les objets etc. En fonction du contrôle de contenu choisi, vous pouvez créer un formulaire contenant les zones de texte modifiable pouvant être rempli par d'autres utilisateurs, ou protéger certains éléments qu'on ne puisse les modifier ou supprimer. </p>
+            <p>ONLYOFFICE <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> permet d'ajouter les contrôles de contenu <b>classiques</b>, c'est à dire les contrôles qui sont <b>entièrement rétrocompatible</b> avec les éditeurs tiers tels que Microsoft Word.</p>
+            <p class="note">Remarque: la possibilité d'ajouter de nouveaux contrôles de contenu n'est disponible que dans la version payante. Dans la version gratuite Community vous pouvez modifier les contrôles de contenu existants ainsi que les copier et coller.</p>
+            <p>Actuellement, vous pouvez ajouter les contrôles de contenu suivants: <I>Texte brut</I>, <I>Texte enrichi</I>, <I>Image</I>, <I>Zone de liste déroulante</I>, <em>Liste déroulante</em>, <em>Date</em>, <em>Case à cocher</em>.</p>
+            <ul>
+                <li><I>T</I><em>exte </em> est le texte comportant un objet qui ne peut pas être modifié. C'est seulement un paragraphe que le contrôle en texte brut peut contenir.</li>
+                <li><I>T</I><em>exte enrichi</em> est le texte comportant un objet qui peut être modifié. Les contrôles en texte enrichi peuvent contenir plusieurs paragraphes, listes et objets (images, formes, tableaux etc.).</li>
+                <li><em>Image</em> est un objet comportant une image.</li>
+                <li><I>Zone de liste déroulante</I> est un objet comportant une liste déroulante avec un ensemble de choix. Ce contrôle permet de choisir une valeur prédéfinie et la modifier au besoin.</li>
+                <li><em>Liste déroulante</em> est un objet comportant une liste déroulante avec un ensemble de choix. Ce contrôle permet de choisir une valeur prédéfinie. La valeur choisie ne peut pas être modifiée.</li>
+                <li>Date est l'objet comportant le calendrier qui permet de choisir une date.</li>
+                <li><em>Case à cocher</em> est un objet permettant d'afficher deux options: la case cochée et la case décochée.</li>
+            </ul>
+            <h3>Ajouter des contrôles de contenu</h3>
+            <h4>Créer un nouveau contrôle de contenu de texte brut</h4>
+            <ol>
+                <li>positionnez le point d'insertion dans une ligne du texte où vous souhaitez ajouter le contrôle,<br />ou sélectionnez un passage de texte que vous souhaitez transformer en contrôle du contenu.</li>
+                <li>passez à l'onglet <B>Insertion</B> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>.</li>
+                <li>choisissez l'option <B>Insérer un contrôle de contenu en texte brut</B> dans le menu.</li>
+            </ol>
+            <p>Le contrôle sera inséré au point d'insertion dans une ligne du texte existant. Tapez votre texte à remplacer du texte par défaut à l'intérieur du contrôle de contenu (Votre texte ici): sélectionnez le texte par défaut et tapez du texte approprié ou copiez le texte que vous voulez et collez le à l'intérieur du contrôle de contenu. Les contrôles de contenu de texte brut ne permettent pas l'ajout de sauts de ligne et ne peuvent pas contenir d'autres objets tels que des images, des tableaux, etc.</p>
+            <p><img alt="Nouveau contrôle du contenu de texte brut" src="../images/addedcontentcontrol.png" /></p>
+            <h4>Créer un nouveau contrôle de contenu de texte enrichi</h4>
+            <ol>
+                <li>positionnez le point d'insertion dans une ligne du texte où vous souhaitez ajouter le contrôle,<br />ou sélectionnez un passage de texte que vous souhaitez transformer en contrôle du contenu.</li>
+                <li>passez à l'onglet <B>Insertion</B> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>.</li>
+                <li>choisissez l'option <B>Insérer un contrôle de contenu en texte enrichi</B> dans le menu.</li>
+            </ol>
+            <p>Le contrôle sera inséré dans un nouveau paragraphe du texte. Tapez votre texte à remplacer du texte par défaut à l'intérieur du contrôle de contenu (Votre texte ici): sélectionnez le texte par défaut et tapez du texte approprié ou copiez le texte que vous voulez et collez le à l'intérieur du contrôle de contenu. Les contrôles de contenu de texte enrichi permettent d'ajouter des sauts de ligne, c'est-à-dire peuvent contenir plusieurs paragraphes ainsi que certains objets, tels que des images, des tableaux, d'autres contrôles de contenu, etc.</p>
+            <p><img alt="Contrôle de contenu de texte enrichi" src="../images/richtextcontentcontrol.png" /></p>
+            <h4>Créer un nouveau contrôle de contenu d'image</h4>
+            <ol>
+                <li>positionnez le point d'insertion dans une ligne du texte où vous souhaitez ajouter le contrôle.</li>
+                <li>passez à l'onglet <B>Insertion</B> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>.</li>
+                <li>choisissez l'option<B> Image</B> dans le menu et le contrôle de contenu sera inséré au point d'insertion.</li>
+                <li>cliquez sur l'icône <img alt="L'icône Insertion fonction" src="../images/image_settings_icon.png" /> Image dans le bouton au dessus de la bordure du contrôle de contenu, la fenêtre de sélection standard va apparaître. Choisissez l'image stockée sur votre ordinateur et cliquez sur <B>Ouvrir</B>.</li>
+            </ol>
+            <p>L'image choisie sera affichée à l'intérieur du contrôle de contenu. Pour remplacer l'image, cliquez sur l'icône d'image <img alt="L'icône Insérer image" src="../images/image_settings_icon.png" /> dans le bouton au dessus de la bordure du contrôle de contenu et sélectionnez une autre image.</p>
+            <p><img alt="Un nouveau contrôle de contenu d'image" src="../images/picturecontentcontrol.png" /></p>
+            <h4>Créer un nouveau contrôle de contenu Zone de liste déroulante ou Liste déroulante</h4>
+            <p><I>Zone de liste déroulante</I> et la <I>Liste déroulante</I> sont des objets comportant une liste déroulante avec un ensemble de choix. Ces contrôles de contenu sont crées de la même façon. La différence entre les contrôles Zone de liste déroulante et Liste déroulante est que la liste déroulante propose des choix que vous êtes obligé de sélectionner tandis que la Zone de liste déroulante accepte la saisie d&rsquo;un autre élément.</p>
+            <ol>
+                <li>positionnez le point d'insertion dans une ligne du texte où vous souhaitez ajouter le contrôle de contenu.</li>
+                <li>passez à l'onglet <B>Insertion</B> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>.</li>
+                <li>choisissez l'option<B> Zone de liste déroulante</B> et <B>Liste déroulante</B> dans le menu et le contrôle de contenu sera inséré au point d'insertion.</li>
+                <li>cliquez avec le bouton droit sur le contrôle de contenu ajouté et sélectionnez <B>Paramètres du contrôle de contenu</B> du menu contextuel.</li>
+                <li>dans la fenêtre <b>Paramètres du contrôle de contenu</b> qui s'ouvre, passez à l'onglet <b>Zone de liste déroulante</b> ou <b>Liste déroulante</b> en fonction du type de contrôle de contenu sélectionné.
+                <p><img alt="La fenêtre Paramètres de la Zone de liste déroulante" src="../images/comboboxsettings.png" /></p>
+                </li>
+                <li>
+                    pour ajouter un nouveau élément à la liste, cliquez sur le bouton Ajouter et remplissez les rubriques disponibles dans la fenêtre qui s'ouvre:
+                    <p><img alt=" Zone de liste déroulante - ajouter une valeur" src="../images/comboboxaddvalue.png" /></p>
+                    <ol>
+                        <li>saisissez le texte approprié dans le champ Nom d'affichage, par exemple, <I>Oui, Non, Autre</I> <I>option</I>. Ce texte sera affiché à l'intérieur du contrôle de contenu dans le document.</li>
+                        <li>par défaut le texte du champ <B>Valeur</B> co&iuml;ncide avec celui-ci du champ <B>Nom d'affichage</B>. Si vous souhaitez modifier le texte du champ Valeur, veuillez noter que la valeur doit être unique pour chaque élément. </li>
+                        <li>Cliquez sur <B>OK</B>.</li>
+                    </ol>
+                </li>
+                <li>les boutons <B>Modifier</B> et <B>Effacer </B>à droite servent à modifier ou supprimer les éléments de la liste et les boutons<B> En haut</B> et <B>Bas </B>à changer l'ordre d'affichage des éléments.</li>
+                <li>Une fois les paramètres configurés, cliquez sur <B>OK</B> pour enregistrer la configuration et fermer la fenêtre.</li>
+            </ol>
+            <p><img alt="Nouveau contrôle du contenu de la zone de liste déroulante" src="../images/comboboxcontentcontrol.png" /></p>
+            <p>Vous pouvez cliquez sur la flèche à droite du contrôle de contenu <B>Zone de liste déroulante</B> ou <B>Liste déroulante</B> ajouté pour ouvrir la liste et sélectionner l'élément approprié. Une fois sélectionné dans la <B>Zone de liste déroulante</B>, on peut modifier le texte affiché en saisissant propre texte partiellement ou entièrement. La Liste déroulante ne permet pas la saisie d&rsquo;un autre élément.</p>
+            <p><img alt="Le contrôle de contenu de la zone de liste déroulante" src="../images/comboboxcontentcontrol2.png" /></p>
+            <h4>Créer un nouveau contrôle de contenu sélecteur des dates</h4>
+            <ol>
+                <li>positionnez le point d'insertion dans le texte où vous souhaitez ajouter le contrôle de contenu.</li>
+                <li>passez à l'onglet <B>Insertion</B> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>.</li>
+                <li>choisissez l'option <B>Date</B> dans le menu et le contrôle de contenu indiquant la date actuelle sera inséré au point d'insertion.</li>
+                <li>cliquez avec le bouton droit sur le contrôle de contenu ajouté et sélectionnez <B>Paramètres du contrôle de contenu</B> du menu contextuel.</li>
+                <li>
+                    dans la fenêtre <B>Paramètres du contrôle de contenu</B>, passez à l'onglet <B>Format de date</B>.
+                    <p><img alt="Le fenêtre Paramètres de date" src="../images/datesettings.png" /></p>
+                </li>
+                <li>Sélectionnez la <B>Langue</B> et le format de date appropriée dans la liste <B>Afficher le date comme suit</B>.</li>
+                <li>Cliquez sur <B>OK</B> pour appliquer toutes les modifications et fermer la fenêtre.</li>
+            </ol>
+            <p><img alt="Un nouveau contrôle de contenu de date" src="../images/datecontentcontrol.png" /></p>
+            <p>Vous pouvez cliquez sur la flèche à droite du contrôle de contenu <B>Date</B> ajouté pour ouvrir le calendrier et sélectionner la date appropriée.</p>
+            <p><img alt="Le contrôle de contenu de date" src="../images/datecontentcontrol2.png" /></p>
+            <h4>Créer un nouveau contrôle de contenu de case à cocher</h4>
+            <ol>
+                <li>positionnez le point d'insertion dans le texte où vous souhaitez ajouter le contrôle de contenu.</li>
+                <li>passez à l'onglet <B>Insertion</B> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>.</li>
+                <li>choisissez l'option<B> Case à cocher</B> dans le menu et le contrôle de contenu sera inséré au point d'insertion.</li>
+                <li>cliquez avec le bouton droit sur le contrôle de contenu ajouté et sélectionnez <B>Paramètres du contrôle de contenu</B> du menu contextuel.</li>
+                <li>
+                    dans la fenêtre <B>Paramètres du contrôle de contenu</B>, passez à l'onglet <B>Case à cocher</B>.
+                    <p><img alt="La fenêtre Paramètres de la case à cocher" src="../images/checkboxsettings.png" /></p>
+                </li>
+                <li>cliquez sur le bouton <b>Symbole Activé</b> pour spécifier le symbole indiquant la case cochée ou le <b>Symbole Désactivé</b> pour spécifier la façon d'afficher la case décochée. La fenêtre <B>Symbole</B> s'ouvre. Veuillez consulter <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">cet article</a> pour en savoir plus sur utilisation des symboles.</li>
+                <li>Une fois les paramètres configurés, cliquez sur <B>OK</B> pour enregistrer la configuration et fermer la fenêtre.</li>
+            </ol>
+            <p>La case à cocher s'affiche désactivée.</p>
+            <p><img alt="Nouveau contrôle du contenu de la case à cocher" src="../images/checkboxcontentcontrol.png" /></p>
+            <p>Une fois que vous cliquiez la case à cocher, le symbole qu'on a spécifié comme le <b>Symbole Activé</b> est inséré.</p>
+            <p><img alt="Le contrôle de contenu de la case à cocher" src="../images/checkboxcontentcontrol2.png" /></p>
+            
+            <p class="note"><b>Remarque</b>: La bordure du contrôle de contenu est visible uniquement lorsque le contrôle est sélectionné. Les bordures n'apparaissent pas sur une version imprimée.</p>
+
+            <h3>Déplacer des contrôles de contenu</h3>
+            <p>Les contrôles peuvent être déplacés à un autre endroit du document: cliquez sur le bouton à gauche de la bordure de contrôle pour sélectionner le contrôle et faites-le glisser sans relâcher le bouton de la souris à un autre endroit dans le texte du document.</p>
+            <p><img alt="Déplacer des contrôles de contenu" src="../images/movecontentcontrol.png" /></p>
+            <p>Vous pouvez également <B>copier et coller</B> des contrôles de contenu: sélectionnez le contrôle voulu et utilisez les combinaisons de touches <B>Ctrl+C/Ctrl+V</B>.</p>
+            
+            <h3>Modifier des contrôles de contenu en texte brut et en texte enrichi</h3>
+            <p>On peut modifier le texte à l'intérieur des contrôles de contenu en texte brut et en texte enrichi  à l'aide des icônes de la barre d'outils supérieure: vous pouvez ajuster <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">le type, la taille et la couleur de police</a>, appliquer des <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">styles de décoration</a> et <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">les configurations de mise en forme</a>. Il est également possible d'utiliser la fenêtre <B>Paragraphe - Paramètres avancés</B> accessible depuis le menu contextuel ou depuis la barre latérale de droite pour modifier les propriétés du texte. Le texte contenu dans les contrôles de contenu de texte enrichi peut être mis en forme comme un texte normal du document, c'est-à-dire que vous pouvez définir <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">l'interlignage</a>, modifier <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)"> les retraits de paragraphe</a>, ajuster <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)"> les taquets de tabulation</a>, etc.</p>
+            
+            <h3>Modification des paramètres de contrôle du contenu</h3>
+            <p>Quel que soit le type du contrôle de contenu, on peut configurer ses paramètres sous les onglets <B>Général</B> et <B>Verrouillage</B> dans la fenêtre <B>Paramètres du contrôle de contenu</B>.</p>
+            <p>Pour ouvrir les paramètres de contrôle du contenu, vous pouvez procéder de la manière suivante:</p>
+            <ul>
+                <li>Sélectionnez le contrôle de contenu nécessaire, cliquez sur la flèche en regard de l'icône  <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B>  dans la barre d'outils supérieure et sélectionnez l'option <b>Paramètres de contrôle</b> du menu.</li>
+                <li>Cliquez avec le bouton droit n'importe où dans le contrôle de contenu et utilisez l'option <B>Paramètres de contrôle du contenu</B> dans le menu contextuel.</li>
+            </ul>
+            <p>Une nouvelle fenêtre s'ouvrira. Sous l'onglet <B>Général</B> vous pouvez configurer les paramètres suivants:</p>
+            <p><img alt="Fenêtre des Paramètres de contrôle du contenu - Général" src="../images/ccsettingswindow.png" /></p>
+            <ul>
+                <li>Spécifiez le <B>Titre</B>, l'<B>Espace réservé</B> ou le <B>Tag</B> dans les champs correspondants. Le titre s'affiche lorsque le contrôle est sélectionné dans le document. L'espace réservé est le texte principal qui s'affiche à l'intérieur du contrôle de contenu. Les Tags sont utilisées pour identifier les contrôles de contenu afin que vous puissiez y faire référence dans votre code. </li>
+                <li>Choisissez si vous voulez afficher le contrôle de contenu avec une <B>Boîte d'encombrement</B> ou non. Utilisez l'option <B>Aucun</B> pour afficher le contrôle sans aucune boîte d'encombrement. Si vous sélectionnez l'option <B>Boîte d'encombrement</B>, vous pouvez choisir la <B>Couleur</B> de la boîte à l'aide du champ ci-dessous. Cliquez sur le bouton <B>Appliquer à tous</B> pour appliquer les paramètres d&rsquo;<B>Apparence</B> spécifiés à tous les contrôles de contenu du document.</li>
+            </ul>
+            <p>Sous l'onglet <B>Verrouillage</B> vous pouvez empêchez toute suppression ou modifcation du contrôle de contenu en utilisant les paramètres suivants:</p>
+            <p><img alt="Fenêtre des Paramètres de contrôle du contenu - Verrouillage" src="../images/ccsettingswindow2.png" /></p>
+                <ul>
+                    <li><B>Le contrôle du contenu ne peut pas être supprimé</B> - cochez cette case pour empêcher la suppression du contrôle de contenu.</li>
+                    <li><B>Le contenu ne peut pas être modifié</B> - cochez cette case pour protéger le contenu du contrôle de contenu contre une modification.</li>
+                </ul>  
+                <p>Sous le troisième onglet on peut configurer les paramètres spécifiques de certain type du contrôle de contenu, comme: <I>Zone de liste déroulante, Liste déroulante, Date, Case à cocher</I>. Tous ces paramètres ont déjà été décrits ci-dessus dans la section appropriée à chaque contrôle de contenu.</p>          
+            <p>Cliquez sur le bouton <B>OK</B> dans la fenêtre des paramètres pour appliquer les changements.</p>
+            <p>Il est également possible de surligner les contrôles de contenu avec une certaine couleur. Pour surligner les contrôles avec une couleur:</p>
+            <ol>
+                <li>Cliquez sur le bouton situé à gauche de la bordure du champ pour sélectionner le contrôle,</li>
+                <li>Cliquez sur la flèche à côté de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B> dans la barre d'outils supérieure,</li>
+                <li>Sélectionnez l'option <B>Paramètres de surbrillance</B> du menu,</li>
+                <li>Sélectionnez la couleur souhaitée dans les palettes disponibles: <B>Couleurs du thème</B>, <B>Couleurs standard</B> ou spécifiez une nouvelle <B>Couleur personnalisée</B>. Pour supprimer la surbrillance des couleurs précédemment appliquée, utilisez l'option<B> Pas de surbrillance</B>.</li>
+            </ol>
+            <p>Les options de surbrillance sélectionnées seront appliquées à tous les contrôles de contenu du document.</p>
+            <h3>Supprimer des contrôles de contenu</h3>
+            <p>Pour supprimer un contrôle et laisser tout son contenu, cliquez sur le contrôle de contenu pour le sélectionner, puis procédez de l'une des façons suivantes:</p>
+            <ul>
+                <li>Cliquez sur la flèche en regard de l'icône <img alt="l'icône Contrôles de contenu" src="../images/insertccicon.png" /> <B>Contrôles de contenu</B> dans la barre d'outils supérieure et sélectionnez l'option <B>Supprimer le contrôle du contenu</B> dans le menu.</li>
+                <li>Cliquez avec le bouton droit sur le contrôle de contenu et utilisez l'option <B>Supprimer le contrôle du contenu</B> dans le menu contextuel.</li>
+            </ul>
+            <p>Pour supprimer un contrôle et tout son contenu, sélectionnez le contrôle nécessaire et appuyez sur la touche <B>Suppr</B> du clavier.</p>
+                        
+		</div>
+	</body>
+</html>

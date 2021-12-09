@@ -3907,7 +3907,18 @@ define([
                 setEditable(true, false, true);
             }
 
-            if (APP.readOnly) {
+            if (APP.readOnly && !APP.loggedIn) {
+                // XXX this incorrectly prompts guests to login/register even when they lack editing rights.
+                (function () {
+                    var $banner = $(Pages.setHTML(h('div.cp-app-drive-content-info-box'), Messages.fm_info_sharedFolder));
+                    $banner.find('[href="/login/"], [href="/register/"]').click(function (ev) {
+                        ev.preventDefault();
+                        var page = this.getAttribute('href').replace(/\//g, '');
+                        common.setLoginRedirect(page);
+                    });
+                    $content.prepend($banner);
+                }());
+            } else if (APP.readOnly) {
                 // Read-only drive (team?)
                 $content.prepend($readOnly.clone());
             } else if (sfId && folders[sfId] && folders[sfId].readOnly) {

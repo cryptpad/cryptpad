@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserire note a piè di pagina</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert footnotes to provide explanations for some terms or make references to the sources" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserire note a piè di pagina</h1>
+            <p>È possibile aggiungere note a piè di pagina per fornire spiegazioni o commenti per determinate frasi o termini utilizzati nel testo, fare riferimenti alle fonti, ecc.</p>
+			<p>Per inserire una nota a piè di pagina nel documento,</p>
+			<ol>
+                <li>posizionare il punto di inserimento alla fine del passaggio di testo a cui si desidera aggiungere una nota a piè di pagina,</li>
+                <li>passare alla scheda <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+				<li>Fare click sull’icona <img alt="Icona nota a piè di pagina" src="../images/addfootnote.png" /> <b>Nota a piè di pagina</b> nella barra degli strumenti superiore oppure<br/>
+                    fare clic sulla freccia accanto all'icona <img alt="Icona nota a piè di pagina" src="../images/addfootnote.png" /> <b>Nota a piè di pagina</b> e selezionare l'opzione <b>Inserisci nota a piè di pagina</b> dal menu,
+                <p>Il segno di nota a piè di pagina (ovvero il carattere in apice che indica una nota a piè di pagina) viene visualizzato nel testo del documento e il punto di inserimento si sposta nella parte inferiore della pagina corrente.</p>
+                </li>
+				<li>digitare il testo della nota a piè di pagina.</li>
+			</ol>
+            <p>Ripetere le operazioni di cui sopra per aggiungere note a piè di pagina successive per altri passaggi di testo nel documento. Le note a piè di pagina vengono numerate automaticamente.</p>
+            <p><img alt="Footnotes" src="../images/footnotesadded.png" /></p>
+            <p>Se si posiziona il puntatore del mouse sul segno della nota a piè di pagina nel testo del documento, viene visualizzata una piccola finestra popup con il testo della nota a piè di pagina.</p>
+            <p><img alt="Footnote text" src="../images/footnotetext.png" /></p>
+            <p>Per navigare facilmente tra le note a piè di pagina aggiunte all'interno del testo del documento,</p>
+            <ol>
+                <li>fare clic sulla freccia accanto all'icona <img alt="Icona nota a piè di pagina" src="../images/addfootnote.png" /> <b>Nota a piè di pagina</b> nella scheda <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+                <li>nella sezione <b>Passa alle note a piè di pagina</b> , utilizzare la freccia <img alt="Previous footnote icon" src="../images/previousfootnote.png" /> per passare alla nota a piè di pagina precedente o la freccia <img alt="Next footnote icon" src="../images/nextfootnote.png" /> per passare alla nota a piè di pagina successiva.</li>
+            </ol>
+            <hr />
+			<p>Per modificare le impostazioni delle note a piè di pagina,</p>
+			<ol>
+				<li>fare clic sulla freccia accanto all'icona <img alt="Icona nota a piè di pagina" src="../images/addfootnote.png" /> <b>Nota a piè di pagina</b> nella scheda <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+                <li>selezionare l'opzione <b> Impostazioni delle note</b> dal menu,</li>
+				<li>modificare i parametri correnti nella finestra <b>Impostazioni delle note</b> che si apre: 
+				<p><img alt="Footnotes Settings window" src="../images/footnotes_settings.png" /></p>
+				<ul>
+				<li>Impostare la <b>Posizione</b> delle note a piè di pagina nella pagina selezionando una delle opzioni disponibili: 
+                    <ul>
+                        <li><b>Fondo pagina</b> - per posizionare le note a piè di pagina nella parte inferiore della pagina (questa opzione è selezionata per impostazione predefinita).</li>
+                        <li><b>Sotto al testo</b> - per posizionare le note a piè di pagina più vicino al testo. Questa opzione può essere utile nei casi in cui la pagina contiene un breve testo.</li>
+                    </ul>
+                </li>
+                <li>Regolare il <b>Formato</b> delle note a piè di pagina:
+                    <ul>
+                        <li><b>Formato numero</b> - selezionare il formato numerico necessario tra quelli disponibili: <em>1, 2, 3,...</em>, <em>a, b, c,...</em>, <em>A, B, C,...</em>, <em>i, ii, iii,...</em>, <em>I, II, III,...</em>.</li>
+                        <li><b>Inizia da</b>  - utilizzare le frecce per impostare il numero o la lettera con cui si desidera iniziare la numerazione.</li>
+                        <li><b>Numerazione</b> - selezionare un modo per numerare le note a piè di pagina:
+                        <ul>
+                            <li><b>Continuo</b> - numerare le note a piè di pagina in sequenza in tutto il documento,</li>
+                            <li><b>Ricomincia a ogni sezione</b> -  per iniziare la numerazione delle note a piè di pagina con il numero 1 (o qualche altro carattere specificato) all'inizio di ogni sezione,</li>
+                            <li><b>Ricomincia a ogni pagina</b> - per iniziare la numerazione delle note a piè di pagina con il numero 1 (o un altro carattere specificato) all'inizio di ogni pagina.</li>
+                        </ul>
+                        </li>
+                        <li><b>Simbolo personalizzato</b> - consente di impostare un carattere speciale o una parola che si desidera utilizzare come segno di nota a piè di pagina (ad es. * or Nota1). Immettere il carattere/parola necessari nel campo di immissione testo e fare clic sul pulsante <b>Inserisci</b> nella parte inferiore della finestra <b>Impostazioni note</b>.</li>
+                    </ul>
+                </li>
+                <li>Utilizzare l'elenco a discesa <b>Applica modifiche a</b> per selezionare se si desidera applicare le impostazioni delle note specificate solo a <b>Tutto il documento</b> o alla <b>Sezione attuale</b>.
+                <p class="note"><b>Nota</b>: per utilizzare la formattazione di note a piè di pagina diverse in parti separate del documento, è necessario aggiungere prima delle <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)"> Interruzioni di sezione</a>.</p>
+                </li>
+				</ul>
+				</li>
+                <li>Quando si è pronti, fare clic sul pulsante <b>Applica</b>.</li>
+			</ol>
+            
+            <hr />
+            <p>Per rimuovere una singola nota a piè di pagina, posizionare il punto di inserimento direttamente prima del segno della nota a piè di pagina nel testo del documento e premere <b>Elimina</b>.  Le altre note a piè di pagina verranno rinumerate automaticamente.</p>
+            <p>Per eliminare tutte le note a piè di pagina del documento,</p>
+            <ol>
+                <li>fare clic sulla freccia accanto all'icona <img alt="Icona nota a piè di pagina" src="../images/addfootnote.png" /> <b>Nota a piè di pagina</b> nella scheda <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+                <li>selezionare l'opzione <b>Elimina tutte le note a piè di pagina</b> dal menu.</li>
+            </ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pestaña de archivo</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Spreadsheet Editor user interface - File tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Pestaña de archivo</h1>
+            <p>La pestaña de <b>Archivo</b> permite realizar operaciones básicas en el archivo actual.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Ventana del editor de hojas de cálculo en línea:</p>
+                <p><img alt="Pestaña de archivo" src="../images/interface/filetab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Ventana del editor de hojas de cálculo de escritorio:</p>
+                <p><img alt="Pestaña de archivo" src="../images/interface/desktop_filetab.png" /></p>
+            </div> 
+            <p>Al usar esta pestaña podrás:</p>
+            <ul>
+                <li><span class="onlineDocumentFeatures">en la <em>versión en línea</em>, <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">guardar</a> el archivo actual (en el caso de que la opción de <b>Guardar automáticamente</b> esté desactivada), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">descargar como</a> (guarda la hoja de cálculo en el formato seleccionado en el disco duro del ordenador), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">guardar una copia como</a> (guarda una copia de la hoja de cálculo en el formato seleccionado en los documentos del portal), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">imprimir</a> o <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">renombrar</a>,</span> <span class="desktopDocumentFeatures">en la <em>versión de escritorio</em>, <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">guardar</a> el archivo actual manteniendo el formato y la ubicación actual utilizando la opción de <b>Guardar</b> o guarda el archivo actual con un nombre, ubicación o formato diferente utilizando la opción de <b>Guardar como</b>, <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">imprimir</a> el archivo.</span></li>
+                <li class="desktopDocumentFeatures">proteger el archivo con una contraseña, cambiar o eliminar la contraseña (disponible solamente en la <em>versión de escritorio</em>);</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/OpenCreateNew.htm" onclick="onhyperlinkclick(this)">crear</a> una nueva hoja de cálculo o abrir una recientemente editada (disponible solamente en la <em>versión en línea</em>),</li>
+                <li>mostrar <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">información general</a> sobre la presentación,</li>
+                <li class="onlineDocumentFeatures">gestionar los <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">derechos de acceso</a> (disponible solamente en la <em>versión en línea</em>),</li>
+                <li>acceder a los <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes avanzados</a> del editor,</li>
+                <li><span class="desktopDocumentFeatures">en la <em>versión de escritorio</em>, abre la carpeta donde está guardado el archivo en la ventana del <b>explorador de archivos</b>.</span><span class="onlineDocumentFeatures"> En la <em>versión en línea</em>, abre la carpeta del módulo <b>Documentos</b> donde está guardado el archivo en una nueva pestaña del navegador.</span></li>
+            </ul>
+		</div>
+	</body>
+</html>

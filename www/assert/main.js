@@ -3,7 +3,7 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     'json.sortify',
     '/drive/tests.js',
-    '/common/test.js',
+    //'/common/test.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-thumbnail.js',
@@ -18,7 +18,7 @@ define([
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-assert.less',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages) {
+], function ($, Hyperjson, Sortify, Drive, /*Test,*/ Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
@@ -526,11 +526,12 @@ define([
             })),
         ]));
 
+/*
         if (failed) {
             Test.failed();
         } else {
             Test.passed();
-        }
+        }*/
     });
 
 });

@@ -50,8 +50,8 @@ define([
     h,
     Messages,
     SFCodeMirror,
-    CMeditor,
-    Test)
+    CMeditor/*,
+    Test*/)
 {
     var saveAs = window.saveAs;
 
@@ -1010,6 +1010,7 @@ define([
             publish(true);
         }
 
+/*
         var passIfOk = function (t) {
             t.assert($('#cp-app-poll-description-published').text().indexOf(
                 "Content for the description") === 0);
@@ -1023,7 +1024,9 @@ define([
             t.assert($('input[value="Meeee"]').length === 1);
             t.pass();
         };
+*/
 
+        /*
         if (!APP.readOnly) {
             console.log("Here is the test");
             Test(function (t) {
@@ -1075,13 +1078,14 @@ define([
                     setTimeout(waitFor());
                 }).nThen(function (waitFor) {
                     APP.rt.realtime.onSettle(waitFor());
-                }).nThen(function (/*waitFor*/) {
+                }).nThen(function (/*waitFor*/ /*) {
                     passIfOk(t);
                 });
             });
         } else {
             Test(passIfOk);
         }
+        */
 
         // No need for onLocal in openPadChat because in poll, we listen for metadata changes
         // and save them everytime.
@@ -1315,7 +1319,7 @@ define([
         }).nThen(function (waitFor) {
             common.handleNewFile(waitFor);
         }).nThen(function (/* waitFor */) {
-            Test.registerInner(common.getSframeChannel());
+            //Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             metadataMgr.setDegraded(false); // FIXME degarded mode unsupported (no cursor channel)
 

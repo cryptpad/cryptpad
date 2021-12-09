@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hyperlink einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website or another worksheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Hyperlink einfügen</h1>
+			<p>Einfügen eines Hyperlinks im <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a>:</p>
+			<ol>
+				<li>Wählen Sie die Zelle, in der Sie einen Hyperlink einfügen wollen.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf das Symbol <img alt="Hyperlink" src="../images/addhyperlink.png" /> <b>Hyperlink</b> in der oberen Symbolleiste.</li>
+				<li>Das Fenster <b>Einstellungen Hyperlink</b> öffnet sich und Sie können die Einstellungen für den Hyperlink festlegen:<ul>
+					<li>Wählen Sie den gewünschten Linktyp aus:<p>Wenn Sie einen Hyperlink einfügen möchten, der auf eine externe Website verweist, wählen Sie <b>Website</b> und geben Sie eine URL im Format <em>http://www.example.com</em> in das Feld <b>Link zu</b> ein.</p>
+                        <p><img alt="Fenster Einstellungen Hyperlink" src="../images/hyperlinkwindow.png" /></p>
+					<p>Wenn Sie einen Hyperlink hinzufügen möchten, der zu einem bestimmten Zellenbereich in der aktuellen Tabellenkalkulation führt, wählen Sie die Option <b>Interner Datenbereich</b> und geben Sie das gewünschte Arbeitsblatt und den entsprechenden Zellenbereich an.</p>
+                        <p><img alt="Fenster Einstellungen Hyperlink" src="../images/internallink.png" /></p>
+					</li>
+					<li><b>Ansicht</b> - geben Sie einen Text ein, der angeklickt werden kann und zu der angegebenen Webadresse führt.<p class="note"><b>Hinweis</b>: Wenn die gewählte Zelle bereits Daten beinhaltet, werden diese automatisch in diesem Feld angezeigt.</p>
+					</li>
+					<li><b>QuickInfo</b> - geben Sie einen Text ein, der in einem kleinen Dialogfenster angezeigt wird und den Nutzer über den Inhalt des Verweises informiert.</li>
+				</ul>				
+				</li>
+				<li>Klicken Sie auf <b>OK</b>.</li>
+			</ol>
+            <p>Um einen Hyperlink einzufügen können Sie auch die Tastenkombination <b>STRG+K</b> nutzen oder klicken Sie mit der rechten Maustaste an die Stelle an der Sie den Hyperlink einfügen möchten und wählen Sie die Option <b>Hyperlink</b> im Rechtsklickmenü aus.</p>
+			<p>Wenn Sie den Mauszeiger über den eingefügten Hyperlink bewegen, wird der von Ihnen im Feld QuickInfo eingebene Text angezeigt. Einem in der Tabelle hinterlegten Link folgen: Um eine Zelle auszuwählen die einen Link enthält, ohne den Link zu öffnen, klicken Sie diese an und halten Sie die Maustaste gedrückt.</p>
+			<p>Um den hinzugefügten Hyperlink zu entfernen, wählen Sie die Zelle mit dem entsprechenden Hyperlink aus und drücken Sie die Taste <b>ENTF</b> auf Ihrer Tastatur oder klicken Sie mit der rechten Maustaste auf die Zelle und wählen Sie die Option <b>Alle löschen</b> aus der Menüliste aus.</p>
+		</div>
+	</body>
+</html>

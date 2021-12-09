@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer un nouveau document ou ouvrir un document existant</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Créer un nouveau document, ouvrir un document existant ou revenir à la liste des documents existants" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Créer un nouveau document ou ouvrir un document existant</h1>
+            <p>Dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, vous pouvez créer un nouveau document, ouvrir un document existant ou revenir à la liste des documents existants.</p>
+			<h3>Pour créer un nouveau document</h3>
+            <div class="onlineDocumentFeatures">
+                <p>Dans la <em>version en ligne</em></p>
+                <ol>
+                    <li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+                    <li>sélectionnez l'option <b>Créer nouveau</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dans l’<em>éditeur de bureau</em></p>
+                <ol>
+                    <li>dans la fenêtre principale du programme, sélectionnez l'élément de menu <b>Document</b> dans la section <b>Créer nouveau</b> de la barre latérale gauche - un nouveau fichier s'ouvrira dans un nouvel onglet,</li>
+                    <li>une fois tous les changements nécessaires effectués, cliquez sur l'icône <b>Enregistrer</b> <img alt="Icône Enregistrer" src="../images/save.png" /> dans le coin supérieur gauche ou passez à l'onglet <b>Fichier</b> et choisissez l'élément de menu <b>Enregistrer sous</b>.</li>
+                    <li>dans la fenêtre du gestionnaire de fichiers, sélectionnez l'emplacement du fichier, spécifiez son nom, choisissez le format dans lequel vous souhaitez enregistrer le document (DOCX, Modèle de document (DOTX), ODT, OTT, RTF, TXT, PDF ou PDFA) et cliquez sur le bouton <b>Enregistrer</b>.</li>
+                </ol>
+            </div>
+
+            <div class="desktopDocumentFeatures">
+                <h3>Pour ouvrir un document existant</h3>
+                <p>Dans l’<em>éditeur de bureau</em></p>
+                <ol>
+                    <li>dans la fenêtre principale du programme, sélectionnez l'élément de menu <b>Ouvrir fichier local</b> dans la barre latérale gauche,</li>
+                    <li>choisissez le document nécessaire dans la fenêtre du gestionnaire de fichiers et cliquez sur le bouton <b>Ouvrir</b>.</li>
+                </ol>
+                <p>Vous pouvez également cliquer avec le bouton droit de la souris sur le document nécessaire dans la fenêtre du gestionnaire de fichiers, sélectionner l'option <b>Ouvrir avec</b> et choisir l'application nécessaire dans le menu. Si les fichiers de documents Office sont associés à l'application, vous pouvez également ouvrir les documents en double-cliquant sur le nom du fichier dans la fenêtre d'exploration de fichiers.</p>
+                <p>Tous les répertoires auxquels vous avez accédé à l'aide de l'éditeur de bureau seront affichés dans la liste <b>Dossiers récents</b> afin que vous puissiez y accéder rapidement. Cliquez sur le dossier nécessaire pour sélectionner l'un des fichiers qui y sont stockés.</p>
+            </div>
+
+                <h3>Pour ouvrir un document récemment édité</h3>
+            <div class="onlineDocumentFeatures">
+                <p>Dans la <em>version en ligne</em></p>
+                <ol>
+                    <li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+                    <li>sélectionnez l'option <b>Ouvrir récent</b>,</li>
+                    <li>sélectionnez le document nécessaire dans la liste des documents récemment édités.</li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dans l’<em>éditeur de bureau</em></p>
+                <ol>
+                    <li>dans la fenêtre principale du programme, sélectionnez l'élément de menu <b>Fichiers récents</b> dans la barre latérale gauche,</li>
+                    <li>sélectionnez le document nécessaire dans la liste des documents récemment édités.</li>
+                </ol>
+            </div>
+
+                <p>Pour ouvrir le dossier dans lequel le fichier est stocké <span class="onlineDocumentFeatures">dans un nouvel onglet du navigateur de la <em>version en ligne</em>,</span> <span class="desktopDocumentFeatures">dans la fenêtre de l'explorateur de fichiers de la <em>version de bureau</em>,</span> cliquez sur l'icône <img alt="Ouvrir l’emplacement du fichier" src="../images/gotodocuments.png" /> <b>Ouvrir l’emplacement du fichier</b> à droite de l'en-tête de l'éditeur. Vous pouvez aussi passer à l'onglet <b>Fichier</b> sur la barre d'outils supérieure et sélectionner l'option <b>Ouvrir l’emplacement du fichier</b>.</p>
+            </div>
+	</body>
+</html>

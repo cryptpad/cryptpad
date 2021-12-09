@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Scheda File</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Presentazione dell'interfaccia utente dell'Editor di Documenti - Scheda File" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Scheda File</h1>
+            <p>La scheda <b>File</b> consente di eseguire alcune operazioni di base sul file corrente.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Finestra dell’Editor di Documenti Online:</p>
+                <p><img alt="Scheda File" src="../images/interface/filetab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Finestra dell’Editor di Documenti Desktop:</p>
+                <p><img alt="Scheda File" src="../images/interface/desktop_filetab.png" /></p>
+            </div>            
+            <p>Usando questa scheda, puoi:</p>
+            <ul>
+                <li><span class="onlineDocumentFeatures">nella <em>versione online</em>, <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">salvare</a> il file corrente (nel caso in cui l’opzione di <b>Salvataggio automatico</b> sia disabilitata), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">scaricare in</a> (salva il documento nel formato selezionato sul disco fisso del computer), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">salvare copia come</a> (salva una copia del documento nel formato selezionato nel portale I miei documenti), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">stamparlo</a> o <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">rinominarlo</a>,</span>
+                <span class="desktopDocumentFeatures">nella <em>versione desktop</em>, <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">salvare</a> il file corrente mantenendo il formato e la posizione correnti utilizzando l’opzione <b>Salva</b> o salvare il file corrente con un nome, una posizione o un formato diversi usando l’opzione <b>Salva con Nome</b>, <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">stampare</a> il file.</span>
+                </li>
+                <li class="desktopDocumentFeatures">proteggere il file utilizzando una password, modificare o rimuovere la password (disponibile solo nella <em>versione desktop</em>);</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/OpenCreateNew.htm" onclick="onhyperlinkclick(this)">creare</a> un nuovo documento o aprirne uno modificato di recente (disponibile solo nella <em>versione online</em>),</li>
+                <li>visualizzare le <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">Informazioni documento</a> o modificare alcune proprietà del file,</li>
+                <li class="onlineDocumentFeatures">gestire i <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">Diritti di accesso</a> (disponibile solo nella <em>versione online</em>),</li>
+                <li class="onlineDocumentFeatures">tracciare la <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">Cronologia delle versioni</a> (disponibile solo nella <em>versione online</em>),</li>
+                <li>accedere all’editor <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Impostazioni avanzate</a>,</li>
+                <li><span class="desktopDocumentFeatures">nella <em>versione desktop</em>, aprire la cartella in cui è archiviato il file nella finestra <b>Apri percorso file</b>.</span><span class="onlineDocumentFeatures"> Nella <em>versione online</em>, aprire la cartella del modulo <b>I miei documenti</b> in cui è archiviato il file in una nuova scheda del browser.</span></li>
+            </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Objekte auf einer Seite anordnen und ausrichten</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Align and arrange text boxes, autoshapes, images and charts on a page." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Objekte auf einer Seite anordnen und ausrichten</h1>
+			<p>Im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> die hinzugefügten <b>Autoformen, Bilder, Diagramme</b> und <b>Textboxen</b> können auf einer Seite ausgerichtet, gruppiert und angeordnet werden. Um eine dieser Aktionen auszuführen, wählen Sie zuerst ein einzelnes Objekt oder mehrere Objekte auf der Seite aus. Um mehrere Objekte zu wählen, halten Sie die Taste <b>STRG</b> gedrückt und klicken Sie auf die gewünschten Objekte. Um ein Textfeld auszuwählen, klicken Sie auf den Rahmen und nicht auf den darin befindlichen Text. Danach können Sie über Symbole in der Registerkarte <b>Layout</b> navigieren, die nachstehend beschrieben werden, oder die entsprechenden Optionen aus dem Rechtsklickmenü nutzen.</p>
+			<h3>Objekte ausrichten</h3>
+            <p><b>Ausrichten</b> von <em>zwei oder mehr</em> ausgewählten Objekten:</p>
+			    <ol>
+                    <li>Klicken Sie auf das Symbol <img alt="Ausrichten" src="../images/align_toptoolbar.png" /> <b>ausrichten</b> auf der oberen Symbolleiste in der Registerkarte <b>Layout</b> und wählen Sie eine der verfügbaren Optionen:<ul>
+                            <li><b>An Seite ausrichten</b>, um Objekte relativ zu den Rändern der Seite auszurichten.</li>
+                            <li><b>Am Seitenrand ausrichten</b>, um Objekte relativ zu den Seitenrändern auszurichten.</li>
+                            <li><b>Ausgewählte Objekte ausrichten</b> (diese Option ist standardmäßig ausgewählt), um Objekte im Verhältnis zueinander auszurichten.</li>
+                        </ul>
+                    </li>
+                    <li>Klicken Sie erneut auf das Symbol <img alt="Ausrichten" src="../images/align_toptoolbar.png" /> <b>ausrichten</b> und wählen Sie den gewünschten Ausrichtungstyp aus der Liste aus:<ul>
+                            <li><b>Linksbündig ausrichten</b> <img alt="Linksbündig ausrichten" src="../images/alignobjectleft.png" /> - Objekte horizontal am linken Rand des am weitesten links befindlichen Objekts/linken Rand der Seite/linken Seitenrands ausrichten.</li>
+                            <li><b>Mittig ausrichten</b> <img alt="Zentriert ausrichten" src="../images/alignobjectcenter.png" /> - Objekte horizontal an ihrer Mitte/der Seitenmitte/der Mitte des Abstands zwischen dem linken und rechten Seitenrand ausrichten.</li>
+                            <li><b>Rechtsbündig ausrichten</b> <img alt="Rechtsbündig ausrichten" src="../images/alignobjectright.png" /> - Objekte horizontal am rechten Rand des am weitesten rechts befindlichen Objekts/rechten Rand der Seite/rechten Seitenrands ausrichten.</li>
+                            <li><b>Oben ausrichten</b> <img alt="Oben ausrichten" src="../images/alignobjecttop.png" /> - Objekte vertikal an der Oberkante des obersten Objekts/der Oberkante der Seite/des oberen Seitenrands ausrichten.</li>
+                            <li><b>Mitte ausrichten</b> <img alt="Mittig ausrichten" src="../images/alignobjectmiddle.png" /> - Objekte vertikal an ihrer Mitte/Seitenmitte/ Zwischenraummitte zwischen dem oberen und unteren Seitenrand ausrichten.</li>
+                            <li><b>Unten ausrichten</b> <img alt="Unten ausrichten" src="../images/alignobjectbottom.png" /> - Objekte vertikal an der Unterkante des unteresten Objekts/der Unterkante der Seite/des unteren Seitenrands ausrichten.</li>
+                        </ul>
+                    </li>
+                </ol>
+            <p>Alternativ können Sie mit der rechten Maustaste auf die ausgewählten Objekte klicken, wählen Sie anschließend im Kontextmenü die Option <b>Ausrichten</b> aus und nutzen Sie dann eine der verfügbaren Ausrichtungsoptionen.</p>
+            <p>Wenn Sie ein einzelnes Objekt ausrichten möchten, kann es relativ zu den Rändern des Blatts oder zu den Seitenrändern ausgerichtet werden. Die Option <b>An Rand ausrichten</b> ist in diesem Fall standardmäßig ausgewählt.</p>
+            <h3>Objekte verteilen</h3>
+            <p><em>Drei oder mehr</em> ausgewählte Objekte horizontal oder vertikal so <b>verteilen</b>, dass der gleiche Abstand zwischen ihnen angezeigt wird:</p>
+            <ol>
+                <li>Klicken Sie auf das Symbol <img alt="Ausrichten" src="../images/align_toptoolbar.png" /> <b>ausrichten</b> auf der oberen Symbolleiste in der Registerkarte <b>Layout</b> und wählen Sie eine der verfügbaren Optionen:<ul>
+                        <li><b>An Seite ausrichten</b>, um Objekte zwischen den Rändern der Seite zu verteilen.</li>
+                        <li><b>An Seitenrand ausrichten</b>, um Objekte zwischen den Seitenrändern zu verteilen.</li>
+                        <li><b>Ausgewählte Objekte ausrichten</b> (diese Option ist standardmäßig ausgewählt), um Objekte zwischen zwei ausgewählten äußersten Objekten zu verteilen.</li>
+                    </ul>
+                </li>
+                <li>Klicken Sie erneut auf das Symbol <img alt="Ausrichten" src="../images/align_toptoolbar.png" /> <b>Ausrichten</b> und wählen Sie den gewünschten Verteilungstyp aus der Liste aus:<ul>
+                        <li><b>Horizontal verteilen</b> <img alt="Horizontal verteilen" src="../images/distributehorizontally.png" /> - um Objekte gleichmäßig zwischen den am weitesten links und rechts liegenden ausgewählten Objekten/dem linken und rechten Seitenrand zu verteilen<!--to align the selected objects by their centers (from right to left edges) to the horizontal center of the page-->.</li>
+                        <li><b>Vertikal verteilen</b> <img alt="Vertikal verteilen" src="../images/distributevertically.png" /> - um Objekte gleichmäßig zwischen den am weitesten oben und unten liegenden ausgewählten Objekten / dem oberen und unteren Rand der Seite zu verteilen<!--to align the selected objects by their centers (from top to bottom edges) to the vertical center of the page-->.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Alternativ können Sie mit der rechten Maustaste auf die ausgewählten Objekte klicken, wählen Sie anschließend im Kontextmenü die Option <b>Ausrichten</b> aus und nutzen Sie dann eine der verfügbaren Verteilungsoptionen.</p>
+            <p class="note"><b>Hinweis</b>: Die Verteilungsoptionen sind deaktiviert, wenn Sie weniger als drei Objekte auswählen.</p>
+            <h3>Objekte gruppieren</h3>
+            <p>Um <em>zwei oder mehr</em> Objekte zu <b>gruppieren</b> oder die <b>Gruppierung aufzuheben</b>, klicken Sie auf den Pfeil links neben dem Symbol <img alt="Gruppieren" src="../images/group_toptoolbar.png" /> <b>Gruppieren</b> in der Registerkarte <b>Layout</b> und wählen Sie die gewünschte Option aus der Liste aus:</p>
+            <ul>
+                <li><b>Gruppieren</b> <img alt="Gruppieren" src="../images/group.png" /> - um mehrere Objekte zu einer Gruppe zusammenzufügen, so dass sie gleichzeitig gedreht, verschoben, skaliert, ausgerichtet, angeordnet, kopiert, eingefügt und formatiert werden können, wie ein einzelnes Objekt.</li>
+                <li><b>Gruppierung aufheben</b> <img alt="Gruppierung aufheben" src="../images/ungroup.png" /> - um die ausgewählte Gruppe der zuvor gruppierten Objekte aufzulösen.</li>
+            </ul>
+            <p>Alternativ können Sie mit der rechten Maustaste auf die ausgewählten Objekte klicken, wählen Sie anschließend im Kontextmenü die Option <b>Anordnung</b> aus und nutzen Sie dann die Optionen <b>Gruppieren</b> oder <b>Gruppierung</b> aufheben.</p>
+            <p class="note"><b>Hinweis</b>: Die Option <b>Gruppieren</b> ist deaktiviert, wenn Sie weniger als zwei Objekte auswählen. Die Option <b>Gruppierung aufheben</b> ist nur verfügbar, wenn Sie eine zuvor gruppierte Objektgruppe auswählen.</p>
+            <h3>Objekte anordnen</h3>
+            <p>Um <b>Objekte anzuordnen</b> (z.B. die Reihenfolge bei einer Überlappung zu ändern), klicken Sie auf die Smbole <img alt="Eine Ebene nach vorne" src="../images/bringforward_toptoolbar.png" /> <b>eine Ebene nach vorne</b> und <img alt="Eine Ebene nach hinten" src="../images/sendbackward_toptoolbar.png" /> <b>eine Ebene nach hinten</b> in der Registerkarte <b>Layout</b> und wählen Sie die gewünschte Anordnung aus der Liste aus.</p>
+			<p>Um das/die ausgewählte(n) Objekt(e) nach vorne zu bringen, klicken Sie auf das Symbol <img alt="Eine Ebene nach vorne" src="../images/bringforward_toptoolbar.png" /> <b>Eine Ebene nach vorne</b> in der Registerkarte <b>Layout</b> und wählen Sie den gewünschten Ausrichtungstyp aus der Liste aus:</p>
+            <ul>
+                <li><b>In den Vordergrund</b> <img alt="In den Vordergrund" src="../images/bringtofront.png" /> - Objekt(e) in den Vordergrund bringen.</li>
+                <li><b>Eine Ebene nach vorne</b> <img alt="Eine Ebene nach vorne" src="../images/bringforward.png" /> - um ausgewählte Objekte eine Ebene nach vorne zu schieben.</li>
+            </ul>
+            <p>Um das/die ausgewählte(n) Objekt(e) nach hinten zu verschieben, klicken Sie auf den Pfeil <img alt="Eine Ebene nach hinten" src="../images/sendbackward_toptoolbar.png" /> <b>nach hinten verschieben</b> in der Registerkarte <b>Layout</b> und wählen Sie den gewünschten Ausrichtungstyp aus der Liste aus:</p>
+            <ul>
+                <li><b>In den Hintergrund</b> <img alt="In den Hintergrund" src="../images/sendtoback.png" /> - um ein Objekt/Objekte in den Hintergrund zu schieben.</li>
+                <li><b>Eine Ebene nach hinten</b> <img alt="Eine Ebene nach hinten" src="../images/sendbackward.png" /> - um ausgewählte Objekte nur eine Ebene nach hinten zu schieben.</li>
+            </ul>
+            <p>Alternativ können Sie mit der rechten Maustaste auf die ausgewählten Objekte klicken, wählen Sie anschließend im Kontextmenü die Option <b>Anordnen</b> aus und nutzen Sie dann eine der verfügbaren Optionen.</p>
+		</div>
+	</body>
+</html>
