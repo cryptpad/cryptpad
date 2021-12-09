@@ -14,7 +14,6 @@ define([
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
-        // XXX make sure workers are allowed
         var worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
     }).nThen(function () {
         var requireConfig = RequireConfig();

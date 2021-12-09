@@ -7,9 +7,47 @@ define([
     'jquery',
 ], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
+    var isSPAOuter = false;
 
     common.initIframe = function (waitFor, isRt, pathname) {
         var requireConfig = RequireConfig();
+        var urlArgs = requireConfig.urlArgs;
+        var path = pathname || window.location.pathname;
+
+
+        // XXX
+        // * Add UI in settings
+        //   * Note: if no shared worker on this machine, display a warning about performances
+        // * Reload a page
+        // * grep window.open in inner
+        if (localStorage.CP_SPA === "1") {
+            if (!window.parent || window.parent === window || window.parent.location.host !== window.location.host) {
+                // SPA enabled and we're in the upper level: init "outer" iframe
+                var worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
+                var $i = $('<iframe>').attr('id', 'sbox-iframe').attr('src', window.location.href);
+                $i.attr('allowfullscreen', 'true');
+                $('iframe-placeholder').after($i).remove();
+                waitFor.abort();
+                window.addEventListener('message', function (msg) {
+                    if (typeof(msg.data) !== "object") { return; }
+                    var d = msg.data;
+                    if (d && d.url) {
+                        window.history.replaceState({}, d.title, d.url);
+                    }
+                });
+                return {};
+            }
+            // SPA enabled and we're in the "outer" level
+            isSPAOuter = true;
+            window.CP_SPA_OUTER = true;
+            window.parent.postMessage({
+                url: window.location.href
+            }, window.location.origin);
+        }
+
+
+
+
         var lang = Messages._languageUsed;
         var themeKey = 'CRYPTPAD_STORE|colortheme';
         var req = {
@@ -30,12 +68,17 @@ define([
             href = window.location.href;
             if (window.history && window.history.replaceState && hash) {
                 window.history.replaceState({}, window.document.title, '#');
+                if (isSPAOuter && window.parent) {
+                    window.parent.postMessage({
+                        url: window.location.href
+                    }, window.location.origin);
+                }
             }
         }
 
 
         var $i = $('<iframe>').attr('id', 'sbox-iframe').attr('src',
-            ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
+            ApiConfig.httpSafeOrigin + (path) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
         $('iframe-placeholder').after($i).remove();
@@ -242,6 +285,7 @@ define([
                     var nHash = currentPad.hash;
                     if (!/^#/.test(nHash)) { nHash = '#' + nHash; }
                     window.history.replaceState({}, window.document.title, nHash);
+                    // XXX SPA?
                 }
             }));
         }).nThen(function (waitFor) {
@@ -840,8 +884,7 @@ define([
 
                 sframeChan.on('EV_OPEN_URL', function (url) {
                     if (url) {
-                        // XXX
-                        if (window.parent && window.parent.location.pathname === '/spa/') {
+                        if (isSPAOuter) {
                             window.location.href = url;
                             return;
                         }
@@ -1130,10 +1173,12 @@ define([
             var setDocumentTitle = function () {
                 if (!currentTabTitle) {
                     document.title = currentTitle || 'CryptPad';
+                    if (isSPAOuter && window.parent) { window.parent.title = document.title; }
                     return;
                 }
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
                 document.title = title;
+                if (isSPAOuter && window.parent) { window.parent.title = document.title; }
             };
 
             var setPadTitle = function (data, cb) {
@@ -1147,6 +1192,11 @@ define([
                         if (useUnsafe !== true && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
+                            if (isSPAOuter && window.parent) {
+                                window.parent.postMessage({
+                                    url: window.location.href
+                                }, window.location.origin);
+                            }
                         }
                     }
                     cb({error: err});
@@ -1925,6 +1975,11 @@ define([
                     if (window.history && window.history.replaceState) {
                         if (!/^#/.test(hash)) { hash = '#' + hash; }
                         window.history.replaceState({}, window.document.title, hash);
+                        if (isSPAOuter && window.parent) {
+                            window.parent.postMessage({
+                                url: window.location.href
+                            }, window.location.origin);
+                        }
                         if (typeof(window.onhashchange) === 'function') {
                             window.onhashchange();
                         }
