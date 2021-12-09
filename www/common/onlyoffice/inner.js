@@ -1511,26 +1511,38 @@ define([
                                 var _mediasSources = getMediasSources();
                                 var images = _obj.data || [];
                                 if (!Array.isArray(images)) { return; }
-                                var urls = images.map(function (name) {
-                                    var data = _mediasSources[name];
-                                    if (!data) { return; }
-                                    var media = mediasData[data.src];
-                                    if (!media) { return; }
-                                    return {
-                                        path: name,
-                                        url: media.blobUrl,
-                                    };
-                                }).filter(Boolean);
-                                send({
-                                    type: "documentOpen",
-                                    data: {
-                                        type: "imgurls",
-                                        status: "ok",
-                                        data: {
-                                            urls: urls,
-                                            error: 0
+                                var urls = [];
+                                nThen(function (waitFor) {
+                                    images.forEach(function (name) {
+                                        if (/^data\:image/.test(name)) {
+                                            Util.fetch(name, waitFor(function (err, u8) {
+                                                if (err) { return; }
+                                                var b = new Blob([u8]);
+                                                urls.push(URL.createObjectURL(b));
+                                            }));
+                                            return;
                                         }
-                                    }
+                                        var data = _mediasSources[name];
+                                        if (!data) { return; }
+                                        var media = mediasData[data.src];
+                                        if (!media) { return; }
+                                        urls.push({
+                                            path: name,
+                                            url: media.blobUrl,
+                                        });
+                                    });
+                                }).nThen(function () {
+                                    send({
+                                        type: "documentOpen",
+                                        data: {
+                                            type: "imgurls",
+                                            status: "ok",
+                                            data: {
+                                                urls: urls,
+                                                error: 0
+                                            }
+                                        }
+                                    });
                                 });
                             }
                             break;
