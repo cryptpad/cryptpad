@@ -840,6 +840,11 @@ define([
 
                 sframeChan.on('EV_OPEN_URL', function (url) {
                     if (url) {
+                        // XXX
+                        if (window.parent && window.parent.location.pathname === '/spa/') {
+                            window.location.href = url;
+                            return;
+                        }
                         var a = window.open(url);
                         if (!a) {
                             sframeChan.event('EV_POPUP_BLOCKED');

@@ -88,6 +88,7 @@ var init = function (client, cb) {
                             // One-time initialization (init async-store)
                             cfg.query = function (cId, cmd, data, cb) {
                                 cb = cb || function () {};
+                                if (!self.tabs[cId].chan) { return; }
                                 self.tabs[cId].chan.query(cmd, data, function (err, data2) {
                                     if (err) { return void cb({error: err}); }
                                     cb(data2);
@@ -97,6 +98,7 @@ var init = function (client, cb) {
                                 cb = cb || function () {};
                                 Object.keys(self.tabs).forEach(function (cId) {
                                     if (excludes.indexOf(cId) !== -1) { return; }
+                                    if (!self.tabs[cId].chan) { return; }
                                     self.tabs[cId].chan.query(cmd, data, function (err, data2) {
                                         if (err) { return void cb({error: err}); }
                                         cb(data2);
