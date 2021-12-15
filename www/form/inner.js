@@ -1410,7 +1410,7 @@ define([
                 redraw();
 
                 var hintDiv = h('div.cp-form-conditional-hint', [
-                    h('div.cp-form-conditional-hint', Messages.form_condition_hint)
+                    h('div.cp-form-conditional-hint', Messages.form_conditional_hint)
                 ]);
                 var $hint = $(hintDiv).prependTo(tag);
 
