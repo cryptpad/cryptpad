@@ -1575,7 +1575,7 @@ define([
                     if (editor.status === "ready") {
                         window.clearInterval(intervalHandle);
                         console.log("Editor is ready.");
-                        tryAndTestExport(); // XXX
+                        tryAndTestExport();
                     } else {
                         console.log("Waiting for editor to be ready.");
                     }
