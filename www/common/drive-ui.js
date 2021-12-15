@@ -3908,8 +3908,13 @@ define([
             }
 
             if (APP.readOnly && !APP.loggedIn) {
-                // XXX this incorrectly prompts guests to login/register even when they lack editing rights.
                 (function () {
+                    // show 'READ-ONLY' when a guest only has view rights
+                    if (/\/view\//.test(APP.anonSFHref)) {
+                        $content.prepend($readOnly.clone());
+                        return;
+                    }
+                    // otherwise prompt them to log in or register to take advantage of their edit rights
                     var $banner = $(Pages.setHTML(h('div.cp-app-drive-content-info-box'), Messages.fm_info_sharedFolder));
                     $banner.find('[href="/login/"], [href="/register/"]').click(function (ev) {
                         ev.preventDefault();
