@@ -36,7 +36,6 @@ define([
         init: function () {
             require([
                 'mermaid',
-                //'css!/code/mermaid-new.css' // XXX
             ], function (_Mermaid) {
                 console.debug("loaded mermaid");
                 if (Mermaid.__stubbed) {
