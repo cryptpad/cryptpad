@@ -1410,7 +1410,7 @@ define([
                 redraw();
 
                 var hintDiv = h('div.cp-form-conditional-hint', [
-                    h('div.cp-form-conditional-hint', Messages.form_condition_hint)
+                    h('div.cp-form-conditional-hint', Messages.form_conditional_hint)
                 ]);
                 var $hint = $(hintDiv).prependTo(tag);
 
@@ -2677,7 +2677,7 @@ define([
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 
-//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea
+//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
                         TYPES[type].icon.cloneNode(),

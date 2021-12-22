@@ -1,5 +1,6 @@
 define([], function () {
     if (window.__CRYPTPAD_TEST_OBJ_) { return window.__CRYPTPAD_TEST_OBJ_; }
+/*
     // XXX localhost secureiframe fix
     var out = function () {};
     out.options = {};
@@ -7,6 +8,7 @@ define([], function () {
     out.registerInner = function () { };
     out.registerOuter = function () { };
     return out;
+*/
 
     var locks = [];
     var tests = [];

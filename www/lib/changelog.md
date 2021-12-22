@@ -8,6 +8,6 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jscolor v2.0.5](https://jscolor.com/) for providing a consistent color picker across all browsers
 * [jquery.ui 1.12.1](https://jqueryui.com/) for its 'autocomplete' extension which is used for our tag picker
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
-* [mermaid 8.13.4](https://github.com/mermaid-js/mermaid/releases/tag/8.13.4) extends our markdown integration to support a variety of diagram types
+* [mermaid 8.13.5](https://github.com/mermaid-js/mermaid/releases/tag/8.13.4) extends our markdown integration to support a variety of diagram types
 * [Fabricjs 4.6.0](https://github.com/fabricjs/fabric.js) and [Fabric-history](https://github.com/lyzerk/fabric-history) for the whiteboard app
 
