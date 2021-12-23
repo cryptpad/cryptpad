@@ -3911,6 +3911,8 @@ define([
                 (function () {
                     // show 'READ-ONLY' when a guest only has view rights
                     if (/\/view\//.test(APP.anonSFHref)) {
+            // !common.getMetadataMgr().getPrivateData().canEdit
+            // would accomplish the same thing if this breaks
                         $content.prepend($readOnly.clone());
                         return;
                     }
