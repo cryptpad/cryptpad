@@ -447,6 +447,9 @@ define([
                 type = "text/markdown";
             }
 
+            // Can't upload folder here
+            if (!file.type && file.size%4096 === 0) { return; }
+
             var thumb;
             var preview;
             var alt;
@@ -518,7 +521,7 @@ define([
                         thumb = thumb64;
                     }));
                     if (file.type === "application/pdf") { return; }
-                    MT.preview(buffer, {
+                    MT.preview(file, {
                         type: file.type,
                     }, void 0, w(function (err, el) {
                         if (err) { return void console.error(err); }
