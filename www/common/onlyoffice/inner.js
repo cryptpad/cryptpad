@@ -1372,7 +1372,6 @@ define([
                     // We only need to release locks for sheets
                     if (type !== "sheet" && obj.type === "releaseLock") { return; }
                     if (type === "presentation" && obj.type === "cp_theme") {
-                        // XXX
                         console.error(obj);
                         return;
                     }
@@ -1962,7 +1961,7 @@ define([
             };
             APP.changeTheme = function (id) {
                 /*
-                // XXX disabled:
+                // disabled:
 Uncaught TypeError: Cannot read property 'calculatedType' of null
     at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
                 */
