@@ -2,6 +2,7 @@
 // add your module to this map so it gets used
 var map = {
     'ca': 'Català',
+    'cs': 'Čeština',
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'es': 'Español',
