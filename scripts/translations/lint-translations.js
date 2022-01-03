@@ -99,6 +99,7 @@ processLang(EN, 'en', true);
   'ar',
   //'bn_BD',
   'ca',
+  'cs',
   'de',
   'es',
   'fi',
