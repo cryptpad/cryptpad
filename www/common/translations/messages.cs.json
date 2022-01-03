@@ -691,7 +691,7 @@
     "fm_renamedPad": "Pro tento dokument jste nastavili vlastní název. Jeho sdílený název je:<br><b>{0}</b>",
     "fm_info_owned": "Jste vlastníkem zde zobrazených dokumentů. To znamená, že je můžete trvale odstranit ze serveru, kdykoli budete chtít. Pokud tak učiníte, ostatní uživatelé k nim již nebudou mít přístup.",
     "fm_info_sharedFolder": "Toto je sdílená složka. Nejste přihlášeni, takže k ní máte přístup pouze v režimu pouze pro čtení.<br><a href=\"/register/\">Zaregistrujte se</a> nebo se <a href=\"/login/\">Přihlaste</a>, abyste jej mohli importovat do svého CryptDrive a upravovat jej.",
-    "fm_info_anonymous": "Nejste přihlášeni, takže platnost vašich dokumentů vyprší po {0} dnech. Vymazáním historie prohlížeče mohou zmizet.<br><a href=\"/register/\">Zaregistrujte se</a> (žádné osobní údaje nejsou třeba) nebo <a href=\"/login/\">Se přihlaste</a > pro permanentní uložení dokumentů. <a href=\"#docs\">Přečtěte si další informace o registraci účtu</a>.",
+    "fm_info_anonymous": "Nejste přihlášeni, takže platnost vašich dokumentů vyprší po {0} dnech. Vymazáním historie prohlížeče mohou zmizet.<br><a href=\"/register/\">Zaregistrujte se</a> (žádné osobní údaje nejsou třeba) nebo <a href=\"/login/\">Se přihlaste</a> pro permanentní uložení dokumentů. <a href=\"#docs\">Přečtěte si další informace o registraci účtu</a>.",
     "fm_info_recent": "Tyto dokumenty jste nedávno otevřeli nebo upravili vy nebo lidé, se kterými spolupracujete.",
     "fm_info_template": "Tyto dokumenty jsou uloženy jako šablony. Lze je znovu použít při vytváření nových dokumentů.",
     "fm_info_root": "Můžete vytvořit libovolné množství podsložek pro třídění souborů.",
