@@ -1979,7 +1979,7 @@ define([
                     var f = file.getAsFile();
                     if (!f.type && f.size % 4096 === 0) {
                         // It's a folder!
-                        if (0 && file.webkitGetAsEntry) { // IE and Opera don't support it // XXX
+                        if (file.webkitGetAsEntry) { // IE and Opera don't support it
                             f = file.webkitGetAsEntry();
                             var files = [];
                             nThen(function (w) {
