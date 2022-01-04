@@ -2,8 +2,7 @@
 
 ## Goals
 
-* Update dependencies
-* fix bugs
+For this release we set aside time to update a number of our software dependencies and to investigate a variety of bugs that had been reported in support tickets.
 
 ## Update notes
 
@@ -17,37 +16,43 @@ To update from 4.12.0 or 4.12.1 to 4.13.0:
 
 ## Features
 
-* more mermaid diagram types
-* update fabricjs to support various drawing tablets
-* new version of OnlyOffice
-* additional iframe sandboxing measures where appropriate
-  * secureiframe
+* This release updates OnlyOffice to v6.4.2, which includes a wide variety of improvements and bug fixes, such as:
+  * dark mode
+  * conditional formatting in sheets
+  * fixes for various font and scaling issues
+  * numerous other issues mentioned in [OnlyOffice's changelog](https://github.com/ONLYOFFICE/DocumentServer/blob/master/CHANGELOG.md#642)
+* We switched from using our fork of Fabricjs back to the latest version of the upstream branch, since the maintainers had resolved the cause of an incompatibility with our strict _Content Security Policy_ settings. Among other things, this brought improved support for a variety of pressure-sensitive drawing tablets when using our whiteboard app.
+* Mermaidjs (https://mermaid-js.github.io/mermaid/#/) has been updated to the latest version (8.13.8) which:
+  * includes fixes a number of possible security flaws which should not have had any effect due to our CSP settings
+  * introduces support for several new diagram types (entity relationship, requirement diagrams, user journeys)
+  * adds support for dark mode and more modern styles
+* We've begun to experiment with additional iframe sandboxing features to further isolate common platform features (sharing, access controls, media transclusion, upload) from the apps that can trigger their display. These measures should be mostly redundant on CryptPad instances with correctly configured sandboxes, but may help mitigate unexpected risks in other circumstances.
+* A number of groups and individuals volunteered to help translate CryptPad into more languages or complete translations of languages that had fallen out of date. We are happy to say that CryptPad is now fully translated in Russian, Brazilian Portuguese, and Czech.
 
 ## Bug fixes
 
-* prompt guests to log in or register when viewing a shared folder with edit rights
-* fix border styles on horizontal dividers in dropdowns
-* update json-schema to avoid some prototype pollution
-* avoid breaking code documents with `\`\`\`__proto__` code blocks
-* template creation issues
-  * don't delete `common.initialTeam` ???
-    * used for `Q_SAVE_AS_TEMPLATE`
-  * use passwords where appropriate
-* OnlyOffice
-  * avoid type errors in OnlyOffice if no cursor exists
-  * try to recover old cursor?
-  * respond to OnlyOffice presentation editor with image URLs when present
-  * ensure that images are correctly loaded when exporting via x2t and add theme images
-  * re-enable chart and table insertion buttons in the UI
-  * only open the realtime-channel once
-  * log to the console if x2t fails to run ?
-* guard against type errors in user object migration
-* avoid previewing PDFs in the upload modal (due to incompatibility with improved sandboxing measures?)
-* avoid sframeChan undefined error
-* forms
-  * adjust display styles for buttons
-  * reset default options
-  * re-enter editing status if form autosave interrupts activity
+* Some code which was intended to prompt guests to log in or register when viewing a shared folder stopped working due to some changes in a past release. We now correctly identify when these guests have edit rights, and instead of simply displaying the text **READ ONLY** we prompt them with instructions on how to make full use of the rights they've been given.
+* We fixed some border styles on the horizontal dividers that are sometimes shown in dropdown menus such that consecutive dividers beyond the first are hidden.
+* One of our developer dependencies (`json-schema`) has been updated to fix a prototype pollution bug which should not have had any impact on anyone in practice.
+* A user reported that including `__proto__` as the language in fenced code blocks in a markdown document triggered an error, so we now guard against this case.
+* We've fixed a few issues related to templates:
+  * after creating a template in a team drive, clicking the store button would store it in your own drive
+  * the creation of a template from a password-protected sheet did not correctly use the source sheet's password
+* Thanks to some user reports we discovered some possible type errors that could occur when migrating some account data to a newer internal version.
+* We disabled some unmaintained client-side tests after discovering that they were throwing errors under certain conditions, seemingly due to some browser regressions.
+* We updated some code to handle uploading dropped folders in the drive. Unfortunately this type of "drop" event has to be handled differently than when a folder is uploaded through other means, and Opera browser doesn't support the required APIs, so this is only supported in Firefox and Chromium-based browsers.
+* When previewing uploaded media we now supply the file object rather than its raw buffer contents which were not supported for all media types.
+* We've fixed numerous issues with forms:
+  * layout issues with buttons displayed in forms' author mode
+  * the configured options for certain types of questions are reprocessed when you convert between related question types (multi-checkbox, multi-radio) with options being set back to their defaults when configurations are rendered invalid
+  * editing status is recovered whenever possible if autosave interrupts user activity
+* Finally, we've fixed a number of issues specific to our integration of OnlyOffice's editors:
+  * we now guard against some possible type errors if the metadata required for sharing cursor and selection data is absent or poorly formed
+  * we do our best to recover your old cursor position if the document needs to be reloaded after a checkpoint
+  * some special cases of image inclusion are now handled in the presentation editor
+  * we ensure that images are correctly loaded when exporting, including embedded media and theme backgrounds in presentations
+  * the chart and table buttons were temporarily disabled in OnlyOffice's toolbar due to some incompatibilities which have since been resolved
+  * we now avoid creating duplicated network handlers when reconnecting to an office editing session
 
 # 4.12.1
 
