@@ -1869,11 +1869,16 @@ define([
             } else if (item.isDirectory) {
                 // Get folder contents
                 var dirReader = item.createReader();
+                // this API is not supported in Opera or IE
+                // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/webkitGetAsEntry
+                // all other browsers will recurse over subfolders and upload everything
                 dirReader.readEntries(w(function(entries) {
                     for (var i=0; i<entries.length; i++) {
                         traverseFileTree(entries[i], path + item.name + "/", w, files);
                     }
                 }));
+                // FIXME readEntries takes a function (error handler) as an optional second argument
+                // what kind of errors can be thrown? what will happen?
             }
         };
 
@@ -1974,7 +1979,7 @@ define([
                     var f = file.getAsFile();
                     if (!f.type && f.size % 4096 === 0) {
                         // It's a folder!
-                        if (0 && file.webkitGetAsEntry) { // IE and Opera don't support it
+                        if (0 && file.webkitGetAsEntry) { // IE and Opera don't support it // XXX
                             f = file.webkitGetAsEntry();
                             var files = [];
                             nThen(function (w) {
