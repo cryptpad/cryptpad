@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Organizar celdas, filas y columnas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert or delete cells, rows, and columns, hide or show rows or columns, change row height and column width" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Organizar celdas, filas y columnas</h1>
+			<p>Usted puede insertar celdas en blanco arriba o al lado izquierdo de la celda seleccionada en una hoja de cálculo. Usted también puede insertar toda la fila arriba de una fila seleccionada o una columna al lado izquierdo de la columna seleccionada. Para que se vea de forma fácil mucha información, puede ocultar algunas filas o columnas y mostrarlas de nuevo. también es posible especificar un altura y anchura específica para las filas y columnas.</p>
+			<h3>Introduzca celdas, filas, columnas</h3>
+            <p><b>Para insertar una celda en blanco al lado izquierdo de la celda seleccionada:</b></p>
+			<ol>
+				<li>haga clic con el botón derecho en la celda al lado izquierdo de la que usted quiere insertar una celda nueva,</li>
+				<li>pulse el icono <b>Insertar celdas</b> <img alt="Icono Insertar celdas" src="../images/insertcells.png" /> que está situado en la pestaña de <b>Inicio</b> en barra de herramientas superior o seleccione la opción <b>Insertar</b> en el menú contextual y elija la opción <b>Desplazar celdas a la derecha</b>.</li>
+			</ol>
+			<p>El programa desplazará la celda seleccionada a la derecha para insertar una celda en blanco.</p>
+			<p><b>Para insertar una celda en blanco arriba de la celda seleccionada:</b></p>
+			<ol>
+				<li>haga clic con el botón derecho en la celda arriba de la que usted quiere insertar una celda nueva,</li>
+				<li>pulse el icono <b>Insertar celdas</b> <img alt="Icono Insertar celdas" src="../images/insertcells.png" /> que está situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior o seleccione la opción <b>Insertar</b> en el menú contextual y elija la opción <b>Desplazar celdas hacia abajo</b>.</li>
+			</ol>
+			<p>El programa desplazará la celda seleccionada hacia abajo para insertar una celda en blanco.</p>
+			<p><b>Para insertar toda la fila:</b></p>
+			<ol>
+				<li>seleccione toda la fila o una celda de fila arriba de la que usted quiere insertar una fila nueva,<p class="note"><b>Nota</b>: para insertar filas múltiples, seleccione el número de filas que usted quiere insertar.</p>
+				</li>
+				<li>pulse el icono <b>Insertar celdas</b> <img alt="Icono Insertar celdas" src="../images/insertcells.png" /> que está situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior y use la opción <b>Toda la fila</b>, <br />o haga clic derecho en la celda seleccionada, seleccione la opción <b>Insertar</b> en el menú contextual, y luego elija la opción <b>Toda la fila</b>, <br />o haga clic derecho en la(s) fila(s) seleccionada(s) y use la opción <b>Introducir arriba</b> del menú contextual.</li>
+			</ol>
+			<p>El programa desplazará la fila seleccionada hacia abajo para insertar una fila nueva.</p>
+			<p><b>Para insertar toda la columna:</b></p>
+			<ol>
+				<li>Seleccione o toda la columna haciendo clic en su encabezado o una celda en la columna a la izquierda de la que usted quiere insertar una columna nueva,<p class="note"><b>Nota</b>: para insertar columnas múltiples, seleccione el número de columnas que usted quiere insertar.</p>
+				</li>
+				<li>pulse el icono <b>Insertar celdas</b> <img alt="Insert cells icon" src="../images/insertcells.png" /> que está situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior y use la opción <b>Toda la columna</b>, <br />o haga clic derecho en la celda seleccionada, seleccione la opción <b>Insertar</b> en el menú contextual, y luego elija la opción <b>Toda la columna</b>, <br />o haga clic derecho en la(s) fila(s) seleccionada(s) y use la opción <b>Introducir a la izquierda</b> del menú contextual.</li>
+			</ol>
+			<p>El programa desplazará la columna seleccionada al lado derecho para insertar una columna nueva.</p>
+            <h3>Ocultar y mostrar filas y columnas</h3>
+            <p><b>Para ocultar una fila o columna:</b></p>
+            <ol>
+                <li>seleccione las filas o columnas que usted quiere ocultar,</li>
+                <li>haga clic con el botón derecho del ratón en las filas o columnas seleccionadas y use la opción <b>Ocultar</b> del menú contextual.</li>
+            </ol>
+            <p><b>Para mostrar filas o columnas ocultas</b>, seleccione filas visibles por encima y por debajo de las filas ocultas o columnas visibles a la izquierda y derecha de las columnas ocultas, haga clic derecho en estas y use la opción <b>Mostrar</b> del menú contextual.</p>
+            <h3>Cambie el ancho de la columna y la altura de la fila</h3>
+            <p>El <b>ancho de la columna</b> determina la cantidad de caracteres con formato por defecto que se pueden mostrar en la celda de la columna. El valor por defecto es  8.43 símbolos. Para cambiarlo:</p>
+            <ol>
+                <li>seleccione las columnas que quiere cambiar,</li>
+                <li>haga clic con el botón derecho del ratón en las columnas seleccionadas y use la opción <b>Establecer</b> del menú contextual,</li>
+                <li>elija una de las opciones disponibles:<ul>
+                        <li>seleccione la opción <b>Ajustar anchura de la columna automáticamente</b> para ajustar automáticamente el ancho de cada columna de acuerdo con su contenido, o</li>
+                        <li>seleccione la opción <b>Personalizar anchura de la columna</b> y especifique un valor nuevo de 0 a 255 en la ventana <b>Personalizar anchura de la columna</b>, luego haga clic en <b>OK</b>.<p><img alt="Ventana Personalizar anchura de la columna" src="../images/columnwidth.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Para cambiar la anchura de una sola columna de forma manual, mueve el cursor del ratón sobre el borde derecho del encabezado de la columna para que el cursor cambie a una flecha con doble sentido <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changecolumnwidthcursor.png" />. Arrastre el borde a la izquierda o a la derecha para ajustar una anchura personalizada o haz doble clic para cambiar de forma automática el ancho de la columna según su contenido.</p>
+            <p><img alt="Cambiar el ancho de la columna" src="../images/changecolumnwidth.png" /></p>
+            <p>el valor por defecto de la <b>altura de la fila</b> es de 12.25 puntos. Para cambiarlo:</p>
+            <ol>
+                <li>seleccione las filas que quiere cambiar,</li>
+                <li>haga clic con el botón derecho del ratón en las filas seleccionadas y use la opción <b>Establecer altura de la fila</b> del menú contextual.</li>
+                <li>elija una de las opciones disponibles:<ul>
+                        <li>seleccione la opción <b>Ajustar alto de la fila automáticamente</b> para ajustar automáticamente la altura de cada fila de acuerdo con su contenido, o</li>
+                        <li>seleccione la opción <b>Personalizar altura de la fila</b> y especifique un valor nuevo de 0 a 408,75 en la ventana <b>Personalizar altura de la fila</b>, luego haga clic en <b>OK</b>.<p><img alt="Ventana Personalizar altura de la fila" src="../images/rowheight.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Para cambiar la altura de una sola fila de forma manual, arrastre el borde inferior del encabezado de la fila.</p>
+            <h3>Elimine celdas, filas, columnas</h3>
+            <p><b>Para borrar una celda, fila o columna innecesaria: </b></p>
+			<ol>
+			<li>seleccione las celdas, filas o columnas que usted quiere eliminar,</li>
+			<li>haga clic en el icono <b>Eliminar celdas</b> <img alt="Icono eliminar celdas" src="../images/deletecells.png" /> situado en la pestaña de <b>Inicio</b>  en la barra de herramientas superior o pulse la opción <b>Borrar</b> en el menú contextual y seleccione una opción apropiada: <br />si usted usa la opción <b>Desplazar celdas a la izquierda</b> una celda al lado derecho de la celda borrada será desplazada a la izquierda; <br />si usted usa la opción <b>Desplazar celdas hacia arriba</b> una celda abajo de la celda borrada será desplazada hacia arriba; <br />si usted usa la opción <b>Toda la fila</b> una fila abajo de la fila borrada será desplazada hacia arriba; <br />si usted usa la opción <b>Toda la columna</b> una columna al lado derecho de la columna borrada será desplazada a la izquierda;</li>
+			</ol>
+			<p>Usted siempre puede restaurar los datos borrados usando el icono <b>Deshacer</b> <img alt="Icono Deshacer" src="../images/undo.png" /> en la barra de herramientas superior.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Group data</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Group rows and columns to structure data in a spreadsheet." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Group data</h1>
+            <p>The ability to group rows and columns as well as create an outline allows you to make it easier to work with a spreadsheet that contains a large amount of data. In the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, you can collapse or expand grouped rows and columns to display the necessary data only. It's also possible to create the multi-level structure of grouped rows/columns. When necessary, you can ungroup the previously grouped rows or columns.</p>
+            <h3>Group rows and columns</h3>
+            <p>To group rows or columns:</p>
+            <ol>
+                <li>Select the cell range that you need to group.</li>
+                <li>Switch to the <b>Data</b> tab and use one of the necessary options on the top toolbar:
+                <ul>
+                    <li>click the <img alt="Group icon" src="../images/groupicon.png" /> <b>Group</b> button, then choose the <b>Rows</b> or <b>Columns</b> option in the <b>Group</b> window that appears and click <b>OK</b>,
+                        <p><img alt="Group window" src="../images/groupewindow.png" /></p>
+                    </li>
+                    <li>click the downwards arrow below the <img alt="Group icon" src="../images/groupicon.png" /> <b>Group</b> button and choose the <b>Group rows</b> option from the menu,</li>
+                    <li>click the downwards arrow below the <img alt="Group icon" src="../images/groupicon.png" /> <b>Group</b> button and choose the <b>Group columns</b> option from the menu.</li>
+                </ul>
+                </li>
+            </ol>            
+            <p>The selected rows or columns will be grouped and the created outline will be displayed to the left of the rows or/and above the columns.</p>
+            <p><img alt="Grouped rows and columns" src="../images/groupedrows.png" /></p>
+            <p>To hide grouped rows/columns, click the <img alt="Collapse grouped rows icon" src="../images/collapserowsicon.png" /> <b>Collapse</b> icon. To show collapsed rows/columns, click the <img alt="Expand collapsed rows icon" src="../images/expandrowsicon.png" /> <b>Expand</b> icon.</p>
+            <h5>Change the outline</h5>
+            <p>To change the outline of grouped rows or columns, you can use options from the <b>Group</b> drop-down menu. The <b>Summary rows below detail</b> and <b>Summary columns to the right of detail</b> options are checked by default. They allow to change the location of the <b>Collapse</b> <img alt="Collapse grouped rows icon" src="../images/collapserowsicon.png" /> and <b>Expand</b> <img alt="Expand collapsed rows icon" src="../images/expandrowsicon.png" /> buttons:</p>
+            <ul>
+                <li>Uncheck the <b>Summary rows below detail</b> option if you want to display the summary rows above the details.</li>
+                <li>Uncheck the <b>Summary columns to right of detail</b> option if you want to display the summary columns to the left of details.</li>
+            </ul>
+            <h5>Create multi-level groups</h5>
+            <p>To create a multi-level structure, select a cell range within the previously created group of rows/columns, and group the newly selected range as described above. After that, you can hide and show groups by level using the icons with the level number: <img alt="Level number icons" src="../images/levelnumbericons.png" />.</p>
+            <p>For example, if you create a nested group within the parent group, three levels will be available. It's possible to create up to 8 levels.</p>
+            <p><img alt="Multi-level structure" src="../images/multilevelstructure.png" /></p>
+            <ul>
+                <li>Click the first level <img alt="First level icon" src="../images/firstlevelicon.png" /> icon to switch to the level which hides all grouped data:
+                    <p><img alt="First level" src="../images/firstlevel.png" /></p>
+                </li>
+                <li>Click the second level <img alt="Second level icon" src="../images/secondlevelicon.png" /> icon to switch to the level which displays details of the parent group, but hides the nested group data:
+                    <p><img alt="Second level" src="../images/secondlevel.png" /></p>
+                </li>
+                <li>Click the third level <img alt="Third level icon" src="../images/thirdlevelicon.png" /> icon to switch to the level which displays all details:
+                    <p><img alt="Third level" src="../images/thirdlevel.png" /></p>
+                </li>
+            </ul>
+            <p>It's also possible to use the <img alt="Collapse grouped rows icon" src="../images/collapserowsicon.png" /> <b>Collapse</b> and <img alt="Expand collapsed rows icon" src="../images/expandrowsicon.png" /> <b>Expand</b> icons within the outline to display or hide the data corresponding to a certain level.</p>
+            <h3>Ungroup previously grouped rows and columns</h3>
+            <p>To ungroup previously grouped rows or columns:</p>
+            <ol>
+                <li>Select the range of grouped cells that you need to ungroup.</li>
+                <li>
+                    Switch to the <b>Data</b> tab and use one of the necessary options at the top toolbar:
+                    <ul>
+                        <li>click the <img alt="Ungroup icon" src="../images/ungroupicon.png" /> <b>Ungroup</b> button, then choose the <b>Rows</b> or <b>Columns</b> option in the <b>Group</b> window that appears and click <b>OK</b>,
+                        <p><img alt="Group window" src="../images/groupewindow.png" /></p>
+                        </li>
+                        <li>click the downwards arrow below the <img alt="Group icon" src="../images/ungroupicon.png" /> <b>Ungroup</b> button, then choose the <b>Ungroup rows</b> option from the menu to ungroup rows and clear the outline of rows,</li>
+                        <li>click the downwards arrow below the <img alt="Group icon" src="../images/ungroupicon.png" /> <b>Ungroup</b> button and choose the <b>Ungroup columns</b> option from the menu to ungroup columns and clear the outline of columns,</li>
+                        <li>click the downwards arrow below the <img alt="Group icon" src="../images/ungroupicon.png" /> <b>Ungroup</b> button and choose the <b>Clear outline</b> option from the menu to clear the outline of rows and columns without removing existing groups.</li>
+                    </ul>
+                </li>
+            </ol>
+		</div>
+	</body>
+</html>

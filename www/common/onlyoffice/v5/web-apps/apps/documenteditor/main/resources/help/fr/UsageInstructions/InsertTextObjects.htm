@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des objets textuels</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insérer des objets textuels tels que des zones de texte et Text Art pour rendre votre texte plus explicite." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des objets textuels</h1>
+            <p>Pour rendre votre texte plus explicite et attirer l'attention sur une partie spécifique du document, vous pouvez insérer une zone de texte (un cadre rectangulaire qui permet de saisir du texte) ou un objet Text Art (une zone de texte avec un style de police prédéfini et couleur qui permet d'appliquer certains effets de texte) dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>.</p>
+			<h3>Ajouter un objet textuel</h3>
+            <p>Vous pouvez ajouter un objet texte n'importe où sur la page. Pour le faire:</p>
+            <ol>
+                <li>passez à l'onglet <B>Insérer</B> de la barre d'outils supérieure,</li>
+                <li>sélectionnez le type d'objet textuel voulu:
+                <ul>
+                    <li>
+                        Pour ajouter une zone de texte, cliquez sur l'icône <img alt="L'icône Zone de texte" src="../images/inserttexticon.png" /> <B>Zone de texte</B> de la barre d'outils supérieure, puis cliquez sur l'emplacement où vous souhaitez insérer la zone de texte, maintenez le bouton de la souris enfoncé et faites glisser la bordure pour définir sa taille. Lorsque vous relâchez le bouton de la souris, le point d'insertion apparaîtra dans la zone de texte ajoutée, vous permettant d'entrer votre texte.
+                        <p class="note"><B>Remarque</B>: il est également possible d'insérer une zone de texte en cliquant sur l'icône <img alt="L'icône Forme" src="../images/insertautoshape.png" /> <B>Forme</B> dans la barre d'outils supérieure et en sélectionnant la forme <img alt="Insérer une forme automatique textuelle" src="../images/text_autoshape.png" /> dans le groupe <B>Formes de base</B>.</p>
+                    </li>
+                    <li>Pour ajouter un objet Text Art, cliquez sur l'icône <img alt="L'icône Text Art" src="../images/inserttextarticon.png" /> <B>Text Art</B> dans la barre d'outils supérieure, puis cliquez sur le modèle de style souhaité - l'objet Text Art sera ajouté à la position actuelle du curseur. Sélectionnez le texte par défaut dans la zone de texte avec la souris et remplacez-le par votre propre texte.</li>
+                </ul>
+                </li>
+                <li>cliquez en dehors de l'objet texte pour appliquer les modifications et revenir au document.</li>
+            </ol>
+            <p>Le texte dans l'objet textuel fait partie de celui-ci (ainsi si vous déplacez ou faites pivoter l'objet textuel, le texte change de position lui aussi).</p>
+            <p>Comme un objet textuel inséré représente un cadre rectangulaire (avec des bordures de zone de texte invisibles par défaut) avec du texte à l'intérieur et que ce cadre est une forme automatique commune, vous pouvez modifier aussi bien les propriétés de forme que de texte.</p>
+            <p>Pour supprimer l'objet textuel ajouté, cliquez sur la bordure de la zone de texte et appuyez sur la touche <B>Suppr</B> du clavier. Le texte dans la zone de texte sera également supprimé.</p>
+            <h3>Mettre en forme une zone de texte</h3>
+            <p>Sélectionnez la zone de texte en cliquant sur sa bordure pour pouvoir modifier ses propriétés. Lorsque la zone de texte est sélectionnée, ses bordures sont affichées en tant que lignes pleines (non pointillées).</p>
+            <p><img alt="Zone de texte sélectionnée" src="../images/textbox_boxselected.png" /></p>
+            <ul>
+                <li>Pour <a href="../UsageInstructions/InsertAutoshapes.htm#shape_resize" onclick="onhyperlinkclick(this)">redimensionner, déplacer, faire pivoter</a> la zone de texte, utilisez les poignées spéciales sur les bords de la forme.</li>
+                <li>Pour modifier <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">le remplissage</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">le contour</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_wrapping" onclick="onhyperlinkclick(this)">le style d'habillage</a> de la zone de texte ou <B>remplacer</B> la boîte rectangulaire par une forme différente, cliquez sur l'icône <B>Paramètres de forme</B> <img alt="L'icône Paramètres de la forme" src="../images/shape_settings_icon.png" /> dans la barre latérale de droite et utilisez les options correspondantes.</li>                
+                <li>Pour <B>aligner</B> la zone de texte sur la page, <B>organiser</B> les zones de texte en fonction d'autres objets, <B>pivoter</B> ou <B>retourner</B> une zone de texte, modifier un style d'habillage ou accéder aux paramètres avancés de forme, cliquez avec le bouton droit sur la bordure de zone de texte et utilisez <a href="../UsageInstructions/InsertAutoshapes.htm#shape_rightclickmenu" onclick="onhyperlinkclick(this)">les options du menu contextuel</a>. Pour en savoir plus sur l'organisation et l'alignement des objets, vous pouvez vous référer à <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">cette page</a>.</li>
+            </ul>
+            <h3>Mettre en forme le texte dans la zone de texte</h3>
+            <p>Cliquez sur le texte dans la zone de texte pour pouvoir modifier ses propriétés. Lorsque le texte est sélectionné, les bordures de la zone de texte sont affichées en lignes pointillées.</p>
+            <p><img alt="Texte sélectionné" src="../images/textbox_textselected.png" /></p>
+            <p class="note"><B>Remarque</B>: il est également possible de modifier le formatage du texte lorsque la zone de texte (et non le texte lui-même) est sélectionnée. Dans ce cas, toutes les modifications seront appliquées à tout le texte dans la zone de texte. Certaines options de mise en forme de police (type de police, taille, couleur et styles de décoration) peuvent être appliquées séparément à une partie du texte précédemment sélectionnée.</p>
+            <p>Pour <B>faire pivoter</B> le texte dans la zone de texte, cliquez avec le bouton droit sur le texte, sélectionnez l'option <B>Direction du texte</B>, puis choisissez l'une des options disponibles: <B>Horizontal</B> (sélectionné par défaut),<B> Rotation du texte vers le bas</B> (définit une direction verticale, de haut en bas) ou<B> Rotation du texte vers le haut</B> (définit une direction verticale, de bas en haut).</p>
+            <p>Pour <B>aligner le texte verticalement</B> dans la zone de texte, cliquez avec le bouton droit sur le texte, sélectionnez l'option <B>Alignement vertical</B>, puis choisissez l'une des options disponibles: <B>Aligner en haut</B>, <B>Aligner au centre</B> ou <B>Aligner en bas</B>.</p>
+            <p>Les autres options de mise en forme que vous pouvez appliquer sont les mêmes que celles du texte standard. Veuillez vous reporter aux sections d'aide correspondantes pour en savoir plus sur l'opération concernée. Vous pouvez:</p>
+            <ul>
+                <li><a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">aligner le texte horizontalement</a> dans la zone de texte</li>
+                <li>ajuster <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">le type, la taille, la couleur de police</a>, appliquer <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">des styles de décoration</a> et <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">des préréglages de formatage</a>
+</li>
+                <li>définir <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">l'interligne</a>, modifier <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">les retraits de paragraphe</a>, ajuster <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">les taquets</a> pour le texte multiligne dans la zone de texte</li>
+                <li>insérer <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">un lien hypertexte</a></li>
+            </ul>
+            <p>Vous pouvez également cliquer sur l'icône des <B>Paramètres de Text Art</B> <img alt="L'icône Paramètres de Text Art" src="../images/textart_settings_icon.png" /> dans la barre latérale droite et modifier certains paramètres de style.</p>
+            <h3>Modifier un style Text Art</h3>
+            <p>Sélectionnez un objet texte et cliquez sur l'icône des <B>Paramètres de Text Art</B> <img alt="L'icône Paramètres de Text Art" src="../images/textart_settings_icon.png" /> dans la barre latérale de droite.</p>
+            <p><img alt="Onglet Paramètres de Text Art" src="../images/right_textart.png" /></p>
+            <p>Modifiez le style de texte appliqué en sélectionnant un nouveau <B>Modèle</B> dans la galerie. Vous pouvez également modifier le style de base en sélectionnant un type de police différent, une autre taille, etc.</p>
+            <p>Changer le <B>Remplissage</B> de la police. Les options disponibles sont les suivantes:</p>
+            <ul>
+                <li>
+                    <B>Couleur de remplissage</B> - sélectionnez cette option pour spécifier la couleur unie pour le remplissage de l'espace intérieur des lettres.
+                    <p><img alt="Couleur de remplissage" src="../images/fill_color.png" /></p>
+                    <p id="color">Cliquez sur la case de couleur et sélectionnez la couleur voulue à partir de <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">l'ensemble de couleurs</a> disponibles ou spécifiez n'importe quelle couleur de votre choix:</p>
+                </li>
+                <li>
+                    <B>Remplissage en <B>d</B>égradé</B> - sélectionnez cette option pour sélectionner deux couleurs et remplir les lettres d'une transition douce entre elles.
+                    <p><img alt="Remplissage en dégradé" src="../images/fill_gradient.png" /></p>
+                    <ul>
+                        <li><B>Style</B> - choisissez une des options disponibles: <B>Linéaire</B> (la transition se fait selon un axe horizontal/vertical ou en diagonale, sous l'angle de 45 degrés) ou <B>Radial</B> (la transition se fait autour d'un point, les couleurs se fondent progressivement du centre aux bords en formant un cercle).</li>
+                        <li><B>Direction</B> - choisissez un modèle du menu. Si vous avez sélectionné le style<B> Linéaire,</B> vous pouvez choisir une des directions suivantes: du haut à gauche vers le bas à droite, du haut en bas, du haut à droite vers le bas à gauche, de droite à gauche, du bas à droite vers le haut à gauche, du bas en haut, du bas à gauche vers le haut à droite, de gauche à droite. Si vous avez choisi le style <B>Radial</B>, il n'est disponible qu'un seul modèle.</li>
+                        <li><B>Dégradé</B> - cliquez sur le curseur de dégradé gauche <img alt="Curseur" src="../images/gradientslider.png" /> au-dessous de la barre de dégradé pour activer la palette de couleurs qui correspond à la première couleur. Cliquez sur la palette de couleurs à droite pour sélectionner la première couleur. Faites glisser le curseur pour définir le point de dégradé c'est-à-dire le point quand une couleur se fond dans une autre. Utilisez le curseur droit au-dessous de la barre de dégradé pour spécifier la deuxième couleur et définir le point de dégradé.</li>
+                    </ul>
+                    <p class="note"><B>Remarque</B>: si une de ces deux options est sélectionnée, vous pouvez toujours régler le niveau <B>d'Opacité</B> en faisant glisser le curseur ou en saisissant la valeur de pourcentage à la main. La valeur par défaut est <B>100%</B>. Elle correspond à l'opacité complète. La valeur <B>0%</B> correspond à la transparence totale.</p>
+                </li>
+                <li><B>Pas de remplissage</B> - sélectionnez cette option si vous ne voulez pas utiliser un remplissage.</li>
+            </ul>
+            <p>Ajustez la largeur, la couleur et le type du <B>Ligne</B> de la police.</p>
+            <ul>
+                <li>Pour modifier la largeur du ligne, sélectionnez une des options disponibles depuis la liste déroulante <B>Taille</B>. Les options disponibles sont les suivantes: 0,5 pt, 1 pt, 1,5 pt, 2,25 pt, 3 pt, 4,5 pt, 6 pt ou <B>Pas de ligne</B> si vous ne voulez pas utiliser de ligne.</li>
+                <li>Pour changer la <B>couleur</B> du contour, cliquez sur la case colorée et <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">sélectionnez la couleur voulue</a>.</li>
+                <li>Pour modifier le <B>type</B> de contour, sélectionnez l'option voulue dans la liste déroulante correspondante (une ligne continue est appliquée par défaut, vous pouvez la remplacer par l'une des lignes pointillées disponibles).</li>
+            </ul>
+            <p>Appliquez un effet de texte en sélectionnant le type de transformation de texte voulu dans la galerie <B>Transformation</B>. Vous pouvez ajuster le degré de distorsion du texte en faisant glisser la poignée en forme de diamant rose.</p>
+            <p><img alt="Transformation de Text Art" src="../images/textart_transformation.png" /></p>
+		</div>
+	</body>
+</html>

@@ -5,7 +5,7 @@ define([
 ], function (ApiConfig, nThen, Util) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v4';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v5';
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
@@ -182,10 +182,18 @@ define([
                         + getToId(outputFormat)
                         + "<m_bIsNoBase64>false</m_bIsNoBase64>"
                         + "</TaskQueueDataConvert>";
+
+
             // writing params file to mounted working disk (in memory)
             x2t.FS.writeFile('/working/params.xml', params);
-            // running conversion
-            x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
+            try {
+                // running conversion
+                x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+
             // reading output file from working disk (in memory)
             var result;
             try {

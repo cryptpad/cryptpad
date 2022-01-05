@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Eine neue Kalkulationstabelle erstellen oder eine vorhandene öffnen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Create a new spreadsheet, open a recently edited one, or return to the list of existing spreadsheets" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Eine neue Kalkulationstabelle erstellen oder eine vorhandene öffnen</h1>
+            <p>Im <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a> können Sie eine kürzlich bearbeitete Tabelle öffnen, eine neue Tabelle erstellen oder zur Liste der vorhandenen Tabellen zurückkehren.</p>
+            <h3>Eine neue Kalkulationstabelle erstellen</h3>
+            <div class="onlineDocumentFeatures">
+                <p><em>Online-Editor</em></p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Neu erstellen</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p><em>Desktop-Editor</em></p>
+                <ol>
+                    <li>Wählen Sie im Hauptfenster des Programms das Menü <b>Kalkulationstabelle</b> im Abschnitt <b>Neu erstellen</b> der linken Seitenleiste aus - eine neue Datei wird in einer neuen Registerkarte geöffnet.</li>
+                    <li>Wenn Sie alle gewünschten Änderungen durchgeführt haben, klicken Sie auf das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/save.png" /> in der oberen linken Ecke oder wechseln Sie in die Registerkarte <b>Datei</b> und wählen Sie das Menü <b>Speichern als</b> aus.</li>
+                    <li>Wählen Sie im Fenster Dateiverwaltung den Speicherort, legen Sie den Namen fest, wählen Sie das gewünschte Format (XLSX, Tabellenvorlage (XLTX), ODS, OTS, CSV, PDF oder PDFA) und klicken Sie auf die Schaltfläche <b>Speichern</b>.</li>
+                </ol>
+            </div>
+
+            <div class="desktopDocumentFeatures">
+                <h3>Ein vorhandenes Dokument öffnen:</h3>
+                <p><em>Desktop-Editor</em></p>
+                <ol>
+                    <li>Wählen Sie in der linken Seitenleiste im Hauptfenster des Programms den Menüpunkt <b>Lokale Datei öffnen</b>.</li>
+                    <li>Wählen Sie im Fenster Dateiverwaltung die gewünschte Tabelle aus und klicken Sie auf die Schaltfläche <b>Öffnen</b>.</li>
+                </ol>
+                <p>Sie können auch im Fenster Dateiverwaltung mit der rechten Maustaste auf die gewünschte Tabelle klicken, die Option <b>Öffnen mit</b> auswählen und die gewünschte Anwendung aus dem Menü auswählen. Wenn die Office-Dokumentdateien mit der Anwendung verknüpft sind, können Sie Tabellen auch öffnen, indem Sie im Fenster Datei-Explorer auf den Dateinamen doppelklicken.</p>
+                <p>Alle Verzeichnisse, auf die Sie mit dem Desktop-Editor zugegriffen haben, werden in der Liste <b>Aktuelle Ordner</b> angezeigt, um Ihnen einen schnellen Zugriff zu ermöglichen. Klicken Sie auf den gewünschten Ordner, um eine der darin gespeicherten Dateien auszuwählen.</p>
+            </div>
+
+            <h3>Öffnen einer kürzlich bearbeiteten Tabelle:</h3>
+            <div class="onlineDocumentFeatures">
+                <p><em>Online-Editor</em></p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Zuletzt verwendet...</b>.</li>
+                    <li>Wählen Sie die gewünschte Tabelle aus der Liste der vor kurzem bearbeiteten Dokumente aus.</li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p><em>Desktop-Editor</em></p>
+                <ol>
+                    <li>Wählen Sie in der linken Seitenleiste im Hauptfenster des Programms den Menüpunkt <b>Aktuelle Dateien</b>.</li>
+                    <li>Wählen Sie die gewünschte Tabelle aus der Liste der vor kurzem bearbeiteten Dokumente aus.</li>
+                </ol>
+            </div>
+
+            <p>Um den Ordner in dem die Datei gespeichert ist in der <em>Online-Version</em> <span class="onlineDocumentFeatures">in einem neuen Browser-Tab</span> oder in der <em>Desktop-Version</em> im Fenster <span class="desktopDocumentFeatures">Datei-Explorer</span> zu öffnen, klicken Sie auf der rechten Seite des Editor-Hauptmenüs auf das Symbol <img alt="Dateispeicherort öffnen" src="../images/gotodocuments.png" /> <b>Dateispeicherort öffnen</b>. Alternativ können Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b> wechseln und die Option <b>Dateispeicherort öffnen</b> auswählen.</p>
+		</div>
+	</body>
+</html>

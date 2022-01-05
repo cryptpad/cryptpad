@@ -6,10 +6,10 @@ define([
     '/common/common-realtime.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
-    '/common/test.js',
+    //'/common/test.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
+], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
     $(function () {
         var $checkImport = $('#import-recent');
         if (LocalStore.isLoggedIn()) {
@@ -43,17 +43,19 @@ define([
             $('button.login').click();
         });
 
-        var test;
+        //var test;
         $('button.login').click(function () {
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();
-            Login.loginOrRegisterUI(uname, passwd, false, shouldImport, Test.testing, function () {
+            Login.loginOrRegisterUI(uname, passwd, false, shouldImport, /*Test.testing */ false, function () {
+                /*
                 if (test) {
                     localStorage.clear();
-                    test.pass();
+                    //test.pass();
                     return true;
                 }
+                */
             });
         });
         $('#register').on('click', function () {
@@ -64,11 +66,13 @@ define([
             window.location.href = '/register/' + hash;
         });
 
+/*
         Test(function (t) {
             $uname.val('testuser');
             $passwd.val('testtest');
             test = t;
             $('button.login').click();
         });
+        */
     });
 });

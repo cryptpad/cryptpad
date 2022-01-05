@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Validation des données</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Paramétrer la validation des données pour contrôler la saisie de données" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Validation des données</h1>
+        <p>ONLYOFFICE <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> vous fait bénéficier des fonctionnalités de <b>validation des données</b> pour contrôler les données saisies par les autres utilisateurs. </p>
+        <p>Pour ce faire, sélectionnez la cellule, la plage de cellules ou la feuille de calcul entière dont vous voulez limiter la saisie, passez à l'onglet <B>Données</B> et cliquez sur icône <B>Validation des données</B> dans la barre d'outils supérieure. La fenêtre <B>Validation des données</B> avec trois onglets s'ouvre: <I>Paramètres</I>, <I>Entrer le message</I> et <I>Avertissement d'erreur</I>.</p>
+        <h2>Paramètres</h2>
+        <p>La section <B>Paramètres</B> permet de définir le type de données à contrôler:</p>
+        <p class="note"><B>Remarque</B>: Cochez la case <B>Appliquer ces modifications à toutes les cellules ayant les mêmes paramètres</B> pour limiter toutes les cellules sélectionnées ou la feuille de calcul entière. </p>
+        <p><img alt="La fenêtre Paramètres - Validation des données" src="../images/dataval_settings.png" /></p>
+        <ul>
+            <li>
+                sélectionnez l'option convenable du menu <B>Autoriser</B>:
+                <ul>
+                    <li><B>Aucune valeur</B>: saisie de données sans restrictions.</li>
+                    <li><B>Nombre entier</B>: n'autoriser que la saisie de nombres entiers. </li>
+                    <li><B>Décimales</B>: n'autoriser que la saisie de nombres décimaux.</li>
+                    <li>
+                        <B>Liste</B>: limiter les cellules à n'accepter que des données dans la liste déroulante que vous avez créé. Décochez <B>Afficher une liste déroulante dans une cellule</B> pour masquer la flèche de la liste déroulante.
+                        <p><img alt="Paramètres de Liste" src="../images/dataval_list.png" /></p>
+                    </li>
+                    <li><B>Date</B>: n'autoriser que les dates dans les cellules.</li>
+                    <li><B>Temps</B>: n'autoriser que les heures dans les cellules.</li>
+                    <li><B>Longueur du texte</B>: permet de limiter la longueur du texte.</li>
+                    <li><B>Autre</B>: permet de personnaliser la formule de validation.</li>
+                </ul>
+                <p class="note"><B>Remarque</B>: Cochez la case <B>Appliquer ces modifications à toutes les cellules ayant les mêmes paramètres</B> pour limiter toutes les cellules sélectionnées ou la feuille de calcul entière.</p>
+            </li>
+            <li>
+                sélectionnez des conditions dans le menu <B>Données</B>:
+                <ul>
+                    <li><B>entre</B>: la valeur doit être comprise dans l'intervalle de données selon la règle de validation définie.</li>
+                    <li><B>pas entre</B>: la valeur ne doit pas être comprise dans l'intervalle de données selon la règle de validation définie.</li>
+                    <li><B><B>est égal</B></B>: la valeur dans la cellule doit être égale à la valeur définie par la règle de validation.</li>
+                    <li><B>n'est pas égal</B>: la valeur dans la cellule ne doit pas être égale à la valeur définie par la règle de validation.</li>
+                    <li><B>supérieur à</B>: la valeur doit être supérieure à la valeur définie par la règle de validation.</li>
+                    <li><B>inférieur à</B>: la valeur doit être inférieure à la valeur définie par la règle de validation.</li>
+                    <li><B>est supérieur ou égal à</B>: la valeur dans la cellule doit être supérieure ou égale à la valeur définie par la règle de validation.</li>
+                    <li><B>est inférieur ou égal à</B>: la valeur dans la cellule doit être inférieure ou égale à la valeur définie par la règle de validation.</li>
+                </ul>
+            </li>
+            <li>
+                créez une règle de validation en fonction du type de données autorisé:
+                <div class="tg-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Condition de validation</th>
+                                <th>Règle de validation</th>
+                                <th>Description</th>
+                                <th>Disponibilité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3">Entre / pas entre</td>
+                                <td>Minimum / Maximum</td>
+                                <td>Définir un intervalle de données</td>
+                                <td>Nombre entier / Décimal / Longueur du texte</td>
+                            </tr>
+                            <tr>
+                                <td>Date de début / Date limite</td>
+                                <td>Définir un intervalle de dates</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>Heure de début / Heure de fin</td>
+                                <td>Définir un intervalle de temps</td>
+                                <td>Temps</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4"> <br> <br>Est égal / n'est pas égal</td>
+                                <td>Comparer à</td>
+                                <td>Définir la valeur à comparer à</td>
+                                <td>Nombre entier / Décimal </td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td>Définir la date à comparer à</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td> Temps écoulé</td>
+                                <td>Définir l'heure à comparer à</td>
+                                <td>Temps</td>
+                            </tr>
+                            <tr>
+                                <td>Longueur</td>
+                                <td>Définir la longueur à comparer à</td>
+                                <td>Longueur du texte</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Supérieur à / est supérieur ou égal à</td>
+                                <td>Minimum</td>
+                                <td>Définir la limite inférieure,</td>
+                                <td>Nombre entier / Décimal / Longueur du texte</td>
+                            </tr>
+                            <tr>
+                                <td>Date de début</td>
+                                <td>Définir la date de début</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>Heure de début</td>
+                                <td>Définir l'heure de début</td>
+                                <td>Temps</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Inférieur à / est inférieur ou égal à</td>
+                                <td>Maximum </td>
+                                <td>Définir la limite supérieure,</td>
+                                <td>Nombre entier / Décimal / Longueur du texte</td>
+                            </tr>
+                            <tr>
+                                <td>Date limite</td>
+                                <td>Définir la date limite</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>Heure de fin</td>
+                                <td>Définir l'heure de fin</td>
+                                <td>Temps </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                Ainsi que:
+                <ul>
+                    <li><B>Source</B>: spécifiez la source de données pour limiter les entrées à une sélection dans une liste déroulante.</li>
+                    <li><B>Formule</B>: entrez la formule à personnaliser la règle de validation sous l'option d'autorisation <I>Autre</I>.</li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Entrer le message</h2>
+        <p>La section <B>Entrer le message</B> permet de personnaliser le message qui s'affichera chez les utilisateurs lorsqu'ils feront glisser la souris sur la cellule.</p>
+        <p><img alt="Validation des données - Paramètres de message de saisie" src="../images/dataval_inputmessage.png" /></p>
+        <ul>
+            <li>Saisissez le <B>Titre</B> et le texte du <B>Message de saisie</B>.</li>
+            <li>Décochez <B>Affichez un message de saisie lorsqu'une cellule est sélectionnée</B> pour désactiver l'affichage du message de saisie. Lassez la case active pour affiche le message.</li>
+        </ul>
+        <p><img alt="Message de saisie - modèle" src="../images/dataval_inputmessage_example.png" /></p>
+        <h2>Avertissement d'erreur</h2>
+        <p>La section <B>Avertissement d'erreur</B> permet de personnaliser le message d'erreur avertissant les utilisateurs que les données entrées ne sont pas valides.</p>
+        <p><img alt="Validation des données - Paramètres d'avertissement d'erreur" src="../images/dataval_erroralert.png" /></p>
+        <ul>
+            <li><B>Style</B>: choisissez le type d'alerte parmi les options disponibles: Arrêter, Alerte ou Message:</li>
+            <li><B>Titre</B>: saisissez le titre du message d'alerte.</li>
+            <li><B>Message d'erreur</B>: saisissez le texte du message d'alerte.</li>
+            <li>Décochez <B>Affichez un avertissement d'erreur lorsque les données invalides sont saisies</B> pour désactiver l'affichage des alertes.</li>
+        </ul>
+        <p><img alt="Alerte d'erreur - modèle" src="../images/dataval_erroralert_example.png" /></p>
+    </div>
+</body>
+</html>

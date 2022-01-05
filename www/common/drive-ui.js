@@ -1158,10 +1158,12 @@ define([
                 return void previewMediaTag(data);
             }
 
+            var obj = { t: APP.team };
+
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
             if (useUnsafe === true || APP.newSharedFolder) {
-                return void window.open(APP.origin + href);
+                return void common.openURL(Hash.getNewPadURL(href, obj));
             }
 
             // Get hidden hash
@@ -1170,7 +1172,7 @@ define([
             if (isRo) { opts.view = true; }
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
-            window.open(APP.origin + hiddenHref);
+            common.openURL(Hash.getNewPadURL(hiddenHref, obj));
         };
         var openIn = function (type, path, team, fData) {
             var obj = {
@@ -1329,7 +1331,7 @@ define([
                         if (metadata.channel && metadata.channel.length < 48) {
                             hide.push('preview');
                         }
-                        if (!metadata.channel || metadata.channel.length > 32 || metadata.rtChannel) {
+                        if (!metadata.channel || metadata.channel.length > 32) {
                             hide.push('makeacopy'); // Not for blobs
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
@@ -1855,6 +1857,108 @@ define([
 
             APP.FM.onFileDrop(file, ev);
         };
+
+        var traverseFileTree = function (item, path, w, files) {
+            path = path || "";
+            if (item.isFile) {
+                // Get file
+                item.file(w(function(file) {
+                    file.fix_path = path + file.name;
+                    files.push(file);
+                }));
+            } else if (item.isDirectory) {
+                // Get folder contents
+                var dirReader = item.createReader();
+                // this API is not supported in Opera or IE
+                // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/webkitGetAsEntry
+                // all other browsers will recurse over subfolders and upload everything
+                dirReader.readEntries(w(function(entries) {
+                    for (var i=0; i<entries.length; i++) {
+                        traverseFileTree(entries[i], path + item.name + "/", w, files);
+                    }
+                }));
+                // FIXME readEntries takes a function (error handler) as an optional second argument
+                // what kind of errors can be thrown? what will happen?
+            }
+        };
+
+        // create the folder structure before to upload files from folder
+        var uploadFolder = function (fileList) {
+            var currentFolder = currentPath;
+            // create an array of all the files relative path
+            var files = Array.prototype.map.call(fileList, function (file) {
+                return {
+                    file: file,
+                    path: (file.webkitRelativePath || file.fix_path).split("/"),
+                };
+            });
+            // if folder name already exist in drive, rename it
+            var uploadedFolderName = files[0].path[0];
+            var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
+
+            // ask for folder name and files options, then upload all the files!
+            APP.FM.showFolderUploadModal(availableName, function (folderUploadOptions) {
+                if (!folderUploadOptions) { return; }
+
+                // verfify folder name is possible, and update files path
+                availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
+                if (uploadedFolderName !== availableName) {
+                    files.forEach(function (file) {
+                        file.path[0] = availableName;
+                    });
+                }
+
+                // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
+                // at the index i + 1, the files and folders are children of the folders at the index i
+                var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
+                var uploadSteps = [];
+                for (var i = 0 ; i < maxSteps ; i++) {
+                    uploadSteps[i] = {
+                        folders: [],
+                        files: [],
+                    };
+                }
+                files.forEach(function (file) {
+                    // add steps to create subfolders containing file
+                    for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
+                        var subfolderStr = file.path.slice(0, depth + 1).join("/");
+                        if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
+                            uploadSteps[depth].folders.push(subfolderStr);
+                        }
+                    }
+                    // add step to upload file (one step later than the step of its direct parent folder)
+                    uploadSteps[file.path.length - 1].files.push(file);
+                });
+
+                // add folders, then add files when theirs folders have been created
+                // wait for the folders to be created to go to the next step (don't wait for the files)
+                var stepByStep = function (uploadSteps, i) {
+                    if (i >= uploadSteps.length) { return; }
+                    nThen(function (waitFor) {
+                        // add folders
+                        uploadSteps[i].folders.forEach(function (folder) {
+                            var folderPath = folder.split("/");
+                            var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
+                            var folderName = folderPath.slice(-1);
+                            manager.addFolder(parentFolder, folderName, waitFor(refresh));
+                        });
+                        // upload files
+                        uploadSteps[i].files.forEach(function (file) {
+                            var ev = {
+                                target: $content[0],
+                                path: currentFolder.concat(file.path.slice(0, -1)),
+                            };
+                            APP.FM.handleFile(file.file, ev, folderUploadOptions);
+                        });
+                    }).nThen(function () {
+                        stepByStep(uploadSteps, i + 1);
+                    });
+                };
+
+                stepByStep(uploadSteps, 0);
+            });
+        };
+
         var onDrop = function (ev) {
             ev.preventDefault();
             $('.cp-app-drive-element-droppable').removeClass('cp-app-drive-element-droppable');
@@ -1867,9 +1971,32 @@ define([
                 return void UI.warn(Messages.fm_forbidden);
             }
 
-            // Don't use the normal drop handler for file upload
-            var fileDrop = ev.dataTransfer.files;
-            if (fileDrop.length) { return void onFileDrop(fileDrop, ev); }
+            var fileDrop = ev.dataTransfer.items;
+            if (fileDrop.length) {
+                // Filter out all the folders and use the correct function to upload them
+                fileDrop = Array.prototype.slice.call(fileDrop).map(function (file) {
+                    if (file.kind !== "file") { return; }
+                    var f = file.getAsFile();
+                    if (!f.type && f.size % 4096 === 0) {
+                        // It's a folder!
+                        if (file.webkitGetAsEntry) { // IE and Opera don't support it
+                            f = file.webkitGetAsEntry();
+                            var files = [];
+                            nThen(function (w) {
+                                traverseFileTree(f, "", w, files);
+                            }).nThen(function () {
+                                uploadFolder(files);
+                            });
+                            return;
+                        } else {
+                            // Folder drop not supported by the browser
+                        }
+                    }
+                    return f;
+                }).filter(Boolean);
+                // Continue only with the files
+                return void onFileDrop(fileDrop, ev);
+            }
 
             var oldPaths = JSON.parse(data).path;
             if (!oldPaths) { return; }
@@ -2678,82 +2805,6 @@ define([
             $input.click();
         };
 
-        // create the folder structure before to upload files from folder
-        var uploadFolder = function (fileList) {
-            var currentFolder = currentPath;
-            // create an array of all the files relative path
-            var files = Array.prototype.map.call(fileList, function (file) {
-                return {
-                    file: file,
-                    path: file.webkitRelativePath.split("/"),
-                };
-            });
-            // if folder name already exist in drive, rename it
-            var uploadedFolderName = files[0].path[0];
-            var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
-
-            // ask for folder name and files options, then upload all the files!
-            APP.FM.showFolderUploadModal(availableName, function (folderUploadOptions) {
-                if (!folderUploadOptions) { return; }
-
-                // verfify folder name is possible, and update files path
-                availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
-                if (uploadedFolderName !== availableName) {
-                    files.forEach(function (file) {
-                        file.path[0] = availableName;
-                    });
-                }
-
-                // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
-                // at the index i + 1, the files and folders are children of the folders at the index i
-                var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
-                var uploadSteps = [];
-                for (var i = 0 ; i < maxSteps ; i++) {
-                    uploadSteps[i] = {
-                        folders: [],
-                        files: [],
-                    };
-                }
-                files.forEach(function (file) {
-                    // add steps to create subfolders containing file
-                    for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
-                        var subfolderStr = file.path.slice(0, depth + 1).join("/");
-                        if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
-                            uploadSteps[depth].folders.push(subfolderStr);
-                        }
-                    }
-                    // add step to upload file (one step later than the step of its direct parent folder)
-                    uploadSteps[file.path.length - 1].files.push(file);
-                });
-
-                // add folders, then add files when theirs folders have been created
-                // wait for the folders to be created to go to the next step (don't wait for the files)
-                var stepByStep = function (uploadSteps, i) {
-                    if (i >= uploadSteps.length) { return; }
-                    nThen(function (waitFor) {
-                        // add folders
-                        uploadSteps[i].folders.forEach(function (folder) {
-                            var folderPath = folder.split("/");
-                            var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
-                            var folderName = folderPath.slice(-1);
-                            manager.addFolder(parentFolder, folderName, waitFor(refresh));
-                        });
-                        // upload files
-                        uploadSteps[i].files.forEach(function (file) {
-                            var ev = {
-                                target: $content[0],
-                                path: currentFolder.concat(file.path.slice(0, -1)),
-                            };
-                            APP.FM.handleFile(file.file, ev, folderUploadOptions);
-                        });
-                    }).nThen(function () {
-                        stepByStep(uploadSteps, i + 1);
-                    });
-                };
-
-                stepByStep(uploadSteps, 0);
-            });
-        };
         var showUploadFolderModal = function () {
             var $input = $('<input>', {
                 'type': 'file',
@@ -3905,7 +3956,25 @@ define([
                 setEditable(true, false, true);
             }
 
-            if (APP.readOnly) {
+            if (APP.readOnly && !APP.loggedIn) {
+                (function () {
+                    // show 'READ-ONLY' when a guest only has view rights
+                    if (/\/view\//.test(APP.anonSFHref)) {
+            // !common.getMetadataMgr().getPrivateData().canEdit
+            // would accomplish the same thing if this breaks
+                        $content.prepend($readOnly.clone());
+                        return;
+                    }
+                    // otherwise prompt them to log in or register to take advantage of their edit rights
+                    var $banner = $(Pages.setHTML(h('div.cp-app-drive-content-info-box'), Messages.fm_info_sharedFolder));
+                    $banner.find('[href="/login/"], [href="/register/"]').click(function (ev) {
+                        ev.preventDefault();
+                        var page = this.getAttribute('href').replace(/\//g, '');
+                        common.setLoginRedirect(page);
+                    });
+                    $content.prepend($banner);
+                }());
+            } else if (APP.readOnly) {
                 // Read-only drive (team?)
                 $content.prepend($readOnly.clone());
             } else if (sfId && folders[sfId] && folders[sfId].readOnly) {

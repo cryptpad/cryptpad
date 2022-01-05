@@ -2,7 +2,7 @@ define([
     'jquery',
     '/customize/login.js',
     '/common/cryptpad-common.js',
-    '/common/test.js',
+    //'/common/test.js',
     '/common/common-credential.js',
     '/common/common-interface.js',
     '/common/common-util.js',
@@ -13,7 +13,7 @@ define([
     '/common/hyperscript.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
     var Messages = Cryptpad.Messages;
     $(function () {
         if (LocalStore.isLoggedIn()) {
@@ -111,7 +111,7 @@ define([
             function (yes) {
                 if (!yes) { return; }
 
-                Login.loginOrRegisterUI(uname, passwd, true, shouldImport, Test.testing, function () {
+                Login.loginOrRegisterUI(uname, passwd, true, shouldImport, false /*Test.testing*/, function () {
                     if (test) {
                         localStorage.clear();
                         test.pass();
@@ -149,6 +149,7 @@ define([
             }
         });
 
+/*
         Test(function (t) {
             test = t;
             $uname.val('testuser');
@@ -161,6 +162,6 @@ define([
             window.setTimeout(function () {
                 UI.findOKButton().click();
             }, 1000);
-        });
+        }); */
     });
 });

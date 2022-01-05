@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función BUSCAR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función BUSCAR</h1>
+			<p>La función <b>BUSCAR</b> es una función de búsqueda y referencia. Se usa para devolver un valor del rango seleccionado (fila o columna que contiene los datos en orden ascendente).</p>
+			<p>La sintaxis de la función <b>BUSCAR</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>BUSCAR(valor-buscar, vector-buscar, resultado-vector)</em></b></p> 
+			<p><em>donde</em></p> 
+				<p style="text-indent: 50px;"><b><em>valor-buscar</em></b> es un valor para buscar.</p> 
+				<p style="text-indent: 50px;"><b><em>vector-buscar</em></b> es una sola fila o columna que contiene datos organizados en orden ascendente.</p> 
+				<p style="text-indent: 50px;"><b><em>resultado-buscar</em></b> es una sola fila o columna de datos que tiene el mismo tamaño que <b><em>vector-buscar</em></b>.</p> 
+			<p>La función busca <b><em>lookup-value</em></b> en <b><em>lookup-vector</em></b> y devuelve el valor de la misma posición en <b><em>lookup-result</em></b>.</p>
+			<p class="note"><b>Nota</b>: si <b>lookup-value</b> es menor que todos los valores en <b>lookup-vector</b>, la función devolverá el error <b>#N/A</b>. Si no hay valor que absolutamente corresponde a <b>lookup-value</b>, la función elegirá el más grande valor en <b>lookup-vector</b> que es mayor o igual al valor.</p>
+			<p>Para aplicar la función <b>BUSCAR</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Búsqueda y referencia</b> en la lista,</li>
+			<li>haga clic en la función <b>BUSCAR</b>,</li>
+			<li>introduzca los argumentos requeridos separándolos con comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función BUSCAR" src="../images/lookup.png" /></p>
+		</div>
+	</body>
+</html>

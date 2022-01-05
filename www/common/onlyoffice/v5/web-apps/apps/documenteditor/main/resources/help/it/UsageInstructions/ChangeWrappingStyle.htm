@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Change text wrapping</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Change the text wrapping style to specify the way the object is positioned relative to the text." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Change text wrapping</h1>
+            <p>The <b>Wrapping Style</b> option determines the way the object is positioned relative to the text. You can change the text wrapping style for inserted objects, such as <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">shapes</a>, <a href="../UsageInstructions/InsertImages.htm" onclick="onhyperlinkclick(this)">images</a>, <a href="../UsageInstructions/InsertCharts.htm#" onclick="onhyperlinkclick(this)">charts</a>, <a href="../UsageInstructions/InsertTextObjects.htm" onclick="onhyperlinkclick(this)">text boxes</a> or <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">tables</a>.</p>
+            <h3>Change text wrapping for shapes, images, charts, text boxes</h3>
+            <p>To change the currently selected wrapping style:</p>
+            <ol>
+                <li>select a separate object on the page left-clicking it. To select a text box, click on its border, not the text within it.</li>
+                <li>open the text wrapping settings:
+                    <ul>
+                        <li>switch to the the <b>Layout</b> tab of the top toolbar and click the arrow next to the <img alt="Wrapping icon" src="../images/wrapping_toptoolbar.png" /> <b>Wrapping</b> icon, or</li>
+                        <li>right-click the object and select the <b>Wrapping Style</b> option from the contextual menu, or</li>
+                        <li>right-click the object, select the <b>Advanced Settings</b> option and switch to the <b>Text Wrapping</b> tab of the object <b>Advanced Settings</b> window.</li>
+                    </ul>
+                </li>
+                <li>select the necessary wrapping style:
+                    <ul>
+                        <li>
+                            <p><img alt="Wrapping Style - Inline" src="../images/wrappingstyle_inline_toptoolbar.png" /> <b>Inline</b> - the object is considered to be a part of the text, like a character, so when the text moves, the object moves as well. In this case the positioning options are inaccessible.</p>
+                            <p>If one of the following styles is selected, the object can be moved independently of the text and positioned on the page exactly:</p>
+                        </li>
+                        <li><p><img alt="Wrapping Style - Square" src="../images/wrappingstyle_square_toptoolbar.png" /> <b>Square</b> - the text wraps the rectangular box that bounds the object.</p></li>
+                        <li><p><img alt="Wrapping Style - Tight" src="../images/wrappingstyle_tight_toptoolbar.png" /> <b>Tight</b> - the text wraps the actual object edges.</p></li>
+                        <li><p><img alt="Wrapping Style - Through" src="../images/wrappingstyle_through_toptoolbar.png" /> <b>Through</b> - the text wraps around the object edges and fills in the open white space within the object. So that the effect can appear, use the <b>Edit Wrap Boundary</b> option from the right-click menu.</p></li>
+                        <li><p><img alt="Wrapping Style - Top and bottom" src="../images/wrappingstyle_topandbottom_toptoolbar.png" /> <b>Top and bottom</b> - the text is only above and below the object.</p></li>
+                        <li><p><img alt="Wrapping Style - In front" src="../images/wrappingstyle_infront_toptoolbar.png" /> <b>In front</b> - the object overlaps the text.</p></li>
+                        <li><p><img alt="Wrapping Style - Behind" src="../images/wrappingstyle_behind_toptoolbar.png" /> <b>Behind</b> - the text overlaps the object.</p></li>
+                    </ul>
+                </li>
+            </ol>
+            <p>If you select the <b>Square</b>, <b>Tight</b>, <b>Through</b>, or <b>Top and bottom</b> style, you will be able to set up some additional parameters - <b>Distance from Text</b> at all sides (top, bottom, left, right). To access these parameters, right-click the object, select the <b>Advanced Settings</b> option and switch to the <b>Text Wrapping</b> tab of the object <b>Advanced Settings</b> window. Set the necessary values and click <b>OK</b>.</p>
+            <p>If you select a wrapping style other than <b>Inline</b>, the <b>Position</b> tab is also available in the object <b>Advanced Settings</b> window. To learn more on these parameters, please refer to the corresponding pages with the instructions on how to work with <a href="../UsageInstructions/InsertAutoshapes.htm#position" onclick="onhyperlinkclick(this)">shapes</a>, <a href="../UsageInstructions/InsertImages.htm#position" onclick="onhyperlinkclick(this)">images</a> or <a href="../UsageInstructions/InsertCharts.htm#position" onclick="onhyperlinkclick(this)">charts</a>.</p>
+            <p>If you select a wrapping style other than <b>Inline</b>, you can also edit the wrap boundary for <b>images</b> or <b>shapes</b>. Right-click the object, select the <b>Wrapping Style</b> option from the contextual menu and click the <b>Edit Wrap Boundary</b> option. Drag wrap points to customize the boundary. To create a new wrap point, click anywhere on the red line and drag it to the necessary position. <img alt="Editing Wrap Boundary" src="../images/wrap_boundary.png" /></p>
+            <h3>Change text wrapping for tables</h3>
+            <p>For <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">tables</a>, the following two wrapping styles are available: <b>Inline table</b> and <b>Flow table</b>.</p>
+            <p>To change the currently selected wrapping style:</p>
+            <ol>
+                <li>right-click the table and select the <b>Table Advanced Settings</b> option,</li>
+                <li>switch to the <b>Text Wrapping</b> tab of the <b>Table - Advanced Settings</b> window,
+                </li>
+                <li>
+                    select one of the following options:
+                    <ul>
+                        <li><b>Inline table</b> is used to select the wrapping style when the text is broken by the table as well as to set the alignment: left, center, right.</li>
+                        <li><b>Flow table</b> is used to select the wrapping style when the text is wrapped around the table.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Using the <b>Text Wrapping</b> tab of the <b>Table - Advanced Settings</b> window you can also set up the following additional parameters:</p>
+            <ul>
+                <li>For inline tables, you can set the table <b>Alignment</b> type (left, center or right) and <b>Indent from left</b>.</li>
+                <li>For floating tables, you can set the <b>Distance from text</b> and the table <b>position</b> at the <a href="../UsageInstructions/InsertTables.htm#position" onclick="onhyperlinkclick(this)">Table Position</a> tab.</li>
+            </ul>
+		</div>
+	</body>
+</html>

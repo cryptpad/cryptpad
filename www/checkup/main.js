@@ -363,7 +363,7 @@ define([
         });
     });
 
-    var sheetURL = '/common/onlyoffice/v4/web-apps/apps/spreadsheeteditor/main/index.html';
+    var sheetURL = '/common/onlyoffice/v5/web-apps/apps/spreadsheeteditor/main/index.html';
 
     assert(function (cb, msg) {
         msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
@@ -671,7 +671,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        var url = '/common/onlyoffice/v4/web-apps/apps/spreadsheeteditor/main/index.html';
+        var url = '/common/onlyoffice/v5/web-apps/apps/spreadsheeteditor/main/index.html';
         msg.appendChild(CSP_WARNING(url));
         deferredPostMessage({
             command: 'GET_HEADER',

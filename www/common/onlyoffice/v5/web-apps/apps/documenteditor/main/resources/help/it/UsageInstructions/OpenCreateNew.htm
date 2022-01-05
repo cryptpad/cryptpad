@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create a new document or open an existing one</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Open a recently edited document, create a new one, or return to the list of existing documents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Create a new document or open an existing one</h1>
+			<h3>Per creare un nuovo documento</h3>
+            <div class="onlineDocumentFeatures">
+                <p>Nell’Editor di <em>Documenti Online</em></p>
+                <ol>
+                    <li>clicca su <b>File</b> nella barra degli strumenti superiore,</li>
+                    <li>seleziona l’opzione <b>Crea nuovo</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Nell’Editor di <em>Documenti Desktop</em></p>
+                <ol>
+                    <li>Nella finestra principale del programma, dalla sezione <b>Crea nuovo</b> che trovi sulla barra degli strumenti a sinistra, seleziona la voce <b>Documento</b>. Un nuovo file verrà aperto in una nuova sheda.</li>
+                    <li>Quando tutte le modifiche sono state effettuate, clicca sull’icona <b>Salva</b> <img alt="Save icon" src="../images/save.png" /> nell’angolo superiore sinistro, oppure clicca sulla voce di menù <b>File</b> e poi scegli <b>Salva come</b> dal menu a tendina. </li>
+                    <li>Nella finestra di gestione dei file, scegli la locazione, specifica il nome, scegli il formato desiderato in cui desideri salvare il tuo documento (DOCX, Modello di documento (DOTX), ODT, OTT, RTF, TXT, PDF or PDFA) e poi clicca su <b>Salva</b>.</li>
+                </ol>
+            </div>
+
+            <div class="desktopDocumentFeatures">
+                <h3>Per aprire un documento esistente</h3>
+                <p>Nell’Editor di <em>Documenti Desktop</em></p>
+                <ol>
+                    <li>Nella finestra principale del programma,  seleziona nella barra a sinistra la voce di menù <b>Apri file locale</b>,</li>
+                    <li>Scegli il documento desiderato dalla finestra di gestione dei file e clicca su <b>Apri</b>.</li>
+                </ol>
+                <p>Puoi anche cliccare col tasto destro sul documento desiderato all’interno della finestra di gestione dei file e scegliere l’opzione <b>Apri con</b> per poi scegliere l’applicazione preferita dal menù. Se il tipo di file documento é già stato associato all’applicazione, puoi anche aprire il documento con un doppio click nella finestra di gestione dei file.</p>
+                <p>Tutte le directory a cui hai accesso usando l’editor per desktop verranno visualizzate nell’elenco delle <b>Cartelle recenti</b> in modo da poter avere un rapido accesso in seguito. Cliccando sulla cartella, verranno visualizzati i file in essa contenuti.</p>
+            </div>
+
+                <h3>Per aprire un documento modificato recentemente</h3>
+            <div class="onlineDocumentFeatures">
+                <p>Nell’Editor di <em>Documenti Online</em></p>
+                <ol>
+                    <li>clicca sulla voce <b>File</b> nella barra superiore dei menú</li>
+                    <li>seleziona l’opzione <b>Apri recenti...</b></li>
+                    <li>scegli il documento desiderato dalla lista dei documenti modificati recentemente.</li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Nell’Editor di <em>Documenti Desktop</em></p>
+                <ol>
+                    <li>Nella finestra principale del programma seleziona la voce <b>File recenti</b> nella barra a sinistra,</li>
+                    <li>Scegli il documento di cui hai bisogno dall’elenco dei file modificati recentemente.</li>
+                </ol>
+            </div>
+
+            <p>Per aprire la cartella dove sono locati i file <span class="onlineDocumentFeatures">in una nuova sheda del browser nella <em>versione online</em></span>, clicca sulla voce <img alt="Apri cartella" src="../images/gotodocuments.png" /><b>Apri cartella</b>, <span class="desktopDocumentFeatures">, che nella <em>versione per desktop</em></span> si trova immediatamente a destra della testata dell’editor. Alternativamente puoi cliccare sulla sheda <b>File</b> nella barra superiore e selezionare la voce <b>Apri cartella</b>.</p>
+            </div>
+	</body>
+</html>

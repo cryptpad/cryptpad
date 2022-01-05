@@ -447,6 +447,9 @@ define([
                 type = "text/markdown";
             }
 
+            // Can't upload folder here
+            if (!file.type && file.size%4096 === 0) { return; }
+
             var thumb;
             var preview;
             var alt;
@@ -517,7 +520,8 @@ define([
                         if (!thumb64) { return; }
                         thumb = thumb64;
                     }));
-                    MT.preview(buffer, {
+                    if (file.type === "application/pdf") { return; }
+                    MT.preview(file, {
                         type: file.type,
                     }, void 0, w(function (err, el) {
                         if (err) { return void console.error(err); }
@@ -697,7 +701,7 @@ define([
             var ctx = {
                 fileHost: privateData.fileHost,
                 get: common.getPad,
-                sframeChan: sframeChan,
+                sframeChan: common.getSframeChannel(),
                 cache: common.getCache()
             };
 

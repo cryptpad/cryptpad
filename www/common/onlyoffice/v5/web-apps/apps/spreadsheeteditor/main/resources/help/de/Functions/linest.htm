@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Die RGP Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Die RGP Funktion</h1>
+			<p>Die <b>RGP</b> Funktion ist eine statistische Funktion. Die Funktion RGP berechnet die Statistik für eine Linie nach der Methode der kleinsten Quadrate, um eine gerade Linie zu berechnen, die am besten an die Daten angepasst ist, und gibt dann ein Array zurück, das die Linie beschreibt; Da diese Funktion ein Array von Werten zurückgibt, muss die Formel als Arrayformel eingegeben werden.</p>
+			<p>Die Syntax für die <b>RGP</b> Funktion ist:</p> 
+			<p style="text-indent: 150px;"><b><em>RGP( Y_Werte, [X_Werte], [Konstante], [Stats] )</em></b></p> 
+			<p>Die Argumente:</p>
+            <p style="text-indent: 50px;"><b><em>Y_Werte</em></b> sind die bekannten <em>y</em> Werte in der Gleichung <em>y = mx + b</em>. Dieses Argument ist erforderlich.</p>
+			<p style="text-indent: 50px;"><b><em>X_Werte</em></b> sind die bekannten <em>x</em> Werte in der Gleichung <em>y = mx + b</em>. Dieses Argument ist optional. Fehlt dieses Argument, werden <em>X_Werte</em> wie Arrays <em>{1,2,3,...}</em> angezeigt, die Anzahl der Werte ist dem Anzahlt der <em>Y_Werten</em> ähnlich.</p>
+			<p style="text-indent: 50px;"><b><em>Konstante</em></b> ist ein logischer Wert, der angibt, ob <em>b</em> den Wert <em>0</em> annehmen soll. Dieses Argument ist optional. Wenn dieses Argument mit <em>WAHR</em> belegt oder nicht angegeben ist, wird <em>b</em> normal berechnet. Wenn dieses Argument mit <em>FALSCH</em> belegt ist, wird <em>b</em> gleich <em>0</em> festgelegt.</p>
+			<p style="text-indent: 50px;"><b><em>Stats</em></b> ist ein logischer Wert, der angibt, ob zusätzliche Regressionskenngrößen zurückgegeben werden sollen. Dieses Argument ist optional. Wenn dieses Argument mit <em>WAHR</em> belegt ist, gibt die Funktion die zusatzlichen Regressionskenngrößen zurück. Wenn dieses Argument mit <em>FALSCH</em> belegt oder nicht angegeben ist, gibt die Funktion keine zusatzlichen Regressionskenngrößen zurück.</p>
+            <p>Um die Funktion <b>RGP</b> zu verwenden,</p>
+			<ol>
+			<li>wählen Sie die Zelle für das Ergebnis aus,</li>
+			<li>klicken Sie auf die Schaltfläche <b>Funktion eingeben</b> <img alt="Funktion eingeben - Symbol" src="../images/insertfunction.png" /> in der oberen Symbolleiste,
+				<br />oder klicken Sie die ausgewählte Zelle mit der rechten Maustaste an und wählen Sie die Option <b>Funktion eingeben</b> aus dem Menü aus,
+				<br />oder klicken Sie auf die Schaltfläche <img alt="Funktion Symbol" src="../images/function.png" /> in der Registerkarte Formel,
+			</li>
+			<li>wählen Sie die Gruppe <b>Statistik</b> aus,</li>
+			<li>klicken Sie die Funktion <b>RGP</b> an,</li>
+			<li>geben Sie die Argumente mit Kommas getrennt ein oder wählen Sie die Zellen per Mausklick aus,
+            <!--<p><img alt="RGP Funktion" src="../images/linest-arg.png" /></p>-->
+			</li>
+			<li>drucken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Der erste Wert des Arrays wird in der ausgewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="RGP Funktion" src="../images/linest.png" /></p>
+		</div>
+	</body>
+</html>

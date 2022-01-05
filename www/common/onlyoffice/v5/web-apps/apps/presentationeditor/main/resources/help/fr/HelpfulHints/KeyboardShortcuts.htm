@@ -1,0 +1,648 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Raccourcis clavier</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="La liste des raccourcis clavier pour exécuter certaines fonctions de Presentation Editor plus vite et facile à l'aide du clavier." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+        <script type="text/javascript" src="../search/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../search/js/keyboard-switch.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Raccourcis clavier</h1>
+            <p>La liste des raccourcis clavier pour exécuter certaines fonctions de <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a> plus vite et facile à l'aide du clavier.</p>
+            <ul class="shortcut_variants">
+                <li class="shortcut_toggle pc_option left_option">Windows/Linux</li><!--
+                --><li class="shortcut_toggle mac_option right_option">Mac OS</li>
+            </ul>
+			<table class="keyboard_shortcuts_table">
+				<tr>
+					<th colspan="4" class="keyboard_section">En travaillant sur la présentation</th>
+				</tr>
+				<tr>
+					<td>Ouvrir le panneau "Fichier"</td>
+					<td><kbd>Alt</kbd>+<kbd>F</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>F</kbd></td>
+					<td>Ouvrir le panneau <b>Fichier</b> pour enregistrer, télécharger, imprimer la présentation actuelle, voir ses informations, créer une nouvelle présentation ou ouvrir une présentation existatante, accéder à l'aide de Presentation Editor ou aux paramètres avancés.</td>
+				</tr>
+				<tr>
+					<td>Ouvrir la boîte de dialogue « Rechercher »</td>
+					<td><kbd>Ctrl</kbd>+<kbd>F</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>F</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>F</kbd></td>
+					<td>Ouvrir la fenêtre <b>Recherche</b> pour commencer à chercher un caractère/mot/phrase dans la présentation actuelle.</td>
+				</tr>
+				<tr>
+					<td>Ouvir le panneau "Commentaires"</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>H</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>H</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>H</kbd></td>
+					<td>Ouvrir le volet <b>Commentaires</b> pour ajouter votre commentaire ou pour répondre aux commentaires des autres utilisateurs.</td>
+				</tr>
+				<tr>
+					<td>Ouvrir le champ de commentaires</td>
+					<td><kbd>Alt</kbd>+<kbd>H</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>H</kbd></td>
+					<td>Ouvrir un champ de saisie où vous pouvez ajouter le texte de votre commentaire.</td>
+				</tr>
+				<tr class="onlineDocumentFeatures">
+					<td>Ouvrir le panneau "Chat"</td>
+					<td><kbd>Alt</kbd>+<kbd>Q</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Q</kbd></td>
+					<td>Ouvrir le panneau <b>Chat</b> et envoyer un message.</td>
+				</tr>
+				<tr>
+					<td>Enregistrer la présentation</td>
+					<td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>S</kbd></td>
+					<td>Enregistrer toutes les modifications dans la présentation en cours d'édition dans Presentation Editor. Le fichier actif sera enregistré avec son nom de fichier actuel, son emplacement et son format de fichier.</td>
+				</tr>
+				<tr>
+					<td>Imprimer la présentation</td>
+					<td><kbd>Ctrl</kbd>+<kbd>P</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>P</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>P</kbd></td>
+					<td>Imprimer la présentation avec l'une des imprimantes disponibles ou l'enregistrer sous forme de fichier.</td>
+				</tr>
+				<tr>
+					<td>Enregistrer (Télécharger comme)</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>S</kbd></td>
+					<td>Ouvrir le panneau <b>Télécharger comme</b> pour enregistrer la présentation en cours d'édition sur le disque dur de l'ordinateur dans un des formats pris en charge : PPTX, PDF, ODP, POTX, PDF/A, OTP.</td>
+				</tr>
+				<tr>
+					<td>Plein écran</td>
+					<td><kbd>F11</kbd></td>
+					<td></td>
+					<td>Passer à l'affichage en plein écran pour adapter Presentation Editor à votre écran.</td>
+				</tr>
+                <tr>
+                    <td>Menu d'aide</td>
+                    <td><kbd>F1</kbd></td>
+					<td><kbd>F1</kbd></td>
+                    <td>Ouvrir le menu <b>Aide</b> de Presentation Editor.</td>
+                </tr>
+                <tr>
+                    <td>Ouvrir un fichier existant (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>O</kbd></td>
+					<td></td>
+                    <td>L’onglet <b>Ouvrir fichier local</b> de <b>Desktop Editors</b>, ouvre la boîte de dialogue standard qui permet de sélectionner un fichier existant.</td>
+                </tr>
+                <tr>
+                    <td>Fermer un fichier (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>F4</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>W</kbd></td>
+                    <td>Fermer la fenêtre de présentation actuelle dans <b>Desktop Editors</b>.</td>
+                </tr>
+                <tr>
+                    <td>Menu contextuel de l’élément</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>F10</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>F10</kbd></td>
+                    <td>Ouvrir le <b>menu contextuel</b> de l'élément sélectionné.</td>
+                </tr>
+				<tr>
+				    <td>Réinitialiser le niveau de zoom</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>0</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>0</kbd> or <kbd>&#8984; Cmd</kbd>+<kbd>0</kbd></td>
+                    <td>Réinitialiser le niveau de zoom de la présentation actuelle par défaut pour Ajuster à la diapositive.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Navigation</th>
+				</tr>
+				<tr>
+					<td>Première diapositive</td>
+					<td><kbd>Début</kbd></td>
+					<td><kbd>Début</kbd>,<br /><kbd>Fn</kbd>+<kbd>←</kbd></td>
+					<td>Passer à la première diapositive de la présentation actuelle.</td>
+				</tr>
+				<tr>
+					<td>Dernière diapositive</td>
+					<td><kbd>Fin</kbd></td>
+					<td><kbd>Fin</kbd>,<br /><kbd>Fn</kbd>+<kbd>→</kbd></td>
+					<td>Passer à la dernière diapositive de la présentation actuelle.</td>
+				</tr>
+				<tr>
+					<td>Diapositive suivante</td>
+					<td><kbd>Pg. suiv</kbd></td>
+					<td><kbd>Pg. suiv</kbd>,<br /><kbd>Fn</kbd>+<kbd>↓</kbd></td>
+					<td>Passer à la diapositive suivante de la présentation actuelle.</td>
+				</tr>
+				<tr>
+					<td>Diapositive précédente</td>
+					<td><kbd>Pg. préc</kbd></td>
+					<td><kbd>Pg. préc</kbd>,<br /><kbd>Fn</kbd>+<kbd>↑</kbd></td>
+					<td>Passer à la diapositive précédente de la présentation actuelle.</td>
+				</tr>
+				<tr>
+					<td>Zoom avant</td>
+					<td><kbd>Ctrl</kbd>+<kbd>+</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>=</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>=</kbd></td>
+					<td>Agrandir la présentation en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Zoom arrière</td>
+					<td><kbd>Ctrl</kbd>+<kbd>-</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>-</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>-</kbd></td>
+					<td>Effectuer un zoom arrière de la présentation en cours d'édition.</td>
+				</tr>
+				<tr>
+					<td>Naviguer entre les contrôles dans un dialogue modal</td>
+					<td><kbd>↹ Tab</kbd>/<kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+					<td><kbd>↹ Tab</kbd>/<kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+					<td>Naviguer entre les contrôles pour mettre en évidence le contrôle précédent ou suivant dans les dialogues modaux.</td>
+				</tr>
+
+				<tr id="manageslides">
+					<th colspan="4" class="keyboard_section">Exécuter des actions sur des diapositives</th>
+				</tr>
+				<tr>
+					<td>Nouvelle diapositive</td>
+					<td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+					<td>Créer une nouvelle diapositive et l'ajouter après la diapositive sélectionnée dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Dupliquer la diapositive</td>
+					<td><kbd>Ctrl</kbd>+<kbd>D</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>D</kbd></td>
+					<td>Dupliquer la diapositive sélectionnée dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Déplacer la diapositive vers le haut</td>
+					<td><kbd>Ctrl</kbd>+<kbd>↑</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>↑</kbd></td>
+					<td>Déplacer la diapositive sélectionnée au-dessus de la diapositive précedente dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Déplacer la diapositive vers le bas</td>
+					<td><kbd>Ctrl</kbd>+<kbd>↓</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>↓</kbd></td>
+					<td>Déplacer la diapositive sélectionnée dessous la diapositive suivante dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Déplacer la diapositive au début</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>↑</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>↑</kbd></td>
+					<td>Déplacer la diapositive sélectionnée à la première position dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Déplacer la diapositive à la fin</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>↓</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>↓</kbd></td>
+					<td>Déplacer la diapositive sélectionnée à la dernière position dans la liste.</td>
+				</tr>
+				<tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithobjects"></a>Exécuter des actions sur des objets</th>
+				</tr>
+				<tr>
+					<td>Créer une copie</td>
+					<td><kbd>Ctrl</kbd> + faire glisser,<br /><kbd>Ctrl</kbd>+<kbd>D</kbd></td>
+					<td><kbd>^ Ctrl</kbd> + faire glisser,<br /><kbd>^ Ctrl</kbd>+<kbd>D</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>D</kbd></td>
+					<td>Maintenez la touche <kbd>Ctrl</kbd> pour faire glisser l'objet sélectionné ou appuyez sur <kbd>Ctrl</kbd>+<kbd>D</kbd> (<kbd>&#8984; Cmd</kbd>+<kbd>D</kbd> pour Mac) pour créer sa copie.</td>
+				</tr>
+				<tr>
+					<td>Grouper</td>
+					<td><kbd>Ctrl</kbd>+<kbd>G</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>G</kbd></td>
+					<td>Grouper les objets sélectionnés.</td>
+				</tr>
+				<tr>
+					<td>Dissocier</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>G</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>G</kbd></td>
+					<td>Dissocier le groupe d'objets sélectionnés.</td>
+				</tr>
+                <tr>
+                    <td>Sélectionner l'objet suivant</td>
+                    <td><kbd>↹ Tab</kbd></td>
+					<td><kbd>↹ Tab</kbd></td>
+                    <td>Sélectionner l'objet suivant après l'objet sélectionné.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner l'objet précédent</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Sélectionner l'objet précédent avant l'objet actuellement sélectionné.</td>
+                </tr>
+                <tr>
+                    <td>Tracer une ligne droite ou une flèche</td>
+                    <td><kbd>⇧ Maj</kbd> + faire glisser (lors du tracé de lignes/flèches)</td>
+                    <td><kbd>⇧ Maj</kbd> + faire glisser (lors du tracé de lignes/flèches)</td>
+                    <td>Tracer une ligne droite ou une flèche verticale/horizontale/inclinée de 45 degrés.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Modification des objets</th>
+				</tr>
+				<tr>
+					<td>Limiter le déplacement</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser</td>
+					<td>Limiter le déplacement de l'objet sélectionné horizontalement ou verticalement.</td>
+				</tr>
+				<tr>
+					<td>Définir la rotation de 15 degrés</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors de la rotation)</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors de la rotation)</td>
+					<td>Limiter l'angle de rotation à des incréments de 15 degrés.</td>
+				</tr>
+				<tr>
+					<td>Conserver les proportions</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors du redimensionnement)</td>
+					<td><kbd>⇧ Maj</kbd> + faire glisser (lors du redimensionnement)</td>
+					<td>Conserver les proportions de l'objet sélectionné lors du redimensionnement.</td>
+				</tr>
+				<tr>
+					<td>Mouvement pixel par pixel</td>
+					<td><kbd>Ctrl</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+					<td>Maintenez la touche <kbd>Ctrl</kbd> (<kbd>&#8984; Cmd</kbd> pour Mac) enfoncée en faisant glisser et utilisez les flèches pour déplacer l'objet sélectionné d'un pixel à la fois.</td>
+				</tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithtables"></a>Utilisation des tableaux</th>
+                </tr>
+                <tr>
+                    <td>Passer à la cellule suivante d’une ligne</td>
+                    <td><kbd>↹ Tab</kbd></td>
+					<td><kbd>↹ Tab</kbd></td>
+                    <td>Aller à la cellule suivante d’une ligne de tableau.</td>
+                </tr>
+                <tr>
+                    <td>Passer à la cellule précédente d’une ligne</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Aller à la cellule précédente d’une ligne de tableau.</td>
+                </tr>
+                <tr>
+                    <td>Passer à la ligne suivante</td>
+                    <td><kbd>↓</kbd></td>
+					<td><kbd>↓</kbd></td>
+                    <td>Aller à la ligne suivante d’un tableau.</td>
+                </tr>
+                <tr>
+                    <td>Passer à la ligne précédente</td>
+                    <td><kbd>↑</kbd></td>
+					<td><kbd>↑</kbd></td>
+                    <td>Aller à la ligne précédente d’un tableau.</td>
+                </tr>
+                <tr>
+                    <td>Commencer un nouveau paragraphe</td>
+                    <td><kbd>↵ Entrée</kbd></td>
+					<td><kbd>↵ Retour</kbd></td>
+                    <td>Commencer un nouveau paragraphe dans une cellule.</td>
+                </tr>
+                <tr>
+                    <td>Ajouter une nouvelle ligne</td>
+                    <td><kbd>↹ Tab</kbd> dans la cellule inférieure droite du tableau.</td>
+					<td><kbd>↹ Tab</kbd> dans la cellule inférieure droite du tableau.</td>
+                    <td>Ajouter une nouvelle ligne au bas du tableau.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="preview"></a>Prévisualisation de la présentation</th>
+				</tr>
+				<tr>
+					<td>Démarrer l'affichage de l'aperçu dès le début</td>
+					<td><kbd>Ctrl</kbd>+<kbd>F5</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>F5</kbd></td>
+					<td>Démarrer une présentation dès le début.</td>
+				</tr>
+				<tr>
+					<td>Naviguer vers l'avant</td>
+					<td><kbd>↵ Entrée</kbd>,<br /><kbd>Pg. suiv</kbd>,<br /><kbd>→</kbd>,<br /><kbd>↓</kbd>,<br /><kbd>␣ Barre d'espace</kbd></td>
+					<td><kbd>↵ Retour</kbd>,<br /><kbd>Pg. suiv</kbd>,<br /><kbd>→</kbd>,<br /><kbd>↓</kbd>,<br /><kbd>␣ Barre d'espace</kbd></td>
+					<td>Effectuer l'animation suivante ou passer à la diapositive suivant.</td>
+				</tr>
+				<tr>
+					<td>Navigation à rebours</td>
+					<td><kbd>Pg. préc</kbd>,<br /><kbd>←</kbd>,<br /><kbd>↑</kbd></td>
+					<td><kbd>Pg. préc</kbd>,<br /><kbd>←</kbd>,<br /><kbd>↑</kbd></td>
+					<td>Effectuer l'animation précédente ou revenir à la diapositive précédente.</td>
+				</tr>
+				<tr>
+					<td>Fermer l'aperçu</td>
+					<td><kbd>Échap</kbd></td>
+					<td><kbd>Échap</kbd></td>
+					<td>Terminer la présentation.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Annuler et Rétablir</th>
+				</tr>
+				<tr>
+					<td>Annuler</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Z</kbd></td>
+					<td>Inverser la dernière action effectuée.</td>
+				</tr>
+				<tr>
+					<td>Rétablir</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Y</kbd></td>
+					<td>Répéter la dernière action annulée.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Couper, Copier et Coller</th>
+				</tr>
+				<tr>
+					<td>Couper</td>
+					<td><kbd>Ctrl</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Maj</kbd>+<kbd>Supprimer</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>X</kbd></td>
+					<td>Couper l'objet sélectionné et l'envoyer vers le presse-papiers. L'objet sélectionné peut inséré ensuite à un autre endroit dans la même présentation<!--, into another presentation, or into some other program-->.</td>
+				</tr>
+				<tr>
+					<td>Copier</td>
+					<td><kbd>Ctrl</kbd>+<kbd>C</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>Inser</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>C</kbd></td>
+					<td>Envoyer l'objet sélectionné et vers le presse-papiers. L'objet copié peut être insérées ensuite à un autre endroit dans la même présentation<!--, into another presentation, or into some other program-->.</td>
+				</tr>
+				<tr>
+					<td>Coller</td>
+					<td><kbd>Ctrl</kbd>+<kbd>V</kbd>,<br /><kbd>⇧ Maj</kbd>+<kbd>Inser</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>V</kbd></td>
+					<td>Insérer l'objet précédemment copié depuis le presse-papiers à la position actuelle du curseur. L'objet peut être copié à partir de la même présentation<!--, from another presentation, or from some other program-->.</td>
+				</tr>
+				<tr>
+					<td>Insérer un lien hypertexte</td>
+					<td><kbd>Ctrl</kbd>+<kbd>K</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>K</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>K</kbd></td>
+					<td>Insérer un lien hypertexte qui peut être utilisé pour accéder à une adresse web ou à une certaine diapositive de la présentation.</td>
+				</tr>
+				<tr>
+					<td>Copier le style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>C</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>C</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>C</kbd></td>
+					<td>Copier la mise en forme du fragment sélectionné du texte en cours d'édition. La mise en forme copiée peut être appliquée à un autre fragment du texte dans la même présentation.</td>
+				</tr>
+				<tr>
+					<td>Appliquer le style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>V</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>V</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>V</kbd></td>
+					<td>Appliquer la mise en forme précedemment copiée au texte de la partie en cours d'édition.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Sélectionner avec la souris</th>
+				</tr>
+				<tr>
+					<td>Ajouter au fragment sélectionné</td>
+					<td><kbd>⇧ Maj</kbd></td>
+					<td><kbd>⇧ Maj</kbd></td>
+					<td>Démarrer la sélection, maintenez enfoncée la touche <kbd>⇧ Maj</kbd> et cliquez sur l'endroit où vous souhaitez terminer la sélection.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="textselection"></a>Sélectionner avec le clavier</th>
+				</tr>
+				<tr>
+					<td>Sélectionner tout</td>
+					<td><kbd>Ctrl</kbd>+<kbd>A</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>A</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>A</kbd></td>
+					<td>Sélectionner toutes les diapositives (dans la liste des diapositives) ou tous les objets de la diapositive (dans la zone d'édition de la diapositive) ou tout le texte (dans le bloc de texte) - selon la position du curseur de la souris.</td>
+				</tr>
+				<tr>
+					<td>Sélectionner le fragment du texte</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td>Sélectionner le texte caractère par caractère.</td>
+				</tr>
+				<tr>
+					<td>Sélectionner le texte depuis le curseur jusqu'au début de la ligne</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>Début</kbd></td>
+					<td></td>
+					<td>Sélectionner le fragment du texte depuis le curseur jusqu'au début de la ligne actuelle.</td>
+				</tr>
+				<tr>
+					<td>Sélectionner le texte depuis le curseur jusqu'à la fin de la ligne</td>
+					<td><kbd>⇧ Maj</kbd>+<kbd>Fin</kbd></td>
+					<td></td>
+					<td>Sélectionner le fragment du texte depuis le curseur jusqu'à la fin de la ligne actuelle.</td>
+				</tr>
+                <tr>
+                    <td>Sélectionner un caractère à droite</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>→</kbd></td>
+                    <td>Sélectionner un caractère à droite de la position du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner un caractère à gauche</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>←</kbd></td>
+                    <td>Sélectionner un caractère à gauche de la position du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner jusqu'à la fin d'un mot</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>→</kbd></td>
+                    <td></td>
+                    <td>Sélectionner un fragment de texte depuis le curseur jusqu'à la fin d'un mot.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner au début d'un mot</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>←</kbd></td>
+                    <td></td>
+                    <td>Sélectionner un fragment de texte depuis le curseur jusqu'au début d'un mot.</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner une ligne vers le haut</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↑</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↑</kbd></td>
+                    <td>Sélectionner une ligne vers le haut (avec le curseur au début d'une ligne).</td>
+                </tr>
+                <tr>
+                    <td>Sélectionner une ligne vers le bas</td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↓</kbd></td>
+                    <td><kbd>⇧ Maj</kbd>+<kbd>↓</kbd></td>
+                    <td>Sélectionner une ligne vers le bas (avec le curseur au début d'une ligne).</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Style de texte</th>
+				</tr>
+				<tr>
+					<td>Gras</td>
+					<td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>B</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>B</kbd></td>
+					<td>Mettre la police du fragment de texte sélectionné en gras pour lui donner plus de poids.</td>
+				</tr>
+				<tr>
+					<td>Italique</td>
+					<td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>I</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>I</kbd></td>
+					<td>Mettre la police du fragment de texte sélectionné en italique pour lui donner une certaine inclinaison à droite.</td>
+				</tr>
+				<tr>
+					<td>Souligné</td>
+					<td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>U</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>U</kbd></td>
+					<td>Souligner le fragment de texte sélectionné avec la ligne qui passe sous les lettres.</td>
+				</tr>
+				<tr>
+					<td>Barré</td>
+					<td><kbd>Ctrl</kbd>+<kbd>5</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>5</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>5</kbd></td>
+					<td>Souligner le fragment de texte sélectionné avec la ligne qui passe sous les lettres.</td>
+				</tr>
+				<tr>
+					<td>Indice</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&gt;</kbd></kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&gt;</kbd></kbd></td>
+					<td>Rendre le fragment du texte sélectionné plus petit et le placer à la partie inférieure de la ligne du texte, par exemple comme dans les formules chimiques.</td>
+				</tr>
+				<tr>
+					<td>Exposant</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&lt;</kbd></kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>&lt;</kbd></kbd></td>
+					<td>Sélectionner le fragment du texte et le placer sur la partie supérieure de la ligne de texte, par exemple comme dans les fractions.</td>
+				</tr>
+				<tr>
+					<td>Liste à puces</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>L</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>L</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Maj</kbd>+<kbd>L</kbd></td>
+					<td>Créer une liste à puces non numérotée du fragment de texte sélectionné ou créer une nouvelle liste.</td>
+				</tr>
+				<tr>
+					<td>Supprimer la mise en forme</td>
+					<td><kbd>Ctrl</kbd>+<kbd>␣ Barre d'espace</kbd></td>
+					<td></td>
+					<td>Supprimer la mise en forme du fragment du texte sélectionné.</td>
+				</tr>
+				<tr>
+					<td>Agrandir la police</td>
+					<td><kbd>Ctrl</kbd>+<kbd>]</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>]</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>]</kbd></td>
+					<td>Augmenter la taille de la police du fragment de texte sélectionné de 1 point.</td>
+				</tr>
+				<tr>
+					<td>Réduire la police</td>
+					<td><kbd>Ctrl</kbd>+<kbd>[</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>[</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>[</kbd></td>
+					<td>Réduire la taille de la police du fragment de texte sélectionné de 1 point.</td>
+				</tr>
+				<tr>
+					<td>Alignement centré</td>
+					<td><kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+					<td></td>
+					<td>Centrer le texte entre les bords gauche et droit.</td>
+				</tr>
+				<tr>
+					<td>Justifié</td>
+					<td><kbd>Ctrl</kbd>+<kbd>J</kbd></td>
+					<td></td>
+					<td>Justifier le texte du paragraphe en ajoutant un espace supplémentaire entre les mots pour que les bords gauche et droit du texte soient alignés avec les marges du paragraphe.</td>
+				</tr>
+				<tr>
+					<td>Aligner à droite</td>
+					<td><kbd>Ctrl</kbd>+<kbd>R</kbd></td>
+					<td></td>
+					<td>Aligner à droite avec le texte aligné par le côté droit du bloc de texte, le côté gauche reste non aligné.</td>
+				</tr>
+				<tr>
+					<td>Alignement à gauche</td>
+					<td><kbd>Ctrl</kbd>+<kbd>L</kbd></td>
+					<td></td>
+					<td>Aligner à gauche avec le texte aligné par le côté gauche du bloc de texte, le côté droit reste non aligné.</td>
+				</tr>
+                <tr>
+                    <td>Augmenter le retrait gauche</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+                    <td>Augmenter l'alinéa de gauche d'une position de tabulation.</td>
+                </tr>
+                <tr>
+                    <td>Diminuer l'indentation gauche</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Maj</kbd>+<kbd>M</kbd></td>
+                    <td>Diminuer l'alinéa de gauche d'une position de tabulation.</td>
+                </tr>
+                <tr>
+                    <td>Supprimer un caractère à gauche</td>
+                    <td><kbd>← Retour arrière</kbd></td>
+                    <td><kbd>← Retour arrière</kbd></td>
+                    <td>Supprimer un caractère à gauche du curseur.</td>
+                </tr>
+                <tr>
+                    <td>Supprimer un caractère à droite</td>
+                    <td><kbd>Supprimer</kbd></td>
+                    <td><kbd>Fn</kbd>+<kbd>Supprimer</kbd></td>
+                    <td>Supprimer un caractère à droite du curseur.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section">Se déplacer dans le texte</th>
+                </tr>
+                <tr>
+                    <td>Déplacer un caractère vers la gauche</td>
+                    <td><kbd>←</kbd></td>
+                    <td><kbd>←</kbd></td>
+                    <td>Déplacer le curseur d'un caractère vers la gauche.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer un caractère vers la droite</td>
+                    <td><kbd>→</kbd></td>
+                    <td><kbd>→</kbd></td>
+                    <td>Déplacer le curseur d'un caractère vers la droite.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer une ligne vers le haut</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Déplacer le curseur d'une ligne vers le haut.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer une ligne vers le bas</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Déplacer le curseur d'une ligne vers le bas.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer vers le début d'un mot ou un mot vers la gauche</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd></td>
+                    <td>Déplacer le curseur au début d'un mot ou d'un mot vers la gauche.</td>
+                </tr>
+                <tr>
+                    <td>Déplacer un caractère vers la droite</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>→</kbd></td>
+                    <td>Déplacer le curseur d'un mot vers la droite.</td>
+                </tr>
+                <tr>
+                    <td>Passer à l'emplacement suivant</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↵ Entrée</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>↵ Retour</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>↵ Retour</kbd></td>
+                    <td>Passer au titre ou au corps du texte suivant. S'il s'agit du dernier caractère de remplacement d'une diapositive, une nouvelle diapositive sera insérée avec la même disposition que la diapositive originale.</td>
+                </tr><!--<tr>
+                    <td>One paragraph up</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↑</kbd></td>
+					<td></td>
+                    <td>Move the cursor one paragraph up.</td>
+                </tr>
+                <tr>
+                    <td>One paragraph down</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↓</kbd></td>
+					<td></td>
+                    <td>Move the cursor one paragraph down.</td>
+                </tr>--><tr>
+                    <td>Sauter au début de la ligne</td>
+                    <td><kbd>Début</kbd></td>
+                    <td><kbd>Début</kbd></td>
+                    <td>Placer le curseur au début de la ligne en cours d'édition.</td>
+                </tr>
+                <tr>
+                    <td>Sauter à la fin de la ligne</td>
+                    <td><kbd>Fin</kbd></td>
+                    <td><kbd>Fin</kbd></td>
+                    <td>Placer le curseur à la fin de la ligne en cours d'édition.</td>
+                </tr>
+                <tr>
+                    <td>Aller au début de la zone de texte</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Début</kbd></td>
+					<td></td>
+                    <td>Placer le curseur au début de la zone de texte en cours d'édition.</td>
+                </tr>
+                <tr>
+                    <td>Aller à la fin de la zone de texte</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Fin</kbd></td>
+					<td></td>
+                    <td>Placer le curseur à la fin de la zone de texte en cours d'édition.</td>
+                </tr>
+			</table>
+		</div>
+	</body>
+</html>

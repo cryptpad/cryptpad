@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función CONTAR.SI.CONJUNTO</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función CONTAR.SI.CONJUNTO</h1>
+			<p>La función <b>CONTAR.SI.CONJUNTO</b> es una función estadística. Se usa para contar el número de celdas seleccionadas basándose en varios criterios especificados.</p>
+			<p>La sintaxis de la función <b>CONTAR.SI.CONJUNTO</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>CONTAR.SI.CONJUNTO(rango-de-criterio-1, criterio-1,[criterio-rango-2, criterio-2], ...)</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>rango-de-criterio-1</em></b> es el primer rango de celdas seleccionadas al que se aplica el <em>criterio-1</em>. Es un argumento necesario.</p>
+            <p style="text-indent: 50px;"><b><em>criterio-1</em></b> es la primera condición que se debe cumplir. Se aplica al <em>rango-de-criterio-1</em> y se usa para determinar la media de las celdas en el <em>rango-de-criterio-1</em>. Los valores pueden introducirse manualmente o incluirse en las celdas a las que usted hace referencia. Es un argumento necesario.</p>
+            <p style="text-indent: 50px;"><b><em>rango-de-criterio-2, criterio-2, ...</em></b> son rangos adicionales y sus criterios correspondientes. Estos argumentos son opcionales. Puede añadir hasta 127 rangos y criterio correspondiente.</p>
+			<p class="note"><b>Nota</b>: puede usar caracteres comodín cuando especifica criterios. El signo de interrogación "?" puede reemplazar un único carácter y el asterisco "*" puede usarse en vez de cualquier número de caracteres. Si usted quiere encontrar el signo de interrogación o un asterisco, introduzca una tilde (~) antes del carácter.</p>
+			<p>Para aplicar la función <b>CONTAR.SI.CONJUNTO</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Estadísticas</b> en la lista,</li>
+			<li>haga clic en la función <b>CONTAR.SI.CONJUNTO</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función CONTAR.SI.CONJUNTO" src="../images/countifs.png" /></p>
+		</div>
+	</body>
+</html>

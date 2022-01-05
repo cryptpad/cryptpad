@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Scheda Plugin</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Presentazione dell'interfaccia utente dell'Editor di Documenti - Scheda Plugin" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Scheda Plugin</h1>
+            <p>La scheda <b>Plugin</b> consente di accedere a funzionalità di modifica avanzate utilizzando i componenti di terze parti disponibili. Qui puoi anche usare le macro per semplificare le operazioni di routine.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Finestra dell’Editor di Documenti Online:</p>
+                <p><img alt="Scheda Plugin" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Finestra dell’Editor di Documenti Desktop:</p>
+                <p><img alt="Scheda Plugin" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">Il pulsante <b>Impostazioni</b> consente di aprire la finestra in cui è possibile visualizzare e gestire tutti i plugin installati e aggiungerne di propri.</p>
+            <p>Il pulsante <b>Macro</b> consente di aprire la finestra in cui è possibile creare le proprie macro ed eseguirle. Per saperne di più sulle macro puoi fare riferimento alla nostra <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">Documentazione API</a>.</p>
+            <p>Attualmente, i seguenti plugin sono disponibili per impostazione predefinita:</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Send</b> consente d’inviare il documento via e-mail utilizzando il cliente di posta desktop predefinito (disponibile solo nella <em>versione desktop</em>),</li>
+                <li><b>Highlight code</b> consente di evidenziare la sintassi del codice selezionando la lingua, lo stile, il colore di sfondo necessari,</li>
+                <li><b>OCR</b> consente di riconoscere il testo incluso in un'immagine e d’inserirlo nel testo del documento,</li>
+                <li><b>PhotoEditor</b> consente di modificare le immagini: ritagliare, capovolgere, ruotare, disegnare linee e forme, aggiungere icone e testo, caricare una maschera e applicare filtri come Scala di grigi, Inverti, Seppia, Sfocatura, Precisione, Rilievo, ecc.,</li>
+                <li class="onlineDocumentFeatures"><b>Speech</b> consente di convertire il testo selezionato in voce (disponibile solo nella <em>versione online</em>),</li>
+                <li><b>Thesaurus</b> consente di cercare sinonimi e contrari di una parola e sostituirla con quella selezionata,</li>
+                <li><b>Translator</b> consente di tradurre il testo selezionato in altre lingue,
+                    <p class="note"><b>Note</b>: this plugin doesn't work in Internet Explorer.</p>
+                </li>
+                <li><b>YouTube</b> consente d’incorporare video di YouTube nel tuo documento.</li>
+            </ul>
+            <p class="onlineDocumentFeatures">I plugin <b>Wordpress</b> ed <b>EasyBib</b> possono essere utilizzati se si collegano i servizi corrispondenti nelle impostazioni del portale. È possibile utilizzare le seguenti istruzioni per la <a target="_blank" href="https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx" onclick="onhyperlinkclick(this)">versione server</a> o per la <a target="_blank" href="https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx" onclick="onhyperlinkclick(this)">versione SaaS</a>. </p>
+            <p>Per saperne di più sui plugin puoi fare riferimento alla nostra <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">Documentazione API</a>. Tutti gli esempi di plugin open source attualmente esistenti sono disponibili su <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a>.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Afficher les informations sur le fichier</title>
+		<meta charset="utf-8" />
+		<meta name="description" content=">Afficher le titre, l'auteur, l'emplacement, la date de création et les statistiques du fichier" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Afficher les informations sur le fichier</h1>
+			<p>Pour accéder aux informations détaillées sur le classeur actuellement édité dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Informations du classeur....</b></p>
+            <h3>Informations générales</h3>
+            <p>L'information sur la présentation comprend le titre de la présentation et l'application avec laquelle la présentation a été créée. Certains de ces paramètres sont mis à jour automatiquement mais les autres peuvent être modifiés.</p>
+            <ul>
+                <li class="onlineDocumentFeatures"><b>Emplacement</b> - le dossier dans le module <b>Documents</b> où le fichier est stocké. <b>Propriétaire</b> - le nom de l'utilisateur qui a créé le fichier. <b>Chargé</b> - la date et l'heure quand le fichier a été créé. Ces paramètres ne sont disponibles que sous la <I>version en ligne</I>.</li>
+                <li><b>Titre</b>, <b>sujet</b>, <b>commentaire</b> - ces paramètres facilitent la classification des documents. Vos pouvez saisir l'information nécessaire dans les champs appropriés.</li>
+                <li><b>Dernière modification</b> - la date et l'heure quand le fichier a été modifié la dernière fois.</li>
+                <li><b>Dernière modification par</b> -  le nom de l'utilisateur qui a apporté la dernière modification au classeur quand plusieurs utilisateurs travaillent sur un même fichier. </li>
+                <li><b>Application</b> - l'application dans laquelle on a créé le classeur.</li>
+                <li><b>Auteur</b> - la personne qui a créé le fichier. Saisissez le nom approprié dans ce champ. Appuyez sur la touche <I>Entrée</I> pour ajouter un nouveau champ et spécifier encore un auteur.</li>
+            </ul>
+            <p>Si vous avez modifié les paramètres du fichier, cliquez sur <b>Appliquer</b> pour enregistrer les modifications.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Remarque</b>: Les éditeurs en ligne vous permettent de modifier le titre du classeur directement à partir de l'interface de l'éditeur. Pour ce faire, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Renommer...</b>, puis entrez le <b>Nom de fichier</b> voulu dans la nouvelle fenêtre qui s'ouvre et cliquez sur <b>OK</b>.</p>
+            </div>
+            <div class="onlineDocumentFeatures">
+                <h3>Informations d'autorisation</h3>
+                <p>Dans la <I>version en ligne</I>, vous pouvez consulter les informations sur les permissions des fichiers stockés dans le cloud.</p>
+                <p class="note"><b>Remarque</b>: cette option n'est pas disponible pour les utilisateurs disposant des autorisations en <b>Lecture seule</b>.</p>
+                <p>Pour savoir qui a le droit d'afficher ou de modifier le classur, sélectionnez l'option <b>Droits d'accès...</b> dans la barre latérale de gauche.</p>
+                <p>Vous pouvez également changer les droits d'accès actuels en cliquant sur le bouton <b>Changer les droits d'accès</b> dans la section <b>Personnes qui ont des droits</b>.</p>
+            </div>
+                <p>Pour fermer l'onglet <b>Fichier </b>et reprendre le travail sur votre classur, sélectionnez l'option <b>Fermer le menu</b>.</p>
+            </div>
+	</body>
+</html>

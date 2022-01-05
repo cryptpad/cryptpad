@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kalkulationstabelle speichern/drucken/herunterladen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your spreadsheet in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Kalkulationstabelle speichern/drucken/<span class="onlineDocumentFeatures">herunterladen</span></h1>
+            <h3>Speichern</h3>
+            <p class="onlineDocumentFeatures">Standardmäßig speichert der Online-<a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a> Ihre Datei während der Bearbeitung automatisch alle 2 Sekunden, um Datenverluste im Falle eines unerwarteten Schließen des Programmes zu verhindern. Wenn Sie die Datei im <b>Schnellmodus</b> co-editieren, fordert der Timer 25 Mal pro Sekunde Aktualisierungen an und speichert vorgenommene Änderungen. Wenn Sie die Datei im Modus <b>Strikt</b> co-editieren, werden Änderungen automatisch alle 10 Minuten gespeichert. Sie können den bevorzugten Co-Modus nach Belieben auswählen oder die Funktion <b>AutoSpeichern</b> auf der Seite <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Erweiterte Einstellungen</a> deaktivieren.</p>
+			<p>Aktuelles Tabelle manuell im aktuellen Format im aktuellen Verzeichnis speichern:</p>
+			<ul>
+				<li>Verwenden Sie das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/save.png" /> im linken Bereich der Kopfzeile des Editors oder</li>
+				<li>drücken Sie die Tasten <b>STRG+S</b> oder</li>
+				<li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Speichern</b>.</li>
+			</ul>
+            <p class="note desktopDocumentFeatures">Um Datenverluste durch ein unerwartetes Schließen des Programms zu verhindern, können Sie in der <em>Desktop-Version</em> die Option <b>AutoWiederherstellen</b> auf der Seite <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Erweiterte Einstellungen</a> aktivieren.</p>
+            <div class="desktopDocumentFeatures">
+                <p>In der <em>Desktop-Version</em> können Sie die Tabelle unter einem anderen Namen, an einem neuen Speicherort oder in einem anderen Format speichern.</p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Speichern als...</b>.</li>
+                    <li>Wählen Sie das gewünschte Format aus: XLSX, ODS, CSV, PDF, PDF/A. Sie können auch die Option <b>Tabellenvorlage</b> (XLTX oder OTS) auswählen.</li>
+                </ol>
+            </div>
+            <div class="onlineDocumentFeatures">
+            <h3>Herunterladen</h3>
+			<p>In der <em>Online-Version</em> können Sie die daraus resultierende Tabelle auf der Festplatte Ihres Computers speichern.</p>
+			<ol>
+				<li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+				<li>Wählen Sie die Option <b>Herunterladen als...</b>.</li>
+				<li>Wählen Sie das gewünschte Format aus: XLSX, PDF, ODS, CSV, XLTX, PDF/A, OTS.<p class="note"><b>Hinweis</b>: Wenn Sie das Format CSV auswählen, werden alle Funktionen (Schriftformatierung, Formeln usw.), mit Ausnahme des einfachen Texts, nicht in der CSV-Datei beibehalten. Wenn Sie mit dem Speichern fortfahren, öffnet sich das Fenster <b>CSV-Optionen auswählen</b>. Standardmäßig wird <em>Unicode (UTF-8)</em> als <b>Codierungstyp</b> verwendet. Das <b>Standardtrennzeichen</b> ist das <em>Komma</em> (,), aber die folgenden Optionen sind ebenfalls verfügbar: <em>Semikolon</em> (;), <em>Doppelpunkt</em> (:), <em>Tab</em>, <em>Leerzeichen</em> und <em>Sonstige</em> (mit dieser Option können Sie ein benutzerdefiniertes Trennzeichen festlegen).</p>
+                </li>
+			</ol>
+                <h3>Kopie speichern</h3>
+                <p>In der <em>Online-Version</em> können Sie die eine Kopie der Datei in Ihrem Portal speichern.</p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Kopie Speichern als...</b>.</li>
+                    <li>Wählen Sie das gewünschte Format aus: XLSX, PDF, ODS, CSV, XLTX, PDF/A, OTS.</li>
+                    <li>Wählen Sie den gewünschten Speicherort auf dem Portal aus und klicken Sie <b>Speichern</b>.</li>
+                </ol>
+            </div>
+            <h3 id="print">Drucken</h3>
+			<p>Aktuelle Kalkulationstabelle drucken:</p>
+			<ul>
+				<li>Klicken Sie auf das Symbol <b>Drucken</b> <img alt="Drucken" src="../images/print.png" /> im linken Bereich der Kopfzeile des Editors oder</li>
+				<li>nutzen Sie die Tastenkombination <b>STRG+P</b> oder</li>
+				<li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Drucken</b>.</li>
+			</ul>
+            <div class="note">
+                Der Firefox-Browser ermöglicht das Drucken, ohne das Dokument zuerst als PDF-Datei herunterzuladen.
+            </div>
+			<p>Im Fenster <b>Druckeinstellungen</b> können Sie die Standarddruckeinstellungen ändern. Klicken Sie am unteren Rand des Fensters auf die Schaltfläche <b>Details anzeigen</b>, um alle Parameter anzuzeigen.</p>
+            <p class="note">Sie können die Druckeinstellungen auch auf der Seite <b>Erweiterte Einstellungen...</b> ändern: Klicken Sie auf das Symbol <b>Datei</b> in der oberen Symbolleiste und wählen Sie <b>Erweiterte Einstellungen...</b> &gt;&gt; <b>Seiteneinstellungen</b>:<br />Einige dieser Einstellungen (<b>Seitenränder</b>, <b>Seitenausrichtung</b> und <b>Seitengröße</b> sowie <b>Druckbereich</b>) sind auch in der Registerkarte <b>Layout</b> auf der oberen Symbolleiste verfügbar.</p>
+			<p><img alt="Druckeinstellungen" src="../images/printsettingswindow.png" /></p>
+			<p>Hier können Sie die folgenden Parameter festlegen:</p>
+			<ul>
+			<li><b>Druckbereich</b> - geben Sie an, was Sie drucken möchten: das gesamte <b>aktive Blatt</b>, die gesamte <b>Arbeitsmappe</b> oder einen vorher gewählten Zellenbereich (<b>Auswahl</b>).<p>Wenn Sie zuvor einen konstanten Druckbereich festgelegt haben, nun aber das gesamte Blatt drucken möchten, aktivieren Sie das Kontrollkästchen <b>Druckbereich ignorieren</b>.</p>
+            </li>
+			<li><b>Blatteinstellungen</b> - legen Sie für jedes einzelne Blatt individuelle Druckeinstellungen fest, wenn Sie vorher die Option <b>Arbeitsmappe</b> in der Menüliste für den <b>Druckbereich</b> ausgewählt haben.</li>
+            <li><b>Seitenformat</b> - wählen Sie eine der verfügbaren Größen aus der Menüliste aus.</li>
+			<li><b>Seitenorientierung</b> - wählen Sie die Option <b>Hochformat</b>, wenn Sie vertikal auf der Seite drucken möchten, oder die Option <b>Querformat</b>, um horizontal zu drucken.</li>
+			<li><b>Skalierung</b> - wenn Sie nicht möchten, dass anhängende Spalten oder Zeilen auf einer zweiten Seite gedruckt werden, können Sie den Inhalt des Blatts auf eine Seite verkleinern, indem Sie die entsprechende Option auswählen: <b>Tabelle auf eine Seite anpassen</b>, <b>Alle Spalten auf einer Seite</b> oder <b>Alle Zeilen auf einer Seite</b>. Wenn Sie keine Anpassung vornehmen wollen, wählen Sie die Option <b>Keine Skalierung</b>.</li>
+            <li><b>Ränder</b> - geben Sie den Abstand zwischen der Blattdaten und den Rändern der gedruckten Seite an, indem Sie die Standardgrößen in den Feldern <b>Oben</b>, <b>Unten</b>, <b>Links</b> und <b>Rechts</b> ändern.</li>
+			<li><b>Drucken</b> - geben Sie die Blattelemente an, die gedruckt werden sollen, indem Sie die entsprechenden Felder aktivieren: <b>Gitternetzlinien drucken</b> und <b>Zellen- und Spaltenüberschriften drucken</b>.</li>
+			</ul>
+            <p><span class="desktopDocumentFeatures">In der <em>Desktop-Version</em> wird die Datei direkt gedruckt.</span> <span class="onlineDocumentFeatures">In der <em>Online-Version</em> wird basierend auf dem Dokument eine PDF-Datei erstellt. </span><span class="onlineDocumentFeatures">Diese können Sie öffnen und drucken oder auf der Festplatte des Computers oder einem Wechseldatenträger speichern und später drucken. </span><span class="onlineDocumentFeatures">Einige Browser (z. B. Chrome und Opera) unterstützen Direktdruck.</span></p>
+            <h6 id="printarea">Druckbereich festlegen</h6>
+            <p>Wenn Sie nur einen ausgewählten Zellbereich anstelle des gesamten Arbeitsblatts drucken möchten, können Sie diesen mit der Option <b>Auswahl</b> in der Dropdown-Liste <b>Druckbereich</b> festlegen. Wird die Arbeitsmappe gespeichert so wird diese Einstellung nicht übernommen. Sie ist für die einmalige Verwendung vorgesehen.</p>
+            <p>Wenn ein Zellbereich häufig gedruckt werden soll, können Sie im Arbeitsblatt einen konstanten Druckbereich festlegen. Wird die Arbeitsmappe nun gespeichert, wird auch der Druckbereich gespeichert und kann beim nächsten Öffnen der Tabelle verwendet werden. Es ist auch möglich mehrere konstante Druckbereiche auf einem Blatt festzulegen. In diesem Fall wird jeder Bereich auf einer separaten Seite gedruckt.</p>
+            <p>Einen Druckbereich festlegen:</p>
+            <ol>
+                <li>wählen Sie den gewünschten Zellbereich in der Arbeitsmappe aus: Um mehrere Zellen auszuwählen, drücken Sie die Taste <em>STRG</em> und halten Sie diese gedrückt.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Layout</b>.</li>
+                <li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Druckbereich" src="../images/printareabutton.png" /> <b>Druckbereich</b> und wählen Sie die Option <b>Druckbereich festlegen</b>.</li>
+            </ol>
+            <p>Wenn Sie die Arbeitsmappe speichern, wird der festgelegte Druckbereich ebenfalls gespeichert. Wenn Sie die Datei das nächste Mal öffnen, wird der festgelegte Druckbereich gedruckt.</p>
+            <p class="note"> <b>Hinweis</b>: wenn Sie einen Druckbereich erstellen, wird automatisch ein als <em>Druck_Bereich</em> <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">benannter Bereich</a> erstellt, der im <b>Namensmanger</b> angezeigt wird. Um die Ränder aller Druckbereiche im aktuellen Arbeitsblatt hervorzuheben, klicken Sie auf den Pfeil im Namensfeld links neben der Bearbeitungsleiste und wählen Sie den Namen <em>Druck_Bereich</em> aus der Namensliste aus.</p>
+            <p>Zellen in einen Druckbereich einfügen:</p>
+            <ol>
+                <li>Öffnen Sie die Arbeitsmappe mit dem festgelegten Druckbereich.</li>
+                <li>Wählen Sie den gewünschten Zellbereich in der Arbeitsmappe aus.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Layout</b>.</li>
+                <li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Druckbereich" src="../images/printareabutton.png" /> <b>Druckbereich</b> und wählen Sie die Option <b>Druckbereich festlegen</b>.</li>
+            </ol>
+            <p><!--If the selected cell range is adjacent to the existing print area, it will be added to this print area. If the selected cell range is not adjacent to the existing print area,--> Ein neuer Druckbereich wird hinzugefügt. Jeder Druckbereich wird auf einer separaten Seite gedruckt.</p>
+            <p>Einen Druckbereich löschen:</p>
+            <ol>
+                <li>Öffnen Sie die Arbeitsmappe mit dem festgelegten Druckbereich.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Layout</b>.</li>
+                <li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Druckbereich" src="../images/printareabutton.png" /> <b>Druckbereich</b> und wählen Sie die Option <b>Druckbereich festlegen</b>.</li>
+            </ol>
+            <p>Alle auf diesem Blatt vorhandenen Druckbereiche werden entfernt. Anschließend wird die gesamte Arbeitsmappe gedruckt.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pestaña de Extensiones</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Presentation Editor user interface - Plugins tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Pestaña de Extensiones</h1>
+            <p>La pestaña de <b>Extensiones</b> permite acceso a características de edición avanzadas usando componentes disponibles de terceros. Aquí también puede utilizar macros para simplificar las operaciones rutinarias.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Ventana del editor de presentaciones en línea:</p>
+                <p><img alt="Pestaña de Extensiones" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Ventana del editor de presentaciones de escritorio:</p>
+                <p><img alt="Pestaña de Extensiones" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">El botón <b>Ajustes</b> permite abrir la ventana donde puede ver y administrador todas las extensiones instaladas y añadir las suyas propias.</p>
+            <p>El botón <b>Macros</b> permite abrir la ventana donde puede crear sus propias macros y ejecutarlas. Para aprender más sobre los plugins refiérase a nuestra <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">Documentación de API</a>.</p>
+            <p>Actualmente, estos son los plugins disponibles:</p>		
+            <ul>
+                <li><b>ClipArt</b> permite añadir imágenes de la colección de clipart a su presentación,</li>
+                <li><b>Resaltar código</b> permite resaltar la sintaxis del código, seleccionando el idioma, el estilo y el color de fondo necesarios,</li>
+                <li><b>Editor de Fotos</b> permite editar imágenes: cortar, cambiar tamaño, usar efectos etc.</li>
+                <li>El <b>Diccionario de sinónimos</b> permite buscar tanto sinónimos como antónimos de una palabra y reemplazar esta palabra por la seleccionada,</li>
+                <li><b>Traductor</b> permite traducir el texto seleccionado a otros idiomas,
+                    <p class="note"><b>Nota</b>: este complemento no funciona en Internet Explorer.</p>
+                </li>
+                <li><b>Youtube</b> permite adjuntar vídeos de YouTube en su presentación.</li>
+            </ul>
+            <p>Para aprender más sobre plugins, por favor, lea nuestra <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">Documentación API</a>. Todos los ejemplos de puglin existentes y de acceso libre están disponibles en <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a></p>
+		</div>
+	</body>
+</html>

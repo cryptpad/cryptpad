@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Verweise einfügen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Die Beschreibung der Mendeley-, Zotero- und EasyBib-Plugins für ONLYOFFICE Editoren, mit denen Verweisen in Dokumente eingefügt werden können" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Verweise einfügen</h1>
+        <p>ONLYOFFICE <a href="https://www.onlyoffice.com/de/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> unterstützt die Literaturverwaltungsprogramme wie <b>Mendeley</b>, <b>Zotero</b> und <b>EasyBib</b> beim Einfügen von Quellenangaben in Ihr Dokument.</p>
+
+        <h2 id="Mendeley_block">Mendeley</h2>
+        <h3>ONLYOFFICE mit Mendeley verbinden</h3>
+        <ol>
+            <li>Melden Sie sich bei Ihrem <b>Mendeley</b>-Konto an.</li>
+            <li>Wechseln Sie in Ihrem Dokument zur Registerkarte <b>Plugins</b> und wählen Sie <img alt="Mendeley Plugin Symbol" src="../images/mendeley.png" /> <b>Mendeley</b> aus. Eine Seitenleiste wird links in Ihrem Dokument geöffnet.<li>
+    Klicken Sie auf die Schaltfläche <b>Link kopieren und Formular öffnen</b>.<br />
+    Der Browser öffnet ein Formular auf der Mendeley-Seite. Füllen Sie dieses Formular aus und notieren Sie die Anwendungs-ID für ONLYOFFICE.
+</li>
+            <li>Wechseln Sie zurück zu Ihrem Dokument.</li>
+            <li>Geben Sie die Anwendungs-ID ein und klicken Sie auf <b>Speichern</b>.</li>
+            <li>Klicken Sie auf <b>Anmelden</b>.</li>
+            <li>Klicken Sie auf <b>Weiter</b>.</li>
+        </ol>
+        <p>Jetzt ist ONLYOFFICE mit Ihrem Mendeley-Konto verbunden.</p>
+        <h3>Verweise einfügen</h3>
+        <ol>
+            <li>Öffnen Sie das Dokument und platzieren Sie den Cursor an der Stelle, an der Sie den Verweis(-e) einfügen möchten.</li>
+            <li>Öffnen Sie die Registerkarte <b>Plugins</b> und wählen Sie den Menüpunkt <img alt="Mendeley Plugin Symbol" src="../images/mendeley.png" /> <b>Mendeley</b> aus.</li>
+            <li>Geben Sie einen Suchtext ein und drücken Sie die <b>Eingabetaste</b> auf Ihrer Tastatur.</li>
+            <li>Klicken Sie auf ein oder mehrere Kontrollkästchen.</li>
+            <li>[Optional] Geben Sie einen neuen Suchtext ein und klicken Sie auf ein oder mehrere Kontrollkästchen.</li>
+            <li>Wählen Sie den Referenzstil aus dem Pulldown-Menü <b>Stil</b>.</li>
+            <li>Klicken Sie auf die Schaltfläche <b>Bibliographie einfügen</b>.</li>
+        </ol>
+
+        <h2 id="Zotero_block">Zotero</h2>
+        <h3>ONLYOFFICE mit Zotero verbinden</h3>
+        <ol>
+            <li>Melden Sie sich bei Ihrem <b>Zotero</b>-Konto an.</li>
+            <li>Wechseln Sie in Ihrem Dokument zur Registerkarte <b>Plugins</b> und wählen Sie <img alt="Zotero Plugin Symbol" src="../images/zotero.png" /> <b>Zotero</b> aus. Eine Seitenleiste wird links in Ihrem Dokument geöffnet.</li>
+            <li>Klicken Sie auf <b>Zotero API-Einstellungen</b>.</li>
+            <li>Erstellen Sie auf der Zotero-Seite einen neuen Schlüssel für Zotero, kopieren Sie ihn und speichern Sie ihn für später.</li>
+            <li>Wechseln Sie zu Ihrem Dokument und fügen Sie den API-Schlüssel ein.</li>
+            <li>Klicken Sie auf <b>Speichern</b>.</li>
+        </ol>
+        <p>Jetzt ist ONLYOFFICE mit Ihrem Zotero-Konto verbunden.</p>
+        <h3>Verweise einfügen</h3>
+        <ol>
+            <li>Öffnen Sie das Dokument und platzieren Sie den Cursor an der Stelle, an der Sie den Verweis(-e) einfügen möchten.</li>
+            <li>Öffnen Sie die Registerkarte <b>Plugins</b> und wählen Sie den Menüpunkt <img alt="Zotero Plugin Symbol" src="../images/zotero.png" /> <b>Zotero</b> aus.</li>
+            <li>Geben Sie einen Suchtext ein und drücken Sie die <b>Eingabetaste</b> auf Ihrer Tastatur.</li>
+            <li>Klicken Sie auf ein oder mehrere Kontrollkästchen.</li>
+            <li>[Optional] Geben Sie einen neuen Suchtext ein und klicken Sie auf ein oder mehrere Kontrollkästchen.</li>
+            <li>Wählen Sie den Referenzstil aus dem Pulldown-Menü <b>Stil</b>.</li>
+            <li>Klicken Sie auf die Schaltfläche <b>Bibliographie einfügen</b>.</li>
+        </ol>
+
+        <h2 id="EasyBib_block">EasyBib</h2>
+        <ol>
+            <li>Öffnen Sie das Dokument und platzieren Sie den Cursor an der Stelle, an der Sie den Verweis(-e) einfügen möchten.</li>
+            <li>Öffnen Sie die Registerkarte <b>Plugins</b> und wählen Sie den Menüpunkt <img alt="EasyBib plugin icon" src="../images/easybib.png" /> <b>EasyBib</b> aus.</li>
+            <li>Wählen Sie den Quellentyp aus, den Sie suchen möchten.</li>
+            <li>Geben Sie einen Suchtext ein und drücken Sie die <b>Eingabetaste</b> auf Ihrer Tastatur.</li>
+            <li>Klicken Sie auf der rechten Seite des entsprechenden Buch-/Zeitschriftenartikels/der Website auf '+'. Es wird der Bibliographie hinzugefügt.</li>
+            <li>Wählen Sie den Referenzstil.</li>
+            <li>Klicken Sie auf <b>Bibliographie zum Dokument hinzufügen</b>, um die Referenzen einzufügen.</li>
+        </ol>
+        <img class="gif" alt="Easybib Plugin Gif" src="../images/easybib_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

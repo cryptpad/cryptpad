@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Paramètres avancés de Document Editor</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Paramètres avancés de Document Editor" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Paramètres avancés de Document Editor</h1>
+        <p><a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> vous permet de modifier ses paramètres avancés. Pour y accéder, ouvrez l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Paramètres avancés...</b>. Vous pouvez également cliquer sur l'icône <b>Paramètres d'affichage</b> <img alt="L'icône Paramètres d'affichage" src="../images/viewsettingsicon.png" /> sur le côté droit de l'en-tête de l'éditeur et sélectionner l'option <b>Paramètres avancés</b>.</p>
+        <p>Les paramètres avancés sont les suivants:</p>
+        <ul>
+            <li>Affichage des commentaires sert à activer/désactiver les commentaires en temps réel. 
+            <ul>
+                <li><b>Activer l'affichage des commentaires</b> - si cette option est désactivée, les passages commentés seront mis en surbrillance uniquement si vous cliquez sur l'icône <img alt="L'icône Commentaires" src="../images/commentsicon.png" /> de la barre latérale gauche.</li>
+                <li><b>Activer l'affichage des commentaires résolus</b> - cette fonction est désactivée par défaut pour que les commentaires résolus soient cachés dans le texte du document. Vous ne pourrez voir ces commentaires que si vous cliquez sur l'icône <b>Commentaires</b> <img alt="L'icône Commentaires" src="../images/commentsicon.png" /> dans la barre latérale de gauche. Activez cette option si vous voulez afficher les commentaires résolus dans le texte du document.</li>
+            </ul>
+            </li>
+            <li><b>Vérification de l'orthographe</b> sert à activer/désactiver l'option de vérification de l'orthographe.</li>
+            <li><b>Vérification</b> sert à remplacer automatiquement le mot ou le symbole saisi dans le champ <b>Remplacer</b> ou choisi de la liste par un nouveau mot ou symbole du champ <b>Par</b>.</li>
+            <li><b>Entrée alternative</b> sert à activer / désactiver les hiéroglyphes.</li>
+            <li><b>Guides d'alignement</b> est utilisé pour activer/désactiver les guides d'alignement qui apparaissent lorsque vous déplacez des objets et vous permettent de les positionner précisément sur la page.</li>
+            <li><b>Compatibilité</b> sert à <I>rendre les fichiers compatibles avec les anciennes versions de MS Word lorsqu'ils sont enregistrés au format DOCX</I>.</li>
+            <li><span class="onlineDocumentFeatures"><b>Enregistrement automatique</b> est utilisé dans la <I>version en ligne</I> pour activer/désactiver l'enregistrement automatique des modifications que vous effectuez pendant l'édition.</span></li>
+            <li><span class="desktopDocumentFeatures"><b>Récupération automatique</b> - est utilisé dans la <I>version de bureau</I> pour activer/désactiver l'option qui permet de récupérer automatiquement les documents en cas de fermeture inattendue du programme.</span></li>
+            <li class="onlineDocumentFeatures">Le <b>Mode de co-édition</b> permet de sélectionner l'affichage des modifications effectuées lors de la co-édition:
+                <ul>
+                    <li>Par défaut, le mode <b>Rapide</b> est sélectionné, les utilisateurs qui participent à la co-édition du document verront les changements en temps réel une fois qu'ils sont faits par d'autres utilisateurs.</li>
+                    <li>Si vous préférez ne pas voir d'autres changements d'utilisateur (pour ne pas vous déranger, ou pour toute autre raison), sélectionnez le mode <b>Strict</b> et tous les changements apparaîtront seulement après avoir cliqué sur l'icône <b>Enregistrer</b> <img alt="L'icône Enregistrer" src="../images/saveupdate.png" /> pour vous informer qu'il y a des changements effectués par d'autres utilisateurs.</li>
+                </ul>
+            </li>
+            <li class="onlineDocumentFeatures">
+                <b>Changements de collaboration en temps réel</b> sert à spécifier quels sont les changements que vous souhaitez mettre en surbrillance lors de l'édition collaborative:
+                <ul>
+                    <li>En sélectionnant <b>N'afficher aucune modification</b>, aucune des modifications effectuées au cours de la session ne sera mise en surbrillance.</li>
+                    <li>L'option <b>Tout sélectionnée</b>, toutes les modifications effectuées au cours de la session seront mises en surbrillance.</li>
+                    <li>En sélectionnant <b>Afficher les modifications récentes</b>, seules les modifications effectuées depuis la dernière fois que vous avez cliqué sur l'icône <b>Enregistrer</b> <img alt="L'icône Enregistrer" src="../images/saveupdate.png" /> seront mises en surbrillance. Cette option n'est disponible que lorsque le mode <b>Strict</b> est sélectionné.</li>
+                </ul>
+            </li>
+            <li><b>Thème d’interface</b> permet de modifier les jeux de couleurs de l'interface d'éditeur.
+                <ul>
+                    <li>Le mode <b>Claire</b> comprend l'affichage des éléments de l'interface utilisateur en couleurs standards bleu, blanc et gris claire à contraste réduit et est destiné à un travail de jour.</li>
+                    <li>Le mode <b>Claire classique</b> comprend l'affichage en couleurs standards bleu, blanc et gris claire.</li>
+                    <li>Le mode <b>Sombre</b> comprend l'affichage en tons sombres noir, gris foncé et gris claire destinés à un travail de nuit.</li>
+                </ul>
+            </li>
+            <li><b>Valeur du zoom par défaut</b> sert à définir la valeur de zoom par défaut en la sélectionnant de la liste des options disponibles de 50% à 200%. Vous pouvez également choisir l'option <b>Ajuster à la page</b> ou <b>Ajuster à la largeur</b>.</li>
+            <li>
+                <b>Hinting de la police</b> sert à sélectionner le type d'affichage de la police dans Document Editor:
+                <ul>
+                    <li>Choisissez <b>Comme Windows</b> si vous aimez la façon dont les polices sont habituellement affichées sous Windows, c'est à dire en utilisant la police de Windows.</li>
+                    <li>Choisissez <b>Comme OS X</b> si vous aimez la façon dont les polices sont habituellement affichées sous Mac, c'est à dire sans hinting.</li>
+                    <li>Choisissez <b>Natif</b> si vous voulez que votre texte sera affiché avec les hintings intégrés dans les fichiers de polices.</li>
+                    <li>
+                        <b>Mise en cache par défaut</b> sert à sélectionner cache de police. Il n'est pas recommandé de désactiver ce mode-ci sans raison évidente. C'est peut être utile dans certains cas, par exemple les problèmes d'accélération matérielle activé sous Google Chrome.
+                        <p>Document Editor gère deux modes de mise en cache:</p>
+                        <ol>
+                            <li>Dans le <b>premier mode de mise en cache</b> chaque lettre est mis en cache comme une image indépendante.</li>
+                            <li>Dans le <b>deuxième mode de mise en cache</b> l'image d'une certaine taille est sélectionnée avec les lettres dynamiques et avec de l'allocation/libération de la mémoire mis en place. La deuxième image est créée s'il y a de mémoire suffisante etc.</li>
+                        </ol>
+                        <p>Le <b>Mode de mise en cache par défaut</b> est activé en fonction du navigateur utilisé:</p>
+                        <ul>
+                            <li>Avec la <b>mise en cache par défaut</b> activée, dans Internet Explorer (v. 9, 10, 11) le <b>deuxième mode de mise en cache</b> est utilisé, le <b>premier mode de mise en cache </b>est utilisé dans les autres navigateurs.</li>
+                            <li>Avec la <b>mise en cache par défaut</b> désactivée, dans Internet Explorer (v. 9, 10, 11) le <b>premier mode de mise en cache</b> est utilisé, le <b>deuxième mode de mise en cache </b>est utilisé dans les autres navigateurs.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><b>Unité de mesure</b> sert à spécifier les unités de mesure utilisées sur les règles et dans les fenêtres de paramètres pour les paramètres tels que largeur, hauteur, espacement, marges etc. Vous pouvez choisir l'option <b>Centimètre</b> ou <b>Point</b>.</li>
+            <li><b>Couper, copier et coller</b> - s'utilise pour afficher le bouton <b>Options de collage</b> lorsque le contenu est collé. Cochez la case pour activer cette option.</li>
+            <li><b>Réglages macros</b> - s'utilise pour désactiver toutes les macros avec notification.   
+            <ul>
+                <li>Choisissez <b>Désactivez tout</b> pour désactiver toutes les macros dans votre document;</li>
+                <li><b>Montrer la notification</b> pour afficher les notifications lorsque des macros sont présentes dans un document;</li>
+                <li><b>Activer tout</b> pour exécuter automatiquement toutes les macros dans un document.</li>
+            </ul>
+            </li>
+        </ul>
+        <p>Pour enregistrer toutes les modifications, cliquez sur le bouton <b>Appliquer.</b></p>
+    </div>
+</body>
+</html>

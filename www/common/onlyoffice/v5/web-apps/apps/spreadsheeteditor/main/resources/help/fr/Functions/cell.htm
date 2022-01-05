@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>La fonction CELLULE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>La fonction CELLULE</h1>
+			<p>La fonction <B>CELLULE</B> est l'une des fonctions d'information. Cette fonction renvoie des informations sur la mise en forme, l’emplacement ou le contenu d’une cellule.</p>
+			<p>La syntaxe de la fonction <b>CELLULE</b> est comme suit:</p> 
+			<p style="text-indent: 150px;"><b><em>CELLULE (info_type, [référence])</em></b></p> 
+            <p>où:</p>
+            <p style="text-indent: 50px;"><b><em>info_type</em></b> est la valeur de texte qui spécifie quel type d'information est renvoyé. C'est un argument obligatoire. Les valeurs disponibles sont présentées dans le tableau ci-dessous.</p>
+            <p style="text-indent: 50px;"><b><em>[référence]</em></b> identifie la cellule sur laquelle vous souhaitez des informations. Si vous omettez cet argument, la fonction renvoie les informations pour la dernière cellule modifiée. Si l’argument <I>référence</I> est une plage de cellules, la fonction renvoie les informations de la cellule supérieur gauche de la plage sélectionnée.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Les valeurs de texte</b></td>
+                    <td><b>Le type d'information</b></td>
+                </tr>
+                <tr>
+                    <td>"adresse"</td>
+                    <td>Renvoie la référence pour la cellule.</td>
+                </tr>
+                <tr>
+                    <td>"col"</td>
+                    <td>Renvoie le numéro de colonne de la cellule.</td>
+                </tr>
+                <tr>
+                    <td>"couleur"</td>
+                    <td>Renvoie 1 si la cellule est formatée en couleur pour les valeurs négatives; sinon renvoie 0.</td>
+                </tr>
+                <tr>
+                    <td>"contenus"</td>
+                    <td>Renvoi la valeur de la cellule.</td>
+                </tr>
+                <tr>
+                    <td>"nomfichier"</td>
+                    <td>Renvoie le nom du fichier qui contient une référence.</td>
+                </tr>
+                <tr>
+                    <td>"format"</td>
+                    <td>Renvoie une valeur de texte correspondant au format numérique de la cellule. Les valeurs pour les différents formats sont présentées dans le tableau ci-dessous.</td>
+                </tr>
+                <tr>
+                    <td>"parenthèses"</td>
+                    <td>Renvoie 1 si la cellule est mise en forme avec des parenthèses pour toutes les valeurs; sinon renvoie 0.</td>
+                </tr>
+                <tr>
+                    <td>"prefix"</td>
+                    <td>Renvoie un guillemet simple (') si la cellule contient du texte aligné à gauche, un guillemet double (") si la cellule contient du texte aligné à droite, un caret  (^) si la cellule contient du texte centré, <!--the backslash (\) if the text is fill-aligned,-->et une cha&icirc;ne vide ("") si la cellule contient autre chose.</td>
+                </tr>
+                <tr>
+                    <td>"protéger"</td>
+                    <td>Renvoi 0 si la cellule n'est pas verrouillée et 1 si la cellule est verrouillée.</td>
+                </tr>
+                <tr>
+                    <td>"ligne"</td>
+                    <td>Renvoie le numéro de la ligne de la cellule.</td>
+                </tr>
+                <tr>
+                    <td>"type"</td>
+                    <td>Renvoie "b" si la cellule est vide, "l" si la cellule contient une valeur de texte et 
+"v" si la cellule contient un autre type de données.</td>
+                </tr>
+                <tr>
+                    <td>"largeur"</td>
+                    <td>Renvoie la largeur de la cellule, arrondie à un entier.</td>
+                </tr>
+            </table>
+            <p>Le tableau ci-dessous affiche les valeurs de texte que la fonction renvoie lorsque l’argument est <em>"format"</em>.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Format numérique</b></td>
+                    <td><b>La valeur que la fonction renvoie</b></td>
+                </tr>
+                <tr>
+                    <td>Général</td>
+                    <td>G</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>F0</td>
+                </tr>
+                <tr>
+                    <td>#,##0</td>
+                    <td>,0</td>
+                </tr>
+                <tr>
+                    <td>0.00</td>
+                    <td>F2</td>
+                </tr>
+                <tr>
+                    <td>#,##0.00</td>
+                    <td>,2</td>
+                </tr>
+                <tr>
+                    <td>$#,##0_);($#,##0)</td>
+                    <td>C0</td>
+                </tr>
+                <tr>
+                    <td>$#,##0_);[Rouge]($#,##0)</td>
+                    <td>C0-</td>
+                </tr>
+                <tr>
+                    <td>$#,##0.00_);($#,##0.00)</td>
+                    <td>C2</td>
+                </tr>
+                <tr>
+                    <td>$#,##0.00_);[Rouge]($#,##0.00)</td>
+                    <td>C2-</td>
+                </tr>
+                <tr>
+                    <td>0%</td>
+                    <td>P0</td>
+                </tr>
+                <tr>
+                    <td>0,00%</td>
+                    <td>P2</td>
+                </tr>
+                <tr>
+                    <td>0.00E+00</td>
+                    <td>S2</td>
+                </tr>
+                <tr>
+                    <td># ?/? ou # ??/??</td>
+                    <td>G</td>
+                </tr>
+                <tr>
+                    <td>m/j/aa ou m/j/aa h:mm ou mm/jj/aa</td>
+                    <td>D4</td>
+                </tr>
+                <tr>
+                    <td>j-mmm-aa ou jj-mmm-aa</td>
+                    <td>D1</td>
+                </tr>
+                <tr>
+                    <td>j-mmm ou jj-mmm</td>
+                    <td>D2</td>
+                </tr>
+                <tr>
+                    <td>mmm-aa</td>
+                    <td>D3</td>
+                </tr>
+                <tr>
+                    <td>mm/jj</td>
+                    <td>D5</td>
+                </tr>
+                <tr>
+                    <td>h:mm AM/PM</td>
+                    <td>D7</td>
+                </tr>
+                <tr>
+                    <td>h:mm:ss AM/PM</td>
+                    <td>D6</td>
+                </tr>
+                <tr>
+                    <td>h:mm</td>
+                    <td>D9</td>
+                </tr>
+                <tr>
+                    <td>h:mm:ss</td>
+                    <td>D8</td>
+                </tr>
+            </table>
+            <p>Pour utiliser la fonction <B>CELLULE</B>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous voulez afficher le résultat,</li>
+			<li>appuyez sur l'icône <B>Insérer une fonction</B> <img alt="L'icône Insérer fonction" src="../images/insertfunction.png" /> de la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule et choisissez l'option <B>Insérer une fonction</B> dans le menu, <br />ou cliquez sur l'icône <img alt="L'icône Fonction" src="../images/function.png" /> de la barre de formule,
+			</li>
+			<li>sélectionnez le groupe de fonctions <B>Information</B> dans la liste,</li>
+			<li>appuyez sur la fonction <B>CELLULE</B>,</li>
+			<li>saisissez l'argument approprié et</li>
+			<li>appuyez sur la touche <B>Entrée</B>.</li>
+			</ol>
+			<p>Le résultat s'affiche dans la cellule choisie.</p>
+			<p style="text-indent: 150px;"><img alt="La fonction CELLULE" src="../images/cell.png" /></p>
+		</div>
+	</body>
+</html>

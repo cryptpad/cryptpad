@@ -10,7 +10,7 @@ define([
             json: '/bower_components/requirejs-plugins/src/json',
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
             "jquery": "/bower_components/jquery/dist/jquery.min",
-            "mermaid": "/code/mermaid.min",
+            "mermaid": "/lib/mermaid/mermaid.min",
             // json.sortify same
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
             cm: '/bower_components/codemirror',

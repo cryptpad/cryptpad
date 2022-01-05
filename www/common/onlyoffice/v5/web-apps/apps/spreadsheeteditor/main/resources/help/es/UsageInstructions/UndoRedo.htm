@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Deshaga/rehaga sus acciones</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the spreadsheet: undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Deshaga/rehaga sus acciones</h1>
+			<p>Para realizar las operaciones de deshacer/rehacer, utilice los iconos correspondientes disponibles en la parte izquierda de la cabecera del editor:</p>
+			<ul>
+				<li><b>Deshacer</b> – use el icono <img alt="Icono deshacer" src="../images/undo.png" /> <b>Deshacer</b> para deshacer la última operación que realizó.</li>
+				<li><b>Rehacer</b> – use el icono <img alt="Icono rehacer" src="../images/redo.png" /> <b>Rehacer</b>  para rehacer la última operación que realizó.</li>
+			</ul>
+			<p>Las operaciones de deshacer/rehacer también se pueden realizar usando los <a href="../HelpfulHints/KeyboardShortcuts.htm" onclick="onhyperlinkclick(this)">atajos de teclado</a>.</p>
+            <p class="note"><b>Nota</b>: cuando co-edita una hoja de cálculo en modo <b>Rápido</b> la posibilidad de <b>Deshacer</b>/<b>Rehacer</b> la última operación no está disponible.</p>
+		</div>
+	</body>
+</html>
