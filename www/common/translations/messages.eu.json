@@ -469,5 +469,19 @@
     "settings_userFeedback": "Gaitu erabiltzailearen feedbacka",
     "settings_userFeedbackHint2": "Zure dokumentuen edukia ez da inoiz zerbitzariarekin partekatuko.",
     "settings_userFeedbackHint1": "CryptPad-ek oinarrizko feedbacka ematen dio zerbitzariari, zure esperientzia nola hobetu jakiteko. ",
-    "upload_tooLargeBrief": "Fitxategiak {0}MB-ko muga gainditzen du"
+    "upload_tooLargeBrief": "Fitxategiak {0}MB-ko muga gainditzen du",
+    "todo_removeTaskTitle": "Kendu zeregin hau zure egitekoen zerrendatik",
+    "todo_markAsIncompleteTitle": "Markatu zeregin hau osatugabe gisa",
+    "todo_markAsCompleteTitle": "Markatu zeregin hau amaitutzat",
+    "todo_title": "CryptTodo",
+    "download_step2": "Deszifratzen",
+    "download_step1": "Deskargatzen",
+    "download_dl": "Deskargatu",
+    "download_mt_button": "Deskargatu",
+    "upload_up": "Kargatu",
+    "upload_mustLogin": "Fitxategiak kargatzeko saioa hasi behar duzu",
+    "upload_size": "Tamaina",
+    "upload_cancelled": "Bertan behera utzita",
+    "upload_pending": "Zain",
+    "upload_choose": "Aukeratu fitxategi bat"
 }
