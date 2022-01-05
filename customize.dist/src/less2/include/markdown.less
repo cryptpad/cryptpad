@@ -117,6 +117,11 @@
                 }
             }
             text {
+                &.taskText {
+                    &[class*="doneText"], &[class*="activeText"] {
+                        fill: #444 !important; // XXX PR to mermaid or find a suitable variable
+                    }
+                }
                 &.titleText {
                     fill: @cp_markdown-block-fg;
                 }
