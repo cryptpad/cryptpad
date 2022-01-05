@@ -6,6 +6,7 @@ var map = {
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'es': 'Español',
+    //'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
