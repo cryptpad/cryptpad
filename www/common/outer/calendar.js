@@ -543,7 +543,7 @@ define([
         var hash = Hash.getEditHashFromKeys(secret);
         var roHash = Hash.getViewHashFromKeys(secret);
 
-        if (!ctx.loggedIn) { hash = undefined; }
+        //if (!ctx.loggedIn) { hash = undefined; }
 
         var cal = {
             href: hash && Hash.hashToHref(hash, 'calendar'),
@@ -926,7 +926,7 @@ define([
             }
             if (cmd === 'IMPORT_ICS') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void importICSCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'ADD') {
@@ -946,7 +946,7 @@ define([
             }
             if (cmd === 'UPDATE') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void updateCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE') {
@@ -956,17 +956,17 @@ define([
             }
             if (cmd === 'CREATE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void createEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'UPDATE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void updateEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void deleteEvent(ctx, data, clientId, cb);
             }
         };
