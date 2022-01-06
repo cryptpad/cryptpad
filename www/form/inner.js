@@ -3370,7 +3370,7 @@ define([
                     if (!model) { return; }
                     content.form[_uid] = {
                         //q: Messages.form_default,
-                        opts: Util.clone(model.defaultOpts),
+                        opts: model.defaultOpts ? Util.clone(model.defaultOpts) : undefined,
                         type: type,
                     };
                     if (full || inSection) {
