@@ -859,6 +859,43 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        var directives = [
+            'img-src',
+            'media-src',
+            'child-src',
+            'frame-src'
+        ];
+
+        msg.appendChild(h('span', [
+            "This instance's ",
+            code("Content-Security-Policy"),
+            " headers are unnecessarily permissive.",
+            h('br'),
+            h('br'),
+            " Review the recommended settings for ",
+            code('img-src'), ', ',
+            code('media-src'), ', ',
+            code('child-src'), ', and ',
+            code('frame-src'),
+            " in the provided NGINX configuration file for an example of how to set these headers correctly.",
+        ]));
+        $.ajax(cacheBuster('/'), {
+            dataType: 'text',
+            complete: function (xhr) {
+                var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
+                // check that the relevant CSP directives are defined
+                // and that none of them permit general remote content via '*'
+                if (directives.every(function (k) {
+                    return typeof(CSP[k]) === 'string' && !/ \* /.test(CSP[k]);
+                })) {
+                    return void cb(true);
+                }
+                cb(CSP);
+            },
+        });
+    });
+
 /*
     assert(function (cb, msg) {
         setWarningClass(msg);
