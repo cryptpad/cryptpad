@@ -1425,5 +1425,7 @@
     "creation_new": "Créer : {0}",
     "premiumAccess": "En tant qu'abonné sur {0}, vous pouvez créer de nouveaux documents dans cette application en accès restreint. Veuillez noter qu'elle est expérimentale et qu'il n'est pas recommandé d'y stocker des données importantes.",
     "form_exportSheet": "Exporter vers Tableur",
-    "form_answerChoice": "Veuillez choisir comment vous souhaitez répondre à ce formulaire :"
+    "form_answerChoice": "Veuillez choisir comment vous souhaitez répondre à ce formulaire :",
+    "bounce_danger": "Le lien sur lequel vous avez cliqué ne mène pas à une page web mais à du code ou des données qui pourraient être dangereuses.\n\n(\"{0}\")\n\nCryptPad bloque ce type de lien pour des raisons de sécurité. En cliquant sur OK, vous fermerez cet onglet.",
+    "bounce_confirm": "Vous êtes sur le point de quitter : {0}\n\nÊtes vous sûr de vouloir visiter \"{1}\" ?"
 }
