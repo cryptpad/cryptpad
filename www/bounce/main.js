@@ -41,9 +41,6 @@ define(['/api/config'], function (ApiConfig) {
     require([
         '/customize/messages.js',
     ], function (Messages) {
-        Messages.bounce_confirm = 'You are about to leave {0}\n\nAre you sure you want to visit "{1}"?'; // XXX
-        Messages.bounce_danger = 'It looks like someone is trying to trick you into visiting a dangerous link.\n\n("{0}")\n\nBe careful!'; // XXX
-
         if (['javascript:', 'vbscript:', 'data:', 'blob:'].includes(target.protocol)) {
             window.alert(Messages._getKey('bounce_danger', [target.href]));
             return void reject();
