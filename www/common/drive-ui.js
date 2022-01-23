@@ -1995,7 +1995,10 @@ define([
                     return f;
                 }).filter(Boolean);
                 // Continue only with the files
-                return void onFileDrop(fileDrop, ev);
+                // if there are no files, fall through to other handlers
+                if (fileDrop.length) {
+                    return void onFileDrop(fileDrop, ev);
+                }
             }
 
             var oldPaths = JSON.parse(data).path;
