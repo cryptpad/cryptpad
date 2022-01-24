@@ -1425,5 +1425,7 @@
     "premiumAccess": "Als Abonnent auf {0} kannst du in dieser Anwendung neue Dokumente erstellen. Bitte beachte, dass es sich um eine experimentelle Anwendung handelt, der man noch keine wichtigen Daten anvertrauen sollte.",
     "earlyAccessBlocked": "Diese Anwendung ist auf dieser Instanz noch nicht verfügbar",
     "form_exportSheet": "In Tabelle exportieren",
-    "form_answerChoice": "Bitte wähle aus, wie du dieses Formular beantworten möchtest:"
+    "form_answerChoice": "Bitte wähle aus, wie du dieses Formular beantworten möchtest:",
+    "bounce_danger": "Der Link, auf den Sie geklickt haben, führt nicht zu einer Webseite, sondern zu einem Code oder Daten, die bösartig sein könnten.\n\n(\"{0}\")\n\nCryptPad blockiert diese aus Sicherheitsgründen. Klicken Sie auf OK, um diese Registerkarte zu schließen.",
+    "bounce_confirm": "Sie sind dabei zu gehen: {0}\n\nSind Sie sicher, dass Sie \"{1}\" besuchen wollen?"
 }
