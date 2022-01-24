@@ -102,6 +102,7 @@ processLang(EN, 'en', true);
   'cs',
   'de',
   'es',
+  'eu',
   'fi',
   'fr',
   'hi',
