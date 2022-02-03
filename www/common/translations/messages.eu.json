@@ -1425,5 +1425,7 @@
     "admin_purpose_noanswer": "Nahiago dut ez esatea",
     "admin_instancePurposeTitle": "Instantziaren helburua",
     "resources_learnWhy": "Jakin zergatik blokeatu den",
-    "resources_openInNewTab": "Ireki fitxa berri batean"
+    "resources_openInNewTab": "Ireki fitxa berri batean",
+    "bounce_danger": "Sakatu duzun estekak ez du web-orri batera eramaten, kaltegarriak izan daitezkeen kode edo datu batzuetara baizik.\n\n(\"{0}\")\n\nCryptPad-ek hauek blokeatzen ditu segurtasun arrazoiengatik. Ados sakatuz gero, fitxa hau itxiko da.",
+    "bounce_confirm": "Irteteko zorian zaude: {0}\n\nZiur \"{1}\" bisitatu nahi duzula?"
 }
