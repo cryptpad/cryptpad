@@ -48,6 +48,15 @@ define([
         });
     };
 
+    COMMANDS.CHECK_HTTP_STATUS = function (content, cb) {
+        $.ajax(content.url, {
+            dataType: 'text',
+            complete: function (xhr) {
+                cb(xhr.status);
+            },
+        });
+    };
+
     window.addEventListener("message", function (event) {
         var txid, command;
         if (event && event.data) {

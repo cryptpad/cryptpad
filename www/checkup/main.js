@@ -420,9 +420,11 @@ define([
 
         $.ajax('/?'+ (+new Date()), {
             complete: function (xhr) {
-                var header = xhr.getResponseHeader('permissions-policy');
+                var header = xhr.getResponseHeader('permissions-policy') || '';
+                var rules = header.split(',');
+                if (rules.includes('interest-cohort=()')) { return void cb(true); }
                 printMessage(JSON.stringify(header));
-                cb(header === 'interest-cohort=()' || header);
+                cb(header);
             },
         });
     });
@@ -893,6 +895,18 @@ define([
                 }
                 cb(CSP);
             },
+        });
+    });
+
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', 'pewpew'));
+        deferredPostMessage({
+            command: 'CHECK_HTTP_STATUS',
+            content: {
+                url: cacheBuster('/api/config'),
+            },
+        }, function (content) {
+            cb(content === 200 || content);
         });
     });
 
