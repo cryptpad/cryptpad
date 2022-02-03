@@ -66,7 +66,9 @@ define(['/api/config'], function (ApiConfig) {
     ], function (Messages) {
         // The provided URL seems to be a malicious or invalid payload.
         // Inform the user that we won't navigate and that the 'bounce tab' will be closed.
-        if (['javascript:', 'vbscript:', 'data:', 'blob:'].includes(target.protocol)) {
+        // our linter warns when it sees 'javascript:' because it doesn't distinguish between
+        // detecting this pattern and using it, so we ignore this line
+        if (['javascript:', 'vbscript:', 'data:', 'blob:'].includes(target.protocol)) { // jshint ignore:line
             window.alert(Messages._getKey('bounce_danger', [target.href]));
             return void reject();
         }
