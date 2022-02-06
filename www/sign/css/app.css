@@ -1,0 +1,44 @@
+@font-face {
+    font-family: 'Caveat';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/sign/vendor/fonts/Caveat-Regular.ttf) format('truetype');
+}
+
+#container-pages {
+    overflow: auto;
+}
+
+#sidebarTools {
+    width: 350px;
+}
+
+#sidebarTools .list-item-add label:hover {
+    background: #e8ebed;
+    border: 1px solid #505050;
+}
+
+#sidebarTools .list-item-add label:active, #sidebarTools .list-item-add label.active, #sidebarTools .list-item-add .btn-check:active + .btn-outline-secondary, #sidebarTools .list-item-add .btn-check:checked + .btn-outline-secondary {
+    background: #c9d1d8;
+    border: 1px solid #000;
+    box-shadow: 0 .25rem .5rem rgba(0,0,0,.075) !important;
+}
+
+#input-text-signature {
+    font-family: Caveat;
+    font-size: 48px;
+}
+
+#img-upload {
+    max-width: 460px;
+    max-height: 200px;
+}
+
+#modalAddSvg {
+  margin-top: 110px;
+}
+
+#sidebarTools  {
+  position: fixed;
+  margin-top: 110px;
+}

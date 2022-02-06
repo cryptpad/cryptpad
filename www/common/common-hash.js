@@ -279,7 +279,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         }
 
         // The other versions depends on the type
-        if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
+        if (['media', 'file', 'sign', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
             parsed.getHash = function () {
                 return hash;
@@ -362,7 +362,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             return parsed;
         }
         parsed.getHash = function () { return hashArr.join('/'); };
-        if (['media', 'file'].indexOf(type) !== -1) {
+        if (['media', 'file', 'sign'].indexOf(type) !== -1) {
             parsed.type = 'file';
 
             parsed.getOptions = function () {
@@ -706,7 +706,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             // Version should be a number
             if (typeof(parsed.hashData.version) === "undefined") { return; }
             // pads and files should have a base64 (or hex) key
-            if (parsed.hashData.type === 'pad' || parsed.hashData.type === 'file') {
+            if (parsed.hashData.type === 'pad' || parsed.hashData.type === 'file' || parsed.hashData.type === 'sign') {
                 if (!parsed.hashData.key && !parsed.hashData.channel) { return; }
                 if (parsed.hashData.key && !/^[a-zA-Z0-9+-/=]+$/.test(parsed.hashData.key)) { return; }
             }
