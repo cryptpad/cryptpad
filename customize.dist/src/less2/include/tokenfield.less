@@ -35,6 +35,12 @@
                 flex: 1;
                 min-width: 0 !important;
             }
+            button {
+                // no radius in input + button combo
+                // input .token-input is styled at the bottom of this file
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+            }
         }
         .token {
             box-sizing: border-box;
@@ -92,6 +98,8 @@
             max-width: 100%;
             width: 100%;
             min-width: 100% !important;
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
             &:focus {
                 outline: 0;
                 box-shadow: none;
