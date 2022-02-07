@@ -4,20 +4,22 @@
 
 .leftside-menu-category_main() {
     .unselectable_make();
-    padding: 5px 15px;
+    padding: 5px;
     margin: 15px 0;
     cursor: pointer;
     height: @variables_bar-height;
+    border-radius: @variables_radius;
     .fa, .cptools {
         display: inline-flex;
         justify-content: center;
         margin-right: 5px;
-        min-width: 25px;
+        min-width: 20px;
     }
     &:hover {
         background: fade(@cryptpad_text_col, 10%);
     }
     &.cp-leftside-active {
         background: @cp_sidebar-left-active;
+        color: @cp_sidebar-left-active-fg;
     }
 }

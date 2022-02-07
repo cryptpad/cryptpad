@@ -270,7 +270,7 @@
         white-space: nowrap;
         max-width: 500px;
         min-width: 200px;
-        padding: 0px;
+        padding: 10px 0px 0px 0px;
         color: @cp_sidebar-left-fg;
         display: flex;
         flex-flow: column;
@@ -279,6 +279,7 @@
         .cp-app-drive-tree-categories-container {
             flex: 1;
             overflow: auto;
+            padding: 0px 5px;
         }
         img.cp-app-drive-icon {
             margin-bottom: 3px;
@@ -288,6 +289,8 @@
             margin-top: 15px;
             //padding: 0 0 0 20px;
             padding: 0;
+            background-color: @cp_sidebar-left-item-bg;
+            border-radius: @variables_radius;
             cursor: auto;
             &li, li {
                 padding: 0;
@@ -307,7 +310,7 @@
                     text-overflow: ellipsis;
                     //min-width: ~"calc(100% + 5px)";
                     .leftside-menu-category_main();
-                    width: ~"calc(100% + 5px)";
+                    //width: ~"calc(100% + 5px)"; // XXX remove
                     margin: 0;
                     //margin-bottom: -6px;
                     display: flex;
@@ -318,8 +321,9 @@
                     .fa, .cptools {
                         display: inline-block;
                         min-width: 0;
-                        width: 25px;
+                        width: 20px;
                         margin-right: 0px;
+                        z-index: 99;
                     }
                     .cp-app-drive-element {
                         flex: 1;
@@ -335,7 +339,10 @@
         }
         .cp-app-drive-tree-category {
             margin: 0;
-            margin-top: 15px;
+            margin-top: 10px;
+            background-color: @cp_sidebar-left-item-bg;
+            border-radius: @variables_radius;
+            box-shadow: 0px 0px 5px 1px #00000030; // XXX
             .cp-app-drive-tree-root {
                 .fa-trash-o {
                     padding-left: 2px;
@@ -361,11 +368,11 @@
             margin-left: -10px;
             font-size: 14px;
             position: absolute;
-            left: -20px;
-            top: 10px;
+            left: -17px;
+            top: 11px;
             width: 11px !important;
             height: 11px !important;
-            background-color: @cp_sidebar-left-bg;
+            background-color: @cp_sidebar-left-item-bg;
             padding: 0;
             margin: 0;
             z-index: 10;
@@ -376,17 +383,36 @@
             }
         }
         .cp-app-drive-tree-docs {
+            box-shadow: 0px 0px 5px 1px #00000030; // XXX
+            padding: 2px;
+
+            .cp-app-drive-element-row {
+                &.cp-leftside-active {
+                    .cp-app-drive-icon-expcol {
+                        color: @cryptpad_text_col; // +/- expand icon for folders
+                    }
+                }
+            }
+            .cp-app-drive-tree-root > .cp-app-drive-element-row {
+                margin-left: 0px;
+                &.cp-app-drive-element-active {
+                    .cp-app-drive-icon-expcol {
+                        color: @cp_sidebar-left-active-fg; // +/- expand icon for drive
+                    }
+                }
+            }
             .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-expcol {
                 position: relative;
                 top: 0;
                 left: -10px;
+                background-color: transparent;
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
                 margin-left: -5px;
             }
             .cp-app-drive-tree-root {
                 &> .cp-app-drive-element-row {
-                    padding-left: 20px;
+                    padding-left: 15px;
                 }
                 &> ul {
                     padding-left: 30px;
@@ -403,8 +429,8 @@
                 position: relative;
                 &:before {
                     position: absolute;
-                    left: -15px;
-                    top: -11px;
+                    left: -12px;
+                    top: -10px;
                     content: '';
                     display: block;
                     border-left: 1px solid @cp_drive-tree-branch;
@@ -414,7 +440,7 @@
                 }
                 &:after {
                     position: absolute;
-                    left: -15px;
+                    left: -12px;
                     bottom: -7px;
                     content: '';
                     display: block;
@@ -448,6 +474,7 @@
         box-sizing: border-box;
         background: @cp_sidebar-right-bg;
         color: @cp_sidebar-right-fg;
+        padding-top: 10px;
         overflow-y: auto;
         flex: 1;
         display: flex;

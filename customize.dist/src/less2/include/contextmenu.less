@@ -1,4 +1,5 @@
 @import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
 
 .contextmenu_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -11,7 +12,7 @@
         & > ul {
             border: 1px solid @cp_context-border;
             background-color: @cp_context-bg;
-            border-radius: 0px;
+            border-radius: @variables_radius;
             .dropdown-divider {
                 border-top: 1px solid @cp_context-border;
             }
@@ -46,6 +47,7 @@
                 cursor: pointer;
                 color: @cp_context-fg;
                 padding-left: 10px;
+                border-radius: @variables_radius;
                 &:hover {
                     background-color: @cp_context-bg-hover;
                     color: @cp_context-fg;
