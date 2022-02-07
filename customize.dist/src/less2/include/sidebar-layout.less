@@ -24,12 +24,14 @@
             background: @cp_sidebar-left-bg;
             display: flex;
             flex-flow: column;
+            padding: 0px 5px;
             .cp-sidebarlayout-categories {
                 flex: 1;
                 .cp-sidebarlayout-category {
                     display: flex;
                     align-items: center;
                     .leftside-menu-category_main();
+                    box-shadow: 0px 0px 5px 1px #00000030; // XXX
                 }
             }
             &.cp-leftside-narrow {
@@ -111,10 +113,12 @@
                     //border-radius: 0.25em 0 0 0.25em;
                     border: 1px solid @cryptpad_color_grey_500;
                     border-right: 0px;
+                    border-top-right-radius: 0px;
+                    border-bottom-right-radius: 0px;
                 }
                 button {
-                    //border-radius: 0 0.25em 0.25em 0;
-                    //border: 1px solid #adadad;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
                     border-left: 0px;
                     height: 40px;
                     margin: 0 !important;

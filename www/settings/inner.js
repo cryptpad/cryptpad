@@ -1449,7 +1449,7 @@ define([
         $('<label>').text(Messages.settings_codeIndentation).appendTo($div);
 
         var $inputBlock = $('<div>', {
-            'class': 'cp-sidebarlayout-input-block',
+            'class': 'cp-sidebarlayout-input',
         }).appendTo($div);
 
         var $input = $('<input>', {
@@ -1544,7 +1544,7 @@ define([
         $('<label>').text(Messages.settings_codeFontSize).appendTo($div);
 
         var $inputBlock = $('<div>', {
-            'class': 'cp-sidebarlayout-input-block',
+            'class': 'cp-sidebarlayout-input',
         }).appendTo($div);
 
         var $input = $('<input>', {
