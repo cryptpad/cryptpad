@@ -340,9 +340,10 @@ define([
 
         $('<span>', { 'class': 'label' }).text(Messages.settings_userFeedbackTitle).appendTo($div);
 
-        $('<span>', { 'class': 'cp-sidebarlayout-description' })
-            .append(Messages.settings_userFeedbackHint1)
-            .append(Messages.settings_userFeedbackHint2).appendTo($div);
+        $div.append(h('span.cp-sidebarlayout-description', [
+            Messages.settings_userFeedbackHint1,
+            Messages.settings_userFeedbackHint2,
+        ]));
 
         var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
         var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
@@ -851,9 +852,9 @@ define([
 
         $('<span>', { 'class': 'label' }).text(Messages.settings_driveRedirectTitle).appendTo($div);
 
-        $('<span>', { 'class': 'cp-sidebarlayout-description' })
-            .append(Messages.settings_driveRedirectHint)
-            .appendTo($div);
+        $div.append(h('span', {
+            class: 'cp-sidebarlayout-description',
+        }, Messages.settings_driveRedirectHint));
 
         var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved });
         var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' });
@@ -1719,15 +1720,21 @@ define([
         var active = privateData.category || 'account';
         if (!categories[active]) { active = 'account'; }
         Object.keys(categories).forEach(function(key) {
-            var $category = $('<div>', {
-                'class': 'cp-sidebarlayout-category',
-                'data-category': key
-            }).appendTo($categories);
-
             var iconClass = SIDEBAR_ICONS[key];
+            var icon;
             if (iconClass) {
-                $category.append($('<span>', { 'class': iconClass }));
+                icon = h('span', {
+                    class: iconClass,
+                });
             }
+
+            var $category = $(h('div.cp-sidebarlayout-category', {
+                'data-category': key
+            }, [
+                icon,
+                Messages['settings_cat_' + key] || key,
+            ])).appendTo($categories);
+
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -1744,8 +1751,6 @@ define([
                 $category.addClass('cp-leftside-active');
                 showCategories(categories[key]);
             });
-
-            $category.append(Messages['settings_cat_' + key] || key);
         });
         showCategories(categories[active]);
         common.setHash(active);

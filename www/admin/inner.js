@@ -1965,12 +1965,17 @@ define([
         if (!categories[active]) { active = 'general'; }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             var iconClass = SIDEBAR_ICONS[key];
+            var icon;
             if (iconClass) {
-                $category.append($('<span>', {'class': iconClass}));
+                icon = h('span', { class: iconClass });
             }
-
+            var $category = $(h('div', {
+                'class': 'cp-sidebarlayout-category'
+            }, [
+                icon,
+                Messages['admin_cat_'+key] || key,
+            ])).appendTo($categories);
             if (key === active) {
                 $category.addClass('cp-leftside-active');
             }
@@ -1987,7 +1992,6 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['admin_cat_'+key] || key);
         });
         showCategories(categories[active]);
     };

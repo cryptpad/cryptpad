@@ -271,7 +271,7 @@ define([
         // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
-            $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+            $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
             addCancel();
             return;
         }
@@ -522,7 +522,7 @@ define([
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
         $category.append($('<span>', {'class': 'fa fa-user'}));
         $category.addClass('cp-leftside-active');
-        $category.append(Messages.profileButton);
+        $category.text(Messages.profileButton);
     };
 
     var init = function () {
@@ -603,7 +603,7 @@ define([
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
 
-            var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
+            var $p = $('<p>', {id: CREATE_ID}).text(Messages.profile_register);
             var $a = $('<a>', {
                 href: APP.origin + '/register/'
             });
