@@ -999,7 +999,7 @@ define([
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
                 'worker-src': ["'self'", $outer, $sandbox],
             });
             cb(result);
@@ -1036,7 +1036,7 @@ define([
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
                 'worker-src': ["'self'", $outer, $sandbox],
             });
 
