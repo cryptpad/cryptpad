@@ -67,9 +67,7 @@ define([
         $(msg).removeClass('cp-danger').addClass('cp-warning');
     };
 
-    var cacheBuster = function (url) {
-        return url + '?test=' + (+new Date());
-    };
+    var cacheBuster = Tools.cacheBuster;
 
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
@@ -834,7 +832,7 @@ define([
         });
     });
 
-    assert(function (cb, msg) {
+    assert(function (cb, msg) { // XXX this test has been superceded
         // check that the sandbox domain is included in connect-src
         msg.appendChild(h('span', [
             "This instance's ",
@@ -848,20 +846,17 @@ define([
             " See the provided NGINX configuration file for an example of how to set this header correctly.",
         ]));
 
-        $.ajax(cacheBuster('/'), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
-                var connect = (CSP && CSP['connect-src']) || "";
-                if (connect.includes(trimmedSafe)) {
-                    return void cb(true);
-                }
-                cb(CSP);
-            },
+        Tools.common_xhr('/', function (xhr) {
+            var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
+            var connect = (CSP && CSP['connect-src']) || "";
+            if (connect.includes(trimmedSafe)) {
+                return void cb(true);
+            }
+            cb(CSP);
         });
     });
 
-    assert(function (cb, msg) {
+    assert(function (cb, msg) { // XXX this test has been superceded
         var directives = [
             'img-src',
             'media-src',
@@ -882,24 +877,26 @@ define([
             code('frame-src'),
             " in the provided NGINX configuration file for an example of how to set these headers correctly.",
         ]));
-        $.ajax(cacheBuster('/'), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
-                // check that the relevant CSP directives are defined
-                // and that none of them permit general remote content via '*'
-                if (directives.every(function (k) {
-                    return typeof(CSP[k]) === 'string' && !/ \* /.test(CSP[k]);
-                })) {
-                    return void cb(true);
-                }
-                cb(CSP);
-            },
+        Tools.common_xhr('/', function (xhr) {
+            var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
+            // check that the relevant CSP directives are defined
+            // and that none of them permit general remote content via '*'
+            if (directives.every(function (k) {
+                return typeof(CSP[k]) === 'string' && !/ \* /.test(CSP[k]);
+            })) {
+                return void cb(true);
+            }
+            cb(CSP);
         });
     });
 
     assert(function (cb, msg) {
-        msg.appendChild(h('span', 'pewpew'));
+        msg.appendChild(h('span', [ // XXX
+            code('/api/config'),
+            " returned an HTTP status code other than ",
+            code('200'),
+            ' when accessed from the sandbox domain.',
+        ]));
         deferredPostMessage({
             command: 'CHECK_HTTP_STATUS',
             content: {
@@ -907,6 +904,195 @@ define([
             },
         }, function (content) {
             cb(content === 200 || content);
+        });
+    });
+
+/*
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            'all headers',
+        ]));
+
+        Tools.common_xhr('/', function (xhr) {
+            var all_headers = xhr.getAllResponseHeaders().split(/\r|\n/).filter(Boolean);
+            cb(all_headers);
+        });
+    });
+*/
+
+    var validateCSP = function (raw, expected) {
+        var CSP = parseCSP(raw);
+        var checkRule = function (attr, rules) {
+            var h = CSP[attr];
+            // return `true` if you fail this test...
+            if (typeof(h) !== 'string' || !h) { return true; }
+            var l = rules.length;
+            for (var i = 0;i < l;i++) {
+                if (!h.includes(rules[i])) {
+                    console.log("BAD_HEADER", rules[i]);
+                    return true;
+                }
+                h = h.replace(rules[i], '');
+            }
+            return h.trim();
+        };
+        if (Object.keys(expected).some(function (dir) {
+            var result = checkRule(dir, expected[dir]);
+            if (result) {
+                console.log('BAD_HEADER:', {
+                    rule: dir,
+                    expected: expected[dir],
+                    result: result,
+                });
+            }
+
+            return result;
+        })) {
+            return parseCSP(raw);
+        }
+        return true;
+    };
+
+    assert(function (_cb, msg) {
+        var url = '/sheet/inner.html';
+        var cb = Util.once(Util.mkAsync(_cb));
+        msg.appendChild(CSP_WARNING(url));
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url,
+                header: 'content-security-policy',
+            },
+        }, function (raw) {
+            var $outer = trimmedUnsafe;
+            var $sandbox = trimmedSafe;
+            var result = validateCSP(raw, {
+                'default-src': ["'none'"],
+                'style-src': ["'unsafe-inline'", "'self'", $outer],
+                'font-src': ["'self'", 'data:', $outer],
+                'child-src': ["'self'", 'blob:', $outer, $sandbox],
+                'frame-src': ["'self'", 'blob:', $outer, $sandbox],
+                'script-src': ["'self'", 'resource:', $outer,
+                    "'unsafe-eval'", // XXX sloppy onlyoffice BS
+                    "'unsafe-inline'", // XXX sloppy onlyoffice BS
+                ],
+                'connect-src': [
+                    "'self'",
+                    'blob:',
+                    $outer,
+                    $sandbox,
+                    /https:/.test($outer)? '': 'ws:', // XXX warn about ws: unless the origin is unencrypted
+                    'wss:', // XXX always accept wss: ???
+                ],
+
+                'img-src': ["'self'", 'data:', 'blob:', $outer],
+                'media-src': ['blob:'],
+                'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                'worker-src': ["'self'", $outer, $sandbox],
+            });
+            cb(result);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'content-security-policy';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            var $outer = trimmedUnsafe;
+            var $sandbox = trimmedSafe;
+            var result = validateCSP(raw, {
+                'default-src': ["'none'"],
+                'style-src': ["'unsafe-inline'", "'self'", $outer],
+                'font-src': ["'self'", 'data:', $outer],
+                'child-src': ["'self'", 'blob:', $outer, $sandbox],
+                'frame-src': ["'self'", 'blob:', $outer, $sandbox],
+                'script-src': ["'self'", 'resource:', $outer],
+                'connect-src': [
+                    "'self'",
+                    'blob:',
+                    $outer,
+                    $sandbox,
+                    /https:/.test($outer)? '': 'ws:', // XXX warn about ws: unless the origin is unencrypted
+                    'wss:', // XXX always accept wss: ???
+                ],
+                'img-src': ["'self'", 'data:', 'blob:', $outer],
+                'media-src': ['blob:'],
+                'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                'worker-src': ["'self'", $outer, $sandbox],
+            });
+
+            cb(result);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'access-control-allow-origin';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === "*" || raw); // XXX
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'cross-origin-embedder-policy';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'require-corp' || raw); // XXX
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'cross-origin-resource-policy';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'cross-origin' || raw); // XXX
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'X-Content-Type-Options';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'nosniff' || raw); // XXX
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Cache-Control';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        // Cache-Control should be 'no-cache' unless the URL includes ver=
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'no-cache' || raw); // XXX
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Cache-Control';
+        msg.appendChild(h('span', [
+            header,
+        ]));
+        // Cache-Control should be 'max-age=<number>' if the URL includes 'ver='
+        Tools.common_xhr('/?ver=' +(+new Date()), function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(/max\-age=\d+$/.test(raw) || raw); // XXX
         });
     });
 
