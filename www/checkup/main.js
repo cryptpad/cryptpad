@@ -920,21 +920,30 @@ define([
     });
 */
 
-    var validateCSP = function (raw, expected) {
+    var validateCSP = function (raw, msg, expected) {
         var CSP = parseCSP(raw);
         var checkRule = function (attr, rules) {
-            var h = CSP[attr];
+            var v = CSP[attr];
             // return `true` if you fail this test...
-            if (typeof(h) !== 'string' || !h) { return true; }
+            if (typeof(v) !== 'string' || !v) { return true; }
             var l = rules.length;
             for (var i = 0;i < l;i++) {
-                if (!h.includes(rules[i])) {
+                if (typeof(rules[i]) !== 'undefined' && !v.includes(rules[i])) {
                     console.log("BAD_HEADER", rules[i]);
+                    //msg.appendChild(h('br'));
+                    //msg.appendChild(h('br'));
+                    msg.appendChild(h('p', [
+                        'A value of ',
+                        code('"' + rules.filter(Boolean).join(' ') + '"'),
+                        ' was expected for the ',
+                        code(attr),
+                        ' directive.',
+                    ]));
                     return true;
                 }
-                h = h.replace(rules[i], '');
+                v = v.replace(rules[i], '');
             }
-            return h.trim();
+            return v.trim();
         };
         if (Object.keys(expected).some(function (dir) {
             var result = checkRule(dir, expected[dir]);
@@ -956,7 +965,14 @@ define([
     assert(function (_cb, msg) {
         var url = '/sheet/inner.html';
         var cb = Util.once(Util.mkAsync(_cb));
-        msg.appendChild(CSP_WARNING(url));
+        msg.appendChild(h('span', [
+            code(trimmedUnsafe + url),
+            ' was served with incorrect ',
+            code('Content-Security-Policy'),
+            ' headers.',
+        ]));
+
+        //msg.appendChild(CSP_WARNING(url));
         deferredPostMessage({
             command: 'GET_HEADER',
             content: {
@@ -966,7 +982,7 @@ define([
         }, function (raw) {
             var $outer = trimmedUnsafe;
             var $sandbox = trimmedSafe;
-            var result = validateCSP(raw, {
+            var result = validateCSP(raw, msg, {
                 'default-src': ["'none'"],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
@@ -997,13 +1013,16 @@ define([
     assert(function (cb, msg) {
         var header = 'content-security-policy';
         msg.appendChild(h('span', [
-            header,
+            code(trimmedUnsafe + '/'),
+            ' was served with incorrect ',
+            code('Content-Security-Policy'),
+            ' headers.',
         ]));
         Tools.common_xhr('/', function (xhr) {
             var raw = xhr.getResponseHeader(header);
             var $outer = trimmedUnsafe;
             var $sandbox = trimmedSafe;
-            var result = validateCSP(raw, {
+            var result = validateCSP(raw, msg, {
                 'default-src': ["'none'"],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
