@@ -993,8 +993,8 @@ define([
                     'blob:',
                     $outer,
                     $sandbox,
-                    /https:/.test($outer)? '': 'ws:', // XXX warn about ws: unless the origin is unencrypted
-                    'wss:', // XXX always accept wss: ???
+                    /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
+                    ///https:/.test($outer)? '': 'ws:', // XXX warn about ws: unless the origin is unencrypted
                 ],
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -1030,8 +1030,9 @@ define([
                     'blob:',
                     $outer,
                     $sandbox,
-                    /https:/.test($outer)? '': 'ws:', // XXX warn about ws: unless the origin is unencrypted
-                    'wss:', // XXX always accept wss: ???
+                    /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
+                    ///https:/.test($outer)? '': 'ws:', // XXX warn about ws: unless the origin is unencrypted
+                    //'wss:', // XXX always accept wss: ???
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
