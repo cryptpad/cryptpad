@@ -1075,7 +1075,11 @@ define([
     assert(function (cb, msg) {
         var header = 'Cache-Control';
         msg.appendChild(h('span', [
-            header,
+            'Assets requested without a version parameter should be served with a ',
+            code('no-cache'),
+            ' value for the ',
+            code("Cache-Control"),
+            ' header.',
         ]));
         // Cache-Control should be 'no-cache' unless the URL includes ver=
         Tools.common_xhr('/', function (xhr) {
@@ -1087,7 +1091,9 @@ define([
     assert(function (cb, msg) {
         var header = 'Cache-Control';
         msg.appendChild(h('span', [
-            header,
+            'Assets requested with a version parameter should be served with a long-lived ',
+            code('Cache-Control'),
+            ' header.',
         ]));
         // Cache-Control should be 'max-age=<number>' if the URL includes 'ver='
         Tools.common_xhr('/?ver=' +(+new Date()), function (xhr) {
