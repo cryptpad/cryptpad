@@ -1420,9 +1420,20 @@ define([
         }
 
         // Button
-        var $button = $('<button>', {
-            'class': config.buttonCls || ''
-        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
+        var $button;
+
+        if (config.buttonContent) {
+            $button = $(h('button', {
+                class: config.buttonCls || '',
+            }, [
+                h('span.cp-dropdown-button-title', config.buttonContent),
+            ]));
+        } else {
+            $button = $('<button>', {
+                'class': config.buttonCls || ''
+            }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
+        }
+
         if (config.caretDown) {
             $('<span>', {
                 'class': 'fa fa-caret-down',
@@ -1445,8 +1456,24 @@ define([
         var setOptions = function (options) {
             options.forEach(function (o) {
                 if (!isValidOption(o)) { return; }
-                if (isElement(o)) { return $innerblock.append($(o)); }
-                var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
+                if (isElement(o)) { return $innerblock.append(o); }
+                var $el = $('<' + o.tag + '>', o.attributes || {});
+
+                if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
+                    o.content = [o.content];
+                }
+                if (Array.isArray(o.content)) {
+                    o.content.forEach(function (item) {
+                        if (item instanceof Element) {
+                            return void $el.append(item);
+                        }
+                        if (typeof(item) === 'string') {
+                            $el[0].appendChild(document.createTextNode(item));
+                        }
+                    });
+                    // array of elements or text nodes
+                }
+
                 $el.appendTo($innerblock);
                 if (typeof(o.action) === 'function') {
                     $el.click(function (e) {
@@ -1533,8 +1560,8 @@ define([
             $container.on('click', 'a', function () {
                 value = $(this).data('value');
                 var $val = $(this);
-                var textValue = $val.html() || value;
-                $button.find('.cp-dropdown-button-title').html(textValue);
+                var textValue = $val.text() || value;
+                $button.find('.cp-dropdown-button-title').text(textValue);
                 $container.onChange.fire(textValue, value);
             });
             $container.keydown(function (e) {
@@ -1594,14 +1621,13 @@ define([
             $container.setValue = function (val, name, sync) {
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
-                var textValue = name || $val.html() || val;
-                if (sync) {
-                    $button.find('.cp-dropdown-button-title').html(textValue);
-                    return;
-                }
-                setTimeout(function () {
-                    $button.find('.cp-dropdown-button-title').html(textValue);
-                });
+                var textValue = name || $val.text() || val;
+                var f = function () {
+                    $button.find('.cp-dropdown-button-title').text(textValue);
+                };
+
+                if (sync) { return void f(); }
+                setTimeout(f);
             };
             $container.getValue = function () {
                 return typeof(value) === "undefined" ? '' : value;
@@ -1676,33 +1702,37 @@ define([
         var metadataMgr = Common.getMetadataMgr();
 
         var displayNameCls = config.displayNameCls || 'cp-toolbar-user-name';
-        var $displayedName = $('<span>', {'class': displayNameCls});
 
         var priv = metadataMgr.getPrivateData();
         var accountName = Util.fixHTML(priv.accountName);
         var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
-        var $userName = $('<span>');
         var options = [];
         if (config.displayNameCls) {
-            var $userAdminContent = $('<p>');
+            var userAdminContent = [];
             if (accountName) {
-                var $userAccount = $('<span>').append(Messages.user_accountName + ': ');
-
-                $userAdminContent.append($userAccount).append(accountName);
-                $userAdminContent.append($('<br>'));
+                userAdminContent.push(h('span', [
+                    Messages.user_accountName,
+                    ': ',
+                    h('span', accountName),
+                ]));
+                userAdminContent.push(h('br'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
-                $userName.append(Messages.user_displayName + ': ');
-                $userName.append($displayedName);
+                userAdminContent.push(h('span', [
+                    Messages.user_displayName,
+                    ': ',
+                    h('span', {
+                        class: displayNameCls,
+                    }),
+                ]));
             }
-            $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
                 attributes: {'class': 'cp-toolbar-account'},
-                content: $userAdminContent.html()
+                content: userAdminContent,
             });
         }
 
@@ -1964,7 +1994,7 @@ define([
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
         }*/
         var dropdownConfigUser = {
-            text: $userButton.html(), // Button initial text
+            buttonContent: $userButton[0],
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
@@ -2066,7 +2096,9 @@ define([
                     'data-value': l,
                     'href': '#',
                 },
-                content: languages[l] // Pretty name of the language value
+                content: [ // supplying content as an array ensures it's a text node, not parsed HTML
+                    languages[l] // Pretty name of the language value
+                ],
             });
         });
         var dropdownConfig = {

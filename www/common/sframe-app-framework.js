@@ -663,7 +663,7 @@ define([
                         'data-value': '',
                         'href': '#'
                     },
-                    content: '&nbsp;'
+                    content: ' ',
                 });
                 var dropdownConfig = {
                     text: ext, // Button initial text
