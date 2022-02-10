@@ -229,7 +229,7 @@ define([
             var refreshValue = function () {
                 $bgValue.html('');
                 if (slideOptionsTmp.background && slideOptionsTmp.background.name) {
-                    $bgValue.append(Messages._getKey("printBackgroundValue", [slideOptionsTmp.background.name]));
+                    $bgValue.append(Messages._getKey("printBackgroundValue", [Util.fixHTML(slideOptionsTmp.background.name)]));
                     $('<span>', {
                         'class': 'fa fa-times',
                         title: Messages.printBackgroundRemove,
