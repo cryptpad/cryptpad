@@ -343,7 +343,7 @@ define([
                         'data-value': l.mode,
                         'href': '#',
                     },
-                    content: l.language // Pretty name of the language value
+                    content: [l.language] // Pretty name of the language value
                 });
             });
             var dropdownConfig = {
@@ -395,7 +395,7 @@ define([
                             'data-value': l.name,
                             'href': '#',
                         },
-                        content: l.name // Pretty name of the language value
+                        content: [l.name] // Pretty name of the language value
                     });
                 });
                 var dropdownConfig = {

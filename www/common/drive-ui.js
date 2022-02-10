@@ -2935,34 +2935,49 @@ define([
             if (isInRoot) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-folder'},
-                    content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
+                    attributes: {'class': 'cp-app-drive-new-folder pewpew'},
+                    content: [
+                        $folderIcon.clone()[0],
+                        Messages.fm_folder,
+                    ],
                 });
                 if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     options.push({
                         tag: 'a',
                         attributes: {'class': 'cp-app-drive-new-shared-folder'},
-                        content: $('<div>').append($sharedFolderIcon.clone()).html() + Messages.fm_sharedFolder
+                        content: [
+                            $sharedFolderIcon.clone()[0],
+                            Messages.fm_sharedFolder,
+                        ],
                     });
                 }
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'cp-app-drive-new-fileupload'},
-                    content: $('<div>').append(getIcon('fileupload')).html() + Messages.uploadButton
+                    content: [
+                        getIcon('fileupload')[0],
+                        Messages.uploadButton,
+                    ],
                 });
                 if (APP.allowFolderUpload) {
                     options.push({
                         tag: 'a',
                         attributes: {'class': 'cp-app-drive-new-folderupload'},
-                        content: $('<div>').append(getIcon('folderupload')).html() + Messages.uploadFolderButton
+                        content: [
+                            getIcon('folderupload')[0],
+                            Messages.uploadFolderButton,
+                        ],
                     });
                 }
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'cp-app-drive-new-link'},
-                    content: $('<div>').append(getIcon('link')).html() + Messages.fm_link_new
+                    content: [
+                        getIcon('link')[0],
+                        Messages.fm_link_new,
+                    ],
                 });
                 options.push({tag: 'hr'});
             }
@@ -2983,14 +2998,17 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: attributes,
-                    content: $('<div>').append(getIcon(type)).html() + Messages.type[type]
+                    content: [
+                        getIcon(type)[0],
+                        Messages.type[type],
+                    ],
                 });
             });
-            var $plusIcon = $('<div>').append($('<span>', {'class': 'fa fa-plus'}));
-
-
             var dropdownConfig = {
-                text: $plusIcon.html() + '<span>'+Messages.fm_newButton+'</span>',
+                buttonContent: [
+                    h('span.fa.fa-plus'),
+                    h('span', Messages.fm_newButton),
+                ],
                 options: options,
                 feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
                 common: common
@@ -3071,15 +3089,24 @@ define([
             var options = [{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-type'},
-                content: '<i class="fa fa-minus"></i>' + Messages.fm_type
+                content: [
+                    h('i.fa.fa-minus'),
+                    Messages.fm_type,
+                ],
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-atime'},
-                content: '<i class="fa fa-minus"></i>' + Messages.fm_lastAccess
+                content: [
+                    h('i.fa.fa-minus'),
+                    Messages.fm_lastAccess,
+                ],
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-ctime'},
-                content: '<i class="fa fa-minus"></i>' + Messages.fm_creation
+                content: [
+                    h('i.fa.fa-minus'),
+                    Messages.fm_creation,
+                ],
             }];
             var dropdownConfig = {
                 text: '', // Button initial text
