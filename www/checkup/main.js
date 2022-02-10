@@ -983,7 +983,7 @@ define([
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
                 'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
-                'frame-src': ["'self'", 'blob:', $outer, $sandbox],
+                'frame-src': ["'self'", 'blob:', /*$outer, */$sandbox],
                 'script-src': ["'self'", 'resource:', $outer,
                     "'unsafe-eval'", // XXX sloppy onlyoffice BS
                     "'unsafe-inline'", // XXX sloppy onlyoffice BS
@@ -1023,7 +1023,7 @@ define([
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
                 'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
-                'frame-src': ["'self'", 'blob:', $outer, $sandbox],
+                'frame-src': ["'self'", 'blob:', /*$outer,*/ $sandbox],
                 'script-src': ["'self'", 'resource:', $outer],
                 'connect-src': [
                     "'self'",
