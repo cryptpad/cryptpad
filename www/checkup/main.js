@@ -1096,7 +1096,7 @@ define([
             ' header.',
         ]));
         // Cache-Control should be 'max-age=<number>' if the URL includes 'ver='
-        Tools.common_xhr('/?ver=' +(+new Date()), function (xhr) {
+        Tools.common_xhr('/customize/messages.js?ver=' +(+new Date()), function (xhr) {
             var raw = xhr.getResponseHeader(header);
             cb(/max\-age=\d+$/.test(raw) || raw); // XXX
         });
