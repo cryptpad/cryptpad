@@ -11,13 +11,10 @@ define([
         window.parent.postMessage(JSON.stringify(content), '*');
     };
     postMessage({ command: "READY", });
-    var getHeaders = function (url, cb) {
-        $.ajax(url + "?test=" + (+new Date()), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var allHeaders = xhr.getAllResponseHeaders();
-                return void cb(void 0, allHeaders, xhr);
-            },
+    var getHeaders = function (url, cb) { // XXX reuse XHR objects?
+        Tools.common_xhr(url, function (xhr) {
+            var allHeaders = xhr.getAllResponseHeaders();
+            return void cb(void 0, allHeaders, xhr);
         });
     };
     var COMMANDS = {};
@@ -49,11 +46,8 @@ define([
     };
 
     COMMANDS.CHECK_HTTP_STATUS = function (content, cb) {
-        $.ajax(content.url, {
-            dataType: 'text',
-            complete: function (xhr) {
-                cb(xhr.status);
-            },
+        Tools.common_xhr(content.url, function (xhr) {
+            cb(xhr.status);
         });
     };
 

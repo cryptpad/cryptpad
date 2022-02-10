@@ -67,9 +67,7 @@ define([
         $(msg).removeClass('cp-danger').addClass('cp-warning');
     };
 
-    var cacheBuster = function (url) {
-        return url + '?test=' + (+new Date());
-    };
+    var cacheBuster = Tools.cacheBuster;
 
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
@@ -371,7 +369,6 @@ define([
         var expect = {
             'cross-origin-resource-policy': 'cross-origin',
             'cross-origin-embedder-policy': 'require-corp',
-            //'cross-origin-opener-policy': 'same-origin', // FIXME this is in our nginx config but not server.js
         };
 
         $.ajax(url, {
@@ -656,7 +653,7 @@ define([
         ]);
     };
 
-    assert(function (_cb, msg) {
+    assert(function (_cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
         var url = '/sheet/inner.html';
         var cb = Util.once(Util.mkAsync(_cb));
         msg.appendChild(CSP_WARNING(url));
@@ -672,7 +669,7 @@ define([
         });
     });
 
-    assert(function (cb, msg) {
+    assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
         var url = '/common/onlyoffice/v5/web-apps/apps/spreadsheeteditor/main/index.html';
         msg.appendChild(CSP_WARNING(url));
         deferredPostMessage({
@@ -805,36 +802,7 @@ define([
         cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
     });
 
-    [
-        //'sheet',
-        //'presentation',
-        //'doc',
-        //'convert',
-    ].forEach(function (url) {
-        assert(function (cb, msg) {
-            var header = 'cross-origin-opener-policy';
-            var expected = 'same-origin';
-            deferredPostMessage({
-                command: 'GET_HEADER',
-                content: {
-                    url: '/' + url + '/',
-                    header: header,
-                }
-            }, function (content) {
-                msg.appendChild(h('span', [
-                    code(url),
-                    ' was served without the correct ',
-                    code(header),
-                    ' HTTP header value (',
-                    code(expected),
-                    '). This will interfere with your ability to convert between office file formats.'
-                ]));
-                cb(content === expected);
-            });
-        });
-    });
-
-    assert(function (cb, msg) {
+    assert(function (cb, msg) { // FIXME this test has been superceded, but the descriptive text is still useful
         // check that the sandbox domain is included in connect-src
         msg.appendChild(h('span', [
             "This instance's ",
@@ -848,58 +816,23 @@ define([
             " See the provided NGINX configuration file for an example of how to set this header correctly.",
         ]));
 
-        $.ajax(cacheBuster('/'), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
-                var connect = (CSP && CSP['connect-src']) || "";
-                if (connect.includes(trimmedSafe)) {
-                    return void cb(true);
-                }
-                cb(CSP);
-            },
+        Tools.common_xhr('/', function (xhr) {
+            var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
+            var connect = (CSP && CSP['connect-src']) || "";
+            if (connect.includes(trimmedSafe)) {
+                return void cb(true);
+            }
+            cb(CSP);
         });
     });
 
     assert(function (cb, msg) {
-        var directives = [
-            'img-src',
-            'media-src',
-            'child-src',
-            'frame-src'
-        ];
-
         msg.appendChild(h('span', [
-            "This instance's ",
-            code("Content-Security-Policy"),
-            " headers are unnecessarily permissive.",
-            h('br'),
-            h('br'),
-            " Review the recommended settings for ",
-            code('img-src'), ', ',
-            code('media-src'), ', ',
-            code('child-src'), ', and ',
-            code('frame-src'),
-            " in the provided NGINX configuration file for an example of how to set these headers correctly.",
+            code('/api/config'),
+            " returned an HTTP status code other than ",
+            code('200'),
+            ' when accessed from the sandbox domain.',
         ]));
-        $.ajax(cacheBuster('/'), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
-                // check that the relevant CSP directives are defined
-                // and that none of them permit general remote content via '*'
-                if (directives.every(function (k) {
-                    return typeof(CSP[k]) === 'string' && !/ \* /.test(CSP[k]);
-                })) {
-                    return void cb(true);
-                }
-                cb(CSP);
-            },
-        });
-    });
-
-    assert(function (cb, msg) {
-        msg.appendChild(h('span', 'pewpew'));
         deferredPostMessage({
             command: 'CHECK_HTTP_STATUS',
             content: {
@@ -907,6 +840,230 @@ define([
             },
         }, function (content) {
             cb(content === 200 || content);
+        });
+    });
+
+/*
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            'all headers',
+        ]));
+
+        Tools.common_xhr('/', function (xhr) {
+            var all_headers = xhr.getAllResponseHeaders().split(/\r|\n/).filter(Boolean);
+            cb(all_headers);
+        });
+    });
+*/
+
+    var validateCSP = function (raw, msg, expected) {
+        var CSP = parseCSP(raw);
+        var checkRule = function (attr, rules) {
+            var v = CSP[attr];
+            // return `true` if you fail this test...
+            if (typeof(v) !== 'string' || !v) { return true; }
+            var l = rules.length;
+            for (var i = 0;i < l;i++) {
+                if (typeof(rules[i]) !== 'undefined' && !v.includes(rules[i])) { return true; }
+                v = v.replace(rules[i], '');
+            }
+            return v.trim();
+        };
+        if (Object.keys(expected).some(function (dir) {
+            var result = checkRule(dir, expected[dir]);
+            if (result) {
+                msg.appendChild(h('p', [
+                    'A value of ',
+                    code('"' + expected[dir].filter(Boolean).join(' ') + '"'),
+                    ' was expected for the ',
+                    code(dir),
+                    ' directive.',
+                ]));
+
+                console.log('BAD_HEADER:', {
+                    rule: dir,
+                    expected: expected[dir],
+                    result: result,
+                });
+            }
+
+            return result;
+        })) {
+            return parseCSP(raw);
+        }
+        return true;
+    };
+
+    assert(function (_cb, msg) {
+        var url = '/sheet/inner.html';
+        var cb = Util.once(Util.mkAsync(_cb));
+        msg.appendChild(h('span', [
+            code(trimmedUnsafe + url),
+            ' was served with incorrect ',
+            code('Content-Security-Policy'),
+            ' headers.',
+        ]));
+
+        //msg.appendChild(CSP_WARNING(url));
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url,
+                header: 'content-security-policy',
+            },
+        }, function (raw) {
+            var $outer = trimmedUnsafe;
+            var $sandbox = trimmedSafe;
+            var result = validateCSP(raw, msg, {
+                'default-src': ["'none'"],
+                'style-src': ["'unsafe-inline'", "'self'", $outer],
+                'font-src': ["'self'", 'data:', $outer],
+                'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
+                'frame-src': ["'self'", 'blob:', /*$outer, */$sandbox],
+                'script-src': ["'self'", 'resource:', $outer,
+                    "'unsafe-eval'",
+                    "'unsafe-inline'",
+                ],
+                'connect-src': [
+                    "'self'",
+                    'blob:',
+                    $outer,
+                    $sandbox,
+                    /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
+                ],
+
+                'img-src': ["'self'", 'data:', 'blob:', $outer],
+                'media-src': ['blob:'],
+                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                'worker-src': ["'self'"], // , $outer, $sandbox],
+            });
+            cb(result);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'content-security-policy';
+        msg.appendChild(h('span', [
+            code(trimmedUnsafe + '/'),
+            ' was served with incorrect ',
+            code('Content-Security-Policy'),
+            ' headers.',
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            var $outer = trimmedUnsafe;
+            var $sandbox = trimmedSafe;
+            var result = validateCSP(raw, msg, {
+                'default-src': ["'none'"],
+                'style-src': ["'unsafe-inline'", "'self'", $outer],
+                'font-src': ["'self'", 'data:', $outer],
+                'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
+                'frame-src': ["'self'", 'blob:', /*$outer,*/ $sandbox],
+                'script-src': ["'self'", 'resource:', $outer],
+                'connect-src': [
+                    "'self'",
+                    'blob:',
+                    $outer,
+                    $sandbox,
+                    /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
+                ],
+                'img-src': ["'self'", 'data:', 'blob:', $outer],
+                'media-src': ['blob:'],
+                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                'worker-src': ["'self'"],//, $outer, $sandbox],
+            });
+
+            cb(result);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Access-Control-Allow-Origin';
+        msg.appendChild(h('span', [
+            'Assets must be served with an ',
+            code(header),
+            ' header with a value of ',
+            code("'*'"),
+            ' if you wish to support embedding of encrypted media on third party websites.',
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === "*" || raw);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Cross-Origin-Embedder-Policy';
+        msg.appendChild(h('span', [
+            "Assets must be served with a ",
+            code(header),
+            ' value of ',
+            code('require-corp'),
+            " to enable browser features required for client-side document conversion.",
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'require-corp' || raw);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Cross-Origin-Resource-Policy';
+        msg.appendChild(h('span', [
+            "Assets must be served with a ",
+            code(header),
+            ' value of ',
+            code('cross-origin'),
+            " to enable browser features required for client-side document conversion.",
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'cross-origin' || raw);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'X-Content-Type-Options';
+        msg.appendChild(h('span', [
+            "Assets should be served with an ",
+            code(header),
+            ' header with a value of ',
+            code('nosniff'),
+            '.',
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'nosniff' || raw);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Cache-Control';
+        msg.appendChild(h('span', [
+            'Assets requested without a version parameter should be served with a ',
+            code('no-cache'),
+            ' value for the ',
+            code("Cache-Control"),
+            ' header.',
+        ]));
+        // Cache-Control should be 'no-cache' unless the URL includes ver=
+        Tools.common_xhr('/', function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(raw === 'no-cache' || raw);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'Cache-Control';
+        msg.appendChild(h('span', [
+            'Assets requested with a version parameter should be served with a long-lived ',
+            code('Cache-Control'),
+            ' header.',
+        ]));
+        // Cache-Control should be 'max-age=<number>' if the URL includes 'ver='
+        Tools.common_xhr('/customize/messages.js?ver=' +(+new Date()), function (xhr) {
+            var raw = xhr.getResponseHeader(header);
+            cb(/max\-age=\d+$/.test(raw) || raw);
         });
     });
 
@@ -958,13 +1115,6 @@ define([
         });
     });
 */
-
-    if (false) {
-        assert(function (cb, msg) {
-            msg.innerText = 'fake test to simulate failure';
-            cb(false);
-        });
-    }
 
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {

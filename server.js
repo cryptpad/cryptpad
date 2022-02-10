@@ -84,12 +84,6 @@ var setHeaders = (function () {
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
-            // apply a bunch of cross-origin headers for XLSX export in FF and printing elsewhere
-            /*
-            applyHeaderMap(res, {
-                "Cross-Origin-Opener-Policy": /^\/(sheet|presentation|doc|convert)\//.test(req.url)? 'same-origin': '',
-            });*/
-
             if (Env.NO_SANDBOX) { // handles correct configuration for local development
             // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
                 applyHeaderMap(res, {
