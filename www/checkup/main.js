@@ -928,19 +928,7 @@ define([
             if (typeof(v) !== 'string' || !v) { return true; }
             var l = rules.length;
             for (var i = 0;i < l;i++) {
-                if (typeof(rules[i]) !== 'undefined' && !v.includes(rules[i])) {
-                    console.log("BAD_HEADER", rules[i]);
-                    //msg.appendChild(h('br'));
-                    //msg.appendChild(h('br'));
-                    msg.appendChild(h('p', [
-                        'A value of ',
-                        code('"' + rules.filter(Boolean).join(' ') + '"'),
-                        ' was expected for the ',
-                        code(attr),
-                        ' directive.',
-                    ]));
-                    return true;
-                }
+                if (typeof(rules[i]) !== 'undefined' && !v.includes(rules[i])) { return true; }
                 v = v.replace(rules[i], '');
             }
             return v.trim();
@@ -948,6 +936,14 @@ define([
         if (Object.keys(expected).some(function (dir) {
             var result = checkRule(dir, expected[dir]);
             if (result) {
+                msg.appendChild(h('p', [
+                    'A value of ',
+                    code('"' + expected[dir].filter(Boolean).join(' ') + '"'),
+                    ' was expected for the ',
+                    code(dir),
+                    ' directive.',
+                ]));
+
                 console.log('BAD_HEADER:', {
                     rule: dir,
                     expected: expected[dir],
@@ -986,7 +982,7 @@ define([
                 'default-src': ["'none'"],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
-                'child-src': ["'self'", 'blob:', $outer, $sandbox],
+                'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
                 'frame-src': ["'self'", 'blob:', $outer, $sandbox],
                 'script-src': ["'self'", 'resource:', $outer,
                     "'unsafe-eval'", // XXX sloppy onlyoffice BS
@@ -1026,7 +1022,7 @@ define([
                 'default-src': ["'none'"],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
-                'child-src': ["'self'", 'blob:', $outer, $sandbox],
+                'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
                 'frame-src': ["'self'", 'blob:', $outer, $sandbox],
                 'script-src': ["'self'", 'resource:', $outer],
                 'connect-src': [
