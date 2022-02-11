@@ -1361,7 +1361,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, '*');
+                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
             };
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;

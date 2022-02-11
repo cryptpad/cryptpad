@@ -170,7 +170,7 @@ define([
                 var iframe = $('#sbox-iframe')[0].contentWindow;
                 var postMsg = function (data) {
                     try {
-                        iframe.postMessage(data, '*');
+                        iframe.postMessage(data, ApiConfig.httpSafeOrigin || window.location.origin);
                     } catch (err) {
                         console.error(err, data);
                         if (data && data.error && data.error instanceof Error) {
