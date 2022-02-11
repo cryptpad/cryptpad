@@ -968,11 +968,8 @@ define([
                     $outer,
                     $sandbox,
                     /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
-<<<<<<< HEAD
-=======
                     // XXX https://$files_domain
                     // XXX wss://$api_domain
->>>>>>> soon
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
