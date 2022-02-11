@@ -57,7 +57,7 @@ define([
                 var msgEv = Utils.Util.mkEvent();
                 var iframe = $('#sbox-secure-iframe')[0].contentWindow;
                 var postMsg = function (data) {
-                    iframe.postMessage(data, '*');
+                    iframe.postMessage(data, ApiConfig.httpSafeOrigin);
                 };
                 var w = waitFor();
                 var whenReady = function (msg) {
