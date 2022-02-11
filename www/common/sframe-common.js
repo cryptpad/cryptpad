@@ -762,7 +762,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, '*');
+                iframe.postMessage(data, ApiConfig.httpUnsafeOrigin);
             };
             SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
         }).nThen(function (waitFor) {
