@@ -91,8 +91,6 @@ define([
         console.error(err);
     }
 
-
-
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
             "CryptPad's sandbox requires that both ",
@@ -1022,6 +1020,8 @@ define([
                     $sandbox,
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
+                    AppConfig.accounts_api,
+                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
