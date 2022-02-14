@@ -11,7 +11,7 @@ define([
         window.parent.postMessage(JSON.stringify(content), '*');
     };
     postMessage({ command: "READY", });
-    var getHeaders = function (url, cb) { // XXX reuse XHR objects?
+    var getHeaders = function (url, cb) {
         Tools.common_xhr(url, function (xhr) {
             var allHeaders = xhr.getAllResponseHeaders();
             return void cb(void 0, allHeaders, xhr);

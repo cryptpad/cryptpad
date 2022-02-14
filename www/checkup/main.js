@@ -14,13 +14,14 @@ define([
     '/common/outer/network-config.js',
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
+    '/common/outer/network-config.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Pages, Tools) {
+            NetConfig, Pages, Tools, NetConfig) {
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -71,6 +72,14 @@ define([
 
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
+    var fileHost = ApiConfig.fileHost;
+
+    var API_URL;
+    try {
+        API_URL = new URL(NetConfig.getWebsocketURL(window.location.origin), trimmedUnsafe);
+    } catch (err) {
+        console.error(err);
+    };
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
@@ -843,6 +852,36 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            "An invalid ",
+            code("fileHost"),
+            " value was provided by ",
+            code('/api/config'),
+            '.',
+        ]));
+        // it's OK not to provide a 'fileHost' value
+        if (typeof(fileHost) === 'undefined') { return void cb(true); }
+        // if one is provided, we expect it to be HTTPS
+        if (!isHTTPS(fileHost)) { return void cb(fileHost); }
+        // Otherwise I guess it's OK?
+        cb(true);
+    });
+
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            'This instance is configured to use an invalid websocket URL.',
+        ]));
+
+        if (!API_URL) { return void cb('INVALID_WEBSOCKET'); }
+
+        if (isHTTPS(trimmedUnsafe) && API_URL.protocol !== 'wss:') {
+            return void cb("PROTOCOL_MISMATCH");
+        }
+
+        return void cb(true);
+    });
+
 /*
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
@@ -929,9 +968,8 @@ define([
                     'blob:',
                     $outer,
                     $sandbox,
-                    /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
-                    // XXX https://$files_domain
-                    // XXX wss://$api_domain
+                    API_URL.origin,
+                    isHTTPS(fileHost)? fileHost: undefined,
                 ],
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -967,9 +1005,8 @@ define([
                     'blob:',
                     $outer,
                     $sandbox,
-                    /https:\/\//.test($outer)? $outer.replace('https://', 'wss://') : 'ws:',
-                    // XXX https://$files_domain
-                    // XXX wss://$api_domain
+                    API_URL.origin,
+                    isHTTPS(fileHost)? fileHost: undefined,
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
