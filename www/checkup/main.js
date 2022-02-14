@@ -15,13 +15,14 @@ define([
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
     '/common/outer/network-config.js',
+    '/customize/application_config.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Pages, Tools, NetConfig) {
+            NetConfig, Pages, Tools, NetConfig, AppConfig) {
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -80,6 +81,17 @@ define([
     } catch (err) {
         console.error(err);
     };
+
+    var ACCOUNTS_URL;
+    try {
+        if (typeof(AppConfig.upgradeURL) === 'string') {
+            ACCOUNTS_URL = new URL(AppConfig.upgradeURL, trimmedUnsafe).origin;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+
+
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
@@ -970,6 +982,9 @@ define([
                     $sandbox,
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
+                    // support for cryptpad.fr configuration
+                    AppConfig.accounts_api,
+                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
