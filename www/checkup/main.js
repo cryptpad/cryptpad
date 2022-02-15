@@ -14,7 +14,6 @@ define([
     '/common/outer/network-config.js',
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
-    '/common/outer/network-config.js',
     '/customize/application_config.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
@@ -22,7 +21,7 @@ define([
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Pages, Tools, NetConfig, AppConfig) {
+            NetConfig, Pages, Tools, AppConfig) {
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -80,7 +79,7 @@ define([
         API_URL = new URL(NetConfig.getWebsocketURL(window.location.origin), trimmedUnsafe);
     } catch (err) {
         console.error(err);
-    };
+    }
 
     var ACCOUNTS_URL;
     try {
