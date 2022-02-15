@@ -101,7 +101,7 @@ define([
                         )
                     ),
                     h('div.col-12.col-sm-6.col-md-3.col-lg-3',
-                        h('a.card', {href : "https://app.element.io/#/room/#cryptpad:matrix.xwiki.com"},
+                        h('a.card', {href : "https://matrix.to/#/#cryptpad:matrix.xwiki.com"},
                             h('div.card-body',
                                 h('p', [
                                     h('img', {
