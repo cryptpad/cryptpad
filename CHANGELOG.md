@@ -4,12 +4,20 @@
 
 For this release we set aside time to update a number of our software dependencies and to investigate a variety of bugs that had been reported in support tickets.
 
+We have also been coordinating with security researchers through a bug bounty program hosted by [Intigriti.com](https://intigriti.com) and sponsored by the European Commission. This release includes security fixes and a number of new tests on the checkup page to help ensure that your instance is configured in the most secure manner possible. We recommend you read these notes thoroughly to ensure you update correctly.
+
 ## Update notes
+
+4.13.0 includes significant changes to the _Content-Security-Policy_ found in the example NGINX configuration which we recommend ([available on GitHub](https://github.com/xwiki-labs/cryptpad/tree/main/docs/example.nginx.conf)). The updated policy only allows client behaviour which is strictly necessary for clients to work correctly, and is intended to be resilient against misconfiguration beyond the scope of this file. For instance, rather than simply allowing clients to connect to a list of permitted domains we are now explicit that those domains should only be accessible via HTTPS, in case the administrator was incorrectly serving unencrypted content over the same domain. These changes will need to be applied manually.
+
+Several of the new tests on the checkup page (`https://your-instance.com/checkup/`) evaluate the host instance's CSP headers and are very strict about what is considered correct. These settings are a core part of CryptPad's security model, and failing to configure them correctly can undermine its encryption by putting users at risk of cross-site-scripting (XSS) vulnerabilities.
 
 To update from 4.12.0 or 4.12.1 to 4.13.0:
 
-1. Stop your server
-2. Get the latest code with git
+0. Before updating, review your instance's checkup page to see whether you have any unresolved issues
+1. Update your NGINX configuration file to match the provided example
+2. Stop your server
+3. Get the latest code with git
 3. Install the latest dependencies with `bower update` and `npm i`
 4. Restart your server
 5. Confirm that your instance is passing all the tests included on the `/checkup/` page (on whatever devices you intend to support)
@@ -22,15 +30,21 @@ To update from 4.12.0 or 4.12.1 to 4.13.0:
   * fixes for various font and scaling issues
   * numerous other issues mentioned in [OnlyOffice's changelog](https://github.com/ONLYOFFICE/DocumentServer/blob/master/CHANGELOG.md#642)
 * We switched from using our fork of Fabricjs back to the latest version of the upstream branch, since the maintainers had resolved the cause of an incompatibility with our strict _Content Security Policy_ settings. Among other things, this brought improved support for a variety of pressure-sensitive drawing tablets when using our whiteboard app.
-* Mermaidjs (https://mermaid-js.github.io/mermaid/#/) has been updated to the latest version (8.13.8) which:
+* Mermaidjs (https://mermaid-js.github.io/mermaid/#/) has been updated to the version (8.13.10) which:
   * includes fixes a number of possible security flaws which should not have had any effect due to our CSP settings
   * introduces support for several new diagram types (entity relationship, requirement diagrams, user journeys)
   * adds support for dark mode and more modern styles
-* We've begun to experiment with additional iframe sandboxing features to further isolate common platform features (sharing, access controls, media transclusion, upload) from the apps that can trigger their display. These measures should be mostly redundant on CryptPad instances with correctly configured sandboxes, but may help mitigate unexpected risks in other circumstances.
-* A number of groups and individuals volunteered to help translate CryptPad into more languages or complete translations of languages that had fallen out of date. We are happy to say that CryptPad is now fully translated in Russian, Brazilian Portuguese, and Czech.
+* ~~We've begun to experiment with additional iframe sandboxing features to further isolate common platform features (sharing, access controls, media transclusion, upload) from the apps that can trigger their display. These measures should be mostly redundant on CryptPad instances with correctly configured sandboxes, but may help mitigate unexpected risks in other circumstances.~~
+  * these improvements were disabled because they were handled incorrectly by Safari
+* We've added the ability for guests to edit calendars when they have the appropriate editing rights
+* A number of groups and individuals volunteered to help translate CryptPad into more languages or complete translations of languages that had fallen out of date. We are happy to say that CryptPad is now fully translated in Russian, Brazilian Portuguese, Czech, and Polish.
 
 ## Bug fixes
 
+* 4.13.0 fixes a number of security issues:
+  * There were several instances where unsanitized user input was display as HTML in the UI. This had no effect on instances with correctly configured CSP headers, but could have been leveraged by attackers to run scripts on other users devices where these protections were not applied.
+  * The 'bounce' page (which handles navigation from a CryptPad document to another page) didn't warn users when they were leaving CryptPad (a flaw known as an 'open redirect'). We now detect and warn users of redirection to untrusted pages, reducing the risk of phishing attacks. Some users have complained that they find this new behaviour annoying, but it's there to make the platform safer by default.
+  * We've updated the protocol through which our cross-domain sandboxing system communicates with content served on the main domain so that it completely ignores messages from untrusted sources and refuses to communicate to other contexts unless they are explicitly trusted by the platform. Because of these restrictions it is possible that misconfigured instances will fail to load or otherwise behave incorrectly. Once again, there are tests on the checkup page designed to help identify these configuration issues, so please do take advantage of them.
 * Some code which was intended to prompt guests to log in or register when viewing a shared folder stopped working due to some changes in a past release. We now correctly identify when these guests have edit rights, and instead of simply displaying the text **READ ONLY** we prompt them with instructions on how to make full use of the rights they've been given.
 * We fixed some border styles on the horizontal dividers that are sometimes shown in dropdown menus such that consecutive dividers beyond the first are hidden.
 * One of our developer dependencies (`json-schema`) has been updated to fix a prototype pollution bug which should not have had any impact on anyone in practice.
