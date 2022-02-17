@@ -486,7 +486,7 @@
             position: absolute;
             z-index: 50;
         }
-        &.cp-app-drive-readonly {
+        &.cp-app-drive-readonly { // XXX NOW
             background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
         }
         h1 {
@@ -942,6 +942,17 @@
 
 
     .cp-toolbar-bottom {
+        .cp-toolbar-bottom-left {
+            .cp-app-drive-toolbar-new {
+                border-radius: @variables_radius;
+                color: @cp_toolbar-bottom-fg;
+                border-color: var(--toolbar-bg-color);
+                background-color: var(--toolbar-bg-color);
+                &:hover {
+                    background-color: var(--toolbar-bg-color-fade);
+                }
+            }
+        }
         .cp-toolbar-bottom-right {
             .fa-history { order: 50; }
             // .fa-list, .fa-th-large,

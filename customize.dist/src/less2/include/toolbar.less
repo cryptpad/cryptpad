@@ -15,6 +15,7 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
+    @toolbar-bg-color-fade: fade(@toolbar-bg-color, 70%);
     @desat-color: desaturate(@bg-color, 20%);
     @toolbar-bg-color-light: contrast(@cp_toolbar-fg, lighten(@bg-color, 30%), darken(@desat-color, 20%));
     @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@desat-color, 10%));
@@ -27,6 +28,7 @@
     .toolbar_vars(@bg-color);
 
     --toolbar-bg-color: @toolbar-bg-color;
+    --toolbar-bg-color-fade: @toolbar-bg-color-fade;
     --toolbar-bg-color-light: @toolbar-bg-color-light;
     --toolbar-bg-color-active: @toolbar-bg-color-active;
 
@@ -392,7 +394,6 @@
             //display: inline-block;
             button {
                 height: 100%;
-                border-radius: 0;
                 margin: 0;
                 background: transparent;
             }
@@ -896,7 +897,7 @@
     }
 
     .cp-toolbar-history, .cp-toolbar-snapshots {
-        background-color: @toolbar-bg-color-light;
+        background-color: @toolbar-bg-color-light; // XXX NOW
         background-color: var(--toolbar-bg-color-light);
         color: @toolbar-color;
     }
@@ -935,24 +936,9 @@
         }
     }
     .cp-toolbar-bottom {
-        background-color: @toolbar-bg-color-light;
-        background-color: var(--toolbar-bg-color-light);
         color: @cp_toolbar-bottom-fg;
-        button:hover, button.cp-toolbar-button-active {
-            background-color: @toolbar-bg-color-active;
-            background-color: var(--toolbar-bg-color-active);
-        }
-        button.cp-toolbar-button-active {
-            border-color: @toolbar-bg-color-active;
-            border-color: var(--toolbar-bg-color-active);
-        }
-        button:hover, button:focus {
-            border-color: @toolbar-bg-color-active;
-            border-color: var(--toolbar-bg-color-active);
-            //border-color: @cryptpad_text_col;
-        }
-
         display: inline-flex;
+        margin: 5px 0px;
         align-items: center;
         justify-content: space-between;
         max-width: 100%;
@@ -967,17 +953,44 @@
                 margin: 5px 0px;
             }
         }
+
         button {
-            border: 1px solid transparent;
+            border: 1px solid @cp_toolbar-bottom-fg;
+            background-color: @cp_toolbar-bottom-fg;
+            color: @cp_toolbar-fg-inv;
+            //border-color: var(--toolbar-bg-color-active);
             box-sizing: border-box;
             position: relative;
             margin: 0px;
-            border-radius: 0;
+            border-radius: @variables_radius;
             height: @toolbar_line-height;
             display: inline-flex;
             align-items: center;
             .fa, .cptools {
                 margin-right: 5px;
+            }
+            &:hover {
+                background-color: fade(@cp_toolbar-bottom-fg, 70%);
+            }
+        }
+        button.cp-toolbar-button-active {
+            background-color: @cp_toolbar-bg;
+            border-color: @cp_toolbar-bottom-fg;
+            color: @cp_toolbar-bottom-fg;
+            &:hover {
+                background-color: fade(@cp_toolbar-bottom-fg, 30%);
+            }
+        }
+
+        button.cp-toolbar-button-primary {
+            background-color: @toolbar-bg-color;
+            background-color: var(--toolbar-bg-color);
+            border-color: @toolbar-bg-color;
+            border-color: var(--toolbar-bg-color);
+            color: @cp_toolbar-fg-inv;
+            &:hover {
+                background-color: fade(@toolbar-bg-color, 70%);
+                background-color: var(--toolbar-bg-color-fade);
             }
         }
         button.cp-toolbar-collapse {
@@ -1013,14 +1026,25 @@
         .cp-toolbar-bottom-left {
             display: flex;
             order: 1;
+            padding-left: 5px;
+            button {
+                margin-right: 5px;
+            }
         }
         .cp-toolbar-bottom-mid {
             display: flex;
             order: 2;
+            button {
+                margin-right: 5px;
+            }
         }
         .cp-toolbar-bottom-right {
             order: 3;
             display: flex;
+            padding-right: 5px;
+            button {
+                margin-left: 5px;
+            }
             #cp-toolbar-chat-drawer-open { order: 0; }
             #cp-toolbar-userlist-drawer-open { order: 1; }
             & > .cp-dropdown-container {
@@ -1091,11 +1115,11 @@
                 top: @toolbar_line-height;
                 margin: -1px;
                 min-width: 50px;
-                background: @cp_dropdown-bg;
+                background: @cp_dropdown-bg; // XXX not applied
                 display: flex;
                 flex-flow: column;
                 z-index: 10000; //Z cp-toolbar-drawer-content
-                color: @cp_dropdown-fg;
+                color: @cp_dropdown-fg; // XXX not applied
                 .tools_unselectable();
                 .fa {
                     font-size: 17px;

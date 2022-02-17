@@ -574,7 +574,7 @@ MessengerUI, Messages, Pages) {
             throw new Error("You must provide a `metadataMgr` to display the share button");
         }
 
-        var $shareBlock = $(h('button.cp-toolar-share-button', [
+        var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
             h('i.fa.fa-shhare-alt'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
@@ -605,7 +605,7 @@ MessengerUI, Messages, Pages) {
             throw new Error("You must provide a `metadataMgr` to display the access button");
         }
 
-        var $accessBlock = $(h('button.cp-toolar-access-button', [
+        var $accessBlock = $(h('button.cp-toolar-access-button.cp-toolbar-button-primary', [
             h('i.fa.fa-unlock-alt'),
             h('span.cp-button-name', Messages.accessButton)
         ]));
@@ -632,7 +632,7 @@ MessengerUI, Messages, Pages) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
 
-        var $shareBlock = $(h('button.cp-toolar-share-button', [
+        var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
             h('i.fa.fa-shhare-alt'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
