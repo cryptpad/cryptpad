@@ -897,8 +897,8 @@
     }
 
     .cp-toolbar-history, .cp-toolbar-snapshots {
-        background-color: @toolbar-bg-color-light; // XXX NOW
-        background-color: var(--toolbar-bg-color-light);
+        background-color: @cp_toolbar-bg;
+        //background-color: var(--toolbar-bg-color-light);
         color: @toolbar-color;
     }
     .cp-toolbar-snapshots {
@@ -956,9 +956,6 @@
 
         button {
             border: 1px solid @cp_toolbar-bottom-fg;
-            background-color: @cp_toolbar-bottom-fg;
-            color: @cp_toolbar-fg-inv;
-            //border-color: var(--toolbar-bg-color-active);
             box-sizing: border-box;
             position: relative;
             margin: 0px;
@@ -973,14 +970,25 @@
                 background-color: fade(@cp_toolbar-bottom-fg, 70%);
             }
         }
-        button.cp-toolbar-button-active {
-            background-color: @cp_toolbar-bg;
-            border-color: @cp_toolbar-bottom-fg;
-            color: @cp_toolbar-bottom-fg;
+        .cp-toolbar-bottom-left > button,
+        .cp-toolbar-bottom-mid > button,
+        .cp-toolbar-bottom-right > button,
+        .cp-toolbar-bottom-right > span > button {
+            background-color: @cp_toolbar-bottom-fg;
+            color: @cp_toolbar-fg-inv;
             &:hover {
-                background-color: fade(@cp_toolbar-bottom-fg, 30%);
+                background-color: fade(@cp_toolbar-bottom-fg, 70%);
+            }
+            &.cp-toolbar-button-active {
+                background-color: @cp_toolbar-bg;
+                border-color: @cp_toolbar-bottom-fg;
+                color: @cp_toolbar-bottom-fg;
+                &:hover {
+                    background-color: fade(@cp_toolbar-bottom-fg, 30%);
+                }
             }
         }
+
 
         button.cp-toolbar-button-primary {
             background-color: @toolbar-bg-color;
@@ -1105,6 +1113,7 @@
             }
             .cp-toolbar-drawer-content {
                 box-shadow: 0px 1px 5px 0px @cp_shadow-color;
+                border-radius: @variables_radius;
                 overflow-y: auto;
                 overflow-x: hidden;
                 &.cp-dropdown-visible {
@@ -1113,13 +1122,14 @@
                 position: absolute;
                 left: 0px;
                 top: @toolbar_line-height;
-                margin: -1px;
+                //margin: -1px;
+                padding: 5px;
                 min-width: 50px;
-                background: @cp_dropdown-bg; // XXX not applied
+                background: @cp_dropdown-bg;
                 display: flex;
                 flex-flow: column;
                 z-index: 10000; //Z cp-toolbar-drawer-content
-                color: @cp_dropdown-fg; // XXX not applied
+                color: @cp_dropdown-fg;
                 .tools_unselectable();
                 .fa {
                     font-size: 17px;
@@ -1129,15 +1139,15 @@
                     box-sizing: border-box;
                     min-width: 150px;
                     height: @toolbar_line-height;
-                    border-radius: 0;
+                    border-radius: @variables_radius;
                     border: 0;
                 }
                 button {
                     white-space: nowrap;
-                    padding: 5px 16px;
+                    padding: 5px;
                     text-align: left;
                     margin: 0;
-                    border-radius: 0;
+                    border-radius: @variables_radius;
                     border: 0;
                     width: 100%;
                     line-height: 1em;
