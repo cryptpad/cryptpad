@@ -15,6 +15,8 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
+    // XXX Todo: clean up unused variables
+    // XXX: check contrasts of app colors used as btn background
     @toolbar-bg-color-fade: fade(@toolbar-bg-color, 70%);
     @desat-color: desaturate(@bg-color, 20%);
     @toolbar-bg-color-light: contrast(@cp_toolbar-fg, lighten(@bg-color, 30%), darken(@desat-color, 20%));
@@ -504,7 +506,7 @@
                 .cp-toolbar-link {
                     height: @toolbar_line-height;
                     width: @toolbar_line-height;
-                    transform: scale(0.5);
+                    //transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
                     }
@@ -724,7 +726,7 @@
             line-height: @toolbar_top-height;
             width: @toolbar_top-height;
             height: @toolbar_top-height;
-            padding: 0;
+            padding: 5px;
             box-sizing: border-box;
             display: inline-block;
         }
@@ -736,9 +738,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: @toolbar_top-height;
+                width: @toolbar_top-height - 10px;
                 font-size: 1em;
-                height: @toolbar_top-height;
+                height: @toolbar_top-height - 10px;
+                border-radius: @variables_radius;
                 padding: 0px;
                 margin: 0;
                 &::before {
@@ -797,21 +800,25 @@
                 height: auto;
                 padding: 10px;
 
-                svg {
-                    #outline, #squares {
-                        fill: @toolbar-bg-color;
-                        fill: var(--toolbar-bg-color);
-                    }
-                    #background {
-                        fill: @cp_toolbar-logo-bg;
-                    }
+                span {
+                    font-size: 45px;
                 }
 
-                img {
-                    cursor: pointer;
-                    height: 100%;
-                    width: 100%;
-                }
+                // svg {
+                //     #outline, #squares {
+                //         fill: @toolbar-bg-color;
+                //         fill: var(--toolbar-bg-color);
+                //     }
+                //     #background {
+                //         fill: @cp_toolbar-logo-bg;
+                //     }
+                // }
+
+                // img {
+                //     cursor: pointer;
+                //     height: 100%;
+                //     width: 100%;
+                // }
             }
         }
         .cp-toolbar-user {
@@ -955,7 +962,7 @@
         }
 
         button {
-            border: 1px solid @cp_toolbar-bottom-fg;
+            border: 1px solid @cp_toolbar-bottom-bg;
             box-sizing: border-box;
             position: relative;
             margin: 0px;
@@ -967,38 +974,44 @@
                 margin-right: 5px;
             }
             &:hover {
-                background-color: fade(@cp_toolbar-bottom-fg, 70%);
+                // XXX DB: not working well in dark/light
+                background-color: fade(@cp_toolbar-bottom-bg, 70%);
             }
         }
         .cp-toolbar-bottom-left > button,
         .cp-toolbar-bottom-mid > button,
         .cp-toolbar-bottom-right > button,
         .cp-toolbar-bottom-right > span > button {
-            background-color: @cp_toolbar-bottom-fg;
-            color: @cp_toolbar-fg-inv;
+            background-color: @cp_toolbar-bottom-bg;
+            color: @cp_toolbar-bottom-fg;
             &:hover {
-                background-color: fade(@cp_toolbar-bottom-fg, 70%);
+                // XXX DB: not working well in dark/light
+                background-color: fade(@cp_toolbar-bottom-bg, 50%);
+                border-color: fade(@cp_toolbar-bottom-bg, 50%);
             }
             &.cp-toolbar-button-active {
                 background-color: @cp_toolbar-bg;
-                border-color: @cp_toolbar-bottom-fg;
-                color: @cp_toolbar-bottom-fg;
+                border-color: @cp_toolbar-fg;
+                color: @cp_toolbar-fg;
                 &:hover {
-                    background-color: fade(@cp_toolbar-bottom-fg, 30%);
+                    // XXX DB: not working well in dark/light
+                    background-color: fade(@cp_toolbar-bottom-bg, 50%);
                 }
             }
         }
-
 
         button.cp-toolbar-button-primary {
             background-color: @toolbar-bg-color;
             background-color: var(--toolbar-bg-color);
             border-color: @toolbar-bg-color;
             border-color: var(--toolbar-bg-color);
-            color: @cp_toolbar-fg-inv;
+            color: @cp_toolbar-bottom-fg;
             &:hover {
-                background-color: fade(@toolbar-bg-color, 70%);
+                // XXX DB: not working well in dark/light
+                background-color: fade(@toolbar-bg-color, 50%);
                 background-color: var(--toolbar-bg-color-fade);
+                border-color: fade(@toolbar-bg-color, 50%);
+                border-color: var(--toolbar-bg-color-fade);
             }
         }
         button.cp-toolbar-collapse {

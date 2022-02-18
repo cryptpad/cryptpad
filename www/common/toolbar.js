@@ -896,7 +896,7 @@ MessengerUI, Messages, Pages) {
             href: href,
             title: buttonTitle,
             'class': "cp-toolbar-link-logo"
-        }).append(UIElements.getSvgLogo());
+        }).append(UI.getIcon(privateData.app));
 
         var onClick = function (e) {
             e.preventDefault();
