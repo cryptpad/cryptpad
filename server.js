@@ -249,6 +249,7 @@ var serveConfig = makeRouteCache(function (host) {
             premiumUploadSize: Env.premiumUploadSize,
             restrictRegistration: Env.restrictRegistration,
             httpSafeOrigin: Env.httpSafeOrigin,
+            disableEmbedding: Env.disableEmbedding,
         }, null, '\t'),
         '});'
     ].join(';\n')
