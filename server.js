@@ -69,33 +69,9 @@ var getHeaders = function (Env, type) {
         headers = Default.httpHeaders(Env);
     }
 
-    // next define the base Content Security Policy (CSP) headers
-    if (typeof(config.contentSecurity) === 'string') { // XXX deprecate this???
-        headers['Content-Security-Policy'] = config.contentSecurity;
-        if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
-        if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
-            // backward compat for those who do not merge the new version of the config
-            // when updating. This prevents endless spinner if someone clicks donate.
-            // It also fixes the cross-domain iframe.
-            headers['Content-Security-Policy'] += "frame-ancestors *;";
-        }
-    } else {
-        // use the default CSP headers constructed with your domain
-        headers['Content-Security-Policy'] = Default.contentSecurity(Env);
-    }
-
-    //const padHeaders = Util.clone(headers);
-    if (type === 'office') {
-        if (typeof(config.padContentSecurity) === 'string') {
-            headers['Content-Security-Policy'] = config.padContentSecurity; // XXX drop support for this
-        } else {
-            headers['Content-Security-Policy'] = Default.padContentSecurity(Env);
-        }
-    }
-/*
     headers['Content-Security-Policy'] = type === 'office'?
         Default.padContentSecurity(Env):
-        Default.contentSecurity(Env);*/
+        Default.contentSecurity(Env);
 
     if (Env.NO_SANDBOX) { // handles correct configuration for local development
     // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
