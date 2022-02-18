@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -11,7 +12,7 @@ define([
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/customize/pages.js',
-], function ($, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
+], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
     var Share = {};
 
@@ -771,9 +772,9 @@ define([
             icon: "fa fa-link",
             active: !contactsActive,
         }];
-        if (!opts.static) {
+        if (!opts.static && !ApiConfig.disableEmbedding) {
             tabs.push({
-                getTab: getEmbedTab,
+                getTab: getEmbedTab, // XXX
                 title: Messages.share_embedCategory,
                 icon: "fa fa-code",
                 onShow: onShowEmbed,
@@ -965,11 +966,16 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !hasFriends,
-        }, {
-            getTab: getFileEmbedTab,
-            title: Messages.share_embedCategory,
-            icon: "fa fa-code",
         }];
+
+        if (!ApiConfig.disableEmbedding) {
+            tabs.push({
+                getTab: getFileEmbedTab,
+                title: Messages.share_embedCategory,
+                icon: "fa fa-code",
+            });
+        }
+
         Modal.getModal(common, opts, tabs, cb);
     };
 
