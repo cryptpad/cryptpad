@@ -90,6 +90,12 @@ define([
         console.error(err);
     }
 
+    var debugOrigins = {
+        httpUnsafeOrigin: trimmedUnsafe,
+        httpSafeOrigin: trimmedSafe,
+        currentOrigin: window.location.origin,
+    };
+
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
             "CryptPad's sandbox requires that both ",
@@ -103,7 +109,7 @@ define([
         ]));
 
         //console.error(trimmedSafe, trimmedUnsafe);
-        cb(Boolean(trimmedSafe && trimmedUnsafe));
+        cb(Boolean(trimmedSafe && trimmedUnsafe) || debugOrigins);
     });
 
     assert(function (cb, msg) {
@@ -119,7 +125,7 @@ define([
             RESTART_WARNING(),
         ]));
 
-        return void cb(trimmedSafe !== trimmedUnsafe);
+        return void cb(trimmedSafe !== trimmedUnsafe || trimmedUnsafe);
     });
 
     assert(function (cb, msg) {
@@ -132,7 +138,10 @@ define([
             '. ',
             RESTART_WARNING(),
         ]));
-        cb(trimmedSafe === ApiConfig.httpSafeOrigin && trimmedUnsafe === ApiConfig.httpUnsafeOrigin);
+        var result = trimmedSafe === ApiConfig.httpSafeOrigin &&
+                     trimmedUnsafe === ApiConfig.httpUnsafeOrigin;
+
+        cb(result || debugOrigins);
     });
 
     assert(function (cb, msg) {
@@ -149,7 +158,7 @@ define([
             '.',
         ]));
         var origin = window.location.origin;
-        return void cb(ApiConfig.httpUnsafeOrigin === origin);
+        return void cb(ApiConfig.httpUnsafeOrigin === origin || debugOrigins);
     });
 
     var checkAvailability = function (url, cb) {
@@ -157,7 +166,7 @@ define([
             url: cacheBuster(url),
             data: {},
             complete: function (xhr) {
-                cb(xhr.status === 200);
+                cb(xhr.status === 200 || xhr.status);
             },
         });
     };
@@ -200,8 +209,8 @@ define([
         }).nThen(function (waitFor) {
             to = setTimeout(function () {
                 console.error('TIMEOUT loading iframe on the safe domain');
-                cb(false);
-            }, 5000);
+                cb('TIMEOUT');
+            }, 10000);
             SFCommonO.initIframe(waitFor);
         }).nThen(function () {
             // Iframe is loaded
@@ -230,7 +239,7 @@ define([
             console.error('Websocket TIMEOUT');
             evWSError.fire();
             cb(timeoutErr);
-        }, 5000);
+        }, 10000);
         ws.onopen = function () {
             clearTimeout(to);
             cb(true);
@@ -389,24 +398,23 @@ define([
             'cross-origin-embedder-policy': 'require-corp',
         };
 
-        $.ajax(url, {
-            complete: function (xhr) {
-                cb(!Object.keys(expect).some(function (k) {
-                    var response = xhr.getResponseHeader(k);
-                    if (response !== expect[k]) {
-                        msg.appendChild(h('span', [
-                            'A value of ',
-                            code(expect[k]),
-                            ' was expected for the ',
-                            code(k),
-                            ' HTTP header, but instead a value of "',
-                            code(response),
-                            '" was received.',
-                        ]));
-                        return true; // returning true indicates that a value is incorrect
-                    }
-                }));
-            },
+        Tools.common_xhr(sheetURL, function (xhr) {
+            var result = !Object.keys(expect).some(function (k) {
+                var response = xhr.getResponseHeader(k);
+                if (response !== expect[k]) {
+                    msg.appendChild(h('span', [
+                        'A value of ',
+                        code(expect[k]),
+                        ' was expected for the ',
+                        code(k),
+                        ' HTTP header, but instead a value of "',
+                        code(response),
+                        '" was received.',
+                    ]));
+                    return true; // returning true indicates that a value is incorrect
+                }
+            });
+            cb(result || xhr.getAllResponseHeaders());
         });
     });
 
@@ -433,14 +441,12 @@ define([
             ]));
         };
 
-        $.ajax('/?'+ (+new Date()), {
-            complete: function (xhr) {
-                var header = xhr.getResponseHeader('permissions-policy') || '';
-                var rules = header.split(',');
-                if (rules.includes('interest-cohort=()')) { return void cb(true); }
-                printMessage(JSON.stringify(header));
-                cb(header);
-            },
+        Tools.common_xhr('/', function (xhr) {
+            var header = xhr.getResponseHeader('permissions-policy') || '';
+            var rules = header.split(',');
+            if (rules.includes('interest-cohort=()')) { return void cb(true); }
+            printMessage(JSON.stringify(header));
+            cb(header);
         });
     });
 
@@ -452,61 +458,52 @@ define([
             "Your browser console may provide more details as to why this resource could not be loaded. ",
         ]));
 
-        $.ajax(cacheBuster('/api/broadcast'), {
-            dataType: 'text',
-            complete: function (xhr) {
-                cb(xhr.status === 200);
-            },
+        Tools.common_xhr('/api/broadcast', function (xhr) {
+            var status = xhr.status;
+            cb(status === 200 || status);
         });
     });
 
     var checkAPIHeaders = function (url, msg, cb) {
-        $.ajax(cacheBuster(url), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var allHeaders = xhr.getAllResponseHeaders();
-                var headers = {};
-                var duplicated = allHeaders.split('\n').some(function (header) {
-                    var duplicate;
-                    header.replace(/([^:]+):(.*)/, function (all, type, value) {
-                        type = type.trim();
-                        if (typeof(headers[type]) !== 'undefined') {
-                            duplicate = true;
-                        }
-                        headers[type] = value.trim();
-                    });
-                    return duplicate;
-                });
-
-                var expect = {
-                    'cross-origin-resource-policy': 'cross-origin',
-                    'cross-origin-embedder-policy': 'require-corp',
-                };
-                var incorrect = false;
-
-                Object.keys(expect).forEach(function (k) {
-                    var response = xhr.getResponseHeader(k);
-                    var expected = expect[k];
-                    if (response !== expected) {
-                        incorrect = true;
-                        msg.appendChild(h('p', [
-                            'The ',
-                            code(k),
-                            ' header for ',
-                            code(url),
-                            " is '",
-                            code(response),
-                            "' instead of '",
-                            code(expected),
-                            "' as expected.",
-                        ]));
-
+        Tools.common_xhr(url, function (xhr) {
+            var allHeaders = xhr.getAllResponseHeaders();
+            var headers = {};
+            var duplicated = allHeaders.split('\n').some(function (header) {
+                var duplicate;
+                header.replace(/([^:]+):(.*)/, function (all, type, value) {
+                    type = type.trim();
+                    if (typeof(headers[type]) !== 'undefined') {
+                        duplicate = true;
                     }
+                    headers[type] = value.trim();
                 });
+                return duplicate;
+            });
 
-                if (duplicated || incorrect) { console.debug(allHeaders); }
-                cb(!duplicated && !incorrect);
-            },
+            var expect = {
+                'cross-origin-resource-policy': 'cross-origin',
+                'cross-origin-embedder-policy': 'require-corp',
+            };
+            var incorrect = false;
+
+            Object.keys(expect).forEach(function (k) {
+                var response = xhr.getResponseHeader(k);
+                var expected = expect[k];
+                if (response === expected) { return; }
+                incorrect = true;
+                msg.appendChild(h('p', [
+                    'The ',
+                    code(k),
+                    ' header for ',
+                    code(url),
+                    " is '",
+                    code(response),
+                    "' instead of '",
+                    code(expected),
+                    "' as expected.",
+                ]));
+            });
+            cb((!duplicated && !incorrect) || allHeaders);
         });
     };
 
@@ -625,6 +622,7 @@ define([
     });
 
     var parseCSP = function (CSP) {
+        if (!CSP) { return {}; }
         //console.error(CSP);
         var CSP_headers = {};
         CSP.split(";")
@@ -683,7 +681,7 @@ define([
             },
         }, function (content) {
             var CSP_headers = parseCSP(content);
-            cb(hasOnlyOfficeHeaders(CSP_headers));
+            cb(hasOnlyOfficeHeaders(CSP_headers) || CSP_headers);
         });
     });
 
@@ -698,7 +696,7 @@ define([
             },
         }, function (content) {
             var CSP_headers = parseCSP(content);
-            cb(hasOnlyOfficeHeaders(CSP_headers));
+            cb(hasOnlyOfficeHeaders(CSP_headers) || CSP_headers);
         });
     });
 
@@ -817,31 +815,7 @@ define([
             '. ',
             RESTART_WARNING(),
         ]));
-        cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe));
-    });
-
-    assert(function (cb, msg) { // FIXME this test has been superceded, but the descriptive text is still useful
-        // check that the sandbox domain is included in connect-src
-        msg.appendChild(h('span', [
-            "This instance's ",
-            code("Content-Security-Policy"),
-            " headers do not include the sandboxed domain (",
-            code(trimmedSafe),
-            ") in ",
-            code("connect-src"),
-            ". This can cause problems with fonts when printing office documents.",
-            " This is probably due to an incorrectly configured reverse proxy.",
-            " See the provided NGINX configuration file for an example of how to set this header correctly.",
-        ]));
-
-        Tools.common_xhr('/', function (xhr) {
-            var CSP = parseCSP(xhr.getResponseHeader('content-security-policy'));
-            var connect = (CSP && CSP['connect-src']) || "";
-            if (connect.includes(trimmedSafe)) {
-                return void cb(true);
-            }
-            cb(CSP);
-        });
+        cb(isHTTPS(trimmedUnsafe) && isHTTPS(trimmedSafe) || debugOrigins);
     });
 
     assert(function (cb, msg) {
@@ -904,6 +878,22 @@ define([
     });
 */
 
+    var CSP_DESCRIPTIONS = {
+        'default-src': '',
+        'style-src': '',
+        'font-src': '',
+        'child-src': '',
+        'frame-src': '',
+        'script-src': '',
+        'connect-src': "This rule restricts which URLs can be loaded by scripts. Overly permissive settings can allow users to be tracking using external resources, while overly restrictive settings may block pages from loading entirely.",
+        'img-src': '',
+        'media-src': '',
+        'worker-src': '',
+        'manifest-src': '',
+
+        'frame-ancestors': ' This rule determines which sites can embed content from this instance in an iframe.',
+    };
+
     var validateCSP = function (raw, msg, expected) {
         var CSP = parseCSP(raw);
         var checkRule = function (attr, rules) {
@@ -917,28 +907,30 @@ define([
             }
             return v.trim();
         };
-        if (Object.keys(expected).some(function (dir) {
+        var failed;
+        Object.keys(expected).forEach(function (dir) {
             var result = checkRule(dir, expected[dir]);
-            if (result) {
-                msg.appendChild(h('p', [
-                    'A value of ',
-                    code('"' + expected[dir].filter(Boolean).join(' ') + '"'),
-                    ' was expected for the ',
-                    code(dir),
-                    ' directive.',
-                ]));
+            if (!failed && result) { failed = true; }
+            if (!result) { return; }
+            msg.appendChild(h('p', [
+                'A value of ',
+                code('"' + expected[dir].filter(Boolean).join(' ') + '"'),
+                ' was expected for the ',
+                code(dir),
+                ' directive.',
+                CSP_DESCRIPTIONS[dir]
+            ]));
+/*
+            console.log('BAD_HEADER:', {
+                rule: dir,
+                expected: expected[dir],
+                result: result,
+            });
+*/
+        });
 
-                console.log('BAD_HEADER:', {
-                    rule: dir,
-                    expected: expected[dir],
-                    result: result,
-                });
-            }
+        if (failed) { return parseCSP(raw); }
 
-            return result;
-        })) {
-            return parseCSP(raw);
-        }
         return true;
     };
 
@@ -966,8 +958,8 @@ define([
                 'default-src': ["'none'"],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
-                'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
-                'frame-src': ["'self'", 'blob:', /*$outer, */$sandbox],
+                'child-src': [$outer],
+                'frame-src': ["'self'", 'blob:', $sandbox],
                 'script-src': ["'self'", 'resource:', $outer,
                     "'unsafe-eval'",
                     "'unsafe-inline'",
@@ -1009,8 +1001,8 @@ define([
                 'default-src': ["'none'"],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
-                'child-src': [$outer], //["'self'", 'blob:', $outer, $sandbox],
-                'frame-src': ["'self'", 'blob:', /*$outer,*/ $sandbox],
+                'child-src': [$outer],
+                'frame-src': ["'self'", 'blob:', $sandbox],
                 'script-src': ["'self'", 'resource:', $outer],
                 'connect-src': [
                     "'self'",
@@ -1122,54 +1114,10 @@ define([
         });
     });
 
-/*
-    assert(function (cb, msg) {
-        setWarningClass(msg);
-        $.ajax(cacheBuster('/'), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var serverToken = xhr.getResponseHeader('server');
-                if (serverToken === null) { return void cb(true); }
-
-                var lowered = (serverToken || '').toLowerCase();
-                var family;
-
-                ['Apache', 'Caddy', 'NGINX'].some(function (pattern) {
-                    if (lowered.indexOf(pattern.toLowerCase()) !== -1) {
-                        family = pattern;
-                        return true;
-                    }
-                });
-
-                var text = [
-                    "This instance is set to respond with an HTTP ",
-                    code("server"),
-                    " header. This information can make it easier for attackers to find and exploit known vulnerabilities. ",
-                ];
-
-                if (family === 'NGINX') { // FIXME incorrect instructions for HTTP2. needs a recompile?
-                    msg.appendChild(h('span', text.concat([
-                        "This can be addressed by setting ",
-                        code("server_tokens off"),
-                        " in your global NGINX config."
-                    ])));
-                    return void cb(serverToken);
-                }
-
-                // handle other
-                msg.appendChild(h('span', text.concat([
-                    "In this case, it appears that the host server is running ",
-                    code(serverToken),
-                    " instead of ",
-                    code("NGINX"),
-                    " as recommended. As such, you may not benefit from the latest security enhancements that are tested and maintained by the CryptPad development team.",
-                ])));
-
-                cb(serverToken);
-            }
-        });
+    var serverToken;
+    Tools.common_xhr('/', function (xhr) {
+        serverToken = xhr.getResponseHeader('server');
     });
-*/
 
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
@@ -1223,6 +1171,15 @@ define([
         ]);
     };
 
+    var serverStatement = function (token) {
+        if ([null, undefined].includes(token)) { return undefined; }
+        return h('p.cp-notice-other', [
+            "Page content was served by ",
+            code('"' + token + '"'),
+            '.',
+        ]);
+    };
+
     Assert.run(function (state) {
         var errors = state.errors;
         var failed = errors.length;
@@ -1237,6 +1194,7 @@ define([
 
         var summary = h('div.summary.' + statusClass, [
             versionStatement(),
+            serverStatement(serverToken),
             browserStatement(),
             h('p', Messages._getKey('assert_numberOfTestsPassed', [
                 state.passed,
