@@ -1024,6 +1024,13 @@ define([
         });
     });
 
+/*  Only two use-cases are currently supported:
+    1. remote embedding is enabled, and fully permissive
+    2. remote embedding is disabled, so media-tags can only be loaded on your instance
+
+    Support for selectively enabling embedding on remote sites is far more complicated
+    and will need funding.
+*/
     assert(function (cb, msg) {
         var header = 'Access-Control-Allow-Origin';
         Tools.common_xhr('/', function (xhr) {
