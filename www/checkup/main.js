@@ -1026,22 +1026,30 @@ define([
 
     assert(function (cb, msg) {
         var header = 'Access-Control-Allow-Origin';
-        msg.appendChild(h('span', [ // XXX update text to indicate that the value doesn't match their preference
-            'Assets must be served with an ',
-            code(header),
-            ' header with a value of ',
-            code("'*'"),
-            ' if you wish to support embedding of encrypted media on third party websites.',
-        ]));
         Tools.common_xhr('/', function (xhr) {
             var raw = xhr.getResponseHeader(header);
 
             if (ApiConfig.disableEmbedding) {
-                if ([null, ''].includes(raw)) { return void cb(true); }
+                if (raw === trimmedSafe) { return void cb(true); }
                 else {
-                    return void cb(raw === '*' || raw);
+                    msg.appendChild(h('span', [
+                        'This instance has been configured to disable support for embedding assets in third-party websites. ',
+                        'In order for this setting to be effective while still permitting encrypted media to load locally ',
+                        'the ',
+                        code(header),
+                        ' should only match trusted domains.',
+                    ]));
+                    return void cb(raw);
                 }
             }
+
+            msg.appendChild(h('span', [
+                'Assets must be served with an ',
+                code(header),
+                ' header with a value of ',
+                code("'*'"),
+                ' if you wish to support embedding of encrypted media on third party websites.',
+            ]));
 
             cb(raw === "*" || raw);
         });

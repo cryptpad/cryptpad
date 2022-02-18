@@ -126,7 +126,7 @@ app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
         Express.static(Path.join(__dirname, Env.paths.blob), {
             setHeaders: function (res, path, stat) {
-                res.set('Access-Control-Allow-Origin', '*');
+                res.set('Access-Control-Allow-Origin', Env.disableEmbedding? Env.permittedEmbedders: '*');
                 res.set('Access-Control-Allow-Headers', 'Content-Length');
                 res.set('Access-Control-Expose-Headers', 'Content-Length');
             }
@@ -138,7 +138,7 @@ app.use('/blob', function (req, res, next) {
 
 app.use(function (req, res, next) {
     if (req.method === 'OPTIONS' && /\/blob\//.test(req.url)) {
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Origin', Env.disableEmbedding? Env.permittedEmbedders: '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
         res.setHeader('Access-Control-Max-Age', 1728000);
