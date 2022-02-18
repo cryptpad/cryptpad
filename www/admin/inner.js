@@ -56,6 +56,7 @@ define([
             'cp-admin-archive',
             'cp-admin-unarchive',
             'cp-admin-registration',
+            'cp-admin-disableembeds',
             'cp-admin-email'
         ],
         'quota': [ // Msg.admin_cat_quota
@@ -294,6 +295,47 @@ define([
                     state = APP.instanceStatus.restrictRegistration;
                     $checkbox[0].checked = state;
                     $checkbox.removeAttr('disabled');
+                });
+            });
+        });
+        $cbox.appendTo($div);
+
+        return $div;
+    };
+
+    Messages.admin_disableembedsTitle = "Disable remote embedding"; // XXX
+    Messages.admin_disableembedsHint = "Remove options to embed pads and media-tags hosted on third party websites from sharing menus."; // XXX
+    //Messages.admin_disableembedsButton = "admin_disableembedsButton";
+    Messages.admin_cacheEvictionRequired = "XXX YOU MAY NEED TO USE THE 'FLUSH CACHE' BUTTON FOR THIS TO TAKE EFFECT"; // XXX
+
+    create['disableembeds'] = function () {
+        var key = 'disableembeds';
+        var $div = makeBlock(key);
+        // Msg.admin_disableembedsHint, .admin_disableembedsTitle, .admin_disableembedsButton
+
+        var state = APP.instanceStatus.disableEmbedding;
+        var $cbox = $(UI.createCheckbox('cp-settings-' + key,
+            Messages.admin_disableembedsTitle,
+            state, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
+        var $checkbox = $cbox.find('input').on('change', function() {
+            spinner.spin();
+            var val = $checkbox.is(':checked') || false;
+            $checkbox.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['DISABLE_EMBEDDING', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    spinner.done();
+                    state = APP.instanceStatus.disableEmbedding;
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
+                    UI.alert(Messages.admin_cacheEvictionRequired);
                 });
             });
         });
