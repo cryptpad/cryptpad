@@ -48,9 +48,17 @@ var applyHeaderMap = function (res, map) {
     for (let header in map) { res.setHeader(header, map[header]); }
 };
 
-var setHeaders = (function () {
-    // load the default http headers unless the admin has provided their own via the config file
-    var headers;
+var EXEMPT = [
+    /^\/common\/onlyoffice\/.*\.html.*/,
+    /^\/(sheet|presentation|doc)\/inner\.html.*/,
+    /^\/unsafeiframe\/inner\.html.*$/,
+];
+
+var getHeaders = function (Env, type) {
+    var key = type + 'HeadersCache';
+    if (Env[key]) { return Env[key]; }
+
+    var headers = {};
 
     var custom = config.httpHeaders;
     // if the admin provided valid http headers then use them
@@ -58,11 +66,11 @@ var setHeaders = (function () {
         headers = Util.clone(custom);
     } else {
         // otherwise use the default
-        headers = Default.httpHeaders();
+        headers = Default.httpHeaders(Env);
     }
 
     // next define the base Content Security Policy (CSP) headers
-    if (typeof(config.contentSecurity) === 'string') {
+    if (typeof(config.contentSecurity) === 'string') { // XXX deprecate this???
         headers['Content-Security-Policy'] = config.contentSecurity;
         if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
@@ -73,47 +81,54 @@ var setHeaders = (function () {
         }
     } else {
         // use the default CSP headers constructed with your domain
-        headers['Content-Security-Policy'] = Default.contentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
+        headers['Content-Security-Policy'] = Default.contentSecurity(Env);
     }
 
-    const padHeaders = Util.clone(headers);
-    if (typeof(config.padContentSecurity) === 'string') {
-        padHeaders['Content-Security-Policy'] = config.padContentSecurity;
+    //const padHeaders = Util.clone(headers);
+    if (type === 'office') {
+        if (typeof(config.padContentSecurity) === 'string') {
+            headers['Content-Security-Policy'] = config.padContentSecurity; // XXX drop support for this
+        } else {
+            headers['Content-Security-Policy'] = Default.padContentSecurity(Env);
+        }
+    }
+/*
+    headers['Content-Security-Policy'] = type === 'office'?
+        Default.padContentSecurity(Env):
+        Default.contentSecurity(Env);*/
+
+    if (Env.NO_SANDBOX) { // handles correct configuration for local development
+    // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
+        headers["Cross-Origin-Resource-Policy"] = 'cross-origin';
+        headers["Cross-Origin-Embedder-Policy"] = 'require-corp';
+    }
+
+    // Don't set CSP headers on /api/ endpoints
+    // because they aren't necessary and they cause problems
+    // when duplicated by NGINX in production environments
+    if (type === 'api') {
+        Env[key] = headers;
+        return headers;
+    }
+
+    headers["Cross-Origin-Resource-Policy"] = 'cross-origin';
+    Env[key] = headers;
+    return headers;
+};
+
+var setHeaders = function (req, res) {
+    var type;
+    if (EXEMPT.some(regex => regex.test(req.url))) {
+        type = 'office';
+    } else if (/^\/api\/(broadcast|config)/.test(req.url)) {
+        type = 'api';
     } else {
-        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
+        type = 'standard';
     }
-    if (Object.keys(headers).length) {
-        return function (req, res) {
-            if (Env.NO_SANDBOX) { // handles correct configuration for local development
-            // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
-                applyHeaderMap(res, {
-                    "Cross-Origin-Resource-Policy": 'cross-origin',
-                    "Cross-Origin-Embedder-Policy": 'require-corp',
-                });
-            }
 
-            // Don't set CSP headers on /api/ endpoints
-            // because they aren't necessary and they cause problems
-            // when duplicated by NGINX in production environments
-            if (/^\/api\/(broadcast|config)/.test(req.url)) { return; }
-
-            applyHeaderMap(res, {
-                "Cross-Origin-Resource-Policy": 'cross-origin',
-            });
-
-            // targeted CSP, generic policies, maybe custom headers
-            const h = [
-                    /^\/common\/onlyoffice\/.*\.html.*/,
-                    /^\/(sheet|presentation|doc)\/inner\.html.*/,
-                    /^\/unsafeiframe\/inner\.html.*$/,
-                ].some((regex) => {
-                    return regex.test(req.url);
-                }) ? padHeaders : headers;
-            applyHeaderMap(res, h);
-        };
-    }
-    return function () {};
-}());
+    var h = getHeaders(Env, type);
+    applyHeaderMap(res, h);
+};
 
 (function () {
 if (!config.logFeedback) { return; }

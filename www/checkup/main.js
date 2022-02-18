@@ -978,8 +978,8 @@ define([
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
-                'worker-src': ["'self'"], // , $outer, $sandbox],
+                'frame-ancestors': ApiConfig.disableEmbedding?  [$outer, $sandbox]: ['*'],
+                'worker-src': ["'self'"],
             });
             cb(result);
         });
@@ -1016,7 +1016,7 @@ define([
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                'frame-ancestors': ApiConfig.disableEmbedding?  [$outer, $sandbox]: ['*'],
                 'worker-src': ["'self'"],//, $outer, $sandbox],
             });
 
@@ -1026,7 +1026,7 @@ define([
 
     assert(function (cb, msg) {
         var header = 'Access-Control-Allow-Origin';
-        msg.appendChild(h('span', [
+        msg.appendChild(h('span', [ // XXX update text to indicate that the value doesn't match their preference
             'Assets must be served with an ',
             code(header),
             ' header with a value of ',
@@ -1035,6 +1035,14 @@ define([
         ]));
         Tools.common_xhr('/', function (xhr) {
             var raw = xhr.getResponseHeader(header);
+
+            if (ApiConfig.disableEmbedding) {
+                if ([null, ''].includes(raw)) { return void cb(true); }
+                else {
+                    return void cb(raw === '*' || raw);
+                }
+            }
+
             cb(raw === "*" || raw);
         });
     });
