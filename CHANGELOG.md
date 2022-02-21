@@ -135,7 +135,7 @@ Our team has limited resources, so we've chosen to introduce the new (and **expe
 
 To enable the use of the OnlyOffice Document and Presentation editor for everyone on your instance, edit your [customize/application_config.js](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config) file to include `AppConfig.enableEarlyAccess = true;`.
 
-If you wish to avoid a rush of support tickets from your users by limiting early access to users with custom quota increases, add another line like so `Constants.earlyAccessApps = ['doc', 'presentation'];`.
+If you wish to avoid a rush of support tickets from your users by limiting early access to users with custom quota increases, add another line like so `AppConfig.premiumTypes = ['doc', 'presentation'];`.
 
 As these editors become more stable we plan to enable them by default on third-party instances. Keep in mind, these editors may be unstable and users may lose their work. Our team will fix bugs given sufficient information to reproduce them, but we will not take the time to help you recover lost data unless you have taken a support contract with us.
 
