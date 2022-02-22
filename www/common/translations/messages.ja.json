@@ -1422,5 +1422,10 @@
     "form_conditional_addAnd": "「かつ」の条件を追加",
     "form_conditional_add": "「あるいは」の条件を追加",
     "form_condition_isnot": "等しくない",
-    "form_condition_is": "等しい"
+    "form_condition_is": "等しい",
+    "form_template_poll": "スケジュールの投票のテンプレート",
+    "bounce_danger": "クリックしたリンクは、ウェブページではなく、悪質かもしれないコードやデータに結びついています。\n\n(\"{0}\")\n\nセキュリティー上の理由で、CryptPadはこのデータをブロックしています。OKをクリックするとタブが閉じます。",
+    "bounce_confirm": "このページから退出しようとしています： {0}\n\n次のページを開いてよろしいですか？：{1}",
+    "form_condition_hasnot": "含まない",
+    "form_condition_has": "含む"
 }
