@@ -706,7 +706,7 @@ define([
             }
             var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
-                title: Util.fixHTML(data)
+                title: data,
             }, [
                 opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
                 opts.type === 'day' ? h('span.cp-form-weekday-separator', ' - ') : undefined,
@@ -865,7 +865,7 @@ define([
             if (totalMax.value) {
                 $total.find('[data-id]').removeClass('cp-poll-best');
                 totalMax.data.forEach(function (k) {
-                    $total.find('[data-id="'+k+'"]').addClass('cp-poll-best');
+                    $total.find('[data-id="'+ (k.replace(/"/g, '\\"')) + '"]').addClass('cp-poll-best');
                 });
             }
         };
