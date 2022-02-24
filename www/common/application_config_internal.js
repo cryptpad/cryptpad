@@ -35,6 +35,9 @@ define(function() {
     //'doc', 'presentation'
     ];
 
+    // XXX
+    // AppConfig.premiumTypes = ['doc', 'presentation'];
+
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
      * will use the english version instead. You can customize the langauges you want to be available
@@ -64,6 +67,29 @@ define(function() {
      * To do so, set the following value to an absolute URL.
      */
     //AppConfig.roadmap = 'https://cryptpad.fr/kanban/#/2/kanban/view/PLM0C3tFWvYhd+EPzXrbT+NxB76Z5DtZhAA5W5hG9wo/';
+
+    // XXX
+/*
+AppConfig.imprint, AppConfig.privacy, AppConfig.terms, AppConfig.source, and AppConfig.roadmap can each be configured in one of three manners:
+
+// to prevent the display of privacy policy entirely:
+AppConfig.privacy = false;
+
+// to display the default privacy policy:
+AppConfig.privacy = true;
+
+// to display translated versions of the privacy policy depending on
+// the user's configured or inferred language
+AppConfig.privacy = {
+    'default': '...', // displayed if there is no exact match
+    'en': '/privacy.en.html',
+    'fr': '/privacy.fr.html',
+};
+
+
+*/
+    AppConfig.source = 'https://github.com/xwiki-labs/cryptpad/'; // XXX
+
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds

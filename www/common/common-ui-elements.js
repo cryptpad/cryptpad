@@ -1637,6 +1637,11 @@ define([
         return $container;
     };
 
+    Messages.info_termsFlavour = "<a>XXX terms flavour</a>"; // XXX
+    Messages.info_imprintFlavour = "<a>XXX imprint flavour</a>"; // XXX
+    Messages.info_roadmapFlavour = "<a>XXX roadmap flavour</a>"; // XXX
+    Messages.info_sourceFlavour = "<a>XXX source flavour</a>"; // XXX
+
     UIElements.displayInfoMenu = function (Common, metadataMgr) {
         //var padType = metadataMgr.getMetadata().type;
         var priv = metadataMgr.getPrivateData();
@@ -1647,9 +1652,10 @@ define([
 
         var template = function (line, link) {
             if (!line || !link) { return; }
-            var p = $('<p>').html(line)[0];
+            var p = $('<p>').html(line)[0]; // XXX
             var sub = link.cloneNode(true);
 
+// XXX use URL if you need to?
 /*  This is a hack to make relative URLs point to the main domain
     instead of the sandbox domain. It will break if the admins have specified
     some less common URL formats for their customizable links, such as if they've
@@ -1669,6 +1675,17 @@ define([
 
         var faqLine = template(Messages.help_genericMore, Pages.docsLink);
 
+        // XXX terms
+        var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
+
+        // XXX imprint
+        var imprintLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
+
+        // XXX roadmap
+        var roadmapLine = template(Messages.info_roadmapFlavour, Pages.roadmapLink);
+
+        var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
+
         var content = h('div.cp-info-menu-container', [
             h('div.logo-block', [
                 h('img', {
@@ -1680,7 +1697,11 @@ define([
             h('hr'),
             legalLine,
             privacyLine,
+            termsLine, // XXX
+            imprintLine, // XXX
             faqLine,
+            roadmapLine, // XXX
+            sourceLine, // XXX
         ]);
 
         $(content).find('a').attr('target', '_blank');

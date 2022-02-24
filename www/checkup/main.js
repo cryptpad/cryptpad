@@ -392,7 +392,6 @@ define([
 
     assert(function (cb, msg) {
         msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
-        var url = cacheBuster(sheetURL);
         var expect = {
             'cross-origin-resource-policy': 'cross-origin',
             'cross-origin-embedder-policy': 'require-corp',
@@ -1112,6 +1111,75 @@ define([
             var raw = xhr.getResponseHeader(header);
             cb(/max\-age=\d+$/.test(raw) || raw);
         });
+    });
+
+    var POLICY_ADVISORY = " It's advised that you either provide one or disable registration.";
+    var isValidInfoURL = function (url) {
+        // XXX check that it's an absolute URL ????
+        if (!url || typeof(url) !== 'string') { return false; }
+        try {
+            var parsed = new URL(url, ApiConfig.httpUnsafeOrigin);
+            // check that the URL parsed and that they haven't simply linked to
+            // '/' or '.' or something silly like that.
+            return ![
+                ApiConfig.httpUnsafeOrigin,
+                ApiConfig.httpUnsafeOrigin + '/',
+            ].includes(parsed.href);
+        } catch (err) {
+            return false;
+        }
+    };
+
+    // XXX check if they provide terms of service
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.terms;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No terms of service specified.', // XXX
+            POLICY_ADVISORY,
+        ]));
+        cb(isValidInfoURL(url) || url); // XXX
+    });
+
+    // XXX check if they provide legal data
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.imprint;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No legal data provided.', // XXX
+            POLICY_ADVISORY,
+        ]));
+        cb(isValidInfoURL(url) || url); // XXX
+    });
+
+    // XXX check if they provide a privacy policy
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.privacy;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No privacy policy provided.', // XXX
+            POLICY_ADVISORY,
+        ]));
+        cb(isValidInfoURL(url) || url); // XXX
+    });
+
+    // XXX check if they provide a link to source code
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.source;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No source code link provided.', // XXX
+            POLICY_ADVISORY,
+        ]));
+        cb(isValidInfoURL(url) || url); // XXX
     });
 
     var serverToken;
