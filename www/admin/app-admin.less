@@ -33,8 +33,12 @@
             margin-top: 5px;
         }
     }
-    .cp-admin-setlimit-form + button {
-        margin-top: 5px !important;
+    .cp-admin-setlimit-form,
+    .cp-admin-setjurisdiction-form,
+    .cp-admin-setdescription-form {
+        + button {
+            margin-top: 5px !important;
+        }
     }
     .cp-admin-getlimits {
         code {
@@ -199,6 +203,12 @@
     input.cp-admin-inval {
         border-color: red !important;
     }
+    input[type="text"], textarea {
+        &.cp-listing-info[disabled] {
+            border: 1px solid transparent !important; //1px solid transparent !imprortant;;//none !important;
+        }
+    }
+
     .cp-admin-nopassword {
         .cp-admin-pw {
             display: none !important;

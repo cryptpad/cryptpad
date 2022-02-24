@@ -56,7 +56,7 @@ define([
             'cp-admin-archive',
             'cp-admin-unarchive',
             'cp-admin-registration',
-            'cp-admin-email'
+            'cp-admin-email',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -92,6 +92,11 @@ define([
             'cp-admin-block-daily-check',
             //'cp-admin-provide-aggregate-statistics',
             'cp-admin-list-my-instance',
+
+            'cp-admin-name',
+            'cp-admin-description',
+            'cp-admin-jurisdiction',
+
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
             'cp-admin-instance-purpose',
@@ -264,7 +269,7 @@ define([
                     UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
                     $input.val('');
                     $pwInput.val('');
-                    $reason.val('')
+                    $reason.val('');
                 });
             });
         });
@@ -324,6 +329,8 @@ define([
             var state = data.getState();
             var key = data.key;
             var $div = makeBlock(key);
+
+            // XXX support disabling this checkboxes in certain conditions, ie. when telemetry is off
 
             var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
             var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
@@ -403,6 +410,150 @@ define([
         });
 
         $button.before(innerDiv);
+
+        return $div;
+    };
+
+    Messages.admin_jurisdictionHint = 'Jurisdiction hint'; // XXX
+    Messages.admin_jurisdictionTitle = 'Jurisdiction title'; // XXX
+    Messages.admin_jurisdictionButton = 'Jurisdiction button'; // XXX
+    Messages.admin_jurisdictionPlaceholder = 'Jurisdiction placeholder'; // XXX
+
+    create['jurisdiction'] = function () {
+        var key = 'jurisdiction';
+        var $div = makeBlock(key, true); // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle, Msg.admin_jurisdictionButton
+        var $button = $div.find('button').addClass('cp-listing-action');
+
+        var input = h('input.cp-listing-info', {
+            type: 'text',
+            value: APP.instanceStatus.instanceJurisdiction || '',
+            placeholder: Messages.admin_jurisdictionPlaceholder,
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setjurisdiction-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            if (!$input.val()) { return; }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_JURISDICTION', [$input.val()]] // XXX not implemented
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        $button.before(innerDiv);
+
+        return $div;
+    };
+
+    Messages.admin_nameHint = 'instance name hint'; // XXX
+    Messages.admin_nameTitle = 'instance name title'; // XXX
+    Messages.admin_nameButton = 'instance name button'; // XXX
+    Messages.admin_namePlaceholder = 'instance name placeholder'; // XXX
+
+    create['name'] = function () {
+        var key = 'name';
+        var $div = makeBlock(key, true);
+        // Msg.admin_nameHint, Msg.admin_nameTitle, Msg.admin_nameButton
+        var $button = $div.find('button').addClass('cp-listing-action');
+
+        var input = h('input.cp-listing-info', {
+            type: 'text',
+            value: APP.instanceStatus.instanceName || '',
+            placeholder: Messages.admin_namePlaceholder,
+            style: 'margin-bottom: 5px;',
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setname-form', input); // XXX fix styles
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            if (!$input.val()) { return; }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_NAME', [$input.val()]] // XXX not implemented
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        $button.before(innerDiv);
+
+        return $div;
+    };
+
+
+    Messages.admin_descriptionHint = 'Description hint'; // XXX
+    Messages.admin_descriptionTitle = 'Description title'; // XXX
+    Messages.admin_descriptionButton = 'Description button'; // XXX
+    Messages.admin_descriptionPlaceholder = 'Description placeholder'; // XXX
+
+    create['description'] = function () {
+        var key = 'description';
+        var $div = makeBlock(key, true);
+
+        var textarea = h('textarea.cp-admin-description-text.cp-listing-info', { // XXX use something from UI elements?
+            placeholder: Messages.admin_descriptionPlaceholder,
+        }, APP.instanceStatus.instanceDescription || '');
+
+        var $button = $div.find('button');
+
+        $button.addClass('cp-listing-action');
+
+        var innerDiv = h('div.cp-admin-setdescription-form', {
+            //style: 'margin-bottom: 5px', // XXX LOL NO
+        }, [
+            textarea,
+        ]);
+        $button.before(innerDiv);
+
+        var $input = $(textarea);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            if (!$input.val()) { return; }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_DESCRIPTION', [$input.val()]] // XXX
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
 
         return $div;
     };
@@ -1799,6 +1950,7 @@ define([
         },
     });
 
+    // XXX disable this checkbox if server telemetry is disabled?
     create['list-my-instance'] = makeAdminCheckbox({ // Messages.admin_listMyInstanceTitle.admin_listMyInstanceHint.admin_listMyInstanceLabel
         key: 'list-my-instance',
         getState: function () {
@@ -2034,6 +2186,19 @@ define([
             if (!Array.isArray(data)) { return void cb('EINVAL'); }
             APP.instanceStatus = data[0];
             console.log("Status", APP.instanceStatus);
+
+            var isListed = Boolean(APP.instanceStatus.listMyInstance);
+            var $actions = $('.cp-listing-action');
+            var $fields = $('.cp-listing-info');
+
+            if (isListed) {
+                $actions.removeAttr('disabled');
+                $fields.removeAttr('disabled');
+            } else {
+                $actions.attr('disabled', 'disabled');
+                $fields.attr('disabled', 'disabled');
+            }
+
             cb();
         });
     };
