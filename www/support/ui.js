@@ -8,7 +8,8 @@ define([
     '/common/clipboard.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages) {
+    '/customize/pages.js',
+], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages) {
 
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
@@ -145,19 +146,22 @@ define([
         return true;
     };
 
+    Messages.support_cat_abuse = "Abuse"; // XXX
+    Messages.support_cat_terms = "Terms violation"; // XXX
+
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = [
             'account', // Msg.support_cat_account
             'data', // Msg.support_cat_data
             'bug', // Msg.support_cat_bug
-            // TODO report
+            'abuse', // Msg.support_cat_abuse
+            Pages.customURLs.terms? 'terms': undefined, // Msg.support_cat_terms
             'other' // Msg.support_cat_other
         ];
         if (all) { categories.push('all'); } // Msg.support_cat_all
 
-
-
         categories = categories.map(function (key) {
+            if (!key) { return; }
             return {
                 tag: 'a',
                 content: h('span', Messages['support_cat_'+key]),
@@ -178,6 +182,16 @@ define([
         return $select;
     };
 
+    Messages.support_warning_prompt = "We may require additional information depending on the nature of your issue. Choose the most relevant category for suggestions.";
+
+    Messages.support_warning_account = "CryptPad administrators are unable to identify accounts, teams, folders, and files by their names. Please provide their identifiers if your issue relates to one of these features."; // XXX
+    Messages.support_warning_data = 'What data was lost? Is it entirely gone or only corrupted? Is it backed up? Can you provide a link to the content or at least its document id?'; // XXX
+    Messages.support_warning_bug = "Describe the bug in as much detail as possible. In which browser did you first notice the problem? In which other browser does it first occur, if any? Can you provide a list of all the extensions you've installed?"; // XXX
+    Messages.support_warning_report = 'Give us a link to the reported content, some context about its contents, and where it is being distributed.'; // XXX
+    Messages.support_warning_terms = 'Reports of content or behaviour which violate our <a>terms of service</a> should include links to any related content and descriptions of how they violate the terms. If possible, a description of the context in which you discovered the behaviour may help us prevent future violations.'; // XXX
+    Messages.support_warning_abuse = "If you have experienced targeted abuse on the platform, please provide a description of what occurred and indicate any evidence that might help us prevent this abuse in the future.";
+    Messages.support_warning_other = "What is the nature of your query? Providing as much relevant information as possible in your first message may make it easier for us to address your issue quickly."; // XXX
+
     var makeForm = function (ctx, cb, title) {
         var button;
 
@@ -193,18 +207,36 @@ define([
             value: ''
         });
         var catContainer = h('div.cp-dropdown-container' + (title ? '.cp-hidden': ''));
+        var notice = h('div.alert.alert-info', Messages.support_warning_prompt);
         makeCategoryDropdown(ctx, catContainer, function (key) {
             $(category).val(key);
+            console.log(key);
+            var warning = Messages['support_warning_' + key] || '';
+            if (key === 'terms') {
+                // XXX AppConfig.terms or Pages.termsLink
+                notice.innerHTML = '';
+                //notice.appendChild(UI.setHTML(h('span'), Messages.support_
+                var content = UI.setHTML(h('span'), Messages.support_warning_terms);
+                var link = content.querySelector('a');
+                link.href = Pages.customURLs.terms;
+                notice.appendChild(content);
+                return;
+            }
+
+            notice.innerText = warning;
+
             // TODO add a hint suggesting relevant information to include for the chosen category
         });
 
         var attachments, addAttachment;
 
+
         var content = [
             h('hr'),
             category,
             catContainer,
-            h('br'),
+            notice,
+            //h('br'),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
                 placeholder: Messages.support_formTitle,
                 type: 'text',
