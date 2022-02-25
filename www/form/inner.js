@@ -986,6 +986,12 @@ define([
         });
     });
 
+    var linkClickHandler = function (ev) {
+        ev.preventDefault();
+        var href = ($(this).attr('href') || '').trim();
+        if (!href) { return; }
+        APP.common.openUnsafeURL(href);
+    };
 
     var STATIC_TYPES = {
         md: {
@@ -999,6 +1005,8 @@ define([
                 }, opts.text);
                 var $tag = $(tag);
                 DiffMd.apply(DiffMd.render(opts.text || ''), $tag, APP.common);
+                $tag.find('a').click(linkClickHandler);
+
                 var cursorGetter;
                 return {
                     tag: tag,
@@ -2904,6 +2912,7 @@ define([
         if (content.answers.msg) {
             var $desc = $(description);
             DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
+            $desc.find('a').click(linkClickHandler);
         }
 
         var actions = h('div.cp-form-submit-actions', [
