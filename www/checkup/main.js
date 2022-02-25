@@ -392,7 +392,6 @@ define([
 
     assert(function (cb, msg) {
         msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
-        var url = cacheBuster(sheetURL);
         var expect = {
             'cross-origin-resource-policy': 'cross-origin',
             'cross-origin-embedder-policy': 'require-corp',
