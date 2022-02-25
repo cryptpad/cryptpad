@@ -10,6 +10,7 @@ define([
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
+    if (window.top !== window) { return; }
     $(function () {
         var $checkImport = $('#import-recent');
         if (LocalStore.isLoggedIn()) {

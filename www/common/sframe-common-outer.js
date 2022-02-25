@@ -8,7 +8,41 @@ define([
 ], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
 
+    var embeddableApps = [
+        //'calendar',
+        'code',
+        //'doc', // XXX
+        // 'drive',  // XXX
+        //'file', // doesn't suggest iframes
+        'form',
+        'kanban',
+        'pad',
+        // 'poll', // XXX
+        //'presentation', // XXX
+        // 'sheet', // XXX
+        'slide',
+        //'teams', // XXX
+        'whiteboard',
+    ].map(function (x) {
+        return `/${x}/`; // XXX intentionally break IE or anything that doesn't support template literals
+    });
+
     common.initIframe = function (waitFor, isRt, pathname) {
+        if (window.top !== window) {
+            if (ApiConfig.disableEmbedding) {
+                return void window.alert(`This CryptPad instance's administrators have disabled remote embedding of its editors.`);
+            }
+            // even where embedding is not forbidden it should still be limited
+            // to apps that are explicitly permitted
+            if (!embeddableApps.includes(window.location.pathname)) {
+                return void window.alert(`Embedding this CryptPad editor in remote pages is not supported.`);
+            }
+        }
+
+        if (window.location.origin !== ApiConfig.httpUnsafeOrigin) {
+            return void window.alert(`This page is configured to only be accessed via ${ApiConfig.httpUnsafeOrigin}.`);
+        }
+
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
         var themeKey = 'CRYPTPAD_STORE|colortheme';
