@@ -275,7 +275,7 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
-        var ticketTitle = content.title + ' (#' + content.id + ')';
+        var ticketTitle = content.title + ' (#' + content.id + ')'; // XXX id is not validated in any way
         var ticketCategory;
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);

@@ -120,7 +120,7 @@ define([
             if (queue.inProgress) { return; }
             queue.inProgress = true;
 
-            var $row = $table.find('tr[id="'+id+'"]');
+            var $row = $table.find('tr[id="'+id+'"]'); // XXX
 
             $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-minus'));
             var $pv = $row.find('.cp-fileupload-table-progress-value');
@@ -627,7 +627,7 @@ define([
             queue.inProgress = true;
             var id = file.id;
 
-            var $row = $table.find('tr[id="'+id+'"]');
+            var $row = $table.find('tr[id="'+id+'"]'); // XXX
             var $pv = $row.find('.cp-fileupload-table-progress-value');
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');

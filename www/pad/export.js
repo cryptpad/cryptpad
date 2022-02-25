@@ -28,7 +28,7 @@ define([
                 var blob = Util.find(el, ['_mediaObject','_blob', 'content']);
                 if (!blob) { return; }
                 Util.blobToImage(blob, waitFor(function (imgSrc) {
-                    $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
+                    $clone.find('media-tag[src="' + $(el).attr('src') + '"] img') // XXX
                         .attr('src', imgSrc);
                     $clone.find('media-tag').parent()
                         .find('.cke_widget_drag_handler_container').remove();

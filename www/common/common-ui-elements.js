@@ -204,7 +204,7 @@ define([
             var name = $(inputFilter).val().trim().replace(/"/g, '').toLowerCase();
             $div.find('.cp-usergrid-user').show();
             if (name) {
-                $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
+                $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide(); // XXX
             }
         };
         $(inputFilter).on('keydown keyup change', redraw);
@@ -1521,7 +1521,7 @@ define([
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
+                var $val = $innerblock.find('[data-value="'+value+'"]'); // XXX
                 setActive($val);
                 try {
                     $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
@@ -1608,7 +1608,7 @@ define([
                 window.clearTimeout(to);
                 var c = String.fromCharCode(e.which);
                 pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first'); // XXX
                 if ($value.length) {
                     setActive($value);
                     $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
@@ -1620,7 +1620,7 @@ define([
 
             $container.setValue = function (val, name, sync) {
                 value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
+                var $val = $innerblock.find('[data-value="'+val+'"]'); // XXX
                 var textValue = name || $val.text() || val;
                 var f = function () {
                     $button.find('.cp-dropdown-button-title').text(textValue);
@@ -2407,7 +2407,7 @@ define([
                 teamValue = $(this).attr('data-id');
             });
             if (privateData.storeInTeam) {
-                $team.find('[data-id="'+privateData.storeInTeam+'"]').addClass('cp-selected');
+                $team.find('[data-id="'+privateData.storeInTeam+'"]').addClass('cp-selected'); // XXX
                 teamValue = privateData.storeInTeam;
             }
         }

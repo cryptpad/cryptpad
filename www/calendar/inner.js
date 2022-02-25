@@ -636,7 +636,7 @@ define([
             if (teamId === 0) { return; }
             data.hidden = !data.hidden;
             if (APP.$calendars) {
-                APP.$calendars.find('[data-uid="'+id+'"]').toggleClass('cp-active', !data.hidden);
+                APP.$calendars.find('[data-uid="'+id+'"]').toggleClass('cp-active', !data.hidden); // XXX
             } else {
                 $(calendar).toggleClass('cp-active', !data.hidden);
             }
@@ -1043,7 +1043,7 @@ define([
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
             var del = h('button.btn.btn-danger-outline.small.fa.fa-times');
             var minutes = value * unitValue;
-            if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
+            if ($list.find('[data-minutes="'+minutes+'"]').length) { return; } // XXX
             var span = h('span.cp-notif-entry', {
                 'data-minutes': minutes
             }, [

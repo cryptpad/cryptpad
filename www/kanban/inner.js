@@ -1118,12 +1118,12 @@ define([
             try {
                 var id = kanban.inEditMode;
                 var newBoard;
-                var $el = $container.find('[data-id="'+id+'"]');
+                var $el = $container.find('[data-id="'+id+'"]'); // XXX
                 if (id === "new") {
                     $el = $container.find('.kanban-item.new-item');
                     newBoard = $el.closest('.kanban-board').attr('data-id');
                 } else if (!$el.length) {
-                    $el = $container.find('[data-eid="'+id+'"]');
+                    $el = $container.find('[data-eid="'+id+'"]'); // XXX
                 }
                 var isTop = $el && $el.hasClass('item-top');
                 if (!$el.length) { return; }
@@ -1171,9 +1171,9 @@ define([
                 }
 
                 // Edit a board title or a card title
-                var $el = $container.find('.kanban-board[data-id="'+id+'"]');
+                var $el = $container.find('.kanban-board[data-id="'+id+'"]'); // XXX
                 if (!$el.length) {
-                    $el = $container.find('.kanban-item[data-eid="'+id+'"]');
+                    $el = $container.find('.kanban-item[data-eid="'+id+'"]'); // XXX
                 }
                 if (!$el.length) { return; }
 
@@ -1306,7 +1306,7 @@ define([
 
             // Add new cursor
             var avatar = getAvatar(cursor);
-            var $item = $('.kanban-item[data-eid="'+cursor.item+'"]');
+            var $item = $('.kanban-item[data-eid="'+cursor.item+'"]'); // XXX
             if ($item.length) {
                 remoteCursors[id] = cursor;
                 $item.find('.cp-kanban-cursors').append(avatar);

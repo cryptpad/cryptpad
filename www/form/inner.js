@@ -1894,7 +1894,7 @@ define([
                     setValue: function (val) {
                         this.reset();
                         Object.keys(val || {}).forEach(function (uid) {
-                            $(tag).find('[name="'+uid+'"]').each(function (i, el) {
+                            $(tag).find('[name="'+uid+'"]').each(function (i, el) { // XXX
                                 if ($(el).data('val') !== val[uid]) { return; }
                                 $(el).prop('checked', true);
                             });
@@ -2174,7 +2174,7 @@ define([
                         this.reset();
                         Object.keys(val || {}).forEach(function (uid) {
                             if (!Array.isArray(val[uid])) { return; }
-                            $(tag).find('[data-uid="'+uid+'"] input').each(function (i, el) {
+                            $(tag).find('[data-uid="'+uid+'"] input').each(function (i, el) { // XXX
                                 if (val[uid].indexOf($(el).data('val')) === -1) { return; }
                                 $(el).prop('checked', true);
                             });
@@ -3598,7 +3598,7 @@ define([
                     new: true
                 }, function () {
                     removeQuestion(content, uid);
-                    $('.cp-form-block[data-id="'+uid+'"]').remove();
+                    $('.cp-form-block[data-id="'+uid+'"]').remove(); // XXX
                     framework.localChange();
                     updateAddInline();
                 });
@@ -3804,9 +3804,9 @@ define([
         getSections(content).forEach(function (uid) {
             var block = content.form[uid];
             if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
-            var $block = $container.find('.cp-form-block[data-id="'+uid+'"] .cp-form-section-sortable');
+            var $block = $container.find('.cp-form-block[data-id="'+uid+'"] .cp-form-section-sortable'); // XXX
             block.opts.questions.forEach(function (_uid) {
-                $container.find('.cp-form-block[data-id="'+_uid+'"]').appendTo($block);
+                $container.find('.cp-form-block[data-id="'+_uid+'"]').appendTo($block); // XXX
             });
         });
         updateAddInline();
@@ -3819,14 +3819,14 @@ define([
             if (!temp) { return true; }
             var block = content.form[uid];
             if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
-            var $block = $container.find('.cp-form-block[data-id="'+uid+'"] .cp-form-section-sortable');
+            var $block = $container.find('.cp-form-block[data-id="'+uid+'"] .cp-form-section-sortable'); // XXX
 
             if (temp && temp[uid]) {
                 var tmp = temp[uid];
                 var u = tmp.uid;
                 var t = tmp.type;
-                var $c = $block.closest('.cp-form-block').find('.cp-form-condition[data-uid="'+u+'"]');
-                var $b = $c.find('[data-drop="'+t+'"]').find('button');
+                var $c = $block.closest('.cp-form-block').find('.cp-form-condition[data-uid="'+u+'"]'); // XXX
+                var $b = $c.find('[data-drop="'+t+'"]').find('button'); // XXX
                 var pos = $b && $b.length && $b[0].getBoundingClientRect().y;
                 // If we know the old position of the button and the new one, we can fix the scroll
                 // accordingly
@@ -3849,8 +3849,8 @@ define([
             if (opts.type !== "time") { return; }
             var tmp = temp[uid];
             if (!tmp || !tmp.cursor || !tmp.cursor.flatpickr) { return; }
-            var $block = $container.find('.cp-form-block[data-id="'+uid+'"]');
-            var $i = $block.find('.flatpickr-input[value="'+tmp.cursor.val+'"]');
+            var $block = $container.find('.cp-form-block[data-id="'+uid+'"]'); // XXX
+            var $i = $block.find('.flatpickr-input[value="'+tmp.cursor.val+'"]'); // XXX
             if (!$i.length) { return; }
             APP.afterScroll = function () {
                 $i[0]._flatpickr.open();
@@ -3899,7 +3899,7 @@ define([
                 }
                 var show = checkCondition(block);
                 block.opts.questions.forEach(function (_uid) {
-                    $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
+                    $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show); // XXX
                 });
             });
         });

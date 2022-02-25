@@ -145,16 +145,16 @@ define([
         $block.append(button);
         var save = h('button.btn.btn-primary', Messages.settings_save);
         var text = h('input');
-        var code = h('div.cp-app-profile-link-code', [
+        var code = h('div.cp-app-profile-link-code', [ // XXX
             text,
             save
         ]);
-        var div = h('div.cp-app-profile-link-edit', [
+        var div = h('div.cp-app-profile-link-edit', [ // XXX
             code
         ]);
         $block.append(div);
         $(button).click(function () {
-            $(text).val(APP.$link.attr('href'));
+            $(text).val(APP.$link.attr('href')); // XXX
             $(code).css('display', 'flex');
             APP.editor.refresh();
             $(button).hide();

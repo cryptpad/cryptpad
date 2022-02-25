@@ -191,32 +191,32 @@ define([
 
     var enableColumn  = APP.enableColumn = function (id, table) {
         table = table || $('body');
-        var $input = $(table).find('input[disabled="disabled"][data-rt-id^="' + id + '"]')
+        var $input = $(table).find('input[disabled="disabled"][data-rt-id^="' + id + '"]') // XXX
             .removeAttr('disabled');
         $input.closest('td').addClass('cp-app-poll-table-editing');
-        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
+        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock') // XXX
             .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
     };
     var disableColumn = function (id) {
-        var $input = $('input[data-rt-id^="' + id + '"]')
+        var $input = $('input[data-rt-id^="' + id + '"]') // XXX
             .attr('disabled', 'disabled');
         $input.closest('td').removeClass('cp-app-poll-table-editing');
-        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-lock')
+        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-lock') // XXX
             .removeClass('fa-unlock').attr('title', Messages.poll_locked);
     };
     var enableRow = APP.enableRow = function (id, table) {
         table = table || $('body');
-        var $input = $(table).find('input[disabled="disabled"][data-rt-id="' + id + '"]')
+        var $input = $(table).find('input[disabled="disabled"][data-rt-id="' + id + '"]') // XXX
             .removeAttr('disabled');
         $input.closest('td').addClass('cp-app-poll-table-editing');
-        $(table).find('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]')
+        $(table).find('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]') // XXX
             .css('visibility', 'hidden');
     };
     var disableRow = function (id) {
-        var $input = $('input[type="text"][data-rt-id="' + id + '"]')
+        var $input = $('input[type="text"][data-rt-id="' + id + '"]') // XXX
             .attr('disabled', 'disabled');
         $input.closest('td').removeClass('cp-app-poll-table-editing');
-        $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'visible');
+        $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'visible'); // XXX
     };
 
     var unlockElements = function () {
@@ -249,11 +249,11 @@ define([
     var updateTableButtons = function () {
         var uncomColId = APP.uncommitted.content.colsOrder[0];
         var uncomRowId = APP.uncommitted.content.rowsOrder[0];
-        var $createOption = $('tbody input[data-rt-id="' + uncomRowId+'"]')
+        var $createOption = $('tbody input[data-rt-id="' + uncomRowId+'"]') // XXX
                                 .closest('td').find('> div');
         $createOption.find('#cp-app-poll-create-option').remove();
         $createOption.append(APP.$createRow);
-        var $createUser = $('thead input[data-rt-id="' + uncomColId + '"]')
+        var $createUser = $('thead input[data-rt-id="' + uncomColId + '"]') // XXX
                                 .closest('td');
         $createUser.find('#cp-app-poll-create-user').remove();
         $createUser.prepend(APP.$createCol);
@@ -323,8 +323,8 @@ define([
         var setFocus = function (obj) {
             var el;
             if (document.body.contains(obj.el)) { el = obj.el; }
-            else if($('input[data-rt-id="' + obj.id + '"]').length) {
-                el = $('input[data-rt-id="' + obj.id + '"]')[0];
+            else if($('input[data-rt-id="' + obj.id + '"]').length) { // XXX
+                el = $('input[data-rt-id="' + obj.id + '"]')[0]; // XXX
             }
             else { return; }
             el.focus();
@@ -346,11 +346,11 @@ define([
             // Fix autocomplete bug:
             displayedObj.content.rowsOrder.forEach(function (rowId) {
                 if (f.id === rowId) { return; }
-                $('input[data-rt-id="' + rowId +'"]').val(displayedObj.content.rows[rowId] || '');
+                $('input[data-rt-id="' + rowId +'"]').val(displayedObj.content.rows[rowId] || ''); // XXX
             });
             displayedObj.content.colsOrder.forEach(function (colId) {
                 if (f.id === colId) { return; }
-                $('input[data-rt-id="' + colId +'"]')
+                $('input[data-rt-id="' + colId +'"]') // XXX
                     .val(displayedObj.content.cols[colId] || '');
             });
             updateDisplayedTable();
@@ -469,7 +469,7 @@ define([
                 });
             } else if (isEdit) {
                 unlockRow(id, function () {
-                    $('input[data-rt-id="' + id + '"]').focus();
+                    $('input[data-rt-id="' + id + '"]').focus(); // XXX
                 });
             }
         } else if (type === 'col') {
@@ -485,7 +485,7 @@ define([
                 handleBookmark(id);
             } else if (isLock && isLocked) {
                 unlockColumn(id, function () {
-                    $('input[data-rt-id="' + id + '"]').focus();
+                    $('input[data-rt-id="' + id + '"]').focus(); // XXX
                 });
             } else if (isLock) {
                 lockColumn(id);
@@ -914,7 +914,7 @@ define([
             mergeUncommitted(proxy, uncommittedCopy, true);
             change(null, null, null, null, function() {
                 var newId = APP.uncommitted.content.rowsOrder[0];
-                $('input[data-rt-id="' + newId + '"]').focus();
+                $('input[data-rt-id="' + newId + '"]').focus(); // XXX
             });
         });
 

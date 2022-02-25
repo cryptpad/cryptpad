@@ -486,7 +486,7 @@
                     self.options.boards.items = self.options.boards.items || {};
                     self.options.boards.items[element.id] = element;
 
-                    var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag');
+                    var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag'); // XXX
                     board.appendChild(getElementNode(element));
                     // send event that board has changed
                     self.onChange();
@@ -494,7 +494,7 @@
                 };
 
                 this.addForm = function (boardID, formItem) {
-                    var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag');
+                    var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag'); // XXX
                     board.appendChild(formItem);
                     return self;
                 };
@@ -650,7 +650,7 @@
                     // Remove all boards
                     for (var i in this.options.boards.list) {
                         var boardkey = this.options.boards.list[i];
-                        scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop();
+                        scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop(); // XXX
                         this.removeBoard(boardkey);
                     }
                     this.options.boards = boards;
@@ -660,18 +660,18 @@
                     // Preserve scroll
                     this.options.boards.list.forEach(function (id) {
                         if (!scroll[id]) { return; }
-                        $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
+                        $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]); // XXX
                     });
                     $el.scrollLeft(scrollLeft);
                 }
 
                 this.findBoard = function (id) {
-                    var el = self.element.querySelector('[data-id="' + id + '"]');
+                    var el = self.element.querySelector('[data-id="' + id + '"]'); // XXX
                     return el;
                 }
 
                 this.findElement = function (id) {
-                    var el = self.element.querySelector('[data-eid="' + id + '"]');
+                    var el = self.element.querySelector('[data-eid="' + id + '"]'); // XXX
                     return el;
                 }
 
@@ -681,13 +681,13 @@
                 }
 
                 this.getBoardElements = function (id) {
-                    var board = self.element.querySelector('[data-id="' + id + '"] .kanban-drag');
+                    var board = self.element.querySelector('[data-id="' + id + '"] .kanban-drag'); // XXX
                     return (board.childNodes);
                 }
 
                 this.removeElement = function (el) {
                     if (typeof (el) === 'string')
-                        el = self.element.querySelector('[data-eid="' + el + '"]');
+                        el = self.element.querySelector('[data-eid="' + el + '"]'); // XXX
                     el.remove();
 
                     // send event that board has changed
@@ -700,7 +700,7 @@
                     var id;
                     if (typeof (board) === 'string' || typeof (board) === "number") {
                         id = board;
-                        board = self.element.querySelector('[data-id="' + board + '"]');
+                        board = self.element.querySelector('[data-id="' + board + '"]'); // XXX
                     } else if (board) {
                         id = board.id;
                     }
@@ -712,7 +712,7 @@
                     }
 
                     // Remove duplicates
-                    if (id) { $(self.element).find('.kanban-board[data-id="' + board + '"]').remove(); }
+                    if (id) { $(self.element).find('.kanban-board[data-id="' + board + '"]').remove(); } // XXX
 
                     return self;
                 }

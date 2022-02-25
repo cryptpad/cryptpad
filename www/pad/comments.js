@@ -536,7 +536,7 @@ define([
                     if (!obj || !Array.isArray(obj.m)) { return; }
 
                     // Get the value of the commented text
-                    var res = Env.$inner.find('comment[data-uid="' + key + '"]').toArray();
+                    var res = Env.$inner.find('comment[data-uid="' + key + '"]').toArray(); // XXX
                     var value = res.map(function(el) {
                         return el.innerText;
                     }).join('\n');
@@ -584,8 +584,8 @@ define([
             var focusContent = function() {
                 // Add class "active"
                 Env.$inner.find('comment.active').removeClass('active');
-                Env.$inner.find('comment[data-uid="' + key + '"]').addClass('active');
-                var $last = Env.$inner.find('comment[data-uid="' + key + '"]').last();
+                Env.$inner.find('comment[data-uid="' + key + '"]').addClass('active'); // XXX
+                var $last = Env.$inner.find('comment[data-uid="' + key + '"]').last(); // XXX
 
                 // Scroll into view
                 if (!$last.length) { return; }
@@ -659,7 +659,7 @@ define([
 
         if (Env.mobile && Env.current) {
             Env.$container.find('.cp-comment-container[data-uid]').hide();
-            Env.$container.find('.cp-comment-container[data-uid="' + Env.current + '"]').show();
+            Env.$container.find('.cp-comment-container[data-uid="' + Env.current + '"]').show(); // XXX
         }
 
         Env.$container.show();
@@ -965,10 +965,10 @@ define([
                 Env.current = uid;
                 Env.$container.find('.cp-comment-container[data-uid]').hide();
                 setTimeout(function () {
-                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').show().click();
+                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').show().click(); // XXX
                 });
             } else {
-                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click();
+                Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click(); // XXX
             }
         });
 

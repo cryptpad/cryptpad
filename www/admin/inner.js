@@ -814,7 +814,7 @@ define([
                 return;
             }
             $div.find('.cp-support-list-ticket').hide();
-            $div.find('.cp-support-list-ticket[data-cat="'+key+'"]').show();
+            $div.find('.cp-support-list-ticket[data-cat="'+key+'"]').show(); // XXX
         }, true);
         $drop.setValue('all');
 
@@ -927,7 +927,7 @@ define([
             var cols = [$col1, $col2, $col3, $col4];
             [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
                 list.forEach(function (id, i) {
-                    var $t = $div.find('[data-id="'+id+'"]');
+                    var $t = $div.find('[data-id="'+id+'"]'); // XXX
                     var d = getTicketData(id);
                     $t.css('order', i).appendTo(cols[j]);
                     updateTicketDetails($t, d.premium);
@@ -943,7 +943,7 @@ define([
         var reorder = Util.throttle(_reorder, 150);
 
         var to = Util.throttle(function () {
-            var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
+            var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]'); // XXX
             $ticket.addClass('cp-support-open');
             $ticket[0].scrollIntoView();
             linkedId = undefined;
@@ -962,8 +962,8 @@ define([
                 var msg = data.content.msg;
                 var hash = data.content.hash;
                 var content = msg.content;
-                var id = content.id;
-                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+                var id = content.id.replace(/"/g, '\\"');
+                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]'); // XXX
 
                 hashesById[id] = hashesById[id] || [];
                 if (hashesById[id].indexOf(hash) === -1) {
@@ -1288,7 +1288,7 @@ define([
 
             // Remove a textarea
             var removeLang = function (l) {
-                $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+                $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove(); // XXX
 
                 var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
                 if (!hasDefault) {
@@ -1320,7 +1320,7 @@ define([
 
             // Add a textarea
             var addLang = function (l) {
-                if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
+                if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; } // XXX
                 var preview = h('button.btn.btn-secondary', Messages.broadcast_preview);
                 $(preview).click(function () {
                     onPreview(l);

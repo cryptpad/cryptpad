@@ -279,7 +279,7 @@ define([
                 editor.setOption('mode', mode);
             }
             if (exp.$language) {
-                var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
+                var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined; // XXX
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
             }
@@ -303,7 +303,7 @@ define([
             var $head = $(window.document.head);
 
             var themeLoaded = exp.themeLoaded = function (theme) {
-                return $head.find('link[href*="'+theme+'"]').length;
+                return $head.find('link[href*="'+theme+'"]').length; // XXX
             };
 
             var loadTheme = exp.loadTheme = function (theme) {

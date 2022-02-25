@@ -609,7 +609,7 @@ define([
             self.options.boards.items = self.options.boards.items || {};
             self.options.boards.items[element.id] = element;
 
-            var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag');
+            var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag'); // XXX
             if (before) {
                 board.insertBefore(getElementNode(element), board.firstChild);
             } else {
@@ -621,7 +621,7 @@ define([
         };
 
         this.addForm = function (boardID, formItem, isTop) {
-            var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag');
+            var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag'); // XXX
             if (isTop) {
                 board.insertBefore(formItem, board.firstChild);
             } else {
@@ -805,7 +805,7 @@ define([
                 // Remove all boards
                 for (var i in list) {
                     var boardkey = list[i];
-                    scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop();
+                    scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop(); // XXX
                     self.removeBoard(boardkey);
                 }
 
@@ -815,7 +815,7 @@ define([
                 // Preserve scroll
                 self.options._boards.list.forEach(function (id) {
                     if (!scroll[id]) { return; }
-                    $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
+                    $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]); // XXX
                 });
                 $el.scrollLeft(scrollLeft);
             };
@@ -868,7 +868,7 @@ define([
             var id;
             if (typeof (board) === 'string' || typeof (board) === "number") {
                 id = board;
-                board = self.element.querySelector('[data-id="' + board + '"]');
+                board = self.element.querySelector('[data-id="' + board + '"]'); // XXX
             } else if (board) {
                 id = board.id;
             }
@@ -880,7 +880,7 @@ define([
             }
 
             // Remove duplicates
-            if (id) { $(self.element).find('.kanban-board[data-id="' + board + '"]').remove(); }
+            if (id) { $(self.element).find('.kanban-board[data-id="' + board + '"]').remove(); } // XXX
 
             return self;
         };

@@ -463,12 +463,12 @@ var Renderer = function (APP) {
 
         // Enable input for the userid column
         APP.enableColumn(userid, table);
-        $(table).find('input[disabled="disabled"][data-rt-id^="' + userid + '"]')
+        $(table).find('input[disabled="disabled"][data-rt-id^="' + userid + '"]') // XXX
             .attr('placeholder', Messages.poll_userPlaceholder);
-        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + userid + '"]').remove();
-        $(table).find('[data-rt-id^="' + userid + '"]').closest('td')
+        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + userid + '"]').remove(); // XXX
+        $(table).find('[data-rt-id^="' + userid + '"]').closest('td') // XXX
             .addClass("cp-app-poll-table-own");
-        $(table).find('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]')
+        $(table).find('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]') // XXX
             .css('visibility', '')
             .addClass('cp-app-poll-table-bookmark-full')
             .attr('title', Messages.poll_bookmarked_col);
@@ -477,22 +477,22 @@ var Renderer = function (APP) {
         APP.uncommitted.content.colsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
             APP.enableColumn(id, table);
-            $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').remove();
-            $(table).find('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
-            $(table).find('.cp-app-poll-table-bookmark[data-rt-id="' + id + '"]').remove();
+            $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').remove(); // XXX
+            $(table).find('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove(); // XXX
+            $(table).find('.cp-app-poll-table-bookmark[data-rt-id="' + id + '"]').remove(); // XXX
 
             $(table).find('td.cp-app-poll-table-uncommitted .cover')
                 .addClass("cp-app-poll-table-uncommitted");
-            var $uncommittedCol = $(table).find('[data-rt-id^="' + id + '"]').closest('td');
+            var $uncommittedCol = $(table).find('[data-rt-id^="' + id + '"]').closest('td'); // XXX
             $uncommittedCol.addClass("cp-app-poll-table-uncommitted");
         });
         APP.uncommitted.content.rowsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
             APP.enableRow(id, table);
-            $(table).find('.cp-app-poll-table-edit[data-rt-id="' + id + '"]').remove();
-            $(table).find('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
+            $(table).find('.cp-app-poll-table-edit[data-rt-id="' + id + '"]').remove(); // XXX
+            $(table).find('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove(); // XXX
 
-            $(table).find('[data-rt-id="' + id + '"]').closest('tr')
+            $(table).find('[data-rt-id="' + id + '"]').closest('tr') // XXX
                 .addClass("cp-app-poll-table-uncommitted");
         });
     };
@@ -503,10 +503,10 @@ var Renderer = function (APP) {
     var updateTableButtons = function (table) {
         var uncomColId = APP.uncommitted.content.colsOrder[0];
         var uncomRowId = APP.uncommitted.content.rowsOrder[0];
-        var $createOption = $(table).find('tbody input[data-rt-id="' + uncomRowId+'"]')
+        var $createOption = $(table).find('tbody input[data-rt-id="' + uncomRowId+'"]') // XXX
                                 .closest('td').find('> div');
         $createOption.append(APP.$createRow);
-        var $createUser = $(table).find('thead input[data-rt-id="' + uncomColId + '"]')
+        var $createUser = $(table).find('thead input[data-rt-id="' + uncomColId + '"]') // XXX`
                                 .closest('td');
         $createUser.prepend(APP.$createCol);
 
@@ -534,7 +534,7 @@ var Renderer = function (APP) {
             }
             APP.count[rId] = count;
             var h = $tr.height() || 28;
-            $(table).find('[data-rt-count-id="' + rId + '"]')
+            $(table).find('[data-rt-count-id="' + rId + '"]') // XXX
                 .text(count)
                 .css({
                     'height': h+'px',
@@ -542,9 +542,9 @@ var Renderer = function (APP) {
                 });
         });
         winner.ids.forEach(function (rId) {
-            $(table).find('[data-rt-id="' + rId + '"]').closest('td')
+            $(table).find('[data-rt-id="' + rId + '"]').closest('td') // XXX
                 .addClass('cp-app-poll-table-winner');
-            $(table).find('[data-rt-count-id="' + rId + '"]')
+            $(table).find('[data-rt-count-id="' + rId + '"]') // XXX
                 .addClass('cp-app-poll-table-winner');
         });
     };

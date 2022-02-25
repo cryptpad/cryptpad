@@ -107,7 +107,7 @@ define([
                 var hash = data.content.hash;
                 var content = msg.content;
                 var id = content.id;
-                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]'); // XXX
 
                 hashesById[id] = hashesById[id] || [];
                 if (hashesById[id].indexOf(hash) === -1) {
