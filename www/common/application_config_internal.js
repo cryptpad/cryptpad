@@ -135,6 +135,7 @@ define(function() {
         whiteboard: 'cptools-whiteboard',
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
+        calendar: 'fa-calendar',
         kanban: 'cptools-kanban',
         doc: 'fa-file-word-o',
         presentation: 'fa-file-powerpoint-o',
