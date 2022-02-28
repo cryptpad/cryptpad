@@ -808,7 +808,9 @@ define([
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
-                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
+                        forceOwnDrive: true,
+                    }, function (err, obj) {
                         var error = err || (obj && obj.error);
                         if (error) {
                             $(button).show();
