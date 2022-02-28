@@ -1170,7 +1170,7 @@ define([
             // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
             var sendTo = [];
-            var inTargetDrive;
+            var inTargetDrive, inMyDrive;
             getAllStores().forEach(function (s) {
                 // If this is an edit link but we don't have edit rights, this entry is not useful
                 if (h.mode === "edit" && s.id && !s.secondaryKey) {
@@ -1188,6 +1188,8 @@ define([
                         inTargetDrive = res.length;
                     }
                 }
+
+                if (!s.id) { inMyDrive = res.length; }
 
                 Array.prototype.push.apply(allData, res);
             });
@@ -1253,7 +1255,7 @@ define([
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         stored: true,
-                        inMyDrive: !contains && data.teamId // display "store in cryptdrive" entry
+                        inMyDrive: inMyDrive || (!contains && !data.teamId) // display "store in cryptdrive" entry
                     });
                     return;
                 }
@@ -1268,7 +1270,7 @@ define([
             // Let inner know that dropped files shouldn't trigger the popup
             postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                 stored: true,
-                inMyDrive: true
+                inMyDrive: inMyDrive
             });
             nThen(function (waitFor) {
                 sendTo.forEach(function (teamId) {
