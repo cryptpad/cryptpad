@@ -1172,7 +1172,7 @@ define([
             var sendTo = [];
             var inMyDrive;
             getAllStores().forEach(function (s) {
-                if (data.teamId && s.id !== data.teamId) { return; }
+                if (data.teamId && Number(s.id) !== data.teamId) { return; }
                 if (storeLocally && s.id) { return; }
 
                 // If this is an edit link but we don't have edit rights, this entry is not useful
@@ -1189,7 +1189,7 @@ define([
                 // we need to make a copy of this pad in our drive. We're going to check
                 // if the pad is stored in our MAIN drive.
                 // We only need to check this if the current manager is the target (data.teamId)
-                if (data.teamId === s.id) {
+                if (data.teamId === Number(s.id)) {
                     inMyDrive = res.some(function (obj) {
                         return !obj.fId;
                     });
