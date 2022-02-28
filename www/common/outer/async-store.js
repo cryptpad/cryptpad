@@ -1170,11 +1170,8 @@ define([
             // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
             var sendTo = [];
-            var inMyDrive;
+            var inTargetDrive;
             getAllStores().forEach(function (s) {
-                if (data.teamId && Number(s.id) !== data.teamId) { return; }
-                if (storeLocally && s.id) { return; }
-
                 // If this is an edit link but we don't have edit rights, this entry is not useful
                 if (h.mode === "edit" && s.id && !s.secondaryKey) {
                     return;
@@ -1185,15 +1182,10 @@ define([
                     sendTo.push(s.id);
                 }
 
-                // If we've just accepted ownership for a pad stored in a shared folder,
-                // we need to make a copy of this pad in our drive. We're going to check
-                // if the pad is stored in our MAIN drive.
-                // We only need to check this if the current manager is the target (data.teamId)
+                // Check if the pad is already stored in the specified drive (data.teamId)
                 if ((!s.id && !data.teamId) || Number(s.id) === data.teamId) {
-                    if (!inMyDrive) {
-                        inMyDrive = res.some(function (obj) {
-                            return !obj.fId;
-                        });
+                    if (!inTargetDrive) {
+                        inTargetDrive = res.length;
                     }
                 }
 
@@ -1233,7 +1225,7 @@ define([
             });
 
             // Add the pad if it does not exist in our drive
-            if (!contains || (data.forceSave && !inMyDrive)) {
+            if (!contains || (data.forceSave && !inTargetDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
@@ -1260,7 +1252,8 @@ define([
                     }, cb);
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
-                        stored: true
+                        stored: true,
+                        inMyDrive: !contains && data.teamId // display "store in cryptdrive" entry
                     });
                     return;
                 }
@@ -1275,7 +1268,7 @@ define([
             // Let inner know that dropped files shouldn't trigger the popup
             postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                 stored: true,
-                inMyDrive: inMyDrive
+                inMyDrive: true
             });
             nThen(function (waitFor) {
                 sendTo.forEach(function (teamId) {
