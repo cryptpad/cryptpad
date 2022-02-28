@@ -1159,7 +1159,7 @@ define([
                 expire = data.expire;
             }
 
-            var storeLocally = data.teamId === -1;
+            //var storeLocally = data.teamId === -1;
             if (data.teamId === -1) { data.teamId = undefined; }
 
             // If a teamId is provided, it means we want to store the pad in a specific
