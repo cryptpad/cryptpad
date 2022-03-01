@@ -1639,11 +1639,6 @@ define([
         return $container;
     };
 
-    Messages.info_termsFlavour = "<a>XXX terms flavour</a>"; // XXX
-    Messages.info_imprintFlavour = "<a>XXX imprint flavour</a>"; // XXX
-    Messages.info_roadmapFlavour = "<a>XXX roadmap flavour</a>"; // XXX
-    Messages.info_sourceFlavour = "<a>XXX source flavour</a>"; // XXX
-
     UIElements.displayInfoMenu = function (Common, metadataMgr) {
         //var padType = metadataMgr.getMetadata().type;
         var priv = metadataMgr.getPrivateData();
@@ -1674,18 +1669,8 @@ define([
 
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
-
         var faqLine = template(Messages.help_genericMore, Pages.docsLink);
-
-        // XXX terms
         var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
-
-        // XXX imprint
-        var imprintLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
-
-        // XXX roadmap
-        var roadmapLine = template(Messages.info_roadmapFlavour, Pages.roadmapLink);
-
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
@@ -1697,13 +1682,11 @@ define([
                 h('span', Pages.versionString)
             ]),
             h('hr'),
-            legalLine,
-            privacyLine,
-            termsLine, // XXX
-            imprintLine, // XXX
             faqLine,
-            roadmapLine, // XXX
-            sourceLine, // XXX
+            termsLine,
+            privacyLine,
+            legalLine,
+            sourceLine,
         ]);
 
         $(content).find('a').attr('target', '_blank');

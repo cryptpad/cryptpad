@@ -53,14 +53,18 @@ define([
         'general': [ // Msg.admin_cat_general
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
-            'cp-admin-archive',
-            'cp-admin-unarchive',
             'cp-admin-registration',
             'cp-admin-email',
+
+            'cp-admin-name',
+            'cp-admin-description',
+            'cp-admin-jurisdiction',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
+            'cp-admin-archive',
+            'cp-admin-unarchive',
             'cp-admin-getquota',
             'cp-admin-getlimits',
         ],
@@ -92,10 +96,6 @@ define([
             'cp-admin-block-daily-check',
             //'cp-admin-provide-aggregate-statistics',
             'cp-admin-list-my-instance',
-
-            'cp-admin-name',
-            'cp-admin-description',
-            'cp-admin-jurisdiction',
 
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
@@ -151,8 +151,6 @@ define([
         return $div;
     };
 
-    Messages.admin_archiveReason = "// XXX REASON"; // XXX
-
     var archiveForm = function (archive, $div, $button) {
         var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
         var input = h('input#cp-admin-archive', {
@@ -168,11 +166,10 @@ define([
         });
         var input3 = h('input', {
             id: 'cp-admin-archive-reason',
-            placeholder: Messages.admin_archiveReason,
         });
         var label3 = h('label', {
             for: 'cp-admin-archive-reason',
-        }, Messages.admin_archiveReason);
+        }, Messages.admin_archiveNote);
 
         var $pw = $(input2);
         $pw.addClass('cp-admin-pw');
@@ -377,8 +374,8 @@ define([
 
     create['email'] = function () {
         var key = 'email';
-        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton
-        var $button = $div.find('button');
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton // XXX drop 'emailButton'
+        var $button = $div.find('button').text(Messages.settings_save);
 
         var input = h('input', {
             type: 'email',
@@ -414,15 +411,10 @@ define([
         return $div;
     };
 
-    Messages.admin_jurisdictionHint = 'Jurisdiction hint'; // XXX
-    Messages.admin_jurisdictionTitle = 'Jurisdiction title'; // XXX
-    Messages.admin_jurisdictionButton = 'Jurisdiction button'; // XXX
-    Messages.admin_jurisdictionPlaceholder = 'Jurisdiction placeholder'; // XXX
-
     create['jurisdiction'] = function () {
         var key = 'jurisdiction';
         var $div = makeBlock(key, true); // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle, Msg.admin_jurisdictionButton
-        var $button = $div.find('button').addClass('cp-listing-action');
+        var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
 
         var input = h('input.cp-listing-info', {
             type: 'text',
@@ -434,12 +426,12 @@ define([
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
-            if (!$input.val()) { return; }
+            if (!$input.val()) { return; } // XXX
             spinner.spin();
             $button.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
-                data: ['SET_INSTANCE_JURISDICTION', [$input.val()]] // XXX not implemented
+                data: ['SET_INSTANCE_JURISDICTION', [$input.val()]] // XXX
             }, function (e, response) {
                 $button.removeAttr('disabled');
                 if (e || response.error) {
@@ -450,7 +442,7 @@ define([
                     return;
                 }
                 spinner.done();
-                UI.log(Messages.saved);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_jurisdictionTitle]));
             });
         });
 
@@ -459,21 +451,16 @@ define([
         return $div;
     };
 
-    Messages.admin_nameHint = 'instance name hint'; // XXX
-    Messages.admin_nameTitle = 'instance name title'; // XXX
-    Messages.admin_nameButton = 'instance name button'; // XXX
-    Messages.admin_namePlaceholder = 'instance name placeholder'; // XXX
-
     create['name'] = function () {
         var key = 'name';
         var $div = makeBlock(key, true);
         // Msg.admin_nameHint, Msg.admin_nameTitle, Msg.admin_nameButton
-        var $button = $div.find('button').addClass('cp-listing-action');
+        var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
 
         var input = h('input.cp-listing-info', {
             type: 'text',
-            value: APP.instanceStatus.instanceName || '',
-            placeholder: Messages.admin_namePlaceholder,
+            value: APP.instanceStatus.instanceName || ApiConfig.httpUnsafeOrigin || '',
+            placeholder: ApiConfig.httpUnsafeOrigin, //Messages.admin_namePlaceholder, // XXX
             style: 'margin-bottom: 5px;',
         });
         var $input = $(input);
@@ -481,7 +468,7 @@ define([
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
-            if (!$input.val()) { return; }
+            if (!$input.val()) { return; } // XXX
             spinner.spin();
             $button.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -497,7 +484,7 @@ define([
                     return;
                 }
                 spinner.done();
-                UI.log(Messages.saved);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_nameTitle]));
             });
         });
 
@@ -506,21 +493,15 @@ define([
         return $div;
     };
 
-
-    Messages.admin_descriptionHint = 'Description hint'; // XXX
-    Messages.admin_descriptionTitle = 'Description title'; // XXX
-    Messages.admin_descriptionButton = 'Description button'; // XXX
-    Messages.admin_descriptionPlaceholder = 'Description placeholder'; // XXX
-
     create['description'] = function () {
         var key = 'description';
         var $div = makeBlock(key, true);
 
         var textarea = h('textarea.cp-admin-description-text.cp-listing-info', { // XXX use something from UI elements?
-            placeholder: Messages.admin_descriptionPlaceholder,
+            placeholder: Messages.home_host || '', // XXX
         }, APP.instanceStatus.instanceDescription || '');
 
-        var $button = $div.find('button');
+        var $button = $div.find('button').text(Messages.settings_save);
 
         $button.addClass('cp-listing-action');
 
@@ -535,7 +516,7 @@ define([
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
-            if (!$input.val()) { return; }
+            if (!$input.val()) { return; } // XXX
             spinner.spin();
             $button.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -551,7 +532,7 @@ define([
                     return;
                 }
                 spinner.done();
-                UI.log(Messages.saved);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_descriptionTitle]));
             });
         });
 

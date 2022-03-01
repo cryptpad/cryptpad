@@ -182,7 +182,7 @@ define([
         return $select;
     };
 
-    Messages.support_warning_prompt = "We may require additional information depending on the nature of your issue. Choose the most relevant category for suggestions.";
+    Messages.support_warning_prompt = "We may require additional information depending on the nature of your issue. Choose the most relevant category for suggestions."; // XXX
 
     Messages.support_warning_account = "CryptPad administrators are unable to identify accounts, teams, folders, and files by their names. Please provide their identifiers if your issue relates to one of these features."; // XXX
     Messages.support_warning_data = 'What data was lost? Is it entirely gone or only corrupted? Is it backed up? Can you provide a link to the content or at least its document id?'; // XXX
