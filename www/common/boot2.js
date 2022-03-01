@@ -86,11 +86,11 @@ define([
         }
     } catch (e) { console.error(e); failStore(); }
 
-    require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
     if (typeof(Promise) !== 'function') {
-        setTimeout(function () {
+        return void setTimeout(function () {
             var s = "Internet Explorer is not supported anymore, including by Microsoft.\n\nMost of CryptPad's collaborative functionality requires a modern browser to work.\n\nWe recommend Mozilla Firefox.";
             window.alert(s);
         });
     }
+    require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });

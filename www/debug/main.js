@@ -13,6 +13,9 @@ define([
     '/common/common-interface.js',
 ], function (nThen, ApiConfig, $, RequireConfig, SFCommonO,
     Cryptpad, Util, Hash, Realtime, Constants, UI) {
+    if (window.top !== window) {
+        return void window.alert(`If you are seeing this message then somebody might be trying to compromise your CryptPad account. Please contact the CryptPad development team.`);
+    }
 
     window.Cryptpad = {
         Common: Cryptpad,

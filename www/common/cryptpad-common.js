@@ -974,6 +974,9 @@ define([
             data.forceSave = 1;
             //delete common.initialTeam;
         }
+        if (data.forceOwnDrive) {
+            data.teamId = -1;
+        }
         if (common.initialPath) {
             if (!data.path) {
                 data.path = Array.isArray(common.initialPath) ? common.initialPath
