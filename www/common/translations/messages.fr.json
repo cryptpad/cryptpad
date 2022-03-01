@@ -964,7 +964,7 @@
     "todo_move": "Votre liste de tâches est désormais dans le kanban <b>{0}</b> dans votre Drive.",
     "settings_safeLinkDefault": "Les liens sécurisés sont désormais activés par défaut. Veuillez utiliser le menu <i></i> <b>Partager</b> pour copier les liens plutôt que la barre d'adresse de votre navigateur.",
     "support_languagesPreamble": "L'équipe de support parle les langues suivantes :",
-    "info_privacyFlavour": "<a>Description de la confidentialité</a> de vos données.",
+    "info_privacyFlavour": "<a>Déclaration de confidentialité</a> pour cette instance",
     "user_about": "À propos de CryptPad",
     "info_imprintFlavour": "<a>Informations légales sur les administrateurs de cette instance</a>.",
     "support_cat_all": "Tout",
@@ -1427,5 +1427,14 @@
     "form_exportSheet": "Exporter vers Tableur",
     "form_answerChoice": "Veuillez choisir comment vous souhaitez répondre à ce formulaire :",
     "bounce_danger": "Le lien sur lequel vous avez cliqué ne mène pas à une page web mais à du code ou des données qui pourraient être dangereuses.\n\n(\"{0}\")\n\nCryptPad bloque ce type de lien pour des raisons de sécurité. En cliquant sur OK, vous fermerez cet onglet.",
-    "bounce_confirm": "Vous êtes sur le point de quitter : {0}\n\nÊtes vous sûr de vouloir visiter \"{1}\" ?"
+    "bounce_confirm": "Vous êtes sur le point de quitter : {0}\n\nÊtes vous sûr de vouloir visiter \"{1}\" ?",
+    "info_sourceFlavour": "<a>Code source</a> de CryptPad",
+    "info_termsFlavour": "<a>Conditions d'utilisation</a> pour cette instance",
+    "footer_source": "Code source",
+    "admin_jurisdictionHint": "Le pays où les données chiffrées de cette instance sont hébergées",
+    "admin_descriptionHint": "Le texte descriptif affiché pour cette instance dans la liste des instances publiques sur cryptpad.org",
+    "admin_descriptionTitle": "Description de l'instance",
+    "admin_nameHint": "Le nom affiché pour cette instance dans la liste des instances publiques sur cryptpad.org",
+    "admin_nameTitle": "Nom de l'instance",
+    "admin_archiveNote": "Note"
 }
