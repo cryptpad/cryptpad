@@ -1,5 +1,6 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
+@import (reference) "./variables.less";
 
 .tokenfield_main () {
     --LessLoader_require: LessLoader_currentFile();
@@ -51,6 +52,7 @@
             margin: 2px 0;
             margin-right: 5px;
             height: 24px;
+            border-radius: @variables_radius;
             vertical-align: middle;
             cursor: default;
             color: @cp_token-fg;

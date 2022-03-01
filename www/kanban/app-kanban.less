@@ -26,6 +26,7 @@
     .kanban-board-header {
         background-color: @palette0;
         color: @cp_kanban-fg;
+        border-radius: @variables_radius @variables_radius 0px 0px;
     }
     .kanban-board {
         .kanban-board-inner {
@@ -34,6 +35,8 @@
             max-height: 100%;
             display: flex;
             flex-flow: column;
+            border-radius: @variables_radius;
+            box-shadow: 0px 0px 5px 1px #00000030; // XXX DB
         }
         color: @cp_kanban-fg;
         button {
@@ -81,9 +84,11 @@
     }
     #cp-kanban-edit-body {
         border: 1px solid @cp_forms-border;
+        border-radius: @variables_radius;
         .CodeMirror {
             height: 105px;
             resize: vertical;
+            border-radius: 0px 0px @variables_radius @variables_radius;
         }
         .CodeMirror-scroll {
             box-sizing: content-box;
@@ -91,6 +96,7 @@
         .cp-markdown-toolbar {
             background-color: @cp_kanban-conflict-bg;
             color: @cp_kanban-fg;
+            border-radius: @variables_radius @variables_radius 0px 0px;
             button {
                 &:hover {
                     background-color: @cp_kanban-fg;
@@ -174,8 +180,10 @@
         align-items: center;
         justify-content: space-between;
         padding: 5px;
+        border-radius: @variables_radius;
         flex-wrap: wrap;
         background: @cp_kanban-item-bg;
+        box-shadow: 0px 0px 5px 1px #00000030; // XXX DB make this a variable?
         .tools_unselectable();
         touch-action: none;
         cursor: move;
@@ -250,6 +258,7 @@
                 padding: 0 5px;
                 margin-right: 5px;
                 margin-top: 5px;
+                border-radius: @variables_radius;
                 background-color: @cp_kanban-tags-bg;
                 display: inline-block;
                 font-size: 12px;
@@ -291,8 +300,8 @@
         }
 
         main {
-            padding: 0 10px;
-            margin: 10px 0;
+            padding: 10px 5px;
+            //margin: 10px 0;
             flex: 1;
             overflow-y: auto;
             justify-content: space-around;
@@ -327,8 +336,8 @@
             }
         }
         footer {
-            margin: 10px;
-            margin-top: 0px;
+            margin: 5px;
+            margin-top: 5px;
             display: flex;
             span {
                 .tools_unselectable();
@@ -336,7 +345,7 @@
                 width: 50%;
                 border: 1px solid fade(@cp_kanban-fg, 70%);
                 color: fade(@cp_kanban-fg, 70%);
-                border-radius: 0px;
+                border-radius: @variables_radius;
                 font-size: 25px;
                 display: inline-flex;
                 justify-content: center;
@@ -420,6 +429,7 @@
                     margin-right: 5px;
                     margin-top: 5px;
                     background-color: @cp_kanban-tags-bg;
+                    border-radius: @variables_radius;
                     display: inline-block;
                     font-size: 14px;
                     cursor: pointer;
@@ -445,6 +455,12 @@
                 &:hover {
                     background-color: darken(@board-bg, 10%);
                 }
+                &:first-child {
+                    border-radius: @variables_radius 0px 0px @variables_radius;
+                }
+                &:last-child {
+                    border-radius: 0px @variables_radius @variables_radius 0px;
+                }
             }
         }
     }
@@ -456,16 +472,16 @@
                         background-color: @cp_kanban-fg !important;
                         color: @cp_app-bg;
                     }
-                    span.cp-kanban-view-small {
-                    }
+                    // span.cp-kanban-view-small {
+                    // }
                 }
             }
         }
         &.cp-kanban-quick {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
-                    span.cp-kanban-view {
-                    }
+                    // span.cp-kanban-view {
+                    // }
                     span.cp-kanban-view-small {
                         background-color: @cp_kanban-fg !important;
                         color: @cp_app-bg;
@@ -558,6 +574,7 @@
             width: 50px;
             margin: 10px 5px;
             border: 1px solid @cp_kanban-fg;
+            border-radius: @variables_radius;
             color: @cp_kanban-fg;
             height: 40px;
             display: inline-flex;
@@ -655,6 +672,6 @@
 
     .form-group {
         text-align: right;
-        margin-button: 5px;
+        margin-bottom: 5px;
     }
 }
