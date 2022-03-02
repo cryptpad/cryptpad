@@ -1438,5 +1438,15 @@
     "admin_jurisdictionHint": "The country where this instance's encrypted data is hosted",
     "footer_source": "Source code",
     "info_termsFlavour": "<a>Terms of service</a> for this instance",
-    "info_sourceFlavour": "<a>Source code</a> for CryptPad"
+    "info_sourceFlavour": "<a>Source code</a> for CryptPad",
+    "support_warning_prompt": "Please choose the most relevant category for your issue. This helps administrators triage and provides further suggestions for what information to provide",
+    "support_warning_account": "Please note that administrators are not able to reset passwords. If you have lost the credentials to your account but are still logged in, you can <a>migrate your data to a new account</a>",
+    "support_warning_drives": "Note that administrators are not able to identify folders and documents by name. For shared folders, please provide a <a>document identifier</a>",
+    "support_warning_document": "Please specify which type of document is causing the issue and provide a <a>document identifier</a> or a link",
+    "support_warning_bug": "Please specify in which browser the issue occurs and if any extensions are installed. Please provide as much detail as possible about the issue and the steps necessary to reproduce it",
+    "support_warning_abuse": "Please report content that violates the <a>Terms of Service</a>. Please provide links to the offending documents or user profiles and describe how they are violating the terms. Any additional information on the context in which you discovered the content or behaviour may help administrators prevent future violations",
+    "support_warning_other": "What is the nature of your query? Please provide as much relevant information as possible to make it easier for us to address your issue quickly",
+    "support_cat_drives": "Drive or team",
+    "support_cat_document": "Document",
+    "support_cat_abuse": "Report abuse"
 }
