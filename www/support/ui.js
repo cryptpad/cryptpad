@@ -95,6 +95,9 @@ define([
         }
     };
 
+    //Messages.support_formCategoryError = "Error: category is empty"; // XXX (existing key)
+    Messages.support_formCategoryError = "Please select a ticket category from the dropdown menu"; // XXX
+
     var sendForm = function (ctx, id, form, dest) {
         var $form = $(form);
         var $cat = $form.find('.cp-support-form-category');
@@ -104,15 +107,10 @@ define([
         var $attachments = $form.find('.cp-support-attachments');
 
         var category = $cat.val().trim();
-        /*
-        // || ($form.closest('.cp-support-list-ticket').data('cat') || "").trim();
-        // Messages.support_formCategoryError = "Error: category is empty"; // TODO ensure this is translated before use
-
         if (!category) {
             console.log($cat);
             return void UI.alert(Messages.support_formCategoryError);
         }
-        */
 
         var title = $title.val().trim();
         if (!title) {
@@ -146,16 +144,17 @@ define([
         return true;
     };
 
-    Messages.support_cat_abuse = "Abuse"; // XXX
-    Messages.support_cat_terms = "Terms violation"; // XXX
+    Messages.support_cat_drives = "Drive or team"; // XXX
+    Messages.support_cat_document = "Document"; // XXX
+    Messages.support_cat_abuse = "Report abuse"; // XXX
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = [
             'account', // Msg.support_cat_account
-            'data', // Msg.support_cat_data
+            'drives', // Msg.support_cat_drives
+            'document', // Msg.support_cat_document,
+            Pages.customURLs.terms? 'abuse': undefined, // Msg.support_cat_abuse
             'bug', // Msg.support_cat_bug
-            'abuse', // Msg.support_cat_abuse
-            Pages.customURLs.terms? 'terms': undefined, // Msg.support_cat_terms
             'other' // Msg.support_cat_other
         ];
         if (all) { categories.push('all'); } // Msg.support_cat_all
@@ -182,15 +181,28 @@ define([
         return $select;
     };
 
-    Messages.support_warning_prompt = "We may require additional information depending on the nature of your issue. Choose the most relevant category for suggestions."; // XXX
+    Messages.support_warning_prompt = "Please choose the most relevant category for your issue, this helps administrators triage and provides further suggestions for what information to provide"; // XXX
 
-    Messages.support_warning_account = "CryptPad administrators are unable to identify accounts, teams, folders, and files by their names. Please provide their identifiers if your issue relates to one of these features."; // XXX
-    Messages.support_warning_data = 'What data was lost? Is it entirely gone or only corrupted? Is it backed up? Can you provide a link to the content or at least its document id?'; // XXX
-    Messages.support_warning_bug = "Describe the bug in as much detail as possible. In which browser did you first notice the problem? In which other browser does it first occur, if any? Can you provide a list of all the extensions you've installed?"; // XXX
-    Messages.support_warning_report = 'Give us a link to the reported content, some context about its contents, and where it is being distributed.'; // XXX
-    Messages.support_warning_terms = 'Reports of content or behaviour which violate our <a>terms of service</a> should include links to any related content and descriptions of how they violate the terms. If possible, a description of the context in which you discovered the behaviour may help us prevent future violations.'; // XXX
-    Messages.support_warning_abuse = "If you have experienced targeted abuse on the platform, please provide a description of what occurred and indicate any evidence that might help us prevent this abuse in the future.";
-    Messages.support_warning_other = "What is the nature of your query? Providing as much relevant information as possible in your first message may make it easier for us to address your issue quickly."; // XXX
+    Messages.support_warning_account = "Please note that administrators are not able to reset passwords. If you have lost the credentials to your account but are still logged in, you can <a>migrate your data to a new account</a>"; // XXX
+
+    Messages.support_warning_drives = "Note that administrators are not able to identify folders and documents by name. For shared folders, please provide a <a>document identifier</a> (does not provide access to the content)"; // XXX
+
+    Messages.support_warning_document = "Please specify which type of document is causing the issue and provide a <a>document identifier</a> (does not provide access to the content)"; // XXX
+
+    Messages.support_warning_bug = "Please specify in which browser the issue occurs and if any extensions are installed. Please provide as much detail as possible about the issue and the steps necessary to reproduce it"; // XXX
+
+    Messages.support_warning_abuse = "Please report content that violates the <a>Terms of Service</a>. Please provide links to the offending documents or user profiles and describe how they are violating the terms. Any additional information on the context in which you discovered the content or behaviour may help administrators prevent future violations"; // XXX
+
+    Messages.support_warning_other = "What is the nature of your query? Please provide as much relevant information as possible to make it easier for us to address your issue quickly"; // XXX
+
+    var documentIdDocs = Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#properties');
+
+    var warningLinks = {
+        account: documentIdDocs,
+        document: documentIdDocs,
+        drives: documentIdDocs,
+        abuse: Pages.customURLs.terms,
+    };
 
     var makeForm = function (ctx, cb, title) {
         var button;
@@ -208,24 +220,31 @@ define([
         });
         var catContainer = h('div.cp-dropdown-container' + (title ? '.cp-hidden': ''));
         var notice = h('div.alert.alert-info', Messages.support_warning_prompt);
+        var clickHandler = function (ev) {
+            ev.preventDefault();
+            var $link = $(this);
+            var href = $link.attr('href');
+            if (!href) { return; }
+            ctx.common.openUnsafeURL(href);
+        };
+
         makeCategoryDropdown(ctx, catContainer, function (key) {
             $(category).val(key);
             console.log(key);
             var warning = Messages['support_warning_' + key] || '';
-            if (key === 'terms') {
-                // XXX AppConfig.terms or Pages.termsLink
-                notice.innerHTML = '';
-                //notice.appendChild(UI.setHTML(h('span'), Messages.support_
-                var content = UI.setHTML(h('span'), Messages.support_warning_terms);
-                var link = content.querySelector('a');
-                link.href = Pages.customURLs.terms;
-                notice.appendChild(content);
+            var warningLink = warningLinks[key];
+            if (!warningLink) {
+                notice.innerText = warning;
                 return;
             }
-
-            notice.innerText = warning;
-
-            // TODO add a hint suggesting relevant information to include for the chosen category
+            notice.innerHTML = '';
+            var content = UI.setHTML(h('span'), warning);
+            var link = content.querySelector('a');
+            if (link) {
+                link.href = warningLink;
+                link.onclick = clickHandler;
+            }
+            notice.appendChild(content);
         });
 
         var attachments, addAttachment;
