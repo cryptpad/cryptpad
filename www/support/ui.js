@@ -95,8 +95,6 @@ define([
         }
     };
 
-    //Messages.support_formCategoryError = "Error: category is empty"; // XXX (existing key)
-    Messages.support_formCategoryError = "Please select a ticket category from the dropdown menu"; // XXX
 
     var sendForm = function (ctx, id, form, dest) {
         var $form = $(form);
@@ -107,10 +105,13 @@ define([
         var $attachments = $form.find('.cp-support-attachments');
 
         var category = $cat.val().trim();
+/*
+Messages.support_formCategoryError = "Please select a ticket category from the dropdown menu"; // TODO
         if (!category) {
             console.log($cat);
             return void UI.alert(Messages.support_formCategoryError);
         }
+*/
 
         var title = $title.val().trim();
         if (!title) {
@@ -144,10 +145,6 @@ define([
         return true;
     };
 
-    Messages.support_cat_drives = "Drive or team"; // XXX
-    Messages.support_cat_document = "Document"; // XXX
-    Messages.support_cat_abuse = "Report abuse"; // XXX
-
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = [
             'account', // Msg.support_cat_account
@@ -180,20 +177,6 @@ define([
         $select.find('button').addClass('btn');
         return $select;
     };
-
-    Messages.support_warning_prompt = "Please choose the most relevant category for your issue, this helps administrators triage and provides further suggestions for what information to provide"; // XXX
-
-    Messages.support_warning_account = "Please note that administrators are not able to reset passwords. If you have lost the credentials to your account but are still logged in, you can <a>migrate your data to a new account</a>"; // XXX
-
-    Messages.support_warning_drives = "Note that administrators are not able to identify folders and documents by name. For shared folders, please provide a <a>document identifier</a> (does not provide access to the content)"; // XXX
-
-    Messages.support_warning_document = "Please specify which type of document is causing the issue and provide a <a>document identifier</a> (does not provide access to the content)"; // XXX
-
-    Messages.support_warning_bug = "Please specify in which browser the issue occurs and if any extensions are installed. Please provide as much detail as possible about the issue and the steps necessary to reproduce it"; // XXX
-
-    Messages.support_warning_abuse = "Please report content that violates the <a>Terms of Service</a>. Please provide links to the offending documents or user profiles and describe how they are violating the terms. Any additional information on the context in which you discovered the content or behaviour may help administrators prevent future violations"; // XXX
-
-    Messages.support_warning_other = "What is the nature of your query? Please provide as much relevant information as possible to make it easier for us to address your issue quickly"; // XXX
 
     var documentIdDocs = Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#properties');
 
