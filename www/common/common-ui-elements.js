@@ -1685,6 +1685,14 @@ define([
 
         var $userName = $('<span>');
         var options = [];
+        options.push({
+            tag: 'div',
+            attributes: {'class': 'cp-user-menu-logo'},
+            content: h('span', [
+                h('img', {src: '/customize/CryptPad_logo_grey.svg',alt: 'CryptPad logo',}),
+                h('span.cp-user-menu-logo-text', "CryptPad")
+            ]),
+        });
         if (config.displayNameCls) {
             var $userAdminContent = $('<p>');
             if (accountName) {

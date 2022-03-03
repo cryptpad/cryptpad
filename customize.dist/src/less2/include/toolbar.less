@@ -442,6 +442,7 @@
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
+                // XXX DB TODO: scale down icon logo on small screens
                 .cp-pad-not-pinned {
                     line-height: 32px;
                     flex: unset;
@@ -509,6 +510,9 @@
                     //transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
+                        span {
+                            font-size: 24px;
+                        }
                     }
                 }
                 .cp-toolbar-user {
@@ -517,16 +521,20 @@
                         height: @toolbar_line-height;
                         width: @toolbar_line-height;
                         margin-left: 0;
+                        padding: 0px;
                         button {
                             height: @toolbar_line-height;
                             width: @toolbar_line-height;
                             font-size: 15px;
                             margin-top: -1px;
-                            .cp-dropdown-button-title {
-                                transform: scale(0.5);
-                                bottom: -5px;
-                                right: -5px;
+                            &::before {
+                                padding-top: 1px;
                             }
+                            // .cp-dropdown-button-title {
+                            //     transform: scale(0.5);
+                            //     bottom: -5px;
+                            //     right: -5px;
+                            // }
                         }
                     }
                     .cp-toolbar-user-dropdown {
@@ -799,6 +807,8 @@
                 text-decoration: none;
                 height: auto;
                 padding: 10px;
+                color: @toolbar-bg-color;
+                color: var(--toolbar-bg-color);
 
                 span {
                     font-size: 45px;
@@ -882,6 +892,19 @@
                         .avatar_main(64px);
                         border: 0;
                     }
+                }
+            }
+            .cp-user-menu-logo {
+                text-align: left;
+                font-family: "IBM Plex Mono";
+                color: @cryptpad_color_grey_500;
+                font-size: 1.5em;
+                padding: 5px;
+                img {
+                    width: 25px;
+                }
+                .cp-user-menu-logo-text {
+                    margin-left: 10px;
                 }
             }
             p.cp-toolbar-account {
