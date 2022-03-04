@@ -666,11 +666,11 @@ define([
             note,
             h('nav', [set, remove])
         ]);
+        var $note = $(note);
 
         var getValues = function () {
             var key = $key.val();
             var _limit = parseInt($(limit).val());
-            var _note = $(note).val();
             if (key.length !== 44) {
                 try {
                     var u = Keys.parseUser(key);
@@ -684,6 +684,7 @@ define([
             if (isNaN(_limit) || _limit < 0) {
                 return void UI.warn(Messages.admin_invalLimit);
             }
+            var _note = ($note.val() || "").trim();
             return {
                 key: key,
                 data: {
@@ -734,6 +735,7 @@ define([
                 }
                 APP.refreshLimits();
                 $key.val('');
+                $note.val('');
             });
         });
 
