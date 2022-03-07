@@ -149,6 +149,8 @@ define([
         return $div;
     };
 
+    Messages.admin_archiveReason = "// XXX REASON"; // XXX
+
     var archiveForm = function (archive, $div, $button) {
         var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
         var input = h('input#cp-admin-archive', {
@@ -162,6 +164,14 @@ define([
             id: 'cp-admin-archive-pw',
             placeholder: Messages.login_password
         });
+        var input3 = h('input', {
+            id: 'cp-admin-archive-reason',
+            placeholder: Messages.admin_archiveReason,
+        });
+        var label3 = h('label', {
+            for: 'cp-admin-archive-reason',
+        }, Messages.admin_archiveReason);
+
         var $pw = $(input2);
         $pw.addClass('cp-admin-pw');
         var $pwInput = $pw.find('input');
@@ -171,7 +181,9 @@ define([
             label,
             input,
             label2,
-            input2
+            input2,
+            label3,
+            input3,
         ]));
 
         $div.addClass('cp-admin-nopassword');
@@ -237,9 +249,13 @@ define([
                     }
                 }), true);
             }).nThen(function () {
+                var $reason = $(input3);
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: archive ? 'ARCHIVE_DOCUMENT' : 'RESTORE_ARCHIVED_DOCUMENT',
-                    data: channel
+                    data: {
+                        id: channel,
+                        reason: $reason.val(), // XXX
+                    },
                 }, function (err, obj) {
                     var e = err || (obj && obj.error);
                     clicked = false;
@@ -251,6 +267,7 @@ define([
                     UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
                     $input.val('');
                     $pwInput.val('');
+                    $reason.val('')
                 });
             });
         });
