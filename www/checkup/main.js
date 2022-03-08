@@ -1113,6 +1113,54 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        var path = '/blob/placeholder.txt';
+        var fullPath;
+        try {
+            fullPath = new URL(path, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
+        } catch (err) {
+            fullPath = path;
+        }
+
+        msg.appendChild(h('span', [
+            "A placeholder file was expected to be available at ",
+            code(fullPath),
+            ", but it was not found.",
+            " This commonly indicates a mismatch between the API server's ",
+            code('blobPath'),
+            " value and the path that the webserver or reverse proxy is attempting to serve.",
+            " This misconfiguration will cause errors with uploaded files and CryptPad's office editors (sheet, presentation, document).",
+        ]));
+
+        Tools.common_xhr(fullPath, xhr => {
+            cb(xhr.status === 200 || xhr.status);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var path = '/block/placeholder.txt';
+        var fullPath;
+        try {
+            fullPath = new URL(path, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
+        } catch (err) {
+            fullPath = path;
+        }
+
+        msg.appendChild(h('span', [
+            "A placeholder file was expected to be available at ",
+            code(fullPath),
+            ", but it was not found.",
+            " This commonly indicates a mismatch between the API server's ",
+            code('blockPath'),
+            " value and the path that the webserver or reverse proxy is attempting to serve.",
+            " This misconfiguration will cause errors with login, registration, and password change.",
+        ]));
+
+        Tools.common_xhr(fullPath, xhr => {
+            cb(xhr.status === 200 || xhr.status);
+        });
+    });
+
     var serverToken;
     Tools.common_xhr('/', function (xhr) {
         serverToken = xhr.getResponseHeader('server');
