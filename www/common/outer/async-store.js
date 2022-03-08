@@ -1161,6 +1161,7 @@ define([
 
             //var storeLocally = data.teamId === -1;
             if (data.teamId === -1) { data.teamId = undefined; }
+            if (data.teamId) { data.teamId = Number(data.teamId); }
 
             // If a teamId is provided, it means we want to store the pad in a specific
             // team drive. In this case, we just need to check if the pad is already
