@@ -267,7 +267,7 @@ define([
                     UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
                     $input.val('');
                     $pwInput.val('');
-                    $reason.val('')
+                    $reason.val('');
                 });
             });
         });
