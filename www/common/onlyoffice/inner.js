@@ -1804,6 +1804,7 @@ define([
                         }
 
                         if (APP.isDownload) {
+                            delete APP.isDownload;
                             var bin = getContent();
                             if (!supportsXLSX()) {
                                 return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
@@ -2008,6 +2009,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
                 if (blobUrl) {
+                    delete downloadImages[name];
                     debug("CryptPad Image already loaded " + blobUrl);
                     return void callback(blobUrl);
                 }
@@ -2556,7 +2558,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 type:'text/javascript',
                 src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
             });
-            $('#cp-app-oo-editor').append(s);
+            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
 
             var hashes = content.hashes || {};
             var idx = sortCpIndex(hashes);
