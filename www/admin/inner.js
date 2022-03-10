@@ -70,6 +70,7 @@ define([
         ],
         'stats': [ // Msg.admin_cat_stats
             'cp-admin-refresh-stats',
+            'cp-admin-uptime',
             'cp-admin-active-sessions',
             'cp-admin-active-pads',
             'cp-admin-open-files',
@@ -89,6 +90,8 @@ define([
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
             'cp-admin-performance-profiling',
+            'cp-admin-enable-disk-measurements',
+            'cp-admin-bytes-written',
         ],
         'network': [ // Msg.admin_cat_network
             'cp-admin-update-available',
@@ -790,6 +793,29 @@ define([
             onRefreshStats.fire();
         });
         $div.append($btn);
+        return $div;
+    };
+
+    Messages.admin_uptimeTitle = 'Launch time';
+    Messages.admin_uptimeHint = 'Date and time at which the server was launched';
+
+    create['uptime'] = function () {
+        var key = 'uptime';
+        var $div = makeBlock(key); // Msg.admin_activeSessionsHint, .admin_activeSessionsTitle
+        var pre = h('pre');
+
+        var set = function () {
+            var uptime = APP.instanceStatus.launchTime;
+            if (typeof(uptime) !== 'number') { return; }
+            pre.innerText = new Date(uptime);
+        };
+
+        set();
+
+        $div.append(pre);
+        onRefreshStats.reg(function () {
+            set();
+        });
         return $div;
     };
 
@@ -1884,6 +1910,84 @@ define([
 
         onRefresh();
         onRefreshPerformance.reg(onRefresh);
+
+        return $div;
+    };
+
+    Messages.admin_enableDiskMeasurementsTitle = "Measure disk performance"; // XXX
+    Messages.admin_enableDiskMeasurementsHint = "If enabled, a JSON endpoint will be exposed under /api/profiling which keeps a running measurement of disk I/O within a configurable window. This setting can impact server performance and may reveal data you'd rather keep hidden. It is recommended that you leave it disabled unless you know what you are doing."; // XXX
+
+    create['enable-disk-measurements'] = makeAdminCheckbox({
+        key: 'enable-disk-measurements',
+        getState: function () {
+            return APP.instanceStatus.enableProfiling;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['ENABLE_PROFILING', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.enableProfiling);
+                });
+            });
+        },
+    });
+
+    Messages.admin_bytesWrittenTitle = "Disk performance measurement window";
+    Messages.admin_bytesWrittenHint = "If you have enabled disk performance measurements then the duration of the window can be configured below."; // XXX
+    Messages.admin_bytesWrittenDuration = "Duration of the window in milliseconds: {0}"; // XXX
+    Messages.admin_defaultDuration = "admin_defaultDuration"; // XXX
+    Messages.admin_setDuration = "Set duration"; // XXX
+
+    var isPositiveInteger = function (n) {
+        return n && typeof(n) === 'number'  && n % 1 === 0 && n > 0;
+    };
+
+    create['bytes-written'] = function () {
+        var key = 'bytes-written';
+        var $div = makeBlock(key);
+
+        var duration = APP.instanceStatus.profilingWindow;
+        if (!isPositiveInteger(duration)) { duration = 10000; }
+        var newDuration = h('input', {type: 'number', min: 0, value: duration});
+        var set = h('button.btn.btn-primary', Messages.admin_setDuration);
+        $div.append(h('div', [
+            h('span.cp-admin-bytes-written-duration', Messages._getKey('admin_bytesWrittenDuration', [duration])),
+            h('div.cp-admin-setlimit-form', [
+                newDuration,
+                h('nav', [set])
+            ])
+        ]));
+
+        UI.confirmButton(set, {
+            classes: 'btn-primary',
+            multiple: true,
+            validate: function () {
+                var l = parseInt($(newDuration).val());
+                if (isNaN(l)) { return false; }
+                return true;
+            }
+        }, function () {
+            var d = parseInt($(newDuration).val());
+            if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+
+            var data = [d];
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_PROFILING_WINDOW', data]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                $div.find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_limit', [d]));
+            });
+        });
 
         return $div;
     };

@@ -135,6 +135,14 @@ define([
             rel: 'noreferrer noopener'
         }).appendTo($block).hide();
 
+        APP.$link.click(function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var href = $(this).attr('href').trim();
+            if (!href) { return; }
+            common.openUnsafeURL(href);
+        });
+
         APP.$linkEdit = $();
         if (APP.readOnly) { return; }
 
