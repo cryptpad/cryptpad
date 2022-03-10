@@ -107,10 +107,10 @@ define([
     var customURLs = Pages.customURLs = {};
     (function () {
         var defaultURLs = {
-            //imprint: '/imprint.html', // XXX cryptpad.org/default-imprint.html?
-            //privacy: '/privacy.html', // XXX cryptpad.org/default-privacy.html?
-            terms: '/terms.html', // XXX cryptpad.org/default-terms.html?
-            //roadmap: '/roadmap.html', // XXX cryptpad.org/default-roadmap.html?
+            //imprint: '/imprint.html',
+            //privacy: '/privacy.html',
+            terms: '/terms.html',
+            //roadmap: '/roadmap.html',
             source: 'https://github.com/xwiki-labs/cryptpad',
         };
         var l = Msg._getLanguage();
@@ -132,8 +132,6 @@ define([
             }
         });
     }());
-
-    Msg.footer_source = 'Source code'; // XXX
 
     // used for the about menu
     Pages.imprintLink = footLink(customURLs.imprint, 'imprint');

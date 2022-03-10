@@ -56,6 +56,8 @@ define([
             'cp-admin-registration',
             'cp-admin-email',
 
+            'cp-admin-instance-info-notice',
+
             'cp-admin-name',
             'cp-admin-description',
             'cp-admin-jurisdiction',
@@ -256,7 +258,7 @@ define([
                     cmd: archive ? 'ARCHIVE_DOCUMENT' : 'RESTORE_ARCHIVED_DOCUMENT',
                     data: {
                         id: channel,
-                        reason: $reason.val(), // XXX
+                        reason: $reason.val(),
                     },
                 }, function (err, obj) {
                     var e = err || (obj && obj.error);
@@ -269,7 +271,8 @@ define([
                     UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
                     $input.val('');
                     $pwInput.val('');
-                    $reason.val('');
+                    // disabled because it's actually pretty annoying to re-enter this each time if you are archiving many files
+                    //$reason.val('');
                 });
             });
         });
@@ -330,8 +333,6 @@ define([
             var key = data.key;
             var $div = makeBlock(key);
 
-            // XXX support disabling this checkboxes in certain conditions, ie. when telemetry is off
-
             var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
             var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
             var $cbox = $(UI.createCheckbox('cp-admin-' + key,
@@ -375,9 +376,10 @@ define([
         },
     });
 
+    // XXX remove emailButton
     create['email'] = function () {
         var key = 'email';
-        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton // XXX drop 'emailButton'
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle
         var $button = $div.find('button').text(Messages.settings_save);
 
         var input = h('input', {
@@ -429,12 +431,11 @@ define([
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
-            if (!$input.val()) { return; } // XXX
             spinner.spin();
             $button.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
-                data: ['SET_INSTANCE_JURISDICTION', [$input.val()]] // XXX
+                data: ['SET_INSTANCE_JURISDICTION', [$input.val().trim()]]
             }, function (e, response) {
                 $button.removeAttr('disabled');
                 if (e || response.error) {
@@ -454,6 +455,19 @@ define([
         return $div;
     };
 
+    Messages.admin_infoNotice1 = "The following fields describe your instance. Data entered will only be included in your server's telemetry if you opt in to inclusion in the list of public CryptPad instances."; // XXX
+    Messages.admin_infoNotice2 = "See the 'Network' tab for more details."; // XXX
+
+    create['instance-info-notice'] = function () {
+        return $(h('div.cp-admin-instance-info-notice.cp-sidebarlayout-element',
+            h('div.alert.alert-info.cp-admin-bigger-alert', [
+                Messages.admin_infoNotice1,
+                ' ',
+                Messages.admin_infoNotice2,
+            ])
+        ));
+    };
+
     create['name'] = function () {
         var key = 'name';
         var $div = makeBlock(key, true);
@@ -463,20 +477,19 @@ define([
         var input = h('input.cp-listing-info', {
             type: 'text',
             value: APP.instanceStatus.instanceName || ApiConfig.httpUnsafeOrigin || '',
-            placeholder: ApiConfig.httpUnsafeOrigin, //Messages.admin_namePlaceholder, // XXX
+            placeholder: ApiConfig.httpUnsafeOrigin,
             style: 'margin-bottom: 5px;',
         });
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setname-form', input); // XXX fix styles
+        var innerDiv = h('div.cp-admin-setname-form', input);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
-            if (!$input.val()) { return; } // XXX
             spinner.spin();
             $button.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
-                data: ['SET_INSTANCE_NAME', [$input.val()]] // XXX not implemented
+                data: ['SET_INSTANCE_NAME', [$input.val().trim()]]
             }, function (e, response) {
                 $button.removeAttr('disabled');
                 if (e || response.error) {
@@ -498,19 +511,17 @@ define([
 
     create['description'] = function () {
         var key = 'description';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_descriptionHint
 
-        var textarea = h('textarea.cp-admin-description-text.cp-listing-info', { // XXX use something from UI elements?
-            placeholder: Messages.home_host || '', // XXX
+        var textarea = h('textarea.cp-admin-description-text.cp-listing-info', {
+            placeholder: Messages.home_host || '',
         }, APP.instanceStatus.instanceDescription || '');
 
         var $button = $div.find('button').text(Messages.settings_save);
 
         $button.addClass('cp-listing-action');
 
-        var innerDiv = h('div.cp-admin-setdescription-form', {
-            //style: 'margin-bottom: 5px', // XXX LOL NO
-        }, [
+        var innerDiv = h('div.cp-admin-setdescription-form', [
             textarea,
         ]);
         $button.before(innerDiv);
@@ -519,12 +530,11 @@ define([
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
-            if (!$input.val()) { return; } // XXX
             spinner.spin();
             $button.attr('disabled', 'disabled');
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
-                data: ['SET_INSTANCE_DESCRIPTION', [$input.val()]] // XXX
+                data: ['SET_INSTANCE_DESCRIPTION', [$input.val().trim()]]
             }, function (e, response) {
                 $button.removeAttr('disabled');
                 if (e || response.error) {
@@ -1915,9 +1925,9 @@ define([
     };
 
     Messages.admin_enableDiskMeasurementsTitle = "Measure disk performance"; // XXX
-    Messages.admin_enableDiskMeasurementsHint = "If enabled, a JSON endpoint will be exposed under /api/profiling which keeps a running measurement of disk I/O within a configurable window. This setting can impact server performance and may reveal data you'd rather keep hidden. It is recommended that you leave it disabled unless you know what you are doing."; // XXX
+    Messages.admin_enableDiskMeasurementsHint = "If enabled, a JSON endpoint will be exposed under /api/profiling which keeps a running measurement of disk I/O within a configurable window (set below). This setting can impact server performance and may reveal data you'd rather keep hidden. It is recommended that you leave it disabled unless you know what you are doing."; // XXX
 
-    create['enable-disk-measurements'] = makeAdminCheckbox({
+    create['enable-disk-measurements'] = makeAdminCheckbox({ // Msg.admin_enableDiskMeasurementsTitle.admin_enableDiskMeasurementsHint
         key: 'enable-disk-measurements',
         getState: function () {
             return APP.instanceStatus.enableProfiling;
@@ -1938,10 +1948,10 @@ define([
         },
     });
 
-    Messages.admin_bytesWrittenTitle = "Disk performance measurement window";
+    Messages.admin_bytesWrittenTitle = "Disk performance measurement window"; // XXX
     Messages.admin_bytesWrittenHint = "If you have enabled disk performance measurements then the duration of the window can be configured below."; // XXX
     Messages.admin_bytesWrittenDuration = "Duration of the window in milliseconds: {0}"; // XXX
-    Messages.admin_defaultDuration = "admin_defaultDuration"; // XXX
+    //Messages.admin_defaultDuration = "admin_defaultDuration"; // XXX
     Messages.admin_setDuration = "Set duration"; // XXX
 
     var isPositiveInteger = function (n) {
@@ -1985,7 +1995,7 @@ define([
                     UI.warn(Messages.error);
                     return void console.error(e, response);
                 }
-                $div.find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_limit', [d]));
+                $div.find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
             });
         });
 
@@ -2037,7 +2047,6 @@ define([
         },
     });
 
-    // XXX disable this checkbox if server telemetry is disabled?
     create['list-my-instance'] = makeAdminCheckbox({ // Messages.admin_listMyInstanceTitle.admin_listMyInstanceHint.admin_listMyInstanceLabel
         key: 'list-my-instance',
         getState: function () {
@@ -2274,6 +2283,7 @@ define([
             APP.instanceStatus = data[0];
             console.log("Status", APP.instanceStatus);
 
+/*
             var isListed = Boolean(APP.instanceStatus.listMyInstance);
             var $actions = $('.cp-listing-action');
             var $fields = $('.cp-listing-info');
@@ -2285,7 +2295,7 @@ define([
                 $actions.attr('disabled', 'disabled');
                 $fields.attr('disabled', 'disabled');
             }
-
+*/
             cb();
         });
     };

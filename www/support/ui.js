@@ -147,6 +147,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = [
+            // Msg.support_cat_data is left included because old tickets may still use it
             'account', // Msg.support_cat_account
             'drives', // Msg.support_cat_drives
             'document', // Msg.support_cat_document,
@@ -213,7 +214,8 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
 
         makeCategoryDropdown(ctx, catContainer, function (key) {
             $(category).val(key);
-            console.log(key);
+            //console.log(key);
+            // Msg.support_warning_abuse.support_warning_account.support_warning_bug.support_warning_document.support_warning_drives.support_warning_other
             var warning = Messages['support_warning_' + key] || '';
             var warningLink = warningLinks[key];
             if (!warningLink) {
