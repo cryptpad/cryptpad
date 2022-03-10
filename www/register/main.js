@@ -11,9 +11,10 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/hyperscript.js',
+    '/customize/pages.js',
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h) {
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
@@ -58,7 +59,14 @@ define([
             var confirmPassword = $confirm.val();
 
             var shouldImport = $checkImport[0].checked;
-            var doesAccept = $checkAcceptTerms[0].checked;
+            var doesAccept;
+            try {
+                // if this throws there's either a horrible bug (which someone will report)
+                // or the instance admins did not configure a terms page.
+                doesAccept = $checkAcceptTerms[0].checked;
+            } catch (err) {
+                console.error(err);
+            }
 
             if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
                 var emailWarning = [
@@ -94,7 +102,7 @@ define([
                 return void UI.alert(Messages.register_passwordsDontMatch);
             }
 
-            if (!doesAccept) { // do they accept the terms of service?
+            if (Pages.customURLs.terms && !doesAccept) { // do they accept the terms of service? (if they exist)
                 return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
