@@ -15,15 +15,17 @@ define([
     var create = function (config) {
         // Loaded in load #2
         var sframeChan;
+        var Util = config.modules.Utils.Util;
+        var _onReadyEvt = Util.mkEvent(true);
         var refresh = function (data, cb) {
             if (currentCb) {
                 queue.push({data: data, cb: cb});
                 return;
             }
             if (!ready) {
-                ready = function () {
+                _onReadyEvt.reg(function () {
                     refresh(data, cb);
-                };
+                });
                 return;
             }
             currentCb = cb;
@@ -152,10 +154,8 @@ define([
 
                 sframeChan.onReady(function () {
                     if (ready === true) { return; }
-                    if (typeof ready === "function") {
-                        ready();
-                    }
                     ready = true;
+                    _onReadyEvt.fire();
                 });
             });
         });
