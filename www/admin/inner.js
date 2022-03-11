@@ -1095,26 +1095,30 @@ define([
         };
 
         var _reorder = function () {
-            var hashKeys = Object.keys(hashesById);
+            var orderAnswered = [];
+            var orderPremium = [];
+            var orderNormal = [];
+            var orderClosed = [];
 
-            var orderAnswered = hashKeys.filter(function (id) {
+            Object.keys(hashesById).forEach(function (id) {
                 var d = getTicketData(id);
-                return d && d.lastAdmin && !d.closed;
-            }).sort(sort);
-            var orderPremium = hashKeys.filter(function (id) {
-                var d = getTicketData(id);
-                return d && d.premium && !d.lastAdmin && !d.closed;
-            }).sort(sort);
-            var orderNormal = hashKeys.filter(function (id) {
-                var d = getTicketData(id);
-                return d && !d.premium && !d.lastAdmin && !d.closed;
-            }).sort(sort);
-            var orderClosed = hashKeys.filter(function (id) {
-                var d = getTicketData(id);
-                return d && d.closed;
-            }).sort(sort);
+                if (!d) { return; }
+                if (d.closed) {
+                    return void orderClosed.push(id);
+                }
+                if (d.lastAdmin /* && !d.closed */) {
+                    return void orderAnswered.push(id);
+                }
+                if (d.premium /* && !d.lastAdmin && !d.closed */) {
+                    return void orderPremium.push(id);
+                }
+                orderNormal.push(id);
+                //if (!d.premium && !d.lastAdmin && !d.closed) { return void orderNormal.push(id); }
+            });
+
             var cols = [$col1, $col2, $col3, $col4];
             [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
+                list.sort(sort);
                 list.forEach(function (id, i) {
                     var $t = $div.find('[data-id="'+id+'"]');
                     var d = getTicketData(id);
