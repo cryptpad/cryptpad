@@ -1159,6 +1159,7 @@ define([
 
     // check if they provide legal data
     assert(function (cb, msg) {
+        if (true) { return void cb(true); } // XXX stubbed while we determine whether this is necessary
         if (ApiConfig.restrictRegistration) { return void cb(true); }
 
         var url = Pages.customURLs.imprint;
