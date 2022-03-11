@@ -86,11 +86,12 @@ define(function() {
     AppConfig.privacy = false;
 
     /* You can display a link to your instances's terms of service in the static pages footer.
-     * Since this is different for each individual or organization there is no default value.
+     * A default is included for backwards compatibility, but we recommend replacing this
+     * with your own terms.
      *
      * See the comments above for a description of possible configurations.
      */
-    AppConfig.terms = false;
+    AppConfig.terms = true;
 
     /* The terms of CryptPad's license require that its source code be made available
      * to anyone who uses the software. If you have not made any modifications to the platform
