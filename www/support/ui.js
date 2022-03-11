@@ -188,7 +188,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         abuse: Pages.customURLs.terms,
     };
 
-    var makeForm = function (ctx, cb, title) {
+    var makeForm = function (ctx, cb, title, hideNotice) {
         var button;
 
         if (typeof(cb) === "function") {
@@ -203,7 +203,11 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             value: ''
         });
         var catContainer = h('div.cp-dropdown-container' + (title ? '.cp-hidden': ''));
-        var notice = h('div.alert.alert-info', Messages.support_warning_prompt);
+        var notice;
+        if (!(hideNotice || ctx.isAdmin)) {
+            notice = h('div.alert.alert-info', Messages.support_warning_prompt);
+        }
+
         var clickHandler = function (ev) {
             ev.preventDefault();
             var $link = $(this);
@@ -214,6 +218,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
 
         makeCategoryDropdown(ctx, catContainer, function (key) {
             $(category).val(key);
+            if (!notice) { return; }
             //console.log(key);
             // Msg.support_warning_abuse.support_warning_account.support_warning_bug.support_warning_document.support_warning_drives.support_warning_other
             var warning = Messages['support_warning_' + key] || '';
@@ -373,13 +378,14 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         $(answer).click(function () {
             $ticket.find('.cp-support-form-container').remove();
             $(actions).hide();
+            var hideNotice = true;
             var form = makeForm(ctx, function () {
                 var sent = sendForm(ctx, content.id, form, content.sender);
                 if (sent) {
                     $(actions).css('display', '');
                     $(form).remove();
                 }
-            }, content.title);
+            }, content.title, hideNotice);
             $ticket.append(form);
         });
 
@@ -507,8 +513,8 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         ui.sendForm = function (id, form, dest) {
             return sendForm(ctx, id, form, dest);
         };
-        ui.makeForm = function (cb, title) {
-            return makeForm(ctx, cb, title);
+        ui.makeForm = function (cb, title, hideNotice) {
+            return makeForm(ctx, cb, title, hideNotice);
         };
         ui.makeCategoryDropdown = function (container, onChange, all) {
             return makeCategoryDropdown(ctx, container, onChange, all);
