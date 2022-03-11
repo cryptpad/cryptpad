@@ -142,6 +142,10 @@ define(function() {
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
+        admin: 'fa-gears',
+        settings: 'fa-gear',
+        profile: 'fa-user-circle',
+        support: 'fa-life-ring'
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.
