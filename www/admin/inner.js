@@ -1095,19 +1095,21 @@ define([
         };
 
         var _reorder = function () {
-            var orderAnswered = Object.keys(hashesById).filter(function (id) {
+            var hashKeys = Object.keys(hashesById);
+
+            var orderAnswered = hashKeys.filter(function (id) {
                 var d = getTicketData(id);
                 return d && d.lastAdmin && !d.closed;
             }).sort(sort);
-            var orderPremium = Object.keys(hashesById).filter(function (id) {
+            var orderPremium = hashKeys.filter(function (id) {
                 var d = getTicketData(id);
                 return d && d.premium && !d.lastAdmin && !d.closed;
             }).sort(sort);
-            var orderNormal = Object.keys(hashesById).filter(function (id) {
+            var orderNormal = hashKeys.filter(function (id) {
                 var d = getTicketData(id);
                 return d && !d.premium && !d.lastAdmin && !d.closed;
             }).sort(sort);
-            var orderClosed = Object.keys(hashesById).filter(function (id) {
+            var orderClosed = hashKeys.filter(function (id) {
                 var d = getTicketData(id);
                 return d && d.closed;
             }).sort(sort);
