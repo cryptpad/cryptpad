@@ -73,12 +73,13 @@ define([
         return select;
     };
 
-    var footerCol = function (title, L, literal) {
-        return h('div.col-sm-3', [
+    var footerCol = function (title, L, n) {
+        n = n || 3;
+        return h('div.col-sm-' + n, [
             h('ul.list-unstyled', [
                 h('li.footer-title', {
                     'data-localization': title,
-                }, title? Msg[title]: literal )
+                }, Msg[title])
                 ].concat(L.map(function (l) {
                     return h('li', [ l ]);
                 }))
@@ -153,10 +154,12 @@ define([
             ]);
         }
 
+        var n = legalFooter ? 3: 4;
+
         return h('footer', [
             h('div.container', [
                 h('div.row', [
-                    h('div.col-sm-3', [
+                    h('div.col-sm-' + n, [
                         h('div.cp-logo-foot', [
                             h('img', {
                                 src: '/customize/CryptPad_logo.svg',
@@ -165,21 +168,21 @@ define([
                             }),
                             h('span.logo-font', 'CryptPad')
                         ])
-                    ], ''),
+                    ]),
                     footerCol('footer_product', [
                         footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
                         Pages.docsLink,
                         footLink('/features.html', Pages.areSubscriptionsAllowed()? 'pricing': 'features'), // Messages.pricing, Messages.features
                         Pages.sourceLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
-                    ]),
+                    ], n),
                     footerCol('footer_aboutUs', [
                         footLink('https://blog.cryptpad.fr/', 'blog'),
                         footLink('/contact.html', 'contact'),
                         footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
                         Pages.roadmapLink,
-                    ]),
+                    ], n),
                     legalFooter,
                 ])
             ]),
