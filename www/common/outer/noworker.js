@@ -86,7 +86,7 @@ define([
 
     return {
         query: function (data) {
-            msgEv.fire({data: data});
+            msgEv.fire({data: data, origin: ''});
         },
         onMessage: function (cb) {
             sendMsg.reg(function (data) {
