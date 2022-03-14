@@ -23,29 +23,17 @@ var fancyURL = function (domain, path) {
     return false;
 };
 
-var deriveSandboxOrigin = function (unsafe, port) {
-    var url = new URL(unsafe);
-    url.port = port;
-    return url.origin;
-};
-
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin' (a truthy string)
-    if (!Env.httpUnsafeOrigin || typeof(Env.httpUnsafeOrigin) !== 'string') {
+    if (typeof(Env.httpUnsafeOrigin) !== 'string' || !Env.httpUnsafeOrigin.trim()) {
         throw new Error("No 'httpUnsafeOrigin' provided");
-    }
-
-    if (typeof(Env.httpSafeOrigin) !== 'string') {
-        Env.NO_SANDBOX = true;
-        if (typeof(Env.httpSafePort) !== 'number') {
-            Env.httpSafePort = Env.httpPort + 1;
-        }
-        Env.httpSafeOrigin = deriveSandboxOrigin(Env.httpUnsafeOrigin, Env.httpSafePort);
     }
 }());
 
 var applyHeaderMap = function (res, map) {
-    for (let header in map) { res.setHeader(header, map[header]); }
+    for (let header in map) {
+        if (typeof(map[header]) === 'string') { res.setHeader(header, map[header]); }
+    }
 };
 
 var EXEMPT = [
@@ -53,6 +41,11 @@ var EXEMPT = [
     /^\/(sheet|presentation|doc)\/inner\.html.*/,
     /^\/unsafeiframe\/inner\.html.*$/,
 ];
+
+var cacheHeaders = function (Env, key, headers) {
+    if (Env.DEV_MODE) { return; }
+    Env[key] = headers;
+};
 
 var getHeaders = function (Env, type) {
     var key = type + 'HeadersCache';
@@ -83,12 +76,12 @@ var getHeaders = function (Env, type) {
     // because they aren't necessary and they cause problems
     // when duplicated by NGINX in production environments
     if (type === 'api') {
-        Env[key] = headers;
+        cacheHeaders(Env, key, headers);
         return headers;
     }
 
     headers["Cross-Origin-Resource-Policy"] = 'cross-origin';
-    Env[key] = headers;
+    cacheHeaders(Env, key, headers);
     return headers;
 };
 
@@ -103,6 +96,7 @@ var setHeaders = function (req, res) {
     }
 
     var h = getHeaders(Env, type);
+    //console.log('PEWPEW', type, h);
     applyHeaderMap(res, h);
 };
 
@@ -140,7 +134,7 @@ app.use(function (req, res, next) {
     if (req.method === 'OPTIONS' && /\/blob\//.test(req.url)) {
         res.setHeader('Access-Control-Allow-Origin', Env.disableEmbedding? Env.permittedEmbedders: '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
+        res.setHeader('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,Access-Control-Allow-Origin');
         res.setHeader('Access-Control-Max-Age', 1728000);
         res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
         res.setHeader('Content-Length', 0);
@@ -241,6 +235,7 @@ var serveConfig = makeRouteCache(function (host) {
             restrictRegistration: Env.restrictRegistration,
             httpSafeOrigin: Env.httpSafeOrigin,
             disableEmbedding: Env.disableEmbedding,
+            fileHost: Env.fileHost,
         }, null, '\t'),
         '});'
     ].join(';\n')

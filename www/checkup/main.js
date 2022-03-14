@@ -1045,7 +1045,10 @@ define([
                         code(header),
                         ' should only match trusted domains.',
                     ]));
-                    return void cb(raw);
+                    return void cb({
+                        header: raw,
+                        expected: trimmedSafe,
+                    });
                 }
             }
 
@@ -1268,6 +1271,41 @@ define([
 
         Tools.common_xhr(fullPath, xhr => {
             cb(xhr.status === 200 || xhr.status);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var url;
+        try {
+            url = new URL('/', trimmedUnsafe);
+        } catch (err) {
+            return void cb({
+                error: err,
+            });
+        }
+
+        // XXX don't bother checking cors headers in dev environment
+        if (url.protocol !== 'https') { return void cb(true); } // XXX
+
+        var header = 'Access-Control-Allow-Origin';
+        msg.appendChild(h('span', [
+            'pewpew ',
+            code(header), // XXX
+        ]));
+
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url.href,
+                header: header,
+            },
+        }, function (raw) {
+            if (raw === '*') { return void cb(true); }
+            if (raw === trimmedSafe) { return void cb(true); }
+            cb({
+                response: raw,
+                disableEmbedding: ApiConfig.disableEmbedding,
+            });
         });
     });
 
