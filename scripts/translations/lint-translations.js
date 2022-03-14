@@ -78,8 +78,8 @@ var processLang = function (map, lang, primary) {
         });
 
         var weirdCapitalization;
-        s.replace(/cryptpad(\.fr)*/gi, function (brand) {
-            if (['CryptPad', 'cryptpad.fr'].includes(brand)) { return; }
+        s.replace(/cryptpad(\.fr|\.org)*/gi, function (brand) {
+            if (['CryptPad', 'cryptpad.fr', 'cryptpad.org'].includes(brand)) { return; }
             weirdCapitalization = true;
         });
 

@@ -10,12 +10,13 @@ define([
         var urlArgs = Config.requireConf.urlArgs;
 
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
+
+        var termsLink = Pages.customURLs.terms;
         $(tos).find('a').attr({
-            href: '/terms.html',
+            href: termsLink, // '/terms.html',
             target: '_blank',
             tabindex: '-1',
         });
-
 
         var frame = function (content) {
             return [
@@ -36,6 +37,11 @@ define([
                     h('p', Msg.register_registrationIsClosed),
                 ])
             ]);
+        }
+
+        var termsCheck;
+        if (termsLink) {
+            termsCheck = h('div.checkbox-container', tos);
         }
 
         return frame([
@@ -72,9 +78,7 @@ define([
                         h('div.checkbox-container', [
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
-                        h('div.checkbox-container', [
-                            tos,
-                        ]),
+                        termsCheck,
                         h('button#register', Msg.login_register)
                     ])
                 ]),

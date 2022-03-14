@@ -1181,7 +1181,8 @@ define([
                     title: currentTitle,
                     channel: secret.channel,
                     path: initialPathInDrive, // Where to store the pad if we don't have it in our drive
-                    forceSave: true
+                    forceSave: true,
+                    forceOwnDrive: obj && obj.forceOwnDrive
                 };
                 setPadTitle(data, cb);
             });

@@ -53,20 +53,27 @@ define([
         'general': [ // Msg.admin_cat_general
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
-            'cp-admin-archive',
-            'cp-admin-unarchive',
             'cp-admin-registration',
             'cp-admin-disableembeds',
-            'cp-admin-email'
+            'cp-admin-email',
+
+            'cp-admin-instance-info-notice',
+
+            'cp-admin-name',
+            'cp-admin-description',
+            'cp-admin-jurisdiction',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
+            'cp-admin-archive',
+            'cp-admin-unarchive',
             'cp-admin-getquota',
             'cp-admin-getlimits',
         ],
         'stats': [ // Msg.admin_cat_stats
             'cp-admin-refresh-stats',
+            'cp-admin-uptime',
             'cp-admin-active-sessions',
             'cp-admin-active-pads',
             'cp-admin-open-files',
@@ -86,6 +93,8 @@ define([
         'performance': [ // Msg.admin_cat_performance
             'cp-admin-refresh-performance',
             'cp-admin-performance-profiling',
+            'cp-admin-enable-disk-measurements',
+            'cp-admin-bytes-written',
         ],
         'network': [ // Msg.admin_cat_network
             'cp-admin-update-available',
@@ -93,6 +102,7 @@ define([
             'cp-admin-block-daily-check',
             //'cp-admin-provide-aggregate-statistics',
             'cp-admin-list-my-instance',
+
             'cp-admin-consent-to-contact',
             'cp-admin-remove-donate-button',
             'cp-admin-instance-purpose',
@@ -160,6 +170,13 @@ define([
             id: 'cp-admin-archive-pw',
             placeholder: Messages.login_password
         });
+        var input3 = h('input', {
+            id: 'cp-admin-archive-reason',
+        });
+        var label3 = h('label', {
+            for: 'cp-admin-archive-reason',
+        }, Messages.admin_archiveNote);
+
         var $pw = $(input2);
         $pw.addClass('cp-admin-pw');
         var $pwInput = $pw.find('input');
@@ -169,7 +186,9 @@ define([
             label,
             input,
             label2,
-            input2
+            input2,
+            label3,
+            input3,
         ]));
 
         $div.addClass('cp-admin-nopassword');
@@ -235,9 +254,13 @@ define([
                     }
                 }), true);
             }).nThen(function () {
+                var $reason = $(input3);
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: archive ? 'ARCHIVE_DOCUMENT' : 'RESTORE_ARCHIVED_DOCUMENT',
-                    data: channel
+                    data: {
+                        id: channel,
+                        reason: $reason.val(),
+                    },
                 }, function (err, obj) {
                     var e = err || (obj && obj.error);
                     clicked = false;
@@ -249,6 +272,8 @@ define([
                     UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
                     $input.val('');
                     $pwInput.val('');
+                    // disabled because it's actually pretty annoying to re-enter this each time if you are archiving many files
+                    //$reason.val('');
                 });
             });
         });
@@ -393,10 +418,11 @@ define([
         },
     });
 
+    // XXX remove emailButton
     create['email'] = function () {
         var key = 'email';
-        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle, Msg.admin_emailButton
-        var $button = $div.find('button');
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle
+        var $button = $div.find('button').text(Messages.settings_save);
 
         var input = h('input', {
             type: 'email',
@@ -428,6 +454,142 @@ define([
         });
 
         $button.before(innerDiv);
+
+        return $div;
+    };
+
+    create['jurisdiction'] = function () {
+        var key = 'jurisdiction';
+        var $div = makeBlock(key, true); // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle, Msg.admin_jurisdictionButton
+        var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
+
+        var input = h('input.cp-listing-info', {
+            type: 'text',
+            value: APP.instanceStatus.instanceJurisdiction || '',
+            placeholder: Messages.admin_jurisdictionPlaceholder,
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setjurisdiction-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_JURISDICTION', [$input.val().trim()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_jurisdictionTitle]));
+            });
+        });
+
+        $button.before(innerDiv);
+
+        return $div;
+    };
+
+    Messages.admin_infoNotice1 = "The following fields describe your instance. Data entered will only be included in your server's telemetry if you opt in to inclusion in the list of public CryptPad instances."; // XXX
+    Messages.admin_infoNotice2 = "See the 'Network' tab for more details."; // XXX
+
+    create['instance-info-notice'] = function () {
+        return $(h('div.cp-admin-instance-info-notice.cp-sidebarlayout-element',
+            h('div.alert.alert-info.cp-admin-bigger-alert', [
+                Messages.admin_infoNotice1,
+                ' ',
+                Messages.admin_infoNotice2,
+            ])
+        ));
+    };
+
+    create['name'] = function () {
+        var key = 'name';
+        var $div = makeBlock(key, true);
+        // Msg.admin_nameHint, Msg.admin_nameTitle, Msg.admin_nameButton
+        var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
+
+        var input = h('input.cp-listing-info', {
+            type: 'text',
+            value: APP.instanceStatus.instanceName || ApiConfig.httpUnsafeOrigin || '',
+            placeholder: ApiConfig.httpUnsafeOrigin,
+            style: 'margin-bottom: 5px;',
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setname-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_NAME', [$input.val().trim()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_nameTitle]));
+            });
+        });
+
+        $button.before(innerDiv);
+
+        return $div;
+    };
+
+    create['description'] = function () {
+        var key = 'description';
+        var $div = makeBlock(key, true); // Msg.admin_descriptionHint
+
+        var textarea = h('textarea.cp-admin-description-text.cp-listing-info', {
+            placeholder: Messages.home_host || '',
+        }, APP.instanceStatus.instanceDescription || '');
+
+        var $button = $div.find('button').text(Messages.settings_save);
+
+        $button.addClass('cp-listing-action');
+
+        var innerDiv = h('div.cp-admin-setdescription-form', [
+            textarea,
+        ]);
+        $button.before(innerDiv);
+
+        var $input = $(textarea);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_DESCRIPTION', [$input.val().trim()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    spinner.hide();
+                    return;
+                }
+                spinner.done();
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_descriptionTitle]));
+            });
+        });
 
         return $div;
     };
@@ -559,11 +721,11 @@ define([
             note,
             h('nav', [set, remove])
         ]);
+        var $note = $(note);
 
         var getValues = function () {
             var key = $key.val();
             var _limit = parseInt($(limit).val());
-            var _note = $(note).val();
             if (key.length !== 44) {
                 try {
                     var u = Keys.parseUser(key);
@@ -577,6 +739,7 @@ define([
             if (isNaN(_limit) || _limit < 0) {
                 return void UI.warn(Messages.admin_invalLimit);
             }
+            var _note = ($note.val() || "").trim();
             return {
                 key: key,
                 data: {
@@ -627,6 +790,7 @@ define([
                 }
                 APP.refreshLimits();
                 $key.val('');
+                $note.val('');
             });
         });
 
@@ -681,6 +845,29 @@ define([
             onRefreshStats.fire();
         });
         $div.append($btn);
+        return $div;
+    };
+
+    Messages.admin_uptimeTitle = 'Launch time';
+    Messages.admin_uptimeHint = 'Date and time at which the server was launched';
+
+    create['uptime'] = function () {
+        var key = 'uptime';
+        var $div = makeBlock(key); // Msg.admin_activeSessionsHint, .admin_activeSessionsTitle
+        var pre = h('pre');
+
+        var set = function () {
+            var uptime = APP.instanceStatus.launchTime;
+            if (typeof(uptime) !== 'number') { return; }
+            pre.innerText = new Date(uptime);
+        };
+
+        set();
+
+        $div.append(pre);
+        onRefreshStats.reg(function () {
+            set();
+        });
         return $div;
     };
 
@@ -950,24 +1137,30 @@ define([
         };
 
         var _reorder = function () {
-            var orderAnswered = Object.keys(hashesById).filter(function (id) {
+            var orderAnswered = [];
+            var orderPremium = [];
+            var orderNormal = [];
+            var orderClosed = [];
+
+            Object.keys(hashesById).forEach(function (id) {
                 var d = getTicketData(id);
-                return d && d.lastAdmin && !d.closed;
-            }).sort(sort);
-            var orderPremium = Object.keys(hashesById).filter(function (id) {
-                var d = getTicketData(id);
-                return d && d.premium && !d.lastAdmin && !d.closed;
-            }).sort(sort);
-            var orderNormal = Object.keys(hashesById).filter(function (id) {
-                var d = getTicketData(id);
-                return d && !d.premium && !d.lastAdmin && !d.closed;
-            }).sort(sort);
-            var orderClosed = Object.keys(hashesById).filter(function (id) {
-                var d = getTicketData(id);
-                return d && d.closed;
-            }).sort(sort);
+                if (!d) { return; }
+                if (d.closed) {
+                    return void orderClosed.push(id);
+                }
+                if (d.lastAdmin /* && !d.closed */) {
+                    return void orderAnswered.push(id);
+                }
+                if (d.premium /* && !d.lastAdmin && !d.closed */) {
+                    return void orderPremium.push(id);
+                }
+                orderNormal.push(id);
+                //if (!d.premium && !d.lastAdmin && !d.closed) { return void orderNormal.push(id); }
+            });
+
             var cols = [$col1, $col2, $col3, $col4];
             [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
+                list.sort(sort);
                 list.forEach(function (id, i) {
                     var $t = $div.find('[data-id="'+id+'"]');
                     var d = getTicketData(id);
@@ -1779,6 +1972,84 @@ define([
         return $div;
     };
 
+    Messages.admin_enableDiskMeasurementsTitle = "Measure disk performance"; // XXX
+    Messages.admin_enableDiskMeasurementsHint = "If enabled, a JSON endpoint will be exposed under /api/profiling which keeps a running measurement of disk I/O within a configurable window (set below). This setting can impact server performance and may reveal data you'd rather keep hidden. It is recommended that you leave it disabled unless you know what you are doing."; // XXX
+
+    create['enable-disk-measurements'] = makeAdminCheckbox({ // Msg.admin_enableDiskMeasurementsTitle.admin_enableDiskMeasurementsHint
+        key: 'enable-disk-measurements',
+        getState: function () {
+            return APP.instanceStatus.enableProfiling;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['ENABLE_PROFILING', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.enableProfiling);
+                });
+            });
+        },
+    });
+
+    Messages.admin_bytesWrittenTitle = "Disk performance measurement window"; // XXX
+    Messages.admin_bytesWrittenHint = "If you have enabled disk performance measurements then the duration of the window can be configured below."; // XXX
+    Messages.admin_bytesWrittenDuration = "Duration of the window in milliseconds: {0}"; // XXX
+    //Messages.admin_defaultDuration = "admin_defaultDuration"; // XXX
+    Messages.admin_setDuration = "Set duration"; // XXX
+
+    var isPositiveInteger = function (n) {
+        return n && typeof(n) === 'number'  && n % 1 === 0 && n > 0;
+    };
+
+    create['bytes-written'] = function () {
+        var key = 'bytes-written';
+        var $div = makeBlock(key);
+
+        var duration = APP.instanceStatus.profilingWindow;
+        if (!isPositiveInteger(duration)) { duration = 10000; }
+        var newDuration = h('input', {type: 'number', min: 0, value: duration});
+        var set = h('button.btn.btn-primary', Messages.admin_setDuration);
+        $div.append(h('div', [
+            h('span.cp-admin-bytes-written-duration', Messages._getKey('admin_bytesWrittenDuration', [duration])),
+            h('div.cp-admin-setlimit-form', [
+                newDuration,
+                h('nav', [set])
+            ])
+        ]));
+
+        UI.confirmButton(set, {
+            classes: 'btn-primary',
+            multiple: true,
+            validate: function () {
+                var l = parseInt($(newDuration).val());
+                if (isNaN(l)) { return false; }
+                return true;
+            }
+        }, function () {
+            var d = parseInt($(newDuration).val());
+            if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+
+            var data = [d];
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_PROFILING_WINDOW', data]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                $div.find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
+            });
+        });
+
+        return $div;
+    };
+
     create['update-available'] = function () { // Messages.admin_updateAvailableTitle.admin_updateAvailableHint.admin_updateAvailableLabel.admin_updateAvailableButton
         if (!APP.instanceStatus.updateAvailable) { return; }
         var $div = makeBlock('update-available', true);
@@ -2059,6 +2330,20 @@ define([
             if (!Array.isArray(data)) { return void cb('EINVAL'); }
             APP.instanceStatus = data[0];
             console.log("Status", APP.instanceStatus);
+
+/*
+            var isListed = Boolean(APP.instanceStatus.listMyInstance);
+            var $actions = $('.cp-listing-action');
+            var $fields = $('.cp-listing-info');
+
+            if (isListed) {
+                $actions.removeAttr('disabled');
+                $fields.removeAttr('disabled');
+            } else {
+                $actions.attr('disabled', 'disabled');
+                $fields.attr('disabled', 'disabled');
+            }
+*/
             cb();
         });
     };

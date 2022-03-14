@@ -169,6 +169,10 @@ define([
 
     create['subscribe'] = function () {
         if (!Pages.areSubscriptionsAllowed()) { return; }
+        try {
+            if (common.getMetadataMgr().getPrivateData().plan) { return; }
+        } catch (err) {}
+
         var url = Pages.accounts.upgradeURL;
         var accountsLink = h('a', {
             href: url,

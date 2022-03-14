@@ -392,7 +392,6 @@ define([
 
     assert(function (cb, msg) {
         msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
-        var url = cacheBuster(sheetURL);
         var expect = {
             'cross-origin-resource-policy': 'cross-origin',
             'cross-origin-embedder-policy': 'require-corp',
@@ -1137,6 +1136,141 @@ define([
         });
     });
 
+    var POLICY_ADVISORY = " This link will be included in the home page footer and 'About CryptPad' menu. It's advised that you either provide one or disable registration.";
+    var APPCONFIG_DOCS_LINK = function (key) {
+        return h('span', [
+            " See ",
+            h('a', {
+                href: 'https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config',
+                target: "_blank",
+                rel: 'noopener noreferrer',
+            }, "the relevant documentation"),
+            " about how to customize CryptPad's ",
+            code(key),
+            ' value.',
+        ]);
+    };
+
+    var isValidInfoURL = function (url) {
+        if (!url || typeof(url) !== 'string') { return false; }
+        try {
+            var parsed = new URL(url, ApiConfig.httpUnsafeOrigin);
+            // check that the URL parsed and that they haven't simply linked to
+            // '/' or '.' or something silly like that.
+            return ![
+                ApiConfig.httpUnsafeOrigin,
+                ApiConfig.httpUnsafeOrigin + '/',
+            ].includes(parsed.href);
+        } catch (err) {
+            return false;
+        }
+    };
+
+    // check if they provide terms of service
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.terms;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No terms of service were specified.',
+            POLICY_ADVISORY,
+            APPCONFIG_DOCS_LINK('terms'),
+        ]));
+        cb(isValidInfoURL(url) || url);
+    });
+
+    // check if they provide legal data
+    assert(function (cb, msg) {
+        if (true) { return void cb(true); } // XXX stubbed while we determine whether this is necessary
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.imprint;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No legal entity data was specified.',
+            POLICY_ADVISORY,
+            APPCONFIG_DOCS_LINK('imprint'),
+        ]));
+        cb(isValidInfoURL(url) || url);
+    });
+
+    // check if they provide a privacy policy
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.privacy;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No privacy policy was specified.',
+            POLICY_ADVISORY,
+            APPCONFIG_DOCS_LINK('privacy'),
+        ]));
+        cb(isValidInfoURL(url) || url);
+    });
+
+    // check if they provide a link to source code
+    assert(function (cb, msg) {
+        if (ApiConfig.restrictRegistration) { return void cb(true); }
+
+        var url = Pages.customURLs.source;
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            'No source code link was specified.',
+            POLICY_ADVISORY,
+            APPCONFIG_DOCS_LINK('source'),
+        ]));
+        cb(isValidInfoURL(url) || url);
+    });
+
+    assert(function (cb, msg) {
+        var path = '/blob/placeholder.txt';
+        var fullPath;
+        try {
+            fullPath = new URL(path, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
+        } catch (err) {
+            fullPath = path;
+        }
+
+        msg.appendChild(h('span', [
+            "A placeholder file was expected to be available at ",
+            code(fullPath),
+            ", but it was not found.",
+            " This commonly indicates a mismatch between the API server's ",
+            code('blobPath'),
+            " value and the path that the webserver or reverse proxy is attempting to serve.",
+            " This misconfiguration will cause errors with uploaded files and CryptPad's office editors (sheet, presentation, document).",
+        ]));
+
+        Tools.common_xhr(fullPath, xhr => {
+            cb(xhr.status === 200 || xhr.status);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var path = '/block/placeholder.txt';
+        var fullPath;
+        try {
+            fullPath = new URL(path, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
+        } catch (err) {
+            fullPath = path;
+        }
+
+        msg.appendChild(h('span', [
+            "A placeholder file was expected to be available at ",
+            code(fullPath),
+            ", but it was not found.",
+            " This commonly indicates a mismatch between the API server's ",
+            code('blockPath'),
+            " value and the path that the webserver or reverse proxy is attempting to serve.",
+            " This misconfiguration will cause errors with login, registration, and password change.",
+        ]));
+
+        Tools.common_xhr(fullPath, xhr => {
+            cb(xhr.status === 200 || xhr.status);
+        });
+    });
+
     var serverToken;
     Tools.common_xhr('/', function (xhr) {
         serverToken = xhr.getResponseHeader('server');
@@ -1226,9 +1360,20 @@ define([
             details,
         ]);
 
+        var isWarning = function (x) {
+            return x && /cp\-warning/.test(x.getAttribute('class'));
+        };
+
+        var sortMethod = function (a, b) {
+            if (isWarning(a.message) && !isWarning(b.message)) {
+                return 1;
+            }
+            return a.test - b.test;
+        };
+
         var report = h('div.report', [
             summary,
-            h('div.failures', errors.map(failureReport)),
+            h('div.failures', errors.sort(sortMethod).map(failureReport)),
         ]);
 
         $progress.remove();

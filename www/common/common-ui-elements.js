@@ -808,7 +808,9 @@ define([
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
-                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
+                        forceOwnDrive: true,
+                    }, function (err, obj) {
                         var error = err || (obj && obj.error);
                         if (error) {
                             $(button).show();
@@ -1647,9 +1649,10 @@ define([
 
         var template = function (line, link) {
             if (!line || !link) { return; }
-            var p = $('<p>').html(line)[0];
+            var p = $('<p>').html(line)[0]; // XXX
             var sub = link.cloneNode(true);
 
+// XXX use URL if you need to?
 /*  This is a hack to make relative URLs point to the main domain
     instead of the sandbox domain. It will break if the admins have specified
     some less common URL formats for their customizable links, such as if they've
@@ -1666,8 +1669,9 @@ define([
 
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
-
         var faqLine = template(Messages.help_genericMore, Pages.docsLink);
+        var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
+        var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
             h('div.logo-block', [
@@ -1678,9 +1682,11 @@ define([
                 h('span', Pages.versionString)
             ]),
             h('hr'),
-            legalLine,
-            privacyLine,
             faqLine,
+            termsLine,
+            privacyLine,
+            legalLine,
+            sourceLine,
         ]);
 
         $(content).find('a').attr('target', '_blank');

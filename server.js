@@ -276,6 +276,13 @@ var send404 = function (res, path) {
         send404(res);
     });
 };
+app.get('/api/profiling', function (req, res, next) {
+    if (!Env.enableProfiling) { return void send404(res); }
+    res.setHeader('Content-Type', 'text/javascript');
+    res.send(JSON.stringify({
+        bytesWritten: Env.bytesWritten,
+    }));
+});
 
 app.use(function (req, res, next) {
     res.status(404);
