@@ -9,22 +9,14 @@ define([
     var common = {};
 
     var embeddableApps = [
-        //'calendar',
         'code',
-        //'doc', // XXX
-        // 'drive',  // XXX
-        //'file', // doesn't suggest iframes
         'form',
         'kanban',
         'pad',
-        // 'poll', // XXX
-        //'presentation', // XXX
-        // 'sheet', // XXX
         'slide',
-        //'teams', // XXX
         'whiteboard',
     ].map(function (x) {
-        return `/${x}/`; // XXX intentionally break IE or anything that doesn't support template literals
+        return `/${x}/`;
     });
 
     common.initIframe = function (waitFor, isRt, pathname) {

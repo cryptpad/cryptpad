@@ -16,6 +16,15 @@ define([
              Messages, nThen, Pages) {
     var Share = {};
 
+    var embeddableApps = [
+        'code',
+        'form',
+        'kanban',
+        'pad',
+        'slide',
+        'whiteboard',
+    ].map(app => `/${app}/`);
+
     var createShareWithFriends = function (config, onShare, linkGetter) {
         var common = config.common;
         var sframeChan = common.getSframeChannel();
@@ -772,7 +781,7 @@ define([
             icon: "fa fa-link",
             active: !contactsActive,
         }];
-        if (!opts.static && !ApiConfig.disableEmbedding) {
+        if (!opts.static && !ApiConfig.disableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,
                 title: Messages.share_embedCategory,
