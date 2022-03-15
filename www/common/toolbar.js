@@ -463,15 +463,18 @@ MessengerUI, Messages, Pages) {
     createCollapse = function (toolbar) {
         var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
         var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
+        var notif = h('span.cp-collapsed-notif');
 
         var $button = $(h('button.cp-toolbar-collapse',[
             up,
-            down
+            down,
+            notif
         ]));
         var $up = $(up);
         var $down = $(down);
         toolbar.$bottomR.prepend($button);
         $down.hide();
+        $(notif).hide();
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
@@ -482,6 +485,7 @@ MessengerUI, Messages, Pages) {
             } else {
                 $up.show();
                 $down.hide();
+                $(notif).hide();
             }
         });
     };
@@ -1173,6 +1177,9 @@ MessengerUI, Messages, Pages) {
 
         Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders'], {
             onMessage: function (data, el) {
+                if (toolbar.$top.hasClass('toolbar-hidden')) {
+                    $('.cp-collapsed-notif').css('display', '');
+                }
                 if (el) {
                     $(div).prepend(el);
                 }

@@ -1045,9 +1045,23 @@
         is very small, which makes it unlikely that you'll see the title unless
         you hover perfectly. The same is true of the drive's grid/list view toggle.
 */
-
+            position: relative;
             .fa {
                 margin-right: 0px;
+            }
+            .cp-collapsed-notif {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                background-color: @cryptpad_color_red;
+                position: absolute;
+                bottom: -3px;
+                right: -3px;
+                border: 2px solid @cp_toolbar-bg;
+                border-radius: 50%;
+            }
+            &:not(.cp-toolbar-button-active) .cp-collapsed-notif {
+                display: none;
             }
         }
 
