@@ -2547,7 +2547,7 @@ define([
                     // Use the async store in the main thread if workers are not available
                     require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
                         NoWorker.onMessage(function (data) {
-                            msgEv.fire({data: data});
+                            msgEv.fire({data: data, origin: ''});
                         });
                         postMsg = function (d) { setTimeout(function () { NoWorker.query(d); }); };
                         NoWorker.create();

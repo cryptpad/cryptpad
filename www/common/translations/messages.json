@@ -1448,5 +1448,6 @@
     "support_warning_other": "What is the nature of your query? Please provide as much relevant information as possible to make it easier for us to address your issue quickly",
     "support_cat_drives": "Drive or team",
     "support_cat_document": "Document",
-    "support_cat_abuse": "Report abuse"
+    "support_cat_abuse": "Report abuse",
+    "ui_openDirectly": "This functionality is not available when CryptPad is embedded in another site. Open this document in a new tab?"
 }
