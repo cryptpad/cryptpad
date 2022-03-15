@@ -774,7 +774,7 @@ define([
         }];
         if (!opts.static && !ApiConfig.disableEmbedding) {
             tabs.push({
-                getTab: getEmbedTab, // XXX
+                getTab: getEmbedTab,
                 title: Messages.share_embedCategory,
                 icon: "fa fa-code",
                 onShow: onShowEmbed,
