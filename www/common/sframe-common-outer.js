@@ -675,6 +675,7 @@ define([
                         prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isTop: window.top === window,
                         canEdit: hashes && hashes.editHash,
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
@@ -872,14 +873,19 @@ define([
                     }
                 });
 
-                sframeChan.on('EV_OPEN_URL', function (url) {
-                    if (url) {
-                        var a = window.open(url);
-                        if (!a) {
-                            sframeChan.event('EV_POPUP_BLOCKED');
-                        }
+                var openURL = function (url) {
+                    if (!url) { return; }
+                    var a = window.open(url);
+                    if (!a) {
+                        sframeChan.event('EV_POPUP_BLOCKED');
                     }
+                };
+
+                sframeChan.on('EV_OPEN_URL_DIRECTLY', function () {
+                    var url = currentPad.href;
+                    openURL(url);
                 });
+                sframeChan.on('EV_OPEN_URL', openURL);
 
                 sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
                     if (url) {

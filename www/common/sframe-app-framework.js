@@ -734,6 +734,10 @@ define([
         var createFilePicker = function () {
             if (!common.isLoggedIn()) { return; }
             $embedButton = common.createButton('mediatag', true).click(function () {
+                if (!cpNfInner.metadataMgr.getPrivateData().isTop) {
+                    return void UIElements.openDirectlyConfirmation(common);
+                }
+
                 var cfg = {
                     types: ['file', 'link'],
                     where: ['root']

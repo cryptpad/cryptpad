@@ -662,6 +662,9 @@ define([
         });
     };
 
+    funcs.openDirectly = function () {
+        ctx.sframeChan.event('EV_OPEN_URL_DIRECTLY');
+    };
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.getBounceURL = function (url) {
