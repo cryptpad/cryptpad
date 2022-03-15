@@ -331,7 +331,7 @@ define([
     };
 
     // Msg.admin_registrationHint, .admin_registrationTitle
-    create['registration'] = makeAdminCheckbox({ // XXX
+    create['registration'] = makeAdminCheckbox({
         key: 'registration',
         getState: function () {
             return APP.instanceStatus.restrictRegistration;

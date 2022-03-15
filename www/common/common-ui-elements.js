@@ -523,7 +523,6 @@ define([
         UI.openCustomModal(modal);
     };
 
-    Messages.ui_openDirectly = "This functionality is not available when CryptPad is embedded in another site.  Open this pad in its own window?";// XXX
     UIElements.openDirectlyConfirmation = function (common, cb) {
         cb = cb || Util.noop;
         UI.confirm(h('p', Messages.ui_openDirectly), yes => {
