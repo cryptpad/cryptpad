@@ -43,5 +43,14 @@ define([
         throw e;
     };
 
+    var caughtEval;
+    try { eval('true'); } catch (err) { caughtEval = true; }
+
+    if (!/^\/(sheet|doc|presentation)/.test(window.location.pathname) && !caughtEval) {
+        return void setTimeout(function () {
+            alert("aborting because eval should not be permitted.");
+        });
+    }
+
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
