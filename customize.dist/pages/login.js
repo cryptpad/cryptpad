@@ -43,7 +43,7 @@ define([
                 ]),
                 h('div.row', [
                     h('div.col-md-3'),
-                    h('div.col-md-6', Msg.register_warning_note,),
+                    h('div.col-md-6', Msg.register_warning_note),
                     h('div.col-md-3'),
                 ]),
             ]),
