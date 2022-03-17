@@ -61,9 +61,9 @@ define([
 
             // If this is a file, don't try to look for metadata
             if (opts.channel && opts.channel.length > 32) { return; }
-            if (opts.channel) { data.channel = opts.channel; }
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
+            if (opts.channel) { data.channel = opts.channel; }
             cb(void 0, data);
         });
     };
