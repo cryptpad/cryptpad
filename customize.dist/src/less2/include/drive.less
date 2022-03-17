@@ -943,13 +943,14 @@
 
     .cp-toolbar-bottom {
         .cp-toolbar-bottom-left {
+            @drive-light: lighten(@cryptpad_color_brand, 30%);
             .cp-app-drive-toolbar-new {
                 border-radius: @variables_radius;
-                color: @cp_toolbar-fg;
-                border-color: var(--toolbar-bg-color);
-                background-color: var(--toolbar-bg-color);
+                color: @cryptpad_color_grey_900;
+                border-color: @drive-light;
+                background-color: @drive-light;
                 &:hover {
-                    background-color: var(--toolbar-bg-color-fade);
+                    background-color: fade(@drive-light, 80%);
                 }
             }
         }

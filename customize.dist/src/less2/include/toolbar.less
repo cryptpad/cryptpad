@@ -17,10 +17,10 @@
     @toolbar-bg-color: @bg-color;
     // XXX Todo: clean up unused variables
     // XXX: check contrasts of app colors used as btn background
-    @toolbar-bg-color-fade: fade(@toolbar-bg-color, 70%);
-    @desat-color: desaturate(@bg-color, 20%);
-    @toolbar-bg-color-light: contrast(@cp_toolbar-fg, lighten(@bg-color, 30%), darken(@desat-color, 20%));
-    @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@desat-color, 10%));
+    // @desat-color: desaturate(@bg-color, 20%);
+    // @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@desat-color, 10%));
+    @toolbar-bg-color-light: lighten(@bg-color, 30%);
+    @toolbar-bg-color-fade: fade(@toolbar-bg-color-light, 80%);
 };
 
 .toolbar_main (
@@ -32,7 +32,7 @@
     --toolbar-bg-color: @toolbar-bg-color;
     --toolbar-bg-color-fade: @toolbar-bg-color-fade;
     --toolbar-bg-color-light: @toolbar-bg-color-light;
-    --toolbar-bg-color-active: @toolbar-bg-color-active;
+    // --toolbar-bg-color-active: @toolbar-bg-color-active;
 
     .help_main();
     .notifications_main();
@@ -1024,16 +1024,16 @@
         }
 
         button.cp-toolbar-button-primary {
-            background-color: @toolbar-bg-color;
-            background-color: var(--toolbar-bg-color);
-            border-color: @toolbar-bg-color;
-            border-color: var(--toolbar-bg-color);
+            background-color: @toolbar-bg-color-light;
+            background-color: var(--toolbar-bg-color-light);
+            border-color: @toolbar-bg-color-light;
+            border-color: var(--toolbar-bg-color-light);
             color: @cp_toolbar-bottom-fg;
             &:hover {
                 // XXX DB: not working well in dark/light
-                background-color: fade(@toolbar-bg-color, 50%);
+                background-color: fade(@toolbar-bg-color-light, 80%);
                 background-color: var(--toolbar-bg-color-fade);
-                border-color: fade(@toolbar-bg-color, 50%);
+                border-color: fade(@toolbar-bg-color-light, 80%);
                 border-color: var(--toolbar-bg-color-fade);
             }
         }
