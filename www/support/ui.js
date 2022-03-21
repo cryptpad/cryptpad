@@ -21,6 +21,7 @@ define([
 
         data.sender = {
             name: user.name,
+            accountName: privateData.accountName,
             drive: privateData.driveChannel,
             channel: privateData.support,
             curvePublic: user.curvePublic,
