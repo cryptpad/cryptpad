@@ -332,6 +332,9 @@ nThen(function (w) {
                 currentVersion: process.version,
             });
         }
+        if (Env.NODE_ENV !== 'production') {
+            Env.Log.warn("NODE_ENV", `If this server is running in a production context then it is recommended that you set NODE_ENV=production to prevent Expressjs from responding with stack traces when it catches an error.`);
+        }
 
         if (Env.OFFLINE_MODE) { return; }
         if (Env.websocketPath) { return; }
