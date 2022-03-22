@@ -262,7 +262,9 @@ app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
 var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
+var fivehundred_path = Path.resolve(__dirname + '/customize.dist/500.html');
 var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
+var custom_fivehundred_path = Path.resolve(__dirname + '/customize/500.html');
 
 var send404 = function (res, path) {
     if (!path && path !== four04_path) { path = four04_path; }
@@ -272,6 +274,15 @@ var send404 = function (res, path) {
         send404(res);
     });
 };
+var send500 = function (res, path) {
+    if (!path && path !== fivehundred_path) { path = fivehundred_path; }
+    Fs.exists(path, function (exists) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        if (exists) { return Fs.createReadStream(path).pipe(res); }
+        send500(res);
+    });
+};
+
 app.get('/api/profiling', function (req, res, next) {
     if (!Env.enableProfiling) { return void send404(res); }
     res.setHeader('Content-Type', 'text/javascript');
@@ -283,6 +294,15 @@ app.get('/api/profiling', function (req, res, next) {
 app.use(function (req, res, next) {
     res.status(404);
     send404(res, custom_four04_path);
+});
+
+// default message for thrown errors in ExpressJS routes
+app.use(function (err, req, res, next) {
+    Env.Log.error('EXPRESSJS_ROUTING', {
+        error: err.stack || err,
+    });
+    res.status(500);
+    send500(res, custom_fivehundred_path);
 });
 
 var httpServer = Env.httpServer = Http.createServer(app);
@@ -331,9 +351,6 @@ nThen(function (w) {
                 message: `The CryptPad development team recommends using at least NodeJS v16.14.2`,
                 currentVersion: process.version,
             });
-        }
-        if (Env.NODE_ENV !== 'production') {
-            Env.Log.warn("NODE_ENV", `If this server is running in a production context then it is recommended that you set NODE_ENV=production to prevent Expressjs from responding with stack traces when it catches an error.`);
         }
 
         if (Env.OFFLINE_MODE) { return; }

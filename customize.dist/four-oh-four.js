@@ -12,9 +12,12 @@ define([
         src: '/customize/CryptPad_logo_grey.svg?' + urlArgs
     });
 
+    Messages.fivehundred_internalServerError = 'Internal Server Error'; // XXX
+
+    var is500 = Boolean(document.querySelector('#five-hundred'));
     var brand = h('h1#cp-brand', 'CryptPad');
-    var message = h('h2#cp-scramble', Messages.four04_pageNotFound);
-    var title = h('h2#cp-title', "404");
+    var message = h('h2#cp-scramble', Messages[is500? 'fivehundred_internalServerError':'four04_pageNotFound']);
+    var title = h('h2#cp-title', is500? "500":"404");
 
     var loggedIn = LocalStore.isLoggedIn();
     var link = h('a#cp-link', {
