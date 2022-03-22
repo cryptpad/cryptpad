@@ -8,7 +8,33 @@ define([
 ], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
 
+    var embeddableApps = [
+        'code',
+        'form',
+        'kanban',
+        'pad',
+        'slide',
+        'whiteboard',
+    ].map(function (x) {
+        return `/${x}/`;
+    });
+
     common.initIframe = function (waitFor, isRt, pathname) {
+        if (window.top !== window) {
+            if (ApiConfig.disableEmbedding) {
+                return void window.alert(`This CryptPad instance's administrators have disabled remote embedding of its editors.`);
+            }
+            // even where embedding is not forbidden it should still be limited
+            // to apps that are explicitly permitted
+            if (!embeddableApps.includes(window.location.pathname)) {
+                return void window.alert(`Embedding this CryptPad editor in remote pages is not supported.`);
+            }
+        }
+
+        if (window.location.origin !== ApiConfig.httpUnsafeOrigin) {
+            return void window.alert(`This page is configured to only be accessed via ${ApiConfig.httpUnsafeOrigin}.`);
+        }
+
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
         var themeKey = 'CRYPTPAD_STORE|colortheme';
@@ -641,6 +667,7 @@ define([
                         prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isTop: window.top === window,
                         canEdit: hashes && hashes.editHash,
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
@@ -838,14 +865,19 @@ define([
                     }
                 });
 
-                sframeChan.on('EV_OPEN_URL', function (url) {
-                    if (url) {
-                        var a = window.open(url);
-                        if (!a) {
-                            sframeChan.event('EV_POPUP_BLOCKED');
-                        }
+                var openURL = function (url) {
+                    if (!url) { return; }
+                    var a = window.open(url);
+                    if (!a) {
+                        sframeChan.event('EV_POPUP_BLOCKED');
                     }
+                };
+
+                sframeChan.on('EV_OPEN_URL_DIRECTLY', function () {
+                    var url = currentPad.href;
+                    openURL(url);
                 });
+                sframeChan.on('EV_OPEN_URL', openURL);
 
                 sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
                     if (url) {

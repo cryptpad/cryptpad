@@ -582,6 +582,9 @@ MessengerUI, Messages, Pages) {
             hidden: true
         });
         $shareBlock.click(function () {
+            if (!config.metadataMgr.getPrivateData().isTop) {
+                return void UIElements.openDirectlyConfirmation(Common);
+            }
             if (toolbar.isDeleted) {
                 return void UI.warn(Messages.deletedFromServer);
             }
@@ -609,7 +612,10 @@ MessengerUI, Messages, Pages) {
             h('i.fa.fa-unlock-alt'),
             h('span.cp-button-name', Messages.accessButton)
         ]));
-        $accessBlock.click(function () { 
+        $accessBlock.click(function () {
+            if (!config.metadataMgr.getPrivateData().isTop) {
+                return void UIElements.openDirectlyConfirmation(Common);
+            }
             if (toolbar.isDeleted) {
                 return void UI.warn(Messages.deletedFromServer);
             }

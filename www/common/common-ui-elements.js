@@ -523,6 +523,15 @@ define([
         UI.openCustomModal(modal);
     };
 
+    UIElements.openDirectlyConfirmation = function (common, cb) {
+        cb = cb || Util.noop;
+        UI.confirm(h('p', Messages.ui_openDirectly), yes => {
+            if (!yes) { return void cb(yes); }
+            common.openDirectly();
+            cb(yes);
+        });
+    };
+
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
@@ -879,6 +888,14 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
+                    var isTop;
+                    try {
+                        isTop = common.getMetadataMgr().getPrivateData().isTop;
+                    } catch (err) { console.error(err); }
+                    if (!isTop) {
+                        return void UIElements.openDirectlyConfirmation(common);
+                    }
+
                     sframeChan.event('EV_PROPERTIES_OPEN');
                 });
                 break;

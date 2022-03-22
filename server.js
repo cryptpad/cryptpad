@@ -23,34 +23,35 @@ var fancyURL = function (domain, path) {
     return false;
 };
 
-var deriveSandboxOrigin = function (unsafe, port) {
-    var url = new URL(unsafe);
-    url.port = port;
-    return url.origin;
-};
-
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin' (a truthy string)
-    if (!Env.httpUnsafeOrigin || typeof(Env.httpUnsafeOrigin) !== 'string') {
+    if (typeof(Env.httpUnsafeOrigin) !== 'string' || !Env.httpUnsafeOrigin.trim()) {
         throw new Error("No 'httpUnsafeOrigin' provided");
-    }
-
-    if (typeof(Env.httpSafeOrigin) !== 'string') {
-        Env.NO_SANDBOX = true;
-        if (typeof(Env.httpSafePort) !== 'number') {
-            Env.httpSafePort = Env.httpPort + 1;
-        }
-        Env.httpSafeOrigin = deriveSandboxOrigin(Env.httpUnsafeOrigin, Env.httpSafePort);
     }
 }());
 
 var applyHeaderMap = function (res, map) {
-    for (let header in map) { res.setHeader(header, map[header]); }
+    for (let header in map) {
+        if (typeof(map[header]) === 'string') { res.setHeader(header, map[header]); }
+    }
 };
 
-var setHeaders = (function () {
-    // load the default http headers unless the admin has provided their own via the config file
-    var headers;
+var EXEMPT = [
+    /^\/common\/onlyoffice\/.*\.html.*/,
+    /^\/(sheet|presentation|doc)\/inner\.html.*/,
+    /^\/unsafeiframe\/inner\.html.*$/,
+];
+
+var cacheHeaders = function (Env, key, headers) {
+    if (Env.DEV_MODE) { return; }
+    Env[key] = headers;
+};
+
+var getHeaders = function (Env, type) {
+    var key = type + 'HeadersCache';
+    if (Env[key]) { return Env[key]; }
+
+    var headers = {};
 
     var custom = config.httpHeaders;
     // if the admin provided valid http headers then use them
@@ -58,62 +59,46 @@ var setHeaders = (function () {
         headers = Util.clone(custom);
     } else {
         // otherwise use the default
-        headers = Default.httpHeaders();
+        headers = Default.httpHeaders(Env);
     }
 
-    // next define the base Content Security Policy (CSP) headers
-    if (typeof(config.contentSecurity) === 'string') {
-        headers['Content-Security-Policy'] = config.contentSecurity;
-        if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
-        if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
-            // backward compat for those who do not merge the new version of the config
-            // when updating. This prevents endless spinner if someone clicks donate.
-            // It also fixes the cross-domain iframe.
-            headers['Content-Security-Policy'] += "frame-ancestors *;";
-        }
+    headers['Content-Security-Policy'] = type === 'office'?
+        Default.padContentSecurity(Env):
+        Default.contentSecurity(Env);
+
+    if (Env.NO_SANDBOX) { // handles correct configuration for local development
+    // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
+        headers["Cross-Origin-Resource-Policy"] = 'cross-origin';
+        headers["Cross-Origin-Embedder-Policy"] = 'require-corp';
+    }
+
+    // Don't set CSP headers on /api/ endpoints
+    // because they aren't necessary and they cause problems
+    // when duplicated by NGINX in production environments
+    if (type === 'api') {
+        cacheHeaders(Env, key, headers);
+        return headers;
+    }
+
+    headers["Cross-Origin-Resource-Policy"] = 'cross-origin';
+    cacheHeaders(Env, key, headers);
+    return headers;
+};
+
+var setHeaders = function (req, res) {
+    var type;
+    if (EXEMPT.some(regex => regex.test(req.url))) {
+        type = 'office';
+    } else if (/^\/api\/(broadcast|config)/.test(req.url)) {
+        type = 'api';
     } else {
-        // use the default CSP headers constructed with your domain
-        headers['Content-Security-Policy'] = Default.contentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
+        type = 'standard';
     }
 
-    const padHeaders = Util.clone(headers);
-    if (typeof(config.padContentSecurity) === 'string') {
-        padHeaders['Content-Security-Policy'] = config.padContentSecurity;
-    } else {
-        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
-    }
-    if (Object.keys(headers).length) {
-        return function (req, res) {
-            if (Env.NO_SANDBOX) { // handles correct configuration for local development
-            // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
-                applyHeaderMap(res, {
-                    "Cross-Origin-Resource-Policy": 'cross-origin',
-                    "Cross-Origin-Embedder-Policy": 'require-corp',
-                });
-            }
-
-            // Don't set CSP headers on /api/ endpoints
-            // because they aren't necessary and they cause problems
-            // when duplicated by NGINX in production environments
-            if (/^\/api\/(broadcast|config)/.test(req.url)) { return; }
-
-            applyHeaderMap(res, {
-                "Cross-Origin-Resource-Policy": 'cross-origin',
-            });
-
-            // targeted CSP, generic policies, maybe custom headers
-            const h = [
-                    /^\/common\/onlyoffice\/.*\.html.*/,
-                    /^\/(sheet|presentation|doc)\/inner\.html.*/,
-                    /^\/unsafeiframe\/inner\.html.*$/,
-                ].some((regex) => {
-                    return regex.test(req.url);
-                }) ? padHeaders : headers;
-            applyHeaderMap(res, h);
-        };
-    }
-    return function () {};
-}());
+    var h = getHeaders(Env, type);
+    //console.log('PEWPEW', type, h);
+    applyHeaderMap(res, h);
+};
 
 (function () {
 if (!config.logFeedback) { return; }
@@ -135,7 +120,7 @@ app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
         Express.static(Path.join(__dirname, Env.paths.blob), {
             setHeaders: function (res, path, stat) {
-                res.set('Access-Control-Allow-Origin', '*');
+                res.set('Access-Control-Allow-Origin', Env.disableEmbedding? Env.permittedEmbedders: '*');
                 res.set('Access-Control-Allow-Headers', 'Content-Length');
                 res.set('Access-Control-Expose-Headers', 'Content-Length');
             }
@@ -147,9 +132,9 @@ app.use('/blob', function (req, res, next) {
 
 app.use(function (req, res, next) {
     if (req.method === 'OPTIONS' && /\/blob\//.test(req.url)) {
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Origin', Env.disableEmbedding? Env.permittedEmbedders: '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
+        res.setHeader('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,Access-Control-Allow-Origin');
         res.setHeader('Access-Control-Max-Age', 1728000);
         res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
         res.setHeader('Content-Length', 0);
@@ -249,6 +234,8 @@ var serveConfig = makeRouteCache(function (host) {
             premiumUploadSize: Env.premiumUploadSize,
             restrictRegistration: Env.restrictRegistration,
             httpSafeOrigin: Env.httpSafeOrigin,
+            disableEmbedding: Env.disableEmbedding,
+            fileHost: Env.fileHost,
         }, null, '\t'),
         '});'
     ].join(';\n')

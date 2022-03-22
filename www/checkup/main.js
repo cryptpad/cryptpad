@@ -977,8 +977,8 @@ define([
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
-                'worker-src': ["'self'"], // , $outer, $sandbox],
+                'frame-ancestors': ApiConfig.disableEmbedding?  [$outer, $sandbox]: ['*'],
+                'worker-src': ["'self'"],
             });
             cb(result);
         });
@@ -1015,7 +1015,7 @@ define([
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                //'frame-ancestors': ['*'], // XXX IFF you want to support remote embedding
+                'frame-ancestors': ApiConfig.disableEmbedding?  [$outer, $sandbox]: ['*'],
                 'worker-src': ["'self'"],//, $outer, $sandbox],
             });
 
@@ -1023,18 +1023,53 @@ define([
         });
     });
 
+/*  Only two use-cases are currently supported:
+    1. remote embedding is enabled, and fully permissive
+    2. remote embedding is disabled, so media-tags can only be loaded on your instance
+
+    Support for selectively enabling embedding on remote sites is far more complicated
+    and will need funding.
+*/
+    var checkAllowedOrigins = function (raw, url, msg, cb) {
+        var header = 'Access-Control-Allow-Origin';
+        var expected;
+        if (ApiConfig.disableEmbedding) {
+            expected = trimmedSafe;
+            msg.appendChild(h('span', [
+                'This instance has been configured to disable support for embedding assets and documents in third-party websites. ',
+                'In order for this setting to be effective while still permitting encrypted media to load locally ',
+                'the ',
+                code(header),
+                ' should only match trusted domains.',
+                ' Under most circumstances it is sufficient to permit only the sandbox domain to load assets.',
+                " Remote embedding can be enabled via the admin panel.",
+            ]));
+        } else {
+            expected = '*';
+            msg.appendChild(h('span', [
+                "This instance has been configured to permit embedding assets and documents in third-party websites.",
+                'Assets must be served with an ',
+                code(header),
+                ' header with a value of ',
+                code("'*'"),
+                '.',
+                ' Remote embedding can be disabled via the admin panel.',
+            ]));
+        }
+        if (raw === expected) { return void cb(true); }
+        cb({
+            url: url,
+            response: raw,
+            disableEmbedding: ApiConfig.disableEmbedding,
+        });
+    };
+
     assert(function (cb, msg) {
         var header = 'Access-Control-Allow-Origin';
-        msg.appendChild(h('span', [
-            'Assets must be served with an ',
-            code(header),
-            ' header with a value of ',
-            code("'*'"),
-            ' if you wish to support embedding of encrypted media on third party websites.',
-        ]));
-        Tools.common_xhr('/', function (xhr) {
+        var url = new URL('/', trimmedUnsafe).href;
+        Tools.common_xhr(url, function (xhr) {
             var raw = xhr.getResponseHeader(header);
-            cb(raw === "*" || raw);
+            checkAllowedOrigins(raw, url, msg, cb);
         });
     });
 
@@ -1245,6 +1280,33 @@ define([
 
         Tools.common_xhr(fullPath, xhr => {
             cb(xhr.status === 200 || xhr.status);
+        });
+    });
+
+    assert(function (cb, msg) {
+        var url;
+        try {
+            url = new URL('/', trimmedUnsafe);
+        } catch (err) {
+            // if your configuration is bad enough that this throws
+            // then other tests should detect it. Let's just bail out
+            return void cb(true);
+        }
+
+        // xhr.getResponseHeader and similar APIs don't behave as expected in insecure cross-origin contexts
+        // which prevents us from inspecting headers in a development context. We bail out early
+        // and assume it passed. The proper test will run as normal in production
+        if (url.protocol !== 'https') { return void cb(true); }
+
+        var header = 'Access-Control-Allow-Origin';
+        deferredPostMessage({
+            command: 'GET_HEADER',
+            content: {
+                url: url.href,
+                header: header,
+            },
+        }, function (raw) {
+            checkAllowedOrigins(raw, url.href, msg, cb);
         });
     });
 
