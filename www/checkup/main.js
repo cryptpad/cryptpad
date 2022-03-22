@@ -1310,6 +1310,21 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            "The CryptPad development team recommends running at least NodeJS ",
+            code("v16.14.2"),
+            ". Which can be installed and updated via ",
+            h('a', {
+                href: 'https://github.com/nvm-sh/nvm',
+                rel: 'noopener noreferer',
+                target: '_blank',
+            }, 'NVM'),
+            '.',
+        ]));
+        cb(!ApiConfig.shouldUpdateNode);
+    });
+
     var serverToken;
     Tools.common_xhr('/', function (xhr) {
         serverToken = xhr.getResponseHeader('server');

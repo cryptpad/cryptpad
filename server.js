@@ -236,6 +236,7 @@ var serveConfig = makeRouteCache(function (host) {
             httpSafeOrigin: Env.httpSafeOrigin,
             disableEmbedding: Env.disableEmbedding,
             fileHost: Env.fileHost,
+            shouldUpdateNode: Env.shouldUpdateNode || undefined,
         }, null, '\t'),
         '});'
     ].join(';\n')
@@ -324,6 +325,13 @@ nThen(function (w) {
     require("./lib/log").create(config, function (_log) {
         Env.Log = _log;
         config.log = _log;
+
+        if (Env.shouldUpdateNode) {
+            Env.Log.warn("NODEJS_OLD_VERSION", {
+                message: `The CryptPad development team recommends using at least NodeJS v16.14.2`,
+                currentVersion: process.version,
+            });
+        }
 
         if (Env.OFFLINE_MODE) { return; }
         if (Env.websocketPath) { return; }
