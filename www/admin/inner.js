@@ -424,7 +424,7 @@ define([
         var input = h('input.cp-listing-info', {
             type: 'text',
             value: APP.instanceStatus.instanceJurisdiction || '',
-            placeholder: Messages.admin_jurisdictionPlaceholder,
+            placeholder: Messages.admin_jurisdictionPlaceholder || Messages.owner_unknownUser, // XXX
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setjurisdiction-form', input);
