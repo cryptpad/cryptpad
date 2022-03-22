@@ -2893,7 +2893,8 @@ define([
                 var onCreated = function (err, info) {
                     if (err) {
                         if (err === E_OVER_LIMIT) {
-                            return void UI.alert(Messages.pinLimitDrive, null, true);
+                            var content = h('span', UIElements.fixInlineBRs(Messages.pinLimitDrive));
+                            return void UI.alert(content);
                         }
                         return void UI.alert(Messages.fm_error_cantPin);
                     }
@@ -4382,16 +4383,14 @@ define([
 
         var stringifyPath = function (path) {
             if (!Array.isArray(path)) { return; }
-            var $div = $('<div>');
-            var i = 0;
+            var div = h('div');
             var space = 10;
-            path.forEach(function (s) {
+            path.forEach(function (s, i) {
                 if (i === 0) { s = getPrettyName(s); }
-                $div.append($('<span>', {'style': 'margin: 0 0 0 ' + i * space + 'px;'}).text(s));
-                $div.append($('<br>'));
-                i++;
+                div.appendChild(h('span', { style: 'margin: 0 0 0 ' + i * space + 'px', }, s));
+                div.appendChild(h(('br')));
             });
-            return $div.html();
+            return div;
         };
 
         // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
@@ -4863,8 +4862,11 @@ define([
                     if (paths.length !== 1 || pPath.length !== 4) { return; }
                     var element = manager.find(pPath.slice(0,3)); // element containing the oldpath
                     var sPath = stringifyPath(element.path);
-                    UI.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
-                    return;
+                    return void UI.alert(h('span', [
+                        h('strong', Messages.fm_originalPath),
+                        h('br'),
+                        sPath,
+                    ]));
                 }
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);

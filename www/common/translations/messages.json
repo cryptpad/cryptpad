@@ -1449,5 +1449,8 @@
     "support_cat_drives": "Drive or team",
     "support_cat_document": "Document",
     "support_cat_abuse": "Report abuse",
-    "ui_openDirectly": "This functionality is not available when CryptPad is embedded in another site. Open this document in a new tab?"
+    "ui_openDirectly": "This functionality is not available when CryptPad is embedded in another site. Open this document in a new tab?",
+    "support_cat_debugging": "Debug data",
+    "support_debuggingDataTitle": "Account debugging information",
+    "support_debuggingDataHint": "The following information is included in support tickets you submit. None of it allows administrators to access or decrypt your documents. This information is encrypted such that only administrators can read it."
 }

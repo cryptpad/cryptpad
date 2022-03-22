@@ -1448,5 +1448,6 @@
     "support_cat_abuse": "Missbrauch melden",
     "support_cat_document": "Dokument",
     "support_cat_drives": "Drive oder Team",
-    "ui_saved": "{0} gespeichert"
+    "ui_saved": "{0} gespeichert",
+    "ui_openDirectly": "Diese Funktion ist nicht verfügbar, wenn CryptPad in eine andere Website eingebettet ist. Dieses Dokument in einem neuen Tab öffnen?"
 }
