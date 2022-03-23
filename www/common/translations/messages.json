@@ -1463,5 +1463,7 @@
     "admin_bytesWrittenTitle": "Disk performance measurement window",
     "admin_bytesWrittenHint": "If you have enabled disk performance measurements then the duration of the window can be configured below.",
     "admin_setDuration": "Set duration",
-    "ui_ms": "milliseconds"
+    "ui_ms": "milliseconds",
+    "admin_enableembedsTitle": "Enable remote embedding",
+    "admin_enableembedsHint": "Allow documents and media from this instance to be embedded on other websites. This will add an \"Embed\" option to the Share menu. For security reasons applications that use OnlyOffice (Sheets, Document, Presentation) cannot be embedded even if this setting is active."
 }
