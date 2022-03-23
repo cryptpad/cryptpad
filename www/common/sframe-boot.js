@@ -5,6 +5,12 @@
 // grep -nr '/common/sframe-boot.js?ver=' | sed 's/:.*$//' | grep -v 'sframe-boot.js' | while read x; do \
 //    sed -i -e 's@/common/sframe-boot.js?ver=[^"]*@/common/sframe-boot.js?ver=1.3@' $x; done
 ;(function () {
+if (window === window.top) {
+    return void setTimeout(function () {
+        var s = `sframe-boot.js must only be loaded in a nested context`;
+        window.alert(s);
+    });
+}
 var afterLoaded = function (req) {
     req.cfg = req.cfg || {};
     if (req.pfx) {
