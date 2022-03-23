@@ -1458,5 +1458,10 @@
     "admin_reviewCheckupNotice": "It is recommended to review the <a>checkup</a> page to confirm that this instance is configured correctly.",
     "admin_infoNotice1": "Use the following fields to describe your instance. This information will be used on the instance front page in a future version of CryptPad. It is sent as part of the server telemetry only if you opt in to be included in the list of public CryptPad instances.",
     "admin_infoNotice2": "See the 'Network' tab for more details.",
-    "admin_enableDiskMeasurementsTitle": "Measure disk performance"
+    "admin_enableDiskMeasurementsTitle": "Measure disk performance",
+    "admin_enableDiskMeasurementsHint": "If enabled, a JSON API endpoint will be exposed under <code>/api/profiling</code>. This keeps a running measurement of disk I/O within the time window set below. This setting can impact server performance and may reveal sensitive data. It is recommended that you leave this setting disabled unless you know what you are doing.",
+    "admin_bytesWrittenTitle": "Disk performance measurement window",
+    "admin_bytesWrittenHint": "If you have enabled disk performance measurements then the duration of the window can be configured below.",
+    "admin_setDuration": "Set duration",
+    "ui_ms": "milliseconds"
 }
