@@ -1465,5 +1465,8 @@
     "admin_setDuration": "Set duration",
     "ui_ms": "milliseconds",
     "admin_enableembedsTitle": "Enable remote embedding",
-    "admin_enableembedsHint": "Allow documents and media from this instance to be embedded on other websites. This will add an \"Embed\" option to the Share menu. For security reasons applications that use OnlyOffice (Sheets, Document, Presentation) cannot be embedded even if this setting is active."
+    "admin_enableembedsHint": "Allow documents and media from this instance to be embedded on other websites. This will add an \"Embed\" option to the Share menu. For security reasons applications that use OnlyOffice (Sheets, Document, Presentation) cannot be embedded even if this setting is active.",
+    "error_embeddingDisabled": "Embedding is disabled for this CryptPad instance",
+    "error_embeddingDisabledSpecific": "Embedding is disabled for this CryptPad application.",
+    "error_incorrectAccess": "This page can only be accessed via {0}."
 }
