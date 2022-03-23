@@ -18,7 +18,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "2.2.4",
+    "jquery": "3.6.0",
     "tweetnacl": "0.12.2",
     "components-font-awesome": "^4.6.3",
     "ckeditor": "4.14.0",
