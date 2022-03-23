@@ -1449,5 +1449,8 @@
     "support_cat_document": "Dokument",
     "support_cat_drives": "Drive oder Team",
     "ui_saved": "{0} gespeichert",
-    "ui_openDirectly": "Diese Funktion ist nicht verfügbar, wenn CryptPad in eine andere Website eingebettet ist. Dieses Dokument in einem neuen Tab öffnen?"
+    "ui_openDirectly": "Diese Funktion ist nicht verfügbar, wenn CryptPad in eine andere Website eingebettet ist. Dieses Dokument in einem neuen Tab öffnen?",
+    "support_cat_debugging": "Daten zur Fehleranalyse",
+    "support_debuggingDataTitle": "Informationen zur Fehleranalyse für deinen Account",
+    "support_debuggingDataHint": "Die folgenden Informationen werden zusammen mit den von dir eingereichten Support-Tickets übermittelt. Keine dieser Informationen erlaubt es Administratoren, auf deine Dokumente zuzugreifen oder sie zu entschlüsseln. Diese Informationen sind so verschlüsselt, dass nur Administratoren sie lesen können."
 }
