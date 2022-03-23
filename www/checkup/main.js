@@ -74,6 +74,19 @@ define([
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
     var fileHost = ApiConfig.fileHost;
 
+    var getAPIPlaceholderPath = function (relative) {
+        var absolute;
+        try {
+            absolute = new URL(relative, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
+        } catch (err) {
+            absolute = relative;
+        }
+        return absolute;
+    };
+
+    var blobPlaceholderPath = getAPIPlaceholderPath('/blob/placeholder.txt');
+    var blockPlaceholderPath = getAPIPlaceholderPath('/block/placeholder.txt');
+
     var API_URL;
     try {
         API_URL = new URL(NetConfig.getWebsocketURL(window.location.origin), trimmedUnsafe);
@@ -1235,15 +1248,10 @@ define([
         cb(isValidInfoURL(url) || url);
     });
 
-    assert(function (cb, msg) {
-        var path = '/blob/placeholder.txt';
-        var fullPath;
-        try {
-            fullPath = new URL(path, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
-        } catch (err) {
-            fullPath = path;
-        }
 
+
+    assert(function (cb, msg) {
+        var fullPath = blobPlaceholderPath;
         msg.appendChild(h('span', [
             "A placeholder file was expected to be available at ",
             code(fullPath),
@@ -1260,14 +1268,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        var path = '/block/placeholder.txt';
-        var fullPath;
-        try {
-            fullPath = new URL(path, ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin).href;
-        } catch (err) {
-            fullPath = path;
-        }
-
+        var fullPath = blockPlaceholderPath;
         msg.appendChild(h('span', [
             "A placeholder file was expected to be available at ",
             code(fullPath),
@@ -1323,6 +1324,46 @@ define([
             '.',
         ]));
         cb(!ApiConfig.shouldUpdateNode);
+    });
+
+    assert(function (cb, msg) {
+        var header = 'X-Content-Type-Options';
+        msg.appendChild(h('span', [
+            "Content served from the ",
+            code('/blob/'),
+            " directory is expected to have a ",
+            code(header),
+            " header with a value of ",
+            code('nosniff'),
+            '.',
+        ]));
+        Tools.common_xhr(blobPlaceholderPath, xhr => {
+            var xcto = xhr.getResponseHeader('x-content-type-options');
+            cb(xcto === 'nosniff' || {
+                path: blobPlaceholderPath,
+                value: xcto,
+            });
+        });
+    });
+
+    assert(function (cb, msg) {
+        var header = 'X-Content-Type-Options';
+        msg.appendChild(h('span', [
+            "Content served from the ",
+            code('/block/'),
+            " directory is expected to have a ",
+            code(header),
+            " header with a value of ",
+            code('nosniff'),
+            '.',
+        ]));
+        Tools.common_xhr(blockPlaceholderPath, xhr => {
+            var xcto = xhr.getResponseHeader('x-content-type-options');
+            cb(xcto === 'nosniff' || {
+                path: blockPlaceholderPath,
+                value: xcto,
+            });
+        });
     });
 
     var serverToken;
