@@ -46,8 +46,7 @@ define([
                 [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
                 [ 'whiteboard', Msg.type.whiteboard],
-                [ 'slide', Msg.type.slide],
-                [ 'drive', Msg.type.drive]
+                [ 'slide', Msg.type.slide]
             ].filter(function (x) {
                 return isAvailableType(x[0]);
             })
@@ -99,51 +98,28 @@ define([
             });
         }
 
-        var supportText = Pages.setHTML(h('span'), Msg.home_support);
-        Pages.documentationLink(supportText.querySelector('a'), "https://docs.cryptpad.fr/en/how_to_contribute.html");
+        var pageLink = function (ref, loc, text) {
+            if (!ref) { return; }
+            var attrs =  {
+                href: ref,
+            };
+            if (!/^\//.test(ref)) {
+                attrs.target = '_blank';
+                attrs.rel = 'noopener noreferrer';
+            }
+            if (loc) {
+                attrs['data-localization'] =  loc;
+                text = Msg[loc];
+            }
+            return h('a', attrs, text);
+        };
 
-        var opensource = Pages.setHTML(h('p'), Msg.home_opensource);
-        Pages.externalLink(opensource.querySelector('a'), "https://github.com/xwiki-labs/cryptpad");
-
-        var blocks = [
-            h('div.row.cp-page-section', [
-                h('div.col-sm-6',
-                    h('img.img-fluid.cp-img-invert', {
-                        src:'/customize/images/shredder.png',
-                        alt:'',
-                        'aria-hidden': 'true'
-                    })
-                ),
-                h('div.col-sm-6', [
-                    h('h2', Msg.home_privacy_title),
-                    h('p', Msg.home_privacy_text)
-                ])
-            ]),
-            h('div.row.cp-page-section',
-                h('div.col-sm-12', [
-                    h('h2', Msg.home_host_title),
-                    h('p'), Msg.home_host
-                ])
-            ),
-            h('div.row.cp-page-section', [
-                h('div.col-sm-6', [
-                    h('h2', Msg.home_opensource_title),
-                    opensource,
-                    h('img.small-logo.cp-img-invert', {
-                        src: '/customize/images/logo_AGPLv3.svg',
-                        alt: 'APGL3 License Logo'
-                    })
-                ]),
-                h('div.col-sm-6', [
-                    h('h2', Msg.home_support_title),
-                    supportText,
-                    subscribeButton,
-                    Pages.crowdfundingButton(function () {
-                        Feedback.send('HOME_SUPPORT_CRYPTPAD');
-                    }),
-                ])
-            ])
-        ];
+        // XXX DB: this may be wrong, pasted over form pages.js
+        var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
+                        '/imprint.html' : AppConfig.imprint);
+        imprintLink = AppConfig.imprint ? pageLink(imprintUrl, 'imprint') : undefined;
+        privacyLink = pageLink(AppConfig.privacy, 'privacy');
+        termsLink = pageLink(AppConfig.terms, 'terms');
 
         var notice;
 /*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
@@ -161,21 +137,39 @@ define([
                 Pages.infopageTopbar(),
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [
-                        h('div.cp-title.col-md-7', [
+                        h('div.cp-title.col-md-6', [
                             h('img', {
                                 src: '/customize/CryptPad_logo.svg?' + urlArgs,
                                 'aria-hidden': 'true',
                                 alt: ''
                             }),
-                            h('h1', 'CryptPad'),
-                            UI.setHTML(h('span.tag-line'), Msg.main_catch_phrase)
+                            h('h1', 'CryptPad.fr'), // XXX use instance name
+                            UI.setHTML(h('span.tag-line'), Msg.main_catch_phrase), // XXX Use instance description
+                            h('div.cp-instance-location', [
+                                h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
+                                'Encrypted data is hosted in: France (OVH)' // XXX Use instance location
+                            ]),
+                            termsLink, // XXX DB: insert link to ToS if available
+                            privacyLink, // XXX DB: insert link to privacy policy if available
+                            imprintLink // XXX DB: insert link to imprint if available
                         ]),
-                        h('div.col-md-5.cp-app-grid', [
-                            icons,
+                        h('div.col-md-6', [
+                            h('div.cp-app-grid', [
+                                h('span.cp-app-new', [
+                                    h('i.fa.fa-plus'),
+                                    Msg.fm_newFile
+                                ]),
+                                h('div.cp-app-grid-apps', [
+                                    icons,
+                                ])
+                            ]),
+                            h('a.cp-app-drive', {'href': '/drive/'}, [ // XXX check this is correct
+                                h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
+                                'Drive: 1GB' // XXX Use instance default storage
+                            ]) // XXX DB TODO: add drive link
                         ])
                     ]),
-                    notice,
-                    blocks
+                    notice
                 ]),
                 Pages.infopageFooter(),
             ]),
