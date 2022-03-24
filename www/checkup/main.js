@@ -990,7 +990,7 @@ define([
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                'frame-ancestors': ApiConfig.disableEmbedding?  [$outer, $sandbox]: ['*'],
+                'frame-ancestors': ApiConfig.enableEmbedding? ['*']: [$outer, $sandbox],
                 'worker-src': ["'self'"],
             });
             cb(result);
@@ -1028,7 +1028,7 @@ define([
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                'frame-ancestors': ApiConfig.disableEmbedding?  [$outer, $sandbox]: ['*'],
+                'frame-ancestors': ApiConfig.enableEmbedding? ['*']: [$outer, $sandbox],
                 'worker-src': ["'self'"],//, $outer, $sandbox],
             });
 
@@ -1046,12 +1046,11 @@ define([
     var checkAllowedOrigins = function (raw, url, msg, cb) {
         var header = 'Access-Control-Allow-Origin';
         var expected;
-        if (ApiConfig.disableEmbedding) {
+        if (!ApiConfig.enableEmbedding) {
             expected = trimmedSafe;
             msg.appendChild(h('span', [
-                'This instance has been configured to disable support for embedding assets and documents in third-party websites. ',
-                'In order for this setting to be effective while still permitting encrypted media to load locally ',
-                'the ',
+                'This instance has not been configured to enable support for embedding assets and documents in third-party websites. ',
+                'In order for this setting to be effective while still permitting encrypted media to load locally the ',
                 code(header),
                 ' should only match trusted domains.',
                 ' Under most circumstances it is sufficient to permit only the sandbox domain to load assets.',
@@ -1061,19 +1060,18 @@ define([
             expected = '*';
             msg.appendChild(h('span', [
                 "This instance has been configured to permit embedding assets and documents in third-party websites.",
-                'Assets must be served with an ',
+                'In order for this setting to be effective, assets must be served with an ',
                 code(header),
                 ' header with a value of ',
                 code("'*'"),
-                '.',
-                ' Remote embedding can be disabled via the admin panel.',
+                '. Remote embedding can be disabled via the admin panel.',
             ]));
         }
         if (raw === expected) { return void cb(true); }
         cb({
             url: url,
             response: raw,
-            disableEmbedding: ApiConfig.disableEmbedding,
+            enableEmbedding: ApiConfig.enableEmbedding,
         });
     };
 

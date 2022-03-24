@@ -12,8 +12,6 @@ define([
         src: '/customize/CryptPad_logo_grey.svg?' + urlArgs
     });
 
-    Messages.fivehundred_internalServerError = 'Internal Server Error'; // XXX
-
     var is500 = Boolean(document.querySelector('#five-hundred'));
     var brand = h('h1#cp-brand', 'CryptPad');
     var message = h('h2#cp-scramble', Messages[is500? 'fivehundred_internalServerError':'four04_pageNotFound']);

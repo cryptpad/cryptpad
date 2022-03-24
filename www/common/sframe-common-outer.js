@@ -21,18 +21,18 @@ define([
 
     common.initIframe = function (waitFor, isRt, pathname) {
         if (window.top !== window) {
-            if (ApiConfig.disableEmbedding) {
-                return void window.alert(`This CryptPad instance's administrators have disabled remote embedding of its editors.`);
+            if (!ApiConfig.enableEmbedding) {
+                return void window.alert(Messages.error_embeddingDisabled);
             }
             // even where embedding is not forbidden it should still be limited
             // to apps that are explicitly permitted
             if (!embeddableApps.includes(window.location.pathname)) {
-                return void window.alert(`Embedding this CryptPad editor in remote pages is not supported.`);
+                return void window.alert(Messages.error_embeddingDisabledSpecific);
             }
         }
 
         if (window.location.origin !== ApiConfig.httpUnsafeOrigin) {
-            return void window.alert(`This page is configured to only be accessed via ${ApiConfig.httpUnsafeOrigin}.`);
+            return void window.alert(Messages._getKey('error_incorrectAccess', [ApiConfig.httpUnsafeOrigin]));
         }
 
         var requireConfig = RequireConfig();

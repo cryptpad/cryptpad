@@ -781,7 +781,7 @@ define([
             icon: "fa fa-link",
             active: !contactsActive,
         }];
-        if (!opts.static && !ApiConfig.disableEmbedding && embeddableApps.includes(pathname)) {
+        if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,
                 title: Messages.share_embedCategory,
@@ -977,7 +977,7 @@ define([
             active: !hasFriends,
         }];
 
-        if (!ApiConfig.disableEmbedding) {
+        if (ApiConfig.enableEmbedding) {
             tabs.push({
                 getTab: getFileEmbedTab,
                 title: Messages.share_embedCategory,

@@ -54,7 +54,7 @@ define([
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
             'cp-admin-registration',
-            'cp-admin-disableembeds',
+            'cp-admin-enableembeds',
             'cp-admin-email',
 
             'cp-admin-instance-info-notice',
@@ -299,6 +299,12 @@ define([
             var state = data.getState();
             var key = data.key;
             var $div = makeBlock(key);
+            var $hint;
+            if (data.hintElement) {
+                $hint = $div.find('.cp-sidebarlayout-description');
+                $hint.html('');
+                $hint.append(data.hintElement);
+            }
 
             var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
             var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
@@ -321,13 +327,20 @@ define([
         };
     };
 
-    Messages.admin_cacheEvictionRequired = "Your server's internal state has been updated, but you may need to use the 'flush cache' button for clients to experience the intended effect."; // XXX
-    Messages.admin_reviewCheckupNotice = "It is also recommended that you review this instance's checkup page to confirm that it is configured correctly."; // XXX
     var flushCacheNotice = function () {
-        UI.alert(h('span', [
-            h('p', Messages.admin_cacheEvictionRequired),
-            h('p', Messages.admin_reviewCheckupNotice),
-        ]));
+        var notice = UIElements.setHTML(h('p'), Messages.admin_reviewCheckupNotice);
+        $(notice).find('a').attr({
+            href: new URL('/checkup/', ApiConfig.httpUnsafeOrigin).href,
+        }).click(function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            common.openURL('/checkup/');
+        });
+        var content = h('span', [
+            UIElements.setHTML(h('p'), Messages.admin_cacheEvictionRequired),
+            notice,
+        ]);
+        UI.alert(content);
     };
 
     // Msg.admin_registrationHint, .admin_registrationTitle
@@ -353,25 +366,23 @@ define([
         },
     });
 
-    Messages.admin_disableembedsTitle = "Disable remote embedding"; // XXX
-    Messages.admin_disableembedsHint = "Remove options to embed pads and media-tags hosted on third party websites from sharing menus."; // XXX
-    // Msg.admin_disableembedsHint, .admin_disableembedsTitle
-    create['disableembeds'] = makeAdminCheckbox({
-        key: 'disableembeds',
+    // Msg.admin_enableembedsHint, .admin_enableembedsTitle
+    create['enableembeds'] = makeAdminCheckbox({
+        key: 'enableembeds',
         getState: function () {
-            return APP.instanceStatus.disableEmbedding;
+            return APP.instanceStatus.enableEmbedding;
         },
         query: function (val, setState) {
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
-                data: ['DISABLE_EMBEDDING', [val]]
+                data: ['ENABLE_EMBEDDING', [val]]
             }, function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
                     console.error(e, response);
                 }
                 APP.updateStatus(function () {
-                    setState(APP.instanceStatus.disableEmbedding);
+                    setState(APP.instanceStatus.enableEmbedding);
                     flushCacheNotice();
                 });
             });
@@ -426,7 +437,7 @@ define([
         var input = h('input.cp-listing-info', {
             type: 'text',
             value: APP.instanceStatus.instanceJurisdiction || '',
-            placeholder: Messages.admin_jurisdictionPlaceholder || Messages.owner_unknownUser, // XXX
+            placeholder: Messages.owner_unknownUser || '',
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setjurisdiction-form', input);
@@ -456,9 +467,6 @@ define([
 
         return $div;
     };
-
-    Messages.admin_infoNotice1 = "The following fields describe your instance. Data entered will only be included in your server's telemetry if you opt in to inclusion in the list of public CryptPad instances."; // XXX
-    Messages.admin_infoNotice2 = "See the 'Network' tab for more details."; // XXX
 
     create['instance-info-notice'] = function () {
         return $(h('div.cp-admin-instance-info-notice.cp-sidebarlayout-element',
@@ -1932,10 +1940,8 @@ define([
         return $div;
     };
 
-    Messages.admin_enableDiskMeasurementsTitle = "Measure disk performance"; // XXX
-    Messages.admin_enableDiskMeasurementsHint = "If enabled, a JSON endpoint will be exposed under /api/profiling which keeps a running measurement of disk I/O within a configurable window (set below). This setting can impact server performance and may reveal data you'd rather keep hidden. It is recommended that you leave it disabled unless you know what you are doing."; // XXX
-
     create['enable-disk-measurements'] = makeAdminCheckbox({ // Msg.admin_enableDiskMeasurementsTitle.admin_enableDiskMeasurementsHint
+        hintElement: UIElements.setHTML(h('span'), Messages.admin_enableDiskMeasurementsHint),
         key: 'enable-disk-measurements',
         getState: function () {
             return APP.instanceStatus.enableProfiling;
@@ -1956,11 +1962,6 @@ define([
         },
     });
 
-    Messages.admin_bytesWrittenTitle = "Disk performance measurement window"; // XXX
-    Messages.admin_bytesWrittenHint = "If you have enabled disk performance measurements then the duration of the window can be configured below."; // XXX
-    Messages.admin_bytesWrittenDuration = "Duration of the window in milliseconds: {0}"; // XXX
-    Messages.admin_setDuration = "Set duration"; // XXX
-
     var isPositiveInteger = function (n) {
         return n && typeof(n) === 'number'  && n % 1 === 0 && n > 0;
     };
@@ -1974,7 +1975,7 @@ define([
         var newDuration = h('input', {type: 'number', min: 0, value: duration});
         var set = h('button.btn.btn-primary', Messages.admin_setDuration);
         $div.append(h('div', [
-            h('span.cp-admin-bytes-written-duration', Messages._getKey('admin_bytesWrittenDuration', [duration])),
+            h('span.cp-admin-bytes-written-duration', Messages.ui_ms),
             h('div.cp-admin-setlimit-form', [
                 newDuration,
                 h('nav', [set])
