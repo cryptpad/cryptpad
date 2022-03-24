@@ -52,6 +52,6 @@
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",
-    "jquery": "2.2.4"
+    "jquery": "3.6.0"
   }
 }
