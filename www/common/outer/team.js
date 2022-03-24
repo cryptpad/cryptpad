@@ -2119,7 +2119,7 @@ define([
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
-        var listTeams = function (cb) {
+        var listTeams = function (ctx, data, clientId, cb) {
             var t = Util.clone(teams);
             Object.keys(t).forEach(function (id) {
                 // If failure to load the team, don't send it
@@ -2131,75 +2131,52 @@ define([
             });
             cb(t);
         };
-        team.execCommand = function (clientId, obj, cb) {
 
+        // these commands will call back with an error if you are offline
+        var onlineOnly = [
+            'OFFER_OWNERSHIP',
+            'ANSWER_OWNERSHIP',
+            'INVITE_TO_TEAM',
+            'JOIN_TEAM',
+            'DELETE_TEAM',
+            'CREATE_TEAM',
+            'ACCEPT_LINK_INVITATION',
+        ];
+
+        var teamCommands = {
+            // these return an error if you are offline
+            OFFER_OWNERSHIP: offerOwnership,
+            ANSWER_OWNERSHIP: answerOwnership,
+            INVITE_TO_TEAM: inviteToTeam,
+            JOIN_TEAM: joinTeam,
+            DELETE_TEAM: deleteTeam,
+            CREATE_TEAM: createTeam,
+            ACCEPT_LINK_INVITATION: acceptLinkInvitation,
+
+            // these methods must determine for themselves whether they can work offline
+            SUBSCRIBE: subscribe,
+            OPEN_TEAM_CHAT: openTeamChat,
+            GET_TEAM_ROSTER: getTeamRoster,
+            GET_TEAM_METADATA: getTeamMetadata,
+            SET_TEAM_METADATA: setTeamMetadata,
+            DESCRIBE_USER: describeUser,
+            LEAVE_TEAM: leaveTeam,
+            REMOVE_USER: removeUser,
+            GET_EDITABLE_FOLDERS: getEditableFolders,
+            CREATE_INVITE_LINK: createInviteLink,
+            GET_PREVIEW_CONTENT: getPreviewContent,
+            LIST_TEAMS: listTeams,
+        };
+
+        team.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
+            if (!teamCommands.hasOwnProperty(cmd)) { return; }
             var data = obj.data;
-            if (cmd === 'SUBSCRIBE') {
-                // Only the team app will subscribe to events?
-                return void subscribe(ctx, data, clientId, cb);
+            if (onlineOnly.includes(cmd) && ctx.store.offline) {
+                return void cb({ error: 'OFFLINE' });
             }
-            if (cmd === 'LIST_TEAMS') {
-                return void listTeams(cb);
-            }
-            if (cmd === 'OPEN_TEAM_CHAT') {
-                return void openTeamChat(ctx, data, clientId, cb);
-            }
-            if (cmd === 'GET_TEAM_ROSTER') {
-                return void getTeamRoster(ctx, data, clientId, cb);
-            }
-            if (cmd === 'GET_TEAM_METADATA') {
-                return void getTeamMetadata(ctx, data, clientId, cb);
-            }
-            if (cmd === 'SET_TEAM_METADATA') {
-                return void setTeamMetadata(ctx, data, clientId, cb);
-            }
-            if (cmd === 'OFFER_OWNERSHIP') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void offerOwnership(ctx, data, clientId, cb);
-            }
-            if (cmd === 'ANSWER_OWNERSHIP') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void answerOwnership(ctx, data, clientId, cb);
-            }
-            if (cmd === 'DESCRIBE_USER') {
-                return void describeUser(ctx, data, clientId, cb);
-            }
-            if (cmd === 'INVITE_TO_TEAM') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void inviteToTeam(ctx, data, clientId, cb);
-            }
-            if (cmd === 'LEAVE_TEAM') {
-                return void leaveTeam(ctx, data, clientId, cb);
-            }
-            if (cmd === 'JOIN_TEAM') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void joinTeam(ctx, data, clientId, cb);
-            }
-            if (cmd === 'REMOVE_USER') {
-                return void removeUser(ctx, data, clientId, cb);
-            }
-            if (cmd === 'DELETE_TEAM') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void deleteTeam(ctx, data, clientId, cb);
-            }
-            if (cmd === 'CREATE_TEAM') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void createTeam(ctx, data, clientId, cb);
-            }
-            if (cmd === 'GET_EDITABLE_FOLDERS') {
-                return void getEditableFolders(ctx, data, clientId, cb);
-            }
-            if (cmd === 'CREATE_INVITE_LINK') {
-                return void createInviteLink(ctx, data, clientId, cb);
-            }
-            if (cmd === 'GET_PREVIEW_CONTENT') {
-                return void getPreviewContent(ctx, data, clientId, cb);
-            }
-            if (cmd === 'ACCEPT_LINK_INVITATION') {
-                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
-                return void acceptLinkInvitation(ctx, data, clientId, cb);
-            }
+            // all team commands have a consistent function signature
+            teamCommands[cmd](ctx, data, clientId, cb);
         };
 
         return team;
