@@ -43,22 +43,5 @@ define([
         throw e;
     };
 
-    if (typeof(Promise) !== 'function') {
-        return void setTimeout(function () {
-            var s = "Internet Explorer is not supported anymore, including by Microsoft.\n\nMost of CryptPad's collaborative functionality requires a modern browser to work.\n\nWe recommend Mozilla Firefox.";
-            window.alert(s);
-        });
-    }
-
-    var caughtEval;
-    try {
-        eval('true'); // jshint ignore:line
-    } catch (err) { caughtEval = true; }
-
-    if (!/^\/(sheet|doc|presentation)/.test(window.location.pathname) && !caughtEval) {
-        return void setTimeout(function () {
-            window.alert("aborting because eval should not be permitted.");
-        });
-    }
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
