@@ -1878,7 +1878,9 @@ define([
             progress: 0
         };
 
-        var teams = store.proxy.teams = store.proxy.teams || {};
+        if (!store.proxy.teams) { store.proxy.teams = {}; }
+        var teams = store.proxy.teams;
+
         ctx.numberOfTeams = Object.keys(teams).length;
 
         // Listen for changes in our access rights (if another worker receives edit access)
