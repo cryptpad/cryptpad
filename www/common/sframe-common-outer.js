@@ -21,6 +21,10 @@ define([
 
     common.initIframe = function (waitFor, isRt, pathname) {
         if (window.top !== window) {
+            // this is triggered if the intance's HTTP headers have permitted the app
+            // to be loaded within an iframe, but the instance admin has not explicitly
+            // enabled embedding via the admin panel. Their checkup page should tell them
+            // how to correct this (Access-Control-Allow-Origin and CSP frame-ancestors).
             if (!ApiConfig.enableEmbedding) {
                 return void window.alert(Messages.error_embeddingDisabled);
             }
@@ -30,7 +34,10 @@ define([
                 return void window.alert(Messages.error_embeddingDisabledSpecific);
             }
         }
-
+        // this is triggered in two situations:
+        // 1. a user has somehow loaded the page via an unexpected origin
+        // 2. the admin has configured their httpUnsafeOrigin incorrectly
+        // in case #2 the checkup page will advise them on correct configuration
         if (window.location.origin !== ApiConfig.httpUnsafeOrigin) {
             return void window.alert(Messages._getKey('error_incorrectAccess', [ApiConfig.httpUnsafeOrigin]));
         }
