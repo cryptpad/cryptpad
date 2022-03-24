@@ -2610,6 +2610,16 @@ define([
         }).nThen(function () {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
+
+            // remove tracking parameters from URLs
+            try {
+                var u = new URL(oldHref);
+                u.search = '';
+                if (u.href !== oldHref) {
+                    window.history.replaceState({}, window.document.title, u.href);
+                }
+            } catch (err) { console.error(err); }
+
             window.onhashchange = function (ev) {
                 if (ev && ev.reset) { oldHref = document.location.href; return; }
                 var newHref = document.location.href;
