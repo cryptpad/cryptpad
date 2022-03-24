@@ -103,7 +103,7 @@ define([
         return h('a', attrs, text);
     };
 
-    Pages.versionString = "v4.13.0";
+    Pages.versionString = "v4.14.0";
 
     var customURLs = Pages.customURLs = {};
     (function () {
