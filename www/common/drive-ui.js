@@ -4162,7 +4162,7 @@ define([
                 }
                 APP.displayDirectory(path);
             });
-            if (files.restrictedFolders[isSharedFolder]) {
+            if (files.restrictedFolders && files.restrictedFolders[isSharedFolder]) { // XXX  can't access property "undefined", files.restrictedFolders is undefined
                 $elementRow.addClass('cp-app-drive-element-restricted');
             }
             if (isSharedFolder) {
