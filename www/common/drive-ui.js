@@ -2232,7 +2232,7 @@ define([
                     $ro.attr('title', Messages.readonly);
                 }
 
-                if (files.restrictedFolders[fId]) {
+                if (files.restrictedFolders && files.restrictedFolders[fId]) { // XXX can't access property "false", files.restrictedFolders is undefined
                     var $restricted = $restrictedIcon.clone().appendTo($state);
                     $restricted.attr('title', Messages.fm_restricted);
                 }
@@ -3972,7 +3972,7 @@ define([
             var sfId = manager.isInSharedFolder(currentPath);
 
             // Restricted folder? display ROOT instead
-            if (sfId && files.restrictedFolders[sfId]) {
+            if (sfId && !(files.restrictedFolders && files.restrictedFolders[sfId])) { // XXX can't access property "false", files.restrictedFolders is undefined
                 _displayDirectory([ROOT], true);
                 return;
             }
@@ -4156,7 +4156,7 @@ define([
                     UI.warn(Messages.fm_deletedFolder);
                     return;
                 }
-                if (files.restrictedFolders[isSharedFolder]) {
+                if (files.restrictedFolders && files.restrictedFolders[isSharedFolder]) { // XXX can't access property "false", files.restrictedFolders is undefined
                     UI.warn(Messages.fm_restricted);
                     return;
                 }
@@ -4563,7 +4563,7 @@ define([
             else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
                     var el = manager.find(p.path);
-                    if (files.restrictedFolders[el]) {
+                    if (files.restrictedFolders && files.restrictedFolders[el]) { // XXX can't access property "false", files.restrictedFolders is undefined
                         UI.warn(Messages.fm_restricted);
                         return;
                     }
