@@ -167,11 +167,13 @@
 @cp_buttons-cancel-border: #949494;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_grey_200;
+@cp_sidebar-left-bg: @cryptpad_color_white;
 @cp_sidebar-left-fg: @cryptpad_text_col;
+@cp_sidebar-left-item-bg: @cryptpad_color_grey_200;
 @cp_sidebar-right-bg: @cryptpad_color_white;
 @cp_sidebar-right-fg: @cryptpad_text_col;
-@cp_sidebar-left-active: @cp_sidebar-right-bg;
+@cp_sidebar-left-active: @cryptpad_color_grey_700;
+@cp_sidebar-left-active-fg: @cryptpad_color_grey_200;
 @cp_sidebar-hint: @cryptpad_color_grey_600;
 
 // Drive
@@ -231,6 +233,7 @@
 // Pad Creation Screen
 @cp_creation-bg: @cryptpad_color_white;
 @cp_creation-fg: @cryptpad_text_col;
+@cp_creation-template: @cryptpad_color_grey_100;
 @cp_creation-button-bg: @cryptpad_color_brand;
 @cp_creation-button-fg: @cryptpad_color_white;
 @cp_creation-error-bg: @cryptpad_color_blue;
@@ -258,7 +261,7 @@
 @cp_static-fg: @cryptpad_text_col;
 @cp_static-link: @cryptpad_color_brand;
 @cp_static-title: @cryptpad_color_brand;
-@cp_static-footer: @cryptpad_color_grey_300;
+@cp_static-footer: fade(@cryptpad_color_brand_300, 30%);
 @cp_static-footer-border: @cryptpad_color_white;
 @cp_static-topbar-fg: @cryptpad_color_brand;
 @cp_static-card-bg: @cryptpad_color_white;
@@ -266,7 +269,7 @@
 
 // Limit
 @cp_limit-fg: @cryptpad_text_col;
-@cp-limit-bar-bg: @cryptpad_color_white;
+@cp-limit-bar-bg: @cryptpad_color_grey_200;
 @cp-limit-bar-normal: @cryptpad_color_green;
 @cp-limit-bar-warning: @cryptpad_color_orange;
 @cp-limit-bar-above: @cryptpad_color_red;
@@ -292,8 +295,9 @@
 @cp_support-header-bg: @cryptpad_color_grey_300;
 
 // Toolbar
-@cp_toolbar-bg: @cryptpad_color_grey_200;
+@cp_toolbar-bg: @cryptpad_color_white;
 @cp_toolbar-fg: @cryptpad_text_col;
+@cp_toolbar-bottom-bg: @cryptpad_color_grey_200;
 @cp_toolbar-bottom-fg: @cryptpad_text_col;
 @cp_toolbar-logo-bg: @cryptpad_color_white;
 
@@ -304,7 +308,7 @@
 @cp_history-line-bg: @cryptpad_color_white;
 @cp_history-bg1: #DDD;
 @cp_history-bg2: #BBB;
-@cp_history-fg: @cp_toolbar-bottom-fg;
+@cp_history-fg: @cp_toolbar-fg;
 
 // Tokenfield
 @cp_token-bg: @cryptpad_color_grey_400;
@@ -321,7 +325,7 @@
 @cp_shadow-color: fade(@cryptpad_color_black, 30%);
 
 // Apps
-@cp_app-bg: @cryptpad_color_grey_100;
+@cp_app-bg: @cryptpad_color_white;
 @cp_app-fg: @cryptpad_text_col;
 
 // Accounts
@@ -416,7 +420,7 @@
 
 // Teams
 @cp_teams-card-bg: @cryptpad_color_grey_300;
-@cp_teams-leftside-bg: darken(@cryptpad_color_grey_200, 5%);
+@cp_teams-leftside-bg: @cp_sidebar-left-bg;
 @cp_teams-invite-bg: fade(@cryptpad_color_brand, 50%);
 @cp_teams-invite-fg: @cryptpad_text_col;
 @cp_teams-roster-odd: fade(@cryptpad_text_col, 15%);

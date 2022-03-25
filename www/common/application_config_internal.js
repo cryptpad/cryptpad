@@ -177,12 +177,17 @@ define(function() {
         whiteboard: 'cptools-whiteboard',
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
+        calendar: 'fa-calendar',
         kanban: 'cptools-kanban',
         doc: 'fa-file-word-o',
         presentation: 'fa-file-powerpoint-o',
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
+        admin: 'fa-gears',
+        settings: 'fa-gear',
+        profile: 'fa-user-circle',
+        support: 'fa-life-ring'
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

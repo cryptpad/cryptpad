@@ -599,7 +599,7 @@ define([
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
-            buttonCls: 'btn btn-cancel fa fa-ellipsis-h small'
+            buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions'
         };
         return UIElements.createDropdown(dropdownConfig)[0];
     };

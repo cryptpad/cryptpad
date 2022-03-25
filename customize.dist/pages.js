@@ -87,11 +87,12 @@ define([
         ]);
     };
 
-    var footLink = function (ref, loc, text) {
+    var footLink = function (ref, loc, text, icon) {
         if (!ref) { return; }
         var attrs =  {
             href: ref,
         };
+        var iconName = '';
         if (!/^\//.test(ref)) {
             attrs.target = '_blank';
             attrs.rel = 'noopener noreferrer';
@@ -100,7 +101,11 @@ define([
             attrs['data-localization'] =  loc;
             text = Msg[loc];
         }
-        return h('a', attrs, text);
+        if (icon) {
+            iconName = 'i.fa.fa-' + icon;
+            icon = h(iconName);
+        }
+        return h('a', attrs, [icon, text]);
     };
 
     Pages.versionString = "v4.14.0";
@@ -117,13 +122,12 @@ define([
         var l = Msg._getLanguage();
         ['imprint', 'privacy', 'terms', 'roadmap', 'source'].forEach(function (k) {
             var value = AppConfig[k];
+            console.log('links', k, value);
             if (value === false) { return; }
             if (value === true) {
                 customURLs[k] = defaultURLs[k];
                 return;
             }
-
-            if (!value) { return; }
             if (typeof(value) === 'string') {
                 customURLs[k] = value;
                 return;
@@ -142,7 +146,8 @@ define([
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
     Pages.roadmapLink = footLink(customURLs.roadmap, 'footer_roadmap');
 
-    Pages.infopageFooter = function () {
+    Pages.infopageOldFooter = function () { // XXX DB: not used, kept to copy/paste
+        //var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
         var legalFooter;
 
         // only display the legal part of the footer if it has content
@@ -193,57 +198,94 @@ define([
         ]);
     };
 
+    Pages.infopageFooter = function () {
+        return h('footer.cp-footer', [
+            h('div.cp-footer-left', [
+                h('div.cp-logo-foot', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg',
+                        "aria-hidden": true,
+                        alt: ''
+                    }),
+                    h('span.logo-font', 'CryptPad')
+                ]),
+                footLink('https://cryptpad.org', null, 'Website', 'link'),
+                footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate') // XXX DB: add OpenCollective icon
+            ]),
+            h('.div.cp-footer-center', [
+                h('div.cp-footer-language', [
+                    h('i.fa.fa-language', {'aria-hidden': 'true'}),
+                    languageSelector()
+                ])
+            ]),
+            h('div.cp-footer-right', [
+                h('span.cp-footer-version', 'Version: ' + Pages.versionString) // XXX DB: translate 'Version' ?
+            ])
+        ]);
+    };
+
     Pages.infopageTopbar = function () {
         var rightLinks;
         var username = window.localStorage.getItem('User_name');
         var registerLink;
 
         if (!ApiConfig.restrictRegistration) {
-            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, Msg.login_register);
+            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, [
+                h('i.fa.fa-user', {'aria-hidden':'true'}),
+                Msg.login_register
+            ]);
         }
 
         if (username === null) {
             rightLinks = [
-                h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, Msg.login_login),
+                h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, [
+                    h('i.fa.fa-sign-in', {'aria-hidden':'true'}),
+                    Msg.login_login
+                ]),
                 registerLink,
             ];
         } else {
             rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/' }, [
-                h('i.fa.fa-user-circle'),
+                h('i.fa.fa-user-circle', {'aria-hidden':'true'}),
                 " ",
                 username
             ]);
         }
 
+/*
         var button = h('button.navbar-toggler', {
             'type':'button',
             /*'data-toggle':'collapse',
             'data-target':'#menuCollapse',
             'aria-controls': 'menuCollapse',
             'aria-expanded':'false',
-            'aria-label':'Toggle navigation'*/
-        }, h('i.fa.fa-bars '));
+            'aria-label':'Toggle navigation'
+        }, h('i.fa.fa-bars ')); */
 
-        $(button).click(function () {
-            if ($('#menuCollapse').is(':visible')) {
-                return void $('#menuCollapse').slideUp();
-            }
-            $('#menuCollapse').slideDown();
-        });
+        // XXX button to collapse navbar on small screens
+        // $(button).click(function () {
+        //     if ($('#menuCollapse').is(':visible')) {
+        //         return void $('#menuCollapse').slideUp();
+        //     }
+        //     $('#menuCollapse').slideDown();
+        // });
 
         return h('nav.navbar.navbar-expand-lg',
-            h('a.navbar-brand', { href: '/index.html'}, [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?',
-                    'aria-hidden': true,
-                    alt: ''
-                }), 'CryptPad'
-            ]),
-            button,
-            h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
-                h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
-                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'}, Msg.docs_link),
+            // XXX add link back to index.html on footer logo
+            // h('a.navbar-brand', { href: '/index.html'}, [
+            //     h('img', {
+            //         src: '/customize/CryptPad_logo.svg?',
+            //         'aria-hidden': true,
+            //         alt: ''
+            //     }), 'CryptPad'
+            // ]),
+            //button, XXX collapse button
+            h('div', [
+                // XXX remove about page
+                // h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
                 h('a.nav-item.nav-link', { href: '/features.html'}, Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features),
+                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'},
+                    [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),
             ].concat(rightLinks))
         );
     };

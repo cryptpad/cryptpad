@@ -60,6 +60,8 @@
             position: absolute;
             background-color: @cp_dropdown-bg;
             min-width: 250px;
+            padding: 5px;
+            border-radius: @variables_radius;
             box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
             z-index: 1000; //Z dropdown content
             max-height: 300px;
@@ -77,7 +79,8 @@
 
             & > a, & > span {
                 color: @cp_dropdown-fg;
-                padding: 5px 16px;
+                border-radius: @variables_radius;
+                padding: 5px;
                 text-decoration: none;
                 display: flex;
                 cursor: pointer;
@@ -160,7 +163,7 @@
                 height: 1px;
                 background: @cp_dropdown-bg-active;
                 border: 0 !important;
-                border-top: 1px solid rgba(0,0,0,.1) !important;
+                //border-top: 1px solid rgba(0,0,0,.1) !important; // XXX
                 & + hr {
                     display: none;
                 }

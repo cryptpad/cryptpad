@@ -1,6 +1,7 @@
 @import (reference) "./browser.less";
 @import (reference) './colortheme-all.less';
 @import (reference) './modal.less';
+@import (reference) './variables.less';
 
 .fileupload_main () {
     --LessLoader_require: LessLoader_currentFile();
@@ -13,6 +14,7 @@
         position: absolute;
         right: 10vw;
         bottom: 10vh;
+        border-radius: @variables_radius;
         box-sizing: border-box;
         z-index: 100001; //Z file upload table container: just above the file picker
         display: none;
@@ -88,6 +90,7 @@
                 height: 100%;
                 background-color: @cp_upload-progress;
                 z-index: -1; //Z file upload progress container
+                border-radius: @variables_radius;
             }
             .cp-fileupload-table-cancel {
                 text-align: center;

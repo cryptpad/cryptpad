@@ -1,5 +1,6 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
+@import (reference) "./variables.less";
 
 .checkmark_vars(
     @size: 20px
@@ -39,6 +40,9 @@
         align-items: center;
         position: relative;
         .tools_unselectable();
+        .cp-checkmark-mark {
+            border-radius: @variables_radius;
+        }
 
         & > a {
             margin-left: 0.25em;
