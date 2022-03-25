@@ -2324,7 +2324,7 @@ define([
                 element = root[key];
             }
 
-            var restricted = files.restrictedFolders[element];
+            var restricted = files.restrictedFolders && files.restrictedFolders[element];  // XXX can't access property "1146234121064377", files.restrictedFolders is undefined
             var isSharedFolder = manager.isSharedFolder(element);
 
             var $icon = !isFolder ? getFileIcon(element) : undefined;
