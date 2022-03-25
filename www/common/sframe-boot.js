@@ -23,8 +23,9 @@ try {
     eval('true'); // jshint ignore:line
 } catch (err) { caughtEval = true; }
 
-if (!/^\/(sheet|doc|presentation)/.test(window.location.pathname) && !caughtEval) {
+if (!/^\/(sheet|doc|presentation|unsafeiframe)/.test(window.location.pathname) && !caughtEval) {
     return void setTimeout(function () {
+        console.error('eval panic location:', window.location.pathname);
         window.alert("aborting because eval should not be permitted.");
     });
 }
