@@ -114,12 +114,12 @@ define([
             return h('a', attrs, text);
         };
 
+        var fastLink = k => pageLink(Pages.customURLs[k], k);
+
         // XXX DB: this may be wrong, pasted over form pages.js
-        var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
-                        '/imprint.html' : AppConfig.imprint);
-        imprintLink = AppConfig.imprint ? pageLink(imprintUrl, 'imprint') : undefined;
-        privacyLink = pageLink(AppConfig.privacy, 'privacy');
-        termsLink = pageLink(AppConfig.terms, 'terms');
+        var imprintLink = fastLink('imprint');
+        var privacyLink = fastLink('privacy');
+        var termsLink = fastLink('terms');
 
         var notice;
 /*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
