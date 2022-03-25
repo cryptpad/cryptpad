@@ -1463,5 +1463,10 @@
     "fivehundred_internalServerError": "Interner Serverfehler",
     "error_incorrectAccess": "Auf diese Seite kann nur via {0} zugegriffen werden.",
     "admin_enableembedsHint": "Erlaubt die Einbettung von Dokumenten und Medien in andere Webseiten. Dies fügt eine Option \"Einbetten\" zum Teilen-Menü hinzu. Aus Sicherheitsgründen können Anwendungen, die auf OnlyOffice basieren (Tabelle, Dokument, Präsentation), auch bei aktivierter Option nicht eingebettet werden.",
-    "admin_cacheEvictionRequired": "Der Server hat die neue Einstellung übernommen. Bitte verwende die Schaltfläche <b>Cache leeren</b>, um sicherzustellen, dass die Änderung bei allen Benutzern wirksam wird."
+    "admin_cacheEvictionRequired": "Der Server hat die neue Einstellung übernommen. Bitte verwende die Schaltfläche <b>Cache leeren</b>, um sicherzustellen, dass die Änderung bei allen Benutzern wirksam wird.",
+    "admin_bytesWrittenTitle": "Dauer der Leistungsmessung",
+    "admin_enableDiskMeasurementsTitle": "Messung der Festplattenleistung",
+    "admin_bytesWrittenHint": "Wenn du die Messung der Festplattenleistung aktiviert hast, kann die Dauer unten konfiguriert werden.",
+    "admin_enableDiskMeasurementsHint": "Wenn aktiviert, wird ein JSON-API-Endpunkt unter <code>/api/profiling</code> bereitgestellt. Damit wird eine laufende Messung der Festplattenzugriffe innerhalb des unten festgelegten Zeitfensters durchgeführt. Diese Einstellung kann die Leistung des Servers beeinträchtigen und möglicherweise sensible Daten offenlegen. Es wird empfohlen, diese Einstellung deaktiviert zu lassen, wenn du nicht weißt, was du tust.",
+    "admin_setDuration": "Dauer festlegen"
 }
