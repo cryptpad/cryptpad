@@ -2896,6 +2896,8 @@ define([
                             var content = h('span', UIElements.fixInlineBRs(Messages.pinLimitDrive));
                             return void UI.alert(content);
                         }
+                        // XXX
+                        console.error(err);
                         return void UI.alert(Messages.fm_error_cantPin);
                     }
                     APP.newFolder = info.newPath;
