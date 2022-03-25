@@ -156,7 +156,7 @@
     "fm_sharedFolder": "Folder współdzielony",
     "fm_folderName": "Nazwa folderu",
     "fm_folder": "Folder",
-    "fm_morePads": "Więcej",
+    "ui_more": "Więcej",
     "fm_newFile": "Nowy dokument",
     "fm_newButtonTitle": "Utwórz nowy dokument lub folder, zaimportuj plik do bieżącego folderu.",
     "fm_newFolder": "Nowy folder",

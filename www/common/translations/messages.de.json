@@ -722,7 +722,7 @@
     "requestEdit_sent": "Anfrage gesendet",
     "uploadFolderButton": "Ordner hochladen",
     "properties_unknownUser": "{0} unbekannte(r) Benutzer",
-    "fm_morePads": "Mehr",
+    "ui_more": "Mehr",
     "uploadFolder_modal_title": "Optionen für Hochladen des Ordners",
     "uploadFolder_modal_filesPassword": "Passwort für Dateien",
     "uploadFolder_modal_owner": "Eigene Dateien",

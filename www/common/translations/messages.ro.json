@@ -433,7 +433,7 @@
     "register_emailWarning0": "Se pare că ai adăugat adresa ta de e-mail în loc de numele tău de utilizator.",
     "fc_expandAll": "Extinde",
     "fc_color": "Schimbă culoarea",
-    "fm_morePads": "Mai mult",
+    "ui_more": "Mai mult",
     "uploadFolderButton": "Încarcă dosar",
     "storageStatus": "Capacitate de stocare:<br><b>{0}</b> utilizat din <b>{1}</b>",
     "fc_collapseAll": "Restrânge",

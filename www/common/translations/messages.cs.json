@@ -122,7 +122,7 @@
     "fm_folderName": "Název složky",
     "fm_folder": "Složka",
     "fm_sharedFolder": "Sdílená složka",
-    "fm_morePads": "Více",
+    "ui_more": "Více",
     "fm_newFile": "Nový dokument",
     "fm_newFolder": "Nová složka",
     "userlist_addAsFriendTitle": "Poslat \"{0}\" žádost o přidání do kontatů",

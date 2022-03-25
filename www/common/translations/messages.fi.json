@@ -252,7 +252,7 @@
     "fm_newButtonTitle": "Luo uusi asiakirja tai kansio, tuo tiedosto nykyiseen kansioon.",
     "fm_newFolder": "Uusi kansio",
     "fm_newFile": "Uusi padi",
-    "fm_morePads": "Lisää",
+    "ui_more": "Lisää",
     "fm_folder": "Kansio",
     "fm_sharedFolder": "Jaettu kansio",
     "fm_folderName": "Kansion nimi",

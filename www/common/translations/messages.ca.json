@@ -389,7 +389,7 @@
     "autostore_sf": "Carpeta",
     "padNotPinnedVariable": "Aquest document caducarà després de {4} dies d'inactivitat, {0}inicieu una sessió{1} o {2}registreu-vos{3} per conservar-lo.",
     "uploadFolderButton": "Carregar una carpeta",
-    "fm_morePads": "Més",
+    "ui_more": "Més",
     "fc_color": "Canvia el color",
     "fc_expandAll": "Desplega-ho tot",
     "fc_collapseAll": "Plega-ho tot",

@@ -300,7 +300,7 @@
     "fm_folderName": "Karpetaren izena",
     "fm_sharedFolder": "Karpeta partekatua",
     "fm_folder": "Karpeta",
-    "fm_morePads": "Gehiago",
+    "ui_more": "Gehiago",
     "fm_newFile": "Dokumentu berria",
     "fm_newFolder": "Karpeta berria",
     "fm_newButtonTitle": "Sortu dokumentu edo karpeta berria, inportatu fitxategi bat uneko karpetan.",

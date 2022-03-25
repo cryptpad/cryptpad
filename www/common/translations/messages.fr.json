@@ -721,7 +721,7 @@
     "requestEdit_accepted": "{1} vous a accordé les droits d'édition du document <b>{0}</b>",
     "requestEdit_sent": "Demande envoyée",
     "properties_unknownUser": "{0} utilisateur(s) inconnu(s)",
-    "fm_morePads": "Plus",
+    "ui_more": "Plus",
     "uploadFolder_modal_title": "Options d'importation du dossier",
     "uploadFolder_modal_filesPassword": "Mot de passe des fichiers",
     "uploadFolder_modal_owner": "Être propriétaire des fichiers",

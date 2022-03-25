@@ -430,7 +430,7 @@
     "fm_deleteOwnedPads": "Você tem certeza de que quer remover permanentemente estes documentos?",
     "fm_deleteOwnedPad": "Você tem certeza de que quer remover permanentemente este documento?",
     "fm_sharedFolder": "Pasta compartilhada",
-    "fm_morePads": "Mais",
+    "ui_more": "Mais",
     "fm_sharedFolderName": "Pasta compartilhada",
     "fm_tagsName": "Etiquetas",
     "fm_ownedPadsName": "Adquirido",

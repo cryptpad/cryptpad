@@ -392,7 +392,7 @@
     "padNotPinnedVariable": "Questo pad scadrà dopo {4} giorni di inattività, {0}accedi{1} o {2}registrati{3} per conservarlo.",
     "storageStatus": "Spazio:<br><b>{0}</b> utilizzato su <b>{1}</b>",
     "uploadFolderButton": "Carica cartella",
-    "fm_morePads": "Altro",
+    "ui_more": "Altro",
     "fc_color": "Cambia colore",
     "fc_expandAll": "Espandi tutto",
     "fc_collapseAll": "Comprimi tutto",

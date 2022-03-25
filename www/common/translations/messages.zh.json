@@ -263,7 +263,7 @@
     "fm_deleteOwnedPads": "您确定要永久销毁这些文档吗？",
     "fm_deleteOwnedPad": "您确定要永久销毁此文档吗？",
     "fm_sharedFolder": "共享文件夹",
-    "fm_morePads": "更多的",
+    "ui_more": "更多的",
     "fm_sharedFolderName": "共享文件夹",
     "fm_tagsName": "标签",
     "fm_ownedPadsName": "拥有的",
