@@ -41,7 +41,7 @@ define([
     'cm/addon/fold/markdown-fold',
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
-
+    'cm/addon/wrap/hardwrap',
     'css!/customize/src/print.css',
     'less!/code/app-code.less'
 
@@ -60,8 +60,7 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
-{
+    CMeditor) {
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -91,6 +90,20 @@ define([
         framework._.toolbar.$theme = $content;
         framework._.toolbar.$bottomL.append($theme);
     };
+
+    var wrapParagraph = function (editor, CodeMirror) {
+        editor.on('change', (cm, change) => {
+            console.log('Changing values');
+            console.log('CM Object');
+            console.log(cm);
+
+            console.log('CodeMirror object');
+            console.log(CodeMirror);
+
+            console.log('Editor instance');
+            console.log(editor);
+        })
+    }
 
     var mkCbaButton = function (framework, markers) {
         var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
@@ -216,7 +229,7 @@ define([
                     var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
                     href = privateData.origin + href;
                 } else if (/^#/.test(href)) {
-                    var target = document.getElementById('cp-md-0-'+href.slice(1));
+                    var target = document.getElementById('cp-md-0-' + href.slice(1));
                     if (target) { target.scrollIntoView(); }
                     return;
                 }
@@ -257,7 +270,7 @@ define([
                 'class': 'cp-splitter'
             }).appendTo($previewContainer);
 
-            $previewContainer.on('scroll', function() {
+            $previewContainer.on('scroll', function () {
                 splitter.css('top', $previewContainer.scrollTop() + 'px');
             });
 
@@ -515,7 +528,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-             editor.setValue('');
+            editor.setValue('');
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -537,7 +550,7 @@ define([
             };
         });
 
-        editor.on('change', function( cm, change ) {
+        editor.on('change', function (cm, change) {
             markers.localChange(change, framework.localChange);
         });
 
@@ -592,6 +605,7 @@ define([
 
         }).nThen(function (/*waitFor*/) {
             framework._.sfCommon.isPresentUrl(function (err, val) {
+                wrapParagraph(editor, CodeMirror);
                 andThen2(editor, CodeMirror, framework, val);
             });
         });
