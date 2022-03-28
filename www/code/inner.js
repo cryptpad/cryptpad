@@ -91,17 +91,16 @@ define([
         framework._.toolbar.$bottomL.append($theme);
     };
 
+    var wait, options = { column: 60 }, changing = false;
     var wrapParagraph = function (editor, CodeMirror) {
         editor.on('change', (cm, change) => {
-            console.log('Changing values');
-            console.log('CM Object');
-            console.log(cm);
-
-            console.log('CodeMirror object');
-            console.log(CodeMirror);
-
-            console.log('Editor instance');
-            console.log(editor);
+            if (changing) return;
+            clearTimeout(wait);
+            wait = setTimeout(function () {
+                changing = true;
+                cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
+                changing = false;
+            }, 200);
         })
     }
 
@@ -600,12 +599,13 @@ define([
             }).nThen(function () {
                 CodeMirror = SFCodeMirror.create(null, CMeditor);
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
+
                 editor = CodeMirror.editor;
+                wrapParagraph(editor, CodeMirror);
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
             framework._.sfCommon.isPresentUrl(function (err, val) {
-                wrapParagraph(editor, CodeMirror);
                 andThen2(editor, CodeMirror, framework, val);
             });
         });
