@@ -42,6 +42,7 @@ define([
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
     'cm/addon/wrap/hardwrap',
+
     'css!/customize/src/print.css',
     'less!/code/app-code.less'
 
@@ -60,7 +61,8 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor) {
+    CMeditor)
+{
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -233,7 +235,7 @@ define([
                     var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
                     href = privateData.origin + href;
                 } else if (/^#/.test(href)) {
-                    var target = document.getElementById('cp-md-0-' + href.slice(1));
+                    var target = document.getElementById('cp-md-0-'+href.slice(1));
                     if (target) { target.scrollIntoView(); }
                     return;
                 }
@@ -274,7 +276,7 @@ define([
                 'class': 'cp-splitter'
             }).appendTo($previewContainer);
 
-            $previewContainer.on('scroll', function () {
+            $previewContainer.on('scroll', function() {
                 splitter.css('top', $previewContainer.scrollTop() + 'px');
             });
 
@@ -532,7 +534,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-            editor.setValue('');
+             editor.setValue('');
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -554,7 +556,7 @@ define([
             };
         });
 
-        editor.on('change', function (cm, change) {
+        editor.on('change', function( cm, change ) {
             markers.localChange(change, framework.localChange);
         });
 
@@ -604,7 +606,6 @@ define([
             }).nThen(function () {
                 CodeMirror = SFCodeMirror.create(null, CMeditor);
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
-
                 editor = CodeMirror.editor;
             }).nThen(waitFor());
 
