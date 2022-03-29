@@ -38,7 +38,6 @@ define([
     'cm/addon/dialog/dialog',
     'cm/addon/fold/foldcode',
     'cm/addon/fold/foldgutter',
-    'cm/addon/wrap/hardwrap',
     'cm/addon/fold/brace-fold',
     'cm/addon/fold/xml-fold',
     'cm/addon/fold/markdown-fold',
@@ -58,19 +57,18 @@ define([
     UI,
     h,
     Messages,
-    CMeditor) {
+    CMeditor)
+{
     window.CodeMirror = CMeditor;
-
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
     var SLIDE_COLOR_ID = "cp-app-slide-toolbar-color";
 
-
-    var mkLess = function (less) {
+    var mkLess = function (less) { 
         return (
             '#cp-app-slide-print .cp-app-slide-frame, ' +
             '#cp-app-slide-modal #cp-app-slide-modal-content .cp-app-slide-frame {\r\n' +
-            less +
+                less +
             '\r\n}'
         );
     };
@@ -167,40 +165,40 @@ define([
             var $container = $('<div class="alertify">');
             var $container2 = $('<div class="dialog">').appendTo($container);
             var $div = $('<div id="printOptions">').appendTo($container2);
-            var $p = $('<p>', { 'class': 'msg' }).appendTo($div);
+            var $p = $('<p>', {'class': 'msg'}).appendTo($div);
             $('<b>').text(Messages.printOptions).appendTo($p);
             $p.append($('<br>'));
             // Slide number
             var cbox = UI.createCheckbox('cp-app-slide-options-number', Messages.printSlideNumber,
-                slideOptionsTmp.slide);
+                                         slideOptionsTmp.slide);
             $(cbox).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.slide = c;
             }).css('width', 'auto');
             // Date
             var cboxDate = UI.createCheckbox('cp-app-slide-options-date', Messages.printDate,
-                slideOptionsTmp.date);
+                                         slideOptionsTmp.date);
             $(cboxDate).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.date = c;
             }).css('width', 'auto');
             // Title
             var cboxTitle = UI.createCheckbox('cp-app-slide-options-title', Messages.printTitle,
-                slideOptionsTmp.title);
+                                         slideOptionsTmp.title);
             $(cboxTitle).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.title = c;
             }).css('width', 'auto');
             // Transition
             var cboxTransition = UI.createCheckbox('cp-app-slide-options-transition', Messages.printTransition,
-                slideOptionsTmp.transition);
+                                         slideOptionsTmp.transition);
             $(cboxTransition).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.transition = c;
             }).css('width', 'auto');
             $p.append($('<br>'));
             // Background image
-            $('<label>', { 'for': 'cp-app-slide-options-bg' }).text(Messages.printBackground)
+            $('<label>', {'for': 'cp-app-slide-options-bg'}).text(Messages.printBackground)
                 .appendTo($p);
             if (common.isLoggedIn()) {
                 $p.append($('<br>'));
@@ -253,10 +251,10 @@ define([
             }
             $p.append($('<br>'));
             // CSS
-            $('<label>', { 'for': 'cp-app-slide-options-css' }).text(Messages.printCSS).appendTo($p);
+            $('<label>', {'for': 'cp-app-slide-options-css'}).text(Messages.printCSS).appendTo($p);
             $p.append($('<br>'));
-            var $textarea = $('<textarea>', { 'id': 'cp-app-slide-options-css' })
-                .css({ 'width': '100%', 'height': '100px' }).appendTo($p)
+            var $textarea = $('<textarea>', {'id':'cp-app-slide-options-css'})
+                .css({'width':'100%', 'height':'100px'}).appendTo($p)
                 .on('keydown keyup', function (e) {
                     e.stopPropagation();
                 });
@@ -267,7 +265,7 @@ define([
             require([lessPath], function () { });
             var parseLess = function (less, cb) {
                 require([lessPath], function (Less) {
-                    Less.render(less, {}, function (err, css) {
+                    Less.render(less, {}, function(err, css) {
                         if (err) { return void cb(err); }
                         cb(undefined, css.css);
                     }, window.less);
@@ -287,12 +285,12 @@ define([
                                 '<pre class="cp-slide-css-error">' + Util.fixHTML(
                                     'Line: ' + (err.line - 1) + '\n' +
                                     err.extract[err.line - 1] + '\n' +
-                                    new Array(err.column + 1).join(' ') +
+                                    new Array(err.column+1).join(' ') +
                                     '^--- ' + err.message
                                 ) + '</pre>'
                                 /*Messages.slide_badLess*/, function () {
-                                    $('body').append(createPrintDialog(less));
-                                }, true);
+                                $('body').append(createPrintDialog(less));
+                            }, true);
                         } else {
                             slideOptionsTmp.style = css;
                             updateLocalOptions(slideOptionsTmp);
@@ -312,8 +310,8 @@ define([
             h = UI.listenForKeys(todo, todoCancel);
 
             var $nav = $('<nav>').appendTo($div);
-            $('<button>', { 'class': 'btn cancel' }).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
-            $('<button>', { 'class': 'btn primary' }).text(Messages.settings_save).appendTo($nav).click(todo);
+            $('<button>', {'class': 'btn cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
+            $('<button>', {'class': 'btn primary'}).text(Messages.settings_save).appendTo($nav).click(todo);
 
             return $container;
         };
@@ -371,7 +369,7 @@ define([
         var $check = $("#cp-app-slide-colorpicker");
         var $backgroundPicker = $('<input>', { type: 'color', value: backColor })
             .css({ display: 'none', })
-            .on('change', function () { updateLocalColors(undefined, this.value); });
+            .on('change', function() { updateLocalColors(undefined, this.value); });
         var $back = framework._.sfCommon.createButton(null, true, {
             icon: 'fa-square',
             text: Messages.slide_backCol,
@@ -386,7 +384,7 @@ define([
 
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
-            .on('change', function () { updateLocalColors(this.value, undefined); });
+            .on('change', function() { updateLocalColors(this.value, undefined); });
         var $text = framework._.sfCommon.createButton(null, true, {
             icon: 'fa-i-cursor',
             text: Messages.slide_textCol,
@@ -608,7 +606,7 @@ define([
                         var metadataMgr = framework._.cpNfInner.metadataMgr;
                         var metadata = metadataMgr.getMetadata();
                         if (before) {
-                            $(el).css('background-color', metadata.backColor || '#000');
+                            $(el).css('background-color', metadata.backColor || '#000');
                             return;
                         }
                         $(el).css('background-color', '');

@@ -481,7 +481,7 @@ define([
             if (cursorTo) { clearTimeout(cursorTo); }
             if (editor._noCursorUpdate) { return; }
             cursorTo = setTimeout(function () {
-                frameworkaupdateCursor();
+                framework.updateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
         framework.onCursorUpdate(CodeMirror.setRemoteCursor);

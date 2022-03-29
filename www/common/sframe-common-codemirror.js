@@ -140,6 +140,21 @@ define([
         return text.trim();
     };
 
+    module.mkMaxWidthSettings = function (editor, metadataMgr) {
+        var updateMaxWidthSettings = editor.updateSettings = function () {
+            if (!metadataMgr) { return; }
+            var data = metadataMgr.getPrivateData().settings;
+            data = data.codemirror || {};
+
+            var maxWidth = data['hardWrapMaxWidth'];
+
+            maxWidth = typeof (maxWidth) === 'number' ? maxWidth : 60;
+            editor.setOption('maxWidth', maxWidth);
+        };
+        metadataMgr.onChangeLazy(updateMaxWidthSettings);
+        updateMaxWidthSettings();
+    }
+
     module.mkIndentSettings = function (editor, metadataMgr) {
         var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
             if (typeof(units) !== 'number') { return; }
@@ -503,6 +518,10 @@ define([
         exp.mkIndentSettings = function (metadataMgr) {
             module.mkIndentSettings(editor, metadataMgr);
         };
+
+        exp.mkMaxWidthSettings = function (metadataMgr) {
+            module.mkMaxWidthSettings(editor, metadataMgr);
+        }
 
         exp.getCursor = function () {
             var doc = canonicalize(editor.getValue());
