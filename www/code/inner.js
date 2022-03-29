@@ -92,17 +92,22 @@ define([
     };
 
     var wait, options = { column: 60 }, changing = false;
-    var wrapParagraph = function (editor, CodeMirror) {
+    var wrapParagraph = function (editor, CodeMirror, framework) {
+        var privateData = framework._.cpNfInner.metadataMgr;
+        console.log(privateData);
+        console.log(privateData.getPrivateData());
+        console.log(privateData.getPrivateData().settings.codemirror);
+
         editor.on('change', (cm, change) => {
-            if (changing) return;
+            if (changing) { return; }
             clearTimeout(wait);
             wait = setTimeout(function () {
                 changing = true;
                 cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
                 changing = false;
             }, 200);
-        })
-    }
+        });
+    };
 
     var mkCbaButton = function (framework, markers) {
         var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
@@ -476,7 +481,7 @@ define([
             if (cursorTo) { clearTimeout(cursorTo); }
             if (editor._noCursorUpdate) { return; }
             cursorTo = setTimeout(function () {
-                framework.updateCursor();
+                frameworkaupdateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
         framework.onCursorUpdate(CodeMirror.setRemoteCursor);
@@ -601,11 +606,11 @@ define([
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
 
                 editor = CodeMirror.editor;
-                wrapParagraph(editor, CodeMirror);
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
             framework._.sfCommon.isPresentUrl(function (err, val) {
+                wrapParagraph(editor, CodeMirror, framework);
                 andThen2(editor, CodeMirror, framework, val);
             });
         });
