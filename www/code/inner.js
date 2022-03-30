@@ -97,13 +97,14 @@ define([
         var wait, options = { column: 60 }, changing = false;
         var privateData = framework._.cpNfInner.metadataMgr;
 
-        var column = privateData.getPrivateData().settings.codemirror.hardWrapMaxWidth;
-        options.column = typeof(column) === 'number' && !isNaN(column)? column : 60; 
-        console.log(column);
-
         editor.on('change', (cm, change) => {
+            var column = privateData.getPrivateData().settings.codemirror.hardWrapMaxWidth;
+            options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
+
             if (changing) { return; }
+
             clearTimeout(wait);
+
             wait = setTimeout(function () {
                 changing = true;
                 cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
