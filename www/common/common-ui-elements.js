@@ -1699,6 +1699,8 @@ define([
                 h('span', Pages.versionString)
             ]),
             h('hr'),
+            h('p', Pages.hostDescription),
+            h('hr'),
             faqLine,
             termsLine,
             privacyLine,
