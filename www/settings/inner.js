@@ -95,6 +95,7 @@ define([
             'cp-settings-code-brackets',
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
+            'cp-settings-code-max-width',
         ],
         'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
@@ -1586,7 +1587,7 @@ define([
             type: 'number',
         }).on('change', function () {
             var val = parseInt($input.val());
-            if (typeof (val) !== 'number') { return; }
+            if (val !== NaN && typeof (val) !== 'number') { return; }
             common.setAttribute(['codemirror', key], val);
         }).appendTo($inputBlock);
 

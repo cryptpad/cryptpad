@@ -93,12 +93,13 @@ define([
         framework._.toolbar.$bottomL.append($theme);
     };
 
-    var wait, options = { column: 60 }, changing = false;
     var wrapParagraph = function (editor, CodeMirror, framework) {
+        var wait, options = { column: 60 }, changing = false;
         var privateData = framework._.cpNfInner.metadataMgr;
-        console.log(privateData);
-        console.log(privateData.getPrivateData());
-        console.log(privateData.getPrivateData().settings.codemirror);
+
+        var column = privateData.getPrivateData().settings.codemirror.hardWrapMaxWidth;
+        options.column = typeof(column) === 'number' && !isNaN(column)? column : 60; 
+        console.log(column);
 
         editor.on('change', (cm, change) => {
             if (changing) { return; }
