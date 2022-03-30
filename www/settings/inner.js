@@ -1572,10 +1572,17 @@ define([
 
     create['code-max-width'] = function () {
         var key = 'hardWrapMaxWidth';
+        var defaultInitialMaxWidth = 60;
 
         var $div = $('<div>', {
             'class': 'cp-settings-code-max-width cp-sidebarlayout-element'
         });
+
+        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width',
+            Messages.settings_codeMaxWidth,
+            false, { label: { class: 'noTitle' } }));
+        $cbox.appendTo($div);
+
         $('<label>').text(Messages.settings_codeMaxWidth).appendTo($div);
 
         var $inputBlock = $('<div>', {
@@ -1583,18 +1590,30 @@ define([
         }).appendTo($div);
 
         var $input = $('<input>', {
-            'min': 60,
+            'min': defaultInitialMaxWidth,
             type: 'number',
-        }).on('change', function () {
+        })
+        .on('change', function () {
             var val = parseInt($input.val());
-            if (val !== NaN && typeof (val) !== 'number') { return; }
+            if (!isNaN(val) && typeof (val) !== 'number') { return; }
             common.setAttribute(['codemirror', key], val);
         }).appendTo($inputBlock);
+
+        $cbox.find('input').change(
+            function () {
+                if (this.checked) {
+                    $input.attr('disabled', false);
+                }
+                else {
+                    $input.attr('disabled', true);
+                }
+            }
+        )
 
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
             if (typeof (val) !== 'number') {
-                $input.val(60);
+                $input.val(defaultInitialMaxWidth);
             } else {
                 $input.val(val);
             }
