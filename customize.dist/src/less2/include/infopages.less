@@ -112,7 +112,7 @@ body.html {
             border: none;
             padding: 10px 20px;
             margin-right: 10px;
-            border-radius: 0px;
+            border-radius: @infopages-radius;
             cursor: pointer;
             &:hover, &:focus {
                 background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
@@ -145,7 +145,6 @@ body.html {
         }
     }
     footer {
-
         background-color: @cp_static-footer;
         padding: 10px;
         align-self: normal; // override align-items:center from parent in index.html
@@ -153,15 +152,13 @@ body.html {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        // .container {
-        //     margin-bottom: 20px;
-        //     a {
-        //         color: @cp_static-link;
-        //         &:visited {
-        //             color: @cp_static-link;
-        //         }
-        //     }
-        // }
+        flex-direction: row;
+        @media screen and (max-width: 830px) {
+            flex-direction: column;
+            div {
+                margin-bottom: 10px;
+            }
+        }
         .cp-footer-left, .cp-footer-right {
             display: flex;
             flex-direction: row;
@@ -267,7 +264,7 @@ body.html {
         }
         .nav-link {
             padding: 0.5em 0.7em;
-            margin-left: 10px;
+            margin: 5px;
             color: @cp_static-link;
             display: inline-block;
             &:hover {
@@ -292,27 +289,6 @@ body.html {
         .navbar-toggler {
             margin-top: 10px;
             color: @cp_static-topbar-fg;
-        }
-    }
-    @media (max-width: 1000px) {
-        #menuCollapse {
-            text-align: right;
-    /*        @media (min-width: 576px) {
-                top: 100%;
-                background: rgba(255,255,255,0.8);
-                position: absolute;
-                right: 0px;
-                padding: 0 20px;
-                z-index: 1;
-            }
-    */
-        }
-        .navbar-nav a {
-            text-align: right !important;
-        }
-        .cp-register-btn {
-            margin-right: 13px;
-            text-align: center;
         }
     }
 }
