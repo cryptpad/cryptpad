@@ -132,6 +132,8 @@ define([
                 customURLs[k] = value[l] || value['default'];
             }
         });
+        var value = AppConfig.hostDescription;
+        Pages.hostDescription = (value && (value[l] || value.default)) ||  Msg.home_host;
     }());
 
     // used for the about menu

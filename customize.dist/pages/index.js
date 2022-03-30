@@ -122,7 +122,7 @@ define([
             h('div.row.cp-page-section',
                 h('div.col-sm-12', [
                     h('h2', Msg.home_host_title),
-                    h('p'), Msg.home_host
+                    h('p', Pages.hostDescription),
                 ])
             ),
             h('div.row.cp-page-section', [
