@@ -149,7 +149,18 @@ define([
                 dragBgColor: md.color,
                 borderColor: md.color,
             };
-        }).filter(Boolean);
+        }).filter(Boolean).sort(function (a, b) {
+            var c1 = APP.calendars[a.id];
+            var c2 = APP.calendars[b.id];
+            var team1 = c1.teams.sort()[0] || c1.roTeams.sort()[0];
+            var team2 = c2.teams.sort()[0] || c2.roTeams.sort()[0];
+            var t1 = Util.find(c1, ['content', 'metadata', 'title']) || '';
+            var t2 = Util.find(c2, ['content', 'metadata', 'title']) || '';
+
+            return team1 > team2 ? 1 :
+                    (team1 < team2 ? -1 : (
+                        t1 > t2 ? 1 : (t1 < t2 ? -1 : 0)));
+        });
     };
     var getSchedules = function () {
         var s = [];
@@ -664,6 +675,12 @@ define([
                     var cal = APP.calendars[id] || {};
                     var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
                     return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
+                }).sort(function (a, b) {
+                    var c1 = APP.calendars[a] || {};
+                    var c2 = APP.calendars[b] || {};
+                    var t1 = Util.find(c1, ['content', 'metadata', 'title']) || '';
+                    var t2 = Util.find(c2, ['content', 'metadata', 'title']) || '';
+                    return t1 > t2 ? 1 : (t1 === t2 ? 0 : -1);
                 });
             };
             var tempCalendars = filter(0);
@@ -719,7 +736,7 @@ define([
                 editCalendar();
             }).appendTo($newContainer);
 
-            Object.keys(privateData.teams).forEach(function (teamId) {
+            Object.keys(privateData.teams).sort().forEach(function (teamId) {
                 var calendars = filter(teamId);
                 if (!calendars.length) { return; }
                 var team = privateData.teams[teamId];
