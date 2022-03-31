@@ -134,8 +134,9 @@ define([
     };
 
 
-
     var getCalendars = function () {
+        var LOOKUP = {};
+        var TEAMS = {};
         return Object.keys(APP.calendars).map(function (id) {
             var c = APP.calendars[id];
             if (c.hidden || c.restricted || c.loading) { return; }
@@ -149,14 +150,19 @@ define([
                 dragBgColor: md.color,
                 borderColor: md.color,
             };
-        }).filter(Boolean).sort(function (a, b) {
-            var c1 = APP.calendars[a.id];
-            var c2 = APP.calendars[b.id];
-            var team1 = c1.teams.sort()[0] || c1.roTeams.sort()[0];
-            var team2 = c2.teams.sort()[0] || c2.roTeams.sort()[0];
-            var t1 = Util.find(c1, ['content', 'metadata', 'title']) || '';
-            var t2 = Util.find(c2, ['content', 'metadata', 'title']) || '';
-
+        }).filter(Boolean).map(function (obj) {
+            var id = obj.id;
+            var cal = APP.calendars[id];
+            var team = cal.teams.sort()[0] || cal.roTeams.sort()[0];
+            var title = Util.find(cal, ['content', 'metadata', 'title']) || '';
+            LOOKUP[id] = title;
+            TEAMS[id] = team;
+            return obj;
+        }).sort(function (a, b) {
+            var team1 = TEAMS[a.id];
+            var team2 = TEAMS[b.id];
+            var t1 = LOOKUP[a.id];
+            var t2 = LOOKUP[b.id];
             return team1 > team2 ? 1 :
                     (team1 < team2 ? -1 : (
                         t1 > t2 ? 1 : (t1 < t2 ? -1 : 0)));
@@ -671,15 +677,20 @@ define([
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
             var filter = function (teamId) {
+                var LOOKUP = {};
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
                     var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
                     return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
+                }).map(function (k) {
+                    // nearly constant-time pre-sort
+                    var cal = APP.calendars[k] || {};
+                    var title = Util.find(cal, ['content', 'metadata', 'title']) || '';
+                    LOOKUP[k] = title;
+                    return k;
                 }).sort(function (a, b) {
-                    var c1 = APP.calendars[a] || {};
-                    var c2 = APP.calendars[b] || {};
-                    var t1 = Util.find(c1, ['content', 'metadata', 'title']) || '';
-                    var t2 = Util.find(c2, ['content', 'metadata', 'title']) || '';
+                    var t1 = LOOKUP[a];
+                    var t2 = LOOKUP[b];
                     return t1 > t2 ? 1 : (t1 === t2 ? 0 : -1);
                 });
             };
