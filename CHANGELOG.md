@@ -20,7 +20,7 @@ Now, a bit about the situations in which CryptPad will fail to load:
   * hint: for cryptpad.fr, this value is `https://cryptpad.fr`
 * if CryptPad's sandbox does not correctly block the use of `eval`, then it will abort.
   * the use of `eval` is blocked by the recommended `Content-Security-Policy` headers. These strict headers are applied to most resources loaded from the _sandbox origin_.
-  * hint: for cryptpad.fr the `httpUnsafeOrigin` is `https://sandbox.cryptpad.info`, while our NGINX sets `$sandbox_domain` to `sandbox.cryptpad.info`.
+  * hint: for cryptpad.fr the `httpSafeOrigin` is `https://sandbox.cryptpad.info`, while our NGINX sets `$sandbox_domain` to `sandbox.cryptpad.info`.
 * if CryptPad is loaded in a browser that does not enforce `Content-Security-Policy` (such as Internet Explorer or any other browser using a non-compliant configuration) then it will abort.
 * if CryptPad is embedded within an iframe and you have not explicitly enabled embedding via the admin panel (more on that later) it will abort.
 * if any CryptPad application that requires special permissions (drive, calendar, sheet, doc, presentation) is loaded in an iframe then it will abort.
