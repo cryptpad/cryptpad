@@ -14,13 +14,11 @@ var simpleTags = [
     // FIXME register_notes
     '<ul class="cp-notes-list">',
     '</ul>',
-    '<li>',
-    '</li>',
     '<span class="red">',
     '</span>',
 ];
 
-['a', 'b', 'em', 'p', 'i'].forEach(function (tag) {
+['a', 'b', 'em', 'p', 'i', 'code', 'li',].forEach(function (tag) {
     simpleTags.push('<' + tag + '>');
     simpleTags.push('</' + tag + '>');
 });
