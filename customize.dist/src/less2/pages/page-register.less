@@ -13,13 +13,9 @@
 
     .cp-container {
         .form-group {
-            .checkbox-container {
-                &:nth-of-type(1) {
-                    margin-top: 2em;
-                }
-                &:last-of-type {
-                    margin-bottom: 1em;
-                }
+            .cp-register-instance {
+                text-align: center;
+                margin-bottom: 10px;
             }
             #register {
                 &.btn {
@@ -85,12 +81,13 @@
             position: relative;
             z-index: 2;
             margin-bottom: 100px;
+            border-radius: @infopages-radius-L;
             .cp-shadow();
             .form-control {
-                border-radius: 0;
+                border-radius: @infopages-radius;
                 color: @cryptpad_text_col;
                 background-color: @cp_forms-bg;
-                margin-top: 5px;
+                margin-bottom: 10px;
                 &:focus {
                     border-color: @cryptpad_color_brand;
                 }
@@ -100,7 +97,7 @@
                 color: @cryptpad_text_col;
             }
             button#register {
-                margin: 0px;
+                margin-top: 10px;
             }
         }
 
@@ -119,7 +116,7 @@
                         content: "\f071";
                     }
                     .red {
-                        color: @cryptpad_color_red;
+                        background-color: @cp_static-danger;
                     }
                 }
             }

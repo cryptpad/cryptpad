@@ -116,6 +116,9 @@ define([
 
         var fastLink = k => pageLink(Pages.customURLs[k], k);
 
+        // XXX DB
+        Msg.terms = "Terms of Service";
+
         // XXX DB: this may be wrong, pasted over form pages.js
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
@@ -149,9 +152,9 @@ define([
                                 h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
                                 'Encrypted data is hosted in: France (OVH)' // XXX Use instance location
                             ]),
-                            termsLink, // XXX DB: insert link to ToS if available
-                            privacyLink, // XXX DB: insert link to privacy policy if available
-                            imprintLink // XXX DB: insert link to imprint if available
+                            termsLink,
+                            privacyLink,
+                            imprintLink
                         ]),
                         h('div.col-md-6', [
                             h('div.cp-app-grid', [
@@ -165,8 +168,8 @@ define([
                             ]),
                             h('a.cp-app-drive', {'href': '/drive/'}, [ // XXX check this is correct
                                 h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
-                                'Drive: 1GB' // XXX Use instance default storage
-                            ]) // XXX DB TODO: add drive link
+                                'Drive: 1GB' // XXX DB TODO: Use instance default storage
+                            ])
                         ])
                     ]),
                     notice

@@ -270,7 +270,7 @@ define([
         // });
 
         return h('nav.navbar.navbar-expand-lg',
-            // XXX add link back to index.html on footer logo
+            // XXX DB add link back to index.html on other pages
             // h('a.navbar-brand', { href: '/index.html'}, [
             //     h('img', {
             //         src: '/customize/CryptPad_logo.svg?',
