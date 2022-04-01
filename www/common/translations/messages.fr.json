@@ -540,7 +540,7 @@
     "four04_pageNotFound": "Nous n'avons pas trouvé la page que vous cherchez.",
     "header_logoTitle": "Retourner vers votre CryptDrive",
     "header_homeTitle": "Aller sur la page d'accueil",
-    "help_genericMore": "Découvrez toutes les fonctionalités de CryptPad en lisant la <a>Documentation</a>.",
+    "help_genericMore": "Découvrez toutes les fonctionnalités de CryptPad en lisant la <a>Documentation</a>.",
     "edit": "éditer",
     "view": "voir",
     "feedback_about": "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous réalisez certaines actions.",
@@ -1461,5 +1461,6 @@
     "support_debuggingDataHint": "Les informations suivantes sont jointes aux tickets de support que vous envoyez. Aucune de ces données ne permettent aux administrateurs d'accéder à vos documents ou de les déchiffrer. Ces informations sont chiffrées de telle sorte que seuls les administrateurs peuvent les lire.",
     "support_debuggingDataTitle": "Informations pour le diagnostic du compte",
     "support_cat_debugging": "Diagnostic",
-    "ui_openDirectly": "Cette fonctionnalité n'est pas disponible lorsque CryptPad est intégré dans un autre site. Ouvrir ce document dans un nouvel onglet ?"
+    "ui_openDirectly": "Cette fonctionnalité n'est pas disponible lorsque CryptPad est intégré dans un autre site. Ouvrir ce document dans un nouvel onglet ?",
+    "error_evalPermitted": "Abandon car eval ne devrait pas être autorisé.\\n\\nCette erreur est liée aux headers Content-Security-Policy, elle peut être due à : un navigateur obsolète qui ne les prend pas en charge, des extensions de navigateur qui interfèrent avec leur fonctionnement, ou une configuration incorrecte de cette instance CryptPad."
 }
