@@ -230,7 +230,7 @@
     "invalidHashError": "O documento requerido por você, apresenta uma URL inválida.",
     "errorCopy": " Você pode continuar usando esta versão em modo somente leitura pressionando <em>Esc</em>.",
     "errorRedirectToHome": "Tecle <em>Esc</em> para ser redirecionado para seu CryptDrive.",
-    "newVersionError": "Uma nova versão do CryptPad está disponível. <br><a href='#'>Recarregued</a> para usar a nova versão, ou tecle Esc para acessar seu conteúdo em <b>modo offline</b>.",
+    "newVersionError": "Uma nova versão do CryptPad está disponível. <br><a href='#'>Recarregue</a> para usar a nova versão, ou tecle Esc para acessar seu conteúdo em <b>modo offline</b>.",
     "deletedFromServer": "Documento destruído",
     "mustLogin": "Você precisa estar logado para acessar esta página",
     "disabledApp": "Esta aplicação foi desabilitada. Contate o administrador deste CryptPad para mais informações.",
