@@ -5,31 +5,53 @@
 // grep -nr '/common/sframe-boot.js?ver=' | sed 's/:.*$//' | grep -v 'sframe-boot.js' | while read x; do \
 //    sed -i -e 's@/common/sframe-boot.js?ver=[^"]*@/common/sframe-boot.js?ver=1.3@' $x; done
 ;(function () {
+
+var _alert = function (cb) {
+    return void require([
+        '/common/requireconfig.js',
+    ], function (RequireConfig) {
+        require.config(RequireConfig());
+        require([
+            '/common/common-interface.js',
+            '/common/hyperscript.js',
+            '/customize/messages.js',
+
+            'less!/customize/src/less2/include/alertify.less',
+
+            //'less!/customize/src/less2/pages/page-boot.less',
+        ], cb);
+    });
+};
+
 if (window === window.top) {
-    return void setTimeout(function () {
+    return void _alert(function (UI, h) {
         var s = `sframe-boot.js must only be loaded in a nested context`;
-        window.alert(s);
+        UI.alert(h('p', s));
     });
 }
 if (typeof(Promise) !== 'function') {
-    return void setTimeout(function () {
+    return void _alert(function (UI, h) {
         var s = "Internet Explorer is not supported anymore, including by Microsoft.\n\nMost of CryptPad's collaborative functionality requires a modern browser to work.\n\nWe recommend Mozilla Firefox.";
-        window.alert(s);
+        UI.alert(h('p', {
+            style: 'white-space: break-spaces;',
+        }, s));
     });
 }
 
 var caughtEval;
+console.log("Testing if CSP correctly blocks an 'eval' call");
 try {
     eval('true'); // jshint ignore:line
 } catch (err) { caughtEval = true; }
 
 if (!/^\/(sheet|doc|presentation|unsafeiframe)/.test(window.location.pathname) && !caughtEval) {
-    return void setTimeout(function () {
-        console.error('eval panic location:', window.location.pathname);
-        window.alert("aborting because eval should not be permitted.");
+    console.error('eval panic location:', window.location.pathname, caughtEval);
+    return void _alert(function (UI, h, Msg) {
+        UI.alert(h('p', {
+            style: 'white-space: break-spaces',
+        }, Msg.error_evalPermitted));
     });
 }
-
 
 var afterLoaded = function (req) {
     req.cfg = req.cfg || {};
