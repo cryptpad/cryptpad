@@ -1462,5 +1462,5 @@
     "support_debuggingDataTitle": "Informations pour le diagnostic du compte",
     "support_cat_debugging": "Diagnostic",
     "ui_openDirectly": "Cette fonctionnalité n'est pas disponible lorsque CryptPad est intégré dans un autre site. Ouvrir ce document dans un nouvel onglet ?",
-    "error_evalPermitted": "Abandon car eval ne devrait pas être autorisé.\\n\\nCette erreur est liée aux headers Content-Security-Policy, elle peut être due à : un navigateur obsolète qui ne les prend pas en charge, des extensions de navigateur qui interfèrent avec leur fonctionnement, ou une configuration incorrecte de cette instance CryptPad."
+    "error_evalPermitted": "Abandon car eval ne devrait pas être autorisé.\n\nCette erreur est liée aux headers Content-Security-Policy, elle peut être due à : un navigateur obsolète qui ne les prend pas en charge, des extensions de navigateur qui interfèrent avec leur fonctionnement, ou une configuration incorrecte de cette instance CryptPad."
 }
