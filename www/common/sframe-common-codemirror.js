@@ -156,6 +156,11 @@ define([
         updateMaxWidthSettings();
     }
 
+    /**
+     * Wraps a text based on column set by user in setting.
+     * For example, if the number of characters exceed the value set by user,
+     * then it will wrap the text such that its within the character set by user 
+     */
     module.wrapParagraph = function (editor, CodeMirror, metadataMgr) {
         var wait, options = { column: 60 }, changing = false;
         var data = metadataMgr.getPrivateData().settings;
