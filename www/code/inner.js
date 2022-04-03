@@ -96,10 +96,10 @@ define([
     var wrapParagraph = function (editor, CodeMirror, framework) {
         var wait, options = { column: 60 }, changing = false;
         var privateData = framework._.cpNfInner.metadataMgr;
+        var column = privateData.getPrivateData().settings.codemirror.hardWrapMaxWidth;
+        options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
 
         editor.on('change', (cm, change) => {
-            var column = privateData.getPrivateData().settings.codemirror.hardWrapMaxWidth;
-            options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
 
             if (changing) { return; }
 
@@ -614,8 +614,8 @@ define([
 
         }).nThen(function (/*waitFor*/) {
             framework._.sfCommon.isPresentUrl(function (err, val) {
-                wrapParagraph(editor, CodeMirror, framework);
                 andThen2(editor, CodeMirror, framework, val);
+                wrapParagraph(editor, CodeMirror, framework);
             });
         });
     };

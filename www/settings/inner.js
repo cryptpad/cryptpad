@@ -1599,6 +1599,9 @@ define([
             common.setAttribute(['codemirror', key], val);
         }).appendTo($inputBlock);
 
+        // By default the input field should be disabled
+        $input.attr('disabled', true);
+
         $cbox.find('input').change(
             function () {
                 if (this.checked) {
