@@ -9,6 +9,7 @@ define([
     '/common/common-util.js',
     '/common/text-cursor.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    'cm/addon/wrap/hardwrap',
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
@@ -154,6 +155,31 @@ define([
         metadataMgr.onChangeLazy(updateMaxWidthSettings);
         updateMaxWidthSettings();
     }
+
+    module.wrapParagraph = function (editor, CodeMirror, metadataMgr) {
+        var wait, options = { column: 60 }, changing = false;
+        var data = metadataMgr.getPrivateData().settings;
+
+        /**
+         * Need to ensure that the codemirror is not a null object 
+         */
+        if (data.codemirror) {
+            var column = data.codemirror.hardWrapMaxWidth;
+            options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
+    
+            editor.on('change', (cm, change) => {
+                if (changing) { return; }
+    
+                clearTimeout(wait);
+    
+                wait = setTimeout(function () {
+                    changing = true;
+                    cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
+                    changing = false;
+                }, 200);
+            });
+        }
+    };
 
     module.mkIndentSettings = function (editor, metadataMgr) {
         var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
@@ -521,6 +547,10 @@ define([
 
         exp.mkMaxWidthSettings = function (metadataMgr) {
             module.mkMaxWidthSettings(editor, metadataMgr);
+        }
+
+        exp.wrapParagraph = function (CodeMirror, metadataMgr) {
+            module.wrapParagraph(editor, CodeMirror, metadataMgr);
         }
 
         exp.getCursor = function () {

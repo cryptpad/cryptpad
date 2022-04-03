@@ -93,26 +93,6 @@ define([
         framework._.toolbar.$bottomL.append($theme);
     };
 
-    var wrapParagraph = function (editor, CodeMirror, framework) {
-        var wait, options = { column: 60 }, changing = false;
-        var privateData = framework._.cpNfInner.metadataMgr;
-        var column = privateData.getPrivateData().settings.codemirror.hardWrapMaxWidth;
-        options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
-
-        editor.on('change', (cm, change) => {
-
-            if (changing) { return; }
-
-            clearTimeout(wait);
-
-            wait = setTimeout(function () {
-                changing = true;
-                cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
-                changing = false;
-            }, 200);
-        });
-    };
-
     var mkCbaButton = function (framework, markers) {
         var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
             text: Messages.cba_hide,
@@ -439,6 +419,8 @@ define([
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.mkMaxWidthSettings(framework._.cpNfInner.metadataMgr);
+        CodeMirror.wrapParagraph(CodeMirror, framework._.cpNfInner.metadataMgr);
+
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
         mkFilePicker(framework, editor, evModeChange);
 
@@ -615,7 +597,6 @@ define([
         }).nThen(function (/*waitFor*/) {
             framework._.sfCommon.isPresentUrl(function (err, val) {
                 andThen2(editor, CodeMirror, framework, val);
-                wrapParagraph(editor, CodeMirror, framework);
             });
         });
     };
