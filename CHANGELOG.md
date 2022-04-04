@@ -79,6 +79,9 @@ To update from  4.13.0 to 4.14.0:
   * The _Server header_ is displayed in the page summary if it is available.
   * The tests for CSP headers now describe the failures of _each misconfigured CSP directive_, rather than just the first one to fail.
   * Warnings are displayed for each of several important resources (privacy policy, terms of service, etc) when the instance allows registration but has not provided this information for new users.
+  * Our test runner catches synchronously thrown errors and tries to display helpful messages.
+  * Tests will time out after 25 seconds to ensure that the set of tests eventually completes.
+  * A new script is executed before CryptPad's bootloader which should detect and handle bootloader errors such as missing dependencies or unreachable API endpoints.
 
 ## Bug fixes
 
