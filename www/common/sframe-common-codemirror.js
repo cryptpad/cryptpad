@@ -154,7 +154,7 @@ define([
         };
         metadataMgr.onChangeLazy(updateMaxWidthSettings);
         updateMaxWidthSettings();
-    }
+    };
 
     /**
      * Wraps a text based on column set by user in setting.
@@ -555,11 +555,11 @@ define([
 
         exp.mkMaxWidthSettings = function (metadataMgr) {
             module.mkMaxWidthSettings(editor, metadataMgr);
-        }
+        };
 
         exp.wrapParagraph = function (CodeMirror, metadataMgr) {
             module.wrapParagraph(editor, CodeMirror, metadataMgr);
-        }
+        };
 
         exp.getCursor = function () {
             var doc = canonicalize(editor.getValue());
@@ -648,4 +648,3 @@ define([
 
     return module;
 });
-

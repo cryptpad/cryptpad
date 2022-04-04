@@ -1587,7 +1587,7 @@ define([
             'class': 'cp-sidebarlayout-input-block'
         }).appendTo($div);
 
-        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width'))
+        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width'));
         $cbox.appendTo($container);
 
         var $input = $('<input>', {
@@ -1607,13 +1607,13 @@ define([
                 $input.attr('disabled', !this.checked);
                 common.setAttribute(['codemirror', hardWrapMaxWidthEnabledKey], this.checked);
             }
-        )
+        );
 
         common.getAttribute(['codemirror', hardWrapMaxWidthEnabledKey], function (e, val) {
             if (e) { return void console.error(e); }
             $cbox.find('input').prop("checked", val);
             $input.attr("disabled", !val);
-        })
+        });
 
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
