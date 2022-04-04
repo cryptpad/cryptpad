@@ -990,7 +990,7 @@ define([
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                'frame-ancestors': ApiConfig.enableEmbedding? ["'self'", window.location.protocol]: [$outer, $sandbox],
+                'frame-ancestors': ApiConfig.enableEmbedding? ["'self'", window.location.protocol, 'vector:']: ["'self'", $outer],
                 'worker-src': ["'self'"],
             });
             cb(result);
@@ -1028,7 +1028,7 @@ define([
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
-                'frame-ancestors': ApiConfig.enableEmbedding? ["'self'", window.location.protocol]: [$outer, $sandbox],
+                'frame-ancestors': ApiConfig.enableEmbedding? ["'self'", window.location.protocol, 'vector:']: ["'self'", $outer],
                 'worker-src': ["'self'"],//, $outer, $sandbox],
             });
 
