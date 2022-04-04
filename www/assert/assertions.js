@@ -16,20 +16,18 @@ define([], function () {
                     }
 
                     if (called) { return; }
+                    if (msg && !msg.innerText) {
+                        msg.innerText = "An unexpected error occurred. See your browser's console for more details";
+                    }
+
                     called = true;
                     _cb(arg);
                 };
 
-                var _msg = document.createElement('span');
-                _msg.innerText = "An unexpected error occurred. See your browser's console for more details";
-                if (msg && !msg.innerText) {
-                    msg.innerText = _msg.innerText;
-                }
-
                 to = setTimeout(function () {
                     cb({
                         test: i,
-                        message: msg || _msg,
+                        message: msg,
                         output: "TIMEOUT",
                     });
                 }, 25000);
@@ -42,7 +40,7 @@ define([], function () {
                         } else {
                             cb({
                                 test: i,
-                                message: msg || _msg,
+                                message: msg,
                                 output: result,
                             });
                         }
@@ -54,7 +52,7 @@ define([], function () {
                     //from ${err.fileName} line ${err.lineNumber}`;
                     cb({
                         test: i,
-                        message: msg || _msg,
+                        message: msg,
                         output: {
                             message: err.message,
                             file: err.fileName,
