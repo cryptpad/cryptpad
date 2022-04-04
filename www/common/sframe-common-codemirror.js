@@ -170,19 +170,22 @@ define([
          */
         if (data.codemirror) {
             var column = data.codemirror.hardWrapMaxWidth;
+            var hardWrapEnabled = data.codemirror.hardWrapMaxWidthEnabled;
             options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
-    
-            editor.on('change', (cm, change) => {
-                if (changing) { return; }
-    
-                clearTimeout(wait);
-    
-                wait = setTimeout(function () {
-                    changing = true;
-                    cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
-                    changing = false;
-                }, 200);
-            });
+
+            if (hardWrapEnabled) {
+                editor.on('change', (cm, change) => {
+                    if (changing) { return; }
+        
+                    clearTimeout(wait);
+        
+                    wait = setTimeout(function () {
+                        changing = true;
+                        cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
+                        changing = false;
+                    }, 200);
+                });
+            }
         }
     };
 

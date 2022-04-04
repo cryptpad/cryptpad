@@ -424,6 +424,7 @@
     "settings_codeUseTabs": "Indent using tabs (instead of spaces)",
     "settings_codeFontSize": "Font size in the code editor",
     "settings_codeMaxWidth": "Max width before code wraps to next line",
+    "settings_codeMaxWidthDescription": "If checked, this feature is enabled. You can change the width at which the line will wrap. If not checked, this feature is disabled, so the input will be disabled as well.",
     "settings_padWidth": "Editor's maximum width",
     "settings_padWidthHint": "Switch between page mode (default) that limits the width of the text editor, and using the full width of the screen.",
     "settings_padWidthLabel": "Reduce the editor's width",

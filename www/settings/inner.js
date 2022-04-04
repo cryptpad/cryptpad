@@ -1572,22 +1572,23 @@ define([
 
     create['code-max-width'] = function () {
         var key = 'hardWrapMaxWidth';
+        var hardWrapMaxWidthEnabledKey = `${key}Enabled`;
         var defaultInitialMaxWidth = 60;
 
         var $div = $('<div>', {
             'class': 'cp-settings-code-max-width cp-sidebarlayout-element'
         });
 
-        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width',
-            Messages.settings_codeMaxWidth,
-            false, { label: { class: 'noTitle' } }));
-        $cbox.appendTo($div);
-
         $('<label>').text(Messages.settings_codeMaxWidth).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_codeMaxWidthDescription).appendTo($div);
 
-        var $inputBlock = $('<div>', {
-            'class': 'cp-sidebarlayout-input-block',
+        var $container = $('<span>', {
+            'class': 'cp-sidebarlayout-input-block'
         }).appendTo($div);
+
+        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width'))
+        $cbox.appendTo($container);
 
         var $input = $('<input>', {
             'min': defaultInitialMaxWidth,
@@ -1597,21 +1598,22 @@ define([
             var val = parseInt($input.val());
             if (!isNaN(val) && typeof (val) !== 'number') { return; }
             common.setAttribute(['codemirror', key], val);
-        }).appendTo($inputBlock);
-
-        // By default the input field should be disabled
-        $input.attr('disabled', true);
+        }).appendTo($container);
 
         $cbox.find('input').change(
             function () {
-                if (this.checked) {
-                    $input.attr('disabled', false);
-                }
-                else {
-                    $input.attr('disabled', true);
-                }
+                // If enable hard wrap max width is enabled, then disabled=false
+                // otherwise, disabled=true 
+                $input.attr('disabled', !this.checked);
+                common.setAttribute(['codemirror', hardWrapMaxWidthEnabledKey], this.checked);
             }
         )
+
+        common.getAttribute(['codemirror', hardWrapMaxWidthEnabledKey], function (e, val) {
+            if (e) { return void console.error(e); }
+            $cbox.find('input').prop("checked", val);
+            $input.attr("disabled", !val);
+        })
 
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
