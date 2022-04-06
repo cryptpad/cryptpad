@@ -338,6 +338,7 @@ define([
         nThen(function (waitFor) {
             // Load the shared folders
             ctx.teams[id] = team;
+            if (ctx.maxSize.includes(id)) { team.maxSize = true; }
             registerChangeEvents(ctx, team, proxy);
             var network = ctx.store.network || ctx.store.networkPromise;
             SF.loadSharedFolders(ctx.Store, network, team,
@@ -544,6 +545,13 @@ define([
                     cb({error:'ECONNECT'});
                 }
                 if (info && info.error) {
+                    if (info.error === 'E_MAX_SIZE') {
+                        if (ctx.teams[id]) {
+                            ctx.teams[id].maxSize = true;
+                        } else {
+                            ctx.maxSize.push(id);
+                        }
+                    }
                     if (info.error === "EDELETED" ) {
                         closeTeam(ctx, id);
                     }
@@ -1871,6 +1879,7 @@ define([
             pinPads: cfg.pinPads,
             emit: emit,
             onReadyHandlers: {},
+            maxSize: [],
             teams: {},
             cache: {},
             updateMetadata: cfg.updateMetadata,

@@ -258,9 +258,8 @@ define([
     };
     // Settings and drive and auth
     common.getUserObject = function (teamId, cb) {
-        postMessage("GET", {
+        postMessage("GET_MAIN_DRIVE", {
             teamId: teamId,
-            key: []
         }, function (obj) {
             cb(obj);
         });

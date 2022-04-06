@@ -603,6 +603,9 @@ define([
         APP.toolbar = driveConfig.toolbar;
 
         var $readOnly = $(h('div.cp-banner.cp-banner-info.cp-app-drive-content-info-box', Messages.readonly));
+        Messages.maxSizeReached = 'This folder has exceeded the maximum supported size and cannot be edited anymore.'; // XXX
+        Messages.errorMaxSize = "The selected destination is full. You can't move items there."; // XXX
+        var $maxSize = $(h('div.cp-banner.cp-banner-danger', Messages.maxSizeReached));
 
         var updateObject = driveConfig.updateObject;
         var updateSharedFolders = driveConfig.updateSharedFolders;
@@ -1967,7 +1970,10 @@ define([
             var newPath = findDropPath(ev.target);
             if (!newPath) { return; }
             var sfId = manager.isInSharedFolder(newPath);
-            if (sfId && folders[sfId] && folders[sfId].readOnly) {
+            if ((sfId && folders[sfId] && (folders[sfId].maxSize)) || (!sfId && files.maxSize)) { // XXX check if main drive max size
+                return void UI.warn(Messages.errorMaxSize);
+            }
+            if (sfId && folders[sfId] && (folders[sfId].readOnly)) {
                 return void UI.warn(Messages.fm_forbidden);
             }
 
@@ -2003,14 +2009,25 @@ define([
 
             var oldPaths = JSON.parse(data).path;
             if (!oldPaths) { return; }
-            // A moved element should be removed from its previous location
-            var movedPaths = [];
+
+            var copy = false;
+            if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
+                copy = true;
+            }
 
             var sharedF = false;
+            // A moved element should be removed from its previous location
+            var movedPaths = [];
             oldPaths.forEach(function (p) {
                 movedPaths.push(p.path);
-                if (!sharedF && manager.isInSharedFolder(p.path)) {
+                var fId = manager.isInSharedFolder(p.path);
+                if (!sharedF && fId) {
                     sharedF = true;
+                }
+                // If we drag from a drive that has reached its maximum size, we can't delete from
+                // here so we have to force "copy" instead of "move"
+                if ((fId && folders[fId] && (folders[fId].maxSize)) || (!fId && files.maxSize)) {
+                    copy = true;
                 }
             });
 
@@ -2020,11 +2037,6 @@ define([
                 // TODO or keep deletePaths: trigger the "Remove from cryptdrive" modal
                 return void UI.warn(Messages.error);
                 //return void deletePaths(null, movedPaths);
-            }
-
-            var copy = false;
-            if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
-                copy = true;
             }
 
             if (movedPaths && movedPaths.length) {
@@ -4005,12 +4017,19 @@ define([
                     });
                     $content.prepend($banner);
                 }());
+            } else if (!sfId && files.maxSize) {
+                readOnlyFolder = true;
+                $content.prepend($maxSize.clone());
             } else if (APP.readOnly) {
                 // Read-only drive (team?)
                 $content.prepend($readOnly.clone());
             } else if (sfId && folders[sfId] && folders[sfId].readOnly) {
                 // If readonly shared folder...
-                $content.prepend($readOnly.clone());
+                if (folders[sfId].maxSize) {
+                    $content.prepend($maxSize.clone());
+                } else {
+                    $content.prepend($readOnly.clone());
+                }
                 readOnlyFolder = true;
             }
             $content.data('readOnlyFolder', readOnlyFolder);
@@ -4137,6 +4156,7 @@ define([
             }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
+                files.maxSize = proxy.maxSize;
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
                 });

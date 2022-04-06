@@ -86,7 +86,12 @@ define([
                     }
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
-                    folders[fId].readOnly = !secret.keys.secondaryKey;
+
+                    // Documents that have reached their max size can't be edited anymore
+                    // (they would freeze a process)
+                    folders[fId].maxSize = newObj.maxSize;
+
+                    folders[fId].readOnly = newObj.maxSize || !secret.keys.secondaryKey;
                     if (manager && oldIds.indexOf(fId) === -1) {
                         manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
@@ -95,6 +100,7 @@ define([
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
 
                     manager.folders[fId].offline = newObj.offline;
+                    manager.folders[fId].maxSize = newObj.maxSize;
                 }));
             });
             // Remove from memory folders that have been deleted from the drive remotely

@@ -55,6 +55,7 @@ define([
             GET_PAD_DATA_FROM_CHANNEL: Store.getPadDataFromChannel,
             GET_STRONGER_HASH: Store.getStrongerHash,
             INCREMENT_TEMPLATE_USE: Store.incrementTemplateUse,
+            GET_MAIN_DRIVE: Store.getMainDrive,
             GET_SHARED_FOLDER: Store.getSharedFolder,
             ADD_SHARED_FOLDER: Store.addSharedFolder,
             LOAD_SHARED_FOLDER: Store.loadSharedFolderAnon,

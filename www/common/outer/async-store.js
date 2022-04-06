@@ -131,6 +131,15 @@ define([
             onSync(data.teamId, cb);
         };
 
+        Store.getMainDrive = function (clientId, data, cb) {
+            var s = getStore(data.teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.proxy) { return void cb({ error: 'ENODRIVE' }); }
+            var proxy = Util.clone(s.proxy);
+            proxy.offline = s.offline;
+            proxy.maxSize = s.maxSize;
+            cb(proxy);
+        };
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             var id = data.id;
@@ -139,6 +148,7 @@ define([
             if (s.manager.folders[id]) {
                 proxy = Util.clone(s.manager.folders[id].proxy);
                 proxy.offline = Boolean(s.manager.folders[id].offline);
+                proxy.maxSize = Boolean(s.manager.folders[id].maxSize);
                 // If it is loaded, return the shared folder proxy
                 return void cb(proxy);
             } else {
@@ -3003,6 +3013,12 @@ define([
                     rt.network.disconnect();
                     rt.realtime.abort();
                     sendDriveEvent('NETWORK_DISCONNECT');
+                }
+            });
+            rt.proxy.on('error', function (info) {
+                if (info && info.error === 'E_MAX_SIZE') {
+                    store.maxSize = true;
+                    console.error(info.error, info.message);
                 }
             });
 

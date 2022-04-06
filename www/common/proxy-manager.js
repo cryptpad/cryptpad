@@ -59,6 +59,14 @@ define([
             proxy.on('reconnect', function () {
                 Env.folders[id].offline = false;
             });
+            proxy.on('error', function (info) {
+                if (info.error === "E_MAX_SIZE") {
+                    Env.folders[id].maxSize = true;
+                    try {
+                        //Env.folders[id].userObject.setReadOnly(true);
+                    } catch (e) { console.error(e); }
+                }
+            });
         }
         return userObject;
     };
