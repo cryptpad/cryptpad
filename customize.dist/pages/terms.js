@@ -4,6 +4,7 @@ define([
     '/customize/pages.js'
 ], function (h, Msg, Pages) {
     return function () {
+        document.title = Msg.footer_tos;
         return h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [

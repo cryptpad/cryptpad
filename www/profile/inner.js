@@ -607,6 +607,7 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
 
+        common.setTabTitle(Messages.profileButton);
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
