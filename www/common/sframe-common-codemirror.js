@@ -159,34 +159,24 @@ define([
     /**
      * Wraps a text based on column set by user in setting.
      * For example, if the number of characters exceed the value set by user,
-     * then it will wrap the text such that its within the character set by user 
+     * then it will wrap the text such that its within the character set by user
      */
     module.wrapParagraph = function (editor, CodeMirror, metadataMgr) {
-        var wait, options = { column: 60 }, changing = false;
         var data = metadataMgr.getPrivateData().settings;
+        if (!data.codemirror) { return; }
+        var options = { column: 60 };
+        var column = data.codemirror.hardWrapMaxWidth;
+        var hardWrapEnabled = data.codemirror.hardWrapMaxWidthEnabled;
+        // FIXME a reload of codemirror documents is required
+        // in order for changes in settings to be applied
+        if (!hardWrapEnabled) { return; }
+        options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60;
 
-        /**
-         * Need to ensure that the codemirror is not a null object 
-         */
-        if (data.codemirror) {
-            var column = data.codemirror.hardWrapMaxWidth;
-            var hardWrapEnabled = data.codemirror.hardWrapMaxWidthEnabled;
-            options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
+        var wrap = Util.throttle(function (cm, change) {
+            cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
+        }, 200);
 
-            if (hardWrapEnabled) {
-                editor.on('change', (cm, change) => {
-                    if (changing) { return; }
-        
-                    clearTimeout(wait);
-        
-                    wait = setTimeout(function () {
-                        changing = true;
-                        cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
-                        changing = false;
-                    }, 200);
-                });
-            }
-        }
+        editor.on('change', wrap);
     };
 
     module.mkIndentSettings = function (editor, metadataMgr) {

@@ -1570,25 +1570,38 @@ define([
         return $div;
     };
 
+
+    Messages.settings_codeMaxWidth = "Max width before code wraps to next line"; // XXX
+    Messages.settings_codeMaxWidthDescription = "If checked, this feature is enabled. You can change the width at which the line will wrap. If not checked, this feature is disabled, so the input will be disabled as well."; // XXX
+    Messages.ui_experimental = "This feature is considered experimental."; // XXX
+
     create['code-max-width'] = function () {
         var key = 'hardWrapMaxWidth';
         var hardWrapMaxWidthEnabledKey = `${key}Enabled`;
         var defaultInitialMaxWidth = 60;
 
-        var $div = $('<div>', {
-            'class': 'cp-settings-code-max-width cp-sidebarlayout-element'
-        });
+        var cbox = UI.createCheckbox('cp-settings-code-max-width');
+        var container = h('span.cp-sidebarlayout-input-block', [
+            cbox,
+        ]);
 
-        $('<label>').text(Messages.settings_codeMaxWidth).appendTo($div);
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_codeMaxWidthDescription).appendTo($div);
+        var experimental = h('div.alert.alert-warning', [
+            '⚠️ ',
+            Messages.ui_experimental,
+        ]);
 
-        var $container = $('<span>', {
-            'class': 'cp-sidebarlayout-input-block'
-        }).appendTo($div);
+        var div = h('div.cp-settings-code-max-width.cp-sidebarlayout-element', [
+            h('span.cp-sidebarlayout-description', [
+                h('label', [Messages.settings_codeMaxWidth]),
+                experimental,
+                Messages.settings_codeMaxWidthDescription
+            ]),
+            container,
+        ]);
 
-        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width'));
-        $cbox.appendTo($container);
+        var $div= $(div);
+        var $container = $(container);
+        var $cbox = $(cbox);
 
         var $input = $('<input>', {
             'min': defaultInitialMaxWidth,
@@ -1596,6 +1609,11 @@ define([
         })
         .on('change', function () {
             var val = parseInt($input.val());
+            if (val < defaultInitialMaxWidth) {
+                $input.val(defaultInitialMaxWidth);
+                return console.log(`max-width cannot be less than ${defaultInitialMaxWidth}`);
+            }
+
             if (!isNaN(val) && typeof (val) !== 'number') { return; }
             common.setAttribute(['codemirror', key], val);
         }).appendTo($container);
@@ -1603,7 +1621,7 @@ define([
         $cbox.find('input').change(
             function () {
                 // If enable hard wrap max width is enabled, then disabled=false
-                // otherwise, disabled=true 
+                // otherwise, disabled=true
                 $input.attr('disabled', !this.checked);
                 common.setAttribute(['codemirror', hardWrapMaxWidthEnabledKey], this.checked);
             }

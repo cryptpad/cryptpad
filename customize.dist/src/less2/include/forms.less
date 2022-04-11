@@ -7,6 +7,12 @@
 }
 
 & {
+    input[type="number"] {
+        &[disabled] {
+            color: @cp_forms-disabled !important;
+        }
+    }
+
     @alertify_padding-base: @variables_padding;
 
     input:not(.numInput):not(.form-control):not([type="checkbox"]), textarea, div.cp-textarea {
