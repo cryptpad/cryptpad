@@ -1462,5 +1462,6 @@
     "error_embeddingDisabled": "Embedding is disabled for this CryptPad instance",
     "error_embeddingDisabledSpecific": "Embedding is disabled for this CryptPad application.",
     "error_incorrectAccess": "This page can only be accessed via {0}.",
-    "error_evalPermitted": "Aborting because eval should not be permitted.\n\nThis error is linked to Content-Security-Policy headers, it could be due to: an outdated browser that does not support them, browser extensions that interfere with their correct behaviour, or an incorrect configuration of this CryptPad instance."
+    "error_evalPermitted": "Aborting because eval should not be permitted.\n\nThis error is linked to Content-Security-Policy headers, it could be due to: an outdated browser that does not support them, browser extensions that interfere with their correct behaviour, or an incorrect configuration of this CryptPad instance.",
+    "ui_experimental": "This feature is considered experimental."
 }
