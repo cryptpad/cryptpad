@@ -1486,5 +1486,18 @@ define([
         });
     };
 
+/*  QR code generation is synchronous once the library is loaded
+    so this could be syncronous if we load the library separately. */
+    UI.createQRCode = function (data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb || Util.noop));
+        require(['/lib/qrcode.min.js'], function () {
+            var div = h('div');
+            var code = new window.QRCode(div, data);
+            cb(void 0, div);
+        }, function (err) {
+            cb(err);
+        });
+    };
+
     return UI;
 });

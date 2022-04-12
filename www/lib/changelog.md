@@ -10,4 +10,5 @@ This file is intended to be used as a log of what third-party source we have ven
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
 * [mermaid 9.0.0](https://github.com/mermaid-js/mermaid/releases/tag/8.13.4) extends our markdown integration to support a variety of diagram types
 * [Fabricjs 4.6.0](https://github.com/fabricjs/fabric.js) and [Fabric-history](https://github.com/lyzerk/fabric-history) for the whiteboard app
+* [qrcode.js](https://github.com/davidshimjs/qrcodejs) from [this commit](https://github.com/davidshimjs/qrcodejs/commit/06c7a5e134f116402699f03cda5819e10a0e5787) since the repo doesn't use tags
 
