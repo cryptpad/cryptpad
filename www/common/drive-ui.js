@@ -4525,6 +4525,14 @@ define([
             var type = $contextMenu.attr('data-menu-type');
             var $this = $(this);
 
+            var prefix = /cp\-app\-drive\-context\-/;
+            var command = Util.slice(this.classList)
+                .map(c => {
+                    if (!prefix.test(c)) { return; }
+                    return c.replace(prefix, '');
+                }).filter(Boolean);
+            console.log(command);
+
             var el, data;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
@@ -4784,9 +4792,13 @@ define([
                         common: common
                     };
                     if (padType === 'file') {
-                        return void Share.getFileShareModal(common, padData);
+                        return void Share.getFileShareModal(common, padData, function (err) {
+                            if (err) { UI.warn(Messages.error); }
+                        });
                     }
-                    Share.getShareModal(common, padData);
+                    Share.getShareModal(common, padData, function (err) {
+                        if (err) { UI.warn(Messages.error); }
+                    });
                 }
             }
             else if ($this.hasClass('cp-app-drive-context-savelocal')) {
@@ -4875,7 +4887,10 @@ define([
                     el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
                 }
                 APP.getProperties(el, function (e) {
-                    if (e) { return void logError(e); }
+                    if (e) {
+                        UI.warn(Messages.error);
+                        return void logError(e, el);
+                    }
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-access")) {
@@ -4886,7 +4901,10 @@ define([
                     el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
                 }
                 APP.getAccess(el, function (e) {
-                    if (e) { return void logError(e); }
+                    if (e) {
+                        UI.warn(Messages.error);
+                        return void logError(e);
+                    }
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {
@@ -5130,14 +5148,17 @@ define([
                     if (!obj || typeof(obj) !== "object" || Object.keys(obj).length === 0) {
                         return;
                     }
+                    manager.setHistoryMode(true);
                     copyObjectValue(folders[history.sfId], obj);
                     refresh();
                     return;
                 }
+
                 history.sfId = false;
 
                 var ok = manager.isValidDrive(obj.drive);
                 if (!ok) { return; }
+                manager.setHistoryMode(true);
 
                 var restricted  = files.restrictedFolders;
                 copyObjectValue(files, obj.drive);
@@ -5147,6 +5168,7 @@ define([
                 refresh();
             };
             history.onLeaveHistory = function () {
+                manager.setHistoryMode(false);
                 copyObjectValue(files, proxy.drive);
                 refresh();
             };
