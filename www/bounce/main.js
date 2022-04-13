@@ -59,6 +59,15 @@ define(['/api/config'], function (ApiConfig) {
     // Local URLs don't require any warning and can navigate directly without user input.
     if (target.host === host.host) { return void go(); }
 
+    // It's annoying to be prompted that you are leaving the platform to visit its docs
+    // but marking the docs domain as trusted undermines third-party admins' autonomy.
+    // If we ever abandon the cryptpad.fr domain someone could squat it and abuse this trust.
+    // If the docs domain is a subdomain of the current one then redirect automatically.
+    // We might make the docs domain configurable at some point in the future.
+    if (target.host === 'docs.cryptpad.fr' && target.host.endsWith(host.host)) {
+        return void go();
+    }
+
     // Everything else requires user input, so we load the platform's translations.
     // FIXME: this seems to infer language preferences from the browser instead of the user's account preferences
     require([
