@@ -13,6 +13,7 @@ define([
     '/bower_components/nthen/index.js',
     '/customize/pages.js',
 
+    '/bower_components/file-saver/FileSaver.min.js',
     '/lib/qrcode.min.js',
 ], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
@@ -490,25 +491,46 @@ define([
 
     var getQRCode = function (link) {
         var div = h('div');
-        var code = new window.QRCode(div, link);
+        /*var code =*/ new window.QRCode(div, link);
         return div;
     };
 
     var getQRTab = function (Env, data, opts, _cb) {
         var qr = getQRCode(opts.getLinkValue());
-        var link = h('div.cp-share-modal', [
+
+        var container = h('span#cp-qr-container', [
             h('div#cp-qr-link-preview', qr),
         ]);
+
+        var link = h('div.cp-share-modal', [
+            container,
+        ]);
+
+        $(container).css({
+            'background-color': 'white',
+            display: 'inline-flex',
+            padding: '5px',
+        });
 
         var buttons = [
             makeCancelButton(),
             {
+                className: 'primary cp-bar',
+                name: Messages.share_bar,
+                onClick: function () {
+                    UI.warn("OOPS: NOT IMPLEMENTED"); // XXX
+                    return true;
+                },
+            },
+            {
                 className: 'primary cp-nobar',
-                name: Messages.download_dl, //'PEWPEW', //Messages // XXX
+                name: Messages.download_dl,
                 iconClass: '.fa.fa-download',
                 onClick: function () {
-                    console.log("TODO SAVE IMAGE");
-                    UI.warn("NOT IMPLEMENTED");
+                    qr.querySelector('canvas').toBlob(blob => {
+                        var name = Util.fixFileName((opts.title || 'document') + '-qr.png');
+                        window.saveAs(blob, name);
+                    });
                 },
             },
         ];
@@ -700,7 +722,7 @@ define([
             return $rights.parent().find('#cp-embed-link-preview');
         };
         var getQR = function () {
-            return $rights.parent().find('#cp-qr-link-preview');
+            return $rights.parent().find('#cp-qr-container');
         };
 
         // update values for link and embed preview when radio btns change

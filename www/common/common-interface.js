@@ -1492,7 +1492,7 @@ define([
         var cb = Util.once(Util.mkAsync(_cb || Util.noop));
         require(['/lib/qrcode.min.js'], function () {
             var div = h('div');
-            var code = new window.QRCode(div, data);
+            /*var code =*/ new window.QRCode(div, data);
             cb(void 0, div);
         }, function (err) {
             cb(err);
