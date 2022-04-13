@@ -13,14 +13,15 @@ var map = {
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
+    //'nl': 'Nederlands'
     //'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
     'ru': 'Русский',
     //'sv': 'Svenska',
     //'te': 'తెలుగు',
+    //'uk': 'украї́нська мо́ва',
     'zh': '繁體中文',
-    //'nl': 'Nederlands'
 };
 
 var messages = {};

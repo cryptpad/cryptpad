@@ -45,21 +45,13 @@ module.exports = {
  *  In such a case this should be also handled by NGINX, as documented in
  *  cryptpad/docs/example.nginx.conf (see the $main_domain variable)
  *
- *  Note: you may provide multiple origins for the purpose of accessing
- *  a development instance via different URLs, like so:
- *  httpUnsafeOrigin: 'http://127.0.0.1:3000/ http://localhost:3000/',
- *
- *  Such configuration is not recommended for production instances,
- *  as the development team does not actively test such configuration
- *  and it may have unintended consequences in practice.
- *
  */
     httpUnsafeOrigin: 'http://localhost:3000',
 
 /*  httpSafeOrigin is the URL that is used for the 'sandbox' described above.
  *  If you're testing or developing with CryptPad on your local machine then
  *  it is appropriate to leave this blank. The default behaviour is to serve
- *  the main domain over port 3000 and to serve the content over port 3001.
+ *  the main domain over port 3000 and to serve the sandbox content over port 3001.
  *
  *  This is not appropriate in a production environment where invasive networks
  *  may filter traffic going over abnormal ports.
@@ -69,6 +61,9 @@ module.exports = {
  *
  *  This value corresponds to the $sandbox_domain variable
  *  in the example nginx file.
+ *
+ *  Note that in order for the sandboxing system to be effective
+ *  httpSafeOrigin must be different from httpUnsafeOrigin.
  *
  *  CUSTOMIZE AND UNCOMMENT THIS FOR PRODUCTION INSTALLATIONS.
  */

@@ -7,6 +7,7 @@ define([
 ], function (Config, h, Msg, Pages, LocalStore) {
 
     return function () {
+        document.title = Msg.contact;
         var developerEmail = "contact@cryptpad.fr";
         var adminEmail = Config.adminEmail && [
             'i.did.not.read.my.config@cryptpad.fr',

@@ -7,6 +7,7 @@ define([
     '/customize/pages.js'
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
+        document.title = Msg.register_header;
         var urlArgs = Config.requireConf.urlArgs;
 
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
