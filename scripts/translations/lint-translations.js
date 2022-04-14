@@ -34,7 +34,7 @@ var special_rules = {};
 
 special_rules.en = function (s) {
     // Prefer the american -ize suffix for verbs rather than -ise
-    return /[^w]ise/.test(s);
+    return /[^w]ise(\s|$)/.test(s);
 };
 
 special_rules.fr = function (s) {
