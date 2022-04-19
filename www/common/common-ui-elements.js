@@ -1365,7 +1365,7 @@ define([
             else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
             else { $usage.addClass('cp-limit-usage-above'); }
             var $text = $('<span>', {'class': 'cp-limit-usage-text'});
-            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit]));
+            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit])); // TODO avoid use of .html() if possible
             $container.prepend($text);
             $limit.append($usage);
         };
@@ -1476,7 +1476,7 @@ define([
             options.forEach(function (o) {
                 if (!isValidOption(o)) { return; }
                 if (isElement(o)) { return $innerblock.append(o); }
-                var $el = $('<' + o.tag + '>', o.attributes || {});
+                var $el = $(h(o.tag, (o.attributes || {})));
 
                 if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
                     o.content = [o.content];
@@ -1666,17 +1666,14 @@ define([
 
         var template = function (line, link) {
             if (!line || !link) { return; }
-            var p = $('<p>').html(line)[0]; // XXX
+            var p = Pages.setHTML(h('p'), line);
             var sub = link.cloneNode(true);
-
-// XXX use URL if you need to?
-/*  This is a hack to make relative URLs point to the main domain
-    instead of the sandbox domain. It will break if the admins have specified
-    some less common URL formats for their customizable links, such as if they've
-    used a protocal-relative absolute URL. The URL API isn't quite safe to use
-    because of IE (thanks, Bill).  */
-            var href = sub.getAttribute('href');
-            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var href;
+            try {
+                href = new URL(sub.getAttribute('href'), origin).href;
+            } catch (err) {
+                return; // don't return anything to display if their href causes URL to throw
+            }
             var a = p.querySelector('a');
             if (!a) { return; }
             sub.innerText = a.innerText;
@@ -2007,8 +2004,7 @@ define([
             }
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
-        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon);//.append($userbig);
+        var $userButton = $('<div>').append($icon);
         if (accountName) {
             $userButton = $('<div>').append(accountName);
         }
@@ -2161,7 +2157,7 @@ define([
         var $modal = modal.$modal;
         var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
 
-        var $description = $('<p>').html(Messages.creation_newPadModalDescription);
+        var $description = $(Pages.setHTML(h('p'), Messages.creation_newPadModalDescription));
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 
