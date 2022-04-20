@@ -85,7 +85,6 @@
     "user_accountName": "Kontonamn",
     "user_displayName": "Visningsnamn",
     "user_rename": "Ändra ditt visningsnamn",
-    "changeNamePrompt": "Ändra ditt namn (lämna tomt för att vara anonym): ",
     "exportPrompt": "Vad vill du kalla din fil?",
     "exportButtonTitle": "Exportera detta dokument till en fil på din enhet",
     "exportButton": "Exportera",

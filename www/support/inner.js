@@ -49,7 +49,7 @@ define([
             'cp-support-language',
             'cp-support-form',
         ],
-        'debugging': [
+        'debugging': [ // Msg.support_cat_debugging
             'cp-support-debugging-data',
         ],
     };

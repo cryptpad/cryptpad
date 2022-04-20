@@ -108,7 +108,7 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "v4.14.0";
+    Pages.versionString = "v4.14.1";
 
     var customURLs = Pages.customURLs = {};
     (function () {
@@ -136,6 +136,8 @@ define([
                 customURLs[k] = value[l] || value['default'];
             }
         });
+        var value = AppConfig.hostDescription;
+        Pages.hostDescription = (value && (value[l] || value.default)) ||  Msg.home_host;
     }());
 
     // used for the about menu

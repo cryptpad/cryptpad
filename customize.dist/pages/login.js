@@ -6,6 +6,7 @@ define([
     '/api/config',
 ], function (h, UI, Msg, Pages, Config) {
     return function () {
+        document.title = Msg.login_login;
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [

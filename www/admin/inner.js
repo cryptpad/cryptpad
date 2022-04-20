@@ -1968,7 +1968,7 @@ define([
 
     create['bytes-written'] = function () {
         var key = 'bytes-written';
-        var $div = makeBlock(key);
+        var $div = makeBlock(key); // Msg.admin_bytesWrittenTitle.admin_bytesWrittenHint
 
         var duration = APP.instanceStatus.profilingWindow;
         if (!isPositiveInteger(duration)) { duration = 10000; }

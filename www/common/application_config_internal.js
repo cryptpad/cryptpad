@@ -35,7 +35,12 @@ define(function() {
     //'doc', 'presentation'
     ];
 
-    // XXX
+    /* 'doc' and 'presentation' are considered experimental and are hidden from users
+     * unless they have a custom quota applied via the admin panel. You can customize
+     * which apps are treated this way via the parameter below. This behaviour is not
+     * officially supported and the development team won't help you with any problems
+     * that you experience if you change this value.
+     */
     // AppConfig.premiumTypes = ['doc', 'presentation'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
@@ -106,6 +111,18 @@ define(function() {
      * Since this is different for each individual or organization there is no default value.
      */
     AppConfig.roadmap = false;
+
+    /* By default CryptPad instances display some text on the home page indicating that
+     * they are an independent community instance of the software. You can provide customized messages
+     * by filling in the following data structure with strings for each language you intend to support.
+     */
+    AppConfig.hostDescription = {
+        // default: "Hello world",
+        // en: "Hello world",
+        // fr: "Bonjour le monde",
+        // de: "Hallo Welt",
+        // "pt-br": "Olá Mundo"<
+    };
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds

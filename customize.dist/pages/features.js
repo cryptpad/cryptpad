@@ -12,6 +12,7 @@ define([
     var accounts = Pages.accounts;
 
     return function () {
+        document.title = Msg.features;
         Msg.features_f_apps_note = AppConfig.availablePadTypes.map(function (app) {
             if (AppConfig.registeredOnlyTypes.indexOf(app) !== -1) { return; }
             if (AppConfig.premiumTypes && AppConfig.premiumTypes.includes(app)) { return; }

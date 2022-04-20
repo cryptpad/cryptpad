@@ -29,7 +29,6 @@
     "user_accountName": "Paskyros vardas",
     "user_displayName": "Rodomas pavadinimas",
     "user_rename": "Keisti rodomą pavadinimą",
-    "changeNamePrompt": "Pakeiskite savo vardą (palikite tuščią, kad būtų anoniminis): ",
     "exportPrompt": "Kaip norėtumėte pavadinti savo failą?",
     "exportButtonTitle": "Eksportuokite padą į vietinį failą",
     "exportButton": "Eksportuoti",

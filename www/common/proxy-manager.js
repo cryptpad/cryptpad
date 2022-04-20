@@ -236,8 +236,10 @@ define([
     };
 
     var getSharedFolderData = function (Env, id) {
-        if (!Env.folders[id]) { return {}; }
-        var proxy = Env.folders[id].proxy;
+        var inHistory;
+        if (Env.isHistoryMode && !Env.folders[id]) { inHistory = true; }
+        else if (!Env.folders[id]) { return {}; }
+        var proxy = inHistory? {}: Env.folders[id].proxy;
 
         // Clean deprecated values
         if (Object.keys(proxy.metadata || {}).length > 1) {
@@ -522,6 +524,7 @@ define([
                 href: '/drive/#' + hashes.editHash,
                 roHref: '/drive/#' + hashes.viewHash,
                 channel: secret.channel,
+                lastTitle: data.name,
                 ctime: +new Date(),
             };
             if (data.password) { folderData.password = data.password; }
@@ -1562,6 +1565,10 @@ define([
         return Env.user.userObject.getOwnedPads(Env.edPublic);
     };
 
+    var setHistoryMode = function (Env, flag) {
+        Env.isHistoryMode = Boolean(flag);
+    };
+
     var getFolderData = function (Env, path) {
         var resolved = _resolvePath(Env, path);
         if (!resolved || !resolved.userObject) { return {}; }
@@ -1657,6 +1664,7 @@ define([
             // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
+            setHistoryMode: callWithEnv(setHistoryMode),
             // Drive RPC commands
             rename: callWithEnv(renameInner),
             move: callWithEnv(moveInner),

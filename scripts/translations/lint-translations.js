@@ -14,13 +14,11 @@ var simpleTags = [
     // FIXME register_notes
     '<ul class="cp-notes-list">',
     '</ul>',
-    '<li>',
-    '</li>',
     '<span class="red">',
     '</span>',
 ];
 
-['a', 'b', 'em', 'p', 'i'].forEach(function (tag) {
+['a', 'b', 'em', 'p', 'i', 'code', 'li',].forEach(function (tag) {
     simpleTags.push('<' + tag + '>');
     simpleTags.push('</' + tag + '>');
 });
@@ -36,7 +34,7 @@ var special_rules = {};
 
 special_rules.en = function (s) {
     // Prefer the american -ize suffix for verbs rather than -ise
-    return /[^w]ise/.test(s);
+    return /[^w]ise(\s|$)/.test(s);
 };
 
 special_rules.fr = function (s) {

@@ -121,6 +121,48 @@ define([
         var privacyLink = fastLink('privacy');
         var termsLink = fastLink('terms');
 
+/*
+        var blocks = [
+            h('div.row.cp-page-section', [
+                h('div.col-sm-6',
+                    h('img.img-fluid.cp-img-invert', {
+                        src:'/customize/images/shredder.png',
+                        alt:'',
+                        'aria-hidden': 'true'
+                    })
+                ),
+                h('div.col-sm-6', [
+                    h('h2', Msg.home_privacy_title),
+                    h('p', Msg.home_privacy_text)
+                ])
+            ]),
+            h('div.row.cp-page-section',
+                h('div.col-sm-12', [
+                    h('h2', Msg.home_host_title),
+                    h('p', Pages.hostDescription),
+                ])
+            ),
+            h('div.row.cp-page-section', [
+                h('div.col-sm-6', [
+                    h('h2', Msg.home_opensource_title),
+                    opensource, // XXX
+                    h('img.small-logo.cp-img-invert', {
+                        src: '/customize/images/logo_AGPLv3.svg',
+                        alt: 'APGL3 License Logo'
+                    })
+                ]),
+                h('div.col-sm-6', [
+                    h('h2', Msg.home_support_title),
+                    supportText, // XXX
+                    subscribeButton,
+                    Pages.crowdfundingButton(function () {
+                        Feedback.send('HOME_SUPPORT_CRYPTPAD');
+                    }),
+                ])
+            ])
+        ];
+*/
+
         var notice;
 /*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
     If the text is the key for the translation system then then the most appropriate translated text

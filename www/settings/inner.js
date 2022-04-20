@@ -1811,6 +1811,7 @@ define([
         createLeftside();
         createUsageButton();
 
+        common.setTabTitle(Messages.settings_title);
         UI.removeLoadingScreen();
     });
 });
