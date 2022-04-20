@@ -1,3 +1,38 @@
+# 4.14.1
+
+This minor release fixes a number of bugs that we noticed after deploying 4.14.0.
+
+* A bug in the code responsible for loading document metadata caused documents to be incorrectly treated as if they had no owners. As a result, several options in the Drive's UI did not work as expected:
+  * owned documents could not be destroyed from the access menu.
+  * document passwords could not be changed from the access menu.
+  * document history could not be trimmed from the properties menu.
+* We also found that some components did not behave as expected in the Drive UI while in history mode:
+  * it was not possible to open shared folders' menus (properties, share, access) to view what their properties were in the past (in the event that they had been deleted or had their passwords changed).
+  * shared folders names were not correctly displayed even when their data was available.
+* Some last minute changes to the checkup page before the 4.14.0 release caused a default error message to be incorrectly concatenated with the intended error message for each failing test.
+* A rule in one of our translation linting scripts incorrectly flagged the "ise" in the word "milliseconds" as an instance of the UK-English "-ise" suffix (we use "-ize" elsewhere).
+* An admin of a third-party instance found that they were unable to load their checkup page. As it turned out, they were trying to access it via `/checkup` instead of `/checkup/`. We've updated our example NGINX config to rewrite this URL to include the trailing slash.
+* Some of the comments in `cryptpad/config/config.example.js` were outdated or incorrect and have been removed or corrected.
+* The "About CryptPad" now correctly accepts handles custom links provided as protocol-relative URLs.
+* A number of pages did not set custom titles and instead used the default "CryptPad". They now update the document title, making it possible to distinguish between such pages when you have multiple tabs open.
+* The forms and kanban apps both allow users to write content in Markdown, but did not always display the toolbar above their editors. This was because they inferred the user's preferred editor configuration based on whether they had collapsed the toolbar in the code editor. Since these apps don't offer an easy way to display the toolbar once more, we decided that it was better to just display it all the time.
+
+We've also merged a few significant improvements:
+
+* The Polish translation was updated by Dariusz Laska.
+* A significant percentage (currently 66%) of the Ukrainian translation has also been completed and enabled.
+* We've updated Mermaidjs to version 9.0.0, which fixes a number of bugs and also introduces support for [`gitGraph` diagrams](https://mermaid-js.github.io/mermaid/#/gitgraph?id=gitgraph-diagrams)
+* Users on cryptpad.fr will no longer be warned that they are leaving the platform when they open a link to our documentation. Users on third-party instances will continue to see the usual warning, since they really are navigating to a site operated by different admins.
+
+Our `4.14.0` release notes introduced breaking changes. If you are not already running `4.14.0` we recommend updating to that first, then updating to `4.14.1` once you've confirmed that you are correctly passing all the tests on your instance's checkup page.S
+
+To do so:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
 # 4.14.0
 
 ## Goals
