@@ -1462,5 +1462,6 @@
     "admin_bytesWrittenHint": "Wenn du die Messung der Festplattenleistung aktiviert hast, kann die Dauer unten konfiguriert werden.",
     "admin_enableDiskMeasurementsHint": "Wenn aktiviert, wird ein JSON-API-Endpunkt unter <code>/api/profiling</code> bereitgestellt. Damit wird eine laufende Messung der Festplattenzugriffe innerhalb des unten festgelegten Zeitfensters durchgeführt. Diese Einstellung kann die Leistung des Servers beeinträchtigen und möglicherweise sensible Daten offenlegen. Es wird empfohlen, diese Einstellung deaktiviert zu lassen, wenn du nicht weißt, was du tust.",
     "admin_setDuration": "Dauer festlegen",
-    "error_evalPermitted": "Abbruch, weil eval nicht erlaubt sein sollte.\n\nDieser Fehler steht in Zusammenhang mit Content-Security-Policy-Headern und könnte folgende Ursachen haben: ein veralteter Browser, der diese nicht unterstützt, Browser-Erweiterungen, die das korrekte Verhalten beeinträchtigen, oder eine falsche Konfiguration dieser CryptPad-Instanz."
+    "error_evalPermitted": "Abbruch, weil eval nicht erlaubt sein sollte.\n\nDieser Fehler steht in Zusammenhang mit Content-Security-Policy-Headern und könnte folgende Ursachen haben: ein veralteter Browser, der diese nicht unterstützt, Browser-Erweiterungen, die das korrekte Verhalten beeinträchtigen, oder eine falsche Konfiguration dieser CryptPad-Instanz.",
+    "ui_experimental": "Diese Funktion wird als experimentell betrachtet."
 }
