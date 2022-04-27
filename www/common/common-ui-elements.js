@@ -2014,6 +2014,15 @@ define([
             // If no display name, do not display the parentheses
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
         }*/
+
+        options.forEach(function (option, i) {
+            var f = option.action;
+            if (!f) { return; }
+            option.action = function () {
+                f();
+                return true;
+            };
+        });
         var dropdownConfigUser = {
             buttonContent: $userButton[0],
             options: options, // Entries displayed in the menu
