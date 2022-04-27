@@ -8,7 +8,7 @@ define([
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
-        var urlArgs = Config.requireConf.urlArgs;
+        //var urlArgs = Config.requireConf.urlArgs;
 
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
 
@@ -56,7 +56,7 @@ define([
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group.hidden', [
                         h('div.cp-register-instance', [
-                            Msg.register_instance, , h('br'),
+                            Msg.register_instance, h('br'),
                             h('a', {
                                 href: '/features.html'
                             }, Msg.register_whyRegister)
