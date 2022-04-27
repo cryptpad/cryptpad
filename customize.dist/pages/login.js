@@ -5,6 +5,7 @@ define([
     '/customize/pages.js',
     '/api/config',
 ], function (h, UI, Msg, Pages, Config) {
+    Msg.login_instance = "Connect to your account on {0}"; // XXX insert instance name
     return function () {
         document.title = Msg.login_login;
         return [h('div#cp-main', [
@@ -14,6 +15,7 @@ define([
                 h('div.row', [
                     h('div.col-md-3'),
                     h('div#userForm.form-group.hidden.col-md-6', [
+                        h('div.cp-login-instance',Msg.login_instance),
                         h('input.form-control#name', {
                             name: 'name',
                             type: 'text',
@@ -33,11 +35,11 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
-                            h('button.login', Msg.login_login),
                             (Config.restrictRegistration?
                                 undefined:
                                 h('button#register.cp-secondary', Msg.login_register)
-                            )
+                            ),
+                            h('button.login', Msg.login_login)
                         ])
                     ]),
                     h('div.col-md-3')

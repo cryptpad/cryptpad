@@ -212,9 +212,9 @@ define([
                     h('span.logo-font', 'CryptPad')
                 ]),
                 footLink('https://cryptpad.org', null, 'Website', 'link'),
-                footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate') // XXX DB: add OpenCollective icon
+                footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money') // XXX DB: add OpenCollective icon
             ]),
-            h('.div.cp-footer-center', [
+            h('div.cp-footer-center', [
                 h('div.cp-footer-language', [
                     h('i.fa.fa-language', {'aria-hidden': 'true'}),
                     languageSelector()
@@ -254,17 +254,16 @@ define([
             ]);
         }
 
-/*
-        var button = h('button.navbar-toggler', {
-            'type':'button',
-            /*'data-toggle':'collapse',
-            'data-target':'#menuCollapse',
-            'aria-controls': 'menuCollapse',
-            'aria-expanded':'false',
-            'aria-label':'Toggle navigation'
-        }, h('i.fa.fa-bars ')); */
+        // var button = h('button.navbar-toggler', {
+        //     'type':'button',
+        //     'data-toggle':'collapse',
+        //     'data-target':'#menuCollapse',
+        //     'aria-controls': 'menuCollapse',
+        //     'aria-expanded':'false',
+        //     'aria-label':'Toggle navigation'
+        // }, h('i.fa.fa-bars '));
 
-        // XXX button to collapse navbar on small screens
+        // // XXX button to collapse navbar on small screens
         // $(button).click(function () {
         //     if ($('#menuCollapse').is(':visible')) {
         //         return void $('#menuCollapse').slideUp();
@@ -273,7 +272,7 @@ define([
         // });
 
         return h('nav.navbar.navbar-expand-lg',
-            // XXX add link back to index.html on footer logo
+            // XXX DB add link back to index.html on other pages
             // h('a.navbar-brand', { href: '/index.html'}, [
             //     h('img', {
             //         src: '/customize/CryptPad_logo.svg?',
@@ -281,14 +280,15 @@ define([
             //         alt: ''
             //     }), 'CryptPad'
             // ]),
-            //button, XXX collapse button
-            h('div', [
+            // button, // XXX collapse button
+            // add .collapse.navbar-collapse.justify-content-end#menuCollapse to div below to enable collapse button
+            [
                 // XXX remove about page
                 // h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
                 h('a.nav-item.nav-link', { href: '/features.html'}, Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'},
                     [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),
-            ].concat(rightLinks))
+            ].concat(rightLinks)
         );
     };
 

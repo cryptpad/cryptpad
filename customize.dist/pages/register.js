@@ -27,8 +27,8 @@ define([
                         h('div.row.cp-page-title', h('h1', Msg.register_header)),
                         //h('div.row.cp-register-det', content),
                     ].concat(content)),
+                    Pages.infopageFooter(),
                 ]),
-                Pages.infopageFooter(),
             ];
         };
 
@@ -45,6 +45,8 @@ define([
             termsCheck = h('div.checkbox-container', tos);
         }
 
+        Msg.register_instance = "Creating a new account on {0}"; // XXX DB
+
         return frame([
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
@@ -52,13 +54,13 @@ define([
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
                 h('div.cp-reg-form.col-md-6', [
-                    h('img.img-fluid', {
-                        src: '/customize/images/swallow-the-key.png?' + urlArgs
-                    }),
                     h('div#userForm.form-group.hidden', [
-                        h('a', {
-                            href: '/features.html'
-                        }, Msg.register_whyRegister),
+                        h('div.cp-register-instance', [
+                            Msg.register_instance, , h('br'),
+                            h('a', {
+                                href: '/features.html'
+                            }, Msg.register_whyRegister)
+                        ]),
                         h('input.form-control#username', {
                             type: 'text',
                             autocomplete: 'off',
