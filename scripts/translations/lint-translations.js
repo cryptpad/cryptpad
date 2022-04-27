@@ -115,6 +115,7 @@ processLang(EN, 'en', true);
   'sv',
   //'te',
   'tr',
+  'uk',
   'zh',
 ].forEach(function (lang) {
     try {
