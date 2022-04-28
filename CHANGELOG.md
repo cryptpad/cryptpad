@@ -32,6 +32,7 @@ To do so:
 2. Get the latest code with git
 3. Install the latest dependencies with `bower update` and `npm i`
 4. Restart your server
+5. Review your instance's checkup page to ensure that you are passing all tests
 
 # 4.14.0
 
