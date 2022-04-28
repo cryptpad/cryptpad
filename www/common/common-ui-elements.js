@@ -2023,7 +2023,7 @@ define([
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
         }*/
 
-        options.forEach(function (option, i) {
+        options.forEach(function (option) {
             var f = option.action;
             if (!f) { return; }
             option.action = function () {
