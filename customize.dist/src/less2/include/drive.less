@@ -121,6 +121,9 @@
                 .cp-app-drive-tree-category {
                     margin-top: 0.5em;
                 }
+                .cp-splitter {
+                    display: none;
+                }
             }
         }
     }
@@ -265,7 +268,6 @@
         box-sizing: border-box;
         background: @cp_sidebar-left-bg;
         overflow: auto;
-        resize: horizontal;
         width: auto;
         white-space: nowrap;
         max-width: 500px;
@@ -467,8 +469,27 @@
     #cp-app-drive-content-container {
         display: flex;
         flex-flow: column;
-        flex: 1 1 100%;
+        flex: 1;
         min-width: 0;
+        position: relative;
+        .cp-splitter {
+            position: absolute;
+            height: 100%;
+            width: 8px;
+            top: 0;
+            left: 0;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            &:hover {
+                border-left: 1px solid @cryptpad_text_col;
+            }
+            i {
+                color: @cryptpad_text_col;
+                font-size: 1.6rem;
+            }
+        }
     }
     #cp-app-drive-content {
         box-sizing: border-box;
