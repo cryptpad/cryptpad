@@ -261,6 +261,27 @@ var serveBroadcast = makeRouteCache(function (host) {
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
+var define = function (obj) {
+    return `define(function (){
+    return ${JSON.stringify(obj, null, '\t')};
+});`
+};
+
+app.get('/api/instance', function (req, res) { // XXX use caching?
+    res.setHeader('Content-Type', 'text/javascript');
+    res.send(define({
+        name: {
+            default: Env.instanceName,
+        },
+        description: {
+            default: Env.instanceDescription,
+        },
+        location: {
+            default: Env.instanceJurisdiction,
+        },
+    }));
+});
+
 var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
 var fivehundred_path = Path.resolve(__dirname + '/customize.dist/500.html');
 var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');

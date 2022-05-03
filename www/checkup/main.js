@@ -22,6 +22,8 @@ define([
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Pages, Tools, AppConfig) {
+    window.CHECKUP_MAIN_LOADED = true;
+
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -1361,6 +1363,25 @@ define([
                 path: blockPlaceholderPath,
                 value: xcto,
             });
+        });
+    });
+
+    assert(function (cb, msg) {
+        var url = '/api/instance';
+        msg.appendChild(h('span', [
+            link(url, url),
+            " did not load as expected. This is most likely caused by a missing directive in your reverse proxy or an outdated version of the API server.",
+        ]));
+
+        require([
+            `optional!${url}`,
+        ], function (Instance) {
+            // if the URL fails to load then an empty object will be returned
+            // this can be interpreted as a failure, even though the rest of the platform should still work
+            if (!Object.keys(Instance).length) {
+                return void cb(Instance);
+            }
+            cb(true);
         });
     });
 
