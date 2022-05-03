@@ -637,7 +637,9 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
 
-        var splitter = h('div.cp-splitter');
+        var splitter = h('div.cp-splitter', [
+            h('i.fa.fa-ellipsis-v')
+        ]);
         $contentContainer.append(splitter);
         APP.$splitter = $(splitter).on('mousedown', function (e) {
             e.preventDefault();
