@@ -11,7 +11,8 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
-    '/customize/pages.js'
+    '/customize/pages.js',
+    //'json!/api/instance',
 ], function ($, Config, h, Feedback, UI, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages) {
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -177,6 +178,19 @@ define([
             ]));
         }
 
+        // instance location
+        var locationBlock;
+
+        if (Pages.Instance.location) {
+            locationBlock = h('div.cp-instance-location', [
+                h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
+                'Encrypted data is hosted in: ', // XXX translate
+                Pages.Instance.location,
+            ]);
+        } else {
+            locationBlock = h('div', h('br')); // XXX
+        }
+
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
@@ -188,12 +202,9 @@ define([
                                 'aria-hidden': 'true',
                                 alt: ''
                             }),
-                            h('h1', 'CryptPad.fr'), // XXX use instance name
-                            UI.setHTML(h('span.tag-line'), Msg.main_catch_phrase), // XXX Use instance description
-                            h('div.cp-instance-location', [
-                                h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
-                                'Encrypted data is hosted in: France (OVH)' // XXX Use instance location
-                            ]),
+                            h('h1', Pages.Instance.name),
+                            UI.setHTML(h('span.tag-line'), Pages.Instance.description),
+                            locationBlock,
                             termsLink,
                             privacyLink,
                             imprintLink

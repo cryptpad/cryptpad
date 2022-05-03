@@ -5,7 +5,8 @@ define([
     '/customize/messages.js',
     'jquery',
     '/api/config',
-], function (h, Language, AppConfig, Msg, $, ApiConfig) {
+    'optional!/api/instance',
+], function (h, Language, AppConfig, Msg, $, ApiConfig, Instance) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -141,6 +142,21 @@ define([
         });
         var value = AppConfig.hostDescription;
         Pages.hostDescription = (value && (value[l] || value.default)) ||  Msg.home_host;
+
+        Pages.Instance = {};
+        Object.keys(Instance).forEach(function (k) {
+            var value = Instance[k];
+            var result = Pages.Instance[k] = value[l] || value.default || undefined;
+        });
+
+        var name;
+        try {
+            name = Pages.Instance.name || new URL('/', ApiConfig.httpUnsafeOrigin).host;
+        } catch (err) {
+            name = 'CryptPad';
+        }
+        Pages.Instance.name = name;
+        Pages.Instance.description = Pages.Instance.description || Msg.main_catch_phrase;
     }());
 
     // used for the about menu
