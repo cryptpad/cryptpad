@@ -2,8 +2,6 @@ define([
     'jquery',
     '/api/config',
     '/common/hyperscript.js',
-    '/common/common-feedback.js',
-    '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-util.js',
@@ -12,8 +10,7 @@ define([
     '/customize/application_config.js',
     '/common/outer/local-store.js',
     '/customize/pages.js',
-    //'json!/api/instance',
-], function ($, Config, h, Feedback, UI, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages) {
+], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var isAvailableType = function (x) {
@@ -55,6 +52,7 @@ define([
                 var s = 'div.bs-callout.cp-callout-' + x[0];
                 var cls = '';
                 var isEnabled = checkRegisteredType(x[0]);
+
                 var isEAEnabled = checkEarlyAccess(x[0]);
                 //if (i > 2) { s += '.cp-more.cp-hidden'; }
                 var icon = AppConfig.applicationsIcon[x[0]];
@@ -62,6 +60,8 @@ define([
                 var href = '/'+ x[0] +'/';
                 var attr = isEnabled ? { href: href } : {
                     onclick: function () {
+                        // if the app is not enabled then we send them to the login page
+                        // which will redirect to the app in question ?
                         var loginURL = Hash.hashToHref('', 'login');
                         var url = Hash.getNewPadURL(loginURL, { href: href });
                         window.location.href = url;
@@ -89,15 +89,6 @@ define([
                 TextFit($(a).find('.pad-button-text')[0], {minFontSize: 13, maxFontSize: 18});
             });
         });
-        UI.addTooltips();
-
-        var subscribeButton;
-        /* Display a subscribe button if they are enabled and the button's translation key exists */
-        if (Config.allowSubscriptions) {
-            subscribeButton = Pages.subscribeButton(function () {
-                Feedback.send('HOME_SUBSCRIBE_CRYPTPAD');
-            });
-        }
 
         var pageLink = function (ref, loc, text) {
             if (!ref) { return; }
@@ -195,7 +186,7 @@ define([
 
         var subButton = function () {
             if (Pages.areSubscriptionsAllowed()) {
-                sub = h('div.cp-sub-prompt', [
+                var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
                     h('br'),
                     h('button', Msg.features_f_subscribe),
@@ -220,7 +211,7 @@ define([
                                 alt: ''
                             }),
                             h('h1.cp-instance-title', Pages.Instance.name),
-                            UI.setHTML(h('span.tag-line'), Pages.Instance.description),
+                            Pages.setHTML(h('span.tag-line'), Pages.Instance.description),
                             locationBlock,
                             termsLink,
                             privacyLink,
