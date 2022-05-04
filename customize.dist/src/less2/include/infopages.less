@@ -146,51 +146,30 @@ body.html {
     }
     footer {
         background-color: @cp_static-footer;
-        padding: 10px;
         align-self: normal; // override align-items:center from parent in index.html
         box-shadow: inset 0px 7px 15px -7px rgba(0,0,0,0.3);
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-direction: row;
-        @media screen and (max-width: 830px) {
-            flex-direction: column;
-            div {
-                margin-bottom: 10px;
-            }
-        }
+        flex-wrap: wrap;
         .cp-footer-left, .cp-footer-right {
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
             align-items: center;
             a {
-                margin-left: 10px;
+                margin-right: 10px;
             }
         }
 
-        a {
-            background-color: @cp_static-card-bg;
-            border-radius: @infopages-radius;
-            padding: 0.5em 0.7em;
-            * {
-                display: inline;
-            }
-            i {
-                margin-right: 5px;
-            }
-            &:hover {
-                color: @cryptpad_text_col;
-            }
-        }
         .cp-logo-foot {
             display: flex;
             flex-flow: row;
-            width: 100%;
             align-items: center;
-            margin-right: 20px;
+            padding: 10px;
             img {
                 max-height: 40px;
-                display: block;
                 margin-right: 10px;
             }
             .logo-font {
@@ -203,7 +182,26 @@ body.html {
 
         }
 
+        .cp-logo-btns {
+            padding: 10px;
+            a {
+                background-color: @cp_static-card-bg;
+                border-radius: @infopages-radius;
+                padding: 0.5em 0.7em;
+                white-space: nowrap;
+                display: inline-block;
+                i {
+                    margin-right: 5px;
+                }
+                &:hover {
+                    color: @cryptpad_text_col;
+                }
+            }
+
+        }
+
         .cp-footer-language {
+            padding: 10px;
             margin-right: 10px;
             i {
                 font-size: 1.3em;
@@ -219,6 +217,7 @@ body.html {
             }
         }
         .cp-footer-version {
+            padding: 10px;
             font-family: 'IBM Plex Mono';
         }
         // .cp-version-footer {

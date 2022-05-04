@@ -167,57 +167,7 @@ define([
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
     Pages.roadmapLink = footLink(customURLs.roadmap, 'footer_roadmap');
 
-    Pages.infopageOldFooter = function () { // XXX DB: not used, kept to copy/paste
-        //var terms = footLink('/terms.html', 'footer_tos'); // FIXME this should be configurable like the other legal pages
-        var legalFooter;
-
-        // only display the legal part of the footer if it has content
-        if (Pages.termsLink || Pages.privacyLink || Pages.imprintLink) {
-            legalFooter = footerCol('footer_legal', [
-                Pages.termsLink,
-                Pages.privacyLink,
-                Pages.imprintLink,
-            ]);
-        }
-
-        var n = legalFooter ? 3: 4;
-
-        return h('footer', [
-            h('div.container', [
-                h('div.row', [
-                    h('div.col-sm-' + n, [
-                        h('div.cp-logo-foot', [
-                            h('img', {
-                                src: '/customize/CryptPad_logo.svg',
-                                "aria-hidden": true,
-                                alt: ''
-                            }),
-                            h('span.logo-font', 'CryptPad')
-                        ])
-                    ]),
-                    footerCol('footer_product', [
-                        footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
-                        Pages.docsLink,
-                        footLink('/features.html', Pages.areSubscriptionsAllowed()? 'pricing': 'features'), // Messages.pricing, Messages.features
-                        Pages.sourceLink,
-                        footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
-                    ], n),
-                    footerCol('footer_aboutUs', [
-                        footLink('https://blog.cryptpad.fr/', 'blog'),
-                        footLink('/contact.html', 'contact'),
-                        footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
-                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
-                        Pages.roadmapLink,
-                    ], n),
-                    legalFooter,
-                ])
-            ]),
-            h('div.cp-version-footer', [
-                languageSelector(),
-                h('span', "CryptPad " + Pages.versionString)
-            ])
-        ]);
-    };
+    Msg.footer_website = "Project Website"; // XXX
 
     Pages.infopageFooter = function () {
         return h('footer.cp-footer', [
@@ -230,8 +180,11 @@ define([
                     }),
                     h('span.logo-font', 'CryptPad')
                 ]),
-                footLink('https://cryptpad.org', null, 'Website', 'link'),
-                footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money') // XXX DB: add OpenCollective icon
+                h('div.cp-logo-btns', [
+                    footLink('https://cryptpad.org', null, Msg.footer_website, 'link'),
+                    footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money') // XXX DB: add OpenCollective icon
+
+                ])
             ]),
             h('div.cp-footer-center', [
                 h('div.cp-footer-language', [
