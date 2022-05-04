@@ -109,7 +109,7 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "v4.14.1";
+    Pages.versionString = "5.0.0";
 
     var customURLs = Pages.customURLs = {};
     (function () {
@@ -146,7 +146,7 @@ define([
         Pages.Instance = {};
         Object.keys(Instance).forEach(function (k) {
             var value = Instance[k];
-            var result = Pages.Instance[k] = value[l] || value.default || undefined;
+            Pages.Instance[k] = value[l] || value.default || undefined;
         });
 
         var name;
@@ -281,23 +281,6 @@ define([
         });
 
         return crowdFunding;
-    };
-
-    Pages.subscribeButton = function (onClick) {
-        var _link = h('a', {
-            href: AppConfig.upgradeURL || "/accounts/",
-        });
-
-        var subscribe = h('button', [
-            Msg.features_f_subscribe,
-        ]);
-
-        $(subscribe).click(function () {
-            _link.click();
-            if (typeof(onClick) === 'function') { onClick(); }
-        });
-
-        return subscribe;
     };
 
     return Pages;
