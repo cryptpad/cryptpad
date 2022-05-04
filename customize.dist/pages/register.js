@@ -56,7 +56,8 @@ define([
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group.hidden', [
                         h('div.cp-register-instance', [
-                            Msg.register_instance, h('br'),
+                            Msg._getKey('register_instance', [ Pages.Instance.name ]),
+                            h('br'),
                             h('a', {
                                 href: '/features.html'
                             }, Msg.register_whyRegister)
