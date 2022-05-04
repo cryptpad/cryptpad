@@ -191,6 +191,23 @@ define([
             locationBlock = h('div', h('br')); // XXX
         }
 
+        Msg.home_morestorage = 'For more storage space, and to support the project:'; // XXX
+
+        var subButton = function () {
+            if (Pages.areSubscriptionsAllowed()) {
+                sub = h('div.cp-sub-prompt', [
+                    h('span', Msg.home_morestorage),
+                    h('br'),
+                    h('button', Msg.features_f_subscribe),
+                    h('button', Msg.footer_donate)
+                ]);
+                return sub;
+            } else {
+                return h('div');
+            }
+        };
+
+
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
@@ -202,7 +219,7 @@ define([
                                 'aria-hidden': 'true',
                                 alt: ''
                             }),
-                            h('h1', Pages.Instance.name),
+                            h('h1.cp-instance-title', Pages.Instance.name),
                             UI.setHTML(h('span.tag-line'), Pages.Instance.description),
                             locationBlock,
                             termsLink,
@@ -219,9 +236,12 @@ define([
                                     icons,
                                 ])
                             ]),
-                            h('a.cp-app-drive', {'href': '/drive/'}, [ // XXX check this is correct
-                                h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
-                                'Drive: 1GB' // XXX DB TODO: Use instance default storage
+                            h('div.cp-app-drive', [
+                                h('a.cp-drive-btn', {'href': '/drive/'}, [
+                                    h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
+                                    Msg.team_cat_drive
+                                ]),
+                                subButton
                             ])
                         ])
                     ]),
