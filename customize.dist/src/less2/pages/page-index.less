@@ -28,6 +28,18 @@
         color: @cryptpad_text_col;
     }
 
+
+    h1.cp-instance-title {
+        text-align: center;
+        font-family: "IBM Plex Mono";
+        font-weight: 500;
+        color: @cryptpad_color_brand;
+        font-size: 2.8rem;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
     .cp-home-hero {
         width: 100%;
         align-self: center;
@@ -184,6 +196,7 @@
             font-size: 1.5rem;
             display: block;
             height: min-content;
+            flex-shrink: 0;
             width: fit-content;
             padding: 10px;
             border-radius: @infopages-radius-L;
