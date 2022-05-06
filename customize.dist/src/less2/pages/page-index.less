@@ -11,16 +11,18 @@
         justify-content: space-between;
         align-items: center;
 
+        .alert-info {
+            font-size: 16px;
+            background-color: @cp_alerts-info-bg;
+            color: @cp_alerts-info-text;
+        }
+
         & > .cp-container {
             flex: 1;
             display: flex;
             flex-flow: column;
             justify-content: space-around;
             justify-content: space-evenly;
-            .alert-info {
-                font-size: 16px;
-                border-radius: 0px;
-            }
         }
     }
     body {
