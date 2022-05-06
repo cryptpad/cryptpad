@@ -177,9 +177,12 @@ define([
                             instanceTitle,
                             Pages.setHTML(h('span.tag-line'), Pages.Instance.description),
                             locationBlock,
-                            termsLink,
-                            privacyLink,
-                            imprintLink
+                            h('div.cp-instance-links', [
+                                termsLink,
+                                privacyLink,
+                                imprintLink,
+                                h('a', {href:"/contact.html"}, Msg.contact)
+                            ])
                         ]),
                         h('div.cp-apps.col-lg-6', [
                             h('div.cp-app-grid', [
