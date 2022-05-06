@@ -130,7 +130,9 @@ define([
         // instance title
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
         // XXX DB: How does TextFit work?!
-        // TextFit($(h1).find('.cp-instance-title')[0], {minFontSize: 13, maxFontSize: 18});
+        setTimeout(function () {
+            TextFit(instanceTitle, {minFontSize: 13, maxFontSize: 48});
+        });
 
         // instance location
         var locationBlock;
