@@ -246,8 +246,9 @@ define([
         // });
 
         var isHome = ['/', '/index.html'].includes(window.location.pathname);
-        var homeLink = h('a.nav-item.nav-link' /* .navbar-brand */, { href: '/index.html' }, [
-            'Home page', // XXX replace with image or whatever
+        var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html' }, [
+            h('i.fa.fa-arrow-left'),
+            Msg.homePage
         ]);
 
         return h('nav.navbar.navbar-expand-lg',
@@ -263,7 +264,10 @@ define([
             // add .collapse.navbar-collapse.justify-content-end#menuCollapse to div below to enable collapse button
             [
                 !isHome? homeLink: undefined,
-                h('a.nav-item.nav-link', { href: '/features.html'}, Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features),
+                h('a.nav-item.nav-link', { href: '/features.html'}, [
+                    h('i.fa.fa-info-circle'),
+                    Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features
+                ]),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'},
                     [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),
             ].concat(rightLinks)
