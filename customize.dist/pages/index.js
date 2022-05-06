@@ -130,9 +130,9 @@ define([
         // instance title
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
         // XXX DB: How does TextFit work?!
-        setTimeout(function () {
-            TextFit(instanceTitle, {minFontSize: 13, maxFontSize: 48});
-        });
+        // setTimeout(function () {
+        //     TextFit(instanceTitle, {minFontSize: 13, maxFontSize: 48}); // XXX DB remove?
+        // });
 
         // instance location
         var locationBlock;
@@ -168,7 +168,7 @@ define([
                 notice,
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [
-                        h('div.cp-title.col-md-6', [
+                        h('div.cp-title.col-lg-6', [
                             h('img', {
                                 src: '/customize/CryptPad_logo.svg?' + urlArgs,
                                 'aria-hidden': 'true',
@@ -181,7 +181,7 @@ define([
                             privacyLink,
                             imprintLink
                         ]),
-                        h('div.col-md-6', [
+                        h('div.cp-apps.col-lg-6', [
                             h('div.cp-app-grid', [
                                 h('span.cp-app-new', [
                                     h('i.fa.fa-plus'),

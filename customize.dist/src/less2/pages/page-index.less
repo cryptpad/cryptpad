@@ -23,6 +23,7 @@
             flex-flow: column;
             justify-content: space-around;
             justify-content: space-evenly;
+            max-width: 1000vh;
         }
     }
     body {
@@ -46,18 +47,22 @@
         width: 100%;
         align-self: center;
         align-items: center;
+        justify-content: flex-end;
+        @media screen and (max-width: 990px){
+            justify-content: center;
+        }
     }
     .cp-title {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        margin-top: 1.5em;
+        margin: 0 auto;
+        flex-grow: 1; // XXX DB: no effect
         img {
             max-width: 200px;
             margin-bottom: 1.5em;
         }
-        margin-left: 0;
         h1 {
             font-family: "IBM Plex Mono";
             font-weight: 500;
@@ -82,6 +87,13 @@
         text-decoration: none;
     }
 
+    .cp-apps{
+        max-width: 575px;
+        @media screen and (max-width: 990px) {
+            align-self: baseline;
+        }
+    }
+
     .cp-app-grid {
         background-color: @cp_alertify-bg;
         border-radius: @infopages-radius-L;
@@ -103,7 +115,7 @@
         a {
             margin: 10px;
         }
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 990px) {
             margin-top: 40px;
         }
     }
