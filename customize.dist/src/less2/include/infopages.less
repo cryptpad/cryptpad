@@ -153,7 +153,7 @@ body.html {
         justify-content: space-between;
         flex-direction: row;
         flex-wrap: wrap;
-        .cp-footer-left, .cp-footer-right {
+        .cp-footer-left, .cp-footer-center, .cp-footer-right {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
@@ -185,7 +185,8 @@ body.html {
         .cp-logo-btns {
             padding: 10px;
             a {
-                background-color: @cp_static-card-bg;
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
                 border-radius: @infopages-radius;
                 padding: 0.5em 0.7em;
                 white-space: nowrap;
@@ -194,6 +195,7 @@ body.html {
                     margin-right: 5px;
                 }
                 &:hover {
+                    background-color: @cp_static-card-bg;
                     color: @cryptpad_text_col;
                 }
             }
@@ -266,6 +268,10 @@ body.html {
             margin: 5px;
             color: @cp_static-link;
             display: inline-block;
+            img {
+                max-height: 30px;
+                margin-right: 10px;
+            }
             &.cp-back-home {
                 margin-right: auto;
             }

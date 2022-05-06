@@ -145,15 +145,15 @@ define([
             locationBlock = h('div', h('br'));
         }
 
-        Msg.home_morestorage = 'For more storage space, and to support the project:'; // XXX
+        Msg.home_morestorage = 'For more storage space:'; // XXX
 
         var subButton = function () {
+            // XXX display donation button even if instance doesn't accept subscriptions
             if (Pages.areSubscriptionsAllowed()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
-                    h('br'),
-                    h('button', Msg.features_f_subscribe),
-                    h('button', Msg.footer_donate)
+                    // XXX how to link these properly to accounts?
+                    h('button', {href:"/accounts/"}, Msg.features_f_subscribe)
                 ]);
                 return sub;
             } else {

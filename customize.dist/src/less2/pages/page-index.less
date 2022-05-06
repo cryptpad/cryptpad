@@ -220,7 +220,7 @@
             width: fit-content;
             padding: 10px;
             border-radius: @infopages-radius-L;
-            margin-right: 15px;
+            margin-right: 25px;
             &:visited {
                 color: @cryptpad_text_col;
             }
@@ -234,9 +234,19 @@
             }
         }
         .cp-sub-prompt {
+            * {
+                display: block;
+            }
             button {
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
                 font-size: 1.4rem;
-                margin-top: 10px;
+                margin: 10px 0;
+                border-radius: @infopages-radius-L;
+                &:hover {
+                    background-color: @cp_static-card-bg;
+                    color: @cryptpad_text_col;
+                }
             }
         }
     }
