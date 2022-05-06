@@ -74,6 +74,7 @@ define([
         return select;
     };
 
+/* // XXX remove ?
     var footerCol = function (title, L, n) {
         n = n || 3;
         return h('div.col-sm-' + n, [
@@ -87,6 +88,7 @@ define([
             )
         ]);
     };
+*/
 
     var footLink = function (ref, loc, text, icon) {
         if (!ref) { return; }
@@ -243,6 +245,11 @@ define([
         //     $('#menuCollapse').slideDown();
         // });
 
+        var isHome = ['/', '/index.html'].includes(window.location.pathname);
+        var homeLink = h('a.nav-item.nav-link' /* .navbar-brand */, { href: '/index.html' }, [
+            'Home page', // XXX replace with image or whatever
+        ]);
+
         return h('nav.navbar.navbar-expand-lg',
             // XXX DB add link back to index.html on other pages
             // h('a.navbar-brand', { href: '/index.html'}, [
@@ -255,8 +262,7 @@ define([
             // button, // XXX collapse button
             // add .collapse.navbar-collapse.justify-content-end#menuCollapse to div below to enable collapse button
             [
-                // XXX remove about page
-                // h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
+                !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html'}, Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'},
                     [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),

@@ -109,7 +109,8 @@ define([
         var fastLink = k => pageLink(Pages.customURLs[k], k);
 
         // XXX DB
-        Msg.terms = "Terms of Service";
+        Msg.terms = Msg.footer_tos; //"Terms of Service"; // XXX
+        Msg.home_location = "Encrypted data is hosted in {0}"; // XXX
 
         // XXX DB: this may be wrong, pasted over form pages.js
         var imprintLink = fastLink('imprint');
@@ -121,10 +122,9 @@ define([
     If the text is the key for the translation system then then the most appropriate translated text
     will be displayed. Otherwise, the direct text will be included as HTML.
 */
-        if (AppConfig.homeNotice) {
-            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), [
-                Msg[AppConfig.homeNotice] || AppConfig.homeNotice
-            ]));
+        if (Pages.Instance.notice) {
+            console.log(Pages.Instance.notice);
+            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), Pages.Instance.notice));
         }
 
         // instance title
@@ -134,15 +134,13 @@ define([
 
         // instance location
         var locationBlock;
-
         if (Pages.Instance.location) {
             locationBlock = h('div.cp-instance-location', [
                 h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
-                'Encrypted data is hosted in: ', // XXX translate
-                Pages.Instance.location,
+                Msg._getKey('home_location', [ Pages.Instance.location ]),
             ]);
         } else {
-            locationBlock = h('div', h('br')); // XXX
+            locationBlock = h('div', h('br'));
         }
 
         Msg.home_morestorage = 'For more storage space, and to support the project:'; // XXX
@@ -165,6 +163,7 @@ define([
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
+                notice,
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [
                         h('div.cp-title.col-md-6', [
@@ -174,7 +173,7 @@ define([
                                 alt: ''
                             }),
                             instanceTitle,
-                            UI.setHTML(h('span.tag-line'), Pages.Instance.description),
+                            Pages.setHTML(h('span.tag-line'), Pages.Instance.description),
                             locationBlock,
                             termsLink,
                             privacyLink,
@@ -199,7 +198,6 @@ define([
                             ])
                         ])
                     ]),
-                    notice
                 ]),
                 Pages.infopageFooter(),
             ]),

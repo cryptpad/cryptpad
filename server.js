@@ -270,15 +270,10 @@ var define = function (obj) {
 app.get('/api/instance', function (req, res) { // XXX use caching?
     res.setHeader('Content-Type', 'text/javascript');
     res.send(define({
-        name: {
-            default: Env.instanceName,
-        },
-        description: {
-            default: Env.instanceDescription,
-        },
-        location: {
-            default: Env.instanceJurisdiction,
-        },
+        name: Env.instanceName,
+        description: Env.instanceDescription,
+        location: Env.instanceJurisdiction,
+        notice: Env.instanceNotice,
     }));
 });
 

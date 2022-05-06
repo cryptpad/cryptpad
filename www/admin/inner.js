@@ -62,6 +62,7 @@ define([
             'cp-admin-name',
             'cp-admin-description',
             'cp-admin-jurisdiction',
+            'cp-admin-notice',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -429,7 +430,7 @@ define([
         return $div;
     };
 
-    create['jurisdiction'] = function () {
+    create['jurisdiction'] = function () { // XXX make translateable
         var key = 'jurisdiction';
         var $div = makeBlock(key, true); // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle, Msg.admin_jurisdictionButton
         var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
@@ -468,6 +469,49 @@ define([
         return $div;
     };
 
+    Messages.admin_noticeTitle = "admin_noticeTitle";
+    Messages.admin_noticeHint = "admin_noticeHint";
+    //Messages.admin_noticeButton = "admin_noticeButton";
+
+    create['notice'] = function () { // XXX add input, make translateable
+        var key = 'notice';
+        var $div = makeBlock(key, true);
+
+        var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
+
+        var input = h('input.cp-listing-info', {
+            type: 'text',
+            value: APP.instanceStatus.instanceNotice || '',
+            placeholder: Messages.owner_unknownUser || '',
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setnotice-form', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_NOTICE', [$input.val().trim()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                spinner.hide();
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    return;
+                }
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_noticeTitle]));
+            });
+        });
+
+        $button.before(innerDiv);
+
+        return $div;
+    };
+
     create['instance-info-notice'] = function () {
         return $(h('div.cp-admin-instance-info-notice.cp-sidebarlayout-element',
             h('div.alert.alert-info.cp-admin-bigger-alert', [
@@ -478,7 +522,7 @@ define([
         ));
     };
 
-    create['name'] = function () {
+    create['name'] = function () { // XXX make translateable
         var key = 'name';
         var $div = makeBlock(key, true);
         // Msg.admin_nameHint, Msg.admin_nameTitle, Msg.admin_nameButton
@@ -519,7 +563,7 @@ define([
         return $div;
     };
 
-    create['description'] = function () {
+    create['description'] = function () { // XXX support translation
         var key = 'description';
         var $div = makeBlock(key, true); // Msg.admin_descriptionHint
 
@@ -1419,7 +1463,7 @@ define([
 
     };
 
-    create['broadcast'] = function () {
+    create['broadcast'] = function () { // XXX
         var key = 'broadcast';
         var $div = makeBlock(key); // Msg.admin_broadcastHint, admin_broadcastTitle
 
