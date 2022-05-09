@@ -153,7 +153,10 @@ define([
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
                     // XXX how to link these properly to accounts?
-                    h('button', {href:"/accounts/"}, Msg.features_f_subscribe)
+                    h('a', {href:"/accounts/"}, h('button', [
+                        h('i.fa.fa-ticket'),
+                        Msg.features_f_subscribe
+                    ]))
                 ]);
                 return sub;
             } else {
