@@ -27,10 +27,11 @@
     #cp-filepicker-dialog {
         display: none;
         .cp-modal {
+            border-radius: @variables_radius_L;
             .cp-filepicker-content {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: flex-start;
                 overflow-y: auto;
             }
 
@@ -48,6 +49,7 @@
                 //height: 1em;
                 padding: 10px;
                 margin: 5px;
+                border-radius: @variables_radius;
 
                 display: inline-flex;
                 flex-flow: column;
