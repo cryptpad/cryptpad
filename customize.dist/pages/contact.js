@@ -15,6 +15,7 @@ define([
         ].indexOf(Config.adminEmail) === -1;
         var adminMailbox = Config.supportMailbox && LocalStore.isLoggedIn();
 
+        // XXX: existing key to update
         Msg.contact_admin = "Contact the administrators for: {0}"; // XXX DB: add instance title
 
         return h('div#cp-main', [
