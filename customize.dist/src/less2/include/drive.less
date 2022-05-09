@@ -486,6 +486,13 @@
                 font-size: 1.6rem;
             }
         }
+        &.cp-app-drive-readonly { // applied to offline drive (not read-only shared folders)
+            #cp-app-drive-content-folder {
+                opacity: 0.5;
+            }
+
+            // background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
+        }
     }
     #cp-app-drive-content {
         box-sizing: border-box;
@@ -503,8 +510,8 @@
             position: absolute;
             z-index: 50;
         }
-        &.cp-app-drive-readonly { // XXX DB find new appearance for disabled/read-only drive?
-            background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
+        &.cp-app-drive-readonly { // XXX DB never applied?
+            // background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
         }
         h1 {
             padding-left: 10px;
