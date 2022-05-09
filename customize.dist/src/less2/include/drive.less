@@ -300,7 +300,6 @@
                     display: none;
                 }
                 input {
-                    //width: ~"calc(100% - 30px)";
                     flex: 1;
                     min-width: 0;
                     padding: 0 10px;
@@ -310,11 +309,8 @@
                 & > span.cp-app-drive-element-row {
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    //min-width: ~"calc(100% + 5px)";
                     .leftside-menu-category_main();
-                    //width: ~"calc(100% + 5px)"; // XXX remove
                     margin: 0;
-                    //margin-bottom: -6px;
                     display: flex;
                     align-items: center;
                     cursor: pointer;
@@ -344,7 +340,7 @@
             margin-top: 10px;
             background-color: @cp_sidebar-left-item-bg;
             border-radius: @variables_radius;
-            box-shadow: 0px 0px 5px 1px #00000030; // XXX
+            box-shadow: 0px 0px 5px 1px #00000030; // XXX DB: make shadow var
             .cp-app-drive-tree-root {
                 .fa-trash-o {
                     padding-left: 2px;
@@ -385,7 +381,7 @@
             }
         }
         .cp-app-drive-tree-docs {
-            box-shadow: 0px 0px 5px 1px #00000030; // XXX
+            box-shadow: 0px 0px 5px 1px #00000030; // XXX DB: make shadow var
             padding: 2px;
 
             .cp-app-drive-element-row {

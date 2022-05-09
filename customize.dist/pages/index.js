@@ -112,7 +112,6 @@ define([
         Msg.terms = Msg.footer_tos; //"Terms of Service"; // XXX
         Msg.home_location = "Encrypted data is hosted in {0}"; // XXX
 
-        // XXX DB: this may be wrong, pasted over form pages.js
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
         var termsLink = fastLink('terms');
@@ -148,11 +147,9 @@ define([
         Msg.home_morestorage = 'For more storage space:'; // XXX
 
         var subButton = function () {
-            // XXX display donation button even if instance doesn't accept subscriptions
             if (Pages.areSubscriptionsAllowed()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
-                    // XXX how to link these properly to accounts?
                     h('a', {href:"/accounts/"}, h('button', [
                         h('i.fa.fa-ticket'),
                         Msg.features_f_subscribe

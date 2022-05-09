@@ -74,22 +74,6 @@ define([
         return select;
     };
 
-/* // XXX remove ?
-    var footerCol = function (title, L, n) {
-        n = n || 3;
-        return h('div.col-sm-' + n, [
-            h('ul.list-unstyled', [
-                h('li.footer-title', {
-                    'data-localization': title,
-                }, Msg[title])
-                ].concat(L.map(function (l) {
-                    return h('li', [ l ]);
-                }))
-            )
-        ]);
-    };
-*/
-
     var footLink = function (ref, loc, text, icon) {
         if (!ref) { return; }
         var attrs =  {

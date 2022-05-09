@@ -5,7 +5,7 @@ define([
     '/customize/pages.js',
     '/api/config',
 ], function (h, UI, Msg, Pages, Config) {
-    Msg.login_instance = "Connect to your account on {0}"; // XXX insert instance name
+    Msg.login_instance = "Connect to your account on {0}"; // XXX DB highlight instance name?
     return function () {
         document.title = Msg.login_login;
         return [h('div#cp-main', [

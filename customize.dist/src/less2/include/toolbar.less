@@ -15,10 +15,7 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
-    // XXX Todo: clean up unused variables
     // XXX: check contrasts of app colors used as btn background
-    // @desat-color: desaturate(@bg-color, 20%);
-    // @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@desat-color, 10%));
     @toolbar-bg-color-light: lighten(@bg-color, 30%);
     @toolbar-bg-color-fade: fade(@toolbar-bg-color-light, 80%);
 };
@@ -32,7 +29,6 @@
     --toolbar-bg-color: @toolbar-bg-color;
     --toolbar-bg-color-fade: @toolbar-bg-color-fade;
     --toolbar-bg-color-light: @toolbar-bg-color-light;
-    // --toolbar-bg-color-active: @toolbar-bg-color-active;
 
     .help_main();
     .notifications_main();
