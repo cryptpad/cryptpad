@@ -204,7 +204,8 @@ define(function() {
         admin: 'fa-gears',
         settings: 'fa-gear',
         profile: 'fa-user-circle',
-        support: 'fa-life-ring'
+        support: 'fa-life-ring',
+        accounts: 'fa-ticket'
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

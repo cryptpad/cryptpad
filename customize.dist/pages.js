@@ -74,22 +74,6 @@ define([
         return select;
     };
 
-/* // XXX remove ?
-    var footerCol = function (title, L, n) {
-        n = n || 3;
-        return h('div.col-sm-' + n, [
-            h('ul.list-unstyled', [
-                h('li.footer-title', {
-                    'data-localization': title,
-                }, Msg[title])
-                ].concat(L.map(function (l) {
-                    return h('li', [ l ]);
-                }))
-            )
-        ]);
-    };
-*/
-
     var footLink = function (ref, loc, text, icon) {
         if (!ref) { return; }
         var attrs =  {
@@ -182,20 +166,20 @@ define([
                     }),
                     h('span.logo-font', 'CryptPad')
                 ]),
+                h('span.cp-footer-version', 'v' + Pages.versionString)
+            ]),
+            h('div.cp-footer-center', [
                 h('div.cp-logo-btns', [
                     footLink('https://cryptpad.org', null, Msg.footer_website, 'link'),
                     footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money') // XXX DB: add OpenCollective icon
 
                 ])
             ]),
-            h('div.cp-footer-center', [
+            h('div.cp-footer-right', [
                 h('div.cp-footer-language', [
                     h('i.fa.fa-language', {'aria-hidden': 'true'}),
                     languageSelector()
                 ])
-            ]),
-            h('div.cp-footer-right', [
-                h('span.cp-footer-version', 'Version: ' + Pages.versionString) // XXX DB: translate 'Version' ?
             ])
         ]);
     };
@@ -248,18 +232,15 @@ define([
         var isHome = ['/', '/index.html'].includes(window.location.pathname);
         var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html' }, [
             h('i.fa.fa-arrow-left'),
+            h('img', {
+                src: '/customize/CryptPad_logo.svg',
+                "aria-hidden": true,
+                alt: ''
+            }),
             Msg.homePage
         ]);
 
         return h('nav.navbar.navbar-expand-lg',
-            // XXX DB add link back to index.html on other pages
-            // h('a.navbar-brand', { href: '/index.html'}, [
-            //     h('img', {
-            //         src: '/customize/CryptPad_logo.svg?',
-            //         'aria-hidden': true,
-            //         alt: ''
-            //     }), 'CryptPad'
-            // ]),
             // button, // XXX collapse button
             // add .collapse.navbar-collapse.justify-content-end#menuCollapse to div below to enable collapse button
             [

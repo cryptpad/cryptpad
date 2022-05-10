@@ -48,6 +48,7 @@
 @cryptpad_color_black: #000;
 
 @cryptpad_text_col: @cryptpad_color_grey_200;
+@cryptpad_text_col_inv: @cryptpad_color_grey_900;
 
 @cryptpad_color_blue: #326599; // former logo-1
 @cryptpad_color_light_blue: #00b7d8;
@@ -174,7 +175,7 @@
 @cp_sidebar-right-bg: @cryptpad_color_grey_900;
 @cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cryptpad_color_grey_400;
-@cp_sidebar-left-active-fg: @cryptpad_color_grey_900; // XXX create text_col_inv ?
+@cp_sidebar-left-active-fg: @cryptpad_color_grey_900;
 @cp_sidebar-hint: fade(@cryptpad_text_col, 80%);
 
 // Drive
@@ -192,9 +193,9 @@
 @cp_drive-droppable-bg: @cryptpad_color_grey_700;
 @cp_drive-droppable-fg: @cryptpad_text_col;
 @cp_drive-infobox-bg: @cryptpad_color_brand_fadest;
-@cp_drive-infobox-fg: @cryptpad_text_col;
-@cp_drive-warnbox-bg: @cryptpad_color_warn_red;
-@cp_drive-warnbox-fg: @cryptpad_text_col;
+@cp_drive-infobox-fg: @cryptpad_color_brand_300;
+@cp_drive-warnbox-bg: @cryptpad_color_red_fader;
+@cp_drive-warnbox-fg: @cryptpad_color_light_red;
 @cp_drive-tree-branch: @cryptpad_text_col;
 
 // Contextmenu

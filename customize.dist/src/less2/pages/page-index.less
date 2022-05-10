@@ -23,6 +23,7 @@
             flex-flow: column;
             justify-content: space-around;
             justify-content: space-evenly;
+            max-width: 1000vh;
         }
     }
     body {
@@ -46,18 +47,22 @@
         width: 100%;
         align-self: center;
         align-items: center;
+        justify-content: flex-end;
+        @media screen and (max-width: 990px) {
+            justify-content: center;
+        }
     }
     .cp-title {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        margin-top: 1.5em;
+        margin: 0 auto;
+        flex-grow: 1; // XXX DB: no effect
         img {
             max-width: 200px;
             margin-bottom: 1.5em;
         }
-        margin-left: 0;
         h1 {
             font-family: "IBM Plex Mono";
             font-weight: 500;
@@ -75,11 +80,24 @@
                 margin-right: 5px;
             }
         }
+        .cp-instance-links {
+            padding: 1.3rem;
+            a {
+                margin: 1.3rem;
+            }
+        }
     }
 
     @callout-padding: 15px;
     a:hover {
         text-decoration: none;
+    }
+
+    .cp-apps {
+        max-width: 575px;
+        @media screen and (max-width: 990px) {
+            align-self: baseline;
+        }
     }
 
     .cp-app-grid {
@@ -103,7 +121,7 @@
         a {
             margin: 10px;
         }
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 990px) {
             margin-top: 40px;
         }
     }
@@ -202,7 +220,7 @@
             width: fit-content;
             padding: 10px;
             border-radius: @infopages-radius-L;
-            margin-right: 15px;
+            margin-right: 25px;
             &:visited {
                 color: @cryptpad_text_col;
             }
@@ -216,9 +234,24 @@
             }
         }
         .cp-sub-prompt {
+            * {
+                display: block;
+            }
             button {
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
                 font-size: 1.4rem;
-                margin-top: 10px;
+                margin: 10px 0;
+                border-radius: @infopages-radius-L;
+                padding: 0.75rem;
+                i {
+                    display: inline;
+                    margin-right: 10px;
+                }
+                &:hover, &:focus {
+                    background-color: @cp_static-card-bg;
+                    color: @cryptpad_text_col;
+                }
             }
         }
     }

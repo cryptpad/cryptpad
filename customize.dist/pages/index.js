@@ -112,7 +112,6 @@ define([
         Msg.terms = Msg.footer_tos; //"Terms of Service"; // XXX
         Msg.home_location = "Encrypted data is hosted in {0}"; // XXX
 
-        // XXX DB: this may be wrong, pasted over form pages.js
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
         var termsLink = fastLink('terms');
@@ -130,9 +129,9 @@ define([
         // instance title
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
         // XXX DB: How does TextFit work?!
-        setTimeout(function () {
-            TextFit(instanceTitle, {minFontSize: 13, maxFontSize: 48});
-        });
+        // setTimeout(function () {
+        //     TextFit(instanceTitle, {minFontSize: 13, maxFontSize: 48}); // XXX DB remove?
+        // });
 
         // instance location
         var locationBlock;
@@ -145,15 +144,16 @@ define([
             locationBlock = h('div', h('br'));
         }
 
-        Msg.home_morestorage = 'For more storage space, and to support the project:'; // XXX
+        Msg.home_morestorage = 'For more storage space:'; // XXX
 
         var subButton = function () {
             if (Pages.areSubscriptionsAllowed()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
-                    h('br'),
-                    h('button', Msg.features_f_subscribe),
-                    h('button', Msg.footer_donate)
+                    h('a', {href:"/accounts/"}, h('button', [
+                        h('i.fa.fa-ticket'),
+                        Msg.features_f_subscribe
+                    ]))
                 ]);
                 return sub;
             } else {
@@ -168,7 +168,7 @@ define([
                 notice,
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [
-                        h('div.cp-title.col-md-6', [
+                        h('div.cp-title.col-lg-6', [
                             h('img', {
                                 src: '/customize/CryptPad_logo.svg?' + urlArgs,
                                 'aria-hidden': 'true',
@@ -177,11 +177,14 @@ define([
                             instanceTitle,
                             Pages.setHTML(h('span.tag-line'), Pages.Instance.description),
                             locationBlock,
-                            termsLink,
-                            privacyLink,
-                            imprintLink
+                            h('div.cp-instance-links', [
+                                termsLink,
+                                privacyLink,
+                                imprintLink,
+                                h('a', {href:"/contact.html"}, Msg.contact)
+                            ])
                         ]),
-                        h('div.col-md-6', [
+                        h('div.cp-apps.col-lg-6', [
                             h('div.cp-app-grid', [
                                 h('span.cp-app-new', [
                                     h('i.fa.fa-plus'),
