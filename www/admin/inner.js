@@ -437,7 +437,7 @@ define([
 
         var input = h('input.cp-listing-info', {
             type: 'text',
-            value: APP.instanceStatus.instanceJurisdiction || '',
+            value: getInstanceString('instanceJurisdiction') || '', // XXX
             placeholder: Messages.owner_unknownUser || '',
         });
         var $input = $(input);
@@ -469,11 +469,10 @@ define([
         return $div;
     };
 
-    Messages.admin_noticeTitle = "admin_noticeTitle";
-    Messages.admin_noticeHint = "admin_noticeHint";
-    //Messages.admin_noticeButton = "admin_noticeButton";
+    Messages.admin_noticeTitle = "Home page notice"; // XXX
+    Messages.admin_noticeHint = "An optional message to display on the home page"; // XXX
 
-    create['notice'] = function () { // XXX add input, make translateable
+    create['notice'] = function () { // XXX make translateable
         var key = 'notice';
         var $div = makeBlock(key, true);
 
@@ -481,8 +480,8 @@ define([
 
         var input = h('input.cp-listing-info', {
             type: 'text',
-            value: APP.instanceStatus.instanceNotice || '',
-            placeholder: Messages.owner_unknownUser || '',
+            value: getInstanceString('instanceNotice') || '', // XXX
+            placeholder: '',
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setnotice-form', input);
@@ -522,6 +521,16 @@ define([
         ));
     };
 
+    var getInstanceString = function (attr) {
+        var val = APP.instanceStatus[attr];
+        var type = typeof(val);
+        switch (type) {
+            case 'string': return val;
+            case 'object': return val.default;
+            default: return;
+        }
+    };
+
     create['name'] = function () { // XXX make translateable
         var key = 'name';
         var $div = makeBlock(key, true);
@@ -530,7 +539,7 @@ define([
 
         var input = h('input.cp-listing-info', {
             type: 'text',
-            value: APP.instanceStatus.instanceName || ApiConfig.httpUnsafeOrigin || '',
+            value: getInstanceString('instanceName') || ApiConfig.httpUnsafeOrigin || '',
             placeholder: ApiConfig.httpUnsafeOrigin,
             style: 'margin-bottom: 5px;',
         });
@@ -569,7 +578,7 @@ define([
 
         var textarea = h('textarea.cp-admin-description-text.cp-listing-info', {
             placeholder: Messages.home_host || '',
-        }, APP.instanceStatus.instanceDescription || '');
+        }, getInstanceString('instanceDescription') || '');
 
         var $button = $div.find('button').text(Messages.settings_save);
 
