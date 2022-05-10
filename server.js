@@ -237,6 +237,7 @@ var serveConfig = makeRouteCache(function (host) {
             enableEmbedding: Env.enableEmbedding,
             fileHost: Env.fileHost,
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
+            listMyInstance: Env.listMyInstance,
         }, null, '\t'),
         '});'
     ].join(';\n')

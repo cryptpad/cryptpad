@@ -1385,6 +1385,36 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        if (!ApiConfig.listMyInstance) { return void cb(true); }
+        msg.appendChild(h('span', [
+            "The administrators of this instance have opted in to inclusion in ",
+            link('https://cryptpad.org/instances/', 'the public instance directory'),
+            ' but have not configured at least one of the expected ',
+            code('description'),
+            ' or ',
+            code('location'),
+            ' text fields via the instance admin panel.',
+        ]));
+        var expected = [
+            'description',
+            'location',
+            //'name',
+            // 'notice',
+        ];
+
+        var url = '/api/instance';
+        require([
+            `optional!${url}`,
+        ], function (Instance) {
+            var good = expected.every(function (k) {
+                var val = Instance[k];
+                return (val && typeof(val) === 'object' && typeof(val.default) === 'string' && val.default.trim());
+            });
+            return void cb(good || Instance);
+        });
+    });
+
     var serverToken;
     Tools.common_xhr('/', function (xhr) {
         serverToken = xhr.getResponseHeader('server');
