@@ -25,8 +25,11 @@
 
     .kanban-board-header {
         background-color: @palette0;
-        color: @cp_kanban-fg;
+        color: @cryptpad_color_grey_800;
         border-radius: @variables_radius @variables_radius 0px 0px;
+        button.kanban-edit-item {
+            color: @cryptpad_color_grey_800;
+        }
     }
     .kanban-board {
         .kanban-board-inner {
@@ -40,7 +43,7 @@
         }
         color: @cp_kanban-fg;
         button {
-            color: @cp_kanban-fg;
+            color: @cryptpad_text_col;
         }
     }
 
@@ -58,6 +61,15 @@
             &.kanban-board-inner {
                 background-color: fade(@color, 50%) !important;
             }
+        }
+    }
+    .kanban-card-colors(@kanban-card-colors; @index) when (@index > 0){
+        // loop through the @colors
+        .kanban-colors(@kanban-card-colors; (@index - 1));
+        @color: extract(@kanban-card-colors, @index);
+        // make a numbered class selector for each color
+        .cp-kanban-card-color@{index}{
+            background-color: @color !important;
         }
     }
     // call the loop
