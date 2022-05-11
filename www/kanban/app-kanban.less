@@ -36,7 +36,7 @@
             display: flex;
             flex-flow: column;
             border-radius: @variables_radius;
-            box-shadow: 0px 0px 5px 1px #00000030; // XXX DB: make shadow var
+            box-shadow: @cryptpad_ui_shadow;
         }
         color: @cp_kanban-fg;
         button {
@@ -186,7 +186,7 @@
         border-radius: @variables_radius;
         flex-wrap: wrap;
         background: @cp_kanban-item-bg;
-        box-shadow: 0px 0px 5px 1px #00000030; // XXX  DB: make shadow var
+        box-shadow: @cryptpad_ui_shadow;
         .tools_unselectable();
         touch-action: none;
         cursor: move;
