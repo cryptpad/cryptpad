@@ -75,6 +75,7 @@ define([
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
     var fileHost = ApiConfig.fileHost;
+    var accounts_api = ApiConfig.accounts_api || AppConfig.accounts_api || undefined;
 
     var getAPIPlaceholderPath = function (relative) {
         var absolute;
@@ -986,7 +987,7 @@ define([
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
-                    AppConfig.accounts_api,
+                    accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
 
@@ -1025,7 +1026,7 @@ define([
                     $sandbox,
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
-                    AppConfig.accounts_api,
+                    accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
