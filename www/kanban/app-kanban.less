@@ -22,6 +22,7 @@
     @palette0: @cp_kanban-color0; // Default bg color for header
 
     @kanban-colors: @cp_kanban-colors;
+    @kanban-card-colors: @cp_kanban-card-colors;
 
     .kanban-board-header {
         background-color: @palette0;
@@ -65,15 +66,21 @@
     }
     .kanban-card-colors(@kanban-card-colors; @index) when (@index > 0){
         // loop through the @colors
-        .kanban-colors(@kanban-card-colors; (@index - 1));
+        .kanban-card-colors(@kanban-card-colors; (@index - 1));
         @color: extract(@kanban-card-colors, @index);
         // make a numbered class selector for each color
-        .cp-kanban-card-color@{index}{
-            background-color: @color !important;
+        // .cp-kanban-card-color@{index}{
+        //     background-color: @color !important;
+        // }
+        .cp-kanban-palette-color@{index}{
+            &.kanban-item {
+                background-color: @color !important;
+            }
         }
     }
     // call the loop
     .kanban-colors(@kanban-colors; length(@kanban-colors));
+    .kanban-card-colors(@kanban-card-colors; length(@kanban-card-colors));
 
     .cp-kanban-edit-modal {
         display: flex;
@@ -133,6 +140,9 @@
             line-height: 30px;
             color: @cp_kanban-fg;
             border: 1px solid fade(@cp_kanban-fg, 40%);
+            &.fa-check { // tick on selected color
+                color: @cryptpad_color_grey_800; // XXX review if we show dark palette in card picker
+            }
         }
     }
     #cp-kanban-edit-tags {
