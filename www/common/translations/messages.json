@@ -1463,5 +1463,12 @@
     "error_embeddingDisabledSpecific": "Embedding is disabled for this CryptPad application.",
     "error_incorrectAccess": "This page can only be accessed via {0}.",
     "error_evalPermitted": "Aborting because eval should not be permitted.\n\nThis error is linked to Content-Security-Policy headers, it could be due to: an outdated browser that does not support them, browser extensions that interfere with their correct behaviour, or an incorrect configuration of this CryptPad instance.",
-    "ui_experimental": "This feature is considered experimental."
+    "ui_experimental": "This feature is considered experimental.",
+    "admin_noticeTitle": "Home page notice",
+    "admin_noticeHint": "An optional message to display on the home page",
+    "footer_website": "Project Website",
+    "home_location": "Encrypted data is hosted in {0}",
+    "home_morestorage": "For more storage space:",
+    "login_instance": "Connect to your account on {0}",
+    "register_instance": "Creating a new account on {0}"
 }
