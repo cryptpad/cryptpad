@@ -59,6 +59,9 @@
         // make a numbered class selector for each color
         .cp-kanban-palette-color@{index}{
             background-color: @color !important;
+            &.cp-kanban-palette-board {
+                background-color: @color !important;
+            }
             &.kanban-board-inner {
                 background-color: fade(@color, 50%) !important;
             }
@@ -73,6 +76,9 @@
         //     background-color: @color !important;
         // }
         .cp-kanban-palette-color@{index}{
+            &.cp-kanban-palette-card {
+                background-color: @color !important;
+            }
             &.kanban-item {
                 background-color: @color !important;
             }
