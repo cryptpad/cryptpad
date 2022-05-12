@@ -99,14 +99,7 @@ define([
 
     var customURLs = Pages.customURLs = {};
     (function () {
-        // XXX DB: review this:
-        // almost all pages are commented out
-        // would the imprint page get generated if it was present?
         var defaultURLs = {
-            //imprint: '/imprint.html',
-            //privacy: '/privacy.html',
-            // terms: '/terms.html',
-            //roadmap: '/roadmap.html',
             source: 'https://github.com/xwiki-labs/cryptpad',
         };
         var l = Msg._getLanguage();
