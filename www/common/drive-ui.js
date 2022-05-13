@@ -626,6 +626,7 @@ define([
         // UI containers
         var $tree = APP.$tree = $("#cp-app-drive-tree");
         var $content = APP.$content = $("#cp-app-drive-content");
+        var $contentContainer = APP.$content = $("#cp-app-drive-content-container");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
         var $contextMenu = createContextMenu(common).appendTo($appContainer);
@@ -634,6 +635,26 @@ define([
         var $defaultContextMenu = $("#cp-app-drive-context-default");
         var $trashTreeContextMenu = $("#cp-app-drive-context-trashtree");
         var $trashContextMenu = $("#cp-app-drive-context-trash");
+
+
+        var splitter = h('div.cp-splitter', [
+            h('i.fa.fa-ellipsis-v')
+        ]);
+        $contentContainer.append(splitter);
+        APP.$splitter = $(splitter).on('mousedown', function (e) {
+            e.preventDefault();
+            var x = e.pageX;
+            var w = $tree.width();
+            var handler = function (evt) {
+                if (evt.type === 'mouseup') {
+                    $(window).off('mouseup mousemove', handler);
+                    return;
+                }
+                $tree.css('width', (w - x + evt.pageX) + 'px');
+            };
+            $(window).off('mouseup mousemove', handler);
+            $(window).on('mouseup mousemove', handler);
+        });
 
         // TOOLBAR
 
@@ -3391,6 +3412,7 @@ define([
             APP.toolbar.$bottomL.append(APP.$collapseButton);
             APP.$collapseButton.off('click').on('click', function () {
                 APP.$tree.toggle();
+                APP.$splitter.toggle(APP.$tree.is(':visible'));
                 checkCollapseButton();
             });
         };

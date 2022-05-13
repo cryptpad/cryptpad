@@ -12,6 +12,7 @@
 
     var first = true;
     window.addEventListener('error', function (ev) {
+        if (window.CHECKUP_MAIN_LOADED) { return; }
         if (!ev) { return; }
         var srcElement = ev.srcElement;
         if (!srcElement) { return; }

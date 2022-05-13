@@ -62,6 +62,7 @@ define([
             'cp-admin-name',
             'cp-admin-description',
             'cp-admin-jurisdiction',
+            'cp-admin-notice',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -389,7 +390,6 @@ define([
         },
     });
 
-    // XXX remove emailButton
     create['email'] = function () {
         var key = 'email';
         var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle
@@ -400,7 +400,7 @@ define([
             value: ApiConfig.adminEmail || ''
         });
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setlimit-form', input);
+        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', input);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -429,18 +429,28 @@ define([
         return $div;
     };
 
-    create['jurisdiction'] = function () {
+    var getInstanceString = function (attr) {
+        var val = APP.instanceStatus[attr];
+        var type = typeof(val);
+        switch (type) {
+            case 'string': return val || '';
+            case 'object': return val.default || '';
+            default: return '';
+        }
+    };
+
+    create['jurisdiction'] = function () { // TODO make translateable
         var key = 'jurisdiction';
         var $div = makeBlock(key, true); // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle, Msg.admin_jurisdictionButton
         var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
 
-        var input = h('input.cp-listing-info', {
+        var input = h('input', {
             type: 'text',
-            value: APP.instanceStatus.instanceJurisdiction || '',
+            value: getInstanceString('instanceJurisdiction'),
             placeholder: Messages.owner_unknownUser || '',
         });
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setjurisdiction-form', input);
+        var innerDiv = h('div.cp-admin-setter', input);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -468,6 +478,46 @@ define([
         return $div;
     };
 
+
+    create['notice'] = function () { // TODO make translateable
+        var key = 'notice';
+        var $div = makeBlock(key, true);
+
+        var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
+
+        var input = h('input', {
+            type: 'text',
+            value: getInstanceString('instanceNotice'),
+            placeholder: '',
+        });
+        var $input = $(input);
+        var innerDiv = h('div.cp-admin-setter', input);
+        var spinner = UI.makeSpinner($(innerDiv));
+
+        $button.click(function () {
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_INSTANCE_NOTICE', [$input.val().trim()]]
+            }, function (e, response) {
+                $button.removeAttr('disabled');
+                spinner.hide();
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    return;
+                }
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_noticeTitle]));
+            });
+        });
+
+        $button.before(innerDiv);
+
+        return $div;
+    };
+
     create['instance-info-notice'] = function () {
         return $(h('div.cp-admin-instance-info-notice.cp-sidebarlayout-element',
             h('div.alert.alert-info.cp-admin-bigger-alert', [
@@ -478,20 +528,20 @@ define([
         ));
     };
 
-    create['name'] = function () {
+    create['name'] = function () { // TODO make translateable
         var key = 'name';
         var $div = makeBlock(key, true);
         // Msg.admin_nameHint, Msg.admin_nameTitle, Msg.admin_nameButton
         var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
 
-        var input = h('input.cp-listing-info', {
+        var input = h('input', {
             type: 'text',
-            value: APP.instanceStatus.instanceName || ApiConfig.httpUnsafeOrigin || '',
+            value: getInstanceString('instanceName') || ApiConfig.httpUnsafeOrigin || '',
             placeholder: ApiConfig.httpUnsafeOrigin,
             style: 'margin-bottom: 5px;',
         });
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setname-form', input);
+        var innerDiv = h('div.cp-admin-setter', input);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -519,19 +569,19 @@ define([
         return $div;
     };
 
-    create['description'] = function () {
+    create['description'] = function () { // TODO support translation
         var key = 'description';
         var $div = makeBlock(key, true); // Msg.admin_descriptionHint
 
-        var textarea = h('textarea.cp-admin-description-text.cp-listing-info', {
+        var textarea = h('textarea.cp-admin-description-text', {
             placeholder: Messages.home_host || '',
-        }, APP.instanceStatus.instanceDescription || '');
+        }, getInstanceString('instanceDescription'));
 
         var $button = $div.find('button').text(Messages.settings_save);
 
         $button.addClass('cp-listing-action');
 
-        var innerDiv = h('div.cp-admin-setdescription-form', [
+        var innerDiv = h('div.cp-admin-setter', [
             textarea,
         ]);
         $button.before(innerDiv);
@@ -2290,20 +2340,6 @@ define([
             if (!Array.isArray(data)) { return void cb('EINVAL'); }
             APP.instanceStatus = data[0];
             console.log("Status", APP.instanceStatus);
-
-/*
-            var isListed = Boolean(APP.instanceStatus.listMyInstance);
-            var $actions = $('.cp-listing-action');
-            var $fields = $('.cp-listing-info');
-
-            if (isListed) {
-                $actions.removeAttr('disabled');
-                $fields.removeAttr('disabled');
-            } else {
-                $actions.attr('disabled', 'disabled');
-                $fields.attr('disabled', 'disabled');
-            }
-*/
             cb();
         });
     };

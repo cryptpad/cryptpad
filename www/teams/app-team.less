@@ -88,6 +88,8 @@
         }
         .cp-team-cat-header {
             justify-content: center;
+            background-color: transparent !important;
+            box-shadow: none !important;
             .avatar_main(30px);
             .cp-avatar {
                 justify-content: center;
@@ -101,9 +103,6 @@
             }
             cursor: default !important;
             font-size: 18px;
-            &:hover {
-                background-color: transparent !important;
-            }
             span.cp-sidebarlayout-category-name {
                 padding-left: 5px;
             }
@@ -129,6 +128,7 @@
                 justify-content: space-between;
                 flex-flow: column;
                 width: 300px;
+                border-radius: @variables_radius_L;
                 max-width: 90%;
                 height: 384px;
                 padding: 50px;
@@ -186,7 +186,7 @@
             }
         }
         .cp-team-roster {
-            .avatar_main(50px);
+            .avatar_main(40px);
             .cp-hidden {
                 display: none;
             }
@@ -199,10 +199,11 @@
             .cp-team-roster-member {
                 display: flex;
                 align-items: center;
-                margin: 5px;
-                padding: 2px;
+                margin: 5px 0px;
+                padding: 5px 5px 5px 10px;
                 max-width: 500px;
                 background-color: @roster-bg-color;
+                border-radius: @variables_radius;
                 &:hover {
                     background-color: @roster-bg-color-hover;
                 }
@@ -214,9 +215,10 @@
                     width: 5px;
                     height: 50px;
                     display: inline-block;
-                    background-color: red;
+                    border-radius: @variables_radius;
+                    background-color: @cryptpad_color_red;
                     &.online {
-                        background-color: green;
+                        background-color: @cryptpad_color_green;
                     }
                 }
                 .cp-team-member-name {

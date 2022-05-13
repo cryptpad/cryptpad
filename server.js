@@ -237,6 +237,7 @@ var serveConfig = makeRouteCache(function (host) {
             enableEmbedding: Env.enableEmbedding,
             fileHost: Env.fileHost,
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
+            listMyInstance: Env.listMyInstance,
         }, null, '\t'),
         '});'
     ].join(';\n')
@@ -260,6 +261,22 @@ var serveBroadcast = makeRouteCache(function (host) {
 
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
+
+var define = function (obj) {
+    return `define(function (){
+    return ${JSON.stringify(obj, null, '\t')};
+});`
+};
+
+app.get('/api/instance', function (req, res) { // XXX use caching?
+    res.setHeader('Content-Type', 'text/javascript');
+    res.send(define({
+        name: Env.instanceName,
+        description: Env.instanceDescription,
+        location: Env.instanceJurisdiction,
+        notice: Env.instanceNotice,
+    }));
+});
 
 var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
 var fivehundred_path = Path.resolve(__dirname + '/customize.dist/500.html');

@@ -122,6 +122,7 @@
         .dialog {
             & > div {
                 background-color: @cp_alertify-bg;
+                border-radius: @variables_radius_L;
                 &.half {
                     width: 50%;
                     max-width: 50%;
@@ -205,6 +206,8 @@
                         box-sizing: border-box;
                         padding: 0 15px;
                         cursor: pointer;
+                        border-top-left-radius: @variables_radius;
+                        border-top-right-radius: @variables_radius;
                         &:not(.disabled):hover {
                             background-color: @cp_alertify-hover;
                         }

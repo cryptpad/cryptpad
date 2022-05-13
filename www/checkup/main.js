@@ -22,6 +22,8 @@ define([
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Pages, Tools, AppConfig) {
+    window.CHECKUP_MAIN_LOADED = true;
+
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -73,6 +75,7 @@ define([
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
     var fileHost = ApiConfig.fileHost;
+    var accounts_api = ApiConfig.accounts_api || AppConfig.accounts_api || undefined;
 
     var getAPIPlaceholderPath = function (relative) {
         var absolute;
@@ -984,7 +987,7 @@ define([
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
-                    AppConfig.accounts_api,
+                    accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
 
@@ -1023,7 +1026,7 @@ define([
                     $sandbox,
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
-                    AppConfig.accounts_api,
+                    accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -1361,6 +1364,55 @@ define([
                 path: blockPlaceholderPath,
                 value: xcto,
             });
+        });
+    });
+
+    assert(function (cb, msg) {
+        var url = '/api/instance';
+        msg.appendChild(h('span', [
+            link(url, url),
+            " did not load as expected. This is most likely caused by a missing directive in your reverse proxy or an outdated version of the API server.",
+        ]));
+
+        require([
+            `optional!${url}`,
+        ], function (Instance) {
+            // if the URL fails to load then an empty object will be returned
+            // this can be interpreted as a failure, even though the rest of the platform should still work
+            if (!Object.keys(Instance).length) {
+                return void cb(Instance);
+            }
+            cb(true);
+        });
+    });
+
+    assert(function (cb, msg) {
+        if (!ApiConfig.listMyInstance) { return void cb(true); }
+        msg.appendChild(h('span', [
+            "The administrators of this instance have opted in to inclusion in ",
+            link('https://cryptpad.org/instances/', 'the public instance directory'),
+            ' but have not configured at least one of the expected ',
+            code('description'),
+            ' or ',
+            code('location'),
+            ' text fields via the instance admin panel.',
+        ]));
+        var expected = [
+            'description',
+            'location',
+            //'name',
+            // 'notice',
+        ];
+
+        var url = '/api/instance';
+        require([
+            `optional!${url}`,
+        ], function (Instance) {
+            var good = expected.every(function (k) {
+                var val = Instance[k];
+                return (val && typeof(val) === 'object' && typeof(val.default) === 'string' && val.default.trim());
+            });
+            return void cb(good || Instance);
         });
     });
 
