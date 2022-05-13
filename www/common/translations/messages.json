@@ -625,7 +625,7 @@
     "autostore_forceSave": "Store the file in your CryptDrive",
     "autostore_notAvailable": "You must store this document in your CryptDrive before being able to use this feature.",
     "crowdfunding_button": "Support CryptPad",
-    "crowdfunding_button2": "Help CryptPad",
+    "crowdfunding_button2": "Donate",
     "crowdfunding_popup_text": "<h3>We need your help!</h3>To ensure that CryptPad is actively developed, consider supporting the project via the OpenCollective page, where you can see our <b>Roadmap</b> and <b>Funding goals</b>.",
     "crowdfunding_popup_no": "Not now",
     "survey": "CryptPad survey",
