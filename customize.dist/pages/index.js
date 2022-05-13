@@ -108,8 +108,6 @@ define([
 
         var fastLink = k => pageLink(Pages.customURLs[k], k);
 
-        Msg.terms = Msg.footer_tos; //"Terms of Service"; // XXX
-
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
         var termsLink = fastLink('terms');

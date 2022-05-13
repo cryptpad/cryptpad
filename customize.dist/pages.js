@@ -141,7 +141,7 @@ define([
     // used for the about menu
     Pages.imprintLink = footLink(customURLs.imprint, 'imprint');
     Pages.privacyLink = footLink(customURLs.privacy, 'privacy');
-    Pages.termsLink = footLink(customURLs.terms, 'footer_tos');
+    Pages.termsLink = footLink(customURLs.terms, 'terms');
     Pages.sourceLink = footLink(customURLs.source, 'footer_source');
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
     Pages.roadmapLink = footLink(customURLs.roadmap, 'footer_roadmap');
