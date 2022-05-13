@@ -18,10 +18,12 @@ var simpleTags = [
     '</span>',
 ];
 
-['a', 'b', 'em', 'p', 'i', 'code', 'li',].forEach(function (tag) {
+['a', 'b', 'em',/* 'p',*/ 'i', 'code', 'li',].forEach(function (tag) {
     simpleTags.push('<' + tag + '>');
     simpleTags.push('</' + tag + '>');
 });
+
+var found_tags = {};
 
 // these keys are known to be problematic
 var KNOWN_ISSUES = [ // FIXME
@@ -67,7 +69,10 @@ var processLang = function (map, lang, primary) {
         var usesHTML;
 
         s.replace(/<[\s\S]*?>/g, function (html) {
-            if (simpleTags.indexOf(html) !== -1) { return; }
+            if (simpleTags.includes(html)) {
+                found_tags[html] = 1;
+                return;
+            }
             announce();
             usesHTML = true;
             if (!primary) {
@@ -125,4 +130,9 @@ processLang(EN, 'en', true);
     } catch (err) {
         console.error(err);
     }
+});
+
+simpleTags.forEach(html => {
+    if (found_tags[html]) { return; }
+    console.log(`html exemption '${html}' is unnecessary.`);
 });

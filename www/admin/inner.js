@@ -481,7 +481,7 @@ define([
 
     create['notice'] = function () { // TODO make translateable
         var key = 'notice';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Messages.admin_noticeHint
 
         var $button = $div.find('button').addClass('cp-listing-action').text(Messages.settings_save);
 
