@@ -45,8 +45,6 @@ define([
             termsCheck = h('div.checkbox-container', tos);
         }
 
-        Msg.register_instance = "Creating a new account on {0}"; // XXX DB
-
         return frame([
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [

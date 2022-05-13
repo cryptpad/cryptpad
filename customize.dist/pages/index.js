@@ -108,9 +108,7 @@ define([
 
         var fastLink = k => pageLink(Pages.customURLs[k], k);
 
-        // XXX DB
         Msg.terms = Msg.footer_tos; //"Terms of Service"; // XXX
-        Msg.home_location = "Encrypted data is hosted in {0}"; // XXX
 
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
@@ -128,7 +126,7 @@ define([
 
         // instance title
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
-        // XXX DB: How does TextFit work?!
+        // DB: How does TextFit work?!
         // setTimeout(function () {
         //     TextFit(instanceTitle, {minFontSize: 13, maxFontSize: 48}); // XXX DB remove?
         // });
@@ -143,8 +141,6 @@ define([
         } else {
             locationBlock = h('div', h('br'));
         }
-
-        Msg.home_morestorage = 'For more storage space:'; // XXX
 
         var subButton = function () {
             if (Pages.areSubscriptionsAllowed()) {

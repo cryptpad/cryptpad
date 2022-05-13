@@ -469,8 +469,6 @@ define([
         return $div;
     };
 
-    Messages.admin_noticeTitle = "Home page notice"; // XXX
-    Messages.admin_noticeHint = "An optional message to display on the home page"; // XXX
 
     create['notice'] = function () { // XXX make translateable
         var key = 'notice';

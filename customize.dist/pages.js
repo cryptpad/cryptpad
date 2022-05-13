@@ -146,7 +146,6 @@ define([
     Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
     Pages.roadmapLink = footLink(customURLs.roadmap, 'footer_roadmap');
 
-    Msg.footer_website = "Project Website"; // XXX
 
     Pages.infopageFooter = function () {
         return h('footer.cp-footer', [
