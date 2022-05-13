@@ -252,7 +252,7 @@
     "login_invalPass": "Απαιτείται κωδικός",
     "login_unhandledError": "Προέκυψε ένα μη αναμενόμενο σφάλμα :(",
     "register_importRecent": "Εισαγωγή ιστορικού (Συνίσταται)",
-    "register_acceptTerms": "Αποδέχομαι <a href='/terms.html' tabindex='-1'>τους όρους χρήσης</a> της υπηρεσίας",
+    "register_acceptTerms": "Αποδέχομαι <a>τους όρους χρήσης</a> της υπηρεσίας",
     "register_passwordsDontMatch": "Οι κωδικοί δεν ταιριάζουν!",
     "register_passwordTooShort": "Οι κωδικοί πρέπει να αποτελούνται από τουλάχιστον {0} χαρακτήρες.",
     "register_mustAcceptTerms": "Πρέπει να αποδεχτείτε τους όρους της υπηρεσίας.",
