@@ -26,7 +26,7 @@ define([
                 ]),
                 (adminEmail || adminMailbox) ? h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
-                        Pages.setHTML(h('h2.text-center'), Msg.contact_admin),
+                        h('h2.text-center', Msg._getKey('contact_admin', [ Pages.Instance.name ])),
                         h('p.center', Msg.contact_adminHint)
                     ),
                     adminEmail ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
