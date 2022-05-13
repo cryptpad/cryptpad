@@ -96,7 +96,7 @@ define(function() {
      *
      * See the comments above for a description of possible configurations.
      */
-    AppConfig.terms = true;
+    AppConfig.terms = false;
 
     /* The terms of CryptPad's license require that its source code be made available
      * to anyone who uses the software. If you have not made any modifications to the platform
