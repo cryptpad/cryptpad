@@ -155,13 +155,15 @@ define([
 
         return h('footer.cp-footer', [
             h('div.cp-footer-left', [
-                h('div.cp-logo-foot', [
-                    h('img', {
-                        src: '/customize/CryptPad_logo.svg',
-                        "aria-hidden": true,
-                        alt: ''
-                    }),
-                    h('span.logo-font', 'CryptPad')
+                h('a', {href:"https://cryptpad.org"}, [
+                    h('div.cp-logo-foot', [
+                        h('img', {
+                            src: '/customize/CryptPad_logo.svg',
+                            "aria-hidden": true,
+                            alt: ''
+                        }),
+                        h('span.logo-font', 'CryptPad')
+                    ])
                 ]),
                 h('span.cp-footer-version', 'v' + Pages.versionString)
             ]),
