@@ -22,11 +22,15 @@
     @palette0: @cp_kanban-color0; // Default bg color for header
 
     @kanban-colors: @cp_kanban-colors;
+    @kanban-card-colors: @cp_kanban-card-colors;
 
     .kanban-board-header {
         background-color: @palette0;
-        color: @cp_kanban-fg;
+        color: @cryptpad_color_grey_800;
         border-radius: @variables_radius @variables_radius 0px 0px;
+        button.kanban-edit-item {
+            color: @cryptpad_color_grey_800;
+        }
     }
     .kanban-board {
         .kanban-board-inner {
@@ -40,7 +44,7 @@
         }
         color: @cp_kanban-fg;
         button {
-            color: @cp_kanban-fg;
+            color: @cryptpad_text_col;
         }
     }
 
@@ -55,13 +59,34 @@
         // make a numbered class selector for each color
         .cp-kanban-palette-color@{index}{
             background-color: @color !important;
+            &.cp-kanban-palette-board {
+                background-color: @color !important;
+            }
             &.kanban-board-inner {
                 background-color: fade(@color, 50%) !important;
             }
         }
     }
+    .kanban-card-colors(@kanban-card-colors; @index) when (@index > 0){
+        // loop through the @colors
+        .kanban-card-colors(@kanban-card-colors; (@index - 1));
+        @color: extract(@kanban-card-colors, @index);
+        // make a numbered class selector for each color
+        // .cp-kanban-card-color@{index}{
+        //     background-color: @color !important;
+        // }
+        .cp-kanban-palette-color@{index}{
+            &.cp-kanban-palette-card {
+                background-color: @color !important;
+            }
+            &.kanban-item {
+                background-color: @color !important;
+            }
+        }
+    }
     // call the loop
     .kanban-colors(@kanban-colors; length(@kanban-colors));
+    .kanban-card-colors(@kanban-card-colors; length(@kanban-card-colors));
 
     .cp-kanban-edit-modal {
         display: flex;
@@ -121,6 +146,9 @@
             line-height: 30px;
             color: @cp_kanban-fg;
             border: 1px solid fade(@cp_kanban-fg, 40%);
+            &.fa-check { // tick on selected color
+                color: @cryptpad_text_col;
+            }
         }
     }
     #cp-kanban-edit-tags {

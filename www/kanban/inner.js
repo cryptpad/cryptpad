@@ -363,6 +363,18 @@ define([
         var palette = [''];
         for (var i=1; i<=8; i++) { palette.push('color'+i); }
         var selectedColor = '';
+        var resetThemeClass = function () {
+            $colors.find('.cp-kanban-palette').each(function (i, el) {
+                var $c = $(el);
+                $c.removeClass('cp-kanban-palette-card');
+                $c.removeClass('cp-kanban-palette-board');
+                if (isBoard) {
+                    $c.addClass('cp-kanban-palette-board');
+                } else {
+                    $c.addClass('cp-kanban-palette-card');
+                }
+            });
+        };
         palette.forEach(function (color) {
             var $color = $(h('span.cp-kanban-palette.fa'));
             $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
@@ -383,6 +395,7 @@ define([
                 return selectedColor;
             },
             setValue: function (color) {
+                resetThemeClass();
                 $colors.find('.cp-kanban-palette').removeClass('fa-check');
                 var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
                 $col.addClass('fa-check');
