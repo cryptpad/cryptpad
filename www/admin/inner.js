@@ -430,6 +430,16 @@ define([
         return $div;
     };
 
+    var getInstanceString = function (attr) {
+        var val = APP.instanceStatus[attr];
+        var type = typeof(val);
+        switch (type) {
+            case 'string': return val;
+            case 'object': return val.default;
+            default: return;
+        }
+    };
+
     create['jurisdiction'] = function () { // XXX make translateable
         var key = 'jurisdiction';
         var $div = makeBlock(key, true); // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle, Msg.admin_jurisdictionButton
@@ -517,16 +527,6 @@ define([
                 Messages.admin_infoNotice2,
             ])
         ));
-    };
-
-    var getInstanceString = function (attr) {
-        var val = APP.instanceStatus[attr];
-        var type = typeof(val);
-        switch (type) {
-            case 'string': return val;
-            case 'object': return val.default;
-            default: return;
-        }
     };
 
     create['name'] = function () { // XXX make translateable
