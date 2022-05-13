@@ -8,13 +8,12 @@ define([
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
-        //var urlArgs = Config.requireConf.urlArgs;
 
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
 
         var termsLink = Pages.customURLs.terms;
         $(tos).find('a').attr({
-            href: termsLink, // '/terms.html',
+            href: termsLink,
             target: '_blank',
             tabindex: '-1',
         });
@@ -25,7 +24,6 @@ define([
                     Pages.infopageTopbar(),
                     h('div.container.cp-container', [
                         h('div.row.cp-page-title', h('h1', Msg.register_header)),
-                        //h('div.row.cp-register-det', content),
                     ].concat(content)),
                     Pages.infopageFooter(),
                 ]),

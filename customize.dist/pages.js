@@ -105,7 +105,7 @@ define([
         var l = Msg._getLanguage();
         ['imprint', 'privacy', 'terms', 'roadmap', 'source'].forEach(function (k) {
             var value = AppConfig[k];
-            console.log('links', k, value);
+            //console.log('links', k, value);
             if (value === false) { return; }
             if (value === true) {
                 customURLs[k] = defaultURLs[k];
