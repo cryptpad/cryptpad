@@ -148,6 +148,11 @@ define([
 
 
     Pages.infopageFooter = function () {
+        var donateButton;
+        if (!ApiConfig.removeDonateButton) {
+            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money'); // XXX DB: add OpenCollective icon // XXX
+        }
+
         return h('footer.cp-footer', [
             h('div.cp-footer-left', [
                 h('div.cp-logo-foot', [
@@ -163,8 +168,7 @@ define([
             h('div.cp-footer-center', [
                 h('div.cp-logo-btns', [
                     footLink('https://cryptpad.org', null, Msg.footer_website, 'link'),
-                    footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money') // XXX DB: add OpenCollective icon
-
+                    donateButton,
                 ])
             ]),
             h('div.cp-footer-right', [
@@ -245,25 +249,6 @@ define([
                     [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),
             ].concat(rightLinks)
         );
-    };
-
-    Pages.crowdfundingButton = function (onClick) {
-        var _link = h('a', {
-            href: "https://opencollective.com/cryptpad/",
-            target: '_blank',
-            rel: 'noopener',
-        });
-
-        var crowdFunding = h('button', [
-            Msg.crowdfunding_button
-        ]);
-
-        $(crowdFunding).click(function () {
-            _link.click();
-            if (typeof(onClick) === 'function') { onClick(); }
-        });
-
-        return crowdFunding;
     };
 
     return Pages;
