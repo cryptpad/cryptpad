@@ -812,14 +812,15 @@
                 }
 
                 &:hover {
+                    // Icons shown when hovering the toolbar icon (where logo used to be)
                     .cptools::before {
-                        content: "\e91f";
+                        content: "\e91f"; // XXX Currently shows Destroy
                     }
                     .fa::before {
-                        content: "\f0a0";
+                        content: "\f0a0"; // shows hdd-o for all FA icons (settings, etc)
                     }
                     .fa-hdd-o::before{
-                        content: "\f015";
+                        content: "\f015"; // shows home for drive
                     }
                 }
 
