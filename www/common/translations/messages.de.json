@@ -617,7 +617,7 @@
     "admin_flushCacheButton": "Cache leeren",
     "admin_flushCacheDone": "Cache erfolgreich geleert",
     "footer_donate": "Spenden",
-    "contact_admin": "Administratoren kontaktieren",
+    "contact_admin": "Administratoren kontaktieren für: {0}",
     "contact_adminHint": "Für Probleme mit deinem Account, der Speicherbegrenzung oder der Verfügbarkeit des Dienstes.\n",
     "contact_dev": "Entwickler kontaktieren",
     "contact_devHint": "Für Verbesserungsvorschläge oder zum Danke-Sagen.",
@@ -784,7 +784,7 @@
     "team_pendingOwner": "(ausstehend)",
     "team_pendingOwnerTitle": "Dieser Administrator hat dein Angebot auf Eigentümerschaft noch nicht akzeptiert.",
     "team_demoteMeConfirm": "Du bist gerade dabei, deine Rechte aufzugeben. Dies kann nicht rückgängig gemacht werden. Bist du sicher?",
-    "crowdfunding_button2": "CryptPad unterstützen",
+    "crowdfunding_button2": "Spenden",
     "survey": "CryptPad-Umfrage",
     "team_title": "Team: {0}",
     "team_quota": "Speicherplatzbegrenzung deines Teams",
@@ -1432,5 +1432,12 @@
     "admin_enableDiskMeasurementsHint": "Wenn aktiviert, wird ein JSON-API-Endpunkt unter <code>/api/profiling</code> bereitgestellt. Damit wird eine laufende Messung der Festplattenzugriffe innerhalb des unten festgelegten Zeitfensters durchgeführt. Diese Einstellung kann die Leistung des Servers beeinträchtigen und möglicherweise sensible Daten offenlegen. Es wird empfohlen, diese Einstellung deaktiviert zu lassen, wenn du nicht weißt, was du tust.",
     "admin_setDuration": "Dauer festlegen",
     "error_evalPermitted": "Abbruch, weil eval nicht erlaubt sein sollte.\n\nDieser Fehler steht in Zusammenhang mit Content-Security-Policy-Headern und könnte folgende Ursachen haben: ein veralteter Browser, der diese nicht unterstützt, Browser-Erweiterungen, die das korrekte Verhalten beeinträchtigen, oder eine falsche Konfiguration dieser CryptPad-Instanz.",
-    "ui_experimental": "Diese Funktion wird als experimentell betrachtet."
+    "ui_experimental": "Diese Funktion wird als experimentell betrachtet.",
+    "register_instance": "Einen neunen Account auf {0} erstellen",
+    "login_instance": "Mit deinem Account auf {0} verbinden",
+    "admin_noticeTitle": "Hinweis auf der Hauptseite",
+    "home_morestorage": "Für mehr Speicherplatz:",
+    "home_location": "Verschlüsselte Daten werden in {0} gespeichert",
+    "admin_noticeHint": "Eine optionale Nachricht, die auf der Hauptseite angezeigt wird",
+    "footer_website": "Website des Projekts"
 }
