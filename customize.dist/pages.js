@@ -210,23 +210,6 @@ define([
             ]);
         }
 
-        // var button = h('button.navbar-toggler', {
-        //     'type':'button',
-        //     'data-toggle':'collapse',
-        //     'data-target':'#menuCollapse',
-        //     'aria-controls': 'menuCollapse',
-        //     'aria-expanded':'false',
-        //     'aria-label':'Toggle navigation'
-        // }, h('i.fa.fa-bars '));
-
-        // // XXX button to collapse navbar on small screens
-        // $(button).click(function () {
-        //     if ($('#menuCollapse').is(':visible')) {
-        //         return void $('#menuCollapse').slideUp();
-        //     }
-        //     $('#menuCollapse').slideDown();
-        // });
-
         var isHome = ['/', '/index.html'].includes(window.location.pathname);
         var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html' }, [
             h('i.fa.fa-arrow-left'),
@@ -239,8 +222,6 @@ define([
         ]);
 
         return h('nav.navbar.navbar-expand-lg',
-            // button, // XXX collapse button
-            // add .collapse.navbar-collapse.justify-content-end#menuCollapse to div below to enable collapse button
             [
                 !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html'}, [
