@@ -593,7 +593,7 @@
     "autostore_forceSave": "Stocker le fichier dans votre CryptDrive",
     "autostore_notAvailable": "Vous devez stocker ce document dans votre CryptDrive avant de pouvoir utiliser cette fonctionnalité.",
     "crowdfunding_button": "Soutenir CryptPad",
-    "crowdfunding_button2": "Aider CryptPad",
+    "crowdfunding_button2": "Faire un don",
     "crowdfunding_popup_text": "<h3>Aider CryptPad</h3>Pour vous assurer que CryptPad soit activement développé, nous vous invitons à supporter le projet via la page OpenCollective, où vous pouvez trouver notre <b>Roadmap</b> et nos <b>objectifs de financement</b>.",
     "crowdfunding_popup_no": "Pas maintenant",
     "survey": "Enquête CryptPad",
@@ -619,7 +619,7 @@
     "admin_flushCacheButton": "Vider le cache",
     "admin_flushCacheDone": "Opération réalisée avec succès",
     "footer_donate": "Faire un don",
-    "contact_admin": "Contacter les administrateurs",
+    "contact_admin": "Contacter les administrateurs de : {0}",
     "contact_adminHint": "Pour toute question relative à votre compte, à la limite de stockage ou à la disponibilité du service.\n",
     "contact_dev": "Contacter les développeurs",
     "contact_devHint": "Pour les demandes de fonctionnalités, les améliorations d'ergonomie ou pour dire merci.",
@@ -1432,5 +1432,12 @@
     "support_cat_debugging": "Diagnostic",
     "ui_openDirectly": "Cette fonctionnalité n'est pas disponible lorsque CryptPad est intégré dans un autre site. Ouvrir ce document dans un nouvel onglet ?",
     "error_evalPermitted": "Abandon car eval ne devrait pas être autorisé.\n\nCette erreur est liée aux headers Content-Security-Policy, elle peut être due à : un navigateur obsolète qui ne les prend pas en charge, des extensions de navigateur qui interfèrent avec leur fonctionnement, ou une configuration incorrecte de cette instance CryptPad.",
-    "ui_experimental": "Cette fonctionnalité est considérée comme expérimentale."
+    "ui_experimental": "Cette fonctionnalité est considérée comme expérimentale.",
+    "register_instance": "Création d'un nouveau compte sur {0}",
+    "login_instance": "Connexion à votre compte sur {0}",
+    "home_morestorage": "Pour plus d'espace de stockage :",
+    "home_location": "Hébergement des données chiffrées : {0}",
+    "footer_website": "Site du projet",
+    "admin_noticeHint": "Un message optionnel à afficher sur la page d'accueil",
+    "admin_noticeTitle": "Notice sur la page d'accueil"
 }
