@@ -18,11 +18,25 @@ define([
         var addData = function (meta, Cryptpad, user, Utils) {
             meta.filehash = Utils.currentPad.hash;
         };
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
+            sframeChan.on('Q_SIGNCOLLECTIONS_SET', function (data, cb) {
+                var chanIds = []
+                //  Utils.Hash.hrefToHexChannelId(data, null);
+                Cryptpad.pinPads(chanIds, function (e) {
+                    if (e) { return void cb(e); }
+                    Cryptpad.setSignCollections(data, cb);
+                });
+            });
+            sframeChan.on('Q_SIGNCOLLECTIONS_GET', function (data, cb) {
+                    Cryptpad.getSignCollections(cb);
+            });
+        };
         SFCommonO.start({
             cache: true,
             hash: hash,
             href: href,
             noRealtime: true,
+            addRpc: addRpc,
             addData: addData
         });
     });

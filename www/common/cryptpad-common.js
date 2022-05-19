@@ -350,6 +350,21 @@ define([
         if (data) { postData.value = data; }
         postMessage("SET", postData, cb);
     };
+    // Sign Collection
+    common.getSignCollections = function (cb) {
+        postMessage("GET", { key: ['signCollections'] }, function (obj) {
+            cb(obj);
+        });
+    };
+    common.setSignCollections = function (data, cb) {
+        var postData = {
+            key: ['signCollections']
+        };
+        // If we don't have "data", it means we want to remove the signCollection and we should not have a
+        // "postData.value", even set to undefined (JSON.stringify transforms undefined to null)
+        postData.value = data;
+        postMessage("SET", postData, cb);
+    };
     // Todo
     common.getTodoHash = function (cb) {
         postMessage("GET", { key: ['todo'] }, function (obj) {

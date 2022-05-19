@@ -202,11 +202,20 @@ define([
         menu.classList.remove('d-none');
     };
 
+    var getCollections = function (cb) {
+        var sframeChan = APP.common.getSframeChannel();
+        sframeChan.query("Q_SIGNCOLLECTIONS_GET", {}, function(err, data) {
+            var collections = (data==null) ? [] : JSON.parse(data);
+            cb(collections);
+        });
+    };
+
     var storeCollections = function () {
-        console.log("SIGN store collections")
-        console.log(svgCollections)
-        localStorage.setItem('svgCollections', JSON.stringify(svgCollections));
-        console.log(localStorage.getItem('svgCollections'))
+        var sframeChan = APP.common.getSframeChannel();
+        sframeChan.query("Q_SIGNCOLLECTIONS_SET", JSON.stringify(svgCollections), function (err, err2) {
+            if (err || err2) { return void UI.log(err || err2); }
+            console.log(APP.common.getMetadataMgr().getUserData());
+        });
     };
 
     var getSvgItem = function(svg) {
@@ -717,8 +726,7 @@ define([
             svgCollections.push(svgItem);
             displaysSVG();
             storeCollections()
-            // localStorage.setItem('svgCollections', JSON.stringify(svgCollections));
-
+            
             var svg_list_id = "svg_list";
             if(svgItem.type) {
                 svg_list_id = svg_list_id + "_" + svgItem.type;
@@ -967,20 +975,20 @@ define([
       forceAddLock = !is_mobile();
       addLock = forceAddLock;
 
-      if(localStorage.getItem('svgCollections')) {
-          svgCollections = JSON.parse(localStorage.getItem('svgCollections'));
-      }
+      getCollections(function(collections) {
+        if (collections)
+          svgCollections = collections;
+        opentype.load('/sign/vendor/fonts/Caveat-Regular.ttf', function(err, font) {
+            fontCaveat = font;
+        });
 
-      opentype.load('/sign/vendor/fonts/Caveat-Regular.ttf', function(err, font) {
-          fontCaveat = font;
+        createSignaturePad();
+        responsiveDisplay();
+        displaysSVG();
+        stateAddLock();
+        createEventsListener();
       });
-
-      createSignaturePad();
-      responsiveDisplay();
-      displaysSVG();
-      stateAddLock();
-      createEventsListener();
-    }
+    };
 
     var andThen = function (common) {
        console.log("SIGN in andThen");
@@ -999,6 +1007,9 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
         var fileHost = priv.fileHost || priv.origin || '';
+
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
 
         if (!priv.filehash) {
             uploadMode = true;
@@ -1075,7 +1086,6 @@ define([
 
             // launch the signature App
             initSignaturePdf();
-
             return;
         }
 
