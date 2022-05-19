@@ -43,6 +43,7 @@ define([
 
     var maxPage = 100;
     var pdfData = null;
+    var pdfTitle = null;
     var canvasEditions = [];
     var fontCaveat = null;
     var copiedObject = null;
@@ -808,6 +809,7 @@ define([
         async function prepareDoc(pdfData, items) {
            var buffer = await pdfData.arrayBuffer();
            var pdfDoc = await pdflib.PDFDocument.load(buffer);
+           pdfDoc.setTitle(pdfTitle);
            items.forEach(async (item) => {
              var img = await pdfDoc.embedPng(item.data);
              var page = pdfDoc.getPages()[item.index]
@@ -829,7 +831,7 @@ define([
             console.log(items);
             prepareDoc(pdfData, items).then(pdfBytes => {
               var blob = new Blob([pdfBytes.buffer], { type: "application/pdf" })
-              saveAs(blob, "test.pdf");
+              saveAs(blob, pdfTitle.replace(".pdf", "-signed.pdf"));
             });
         });
 
@@ -1062,6 +1064,12 @@ define([
                      cache: common.getCache()
                 };
 
+
+                var privateData = common.getMetadataMgr().getPrivateData();
+                console.log("priv " , privateData);
+                var metaData = common.getMetadataMgr().getMetadata();
+                console.log("public " , metaData);
+
                 // TODO: Load pdf
                 data = { channel: secret.channel, href: "/file/#/" + priv.filehash}
 
@@ -1069,6 +1077,14 @@ define([
                 MakeBackup.downloadFile(ctx, data, function(err, obj) {
                   // Store the PDF data, as we will need it to insert the images
                   pdfData = obj.content;
+                  pdfTitle = obj.metadata.name;
+
+                  Title.updateTitle(pdfTitle || Title.defaultTitle);
+                  toolbar.addElement(['pageTitle'], {
+                    pageTitle: pdfTitle,
+                    title: Title.getTitleConfig(),
+                    });
+
                   var url = URL.createObjectURL(pdfData);
                   require.config({paths: {'pdfjs-dist': '/sign/vendor/pdf.js?legacy'}});
                   require(['pdfjs-dist/build/pdf'], function(pdfjsLib) {
