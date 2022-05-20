@@ -17,7 +17,7 @@
     @toolbar-bg-color: @bg-color;
     // XXX: check contrasts of app colors used as btn background
     @toolbar-bg-color-light: lighten(@bg-color, 30%);
-    @toolbar-bg-color-fade: fade(@toolbar-bg-color-light, 80%);
+    @toolbar-bg-color-fade: fade(@toolbar-bg-color-light, 60%);
 };
 
 .toolbar_main (
@@ -439,7 +439,6 @@
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
-                // XXX DB TODO: scale down icon logo on small screens
                 .cp-pad-not-pinned {
                     line-height: 32px;
                     flex: unset;
@@ -997,7 +996,6 @@
                 margin-right: 5px;
             }
             &:hover {
-                // XXX DB: not working well in dark/light
                 background-color: fade(@cp_toolbar-bottom-bg, 70%);
             }
         }
@@ -1008,17 +1006,16 @@
             background-color: @cp_toolbar-bottom-bg;
             color: @cp_toolbar-bottom-fg;
             &:hover {
-                // XXX DB: not working well in dark/light
-                background-color: fade(@cp_toolbar-bottom-bg, 50%);
-                border-color: fade(@cp_toolbar-bottom-bg, 50%);
+                background-color: fade(@cryptpad_text_col, 20%);
+                border-color: @cryptpad_text_col;
+                color: @cryptpad_text_col;
             }
             &.cp-toolbar-button-active {
                 background-color: @cp_toolbar-bg;
                 border-color: @cp_toolbar-fg;
                 color: @cp_toolbar-fg;
                 &:hover {
-                    // XXX DB: not working well in dark/light
-                    background-color: fade(@cp_toolbar-bottom-bg, 50%);
+                    background-color: fade(@cryptpad_text_col, 20%);
                 }
             }
         }
@@ -1030,11 +1027,11 @@
             border-color: var(--toolbar-bg-color-light);
             color: @cp_toolbar-bottom-fg;
             &:hover {
-                // XXX DB: not working well in dark/light
-                background-color: fade(@toolbar-bg-color-light, 80%);
+                background-color: @toolbar-bg-color-fade;
                 background-color: var(--toolbar-bg-color-fade);
-                border-color: fade(@toolbar-bg-color-light, 80%);
+                border-color: @toolbar-bg-color-fade;
                 border-color: var(--toolbar-bg-color-fade);
+                color: @cp_toolbar-bottom-fg;
             }
         }
         button.cp-toolbar-collapse {
