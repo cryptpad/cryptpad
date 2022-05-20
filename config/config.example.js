@@ -11,7 +11,7 @@
     Support requests for such setups should be directed to their authors.
 
     If you're having difficulty difficulty configuring your instance
-    we suggest that you join the project's IRC/Matrix channel.
+    we suggest that you join the project's Matrix channel.
 
     If you don't have any difficulty configuring your instance and you'd like to
     support us for the work that went into making it pain-free we are quite happy
