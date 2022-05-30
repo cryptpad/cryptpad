@@ -1,3 +1,35 @@
+# 5.0.0
+
+## Goals
+
+New look
+
+## Update notes
+
+* new API endpoint
+  * your instance won't break if you don't enable it, but you really should
+
+
+## Features
+
+* new look
+  * rounded corners
+* display instance name, description, location on the home page
+* move project information out of the platform repository and onto the project site (cryptpad.org)
+* set instance home page notice from the admin panel
+* change calendar options icon from ellipsis to cog
+* checkup page
+  * warn if the instance is public but does not contain a description and location
+* resizeable drive tree side panel
+  * also in teams
+
+## Bug fixes
+
+* OnlyOffice font issues
+* rewrite checkup page URL to include trailing slash on misconfigured instances
+* the user admin menu did not automatically close after clicking options in some browsers (under unknown conditions)
+* guard against type error that could occur when trying to generate a list of shared folders to pin
+
 # 4.14.1
 
 This minor release fixes a number of bugs that we noticed after deploying 4.14.0.
