@@ -1263,8 +1263,12 @@ define([
         }
         if (type === "pin") {
             var sfChannels = Object.keys(Env.folders).map(function (fId) {
-                return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
-            });
+                try {
+                    return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
+                } catch (err) {
+                    console.error(err);
+                }
+            }).filter(Boolean);
             Array.prototype.push.apply(result, sfChannels);
         }
 
