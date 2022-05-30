@@ -22,6 +22,8 @@
 
         if (/\/api\/.*/.test(src)) {
             console.error("A serverside API endpoint could not be reached.", src);
+            // don't warn about bower if the error is the optional instance endpoint
+            if (/\/api\/instance/.test(src)) { return; }
         }
 
         //if (!/\/bower_components\/.*/.test(src)) { return; }
