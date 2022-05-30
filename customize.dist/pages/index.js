@@ -90,12 +90,21 @@ define([
             });
         });
 
+        var isLocalURL = url => {
+            try {
+                return new URL(url, window.location.href).origin === window.location.origin;
+            } catch (err) {
+                console.error(err);
+                return /^\//.test(url);
+            }
+        };
+
         var pageLink = function (ref, loc, text) {
             if (!ref) { return; }
             var attrs =  {
                 href: ref,
             };
-            if (!/^\//.test(ref)) {
+            if (!isLocalURL(ref)) {
                 attrs.target = '_blank';
                 attrs.rel = 'noopener noreferrer';
             }
