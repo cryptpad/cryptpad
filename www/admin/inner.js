@@ -538,7 +538,6 @@ define([
             type: 'text',
             value: getInstanceString('instanceName') || ApiConfig.httpUnsafeOrigin || '',
             placeholder: ApiConfig.httpUnsafeOrigin,
-            style: 'margin-bottom: 5px;',
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setter', input);
