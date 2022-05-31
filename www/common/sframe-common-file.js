@@ -34,7 +34,7 @@ define([
     };
 
 
-    Messages.upload_tooLargeBrief = "File exceeds the {0}MB limit for this drive";
+    Messages.upload_tooLargeBrief = "File exceeds the {0}MB limit for this drive"; // XXX
     module.create = function (common, config) {
         var File = {};
         //var origin = common.getMetadataMgr().getPrivateData().origin;
