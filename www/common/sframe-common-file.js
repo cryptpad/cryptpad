@@ -33,8 +33,6 @@ define([
         sframeChan.query('Q_UPLOAD_FILE', data, cb);
     };
 
-
-    Messages.upload_tooLargeBrief = "File exceeds the {0}MB limit for this drive"; // XXX
     module.create = function (common, config) {
         var File = {};
         //var origin = common.getMetadataMgr().getPrivateData().origin;
@@ -114,7 +112,9 @@ define([
             }
             if (data.complete && data.href && data.uid) {
                 if (response.expected(data.uid)) {
-                    response.handle(data.uid, [data.href]); } return;
+                    response.handle(data.uid, [data.href]);
+                }
+                return;
             }
             if (typeof data.progress !== "undefined" && response.expected(data.uid)) {
                 return void updateProgress(data.progress);
