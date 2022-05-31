@@ -467,7 +467,7 @@
     "upload_notEnoughSpace": "There is not enough space for this file in your CryptDrive.",
     "upload_notEnoughSpaceBrief": "Not enough space",
     "upload_tooLarge": "This file exceeds the maximum upload size allowed for your account.",
-    "upload_tooLargeBrief": "File exceeds the {0}MB limit",
+    "upload_tooLargeBrief": "File exceeds the {0}MB limit for this drive",
     "upload_choose": "Choose a file",
     "upload_pending": "Pending",
     "upload_cancelled": "Cancelled",
