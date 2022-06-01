@@ -235,6 +235,7 @@ define([
                         $codeMirrorContainer.removeClass('cp-app-code-fullpage');
                         if (isPresentMode) {
                             $editorContainer.addClass('cp-app-code-present');
+                            $previewButton.hide();
                         }
                     }
                 });
