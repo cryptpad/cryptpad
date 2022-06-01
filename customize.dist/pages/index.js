@@ -146,7 +146,7 @@ define([
         }
 
         var subButton = function () {
-            if (Pages.areSubscriptionsAllowed()) {
+            if (Pages.areSubscriptionsAllowed() && !LocalStore.getPremium()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
                     h('a', {href:"/accounts/"}, h('button', [
