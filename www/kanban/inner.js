@@ -962,7 +962,7 @@ define([
 
             var getTags = function () {
                 return $list.find('span.active').map(function () {
-                    return $(this).data('tag');
+                    return String($(this).data('tag'));
                 }).get();
             };
             var commitTags = function () {
