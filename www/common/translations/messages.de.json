@@ -448,7 +448,7 @@
     "upload_notEnoughSpace": "Der verfügbare Speicherplatz in deinem CryptDrive reicht leider nicht für diese Datei.",
     "upload_notEnoughSpaceBrief": "Unzureichender Speicherplatz",
     "upload_tooLarge": "Diese Datei überschreitet die für deinen Account erlaubte maximale Größe.",
-    "upload_tooLargeBrief": "Datei überschreitet die maximale Größe von {0} MB",
+    "upload_tooLargeBrief": "Datei überschreitet die maximale Größe von {0} MB für dieses Drive",
     "upload_choose": "Eine Datei wählen",
     "upload_pending": "In der Warteschlange",
     "upload_cancelled": "Abgebrochen",
