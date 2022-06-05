@@ -55,7 +55,7 @@
     "fm_folder": "フォルダ",
     "fm_folderName": "フォルダ名",
     "fm_fileName": "ファイル名",
-    "crowdfunding_button2": "CryptPadを支援",
+    "crowdfunding_button2": "寄付",
     "fm_padIsOwned": "あなたはこのドキュメントの所有者です",
     "creation_expiration": "有効期限を設定",
     "owner_removeText": "オーナー",
@@ -906,7 +906,7 @@
     "mdToolbar_button": "マークダウンのツールバーを表示もしくは隠す",
     "pad_base64": "このドキュメントはサイズの大きい画像を含んでいます。ドキュメントのサイズが大きいと、読み込みに時間がかかります。サイズを減らすために、画像のフォーマットを変換して、別の画像ファイルとしてCryptDriveに保存することができます。画像を変換してよろしいですか？",
     "todo_removeTaskTitle": "このタスクをリストから削除",
-    "upload_tooLargeBrief": "ファイルが{0}MBの制限を超えています",
+    "upload_tooLargeBrief": "ファイルがドライブの{0}MBの制限を超えています",
     "upload_tooLarge": "ファイルがあなたのアカウントでアップロードできるサイズを超えています。",
     "upload_notEnoughSpaceBrief": "容量が足りません",
     "upload_notEnoughSpace": "CryptDriveの空き容量が不足しています。",
@@ -1430,5 +1430,10 @@
     "fivehundred_internalServerError": "内部サーバーエラー",
     "support_debuggingDataHint": "作成するサポートチケットには以下の情報が含まれます。その情報から管理者があなたの暗号化されたドキュメントにアクセスすることはできません。以下の情報は、管理者だけが読めるように暗号化されます。",
     "support_debuggingDataTitle": "アカウントのデバッグ用の情報",
-    "support_cat_debugging": "デバッグデータ"
+    "support_cat_debugging": "デバッグデータ",
+    "register_instance": "{0}でアカウントを作成",
+    "login_instance": "{0}のアカウントと接続",
+    "home_location": "暗号化されたデータは{0}に保存されています。",
+    "footer_website": "プロジェクトのウェブサイト",
+    "ui_experimental": "この機能は試験中です。"
 }
