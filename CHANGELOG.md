@@ -4,14 +4,14 @@
 
 This release was centered around two main goals:
 
-1. implement a new, more modern and minimalist design with rounded corners and simpler colors
-2. remove detailed information about the open-source project from the platform itself and instead host it on the recently deployed project site (https://cryptpad.org)
+1. Implement a new, more modern and minimalist design with rounded corners and simpler colors
+2. Remove detailed information about the open-source project from the platform itself and instead host it on the recently deployed project site (https://cryptpad.org)
 
 ## Update notes
 
 Recent versions of CryptPad have introduced strict configuration requirements. If you are not already running version `4.14.1` then we recommend you read the notes of our past few releases and apply their updates in sequence. Each version introduces new tests on the checkup page which will help to identify configuration errors that may result in a non-functional server unless corrected.
 
-Version 5.0.0 introduces a new serverside API (`/api/instance`) which serves customized information (server name, description, hosting location) from the admin panel so that it can be displayed on the newly redesigned home page.
+Version 5.0.0 introduces a new server-side API (`/api/instance`) which serves customized information (server name, description, hosting location) from the admin panel so that it can be displayed on the redesigned home page.
 
 We've done some extra work relative to similar APIs we've introduced in the past to ensure that the client-side code will continue to work without it. The upgrade process should go smoothly even if you fail to apply the suggested updates to your reverse proxy configuration (see `cryptpad/docs/example.nginx.conf`). If this data cannot be retrieved by the client it will fall back to some sensible defaults, but we recommend you take the time to fix it now in case this API ceases to be optional in some future release. The checkup page will identify whether the API is accessible and display an error otherwise.
 
