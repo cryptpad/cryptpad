@@ -2,33 +2,65 @@
 
 ## Goals
 
-New look
+This release was centered around two main goals:
+
+1. implement a new, more modern and minimalist design with rounded corners and simpler colors
+2. remove detailed information about the open-source project from the platform itself and instead host it on the recently deployed project site (https://cryptpad.org)
 
 ## Update notes
 
-* new API endpoint
-  * your instance won't break if you don't enable it, but you really should
+Recent versions of CryptPad have introduced strict configuration requirements. If you are not already running version `4.14.1` then we recommend you read the notes of our past few releases and apply their updates in sequence. Each version introduces new tests on the checkup page which will help to identify configuration errors that may result in a non-functional server unless corrected.
 
+Version 5.0.0 introduces a new serverside API (`/api/instance`) which serves customized information (server name, description, hosting location) from the admin panel so that it can be displayed on the newly redesigned home page.
+
+We've done some extra work relative to similar APIs we've introduced in the past to ensure that the client-side code will continue to work without it. The upgrade process should go smoothly even if you fail to apply the suggested updates to your reverse proxy configuration (see `cryptpad/docs/example.nginx.conf`). If this data cannot be retrieved by the client it will fall back to some sensible defaults, but we recommend you take the time to fix it now in case this API ceases to be optional in some future release. The checkup page will identify whether the API is accessible and display an error otherwise.
+
+```diff
+diff --git a/docs/example.nginx.conf b/docs/example.nginx.conf
+index a2d1cb1ce..23139c58c 100644
+--- a/docs/example.nginx.conf
++++ b/docs/example.nginx.conf
+@@ -183,7 +183,7 @@ server {
+     # /api/config is loaded once per page load and is used to retrieve
+     # the caching variable which is applied to every other resource
+     # which is loaded during that session.
+-    location ~ ^/api/(config|broadcast).*$ {
++    location ~ ^/api/.*$ {
+         proxy_pass http://localhost:3000;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header Host $host;
+```
+
+To update from `4.14.1` to `5.0.0`:
+
+1. Update your reverse proxy configuration to forward all `/api/` requests to the API server, as per the diff shown above, and reload your reverse proxy config
+2. Stop your API server
+3. Fetch the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+6. Review your instance's checkup page to ensure that you are passing all tests
 
 ## Features
 
-* new look
-  * rounded corners
-* display instance name, description, location on the home page
-* move project information out of the platform repository and onto the project site (cryptpad.org)
-* set instance home page notice from the admin panel
-* change calendar options icon from ellipsis to cog
-* checkup page
-  * warn if the instance is public but does not contain a description and location
-* resizeable drive tree side panel
-  * also in teams
+* The most notable feature of this release is its new look: with rounded corners, a more subtle use of colors, and some updated icons.
+* As noted above, instance information from the admin panel is now displayed on the home page, making it easier to customize a CryptPad instance without having to edit so many files on the server. In particular, the home page will now display:
+  1. The instance's configured name or its domain (as a default).
+  2. The instance's description or a default string.
+  3. The instance's hosting location (if specified).
+  4. An optional notice to be displayed as a banner.
+* Many of the informational pages have been replaced by a link the project site (cryptpad.org). Links to optional, instance-specific pages like its terms of service, privacy policy, legal notice and contact information are displayed inline, allowing for a smaller footer.
+* The drive's directory tree (also shown in teams) can now be resized by dragging its border.
+* The checkup page features several new tests, including some which only apply to public instances (a description and location are expected if you have opted into the public instance directory (https://cryptpad.org/instances/).
 
 ## Bug fixes
 
-* OnlyOffice font issues
-* rewrite checkup page URL to include trailing slash on misconfigured instances
-* the user admin menu did not automatically close after clicking options in some browsers (under unknown conditions)
-* guard against type error that could occur when trying to generate a list of shared folders to pin
+* The font selector in our OnlyOffice-based editors (sheets, docs, presentations) now supports several new fonts, and we've fixed a rendering error which caused the wrong font to be selected when clicking on certain options in the dropdown list (https://github.com/xwiki-labs/cryptpad/issues/898).
+* Clicking on an option in the user administration menu (in the top-right corner) didn't automatically close the menu in some cases because some browsers emitted an event while others did not. We now explicitly close this menu when any of its options are clicked.
+* We now guard against a type error that occurred when trying to generate a list of documents to "pin" while shared folders were still in the process of synchronizing.
+* Thanks to a user report we identified that when a premium user uploaded to a non-premium team the error message incorrectly indicated that the uploaded file exceeded the premium size limit (rather than the non-premium size limit). This resulted in confusing behaviour where a 30MB file was described as being over the 150MB file upload limit. We've updated the resulting error message to display the appropriate size limit and indicate that it is relative to the target drive or team, rather than the user's account.
+* Another user reported that they had trouble exporting OnlyOffice documents that contained certain unprintable control characters in their file names. We now remove those unprintable characters when exporting.
+* We noticed that very long messages in team invitation links could overflow their container, so we fixed its incorrect styles.
+* We observed that some third-party instances had been incorrectly configured such that when they entered an editor's URL (such as `/pad`) they only observed a blank page rather than being redirected to the appropriate URL which contained a trailing slash (ie. `/pad/`). We've added a script which detects such cases and redirects to the appropriate URL if it exists.
 
 # 4.14.1
 
