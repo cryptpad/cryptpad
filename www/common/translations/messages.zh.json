@@ -373,7 +373,7 @@
     "invalidHashError": "您请求的文档的 URL 无效。",
     "chainpadError": "更新内容时出现严重错误。 此页面处于只读模式，以确保您不会丢失您的工作。<br>点击 <em>Esc</em> 以继续查看此文档，或重新加载后再次尝试编辑。",
     "inactiveError": "由于缺少活动，此文档已被删除。 按 Esc 创建一个新文档。",
-    "deletedError": "hydrochloquine <a href=\"https://keys-chloroquineclinique.com/#\">chloroquine structure</a>",
+    "deletedError": "该文档已被删除，不再可用。",
     "expiredError": "此文档已过期，不再可用。",
     "anonymousStoreDisabled": "此 CryptPad 实例的管理员已禁用访客存储服务。 登录以访问您自己的 CryptDrive。",
     "padNotPinnedVariable": "此文档将在 {4} 天不活动后过期，{0}登录{1}或{2}注册{3}以保存它。",
