@@ -1540,7 +1540,8 @@ define([
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
                 setActive($val);
                 try {
                     $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
@@ -1627,7 +1628,8 @@ define([
                 window.clearTimeout(to);
                 var c = String.fromCharCode(e.which);
                 pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                // We use JSON.stringify here to escape quotes
+                var $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first');
                 if ($value.length) {
                     setActive($value);
                     $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
@@ -1639,7 +1641,8 @@ define([
 
             $container.setValue = function (val, name, sync) {
                 value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(val)+']');
                 var textValue = name || $val.text() || val;
                 var f = function () {
                     $button.find('.cp-dropdown-button-title').text(textValue);
