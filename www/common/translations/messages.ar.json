@@ -1,1 +1,12 @@
-{}
+{
+    "settings_changePasswordNew": "الكلمة السرية الجديدة",
+    "settings_changePasswordCurrent": "الكلمة السرية الحالية",
+    "settings_changePasswordButton": "تعديل الكلمة السرية",
+    "settings_changePasswordTitle": "عدّل كلمتك السرية",
+    "login_invalPass": "الكلمة السرية مطلوبة",
+    "login_password": "الكلمة السرية",
+    "login_username": "اسم المستخدم",
+    "properties_changePassword": "عدّل الكلمة السرية",
+    "properties_addPassword": "إضافة كلمة سرية",
+    "creation_passwordValue": "الكلمة السرية"
+}
