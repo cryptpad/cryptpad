@@ -262,6 +262,14 @@ var serveBroadcast = makeRouteCache(function (host) {
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
+app.get('/api/updatequota', function (req, res) {
+    var Quota = require("./lib/commands/quota");
+    Quota.updateCachedLimits(Env, (e) => {
+        if (e) { return res.status(500).send({error: 'Internal server error'}); }
+        res.send();
+    });
+});
+
 var define = function (obj) {
     return `define(function (){
     return ${JSON.stringify(obj, null, '\t')};
