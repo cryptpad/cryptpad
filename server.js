@@ -262,14 +262,6 @@ var serveBroadcast = makeRouteCache(function (host) {
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
-app.get('/api/updatequota', function (req, res) {
-    var Quota = require("./lib/commands/quota");
-    Quota.updateCachedLimits(Env, (e) => {
-        if (e) { return res.status(500).send({error: 'Internal server error'}); }
-        res.send();
-    });
-});
-
 var define = function (obj) {
     return `define(function (){
     return ${JSON.stringify(obj, null, '\t')};
@@ -307,6 +299,21 @@ var send500 = function (res, path) {
         send500(res);
     });
 };
+
+app.get('/api/updatequota', function (req, res) {
+    if (!Env.quota_api) {
+        res.status(404);
+        return void send404(res);
+    }
+    var Quota = require("./lib/commands/quota");
+    Quota.updateCachedLimits(Env, (e) => {
+        if (e) {
+            res.status(500);
+            return void send500(res);
+        }
+        res.send();
+    });
+});
 
 app.get('/api/profiling', function (req, res, next) {
     if (!Env.enableProfiling) { return void send404(res); }
