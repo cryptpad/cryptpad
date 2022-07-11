@@ -670,5 +670,20 @@
     "drive_active7Days": "Últimos 7 dias",
     "drive_active1Day": "Últimas 24 horas",
     "settings_codeSpellcheckLabel": "Habilite la verificación ortográfica en el editor de código",
-    "settings_codeSpellcheckTitle": "Corrección ortográfica"
+    "settings_codeSpellcheckTitle": "Corrección ortográfica",
+    "notifications_dismiss": "Ignorar",
+    "share_withFriends": "Compartir",
+    "form_answerAs": "Responder como",
+    "form_anonymousBox": "Responder de forma anónima",
+    "form_answerChoice": "Elija cómo le gustaría contestar este formulario:",
+    "form_maxLength": "Límite de caracteres: {0}/{1}",
+    "form_required_on": "Requerido",
+    "form_required_answer": "Respuesta: ",
+    "form_requiredWarning": "Las siguientes preguntas requieren una respuesta:",
+    "features_emailRequired": "Email requerido",
+    "form_alreadyAnswered": "Respondió a este formulario el {0}",
+    "form_editAnswer": "Editar mis respuestas",
+    "form_update": "Actualizar",
+    "calendar_update": "Actualizar",
+    "admin_support_last": "Actualizado el: "
 }
