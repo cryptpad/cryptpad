@@ -1,11 +1,7 @@
-var logoPath = (/^\/(|index\.html)$/g.test(location.pathname)) ? '/customize/CryptPad_logo_grey.svg': '/customize/CryptPad_logo.svg';
-
-var logoPath2 = '/customize/CryptPad_logo.svg';
+var logoPath = '/customize/CryptPad_logo.svg';
 if (location.pathname == '/' || location.pathname == '/index.html') {
-    logoPath2 = '/customize/CryptPad_logo_grey.svg';
+    logoPath = '/customize/CryptPad_logo_hero.svg';
 }
-// XXX rewrite 'CryptPad_logo_grey' by 'CryptPad_logo_hero'
-// Choose between logoPath & logoPath2 OR do a separate "pre-loading" script for main page (customize/index.html)
 
 var elem = document.createElement('div');
 elem.setAttribute('id', 'placeholder');

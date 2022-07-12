@@ -47,8 +47,7 @@ $(function () {
         ], function () {
             var $main = $(infoPage());
 
-            // Clean placeholder
-            document.querySelector('#placeholder').remove();
+            $('#placeholder').remove();
 
             $body.append($main);
 

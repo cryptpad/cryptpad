@@ -228,12 +228,6 @@ define([
                     // Answer with the requested data
                     postMsg(JSON.stringify({ txid: data.txid, cache: cache, localStore: localStore, language: Cryptpad.getLanguage() }));
 
-                    // Remove the placeholder once iframe overwrites it for sure
-                    setTimeout(function() {
-                        document.querySelector('#placeholder').remove();
-                        console.log('Pre-loading placeholder removed');
-                    }, (5 * 1000));
-
                     // Then start the channel
                     window.addEventListener('message', function (msg) {
                         if (msg.source !== iframe) { return; }
@@ -1960,6 +1954,9 @@ define([
                 rtConfig = rtConfig || {};
                 rtStarted = true;
 
+                // Remove the outer placeholder once iframe overwrites it for sure
+                document.querySelector('#placeholder').remove();
+
                 var replaceHash = function (hash) {
                     // The pad has just been created but is not stored yet. We'll switch
                     // to hidden hash once the pad is stored
@@ -2196,3 +2193,4 @@ define([
 
     return common;
 });
+
