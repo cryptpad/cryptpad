@@ -1,5 +1,6 @@
+(function () {
 var logoPath = '/customize/CryptPad_logo.svg';
-if (location.pathname == '/' || location.pathname == '/index.html') {
+if (location.pathname === '/' || location.pathname === '/index.html') {
     logoPath = '/customize/CryptPad_logo_hero.svg';
 }
 
@@ -14,6 +15,7 @@ elem.innerHTML = [
     '</div>'
 ].join('');
 
-document.addEventListener('DOMContentLoaded', function(e) {
+document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(elem);
 });
+}());
