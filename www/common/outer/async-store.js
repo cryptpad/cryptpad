@@ -49,7 +49,8 @@ define([
             hideDuplicate: true
         },
         pad: {
-            width: true
+            width: true,
+            spellcheck: true
         },
         security: {
             unsafeLinks: false
