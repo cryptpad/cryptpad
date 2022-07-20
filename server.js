@@ -300,6 +300,21 @@ var send500 = function (res, path) {
     });
 };
 
+app.get('/api/updatequota', function (req, res) {
+    if (!Env.quota_api) {
+        res.status(404);
+        return void send404(res);
+    }
+    var Quota = require("./lib/commands/quota");
+    Quota.updateCachedLimits(Env, (e) => {
+        if (e) {
+            res.status(500);
+            return void send500(res);
+        }
+        res.send();
+    });
+});
+
 app.get('/api/profiling', function (req, res, next) {
     if (!Env.enableProfiling) { return void send404(res); }
     res.setHeader('Content-Type', 'text/javascript');
