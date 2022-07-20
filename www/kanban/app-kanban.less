@@ -303,6 +303,9 @@
             cursor: text;
             overflow-wrap: anywhere;
             flex: 1;
+            &:empty::before {
+              content: "\200b";
+            }
         }
         &.kanban-item-hidden {
             display: none;
