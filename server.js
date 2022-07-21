@@ -148,6 +148,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(Express.static(__dirname + '/customize/www'));
 app.use(Express.static(__dirname + '/www'));
 
 // FIXME I think this is a regression caused by a recent PR
