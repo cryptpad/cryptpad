@@ -1,6 +1,14 @@
 var Fs = require("fs");
 var Fse = require("fs-extra");
 var Path = require("path");
+
+if (!Fs.existsSync('./config/config.js')) {
+    console.log(`This script needs the file config/config.js to work properly.  
+                You can make one by copying config/config.example.js. Check the
+                value of httpUnsafeOrigin for this script to behave as expected.`
+                .replace(/\s{2,}/g, ' '));
+    process.exit(1);
+}
 var config = require("./lib/load-config");
 
 var swap = function (s, o) {
@@ -86,7 +94,9 @@ var appIndexesToBuild = [
     'form',
     'poll',
     'whiteboard',
-    'slide'
+    'slide',
+    'file',
+    'drive'
 ];
 
 appIndexesToBuild.forEach(function (app) {
