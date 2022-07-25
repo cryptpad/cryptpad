@@ -50,6 +50,8 @@
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
     "template": "cd customize.dist/src && for page in ../index.html ../contact.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;",
-    "evict-inactive": "node scripts/evict-inactive.js"
+    "evict-inactive": "node scripts/evict-inactive.js",
+    "make-opengraph": "node scripts/build.js",
+    "clean-opengraph": "rm -rf customize/www/"
   }
 }
