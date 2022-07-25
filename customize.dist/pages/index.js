@@ -169,7 +169,7 @@ define([
                     h('div.row.cp-home-hero', [
                         h('div.cp-title.col-lg-6', [
                             h('img', {
-                                src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                                src: '/customize/CryptPad_logo_hero.svg?' + urlArgs,
                                 'aria-hidden': 'true',
                                 alt: ''
                             }),
