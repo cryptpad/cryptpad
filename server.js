@@ -148,6 +148,8 @@ app.use(function (req, res, next) {
     next();
 });
 
+// serve custom app content from the customize directory
+// useful for testing pages customized with opengraph data
 app.use(Express.static(__dirname + '/customize/www'));
 app.use(Express.static(__dirname + '/www'));
 
