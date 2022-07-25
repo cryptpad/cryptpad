@@ -1,3 +1,5 @@
+/* globals process */
+
 var Fs = require("fs");
 var Fse = require("fs-extra");
 var Path = require("path");
