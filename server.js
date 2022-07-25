@@ -311,9 +311,11 @@ app.get('/api/updatequota', function (req, res) {
     var Quota = require("./lib/commands/quota");
     Quota.updateCachedLimits(Env, (e) => {
         if (e) {
+            Env.warn('UPDATE_QUOTA_ERR', e);
             res.status(500);
             return void send500(res);
         }
+        Env.log('QUOTA_UPDATED', {});
         res.send();
     });
 });
