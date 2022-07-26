@@ -148,6 +148,9 @@ app.use(function (req, res, next) {
     next();
 });
 
+// serve custom app content from the customize directory
+// useful for testing pages customized with opengraph data
+app.use(Express.static(__dirname + '/customize/www'));
 app.use(Express.static(__dirname + '/www'));
 
 // FIXME I think this is a regression caused by a recent PR
@@ -299,6 +302,23 @@ var send500 = function (res, path) {
         send500(res);
     });
 };
+
+app.get('/api/updatequota', function (req, res) {
+    if (!Env.quota_api) {
+        res.status(404);
+        return void send404(res);
+    }
+    var Quota = require("./lib/commands/quota");
+    Quota.updateCachedLimits(Env, (e) => {
+        if (e) {
+            Env.warn('UPDATE_QUOTA_ERR', e);
+            res.status(500);
+            return void send500(res);
+        }
+        Env.log('QUOTA_UPDATED', {});
+        res.send();
+    });
+});
 
 app.get('/api/profiling', function (req, res, next) {
     if (!Env.enableProfiling) { return void send404(res); }
