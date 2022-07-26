@@ -1163,11 +1163,11 @@ define([
     });
 
     var POLICY_ADVISORY = " This link will be included in the home page footer and 'About CryptPad' menu. It's advised that you either provide one or disable registration.";
-    var APPCONFIG_DOCS_LINK = function (key) {
+    var APPCONFIG_DOCS_LINK = function (key, href) {
         return h('span', [
             " See ",
             h('a', {
-                href: 'https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config',
+                href: href || 'https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config',
                 target: "_blank",
                 rel: 'noopener noreferrer',
             }, "the relevant documentation"),
@@ -1175,6 +1175,10 @@ define([
             code(key),
             ' value.',
         ]);
+    };
+
+    var TERMS_DOCS_LINK = function (key) {
+        return APPCONFIG_DOCS_LINK(key, 'https://docs.cryptpad.fr/en/admin_guide/customization.html#links-to-terms-of-service-privacy-policy-and-imprint-pages');
     };
 
     var isValidInfoURL = function (url) {
@@ -1201,7 +1205,7 @@ define([
         msg.appendChild(h('span', [
             'No terms of service were specified.',
             POLICY_ADVISORY,
-            APPCONFIG_DOCS_LINK('terms'),
+            TERMS_DOCS_LINK('terms'),
         ]));
         cb(isValidInfoURL(url) || url);
     });
@@ -1216,7 +1220,7 @@ define([
         msg.appendChild(h('span', [
             'No legal entity data was specified.',
             POLICY_ADVISORY,
-            APPCONFIG_DOCS_LINK('imprint'),
+            TERMS_DOCS_LINK('imprint'),
         ]));
         cb(isValidInfoURL(url) || url);
     });
@@ -1230,7 +1234,7 @@ define([
         msg.appendChild(h('span', [
             'No privacy policy was specified.',
             POLICY_ADVISORY,
-            APPCONFIG_DOCS_LINK('privacy'),
+            TERMS_DOCS_LINK('privacy'),
         ]));
         cb(isValidInfoURL(url) || url);
     });
