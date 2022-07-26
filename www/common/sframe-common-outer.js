@@ -1954,6 +1954,12 @@ define([
                 rtConfig = rtConfig || {};
                 rtStarted = true;
 
+                // Remove the outer placeholder once iframe overwrites it for sure
+                var placeholder = document.querySelector('#placeholder');
+                if (placeholder && typeof(placeholder.remove) === 'function') {
+                    placeholder.remove();
+                }
+
                 var replaceHash = function (hash) {
                     // The pad has just been created but is not stored yet. We'll switch
                     // to hidden hash once the pad is stored
