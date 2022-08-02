@@ -41,6 +41,8 @@
     flex: 0 1 auto;
     min-height: 0;
     text-align: center;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
 }
 #placeholder .placeholder-logo-container img {
     max-width: 100%;
@@ -56,6 +58,8 @@
     display: flex;
     flex-flow: column;
     align-items: center;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
 }
 #placeholder .placeholder-logo {
     margin-left: auto;
@@ -65,6 +69,11 @@
     width: auto;
     height: auto;
     margin-bottom: 2em;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @media screen and (max-width: 500px) {
