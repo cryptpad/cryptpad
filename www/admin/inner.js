@@ -1184,11 +1184,18 @@ define([
                     $t.css('order', i).appendTo(cols[j]);
                     updateTicketDetails($t, d.premium);
                 });
-                if (!list.length) {
+                var len;
+                try {
+                    len = cols[j].find('div.cp-support-list-ticket').length;
+                } catch (err) {
+                    UI.warn(Messages.error);
+                    return void console.error(err);
+                }
+                if (!len) {
                     cols[j].hide();
                 } else {
                     cols[j].show();
-                    cols[j].find('.cp-support-count').text(list.length);
+                    cols[j].find('.cp-support-count').text(len);
                 }
             });
         };
