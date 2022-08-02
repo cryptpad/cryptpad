@@ -49,7 +49,6 @@ define([
         "HTML htmlmixed .html",
         "HTTP http _", /* no extension */
         "IDL idl .idl",
-        "JADE jade .jade",
         "Java text/x-java .java",
         "JavaScript javascript .js",
         "Jinja2 jinja2 .j2",
