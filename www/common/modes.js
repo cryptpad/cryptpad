@@ -11,7 +11,7 @@ define([
         "Asterisk asterisk",
         "Brainfuck brainfuck .b",
         "C text/x-csrc .c",
-        "C text/x-c++src .cpp",
+        "C++ text/x-c++src .cpp",
         "C-like clike .c",
         "Clojure clojure .clj",
         "CMake cmake _", /* no extension */
