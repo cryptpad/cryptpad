@@ -9,6 +9,3 @@ contact_links:
   - name: Features requests
     url: https://forum.cryptpad.org
     about: Please use the appropriate forum category for features requests
-  - name: Security vulnerability
-    url: https://github.com/xwiki-labs/cryptpad/SECURITY.md
-    about: Please give us appropriate time to verify, respond and fix before disclosure
