@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Installation, configuration issues
+    url: https://forum.cryptpad.org
+    about: Please use the community forum for questions or assistance
+  - name: Features requests
+    url: https://forum.cryptpad.org
+    about: Please use the community forum for features requests
+  - name: Security vulnerability
+    url: https://github.com/xwiki-labs/cryptpad/SECURITY.md
+    about: Please give us appropriate time to verify, respond and fix before disclosure
