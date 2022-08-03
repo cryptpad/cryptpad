@@ -121,6 +121,9 @@
                 .cp-app-drive-tree-category {
                     margin-top: 0.5em;
                 }
+                .cp-splitter {
+                    display: none;
+                }
             }
         }
     }
@@ -163,6 +166,10 @@
         }
         .cptools {
             color: @cp_drive-selected-fg;
+        }
+        &.cp-app-drive-element-active {
+            background: @cp_drive-selected-bg !important;
+            color: @cryptpad_text_col !important;
         }
     }
 
@@ -265,12 +272,11 @@
         box-sizing: border-box;
         background: @cp_sidebar-left-bg;
         overflow: auto;
-        resize: horizontal;
         width: auto;
         white-space: nowrap;
         max-width: 500px;
         min-width: 200px;
-        padding: 0px;
+        padding: 10px 0px 0px 0px;
         color: @cp_sidebar-left-fg;
         display: flex;
         flex-flow: column;
@@ -279,6 +285,7 @@
         .cp-app-drive-tree-categories-container {
             flex: 1;
             overflow: auto;
+            padding: 0px 5px;
         }
         img.cp-app-drive-icon {
             margin-bottom: 3px;
@@ -288,6 +295,8 @@
             margin-top: 15px;
             //padding: 0 0 0 20px;
             padding: 0;
+            background-color: @cp_sidebar-left-item-bg;
+            border-radius: @variables_radius;
             cursor: auto;
             &li, li {
                 padding: 0;
@@ -295,7 +304,6 @@
                     display: none;
                 }
                 input {
-                    //width: ~"calc(100% - 30px)";
                     flex: 1;
                     min-width: 0;
                     padding: 0 10px;
@@ -305,11 +313,8 @@
                 & > span.cp-app-drive-element-row {
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    //min-width: ~"calc(100% + 5px)";
                     .leftside-menu-category_main();
-                    width: ~"calc(100% + 5px)";
                     margin: 0;
-                    //margin-bottom: -6px;
                     display: flex;
                     align-items: center;
                     cursor: pointer;
@@ -318,8 +323,9 @@
                     .fa, .cptools {
                         display: inline-block;
                         min-width: 0;
-                        width: 25px;
+                        width: 20px;
                         margin-right: 0px;
+                        z-index: 99;
                     }
                     .cp-app-drive-element {
                         flex: 1;
@@ -335,7 +341,10 @@
         }
         .cp-app-drive-tree-category {
             margin: 0;
-            margin-top: 15px;
+            margin-top: 10px;
+            background-color: @cp_sidebar-left-item-bg;
+            border-radius: @variables_radius;
+            box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
                 .fa-trash-o {
                     padding-left: 2px;
@@ -361,11 +370,11 @@
             margin-left: -10px;
             font-size: 14px;
             position: absolute;
-            left: -20px;
-            top: 10px;
+            left: -17px;
+            top: 11px;
             width: 11px !important;
             height: 11px !important;
-            background-color: @cp_sidebar-left-bg;
+            background-color: @cp_sidebar-left-item-bg;
             padding: 0;
             margin: 0;
             z-index: 10;
@@ -376,17 +385,35 @@
             }
         }
         .cp-app-drive-tree-docs {
+            box-shadow: @cryptpad_ui_shadow;
+
+            .cp-app-drive-element-row {
+                &.cp-leftside-active {
+                    .cp-app-drive-icon-expcol {
+                        color: @cryptpad_text_col; // +/- expand icon for folders
+                    }
+                }
+            }
+            .cp-app-drive-tree-root > .cp-app-drive-element-row {
+                margin-left: 0px;
+                &.cp-app-drive-element-active {
+                    .cp-app-drive-icon-expcol {
+                        color: @cp_sidebar-left-active-fg; // +/- expand icon for drive
+                    }
+                }
+            }
             .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-expcol {
                 position: relative;
                 top: 0;
                 left: -10px;
+                background-color: transparent;
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
                 margin-left: -5px;
             }
             .cp-app-drive-tree-root {
                 &> .cp-app-drive-element-row {
-                    padding-left: 20px;
+                    padding-left: 15px;
                 }
                 &> ul {
                     padding-left: 30px;
@@ -403,8 +430,8 @@
                 position: relative;
                 &:before {
                     position: absolute;
-                    left: -15px;
-                    top: -11px;
+                    left: -12px;
+                    top: -10px;
                     content: '';
                     display: block;
                     border-left: 1px solid @cp_drive-tree-branch;
@@ -414,7 +441,7 @@
                 }
                 &:after {
                     position: absolute;
-                    left: -15px;
+                    left: -12px;
                     bottom: -7px;
                     content: '';
                     display: block;
@@ -441,13 +468,40 @@
     #cp-app-drive-content-container {
         display: flex;
         flex-flow: column;
-        flex: 1 1 100%;
+        flex: 1;
         min-width: 0;
+        position: relative;
+        .cp-splitter {
+            position: absolute;
+            height: 100%;
+            width: 8px;
+            top: 0;
+            left: 0;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            &:hover {
+                border-left: 1px solid @cryptpad_text_col;
+            }
+            i {
+                color: @cryptpad_text_col;
+                font-size: 1.6rem;
+            }
+        }
+        &.cp-app-drive-readonly { // applied to offline drive (not read-only shared folders)
+            #cp-app-drive-content-folder {
+                opacity: 0.5;
+            }
+
+            // background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
+        }
     }
     #cp-app-drive-content {
         box-sizing: border-box;
         background: @cp_sidebar-right-bg;
         color: @cp_sidebar-right-fg;
+        padding-top: 10px;
         overflow-y: auto;
         flex: 1;
         display: flex;
@@ -458,9 +512,6 @@
             background-color: @cp_drive-selection-overlay;
             position: absolute;
             z-index: 50;
-        }
-        &.cp-app-drive-readonly {
-            background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
         }
         h1 {
             padding-left: 10px;
@@ -473,6 +524,7 @@
             margin: 1em;
             background: @cp_drive-infobox-bg;
             color: @cp_drive-infobox-fg;
+            border-radius: @variables_radius;
             cursor: default;
             a {
                 color: @cryptpad_color_link;
@@ -570,6 +622,7 @@
             }
             .drive_fileIcon;
             li {
+                border-radius: @variables_radius;
                 &.cp-app-drive-element {
                     position: relative;
                 }
@@ -639,6 +692,7 @@
             }
             li {
                 display: flex;
+                border-radius: @variables_radius;
                 input {
                     border: 1px solid transparent;
                     margin: 0;
@@ -727,6 +781,7 @@
                     }
                     &> span {
                         padding: 14px 5px;
+                        border-radius: @variables_radius;
                         &.cp-app-drive-sort-clickable {
                             cursor: pointer;
                             &:hover {
@@ -858,6 +913,7 @@
             flex-flow: column;
             li, li .fa, li .cptools {
                 cursor: pointer;
+                border-radius: @variables_radius;
             }
             &> p {
                 display: flex;
@@ -912,6 +968,18 @@
 
 
     .cp-toolbar-bottom {
+        .cp-toolbar-bottom-left {
+            @drive-light: lighten(@cryptpad_color_brand, 30%);
+            .cp-app-drive-toolbar-new {
+                border-radius: @variables_radius;
+                color: @cryptpad_color_grey_900;
+                border-color: @drive-light;
+                background-color: @drive-light;
+                &:hover {
+                    background-color: fade(@drive-light, 80%);
+                }
+            }
+        }
         .cp-toolbar-bottom-right {
             .fa-history { order: 50; }
             // .fa-list, .fa-th-large,

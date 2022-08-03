@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Copier/coller les passages de texte, annuler/rétablir vos actions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Utiliser les opérations de base sur le texte: copier, coller, annuler, rétablir" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Copier/coller les passages de texte, annuler/rétablir vos actions</h1>
+            <h3>Utiliser les opérations de base du presse-papiers</h3>
+			<p>Pour couper, copier, coller des passages de texte et des objets insérés (formes automatiques, images, graphiques) dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> utilisez les options correspondantes dans le menu contextuel ou les icônes de la barre d'outils supérieure :</p>
+			<ul>
+                <li><b>Couper</b> – sélectionnez un fragment de texte ou un objet et utilisez l'option <b>Couper</b> dans le menu contextuel pour supprimer la sélection et l'envoyer dans le presse-papiers de l'ordinateur. <span class="onlineDocumentFeatures">Les données coupées peuvent être insérées plus tard dans un autre endroit dans le même document.</span></li>
+				<li><b>Copier</b> – sélectionnez un fragment de texte ou un objet et utilisez l'option <b>Copier</b> dans le menu contextuel, ou l'icône <b>Copier</b> <img alt="Icône Copier" src="../images/copy.png" /> de la barre d'outils supérieure pour copier la sélection dans le presse-papiers de l'ordinateur. <span class="onlineDocumentFeatures">Les données coupées peuvent être insérées plus tard dans un autre endroit dans le même document.</span></li>
+				<li><b>Coller</b> – trouvez l'endroit dans votre document où vous voulez coller le fragment de texte/l'objet précédemment copié et utilisez l'option <b>Coller</b> dans le menu contextuel, ou l'icône <b>Coller</b> <img alt="Icône Coller" src="../images/paste.png" /> de la barre d'outils supérieure. Le texte / objet sera inséré à la position actuelle du curseur. <span class="onlineDocumentFeatures">Le texte peut être copié à partir du même document.</span></li>			
+			</ul>
+            <p><span class="onlineDocumentFeatures">Dans la <em>version en ligne</em>, les combinaisons de touches suivantes ne sont utilisées que pour copier ou coller des données de/vers un autre document ou un autre programme,</span> <span class="desktopDocumentFeatures">dans la <em>version de bureau</em>, les boutons/options de menu et les combinaisons de touches correspondantes peuvent être utilisées pour toute opération copier/coller :</span></p>
+            <ul>
+                <li><b>Ctrl+X</b> pour couper ;</li>
+                <li><b>Ctrl+C</b> pour copier ;</li>
+                <li><b>Ctrl+V</b> pour coller.</li>
+            </ul>
+			<p class="note"><b>Remarque</b> : au lieu de couper et coller du texte dans le même document, vous pouvez sélectionner le passage de texte nécessaire et le faire glisser à la position nécessaire.</p>
+            <h3>Utiliser la fonctionnalité Collage spécial</h3>
+            <p>Une fois le texte copié et collé, le bouton <b>Collage spécial</b> <img alt="Collage spécial" src="../images/pastespecialbutton.png" /> apparaît à côté du passage de texte inséré. Cliquez sur ce bouton pour sélectionner l'option de collage requise.</p>
+            <p>Lorsque vous collez le texte de paragraphe ou du texte dans des formes automatiques, les options suivantes sont disponibles :</p>
+            <ul>
+                <li><em>Coller</em> - permet de coller le texte copié en conservant sa mise en forme d'origine.</li>
+                <li><em>Conserver le texte uniquement</em> - permet de coller le texte sans  sa mise en forme d'origine.</li>
+            </ul>
+            <p>Si vous collez le tableau copié dans un tableau existant, les options suivantes sont disponibles:</p>
+            <ul>
+                <li><em>Remplacer les cellules</em> - permet de remplacer le contenu de la table existante par les données collées. Cette option est sélectionnée par défaut.</li>
+                <li><em>Imbriquer le tableau</em> - permet de coller le tableau copié en tant que tableau imbriqué dans la cellule sélectionnée du tableau existant.</li>
+                <li><em>Conserver le texte uniquement</em> - permet de coller le contenu du tableau sous forme de valeurs de texte séparées par le caractère de tabulation.</li>
+            </ul>
+            <p>Pour activer / désactiver l'affichage du bouton <b>Collage spécial</b> lorsque vous collez le texte, passez à l'onglet <b>Fichier</b> > <b>Paramètres avancés...</b> et cochez / décochez la casse <b>Couper, copier, coller</b>.</p>
+            <h3>Annuler/rétablir vos actions</h3>
+			<p>Pour effectuer les opérations annuler/rétablir, utilisez les icônes correspondantes dans l'en-tête de l'éditeur ou les raccourcis clavier :</p>
+            <ul>
+                <li><b>Annuler</b> – utilisez l'icône <b>Annuler</b> <img alt="Icône Annuler" src="../images/undo.png" /> située dans la partie gauche de l'en-tête de l'éditeur ou la combinaison de touches <b>Ctrl+Z</b> pour annuler la dernière opération effectuée.</li>
+                <li><b>Rétablir</b> – utilisez l'icône <b>Rétablir</b> <img alt="Icône Rétablir" src="../images/redo.png" /> située dans la partie gauche de l'en-tête de l'éditeur ou la combinaison de touches <b>Ctrl+Y</b> pour rétablir l’opération précédemment annulée.</li>
+            </ul>
+            <p class="note"><b>Remarque</b> : lorsque vous co-éditez un document en mode <b>Rapide</b>, la possibilité de <b>Rétablir</b> la dernière opération annulée n'est pas disponible.</p>
+		</div>
+	</body>
+</html>

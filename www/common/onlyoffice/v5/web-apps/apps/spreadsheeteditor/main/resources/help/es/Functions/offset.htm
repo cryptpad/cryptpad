@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DESREF</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función DESREF</h1>
+			<p>La función <b>DESREF</b> es una función de búsqueda y referencia. Se usa para devolver una referencia a una celda desplazada de la celda especificada (o la celda o rango de celdas de la parte izquierda superior) a un número concreto de filas y columnas.</p>
+			<p>La sintaxis de la función <b>DESREF</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>DESREF(referencia, filas, columnas[, [altura] [, [ancho]]])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><em><b>referencia</b></em> es una referencia a una celda o rango de celdas inicial.</p>
+			<p style="text-indent: 50px;"><em><b>filas</b></em> es el número de filas, arriba o abajo, que quiere que la referencia devuelta refiera a la celda de la parte superior izquierda. Los números positivos significan que el resultado cambiará hacia abajo de la celda inicial. Los valores negativos significan que cambiarán hacia arriba de la celda inicial.</p>
+			<p style="text-indent: 50px;"><em><b>Columnas</b></em> es un número de columnas, a la izquierda o derecha, s el número de filas, arriba o abajo, que quiere que la referencia devuelta refiera a la celda de la parte superior izquierda. Los números positivos significan que el resultado cambiará hacia la derecha de la celda inicial. Los valores negativos significan que cambiarán hacia la izquierda de la celda inicial.</p>
+            <p style="text-indent: 50px;"><em><b>altura</b></em> es un número de filas en la referencia devuelta. El valor debe ser un número positivo. Es un argumento opcional. Si se omite, la función asumirá que su valor es igual a la altura del rango inicial.</p>
+            <p style="text-indent: 50px;"><em><b>ancho</b></em> es un número de columnas en la referencia devuelta. El valor debe ser un número positivo. Es un argumento opcional. Si se omite, la función asumirá que su valor es igual al ancho del rango inicial.</p>
+			<p>Para aplicar la función <b>DESREF</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Búsqueda y referencia</b> en la lista,</li>
+			<li>haga clic en la función <b>DESREF</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función DESREF" src="../images/offset.png" /></p>
+		</div>
+	</body>
+</html>

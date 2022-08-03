@@ -523,6 +523,15 @@ define([
         UI.openCustomModal(modal);
     };
 
+    UIElements.openDirectlyConfirmation = function (common, cb) {
+        cb = cb || Util.noop;
+        UI.confirm(h('p', Messages.ui_openDirectly), yes => {
+            if (!yes) { return void cb(yes); }
+            common.openDirectly();
+            cb(yes);
+        });
+    };
+
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
@@ -808,7 +817,9 @@ define([
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
-                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
+                        forceOwnDrive: true,
+                    }, function (err, obj) {
                         var error = err || (obj && obj.error);
                         if (error) {
                             $(button).show();
@@ -877,6 +888,14 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
+                    var isTop;
+                    try {
+                        isTop = common.getMetadataMgr().getPrivateData().isTop;
+                    } catch (err) { console.error(err); }
+                    if (!isTop) {
+                        return void UIElements.openDirectlyConfirmation(common);
+                    }
+
                     sframeChan.event('EV_PROPERTIES_OPEN');
                 });
                 break;
@@ -1346,7 +1365,7 @@ define([
             else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
             else { $usage.addClass('cp-limit-usage-above'); }
             var $text = $('<span>', {'class': 'cp-limit-usage-text'});
-            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit]));
+            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit])); // TODO avoid use of .html() if possible
             $container.prepend($text);
             $limit.append($usage);
         };
@@ -1420,9 +1439,20 @@ define([
         }
 
         // Button
-        var $button = $('<button>', {
-            'class': config.buttonCls || ''
-        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
+        var $button;
+
+        if (config.buttonContent) {
+            $button = $(h('button', {
+                class: config.buttonCls || '',
+            }, [
+                h('span.cp-dropdown-button-title', config.buttonContent),
+            ]));
+        } else {
+            $button = $('<button>', {
+                'class': config.buttonCls || ''
+            }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
+        }
+
         if (config.caretDown) {
             $('<span>', {
                 'class': 'fa fa-caret-down',
@@ -1445,8 +1475,24 @@ define([
         var setOptions = function (options) {
             options.forEach(function (o) {
                 if (!isValidOption(o)) { return; }
-                if (isElement(o)) { return $innerblock.append($(o)); }
-                var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
+                if (isElement(o)) { return $innerblock.append(o); }
+                var $el = $(h(o.tag, (o.attributes || {})));
+
+                if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
+                    o.content = [o.content];
+                }
+                if (Array.isArray(o.content)) {
+                    o.content.forEach(function (item) {
+                        if (item instanceof Element) {
+                            return void $el.append(item);
+                        }
+                        if (typeof(item) === 'string') {
+                            $el[0].appendChild(document.createTextNode(item));
+                        }
+                    });
+                    // array of elements or text nodes
+                }
+
                 $el.appendTo($innerblock);
                 if (typeof(o.action) === 'function') {
                     $el.click(function (e) {
@@ -1494,7 +1540,8 @@ define([
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
                 setActive($val);
                 try {
                     $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
@@ -1533,8 +1580,8 @@ define([
             $container.on('click', 'a', function () {
                 value = $(this).data('value');
                 var $val = $(this);
-                var textValue = $val.html() || value;
-                $button.find('.cp-dropdown-button-title').html(textValue);
+                var textValue = $val.text() || value;
+                $button.find('.cp-dropdown-button-title').text(textValue);
                 $container.onChange.fire(textValue, value);
             });
             $container.keydown(function (e) {
@@ -1581,7 +1628,8 @@ define([
                 window.clearTimeout(to);
                 var c = String.fromCharCode(e.which);
                 pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                // We use JSON.stringify here to escape quotes
+                var $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first');
                 if ($value.length) {
                     setActive($value);
                     $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
@@ -1593,15 +1641,15 @@ define([
 
             $container.setValue = function (val, name, sync) {
                 value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
-                var textValue = name || $val.html() || val;
-                if (sync) {
-                    $button.find('.cp-dropdown-button-title').html(textValue);
-                    return;
-                }
-                setTimeout(function () {
-                    $button.find('.cp-dropdown-button-title').html(textValue);
-                });
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(val)+']');
+                var textValue = name || $val.text() || val;
+                var f = function () {
+                    $button.find('.cp-dropdown-button-title').text(textValue);
+                };
+
+                if (sync) { return void f(); }
+                setTimeout(f);
             };
             $container.getValue = function () {
                 return typeof(value) === "undefined" ? '' : value;
@@ -1621,27 +1669,27 @@ define([
 
         var template = function (line, link) {
             if (!line || !link) { return; }
-            var p = $('<p>').html(line)[0];
+            var p = Pages.setHTML(h('p'), line);
             var sub = link.cloneNode(true);
-
-/*  This is a hack to make relative URLs point to the main domain
-    instead of the sandbox domain. It will break if the admins have specified
-    some less common URL formats for their customizable links, such as if they've
-    used a protocal-relative absolute URL. The URL API isn't quite safe to use
-    because of IE (thanks, Bill).  */
-            var href = sub.getAttribute('href');
-            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var href;
+            try {
+                href = new URL(sub.getAttribute('href'), origin).href;
+            } catch (err) {
+                return; // don't return anything to display if their href causes URL to throw
+            }
             var a = p.querySelector('a');
             if (!a) { return; }
             sub.innerText = a.innerText;
+            sub.setAttribute('href', href);
             p.replaceChild(sub, a);
             return p;
         };
 
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
-
         var faqLine = template(Messages.help_genericMore, Pages.docsLink);
+        var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
+        var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
             h('div.logo-block', [
@@ -1652,9 +1700,13 @@ define([
                 h('span', Pages.versionString)
             ]),
             h('hr'),
-            legalLine,
-            privacyLine,
+            h('p', Pages.hostDescription),
+            h('hr'),
             faqLine,
+            termsLine,
+            privacyLine,
+            legalLine,
+            sourceLine,
         ]);
 
         $(content).find('a').attr('target', '_blank');
@@ -1676,33 +1728,45 @@ define([
         var metadataMgr = Common.getMetadataMgr();
 
         var displayNameCls = config.displayNameCls || 'cp-toolbar-user-name';
-        var $displayedName = $('<span>', {'class': displayNameCls});
 
         var priv = metadataMgr.getPrivateData();
         var accountName = Util.fixHTML(priv.accountName);
         var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
-        var $userName = $('<span>');
         var options = [];
+        options.push({
+            tag: 'div',
+            attributes: {'class': 'cp-user-menu-logo'},
+            content: h('span', [
+                h('img', {src: '/customize/CryptPad_logo_grey.svg',alt: 'CryptPad logo',}), // XXX hardcoded alt text?
+                h('span.cp-user-menu-logo-text', "CryptPad")
+            ]),
+        });
         if (config.displayNameCls) {
-            var $userAdminContent = $('<p>');
+            var userAdminContent = [];
             if (accountName) {
-                var $userAccount = $('<span>').append(Messages.user_accountName + ': ');
-
-                $userAdminContent.append($userAccount).append(accountName);
-                $userAdminContent.append($('<br>'));
+                userAdminContent.push(h('span', [
+                    Messages.user_accountName,
+                    ': ',
+                    h('span', accountName),
+                ]));
+                userAdminContent.push(h('br'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
-                $userName.append(Messages.user_displayName + ': ');
-                $userName.append($displayedName);
+                userAdminContent.push(h('span', [
+                    Messages.user_displayName,
+                    ': ',
+                    h('span', {
+                        class: displayNameCls,
+                    }),
+                ]));
             }
-            $userAdminContent.append($userName);
             options.push({
                 tag: 'p',
                 attributes: {'class': 'cp-toolbar-account'},
-                content: $userAdminContent.html()
+                content: userAdminContent,
             });
         }
 
@@ -1952,8 +2016,7 @@ define([
             }
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
-        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon);//.append($userbig);
+        var $userButton = $('<div>').append($icon);
         if (accountName) {
             $userButton = $('<div>').append(accountName);
         }
@@ -1963,8 +2026,17 @@ define([
             // If no display name, do not display the parentheses
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
         }*/
+
+        options.forEach(function (option) {
+            var f = option.action;
+            if (!f) { return; }
+            option.action = function () {
+                f();
+                return true;
+            };
+        });
         var dropdownConfigUser = {
-            text: $userButton.html(), // Button initial text
+            buttonContent: $userButton[0],
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
@@ -2066,7 +2138,9 @@ define([
                     'data-value': l,
                     'href': '#',
                 },
-                content: languages[l] // Pretty name of the language value
+                content: [ // supplying content as an array ensures it's a text node, not parsed HTML
+                    languages[l] // Pretty name of the language value
+                ],
             });
         });
         var dropdownConfig = {
@@ -2104,7 +2178,7 @@ define([
         var $modal = modal.$modal;
         var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
 
-        var $description = $('<p>').html(Messages.creation_newPadModalDescription);
+        var $description = $(Pages.setHTML(h('p'), Messages.creation_newPadModalDescription));
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 

@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Introducing the user interface of the Document Editor</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Document Editor user interface" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Introducing the user interface of the Document Editor</h1>
+			<p>The <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> uses a tabbed interface where editing commands are grouped into tabs by functionality.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Main window of the Online Document Editor:</p>
+                <p><img alt="Online Document Editor window" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Main window of the Desktop Document Editor:</p>
+                <p><img alt="Desktop Document Editor window" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>The editor interface consists of the following main elements:</p>
+            <ol>
+                <li>
+                    The <b>Editor header</b> displays the ONLYOFFICE logo, <span class="desktopDocumentFeatures">tabs for all opened documents </span>with their names and menu tabs.
+                    <p>On the left side of the <b>Editor header</b>, the <b>Save</b>, <b>Print file</b>, <b>Undo</b> and <b>Redo</b> buttons are located.</p>
+                    <p><img alt="Icons in the editor header" src="../images/interface/leftpart.png" /></p>
+                    <p>On the right side of the <b>Editor header</b>, along with the user name the following icons are displayed:</p>
+                    <ul>
+                        <li><img alt="Open file location" src="../images/gotodocuments.png" /> <b>Open file location</b> - <span class="desktopDocumentFeatures">in the <em>desktop version</em>, it allows opening the folder, where the file is stored, in the <b>File explorer</b> window.</span> <span class="onlineDocumentFeatures"> In the <em>online version</em>, it allows opening the folder of the <b>Documents</b> module, where the file is stored, in a new browser tab.</span></li>
+                        <li><img alt="View Settings icon" src="../images/viewsettingsicon.png" /> It allows adjusting the <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">View Settings</a> and access the <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Advanced Settings</a> of the editor.</li>
+                        <li class="onlineDocumentFeatures"><img alt="Manage document access rights icon" src="../images/access_rights.png" /> <b>Manage document access rights</b> (available in the <em>online version</em> only). It allows adjusting  <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">access rights</a> for the documents stored in the cloud.</li>
+                        <li><img alt="Favorites icon" src="../images/favorites_icon.png" /> <b>Mark as favorite</b> - click the star to add a file to favorites as to make it easy to find. The added file is just a shortcut so the file itself remains stored in its original location. Deleting a file from favorites does not remove the file from its original location.</li>
+                    </ul>                    
+                </li>
+                <li>The <b>Top toolbar</b> displays a set of editing commands depending on the selected menu tab. Currently, the following tabs are available: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">File</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Home</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Insert</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Layout</a>, <a href="../ProgramInterface/ReferencesTab.htm" onclick="onhyperlinkclick(this)">References</a>, <a href="../ProgramInterface/ReviewTab.htm" onclick="onhyperlinkclick(this)">Collaboration</a>, <span class="desktopDocumentFeatures">Protection,</span> <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plugins</a>.
+                <p>The <img alt="Copy icon" src="../images/copy.png" /> <b>Copy</b> and <img alt="Paste icon" src="../images/paste.png" /> <b>Paste</b> options are always available on the left side of the <b>Top toolbar</b> regardless of the selected tab.</p>
+                </li>
+                <li>The <b>Status bar</b> located at the bottom of the editor window indicates the page number and displays some notifications (for example, "All changes saved", etc.). It also allows <a href="../HelpfulHints/SpellChecking.htm" onclick="onhyperlinkclick(this)">setting the text language, enabling spell checking</a>, turning on the <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">track changes mode</a> and adjusting <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">zoom</a>.</li>
+                <li>The <b>Left sidebar</b> contains the following icons: 
+                    <ul>
+                        <li><img alt="Search icon" src="../images/searchicon.png" /> - allows using the <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Search and Replace</a> tool,</li>
+                        <li><img alt="Comments icon" src="../images/commentsicon.png" /> - allows opening the <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Comments</a> panel,</li>
+                        <li><img alt="Navigation icon" src="../images/navigationicon.png" /> - allows going to the <a href="../UsageInstructions/CreateTableOfContents.htm#navigation" onclick="onhyperlinkclick(this)">Navigation</a> panel and managing headings,</li>
+                        <li class="onlineDocumentFeatures"><img alt="Chat icon" src="../images/chaticon.png" /> - (available in the <em>online version</em> only) allows opening the <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chat</a> panel,</li>
+                        <li class="onlineDocumentFeatures"><img alt="Feedback and Support icon" src="../images/feedbackicon.png" /> - (available in the <em>online version</em> only) allows to contact our support team,</li>
+                        <li class="onlineDocumentFeatures"><img alt="About icon" src="../images/abouticon.png" /> - (available in the <em>online version</em> only) allows to view the information about the program.</li>
+                    </ul>
+                </li>
+                <li><b>Right sidebar</b> sidebar allows adjusting additional parameters of different objects. When you select a particular object in the text, the corresponding icon is activated on the <b>Right sidebar</b>. Click this icon to expand the <b>Right sidebar</b>.</li>
+                <li>The horizontal and vertical <b>Rulers</b> make it possible to align the text and other elements in the document, set up margins, tab stops and paragraph indents.</li>
+                <li><b>Working area</b> allows to view document content, enter and edit data.</li>
+                <li><b>Scroll bar</b> on the right allows to scroll up and down multi-page documents.</li>
+            </ol>
+            <p>For your convenience, you can hide some components and display them again when them when necessary. To learn more about adjusting view settings, please refer to <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">this page</a>.</p>
+           
+		</div>
+	</body>
+</html>

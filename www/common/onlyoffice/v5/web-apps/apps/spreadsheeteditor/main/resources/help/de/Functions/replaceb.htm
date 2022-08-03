@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>ERSETZEN/ERSETZENB-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>ERSETZEN/ERSETZENB-Funktion</h1>
+			<p>Die Funktionen <b>ERSETZEN/ERSETZENB</b> gehören zur Gruppe der Text- und Datenfunktionen. Sie ersetzt eine Zeichenfolge, basierend auf der Anzahl der Zeichen und der angegebenen Startposition, durch eine neue Zeichengruppe. Die Funktion <b>ERSETZEN</b> ist für Sprachen gedacht, die den Single-Byte-Zeichensatz (SBCS) verwenden, während <b>ERSETZENB</b> für Sprachen verwendet wird, die den Doppelbyte-Zeichensatz (DBCS) verwenden, wie Japanisch, Chinesisch, Koreanisch usw.</p>
+			<p>Die Formelsyntax der Funktionen <b>ERSETZEN/ERSETZENB</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>ERSETZEN(Alter_Text;Erstes_Zeichen;Anzahl_Zeichen;Neuer_Text)</em></b></p> 
+			<p style="text-indent: 150px;"><b><em>ERSETZENB(Alter_Text;Erstes_Zeichen;Anzahl_Zeichen;Neuer_Text)</em></b></p>
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>Alter_Text</em></b> ist der Text, in dem Sie eine Anzahl von Zeichen ersetzen möchten.</p> 
+			<p style="text-indent: 50px;"><b><em>Erstes_Zeichen</em></b> ist die Position des Zeichens, an der mit dem Ersetzen begonnen werden soll.</p> 
+			<p style="text-indent: 50px;"><b><em>Anzahl_Zeichen</em></b> ist die Anzahl der Zeichen in die ersetzt werden sollen.</p>
+			<p style="text-indent: 50px;"><b><em>Neuer_Text</em></b> ist der Ersatztext.</p> 
+			<p>Die Argumente werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktionen <b>ERSETZEN/ERSETZENB</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Text und Daten</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die gewünschte Funktion <b>ERSETZEN</b> oder <b>ERSETZENB</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.<p class="note"><b>Hinweis</b>: die Funktionen ERSETZEN/ERSETZENB <b>unterscheiden zwischen Groß- und Kleinbuchstaben</b>.</p>
+			</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="REPLACE Funktion" src="../images/replace.png" /></p>
+		</div>
+	</body>
+</html>

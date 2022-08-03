@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "4.12.0",
+  "version": "5.0.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "ws": "^3.3.1"
   },
   "devDependencies": {
-    "jshint": "^2.10.2",
+    "jshint": "^2.13.4",
     "less": "3.7.1",
     "lesshint": "6.3.7",
     "selenium-webdriver": "^3.6.0"
@@ -49,7 +49,9 @@
     "unused-translations": "node ./scripts/translations/unused-translations.js",
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
-    "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;",
-    "evict-inactive": "node scripts/evict-inactive.js"
+    "template": "cd customize.dist/src && for page in ../index.html ../contact.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;",
+    "evict-inactive": "node scripts/evict-inactive.js",
+    "make-opengraph": "node scripts/build.js",
+    "clean-opengraph": "rm -rf customize/www/"
   }
 }

@@ -14,6 +14,7 @@
         color: @cp_forms-fg;
         background-color: @cp_forms-bg;
         border: 1px solid @cp_forms-border;
+        border-radius: @variables_radius;
         font-size: 100%;
         padding: @alertify_padding-base;
         &:not(.tui-full-calendar-content) {
@@ -39,6 +40,7 @@
         input {
             margin: 0 !important;
             flex: 1;
+            border-radius: @variables_radius 0 0 @variables_radius !important;
             min-width: 0;
         }
         span {
@@ -47,6 +49,7 @@
                 height: 100%;
                 margin-left: -1px;
                 text-transform: unset !important;
+                border-radius: 0 @variables_radius @variables_radius 0;
             }
         }
     }
@@ -79,11 +82,15 @@
         }
         button {
             margin: 0 !important;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
         }
         .cp-button-timer {
             height: 3px;
             & > div {
                 height: 100%;
+                border-bottom-left-radius: 3px;
+                border-bottom-right-radius: 3px;
                 background-color: @cp_buttons-primary;
                 &.danger, &.btn-danger, &.danger-alt, &.btn-danger-alt {
                     background-color: @cp_buttons-red;
@@ -109,7 +116,7 @@
         font-size: 14px;
         text-decoration: none;
         cursor: pointer;
-        border-radius: 0;
+        border-radius: @variables_radius;
         transition: none;
 
         i, .fa, .cptools {
@@ -230,7 +237,7 @@
         margin: 0px 0px @alertify_padding-base 0px;
         font-size: 12px;
         padding: 5px;
-        border-radius: 0px;
+        border-radius: @variables_radius;
         i {
             margin-right: 10px;
         }
@@ -288,9 +295,11 @@
         font-weight: bold;
         text-transform: uppercase;
         cursor: default;
+        border-radius: @variables_radius;
         &.cp-banner-danger {
             background-color: @cp_drive-warnbox-bg;
             color: @cp_drive-warnbox-fg;
+            border: 1px solid @cp_drive-warnbox-fg;
         }
         &.cp-banner-info {
             background-color: @cp_drive-infobox-bg;
@@ -303,7 +312,7 @@
         .flatpickr-calendar {
             background: @cp_flatpickr-bg;
             color: @cryptpad_text_col;
-            border-radius: 0;
+            border-radius: @variables_radius;
             box-shadow: @variables_shadow;
             -webkit-box-shadow: @variables_shadow;
             &.arrowTop::before, &.arrowTop::after {

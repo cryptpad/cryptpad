@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Copy/paste text passages, undo/redo your actions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the document text: copy, paste, undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Copy/paste text passages, undo/redo your actions</h1>
+            <h3>Utilizza le operazioni di base negli Appunti</h3>
+			<p>Per tagliare, copiare e incollare passaggi di testo ed oggetti inseriti (forme, immagini, grafici) all'interno del documento corrente, utilizzate le opzioni corrispondenti dal menù del tasto destro del mouse o le icone disponibili in qualsiasi scheda della barra superiore degli strumenti:</p>
+			<ul>
+                <li><b>Taglia</b> – seleziona un frammento di testo o un oggetto ed utilizza l'opzione Taglia dal menu di scelta rapida col tasto destro del mouse per tagliare la selezione ed inviarla alla memoria degli appunti del computer. I dati tagliati potranno essere successivamente inseriti in un'altra posizione nello stesso documento.</span></li>
+				<li><b>Copia</b> –  seleziona un frammento di testo o un oggetto ed utilizza l'opzione <b>Copia</b> dal menu di scelta rapida del tasto destro del mouse o l'icona <b>Copia</b> <img alt="Copy icon" src="../images/copy.png" /> nella barra superiore degli strumenti per copiare la selezione nella memoria degli appunti del computer. <span class="onlineDocumentFeatures">I dati copiati potranno essere successivamente inseriti in un'altra posizione nello stesso documento.</span></li>
+				<li><b>Incolla</b> – trova la posizione nel documento in cui è necessario incollare il frammento / l’oggetto di testo precedentemente copiato ed utilizza l'opzione <b>Incolla</b> dal menu di scelta rapida del tasto destro del mouse o l'icona <b>Incolla </b> <img alt="Paste icon" src="../images/paste.png" /> nella barra superiore degli strumenti. Il testo / l’oggetto verrà inserito nella posizione corrente del cursore.
+				<span class="onlineDocumentFeatures">I dati potranno essere precedentemente copiati dallo stesso documento.</span></li>			
+			</ul>
+            <p><span class="onlineDocumentFeatures">Nella  <em>versione online</em>, le seguenti combinazioni di tasti vengono utilizzate solo per copiare o incollare dati da / in un altro documento o qualche altro programma,</span> <span class="desktopDocumentFeatures">nella <em>versione desktop</em>, è possibile utilizzare entrambe le corrispondenti opzioni di pulsanti / menu e combinazioni di tasti per qualsiasi operazione di copia / incolla:</span></p>
+            <ul>
+                <li><b>Ctrl+X</b> combinazione di tasti per tagliare;</li>
+                <li><b>Ctrl+C</b> combinazione di tasti per copiare;</li>
+                <li><b>Ctrl+V</b> combinazione di tasti per incollare.</li>
+            </ul>
+			<p class="note"><b>Nota</b>: invece di tagliare ed incollare il testo all'interno dello stesso documento, è sufficiente selezionare il passaggio di testo desiderato e trascinarlo nella posizione voluta.</p>
+            <h3>Usa la funzione Incolla speciale</h3>
+            <p>Una volta che il testo incollato viene copiato, il pulsante <b>Incolla speciale</b> <img alt="Incolla speciale" src="../images/pastespecialbutton.png" /> apparirà accanto al passaggio di testo inserito. Fa’ clic su questo pulsante per selezionare l'opzione Incolla desiderata: </p>
+            <p>Quando si incolla il testo del paragrafo o del testo all'interno delle forme automatiche, sono disponibili le seguenti opzioni:</p>
+            <ul>
+                <li><em>Incolla</em> - consente di incollare il testo copiato mantenendo la formattazione originale.</li>
+                <li><em>Mantieni solo testo</em> -  consente di incollare il testo senza la sua formattazione originale.</li>
+            </ul>
+            <p>Se si incolla una tabella copiata in una tabella esistente, si renderanno disponibili le seguenti opzioni:</p>
+            <ul>
+                <li><em>Sovrascrivi celle</em> - consente di sostituire il contenuto della tabella esistente con i dati incollati. Questa opzione è selezionata come impostazione predefinita.</li>
+                <li><em>Annida Tabella </em> - consente di incollare la tabella copiata come tabella nidificata nella cella selezionata della tabella esistente..</li>
+                <li><em>Mantieni solo testo</em> - consente di incollare il testo senza la sua formattazione originale.</li>
+            </ul>
+            <h3>Annulla / ripristina le tue azioni</h3>
+			<p>Per eseguire le operazioni di annullamento / ripristino , utilizzate le icone corrispondenti nell'intestazione dell'editor o le scorciatoie da tastiera:</p>
+            <ul>
+                <li><b>Annulla </b> – usa l’icona <b>Annulla</b> <img alt="Undo icon" src="../images/undo.png" /> nella parte sinistra dell'intestazione dell'editor o la combinazione di tasti <b>Ctrl+Z</b>  per annullare l'ultima operazione eseguita.</li>
+                <li><b>Ripristina</b> –  usa l’icona <b>Ripristina</b> <img alt="Redo icon" src="../images/redo.png" /> nella parte sinistra dell'intestazione dell'editor o la combinazione di tasti <b>Ctrl+Y</b> per ripristinare l'ultima operazione annullata</li>
+            </ul>
+            <p class="note">
+                <b>Nota</b>: quando si co-modifica un documento in modalità <b>Veloce</b>, la possibilità di <b>ripristinare</b>  l'ultima operazione annullata non è disponibile.
+            </p>
+		</div>
+	</body>
+</html>

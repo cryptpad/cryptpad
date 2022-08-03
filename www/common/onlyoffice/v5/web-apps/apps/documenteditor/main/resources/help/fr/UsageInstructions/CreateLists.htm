@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer des listes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Créer des listes à puces et des listes numérotées et changer la structure et les paramètres des listes" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Créer des listes</h1>
+            <p>Pour créer une liste dans <a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>,</p>
+            <ol>
+                <li>placez le curseur à la position où vous voulez commencer la liste (cela peut être une nouvelle ligne ou le texte existant),</li>
+                <li>passez à l'onglet <b>Accueil</b> de la barre d'outils supérieure,</li>
+                <li>
+                    sélectionnez le type de liste à créer:
+                    <ul>
+                        <li><b>Liste non ordonnée</b> avec des marqueurs est créée à l'aide de l'icône <b>Puces</b> <img alt="L'icône de la liste non ordonnée" src="../images/bullets.png" /> de la barre d'outils supérieure</li>
+                        <li>
+                            <b>Liste ordonnée</b> avec numérotage spécial est créée à l'aide de l'icône <b>Numérotation</b> <img alt="L'icône de la liste ordonnée" src="../images/numbering.png" /> de la barre d'outils supérieure
+                            <p class="note">Cliquez sur la flèche vers le bas à côté de l'icône <b>Puces</b> ou <b>Numérotation</b> pour sélectionner le format de puces ou de numérotation souhaité.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>appuyez sur la touche <b>Entrée</b> à la fin de la ligne pour ajouter un nouvel élément à la liste.  Pour terminer la liste, appuyez sur la touche <b>Retour arrière</b> et continuez le travail.</li>
+            </ol>
+            <p>L'éditeur commence automatiquement une liste numérotée lorsque vous tapez 1 et un point ou une parenthèse droite et un espace: <b>1.</b>, <b>1)</b>. La liste à puces commence automatiquement lorsque vous tapez  <b>-</b> ou <b>* </b> et un espace.</p>
+            <p>Vous pouvez aussi changer le retrait du texte dans les listes et leur imbrication en utilisant les icônes <b>Liste multi-niveaux</b> <img alt="L'icône de la liste multi-niveaux" src="../images/outline.png" />, <b>Réduire le retrait</b> <img alt="L'icône Réduire le retrait" src="../images/decreaseindent.png" /> et <b>Augmenter le retrait</b> <img alt="L'icône Augmenter le retrait" src="../images/increaseindent.png" /> sous l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p>
+            <p>Pour modifier le niveau de la liste, cliquez sur l'icône  <b>Numérotation </b> <img alt="L'icône de la liste ordonnée" src="../images/numbering.png" />, <b>Puces</b>  <img alt="L'icône de la liste non ordonnée" src="../images/bullets.png" />, ou <b>Liste multi-niveaux</b> <img alt="L'icône de la liste multi-niveaux" src="../images/outline.png" /> et choisissez <b>Changer le niveau de liste</b>, ou placer le curseur au début de la ligne et appuyez sur la touche Tab du clavier pour augmenter le niveau de la liste. Procédez au niveau de liste approprié.</p>
+            <p><img alt="Changer le niveau de liste" src="../images/listlevel.png" /></p>
+            <p class="note">Vous pouvez configurez les paramètres supplémentaires du retrait et de l'espacement sur la barre latérale droite et dans la fenêtre de configuration de paramètres avancées.  Pour en savoir plus, consultez les pages  <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Modifier le retrait des paragraphes</a> et <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Régler l'interligne du paragraphe</a> .</p>
+
+            <h3>Joindre et séparer des listes</h3>
+            <p>Pour joindre une liste à la précédente:</p>
+            <ol>
+                <li>cliquez avec le bouton droit sur le premier élément de la seconde liste,</li>
+                <li>utilisez l'option <b>Joindre à la liste précédente</b> du menu contextuel.</li>
+            </ol>
+            <p>Les listes seront jointes et la numérotation se poursuivra conformément à la numérotation de la première liste.</p>
+
+            <p>Pour séparer une liste:</p>
+            <ol>
+                <li>cliquez avec le bouton droit de la souris sur l'élément de la liste où vous voulez commencer une nouvelle liste,</li>
+                <li>sélectionnez l'option <b>Séparer la liste</b> du menu contextuel.</li>
+            </ol>
+            <p>La liste sera séparée et la numérotation dans la deuxième liste recommencera.</p>
+
+            <h3>Modifier la numérotation</h3>
+            <p>Poursuivre la numérotation séquentielle dans la deuxième liste selon la numérotation de la liste précédente:</p>
+            <ol>
+                <li>cliquez avec le bouton droit sur le premier élément de la seconde liste,</li>
+                <li>sélectionnez l'option <b>Continuer la numérotation</b> du menu contextuel.</li>
+            </ol>
+            <p>La numérotation se poursuivra conformément à la numérotation de la première liste.</p>
+
+            <p>Pour définir une certaine valeur initiale de numérotation:</p>
+            <ol>
+                <li>cliquez avec le bouton droit de la souris sur l'élément de la liste où vous souhaitez appliquer une nouvelle valeur de numérotation,</li>
+                <li>sélectionnez l'option <b>Définit la valeur de la numérotation</b> du menu contextuel,</li>
+                <li>dans une nouvelle fenêtre qui s'ouvre, définissez la valeur numérique voulue et cliquez sur le bouton <b>OK</b>.</li>
+            </ol>
+
+            <h3>Configurer les paramètres de la liste</h3>
+            <p>Pour configurer les paramètres de la liste comme la puce/la numérotation, l'alignement, la taille et la couleur:</p>
+            <ol>
+                <li>cliquez sur un élément de la liste actuelle ou sélectionnez le texte à partir duquel vous souhaitez créer une liste,</li>
+                <li>cliquez sur l'icône <b>Puces</b> <img alt="L'icône de la liste non ordonnée" src="../images/bullets.png" /> ou <b>Numérotation</b> <img alt="L'icône de la liste ordonnée" src="../images/numbering.png" /> sous l'onglet <b>Accueil</b> dans la barre d'outils en haut,</li>
+                <li>sélectionnez l'option <b>Paramètres de la liste</b>,</li>
+                <li>
+                    la fenêtre <b>Paramètres de la liste</b> s'affiche.  La fenêtre de paramètres de la liste à puces se présente sous cet aspect:
+                    <p><img alt="La fenêtre Paramètres de la liste à puces" src="../images/bulletedlistsettings.png" /></p>
+                    <p>La fenêtre de paramètres de la liste numérotée se présente sous cet aspect:</p>
+                    <p><img alt="La fenêtre Paramètres de la liste numérotée" src="../images/orderedlistsettings.png" /></p>
+                    <p>Pour la liste à puces on peut choisir le caractère à utiliser comme <b>puce</b> et pour la liste numérotée on peut choisir le <b>type</b> de numérotation. Les options <b>Alignement</b>, <b>Taille</b> et <b>Couleur</b> sont identiques pour toutes les listes soit à puces soit numérotée.</p>
+                    <ul>
+                        <li><b>Puce </b>permet de sélectionner le caractère approprié pour les éléments de la liste.  Lorsque vous appuyez sur le champ <b>Symboles et caractères</b>, la fenêtre <b>Symbole</b> va apparaître dans laquelle vous pouvez choisir parmi les caractères disponibles. Veuillez consulter <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">cet article</a>pour en savoir plus sur utilisation des symboles.</li>
+                        <li><b>Type</b> permet de sélectionner la numérotation appropriée pour la liste.  Les options suivantes sont disponibles: <I>Rien, 1, 2, 3,..., a, b, c,..., A, B, C,..., i, ii, iii,..., I, II, III,....</I></li>
+                        <li><b>Alignement</b> permet de sélectionner le type d'alignement approprié pour aligner les puces/nombres horizontalement.  Les options d'alignement disponibles: <I>À gauche</I>, <I>Au centre</I>, <I>À droite</I>.</li>
+                        <li><b>Taille</b> permet d'ajuster la taille des puces/numéros.  L'option par défaut est <b>En tant que texte</b>.  Lorsque cette option est active, la taille des puces correspond à la taille du texte; Ajustez la taille en utilisant les valeurs prédéfinies de <I>8 à 96</I>.</li>
+                        <li><b>Couleur</b> permet de choisir la couleur des puces/numéros. L'option par défaut est <b>En tant que texte</b>.  Lorsque cette option est active, la couleur des puces ou des chiffres correspond à la couleur du texte. Choisissez l'option <b>Automatique</b> pour appliquer la couleur automatiquement, sélectionnez les <I>Couleurs de thème</I> ou les <I>Couleurs standard</I> de la palette ou définissez la <I>Couleur personnalisée</I>.</li>
+                    </ul>
+                    <p>Toutes les modifications sont affichées dans le champ <b>Aperçu</b>.</p>
+                </li>
+                <li>Cliquez sur <b>OK</b> pour appliquer toutes les modifications et fermer la fenêtre.</li>
+            </ol>
+            <p>Pour configurer les paramètres de la liste à plusieurs niveaux,</p>
+            <ol>
+                <li>appuyez sur un élément de la liste,</li>
+                <li>cliquez sur l'icône <b>Liste multiniveaux</b> <img alt="L'icône de la liste multi-niveaux" src="../images/outline.png" /> sous l'onglet <b>Accueil</b> dans la barre d'outils en haut,</li>
+                <li>sélectionnez l'option <b>Paramètres de la liste</b>,</li>
+                <li>
+                    la fenêtre <b>Paramètres de la liste</b> s'affiche. La fenêtre Paramètres de la liste multiniveaux se présente sous cet aspect:
+                    <p><img alt="La fenêtre Paramètres de la liste multiniveaux" src="../images/multilevellistsettings.png" /></p>
+                    <p>Choisissez le niveau approprié dans la liste <b>Niveau</b> à gauche, puis personnalisez l'aspect des puces et des nombres pour le niveau choisi: </p>
+                    <ul>
+                        <li><b>Type</b> permet de sélectionner la numérotation appropriée pour la liste numérotée ou le caractère approprié pour la liste à puces. Les options disponibles pour la liste numérotée:  <I>Rien, 1, 2, 3,..., a, b, c,..., A, B, C,..., i, ii, iii,..., I, II, III,....</I> Pour la liste à puces vous pouvez choisir un des symboles prédéfinis ou utiliser l'option <b>Nouvelle puce</b>.  Lorsque vous appuyez sur cette option, la fenêtre <b>Symbole</b> va apparaître dans laquelle vous pouvez choisir parmi les caractères disponibles.  Veuillez consulter <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">cet article</a>pour en savoir plus sur utilisation des symboles.</li>
+                        <li><b>Alignement</b> permet de sélectionner le type d'alignement approprié pour aligner les puces/nombres horizontalement du début du paragraphe.  À gauche, Au centre, À droite. Les options d'alignement disponibles: <I>À gauche</I>, <I>Au centre</I>, <I>À droite</I>.</li>
+                        <li><b>Taille</b> permet d'ajuster la taille des puces/numéros. L'option par défaut est <b>En tant que texte</b>. Ajustez la taille en utilisant les paramètres prédéfinis de <I>8 à 96</I>.</li>
+                        <li><b>Couleur</b> permet de choisir la couleur des puces/numéros. L'option par défaut est <b>En tant que texte</b>. Lorsque cette option est active, la couleur des puces ou des chiffres correspond à la couleur du texte. Choisissez l'option <b>Automatique</b> pour appliquer la couleur automatiquement, sélectionnez les <I>Couleurs de thème</I> ou les <I>Couleurs standard</I> de la palette ou définissez la <I>Couleur personnalisée</I>.</li>
+                    </ul>
+                    <p>Toutes les modifications sont affichées dans le champ <b>Aperçu</b>.</p>
+                </li>
+                <li>Cliquez sur <b>OK</b> pour appliquer toutes les modifications et fermer la fenêtre.</li>
+            </ol>            
+        </div>
+	</body>
+</html>

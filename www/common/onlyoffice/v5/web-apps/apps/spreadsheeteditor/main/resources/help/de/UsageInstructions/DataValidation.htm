@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Daten in Zellen überprüfen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Legen Sie Datenüberprüfungsparameter fest, um die weitere Bearbeitung der Tabelle zu steuern" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Daten in Zellen überprüfen</h1>
+        <p>Die ONLYOFFICE <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a> bietet eine Funktion für <b>Datenüberprüfung</b>, mit der die Parameter der Informationen angepasst werden, die Benutzer in Zellen eingeben.</p>
+        <p>Um auf die Datenüberprüfungsfunktion zuzugreifen, wählen Sie eine Zelle, einen Zellbereich oder eine gesamte Tabelle aus, auf die Sie die Funktion anwenden möchten, öffnen Sie die Registerkarte <b>Daten</b> und klicken Sie in der oberen Symbolleiste auf das Symbol <b>Datenüberprüfung</b>. Das geöffnete <b>Datenüberprüfungsfenster</b> enthält drei Registerkarten: <em>Einstellungen</em>, <em>Eingabemeldung</em> und <em>Fehlermeldung</em>.</p>
+        <h2>Einstellungen</h2>
+        <p>Im Abschnitt <b>Einstellungen</b> können Sie den Datentyp festlegen:</p>
+        <p class="note"><b>Hinweis</b>: Aktivieren Sie das Kontrollkästchen <b>Diese Änderungen auf alle anderen Zellen mit denselben Einstellungen anwenden</b>, um dieselben Einstellungen für den ausgewählten Zellbereich oder ein ganzes Arbeitsblatt zu verwenden.</p>
+        <p><img alt="Datenüberprüfung - Einstellungen" src="../images/dataval_settings.png" /></p>
+        <ul>
+            <li>
+                wählen Sie die gewünschte Option im Menü <b>Zulassen</b> aus:
+                <ul>
+                    <li><b>Jeder Wert</b>: Keine Grenzen für den Informationstyp.</li>
+                    <li><b>Ganze Zahl</b>: Es sind nur ganze Zahlen zulässig.</li>
+                    <li><b>Dezimal</b>: Es sind nur Zahlen mit einem Dezimalpunkt zulässig.</li>
+                    <li>
+                        <b>Liste</b>: Es sind nur Optionen aus der von Ihnen erstellten Dropdown-Liste zulässig. Deaktivieren Sie das Kästchen <b>Dropdownliste in der Zell anzeigen</b>, um den Dropdown-Pfeil auszublenden.
+                        <p><img alt="Liste - Einstellungen" src="../images/dataval_list.png" /></p>
+                    </li>
+                    <li><b>Datum</b>: Es sind nur Zellen mit dem Datumsformat zulässig.</li>
+                    <li><b>Uhrzeit</b>: Es sind nur Zellen mit dem Zeitformat zulässig.</li>
+                    <li><b>Textlänge</b>: Legt die Zeichenbegrenzung fest.</li>
+                    <li><b>Sonstiges</b>: Legt den gewünschten Datenüberprüfungsparameter als Formel fest.</li>
+                </ul>
+                <p class="note"><b>Hinweis</b>: Mit dem Kontrollkästchen <b>Leere Zellen ignorieren</b> kann die Datenüberprüfungsfunktion leere Zellen ignorieren.</p>
+            </li>
+            <li>
+                geben Sie im Menü <b>Daten</b> eine Bedingung an:
+                <ul>
+                    <li><b>zwischen</b>: Die Daten in Zellen sollen innerhalb des durch die Validierungsregel festgelegten Bereichs liegen.</li>
+                    <li><b>nicht zwischen</b>: Die Daten in Zellen sollen nicht innerhalb des durch die Validierungsregel festgelegten Bereichs liegen.</li>
+                    <li><b>ist gleich</b>: Die Daten in Zellen sollen dem in der Validierungsregel festgelegten Wert entsprechen.</li>
+                    <li><b>ist nicht gleich</b>: Die Daten in Zellen sollen nicht dem in der Validierungsregel festgelegten Wert entsprechen.</li>
+                    <li><b>größer als</b>: Die Daten in Zellen sollen die in der Validierungsregel festgelegten Werte übersteigen.</li>
+                    <li><b>kleiner als</b>: Die Daten in Zellen sollen nicht die in der Validierungsregel festgelegten Werte übersteigen.</li>
+                    <li><b>größer als oder gleich wie</b>: Die Daten in Zellen sollen größer oder gleich dem durch die Validierungsregel festgelegten Wert sein.</li>
+                    <li><b>kleiner als oder gleich wie</b>: Die Daten in Zellen sollen kleiner oder gleich dem durch die Validierungsregel festgelegten Wert sein.</li>
+                </ul>
+            </li>
+            <li>
+                erstellen Sie eine Validierungsregel in Abhängigkeit vom zulässigen Informationstyp:
+                <div class="tg-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bedingung</th>
+                                <th>Validierungsregel</th>
+                                <th>Beschreibung</th>
+                                <th>Verfügbarkeit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3">Zwischen / nicht zwischen</td>
+                                <td>Minimum / Maximum</td>
+                                <td>Legt den Wertebereich fest</td>
+                                <td>Jeder Wert / Dezimal / Textlänge</td>
+                            </tr>
+                            <tr>
+                                <td>Startdatum / Enddatum</td>
+                                <td>Legt den Datumsbereich fest</td>
+                                <td>Datum</td>
+                            </tr>
+                            <tr>
+                                <td>Startzeit / Endzeit</td>
+                                <td>Legt den Zeitraum fest</td>
+                                <td>Zeit</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4"> <br> <br>Ist gleich / ist nicht gleich</td>
+                                <td>Vergleichen mit</td>
+                                <td>Legt den Vergleichswert fest</td>
+                                <td>Jeder Wert / Dezimal</td>
+                            </tr>
+                            <tr>
+                                <td>Datum</td>
+                                <td>Legt das Vergleichsdatum fest</td>
+                                <td>Datum</td>
+                            </tr>
+                            <tr>
+                                <td>Verstrichene Zeit</td>
+                                <td>Legt die Vergleichszeit fest</td>
+                                <td>Zeit</td>
+                            </tr>
+                            <tr>
+                                <td>Länge</td>
+                                <td>Legt den Wert für die Textlänge zum Vergleich fest</td>
+                                <td>Textlänge</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Größer als / größer als oder gleich wie</td>
+                                <td>Minimum</td>
+                                <td>Legt die Untergrenze fest</td>
+                                <td>Jeder Wert / Dezimal / Textlänge</td>
+                            </tr>
+                            <tr>
+                                <td>Startdatum</td>
+                                <td>Legt das Startdatum fest</td>
+                                <td>Datum</td>
+                            </tr>
+                            <tr>
+                                <td>Startzeit</td>
+                                <td>Legt die Startzeit fest</td>
+                                <td>Zeit</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Kleiner als / kleiner als oder gleich wie</td>
+                                <td>Maximum</td>
+                                <td>Legt die Obergrenze fest</td>
+                                <td>Jeder Wert / Dezimal / Textlänge</td>
+                            </tr>
+                            <tr>
+                                <td>Enddatum</td>
+                                <td>Legt das Enddatum fest</td>
+                                <td>Datum</td>
+                            </tr>
+                            <tr>
+                                <td>Endzeit</td>
+                                <td>Legt die Endzeit fest</td>
+                                <td>Zeit</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                sowie auch:
+                <ul>
+                    <li><b>Quelle</b>: Gibt die Informationsquelle für den <em>Listeninformationstyp</em> an.</li>
+                    <li><b>Formel</b>: Geben Sie die erforderliche Formel ein, um eine benutzerdefinierte Validierungsregel für den Informationstyp <em>Sonstiges</em> zu erstellen.</li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Eingabemeldung</h2>
+        <p>Im Abschnitt <b>Eingabemeldung</b> können Sie eine benutzerdefinierte Meldung erstellen, die angezeigt wird, wenn ein Benutzer den Mauszeiger über die Zelle bewegt.</p>
+        <p><img alt="Datenueberpruefung - Eingabemeldung Einstellungen" src="../images/dataval_inputmessage.png" /></p>
+        <ul>
+            <li>Geben Sie den <b>Titel</b> und den Text Ihrer <b>Eingabemeldung</b> an.</li>
+            <li>Deaktivieren Sie die Option <b>Eingabemeldung anzeigen, wenn Zelle ausgewählt ist</b>, um die Anzeige der Meldung zu deaktivieren. Aktivieren Sie diese Option, um die Meldung anzuzeigen.</li>
+        </ul>
+        <p><img alt="Eingabemeldung - Beispiel" src="../images/dataval_inputmessage_example.png" /></p>
+        <h2>Fehlermeldung</h2>
+        <p>Im Abschnitt <b>Fehlermeldung</b> können Sie die Meldung angeben, die angezeigt wird, wenn die von Benutzern angegebenen Daten nicht den Validierungsregeln entsprechen.</p>
+        <p><img alt="Datenueberpruefung - Fehlermeldung Einstellungen" src="../images/dataval_erroralert.png" /></p>
+        <ul>
+            <li><b>Stil</b>: Wählen Sie eine der verfügbaren Voreinstellungen: <em>Beenden</em>, <em>Warnung</em> oder <em>Nachricht</em>.</li>
+            <li><b>Titel</b>: Geben Sie den Titel der Fehlermeldung an.</li>
+            <li><b>Fehlermeldung</b>: Geben Sie den Text der Fehlermeldung ein.</li>
+            <li>Deaktivieren Sie das Kontrollkästchen <b>Fehlerwarnung anzeigen, wenn ungültige Daten eingegeben werden</b>, um die Anzeige der Fehlermeldung zu deaktivieren.</li>
+        </ul>
+        <p><img alt="Fehlermeldung - Beispiel" src="../images/dataval_erroralert_example.png" /></p>
+    </div>
+</body>
+</html>

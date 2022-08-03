@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Advanced Settings of the Presentation Editor</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The advanced settings of Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Advanced Settings of the Presentation Editor</h1>
+			<p>The <a target="_blank" href="https://www.onlyoffice.com/en/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a> allows you to change its advanced settings. To access them, open the <b>File</b> tab on the top toolbar and select the <b>Advanced Settings...</b> option. You can also click the <b>View settings</b> <img alt="View settings icon" src="../images/viewsettingsicon.png" /> icon on the right side of the editor header and select the <b>Advanced settings</b> option.</p>
+			<p>The advanced settings are:</p>
+            <ul>
+                <li><b>Spell Checking</b> is used to turn on/off the spell checking option.</li>
+                <li><b>Proofing</b> - used to automatically replace word or symbol typed in the <b>Replace:</b> box or chosen from the list by a new word or symbol displayed in the <b>By:</b> box.</li>
+                <li><b>Alternate Input</b> is used to turn on/off hieroglyphs.</li>
+                <li><b>Alignment Guides</b> is used to turn on/off alignment guides that appear when you move objects and allow you to position them on the slide precisely.</li>
+                <li><span class="onlineDocumentFeatures"><b>Autosave</b> is used in the <em>online version</em> to turn on/off automatic saving of changes you make while editing.</span> </li>
+                <li><span class="desktopDocumentFeatures"><b>Autorecover</b> - is used in the <em>desktop version</em> to turn on/off the option that allows you to automatically recover documents if the program closes unexpectedly.</span></li>
+                <li class="onlineDocumentFeatures">
+                    <b>Co-editing Mode</b> is used to select a way of displaying changes made during co-editing:
+                    <ul>
+                        <li>By default, the <b>Fast</b> mode is selected, the users who take part in the presentation co-editing, will see the changes in real time once they are made by other users.</li>
+                        <li>If you prefer not to see the changes made by other users (so that they will not disturb you, or for some other reason), select the <b>Strict</b> mode, and all the changes will be shown only after you click the <b>Save</b> <img alt="Save icon" src="../images/saveupdate.png" /> icon with a notification that there are some changes made by other users.</li>
+                    </ul>
+                </li>
+                <li>
+                    <b>Interface theme</b> is used to change the color scheme of the editor’s interface.
+                    <ul>
+                        <li><b>Light</b> color scheme incorporates standard orange, white, and light-gray colors with less contrast in UI elements suitable for working during daytime.</li>
+                        <li><b>Classic Light</b> color scheme incorporates standard orange, white, and light-gray colors.</li>
+                        <li><b>Dark</b> color scheme incorporates black, dark-gray, and light-gray colors suitable for working during nighttime.</li>
+                    </ul>
+                </li>
+                <li><b>Default Zoom Value</b> is used to set the default zoom value selecting it in the list of available options from 50% to 200%. You can also choose the <b>Fit to Slide</b> or <b>Fit to Width</b> option.</li>
+                <li>
+                    <b>Font Hinting</b> is used to select a way fonts are displayed in the Presentation Editor:
+                    <ul>
+                        <li>Choose <b>As Windows</b> if you like the way fonts are usually displayed on Windows, i.e. using Windows font hinting.</li>
+                        <li>Choose <b>As OS X</b> if you like the way fonts are usually displayed on a Mac, i.e. without any font hinting at all.</li>
+                        <li>Choose <b>Native</b> if you want your text to be displayed with the hinting embedded into font files.</li>
+                        <li>
+                            <b>Default cache mode</b> - used to select the cache mode for the font characters. It’s not recommended to switch it without any reason. It can be helpful in some cases only, for example, when the Google Chrome browser has problems with the enabled hardware acceleration.
+                            <p>The Presentation Editor has two cache modes:</p>
+                            <ol>
+                                <li>In the <b>first cache mode</b>, each letter is cached as a separate picture.</li>
+                                <li>In the <b>second cache mode</b>, a picture of a certain size is selected where letters are placed dynamically and a mechanism of allocating/removing memory in this picture is also implemented. If there is not enough memory, a second picture is created, etc.</li>
+                            </ol>
+                            <p>The <b>Default cache mode</b> setting applies two above mentioned cache modes separately for different browsers:</p>
+                            <ul>
+                                <li>When the <b>Default cache mode</b> setting is enabled, Internet Explorer (v. 9, 10, 11) uses the <b>second cache mode</b>, other browsers use the <b>first cache mode</b>.</li>
+                                <li>When the <b>Default cache mode</b> setting is disabled, Internet Explorer (v. 9, 10, 11) uses the <b>first cache mode</b>, other browsers use the <b>second cache mode</b>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><b>Unit of Measurement</b> is used to specify what units are used on the rulers and in properties windows for measuring elements parameters such as width, height, spacing, margins, etc. You can select the <b>Centimeter</b>, <b>Point</b>, or <b>Inch</b> option.</li>
+                <li><b>Cut, copy and paste</b> - used to show the <b>Paste Options</b> button when content is pasted. Check the box to enable this feature.</li>
+                <li>
+                    <b>Macros Settings</b> - used to set macros display with a notification.
+                    <ul>
+                        <li>Choose <b>Disable all</b> to disable all macros within the presentation;</li>
+                        <li><b>Show notification</b> to receive notifications about macros within the presentation;</li>
+                        <li><b>Enable all</b> to automatically run all macros within the presentation.</li>
+                    </ul>
+                </li>
+            </ul>
+			<p>To save the changes you made, click the <b>Apply</b> button.</p>
+		</div>
+	</body>
+</html>

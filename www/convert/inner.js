@@ -10,6 +10,7 @@ define([
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/outer/worker-channel.js',
+    '/common/outer/x2t.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -25,10 +26,12 @@ define([
     Messages,
     UI,
     Util,
-    Channel
+    Channel,
+    X2T
     )
 {
     var APP = window.APP = {};
+    var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
     var common;
     var sFrameChan;
@@ -111,7 +114,7 @@ define([
     var loadOO = function (blob, type, name, cb) {
         var s = h('script', {
             type:'text/javascript',
-            src: '/common/onlyoffice/v4/web-apps/apps/api/documents/api.js'
+            src: '/common/onlyoffice/'+CURRENT_VERSION+'/web-apps/apps/api/documents/api.js'
         });
         var file = getFileType(type);
         APP.$rightside.append(s);

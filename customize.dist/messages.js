@@ -2,23 +2,26 @@
 // add your module to this map so it gets used
 var map = {
     'ca': 'Català',
+    'cs': 'Čeština',
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'es': 'Español',
+    'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
-    //'pl': 'Polski',
+    //'nl': 'Nederlands'
+    'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
     'ru': 'Русский',
     //'sv': 'Svenska',
     //'te': 'తెలుగు',
+    'uk': 'Українська',
     'zh': '繁體中文',
-    //'nl': 'Nederlands'
 };
 
 var messages = {};

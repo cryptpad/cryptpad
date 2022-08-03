@@ -14,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js',
 
-    '/bower_components/secure-fabric.js/dist/fabric.min.js',
+    '/lib/fabric.min.js',
     'less!/whiteboard/app-whiteboard.less'
 ], function (
     $,
@@ -123,7 +123,7 @@ define([
         APP.draw = true;
         $brush.click(function () {
             if (APP.draw) { return; }
-            canvas.deactivateAll().renderAll();
+            canvas.discardActiveObject().renderAll();
             APP.draw = true;
             canvas.isDrawingMode = APP.draw;
             $type.find('button').removeClass('btn-primary');
@@ -132,7 +132,7 @@ define([
         });
         $move.click(function () {
             if (!APP.draw) { return; }
-            canvas.deactivateAll().renderAll();
+            canvas.discardActiveObject().renderAll();
             APP.draw = false;
             canvas.isDrawingMode = APP.draw;
             $type.find('button').removeClass('btn-primary');
@@ -171,14 +171,15 @@ define([
 
         var deleteSelection = function () {
             if (APP.draw) { return; }
+            /*
             if (canvas.getActiveObject()) {
                 canvas.getActiveObject().remove();
-            }
-            if (canvas.getActiveGroup()) {
-                canvas.getActiveGroup()._objects.forEach(function (el) {
-                    el.remove();
+            }*/
+            if (canvas.getActiveObjects()) {
+                canvas.getActiveObjects().forEach(function (el) {
+                    APP.canvas.remove(el);
                 });
-                canvas.discardActiveGroup();
+                canvas.discardActiveObject();
             }
             canvas.renderAll();
             APP.onLocal();
@@ -342,7 +343,7 @@ define([
 
             canvas.isDrawingMode = bool ? APP.draw : false;
             if (!bool) {
-                canvas.deactivateAll();
+                canvas.discardActiveObject();
                 canvas.renderAll();
             }
             canvas.forEachObject(function (object) {
@@ -367,7 +368,7 @@ define([
         APP.FM = framework._.sfCommon.createFileManager({});
         APP.upload = function (title) {
             var canvas = $canvas[0];
-            APP.canvas.deactivateAll().renderAll();
+            APP.canvas.discardActiveObject().renderAll();
             canvas.toBlob(function (blob) {
                 blob.name = title;
                 APP.FM.handleFile(blob);

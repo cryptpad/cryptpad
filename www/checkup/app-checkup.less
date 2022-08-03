@@ -2,6 +2,8 @@
 @import (reference) "../../customize/src/less2/include/font.less";
 @import (reference) "../../customize/src/less2/include/alertify.less";
 
+@corner: 5px;
+
 html, body {
     .font_main();
     .alertify_main();
@@ -14,13 +16,14 @@ html, body {
 
     .report {
         font-size: 30px;
-        max-width: 26em;
+        max-width: 30em;
         margin: auto;
         padding-top: 15px;
     }
 
     .summary, .failure, .error, .success {
         margin-bottom: 1em;
+        border-radius: @corner;
     }
 
     .pending {
@@ -66,6 +69,7 @@ html, body {
         word-break: break-word;
         padding: 5px;
         //font-size: 16px;
+        border-radius: @corner;
         &.cp-danger {
             border: 1px solid @cp_alerts-danger-bg;
             background-color: @cp_alerts-danger-bg;

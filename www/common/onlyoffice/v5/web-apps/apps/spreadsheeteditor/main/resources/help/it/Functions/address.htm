@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Funzione ADDRESS</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Funzione ADDRESS</h1>
+			<p>La funzione <b>ADDRESS</b> è una delle funzioni della categoria Ricerca e riferimento. Si usa per restituire una rappresentazione testuale di un indirizzo di cella.</p>
+			<p>La sintassi della funzione <b>ADDRESS</b> è:</p> 
+			<p style="text-indent: 150px;"><b><em>ADDRESS(row-number, col-number[ , [ref-type] [, [A1-ref-type-flag] [, sheet name]]])</em></b></p> 
+			<p><em>dove</em></p> 
+			<p style="text-indent: 50px;"><em><b>row-number</b></em> è il numero riga da utilizzare in un indirizzo di cella.</p>
+			<p style="text-indent: 50px;"><em><b>col-number</b></em> è il numero colonna da utilizzare in un indirizzo di cella.</p>
+			<p style="text-indent: 50px;"><em><b>ref-type</b></em> è un tipo di riferimento. Esso può essere di uno dei seguenti valori numerici:</p>
+				<table style="width: 40%">
+				<tr>
+					<td><b>Valore numerico</b></td>
+					<td><b>Significato</b></td>
+				</tr>
+				<tr>
+					<td>1 o assente</td>
+					<td>Riferimento assoluto</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Riga assoluta; colonna relativa</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Riga relativa; colonna assoluta</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Riferimento relativo</td>
+				</tr>
+			</table>
+			<p><em><b>A1-ref-type-flag</b></em> è un valore logico opzionale: TRUE o FALSE. Se il valore inserito è TRUE o assente, la funzione analizza <b><em>ref-text</em></b> come un riferimento di stile A1. Se FALSE, la funzione analizza <b><em>ref-text</em></b> come un riferimento di stile R1C1.</p>
+			<p style="text-indent: 50px;"><em><b>sheet name</b></em> è il nome foglio da utilizzare in un indirizzo di cella. E' un argomento opzionale. Se questo argomento è assente, la funzione restituisce l'indirizzo di cella senza il nome foglio specificato.</p>
+			<p>Questi argomenti possono essere inseriti a mano o inclusi nelle celle alle quali fate riferimento.</p>
+			<p>Per applicare la funzione <b>ADDRESS</b>,</p>
+			<ol>
+			<li>selezionate la cella dove desiderate visualizzare il risultato,</li>
+			<li>cliccate sull'icona <b>Inserisci funzione</b> <img alt="Inserisci funzione" src="../images/insertfunction.png" /> sulla barra degli strumenti superiore,
+				<br />o cliccate con il tasto destro del mouse sulla cella scelta e selezionate l'opzione <b>Inserisci funzione</b> dal menu contestuale,
+				<br />o cliccate sull'icona <img alt="Funzione" src="../images/function.png" /> prima della barra della formula,
+			</li>
+			<li>selezionate il gruppo di funzioni <b>Ricerca e riferimento</b> dall'elenco,</li>
+			<li>cliccate sulla funzione <b>ADDRESS</b>,</li>
+			<li>inserite gli argomenti richiesti separati da virgola,</li>
+			<li>premete il tasto <b>Enter</b>.</li>
+			</ol>
+			<p>Il risultato sarà visualizzato nella cella scelta.</p>
+			<p style="text-indent: 150px;"><img alt="Funzione ADDRESS" src="../images/address.png" /></p>
+		</div>
+	</body>
+</html>

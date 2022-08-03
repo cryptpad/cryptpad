@@ -35,6 +35,14 @@ define(function() {
     //'doc', 'presentation'
     ];
 
+    /* 'doc' and 'presentation' are considered experimental and are hidden from users
+     * unless they have a custom quota applied via the admin panel. You can customize
+     * which apps are treated this way via the parameter below. This behaviour is not
+     * officially supported and the development team won't help you with any problems
+     * that you experience if you change this value.
+     */
+    // AppConfig.premiumTypes = ['doc', 'presentation'];
+
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
      * will use the english version instead. You can customize the langauges you want to be available
@@ -45,25 +53,76 @@ define(function() {
      */
     //AppConfig.availableLanguages = ['en', 'fr', 'de'];
 
+    /*
+     * AppConfig.imprint, AppConfig.privacy, AppConfig.terms, AppConfig.source, and AppConfig.roadmap
+     * define values used in at least one of the static pages' footer or the 'About CryptPad' menu.
+     *
+     * They can each be configured in one of three manners:
+     *
+     * 1. set their value to `false` to cause them not to be displayed, even if a default value exists
+     *      example:
+     *      AppConfig.privacy = false;
+     * 2. set their value to `true` to use the default value if it exists.
+     *      example:
+     *      AppConfig.privacy = true;
+     * 3. set their value to an object which maps language codes or a default setting to the relevant URL (as a string)
+     *      example:
+     *      AppConfig.privacy = {
+     *          "default": 'https://example.com/privacy.html',
+     *          "en": 'https://example.com/privacy.en.html', // in case English is not your default language
+     *          "fr": 'https://example.com/privacy.fr.html', // another language
+     *          "de": 'https://example.com/privacy.de.html', // you get the idea?
+     *      };
+     *
+     */
+
     /* You can display a link to the imprint (legal notice) of your website in the static pages
-     * footer. To do so, you can either set the following value to `true` and create an imprint.html page
-     * in the `customize` directory. You can also set it to an absolute URL if your imprint page already exists.
+     * footer. Since this is different for each individual or organization there is
+     * no default value.
+     *
+     * See the comments above for a description of possible configurations.
      */
     AppConfig.imprint = false;
-    // AppConfig.imprint = true;
-    // AppConfig.imprint = 'https://xwiki.com/en/company/legal-notice';
 
     /* You can display a link to your own privacy policy in the static pages footer.
-     * To do so, set the following value to the absolute URL of your privacy policy.
+     * Since this is different for each individual or organization there is no default value.
+     * See the comments above for a description of possible configurations.
      */
-    // AppConfig.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
+    AppConfig.privacy = false;
 
-    /* We (the project's developers) include the ability to display a 'Roadmap' in static pages footer.
-     * This is disabled by default.
-     * We use this to publish the project's development roadmap, but you can use it however you like.
-     * To do so, set the following value to an absolute URL.
+    /* You can display a link to your instances's terms of service in the static pages footer.
+     * A default is included for backwards compatibility, but we recommend replacing this
+     * with your own terms.
+     *
+     * See the comments above for a description of possible configurations.
      */
-    //AppConfig.roadmap = 'https://cryptpad.fr/kanban/#/2/kanban/view/PLM0C3tFWvYhd+EPzXrbT+NxB76Z5DtZhAA5W5hG9wo/';
+    AppConfig.terms = false;
+
+    /* The terms of CryptPad's license require that its source code be made available
+     * to anyone who uses the software. If you have not made any modifications to the platform
+     * then it is sufficient to leave this as-is. If you have made changes, customize
+     * this value to a software repository which includes the source code including your modifications.
+     *
+     * See the comments above for a description of possible configurations.
+     */
+    AppConfig.source = true;
+
+    /* If you wish to communicate your organization's roadmap to your users you may use the setting below.
+     * Since this is different for each individual or organization there is no default value.
+     */
+    AppConfig.roadmap = false;
+
+    /* By default CryptPad instances display some text on the home page indicating that
+     * they are an independent community instance of the software. You can provide customized messages
+     * by filling in the following data structure with strings for each language you intend to support.
+     */
+    AppConfig.hostDescription = {
+        // default: "Hello world",
+        // en: "Hello world",
+        // fr: "Bonjour le monde",
+        // de: "Hallo Welt",
+        // "pt-br": "Olá Mundo"<
+    };
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
@@ -135,12 +194,18 @@ define(function() {
         whiteboard: 'cptools-whiteboard',
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
+        calendar: 'fa-calendar',
         kanban: 'cptools-kanban',
         doc: 'fa-file-word-o',
         presentation: 'fa-file-powerpoint-o',
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
+        admin: 'fa-gears',
+        settings: 'fa-gear',
+        profile: 'fa-user-circle',
+        support: 'fa-life-ring',
+        accounts: 'fa-ticket'
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

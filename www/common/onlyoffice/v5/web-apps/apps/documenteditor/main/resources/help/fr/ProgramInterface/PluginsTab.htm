@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Onglet Modules complémentaires</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Présentation de l'interface utilisateur de Document Editor - l'onglet Modules complémentaires" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Onglet Modules complémentaires</h1>
+            <p>L'onglet<b> Modules complémentaires</b> dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> permet d'accéder à des fonctions d'édition avancées à l'aide de composants tiers disponibles. Ici vous pouvez également utiliser des macros pour simplifier les opérations de routine.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Fenêtre de l'éditeur en ligne Document Editor :</p>
+                <p><img alt="Onglet Modules complémentaires" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Fenêtre de l'éditeur de bureau Document Editor :</p>
+                <p><img alt="Onglet Modules complémentaires" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">Le bouton <b>Paramètres</b> permet d'ouvrir la fenêtre où vous pouvez visualiser et gérer tous les modules complémentaires installés et ajouter vos propres modules.</p>
+            <p>Le bouton <b>Macros</b> permet d'ouvrir la fenêtre où vous pouvez créer vos propres macros et les exécuter. Pour en savoir plus sur les macros, veuillez vous référer à la <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">documentation de notre API</a>.</p>
+            <p>Actuellement, les modules suivants sont disponibles :</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Send</b> sert à envoyer les documents par courriel en utilisant un client de messagerie de bureau (disponible uniquement dans la <em>version en ligne</em>),</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/HighlightedCode.htm" onclick="onhyperlinkclick(this)">Code en surbrillance</a> sert à surligner la syntaxe du code en sélectionnant la langue, le style, la couleur de fond appropriés,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/OCR.htm" onclick="onhyperlinkclick(this)">OCR</a> sert à extraire le texte incrusté dans des images et l'insérer dans votre document,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/PhotoEditor.htm" onclick="onhyperlinkclick(this)"> Éditeur de photos</a> sert à modifier les images: rogner, retourner, pivoter, dessiner les lignes et le formes, ajouter des icônes et du texte, charger l’image de masque et appliquer des filtres comme Niveaux de gris, Inverser, Sépia, Flou, Embosser, Affûter etc.,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/Speech.htm" onclick="onhyperlinkclick(this)">Parole</a> permet la lecture du texte sélectionné à voix haute (disponible uniquement dans la <em>version en ligne</em>),</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/Thesaurus.htm" onclick="onhyperlinkclick(this)">Thésaurus</a> sert à trouver les synonymes et les antonymes et les utiliser à remplacer le mot sélectionné,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/Translator.htm" onclick="onhyperlinkclick(this)">Traducteur</a> sert à traduire le texte dans des langues disponibles,
+                    <p class="note"><b>Remarque</b>: ce plugin ne fonctionne pas dans Internet Explorer.</p>
+                </li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/YouTube.htm" onclick="onhyperlinkclick(this)">You Tube</a> permet d’ajouter les videos YouTube dans votre document,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#Mendeley_block" onclick="onhyperlinkclick(this)">Mendeley</a> permet de gérer les mémoires de recherche et de générer une bibliographie pour les articles scientifiques (disponible uniquement dans la <em>version en ligne</em>),</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#Zotero_block" onclick="onhyperlinkclick(this)">Zotero</a> permet de gérer des références bibliographiques et des documents associés (disponible uniquement dans la <em>version en ligne</em>),</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#EasyBib_block" onclick="onhyperlinkclick(this)">EasyBib</a> sert à trouver et ajouter les livres, les journaux, les articles et les sites Web (disponible uniquement dans la <em>version en ligne</em>).</li>
+            </ul>
+             <p class="onlineDocumentFeatures">Les modules<a href="../UsageInstructions/Wordpress.htm" onclick="onhyperlinkclick(this)">Wordpress</a> et <b>EasyBib</b> peuvent être utilisés si vous connectez les services correspondants dans les paramètres de votre portail. Vous pouvez utiliser les instructions suivantes <a target="_blank" href="https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx" onclick="onhyperlinkclick(this)">pour la version serveur</a> ou <a target="_blank" href="https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx" onclick="onhyperlinkclick(this)">pour la version SaaS</a>.</p>
+            <p>Pour en savoir plus sur les modules complémentaires, veuillez vous référer à la <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">documentation de notre API</a>. Tous les exemples de modules open source actuellement disponibles sont disponibles sur <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a>.</p>
+		</div>
+	</body>
+</html>

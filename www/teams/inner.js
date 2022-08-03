@@ -1349,8 +1349,15 @@ define([
                     Messages._getKey('team_inviteFromMsg',
                     [Util.fixHTML(getDisplayName(json.author.displayName)),
                     Util.fixHTML(json.teamName)])));
-                if (json.message) {
-                    $div.append(h('div.cp-teams-invite-message', json.message));
+                if (typeof(json.message) === 'string') {
+                    var message = h('div.cp-teams-invite-message');
+                    json.message.split('\n').forEach(line => {
+                        if (line.trim()) {
+                            message.appendChild(h('span', line));
+                        }
+                        message.appendChild(h('br'));
+                    });
+                    $div.append(message);
                 }
             }));
         }).nThen(function (waitFor) {

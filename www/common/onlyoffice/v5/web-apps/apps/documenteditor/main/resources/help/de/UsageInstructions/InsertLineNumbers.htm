@@ -1,0 +1,54 @@
+﻿﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zeilennummern einfügen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Fügen Sie Zeilennnummern im Dokumenteneditor ein" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Zeilennummern einfügen</h1>
+        <p>Der <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>ONLYOFFICE Dokumenteneditor</b></a> kann Zeilen in Ihrem Dokument automatisch zählen. Diese Funktion kann nützlich sein, wenn Sie auf eine bestimmte Zeile des Dokuments verweisen müssen, z.B. in einer Vereinbarung oder einem Code-Skript. Verwenden Sie das Tool <img alt="Zeilennummern Symbol" src="../images/linenumbers_icon.png" /> <b>Zeilennummern</b>, um die Zeilennummerierung auf das Dokument anzuwenden. Bitte beachten Sie, dass die Zeilennummerierungssequenz nicht auf den Text in den Objekten wie Tabellen, Textfeldern, Diagrammen, Kopf- / Fußzeilen usw. angewendet wird. Diese Objekte werden als eine Zeile behandelt.</p>
+        <h2>Zeilennummern anwenden</h2>
+        <ol>
+            <li>Öffnen Sie die Registerkarte <b>Layout</b> in der oberen Symbolleiste und klicken Sie auf das Symbol <img alt="Zeilennummern Symbol" src="../images/linenumbers_icon.png" /><b>Zeilennummern</b>.</li>
+            <li>
+                Wählen Sie im geöffneten Drop-Down-Menü die gewünschten Parameter für eine schnelle Einrichtung:
+                <ul>
+                    <li><b>Ununterbrochen</b> - jeder Zeile des Dokuments wird eine Sequenznummer zugewiesen.</li>
+                    <li><b>Jede Seite neu beginnen</b> - die Zeilennummerierungssequenz wird auf jeder Seite des Dokuments neu gestartet.</li>
+                    <li><b>Jeden Abschnitt neu beginnen</b> - die Zeilennummerierungssequenz wird in jedem Abschnitt des Dokuments neu gestartet. Bitte lesen Sie <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">diese Anleitung</a>, um mehr über die Abschnittsümbrüche zu lernen.</li>
+                    <li><b>Im aktuellen Absatz verbieten</b> - der aktuelle Absatz wird in der Zeilennummerierungssequenz übersprungen. Um mehrere Absätze von der Sequenz auszuschließen, wählen Sie sie mit der linken Maustaste aus, bevor Sie diesen Parameter anwenden.</li>
+                </ul>
+            </li>
+            <li>
+                Geben Sie bei Bedarf die erweiterten Parameter an. Klicken Sie auf dem Menüpunkt <b>Zeilennummerierungsoptionen</b> im Drop-Down-Menü <b>Zeilennummern</b>. Markieren Sie das Kästchen <b>Zeilennummer hinzufügen</b>, um die Zeilennummerierung auf das Dokument anzuwenden und auf die erweiterten Einstellungen zuzugreifen:
+                <p><img alt="Zeilennummern Fenster" src="../images/linenumbers_window.png" /></p>
+                <ul>
+                    <li>Die Option <b>Beginnen mit</b> legt den numerischen Startwert der Zeilennummerierungssequenz fest. Der Parameter ist auf <b>1</b> standarmäßig eingestellt.</li>
+                    <li>Die Option <b>Aus dem Text</b> gibt den Abstand zwischen den Zeilennummern und dem Text an. Geben Sie den gewünschten Wert in cm ein. Der Parameter ist auf <b>Auto</b> standarmäßig eingestellt.</li>
+                    <li>Die Option <b>Zählintervall</b> bestimmt, wie viel Zeilen eine Zeilennummerierung erscheinen soll, d.h. die Zahlen werden in einem Bündel (zweifach, dreifach usw.) gezählt. Geben Sie den erforderlichen numerischen Wert ein. Der Parameter ist auf <b>1</b> standardmäßig eingestellt.</li>
+                    <li>Die Option <b>Jede Seite neu beginnen</b>: Die Zeilennummerierungssequenz wird auf jeder Seite des Dokuments neu gestartet.</li>
+                    <li>Die Option <b>Jeden Abschnitt neu beginnen</b>: Die Zeilennummerierungssequenz wird in jedem Abschnitt des Dokuments neu gestartet.</li>
+                    <li>Die Option <b>Ununterbrochen</b>: Jeder Zeile des Dokuments wird eine Sequenznummer zugewiesen.</li>
+                    <li>Die Option <b>Anwendung von Änderungen auf</b> gibt den Teil des Dokuments an, dem Sie Sequenznummern zuweisen möchten. Wählen Sie eine der verfügbaren Voreinstellungen: <b>Aktueller Abschnitt</b>, um die Zeilennummerierung auf den ausgewählten Abschnitt des Dokuments anzuwenden; <b>Bis zum Ende des Dokuments</b>, um die Zeilennummerierung auf den Text anzuwenden, der der aktuellen Cursorposition folgt; <b>Zum ganzen Dokument</b>, um die Zeilennummerierung auf das gesamte Dokument anzuwenden. Der Parameter ist auf <b>Zum ganzen Dokument</b> standardmäßig eingestellt.</li>
+                    <li>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</li>
+                </ul>
+            </li>
+        </ol>
+        <h2>Zeilennummern entfernen</h2>
+        <p>Um die Zeilennummerierungssequenz zu entfernen,</p>
+        <ol>
+            <li>öffnen Sie die Registerkarte <b>Layout</b> in der oberen Symbolleiste und klicken Sie auf das Symbol <img alt="Zeilennummern Symbol" src="../images/linenumbers_icon.png" /><b>Zeilennummern</b>,</li>
+            <li>wählen Sie die Option <b>Kein</b> im geöffneten Drop-Down-Menü oder wählen Sie den Menüpunkt <b>Zeilennummerierungsoptionen</b> aus und im geöffneten Fenster <b>Zeilennummern</b> deaktivieren Sie das Kästchen <b>Zeilennummer hinzufügen</b>.</li>
+        </ol>
+    </div>
+</body>
+</html>

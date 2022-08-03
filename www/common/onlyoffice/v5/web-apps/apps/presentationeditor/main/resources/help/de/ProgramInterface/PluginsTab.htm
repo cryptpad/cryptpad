@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Registerkarte Plugins</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Benutzeroberfläche - Registerkarte Plugins - Präsentationseditor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Registerkarte Plugins</h1>
+        <p>Die Registerkarte <b>Plugins</b> im <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> ermöglicht den Zugriff auf erweiterte Bearbeitungsfunktionen mit verfügbaren Komponenten von Drittanbietern. Unter dieser Registerkarte können Sie auch Makros festlegen, um Routinevorgänge zu vereinfachen.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Dialogbox Online-Präsentationseditor:</p>
+                <p><img alt="Registerkarte Plugins" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dialogbox Desktop-Präsentationseditor:</p>
+                <p><img alt="Registerkarte Plugins" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">Durch Anklicken der Schaltfläche <b>Einstellungen</b> öffnet sich das Fenster, in dem Sie alle installierten Plugins anzeigen und verwalten sowie eigene Plugins hinzufügen können.</p>
+            <p>Durch Anklicken der Schaltfläche <b>Makros</b> öffnet sich das Fenster, in dem Sie Ihre eigenen Makros erstellen und ausführen können. Um mehr über Makros zu erfahren, lesen Sie bitte unsere <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">API-Dokumentation</a>.</p>
+            <p>Derzeit stehen folgende Plugins zur Verfügung:</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Senden</b> ermöglicht das Senden der Präsentation per E-Mail mit dem Standard-Desktop-Mail-Client (nur in der <em>Desktop-Version</em> verfügbar),</li>
+                <li><a href="../UsageInstructions/HighlightedCode.htm" onclick="onhyperlinkclick(this)">Code hervorheben</a> - Hervorhebung der Syntax des Codes durch Auswahl der erforderlichen Sprache, des Stils, der Hintergrundfarbe,</li>
+                <li><a href="../UsageInstructions/PhotoEditor.htm" onclick="onhyperlinkclick(this)">Foto-Editor</a> - Bearbeitung von Bildern: schneiden, spiegeln, drehen, Linien und Formen zeichnen, Symbole und Texte einfügen, Maske laden und die Filter verwenden, z.B. Graustufe, invertieren, Sepia, Blur, schärfen, Emboss usw.,</li>
+                <li><a href="../UsageInstructions/Thesaurus.htm" onclick="onhyperlinkclick(this)">Thesaurus</a> - mit diesem Plugin können Synonyme und Antonyme eines Wortes gesucht und durch das ausgewählte Wort ersetzt werden,</li>
+                <li><a href="../UsageInstructions/Translator.htm" onclick="onhyperlinkclick(this)">Übersetzer</a> - Übersetzen von ausgewählten Textabschnitten in andere Sprachen,
+                    <p class="note">Dieses Plugin funktioniert nicht im Internet Explorer.</p>
+                </li>
+                <li><a href="../UsageInstructions/YouTube.htm" onclick="onhyperlinkclick(this)">YouTube</a> - Einbetten von YouTube-Videos in der Präsentation.</li>
+            </ul>
+            <p>Um mehr über Plugins zu erfahren, lesen Sie bitte unsere <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">API-Dokumentation</a>. Alle derzeit als Open-Source verfügbaren Plugin-Beispiele sind auf <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a> verfügbar.</p>
+		</div>
+	</body>
+</html>

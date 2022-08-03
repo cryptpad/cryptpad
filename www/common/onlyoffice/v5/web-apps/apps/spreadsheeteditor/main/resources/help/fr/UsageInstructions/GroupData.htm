@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Grouper des données</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Grouper des lignes et des colonnes pour structurer les données dans un classeur." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Grouper des données</h1>
+        <p>La possibilité de regrouper les lignes et les colonnes ainsi que de créer un plan vous permet de travailler plus facilement avec une feuille de calcul contenant une grande quantité de données. Dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, vous pouvez réduire ou agrandir les lignes et les colonnes groupées pour afficher uniquement les données nécessaires. Il est également possible de créer une structure à plusieurs niveaux des lignes /colonnes groupées. Lorsque c’est nécessaire, vous pouvez dissocier les lignes/colonnes précédemment groupées.</p>
+        <h3>Grouper les lignes et colonnes</h3>
+        <p>Pour grouper les lignes et colonnes:</p>
+            <ol>
+                <li>Sélectionnez la rangée de cellules que vous voulez regrouper.</li>
+                <li>Basculez vers l’onglet de <b>Données</b> et utilisez l’une des options nécessaires dans la barre d’outils supérieure:
+                    <ul>
+                        <li>
+                            cliquez sur le bouton <img alt="Group icon" src="../images/groupicon.png" /> <b>Grouper</b> puis choisissez l’option <b>Lignes ou Colonnes</b> dans la fenêtre <b>Grouper</b> qui apparaît et cliquez <b>OK</b>,
+                            <p><img alt="Group window" src="../images/groupewindow.png" /></p>
+                        </li>
+                        <li>cliquez sur la flèche vers le bas sous le bouton <img alt="Group icon" src="../images/groupicon.png" /> <b>Grouper</b> et choisissez l’option <b>Grouper les lignes</b> depuis le menu,</li>
+                        <li>cliquez sur la flèche vers le bas sous le bouton <img alt="Group icon" src="../images/groupicon.png" /> <b>Grouper</b> et choisissez l’option <b>Grouper les colonnes</b> depuis le menu.</li>
+                    </ul>
+                </li>
+            </ol>            
+            <p>Les lignes et colonnes sélectionnées seront regroupées et le plan créé sera affiché à gauche des lignes et au-dessus des colonnes.</p>
+            <p><img alt="Grouped rows and columns" src="../images/groupedrows.png" /></p>
+            <p>Pour masquer les lignes/colonnes, cliquez sur l’icône <img alt="Collapse grouped rows icon" src="../images/collapserowsicon.png" /> <b>Réduire</b>. Pour afficher les lignes/colonnes réduites, cliquez sur l’icône <img alt="Expand collapsed rows icon" src="../images/expandrowsicon.png" /> <b>Agrandir</b>.</p>
+            <h5>Changer le plan</h5>
+            <p>Pour modifier le plan des lignes ou colonnes groupées, vous pouvez utiliser les options du menu déroulant <b>Grouper</b>. Les option <b>Lignes de synthèse sous les lignes de détail</b> et les <b>Colonnes de synthèse à droite des colonnes de détail</b> sont choisies par défaut. Elles permettent de modifier l’emplacement du bouton <b>Réduire</b> <img alt="Collapse grouped rows icon" src="../images/collapserowsicon.png" /> et du bouton <b>Agrandir</b> <img alt="Expand collapsed rows icon" src="../images/expandrowsicon.png" /> buttons:</p>
+            <ul>
+                <li>Décrochez l’option <b>Lignes de synthèse sous les lignes de détail</b> si vous souhaitez afficher les lignes de synthèse au-dessus des lignes de détail.</li>
+                <li>Décrochez l’option <b>Colonnes de synthèse à droite des colonnes de détail</b> si vous souhaitez afficher les colonnes de synthèse à gauches des colonnes de détail.</li>
+            </ul>
+            <h5>Créer des groupes à plusieurs niveaux</h5>
+            <p>Pour créer une structure à plusieurs niveaux, sélectionnez une plage de celle-ci dans le groupe de lignes/ colonnes précédemment créé et regrouper la nouvelles plage sélectionnée comme décrit ci-dessus. Après cela, vous pouvez masquer et afficher les groupes par niveau en utilisant les icônes avec le numéro de niveau: <img alt="Level number icons" src="../images/levelnumbericons.png" />.</p>
+            <p>Par exemple, si vous créez un groupe imbriqué dans le groupe parent, trois niveaux seront disponibles. Il est possible de créer jusqu’à 8 niveaux.</p>
+            <p><img alt="Multi-level structure" src="../images/multilevelstructure.png" /></p>
+            <ul>
+                <li>Cliquez sur la première icône de niveau <img alt="First level icon" src="../images/firstlevelicon.png" /> pour passer au niveau qui masque toutes les données groupées:
+                    <p><img alt="First level" src="../images/firstlevel.png" /></p>
+                </li>
+                <li>Cliquez sur la deuxième icône de niveau <img alt="Second level icon" src="../images/secondlevelicon.png" /> pour passer au niveau qui affiche les détails du groupe parent, mais masque les données du groupe imbriqué:
+                    <p><img alt="Second level" src="../images/secondlevel.png" /></p>
+                </li>
+                <li>Cliquez sur la troisième icône de niveau <img alt="Third level icon" src="../images/thirdlevelicon.png" /> pour passer au niveau qui affiche tous les détails:
+                    <p><img alt="Third level" src="../images/thirdlevel.png" /></p>
+                </li>
+            </ul>
+            <p>Il est possible d’utiliser les icônes <img alt="Collapse grouped rows icon" src="../images/collapserowsicon.png" /> <b>Réduire</b> et <img alt="Expand collapsed rows icon" src="../images/expandrowsicon.png" /> <b>Agrandir</b> dans le plan pour afficher ou masquer les données correspondant à un certain niveau.</p>
+            <h3>Dissocier des lignes et des colonnes précédemment groupées</h3>
+            <p>Pour dissocier des lignes ou des colonnes précédemment groupées:</p>
+            <ol>
+                <li>Sélectionnez la plage de cellules groupées pour dissocier.</li>
+                <li>
+                    Basculez vers l’onglet de <b>Données</b> et utilisez l’une des options nécessaires sur la barre d’outils supérieure:
+                    <ul>
+                        <li>
+                            cliquez sur le bouton <img alt="Ungroup icon" src="../images/ungroupicon.png" /> <b>Dissocier</b> puis choisissez l’option <b>Lignes</b> ou <b>Colonnes</b> dans la fenêtre <b>Grouper</b> qui apparaît et cliquez sur <b>OK</b>,
+                            <p><img alt="Group window" src="../images/groupewindow.png" /></p>
+                        </li>
+                        <li>cliquez sur la flèche vers le bas sous le bouton de <img alt="Group icon" src="../images/ungroupicon.png" /> <b>Dissocier</b> puis choisissez l’option <b>Dissocier les lignes</b> et <b>Effacer le plan</b>,</li>
+                        <li>cliquez sur la flèche vers le bas sous le bouton <img alt="Group icon" src="../images/ungroupicon.png" /> <b>Dissocier</b> et choisissez l’option <b>Dissocier les colonnes</b> depuis le menu pour dissocier les colonnes et effacer le plan de colonnes,</li>
+                        <li>cliquez sur la flèche vers le bas sous le bouton <img alt="Group icon" src="../images/ungroupicon.png" /> <b>Dissocier</b> et choisissez l’option <b>Effacer le plan</b> depuis le menu pour effacer le plan des lignes et des colonnes sans supprimer les groupes existants.</li>
+                    </ul>
+                </li>
+            </ol>
+		</div>
+	</body>
+</html>

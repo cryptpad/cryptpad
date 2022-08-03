@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer et modifier des images</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Ajouter une image à votre présentation et configurer sa taille et position." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer et modifier des images</h1>
+            <h3>Insérer une image</h3>
+			<p><a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a> vous permet d'insérer des images aux formats populaires dans votre présentation. Les formats d'image pris en charge sont les suivants: BMP, GIF, JPEG, JPG, PNG.</p>
+			<p>Pour ajouter une image à une diapositive,</p>
+			<ol>
+				<li>sélectionnez la diapositive à laquelle vous voulez ajouter une image dans la liste des diapositives à gauche,</li>
+				<li>cliquez sur l'icône <img alt="L'icône Image" src="../images/image.png" /> <b>Image</b> dans l'onglet <b>Accueil</b> ou <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'une des options suivantes pour charger l'image:
+					<ul>
+                        <li>l'option <b>Image à partir d'un fichier</b> ouvre la fenêtre de dialogue standard pour sélectionner le fichier. Sélectionnez le fichier de votre choix sur le disque dur de votre ordinateur et cliquez sur le bouton <b>Ouvrir</b>
+                            <p class="note">Dans <em>l’éditeur en ligne</em>, vous pouvez sélectionner plusieurs images à la fois.</p>
+                        </li>
+                        <li>l'option<b> Image à partir d'une URL</b> ouvre la fenêtre où vous pouvez saisir l'adresse Web de l'image et cliquer sur le bouton <b>OK</b></li>
+                        <li class="onlineDocumentFeatures"> l'option <b>Image de stockage</b> ouvrira la fenêtre<b> Sélectionner la source de données</b>. Sélectionnez une image stockée sur votre portail et cliquez sur le bouton <b>OK</b></li>
+					</ul>
+				</li>
+				<li>après avoir ajouté l'image, vous pouvez modifier sa <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">taille, ses paramètres et sa position</a>.</li>
+			</ol>
+            <p>On peut ajouter une image dans l'espace réservé en cliquant sur l'icône <img alt="L'icône Image à partir d'un fichier" src="../images/placeholder_imagefromfile.png" /> <b>Image à partir d'un fichier</b> à l'intérieur de l'espace et sélectionner l'image stockée sur votre ordinateur, ou utiliser le bouton <img alt="L'icône Image à partir d'une URL" src="../images/placeholder_imagefromurl.png" /> <b>Image à partir d'une URL</b> et saisissez l'adresse URL de l'image:</p>
+            <p><img alt="Ajouter une image dans l'espace réservé" src="../images/placeholder_object.png" /></p>	
+            <p>On peut aussi ajouter une image à la disposition de diapositive. Pour en savoir plus, veuillez consulter <a href="../UsageInstructions/SetSlideParameters.htm#addtolayout" onclick="onhyperlinkclick(this)">cet article</a>.</p>
+			<hr />
+            <h3>Ajuster les paramètres de l'image</h3>
+			<p>La barre latérale droite est activée lorsque vous cliquez avec le bouton gauche sur une image et sélectionnez l'icône <img alt="L'icône Paramètres de l'image" src="../images/image_settings_icon.png" /> <b>Paramètres de l'image</b> à droite. Elle comporte les sections suivantes:</p>
+            <img alt="L'onglet Paramètres de l'image" src="../images/imagesettingstab.png" />
+            <p><b>Taille</b> - permet d'afficher la <b>Largeur</b> et la <b>Hauteur</b> de l'image actuelle ou de restaurer la <b>Taille par défaut</b> de l'image si nécessaire.</p>
+			
+            <p>Le bouton <b>Rogner</b> sert à recadrer l'image. Cliquez sur le bouton <b>Rogner</b> pour activer les poignées de recadrage qui appairaient par chaque coin et sur les côtés. Faites glisser manuellement les pognées pour définir la zone de recadrage. Vous pouvez positionner le curseur sur la bordure de la zone de recadrage  lorsque il se transforme en <img alt="Flèche" src="../images/arrow.png" /> et faites la glisser. </p>
+            <ul>
+                <li>Pour rogner un seul côté, faites glisser la poignée située au milieu de ce côté.</li>
+                <li>Pour rogner simultanément deux côtés adjacents, faites glisser l'une des poignées d'angle.</li>
+                <li>Pour rogner également deux côtés opposés de l'image, maintenez la touche <I>Ctrl</I> enfoncée lorsque vous faites glisser la poignée au milieu de l'un de ces côtés. </li>
+                <li>Pour rogner également tous les côtés de l'image, maintenez la touche <I>Ctrl</I> enfoncée lorsque vous faites glisser l'une des poignées d'angle.</li>
+            </ul>
+            <p>Lorsque la zone de recadrage est définie, cliquez à nouveau sur le bouton <b>Rogner</b>, ou appuyez sur la touche <I>Echap</I>, ou cliquez n'importe où à l'extérieur de la zone de recadrage pour appliquer les modifications.</p>
+            <p>Une fois la zone de recadrage sélectionnée, il est également possible d'utiliser les options <b>Remplissage</b> et <b>Ajuster</b> disponibles dans le menu déroulant <b>Rogner</b>. Cliquez de nouveau sur le bouton <b>Rogner</b> et sélectionnez l'option de votre choix: </p>
+            <ul>
+                <li>Si vous sélectionnez l'option <b>Remplissage</b>, la partie centrale de l'image originale sera conservée et utilisée pour remplir la zone de cadrage sélectionnée, tandis que les autres parties de l'image seront supprimées.</li>
+                <li>Si vous sélectionnez l'option <b>Ajuster</b>, l'image sera redimensionnée pour correspondre à la hauteur ou à la largeur de la zone de recadrage. Aucune partie de l'image originale ne sera supprimée, mais des espaces vides peuvent </li>
+            </ul>
+            <p><b>Remplacer l'image</b> - est utilisé pour charger une autre image à la place de celle en cours en sélectionnant la source désirée. Vous pouvez choisir parmi les options suivantes: <b>A partir du fichier</b>, <b>Image de stockage</b> ou <b>A partir de l'URL</b>. L'option Remplacer l'image est également disponible dans le menu contextuel.</p>
+            <p><b>Rotation</b> permet de faire pivoter l'image de 90 degrés dans le sens des aiguilles d'une montre ou dans le sens inverse des aiguilles d'une montre, ainsi que de retourner l'image horizontalement ou verticalement. Cliquez sur l'un des boutons:</p>
+            <ul>
+                <li><img alt="Icône Pivoter dans le sens inverse des aiguilles d'une montre" src="../images/rotatecounterclockwise.png" /> pour faire pivoter l'image de 90 degrés dans le sens inverse des aiguilles d'une montre</li>
+                <li><img alt="Icône Pivoter dans le sens des aiguilles d'une montre" src="../images/rotateclockwise.png" /> pour faire pivoter l'image de 90 degrés dans le sens des aiguilles d'une montre</li>
+                <li><img alt="Icône Retourner horizontalement" src="../images/fliplefttoright.png" /> pour retourner l'image horizontalement (de gauche à droite)</li>
+                <li><img alt="Icône Retourner verticalement" src="../images/flipupsidedown.png" /> pour retourner l'image verticalement (à l'envers)</li>
+            </ul>
+            <p>Lorsque l'image est sélectionnée, l'icône <b>Paramètres de la forme</b> <img alt="L'icône Paramètres de la forme" src="../images/shape_settings_icon.png" /> est également disponible sur la droite. Vous pouvez cliquer sur cette icône pour ouvrir l'onglet <b>Paramètres de la forme </b>dans la barre latérale droite et ajuster le type du <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>Ligne</b></a> la taille et la couleur de la forme ainsi que le type de forme en sélectionnant une autre forme dans le menu <b>Modifier la forme automatique</b>. La forme de l'image changera en conséquence.</p>
+            <p>Sous l'onglet Paramètres de la forme, vous pouvez utiliser l'option Ajouter une ombre pour créer une zone ombrée autour de l'image.</p>
+            <p><img alt="L'onglet Paramètres de la forme" src="../images/right_image_shape.png" /></p>
+			<hr />
+			<p>Pour modifier les <b>paramètres avancés</b>, cliquez sur l'image avec le bouton droit de la souris et sélectionnez <b>Paramètres avancés de l'image</b> du menu contextuel ou cliquez sur le lien de la barre latérale droite <b>Afficher les paramètres avancés</b>. La fenêtre paramètres de l'image s'ouvre:</p>
+            <p><img alt="Paramètres de l'image" src="../images/image_properties.png" /></p>
+			<p>L'onglet <b>Placement</b> vous permet de régler les paramètres suivants:</p>
+			<ul>
+				<li><b>Taille</b> - utilisez cette options pour modifier la largeur/hauteur de l'image. Lorsque le bouton <b><b>Proportions constantes  </b></b> <img alt="L'icône Proportions constantes" src="../images/constantproportions.png" /> est activé (Ajouter un ombre) <img alt="L'icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), le rapport largeur/hauteur d'origine s'ajuste proportionnellement. Pour rétablir la taille par défaut de l'image ajoutée, cliquez sur le bouton <b>Taille actuelle</b>.</li>
+				<li><b>Position</b> - utilisez cette option pour modifier la position de l'image sur la diapositive (la position est calculée à partir des côtés supérieur et gauche de la diapositive).</li>
+			</ul>
+            <p><img alt="Paramètres de l'image: Rotation" src="../images/image_properties2.png" /></p>
+            <p>L'onglet <b>Rotation</b> comporte les paramètres suivants:</p>
+            <ul>
+                <li><b>Angle</b> - utilisez cette option pour faire pivoter l'image d'un angle exactement spécifié. Entrez la valeur souhaitée mesurée en degrés dans le champ ou réglez-la à l'aide des flèches situées à droite. </li>
+                <li><b>Retourné</b> - cochez la case <b>Horizontalement</b> pour retourner l'image horizontalement (de gauche à droite) ou la case <b>Verticalement</b> pour retourner l'image verticalement (à l'envers).</li>
+            </ul>
+            <p><img alt="Paramètres de l'image" src="../images/image_properties1.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information de l'image.</p>			
+			<hr />
+			<p>Pour <b>supprimer</b> une image insérée, sélectionnez-le avec la souris et appuyez sur la touche <b>Suppr.</b></p>
+			<p>Pour apprendre à <b>aligner</b> une image sur la diapositive ou à <b>organiser</b> plusieurs images, reportez-vous à la section <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Aligner et organiser les objets dans une diapositive</a> .</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>AutoFormen einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fügen Sie eine Form in Ihrem Dokument ein und ändern Sie ihre Eigenschaften" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>AutoFormen einfügen</h1>
+            <h3>Fügen Sie eine automatische Form ein</h3>
+			<p>So fügen Sie Ihrem Dokument eine automatische Form hinzu im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a>:</p>
+			<ol>
+                <li>Wechseln Sie zur Registerkarte <b>Einfügen</b> in der oberen Symbolleiste.</li>
+				<li>Klicken Sie auf das <b>Formsymbol</b> <img alt="Form" src="../images/insertautoshape.png" /> in der oberen Symbolleiste.</li>
+				<li>Wählen Sie eine der verfügbaren Autoshape-Gruppen aus: Grundformen, figürliche Pfeile, Mathematik, Diagramme, Sterne und Bänder, Beschriftungen, Schaltflächen, Rechtecke, Linien,</li>
+				<li>Klicken Sie auf die erforderliche automatische Form innerhalb der ausgewählten Gruppe.</li>
+				<li>Platzieren Sie den Mauszeiger an der Stelle, an der die Form plaziert werden soll.</li>
+				<li>Sobald die automatische Form hinzugefügt wurde, können Sie ihre Größe, Position und Eigenschaften ändern.<p class="note"><b>Hinweis</b>: Um eine Beschriftung innerhalb der automatischen Form hinzuzufügen, stellen Sie sicher, dass die Form auf der Seite ausgewählt ist, und geben Sie Ihren Text ein. Der auf diese Weise hinzugefügte Text wird Teil der automatischen Form (wenn Sie die Form verschieben oder drehen, wird der Text mit verschoben oder gedreht).</p>
+				</li>
+			</ol>
+			<p>Es ist auch möglich, der automatischen Form eine Beschriftung hinzuzufügen. Weitere Informationen zum Arbeiten mit Untertiteln für Autoformen finden Sie in <a href="../UsageInstructions/AddCaption.htm" onclick="onhyperlinkclick(this)">diesem Artikel</a>.</p>
+            <h3>Verschieben und ändern Sie die Größe von Autoformen</h3>
+            <p id ="shape_resize"><img class="floatleft" alt="Form einer AutoForm ändern" src="../images/reshaping.png" />Um die Größe der automatischen Form zu ändern, ziehen Sie kleine Quadrate <img alt="Quadrat" src="../images/resize_square.png" /> an den Formkanten. Halten Sie die <b>Umschalttaste</b> gedrückt und ziehen Sie eines der Eckensymbole, um die ursprünglichen Proportionen der ausgewählten automatischen Form während der Größenänderung beizubehalten.</p>
+			<p>Wenn Sie einige Formen ändern, z. B. abgebildete Pfeile oder Beschriftungen, ist auch das gelbe rautenförmige Symbol <img alt="Gelber Diamant" src="../images/yellowdiamond.png" /> verfügbar. Hier können Sie einige Aspekte der Form anpassen, z. B. die Länge der Pfeilspitze.</p>
+			<p>Verwenden Sie zum Ändern der Position für die automatische Form das <img alt="Pfeil" src="../images/arrow.png" /> Symbol, das angezeigt wird, nachdem Sie den Mauszeiger über die automatische Form bewegt haben. Ziehen Sie die automatische Form an die gewünschte Position, ohne die Maustaste loszulassen. Wenn Sie die automatische Form verschieben, werden Hilfslinien angezeigt, mit denen Sie das Objekt präzise auf der Seite positionieren können (wenn ein anderer Umbruchstil als Inline ausgewählt ist). Um die automatische Form in Schritten von einem Pixel zu verschieben, halten Sie die <b>Strg-Taste</b> gedrückt und verwenden Sie die Tastenkombinationen. Halten Sie beim Ziehen die <b>Umschalttaste</b> gedrückt, um die automatische Form streng horizontal / vertikal zu verschieben und zu verhindern, dass sie sich senkrecht bewegt.</p>
+			<p>Um die automatische Form zu drehen, bewegen Sie den Mauszeiger über den Drehgriff <img alt="Drehpunkt" src="../images/greencircle.png" /> und ziehen Sie ihn im oder gegen den Uhrzeigersinn. Halten Sie die <b>Umschalttaste</b> gedrückt, um den Drehwinkel auf Schritte von 15 Grad zu beschränken.</p>
+            <p class="note"><b>Hinweis</b>: Die Liste der Tastaturkürzel, die beim Arbeiten mit Objekten verwendet werden können, finden Sie <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithobjects" onclick="onhyperlinkclick(this)">hier</a>.</p>
+            <hr />
+            <h3>Passen Sie die Autoshape-Einstellungen an</h3>
+            <p id ="shape_rightclickmenu">Verwenden Sie das <b>Rechtsklick-Menü</b>, um Autoshapes auszurichten und anzuordnen. Die Menüoptionen sind:</p>
+			<ul>
+                <li><b>Ausschneiden, Kopieren, Einfügen</b> - Standardoptionen, mit denen ein ausgewählter Text / ein ausgewähltes Objekt ausgeschnitten oder kopiert und eine zuvor ausgeschnittene / kopierte Textpassage oder ein Objekt an die aktuelle Zeigerposition eingefügt wird.</li>
+                <li><b>Anordnen</b> wird verwendet, um die ausgewählte automatische Form in den Vordergrund zu bringen, in den Hintergrund zu senden, vorwärts oder rückwärts zu bewegen sowie Formen zu gruppieren oder die Gruppierung aufzuheben, um Operationen mit mehreren von ihnen gleichzeitig auszuführen. Weitere Informationen zum Anordnen von Objekten finden Sie auf <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</li>
+				<li><b>Ausrichten</b> wird verwendet, um die Form links, mittig, rechts, oben, Mitte, unten auszurichten. Weitere Informationen zum Ausrichten von Objekten finden Sie auf <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</li>
+				<li>Der <b>Umbruchstil</b> wird verwendet, um einen Textumbruchstil aus den verfügbaren auszuwählen - inline, quadratisch, eng, durch, oben und unten, vorne, hinten - oder um die <b>Umbruchgrenze</b> zu bearbeiten. Die Option Wrap-Grenze bearbeiten ist nur verfügbar, wenn Sie einen anderen Wrap-Stil als Inline auswählen. Ziehen Sie die Umbruchpunkte, um die Grenze anzupassen. Um einen neuen Umbruchpunkt zu erstellen, klicken Sie auf eine beliebige Stelle auf der roten Linie und ziehen Sie sie an die gewünschte Position. <img alt="Umbruchgrenze bearbeiten" src="../images/wrap_boundary.png" /></li>
+                <li><b>Drehen</b> wird verwendet, um die Form um 90 Grad im oder gegen den Uhrzeigersinn zu drehen sowie um die Form horizontal oder vertikal zu drehen.</li>
+                <li>Mit den <b>Erweiterten Einstellungen der Form</b> wird das Fenster "Form - Erweiterte Einstellungen" geöffnet.</li>
+			</ul>
+			<hr />
+			<p>Einige der Einstellungen für die automatische Form können über die Registerkarte Formeinstellungen in der rechten Seitenleiste geändert werden. Um es zu aktivieren, klicken Sie auf die Form und wählen Sie rechts das Symbol <b>Formeinstellungen</b> <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" />.  Hier können Sie folgende Eigenschaften ändern:</p>
+			<ul>
+			<li  id="shape_fill"><b>Füllen</b> - Verwenden Sie diesen Abschnitt, um die automatische Formfüllung auszuwählen. Sie können folgende Optionen auswählen:<ul>
+				<li><b>Farbfüllung</b> - Wählen Sie diese Option aus, um die Volltonfarbe anzugeben, mit der Sie den Innenraum der ausgewählten Autoform füllen möchten.<p><img alt="Einfarbige Füllung" src="../images/fill_color.png" /></p>
+				<p id="color">Klicken Sie auf das farbige Feld unten und wählen Sie die gewünschte Farbe aus den verfügbaren <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">Farbsätzen</a> aus oder geben Sie eine beliebige Farbe an:</p>
+				</li>
+				<li>
+					<b>Füllung mit Farbverlauf</b> - wählen Sie diese Option, um die Form mit einem sanften Übergang von einer Farbe zu einer anderen zu füllen.<p><img alt="Füllung mit Farbverlauf" src="../images/fill_gradient.png" /></p>
+					<ul>
+						<li><b>Stil</b> - wählen Sie eine der verfügbaren Optionen: <b>Linear</b> (Farben ändern sich linear, d.h. entlang der horizontalen/vertikalen Achse oder diagonal in einem 45-Grad Winkel) oder <b>Radial</b> (Farben ändern sich kreisförmig vom Zentrum zu den Kanten).</li>
+						<li><b>Richtung</b> - wählen Sie eine Vorlage aus dem Menü aus. Wenn der Farbverlauf <b>Linear</b> ausgewählt ist, sind die folgenden Richtungen verfügbar: von oben links nach unten rechts, von oben nach unten, von oben rechts nach unten links, von rechts nach links, von unten rechts nach oben links, von unten nach oben, von unten links nach oben rechts, von links nach rechts. Wenn der Farbverlauf <b>Radial</b> ausgewählt ist, steht nur eine Vorlage zur Verfügung.</li>
+						<li>
+							<b>Farbverlauf</b> - verwenden Sie diese Option, um die Form mit zwei oder mehr verblassenden Farben zu füllen. Passen Sie Ihre Farbverlaufsfüllung ohne Einschränkungen an. Klicken Sie auf die Form, um das rechte <b>Füllungsmenü</b> zu öffnen.
+							<p>Die verfügbare Menüoptionen:</p>
+							<ul>
+								<li>
+									<b>Stil</b> - wählen Sie <b>Linear</b> oder <b>Radial</b> aus:
+									<ul>
+										<li><b>Linear</b> wird verwendet, wenn Ihre Farben von links nach rechts, von oben nach unten oder in einem beliebigen Winkel in eine Richtung fließen sollen. Klicken Sie auf <b>Richtung</b>, um eine voreingestellte Richtung auszuwählen, und klicken Sie auf <b>Winke</b>, um einen genauen Verlaufswinkel einzugeben.</li>
+										<li><b>Radial</b> wird verwendet, um sich von der Mitte zu bewegen, da die Farbe an einem einzelnen Punkt beginnt und nach außen ausstrahlt.</li>
+									</ul>
+								</li>
+								<li>
+									<b>Punkt des Farbverlaufs</b> ist ein bestimmter Punkt für den Verlauf von einer Farbe zur anderen.
+									<ul>
+										<li>Verwenden Sie die Schaltfläche <img alt="Punkt des Farbverlaufs einfügen" src="../images/addgradientpoint.png" /> <b>Punkt des Farbverlaufs einfügen</b> oder den Schieberegler, um einen Punkt des Verlaufs einzufügen. Sie können bis zu 10 Punkte einfügen. Jeder nächste eingefügte Punkt des Farbverlaufs beeinflusst in keiner Weise die aktuelle Darstellung der Farbverlaufsfüllung. Verwenden Sie die Schaltfläche <img alt="Punkt des Farbverlaufs entfernen" src="../images/removegradientpoint.png" /> <b>Punkt des Farbverlaufs entfernen</b>, um den bestimmten Punkt zu löschen.</li>
+										<li>Verwenden Sie den Schieberegler, um die Position des Farbverlaufspunkts zu ändern, oder geben Sie <b>Position</b> in Prozent an, um eine genaue Position zu erhalten.</li>
+										<li>Um eine Farbe auf einen Verlaufspunkt anzuwenden, klicken Sie auf einen Punkt im Schieberegler und dann auf <b>Farbe</b>, um die gewünschte Farbe auszuwählen.</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li><b>Bild oder Textur</b> - Wählen Sie diese Option, um ein Bild oder eine vordefinierte Textur als Formhintergrund zu verwenden.<p><img alt="Bild- oder Texturfüllung" src="../images/fill_picture.png" /></p>
+					<ul>
+						<li>Wenn Sie ein Bild als Hintergrund für die Form verwenden möchten, können Sie ein Bild <b>aus der Datei</b> hinzufügen, indem Sie es auf der Festplatte Ihres Computers auswählen, oder <b>aus der URL</b>, indem Sie die entsprechende URL-Adresse in das geöffnete Fenster einfügen.</li>
+						<li>Wenn Sie eine Textur als Hintergrund für die Form verwenden möchten, öffnen Sie das Menü Von Textur und wählen Sie die gewünschte Texturvoreinstellung aus.<p>Derzeit sind folgende Texturen verfügbar: Leinwand, Karton, dunkler Stoff, Maserung, Granit, graues Papier, Strick, Leder, braunes Papier, Papyrus, Holz.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>Falls das ausgewählte <b>Bild</b> weniger oder mehr Abmessungen als die automatische Form hat, können Sie die Einstellung <b>Dehnen</b> oder <b>Kacheln</b> aus der Dropdown-Liste auswählen.</p>
+						<p>Mit der Option <b>Kacheln</b> können Sie nur einen Teil des größeren Bilds anzeigen, wobei die ursprünglichen Abmessungen beibehalten werden, oder das kleinere Bild wiederholen, wobei die ursprünglichen Abmessungen über der Oberfläche der automatischen Form beibehalten werden, sodass der Raum vollständig ausgefüllt werden kann.</p>
+						<p class="note"><b>Hinweis</b>: Jede ausgewählte <b>Texturvoreinstellung</b> füllt den Raum vollständig aus. Sie können jedoch bei Bedarf den <b>Dehnungseffekt</b> anwenden.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Muster</b> - Wählen Sie diese Option, um die Form mit einem zweifarbigen Design zu füllen, das aus regelmäßig wiederholten Elementen besteht.<p><img alt="Füllungsmuster" src="../images/fill_pattern.png" /></p>
+				    <ul>
+				        <li><b>Muster</b> - Wählen Sie eines der vordefinierten Designs aus dem Menü.</li>
+				        <li><b>Vordergrundfarbe</b> - Klicken Sie auf dieses Farbfeld, um die Farbe der Musterelemente zu ändern.</li>
+				        <li><b>Hintergrundfarbe</b> - Klicken Sie auf dieses Farbfeld, um die Farbe des Musterhintergrunds zu ändern.</li>
+				    </ul>			
+				</li>
+				<li><b>Keine Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+			</ul>
+			</li>
+			</ul>
+			<p><img class="floatleft" alt="Registerkarte Einstellungen AutoFom" src="../images/right_autoshape.png" /></p>
+			<ul style="margin-left: 280px;">			
+			<li><b>Deckkraft</b> - Verwenden Sie diesen Abschnitt, um eine <b>Deckkraftstufe</b> festzulegen, indem Sie den Schieberegler ziehen oder den Prozentwert manuell eingeben. Der Standardwert ist <b>100%</b>. Es entspricht der vollen Deckkraft. Der Wert <b>0%</b> entspricht der vollen Transparenz.</li>
+			<li id="shape_stroke"><b>Strich</b> - Verwenden Sie diesen Abschnitt, um die Breite, Farbe oder den Typ des Strichs für die automatische Formgebung zu ändern.<ul>
+				<li>Um die Strichbreite zu ändern, wählen Sie eine der verfügbaren Optionen aus der Dropdown-Liste <b>Größe</b>. Die verfügbaren Optionen sind: 0,5 pt, 1 pt, 1,5 pt, 2,25 pt, 3 pt, 4,5 pt, 6 pt. Alternativ können Sie die Option Keine Linie auswählen, wenn Sie <b>keinen Strich</b> verwenden möchten.</li>
+				<li>Um die <b>Strichfarbe</b> zu ändern, klicken Sie auf das farbige Feld unten und <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">wählen Sie die gewünschte Farbe aus</a>.</li>
+                <li>Um den <b>Strich-Typ</b> zu ändern, wählen Sie die erforderliche Option aus der entsprechenden Dropdown-Liste aus (standardmäßig wird eine durchgezogene Linie angewendet, Sie können sie in eine der verfügbaren gestrichelten Linien ändern).</li>
+				</ul>
+			</li>
+            <li>Die <b>Drehung</b> wird verwendet, um die Form um 90 Grad im oder gegen den Uhrzeigersinn zu drehen sowie um die Form horizontal oder vertikal zu drehen. Klicken Sie auf eine der Schaltflächen:<ul>
+                    <li><img alt="Gegen den Uhrzeigersinn drehen" src="../images/rotatecounterclockwise.png" /> um die Form um 90 Grad gegen den Uhrzeigersinn zu drehen</li>
+                    <li><img alt="Im Uhrzeigersinn drehen" src="../images/rotateclockwise.png" /> um die Form um 90 Grad im Uhrzeigersinn zu drehen</li>
+                    <li><img alt="Horizontal spiegeln" src="../images/fliplefttoright.png" /> um die Form horizontal zu drehen (von links nach rechts)</li>
+                    <li><img alt="Vertikal spiegeln" src="../images/flipupsidedown.png" /> um die Form vertikal zu drehen (verkehrt herum)</li>
+                </ul>
+            </li>
+			<li><b>Umbruchstil</b> - Verwenden Sie diesen Abschnitt, um einen Textumbruchstil aus den verfügbaren auszuwählen - inline, quadratisch, eng, durch, oben und unten, vorne, hinten (weitere Informationen finden Sie in der Beschreibung der erweiterten Einstellungen unten).</li>
+			<li><b>Autoshape ändern</b> - Verwenden Sie diesen Abschnitt, um die aktuelle Autoshape durch eine andere zu ersetzen, die aus der Dropdown-Liste ausgewählt wurde.</li>
+			<li><b>Schatten anzeigen</b> - Aktivieren Sie diese Option, um die Form mit Schatten anzuzeigen.</li>
+			</ul>
+			<hr />
+			<h3>Passen Sie die erweiterten Einstellungen für die automatische Form an</h3>
+			<p>Um die <b>erweiterten Einstellungen</b> der automatischen Form zu ändern, klicken Sie mit der rechten Maustaste darauf und wählen Sie die Option <b>Erweiterte Einstellungen</b> im Menü oder verwenden Sie den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste. Das Fenster 'Form - Erweiterte Einstellungen' wird geöffnet:</p>
+            <p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties.png" /></p>
+			<p>Die Registerkarte <b>Größe</b> enthält die folgenden Parameter:</p>
+			<ul>
+				<li><b>Breite</b> - Verwenden Sie eine dieser Optionen, um die automatische Formbreite zu ändern.<ul>
+                    <li><b>Absolut</b> - Geben Sie einen genauen Wert an, der in absoluten Einheiten gemessen wird, d. H. <b>Zentimeter</b> / <b>Punkte</b> / <b>Zoll</b> (abhängig von der auf der Registerkarte <b>Datei -> Erweiterte Einstellungen</b> ... angegebenen Option).</li>
+                    <li><b>Relativ</b> - Geben Sie einen Prozentsatz <b>relativ zur</b> <em>linken Randbreite</em>, <em>dem Rand</em> (d. H. Dem Abstand zwischen dem linken und rechten Rand), <em>der Seitenbreite</em> oder der <em>rechten Randbreite</em> an.</li>
+                </ul>
+                </li>
+                <li><b>Höhe</b> - Verwenden Sie eine dieser Optionen, um die Höhe der automatischen Form zu ändern.<ul>
+                        <li><b>Absolut</b> - Geben Sie einen genauen Wert an, der in absoluten Einheiten gemessen wird, d. H. <b>Zentimeter</b> / <b>Punkte</b> / <b>Zoll</b> (abhängig von der auf der Registerkarte <b>Datei -> Erweiterte Einstellungen</b> ... angegebenen Option).</li>
+                        <li><b>Relativ</b> - Geben Sie einen Prozentsatz <b>relativ zum</b> <em>Rand</em> (d. H. Dem Abstand zwischen dem oberen und unteren Rand), der <em>Höhe des unteren Randes</em>, der <em>Seitenhöhe</em> oder der Höhe des <em>oberen Randes</em> an.	</li>
+                    </ul>
+                </li>
+                <li>Wenn die Option <b>Seitenverhältnis sperren</b> aktiviert ist, werden Breite und Höhe zusammen geändert, wobei das ursprüngliche Seitenverhältnis beibehalten wird.</li>
+			</ul>
+            <p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_6.png" /></p>
+            <p>Die Registerkarte <b>Rotation</b> enthält die folgenden Parameter:</p>
+            <ul>
+                <li><b>Winkel</b> - Verwenden Sie diese Option, um die Form um einen genau festgelegten Winkel zu drehen. Geben Sie den erforderlichen Wert in Grad in das Feld ein oder passen Sie ihn mit den Pfeilen rechts an.</li>
+                <li><b>Gekippt</b> - Aktivieren Sie das Kontrollkästchen <b>Horizontal</b>, um die Form horizontal umzudrehen (von links nach rechts), oder aktivieren Sie das Kontrollkästchen <b>Vertikal</b>, um die Form vertikal zu spiegeln (verkehrt herum).</li>
+            </ul>
+            <p id="shape_wrapping"><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_1.png" /></p>
+			<p>Die Registerkarte <b>Textumbruch</b> enthält die folgenden Parameter:</p>
+			<ul>
+				<li><b>Umbruchstil</b> - Verwenden Sie diese Option, um die Position der Form relativ zum Text zu ändern: Sie ist entweder Teil des Textes (falls Sie den Inline-Stil auswählen) oder wird von allen Seiten umgangen (wenn Sie einen auswählen) die anderen Stile).<ul>
+				    <li><p><img alt="Textumbruch - Mit Text verschieben" src="../images/wrappingstyle_inline.png" /> <b>Inline</b> - Die Form wird wie ein Zeichen als Teil des Textes betrachtet. Wenn sich der Text bewegt, bewegt sich auch die Form. In diesem Fall sind die Positionierungsoptionen nicht zugänglich.</p>
+				    <p>Wenn einer der folgenden Stile ausgewählt ist, kann die Form unabhängig vom Text verschoben und genau auf der Seite positioniert werden:</p>
+				    </li>
+				    <li><p><img alt="Textumbruch - Quadrat" src="../images/wrappingstyle_square.png" /> <b>Quadratisch</b> - Der Text umschließt das rechteckige Feld, das die Form begrenzt.</p></li>
+				    <li><p><img alt="Textumbruch - Eng" src="../images/wrappingstyle_tight.png" /> <b>Eng</b> - Der Text umschließt die tatsächlichen Formkanten.</p></li>
+				    <li><p><img alt="Textumbruch - Transparent" src="../images/wrappingstyle_through.png" /> <b>Durch</b> - Der Text wird um die Formkanten gewickelt und füllt den offenen weißen Bereich innerhalb der Form aus. Verwenden Sie die Option <b>Umbruchgrenze bearbeiten</b> im Kontextmenü, damit der Effekt angezeigt wird.</p></li>
+				    <li><p><img alt="Textumbruch - Oben und unten" src="../images/wrappingstyle_topandbottom.png" /> <b>Oben und unten</b> - der Text befindet sich nur über und unter der Form.</p></li>
+				    <li><p><img alt="Textumbruch - Vorne" src="../images/wrappingstyle_infront.png" /> <b>Vorne</b> - die Form überlappt den Text.</p></li>
+				    <li><p><img alt="Textumbruch - Hinten" src="../images/wrappingstyle_behind.png" /> <b>Dahinter</b> - der Text überlappt die Form.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Wenn Sie den quadratischen, engen, durchgehenden oder oberen und unteren Stil auswählen, können Sie einige zusätzliche Parameter festlegen - <b>Abstand zum Text</b> an allen Seiten (oben, unten, links, rechts).</p>
+            <p id="position"><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_2.png" /></p>
+			<p>Die Registerkarte <b>Position</b> ist nur verfügbar, wenn Sie einen anderen Umbruchstil als Inline auswählen. Diese Registerkarte enthält die folgenden Parameter, die je nach ausgewähltem Verpackungsstil variieren:</p>
+			<ul>
+                <li>Im <b>horizontalen</b> Bereich können Sie einen der folgenden drei Positionierungstypen für die automatische Form auswählen:<ul>
+                        <li><b>Ausrichtung</b> (links, Mitte, rechts) <b>relativ zu</b> Zeichen, Spalte, linkem Rand, Rand, Seite oder rechtem Rand,</li>
+                        <li><b>Absolute Position</b>, gemessen in absoluten Einheiten, d. H. <b>Zentimeter</b>/<b>Punkte</b>/<b>Zoll</b> (abhängig von der auf der Registerkarte <b>Datei</b> -&gt; <b>Erweiterte Einstellungen...</b> angegebenen Option), <b>rechts neben</b> Zeichen, Spalte, linkem Rand, Rand, Seite oder rechtem Rand.</li>
+                        <li><b>Relative Position</b> gemessen in Prozent <b>relativ zum</b> linken Rand, Rand, Seite oder rechten Rand.</li>
+                    </ul>
+                </li>
+                <li>Im <b>vertikalen</b> Bereich können Sie einen der folgenden drei Positionierungstypen für die automatische Form auswählen:<ul>
+                        <li><b>Ausrichtung</b> (oben, Mitte, unten) <b>relativ zu</b> Linie, Rand, unterem Rand, Absatz, Seite oder oberem Rand,</li>
+                        <li><b>Absolute Position</b> gemessen in absoluten Einheiten, d. H. <b>Zentimeter</b> / <b>Punkte</b> / <b>Zoll</b> (abhängig von der auf der Registerkarte <b>Datei</b> -&gt; <b>Erweiterte Einstellungen...</b> angegebenen Option), <b>unter</b> Linie, Rand, unterem Rand, Absatz, Seite oder oberem Rand,</li>
+                        <li><b>Relative Position</b> gemessen in Prozent <b>relativ zum</b> Rand, unteren Rand, Seite oder oberen Rand.</li>
+                    </ul>
+                </li>
+                <li><b>Objekt mit Text verschieben</b> steuert, ob sich die automatische Form so bewegt, wie sich der Text bewegt, an dem sie verankert ist.</li>
+				<li><b>Überlappungssteuerung zulassen</b> steuert, ob sich zwei automatische Formen überlappen oder nicht, wenn Sie sie auf der Seite nebeneinander ziehen</li>
+			</ul>
+			<p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_3.png" /></p>
+			<p>Die Registerkarte <b>Gewichte und Pfeile</b> enthält die folgenden Parameter:</p>
+			<ul>
+				<li><b>Linienstil</b> - In dieser Optionsgruppe können die folgenden Parameter angegeben werden:<ul>
+				<li><b>Kappentyp</b> - Mit dieser Option können Sie den Stil für das Ende der Linie festlegen. Daher kann er nur auf Formen mit offenem Umriss angewendet werden, z. B. Linien, Polylinien usw.:<ul>
+					<li><b>Flach</b> - Die Endpunkte sind flach.</li>
+					<li><b>Runden</b> - Die Endpunkte werden gerundet.</li>
+					<li><b>Quadrat</b> - Die Endpunkte sind quadratisch.</li>
+					</ul>
+				</li>
+				<li><b>Verbindungstyp</b> - Mit dieser Option können Sie den Stil für den Schnittpunkt zweier Linien festlegen. Dies kann sich beispielsweise auf eine Polylinie oder die Ecken des Dreiecks oder Rechteckumrisses auswirken:<ul>
+					<li><b>Rund</b> - die Ecke wird abgerundet.</li>
+					<li><b>Abschrägung</b> - die Ecke wird eckig abgeschnitten.</li>
+					<li><b>Gehrung</b> - die Ecke wird spitz. Es passt gut zu Formen mit scharfen Winkeln.</li>
+					</ul>
+					<p class="note"><b>Hinweis</b>: Der Effekt macht sich stärker bemerkbar, wenn Sie eine große Umrissbreite verwenden.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Pfeile</b> - Diese Optionsgruppe ist verfügbar, wenn eine Form aus der Formgruppe <b>Linien</b> ausgewählt ist. Sie können den <b>Pfeil Start-</b> und <b>Endstil</b> und <b>-größe</b> festlegen, indem Sie die entsprechende Option aus den Dropdown-Listen auswählen.</li>
+			</ul>
+            <p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_4.png" /></p>
+			<p>Auf der Registerkarte <b>Textauffüllung</b> können Sie die inneren Ränder der <b>oberen, unteren, linken</b> und <b>rechten</b> Form der automatischen Form ändern (d. H. Den Abstand zwischen dem Text innerhalb der Form und den Rahmen der automatischen Form).</p>
+            <p class="note"><b>Hinweis</b>: Diese Registerkarte ist nur verfügbar, wenn Text innerhalb der automatischen Form hinzugefügt wird. Andernfalls ist die Registerkarte deaktiviert.</p>
+            <p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_5.png" /></p>
+            <p>Auf der Registerkarte <b>Alternativer Text</b> können Sie einen <b>Titel</b> und eine <b>Beschreibung</b> angeben, die Personen mit Seh- oder kognitiven Beeinträchtigungen vorgelesen werden, damit sie besser verstehen, welche Informationen in der Form enthalten sind.</p>
+		</div>
+	</body>
+</html>

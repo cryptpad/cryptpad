@@ -8,7 +8,40 @@ define([
 ], function (nThen, ApiConfig, RequireConfig, Messages, $) {
     var common = {};
 
+    var embeddableApps = [
+        'code',
+        'form',
+        'kanban',
+        'pad',
+        'slide',
+        'whiteboard',
+    ].map(function (x) {
+        return `/${x}/`;
+    });
+
     common.initIframe = function (waitFor, isRt, pathname) {
+        if (window.top !== window) {
+            // this is triggered if the intance's HTTP headers have permitted the app
+            // to be loaded within an iframe, but the instance admin has not explicitly
+            // enabled embedding via the admin panel. Their checkup page should tell them
+            // how to correct this (Access-Control-Allow-Origin and CSP frame-ancestors).
+            if (!ApiConfig.enableEmbedding) {
+                return void window.alert(Messages.error_embeddingDisabled);
+            }
+            // even where embedding is not forbidden it should still be limited
+            // to apps that are explicitly permitted
+            if (!embeddableApps.includes(window.location.pathname)) {
+                return void window.alert(Messages.error_embeddingDisabledSpecific);
+            }
+        }
+        // this is triggered in two situations:
+        // 1. a user has somehow loaded the page via an unexpected origin
+        // 2. the admin has configured their httpUnsafeOrigin incorrectly
+        // in case #2 the checkup page will advise them on correct configuration
+        if (window.location.origin !== ApiConfig.httpUnsafeOrigin) {
+            return void window.alert(Messages._getKey('error_incorrectAccess', [ApiConfig.httpUnsafeOrigin]));
+        }
+
         var requireConfig = RequireConfig();
         var lang = Messages._languageUsed;
         var themeKey = 'CRYPTPAD_STORE|colortheme';
@@ -80,7 +113,7 @@ define([
             nThen: nThen
         };
         var AppConfig;
-        var Test;
+        //var Test;
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
@@ -113,11 +146,11 @@ define([
                 '/common/outer/local-store.js',
                 '/common/outer/cache-store.js',
                 '/customize/application_config.js',
-                '/common/test.js',
+                //'/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
+            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -139,7 +172,7 @@ define([
                 Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
-                Test = _Test;
+                //Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -170,7 +203,7 @@ define([
                 var iframe = $('#sbox-iframe')[0].contentWindow;
                 var postMsg = function (data) {
                     try {
-                        iframe.postMessage(data, '*');
+                        iframe.postMessage(data, ApiConfig.httpSafeOrigin || window.location.origin);
                     } catch (err) {
                         console.error(err, data);
                         if (data && data.error && data.error instanceof Error) {
@@ -641,6 +674,7 @@ define([
                         prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isTop: window.top === window,
                         canEdit: hashes && hashes.editHash,
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
@@ -715,7 +749,7 @@ define([
                 sframeChan.event('EV_LOGOUT');
             });
 
-            Test.registerOuter(sframeChan);
+            //Test.registerOuter(sframeChan);
 
             Cryptpad.onNewVersionReconnect.reg(function () {
                 sframeChan.event("EV_NEW_VERSION");
@@ -838,14 +872,19 @@ define([
                     }
                 });
 
-                sframeChan.on('EV_OPEN_URL', function (url) {
-                    if (url) {
-                        var a = window.open(url);
-                        if (!a) {
-                            sframeChan.event('EV_POPUP_BLOCKED');
-                        }
+                var openURL = function (url) {
+                    if (!url) { return; }
+                    var a = window.open(url);
+                    if (!a) {
+                        sframeChan.event('EV_POPUP_BLOCKED');
                     }
+                };
+
+                sframeChan.on('EV_OPEN_URL_DIRECTLY', function () {
+                    var url = currentPad.href;
+                    openURL(url);
                 });
+                sframeChan.on('EV_OPEN_URL', openURL);
 
                 sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
                     if (url) {
@@ -1181,7 +1220,8 @@ define([
                     title: currentTitle,
                     channel: secret.channel,
                     path: initialPathInDrive, // Where to store the pad if we don't have it in our drive
-                    forceSave: true
+                    forceSave: true,
+                    forceOwnDrive: obj && obj.forceOwnDrive
                 };
                 setPadTitle(data, cb);
             });
@@ -1295,6 +1335,7 @@ define([
             });
 
             sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
+                data.teamId = Cryptpad.initialTeam;
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
@@ -1913,6 +1954,12 @@ define([
                 rtConfig = rtConfig || {};
                 rtStarted = true;
 
+                // Remove the outer placeholder once iframe overwrites it for sure
+                var placeholder = document.querySelector('#placeholder');
+                if (placeholder && typeof(placeholder.remove) === 'function') {
+                    placeholder.remove();
+                }
+
                 var replaceHash = function (hash) {
                     // The pad has just been created but is not stored yet. We'll switch
                     // to hidden hash once the pad is stored
@@ -2048,6 +2095,14 @@ define([
                         }, cryptputCfg);
                         return;
                     }
+                    if (Cryptpad.fromFileData && isOO && Cryptpad.fromFileData.href) {
+                        var d = Cryptpad.fromFileData;
+                        var _p = Utils.Hash.parsePadUrl(d.href);
+                        if (_p.type === currentPad.app) {
+                            data.template = d.href;
+                            templatePw = d.password;
+                        }
+                    }
                     if (data.template) {
                         // Start OO with a template...
                         // Cryptget and give href, password and content to inner
@@ -2129,8 +2184,8 @@ define([
 
             Utils.Feedback.reportAppUsage();
 
-            if (!realtime && !Test.testing) { return; }
-            if (isNewFile && cfg.useCreationScreen && !Test.testing) { return; }
+            if (!realtime /*&& !Test.testing*/) { return; }
+            if (isNewFile && cfg.useCreationScreen /* && !Test.testing */) { return; }
             if (burnAfterReading) { return; }
             //if (isNewFile && Utils.LocalStore.isLoggedIn()
             //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Add bookmarks</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Bookmarks allow to quickly jump to a certain position in the current document or add a link to this location within the document." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Add bookmarks</h1>
+            <p>Bookmarks allow quickly access a certain part of the text or add a link to its location in the document.</p>
+			<p>To add a bookmark in the <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>:</p>
+			<ol>
+                <li>specify the place where you want the bookmark to be added:
+                <ul>
+                    <li>put the mouse cursor at the beginning of the necessary text passage, or</li>
+                    <li>select the necessary text passage,</li>
+                </ul>
+                </li>
+                <li>switch to the <b>References</b> tab of the top toolbar,</li>
+                <li>click the <img alt="Bookmark icon" src="../images/bookmark.png" /> <b>Bookmark</b> icon on the top toolbar,</li>
+				<li>in the <b>Bookmarks</b> window, enter the <b>Bookmark name</b> and click the <b>Add</b> button - a bookmark will be added to the bookmark list displayed below,
+                    <p class="note"><b>Note</b>: the bookmark name should begin with a letter, but it can also contain numbers. The bookmark name cannot contain spaces, but can include the underscore character "_".</p>
+                    <p><img alt="Bookmarks window" src="../images/bookmark_window.png" /></p>
+                </li>
+			</ol>
+            <p>To access one of the added bookmarks within in the text:</p>
+            <ol>
+                <li>click the <img alt="Bookmark icon" src="../images/bookmark.png" /> <b>Bookmark</b> icon on the <b>References</b> tab of the top toolbar,</li>
+                <li>in the <b>Bookmarks</b> window, select the bookmark you want to access. To easily find the required bookmark in the list, you can sort the list of bookmarks by <b>Name</b> or by <b>Location</b> in the text,</li>
+                <li>check the <b>Hidden bookmarks</b> option to display hidden bookmarks in the list (i.e. the bookmarks automatically created by the program when adding references to a certain part of the document. For example, if you create a hyperlink to a certain heading within the document, the document editor automatically creates a hidden bookmark to the target of this link).</li>
+                <li>click the <b>Go to</b> button - the cursor will be positioned where the selected bookmark was added to the text, or the corresponding text passage will be selected,</li>
+                <li>
+                    click the <b>Get Link</b> button - a new window will open where you can press the <b>Copy</b> button to copy the link to the file which specifyes the bookmark location in the document. When you paste this link in a browser address bar and press Enter, the document will be opened where the selected bookmark was added.
+                    <p><img alt="Bookmarks window" src="../images/bookmark_window2.png" /></p>
+                    <p class="note"><b>Note</b>: if you want to share this link with other users, you'll need to provide them with the corresponding access rights using the <b>Sharing</b> option on the <b>Collaboration</b> tab.</p>
+                </li>
+                <li>click the <b>Close</b> button to close the window.</li>
+            </ol>
+            <p>To delete a bookmark, select it in the bookmark list and click the <b>Delete</b> button.</p>
+            <p>To find out how to use bookmarks when creating links please refer to the <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">Add hyperlinks</a> section.</p>
+
+		</div>
+	</body>
+</html>

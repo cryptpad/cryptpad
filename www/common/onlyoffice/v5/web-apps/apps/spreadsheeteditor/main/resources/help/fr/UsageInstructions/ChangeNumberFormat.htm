@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Modifier le format de nombre</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Modifier le format de nombre pour afficher les nombres d'une manière convenable" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Modifier le format de nombre</h1>
+            <h3>Appliquer un format de nombre</h3>
+			<p>Dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, vous pouvez facilement modifier le format de nombre, c'est à dire l'apparence d'un nombre saisi dans votre feuille de calcul. Pour ce faire, </p>
+			<ol>
+				<li>sélectionnez une cellule, une plage de cellules avec la souris ou la feuille de calcul entière en utilisant la combinaison de touches <b>Ctrl+A</b>,
+                <p class="note"><b>Remarque</b>: vous pouvez également sélectionner plusieurs cellules ou plages non adjacentes en maintenant la touche <b>Ctrl</b> enfoncée tout en sélectionnant les cellules/plages à l'aide de la souris.</p>
+                </li>
+				<li>faites dérouler la liste <b>Format de nombre</b> <img alt="Bouton Format général" src="../images/generalformat.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ou cliquez avec le bouton droit sur les cellules sélectionnées et utilisez l'option <b>Format de nombre</b> du menu contextuel. Sélectionnez le format de nombre approprié:
+					<ul>
+						<li><b>Général</b> sert à afficher les données saisies en tant que nombres standards de façon la plus compacte, sans aucun signe supplémentaire,</li>
+						<li><b>Nombre </b>sert à afficher les nombres avec 0-30 chiffres après le point décimal où un séparateur de milliers ajouté entre chaque groupe de trois chiffres avant le point décimal,</li>
+						<!--<li><b>Integer</b> - is used to display the numbers as an integer,</li>-->
+						<li><b>Scientifique</b> (exponentiel) sert à exprimer le nombre sous la forme d.dddE+ddd ou d.dddE-ddd où chaque d c'est un chiffre de 0 à 9,</li>
+                        <li><b>Comptabilité</b> - est utilisé pour afficher les valeurs monétaires avec le symbole monétaire par défaut et deux décimales. Pour appliquer un autre symbole monétaire ou nombre de décimales, suivez <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">les instructions ci-dessous</a>. Contrairement au format <b>Devise</b>, le format <b>Comptabilité</b> aligne les symboles monétaires sur le côté gauche de la cellule, représente les valeurs nulles sous forme de tirets et affiche les valeurs négatives entre parenthèses.
+                            <p><img alt="Formats numériques Comptabilité et Devise" src="../images/accounting_currency.png" /></p>
+                            <p class="note"><b>Remarque</b>: pour appliquer rapidement le format <b>Comptabilité</b> aux données sélectionnées, vous pouvez également cliquer sur l'icône <b>Style comptable</b> <img alt="L'icône Style comptable" src="../images/accountingstyle.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionner le symbole de devise requis parmi les symboles monétaires suivants: <b>$</b> Dollar, <b>&euro;</b> Euro, <b>&amp;pound</b> Livre Sterling, <b>₽</b> Rouble, <b>&amp;yen</b> Yen, <b>kn</b> Kuna Croate.</p>
+                        </li>
+                        <li><b>Monétaire</b> - est utilisé pour afficher les valeurs monétaires avec le symbole monétaire par défaut et deux décimales. Pour appliquer un autre symbole monétaire ou nombre de décimales, suivez <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">les instructions ci-dessous</a>. Contrairement au format <b>Comptabilité</b>, le format <b>Monétaire</b> place un symbole de devise directement avant le premier chiffre et affiche des valeurs négatives avec le signe négatif (-).</li>
+						<li>Date - est utilisé pour afficher les dates<!--. You can select one of the following date formats: <em>MM-dd-yy</em>, <em>MM-dd-yyyy</em>, <em>dd-MM-yy</em>, <em>dd-MM-yyyy</em>, <em>dd-MMM-yyyy</em>, <em>dd-MMM</em>, <em>MMM-yy</em>-->,</li>
+						<li>Heure - est utilisé pour afficher les heures<!--. You can select one of the following time formats: <em>HH:mm</em>, <em>HH:MM:ss</em>, <em>hh:mm tt</em>, <em>hh:mm:ss tt</em>, <em>[h]:mm:ss</em>-->,</li>
+						<li><b>Pourcentage</b> sert à afficher les données en pourcentage avec un symbole de pourcentage <b>%</b>,
+							<p class="note"><b>Remarque</b>: pour ajouter rapidement un symbole de pourcentage à vos données vous pouvez également utiliser l'icône <b>Pour cent style</b> <img alt="L'icône Pour cent style" src="../images/percentstyle.png" /> située sous l'onglet <b>Accueil </b>sur la barre d'outils supérieure.</p>
+						</li>
+                        <li><b>Fraction</b>  sert à afficher les nombres comme des fractions usuelles plutôt que des nombres décimaux.</li>
+						<li><b>Texte</b> sert à afficher les valeurs numériques qui sont traitées comme du texte simple avec la plus grande précision disponible.</li>
+                        <li><b>Autres formats</b> - est utilisé pour créer un <b>format de nombre personnalisé</b> ou personnaliser les formats de nombres déjà appliqués en spécifiant des paramètres supplémentaires (voir la description ci-dessous).</li>
+                        <li><b>Personnalisé</b> sert à créer le format personnalisé:
+                        <ul>
+                            <li>sélectionnez une cellule, une plage de cellules ou la feuille de calcul entière contenant les valeurs à mettre en forme,</li>
+                            <li>sélectionnez l'option <b>Personnalisé</b> dans le menu <b>Autre formats</b>:</li>
+                            <li>saisissez les codes appropriés et vérifiez le résultat dans la zone d'aperçu ou choisissez un modèle et/ou combinez-les. Si vous voulez créer un format d'après un modèle, appliquez donc un format existant et modifiez-le selon votre préférence.</li>
+                            <li>cliquez sur <b>OK</b>.</li>
+                        </ul>
+                        </li>
+					</ul>
+				</li>
+				<li>modifiez le nombre de décimales, si nécessaire:
+				    <ul>
+				        <li>utilisez l'icône <b>Ajouter une décimale</b> <img alt="L'icône Ajouter une décimale" src="../images/increasedecimal.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure pour afficher plus de chiffres après la virgule,</li>
+				        <li>utilisez l'icône <b>Réduire les décimales</b> <img alt="L'icône réduire les décimales" src="../images/decreasedecimal.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure pour afficher moins de chiffres après la virgule.</li>
+				    </ul>
+				 </li>
+			</ol>
+            <p class="note">
+                <b>Remarque</b>: pour modifier le format de nombre, vous pouvez aussi se servir  <a href="../HelpfulHints/KeyboardShortcuts.htm#dataformats" onclick="onhyperlinkclick(this)">des raccourcis clavier</a>.
+            </p>
+            <h3 id="customize">Personnaliser un format de nombre</h3>
+            <p>Vous pouvez personnaliser le format numérique appliqué de la manière suivante:</p>
+			<ol>
+                <li>sélectionnez les cellules pour lesquelles vous souhaitez personnaliser le format de nombre,</li>
+                <li>faites dérouler la liste <b>Format de nombre</b> <img alt="Bouton Format général" src="../images/generalformat.png" /> sous l'onglet <b>Accueil</b> de la barre d'outils supérieure ou cliquez avec le bouton droit sur les cellules sélectionnées et utilisez l'option <b>Format de nombre</b> du menu contextuel.</li>
+                <li>sélectionnez l'option <b>Autres formats</b>,</li>
+                <li>Dans la fenêtre <b>Format de nombre</b> qui s'ouvre, ajustez les paramètres disponibles. Les options diffèrent en fonction du format numérique appliqué aux cellules sélectionnées. Vous pouvez utiliser la liste <b>Catégorie </b>pour modifier le format numérique.
+                <p><img alt="Fenêtre de format de nombre" src="../images/numberformatwindow.png" /></p>  
+                <ul>
+                    <li>Pour le format <b>Nombre</b>, vous pouvez définir le nombre de <b>Décimales</b>, spécifier si vous souhaitez <b>Utiliser le séparateur de milliers</b> ou non et choisir l'un des <b>Formats</b> disponibles pour l'affichage des valeurs négatives.</li>
+                    <li>Pour les formats <b>Scientifique</b> et <b>Pourcentage</b>, vous pouvez définir le nombre de <b>Décimales</b>.</li>
+                    <li>Pour les formats <b>Comptabilité</b> et <b>Monétaire</b>, vous pouvez définir le nombre de <b>Décimales</b>, choisir l'un des <b>Symboles</b> de devise disponibles et l'un des <b>Formats</b> disponibles pour afficher les valeurs négatives.</li>
+                    <li>Pour le format<b> Date</b>, vous pouvez sélectionner l'un des formats de date disponibles: <em>4/15</em>, <em>04/15</em>, <em>4/15/06</em>, <em>04/15/06</em>, <em>4/15/2006</em>, <em>04/15/2006</em>, <em>4/15/06 0:00</em>, <em>04/15/06 0:00</em>, <em>4/15/06 12:00 AM</em>, <em>A</em>, <em>Avril15 2006</em>, <em>15-Avr</em>, <em>15-Avr-06</em>, <em>Avr-06</em>, <em>Avril-06</em>, <em>A-06</em>, <em>06-Avr</em>, <em>15-Avr-2006</em>, <em>2006-Avr-15</em>, <em>06-Avr-15</em>, &nbsp;<em>06-4-15</em>, <em>06-04-15</em>, <em>2006-4-15</em>, <em>2006-04-15</em>, <em>15/Avr</em>, <em>15/Avr/06</em>, <em>Avr/06</em>, <em>Avril/06</em>, <em>A/06</em>, <em>06/Avr</em>, <em>15/Avr/2006</em>, <em>2006/Avr/15</em>, <em>06/Avr/15</em>, <em>06/4/15</em>, <em>06/04/15</em>, <em>2006/4/15</em>, <em>2006/04/15</em>, <em>15 Avr</em>, <em>15 Avr 06</em>, <em>Avr 06</em>, <em>Avril 06</em>, <em>A 06</em>, <em>06 Avr</em>, <em>15 Avr 2006</em>, <em>2006 Avr 15</em>, <em>06 Avr 15</em>, <em>06 4 15</em>, <em>06 04 15</em>, <em>2006 4 15</em>, <em>2006 04 15</em>.</li>
+                    <li>Pour le format <b>Heure</b>, vous pouvez sélectionner l'un des formats d'heure disponibles: <I>12:48:58 PM, 12:48, 12:48 PM, 12:48:58, 48:57.6, 36:48:58.</I></li>
+                    <li>Pour le format<b> Fraction</b>, vous pouvez sélectionner l'un des formats disponibles: <I>D'un chiffre (1/3), De deux chiffres (12/25), De trois chiffres (131/135), Demis (1/2), Quarts (2/4), Huitièmes (4/8), Seizièmes (8/16), Dixièmes (5/10), Centièmes (50/100).</I></li>
+                </ul>
+                </li>
+                <li>Cliquez sur le bouton <b>OK</b> pour appliquer les modifications.</li>
+            </ol>
+		</div>
+	</body>
+</html>

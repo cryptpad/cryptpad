@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>BEREICH.VERSCHIEBEN-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>BEREICH.VERSCHIEBEN-Funktion</h1>
+			<p>Die Funktion <b>BEREICH.VERSCHIEBEN</b> gehört zur Gruppe der Nachschlage- und Verweisfunktionen. Sie gibt einen Verweis auf eine Zelle zurück, die von der angegebenen Zelle (oder der Zelle oben links im Zellenbereich) um eine bestimmte Anzahl von Zeilen und Spalten verschoben wurde.</p>
+			<p>Formelsyntax der Funktion <b>BEREICH.VERSCHIEBEN</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>BEREICH.VERSCHIEBEN(Bezug;Zeilen;Spalten;[Höhe];[Breite])</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><em><b>Bezug</b></em> ist der Bezug, der als Ausgangspunkt des Verschiebevorgangs dienen soll.</p>
+			<p style="text-indent: 50px;"><em><b>Zeilen</b></em> ist die Anzahl der Zeilen, um die Sie die obere linke Eckzelle des Bereichs nach oben oder nach unten verschieben möchten. Bei positiven Zahlen wird das Ergebnis unter die ursprüngliche Zelle verschoben. Bei negativen Zahlen wird das Ergebnis über die ursprüngliche Zelle verschoben.</p>
+			<p style="text-indent: 50px;"><em><b>Spalten</b></em> ist die Anzahl der Spalten, um die Sie die obere linke Eckzelle des Bereichs nach links oder nach rechts verschieben möchten. Bei positiven Zahlen wird das Ergebnis von der ursprünglichen Zelle aus nach rechts verschoben. Bei negativen Zahlen wird das Ergebnis von der ursprünglichen Zelle aus nach links verschoben.</p>
+            <p style="text-indent: 50px;"><em><b>Höhe</b></em> ist die Höhe des neuen Bezugs in Zeilen. Hierfür muss ein positiver Wert angegeben werden. Dieses Argument ist optional. Fehlt das Argument nimmt die Funktion an, dass der neue Bezug dieselbe Höhe hat wie Bezug.</p>
+            <p style="text-indent: 50px;"><em><b>Breite</b></em> ist die Breite des neuen Bezugs in Spalten. Hierfür muss ein positiver Wert angegeben werden. Dieses Argument ist optional. Fehlt das Argument nimmt die Funktion an, dass der neue Bezug dieselbe Breite hat wie Bezug.</p>
+			<p>Anwendung der Funktion <b>BEREICH.VERSCHIEBEN</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Nachschlage- und Verweisfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>BEREICH.VERSCHIEBEN</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="BEREICH.VERSCHIEBEN-Funktion" src="../images/offset.png" /></p>
+		</div>
+	</body>
+</html>

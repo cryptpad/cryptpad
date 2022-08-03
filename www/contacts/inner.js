@@ -55,17 +55,8 @@ define([
         APP.toolbar.$rightside.hide();
 
         MessengerUI.create($(appElement), common);
+        common.setTabTitle(Messages.contacts);
 
         UI.removeLoadingScreen();
-
-/*
-        sFrameChan.query('Q_HEY_BUDDY', null, function (err, data) {
-            if (!data) { return; }
-            if (data.error) {
-                UI.warn(data.error);
-            } else {
-                UI.log(data.response);
-            }
-        });*/
     });
 });

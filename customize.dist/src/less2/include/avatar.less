@@ -1,5 +1,6 @@
 @import (reference) "./tools.less";
 @import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
 .avatar_vars(
     @width: 30px
 ) {
@@ -24,6 +25,7 @@
         font-size: 16px;
         display: flex;
         align-items: center;
+        border-radius: @variables_radius;
         .cp-avatar-default, media-tag {
             display: inline-flex;
 
@@ -32,6 +34,8 @@
 
             height: @avatar-width;
             height: var(--avatar-width);
+            border-radius: @variables_radius;
+
 
             justify-content: center;
             align-items: center;

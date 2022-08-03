@@ -2,6 +2,19 @@ define([
     'cm/lib/codemirror',
     'cm/addon/mode/simple'
 ], function (CodeMirror) {
+
+    // Hack to avoid breaking a document with ```__proto__ codeblock
+    CodeMirror.defineSimpleMode("__proto__", {
+        start: [ {regex: /.*/, token: "comment"} ],
+        env: [ {regex: /.*/, token: "comment"} ]
+    });
+    CodeMirror.registerHelper("fold", "__proto__", function(cm, start) {
+        return {
+            from: CodeMirror.Pos(0,0),
+            to: CodeMirror.Pos(0,0)
+        };
+    });
+
     CodeMirror.__mode = 'orgmode';
 
     var isEmpty = function (el, idx) {

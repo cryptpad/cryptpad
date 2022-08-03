@@ -14,16 +14,16 @@ var simpleTags = [
     // FIXME register_notes
     '<ul class="cp-notes-list">',
     '</ul>',
-    '<li>',
-    '</li>',
     '<span class="red">',
     '</span>',
 ];
 
-['a', 'b', 'em', 'p', 'i'].forEach(function (tag) {
+['a', 'b', 'em',/* 'p',*/ 'i', 'code', 'li',].forEach(function (tag) {
     simpleTags.push('<' + tag + '>');
     simpleTags.push('</' + tag + '>');
 });
+
+var found_tags = {};
 
 // these keys are known to be problematic
 var KNOWN_ISSUES = [ // FIXME
@@ -36,7 +36,7 @@ var special_rules = {};
 
 special_rules.en = function (s) {
     // Prefer the american -ize suffix for verbs rather than -ise
-    return /[^w]ise/.test(s);
+    return /[^w]ise(\s|$)/.test(s);
 };
 
 special_rules.fr = function (s) {
@@ -69,7 +69,10 @@ var processLang = function (map, lang, primary) {
         var usesHTML;
 
         s.replace(/<[\s\S]*?>/g, function (html) {
-            if (simpleTags.indexOf(html) !== -1) { return; }
+            if (simpleTags.includes(html)) {
+                found_tags[html] = 1;
+                return;
+            }
             announce();
             usesHTML = true;
             if (!primary) {
@@ -78,8 +81,8 @@ var processLang = function (map, lang, primary) {
         });
 
         var weirdCapitalization;
-        s.replace(/cryptpad(\.fr)*/gi, function (brand) {
-            if (['CryptPad', 'cryptpad.fr'].includes(brand)) { return; }
+        s.replace(/cryptpad(\.fr|\.org)*/gi, function (brand) {
+            if (['CryptPad', 'cryptpad.fr', 'cryptpad.org'].includes(brand)) { return; }
             weirdCapitalization = true;
         });
 
@@ -99,8 +102,10 @@ processLang(EN, 'en', true);
   'ar',
   //'bn_BD',
   'ca',
+  'cs',
   'de',
   'es',
+  'eu',
   'fi',
   'fr',
   'hi',
@@ -115,6 +120,7 @@ processLang(EN, 'en', true);
   'sv',
   //'te',
   'tr',
+  'uk',
   'zh',
 ].forEach(function (lang) {
     try {
@@ -124,4 +130,9 @@ processLang(EN, 'en', true);
     } catch (err) {
         console.error(err);
     }
+});
+
+simpleTags.forEach(html => {
+    if (found_tags[html]) { return; }
+    console.log(`html exemption '${html}' is unnecessary.`);
 });
