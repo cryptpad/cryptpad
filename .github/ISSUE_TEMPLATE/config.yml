@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Installation, configuration issues
+  - name: Installation, configuration issue
     url: https://forum.cryptpad.org
     about: Please use the appropriate forum category for questions or assistance
-  - name: Bug reports
+  - name: Bug report
     url: https://forum.cryptpad.org
     about: Please use the appropriate forum category to report bugs
-  - name: Features requests
+  - name: Feature request
     url: https://forum.cryptpad.org
     about: Please use the appropriate forum category for features requests
