@@ -194,6 +194,8 @@ define([
 
         $div.addClass('cp-admin-nopassword');
 
+        var isHex = s => !/[^0-9a-f]/.test(s);
+
         var parsed;
         var $input = $(input).on('keypress change paste', function () {
             setTimeout(function () {
@@ -204,8 +206,13 @@ define([
                     return;
                 }
 
-                parsed = Hash.isValidHref(val);
-                $pwInput.val('');
+                // accept raw channel and file IDs
+                if (isHex(val) && [32, 48].includes(val.length)) {
+                    parsed = Hash.isValidHref(`/pad/#/3/pad/edit/${val}/`);
+                } else {
+                    parsed = Hash.isValidHref(val);
+                    $pwInput.val('');
+                }
 
                 if (!parsed || !parsed.hashData) {
                     $div.toggleClass('cp-admin-nopassword', true);
