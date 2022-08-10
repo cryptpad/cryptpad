@@ -312,6 +312,8 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         return form;
     };
 
+    Messages.ui_copyLinkToClipboard = "Copy link to clipboard"; // XXX
+
     var makeTicket = function (ctx, $div, content, onHide) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -332,7 +334,10 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         var url;
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn.fa.fa-clipboard');
+            url = h('button.btn.fa.fa-clipboard', {
+                title: Messages.ui_copyLinkToClipboard,
+                // XXX other accessibility attributes?
+            });
             $(url).click(function (e) {
                 e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
