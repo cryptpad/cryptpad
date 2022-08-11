@@ -67,10 +67,18 @@ define([
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
-            'cp-admin-archive',
-            'cp-admin-unarchive',
-            'cp-admin-getquota',
+
+            //'cp-admin-archive', // XXX
+            //'cp-admin-unarchive', // XXX
+
+            //'cp-admin-getquota', // XXX
             'cp-admin-getlimits',
+        ],
+        'database': [
+            //'cp-admin-metadata-controls',
+            'cp-admin-account-metadata',
+            'cp-admin-document-metadata',
+            'cp-admin-block-metadata',
         ],
         'stats': [ // Msg.admin_cat_stats
             'cp-admin-refresh-stats',
@@ -158,6 +166,9 @@ define([
         return $div;
     };
 
+    var isHex = s => !/[^0-9a-f]/.test(s);
+
+/*
     var archiveForm = function (archive, $div, $button) {
         var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
         var input = h('input#cp-admin-archive', {
@@ -193,8 +204,6 @@ define([
         ]));
 
         $div.addClass('cp-admin-nopassword');
-
-        var isHex = s => !/[^0-9a-f]/.test(s);
 
         var parsed;
         var $input = $(input).on('keypress change paste', function () {
@@ -286,7 +295,9 @@ define([
             });
         });
     };
+*/
 
+/*
     create['archive'] = function () {
         var key = 'archive';
         var $div = makeBlock(key, true); // Msg.admin_archiveHint, .admin_archiveTitle, .admin_archiveButton
@@ -294,11 +305,941 @@ define([
         archiveForm(true, $div, $button);
         return $div;
     };
+*/
+/*
     create['unarchive'] = function () {
         var key = 'unarchive';
         var $div = makeBlock(key, true); // Msg.admin_unarchiveHint, .admin_unarchiveTitle, .admin_unarchiveButton
         var $button = $div.find('button');
         archiveForm(false, $div, $button);
+        return $div;
+    };
+*/
+
+    Messages.admin_metadataControlsHint = 'admin_metadataControlsHint'; // XXX
+    Messages.admin_metadataControlsTitle = 'admin_metadataControlsTitle'; // XXX
+    Messages.admin_metadataControlsButton = 'admin_metadataControlsTitle'; // XXX
+
+    create['metadata-controls'] = function () { // XXX
+        var key = 'metadata-controls';
+        var $div = makeBlock(key, true);
+
+        return $div;
+    };
+
+    Messages.admin_accountMetadataTitle = 'Account information'; // XXX
+    Messages.admin_accountMetadataHint = `Enter a user's public key to fetch data about their account.`; // XXX
+    Messages.admin_accountMetadataButton = 'Generate report'; // XXX
+
+    var sframeCommand = function (command, data, cb) {
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: command,
+            data: data,
+        }, function (err, response) {
+            if (err) { return void cb(err); }
+            if (response && response.error) { return void cb(response.error); }
+            cb(void 0, response);
+        });
+    };
+
+    var getAccountData = function (key, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var data = {
+            //'signing key': key,
+            generated: +new Date(),
+        };
+
+        return void nThen(function (w) {
+            sframeCommand('GET_PIN_ACTIVITY', key, w((err, response) => {
+                if (err || !response) {
+                    console.error(err, response);
+                    UI.warn(Messages.error);
+                } else {
+                    // XXX get first pin time too
+                    data.first = response[0].first;
+                    data.latest = response[0].latest;
+
+                    //data.lastPinTime = response[0];
+                    //data['last pin activity time'] = new Date(response[0]);
+                    console.info(err, response);
+                }
+            }));
+        }).nThen(function (w) {
+            sframeCommand('IS_USER_ONLINE', key, w((err, response) => {
+                console.log('online', err, response);
+                if (!Array.isArray(response) || typeof(response[0]) !== 'boolean') { return; }
+                data.currentlyOnline = response[0];
+            }));
+        }).nThen(function (w) {
+            sframeCommand('GET_USER_QUOTA', key, w((err, response) => {
+                if (err || !response) {
+                    return void console.error('quota', err, response);
+                } else {
+                    data.plan = response[1];
+                    data.note = response[2];
+                    data.limit = response[0];
+                }
+            }));
+        }).nThen(function (w) {
+            // storage used
+            sframeCommand('GET_USER_TOTAL_SIZE', key, w((err, response) => {
+                if (err || !Array.isArray(response)) {
+                    console.error('size', err, response);
+                } else {
+                    console.info('size', response);
+                    data.usage = response[0];
+                }
+            }));
+        }).nThen(function (w) {
+            // channels pinned
+            // files pinned
+            sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
+                if (err || !Array.isArray(response)) {
+                    UI.warn(Messages.error);
+                    return void console.error('storage stats', err, response);
+                } else {
+                    console.info(response);
+                    data.channels = response[0].channels;
+                    data.files = response[0].files;
+                }
+            }));
+        }).nThen(function (w) { // pin log status (live, archived, unknown)
+            sframeCommand('GET_PIN_LOG_STATUS', key, w((err, response) => {
+                if (err || !Array.isArray(response)) {
+                    UI.warn(Messages.error);
+                    return void console.error('pin log status', err, response);
+                } else {
+                    console.info('pin log status', response);
+                    data.live = response[0].live;
+                    data.archived = response[0].archived;
+                }
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+
+    var getPrettySize = UIElements.prettySize;
+    Messages.admin_generatedAt = 'Time generated'; // XXX
+
+    // pin log available
+    Messages.ui_true = 'true';
+    Messages.ui_false = 'false';
+    Messages.ui_undefined = 'unknown';
+
+    var localizeState = state => {
+        console.log(state);
+        var o = {
+            'true': Messages.ui_true,
+            'false': Messages.ui_false,
+            'undefined': Messages.ui_undefined,
+        };
+        return o[state] || 'oops'; // XXX
+    };
+
+    var disable = $el => $el.attr('disabled', 'disabled');
+    var enable = $el => $el.removeAttr('disabled');
+
+    create['account-metadata'] = function () { // XXX
+        var key = 'account-metadata';
+        var $div = makeBlock(key, true);
+
+        // input field for edPublic or user string
+        Messages.admin_accountMetadataPlaceholder = 'user string (from profile/settings) or public signing key'; // XXX
+
+        var input = h('input', {
+            placeholder: Messages.admin_accountMetadataPlaceholder,
+            type: 'text',
+            value: '',
+            //value: '[ansuz@localhost:3000/BpL3pEyX2IlfsvxQELB9uz5qh+40re0gD6J6LOobBm8=]', // XXX
+        });
+        var $input = $(input);
+
+        var box = h('div.cp-admin-setter', [
+            input, 
+        ]);
+
+        $div.find('.cp-sidebarlayout-description').after(box);
+
+        var results = h('span');
+
+        $div.append(results);
+
+        var pending = false;
+        var getInputState = function () {
+            var val = $input.val().trim();
+            var key = Keys.canonicalize(val);
+            var state = {
+                value: val,
+                key: key,
+                valid: Boolean(key),
+                pending: pending,
+            };
+
+            return state;
+        };
+
+        var $btn = $div.find('.btn');
+        disable($btn);
+        var setInterfaceState = function (state) {
+            state = state || getInputState();
+            var both = [$input, $btn];
+            if (state.pending) {
+                both.forEach(disable);
+            } else if (state.valid) {
+                both.forEach(enable);
+            } else {
+                enable($input);
+                disable($btn);
+            }
+        };
+
+        $input.on('keypress keyup change paste', function () {
+            setTimeout(setInterfaceState);
+        });
+
+        $btn.click(function (/* ev */) {
+            if (pending) { return; }
+            var state = getInputState();
+            if (!state.valid) {
+                results.innerHTML = '';
+                Messages.admin_invalidKey = 'INVALID KEY'; // XXX
+                return void UI.warn(Messages.admin_invalidKey); // Messages.error); // XXX invalid key
+            }
+            var key = state.key;
+            pending = true;
+            setInterfaceState();
+
+            getAccountData(key, (err, data) => {
+                pending = false;
+                setInterfaceState();
+                if (!data) {
+                    results.innerHTML = '';
+                    return UI.warn("no data"); // XXX
+                }
+                $btn.removeAttr('disabled');
+
+                var table = h('table.cp-account-stats');
+                var row = (label, value) => {
+                    table.appendChild(h('tr', [
+                        h('td', h('strong', label)),
+                        h('td', value)
+                    ]));
+                };
+
+            // info
+                row(Messages.admin_generatedAt, new Date(data.generated));
+
+                // signing key
+                row(Messages.settings_publicSigningKey, key);
+
+                // First pin activity time
+                Messages.admin_firstPinTime = 'First pin activity time'; // XXX
+                row(Messages.admin_firstPinTime, new Date(data.first));
+
+                // last pin activity time
+                Messages.admin_lastPinTime = 'Last pin activity time'; // XXX
+                row(Messages.admin_lastPinTime, new Date(data.latest));
+
+                // currently online
+                Messages.admin_currentlyOnline = 'Is currently online'; // XXX
+                row(Messages.admin_currentlyOnline, data.currentlyOnline);
+
+                // plan name
+                Messages.admin_planName = 'Plan name'; // XXX
+                Messages.ui_none = 'none'; // XXX
+                row(Messages.admin_planName, data.plan || Messages.ui_none);
+
+                // plan note
+                Messages.admin_note = 'Plan note'; // XXX
+                row(Messages.admin_note, data.note || Messages.ui_none);
+
+                // storage limit
+                Messages.admin_limit = "Storage limit"; // XXX
+                row(Messages.admin_limit, getPrettySize(data.limit));
+
+                // data stored
+                Messages.admin_storageUsage =  'Data stored'; // XXX
+                row(Messages.admin_storageUsage, getPrettySize(data.usage));
+
+                // number of channels
+                Messages.admin_channelCount = "Number of channels"; // XXX
+                row(Messages.admin_channelCount, data.channels);
+
+                // number of files pinned
+                Messages.admin_fileCount = 'Number of files'; // XXX
+                row(Messages.admin_fileCount, data.files);
+
+                Messages.admin_pinLogAvailable = "Pin log is available"; // XXX
+                row(Messages.admin_pinLogAvailable, localizeState(data.live));
+
+                // pin log archived
+                Messages.admin_pinLogArchived = 'Pin log is archived'; // XXX
+                row(Messages.admin_pinLogArchived, localizeState(data.archived));
+
+                var BTN = function (cls) {
+                    return function (text, handler) {
+                        var btn = h(`button.btn.btn-${cls}`, text);
+                        if (handler) { $(btn).click(handler); }
+                        return btn;
+                    };
+                };
+
+                var primary = BTN('primary');
+                var danger = BTN('danger');
+
+            // actions
+                if (data.archived && data.live === false) {
+                    Messages.admin_restoreArchivedPins = "Restore archived pin log"; // XXX
+                    Messages.admin_pinLogRestored = 'Pin log restored'; // XXX
+                    row(Messages.admin_restoreArchivedPins, primary('restore', function () {
+                        sframeCommand('RESTORE_ARCHIVED_PIN_LOG', key, function (err) {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.admin_pinLogRestored);
+                        });
+                    })); // XXX
+                }
+
+                if (data.live === true) {
+                    var getPins = () => {
+                        sframeCommand('GET_PIN_LIST', key, (err, pins) => {
+                            if (err || !Array.isArray(pins)) {
+                                return void UI.warn(Messages.error); // XXX
+                            }
+                            var P = pins.slice().sort((a, b) => a.length - b.length);
+                            UI.alert(h('ul', P.map(p => h('li', h('code', p)))));
+                        });
+                    };
+
+                    // get full pin list
+                    Messages.admin_getPinList = 'Get full pin list'; // XXX
+                    row(Messages.admin_getPinList, primary('go', getPins)); // XXX display modal with pre or ul and buttons to copy/download
+
+                    // get full pin history
+                    Messages.admin_getFullPinHistory = 'Get full pin history'; // XXX
+                    var getHistoryHandler = () => {
+                        sframeCommand('GET_PIN_HISTORY', key, (err, history) => {
+                            if (err) { return void UI.warn(err); }
+                            UI.log(history); // XXX
+                        });
+                    };
+                    row(Messages.admin_getFullPinHistory, primary('go', getHistoryHandler)); // XXX display modal with pre and buttons to copy/download
+
+                    // archive pin log
+                    Messages.admin_archivePinLog = "Archive this account's pin log";  // XXX
+                    Messages.admin_pinLogArchived = "Pin log archived"; // XXX
+                    Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive."; // XXX
+                    Messages.ui_pleaseConfirm = "Please confirm you want to proceed"; // XXX
+                    Messages.ui_confirm = "Confirm"; // XXX
+                    var archiveHandler = () => {
+                        var message = h('span', [
+                            h('p', Messages.admin_archivePinLogConfirm),
+                            h('p', Messages.ui_pleaseConfirm),
+                        ]);
+
+                        UI.confirm(message, yes => {
+                            if (!yes) { return; }
+                            sframeCommand('ARCHIVE_PIN_LOG', key, (err /*, response */) => {
+                                console.error(err);
+                                if (err) { return void UI.warn(err); }
+                                UI.log(Messages.admin_pinLogArchived);
+                            });
+                        }, {
+                            ok: Messages.ui_confirm,
+                        });
+                    };
+
+                    // XXX accessibility, tooltips
+                    row(Messages.admin_archivePinLog, danger(Messages.admin_archiveButton, archiveHandler)); // XXX this user's documents will no longer be considered important. inactive documents may eventually be removed if nobody else is pinning them
+
+                        // if (data.archived) {
+                            // danger, will overwrite
+                        //} else {
+                            // confirm
+                        //}
+
+                    // archive owned documents
+                    Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents"; // XXX
+                    Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored."; // XXX
+                    // XXX accessibility, tooltips
+                    var archiveDocuments = () => {
+                        var message = h('span', [
+                            h('p', Messages.admin_archiveDocumentConfirm),
+                            h('p', Messages.ui_pleaseConfirm),
+                        ]);
+                        UI.confirm(message, yes => { // XXX
+                            if (!yes) { return; }
+                            sframeCommand('ARCHIVE_OWNED_DOCUMENTS', key, (err, response) => {
+                                if (err) { return void UI.warn(err); }
+                                UI.log(response);
+                            });
+                        }, {
+                            ok: Messages.ui_confirm,
+                        });
+                    };
+                    row(Messages.admin_archiveOwnedAccountDocuments, danger(Messages.admin_archiveButton, archiveDocuments));
+                }
+                results.innerHTML = '';
+                results.appendChild(table);
+            });
+        });
+
+        return $div;
+    };
+
+    Messages.admin_documentMetadataHint = `Query a channel or file via its id or link`; // XXX
+    Messages.admin_documentMetadataTitle = 'Document information';// XXX
+    Messages.admin_documentMetadataButton = 'Generate report'; // XXX
+
+    var getDocumentData = function (id, cb) {
+        var data = {
+            generated: +new Date(),
+            id: id,
+        };
+        var types = { // XXX handle things other than channels
+            32: 'channel',
+            48: 'file',
+            33: 'ephemeral',
+            34: 'broadcast',
+        };
+        data.type = types[typeof(id) === 'string' && id.length] || 'unknown';
+
+        nThen(function (w) { // XXX
+            if (data.type !== 'channel') { return; }
+            sframeCommand('GET_STORED_METADATA', id, w(function (err, res) {
+                if (err) { return void console.error(err); }
+                if (!(Array.isArray(res) && res[0])) { return void console.error("NO_METADATA"); }
+                var metadata = res[0];
+                data.metadata = metadata;
+                console.info('metadata', metadata);
+
+                data.created = Util.find(data, ['metadata', 'created']);
+            }));
+        }).nThen(function (w) {
+            sframeCommand("GET_DOCUMENT_SIZE", id, w(function (err, res) {
+                console.info('got document size', err, res);
+                if (err) { return void console.error(err); }
+                if (!(Array.isArray(res) && typeof(res[0]) === 'number')) {
+                    return void console.error("NO_SIZE");
+                }
+                data.size = res[0];
+            }));
+        }).nThen(function (w) {
+            if (data.type !== 'channel') { return; }
+            sframeCommand('GET_LAST_CHANNEL_TIME', id, w(function (err, res) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(res) || typeof(res[0]) !== 'number') { return void console.error(res); }
+                data.lastModified = new Date(res[0]);
+            }));
+        }).nThen(function (w) {
+            // whether currently open
+            if (data.type !== 'channel') { return; }
+            sframeCommand('GET_CACHED_CHANNEL_METADATA', id, w(function (err, res) {
+                console.info("cached channel metadata", err, res);
+                if (err === 'ENOENT') {
+                    data.currentlyOpen = false;
+                    return;
+                }
+
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(res) || !res[0]) { return void console.error(res); }
+                data.currentlyOpen = true;
+            }));
+        }).nThen(function (/* w */) {
+            // offset time if exists
+
+        }).nThen(function (w) {
+            // status (live, archived, unknown)
+            if (!['channel', 'file'].includes(data.type)) { return; }
+            sframeCommand('GET_DOCUMENT_STATUS', id, w(function (err, res) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(res) || !res[0]) {
+                    UI.warn(Messages.error);
+                    return void console.error(err, res);
+                }
+                data.live = res[0].live;
+                data.archived = res[0].archived;
+                console.error("get channel status", err, res);
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+
+    create['document-metadata'] = function () { // XXX
+        var key = 'document-metadata';
+        var $div = makeBlock(key, true);
+
+        Messages.admin_documentMetadataPlaceholder = "Document URL or id"; // XXX
+        var input = h('input', {
+            placeholder: Messages.admin_documentMetadataPlaceholder,
+            type: 'text',
+            value: '',
+        });
+
+        var passwordContainer = UI.passwordInput({
+            id: 'cp-database-document-pw',
+            placeholder: Messages.login_password,
+        });
+        var $passwordContainer = $(passwordContainer);
+
+        var $input = $(input);
+        var $password = $(passwordContainer).find('input');
+
+        var pending = false;
+        var getInputState = function () {
+            var val = $input.val().trim();
+            var state = {
+                valid: false,
+                passwordRequired: false,
+                id: undefined,
+                input: val,
+                password: $password.val().trim(),
+                pending: false,
+            };
+
+            if (!val) { return state; }
+            if (isHex(val) && [32, 48].includes(val.length)) {
+                state.valid = true;
+                state.id = val;
+                return state;
+            }
+
+            var url;
+            try {
+                url = new URL(val, ApiConfig.httpUnsafeOrigin);
+            } catch (err) {}
+
+            if (!url) { return state; } // invalid
+            var parsed = Hash.isValidHref(val);
+            if (!parsed || !parsed.hashData) {
+                state.passwordRequired = true;
+                state.valid = false;
+                return state;
+            }
+
+            if (parsed.hashData.version === 3) {
+                state.id = parsed.hashData.channel;
+                state.valid = true;
+                return state;
+            }
+
+            var secret;
+            if (parsed.hashData.password) {
+                state.passwordRequired = true;
+                secret = Hash.getSecrets(parsed.type, parsed.hash, state.password);
+            } else {
+                secret = Hash.getSecrets(parsed.type, parsed.hash);
+            }
+
+            console.log('PEWPEW', parsed.hashData, secret);
+
+            if (secret && secret.channel) {
+                state.id = secret.channel;
+                state.valid = true;
+                return state;
+            }
+            return state;
+        };
+
+        $passwordContainer.hide();
+        var box = h('div.cp-admin-setter', [
+            input,
+            passwordContainer,
+        ]);
+        $div.find('.cp-sidebarlayout-description').after(box);
+        var results = h('span');
+
+        $div.append(results);
+
+        var $btn = $div.find('.btn');
+        disable($btn);
+
+        var setInterfaceState = function () {
+            var state = getInputState();
+            var all = [ $btn, $password, $input ];
+            var text = [$password, $input];
+
+            var disable = $el => $el.attr('disabled', 'disabled');
+            var enable = $el => $el.removeAttr('disabled');
+
+            if (state.pending) {
+                all.forEach(disable);
+            } else if (state.valid) {
+                all.forEach(enable);
+            } else {
+                text.forEach(enable);
+                disable($btn);
+            }
+            if (state.passwordRequired) {
+                $passwordContainer.show();
+            } else {
+                $passwordContainer.hide();
+            }
+        };
+
+        $input.on('keypress keyup change paste', function () {
+            setTimeout(setInterfaceState);
+        });
+
+        var archiveReason = "";
+        var restoreReason = "";
+        $btn.click(function () {
+            if (pending) { return; }
+            pending = true;
+            var state = getInputState();
+            setInterfaceState(state);
+            getDocumentData(state.id, function (err, data) {
+                pending = false;
+                setInterfaceState();
+                if (err) {
+                    results.innerHTML = '';
+                    return void UI.warn(err);
+                }
+                console.info(data);
+
+                var table = h('table.cp-document-stats');
+                var row = (label, value) => {
+                    table.appendChild(h('tr', [
+                        h('td', h('strong', label)),
+                        h('td', value)
+                    ]));
+                };
+                row(Messages.admin_generatedAt, new Date(data.generated));
+
+                row(Messages.documentID, data.id);
+
+                Messages.admin_documentType = 'Document type'; // XXX
+                row(Messages.admin_documentType, data.type);
+
+                Messages.admin_documentSize = 'Document size'; // XXX
+                row(Messages.admin_documentSize, data.size? getPrettySize(data.size): Messages.ui_undefined);
+
+                var BTN = (cls) => {
+                    return function (text, handler) {
+                        var btn = h(`button.btn.btn-${cls}`, text);
+                        if (handler) { $(btn).click(handler); }
+                        return btn;
+                    };
+                };
+                var primary = BTN('primary');
+                var danger = BTN('danger');
+
+                if (data.type === 'channel') {
+                    // XXX what to do for files?
+                    Messages.admin_documentMetadata = "Computed metadata"; // XXX
+                    try {
+                        row(Messages.admin_documentMetadata, h('pre', JSON.stringify(data.metadata || {}, null, 2)));
+                    } catch (err2) {
+                        UI.warn(Messages.error);
+                        console.error(err2);
+                    }
+
+                    Messages.admin_documentCreationTime = 'Document creation time'; // XXX
+                    row(Messages.admin_documentCreationTime, data.created? new Date(data.created): Messages.ui_undefined);
+
+                    Messages.admin_documentModifiedTime = "Last modified"; // XXX
+                    row(Messages.admin_documentModifiedTime, data.lastModified? new Date(data.lastModified): Messages.ui_undefined);
+
+                    Messages.admin_currentlyOpen = 'Currently open?'; // XXX
+                    row(Messages.admin_currentlyOpen, localizeState(data.currentlyOpen));
+
+                    Messages.admin_channelAvailable = 'Channel is available'; // XXX
+                    row(Messages.admin_channelAvailable, localizeState(data.live));
+
+                    Messages.admin_channelArchived = 'Channel is archived'; // XXX
+                    row(Messages.admin_channelArchived, localizeState(data.archived));
+
+                // actions
+                    // get raw metadata history
+                    Messages.admin_getRawMetadata = 'Get full metadata history';
+                    row(Messages.admin_getRawMetadata, primary('go!', function () { // XXX
+                        UI.warn('NOT_IMPLEMENTED'); // XXX
+                    }));
+                }
+
+                if (data.live) {
+                // archive
+                    Messages.admin_archiveDocument = 'Archive document'; // XXX
+                    Messages.admin_archiveDocumentConfirm = "Are you sure?"; // XXX
+                    // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
+
+                    var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
+                        var message = h('span', [
+                            h('p', 'Please specify the reason for archiving this file and confirm that you would like to proceed'), // XXX
+                            h('p', Messages.ui_pleaseConfirm),
+                        ]);
+
+                        UI.prompt(message, archiveReason, result => {
+                            if (result === null) { return; }
+                            archiveReason = result;
+                            sframeCommand('ARCHIVE_DOCUMENT', {
+                                id: data.id,
+                                reason: archiveReason,
+                            }, (err /*, response */) => {
+                                if (err) {
+                                    console.error(err);
+                                    return void UI.warn(Messages.error);
+                                }
+                                UI.log(Messages.archivedFromServer);
+                                $(archiveDocumentButton).attr('disabled', 'disabled');
+                            });
+                        }, {
+                            ok: Messages.ui_confirm,
+                        });
+                    });
+                    row(Messages.admin_archiveDocument, archiveDocumentButton);
+                }
+
+                if (data.archived && !data.live) {
+                    Messages.admin_restoreDocument = "Restore document"; // XXX
+                    Messages.admin_restoreDocumentConfirm = "Are you sure?";
+                    var restoreDocumentButton = primary(Messages.admin_unarchiveButton, function () {
+                        var message = h('span', [
+                            h('p', 'Please specify the reason for restoring this file and confirm that you would like to proceed.'), // XXX
+                            h('p', Messages.ui_pleaseConfirm),
+                        ]);
+
+                        UI.prompt(message, restoreReason, result => {
+                            if (result === null) { return; }
+                            restoreReason = result;
+                            sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
+                                id: data.id,
+                                reason: restoreReason,
+                            }, (err /*, response */) => {
+                                if (err) {
+                                    console.error(err);
+                                    return void UI.warn(Messages.error);
+                                }
+                                UI.log(Messages.restoredFromServer);
+                                $(restoreDocumentButton).attr('disabled', 'disabled');
+                            });
+                        }, {
+                            ok: Messages.ui_confirm,
+                        });
+                    });
+                    // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
+                    row(Messages.admin_restoreDocument, restoreDocumentButton);
+                }
+                // XXX file restore button?
+
+                results.innerHTML = '';
+                results.appendChild(table);
+            });
+        });
+
+        return $div;
+    };
+
+    Messages.admin_blockMetadataTitle = 'Login-block information';// XXX
+    Messages.admin_blockMetadataHint = `Login blocks store an account's essential credentials and are encrypted using keys derived from their username and password.`; // XXX
+
+    // XXX admin_blockMetadataHint
+// access information about login blocks
+/*
+    status (live/archived/unknown)
+    FS metadata (ctime/atime/mtime)
+    actions
+        archive
+        restore
+
+*/
+//`;
+    Messages.admin_blockMetadataButton = 'Check block status';// XXX
+
+    var getBlockData = function (key, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var data = {
+            generated: +new Date(),
+            key: key,
+        };
+
+        nThen(function (w) {
+            sframeCommand('GET_DOCUMENT_STATUS', key, w((err, res) => {
+                if (err) { 
+                    console.error(err);
+                    return void UI.warn(Messages.error);
+                }
+                if (!Array.isArray(res) || !res[0]) {
+                    UI.warn(Messages.error);
+                    return void console.error(err, res);
+                }
+                data.live = res[0].live;
+                data.archived = res[0].archived;
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+
+    create['block-metadata'] = function () { // XXX
+        var key = 'block-metadata';
+        var $div = makeBlock(key, true);
+
+        Messages.admin_blockMetadataPlaceholder = 'XXX PLACEHOLDER';
+
+        var input = h('input', {
+            placeholder: Messages.admin_blockMetadataPlaceholder,
+            value: '',
+        });
+        var $input = $(input);
+
+        var box = h('div.cp-admin-setter', [
+            input,
+        ]);
+
+        $div.find('.cp-sidebarlayout-description').after(box);
+
+        var results = h('span');
+        $div.append(results);
+        var $btn = $div.find('.btn');
+        disable($btn);
+
+        var pending = false;
+        var getInputState = function () {
+            var val = $input.val().trim();
+            var state = {
+                pending: pending,
+                valid: false,
+                value: val,
+                key: '',
+            };
+
+            var url;
+            try {
+                url = new URL(val, ApiConfig.httpUnsafeOrigin);
+            } catch (err) { }
+
+            console.log(url);
+
+            var getKey = function () {
+                var parts = val.split('/');
+                return parts[parts.length - 1];
+            };
+
+            var isValidBlockURL = function (url) {
+                if (!url) { return; }
+
+
+                return url.origin === ApiConfig.httpUnsafeOrigin &&
+                /^\/block\/.*/.test(url.pathname) && getKey().length === 44;
+
+            };
+
+            if (isValidBlockURL(url)) { // XXX check if block location is valid
+                state.valid = true;
+                state.key = getKey();
+            }
+
+            return state;
+        };
+        var setInterfaceState = function () {
+            var state = getInputState();
+            var all = [$btn, $input];
+
+            if (state.pending) {
+                all.forEach(disable);
+            } else if (state.valid) {
+                all.forEach(enable);
+            } else {
+                enable($input);
+                disable($btn);
+            }
+        };
+
+        $input.on('keypress keyup change paste', function () {
+            setTimeout(setInterfaceState);
+        });
+
+        $btn.click(function () {
+            if (pending) { return; }
+            var state = getInputState();
+            pending = true;
+            setInterfaceState();
+
+            getBlockData(state.key, (err, data) => {
+                pending = false;
+                setInterfaceState();
+
+                if (!data) {
+                    results.innerHTML = '';
+                    return UI.warn("no data"); // XXX
+                }
+
+                var table = h('table.cp-block-stats');
+                var row = (label, value) => {
+                    table.appendChild(h('tr', [
+                        h('td', h('strong', label)),
+                        h('td', value)
+                    ]));
+                };
+
+                row(Messages.admin_generatedAt, new Date(data.generated));
+
+                Messages.admin_blockAvailable = 'Block is available';
+                row(Messages.admin_blockAvailable, localizeState(data.live));
+
+                Messages.admin_blockArchived = 'Block is archived';
+                row(Messages.admin_blockArchived, localizeState(data.archived));
+
+                var BTN = function (cls) {
+                    return function (text, handler) {
+                        var btn = h(`button.btn.btn-${cls}`, text);
+                        if (handler) { $(btn).click(handler); }
+                        return btn;
+                    };
+                };
+
+                if (data.live) {
+                    // XXX archive button
+                    var archiveButton = BTN('danger')('ARCHIVE', function () {
+                        // XXX confirm first
+                        // add a reason
+                        sframeCommand('ARCHIVE_BLOCK', {
+                            key: state.key,
+                            reason: '', // XXX
+                        }, (err, res) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            disable($(archiveButton));
+                            UI.log("archive block");
+                            console.log('archive block', err, res);
+                        });
+                    });
+                    Messages.admin_archiveBlock = "ARCHIVE BLOCK";
+                    row(Messages.admin_archiveBlock, archiveButton);
+                }
+                if (data.archived && !data.live) {
+                    // XXX restore button
+                    var restoreButton = BTN('danger')('RESTORE', function () {
+                        // XXX confirm first
+                        sframeCommand('RESTORE_ARCHIVED_BLOCK', {
+                            key: state.key,
+                            reason: '', // XXX
+                        }, (err, res) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            disable($(restoreButton));
+                            console.log('restore archived block', err, res);
+                            UI.log("SUCCESS"); // XXX
+                        });
+                    });
+                    Messages.admin_restoreBlock = "RESTORE ARCHIVED BLOCK";
+                    row(Messages.admin_restoreBlock, restoreButton);
+                }
+
+                results.innerHTML = '';
+                results.appendChild(table);
+            });
+        });
+
         return $div;
     };
 
@@ -618,8 +1559,6 @@ define([
         return $div;
     };
 
-    var getPrettySize = UIElements.prettySize;
-
     create['defaultlimit'] = function () {
         var key = 'defaultlimit';
         var $div = makeBlock(key); // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
@@ -822,7 +1761,8 @@ define([
         return $div;
     };
 
-    create['getquota'] = function () {
+/*
+    create['getquota'] = function () { // XXX remove?
         var key = 'getquota';
         var $div = makeBlock(key, true); // Msg.admin_getquotaHint, .admin_getquotaTitle, .admin_getquotaButton
 
@@ -858,6 +1798,7 @@ define([
 
         return $div;
     };
+*/
 
     var onRefreshStats = Util.mkEvent();
 
@@ -2287,7 +3228,10 @@ define([
         broadcast: 'fa fa-bullhorn',
         performance: 'fa fa-heartbeat',
         network: 'fa fa-sitemap', // or fa-university ?
+        database: 'fa fa-database',
     };
+
+    Messages.admin_cat_database = "Database"; // XXX
 
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
