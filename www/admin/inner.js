@@ -1108,6 +1108,9 @@ define([
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
 
+        Messages.admin_blockKey = 'Block public key';
+        row(Messages.admin_blockKey, data.key);
+
         Messages.admin_blockAvailable = 'Block is available';
         row(Messages.admin_blockAvailable, localizeState(data.live));
 
