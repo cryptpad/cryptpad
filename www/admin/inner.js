@@ -1210,8 +1210,7 @@ define([
             };
             var isValidBlockURL = function (url) {
                 if (!url) { return; }
-                return url.origin === ApiConfig.httpUnsafeOrigin &&
-                /^\/block\/.*/.test(url.pathname) && getKey().length === 44;
+                return /* url.origin === ApiConfig.httpUnsafeOrigin && */ /^\/block\/.*/.test(url.pathname) && getKey().length === 44;
             };
             if (isValidBlockURL(url)) {
                 state.valid = true;
