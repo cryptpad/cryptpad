@@ -327,5 +327,17 @@
     .cp-charts-row.heading {
         font-weight: bold;
     }
+    table.cp-account-stats,
+    table.cp-block-stats,
+    table.cp-document-stats {
+        @color: #777;
+        border: 1px solid @color;
+        margin: 15px;
+        td {
+            max-width: 60vw; // XXX
+            border: 1px solid @color;
+            padding: 5px;
+        }
+    }
 }
 

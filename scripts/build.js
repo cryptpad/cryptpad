@@ -55,7 +55,8 @@ const ogData = `
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{title}}">
     <meta property="og:description" content="CryptPad: end-to-end encrypted collaboration suite">
-    <meta property="og:image" content="{{rootUrl}}/customize/images/opengraph_preview/{{image}}">`;
+    <meta property="og:image" content="{{rootUrl}}/customize/images/opengraph_preview/{{image}}">
+    <meta property="twitter:card" content="summary_large_image">`;
 
 var previewExists = function (name) {
     if (Fs.existsSync(__dirname + '/../customize/images/opengraph_preview/')) {
@@ -114,6 +115,7 @@ var appIndexesToBuild = [
     'whiteboard',
     'slide',
     'file',
+    'calendar',
     'drive',
     'teams'
 ];
