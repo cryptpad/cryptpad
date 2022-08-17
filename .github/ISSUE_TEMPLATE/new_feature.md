@@ -1,17 +1,20 @@
----
-name: New feature
-about: ADMIN ONLY - Track a new feature
-title: ''
-labels: 'new feature'
-assignees: ''
-
----
-
-**Summary**
-Please describe your idea in a reasonable amount of detail.
-
-**Motivation**
-Please describe how your idea would benefit you and other users.
-
-**Additional context**
- Add any other context or screenshots about the feature request.
+name: Feature Request
+description: Suggest an idea for CryptPad
+labels: ["feature request"]
+body:
+  - type: textarea
+    attributes:
+      label: Summary
+      description: Please describe your idea in a reasonable amount of detail.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Motivation
+      description: Please describe how your idea would benefit you and other users.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request.

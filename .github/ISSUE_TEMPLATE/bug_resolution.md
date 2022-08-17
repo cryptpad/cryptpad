@@ -1,41 +1,60 @@
----
-name: Bug resolution
-about: ADMIN ONLY - Track a bug resolution
-title: ''
-labels: 'bug'
-assignees: ''
-
----
-
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Browser (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. firefox, tor browser, chrome, safari, brave, edge, ???]
-   - variations [e.g. Firefox nightly, Firefox ESR, Chromium, Ungoogled chrome]
- - Version [e.g. 22]
- - Extensions installed (UBlock Origin, Passbolt, LibreJS]
- - Browser tweaks [e.g. firefox "Enhanced Tracking Protection" strict/custom mode, tor browser "safer" security level, chrome incognito mode]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+name: Bug report
+description: Report a reproducible bug for CryptPad. (NOT to be used for support questions.)
+labels: ["bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Contribution guidelines
+      description: Please read the code of conduct before proceeding.
+      options:
+        - label: I've read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) and wholeheartedly agree
+          required: true
+  - type: checkboxes
+    attributes:
+      label: I've found a bug and checked that ...
+      description: Prior to placing the issue, please check following:** *(fill out each checkbox with an `X` once done)*
+      options:
+      - label: ... I understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
+        required: true
+      - label: ... I have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
+        required: true
+      - label: ... I have understood that answers are voluntary and community-driven, and not commercial support.
+        required: true
+      - label: ... I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.fr/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
+        required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in CryptPad UI.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please describe the steps to reproduce the bug. Screenshots can be added, if helpful.
+      placeholder: |-
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: System information
+      description: In this stage we would kindly ask you to attach general system information about your setup.
+      value: |-
+             | Question | Answer |
+             | --- | --- |
+             | Operating system and version | I_DO_REPLY_HERE |
+             | Web browser and version| I_DO_REPLY_HERE |
+             | Extensions installed | I_DO_REPLY_HERE |
+             | Browser tweaks | I_DO_REPLY_HERE |
+             | CryptPad version | I_DO_REPLY_HERE |
+    validations:
+      required: true
