@@ -3,6 +3,6 @@ contact_links:
   - name: CryptPad.fr issue
     url: https://cryptpad.fr/support/#new
     about: Please use the integrated support form for CryptPad.fr
-  - name: Report a security vulnerability
-    url: mailto:contact@cryptpad.fr?subject=Security%20vulnerability
-    about: Please give us appropriate time to verify, respond and fix before disclosure
+  #- name: Report a security vulnerability
+  #  url: mailto:contact@cryptpad.fr?subject=Security%20vulnerability
+  #  about: Please give us appropriate time to verify, respond and fix before disclosure
