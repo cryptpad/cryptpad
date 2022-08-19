@@ -9,8 +9,12 @@
   font-style: normal;
 }
 
+.cp-app-noscroll body {
+    background: transparent;
+}
 .cp-app-noscroll #placeholder {
     z-index: 9999999; /* loading screen -1 */
+    background-color: transparent;
 }
 
 #placeholder {
@@ -64,6 +68,9 @@
     align-items: center;
     opacity: 0;
     animation: fadein 5s ease 2s forwards;
+}
+#placeholder .placeholder-message-container p {
+    margin-top: 0;
 }
 #placeholder .placeholder-logo {
     margin-left: auto;
