@@ -15,9 +15,19 @@ elem.innerHTML = [
     '</div>'
 ].join('');
 
+var key = 'CRYPTPAD_STORE|colortheme'; // handle outer
+if (localStorage[key] && localStorage[key] === 'dark') {
+    elem.classList.add('dark-theme');
+}
+if (!localStorage[key] && localStorage[key+'_default'] && localStorage[key+'_default'] === 'dark') {
+    elem.classList.add('dark-theme');
+}
+
 var req;
 try {
     req = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
+    if ((req.theme || req.themeOS) === 'dark') { // handle inner
+        elem.classList.add('dark-theme');
     }
 } catch (e) {}
 

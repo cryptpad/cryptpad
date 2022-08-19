@@ -36,12 +36,11 @@
     align-items: center;
     font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
-@media (prefers-color-scheme: dark) {
-    #placeholder {
-        background-color: #212121; /* @cp_loading-bg (dark) */
-        color: #EEEEEE; /* @cp_loading-fg (dark) */
-    }
+#placeholder.dark-theme {
+    background-color: #212121; /* @cp_loading-bg (dark) */
+    color: #EEEEEE; /* @cp_loading-fg (dark) */
 }
+
 #placeholder .placeholder-logo-container {
     height: 300px;
     width: 300px;
