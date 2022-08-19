@@ -9,6 +9,10 @@
   font-style: normal;
 }
 
+.cp-app-noscroll #placeholder {
+    z-index: 9999999; /* loading screen -1 */
+}
+
 #placeholder {
     visibility: visible;
     position: fixed;
