@@ -373,7 +373,7 @@ define([
                 if (err) {
                     console.error(err);
                     UI.warn(Messages.error);
-                } else if (!response) {
+                } else if (!response || !response[0]) {
                     console.error(response); // XXX
                     UI.warn('NO RESPONSE'); // XXX
                 } else {
@@ -412,19 +412,18 @@ define([
             // channels pinned
             // files pinned
             sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
-                if (err || !Array.isArray(response)) {
+                if (err || !Array.isArray(response) || !response[0]) {
                     UI.warn(Messages.error);
                     return void console.error('storage stats', err, response);
                 } else {
-                    //console.info(response);
                     data.channels = response[0].channels;
                     data.files = response[0].files;
                 }
             }));
         }).nThen(function (w) { // pin log status (live, archived, unknown)
             sframeCommand('GET_PIN_LOG_STATUS', key, w((err, response) => {
-                if (err || !Array.isArray(response)) {
-                    //console.error('pin log status', err, response); // XXX
+                if (err || !Array.isArray(response) || !response[0]) {
+                    console.error('pin log status', err, response); // XXX
                     return void UI.warn(Messages.error);
                 } else {
                     console.info('pin log status', response);
