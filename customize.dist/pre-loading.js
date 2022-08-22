@@ -19,8 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(elem);
     // fallback if CSS animations not available
     setTimeout(() => {
-        document.querySelector('.placeholder-logo-container').style.opacity = 100;
-        document.querySelector('.placeholder-message-container').style.opacity = 100;
+        try {
+            document.querySelector('.placeholder-logo-container').style.opacity = 100;
+            document.querySelector('.placeholder-message-container').style.opacity = 100;
+        } catch (err) {
+            console.error(err);
+        }
     }, 3000);
 });
 }());
