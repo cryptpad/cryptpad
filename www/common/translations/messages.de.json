@@ -1421,7 +1421,7 @@
     "error_embeddingDisabled": "Einbettung ist für diese CryptPad-Instanz deaktiviert",
     "admin_enableembedsTitle": "Einbettung aktivieren",
     "ui_ms": "Millisekunden",
-    "admin_infoNotice1": "Verwende die folgenden Felder, um deine Instanz zu beschreiben. In einer zukünftigen Version von CryptPad werden diese Informationen auf der Startseite der Instanz verwendet. Sie werden zusammen mit der Server-Telemetrie gesendet, wenn du der Aufnahme in Listen öffentlicher CryptPad-Instanzen zugestimmt hast.",
+    "admin_infoNotice1": "Verwende die folgenden Felder, um deine Instanz zu beschreiben. Diese Informationen werden auf der Startseite der Instanz verwendet. Sie werden zusammen mit der Server-Telemetrie gesendet, wenn du der Aufnahme in Listen öffentlicher CryptPad-Instanzen zugestimmt hast.",
     "fivehundred_internalServerError": "Interner Serverfehler",
     "error_incorrectAccess": "Auf diese Seite kann nur via {0} zugegriffen werden.",
     "admin_enableembedsHint": "Erlaubt die Einbettung von Dokumenten und Medien in andere Webseiten. Dies fügt eine Option \"Einbetten\" zum Teilen-Menü hinzu. Aus Sicherheitsgründen können Anwendungen, die auf OnlyOffice basieren (Tabelle, Dokument, Präsentation), auch bei aktivierter Option nicht eingebettet werden.",
