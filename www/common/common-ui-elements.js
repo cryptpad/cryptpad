@@ -1680,6 +1680,7 @@ define([
             var a = p.querySelector('a');
             if (!a) { return; }
             sub.innerText = a.innerText;
+            sub.setAttribute('href', href);
             p.replaceChild(sub, a);
             return p;
         };
