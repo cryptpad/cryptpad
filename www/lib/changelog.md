@@ -12,4 +12,5 @@ This file is intended to be used as a log of what third-party source we have ven
 * [Fabricjs 4.6.0](https://github.com/fabricjs/fabric.js) and [Fabric-history](https://github.com/lyzerk/fabric-history) for the whiteboard app
 * [Requirejs optional module plugin](https://stackoverflow.com/a/27422370)
 * [asciidoc.js 2.0.0](https://github.com/asciidoctor/codemirror-asciidoc/releases/tag/2.0.0) with slight changes to match the format of other codemirror modes
+* [Asciidoctor.js 2.2.6](https://github.com/asciidoctor/asciidoctor.js/releases/tag/v2.2.6) for AsciiDoc rendering
 

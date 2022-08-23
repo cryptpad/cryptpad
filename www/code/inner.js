@@ -143,6 +143,12 @@ define([
     previews['htmlmixed'] = function (val, $div, common) {
         DiffMd.apply(val, $div, common);
     };
+    previews['asciidoc'] = function (val, $div, common) {
+        require(['asciidoctor'], function (asciidoctor) {
+            var html = asciidoctor.convert(val, { attributes: 'showtitle' });
+            DiffMd.apply(html, $div, common);
+        });
+    };
 
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
