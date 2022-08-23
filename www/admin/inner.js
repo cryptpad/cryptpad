@@ -370,6 +370,7 @@ define([
 
         return void nThen(function (w) {
             sframeCommand('GET_PIN_ACTIVITY', key, w((err, response) => {
+                if (err === 'ENOENT') { return; }
                 if (err) {
                     console.error(err);
                     UI.warn(Messages.error);
