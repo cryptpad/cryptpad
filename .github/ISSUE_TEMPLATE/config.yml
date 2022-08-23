@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: CryptPad.fr issue
+    url: https://cryptpad.fr/support/#new
+    about: Please use the integrated support form for CryptPad.fr
+  - name: Report a security vulnerability
+    url: https://ouvaton.link/pOgHev
+    about: Please give us appropriate time to verify, respond and fix before disclosure

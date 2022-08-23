@@ -984,6 +984,9 @@ define([
             Loading();
             todo();
         }
+
+        // Remove the inner placeholder (iframe)
+        $('#placeholder').remove();
     };
     UI.updateLoadingProgress = function (data) {
         if (window.CryptPad_updateLoadingProgress) {

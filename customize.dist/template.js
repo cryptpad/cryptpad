@@ -47,6 +47,8 @@ $(function () {
         ], function () {
             var $main = $(infoPage());
 
+            $('#placeholder').remove();
+
             $body.append($main);
 
             if (/^\/register\//.test(pathname)) {
