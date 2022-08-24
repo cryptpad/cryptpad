@@ -67,15 +67,9 @@ define([
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
             'cp-admin-setlimit',
-
-            //'cp-admin-archive', // XXX
-            //'cp-admin-unarchive', // XXX
-
-            //'cp-admin-getquota', // XXX
             'cp-admin-getlimits',
         ],
         'database': [
-            //'cp-admin-metadata-controls',
             'cp-admin-account-metadata',
             'cp-admin-document-metadata',
             'cp-admin-block-metadata',
@@ -168,165 +162,6 @@ define([
 
     var isHex = s => !/[^0-9a-f]/.test(s);
 
-/*
-    var archiveForm = function (archive, $div, $button) {
-        var label = h('label', { for: 'cp-admin-archive' }, Messages.admin_archiveInput);
-        var input = h('input#cp-admin-archive', {
-            type: 'text'
-        });
-
-        var label2 = h('label.cp-admin-pw', {
-            for: 'cp-admin-archive-pw'
-        }, Messages.admin_archiveInput2);
-        var input2 = UI.passwordInput({
-            id: 'cp-admin-archive-pw',
-            placeholder: Messages.login_password
-        });
-        var input3 = h('input', {
-            id: 'cp-admin-archive-reason',
-        });
-        var label3 = h('label', {
-            for: 'cp-admin-archive-reason',
-        }, Messages.admin_archiveNote);
-
-        var $pw = $(input2);
-        $pw.addClass('cp-admin-pw');
-        var $pwInput = $pw.find('input');
-
-
-        $button.before(h('div.cp-admin-setlimit-form', [
-            label,
-            input,
-            label2,
-            input2,
-            label3,
-            input3,
-        ]));
-
-        $div.addClass('cp-admin-nopassword');
-
-        var parsed;
-        var $input = $(input).on('keypress change paste', function () {
-            setTimeout(function () {
-                $input.removeClass('cp-admin-inval');
-                var val = $input.val().trim();
-                if (!val) {
-                    $div.toggleClass('cp-admin-nopassword', true);
-                    return;
-                }
-
-                // accept raw channel and file IDs
-                if (isHex(val) && [32, 48].includes(val.length)) {
-                    parsed = Hash.isValidHref(`/pad/#/3/pad/edit/${val}/`);
-                } else {
-                    parsed = Hash.isValidHref(val);
-                    $pwInput.val('');
-                }
-
-                if (!parsed || !parsed.hashData) {
-                    $div.toggleClass('cp-admin-nopassword', true);
-                    return void $input.addClass('cp-admin-inval');
-                }
-
-                var pw = parsed.hashData.version !== 3 && parsed.hashData.password;
-                $div.toggleClass('cp-admin-nopassword', !pw);
-            });
-        });
-        $pw.on('keypress change', function () {
-            setTimeout(function () {
-                $pw.toggleClass('cp-admin-inval', !$pwInput.val());
-            });
-        });
-
-        var clicked = false;
-        $button.click(function () {
-            if (!parsed || !parsed.hashData) {
-                UI.warn(Messages.admin_archiveInval);
-                return;
-            }
-            var pw = parsed.hashData.password ? $pwInput.val() : undefined;
-            var channel;
-            if (parsed.hashData.version === 3) {
-                channel = parsed.hashData.channel;
-            } else {
-                var secret = Hash.getSecrets(parsed.type, parsed.hash, pw);
-                channel = secret && secret.channel;
-            }
-
-            if (!channel) {
-                UI.warn(Messages.admin_archiveInval);
-                return;
-            }
-
-            if (clicked) { return; }
-            clicked = true;
-
-            nThen(function (waitFor) {
-                if (!archive) { return; }
-                common.getFileSize(channel, waitFor(function (err, size) {
-                    if (!err && size === 0) {
-                        clicked = false;
-                        waitFor.abort();
-                        return void UI.warn(Messages.admin_archiveInval);
-                    }
-                }), true);
-            }).nThen(function () {
-                var $reason = $(input3);
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: archive ? 'ARCHIVE_DOCUMENT' : 'RESTORE_ARCHIVED_DOCUMENT',
-                    data: {
-                        id: channel,
-                        reason: $reason.val(),
-                    },
-                }, function (err, obj) {
-                    var e = err || (obj && obj.error);
-                    clicked = false;
-                    if (e) {
-                        UI.warn(Messages.error);
-                        console.error(e);
-                        return;
-                    }
-                    UI.log(archive ? Messages.archivedFromServer : Messages.restoredFromServer);
-                    $input.val('');
-                    $pwInput.val('');
-                    // disabled because it's actually pretty annoying to re-enter this each time if you are archiving many files
-                    //$reason.val('');
-                });
-            });
-        });
-    };
-*/
-
-/*
-    create['archive'] = function () {
-        var key = 'archive';
-        var $div = makeBlock(key, true); // Msg.admin_archiveHint, .admin_archiveTitle, .admin_archiveButton
-        var $button = $div.find('button');
-        archiveForm(true, $div, $button);
-        return $div;
-    };
-*/
-/*
-    create['unarchive'] = function () {
-        var key = 'unarchive';
-        var $div = makeBlock(key, true); // Msg.admin_unarchiveHint, .admin_unarchiveTitle, .admin_unarchiveButton
-        var $button = $div.find('button');
-        archiveForm(false, $div, $button);
-        return $div;
-    };
-*/
-
-    Messages.admin_metadataControlsHint = 'admin_metadataControlsHint'; // XXX
-    Messages.admin_metadataControlsTitle = 'admin_metadataControlsTitle'; // XXX
-    Messages.admin_metadataControlsButton = 'admin_metadataControlsTitle'; // XXX
-
-    create['metadata-controls'] = function () { // XXX
-        var key = 'metadata-controls';
-        var $div = makeBlock(key, true);
-
-        return $div;
-    };
-
     Messages.admin_accountMetadataTitle = 'Account information'; // XXX
     Messages.admin_accountMetadataHint = `Enter a user's public key to fetch data about their account.`; // XXX
     Messages.admin_accountMetadataButton = 'Generate report'; // XXX
@@ -371,12 +206,10 @@ define([
         return void nThen(function (w) {
             sframeCommand('GET_PIN_ACTIVITY', key, w((err, response) => {
                 if (err === 'ENOENT') { return; }
-                if (err) {
+                if (err || !response || !response[0]) {
                     console.error(err);
+                    console.error(response);
                     UI.warn(Messages.error);
-                } else if (!response || !response[0]) {
-                    console.error(response); // XXX
-                    UI.warn('NO RESPONSE'); // XXX
                 } else {
                     data.first = response[0].first;
                     data.latest = response[0].latest;
@@ -424,7 +257,7 @@ define([
         }).nThen(function (w) { // pin log status (live, archived, unknown)
             sframeCommand('GET_PIN_LOG_STATUS', key, w((err, response) => {
                 if (err || !Array.isArray(response) || !response[0]) {
-                    console.error('pin log status', err, response); // XXX
+                    console.error('pin log status', err, response);
                     return void UI.warn(Messages.error);
                 } else {
                     console.info('pin log status', response);
@@ -442,9 +275,10 @@ define([
     Messages.admin_generatedAt = 'Time generated'; // XXX
 
     // pin log available
-    Messages.ui_true = 'true';
-    Messages.ui_false = 'false';
-    Messages.ui_undefined = 'unknown';
+    Messages.ui_true = 'true'; // XXX
+    Messages.ui_false = 'false'; // XXX
+    Messages.ui_undefined = 'unknown'; // XXX
+    Messages.ui_none = 'none'; // XXX
 
     var localizeState = state => {
         var o = {
@@ -452,16 +286,50 @@ define([
             'false': Messages.ui_false,
             'undefined': Messages.ui_undefined,
         };
-        return o[state] || 'oops'; // XXX
+        return o[state] || Messages.error;
     };
 
     var disable = $el => $el.attr('disabled', 'disabled');
     var enable = $el => $el.removeAttr('disabled');
 
-    Messages.ui_none = 'none'; // XXX
     var maybeDate = function (d) {
         return d? new Date(d): Messages.ui_undefined;
     };
+
+    var archiveReason = "";
+    var justifyArchivalDialog = function (customMessage, action) {
+        var message = h('p', customMessage || Messages.admin_archiveReason);
+        UI.prompt(message, archiveReason, result => {
+            if (result === null) { return; }
+            if (typeof(result) !== 'string' || !result.trim()) { return; }
+            archiveReason = result;
+            action(result);
+        }, {
+            ok: Messages.ui_confirm,
+        });
+    };
+
+    var restoreReason = "";
+    var justifyRestorationDialog = function (customMessage, action) {
+        var message = h('p', customMessage || Messages.admin_restoreReason);
+        UI.prompt(message, restoreReason, result => {
+            if (result === null) { return; }
+            if (typeof(result) !== 'string' || !result.trim()) { return; }
+            restoreReason = result;
+            action(result);
+        }, {
+            ok: Messages.ui_confirm,
+        });
+    };
+
+    var customButton = function (cls, text, handler) {
+        var btn = h(`button.btn.btn-${cls}`, text);
+        if (handler) { $(btn).click(handler); }
+        return btn;
+    };
+
+    var primary = (text, handler) => customButton('primary', text, handler);
+    var danger = (text, handler) => customButton('danger', text, handler);
 
     var renderAccountData = function (data) {
         var tableObj = makeMetadataTable('cp-account-stats');
@@ -473,75 +341,52 @@ define([
         // signing key
         row(Messages.settings_publicSigningKey, data.key);
 
-
         // First pin activity time
-        Messages.admin_firstPinTime = 'First pin activity time'; // XXX
         row(Messages.admin_firstPinTime, maybeDate(data.first));
 
         // last pin activity time
-        Messages.admin_lastPinTime = 'Last pin activity time'; // XXX
         row(Messages.admin_lastPinTime, maybeDate(data.latest));
 
         // currently online
-        Messages.admin_currentlyOnline = 'Is currently online'; // XXX
         row(Messages.admin_currentlyOnline, data.currentlyOnline);
 
         // plan name
-        Messages.admin_planName = 'Plan name'; // XXX
         row(Messages.admin_planName, data.plan || Messages.ui_none);
 
         // plan note
-        Messages.admin_note = 'Plan note'; // XXX
         row(Messages.admin_note, data.note || Messages.ui_none);
 
         // storage limit
-        Messages.admin_limit = "Storage limit"; // XXX
         row(Messages.admin_limit, getPrettySize(data.limit));
 
         // data stored
-        Messages.admin_storageUsage =  'Data stored'; // XXX
         row(Messages.admin_storageUsage, getPrettySize(data.usage));
 
         // number of channels
-        Messages.admin_channelCount = "Number of channels"; // XXX
         row(Messages.admin_channelCount, data.channels);
 
         // number of files pinned
-        Messages.admin_fileCount = 'Number of files'; // XXX
         row(Messages.admin_fileCount, data.files);
 
-        Messages.admin_pinLogAvailable = "Pin log is available"; // XXX
         row(Messages.admin_pinLogAvailable, localizeState(data.live));
 
         // pin log archived
-        Messages.admin_pinLogArchived = 'Pin log is archived'; // XXX
         row(Messages.admin_pinLogArchived, localizeState(data.archived));
-
-        var BTN = function (cls) {
-            return function (text, handler) {
-                var btn = h(`button.btn.btn-${cls}`, text);
-                if (handler) { $(btn).click(handler); }
-                return btn;
-            };
-        };
-
-        var primary = BTN('primary');
-        var danger = BTN('danger');
 
     // actions
         if (data.archived && data.live === false) {
-            Messages.admin_restoreArchivedPins = "Restore archived pin log"; // XXX
-            Messages.admin_pinLogRestored = 'Pin log restored'; // XXX
-            Messages.ui_restore = 'Restore';
-
             row(Messages.admin_restoreArchivedPins, primary(Messages.ui_restore, function () {
-                // XXX confirm first
-                sframeCommand('RESTORE_ARCHIVED_PIN_LOG', data.key, function (err) {
-                    if (err) {
-                        console.error(err);
-                        return void UI.warn(Messages.error);
-                    }
-                    UI.log(Messages.admin_pinLogRestored);
+                justifyRestorationDialog('', reason => {
+                    sframeCommand('RESTORE_ARCHIVED_PIN_LOG', {
+                        key: data.key,
+                        reason: reason,
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.log(Messages.admin_pinLogRestored);
+                    });
                 });
             }));
         }
@@ -550,7 +395,8 @@ define([
             var getPins = () => {
                 sframeCommand('GET_PIN_LIST', data.key, (err, pins) => {
                     if (err || !Array.isArray(pins)) {
-                        return void UI.warn(Messages.error); // XXX
+                        console.error(err);
+                        return void UI.warn(Messages.error);
                     }
                     var P = pins.slice().sort((a, b) => a.length - b.length);
                     UI.alert(h('ul', P.map(p => h('li', h('code', p)))));
@@ -558,94 +404,67 @@ define([
             };
 
             // get full pin list
-            Messages.admin_getPinList = 'Get full pin list'; // XXX
-            row(Messages.admin_getPinList, primary('go', getPins)); // XXX display modal with pre or ul and buttons to copy/download
+            row(Messages.admin_getPinList, primary(Messages.ui_fetch, getPins)); // XXX display modal with pre or ul and buttons to copy/download
 
             // get full pin history
-            Messages.admin_getFullPinHistory = 'Get full pin history (not implemented)'; // XXX
             var getHistoryHandler = () => {
                 sframeCommand('GET_PIN_HISTORY', data.key, (err, history) => {
                     if (err) { return void UI.warn(err); }
                     UI.log(history); // XXX
                 });
             };
-            var pinHistoryButton =  primary('go', getHistoryHandler);
+            var pinHistoryButton =  primary(Messages.ui_fetch, getHistoryHandler);
             disable($(pinHistoryButton));
 
             row(Messages.admin_getFullPinHistory, pinHistoryButton); // XXX display modal with pre and buttons to copy/download
 
             // archive pin log
-            Messages.admin_archivePinLog = "Archive this account's pin log";  // XXX
-            Messages.admin_pinLogArchived = "Pin log archived"; // XXX
-            Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive."; // XXX
-            Messages.ui_pleaseConfirm = "Please confirm you want to proceed"; // XXX
-            Messages.ui_confirm = "Confirm"; // XXX
             var archiveHandler = () => {
-                var message = h('span', [
-                    h('p', Messages.admin_archivePinLogConfirm),
-                    h('p', Messages.ui_pleaseConfirm),
-                ]);
-
-                UI.confirm(message, yes => {
-                    if (!yes) { return; }
-                    sframeCommand('ARCHIVE_PIN_LOG', data.key, (err /*, response */) => {
+                justifyArchivalDialog(Messages.admin_archivePinLogConfirm, reason => {
+                    sframeCommand('ARCHIVE_PIN_LOG', {
+                        key: data.key,
+                        reason: reason,
+                    }, (err /*, response */) => {
                         console.error(err);
                         if (err) { return void UI.warn(err); }
                         UI.log(Messages.admin_pinLogArchived);
                     });
-                }, {
-                    ok: Messages.ui_confirm,
                 });
             };
 
             // XXX accessibility, tooltips
             row(Messages.admin_archivePinLog, danger(Messages.admin_archiveButton, archiveHandler)); // XXX this user's documents will no longer be considered important. inactive documents may eventually be removed if nobody else is pinning them
 
-                // if (data.archived) {
-                    // danger, will overwrite
-                //} else {
-                    // confirm
-                //}
-
             // archive owned documents
-            Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)"; // XXX
-            Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored."; // XXX
             // XXX accessibility, tooltips
             var archiveDocuments = () => {
-                var message = h('span', [
-                    h('p', Messages.admin_archiveDocumentConfirm),
-                    h('p', Messages.ui_pleaseConfirm),
-                ]);
-                UI.confirm(message, yes => { // XXX
-                    if (!yes) { return; }
-                    sframeCommand('ARCHIVE_OWNED_DOCUMENTS', data.key, (err, response) => {
+                justifyRestorationDialog(Messages.admin_archiveDocumentsConfirm, reason => {
+                    sframeCommand('ARCHIVE_OWNED_DOCUMENTS', {
+                        key: data.key,
+                        reason: reason,
+                    }, (err, response) => {
                         if (err) { return void UI.warn(err); }
                         UI.log(response);
                     });
-                }, {
-                    ok: Messages.ui_confirm,
                 });
             };
 
             var archiveDocumentsButton = danger(Messages.admin_archiveButton, archiveDocuments);
-            disable($(archiveDocumentsButton));
+            disable($(archiveDocumentsButton)); // XXX
             row(Messages.admin_archiveOwnedAccountDocuments, archiveDocumentsButton);
         }
         return tableObj.table;
     };
 
-    create['account-metadata'] = function () { // XXX
+    create['account-metadata'] = function () {
         var key = 'account-metadata';
         var $div = makeBlock(key, true);
 
         // input field for edPublic or user string
-        Messages.admin_accountMetadataPlaceholder = 'user string (from profile/settings) or public signing key'; // XXX
-
         var input = h('input', {
             placeholder: Messages.admin_accountMetadataPlaceholder,
             type: 'text',
             value: '',
-            //value: '[ansuz@localhost:3000/BpL3pEyX2IlfsvxQELB9uz5qh+40re0gD6J6LOobBm8=]', // XXX
         });
         var $input = $(input);
 
@@ -697,7 +516,6 @@ define([
             var state = getInputState();
             if (!state.valid) {
                 results.innerHTML = '';
-                Messages.admin_invalidKey = 'INVALID KEY'; // XXX
                 return void UI.warn(Messages.admin_invalidKey);
             }
             var key = state.key;
@@ -709,7 +527,7 @@ define([
                 setInterfaceState();
                 if (!data) {
                     results.innerHTML = '';
-                    return UI.warn("no data"); // XXX
+                    return UI.warn(Messages.error);
                 }
                 var table = renderAccountData(data);
                 results.innerHTML = '';
@@ -799,35 +617,68 @@ define([
         });
     };
 
-    var archiveReason = "";
-    var restoreReason = "";
+    Messages.ui_success = "Success"; // XXX
+    Messages.admin_archiveReason = "Please specify the reason for archival and confirm that you would like to proceed"; // XXX
+    Messages.admin_restoreReason = "Please specify the reason for restoration and confirm that you would like to proceed"; // XXX
+    Messages.ui_restore = 'Restore'; // XXX
+    Messages.admin_restoreArchivedPins = "Restore archived pin log"; // XXX
+    Messages.admin_pinLogRestored = 'Pin log restored'; // XXX
+    Messages.admin_getPinList = 'Fetch full pin list'; // XXX
+
+    Messages.admin_getFullPinHistory = 'Fetch full pin history (not implemented)'; // XXX
+    Messages.ui_fetch = "Fetch"; // XXX
+
+    Messages.admin_archivePinLog = "Archive this account's pin log";  // XXX
+    Messages.admin_pinLogArchived = "Pin log archived"; // XXX
+    Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive."; // XXX
+    Messages.ui_confirm = "Confirm"; // XXX
+
+    Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)"; // XXX
+    Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored."; // XXX
+
+    Messages.admin_accountMetadataPlaceholder = 'User id (public signing key)'; // XXX
+    Messages.admin_invalidKey = 'INVALID KEY'; // XXX
+    Messages.admin_documentType = 'Document type'; // XXX
+    Messages.admin_documentSize = 'Document size'; // XXX
+
+    Messages.admin_documentMetadata = "Computed metadata"; // XXX
+    Messages.admin_documentCreationTime = 'Document creation time'; // XXX
+    Messages.admin_documentModifiedTime = "Last modified"; // XXX
+    Messages.admin_currentlyOpen = 'Currently open?'; // XXX
+    Messages.admin_channelAvailable = 'Channel is available'; // XXX
+    Messages.admin_channelArchived = 'Channel is archived'; // XXX
+    Messages.admin_getRawMetadata = 'Fetch full metadata history (not implemented)'; // XXX
+    Messages.admin_archiveDocument = 'Archive document'; // XXX
+    Messages.admin_archiveDocumentConfirm = "Are you sure?"; // XXX
+
+    Messages.admin_restoreDocument = "Restore document"; // XXX
+    Messages.admin_restoreDocumentConfirm = "Are you sure?"; // XXX
+
+    Messages.admin_documentMetadataPlaceholder = "Document URL or id"; // XXX
+
+    Messages.admin_firstPinTime = 'First pin activity time'; // XXX
+    Messages.admin_lastPinTime = 'Last pin activity time'; // XXX
+    Messages.admin_currentlyOnline = 'Is currently online'; // XXX
+    Messages.admin_planName = 'Plan name'; // XXX
+    Messages.admin_note = 'Plan note'; // XXX
+    Messages.admin_limit = "Storage limit"; // XXX
+    Messages.admin_storageUsage =  'Data stored'; // XXX
+    Messages.admin_channelCount = "Number of channels"; // XXX
+    Messages.admin_fileCount = 'Number of files'; // XXX
+    Messages.admin_pinLogAvailable = "Pin log is available"; // XXX
+    Messages.admin_pinLogArchived = 'Pin log is archived'; // XXX
+
     var renderDocumentData = function (data) {
         var tableObj = makeMetadataTable('cp-document-stats');
         var row = tableObj.row;
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
-
         row(Messages.documentID, data.id);
-
-        Messages.admin_documentType = 'Document type'; // XXX
         row(Messages.admin_documentType, data.type);
-
-        Messages.admin_documentSize = 'Document size'; // XXX
         row(Messages.admin_documentSize, data.size? getPrettySize(data.size): Messages.ui_undefined);
-
-        var BTN = (cls) => {
-            return function (text, handler) {
-                var btn = h(`button.btn.btn-${cls}`, text);
-                if (handler) { $(btn).click(handler); }
-                return btn;
-            };
-        };
-        var primary = BTN('primary');
-        var danger = BTN('danger');
 
         if (data.type === 'channel') {
             // XXX what to do for files?
-            Messages.admin_documentMetadata = "Computed metadata"; // XXX
             try {
                 row(Messages.admin_documentMetadata, h('pre', JSON.stringify(data.metadata || {}, null, 2)));
             } catch (err2) {
@@ -835,90 +686,56 @@ define([
                 console.error(err2);
             }
 
-            Messages.admin_documentCreationTime = 'Document creation time'; // XXX
             row(Messages.admin_documentCreationTime, maybeDate(data.created));
-
-            Messages.admin_documentModifiedTime = "Last modified"; // XXX
             row(Messages.admin_documentModifiedTime, maybeDate(data.lastModified));
-
-            Messages.admin_currentlyOpen = 'Currently open?'; // XXX
             row(Messages.admin_currentlyOpen, localizeState(data.currentlyOpen));
-
-            Messages.admin_channelAvailable = 'Channel is available'; // XXX
             row(Messages.admin_channelAvailable, localizeState(data.live));
-
-            Messages.admin_channelArchived = 'Channel is archived'; // XXX
             row(Messages.admin_channelArchived, localizeState(data.archived));
 
         // actions
             // get raw metadata history
-            Messages.admin_getRawMetadata = 'Get full metadata history (not implemented)';
-            var metadataHistoryButton = primary('go!', function () { // XXX
+            var metadataHistoryButton = primary(Messages.ui_fetch, function () {
                 UI.warn('NOT_IMPLEMENTED'); // XXX
             });
             disable($(metadataHistoryButton));
-
             row(Messages.admin_getRawMetadata, metadataHistoryButton);
         }
 
         if (data.live) {
         // archive
-            Messages.admin_archiveDocument = 'Archive document'; // XXX
-            Messages.admin_archiveDocumentConfirm = "Are you sure?"; // XXX
             // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
-
             var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
-                var message = h('span', [
-                    h('p', 'Please specify the reason for archiving this file and confirm that you would like to proceed'), // XXX
-                    h('p', Messages.ui_pleaseConfirm),
-                ]);
-
-                UI.prompt(message, archiveReason, result => {
-                    if (result === null) { return; }
-                    archiveReason = result;
+                justifyArchivalDialog('', result => {
                     sframeCommand('ARCHIVE_DOCUMENT', {
                         id: data.id,
-                        reason: archiveReason,
+                        reason: result,
                     }, (err /*, response */) => {
                         if (err) {
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
                         UI.log(Messages.archivedFromServer);
-                        $(archiveDocumentButton).attr('disabled', 'disabled');
+                        disable($(archiveDocumentButton));
                     });
-                }, {
-                    ok: Messages.ui_confirm,
                 });
             });
             row(Messages.admin_archiveDocument, archiveDocumentButton);
         }
 
         if (data.archived && !data.live) {
-            Messages.admin_restoreDocument = "Restore document"; // XXX
-            Messages.admin_restoreDocumentConfirm = "Are you sure?";
             var restoreDocumentButton = primary(Messages.admin_unarchiveButton, function () {
-                var message = h('span', [
-                    h('p', 'Please specify the reason for restoring this file and confirm that you would like to proceed.'), // XXX
-                    h('p', Messages.ui_pleaseConfirm),
-                ]);
-
-                UI.prompt(message, restoreReason, result => {
-                    if (result === null) { return; }
-                    restoreReason = result;
+                justifyRestorationDialog('', reason => {
                     sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
                         id: data.id,
-                        reason: restoreReason,
+                        reason: reason,
                     }, (err /*, response */) => {
                         if (err) {
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
                         UI.log(Messages.restoredFromServer);
-                        $(restoreDocumentButton).attr('disabled', 'disabled');
+                        disable($(restoreDocumentButton));
                     });
-                }, {
-                    ok: Messages.ui_confirm,
                 });
             });
             // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
@@ -933,7 +750,6 @@ define([
         var key = 'document-metadata';
         var $div = makeBlock(key, true);
 
-        Messages.admin_documentMetadataPlaceholder = "Document URL or id"; // XXX
         var input = h('input', {
             placeholder: Messages.admin_documentMetadataPlaceholder,
             type: 'text',
@@ -1064,18 +880,14 @@ define([
     Messages.admin_blockMetadataTitle = 'Login-block information';// XXX
     Messages.admin_blockMetadataHint = `Login blocks store an account's essential credentials and are encrypted using keys derived from their username and password.`; // XXX
 
-    // XXX admin_blockMetadataHint
-// access information about login blocks
-/*
-    status (live/archived/unknown)
-    FS metadata (ctime/atime/mtime)
-    actions
-        archive
-        restore
-
-*/
-//`;
     Messages.admin_blockMetadataButton = 'Check block status';// XXX
+    Messages.admin_blockMetadataPlaceholder = 'Absolute or relative block URL'; // XXX
+    Messages.admin_restoreBlock = "RESTORE ARCHIVED BLOCK"; // XXX
+    Messages.admin_archiveBlock = "ARCHIVE BLOCK"; // XXX
+    Messages.admin_blockKey = 'Block public key'; // XXX
+    Messages.admin_blockAvailable = 'Block is available'; // XXX
+    Messages.admin_blockArchived = 'Block is archived'; // XXX
+    Messages.ui_archive = "Archive"; // XXX
 
     var getBlockData = function (key, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
@@ -1107,74 +919,55 @@ define([
         var row = tableObj.row;
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
-
-        Messages.admin_blockKey = 'Block public key';
         row(Messages.admin_blockKey, data.key);
-
-        Messages.admin_blockAvailable = 'Block is available';
         row(Messages.admin_blockAvailable, localizeState(data.live));
-
-        Messages.admin_blockArchived = 'Block is archived';
         row(Messages.admin_blockArchived, localizeState(data.archived));
 
-        var BTN = function (cls) {
-            return function (text, handler) {
-                var btn = h(`button.btn.btn-${cls}`, text);
-                if (handler) { $(btn).click(handler); }
-                return btn;
-            };
-        };
-
         if (data.live) {
-            // XXX archive button
-            var archiveButton = BTN('danger')('ARCHIVE', function () {
-                // XXX confirm first
-                // add a reason
-                sframeCommand('ARCHIVE_BLOCK', {
-                    key: data.key,
-                    reason: '', // XXX
-                }, (err, res) => {
-                    if (err) {
-                        console.error(err);
-                        return void UI.warn(Messages.error);
-                    }
-                    disable($(archiveButton));
-                    UI.log("archive block");
-                    console.log('archive block', err, res);
+            var archiveButton = danger(Messages.ui_archive, function () {
+                justifyArchivalDialog('', reason => {
+                    sframeCommand('ARCHIVE_BLOCK', {
+                        key: data.key,
+                        reason: reason,
+                    }, (err, res) => {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        disable($(archiveButton));
+                        UI.log(Messages.ui_success);
+                        console.log('archive block', err, res);
+                    });
                 });
             });
-            Messages.admin_archiveBlock = "ARCHIVE BLOCK";
             row(Messages.admin_archiveBlock, archiveButton);
         }
         if (data.archived && !data.live) {
-            // XXX restore button
-            var restoreButton = BTN('danger')('RESTORE', function () {
-                // XXX confirm first
-                sframeCommand('RESTORE_ARCHIVED_BLOCK', {
-                    key: data.key,
-                    reason: '', // XXX
-                }, (err, res) => {
-                    if (err) {
-                        console.error(err);
-                        return void UI.warn(Messages.error);
-                    }
-                    disable($(restoreButton));
-                    console.log('restore archived block', err, res);
-                    UI.log("SUCCESS"); // XXX
+            var restoreButton = danger(Messages.ui_restore, function () {
+                justifyRestorationDialog('', reason => {
+                    sframeCommand('RESTORE_ARCHIVED_BLOCK', {
+                        key: data.key,
+                        reason: reason,
+                    }, (err, res) => {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        disable($(restoreButton));
+                        console.log('restore archived block', err, res);
+                        UI.log(Messages.ui_success);
+                    });
                 });
             });
-            Messages.admin_restoreBlock = "RESTORE ARCHIVED BLOCK";
             row(Messages.admin_restoreBlock, restoreButton);
         }
 
         return tableObj.table;
     };
 
-    create['block-metadata'] = function () { // XXX
+    create['block-metadata'] = function () {
         var key = 'block-metadata';
         var $div = makeBlock(key, true);
-
-        Messages.admin_blockMetadataPlaceholder = 'XXX PLACEHOLDER';
 
         var input = h('input', {
             placeholder: Messages.admin_blockMetadataPlaceholder,
@@ -1247,9 +1040,10 @@ define([
             getBlockData(state.key, (err, data) => {
                 pending = false;
                 setInterfaceState();
-                if (!data) {
+                if (err || !data) {
                     results.innerHTML = '';
-                    return UI.warn("no data"); // XXX
+                    console.log(err, data);
+                    return UI.warn(Messages.error);
                 }
                 var table = renderBlockData(data);
                 results.innerHTML = '';
@@ -1778,45 +1572,6 @@ define([
         return $div;
     };
 
-/*
-    create['getquota'] = function () { // XXX remove?
-        var key = 'getquota';
-        var $div = makeBlock(key, true); // Msg.admin_getquotaHint, .admin_getquotaTitle, .admin_getquotaButton
-
-        var input = h('input#cp-admin-getquota', {
-            type: 'text'
-        });
-        var $input = $(input);
-
-        var $button = $div.find('button');
-        $button.before(h('div.cp-admin-setlimit-form', [
-            input,
-        ]));
-
-        $button.click(function () {
-            var val = $input.val();
-            if (!val || !val.trim()) { return; }
-            var key = Keys.canonicalize(val);
-            if (!key) { return; }
-            $input.val('');
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'GET_USER_TOTAL_SIZE',
-                data: key
-            }, function (e, obj) {
-                if (e || (obj && obj.error)) {
-                    console.error(e || obj.error);
-                    return void UI.warn(Messages.error);
-                }
-                var size = Array.isArray(obj) && obj[0];
-                if (typeof(size) !== "number") { return; }
-                UI.alert(getPrettySize(size));
-            });
-        });
-
-        return $div;
-    };
-*/
-
     var onRefreshStats = Util.mkEvent();
 
     create['refresh-stats'] = function () {
@@ -1830,8 +1585,8 @@ define([
         return $div;
     };
 
-    Messages.admin_uptimeTitle = 'Launch time';
-    Messages.admin_uptimeHint = 'Date and time at which the server was launched';
+    Messages.admin_uptimeTitle = 'Launch time'; // XXX
+    Messages.admin_uptimeHint = 'Date and time at which the server was launched'; // XXX
 
     create['uptime'] = function () {
         var key = 'uptime';
