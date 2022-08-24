@@ -164,7 +164,7 @@ define([
 
     Messages.admin_accountMetadataTitle = 'Account information'; // XXX
     Messages.admin_accountMetadataHint = `Enter a user's public key to fetch data about their account.`; // XXX
-    Messages.admin_accountMetadataButton = 'Generate report'; // XXX
+    Messages.ui_generateReport = 'Generate report'; // XXX
 
     var sframeCommand = function (command, data, cb) {
         sFrameChan.query('Q_ADMIN_RPC', {
@@ -493,6 +493,7 @@ define([
         };
 
         var $btn = $div.find('.btn');
+        $btn.text(Messages.ui_generateReport);
         disable($btn);
         var setInterfaceState = function (state) {
             state = state || getInputState();
@@ -540,7 +541,6 @@ define([
 
     Messages.admin_documentMetadataHint = `Query a channel or file via its id or link`; // XXX
     Messages.admin_documentMetadataTitle = 'Document information';// XXX
-    Messages.admin_documentMetadataButton = 'Generate report'; // XXX
 
     var getDocumentData = function (id, cb) {
         var data = {
@@ -829,6 +829,7 @@ define([
         $div.append(results);
 
         var $btn = $div.find('.btn');
+        $btn.text(Messages.ui_generateReport);
         disable($btn);
 
         var setInterfaceState = function () {
@@ -1590,7 +1591,7 @@ define([
 
     create['uptime'] = function () {
         var key = 'uptime';
-        var $div = makeBlock(key); // Msg.admin_activeSessionsHint, .admin_activeSessionsTitle
+        var $div = makeBlock(key); // Msg.admin_uptimeTitle, .admin_uptimeHint
         var pre = h('pre');
 
         var set = function () {
