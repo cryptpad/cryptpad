@@ -1439,5 +1439,7 @@
     "home_location": "Encrypted data is hosted in {0}",
     "home_morestorage": "For more storage space:",
     "login_instance": "Connect to your account on {0}",
-    "register_instance": "Creating a new account on {0}"
+    "register_instance": "Creating a new account on {0}",
+    "admin_uptimeTitle": "Launch time",
+    "admin_uptimeHint": "Date and time at which the server was launched"
 }
