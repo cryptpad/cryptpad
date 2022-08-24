@@ -1603,7 +1603,7 @@ define([
 
         $div.append(pre);
         onRefreshStats.reg(function () {
-            set();
+            APP.updateStatus(set);
         });
         return $div;
     };
