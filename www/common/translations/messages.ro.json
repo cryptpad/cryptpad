@@ -369,7 +369,7 @@
     "register_passwordTooShort": "Parolele trebuie să aibă o lungime de cel putin {0} caractere.",
     "register_whyRegister": "De ce să te înscrii?",
     "settings_cat_account": "Cont",
-    "settings_cat_drive": "CrytpDrive",
+    "settings_cat_drive": "CryptDrive",
     "settings_cat_cursor": "Cursor",
     "settings_cat_code": "Cod",
     "settings_cat_pad": "Rich text",
