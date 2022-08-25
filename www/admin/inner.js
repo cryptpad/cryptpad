@@ -162,10 +162,6 @@ define([
 
     var isHex = s => !/[^0-9a-f]/.test(s);
 
-    Messages.admin_accountMetadataTitle = 'Account information'; // XXX
-    Messages.admin_accountMetadataHint = `Enter a user's public key to fetch data about their account.`; // XXX
-    Messages.ui_generateReport = 'Generate report'; // XXX
-
     var sframeCommand = function (command, data, cb) {
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: command,
@@ -272,14 +268,6 @@ define([
     };
 
     var getPrettySize = UIElements.prettySize;
-    Messages.admin_generatedAt = 'Time generated'; // XXX
-
-    // pin log available
-    Messages.ui_true = 'true'; // XXX
-    Messages.ui_false = 'false'; // XXX
-    Messages.ui_undefined = 'unknown'; // XXX
-    Messages.ui_none = 'none'; // XXX
-
     var localizeState = state => {
         var o = {
             'true': Messages.ui_true,
@@ -517,7 +505,7 @@ define([
             var state = getInputState();
             if (!state.valid) {
                 results.innerHTML = '';
-                return void UI.warn(Messages.admin_invalidKey);
+                return void UI.warn(Messages.error);
             }
             var key = state.key;
             pending = true;
@@ -538,9 +526,6 @@ define([
 
         return $div;
     };
-
-    Messages.admin_documentMetadataHint = `Query a channel or file via its id or link`; // XXX
-    Messages.admin_documentMetadataTitle = 'Document information';// XXX
 
     var getDocumentData = function (id, cb) {
         var data = {
@@ -617,56 +602,22 @@ define([
         });
     };
 
-    Messages.ui_success = "Success"; // XXX
-    Messages.admin_archiveReason = "Please specify the reason for archival and confirm that you would like to proceed"; // XXX
-    Messages.admin_restoreReason = "Please specify the reason for restoration and confirm that you would like to proceed"; // XXX
-    Messages.ui_restore = 'Restore'; // XXX
     Messages.admin_restoreArchivedPins = "Restore archived pin log"; // XXX
     Messages.admin_pinLogRestored = 'Pin log restored'; // XXX
     Messages.admin_getPinList = 'Fetch full pin list'; // XXX
 
     Messages.admin_getFullPinHistory = 'Fetch full pin history (not implemented)'; // XXX
-    Messages.ui_fetch = "Fetch"; // XXX
 
     Messages.admin_archivePinLog = "Archive this account's pin log";  // XXX
     Messages.admin_pinLogArchived = "Pin log archived"; // XXX
     Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive."; // XXX
-    Messages.ui_confirm = "Confirm"; // XXX
 
     Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)"; // XXX
     Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored."; // XXX
 
-    Messages.admin_accountMetadataPlaceholder = 'User id (public signing key)'; // XXX
-    Messages.admin_invalidKey = 'INVALID KEY'; // XXX
-    Messages.admin_documentType = 'Document type'; // XXX
-    Messages.admin_documentSize = 'Document size'; // XXX
-
-    Messages.admin_documentMetadata = "Computed metadata"; // XXX
-    Messages.admin_documentCreationTime = 'Document creation time'; // XXX
-    Messages.admin_documentModifiedTime = "Last modified"; // XXX
-    Messages.admin_currentlyOpen = 'Currently open?'; // XXX
-    Messages.admin_channelAvailable = 'Channel is available'; // XXX
-    Messages.admin_channelArchived = 'Channel is archived'; // XXX
     Messages.admin_getRawMetadata = 'Fetch full metadata history (not implemented)'; // XXX
     Messages.admin_archiveDocument = 'Archive document'; // XXX
-    Messages.admin_archiveDocumentConfirm = "Are you sure?"; // XXX
-
     Messages.admin_restoreDocument = "Restore document"; // XXX
-    Messages.admin_restoreDocumentConfirm = "Are you sure?"; // XXX
-
-    Messages.admin_documentMetadataPlaceholder = "Document URL or id"; // XXX
-
-    Messages.admin_firstPinTime = 'First pin activity time'; // XXX
-    Messages.admin_lastPinTime = 'Last pin activity time'; // XXX
-    Messages.admin_currentlyOnline = 'Is currently online'; // XXX
-    Messages.admin_planName = 'Plan name'; // XXX
-    Messages.admin_note = 'Plan note'; // XXX
-    Messages.admin_limit = "Storage limit"; // XXX
-    Messages.admin_storageUsage =  'Data stored'; // XXX
-    Messages.admin_channelCount = "Number of channels"; // XXX
-    Messages.admin_fileCount = 'Number of files'; // XXX
-    Messages.admin_pinLogAvailable = "Pin log is available"; // XXX
-    Messages.admin_pinLogArchived = 'Pin log is archived'; // XXX
 
     var renderDocumentData = function (data) {
         var tableObj = makeMetadataTable('cp-document-stats');
@@ -878,17 +829,11 @@ define([
         return $div;
     };
 
-    Messages.admin_blockMetadataTitle = 'Login-block information';// XXX
-    Messages.admin_blockMetadataHint = `Login blocks store an account's essential credentials and are encrypted using keys derived from their username and password.`; // XXX
-
-    Messages.admin_blockMetadataButton = 'Check block status';// XXX
-    Messages.admin_blockMetadataPlaceholder = 'Absolute or relative block URL'; // XXX
     Messages.admin_restoreBlock = "RESTORE ARCHIVED BLOCK"; // XXX
     Messages.admin_archiveBlock = "ARCHIVE BLOCK"; // XXX
     Messages.admin_blockKey = 'Block public key'; // XXX
     Messages.admin_blockAvailable = 'Block is available'; // XXX
     Messages.admin_blockArchived = 'Block is archived'; // XXX
-    Messages.ui_archive = "Archive"; // XXX
 
     var getBlockData = function (key, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
@@ -985,6 +930,7 @@ define([
         var results = h('span');
         $div.append(results);
         var $btn = $div.find('.btn');
+        $btn.text(Messages.ui_generateReport);
         disable($btn);
 
         var pending = false;
@@ -1585,9 +1531,6 @@ define([
         $div.append($btn);
         return $div;
     };
-
-    Messages.admin_uptimeTitle = 'Launch time'; // XXX
-    Messages.admin_uptimeHint = 'Date and time at which the server was launched'; // XXX
 
     create['uptime'] = function () {
         var key = 'uptime';
@@ -3003,8 +2946,6 @@ define([
         network: 'fa fa-sitemap', // or fa-university ?
         database: 'fa fa-database',
     };
-
-    Messages.admin_cat_database = "Database"; // XXX
 
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
