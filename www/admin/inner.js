@@ -346,6 +346,7 @@ define([
         return button;
     };
 
+    Messages.admin_reportContent = "Report content"; // XXX
     var reportContentLabel = () => {
         return h('span', [
             Messages.admin_reportContent,
@@ -381,7 +382,7 @@ define([
         row(Messages.admin_note, data.note || Messages.ui_none);
 
         // storage limit
-        row(Messages.admin_limit, getPrettySize(data.limit));
+        row(Messages.admin_planLimit, getPrettySize(data.limit));
 
         // data stored
         row(Messages.admin_storageUsage, getPrettySize(data.usage));
@@ -439,7 +440,7 @@ define([
                         console.error(err);
                         return void UI.warn(Messages.error);
                     }
-                    UI.log(history); // XXX
+                    UI.alert(history); // XXX NOT_IMPLEMENTED
                 });
             };
             var pinHistoryButton =  primary(Messages.ui_fetch, getHistoryHandler);
@@ -594,7 +595,6 @@ define([
                 if (!(Array.isArray(res) && res[0])) { return void console.error("NO_METADATA"); }
                 var metadata = res[0];
                 data.metadata = metadata;
-                console.info('metadata', metadata); // XXX
                 data.created = Util.find(data, ['metadata', 'created']);
             }));
         }).nThen(function (w) {
@@ -746,7 +746,7 @@ define([
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messages.restoredFromServer); // XXX success?
+                        UI.log(Messages.ui_success);
                         disable($(restoreDocumentButton));
                     });
                 });
@@ -756,15 +756,11 @@ define([
         }
         // XXX file restore button?
 
-        row(h('span', [
-            Messages.admin_reportContent,
-            ' (JSON)',
-        ]), copyToClipboard(data));
+        row(reportContentLabel, copyToClipboard(data));
 
         return tableObj.table;
     };
 
-    Messages.admin_reportContent = "Report content"; // XXX
     create['document-metadata'] = function () { // XXX
         var key = 'document-metadata';
         var $div = makeBlock(key, true);
