@@ -14,6 +14,7 @@ define([
     '/common/common-hash.js',
     '/common/common-signing-keys.js',
     '/support/ui.js',
+    '/common/clipboard.js',
 
     '/lib/datepicker/flatpickr.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
@@ -38,6 +39,7 @@ define([
     Hash,
     Keys,
     Support,
+    Clipboard,
     Flatpickr
     )
 {
@@ -191,6 +193,7 @@ define([
             table: table,
         };
     };
+    var getPrettySize = UIElements.prettySize;
 
     var getAccountData = function (key, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
@@ -262,12 +265,26 @@ define([
                 }
             }));
         }).nThen(function () {
-            console.log(data);
+            //console.log(data);
+            try {
+                ['generated', 'first', 'latest'].forEach(k => {
+                    var val = data[k];
+                    if (typeof(val) !== 'number') { return; }
+                    data[`${k}_formatted`] = new Date(val);
+                });
+                ['limit', 'usage'].forEach(k => {
+                    var val = data[k];
+                    if (typeof(val) !== 'number') { return; }
+                    data[`${k}_formatted`] = getPrettySize(val);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+
             cb(void 0, data);
         });
     };
 
-    var getPrettySize = UIElements.prettySize;
     var localizeState = state => {
         var o = {
             'true': Messages.ui_true,
@@ -284,30 +301,28 @@ define([
         return d? new Date(d): Messages.ui_undefined;
     };
 
-    var archiveReason = "";
-    var justifyArchivalDialog = function (customMessage, action) {
-        var message = h('p', customMessage || Messages.admin_archiveReason);
-        UI.prompt(message, archiveReason, result => {
+    var justifyDialog = (message, suggestion, implicit, explicit) => {
+        UI.prompt(message, suggestion, result => { // XXX placeholder? (admin_archiveNote)
             if (result === null) { return; }
-            if (typeof(result) !== 'string' || !result.trim()) { return; }
-            archiveReason = result;
-            action(result);
+            if (typeof(result) !== 'string') { result = ''; }
+            else { result = result.trim(); }
+            implicit(result); // remember the justification for next time
+            explicit(result); // follow up with the action
         }, {
             ok: Messages.ui_confirm,
         });
     };
 
+    var archiveReason = "";
+    var justifyArchivalDialog = (customMessage, action) => {
+        var message = customMessage || Messages.admin_archiveReason;
+        justifyDialog(message, archiveReason, reason => { archiveReason = reason; }, action);
+    };
+
     var restoreReason = "";
-    var justifyRestorationDialog = function (customMessage, action) {
-        var message = h('p', customMessage || Messages.admin_restoreReason);
-        UI.prompt(message, restoreReason, result => {
-            if (result === null) { return; }
-            if (typeof(result) !== 'string' || !result.trim()) { return; }
-            restoreReason = result;
-            action(result);
-        }, {
-            ok: Messages.ui_confirm,
-        });
+    var justifyRestorationDialog = (customMessage, action) => {
+        var message = customMessage || Messages.admin_restoreReason;
+        justifyDialog(message, restoreReason, reason => { restoreReason = reason; }, action);
     };
 
     var customButton = function (cls, text, handler) {
@@ -318,6 +333,27 @@ define([
 
     var primary = (text, handler) => customButton('primary', text, handler);
     var danger = (text, handler) => customButton('danger', text, handler);
+
+    var copyToClipboard = (content) => {
+        var button = primary(Messages.copyToClipboard, () => {
+            var toCopy = JSON.stringify(content, null, 2);
+            if (Clipboard.copy.multiline(toCopy)) {
+                UI.log(Messages.genericCopySuccess);
+            } else {
+                UI.warn(Messages.error);
+            }
+        });
+        return button;
+    };
+
+    var reportContentLabel = () => {
+        return h('span', [
+            Messages.admin_reportContent,
+            ' (JSON) ',
+            h('br'),
+            h('small', Messages.ui_experimental),
+        ]);
+    };
 
     var renderAccountData = function (data) {
         var tableObj = makeMetadataTable('cp-account-stats');
@@ -373,7 +409,7 @@ define([
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messages.admin_pinLogRestored);
+                        UI.log(Messages.ui_success);
                     });
                 });
             }));
@@ -387,6 +423,8 @@ define([
                         return void UI.warn(Messages.error);
                     }
                     var P = pins.slice().sort((a, b) => a.length - b.length);
+                    // XXX format as two-column table (id, type)
+                    // XXX add ['copy-to-clipboard', 'close'] buttons
                     UI.alert(h('ul', P.map(p => h('li', h('code', p)))));
                 });
             };
@@ -397,7 +435,10 @@ define([
             // get full pin history
             var getHistoryHandler = () => {
                 sframeCommand('GET_PIN_HISTORY', data.key, (err, history) => {
-                    if (err) { return void UI.warn(err); }
+                    if (err) {
+                        console.error(err);
+                        return void UI.warn(Messages.error);
+                    }
                     UI.log(history); // XXX
                 });
             };
@@ -414,8 +455,11 @@ define([
                         reason: reason,
                     }, (err /*, response */) => {
                         console.error(err);
-                        if (err) { return void UI.warn(err); }
-                        UI.log(Messages.admin_pinLogArchived);
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.log(Messages.ui_success);
                     });
                 });
             };
@@ -441,6 +485,9 @@ define([
             disable($(archiveDocumentsButton)); // XXX
             row(Messages.admin_archiveOwnedAccountDocuments, archiveDocumentsButton);
         }
+
+        row(reportContentLabel, copyToClipboard(data));
+
         return tableObj.table;
     };
 
@@ -532,7 +579,7 @@ define([
             generated: +new Date(),
             id: id,
         };
-        var types = { // XXX handle things other than channels
+        var types = {
             32: 'channel',
             48: 'file',
             33: 'ephemeral',
@@ -547,10 +594,13 @@ define([
                 if (!(Array.isArray(res) && res[0])) { return void console.error("NO_METADATA"); }
                 var metadata = res[0];
                 data.metadata = metadata;
-                console.info('metadata', metadata);
-
+                console.info('metadata', metadata); // XXX
                 data.created = Util.find(data, ['metadata', 'created']);
             }));
+        }).nThen(function (w) {
+            if (data.type !== 'file') { return; }
+            w = w; // XXX get file data?
+            // XXX atime, mtime, ctime ?
         }).nThen(function (w) {
             sframeCommand("GET_DOCUMENT_SIZE", id, w(function (err, res) {
                 console.info('got document size', err, res);
@@ -598,26 +648,35 @@ define([
                 console.error("get channel status", err, res);
             }));
         }).nThen(function () {
+            // for easy readability when copying to clipboard
+            try {
+                ['generated', 'created', 'lastModified'].forEach(k => {
+                    data[`${k}_formatted`] = new Date(data[k]);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+
             cb(void 0, data);
         });
     };
 
-    Messages.admin_restoreArchivedPins = "Restore archived pin log"; // XXX
-    Messages.admin_pinLogRestored = 'Pin log restored'; // XXX
-    Messages.admin_getPinList = 'Fetch full pin list'; // XXX
-
     Messages.admin_getFullPinHistory = 'Fetch full pin history (not implemented)'; // XXX
 
-    Messages.admin_archivePinLog = "Archive this account's pin log";  // XXX
-    Messages.admin_pinLogArchived = "Pin log archived"; // XXX
     Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive."; // XXX
 
     Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)"; // XXX
     Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored."; // XXX
 
     Messages.admin_getRawMetadata = 'Fetch full metadata history (not implemented)'; // XXX
-    Messages.admin_archiveDocument = 'Archive document'; // XXX
-    Messages.admin_restoreDocument = "Restore document"; // XXX
+
+    var localizeType = function (type) {
+        var o = {
+            channel: Messages.type.doc,
+            file: Messages.type.file,
+        };
+        return o[type] || Messages.ui_undefined;
+    };
 
     var renderDocumentData = function (data) {
         var tableObj = makeMetadataTable('cp-document-stats');
@@ -625,11 +684,10 @@ define([
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
         row(Messages.documentID, data.id);
-        row(Messages.admin_documentType, data.type);
+        row(Messages.admin_documentType, localizeType(data.type));
         row(Messages.admin_documentSize, data.size? getPrettySize(data.size): Messages.ui_undefined);
 
         if (data.type === 'channel') {
-            // XXX what to do for files?
             try {
                 row(Messages.admin_documentMetadata, h('pre', JSON.stringify(data.metadata || {}, null, 2)));
             } catch (err2) {
@@ -651,6 +709,10 @@ define([
             disable($(metadataHistoryButton));
             row(Messages.admin_getRawMetadata, metadataHistoryButton);
         }
+        if (data.type === 'file') {
+            // XXX what to do for files?
+
+        }
 
         if (data.live) {
         // archive
@@ -665,12 +727,12 @@ define([
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messages.archivedFromServer);
+                        UI.log(Messages.archivedFromServer); // XXX success ?
                         disable($(archiveDocumentButton));
                     });
                 });
             });
-            row(Messages.admin_archiveDocument, archiveDocumentButton);
+            row(Messages.admin_archiveDocument, archiveDocumentButton); // XXX admin_archiveHint ?
         }
 
         if (data.archived && !data.live) {
@@ -684,19 +746,25 @@ define([
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messages.restoredFromServer);
+                        UI.log(Messages.restoredFromServer); // XXX success?
                         disable($(restoreDocumentButton));
                     });
                 });
             });
             // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
-            row(Messages.admin_restoreDocument, restoreDocumentButton);
+            row(Messages.admin_restoreDocument, restoreDocumentButton); // XXX display admin_unarchiveHint inline
         }
         // XXX file restore button?
+
+        row(h('span', [
+            Messages.admin_reportContent,
+            ' (JSON)',
+        ]), copyToClipboard(data));
 
         return tableObj.table;
     };
 
+    Messages.admin_reportContent = "Report content"; // XXX
     create['document-metadata'] = function () { // XXX
         var key = 'document-metadata';
         var $div = makeBlock(key, true);
@@ -715,6 +783,7 @@ define([
 
         var $input = $(input);
         var $password = $(passwordContainer).find('input');
+        $password.attr('placeholder', Messages.admin_archiveInput2);
 
         var pending = false;
         var getInputState = function () {
@@ -743,6 +812,8 @@ define([
             if (!url) { return state; } // invalid
             var parsed = Hash.isValidHref(val);
             if (!parsed || !parsed.hashData) {
+                // XXX invalid input causes the password field to be displayed, ie:
+                // "drive": "eafc6ed83efa917a2d732b96e49c322b",
                 state.passwordRequired = true;
                 state.valid = false;
                 return state;
@@ -829,12 +900,6 @@ define([
         return $div;
     };
 
-    Messages.admin_restoreBlock = "RESTORE ARCHIVED BLOCK"; // XXX
-    Messages.admin_archiveBlock = "ARCHIVE BLOCK"; // XXX
-    Messages.admin_blockKey = 'Block public key'; // XXX
-    Messages.admin_blockAvailable = 'Block is available'; // XXX
-    Messages.admin_blockArchived = 'Block is archived'; // XXX
-
     var getBlockData = function (key, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var data = {
@@ -856,6 +921,14 @@ define([
                 data.archived = res[0].archived;
             }));
         }).nThen(function () {
+            try {
+                ['generated'].forEach(k => {
+                    data[`${k}_formatted`] = new Date(data[k]);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+
             cb(void 0, data);
         });
     };
@@ -907,6 +980,8 @@ define([
             });
             row(Messages.admin_restoreBlock, restoreButton);
         }
+
+        row(reportContentLabel, copyToClipboard(data));
 
         return tableObj.table;
     };
