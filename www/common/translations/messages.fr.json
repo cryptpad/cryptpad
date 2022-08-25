@@ -1439,5 +1439,9 @@
     "home_location": "Hébergement des données chiffrées : {0}",
     "footer_website": "Site du projet",
     "admin_noticeHint": "Un message optionnel à afficher sur la page d'accueil",
-    "admin_noticeTitle": "Notice sur la page d'accueil"
+    "admin_noticeTitle": "Notice sur la page d'accueil",
+    "ui_restore": "Restaurer",
+    "ui_archive": "Archiver",
+    "ui_undefined": "inconnu",
+    "admin_documentType": "Type"
 }

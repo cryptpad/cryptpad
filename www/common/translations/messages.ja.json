@@ -1435,5 +1435,9 @@
     "login_instance": "{0}のアカウントと接続",
     "home_location": "暗号化されたデータは{0}に保存されています。",
     "footer_website": "プロジェクトのウェブサイト",
-    "ui_experimental": "この機能は試験中です。"
+    "ui_experimental": "この機能は試験中です。",
+    "ui_restore": "復元",
+    "ui_archive": "アーカイブ",
+    "ui_undefined": "不明",
+    "admin_documentType": "種類"
 }

@@ -1448,5 +1448,8 @@
     "admin_documentMetadata": "Aktuelle Metadaten",
     "admin_restoreReason": "Bitte gib den Grund für die Wiederherstellung an und bestätige, dass du fortfahren möchtest",
     "admin_archiveReason": "Bitte gib den Grund für die Archivierung an und bestätige, dass du fortfahren möchtest",
-    "ui_undefined": "unbekannt"
+    "ui_undefined": "unbekannt",
+    "ui_restore": "Wiederherstellen",
+    "ui_archive": "Archivieren",
+    "admin_documentType": "Typ"
 }
