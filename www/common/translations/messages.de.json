@@ -1451,5 +1451,10 @@
     "ui_undefined": "unbekannt",
     "ui_restore": "Wiederherstellen",
     "ui_archive": "Archivieren",
-    "admin_documentType": "Typ"
+    "admin_documentType": "Typ",
+    "ui_success": "Erfolg",
+    "ui_false": "falsch",
+    "ui_true": "wahr",
+    "admin_generatedAt": "Zeitstempel des Berichts",
+    "admin_cat_database": "Datenbank"
 }
