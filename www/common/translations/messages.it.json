@@ -1083,5 +1083,9 @@
     "settings_kanbanTagsOr": "O",
     "settings_kanbanTagsAnd": "E",
     "settings_kanbanTagsHint": "Seleziona come vuoi che agisca il filtro dei tag quando selezioni più tag: mostra solo le schede contenenti tutti i tag selezionati (E) o mostra le schede contenenti uno qualsiasi dei tag selezionati (O)",
-    "settings_kanbanTagsTitle": "Filtro tag"
+    "settings_kanbanTagsTitle": "Filtro tag",
+    "ui_restore": "Ripristina",
+    "ui_archive": "Archivio",
+    "ui_undefined": "sconosciuto",
+    "admin_documentType": "Tipo"
 }

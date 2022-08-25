@@ -1008,7 +1008,7 @@
     "admin_defaultlimitHint": "Maximum storage limit for CryptDrives (users and teams) when no custom rule is applied",
     "admin_defaultlimitTitle": "Storage limit (MB)",
     "admin_setlimitButton": "Set limit",
-    "admin_limit": "Storage limit",
+    "admin_limit": "Current limit: {0}",
     "admin_getlimitsHint": "List all the custom storage limits applied to your instance.",
     "admin_getlimitsTitle": "Custom limits",
     "admin_limitPlan": "Plan: {0}",
@@ -1492,5 +1492,6 @@
     "admin_archivePinLog": "Archive this account's pin log",
     "admin_restoreArchivedPins": "Restore archived pin log",
     "admin_archiveDocument": "Archive document",
-    "admin_restoreDocument": "Restore document"
+    "admin_restoreDocument": "Restore document",
+    "admin_planlimit": "Storage limit"
 }

@@ -785,5 +785,8 @@
     "fo_moveUnsortedError": "Du kan ikke flytte en mappe til mal-listen",
     "oo_cantUpload": "Opplasting tillates ikke når andre brukere er tilstede.",
     "kanban_addBoard": "Legg til en tavle",
-    "kanban_newBoard": "Ny tavle"
+    "kanban_newBoard": "Ny tavle",
+    "ui_restore": "Gjenopprett",
+    "ui_undefined": "ukjent",
+    "admin_documentType": "Type"
 }

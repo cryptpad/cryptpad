@@ -482,5 +482,7 @@
     "upload_choose": "Alegeți un fișier",
     "upload_tooLargeBrief": "Fișier prea mare",
     "upload_tooLarge": "Acest fișier depășește dimensiunea maximă de încărcare permisă pentru contul dumneavoastră.",
-    "upload_notEnoughSpaceBrief": "Spațiu insuficient"
+    "upload_notEnoughSpaceBrief": "Spațiu insuficient",
+    "ui_restore": "Restaurează",
+    "admin_documentType": "Tip"
 }

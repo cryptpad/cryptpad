@@ -1389,5 +1389,9 @@
     "requestEdit_accepted": "{1} przyznał Ci prawa do edycji dokumentu <b>{0}</b>",
     "requestEdit_request": "{1} chce edytować dokument <b>{0}</b>",
     "later": "Zdecyduj później",
-    "requestEdit_viewPad": "Otwórz dokument w nowej karcie"
+    "requestEdit_viewPad": "Otwórz dokument w nowej karcie",
+    "ui_restore": "Przywróc",
+    "ui_archive": "Archiwizuj",
+    "ui_undefined": "nieznany",
+    "admin_documentType": "Typ"
 }

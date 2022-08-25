@@ -1439,5 +1439,9 @@
     "footer_website": "Proiektuaren webgunea",
     "admin_noticeHint": "Hasierako orrian bistaratzeko aukerako mezua",
     "admin_noticeTitle": "Hasierako orrialdearen berri",
-    "ui_experimental": "Tresna hau esperimentaltzat hartzen da."
+    "ui_experimental": "Tresna hau esperimentaltzat hartzen da.",
+    "ui_restore": "Berreskuratu",
+    "ui_archive": "Artxibo",
+    "ui_undefined": "ezezaguna",
+    "admin_documentType": "Mota"
 }
