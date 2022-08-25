@@ -382,7 +382,7 @@ define([
         row(Messages.admin_note, data.note || Messages.ui_none);
 
         // storage limit
-        row(Messages.admin_planLimit, getPrettySize(data.limit));
+        row(Messages.admin_planlimit, getPrettySize(data.limit));
 
         // data stored
         row(Messages.admin_storageUsage, getPrettySize(data.usage));
