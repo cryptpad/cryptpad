@@ -1482,5 +1482,15 @@
     "admin_channelCount": "Number of channels",
     "admin_fileCount": "Number of files",
     "admin_pinLogAvailable": "Pin log is available",
-    "admin_pinLogArchived": "Pin log is archived"
+    "admin_pinLogArchived": "Pin log is archived",
+    "admin_blockKey": "Block public key",
+    "admin_blockAvailable": "Block is available",
+    "admin_blockArchived": "Block is archived",
+    "admin_archiveBlock": "Archive block",
+    "admin_restoreBlock": "Restore archived block",
+    "admin_getPinList": "Current pin list",
+    "admin_archivePinLog": "Archive this account's pin log",
+    "admin_restoreArchivedPins": "Restore archived pin log",
+    "admin_archiveDocument": "Archive document",
+    "admin_restoreDocument": "Restore document"
 }
