@@ -3048,35 +3048,10 @@ define([
 
         var createFilterButton = function (isTemplate, $container) {
             if (!APP.loggedIn) { return; }
+            Messages.fm_filterBy = 'Filter by'; // XXX: English hardcoded
 
             // Create dropdown
             var options = [];
-            if (!isTemplate) {
-                options.push({
-                    tag: 'a',
-                    attributes: {
-                        'class': 'cp-app-drive-filter-doc',
-                        'data-type': 'link'
-                    },
-                    content: [
-                        getIcon('link')[0],
-                        Messages.fm_link_type,
-                    ],
-                });
-                options.push({
-                    tag: 'a',
-                    attributes: {
-                        'class': 'cp-app-drive-filter-doc',
-                        'data-type': 'file',
-                        'href': '#'
-                    },
-                    content: [
-                        getIcon('file')[0],
-                        Messages.type['file'],
-                    ],
-                });
-                options.push({tag: 'hr'});
-            }
             getNewPadTypes().forEach(function (type) {
                 var attributes = {
                     'class': 'cp-app-drive-filter-doc',
@@ -3100,10 +3075,36 @@ define([
                     ],
                 });
             });
+            if (!isTemplate) {
+                options.push({tag: 'hr'});
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-app-drive-filter-doc',
+                        'data-type': 'link'
+                    },
+                    content: [
+                        getIcon('link')[0],
+                        Messages.fm_link_type,
+                    ],
+                });
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-app-drive-filter-doc',
+                        'data-type': 'file',
+                        'href': '#'
+                    },
+                    content: [
+                        getIcon('file')[0],
+                        Messages.type['file'],
+                    ],
+                });
+            }
             var dropdownConfig = {
                 buttonContent: [
                     h('span.fa.fa-filter'),
-                    h('span', 'Filter by'), // XXX: English hardcoded
+                    h('span', Messages.fm_filterBy),
                 ],
                 options: options,
                 feedback: 'DRIVE_FILTERBY',
@@ -3111,8 +3112,8 @@ define([
             };
             var $block = UIElements.createDropdown(dropdownConfig);
 
-            // XXX: Custom style?
-            $block.find('button').addClass('cp-app-drive-toolbar-filter');
+            // Add style
+            $block.find('button').addClass('cp-toolbar-button-active');
 
             // Add a handler
             $block.find('a.cp-app-drive-filter-doc')
@@ -3646,7 +3647,7 @@ define([
                 isEmpty = false;
             });
 
-            var sortedFolders = sortTrashElements(true, filesList, null, !getSortFolderDesc());
+            var sortedFolders = typeFilter ? [] : sortTrashElements(true, filesList, null, !getSortFolderDesc());
             var sortedFiles = sortTrashElements(false, filesList, APP.store[SORT_FILE_BY], !getSortFileDesc);
 
             if (typeFilter) {
@@ -3655,9 +3656,8 @@ define([
                 sortedFiles = sortedFiles.filter(function (obj) {
                     return (idsFilter.indexOf(obj.element) !== -1);
                 });
-                if (sortedFolders.length < 1 && sortedFiles.length < 1) {
-                    isEmpty = true;
-                }
+                // prevent trash emptying while filter is active
+                isEmpty = true;
             }
 
             if (!isEmpty) {
@@ -3665,7 +3665,7 @@ define([
                 $content.append($empty);
             }
 
-            if (manager.hasSubfolder(root, true)) { $list.append($folderHeader); }
+            if (!typeFilter && manager.hasSubfolder(root, true)) { $list.append($folderHeader); }
             sortedFolders.forEach(function (f) {
                 var $element = createElement([TRASH], f.spath, root, true);
                 $list.append($element);
@@ -4224,10 +4224,10 @@ define([
                 displaySharedFolder($list);
             } else {
                 if (!inTrash) { $dirContent.contextmenu(openContextMenu('content')); }
-                if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
+                if (!isFilter && manager.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
-                var sortedFolders = sortElements(true, path, keys, null, !getSortFolderDesc());
+                var sortedFolders = isFilter ? [] : sortElements(true, path, keys, null, !getSortFolderDesc());
                 var sortedFiles = sortElements(false, path, keys, APP.store[SORT_FILE_BY], !getSortFileDesc());
                 sortedFiles = isFilter ? filterPads(sortedFiles, typeFilter, path) : sortedFiles;
                 sortedFolders.forEach(function (key) {
