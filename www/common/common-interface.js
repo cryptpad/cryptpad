@@ -631,7 +631,7 @@ define([
         var frame = dialog.frame([
             message,
             dialog.nav(ok),
-        ]);
+        ], opt);
 
         if (opt.forefront) { $(frame).addClass('forefront'); }
         var listener;
@@ -725,7 +725,7 @@ define([
             message,
             dialog.nav(opt.reverseOrder?
                 [ok, cancel]: [cancel, ok]),
-        ]);
+        ], opt);
 
         var listener;
         var close = Util.once(function (bool, ev) {
