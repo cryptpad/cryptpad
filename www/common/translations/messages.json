@@ -1494,5 +1494,6 @@
     "admin_archiveDocument": "Archive document",
     "admin_restoreDocument": "Restore document",
     "admin_planlimit": "Storage limit",
-    "admin_reportContent": "Report content"
+    "admin_reportContent": "Report content",
+    "admin_getRawMetadata": "Metadata history"
 }
