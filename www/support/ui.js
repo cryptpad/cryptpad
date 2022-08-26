@@ -312,8 +312,6 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         return form;
     };
 
-    Messages.ui_copyLinkToClipboard = "Copy link to clipboard"; // XXX
-
     var makeTicket = function (ctx, $div, content, onHide) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -332,10 +330,12 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         ]);
 
         var url;
+        var copyKey;
+        var publicKey = Util.find(content, ['sender', 'edPublic']);
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn.fa.fa-clipboard', {
-                title: Messages.ui_copyLinkToClipboard,
+            url = h('button.btn.fa.fa-link', {
+                title: Messages.share_linkCopy,
                 // XXX other accessibility attributes?
             });
             $(url).click(function (e) {
@@ -344,6 +344,20 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
                 var success = Clipboard.copy(link);
                 if (success) { UI.log(Messages.shareSuccess); }
             });
+            if (typeof(publicKey) === 'string') {
+                copyKey = h('button.btn.fa.fa-key', {
+                    title: Messages.profile_copyKey,
+                    // XXX accessibility
+                });
+                $(copyKey).click(e => {
+                    e.stopPropagation();
+                    if (Clipboard.copy(publicKey)) {
+                        UI.log(Messages.shareSuccess);
+                    } else {
+                        UI.warn(Messages.error);
+                    }
+                });
+            }
         }
 
         var $ticket = $(h('div.cp-support-list-ticket', {
@@ -352,7 +366,10 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         }, [
             h('h2', [
                 h('span', [ticketCategory, ticketTitle]),
-                h('span.cp-support-title-buttons',url)
+                h('span.cp-support-title-buttons', [
+                    copyKey,
+                    url,
+                ]),
             ]),
             actions
         ]));
