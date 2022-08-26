@@ -1456,5 +1456,11 @@
     "ui_false": "falsch",
     "ui_true": "wahr",
     "admin_generatedAt": "Zeitstempel des Berichts",
-    "admin_cat_database": "Datenbank"
+    "admin_cat_database": "Datenbank",
+    "ui_confirm": "Bestätigen",
+    "ui_generateReport": "Bericht generieren",
+    "admin_fileCount": "Anzahl der Dateien",
+    "admin_storageUsage": "Gespeicherte Daten",
+    "admin_accountMetadataPlaceholder": "Benutzerkennung (öffentlicher Schlüssel zum Unterschreiben)",
+    "admin_documentMetadataPlaceholder": "URL oder Kennung des Dokuments"
 }
