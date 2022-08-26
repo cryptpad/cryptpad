@@ -79,7 +79,6 @@ define([
     var SHARED_FOLDER = 'sf';
     var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
     var FILTER = "filter";
-    var FILTER_NAME = "I don't have any idea of what's going here..."; // XXX: English hardcoded again
 
     // Icons
     var faFolder = 'cptools-folder';
@@ -2469,7 +2468,6 @@ define([
                 case RECENT: pName = RECENT_NAME; break;
                 case OWNED: pName = OWNED_NAME; break;
                 case TAGS: pName = TAGS_NAME; break;
-                case FILTER: pName = FILTER_NAME; break;
                 case SHARED_FOLDER: pName = SHARED_FOLDER_NAME; break;
                 default: pName = name;
             }
@@ -2636,8 +2634,6 @@ define([
                     msg = Messages.fm_info_owned;
                     break;
                 case TAGS:
-                    break;
-                case FILTER:
                     break;
                 default:
                     msg = undefined;
@@ -3110,7 +3106,7 @@ define([
                     h('span', 'Filter by'), // XXX: English hardcoded
                 ],
                 options: options,
-                feedback: 'DRIVE_FILTERPAD_LOCALFOLDER', // XXX: What should I input there?
+                feedback: 'DRIVE_FILTERBY',
                 common: common
             };
             var $block = UIElements.createDropdown(dropdownConfig);
@@ -3119,7 +3115,7 @@ define([
             $block.find('button').addClass('cp-app-drive-toolbar-filter');
 
             // Add a handler
-            $block.find('a.cp-app-drive-filter-doc, li.cp-app-drive-filter-doc')
+            $block.find('a.cp-app-drive-filter-doc')
             .click(function () {
                 var type = $(this).attr('data-type') || 'invalid-filter';
                 APP.displayDirectory([FILTER, type, currentPath]);
