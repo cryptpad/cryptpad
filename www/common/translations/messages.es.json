@@ -685,5 +685,7 @@
     "form_editAnswer": "Editar mis respuestas",
     "form_update": "Actualizar",
     "calendar_update": "Actualizar",
-    "admin_support_last": "Actualizado el: "
+    "admin_support_last": "Actualizado el: ",
+    "ui_restore": "Recuperar",
+    "admin_documentType": "Tipo"
 }

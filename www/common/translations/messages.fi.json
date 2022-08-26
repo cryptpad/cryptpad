@@ -1075,5 +1075,9 @@
     "register_notes": "<ul class=\"cp-notes-list\"><li>Salasanasi on avain, joka salaa kaikki asiakirjasti.<span class=\"red\">Jos kadotat salasanasi, emme voi palauttaa tietojasi.</span></li><li>Jos käytät jaettua tietokonetta,<span class=\"red\">muista kirjautua ulos</span> lopettaessasi. Pelkkä selainikkunan sulkeminen jättää käyttäjätunnuksesi haavoittuvaiseksi.</li><li>Säilyttääksesi kirjautumattomana tekemäsi tai tallentamasi asiakirjat, valitse \"Tuo asiakirjat anonyymistä istunnosta\".</li></ul>",
     "settings_padOpenLinkLabel": "Ota käyttöön suora linkkien avaus",
     "settings_padOpenLinkHint": "Tämä asetus avaa upotetut linkit suoraan napsauttamalla ilman esikatseluikkunaa",
-    "settings_padOpenLinkTitle": "Avaa linkit ensimmäisellä napsautuksella"
+    "settings_padOpenLinkTitle": "Avaa linkit ensimmäisellä napsautuksella",
+    "ui_restore": "Palauta",
+    "ui_archive": "Arkistoi",
+    "ui_undefined": "tuntematon",
+    "admin_documentType": "Tyyppi"
 }
