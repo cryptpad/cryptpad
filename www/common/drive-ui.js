@@ -3029,9 +3029,10 @@ define([
             });
             var dropdownConfig = {
                 buttonContent: [
-                    h('span.fa.fa-plus'),
-                    h('span', Messages.fm_newButton),
+                    h('i.fa.fa-plus'),
+                    h('span.cp-button-name', Messages.fm_newButton),
                 ],
+                buttonCls: 'cp-toolbar-dropdown-nowrap',
                 options: options,
                 feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
                 common: common
@@ -3103,9 +3104,10 @@ define([
             }
             var dropdownConfig = {
                 buttonContent: [
-                    h('span.fa.fa-filter'),
-                    h('span', Messages.fm_filterBy),
+                    h('i.fa.fa-filter'),
+                    h('span.cp-button-name', Messages.fm_filterBy),
                 ],
+                buttonCls: 'cp-toolbar-dropdown-nowrap',
                 options: options,
                 feedback: 'DRIVE_FILTERBY',
                 common: common
