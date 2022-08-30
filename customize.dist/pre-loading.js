@@ -37,12 +37,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // soft transition between inner and outer placeholders
     if (req && req.time && (+new Date() - req.time > 2000)) {
-        var logo = document.querySelector('.placeholder-logo-container');
-        var message = document.querySelector('.placeholder-message-container');
-        logo.style.opacity = 100;
-        message.style.opacity = 100;
-        logo.style.animation = 'none';
-        message.style.animation = 'none';
+        try {
+            var logo = document.querySelector('.placeholder-logo-container');
+            var message = document.querySelector('.placeholder-message-container');
+            logo.style.opacity = 100;
+            message.style.opacity = 100;
+            logo.style.animation = 'none';
+            message.style.animation = 'none';
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     // fallback if CSS animations not available
