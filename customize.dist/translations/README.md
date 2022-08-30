@@ -1,6 +1,8 @@
 # Translations
 
-Translations can now be made using [Weblate](https://weblate.cryptpad.fr). We may still accept PRs for the internal translation files, but we won't provide support for this.
+Translations can now be made using [Weblate](https://weblate.cryptpad.fr). We may still accept PRs for the internal translation files, but we won't provide support for this. See the state of the translated languages:
+
+![](https://weblate.cryptpad.fr/widgets/cryptpad/-/app/multi-auto.svg)
 
 ## Request a new language
 

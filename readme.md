@@ -54,7 +54,10 @@ meet our strict criteria for safety.
 # Translations
 
 CryptPad can be translated with nothing more than a web browser via our
-[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/). See the state of the translated languages:
+
+![](https://weblate.cryptpad.fr/widgets/cryptpad/-/app/multi-auto.svg)
+
 More information about this can be found in [our translation guide](/customize.dist/translations/README.md).
 
 # Contacting Us
