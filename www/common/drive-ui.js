@@ -1150,8 +1150,12 @@ define([
             common.getMediaTagPreview(mts, idx);
         };
 
+        var FILTER_BY = "filterBy";
+
         var refresh = APP.refresh = function () {
-            APP.displayDirectory(currentPath);
+            var type = APP.store[FILTER_BY];
+            var path = type ? [FILTER, type, currentPath] : currentPath;
+            APP.displayDirectory(path);
         };
 
         // `app`: true (force open wiht the app), false (force open in preview),
@@ -3050,9 +3054,23 @@ define([
         var createFilterButton = function (isTemplate, $container) {
             if (!APP.loggedIn) { return; }
             Messages.fm_filterBy = 'Filter by'; // XXX: English hardcoded
+            Messages.fm_rmFilter = 'Disable filter'; // XXX: English hardcoded
 
             // Create dropdown
             var options = [];
+            if (APP.store[FILTER_BY]) {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-app-drive-rm-filter',
+                    },
+                    content: [
+                        h('i.fa.fa-times'),
+                        Messages.fm_rmFilter,
+                    ],
+                });
+                options.push({tag: 'hr'});
+            }
             getNewPadTypes().forEach(function (type) {
                 var attributes = {
                     'class': 'cp-app-drive-filter-doc',
@@ -3112,15 +3130,36 @@ define([
                 feedback: 'DRIVE_FILTERBY',
                 common: common
             };
+            if (APP.store[FILTER_BY]) {
+                var type = APP.store[FILTER_BY];
+                var message = type === 'link' ? Messages.fm_link_type : Messages.type[type];
+                dropdownConfig.buttonContent.push(
+                    h('span.cp-button-name', ':'),
+                    getIcon(type)[0],
+                    h('span.cp-button-name', message)
+                );
+            }
             var $block = UIElements.createDropdown(dropdownConfig);
 
             // Add style
-            $block.find('button').addClass('cp-toolbar-button-active');
+            if (APP.store[FILTER_BY]) {
+                $block.find('button').addClass('cp-toolbar-button-active');
+            }
 
-            // Add a handler
+            // Add handlers
+            if (APP.store[FILTER_BY]) {
+                $block.find('a.cp-app-drive-rm-filter')
+                .click(function () {
+                    APP.store[FILTER_BY] = undefined;
+                    localStore.put(FILTER_BY, undefined);
+                    APP.displayDirectory(currentPath);
+                });
+            }
             $block.find('a.cp-app-drive-filter-doc')
             .click(function () {
                 var type = $(this).attr('data-type') || 'invalid-filter';
+                APP.store[FILTER_BY] = type;
+                localStore.put(FILTER_BY, type);
                 APP.displayDirectory([FILTER, type, currentPath]);
             });
 
@@ -4059,6 +4098,9 @@ define([
                 typeFilter = path[1];
                 path = path[2];
                 currentPath = path;
+            } else {
+                APP.store[FILTER_BY] = undefined;
+                localStore.put(FILTER_BY, undefined);
             }
             var isInRoot = manager.isPathIn(path, [ROOT]);
             var inTrash = manager.isPathIn(path, [TRASH]);
