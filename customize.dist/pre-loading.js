@@ -15,16 +15,44 @@ elem.innerHTML = [
     '</div>'
 ].join('');
 
+var key = 'CRYPTPAD_STORE|colortheme'; // handle outer
+if (localStorage[key] && localStorage[key] === 'dark') {
+    elem.classList.add('dark-theme');
+}
+if (!localStorage[key] && localStorage[key+'_default'] && localStorage[key+'_default'] === 'dark') {
+    elem.classList.add('dark-theme');
+}
+
+var req;
+try {
+    req = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
+    if ((req.theme || req.themeOS) === 'dark') { // handle inner
+        elem.classList.add('dark-theme');
+    }
+} catch (e) {}
+
 document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(elem);
+    window.CP_preloadingTime = +new Date();
+
+    // soft transition between inner and outer placeholders
+    if (req && req.time && (+new Date() - req.time > 2000)) {
+        try {
+            var logo = document.querySelector('.placeholder-logo-container');
+            var message = document.querySelector('.placeholder-message-container');
+            logo.style.opacity = 100;
+            message.style.opacity = 100;
+            logo.style.animation = 'none';
+            message.style.animation = 'none';
+        } catch (err) {}
+    }
+
     // fallback if CSS animations not available
     setTimeout(() => {
         try {
             document.querySelector('.placeholder-logo-container').style.opacity = 100;
             document.querySelector('.placeholder-message-container').style.opacity = 100;
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (e) {}
     }, 3000);
 });
 }());

@@ -9,6 +9,14 @@
   font-style: normal;
 }
 
+.cp-app-noscroll body {
+    background: transparent;
+}
+.cp-app-noscroll #placeholder {
+    z-index: 9999999; /* loading screen -1 */
+    background-color: transparent;
+}
+
 #placeholder {
     visibility: visible;
     position: fixed;
@@ -28,12 +36,11 @@
     align-items: center;
     font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
-@media (prefers-color-scheme: dark) {
-    #placeholder {
-        background-color: #212121; /* @cp_loading-bg (dark) */
-        color: #EEEEEE; /* @cp_loading-fg (dark) */
-    }
+#placeholder.dark-theme {
+    background-color: #212121; /* @cp_loading-bg (dark) */
+    color: #EEEEEE; /* @cp_loading-fg (dark) */
 }
+
 #placeholder .placeholder-logo-container {
     height: 300px;
     width: 300px;
@@ -60,6 +67,9 @@
     align-items: center;
     opacity: 0;
     animation: fadein 5s ease 2s forwards;
+}
+#placeholder .placeholder-message-container p {
+    margin-top: 0;
 }
 #placeholder .placeholder-logo {
     margin-left: auto;
