@@ -334,10 +334,13 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         var publicKey = Util.find(content, ['sender', 'edPublic']);
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn.fa.fa-link', {
+            url = h('button.btn', {
                 title: Messages.share_linkCopy,
-                // XXX other accessibility attributes?
-            });
+            }, [
+                h('i.fa.fa-link', {
+                    'aria-hidden': true,
+                }),
+            ]);
             $(url).click(function (e) {
                 e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
@@ -345,10 +348,13 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
                 if (success) { UI.log(Messages.shareSuccess); }
             });
             if (typeof(publicKey) === 'string') {
-                copyKey = h('button.btn.fa.fa-key', {
+                copyKey = h('button.btn', {
                     title: Messages.profile_copyKey,
-                    // XXX accessibility
-                });
+                }, [
+                    h('i.fa.fa-key', {
+                        'aria-hidden': true,
+                    }),
+                ]);
                 $(copyKey).click(e => {
                     e.stopPropagation();
                     if (Clipboard.copy(publicKey)) {
