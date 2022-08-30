@@ -17,6 +17,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
     '/calendar/export.js',
+    '/calendar/recurrence.js',
     '/lib/datepicker/flatpickr.js',
 
     '/common/inner/share.js',
@@ -47,6 +48,7 @@ define([
     AppConfig,
     Calendar,
     Export,
+    Rec,
     Flatpickr,
     Share, Access, Properties
     )
@@ -169,6 +171,8 @@ define([
         });
     };
     var getSchedules = function () {
+        APP.recurringEvents = [];
+        APP.recurringDone = [];
         var s = [];
         var calendars = Object.keys(APP.calendars);
         if (APP.currentCalendar) {
@@ -199,11 +203,16 @@ define([
                 if (c.readOnly) {
                     obj.isReadOnly = true;
                 }
+                if (obj.recurrenceRule) {
+                    APP.recurringEvents.push(obj);
+                }
                 s.push(data.content[uid]);
             });
         });
         return s;
     };
+
+    var updateRecurring = function () {}; // Defined later
     var renderCalendar = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
@@ -212,6 +221,8 @@ define([
         cal.setCalendars(getCalendars());
         cal.createSchedules(getSchedules(), true);
         cal.render();
+        Rec.resetCache();
+        updateRecurring();
     };
     var onCalendarUpdate = function (data) {
         var cal = APP.calendar;
@@ -766,6 +777,7 @@ define([
 
     };
 
+    // Get week number in our calendar view
     var ISO8601_week_no = function (dt) {
         var tdt = new Date(dt.valueOf());
         var dayn = (dt.getDay() + 6) % 7;
@@ -777,6 +789,66 @@ define([
         }
         return 1 + Math.ceil((firstThursday - tdt) / 604800000);
     };
+
+    var _updateRecurring = function () {
+        var cal = APP.calendar;
+        if (!cal) { return; }
+
+        var range = APP.calendar._renderRange;
+        var startView = range.start._date;
+        var endView = range.end._date;
+        endView.setDate(endView.getDate() + 1);
+
+        var midView = new Date(((+startView) + (+endView)) / 2);
+
+        // We want to generate recurring events month per month.
+        // In "month" view, we may see up to 3 different monthes
+        // at the same time.
+        var startId = Rec.getMonthId(startView);
+        var midId = Rec.getMonthId(midView);
+        var endId = Rec.getMonthId(endView);
+        var todo = Util.deduplicateString([startId, midId, endId]);
+        todo = todo.filter(function (monthId) {
+            return !APP.recurringDone.includes(monthId);
+        });
+
+        var toAdd = Rec.getRecurring(todo, APP.recurringEvents);
+
+        // Mark selected monthes as done
+        todo.forEach(function (monthId) { APP.recurringDone.push(monthId); });
+
+        cal.createSchedules(toAdd);
+    };
+    updateRecurring = function () {
+        try {
+            _updateRecurring();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+// XXX XXX
+// TODO
+/*
+* weekly, daily DONE
+* BYDAY with NUMBER DONE
+* monthly yearly DONE
+* BYSETPOS DONE
+
+TODO MARDI
+Cache
+==> avec noExpand, on ne peut pas savoir combien d'éléments ont déjà été ajoutés
+==> il faut un cache des éléments déjà générés
+==> soit un COUNT (implémentation actuelle) mais bug avec yearly...
+==> soit un cache de dates qui est géré par la fonction iterate directement (on supprime le noExpand mais on utilise le cache pour ne pas régénérer)
+
+
+MAYBE CHECK AGAIN WITH INTERVALS?
+
+UPDATE A RECCURENT EVENT:
+ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a value equals to the DTSTART of this recurring event)
+*/
+
 
     var updateDateRange = function () {
         var range = APP.calendar._renderRange;
@@ -877,6 +949,10 @@ define([
                 isAllDay: event.isAllDay,
                 end: +endDate,
                 reminders: reminders,
+                recurrenceRule: {
+                    freq: 'daily',
+                    count: 10
+                }
             };
 
             newEvent(schedule, function (err) {
@@ -929,7 +1005,6 @@ define([
         });
 
         updateDateRange();
-
         renderCalendar();
 
         // Toolbar
@@ -964,6 +1039,7 @@ define([
             var mode = $(this).attr('data-value');
             cal.changeView(mode);
             updateDateRange();
+            updateRecurring();
             store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
@@ -985,14 +1061,18 @@ define([
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
+            updateRecurring();
         });
         $(goRight).click(function () {
             cal.next();
+            // XXX update recurring
             updateDateRange();
+            updateRecurring();
         });
         $(goToday).click(function () {
             cal.today();
             updateDateRange();
+            updateRecurring();
         });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight
@@ -1204,6 +1284,10 @@ define([
             var $button = $el.find('.tui-full-calendar-section-button-save');
             var div = getNotificationDropdown();
             $button.before(div);
+
+
+// XXX reccuring here
+
 
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
             var $start = $el.find('.tui-full-calendar-section-start-date');
