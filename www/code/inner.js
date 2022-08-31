@@ -68,6 +68,7 @@ define([
         'markdown',
         'gfm',
         'html',
+        'asciidoc',
         'htmlembedded',
         'htmlmixed',
         'index.html',
@@ -144,8 +145,35 @@ define([
         DiffMd.apply(val, $div, common);
     };
     previews['asciidoc'] = function (val, $div, common) {
-        require(['asciidoctor'], function (asciidoctor) {
-            var html = asciidoctor.convert(val, { attributes: 'showtitle' });
+        require([
+            'asciidoctor',
+
+            '/lib/highlight/highlight.pack.js',
+            'css!/lib/highlight/styles/' + (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
+        ], function (asciidoctor) {
+            var Highlight = window.hljs;
+            var html = '';
+
+            var re = /<media-tag .*?<\/media-tag>|<a .*?<\/a>/gsi;
+            var specialTags = val.match(re);
+            var subVals = val.split(re);
+
+            subVals.forEach((val, i) => {
+                html += asciidoctor.convert(val, { attributes: 'showtitle' });
+                if (specialTags[i]) { html += specialTags[i]; }
+            });
+
+            // keep the last s and `npm run lint` will worry, remove it and it won't work anymore
+            // for support, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/dotAll 
+            var reHL = /(<pre class="highlight"><code class=".*?" data-lang="([\w-]*)">)(.*?)(<\/code><\/pre>)/g;
+            html = html.replace(reHL, (match, p1, p2, p3, p4) => {
+                try {
+                    return p1 + Highlight.highlight(p2, p3).value + p4;
+                } catch (e) {
+                    return match;
+                }
+            });
+            
             DiffMd.apply(html, $div, common);
         });
     };
