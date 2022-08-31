@@ -2951,6 +2951,79 @@ define([
                 openIn(type, path, APP.team);
             });
         };
+        var getNewPadOptions = function (isInRoot) {
+            var options = [];
+            if (isInRoot) {
+                options.push({
+                    class: 'cp-app-drive-new-folder',
+                    icon: $folderIcon.clone()[0],
+                    name: Messages.fm_folder,
+                });
+                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
+                    options.push({
+                        class: 'cp-app-drive-new-shared-folder',
+                        icon: $sharedFolderIcon.clone()[0],
+                        name: Messages.fm_sharedFolder,
+                    });
+                }
+                options.push({ separator: true });
+                options.push({
+                    class: 'cp-app-drive-new-fileupload',
+                    icon: getIcon('fileupload')[0],
+                    name: Messages.uploadButton,
+                });
+                if (APP.allowFolderUpload) {
+                    options.push({
+                        class: 'cp-app-drive-new-folderupload',
+                        icon: getIcon('folderupload')[0],
+                        name: Messages.uploadFolderButton,
+                    });
+                }
+                options.push({ separator: true });
+                options.push({
+                    class: 'cp-app-drive-new-link',
+                    icon: getIcon('link')[0],
+                    name: Messages.fm_link_new,
+                });
+                options.push({ separator: true });
+            }
+            getNewPadTypes().forEach(function (type) {
+                var typeClass = 'cp-app-drive-new-doc';
+
+                var premium = common.checkRestrictedApp(type);
+                if (premium < 0) {
+                    typeClass += ' cp-app-hidden cp-app-disabled';
+                } else if (premium === 0) {
+                    typeClass += ' cp-app-disabled';
+                }
+
+                options.push({
+                    class: typeClass,
+                    type: type,
+                    icon: getIcon(type)[0],
+                    name: Messages.type[type],
+                });
+            });
+
+            if (APP.store[FILTER_BY]) {
+                var typeFilter = APP.store[FILTER_BY];
+                options = options.filter((obj) => {
+                    if (obj.separator) { return false; }
+
+                    if (typeFilter === 'link') {
+                        return obj.class.includes('cp-app-drive-new-link');
+                    }
+                    if (typeFilter === 'file') {
+                        return obj.class.includes('cp-app-drive-new-fileupload');
+                    }
+                    if (getNewPadTypes().indexOf(typeFilter) !== -1) {
+                        return typeFilter === obj.type;
+                    }
+                });
+            }
+
+            return options;
+        }
         var createNewButton = function (isInRoot, $container) {
             if (!APP.editable) { return; }
             if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
@@ -2958,78 +3031,18 @@ define([
             if (!manager.isPathIn(currentPath, [ROOT, 'hrefArray'])) { return; }
 
             // Create dropdown
-            var options = [];
-            if (isInRoot) {
-                options.push({
+            var options = getNewPadOptions(isInRoot).map(function (obj) {
+                if (obj.separator) { return { tag: 'hr' }; }
+                var newObj = {
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-folder pewpew'},
-                    content: [
-                        $folderIcon.clone()[0],
-                        Messages.fm_folder,
-                    ],
-                });
-                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
-                    options.push({
-                        tag: 'a',
-                        attributes: {'class': 'cp-app-drive-new-shared-folder'},
-                        content: [
-                            $sharedFolderIcon.clone()[0],
-                            Messages.fm_sharedFolder,
-                        ],
-                    });
-                }
-                options.push({tag: 'hr'});
-                options.push({
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-fileupload'},
-                    content: [
-                        getIcon('fileupload')[0],
-                        Messages.uploadButton,
-                    ],
-                });
-                if (APP.allowFolderUpload) {
-                    options.push({
-                        tag: 'a',
-                        attributes: {'class': 'cp-app-drive-new-folderupload'},
-                        content: [
-                            getIcon('folderupload')[0],
-                            Messages.uploadFolderButton,
-                        ],
-                    });
-                }
-                options.push({tag: 'hr'});
-                options.push({
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-link'},
-                    content: [
-                        getIcon('link')[0],
-                        Messages.fm_link_new,
-                    ],
-                });
-                options.push({tag: 'hr'});
-            }
-            getNewPadTypes().forEach(function (type) {
-                var attributes = {
-                    'class': 'cp-app-drive-new-doc',
-                    'data-type': type,
-                    'href': '#'
+                    attributes: { 'class': obj.class },
+                    content: [ obj.icon, obj.name ]
                 };
-
-                var premium = common.checkRestrictedApp(type);
-                if (premium < 0) {
-                    attributes.class += ' cp-app-hidden cp-app-disabled';
-                } else if (premium === 0) {
-                    attributes.class += ' cp-app-disabled';
+                if (obj.type) {
+                    newObj.attributes['data-type'] = obj.type;
+                    newObj.attributes['href'] = '#';
                 }
-
-                options.push({
-                    tag: 'a',
-                    attributes: attributes,
-                    content: [
-                        getIcon(type)[0],
-                        Messages.type[type],
-                    ],
-                });
+                return newObj;
             });
             var dropdownConfig = {
                 buttonContent: [
@@ -3443,62 +3456,18 @@ define([
         // Create the ghost icon to add pads/folders
         var createNewPadIcons = function ($block, isInRoot) {
             var $container = $('<div>');
-            if (isInRoot) {
-                // Folder
-                var $element1 = $('<li>', {
-                    'class': 'cp-app-drive-new-folder cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
-                }).prepend($folderIcon.clone()).appendTo($container);
-                $element1.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                    .text(Messages.fm_folder));
-                // Shared Folder
-                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
-                    var $element3 = $('<li>', {
-                        'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
-                                 'cp-app-drive-element-grid'
-                    }).prepend($sharedFolderIcon.clone()).appendTo($container);
-                    $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                        .text(Messages.fm_sharedFolder));
-                }
-                // Upload file
-                var $elementFileUpload = $('<li>', {
-                    'class': 'cp-app-drive-new-fileupload cp-app-drive-element-row ' +
-                        'cp-app-drive-element-grid'
-                }).prepend(getIcon('fileupload')).appendTo($container);
-                $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.uploadButton));
-                // Upload folder
-                if (APP.allowFolderUpload) {
-                    var $elementFolderUpload = $('<li>', {
-                        'class': 'cp-app-drive-new-folderupload cp-app-drive-element-row ' +
-                        'cp-app-drive-element-grid'
-                    }).prepend(getIcon('folderupload')).appendTo($container);
-                    $elementFolderUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                        .text(Messages.uploadFolderButton));
-                }
-                // Link
-                var $elementLink = $('<li>', {
-                    'class': 'cp-app-drive-new-link cp-app-drive-element-row ' +
-                        'cp-app-drive-element-grid'
-                }).prepend(getIcon('link')).appendTo($container);
-                $elementLink.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.fm_link_type));
-            }
-            // Pads
-            getNewPadTypes().forEach(function (type) {
-                var $element = $('<li>', {
-                    'class': 'cp-app-drive-new-doc cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
-                }).prepend(getIcon(type)).appendTo($container);
-                $element.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.type[type]));
-                $element.attr('data-type', type);
+            getNewPadOptions(isInRoot).forEach(function (obj) {
+                if (obj.separator) { return; }
 
-                var premium = common.checkRestrictedApp(type);
-                if (premium < 0) {
-                    $element.addClass('cp-app-hidden cp-app-disabled');
-                } else if (premium === 0) {
-                    $element.addClass('cp-app-disabled');
+                var $element = $('<li>', {
+                    'class': obj.class + ' cp-app-drive-element-row ' +
+                             'cp-app-drive-element-grid'
+                }).prepend(obj.icon).appendTo($container);
+                $element.append($('<span>', { 'class': 'cp-app-drive-new-name' })
+                    .text(obj.name));
+
+                if (obj.type) {
+                    $element.attr('data-type', obj.type);
                 }
             });
 
