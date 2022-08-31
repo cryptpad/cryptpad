@@ -1003,6 +1003,7 @@ define([
         $loading.addClass("cp-loading-hidden"); // Hide the loading screen
         $loading.find('.cp-loading-progress').remove(); // Remove the progress list
         setTimeout(cb, 750);
+        $('head > link[href^="/customize/src/pre-loading.css"]').remove();
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
