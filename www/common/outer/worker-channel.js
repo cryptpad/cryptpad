@@ -168,7 +168,14 @@ define([
             if (!msg.data || msg.data === '_READY') { return; }
             if (!trusted.includes(msg.origin)) { return; }
 
-            var data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
+            var data;
+            // apparently some browser extensions send messages to random targets
+            // which can trigger parse errors that interrupt normal behaviour
+            try {
+                data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
+            } catch (err) {
+                console.error(err);
+            }
             if (typeof(data.ack) !== "undefined") {
                 if (acks[data.txid]) { acks[data.txid](!data.ack); }
             } else if (typeof(data.q) === 'string') {

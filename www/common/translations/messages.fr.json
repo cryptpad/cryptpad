@@ -982,7 +982,7 @@
     "infobar_versionHash": "Vous consultez une ancienne version de ce document ({0}).",
     "history_restoreDriveDone": "CryptDrive restauré",
     "history_restoreDrivePrompt": "Êtes-vous sûr de vouloir remplacer la version actuelle du CryptDrive par la version affichée ?",
-    "history_restoreDriveTitle": "Restaurer la version du CrytpDrive sélectionnée",
+    "history_restoreDriveTitle": "Restaurer la version du CryptDrive sélectionnée",
     "history_userNext": "Auteur suivant",
     "history_fastNext": "Session suivante",
     "history_userPrev": "Auteur précédent",
@@ -1423,7 +1423,7 @@
     "admin_enableDiskMeasurementsHint": "Si ce réglage est activé, un point d'accès API JSON sera exposé à <code>/api/profiling</code>. Cela permet de conserver une mesure courante des I/O du disque dans la fenêtre de temps définie ci-dessous. Ce paramètre peut avoir un impact sur les performances du serveur et peut révéler des données confidentielles. Il est recommandé de laisser ce paramètre désactivé si vous n'en avez pas le besoin spécifique.",
     "admin_enableDiskMeasurementsTitle": "Mesurer la performance du disque",
     "admin_infoNotice2": "Consultez l'onglet \"Réseau\" pour plus de détails.",
-    "admin_infoNotice1": "Utilisez les champs ci-dessous pour décrire votre instance. Ces informations seront utilisées sur la page d'accueil de l'instance dans une future version de CryptPad. Elles sont envoyées avec les données télémétriques du serveur seulement si vous avez choisi d'être inclus dans la liste des instances publiques de CryptPad.",
+    "admin_infoNotice1": "Utilisez les champs ci-dessous pour décrire votre instance. Ces informations sont utilisées sur la page d'accueil de l'instance. Elles sont aussi envoyées avec les données télémétriques du serveur si vous avez choisi d'être inclus dans la liste des instances publiques de CryptPad.",
     "admin_reviewCheckupNotice": "Il est recommandé de consulter la page <a>checkup</a> pour vérifier que cette instance est configurée correctement.",
     "admin_cacheEvictionRequired": "Le serveur a été mis à jour avec le nouveau réglage. Veuillez utiliser le bouton <b>Vider le cache</b> pour que ce changement soit visible pour tous les utilisateurs.",
     "fivehundred_internalServerError": "Erreur interne du serveur",
@@ -1439,5 +1439,9 @@
     "home_location": "Hébergement des données chiffrées : {0}",
     "footer_website": "Site du projet",
     "admin_noticeHint": "Un message optionnel à afficher sur la page d'accueil",
-    "admin_noticeTitle": "Notice sur la page d'accueil"
+    "admin_noticeTitle": "Notice sur la page d'accueil",
+    "ui_restore": "Restaurer",
+    "ui_archive": "Archiver",
+    "ui_undefined": "inconnu",
+    "admin_documentType": "Type"
 }

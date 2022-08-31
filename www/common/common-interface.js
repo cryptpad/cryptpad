@@ -631,7 +631,7 @@ define([
         var frame = dialog.frame([
             message,
             dialog.nav(ok),
-        ]);
+        ], opt);
 
         if (opt.forefront) { $(frame).addClass('forefront'); }
         var listener;
@@ -725,7 +725,7 @@ define([
             message,
             dialog.nav(opt.reverseOrder?
                 [ok, cancel]: [cancel, ok]),
-        ]);
+        ], opt);
 
         var listener;
         var close = Util.once(function (bool, ev) {
@@ -1003,6 +1003,7 @@ define([
         $loading.addClass("cp-loading-hidden"); // Hide the loading screen
         $loading.find('.cp-loading-progress').remove(); // Remove the progress list
         setTimeout(cb, 750);
+        $('head > link[href^="/customize/src/pre-loading.css"]').remove();
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {

@@ -312,8 +312,6 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         return form;
     };
 
-    Messages.ui_copyLinkToClipboard = "Copy link to clipboard"; // XXX
-
     var makeTicket = function (ctx, $div, content, onHide) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -332,18 +330,40 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         ]);
 
         var url;
+        var copyKey;
+        var publicKey = Util.find(content, ['sender', 'edPublic']);
         if (ctx.isAdmin) {
             ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn.fa.fa-clipboard', {
-                title: Messages.ui_copyLinkToClipboard,
-                // XXX other accessibility attributes?
-            });
+            url = h('button.btn', {
+                title: Messages.share_linkCopy,
+            }, [
+                h('i.fa.fa-link', {
+                    'aria-hidden': true,
+                }),
+            ]);
             $(url).click(function (e) {
                 e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
                 var success = Clipboard.copy(link);
                 if (success) { UI.log(Messages.shareSuccess); }
             });
+            if (typeof(publicKey) === 'string') {
+                copyKey = h('button.btn', {
+                    title: Messages.profile_copyKey,
+                }, [
+                    h('i.fa.fa-key', {
+                        'aria-hidden': true,
+                    }),
+                ]);
+                $(copyKey).click(e => {
+                    e.stopPropagation();
+                    if (Clipboard.copy(publicKey)) {
+                        UI.log(Messages.shareSuccess);
+                    } else {
+                        UI.warn(Messages.error);
+                    }
+                });
+            }
         }
 
         var $ticket = $(h('div.cp-support-list-ticket', {
@@ -352,7 +372,10 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         }, [
             h('h2', [
                 h('span', [ticketCategory, ticketTitle]),
-                h('span.cp-support-title-buttons',url)
+                h('span.cp-support-title-buttons', [
+                    copyKey,
+                    url,
+                ]),
             ]),
             actions
         ]));

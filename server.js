@@ -304,7 +304,7 @@ var send500 = function (res, path) {
 };
 
 app.get('/api/updatequota', function (req, res) {
-    if (!Env.quota_api) {
+    if (!Env.accounts_api) {
         res.status(404);
         return void send404(res);
     }

@@ -1162,5 +1162,8 @@
     "admin_emailTitle": "Контактна пошта адміністрації",
     "admin_enableembedsTitle": "Дозволити віддалене вбудування",
     "admin_registrationHint": "Заборонити новим користувачкам і користувачам реєструватись",
-    "admin_registrationTitle": "Закрити реєстрацію"
+    "admin_registrationTitle": "Закрити реєстрацію",
+    "ui_restore": "Відновити",
+    "ui_archive": "Архівувати",
+    "admin_documentType": "Тип"
 }

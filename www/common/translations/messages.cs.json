@@ -1437,5 +1437,9 @@
     "admin_nameTitle": "Název instance",
     "admin_archiveNote": "Poznámka",
     "bounce_danger": "Odkaz, na který jste klikli, nevede na webovou stránku, ale na kód nebo data, která mohou být škodlivá.\n\n(\"{0}\")\n\nCryptPad je z bezpečnostních důvodů blokuje. Kliknutím na tlačítko OK tuto kartu zavřete.",
-    "bounce_confirm": "Chystáte se odejít: {0}\n\nJste si jistí, že chcete navštívit \"{1}\"?"
+    "bounce_confirm": "Chystáte se odejít: {0}\n\nJste si jistí, že chcete navštívit \"{1}\"?",
+    "ui_restore": "Obnovit",
+    "ui_archive": "Archivovat",
+    "ui_undefined": "neznámý",
+    "admin_documentType": "Typ"
 }

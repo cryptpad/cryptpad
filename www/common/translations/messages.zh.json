@@ -1439,5 +1439,9 @@
     "support_warning_account": "请注意，管理员无法重置密码。 如果您丢失了帐户凭据但仍处于登录状态，您可以<a>将数据迁移到新帐户</a>",
     "support_warning_prompt": "请为您的问题选择最相关的类别。 这有助于管理员进行分类，并为提供哪些信息提供进一步的建议",
     "info_sourceFlavour": "CryptPad 的<a>源代码</a>",
-    "info_termsFlavour": "此实例的<a>服务条款</a>"
+    "info_termsFlavour": "此实例的<a>服务条款</a>",
+    "ui_restore": "恢复",
+    "ui_archive": "归档",
+    "ui_undefined": "未知",
+    "admin_documentType": "類型"
 }
