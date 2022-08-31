@@ -147,34 +147,26 @@ define([
     previews['asciidoc'] = function (val, $div, common) {
         require([
             'asciidoctor',
-
             '/lib/highlight/highlight.pack.js',
             'css!/lib/highlight/styles/' + (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
         ], function (asciidoctor) {
+            var reg = asciidoctor.Extensions.create();
             var Highlight = window.hljs;
-            var html = '';
 
-            var re = /<media-tag .*?<\/media-tag>|<a .*?<\/a>/gsi;
-            var specialTags = val.match(re);
-            var subVals = val.split(re);
-
-            subVals.forEach((val, i) => {
-                html += asciidoctor.convert(val, { attributes: 'showtitle' });
-                if (specialTags[i]) { html += specialTags[i]; }
+            reg.inlineMacro('media-tag', function () {
+                var t = this;
+                t.process(function (parent, target) {
+                    var d = target.split('|');
+                    return t.createInline(parent, 'quoted', `<media-tag src="${d[0]}" data-crypto-key="${d[1]}"></media-tag>`).convert();
+                });
             });
 
-            // keep the last s and `npm run lint` will worry, remove it and it won't work anymore
-            // for support, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/dotAll 
-            var reHL = /(<pre class="highlight"><code class=".*?" data-lang="([\w-]*)">)(.*?)(<\/code><\/pre>)/g;
-            html = html.replace(reHL, (match, p1, p2, p3, p4) => {
-                try {
-                    return p1 + Highlight.highlight(p2, p3).value + p4;
-                } catch (e) {
-                    return match;
-                }
-            });
-            
+            var html = asciidoctor.convert(val, { attributes: 'showtitle', extension_registry: reg });
+
             DiffMd.apply(html, $div, common);
+            $div.find('pre code').each(function (i, el) {
+                Highlight.highlightBlock(el);
+            });
         });
     };
 
@@ -404,9 +396,18 @@ define([
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is enabled
-                framework.setMediaTagEmbedder(function (mt) {
+                framework.setMediaTagEmbedder(function (mt, d) {
+                    console.log(mt, d);
                     editor.focus();
-                    editor.replaceSelection($(mt)[0].outerHTML);
+                    var txt = $(mt)[0].outerHTML;
+                    if (editor.getMode().name === "asciidoc") {
+                        if (d.static) {
+                            txt = d.href + `[${d.name}]`;
+                        } else {
+                            txt = `media-tag:${d.src}|${d.key}[]`;
+                        }
+                    }
+                    editor.replaceSelection(txt);
                 });
             } else {
                 // Embedding is disabled
