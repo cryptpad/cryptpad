@@ -241,6 +241,7 @@ var serveConfig = makeRouteCache(function (host) {
             fileHost: Env.fileHost,
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
             listMyInstance: Env.listMyInstance,
+            accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
     ].join(';\n')
