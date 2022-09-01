@@ -1,6 +1,6 @@
 name: Feature Request
-description: Suggest an idea for CryptPad
-labels: ["feature request"]
+description: Suggest an idea for CryptPad. Please search past issues and labels to check that your question/idea has not already been addressed. If it has please comment on the relevant issues instead of creating a new one
+labels: ["Feature Request"]
 body:
   - type: textarea
     attributes:
