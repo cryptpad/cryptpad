@@ -1503,5 +1503,6 @@
     "og_contact": "{0} Contact",
     "og_pricing": "{0} Pricing",
     "og_features": "{0} Features",
-    "ui_jsRequired": "JavaScript must be enabled to perform encryption in your browser"
+    "ui_jsRequired": "JavaScript must be enabled to perform encryption in your browser",
+    "og_encryptedAppType": "Encrypted {0}"
 }
