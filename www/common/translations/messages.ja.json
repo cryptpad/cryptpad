@@ -1473,5 +1473,12 @@
     "home_morestorage": "より多くのストレージ容量が必要な場合：",
     "admin_noticeTitle": "トップページでの通知",
     "admin_noticeHint": "トップページに表示するメッセージ（オプション）",
-    "error_evalPermitted": "evalが許可されないため、中止します。\n\nこのエラーはContent-Security-Policyのヘッダーに関係しています。理由は、ヘッダーをサポートしない旧バージョンのブラウザー、適切な動作を防ぐブラウザーの拡張機能のため、もしくは、このCryptPadのインスタンスが適切に設定されていないことが考えられます。"
+    "error_evalPermitted": "evalが許可されないため、中止します。\n\nこのエラーはContent-Security-Policyのヘッダーに関係しています。理由は、ヘッダーをサポートしない旧バージョンのブラウザー、適切な動作を防ぐブラウザーの拡張機能のため、もしくは、このCryptPadのインスタンスが適切に設定されていないことが考えられます。",
+    "admin_pinLogAvailable": "ピンのログは利用可能です",
+    "admin_pinLogArchived": "ピンのログはアーカイブされています",
+    "admin_blockMetadataHint": "ログインブロックは、CryptPadにログインするためのユーザー名とパスワードの組み合わせのことです",
+    "admin_blockMetadataTitle": "ログインブロックに関する情報",
+    "admin_accountMetadataHint": "ユーザーの公開鍵を入力すると、ユーザーのアカウントに関するデータを取得できます。",
+    "admin_reportContent": "内容を報告",
+    "admin_getRawMetadata": "メタデータの履歴"
 }
