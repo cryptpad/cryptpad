@@ -1443,5 +1443,6 @@
     "ui_restore": "Restaurer",
     "ui_archive": "Archiver",
     "ui_undefined": "inconnu",
-    "admin_documentType": "Type"
+    "admin_documentType": "Type",
+    "ui_jsRequired": "JavaScript doit être activé pour effectuer le chiffrement dans votre navigateur"
 }

@@ -1495,5 +1495,13 @@
     "admin_restoreDocument": "Restore document",
     "admin_planlimit": "Storage limit",
     "admin_reportContent": "Report content",
-    "admin_getRawMetadata": "Metadata history"
+    "admin_getRawMetadata": "Metadata history",
+    "og_teamDrive": "Team drive",
+    "og_default": "CryptPad: end-to-end encrypted collaboration suite",
+    "og_login": "Log in to {0}",
+    "og_register": "Register an account on {0}",
+    "og_contact": "{0} Contact",
+    "og_pricing": "{0} Pricing",
+    "og_features": "{0} Features",
+    "ui_jsRequired": "JavaScript must be enabled to perform encryption in your browser"
 }
