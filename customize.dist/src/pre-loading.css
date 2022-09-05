@@ -98,3 +98,17 @@ html:not(.cp-app-noscroll) #placeholder.dark-theme {
         display: none;
     }
 }
+:is(div, noscript) > p.noscript {
+    font-family: sans-serif;
+    z-index: 999;
+    padding: 15px;
+    font-size: 20px;
+    margin-top: 30px !important;
+    max-width: 800px;
+    margin: auto;
+
+    background-color: #424242;
+    color: #eee;
+    border-radius: 5px;
+}
+
