@@ -1480,5 +1480,10 @@
     "admin_blockArchived": "Block wurde archiviert",
     "admin_blockAvailable": "Block ist verfügbar",
     "admin_blockMetadataPlaceholder": "Absolute oder relative URL des Blocks",
-    "admin_blockMetadataHint": "Der Login-Block ermöglicht es einem Account, sich bei CryptPad mit der Kombination aus Benutzername und Passwort anzumelden"
+    "admin_blockMetadataHint": "Der Login-Block ermöglicht es einem Account, sich bei CryptPad mit der Kombination aus Benutzername und Passwort anzumelden",
+    "admin_blockMetadataTitle": "Login-Block-Informationen",
+    "admin_documentMetadataTitle": "Dokument-Informationen",
+    "admin_accountMetadataTitle": "Account-Informationen",
+    "admin_uptimeHint": "Datum und Uhrzeit des Serverstarts",
+    "ui_none": "kein(e)"
 }
