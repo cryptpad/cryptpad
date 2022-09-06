@@ -81,7 +81,7 @@ define([
         e.setDate(s.getDate() + data.days);
     };
 
-    var DAYORDER = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+    var DAYORDER = Rec.DAYORDER = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
     var getDayData = function (str) {
         var pos = Number(str.slice(0,-2));
         var day = DAYORDER.indexOf(str.slice(-2));
@@ -524,11 +524,11 @@ define([
         return all;
     };
 
-    Rec.getRecurring = function (monthes, events) {
+    Rec.getRecurring = function (months, events) {
         if (window.CP_DEV_MODE) { debug = console.warn; }
 
         var toAdd = [];
-        monthes.forEach(function (monthId) {
+        months.forEach(function (monthId) {
             // from 1st day of the month at 00:00 to last day at 23:59:59:999
             var ms = monthId.split('-');
             var _startMonth = new Date(ms[0], ms[1]);
@@ -549,6 +549,9 @@ define([
                 if (rule.until < _startMonth) { return; }
 
                 var endData = getEndData(_start, _end);
+
+                if (rule.interval && rule.interval < 1) { return; }
+                if (!FREQ[rule.freq]) { return; }
 
                 /*
                 // Rule examples
@@ -610,6 +613,10 @@ define([
                             stop = true;
                             return true;
                         }
+                        if (rule.until && evS > rule.until) {
+                            stop = true;
+                            return true;
+                        }
                         if (_evS < _start) { // "Expand" rules may create events before the _start
                             return;
                         }
@@ -618,7 +625,7 @@ define([
                             // Nothing to display but continue the recurrence
                             return;
                         }
-                        // If a recurring event start and end in different monthes, make sure
+                        // If a recurring event start and end in different months, make sure
                         // it is only added once
                         if ((_evS < _endMonth && _evE >= _endMonth) ||
                                 (_evS < _startMonth && _evE >= _startMonth)) {

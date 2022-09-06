@@ -43,7 +43,14 @@ define([
         };
         var getEndDate = function () {
             setTimeout(function () { $(endPickr.calendarContainer).remove(); });
-            return endPickr.parseDate(e.value);
+            var d = endPickr.parseDate(e.value);
+
+            if (endPickr.config.dateFormat === "Y-m-d") { // All day event
+                // Tui-calendar will remove 1s (1000ms) to the date for an unknown reason...
+                d.setMilliseconds(1000);
+            }
+
+            return d;
         };
 
         return {

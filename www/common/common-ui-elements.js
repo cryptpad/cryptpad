@@ -1417,7 +1417,7 @@ define([
             return /HTML/.test(Object.prototype.toString.call(o)) &&
                 typeof(o.tagName) === 'string';
         };
-        var allowedTags = ['a', 'p', 'hr', 'div'];
+        var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
         var isValidOption = function (o) {
             if (typeof o !== "object") { return false; }
             if (isElement(o)) { return true; }
@@ -1541,6 +1541,7 @@ define([
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
                 // We use JSON.stringify here to escape quotes
+                if (typeof(value) === "object") { value = JSON.stringify(value); }
                 var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
                 setActive($val);
                 try {

@@ -135,7 +135,6 @@ define([
         return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
 
-
     var getCalendars = function () {
         var LOOKUP = {};
         var TEAMS = {};
@@ -802,7 +801,7 @@ define([
         var midView = new Date(((+startView) + (+endView)) / 2);
 
         // We want to generate recurring events month per month.
-        // In "month" view, we may see up to 3 different monthes
+        // In "month" view, we may see up to 3 different months
         // at the same time.
         var startId = Rec.getMonthId(startView);
         var midId = Rec.getMonthId(midView);
@@ -814,7 +813,7 @@ define([
 
         var toAdd = Rec.getRecurring(todo, APP.recurringEvents);
 
-        // Mark selected monthes as done
+        // Mark selected months as done
         todo.forEach(function (monthId) { APP.recurringDone.push(monthId); });
 
         cal.createSchedules(toAdd);
@@ -827,24 +826,7 @@ define([
         }
     };
 
-// XXX XXX
-// TODO
 /*
-* weekly, daily DONE
-* BYDAY with NUMBER DONE
-* monthly yearly DONE
-* BYSETPOS DONE
-
-TODO MARDI
-Cache
-==> avec noExpand, on ne peut pas savoir combien d'éléments ont déjà été ajoutés
-==> il faut un cache des éléments déjà générés
-==> soit un COUNT (implémentation actuelle) mais bug avec yearly...
-==> soit un cache de dates qui est géré par la fonction iterate directement (on supprime le noExpand mais on utilise le cache pour ne pas régénérer)
-
-
-MAYBE CHECK AGAIN WITH INTERVALS?
-
 UPDATE A RECCURENT EVENT:
 ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a value equals to the DTSTART of this recurring event)
 */
@@ -928,12 +910,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            // TODO Recurrence (later)
-            // On creation, select a recurrence rule (daily / weekly / monthly / more weird rules)
-            // then mark it under recurrence rule with a uid (the same for all the recurring events)
-            // ie: recurrenceRule: DAILY|{uid}
-            // Use template to hide "recurrenceRule" from the detailPopup or at least to use
-            // a non technical value
             var reminders = APP.notificationsEntries;
 
             var startDate = event.start._date;
@@ -949,10 +925,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 isAllDay: event.isAllDay,
                 end: +endDate,
                 reminders: reminders,
-                recurrenceRule: {
-                    freq: 'daily',
-                    count: 10
-                }
+                recurrenceRule: APP.recurrenceRule
             };
 
             newEvent(schedule, function (err) {
@@ -966,14 +939,23 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         cal.on('beforeUpdateSchedule', function(event) {
             var changes = event.changes || {};
             delete changes.state;
+
             if (changes.end) { changes.end = +new Date(changes.end._date); }
             if (changes.start) { changes.start = +new Date(changes.start._date); }
             var old = event.schedule;
 
-            var oldReminders = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'reminders']);
-            var reminders = APP.notificationsEntries;
-            if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
-                changes.reminders = reminders;
+            if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
+                var oldReminders = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'reminders']);
+                var reminders = APP.notificationsEntries;
+                if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
+                    changes.reminders = reminders;
+                }
+
+                var oldRec = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'recurrenceRule']) || '';
+                var rec = APP.recurrenceRule;
+                if (JSONSortify(oldRec) !== JSONSortify(rec)) {
+                    changes.recurrenceRule = rec;
+                }
             }
 
             updateEvent({
@@ -1078,6 +1060,433 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             goLeft, goToday, goRight
         ]));
 
+    };
+
+
+// XXX
+Messages.calendar_rec = "Repeat"; // XXX
+Messages.calendar_rec_no = "None";
+Messages.calendar_rec_daily = "Daily";
+Messages.calendar_rec_weekly = "Weekly on {0}";
+// getWeekDays(true)[date.getDay()];
+
+Messages.calendar_rec_monthly = "Monthly, day {1}";
+Messages.calendar_rec_yearly = "Yearly on {2}";
+// a.toLocaleDateString(undefined, {month:"long", day:"2-digit"})
+
+Messages.calendar_rec_weekend = "Every weekend (Saturday and Sunday)";
+Messages.calendar_rec_weekdays = "Every week, Monday to Friday";
+
+Messages.calendar_rec_custom = "Custom";
+
+Messages.calendar_rec_txt = "Repeat every";
+Messages.calendar_rec_freq_daily = "days";
+Messages.calendar_rec_freq_weekly = "weeks";
+Messages.calendar_rec_freq_monthly = "months";
+Messages.calendar_rec_freq_yearly = "years";
+
+Messages.calendar_rec_until_no = "No end";
+Messages.calendar_rec_until_date = "Until";
+Messages.calendar_rec_until_count = "Ends after";
+Messages.calendar_rec_until_count2 = "occurences";
+
+Messages.calendar_rec_monthly_pick = "Repeats on";
+
+Messages.calendar_nth_1 = "first";
+Messages.calendar_nth_2 = "second";
+Messages.calendar_nth_3 = "third";
+Messages.calendar_nth_4 = "fourth";
+Messages.calendar_nth_5 = "fifth";
+Messages.calendar_nth_last = "last";
+
+Messages.calendar_rec_monthly_nth = "Every {0} {1} of the month";
+Messages.calendar_rec_yearly_nth = "Every {0} {1} of {2}";
+Messages.calendar_rec_every_date = "Every {0}";
+
+    var WEEKDAYS = getWeekDays(true);
+    var getMonthlyPattern = function (date, yearly) {
+        var d = new Date(+date);
+        var day = d.getDay();
+        var monthday = d.getDate();
+
+        // Check nth day
+        var s = new Date(+d);
+        s.setDate(1);
+        while (s.getDay() !== day) { s.setDate(s.getDate() + 1); }
+        var nth = ((monthday - s.getDate()) / 7) + 1;
+
+        // Check last day
+        var m = d.getMonth();
+        d.setDate(d.getDate() + 7);
+        var last = d.getMonth() !== m;
+
+        var dayCode = Rec.DAYORDER[day];
+        var dayStr = WEEKDAYS[day];
+        var monthStr = date.toLocaleDateString(undefined, { month: 'long' });
+
+        var key = yearly ? "yearly" : "monthly";
+        return {
+            nth: nth + dayCode,
+            str: Messages._getKey('calendar_rec_'+key+'_nth', [
+                Messages['calendar_nth_'+nth],
+                dayStr,
+                monthStr
+            ]),
+            last: last ? '-1' + dayStr : undefined,
+            lastStr: Messages._getKey('calendar_rec_'+key+'_nth', [
+                Messages['calendar_nth_last'],
+                dayStr,
+                monthStr
+            ]),
+            // Messages.calendar_rec_yearly_nth
+            // Messages.calendar_rec_monthly_nth
+        };
+    };
+
+    var getRecurrenceInput = function (date) {
+        APP.recurrenceRule = '';
+
+        var obj = APP.editModalData;
+        if (obj.id) { // Edit mode, recover recurrence data
+            var cal = obj.selectedCal.id;
+            var calData = APP.calendars[cal];
+            if (calData) {
+                var ev = Util.find(calData,['content', 'content', obj.id]);
+                APP.recurrenceRule = ev.recurrenceRule || '';
+            }
+        }
+
+        var options = [{
+            tag: 'a',
+            attributes: {
+                'class': 'cp-calendar-recurrence',
+                'data-value': '',
+                'href': '#',
+            },
+            content: Messages.calendar_rec_no
+        }];
+        // Basic recurrence
+        ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-calendar-recurrence',
+                    'data-value': JSON.stringify({freq: rec}),
+                    'href': '#',
+                },
+                content: Messages._getKey('calendar_rec_' + rec, [
+                    getWeekDays(true)[date.getDay()],
+                    date.getDate(),
+                    date.toLocaleDateString(undefined, {month:"long", day:"2-digit"})
+                ])
+            });
+        });
+        // Weekdays / Weekend
+        var isWeekend = [0,6].includes(date.getDay());
+        var weekValue = isWeekend ? ['SA', 'SU'] : ['MO', 'TU', 'WE', 'TH', 'FR'];
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-calendar-recurrence',
+                'data-value': JSON.stringify({
+                    freq: 'weekly',
+                    by: { day: weekValue }
+                }),
+                'href': '#',
+            },
+            content: Messages['calendar_rec_' + (isWeekend ? 'weekend' : 'weekdays')]
+        });
+
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-calendar-recurrence',
+                'data-value': 'custom',
+                'href': '#',
+            },
+            content: Messages.calendar_rec_custom
+        });
+
+        var dropdownConfig = {
+            text: Messages.calendar_rec_no,
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            common: common,
+            buttonCls: 'btn btn-secondary',
+            caretDown: true,
+        };
+
+        var $block = UIElements.createDropdown(dropdownConfig);
+        $block.setValue(APP.recurrenceRule ? 'custom' : '');
+
+        var customDiv = h('div');
+        //var $custom = $(customDiv).hide();
+
+        var showCustom = function () {
+            //if ($.trim($custom.html())) { return $custom.show(); }
+            var rec = APP.recurrenceRule || {};
+
+            var interval = h('input', {
+                type: "number",
+                min: 1,
+                max: 1000,
+                value: rec.interval || 1
+            });
+
+            var options = [];
+            ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-calendar-recurrence-freq',
+                        'data-value': rec,
+                        'href': '#',
+                    },
+                    content: Messages['calendar_rec_freq_' + rec]
+                });
+            });
+            var dropdownConfig = {
+                text: Messages.calendar_rec_freq_daily,
+                options: options, // Entries displayed in the menu
+                isSelect: true,
+                common: common,
+                buttonCls: 'btn btn-secondary',
+                caretDown: true,
+            };
+            var $freq = UIElements.createDropdown(dropdownConfig);
+            $freq.setValue(rec.freq || 'daily');
+
+            var radioNo = UI.createRadio('cp-calendar-rec-until', 'cp-calendar-rec-until-no',
+                       Messages.calendar_rec_until_no, !rec.until && !rec.count, {});
+            var pickr;
+            var untilDate = [
+                h('span', Messages.calendar_rec_until_date),
+                pickr = h('input', {readonly:"readonly"})
+            ];
+            var startPickr = Flatpickr(pickr, {
+                enableTime: false,
+                minDate: date,
+                //dateFormat: dateFormat,
+                onChange: function () {
+                    //endPickr.set('minDate', startPickr.parseDate(s.value));
+                }
+            });
+            var endDate = new Date(+date);
+            endDate.setMonth(endDate.getMonth() + 1);
+            startPickr.setDate(rec.until ? new Date(rec.until) : endDate);
+            var radioDate = UI.createRadio('cp-calendar-rec-until', 'cp-calendar-rec-until-date',
+                       untilDate, Boolean(rec.until), {input:{'data-value':'date'}});
+            var untilCount = [
+                h('span', Messages.calendar_rec_until_count),
+                h('input', {type: "number", value: (rec.count || 5), min: 2}),
+                h('span', Messages.calendar_rec_until_count2),
+            ];
+            var radioCount = UI.createRadio('cp-calendar-rec-until', 'cp-calendar-rec-until-count',
+                       untilCount, Boolean(rec.count), {input:{'data-value':'count'}});
+            var untilEls = [radioNo, radioDate, radioCount];
+            $(untilEls).find('.cp-checkmark-label input').click(function () {
+                $(this).closest('.cp-radio').find('input[type="radio"]').prop('checked', true);
+            });
+
+            var repeat = h('div.cp-calendar-rec-inline', [
+                h('span', Messages.calendar_rec_txt),
+                interval,
+                $freq[0]
+            ]);
+            var until = h('div.cp-calendar-rec-block.radio-group', untilEls);
+
+            var expand = h('div');
+            var $expand = $(expand);
+            var EXPAND = {};
+            EXPAND.daily = function () {};
+            EXPAND.weekly = function () {
+                $expand.attr('class', 'cp-calendar-rec-inline');
+                var days = getWeekDays();
+                var cbox, dayCode;
+                var checked = (rec.by && rec.by.day) || [Rec.DAYORDER[date.getDay()]];
+                for (var i = 1; i < 8; i++) {
+                    dayCode = Rec.DAYORDER[i%7];
+                    cbox = UI.createCheckbox('cp-form-rec-weekly-'+i,
+                        days[i%7], checked.includes(dayCode), { input: { 'data-value': dayCode } });
+                    $expand.append(cbox);
+                }
+            };
+            EXPAND.monthly = function () {
+                $expand.attr('class', 'cp-calendar-rec-block radio-group');
+                // Display one or two radio options accordingly
+                var checked = (rec.by && rec.by.day) || [];
+                var pattern = getMonthlyPattern(date);
+                var radioNth = UI.createRadio('cp-calendar-rec-monthly', 'cp-calendar-rec-monthly-nth',
+                    pattern.str, checked.includes(pattern.nth),
+                    {input:{'data-value':pattern.nth }});
+                $expand.append(radioNth);
+
+                if (pattern.last) {
+                    var radioLast = UI.createRadio('cp-calendar-rec-monthly', 'cp-calendar-rec-monthly-last',
+                        pattern.lastStr, checked.includes(pattern.last),
+                        {input:{ 'data-value': pattern.last }});
+                    $expand.append(radioLast);
+                }
+
+                var active = (rec.by && rec.by.monthday) || [date.getDate()];
+                var lines = [], l, n;
+                for (var i = 0; i < 5; i++) {
+                    l = [];
+                    for (var j = 1; j < 8; j++) {
+                        n = i * 7 + j;
+                        if (n > 31) { break; }
+                        l.push(h('button.btn.no-margin.cp-calendar-monthly-pick-el' +
+                                    (active.includes(n) ? '.btn-secondary' : '.btn-cancel'), {
+                                'data-value': n
+                             }, n));
+                    }
+                    lines[i] = h('div', l);
+                }
+
+                var pickr = h('div.cp-calendar-monthly-pick', lines);
+                $(pickr).find('button').click(function () {
+                    var $b = $(this);
+                    if ($b.is('.btn-secondary')) {
+                        return $b.removeClass('btn-secondary').addClass('btn-cancel');
+                    }
+                    $b.removeClass('btn-cancel').addClass('btn-secondary');
+                });
+                var radioPickContent = [
+                    h('span', Messages.calendar_rec_monthly_pick),
+                    pickr
+                ];
+                var radioPick = UI.createRadio('cp-calendar-rec-monthly', 'cp-calendar-rec-monthly-pick',
+                       radioPickContent, !checked.length, {input:{'data-value':'pick'}});
+                $expand.append(radioPick);
+
+                $expand.find('.cp-checkmark-label button').click(function () {
+                    $(this).closest('.cp-radio').find('input[type="radio"]').prop('checked', true);
+                });
+            };
+            EXPAND.yearly = function () {
+                $expand.attr('class', 'cp-calendar-rec-block radio-group');
+
+                var checked = (rec.by && rec.by.day) || [];
+
+                var radioDate = UI.createRadio('cp-calendar-rec-yearly',
+                    'cp-calendar-rec-yearly-date',
+                    Messages._getKey('calendar_rec_every_date', [
+                        date.toLocaleDateString(undefined, { month: 'long', day: 'numeric'})
+                    ]), !checked.length, { 'data-value': '' });
+                $expand.append(radioDate);
+
+                var pattern = getMonthlyPattern(date, true);
+                var radioNth = UI.createRadio('cp-calendar-rec-yearly', 'cp-calendar-rec-yearly-nth',
+                    pattern.str, checked.includes(pattern.nth),
+                    {input:{ 'data-value': pattern.nth }});
+                $expand.append(radioNth);
+
+                if (pattern.last) {
+                    var radioLast = UI.createRadio('cp-calendar-rec-yearly', 'cp-calendar-rec-yearly-last',
+                        pattern.lastStr, checked.includes(pattern.last),
+                        {input:{ 'data-value': pattern.last }});
+                    $expand.append(radioLast);
+                }
+            };
+            EXPAND[rec.freq || "daily"]();
+
+            var currentFreq = 'daily';
+            $freq.onChange.reg(function (prettyVal, val) {
+                if (val === currentFreq || !val) { return; }
+                currentFreq = val;
+                rec = {};
+                $expand.empty();
+                EXPAND[val]();
+            });
+
+
+            var content = [repeat, expand, until];
+
+            //$custom.append(content).show();
+            var $modal;
+            var modal = UI.dialog.customModal(content, {
+                buttons: [{
+                    className: 'cancel',
+                    name: Messages.cancel,
+                    onClick: function () {
+                        if (!APP.recurrenceRule) { $block.setValue(''); }
+                    },
+                    keys: [27]
+                }, {
+                    className: 'primary',
+                    name: Messages.settings_save,
+                    onClick: function () {
+                        var freq = $freq.getValue();
+
+                        var rec = APP.recurrenceRule = {
+                            freq: freq,
+                            interval: Number($(interval).val()) || 1,
+                            by: {}
+                        };
+
+                        var until = $modal.find('input[name="cp-calendar-rec-until"]:checked').data('value');
+                        if (until === "count") {
+                            rec.count = $(radioCount).find('input[type="number"]').val();
+                        } else if (until === "date") {
+                            var _date = Flatpickr.parseDate(pickr.value);
+                            _date.setDate(_date.getDate()+1);
+                            rec.until = +_date - 1;
+                        }
+
+                        if (freq === "weekly") {
+                            rec.by.day = [];
+                            $expand.find('input[type="checkbox"]:checked').each(function (i, el) {
+                                rec.by.day.push($(el).data('value'));
+                                if (!rec.by.day.length) { delete rec.by.day; }
+                            });
+                        }
+
+                        if (freq === "monthly") {
+                            var _m = $expand.find('input[name="cp-calendar-rec-monthly"]:checked').data('value');
+                            if (_m === "pick") {
+                                rec.by.monthday = [];
+                                $expand.find('div.cp-calendar-monthly-pick button.btn-secondary')
+                                        .each(function (i, el) {
+                                    rec.by.monthday.push($(el).data('value'));
+                                });
+                                if (!rec.by.monthday.length) { delete rec.by.monthday; }
+                            } else {
+                                rec.by.day = [_m];
+                            }
+                        }
+
+                        if (freq === "yearly") {
+                            var _y = $expand.find('input[name="cp-calendar-rec-yearly"]:checked').data('value');
+                            if (_y) {
+                                rec.by.month = [date.getMonth()+1];
+                                rec.by.day = _y;
+                            }
+                        }
+
+                        if (!Object.keys(rec.by).length) { delete rec.by; }
+                    },
+                    keys: [13]
+                }]
+            });
+            $modal = $(modal);
+            UI.openCustomModal(modal);
+            $modal.closest('.alertify').on('mousedown', function (e) {
+                e.stopPropagation();
+            });
+        };
+
+        $block.onChange.reg(function(name, val) {
+            if (val === "custom") { return void showCustom(); }
+            APP.recurrenceRule = val;
+        });
+
+        return h('div.cp-calendar-recurrence-container', [
+            h('hr'),
+            h('span', Messages.calendar_rec),
+            $block[0],
+            customDiv,
+            h('hr')
+        ]);
     };
 
     var parseNotif = function (minutes) {
@@ -1261,6 +1670,14 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
 
+            var $container = $el.closest('.tui-full-calendar-floating-layer');
+            $container.addClass('cp-calendar-popup-flex');
+            $container.css('display', 'flex').mousedown(function (e) {
+                if ($(e.target).is('.cp-calendar-popup-flex')) {
+                    $el.find('.tui-full-calendar-popup-close').click();
+                }
+            });
+
             var calendars = APP.calendars || {};
             var show = false;
             $el.find('.tui-full-calendar-dropdown-menu li').each(function (i, li) {
@@ -1282,35 +1699,34 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
 
             var $button = $el.find('.tui-full-calendar-section-button-save');
+
+            var $startDate = $el.find('#tui-full-calendar-schedule-start-date');
+            var startDate = Flatpickr.parseDate($startDate.val());
+            var divRec = getRecurrenceInput(startDate);
+            $button.before(divRec);
+
             var div = getNotificationDropdown();
             $button.before(div);
 
 
-// XXX reccuring here
 
 
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
-            var $start = $el.find('.tui-full-calendar-section-start-date');
-            var $dash = $el.find('.tui-full-calendar-section-date-dash');
-            var $end = $el.find('.tui-full-calendar-section-end-date');
             var allDay = $cbox.is(':checked');
-            if (allDay) {
-                $start.hide();
-                $dash.hide();
-                $end.hide();
-            }
+            var allDayFormat = 'Y-m-d';
+            var timeFormat = '';
+            var setFormat = function (allDay) {
+                var s = window.CP_startPickr;
+                var e = window.CP_endPickr;
+                if (!timeFormat) { timeFormat = s.config.dateFormat; }
+                s.set('dateFormat', allDay ? allDayFormat : timeFormat);
+                e.set('dateFormat', allDay ? allDayFormat : timeFormat);
+            };
+            setFormat(allDay);
             $el.find('.tui-full-calendar-section-allday').click(function () {
                 setTimeout(function () {
                     var allDay = $cbox.is(':checked');
-                    if (allDay) {
-                        $start.hide();
-                        $dash.hide();
-                        $end.hide();
-                        return;
-                    }
-                    $start.show();
-                    $dash.show();
-                    $end.show();
+                    setFormat(allDay);
                 });
             });
         };
