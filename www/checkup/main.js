@@ -1422,6 +1422,8 @@ define([
 
     [
         '/',
+        '/index.html',
+        '/contact.html',
         '/code/',
         '/pad/index.html',
     ].forEach(url => {
@@ -1456,7 +1458,7 @@ define([
                         h('p', [
                             link(url, url),
                             ' is missing several attributes which provide better previews on social media sites and messengers. ',
-                            "The administrator of this instance can generate them with ", code('npm run make-opengraph'), '.',
+                            "The administrator of this instance can generate them with ", code('npm run build'), '.',
                         ]),
                         h('p', "Missing attributes: "),
                         h('ul', missing.map(q => h('li', h('code', q)))),
