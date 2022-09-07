@@ -1466,12 +1466,12 @@
     "admin_documentSize": "Größe",
     "admin_currentlyOnline": "Ist derzeit online",
     "admin_currentlyOpen": "Derzeit geöffnet",
-    "admin_documentMetadataHint": "Abfrage eines Kanals oder einer Datei über ihre ID oder URL",
+    "admin_documentMetadataHint": "Abfrage eines Dokuments oder einer Datei über ihre ID oder URL",
     "admin_reportContent": "Inhalt des Berichts",
     "admin_planlimit": "Speicherbegrenzung",
-    "admin_channelCount": "Anzahl der Kanäle",
+    "admin_channelCount": "Anzahl der Dokumente",
     "admin_channelArchived": "Kanal wurde archiviert",
-    "admin_channelAvailable": "Kanal ist verfügbar",
+    "admin_channelAvailable": "Verfügbar",
     "admin_accountMetadataHint": "Gib den öffentlichen Schlüssel eines Benutzers ein, um Daten über den Account abzurufen.",
     "ui_fetch": "Abrufen",
     "admin_blockKey": "Öffentlicher Schlüssel des Blocks",
@@ -1485,5 +1485,6 @@
     "admin_documentMetadataTitle": "Dokument-Informationen",
     "admin_accountMetadataTitle": "Account-Informationen",
     "admin_uptimeHint": "Datum und Uhrzeit des Serverstarts",
-    "ui_none": "kein(e)"
+    "ui_none": "kein(e)",
+    "admin_getRawMetadata": "Historie der Metadaten"
 }
