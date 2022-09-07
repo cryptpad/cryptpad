@@ -71,7 +71,7 @@ define([
             'cp-admin-setlimit',
             'cp-admin-getlimits',
         ],
-        'database': [
+        'database': [ // Msg.admin_cat_database
             'cp-admin-account-metadata',
             'cp-admin-document-metadata',
             'cp-admin-block-metadata',
@@ -302,7 +302,7 @@ define([
     };
 
     var justifyDialog = (message, suggestion, implicit, explicit) => {
-        UI.prompt(message, suggestion, result => { // XXX placeholder? (admin_archiveNote)
+        UI.prompt(message, suggestion, result => {
             if (result === null) { return; }
             if (typeof(result) !== 'string') { result = ''; }
             else { result = result.trim(); }
@@ -310,6 +310,9 @@ define([
             explicit(result); // follow up with the action
         }, {
             ok: Messages.ui_confirm,
+            inputOpts: {
+                placeholder: Messages.admin_archiveNote || '',
+            },
         });
     };
 
@@ -325,14 +328,14 @@ define([
         justifyDialog(message, restoreReason, reason => { restoreReason = reason; }, action);
     };
 
-    var customButton = function (cls, text, handler) {
-        var btn = h(`button.btn.btn-${cls}`, text);
+    var customButton = function (cls, text, handler, opt) {
+        var btn = h(`button.btn.btn-${cls}`, opt, text);
         if (handler) { $(btn).click(handler); }
         return btn;
     };
 
-    var primary = (text, handler) => customButton('primary', text, handler);
-    var danger = (text, handler) => customButton('danger', text, handler);
+    var primary = (text, handler, opt) => customButton('primary', text, handler, opt);
+    var danger = (text, handler, opt) => customButton('danger', text, handler, opt);
 
     var copyToClipboard = (content) => {
         var button = primary(Messages.copyToClipboard, () => {
@@ -531,7 +534,7 @@ define([
 
     create['account-metadata'] = function () {
         var key = 'account-metadata';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
 
         // input field for edPublic or user string
         var input = h('input', {
@@ -784,7 +787,6 @@ define([
 
         if (data.live) {
         // archive
-            // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
             var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
                 justifyArchivalDialog('', result => {
                     sframeCommand('ARCHIVE_DOCUMENT', {
@@ -795,12 +797,15 @@ define([
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messages.ui_success); //archivedFromServer); // XXX success ?
+                        UI.log(Messages.archivedFromServer);
                         disable($(archiveDocumentButton));
                     });
                 });
             });
-            row(Messages.admin_archiveDocument, archiveDocumentButton); // XXX admin_archiveHint ?
+            row(Messages.admin_archiveDocument, h('span', [
+                archiveDocumentButton,
+                h('small', Messages.admin_archiveHint),
+            ]));
         }
 
         if (data.archived && !data.live) {
@@ -814,13 +819,15 @@ define([
                             console.error(err);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messages.ui_success);
+                        UI.log(Messages.restoredFromServer);
                         disable($(restoreDocumentButton));
                     });
                 });
             });
-            // XXX accessibility, tooltips (admin_unarchiveHint, admin_unarchiveTitle)
-            row(Messages.admin_restoreDocument, restoreDocumentButton); // XXX display admin_unarchiveHint inline
+            row(Messages.admin_restoreDocument, h('span', [
+                restoreDocumentButton,
+                h('small', Messages.admin_unarchiveHint),
+            ]));
         }
         // XXX file restore button?
 
@@ -831,7 +838,7 @@ define([
 
     create['document-metadata'] = function () {
         var key = 'document-metadata';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_documentMetadataHint.admin_documentMetadataTitle
 
         var input = h('input', {
             placeholder: Messages.admin_documentMetadataPlaceholder,
@@ -1068,7 +1075,7 @@ define([
 
     create['block-metadata'] = function () {
         var key = 'block-metadata';
-        var $div = makeBlock(key, true);
+        var $div = makeBlock(key, true); // Msg.admin_blockMetadataHint.admin_blockMetadataTitle
 
         var input = h('input', {
             placeholder: Messages.admin_blockMetadataPlaceholder,
