@@ -1480,5 +1480,12 @@
     "admin_accountMetadataTitle": "Account-Informationen",
     "admin_uptimeHint": "Datum und Uhrzeit des Serverstarts",
     "ui_none": "kein(e)",
-    "admin_getRawMetadata": "Historie der Metadaten"
+    "admin_getRawMetadata": "Historie der Metadaten",
+    "og_encryptedAppType": "Verschlüsselt: {0}",
+    "og_pricing": "{0}: Preise und Konditionen",
+    "og_features": "{0}: Funktionen",
+    "og_contact": "{0}: Kontakt",
+    "og_teamDrive": "Team-Drive",
+    "og_default": "CryptPad: Ende-zu-Ende-verschlüsselte Suite zur Zusammenarbeit",
+    "ui_jsRequired": "JavaScript muss aktiviert sein, um die Verschlüsselung in deinem Browser zu ermöglichen"
 }
