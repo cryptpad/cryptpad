@@ -1103,7 +1103,127 @@ Messages.calendar_rec_monthly_nth = "Every {0} {1} of the month";
 Messages.calendar_rec_yearly_nth = "Every {0} {1} of {2}";
 Messages.calendar_rec_every_date = "Every {0}";
 
+
+
+Messages.calendar_list = "{0}, {1}";
+Messages.calendar_list_end = "{0} or {1}";
+
+Messages.calendar_str_yearly = "{0} year(s)";
+Messages.calendar_str_monthly = "{0} month(s)";
+Messages.calendar_str_weekly = "{0} week(s)";
+Messages.calendar_str_daily = "{0} day(s)";
+
+Messages.calendar_str_day = "on {0}";
+Messages.calendar_str_monthday = "on the {0}";
+Messages.calendar_str_nthdayofmonth = "on the {0} of {1}";
+
+Messages.calendar_str_for = "for {0} times";
+Messages.calendar_str_until = "until {0}";
+
+Messages.calendar_str_filter = "Filters:";
+Messages.calendar_str_filter_month = "Months: {0}";
+Messages.calendar_str_filter_weekno = "Weeks: {0}";
+Messages.calendar_str_filter_yearday = "Days of year: {0}";
+Messages.calendar_str_filter_monthday = "Days of month: {0}";
+Messages.calendar_str_filter_day = "Days: {0}";
+
+
     var WEEKDAYS = getWeekDays(true);
+    var listItems = function (_arr) {
+        arr = _arr.slice();
+        if (arr.length === 1) {
+            return arr[0];
+        }
+        var str = arr.shift();
+        var i = 0;
+        while (arr.length > 1 && i < 367) {
+            str = Messages._getKey('calendar_list', [str, arr.shift()]);
+            i++;
+        }
+        str = Messages._getKey('calendar_list_end', [str, arr.shift()]);
+        return str;
+    };
+    var translate = function (rule) {
+        var str = "";
+        if (!rule || !rule.freq) { return; }
+        var tmp = new Date();
+
+        // Freq, interval
+        str = Messages._getKey('calendar_str_'+rule.freq, [rule.interval || 1]);
+
+        var m = rule.by && rule.by.month;
+        var d = rule.by && rule.by.day;
+        var md = rule.by && rule.by.monthday;
+
+        var ord = false;
+        if (d) {
+            d = d.map(function (str) {
+                var nth = str.slice(0, -2);
+                nth = (nth === '-1') ? 'last' : nth;
+                ord = Boolean(nth);
+                var day = str.slice(-2);
+                var n = Rec.DAYORDER.indexOf(day);
+                var dayStr = WEEKDAYS[n];
+                if (nth) { return Messages['calendar_nth_'+nth] + " " + dayStr; }
+                return dayStr;
+            });
+        }
+        if (m) {
+            m = m.map(function (n) {
+                tmp.setMonth(n-1);
+                return tmp.toLocaleDateString(undefined, { month: 'long' });
+            });
+        }
+
+        // Until / count
+        var end = "";
+        if (rule.count) {
+            end += " " + Messages._getKey('calendar_str_for', [rule.count]);
+        }
+        if (rule.until) {
+            end += " " + Messages._getKey('calendar_str_until', [
+                new Date(rule.until).toLocaleDateString(undefined, {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            ]);
+        }
+
+        var filters = [];
+        // nth day (of month)
+        if (rule.freq === "yearly" && m && m.length === 1 && d && d.length === 1
+            && Object.keys(rule.by).length === 2) {
+            str += " " + Messages._getKey('calendar_str_nthdayofmonth', [
+                d[0],
+                m[0]
+            ]);
+        } else if (rule.freq === "monthly" && d && d.length === 1 && ord
+            && Object.keys(rule.by).length === 1) {
+            str += " " + Messages._getKey('calendar_str_monthday', [
+                d[0]
+            ]);
+        } else if (rule.freq === "monthly" && md && Object.keys(rule.by).length === 1) {
+            str += " " + Messages._getKey('calendar_str_monthday', [listItems(md)]);
+        } else if (rule.freq === "weekly" && d && Object.keys(rule.by).length === 1) {
+            str += " " + Messages._getKey('calendar_str_day', [listItems(d)]);
+        } else if (rule.by) {
+            filters = Object.keys(rule.by).map(function (k) {
+                var val = rule.by[k];
+                if (k === "month") { val = m; }
+                if (k === "day") { val = d; }
+                return Messages._getKey('calendar_str_filter_'+k, [listItems(val)]);
+            });
+        }
+
+        str += end;
+
+        return {
+            str: Messages._getKey('calendar_rec_every_date', [str]),
+            filters: filters
+        };
+    };
+
     var getMonthlyPattern = function (date, yearly) {
         var d = new Date(+date);
         var day = d.getDay();
@@ -1156,6 +1276,24 @@ Messages.calendar_rec_every_date = "Every {0}";
             }
         }
 
+
+// XXX TEST
+/*
+APP.recurrenceRule = {
+    freq: 'yearly',
+    interval: 2,
+    count: 30,
+    until: 1924902000000,
+    by: {
+        month: [1, 3, 5, 7, 9, 11],
+        weekno: [1, 11, 21, 31, 41, 51],
+        day: ["MO","TU","WE","TH","FR"]
+    }
+};
+*/
+
+        var basicStr = {};
+
         var options = [{
             tag: 'a',
             attributes: {
@@ -1167,11 +1305,12 @@ Messages.calendar_rec_every_date = "Every {0}";
         }];
         // Basic recurrence
         ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
+            basicStr[rec] = JSONSortify({freq: rec});
             options.push({
                 tag: 'a',
                 attributes: {
                     'class': 'cp-calendar-recurrence',
-                    'data-value': JSON.stringify({freq: rec}),
+                    'data-value': basicStr[rec],
                     'href': '#',
                 },
                 content: Messages._getKey('calendar_rec_' + rec, [
@@ -1184,19 +1323,20 @@ Messages.calendar_rec_every_date = "Every {0}";
         // Weekdays / Weekend
         var isWeekend = [0,6].includes(date.getDay());
         var weekValue = isWeekend ? ['SA', 'SU'] : ['MO', 'TU', 'WE', 'TH', 'FR'];
+        basicStr.days = JSONSortify({
+            freq: 'daily',
+            by: { day: weekValue }
+        });
         options.push({
             tag: 'a',
             attributes: {
                 'class': 'cp-calendar-recurrence',
-                'data-value': JSON.stringify({
-                    freq: 'weekly',
-                    by: { day: weekValue }
-                }),
+                'data-value': basicStr.days,
                 'href': '#',
             },
             content: Messages['calendar_rec_' + (isWeekend ? 'weekend' : 'weekdays')]
         });
-
+        // Custom
         options.push({
             tag: 'a',
             attributes: {
@@ -1215,15 +1355,47 @@ Messages.calendar_rec_every_date = "Every {0}";
             buttonCls: 'btn btn-secondary',
             caretDown: true,
         };
-
         var $block = UIElements.createDropdown(dropdownConfig);
-        $block.setValue(APP.recurrenceRule ? 'custom' : '');
 
-        var customDiv = h('div');
-        //var $custom = $(customDiv).hide();
+        var translated = h('div.cp-calendar-rec-translated');
+        var $translated = $(translated);
+        var addTranslation = function () {
+            $translated.empty();
+
+            // Dropdown value
+            var recStr = JSONSortify(APP.recurrenceRule);
+            var set = Object.keys(basicStr).some(function (k) {
+                if (recStr === basicStr[k]) {
+                    $block.setValue(basicStr[k]);
+                    return true;
+                    $translated.empty();
+                }
+            });
+            if (set) { return; }
+            $block.setValue(APP.recurrenceRule ? 'custom' : '');
+
+            // Text value
+
+            var ruleObj = translate(APP.recurrenceRule)
+            if (!ruleObj || !ruleObj.str) { return; }
+            $translated.append(h('div.cp-calendar-rec-translated-str', ruleObj.str));
+
+            if (!ruleObj.filters || !Array.isArray(ruleObj.filters)
+                    || !ruleObj.filters.length) { return; }
+            var toAdd = [];
+            toAdd = ruleObj.filters.map(function (str) {
+                return h('li', str);
+            });
+            $translated.append([
+                h('div', Messages.calendar_str_filter),
+                h('ul', toAdd)
+            ]);
+        };
+        addTranslation();
+
+
 
         var showCustom = function () {
-            //if ($.trim($custom.html())) { return $custom.show(); }
             var rec = APP.recurrenceRule || {};
 
             var interval = h('input', {
@@ -1336,7 +1508,7 @@ Messages.calendar_rec_every_date = "Every {0}";
                         n = i * 7 + j;
                         if (n > 31) { break; }
                         l.push(h('button.btn.no-margin.cp-calendar-monthly-pick-el' +
-                                    (active.includes(n) ? '.btn-secondary' : '.btn-cancel'), {
+                                    (active.includes(n) ? '.btn-secondary' : '.btn-default'), {
                                 'data-value': n
                              }, n));
                     }
@@ -1390,7 +1562,7 @@ Messages.calendar_rec_every_date = "Every {0}";
             };
             EXPAND[rec.freq || "daily"]();
 
-            var currentFreq = 'daily';
+            var currentFreq = rec.freq || 'daily';
             $freq.onChange.reg(function (prettyVal, val) {
                 if (val === currentFreq || !val) { return; }
                 currentFreq = val;
@@ -1402,7 +1574,6 @@ Messages.calendar_rec_every_date = "Every {0}";
 
             var content = [repeat, expand, until];
 
-            //$custom.append(content).show();
             var $modal;
             var modal = UI.dialog.customModal(content, {
                 buttons: [{
@@ -1423,6 +1594,7 @@ Messages.calendar_rec_every_date = "Every {0}";
                             interval: Number($(interval).val()) || 1,
                             by: {}
                         };
+                        if (rec.interval === 1) { delete rec.interval; }
 
                         var until = $modal.find('input[name="cp-calendar-rec-until"]:checked').data('value');
                         if (until === "count") {
@@ -1459,11 +1631,13 @@ Messages.calendar_rec_every_date = "Every {0}";
                             var _y = $expand.find('input[name="cp-calendar-rec-yearly"]:checked').data('value');
                             if (_y) {
                                 rec.by.month = [date.getMonth()+1];
-                                rec.by.day = _y;
+                                rec.by.day = [_y];
                             }
                         }
 
                         if (!Object.keys(rec.by).length) { delete rec.by; }
+
+                        addTranslation();
                     },
                     keys: [13]
                 }]
@@ -1478,13 +1652,14 @@ Messages.calendar_rec_every_date = "Every {0}";
         $block.onChange.reg(function(name, val) {
             if (val === "custom") { return void showCustom(); }
             APP.recurrenceRule = val;
+            addTranslation();
         });
 
         return h('div.cp-calendar-recurrence-container', [
             h('hr'),
             h('span', Messages.calendar_rec),
             $block[0],
-            customDiv,
+            translated,
             h('hr')
         ]);
     };
