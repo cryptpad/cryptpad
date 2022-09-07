@@ -460,15 +460,11 @@ define([
                         wide: true,
                         ok: Messages.copyToClipboard,
                     });
-
-                    // XXX format as two-column table (id, type)
-                    // XXX add ['copy-to-clipboard', 'close'] buttons
-                    //UI.alert(h('ul', P.map(p => h('li', h('code', p)))));
                 });
             };
 
             // get full pin list
-            row(Messages.admin_getPinList, primary(Messages.ui_fetch, getPins)); // XXX display modal with pre or ul and buttons to copy/download
+            row(Messages.admin_getPinList, primary(Messages.ui_fetch, getPins));
 
             // get full pin history
             var getHistoryHandler = () => {
@@ -477,14 +473,14 @@ define([
                         console.error(err);
                         return void UI.warn(Messages.error);
                     }
-                    UI.alert(history); // XXX NOT_IMPLEMENTED
+                    UI.alert(history); // TODO NOT_IMPLEMENTED
                 });
             };
             var pinHistoryButton =  primary(Messages.ui_fetch, getHistoryHandler);
             disable($(pinHistoryButton));
 
-            // XXX pin history is not implemented
-            //row(Messages.admin_getFullPinHistory, pinHistoryButton); // XXX display modal with pre and buttons to copy/download
+            // TODO pin history is not implemented
+            //row(Messages.admin_getFullPinHistory, pinHistoryButton);
 
             // archive pin log
             var archiveHandler = () => {
@@ -503,12 +499,10 @@ define([
                 });
             };
 
-            // XXX accessibility, tooltips
-            row(Messages.admin_archivePinLog, danger(Messages.admin_archiveButton, archiveHandler)); // XXX this user's documents will no longer be considered important. inactive documents may eventually be removed if nobody else is pinning them
+            row(Messages.admin_archivePinLog, danger(Messages.admin_archiveButton, archiveHandler));
 
             // archive owned documents
-            // XXX accessibility, tooltips
-/* // XXX not implemented
+/* // TODO not implemented
             var archiveDocuments = () => {
                 justifyRestorationDialog(Messages.admin_archiveDocumentsConfirm, reason => {
                     sframeCommand('ARCHIVE_OWNED_DOCUMENTS', {
@@ -522,7 +516,7 @@ define([
             };
 
             var archiveDocumentsButton = danger(Messages.admin_archiveButton, archiveDocuments);
-            disable($(archiveDocumentsButton)); // XXX
+            disable($(archiveDocumentsButton));
             row(Messages.admin_archiveOwnedAccountDocuments, archiveDocumentsButton);
 */
         }
@@ -622,7 +616,7 @@ define([
         };
         data.type = inferDocumentType(id);
 
-        nThen(function (w) { // XXX
+        nThen(function (w) {
             if (data.type !== 'channel') { return; }
             sframeCommand('GET_STORED_METADATA', id, w(function (err, res) {
                 if (err) { return void console.error(err); }
@@ -631,9 +625,6 @@ define([
                 data.metadata = metadata;
                 data.created = Util.find(data, ['metadata', 'created']);
             }));
-        }).nThen(function (w) {
-            if (data.type !== 'file') { return; }
-            w = w; // XXX get blob-specific  data? (atime, mtime, ctime)
         }).nThen(function (w) {
             sframeCommand("GET_DOCUMENT_SIZE", id, w(function (err, res) {
                 if (err) { return void console.error(err); }
@@ -690,10 +681,12 @@ define([
         });
     };
 
-    Messages.admin_getFullPinHistory = 'Pin history'; // XXX
-    Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive."; // XXX
-    Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)"; // XXX
-    Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored."; // XXX
+/* FIXME
+    Messages.admin_getFullPinHistory = 'Pin history';
+    Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive.";
+    Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)";
+    Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored.";
+*/
 
     var localizeType = function (type) {
         var o = {
@@ -781,7 +774,7 @@ define([
         }
 
         if (data.type === 'file') {
-            // XXX what to do for files?
+            // TODO what to do for files?
 
         }
 
@@ -829,7 +822,6 @@ define([
                 h('small', Messages.admin_unarchiveHint),
             ]));
         }
-        // XXX file restore button?
 
         row(reportContentLabel, copyToClipboard(data));
 
