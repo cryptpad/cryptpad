@@ -372,6 +372,7 @@ define([
     var iterate = function (rule, _origin, s) {
         // "origin" is the original event to detect the start of BYxxx
         var origin = Util.clone(_origin);
+        var oS = new Date(origin.start);
 
         var id = origin.id;
 
@@ -407,8 +408,12 @@ define([
                 if (!add) { return; }
 
                 if (Array.isArray(add)) {
+                    add = add.filter(function (dateS) {
+                        return dateS.toLocaleDateString() !== oS.toLocaleDateString();
+                    });
                     Array.prototype.push.apply(all, add);
                 } else {
+                    if (_s.toLocaleDateString() === oS.toLocaleDateString()) { return; }
                     all.push(_s);
                 }
             };
@@ -593,6 +598,7 @@ define([
                         return;
                     }
 
+
                     var stop = false;
                     _toAdd.some(function (_newS) {
                         // Make event with correct start and end time
@@ -606,23 +612,28 @@ define([
                         if (_ev.isAllDay && _ev.endDay) { _ev.endDay = getDateStr(_evE); }
 
                         if (c >= count) { // Limit reached
+                            debug(_evS.toLocaleDateString(), 'count');
                             stop = true;
                             return true;
                         }
                         if (_evS >= _endMonth) { // Won't affect us anymore
+                            debug(_evS.toLocaleDateString(), 'endMonth');
                             stop = true;
                             return true;
                         }
-                        if (rule.until && evS > rule.until) {
+                        if (rule.until && _evS > rule.until) {
+                            debug(_evS.toLocaleDateString(), 'until');
                             stop = true;
                             return true;
                         }
                         if (_evS < _start) { // "Expand" rules may create events before the _start
+                            debug(_evS.toLocaleDateString(), 'start');
                             return;
                         }
                         c++;
                         if (_evE < _startMonth) { // Ended before the current month
                             // Nothing to display but continue the recurrence
+                            debug(_evS.toLocaleDateString(), 'startMonth');
                             return;
                         }
                         // If a recurring event start and end in different months, make sure
