@@ -603,6 +603,7 @@ define([
                     _toAdd.some(function (_newS) {
                         // Make event with correct start and end time
                         var _ev = Util.clone(obj);
+                        _ev.id += '|' + c;
                         var _evS = new Date(+_newS);
                         var _evE = new Date(+_newS);
                         setEndData(_evS, _evE, endData);

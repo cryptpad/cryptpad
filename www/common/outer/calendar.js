@@ -762,6 +762,7 @@ define([
 
         // update the event
         var changes = data.changes || {};
+        var type = data.type || {};
 
         var newC;
         if (changes.calendarId) {
@@ -770,7 +771,52 @@ define([
             newC.proxy.content = newC.proxy.content || {};
         }
 
+        if (['one','from', 'all'].includes(type.which)) {
+            ev.recUpdate = ev.recUpdate || {
+                one: {},
+                from: {}
+            };
+        }
+        var update = ev.recUpdate;
+        var keys = Object.keys(changes).filter(function (s) {
+            return s !== "calendarId";
+        });
+        if (type.which === "one") {
+            delete changes.recurrenceRule; // XXX
+            update.one[type.when] = update.one[type.when] || {};
+        } else if (type.which === "from") {
+            delete changes.recurrenceRule; // XXX
+            update.from[type.when] = update.from[type.when] || {};
+            // Delete all "single event" updates (affected keys only) after this "from" date
+            Object.keys(update.one).forEach(function (d) {
+                if (Number(d) < type.when) { return; }
+                keys.forEach(function (k) {
+                    delete update.one[d][k];
+                });
+            });
+        } else if (type.which === "all") {
+            // Delete all "single/from" updates (affected keys only) after
+            Object.keys(update.from).forEach(function (d) {
+                keys.forEach(function (k) {
+                    delete update.from[d][k];
+                });
+            });
+            Object.keys(update.one).forEach(function (d) {
+                keys.forEach(function (k) {
+                    delete update.one[d][k];
+                });
+            });
+        }
+
         Object.keys(changes).forEach(function (key) {
+            if (key !== "calendarId" && type.which === "one") {
+                update.one[type.when][key] = changes[key];
+                return;
+            }
+            if (key !== "calendarId" && type.which === "from") {
+                update.from[type.when][key] = changes[key];
+                return;
+            }
             ev[key] = changes[key];
         });
 
@@ -816,7 +862,22 @@ define([
         var c = ctx.calendars[id];
         if (!c) { return void cb({error: "ENOENT"}); }
         c.proxy.content = c.proxy.content || {};
-        delete c.proxy.content[data.id];
+        var evId = data.id.split('|')[0];
+        if (data.id === evId) {
+            delete c.proxy.content[data.id];
+        } else {
+            var ev = c.proxy.content[evId];
+            var s = data.raw && data.raw.start;
+            if (s) {
+                ev.recUpdate = ev.recUpdate || {
+                    one: {},
+                    from: {}
+                };
+                ev.recUpdate.one[s] = {
+                    deleted: true
+                };
+            }
+        }
         Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
             addReminders(ctx, id, {
                 id: data.id,

@@ -211,17 +211,68 @@ define([
         return s;
     };
 
+    var sortUpdate = function (obj) {
+        return Object.keys(obj).sort(function (d1, d2) {
+            return Number(d1) - Number(d2);
+        });
+    };
+    var applyUpdates = function (events) {
+        events.forEach(function (ev) {
+            ev.raw = {
+                start: ev.start,
+                end: ev.end,
+            };
+
+            if (!ev.recUpdate) { return; }
+            var from = ev.recUpdate.from || {};
+            var one = ev.recUpdate.one || {};
+            var s = ev.start;
+
+            var applyDiff = function (obj, k) {
+                var diff = obj[k]; // Diff is always compared to origin start/end
+                var d = new Date(ev.raw[+k]);
+                d.setDate(d.getDate() + diff.d);
+                d.setHours(d.getHours() + diff.h);
+                d.setMinutes(d.getMinutes() + diff.m);
+                ev[k] = +d;
+            };
+
+            sortUpdate(from).forEach(function (d) {
+                if (s < Number(d)) { return; }
+                Object.keys(from[d]).forEach(function (k) {
+                    if (k === 'start' || k === 'end') { return void applyDiff(from[d], k); }
+                    ev[k] = from[d][k];
+                });
+            });
+            if (!one[s]) { return; }
+            Object.keys(one[s]).forEach(function (k) {
+                if (k === 'start' || k === 'end') { return void applyDiff(one[s], k); }
+                ev[k] = one[s][k];
+            });
+            if (ev.deleted) {
+                Object.keys(ev).forEach(function (k) {
+                    delete ev[k];
+                });
+            }
+        });
+        return events;
+    };
+
     var updateRecurring = function () {}; // Defined later
     var renderCalendar = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
 
-        cal.clear();
-        cal.setCalendars(getCalendars());
-        cal.createSchedules(getSchedules(), true);
-        cal.render();
-        Rec.resetCache();
-        updateRecurring();
+        try {
+            cal.clear();
+            cal.setCalendars(getCalendars());
+            cal.createSchedules(applyUpdates(getSchedules()), true);
+            cal.render();
+            Rec.resetCache();
+            updateRecurring();
+        } catch (e) {
+            console.error(e);
+        }
     };
     var onCalendarUpdate = function (data) {
         var cal = APP.calendar;
@@ -270,7 +321,10 @@ define([
         monthGridHeaderExceed: function(hiddenSchedules) {
             return '<span class="tui-full-calendar-weekday-grid-more-schedules">' + Messages._getKey('calendar_more', [hiddenSchedules]) + '</span>';
         },
-        popupEdit: function() { return Messages.poll_edit; },
+        popupEdit: function(obj) {
+            APP.editModalData = obj.data && obj.data.root;
+            return Messages.poll_edit;
+        },
         popupDelete: function() { return Messages.kanban_delete; },
         popupDetailLocation: function(schedule) {
             // TODO detect url and create 'a' tag
@@ -816,7 +870,7 @@ define([
         // Mark selected months as done
         todo.forEach(function (monthId) { APP.recurringDone.push(monthId); });
 
-        cal.createSchedules(toAdd);
+        cal.createSchedules(applyUpdates(toAdd));
     };
     updateRecurring = function () {
         try {
@@ -831,6 +885,33 @@ UPDATE A RECCURENT EVENT:
 ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a value equals to the DTSTART of this recurring event)
 */
 
+
+    var diffDate = function (oldTime, newTime) {
+        var n = new Date(newTime);
+        var o = new Date(oldTime);
+
+        // Diff Days
+        var d = 0;
+        var mult = n < o ? -1 : 1;
+        while (n.toLocaleDateString() !== o.toLocaleDateString() || mult >= 10000) {
+            n.setDate(n.getDate() - mult);
+            d++;
+        }
+        d = mult * d;
+
+        // Diff hours
+        n = new Date(newTime);
+        var h = n.getHours() - o.getHours();
+
+        // Diff minutes
+        var m = n.getMinutes() - o.getMinutes();
+
+        return {
+            d: d,
+            h: h,
+            m: m
+        };
+    };
 
     var updateDateRange = function () {
         var range = APP.calendar._renderRange;
@@ -943,40 +1024,96 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             if (changes.end) { changes.end = +new Date(changes.end._date); }
             if (changes.start) { changes.start = +new Date(changes.start._date); }
             var old = event.schedule;
+            var id = old.id.split('|')[0];
+
+            var originalEvent = Util.find(APP.calendars, [old.calendarId, 'content', 'content', id]);
 
             if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
-                var oldReminders = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'reminders']);
+                // XXX reminders may have been updated
+                var oldReminders = originalEvent.reminders;
                 var reminders = APP.notificationsEntries;
                 if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
                     changes.reminders = reminders;
                 }
 
-                var oldRec = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'recurrenceRule']) || '';
+                var oldRec = originalEvent.recurrenceRule;
                 var rec = APP.recurrenceRule;
-                if (JSONSortify(oldRec) !== JSONSortify(rec)) {
+                if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
                     changes.recurrenceRule = rec;
                 }
             }
 
-            updateEvent({
-                ev: old,
-                changes: changes
-            }, function (err) {
-                if (err) {
-                    console.error(err);
-                    return void UI.warn(err);
+
+            var ev = APP.calendar.getSchedule(old.id, old.calendarId);
+            var isOrigin = id === old.id;
+            var wasRecurrent = Boolean(originalEvent.recurrenceRule);
+
+            var afterConfirm = function () {
+                var raw = (ev && ev.raw) || {};
+                if (['one', 'from'].includes(APP.editType)) {
+                    if (changes.start) {
+                        changes.start = diffDate(raw.start || ev.start, changes.start);
+                    }
+                    if (changes.end) {
+                        changes.end = diffDate(raw.end || ev.end, changes.end);
+                    }
                 }
-                cal.updateSchedule(old.id, old.calendarId, changes);
+
+                old.id = id;
+                updateEvent({
+                    ev: old,
+                    changes: changes,
+                    type: {
+                        which: APP.editType,
+                        when: raw.start || ev.start
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return void UI.warn(err);
+                    }
+                    //cal.updateSchedule(old.id, old.calendarId, changes);
+                });
+            };
+
+            // Confirm modal: select which recurring events to update
+
+            if (!wasRecurrent) { return void afterConfirm(); }
+            if (!APP.recurrenceRule || !APP.recurrenceRule.freq) { return void afterConfirm(); }
+
+            var list = ['one','from','all'];
+            if (isOrigin) { list = ['one', 'all']; }
+            if ((changes.start || changes.end) && !isOrigin) {
+                list = list.filter(function (item) {
+                    return item !== "all";
+                });
+            }
+
+            var radioEls = list.map(function (k, i) {
+                return UI.createRadio('cp-calendar-rec-edit', 'cp-calendar-rec-edit-'+k,
+                           Messages['calendar_rec_edit_'+k], !i, {input:{ 'data-value':k }});
+            });
+            var content = h('div', [
+                h('p', Messages.calendar_rec_edit),
+                radioEls
+            ]);
+            UI.confirm(content, function (yes) {
+                if (!yes) { return; }
+                var r = $(content).find('input[name="cp-calendar-rec-edit"]:checked')
+                                .data('value');
+                APP.editType = r;
+                afterConfirm();
+            });
+            $(content).closest('.alertify').on('mousedown', function (e) {
+                e.stopPropagation();
             });
         });
         cal.on('beforeDeleteSchedule', function(event) {
-            var data = event.schedule;
             deleteEvent(event.schedule, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                cal.deleteSchedule(data.id, data.calendarId);
             });
         });
 
@@ -1127,10 +1264,16 @@ Messages.calendar_str_filter_yearday = "Days of year: {0}";
 Messages.calendar_str_filter_monthday = "Days of month: {0}";
 Messages.calendar_str_filter_day = "Days: {0}";
 
+Messages.calendar_rec_edit = "This event is configured to repeat itself.";
+Messages.calendar_rec_edit_one = "Edit only this event";
+Messages.calendar_rec_edit_from = "Edit all events from this one";
+Messages.calendar_rec_edit_all = "Edit all events";
+
+Messages.calendar_rec_stop = "Stop recurrence";
 
     var WEEKDAYS = getWeekDays(true);
     var listItems = function (_arr) {
-        arr = _arr.slice();
+        var arr = _arr.slice();
         if (arr.length === 1) {
             return arr[0];
         }
@@ -1271,11 +1414,13 @@ Messages.calendar_str_filter_day = "Days: {0}";
             var cal = obj.selectedCal.id;
             var calData = APP.calendars[cal];
             if (calData) {
-                var ev = Util.find(calData,['content', 'content', obj.id]);
+                var id = obj.id.split('|')[0];
+                var ev = Util.find(calData,['content', 'content', id]);
                 APP.recurrenceRule = ev.recurrenceRule || '';
             }
         }
 
+        APP.wasRecurrent = Boolean(APP.recurrenceRule);
 
 // XXX TEST
 /*
@@ -1367,8 +1512,8 @@ APP.recurrenceRule = {
             var set = Object.keys(basicStr).some(function (k) {
                 if (recStr === basicStr[k]) {
                     $block.setValue(basicStr[k]);
-                    return true;
                     $translated.empty();
+                    return true;
                 }
             });
             if (set) { return; }
@@ -1376,7 +1521,7 @@ APP.recurrenceRule = {
 
             // Text value
 
-            var ruleObj = translate(APP.recurrenceRule)
+            var ruleObj = translate(APP.recurrenceRule);
             if (!ruleObj || !ruleObj.str) { return; }
             $translated.append(h('div.cp-calendar-rec-translated-str', ruleObj.str));
 
@@ -1683,7 +1828,9 @@ APP.recurrenceRule = {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
         // DEFAULT HERE [10] ==> 10 minutes before the event
-        var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', ev.id, 'reminders']) || [10];
+        var id = (ev.id && ev.id.split('|')[0]) || undefined;
+        var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', id, 'reminders']) || [10];
+        // XXX ID reminders may have been edited for a recurring event
         APP.notificationsEntries = [];
         var number = h('input.tui-full-calendar-content', {
             type: "number",
@@ -1877,15 +2024,14 @@ APP.recurrenceRule = {
 
             var $startDate = $el.find('#tui-full-calendar-schedule-start-date');
             var startDate = Flatpickr.parseDate($startDate.val());
+
             var divRec = getRecurrenceInput(startDate);
             $button.before(divRec);
 
             var div = getNotificationDropdown();
             $button.before(div);
 
-
-
-
+            // Use Flatpickr with or without time depending on allday checkbox
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
             var allDay = $cbox.is(':checked');
             var allDayFormat = 'Y-m-d';
@@ -1912,6 +2058,43 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-popup-delete').addClass('btn btn-danger');
             $el.find('.tui-full-calendar-popup-delete .tui-full-calendar-icon').addClass('fa fa-trash').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
+
+            var $section = $el.find('.tui-full-calendar-section-button');
+            var ev = APP.editModalData;
+            var data = ev.schedule || {};
+            var id = data.id;
+            if (!id) { return; }
+            if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
+
+            // This is a recurring event, add button to stop recurrence now
+            var $b = $(h('button.btn.btn-secondary', [
+                h('i.fa.fa-times'),
+                h('span', Messages.calendar_rec_stop)
+            ])).insertBefore($section);
+            $b.click(function () {
+                var originalId = id.split('|')[0];
+                var originalEvent = Util.find(APP.calendars,
+                        [ev.schedule.calendarId, 'content', 'content', originalId]);
+                var rec = originalEvent.recurrenceRule;
+                if (!rec) { return; }
+                rec.until = (ev.schedule.raw && ev.schedule.raw.start) - 1;
+                data.id = originalId;
+                updateEvent({
+                    ev: data,
+                    changes: {
+                        recurrenceRule: rec
+                    },
+                    type: {
+                        which: 'all'
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return void UI.warn(err);
+                    }
+                    $b.closest('.tui-full-calendar-floating-layer').hide();
+                });
+            });
         };
         var onPopupRemoved = function () {
             var start, end;
