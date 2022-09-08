@@ -205,7 +205,7 @@ define([
                 if (obj.recurrenceRule) {
                     APP.recurringEvents.push(obj);
                 }
-                s.push(data.content[uid]);
+                s.push(Util.clone(data.content[uid]));
             });
         });
         return s;
