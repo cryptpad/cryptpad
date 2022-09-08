@@ -196,5 +196,8 @@
     "poll_userPlaceholder": "Vardas",
     "poll_optionPlaceholder": "Pasirinkimai",
     "poll_commit": "Pateikti",
-    "poll_create_option": "Pridėti naują parinktį"
+    "poll_create_option": "Pridėti naują parinktį",
+    "error_unhelpfulScriptError": "Scenarijaus klaida: daugiau informacijos rasite naršyklės konsolėje",
+    "tag_edit": "Pakeisti",
+    "tag_add": "Pridėti"
 }

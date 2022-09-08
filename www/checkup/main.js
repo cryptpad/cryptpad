@@ -1420,6 +1420,55 @@ define([
         });
     });
 
+    [
+        '/',
+        '/index.html',
+        '/contact.html',
+        '/code/',
+        '/pad/index.html',
+    ].forEach(url => {
+        assert(function (cb, msg) {
+            try {
+                url = new URL(url, ApiConfig.httpUnsafeOrigin).href;
+            } catch (err) {
+                console.error(err);
+            }
+
+            Tools.common_xhr(url, xhr => {
+                xhr.done(res => {
+                    var dom = new DOMParser().parseFromString(res, 'text/html');
+                    var sels = [
+                        'og:url',
+                        'og:type',
+                        'og:title',
+                        'og:description',
+                        'og:image',
+                        'twitter:card',
+                    ];
+                    var missing = [];
+                    sels.forEach(sel => {
+                        var selector = `meta[property="${sel}"]`;
+                        var el = dom.querySelector(selector);
+                        if (!el) { missing.push(selector); }
+                    });
+                    if (!missing.length) { return void cb(true); }
+
+                    setWarningClass(msg);
+                    msg.appendChild(h('span', [
+                        h('p', [
+                            link(url, url),
+                            ' is missing several attributes which provide better previews on social media sites and messengers. ',
+                            "The administrator of this instance can generate them with ", code('npm run build'), '.',
+                        ]),
+                        h('p', "Missing attributes: "),
+                        h('ul', missing.map(q => h('li', h('code', q)))),
+                    ]));
+                    cb(false);
+                });
+            });
+        });
+    });
+
     var serverToken;
     Tools.common_xhr('/', function (xhr) {
         serverToken = xhr.getResponseHeader('server');

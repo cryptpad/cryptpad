@@ -241,6 +241,7 @@ var serveConfig = makeRouteCache(function (host) {
             fileHost: Env.fileHost,
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
             listMyInstance: Env.listMyInstance,
+            accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
     ].join(';\n')
@@ -304,7 +305,7 @@ var send500 = function (res, path) {
 };
 
 app.get('/api/updatequota', function (req, res) {
-    if (!Env.quota_api) {
+    if (!Env.accounts_api) {
         res.status(404);
         return void send404(res);
     }

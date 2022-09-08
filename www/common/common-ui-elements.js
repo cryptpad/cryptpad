@@ -1739,7 +1739,10 @@ define([
             tag: 'div',
             attributes: {'class': 'cp-user-menu-logo'},
             content: h('span', [
-                h('img', {src: '/customize/CryptPad_logo_grey.svg',alt: 'CryptPad logo',}), // XXX hardcoded alt text?
+                h('img', {
+                    src: '/customize/CryptPad_logo_grey.svg',
+                    "aria-hidden": true,
+                }),
                 h('span.cp-user-menu-logo-text', "CryptPad")
             ]),
         });
