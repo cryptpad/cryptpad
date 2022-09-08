@@ -150,7 +150,7 @@ define([
     Pages.infopageFooter = function () {
         var donateButton;
         if (!ApiConfig.removeDonateButton) {
-            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money'); // XXX DB: add OpenCollective icon // XXX
+            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money'); // TODO migrate to forkawesome and use the OpenCollective icon
         }
 
         return h('footer.cp-footer', [

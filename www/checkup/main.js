@@ -1427,7 +1427,7 @@ define([
         '/code/',
         '/pad/index.html',
     ].forEach(url => {
-        assert(function (cb, msg) { // XXX
+        assert(function (cb, msg) {
             try {
                 url = new URL(url, ApiConfig.httpUnsafeOrigin).href;
             } catch (err) {
