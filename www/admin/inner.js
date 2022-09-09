@@ -200,6 +200,7 @@ define([
         var data = {
             generated: +new Date(),
             key: key,
+            safeKey: Util.escapeKeyCharacters(key),
         };
 
         return void nThen(function (w) {
@@ -376,7 +377,16 @@ define([
         row(Messages.admin_generatedAt, new Date(data.generated));
 
         // signing key
-        row(Messages.settings_publicSigningKey, data.key);
+        if (data.key === data.safeKey) {
+            row(Messages.settings_publicSigningKey, h('code', data.key));
+        } else {
+            row(Messages.settings_publicSigningKey, h('span', [
+                h('code', data.key),
+                ', ',
+                h('br'),
+                h('code', data.safeKey),
+            ]));
+        }
 
         // First pin activity time
         row(Messages.admin_firstPinTime, maybeDate(data.first));
@@ -701,7 +711,7 @@ define([
         var row = tableObj.row;
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
-        row(Messages.documentID, data.id);
+        row(Messages.documentID, h('code', data.id));
         row(Messages.admin_documentType, localizeType(data.type));
         row(Messages.admin_documentSize, data.size? getPrettySize(data.size): Messages.ui_undefined);
 
@@ -1017,7 +1027,7 @@ define([
         var row = tableObj.row;
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
-        row(Messages.admin_blockKey, data.key);
+        row(Messages.admin_blockKey, h('code', data.key));
         row(Messages.admin_blockAvailable, localizeState(data.live));
         row(Messages.admin_blockArchived, localizeState(data.archived));
 
