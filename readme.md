@@ -8,11 +8,11 @@ CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. 
 
 ## For development
 
-Our [developer guide](https://docs.cryptpad.fr/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
+Our [developer guide](https://docs.cryptpad.org/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
 
 ## For production
 
-Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.fr/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
+Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
 
 ## Current version
 
@@ -73,7 +73,7 @@ CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), 
 
 # Contributing
 
-We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.fr/en/how_to_contribute.html). 
+We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.org/en/how_to_contribute.html).
 
 If you have any questions or comments, or if you're interested in contributing to CryptPad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
 

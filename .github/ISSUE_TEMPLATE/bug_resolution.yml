@@ -20,7 +20,7 @@ body:
         required: true
       - label: I have understood that answers are voluntary and community-driven, and not commercial support.
         required: true
-      - label: I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.fr/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
+      - label: I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
         required: true
   - type: textarea
     attributes:

@@ -807,7 +807,7 @@ define([
                 if (i) { i.classList = 'fa fa-shhare-alt'; }
                 var a = error.querySelector('a');
                 if (a) {
-                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/user_account.html#confidentiality"));
+                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
                 }
                 UI.errorLoadingScreen(error);
             });

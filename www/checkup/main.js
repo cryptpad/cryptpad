@@ -1167,7 +1167,7 @@ define([
         return h('span', [
             " See ",
             h('a', {
-                href: href || 'https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config',
+                href: href || 'https://docs.cryptpad.org/en/admin_guide/customization.html#application-config',
                 target: "_blank",
                 rel: 'noopener noreferrer',
             }, "the relevant documentation"),
@@ -1178,7 +1178,7 @@ define([
     };
 
     var TERMS_DOCS_LINK = function (key) {
-        return APPCONFIG_DOCS_LINK(key, 'https://docs.cryptpad.fr/en/admin_guide/customization.html#links-to-terms-of-service-privacy-policy-and-imprint-pages');
+        return APPCONFIG_DOCS_LINK(key, 'https://docs.cryptpad.org/en/admin_guide/customization.html#links-to-terms-of-service-privacy-policy-and-imprint-pages');
     };
 
     var isValidInfoURL = function (url) {

@@ -180,7 +180,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         return $select;
     };
 
-    var documentIdDocs = Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#properties');
+    var documentIdDocs = Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/apps/general.html#properties');
 
     var warningLinks = {
         account: documentIdDocs,
