@@ -230,7 +230,7 @@ define([
 
             var applyDiff = function (obj, k) {
                 var diff = obj[k]; // Diff is always compared to origin start/end
-                var d = new Date(ev.raw[+k]);
+                var d = new Date(ev.raw[k]);
                 d.setDate(d.getDate() + diff.d);
                 d.setHours(d.getHours() + diff.h);
                 d.setMinutes(d.getMinutes() + diff.m);
@@ -1048,6 +1048,10 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             var isOrigin = id === old.id;
             var wasRecurrent = Boolean(originalEvent.recurrenceRule);
 
+            if (!event.triggerEventName || event.triggerEventName !== "click") {
+                APP.recurrenceRule = ev.recurrenceRule;
+            }
+
             var afterConfirm = function () {
                 var raw = (ev && ev.raw) || {};
                 if (['one', 'from'].includes(APP.editType)) {
@@ -1058,6 +1062,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                         changes.end = diffDate(raw.end || ev.end, changes.end);
                     }
                 }
+
 
                 old.id = id;
                 updateEvent({
