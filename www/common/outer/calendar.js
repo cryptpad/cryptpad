@@ -184,7 +184,7 @@ define([
             var time = now + delay;
 
             if (d.some(function (minutes) {
-                return delayMinutes >= minutes
+                return delayMinutes >= minutes;
             })) { return; }
 
             // setTimeout only work with 32bit timeout values. If the event is too far away,

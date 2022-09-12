@@ -599,7 +599,7 @@ proxy.mailboxes = {
             });
         };
 
-        mailbox.hideMessage = function (type, msg, cId, cb) {
+        mailbox.hideMessage = function (type, msg) {
             hideMessage(ctx, type, msg.hash, ctx.clients);
         };
         mailbox.showMessage = function (type, msg, cId, cb) {
