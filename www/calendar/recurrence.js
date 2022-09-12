@@ -603,7 +603,7 @@ define([
                     _toAdd.some(function (_newS) {
                         // Make event with correct start and end time
                         var _ev = Util.clone(obj);
-                        _ev.id += '|' + c;
+                        _ev.id += '|' + (+_newS);
                         var _evS = new Date(+_newS);
                         var _evE = new Date(+_newS);
                         setEndData(_evS, _evE, endData);
@@ -663,6 +663,57 @@ define([
         });
         return toAdd;
     };
+
+    var sortUpdate = function (obj) {
+        return Object.keys(obj).sort(function (d1, d2) {
+            return Number(d1) - Number(d2);
+        });
+    };
+    Rec.applyUpdates = function (events) {
+        events.forEach(function (ev) {
+            ev.raw = {
+                start: ev.start,
+                end: ev.end,
+            };
+
+            if (!ev.recUpdate) { return; }
+            var from = ev.recUpdate.from || {};
+            var one = ev.recUpdate.one || {};
+            var s = ev.start;
+
+            var applyDiff = function (obj, k) {
+                var diff = obj[k]; // Diff is always compared to origin start/end
+                var d = new Date(ev.raw[k]);
+                d.setDate(d.getDate() + diff.d);
+                d.setHours(d.getHours() + diff.h);
+                d.setMinutes(d.getMinutes() + diff.m);
+                ev[k] = +d;
+            };
+
+            sortUpdate(from).forEach(function (d) {
+                if (s < Number(d)) { return; }
+                Object.keys(from[d]).forEach(function (k) {
+                    if (k === 'start' || k === 'end') { return void applyDiff(from[d], k); }
+                    ev[k] = from[d][k];
+                });
+            });
+            Object.keys(one[s] || {}).forEach(function (k) {
+                if (k === 'start' || k === 'end') { return void applyDiff(one[s], k); }
+                ev[k] = one[s][k];
+            });
+            if (ev.deleted) {
+                Object.keys(ev).forEach(function (k) {
+                    delete ev[k];
+                });
+            }
+
+            if (ev.reminders) {
+                ev.raw.reminders = ev.reminders;
+            }
+        });
+        return events;
+    };
+
 
     return Rec;
 });

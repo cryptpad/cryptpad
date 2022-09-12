@@ -120,7 +120,8 @@ define([
 
         onViewedHandlers.push(function (data) {
             var hash = data.hash.replace(/"/g, '\\\"');
-            var $notif = $('.cp-notification[data-hash="'+hash+'"]:not(.cp-app-notification-archived)');
+            if (/^REMINDER\|/.test(hash)) { hash = hash.split('-')[0]; }
+            var $notif = $('.cp-notification[data-hash^="'+hash+'"]:not(.cp-app-notification-archived)');
             if ($notif.length) {
                 $notif.remove();
             }

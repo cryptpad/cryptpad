@@ -58,6 +58,14 @@ define([
         calendars: {}
     };
 
+
+/* XXX TODO
+Update existing recurrence rule
+  - WARNING
+  - delete all recUpdate
+  - delete all "dismissed" reminders
+*/
+
     var common;
     var metadataMgr;
     var sframeChan;
@@ -211,52 +219,7 @@ define([
         return s;
     };
 
-    var sortUpdate = function (obj) {
-        return Object.keys(obj).sort(function (d1, d2) {
-            return Number(d1) - Number(d2);
-        });
-    };
-    var applyUpdates = function (events) {
-        events.forEach(function (ev) {
-            ev.raw = {
-                start: ev.start,
-                end: ev.end,
-            };
-
-            if (!ev.recUpdate) { return; }
-            var from = ev.recUpdate.from || {};
-            var one = ev.recUpdate.one || {};
-            var s = ev.start;
-
-            var applyDiff = function (obj, k) {
-                var diff = obj[k]; // Diff is always compared to origin start/end
-                var d = new Date(ev.raw[k]);
-                d.setDate(d.getDate() + diff.d);
-                d.setHours(d.getHours() + diff.h);
-                d.setMinutes(d.getMinutes() + diff.m);
-                ev[k] = +d;
-            };
-
-            sortUpdate(from).forEach(function (d) {
-                if (s < Number(d)) { return; }
-                Object.keys(from[d]).forEach(function (k) {
-                    if (k === 'start' || k === 'end') { return void applyDiff(from[d], k); }
-                    ev[k] = from[d][k];
-                });
-            });
-            if (!one[s]) { return; }
-            Object.keys(one[s]).forEach(function (k) {
-                if (k === 'start' || k === 'end') { return void applyDiff(one[s], k); }
-                ev[k] = one[s][k];
-            });
-            if (ev.deleted) {
-                Object.keys(ev).forEach(function (k) {
-                    delete ev[k];
-                });
-            }
-        });
-        return events;
-    };
+    var applyUpdates = Rec.applyUpdates;
 
     var updateRecurring = function () {}; // Defined later
     var renderCalendar = function () {
@@ -1028,9 +991,12 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var originalEvent = Util.find(APP.calendars, [old.calendarId, 'content', 'content', id]);
 
+            var ev = APP.calendar.getSchedule(old.id, old.calendarId);
+            var isOrigin = id === old.id;
+            var wasRecurrent = Boolean(originalEvent.recurrenceRule);
+
             if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
-                // XXX reminders may have been updated
-                var oldReminders = originalEvent.reminders;
+                var oldReminders = ev.raw.reminders || originalEvent.reminders;
                 var reminders = APP.notificationsEntries;
                 if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
                     changes.reminders = reminders;
@@ -1043,10 +1009,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 }
             }
 
-
-            var ev = APP.calendar.getSchedule(old.id, old.calendarId);
-            var isOrigin = id === old.id;
-            var wasRecurrent = Boolean(originalEvent.recurrenceRule);
 
             if (!event.triggerEventName || event.triggerEventName !== "click") {
                 APP.recurrenceRule = ev.recurrenceRule;
@@ -1062,7 +1024,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                         changes.end = diffDate(raw.end || ev.end, changes.end);
                     }
                 }
-
 
                 old.id = id;
                 updateEvent({
@@ -1834,8 +1795,12 @@ APP.recurrenceRule = {
         var calId = ev.selectedCal.id;
         // DEFAULT HERE [10] ==> 10 minutes before the event
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
-        var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', id, 'reminders']) || [10];
-        // XXX ID reminders may have been edited for a recurring event
+        var _ev = APP.calendar.getSchedule(ev.id, calId);
+        var oldReminders = _ev && _ev.raw && _ev.raw.reminders;
+        if (!oldReminders) {
+            oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', id, 'reminders']) || [60];
+        }
+
         APP.notificationsEntries = [];
         var number = h('input.tui-full-calendar-content', {
             type: "number",
