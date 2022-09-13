@@ -992,6 +992,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             var originalEvent = Util.find(APP.calendars, [old.calendarId, 'content', 'content', id]);
 
             var ev = APP.calendar.getSchedule(old.id, old.calendarId);
+            var evOrig = APP.calendar.getSchedule(id, old.calendarId);
+
             var isOrigin = id === old.id;
             var wasRecurrent = Boolean(originalEvent.recurrenceRule);
 
@@ -1016,6 +1018,11 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var afterConfirm = function () {
                 var raw = (ev && ev.raw) || {};
+                var rawData = { // Exact start and end of the selected event
+                    start: raw.start || ev.start,
+                    end: raw.end || ev.end,
+                    isOrigin: isOrigin
+                };
                 if (['one', 'from'].includes(APP.editType)) {
                     if (changes.start) {
                         changes.start = diffDate(raw.start || ev.start, changes.start);
@@ -1029,6 +1036,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 updateEvent({
                     ev: old,
                     changes: changes,
+                    rawData: rawData,
                     type: {
                         which: APP.editType,
                         when: raw.start || ev.start
@@ -1041,11 +1049,14 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     //cal.updateSchedule(old.id, old.calendarId, changes);
                 });
             };
+            Messages.calendar_rec_warn_delall = "The recurrence rule was deleted. Only the original event on {0} will be kept.";
+            Messages.calendar_rec_warn_del = "The recurrence rule was deleted. All occurences after the selected one will be removed.";
+            Messages.calendar_rec_warn_updateall = "The recurrence rule was modified. Only the original event on {0} will be kept and new occurences will be created.";
+            Messages.calendar_rec_warn_update = "The recurrence rule was modified. All occurences after the selected one will be removed and recreated with the new rule.";
 
             // Confirm modal: select which recurring events to update
-
+            if (!Object.keys(changes).length) { return void afterConfirm(); }
             if (!wasRecurrent) { return void afterConfirm(); }
-            if (!APP.recurrenceRule || !APP.recurrenceRule.freq) { return void afterConfirm(); }
 
             var list = ['one','from','all'];
             if (isOrigin) { list = ['one', 'all']; }
@@ -1059,8 +1070,11 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 return UI.createRadio('cp-calendar-rec-edit', 'cp-calendar-rec-edit-'+k,
                            Messages['calendar_rec_edit_'+k], !i, {input:{ 'data-value':k }});
             });
+            var p = h('p', Messages.calendar_rec_edit);
+            var warn = h('div.alert.alert-warning');
             var content = h('div', [
-                h('p', Messages.calendar_rec_edit),
+                warn,
+                p,
                 radioEls
             ]);
             UI.confirm(content, function (yes) {
@@ -1073,6 +1087,38 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             $(content).closest('.alertify').on('mousedown', function (e) {
                 e.stopPropagation();
             });
+
+            var $p = $(p);
+            var $warn = $(warn);
+            var $radio = $(radioEls);
+            var recurrenceWarn = function () {
+                if (typeof(changes.recurrenceRule) === "undefined") {
+                    $p.show();
+                    return $warn.hide();
+                }
+                $warn.show();
+                $p.hide();
+                var val = $radio.find('input[name="cp-calendar-rec-edit"]:checked')
+                                        .data('value');
+
+
+                if (!changes.recurrenceRule) { // Rule was deleted
+                    if (!val || val === "all") {
+                        return $warn.text(Messages._getKey('calendar_rec_warn_delall', [
+                            new Date(evOrig.start).toLocaleDateString()
+                        ]));
+                    }
+                    return $warn.text(Messages.calendar_rec_warn_del);
+                }
+                if (!val || val === "all") {
+                    return $warn.text(Messages._getKey('calendar_rec_warn_updateall', [
+                        new Date(evOrig.start).toLocaleDateString()
+                    ]));
+                }
+                return $warn.text(Messages.calendar_rec_warn_update);
+            };
+            recurrenceWarn();
+            $radio.find('input[type="radio"]').on('change', recurrenceWarn);
         });
         cal.on('beforeDeleteSchedule', function(event) {
             deleteEvent(event.schedule, function (err) {

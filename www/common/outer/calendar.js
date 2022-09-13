@@ -223,6 +223,7 @@ define([
     };
     var addReminders = function (ctx, id, ev) {
         var calendar = ctx.calendars[id];
+        if (!ev) { return; } // XXX deleted event remote: delete reminders
         if (!calendar || !calendar.reminders) { return; }
         if (calendar.stores.length === 1 && calendar.stores[0] === 0) { return; }
 
@@ -841,43 +842,80 @@ define([
             newC.proxy.content = newC.proxy.content || {};
         }
 
-        if (['one','from', 'all'].includes(type.which)) {
-            ev.recUpdate = ev.recUpdate || {
-                one: {},
-                from: {}
-            };
-            if (!ev.recUpdate.one) { ev.recuPdate.one = {}; }
-            if (!ev.recUpdate.from) { ev.recuPdate.from = {}; }
+        var RECUPDATE = {
+            one: {},
+            from: {}
+        };
+        if (['one','from','all'].includes(type.which)) {
+            ev.recUpdate = ev.recUpdate || RECUPDATE;
+            if (!ev.recUpdate.one) { ev.recUpdate.one = {}; }
+            if (!ev.recUpdate.from) { ev.recUpdate.from = {}; }
         }
         var update = ev.recUpdate;
+        var alwaysAll = ['calendarId', 'recurrenceRule'];
         var keys = Object.keys(changes).filter(function (s) {
-            return s !== "calendarId";
+            // we can only change the calendar or recurrence rule on the origin
+            return !alwaysAll.includes(s);
         });
-        if (type.which === "one") {
-            delete changes.recurrenceRule; // XXX
-            update.one[type.when] = update.one[type.when] || {};
-        } else if (type.which === "from") {
-            delete changes.recurrenceRule; // XXX
-            update.from[type.when] = update.from[type.when] || {};
-            // Delete all "single event" updates (affected keys only) after this "from" date
-            Object.keys(update.one).forEach(function (d) {
-                if (Number(d) < type.when) { return; }
+
+        // Update recurrence rule. We may create a new event here
+        var dontSendUpdate = false;
+        if (typeof(changes.recurrenceRule) !== "undefined") {
+            var newR = changes.recurrenceRule;
+            var oldR = ev.recurrenceRule;
+            if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
+                delete changes.recurrenceRule;
+                // Add "until"
+                if (ev.start !== type.when) { oldR.until = type.when-1; }
+                // Delete future recUpdate
+                [update.from, update.one].forEach(function (obj) {
+                    Object.keys(obj).forEach(function (d) {
+                        if (Number(d) < type.when) { return; }
+                        delete obj[d];
+                    });
+                });
+                // if modified, create new event once this one is updated
+                if (newR) {
+                    var _cb = cb;
+                    dontSendUpdate = true;
+                    cb = function () {
+                        var newEv = Util.clone(ev);
+                        newEv.start = data.rawData.start;
+                        newEv.end = data.rawData.end;
+                        Rec.applyUpdates([newEv]); // Take the correct data
+                        newEv.id = Util.uid();
+                        newEv.recurrenceRule = newR;
+                        delete newEv.recUpdate;
+                        createEvent(ctx, newEv, cId, _cb);
+                    };
+                }
+            } else {
+                ev.recUpdate = RECUPDATE;
+            }
+        }
+
+        // Delete (future) affected keys
+        var cleanKeys = function (obj, when) {
+            Object.keys(obj).forEach(function (d) {
+                if (when && Number(d) < when) { return; }
                 keys.forEach(function (k) {
-                    delete update.one[d][k];
+                    delete obj[d][k];
                 });
             });
+        };
+
+        if (type.which === "one") {
+            update.one[type.when] = update.one[type.when] || {};
+            // Nothing to delete
+        } else if (type.which === "from") {
+            update.from[type.when] = update.from[type.when] || {};
+            // Delete all "single/from" updates (affected keys only) after this "from" date
+            cleanKeys(update.from, type.when);
+            cleanKeys(update.one, type.when);
         } else if (type.which === "all") {
             // Delete all "single/from" updates (affected keys only) after
-            Object.keys(update.from).forEach(function (d) {
-                keys.forEach(function (k) {
-                    delete update.from[d][k];
-                });
-            });
-            Object.keys(update.one).forEach(function (d) {
-                keys.forEach(function (k) {
-                    delete update.one[d][k];
-                });
-            });
+            cleanKeys(update.from);
+            cleanKeys(update.one);
         }
 
         if (changes.start && (!type.which || type.which === "all")) {
@@ -920,11 +958,11 @@ define([
         }
 
         Object.keys(changes).forEach(function (key) {
-            if (key !== "calendarId" && type.which === "one") {
+            if (!alwaysAll.includes(key) && type.which === "one") {
                 update.one[type.when][key] = changes[key];
                 return;
             }
-            if (key !== "calendarId" && type.which === "from") {
+            if (!alwaysAll.includes(key) && type.which === "from") {
                 update.from[type.when][key] = changes[key];
                 return;
             }
@@ -947,6 +985,7 @@ define([
             delete c.proxy.content[data.ev.id];
         }
 
+
         nThen(function (waitFor) {
             Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
@@ -963,8 +1002,8 @@ define([
                 addReminders(ctx, id, ev);
             }
 
-            sendUpdate(ctx, c);
-            if (newC) { sendUpdate(ctx, newC); }
+            if (!dontSendUpdate || newC) { sendUpdate(ctx, c); }
+            if (newC && !dontSendUpdate) { sendUpdate(ctx, newC); }
             cb();
         });
     };
