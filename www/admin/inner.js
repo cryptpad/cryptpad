@@ -801,7 +801,7 @@ define([
                                 w.abort();
                                 return void UI.warn(Messages.error);
                             }
-                        }))
+                        }));
                     }).nThen(function () {
                         sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
                             id: data.id,
