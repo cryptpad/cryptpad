@@ -788,7 +788,72 @@ define([
 
         }
 
-        if (data.live) {
+        if (data.live && data.archived) {
+            let disableButtons;
+            let restoreButton = danger(Messages.admin_unarchiveButton, function () {
+                justifyRestorationDialog('', reason => {
+                    nThen(function (w) {
+                        sframeCommand('REMOVE_DOCUMENT', {
+                            id: data.id,
+                            reason: reason,
+                        }, w(err => {
+                            if (err) {
+                                w.abort();
+                                return void UI.warn(Messages.error);
+                            }
+                        }))
+                    }).nThen(function () {
+                        sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
+                            id: data.id,
+                            reason: reason,
+                        }, (err /*, response */) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.restoredFromServer);
+                            disableButtons();
+                        });
+                    });
+                });
+            });
+
+            let archiveButton = danger(Messages.admin_archiveButton, function () {
+                justifyArchivalDialog('', result => {
+                    sframeCommand('ARCHIVE_DOCUMENT', {
+                        id: data.id,
+                        reason: result,
+                    }, (err /*, response */) => {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.log(Messages.archivedFromServer);
+                        disableButtons();
+                    });
+                });
+            });
+
+            disableButtons = function () {
+                [archiveButton, restoreButton].forEach(el => {
+                    disable($(el));
+                });
+            };
+
+            row(h('span', [
+                Messages.admin_documentConflict,
+                h('br'),
+                h('small', Messages.ui_experimental),
+            ]), h('span', [
+                h('div.alert.alert-danger.cp-admin-bigger-alert', [
+                    Messages.admin_conflictExplanation,
+                ]),
+                h('p', [
+                    restoreButton,
+                    archiveButton,
+                ]),
+            ]));
+        } else if (data.live) {
         // archive
             var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
                 justifyArchivalDialog('', result => {
@@ -809,9 +874,7 @@ define([
                 archiveDocumentButton,
                 h('small', Messages.admin_archiveHint),
             ]));
-        }
-
-        if (data.archived && !data.live) {
+        } else if (data.archived) {
             var restoreDocumentButton = primary(Messages.admin_unarchiveButton, function () {
                 justifyRestorationDialog('', reason => {
                     sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
