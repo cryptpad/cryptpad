@@ -529,6 +529,23 @@ define([
         return all;
     };
 
+    var getNextRules = function (obj) {
+        if (!obj.recUpdate) { return []; }
+        var _allRules = {};
+        var _obj = obj.recUpdate.from;
+        Object.keys(_obj || {}).forEach(function (d) {
+            var u = _obj[d];
+            if (u.recurrenceRule) { _allRules[d] = u.recurrenceRule; }
+        });
+        return Object.keys(_allRules).sort(function (a, b) { return Number(a)-Number(b); })
+                      .map(function (k) {
+            var r = Util.clone(_allRules[k]);
+            if (!FREQ[r.freq]) { return; }
+            if (r.interval && r.interval < 1) { return; }
+            r._start = Number(k);
+            return r;
+        }).filter(Boolean);
+    };
     Rec.getRecurring = function (months, events) {
         if (window.CP_DEV_MODE) { debug = console.warn; }
 
@@ -549,6 +566,9 @@ define([
                 var _end = new Date(obj.end);
                 var rule = obj.recurrenceRule;
                 if (!rule) { return; }
+
+                var nextRules = getNextRules(obj);
+                var nextRule = nextRules.shift();
 
                 if (_start >= _endMonth) { return; }
                 if (rule.until < _startMonth) { return; }
@@ -600,6 +620,7 @@ define([
 
 
                     var stop = false;
+                    var newrule = false;
                     _toAdd.some(function (_newS) {
                         // Make event with correct start and end time
                         var _ev = Util.clone(obj);
@@ -609,8 +630,13 @@ define([
                         setEndData(_evS, _evE, endData);
                         _ev.start = +_evS;
                         _ev.end = +_evE;
+                        _ev._count = c;
                         if (_ev.isAllDay && _ev.startDay) { _ev.startDay = getDateStr(_evS); }
                         if (_ev.isAllDay && _ev.endDay) { _ev.endDay = getDateStr(_evE); }
+
+                        if (nextRule && _ev.start === nextRule._start) {
+                            newrule = true;
+                        }
 
                         if (c >= count) { // Limit reached
                             debug(_evS.toLocaleDateString(), 'count');
@@ -652,6 +678,16 @@ define([
 
                         // Add this event
                         toAdd.push(_ev);
+                        if (newrule) {
+                            _ev._count = c;
+                            count = nextRule.count;
+                            c = 1;
+                            evS = +_evS;
+                            obj = _ev;
+                            rule = nextRule;
+                            // XXX
+                            return true;
+                        }
                     });
                     if (!stop) { next(evS); }
                 };
@@ -677,9 +713,16 @@ define([
             };
 
             if (!ev.recUpdate) { return; }
+
             var from = ev.recUpdate.from || {};
             var one = ev.recUpdate.one || {};
             var s = ev.start;
+
+            // Add "until" date to our recurrenceRule if it has been modified in future occurences
+            var nextRules = getNextRules(ev).filter(function (r) {
+                return r._start > s;
+            });
+            var nextRule = nextRules.shift();
 
             var applyDiff = function (obj, k) {
                 var diff = obj[k]; // Diff is always compared to origin start/end
@@ -694,17 +737,23 @@ define([
                 if (s < Number(d)) { return; }
                 Object.keys(from[d]).forEach(function (k) {
                     if (k === 'start' || k === 'end') { return void applyDiff(from[d], k); }
+                    if (k === "recurrenceRule" && !from[d][k]) { return; }
                     ev[k] = from[d][k];
                 });
             });
             Object.keys(one[s] || {}).forEach(function (k) {
                 if (k === 'start' || k === 'end') { return void applyDiff(one[s], k); }
+                if (k === "recurrenceRule" && !one[s][k]) { return; }
                 ev[k] = one[s][k];
             });
             if (ev.deleted) {
                 Object.keys(ev).forEach(function (k) {
                     delete ev[k];
                 });
+            }
+
+            if (nextRule && ev.recurrenceRule) {
+                ev.recurrenceRule._next = nextRule._start - 1;
             }
 
             if (ev.reminders) {

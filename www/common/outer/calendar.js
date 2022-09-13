@@ -852,49 +852,21 @@ define([
             if (!ev.recUpdate.from) { ev.recUpdate.from = {}; }
         }
         var update = ev.recUpdate;
-        var alwaysAll = ['calendarId', 'recurrenceRule'];
+        var alwaysAll = ['calendarId'];
         var keys = Object.keys(changes).filter(function (s) {
             // we can only change the calendar or recurrence rule on the origin
             return !alwaysAll.includes(s);
         });
 
-        // Update recurrence rule. We may create a new event here
-        var dontSendUpdate = false;
-        if (typeof(changes.recurrenceRule) !== "undefined") {
-            var newR = changes.recurrenceRule;
-            var oldR = ev.recurrenceRule;
-            if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
-                delete changes.recurrenceRule;
-                // Add "until"
-                if (ev.start !== type.when) { oldR.until = type.when-1; }
-                // Delete future recUpdate
-                [update.from, update.one].forEach(function (obj) {
-                    Object.keys(obj).forEach(function (d) {
-                        if (Number(d) < type.when) { return; }
-                        delete obj[d];
-                    });
-                });
-                // if modified, create new event once this one is updated
-                if (newR) {
-                    var _cb = cb;
-                    dontSendUpdate = true;
-                    cb = function () {
-                        var newEv = Util.clone(ev);
-                        newEv.start = data.rawData.start;
-                        newEv.end = data.rawData.end;
-                        Rec.applyUpdates([newEv]); // Take the correct data
-                        newEv.id = Util.uid();
-                        newEv.recurrenceRule = newR;
-                        delete newEv.recUpdate;
-                        createEvent(ctx, newEv, cId, _cb);
-                    };
-                }
-            } else {
-                ev.recUpdate = RECUPDATE;
-            }
-        }
-
         // Delete (future) affected keys
+        var cleanAfter = function (time) {
+            [update.from, update.one].forEach(function (obj) {
+                Object.keys(obj).forEach(function (d) {
+                    if (Number(d) < time) { return; }
+                    delete obj[d];
+                });
+            });
+        };
         var cleanKeys = function (obj, when) {
             Object.keys(obj).forEach(function (d) {
                 if (when && Number(d) < when) { return; }
@@ -903,6 +875,17 @@ define([
                 });
             });
         };
+
+
+        // Update recurrence rule. We may create a new event here
+        var dontSendUpdate = false;
+        if (typeof(changes.recurrenceRule) !== "undefined") {
+            if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
+                cleanAfter(type.when);
+            } else {
+                ev.recUpdate = RECUPDATE;
+            }
+        }
 
         if (type.which === "one") {
             update.one[type.when] = update.one[type.when] || {};
@@ -957,8 +940,14 @@ define([
             }
         }
 
+        // Apply the changes
         Object.keys(changes).forEach(function (key) {
             if (!alwaysAll.includes(key) && type.which === "one") {
+                if (key === "recurrenceRule") {
+                    // Always "from", never "one" for recurrence rules
+                    update.from[type.when] = update.from[type.when] || {};
+                    return (update.from[type.when][key] = changes[key]);
+                }
                 update.one[type.when][key] = changes[key];
                 return;
             }

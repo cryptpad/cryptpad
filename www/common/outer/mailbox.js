@@ -178,7 +178,7 @@ proxy.mailboxes = {
                 return clientId !== cId;
             }));
 
-            var uid = hash.split('|')[1].split('-')[0];
+            var uid = hash.slice(9).split('-')[0];
             var d = Util.find(ctx, ['store', 'proxy', 'hideReminders', uid]);
             if (!d) {
                 var h = ctx.store.proxy.hideReminders = ctx.store.proxy.hideReminders || {};

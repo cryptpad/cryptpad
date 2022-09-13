@@ -58,14 +58,6 @@ define([
         calendars: {}
     };
 
-
-/* XXX TODO
-Update existing recurrence rule
-  - WARNING
-  - delete all recUpdate
-  - delete all "dismissed" reminders
-*/
-
     var common;
     var metadataMgr;
     var sframeChan;
@@ -1049,6 +1041,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     //cal.updateSchedule(old.id, old.calendarId, changes);
                 });
             };
+
+            // XXX
             Messages.calendar_rec_warn_delall = "The recurrence rule was deleted. Only the original event on {0} will be kept.";
             Messages.calendar_rec_warn_del = "The recurrence rule was deleted. All occurences after the selected one will be removed.";
             Messages.calendar_rec_warn_updateall = "The recurrence rule was modified. Only the original event on {0} will be kept and new occurences will be created.";
@@ -1282,6 +1276,7 @@ Messages.calendar_rec_edit_from = "Edit all events from this one";
 Messages.calendar_rec_edit_all = "Edit all events";
 
 Messages.calendar_rec_stop = "Stop recurrence";
+Messages.calendar_rec_updated = "Rule updated on {0}";
 
     var WEEKDAYS = getWeekDays(true);
     var listItems = function (_arr) {
@@ -1426,12 +1421,12 @@ Messages.calendar_rec_stop = "Stop recurrence";
             var cal = obj.selectedCal.id;
             var calData = APP.calendars[cal];
             if (calData) {
-                var id = obj.id.split('|')[0];
-                var ev = Util.find(calData,['content', 'content', id]);
+                var ev = APP.calendar.getSchedule(obj.id, cal);
                 APP.recurrenceRule = ev.recurrenceRule || '';
             }
         }
-
+        var updatedOn = APP.recurrenceRule && APP.recurrenceRule._next;
+        if (updatedOn) { delete APP.recurrenceRule._next; }
         APP.wasRecurrent = Boolean(APP.recurrenceRule);
 
 // XXX TEST
@@ -1516,7 +1511,7 @@ APP.recurrenceRule = {
 
         var translated = h('div.cp-calendar-rec-translated');
         var $translated = $(translated);
-        var addTranslation = function () {
+        var _addTranslation = function () {
             $translated.empty();
 
             // Dropdown value
@@ -1548,6 +1543,16 @@ APP.recurrenceRule = {
                 h('ul', toAdd)
             ]);
         };
+        var addUpdate = function () {
+            if (!updatedOn) { return; }
+            var d = new Date(APP.recurrenceRule._next).toLocaleDateString();
+            $translated.append(h('div', Messages._getKey('calendar_rec_updated', [d])));
+        };
+        var addTranslation = function () {
+            _addTranslation();
+            addUpdate();
+        };
+
         addTranslation();
 
 
