@@ -316,7 +316,7 @@ app.get('/api/updatequota', function (req, res) {
             res.status(500);
             return void send500(res);
         }
-        Env.log('QUOTA_UPDATED', {});
+        Env.Log.info('QUOTA_UPDATED', {});
         res.send();
     });
 });
