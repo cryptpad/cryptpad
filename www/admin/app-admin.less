@@ -2,7 +2,6 @@
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/support.less';
 @import (reference) '../../customize/src/less2/include/charts.less';
-
 &.cp-app-admin {
 
     .framework_min_main();
@@ -63,12 +62,12 @@
                 max-width: 500px;
             }
             @media screen and (max-width: 1200px) {
-                td.note {
+                :is(td, th).note {
                     display: none;
                 }
             }
             @media screen and (max-width: 1400px) {
-                td.plan {
+                :is(td, th).plan {
                     display: none;
                 }
             }
@@ -332,6 +331,7 @@
     .cp-charts-row.heading {
         font-weight: bold;
     }
+    table.cp-admin-all-limits,
     table.cp-metadata-history,
     table.cp-account-stats,
     table.cp-block-stats,
@@ -343,7 +343,7 @@
         td, pre {
             color: @cryptpad_text_col;
         }
-        td {
+        td, th {
             max-width: 60vw; // XXX
             border: 1px solid @color;
             padding: 5px;

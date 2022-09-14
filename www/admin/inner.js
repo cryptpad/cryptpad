@@ -1628,9 +1628,9 @@ define([
                             title: title
                         }, [
                             h('td', keyEl),
-                            h('td.limit', Messages._getKey('admin_limit', [limit])),
-                            h('td.plan', Messages._getKey('admin_limitPlan', [user.plan])),
-                            h('td.note', Messages._getKey('admin_limitNote', [user.note]))
+                            h('td.limit', limit),
+                            h('td.plan', user.plan),
+                            h('td.note', user.note)
                         ]);
                     }
                     return h('li.cp-admin-limit', [
@@ -1642,7 +1642,16 @@ define([
                         ])
                     ]);
                 });
-                if (compact) { return $div.append(h('table.cp-admin-all-limits', content)); }
+                if (compact) {
+                    return $div.append(h('table.cp-admin-all-limits', [
+                        h('tr', [
+                            h('th', Messages.settings_publicSigningKey),
+                            h('th.limit', Messages.admin_planlimit),
+                            h('th.plan', Messages.admin_planName),
+                            h('th.note', Messages.admin_note)
+                        ]),
+                    ].concat(content)));
+                }
                 $div.append(h('ul.cp-admin-all-limits', content));
             });
         };
