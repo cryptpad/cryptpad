@@ -1818,11 +1818,11 @@ APP.recurrenceRule = {
         });
 
         return h('div.cp-calendar-recurrence-container', [
-            h('hr'),
-            h('span', Messages.calendar_rec),
+            h('span.cp-recurrence-label', [
+                h('i.fa.fa-repeat', {'aria-hidden':'true'}),
+                Messages.calendar_rec]),
             $block[0],
-            translated,
-            h('hr')
+            translated
         ]);
     };
 
@@ -1895,7 +1895,10 @@ APP.recurrenceRule = {
         var addNotif = h('button.btn.btn-primary-outline.fa.fa-plus');
         var $list = $(h('div.cp-calendar-notif-list'));
         var listContainer = h('div.cp-calendar-notif-list-container', [
-            h('span.cp-notif-label', Messages.calendar_notifications),
+            h('span.cp-notif-label', [
+                h('i.fa.fa-bell', {'aria-hidden':'true'}),
+                Messages.calendar_notifications
+            ]),
             $list[0],
             h('span.cp-notif-empty', Messages.calendar_noNotification)
         ]);
