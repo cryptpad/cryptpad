@@ -135,6 +135,66 @@ define([
         return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
 
+    // Get week number in our calendar view
+    var ISO8601_week_no = function (dt) {
+        var tdt = new Date(dt.valueOf());
+        var dayn = (dt.getDay() + 6) % 7;
+        tdt.setDate(tdt.getDate() - dayn + 3);
+        var firstThursday = tdt.valueOf();
+        tdt.setMonth(0, 1);
+        if (tdt.getDay() !== 4) {
+            tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+        }
+        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+    };
+
+    var updateDateRange = function () {
+        var range = APP.calendar._renderRange;
+        var start = range.start._date.toLocaleDateString();
+        var end = range.end._date.toLocaleDateString();
+        var week = ISO8601_week_no(range.start._date);
+        var date = [
+            h('b.cp-small', Messages._getKey('calendar_weekNumber', [week])),
+            h('b', start),
+            h('span', ' - '),
+            h('b', end),
+        ];
+        if (APP.calendar._viewName === "day") {
+            date = h('b', start);
+        } else if (APP.calendar._viewName === "month") {
+            var month;
+            var mid = new Date(Math.floor(((+range.start._date) + (+range.end._date)) / 2));
+            try {
+                month = mid.toLocaleString('default', {
+                    month: 'long',
+                    year:'numeric'
+                });
+                month = month.replace(/^./, function (str) { return str.toUpperCase(); });
+                date = h('b', month);
+            } catch (e) {
+                // Use same as week range: first day of month to last day of month
+            }
+        }
+        APP.toolbar.$bottomM.empty().append(h('div', date));
+    };
+    APP.moveToDate = function (time) {
+        var cal = APP.calendar;
+        if (!cal) { return; }
+
+        // Move calendar to correct date
+        var d = new Date(time);
+        cal.setDate(d);
+        updateDateRange();
+
+        // Scroll to correct time
+        setTimeout(function () {
+            var h = d.toLocaleTimeString('en-US', { hour12: 0, timeStyle: "short" }).slice(0,2);
+            h = Number(h) % 24;
+            var $h = $('.tui-full-calendar-timegrid-timezone .tui-full-calendar-timegrid-hour');
+            try { $h.get(h).scrollIntoView(); } catch (e) { console.error(e); }
+        });
+    };
+
     var getCalendars = function () {
         var LOOKUP = {};
         var TEAMS = {};
@@ -223,6 +283,10 @@ define([
             cal.setCalendars(getCalendars());
             cal.createSchedules(applyUpdates(getSchedules()), true);
             cal.render();
+            if (APP.initTime && APP.moveToDate) {
+                APP.moveToDate(APP.initTime);
+                delete APP.initTime;
+            }
             Rec.resetCache();
             updateRecurring();
         } catch (e) {
@@ -785,19 +849,6 @@ define([
 
     };
 
-    // Get week number in our calendar view
-    var ISO8601_week_no = function (dt) {
-        var tdt = new Date(dt.valueOf());
-        var dayn = (dt.getDay() + 6) % 7;
-        tdt.setDate(tdt.getDate() - dayn + 3);
-        var firstThursday = tdt.valueOf();
-        tdt.setMonth(0, 1);
-        if (tdt.getDay() !== 4) {
-            tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
-        }
-        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
-    };
-
     var _updateRecurring = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
@@ -868,35 +919,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         };
     };
 
-    var updateDateRange = function () {
-        var range = APP.calendar._renderRange;
-        var start = range.start._date.toLocaleDateString();
-        var end = range.end._date.toLocaleDateString();
-        var week = ISO8601_week_no(range.start._date);
-        var date = [
-            h('b.cp-small', Messages._getKey('calendar_weekNumber', [week])),
-            h('b', start),
-            h('span', ' - '),
-            h('b', end),
-        ];
-        if (APP.calendar._viewName === "day") {
-            date = h('b', start);
-        } else if (APP.calendar._viewName === "month") {
-            var month;
-            var mid = new Date(Math.floor(((+range.start._date) + (+range.end._date)) / 2));
-            try {
-                month = mid.toLocaleString('default', {
-                    month: 'long',
-                    year:'numeric'
-                });
-                month = month.replace(/^./, function (str) { return str.toUpperCase(); });
-                date = h('b', month);
-            } catch (e) {
-                // Use same as week range: first day of month to last day of month
-            }
-        }
-        APP.toolbar.$bottomM.empty().append(h('div', date));
-    };
     var makeCalendar = function (view) {
         var store = window.cryptpadStore;
 
@@ -1190,12 +1212,12 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         });
         $(goRight).click(function () {
             cal.next();
-            // XXX update recurring
             updateDateRange();
             updateRecurring();
         });
         $(goToday).click(function () {
-            cal.today();
+            APP.moveToDate(+new Date());
+            //cal.today();
             updateDateRange();
             updateRecurring();
         });
@@ -2191,6 +2213,8 @@ APP.recurrenceRule = {
                 }, function (obj) {
                     if (obj && obj.error) { console.error(obj.error); }
                 });
+            } else if (privateData.calendarOpts) {
+                APP.initTime = privateData.calendarOpts.time;
             }
             store.get('calendarView', makeCalendar);
             UI.removeLoadingScreen();

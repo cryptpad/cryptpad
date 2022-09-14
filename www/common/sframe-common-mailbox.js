@@ -13,6 +13,7 @@ define([
     Mailbox.create = function (Common) {
         var mailbox = Common.mailbox;
         var sframeChan = Common.getSframeChannel();
+        var priv = Common.getMetadataMgr().getPrivateData();
 
         var execCommand = function (cmd, data, cb) {
             sframeChan.query('Q_MAILBOX_COMMAND', {
@@ -67,6 +68,14 @@ define([
                 }
             } else if (data.type === 'reminders') {
                 avatar = h('i.fa.fa-calendar.cp-broadcast.preview');
+                if (priv.app !== 'calendar') { avatar.classList.add('cp-reminder'); }
+                $(avatar).click(function (e) {
+                    e.stopPropagation();
+                    if (data.content && data.content.handler) {
+                        return void data.content.handler();
+                    }
+                    Common.openURL(Hash.hashToHref('', 'calendar'));
+                });
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
