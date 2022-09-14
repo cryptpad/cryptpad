@@ -1703,9 +1703,9 @@ APP.recurrenceRule = {
                 $(pickr).find('button').click(function () {
                     var $b = $(this);
                     if ($b.is('.btn-secondary')) {
-                        return $b.removeClass('btn-secondary').addClass('btn-cancel');
+                        return $b.removeClass('btn-secondary').addClass('btn-default');
                     }
-                    $b.removeClass('btn-cancel').addClass('btn-secondary');
+                    $b.removeClass('btn-default').addClass('btn-secondary');
                 });
                 var radioPickContent = [
                     h('span', Messages.calendar_rec_monthly_pick),
