@@ -1,3 +1,72 @@
+# 5.1.0
+
+## Goals
+
+We had two new members join our team in the time since our previous release.
+
+Mathilde joined us as an administrator of CryptPad.fr, so we decided to put some unplanned time towards the platform's administrative tooling to simplify some common workflows.
+
+Maxime joined us for a summer internship as a front-end developer, and took initiative on a number of popular issues from our tracker on GitHub.
+
+## Update notes
+
+* We applied a minor optimization to CryptPad's caching rules which should result in a slight decrease of many pages' loading times, thanks to some helpful profiling by one of our users.
+
+
+* We have started implementing a very basic build system for CryptPad which, at the moment, is only responsible for generating a few static HTML pages.
+  * These pages include the _opengraph_ tags which describe how previews of the page should be rendered in social media posts, messenger applications, and search engine summaries.
+  * For the moment we haven't configured the system to build distinct pages for every language, so they will include text which is hardcoded in a single language which defaults to English. This can be configured in `config/config.js` (for example: `preferredLanguage: 'de',`). We intend to improve this in the future.
+  * They also update the content of the page's `<noscript>` tag, which is displayed in the event that the user has disabled JavaScript in their browser. The build system includes every translation of this message that is available, rather than just the English and French translations that were displayed previously.
+  * We've included some new tests on the checkup page to detect whether these customized pages have been built, and to remind administrators to generate them otherwise (using `npm run build`).
+  * Because the generated pages are based on the current default versions of these pages, updating to future versions of the software without re-building could result in errors due to outdated code being served. We'll include reminders in the update steps as we do for other common errors.
+
+
+* In order for the above changes to be effective, you'll need to update your NGINX configuration file. You can use git to see what has changed since v5.0.0 by running `git diff 5.0.0...main ./docs` in the root of your CryptPad repository.
+
+
+* We've updated the home page to use a distinct version of the CryptPad logo for its main image. This makes it easier to customize the home page itself without impacting the rest of the platform. To override the default image, include your own at `/customize/CryptPad_logo_hero.svg`.
+
+
+* Finally, a number of admins had opted into inclusion in our public instance directory but had not configured pages for their privacy policy or terms of service, which caused the checkup page to display an error. We've updated this error message to point directly to the relevant documentation, since the previous values were not sufficiently clear.
+
+
+To update from `5.0.0` to `5.1.0`:
+
+1. Update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` and reload its configuration
+2. Stop your API server
+3. Fetch the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Run `npm run build` to generate the new static pages
+5. Restart your server
+6. Review your instance's checkup page to ensure that you are passing all tests
+
+## Features
+
+* Administration:
+  * The instance admin panel now features a "Database" tab which makes it possible to generate reports for accounts, documents, and "login blocks". This finally enables administrators to review document and account metadata, archive or restore data, and generally perform actions that used to require specialized knowledge about the platform's data storage formats.
+  * Since the _Database_ tab identifies accounts by their public signing keys, we made it easier to access these keys by adding a button to support tickets which copies the author's key to your clipboard.
+* Thanks to a contributor, the platform is now available in European Portuguese in addition to the existing Brazilian Portuguese translation.
+* We've updated our mermaid integration to [v9.1.7](https://github.com/mermaid-js/mermaid/releases/tag/v9.1.7).
+* Spellcheck is now enabled by default in our rich text editor and can be disabled via the settings page in case you have not already done so.
+* Our code editor now includes a highlighting module for _asciidoc_ syntax.
+* The contact page has been updated to reflect that we have migrated our Mastodon account to [Fosstodon.org/@cryptpad](https://fosstodon.org/@cryptpad)
+* Various links throughout the platform have been updated to reflect that we've migrated our documentation from docs.cryptpad.fr to [docs.cryptpad.org](https://docs.cryptpad.org). The old domain now redirects to the new one to preserve compatibility with old instances or any other pages that have linked to it.
+* We've updated our issue templates on GitHub to use their new _Issue Forms_ functionality, making it easier to correctly submit a well-formatted bug report or feature request.
+* The project's readme now includes a widget indicating the completeness of CryptPad's translations on our Weblate instance.
+
+## Bug fixes
+
+* Thanks to some detailed reports from users of our spreadsheet editor we were able to reproduce an error that caused very large changes to be saved incorrectly. Such changes trigger multi-part messages to be created, but only the first message was correctly sent to the server. The client has now been updated to correctly send each part of the patch.
+* The behaviour of the long-form text input editor in our form app was not consistent with markdown-editing interfaces on the rest of the platform, so we enabled the same functionality as elsewhere.
+* Administration
+  * We found that the quantity of support tickets shown for each category was sometimes inaccurate, so we corrected the way this number was computed.
+  * A change in the internal format of each instance's name, location, and description caused these fields not to be included in telemetry for instances that had opted into the [public instance directory](https://cryptpad.org/instances/). We've corrected this so such instances provide all the necessary information.
+  * We've corrected some logic for displaying configured URLs for privacy policies, terms of service, and similar resources such that relative URLs are considered relative to the top-level domain (rather than the sandbox domain).
+  * The "Launch time" value on the admin panel was using a hard-coded rather than the relevant translation, and was not correctly updating when the "Refresh" button was clicked. Both issues have been fixed.
+* A flaw in some of the styles for the kanban app made it impossible to add text to an empty card via the usual inline text field UI. Adding placeholder content to this field made the default click events work as expected.
+* Dropdowns with text content containing quotes (such as those that could be created in the form app) caused an invalid CSS selector to be constructed, which resulted in rendering issues. Such quotes are now properly escaped.
+* We found that some message handlers in CryptPad were receiving and trying to parse messages from unexpected sources (browser extensions). These messages triggered parsing errors which cause CryptPad's error screen to be displayed. We now guard against such messages and ignore them when they are not in the expected format or when they otherwise trigger parsing errors.
+
 # 5.0.0
 
 ## Goals
