@@ -396,7 +396,11 @@ define([
                 res[uid] = obj;
             });
 
-            cb(null, res);
+            // setTimeout to make sure we call back after the "recurrence-id" setTimeout
+            // are called
+            setTimeout(function () {
+                cb(null, res);
+            });
         });
     };
 

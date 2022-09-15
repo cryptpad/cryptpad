@@ -102,17 +102,17 @@ define([
         return date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
     };
     var FREQ = {};
-    FREQ['daily'] = function (s) {
-        s.setDate(s.getDate()+1);
+    FREQ['daily'] = function (s, i) {
+        s.setDate(s.getDate()+i);
     };
-    FREQ['weekly'] = function (s) {
-        s.setDate(s.getDate()+7);
+    FREQ['weekly'] = function (s,i) {
+        s.setDate(s.getDate()+(i*7));
     };
-    FREQ['monthly'] = function (s) {
-        s.setMonth(s.getMonth()+1);
+    FREQ['monthly'] = function (s,i) {
+        s.setMonth(s.getMonth()+i);
     };
-    FREQ['yearly'] = function (s) {
-        s.setFullYear(s.getFullYear()+1);
+    FREQ['yearly'] = function (s,i) {
+        s.setFullYear(s.getFullYear()+i);
     };
 
     // EXPAND is used to create iterations added from a BYxxx rule
@@ -434,17 +434,36 @@ define([
 
         // Manage interval for the next iteration
         var it = Util.once(function () {
-            for (var i=0; i<inter; i++) {
-                FREQ[freq](s);
-            }
+            FREQ[freq](s, inter);
         });
         var addDefault = function () {
+            if (freq === "monthly") {
+                s.setDate(15);
+            } else if (freq === "yearly" && oS.getMonth() === 1 && oS.getDate() === 29) {
+                s.setDate(28);
+            }
+
             it();
-            all.push(s);
+
+            var _s = new Date(+s);
+            if (freq === "monthly" || freq === "yearly") {
+                _s.setDate(oS.getDate());
+                if (_s.getDate() !== oS.getDate()) { return; } // If 31st or Feb 29th doesn't exist
+                if (freq === "yearly" && _s.getMonth() !== oS.getMonth()) { return; }
+
+                // FIXME if there is a recUpdate that moves the 31st to the 30th, the event
+                // will still only be displayed on months with 31 days
+            }
+            all.push(_s);
         };
 
         if (Array.isArray(cache[id][uid])) {
             debug('Get cache', id, uid);
+            if (freq === "monthly") {
+                s.setDate(15);
+            } else if (freq === "yearly" && oS.getMonth() === 1 && oS.getDate() === 29) {
+                s.setDate(28);
+            }
             it();
             return cache[id][uid];
         }
