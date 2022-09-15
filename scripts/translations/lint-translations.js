@@ -1,4 +1,5 @@
 var EN = require("../../www/common/translations/messages.json");
+var Util = require("../../www/common/common-util.js");
 
 var simpleTags = [
     '<br>',
@@ -51,6 +52,54 @@ special_rules.fr = function (s) {
 
 var noop = function () {};
 
+var getTags = S => {
+    if (typeof(S) !== 'string') { return []; }
+
+    var tags = [];
+    S.replace(/<[\s\S]*?>/g, function (html) {
+        tags.push(html);
+    });
+    return tags;
+};
+
+var getTagCount = T => {
+    var M = {};
+    T.forEach(html => {
+        Util.inc(M, html);
+    });
+    return M;
+};
+
+// bidirectional comparison
+var compareMarkup = (A, B) => {
+    // if the frequency of some key in A does not match that of the same key in B
+    if (Object.keys(A).some(k => {
+        return A[k] !== B[k];
+    })) {
+        return false;
+    }
+
+    // same for B
+    if (Object.keys(B).some(k => {
+        return A[k] !== B[k];
+    })) {
+        return false;
+    }
+
+    return true;
+};
+
+var getReferenceMarkup = (function () {
+    var O = {};
+    return function (k) {
+        var val = O[k];
+        if (typeof(val) !== 'undefined') { return val; }
+        var tags = getTags(EN[k]);
+        val = O[k] = getTagCount(tags);
+        return val;
+    };
+}());
+
 var processLang = function (map, lang, primary) {
     var announced = false;
     var announce = function () {
@@ -68,7 +117,14 @@ var processLang = function (map, lang, primary) {
         if (typeof(s) !== 'string') { return; }
         var usesHTML;
 
-        s.replace(/<[\s\S]*?>/g, function (html) {
+        var ref = getReferenceMarkup(k);
+        var tags = getTags(s);
+        var tagCount = getTagCount(tags);
+        var markupMatches = compareMarkup(ref, tagCount);
+
+        //console.log(ref);
+
+        tags.forEach(html => {
             if (simpleTags.includes(html)) {
                 found_tags[html] = 1;
                 return;
@@ -88,9 +144,18 @@ var processLang = function (map, lang, primary) {
 
         var specialViolation = special(s);
 
-        if (usesHTML || weirdCapitalization || specialViolation) {
+        if (usesHTML || weirdCapitalization || specialViolation || !markupMatches) {
             announce();
             console.log("%s", s);
+
+            if (!markupMatches) {
+                console.log("Markup does not match base translation");
+
+                console.log("\nEnglish: \n\n%s\n", EN[k]);
+                console.log(tagCount);
+                console.log(ref);
+            }
+            //if (mismatchedTags.length) { console.log(mismatchedTags); } // XXX
             console.log("[%s]\n", k);
         }
     });
