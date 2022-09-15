@@ -348,8 +348,16 @@ define([
         },
         popupDelete: function() { return Messages.kanban_delete; },
         popupDetailLocation: function(schedule) {
-            // TODO detect url and create 'a' tag
-            return Messages._getKey('calendar_location', [Util.fixHTML(schedule.location)]);
+            var l = schedule.location;
+            var str = Util.fixHTML(l);
+            delete APP.nextLocationUid;
+            if (/^https?:\/\//.test(l)) {
+                var uid = "cp-link-"+Util.uid();
+                str = `<a href="${l}" id="${uid}">${str}</a>`;
+                APP.nextLocationUid = uid;
+            }
+
+            return Messages._getKey('calendar_location', [str]);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -2108,6 +2116,16 @@ APP.recurrenceRule = {
             if (!id) { return; }
             if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
 
+            if (APP.nextLocationUid) {
+                var uid = APP.nextLocationUid;
+                delete APP.nextLocationUid;
+                var $a = $el.find('#'+uid);
+                $a.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    common.openUnsafeURL($a.attr('href'));
+                });
+            }
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-secondary', [
                 h('i.fa.fa-times'),
