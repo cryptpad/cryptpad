@@ -318,7 +318,7 @@
     "contacts_title": "Contacte",
     "contacts_added": "Invitația din partea contactului acceptată",
     "contacts_rejected": "Invitația din partea contactului refuzată",
-    "contacts_request": "<em>{0}</em> ar dori să vă adauge la lista de contacte. <b>Acceptati<b>?",
+    "contacts_request": "<em>{0}</em> ar dori să vă adauge la lista de contacte. <b>Acceptati</b>?",
     "contacts_send": "Trimite",
     "contacts_remove": "Șterge acest contact",
     "contacts_confirmRemove": "Ești sigur ca vrei să-l ștergi pe <em>1{0}</em>2 din lista de contacte?",

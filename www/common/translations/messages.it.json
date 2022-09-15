@@ -217,7 +217,7 @@
     "contacts_title": "Contatti",
     "contacts_added": "Invito ai contatti accettato.",
     "contacts_rejected": "Invito ai contatti rifiutato",
-    "contacts_request": "<em>{0}</em> vorrebbe aggiungerti ai contatti. <b>Accettare<b>?",
+    "contacts_request": "<em>{0}</em> vorrebbe aggiungerti ai contatti. <b>Accettare</b>?",
     "contacts_send": "Invia",
     "contacts_remove": "Rimuovi questo contatto",
     "contacts_confirmRemove": "Sei sicuro di voler rimuovere <em>{0}</em> dai tuoi contatti?",

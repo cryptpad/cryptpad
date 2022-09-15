@@ -276,7 +276,7 @@
     "contacts_confirmRemove": "确定要从联系人中删除 <em>{0}</em> 吗？",
     "contacts_remove": "删除此联系人",
     "contacts_send": "发送",
-    "contacts_request": "<em>{0}</em> 想将您添加为联系人。 <b>接受<b>？",
+    "contacts_request": "<em>{0}</em> 想将您添加为联系人。 <b>接受</b>？",
     "contacts_rejected": "联系人邀请被拒绝",
     "contacts_added": "联系人已接受邀请。",
     "contacts_title": "联系人",

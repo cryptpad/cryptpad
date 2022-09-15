@@ -330,7 +330,7 @@
     "contacts_confirmRemove": "Ziur zaude <em>{0}</em> zure kontaktuetatik kendu nahi duzula?",
     "contacts_remove": "Kendu kontaktu hau",
     "contacts_send": "Bidali",
-    "contacts_request": "<em>{0}</em> erabiltzaileak kontaktu gisa gehitu nahi zaitu. <b>Onartu<b>?",
+    "contacts_request": "<em>{0}</em> erabiltzaileak kontaktu gisa gehitu nahi zaitu. <b>Onartu</b>?",
     "contacts_rejected": "Kontaktu-gonbidapena baztertu da",
     "contacts_added": "Kontaktu-gonbidapena onartu da.",
     "contacts_title": "Kontaktuak",

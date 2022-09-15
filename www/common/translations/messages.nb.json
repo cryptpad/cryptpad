@@ -189,7 +189,7 @@
     "contacts_title": "Kontakter",
     "contacts_added": "Kontaktinvitasjon godtatt.",
     "contacts_rejected": "Kontaktinvitasjonen avvist",
-    "contacts_request": "<em>{0}</em> vil legge deg til som kontakt. <b>Aksepter<b>?",
+    "contacts_request": "<em>{0}</em> vil legge deg til som kontakt. <b>Aksepter</b>?",
     "contacts_remove": "Fjern denne kontakten",
     "contacts_confirmRemove": "Fjern <em>{0}</em> fra kontaktlisten din?",
     "contacts_typeHere": "Skriv en melding her …",

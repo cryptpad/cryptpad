@@ -104,7 +104,7 @@
     "contacts_confirmRemove": "Точно вилучити <em>{0]</em> із контактів?",
     "contacts_remove": "Вилучити контакт",
     "contacts_send": "Надіслати",
-    "contacts_request": "<em>{0}</em> пропонує вам контакт. <b>Прийняти<b>?",
+    "contacts_request": "<em>{0}</em> пропонує вам контакт. <b>Прийняти</b>?",
     "contacts_rejected": "Запрошення на контакт відхилено",
     "contacts_added": "Запрошення на контакт прийнято.",
     "contacts_title": "Контакти",

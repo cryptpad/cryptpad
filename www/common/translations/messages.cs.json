@@ -250,7 +250,7 @@
     "contacts_confirmRemove": "Jste si jistí, že chcete odstranit <em>{0}</em> z vašich kontaktů?",
     "contacts_remove": "Odebrat kontakt",
     "contacts_send": "Odeslat",
-    "contacts_request": "<em>{0}</em> si vás chce přidat do kontaktů. <b>Přijmout<b>?",
+    "contacts_request": "<em>{0}</em> si vás chce přidat do kontaktů. <b>Přijmout</b>?",
     "contacts_rejected": "Žádost o přidání do kontaktů zamítnuta",
     "contacts_added": "Žádost o přidání do kontatů přijata.",
     "contacts_title": "Kontakty",

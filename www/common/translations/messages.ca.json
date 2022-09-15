@@ -215,7 +215,7 @@
     "contacts_title": "Contactes",
     "contacts_added": "Invitació de contacte acceptada.",
     "contacts_rejected": "Invitació de contacte rebutjada",
-    "contacts_request": "<em>{0}</em> vol afegir-vos com a contacte. <b>Ho accepteu<b>?",
+    "contacts_request": "<em>{0}</em> vol afegir-vos com a contacte. <b>Ho accepteu</b>?",
     "contacts_send": "Envia",
     "contacts_remove": "Suprimeix aquest contacte",
     "contacts_confirmRemove": "De debò voleu suprimir <em>{0}</em> dels vostres contactes?",
