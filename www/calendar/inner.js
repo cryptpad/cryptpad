@@ -186,6 +186,8 @@ define([
         cal.setDate(d);
         updateDateRange();
 
+        if (cal.getViewName() === 'month') { return; }
+
         // Scroll to correct time
         setTimeout(function () {
             var h = d.toLocaleTimeString('en-US', { hour12: 0, timeStyle: "short" }).slice(0,2);
@@ -1180,6 +1182,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         var goLeft = h('button.fa.fa-chevron-left');
         var goRight = h('button.fa.fa-chevron-right');
         var goToday = h('button', Messages.calendar_today);
+        var goDate = h('button.fa.fa-calendar');
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
@@ -1196,8 +1199,26 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             updateDateRange();
             updateRecurring();
         });
+        $(goDate).click(function () {
+            var f = Flatpickr(goDate, {
+                enableTime: false,
+                defaultDate: APP.calendar.getDate()._date,
+                //dateFormat: dateFormat,
+                onChange: function (date) {
+                    date[0].setHours(12);
+                    f.destroy();
+                    APP.moveToDate(+date[0]);
+                    updateDateRange();
+                    updateRecurring();
+                },
+                onClose: function () {
+                    setTimeout(f.destroy);
+                }
+            });
+            f.open();
+        });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
-            goLeft, goToday, goRight
+            goLeft, goToday, goRight, goDate
         ]));
 
     };
