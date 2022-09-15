@@ -892,32 +892,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 */
 
 
-    var diffDate = function (oldTime, newTime) {
-        var n = new Date(newTime);
-        var o = new Date(oldTime);
-
-        // Diff Days
-        var d = 0;
-        var mult = n < o ? -1 : 1;
-        while (n.toLocaleDateString() !== o.toLocaleDateString() || mult >= 10000) {
-            n.setDate(n.getDate() - mult);
-            d++;
-        }
-        d = mult * d;
-
-        // Diff hours
-        n = new Date(newTime);
-        var h = n.getHours() - o.getHours();
-
-        // Diff minutes
-        var m = n.getMinutes() - o.getMinutes();
-
-        return {
-            d: d,
-            h: h,
-            m: m
-        };
-    };
+    var diffDate = Rec.diffDate;
 
     var makeCalendar = function (view) {
         var store = window.cryptpadStore;
@@ -1018,7 +993,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     changes.reminders = reminders;
                 }
 
-                var oldRec = originalEvent.recurrenceRule;
+                var oldRec = ev.recurrenceRule;
                 var rec = APP.recurrenceRule;
                 if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
                     changes.recurrenceRule = rec;
@@ -1068,7 +1043,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             Messages.calendar_rec_warn_delall = "The recurrence rule was deleted. Only the original event on {0} will be kept.";
             Messages.calendar_rec_warn_del = "The recurrence rule was deleted. All occurences after the selected one will be removed.";
             Messages.calendar_rec_warn_updateall = "The recurrence rule was modified. Only the original event on {0} will be kept and new occurences will be created.";
-            Messages.calendar_rec_warn_update = "The recurrence rule was modified. All occurences after the selected one will be removed and recreated with the new rule.";
+            Messages.calendar_rec_warn_update = "The recurrence rule was modified. All occurences after the selected one will be removed and recreated with the new rule."; // XXX NOTE: the "count" value will be reset
 
             // Confirm modal: select which recurring events to update
             if (!Object.keys(changes).length) { return void afterConfirm(); }
@@ -1567,7 +1542,7 @@ APP.recurrenceRule = {
         };
         var addUpdate = function () {
             if (!updatedOn) { return; }
-            var d = new Date(APP.recurrenceRule._next).toLocaleDateString();
+            var d = new Date(updatedOn).toLocaleDateString();
             $translated.append(h('div', Messages._getKey('calendar_rec_updated', [d])));
         };
         var addTranslation = function () {

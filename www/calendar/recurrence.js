@@ -219,14 +219,27 @@ define([
         var all = [];
         if (![0,1,2,3,4,5,6].includes(day)) { return false; }
 
-        var filterPos = function () {
+        var filterPos = function (m) {
             if (!pos) { return; }
-            if (pos < 0) {
-                pos = all.length + pos;
-            } else {
-                pos--; // An array starts at 0 but the recurrence rule starts at 1
-            }
-            all = [all[pos]];
+
+            var _all = [];
+            'aaaaaaaaaaaa'.split('').some(function (a, i) {
+                if (typeof(m) !== "undefined" && i !== m) { return; }
+
+                var _pos;
+                var tmp = all.filter(function (d) {
+                    return d.getMonth() === i;
+                });
+                if (pos < 0) {
+                    _pos = tmp.length + pos;
+                } else {
+                    _pos = pos - 1; // An array starts at 0 but the recurrence rule starts at 1
+                }
+                _all.push(tmp[_pos]);
+
+                return typeof(m) !== "undefined" && i === m;
+            });
+            all = _all.filter(Boolean); // The "5th" {day} won't always exist
         };
 
         var tmp;
@@ -250,7 +263,7 @@ define([
                 all.push(new Date(+tmp));
                 tmp.setDate(tmp.getDate()+7);
             }
-            filterPos();
+            filterPos(m);
             return all;
         }
 
@@ -374,7 +387,7 @@ define([
         var origin = Util.clone(_origin);
         var oS = new Date(origin.start);
 
-        var id = origin.id;
+        var id = origin.id.split('|')[0]; // Use same cache when updating recurrence rule
 
         // "uid" is used for the cache
         var uid = s.toLocaleDateString();
@@ -686,7 +699,7 @@ define([
                             evS = +_evS;
                             obj = _ev;
                             rule = nextRule;
-                            // XXX
+                            nextRule = nextRules.shift();
                             return true;
                         }
                     });
@@ -699,6 +712,55 @@ define([
             });
         });
         return toAdd;
+    };
+    Rec.getAllOccurrences = function (ev) {
+        if (!ev.recurrenceRule) { return [ev.start]; }
+        var r = ev.recurrenceRule;
+        // In case of infinite recursion, we can't get all
+        if (!r.until && !r.count) { return false; }
+        var all = [ev.start];
+        var d = new Date(ev.start);
+        d.setDate(15); // Make sure we won't skip a month if the event starts on day > 28
+        var toAdd = [];
+
+        var i = 0;
+        var check = function () {
+            return r.count ? (all.length < r.count) : (+d <= r.until);
+        };
+        while ((toAdd = Rec.getRecurring([Rec.getMonthId(d)], [ev])) && check() && i < (r.count*12)) {
+            Array.prototype.push.apply(all, toAdd.map(function (_ev) { return _ev.start; }));
+            d.setMonth(d.getMonth() + 1);
+            i++;
+        }
+
+        return all;
+    };
+
+    Rec.diffDate = function (oldTime, newTime) {
+        var n = new Date(newTime);
+        var o = new Date(oldTime);
+
+        // Diff Days
+        var d = 0;
+        var mult = n < o ? -1 : 1;
+        while (n.toLocaleDateString() !== o.toLocaleDateString() || mult >= 10000) {
+            n.setDate(n.getDate() - mult);
+            d++;
+        }
+        d = mult * d;
+
+        // Diff hours
+        n = new Date(newTime);
+        var h = n.getHours() - o.getHours();
+
+        // Diff minutes
+        var m = n.getMinutes() - o.getMinutes();
+
+        return {
+            d: d,
+            h: h,
+            m: m
+        };
     };
 
     var sortUpdate = function (obj) {

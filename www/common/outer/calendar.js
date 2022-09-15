@@ -408,10 +408,20 @@ define([
             c.lm = lm;
             var proxy = c.proxy = lm.proxy;
 
+            var _updateCalled = false;
+            var _update = function () {
+                if (_updateCalled) { return; }
+                _updateCalled = true;
+                setTimeout(function () {
+                    _updateCalled = false;
+                    update();
+                });
+            };
+
             lm.proxy.on('cacheready', function () {
                 if (!proxy.metadata) { return; }
                 c.cacheready = true;
-                setTimeout(update);
+                _update();
                 if (cb) { cb(null, lm.proxy); }
                 addInitialReminders(ctx, channel, cfg.lastVisitNotif);
             }).on('ready', function (info) {
@@ -428,12 +438,12 @@ define([
                         title: data.title
                     };
                 }
-                setTimeout(update);
+                _update();
                 if (cb) { cb(null, lm.proxy); }
                 addInitialReminders(ctx, channel, cfg.lastVisitNotif);
             }).on('change', [], function () {
                 if (!c.ready) { return; }
-                setTimeout(update);
+                _update();
             }).on('change', ['content'], function (o, n, p) {
                 if (p.length === 2 && n && !o) { // New event
                     return void addReminders(ctx, channel, n);
@@ -457,7 +467,7 @@ define([
                     });
                 }
             }).on('remove', ['content'], function (x, p) {
-                setTimeout(update);
+                _update();
                 if ((p.length >= 3 && p[2] === 'reminders') ||
                     (p.length >= 6 && p[5] === 'reminders')) {
                     return void setTimeout(function () {
@@ -471,10 +481,10 @@ define([
                 updateLocalCalendars(ctx, c, md);
             }).on('disconnect', function () {
                 c.offline = true;
-                setTimeout(update);
+                _update();
             }).on('reconnect', function () {
                 c.offline = false;
-                setTimeout(update);
+                _update();
             }).on('error', function (info) {
                 if (!info || !info.error) { return; }
                 if (info.error === "EDELETED" ) {
@@ -482,7 +492,7 @@ define([
                 }
                 if (info.error === "ERESTRICTED" ) {
                     c.restricted = true;
-                    setTimeout(update);
+                    _update();
                 }
                 cb(info);
             });
