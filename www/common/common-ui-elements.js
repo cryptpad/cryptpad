@@ -2820,6 +2820,8 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
+                // XXX You can still use the current version in read-only mode by pressing Esc.
+                // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }

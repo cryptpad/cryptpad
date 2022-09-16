@@ -856,6 +856,8 @@ define([
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
                 if (err === 'DELETED') {
+                    // XXX You can still use the current version in read-only mode by pressing Esc.
+                    // what if they don't have a keyboard (ie. mobile)
                     msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
                 }
                 if (err === "INVALID_HASH") {
