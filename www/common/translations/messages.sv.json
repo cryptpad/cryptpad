@@ -131,7 +131,7 @@
     "loading": "Laddar...",
     "newVersionError": "En ny version av CryptPad är tillgänglig.<br><a href='#'>Ladda om</a> för att använda den nya versionen, eller tryck Esc för att nå ditt innehåll i <b>offline-läge</b>.",
     "errorRedirectToHome": "Tryck <em>Esc</em> för att bli omdirigerad till din CryptDrive.",
-    "errorCopy": " Du kan fortfarande nå innehållet genom att trycka <em>Esc</em>.<br>När du stänger detta fönster kommer du inte längre ha tillgång till det.",
+    "errorCopy": " Du kan fortfarande nå innehållet genom att trycka <em>Esc</em>.",
     "invalidHashError": "Dokumentet du har begärt har en felaktig URL.",
     "chainpadError": "Ett kritiskt fel har uppstått när ditt innehåll uppdaterades. Denna sida är i skrivskyddat läge för att säkerställa att du inte förlorar ditt arbete.<br>Tryck <em>Esc</em> för att fortsätta visa detta dokument, eller ladda om och försök redigera igen.",
     "inactiveError": "Detta dokument har tagits bort på grund av inaktivitet. Vänligen tryck Esc för att skapa ett nytt dokument.",

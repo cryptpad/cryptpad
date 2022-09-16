@@ -276,7 +276,7 @@
     "fm_info_template": "Questi documenti sono salvati come modelli. Puoi riutilizzarli per creare nuovi documenti.",
     "fm_info_recent": "Questi documenti sono stati recentemente aperti o modificati da te o da persone con le quali tu collabori.",
     "fm_info_trash": "Svuota il tuo cestino per liberare spazio nel tuo CryptDrive.",
-    "fm_info_anonymous": "Non hai effettuato l'accesso, quindi i tuoi documenti scadranno tra {0} giorni. Cancellando la cronologia potresti farli scomparire.<br><a href=\"/register/\">Registrati</a> (non sono richieste informazioni personali) oppure <a href=\"/login/\">Accedi</a> per conservarli permanentemente nel tuo drive.<br> <a href=\"#docs\">Leggi di più sugli account registrati</a>.",
+    "fm_info_anonymous": "Non hai effettuato l'accesso, quindi i tuoi documenti scadranno tra {0} giorni. Cancellando la cronologia potresti farli scomparire.<br><a href=\"/register/\">Registrati</a> (non sono richieste informazioni personali) oppure <a href=\"/login/\">Accedi</a> per conservarli permanentemente nel tuo drive. <a href=\"#docs\">Leggi di più sugli account registrati</a>.",
     "fm_info_sharedFolder": "Questa è una cartella condivisa. Non hai effettuato l'accesso, quindi puoi visualizzarla solo in modalità di sola lettura.<br><a href=\"/register/\">Registrati</a> o <a href=\"/login/\">Accedi</a> per poterla importare nel tuo CryptDrive e per modificarla.",
     "fm_info_owned": "Sei il proprietario dei documenti mostrati qui. Questo significa che puoi rimuoverli permanentemente dal server quando lo desideri. Se lo fai, gli altri utenti non potranno più accedervi.",
     "fm_error_cantPin": "Errore interno del server. Ricarica la pagina e prova di nuovo.",

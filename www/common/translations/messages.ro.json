@@ -204,7 +204,7 @@
     "inactiveError": "Această filă a fost ștersă din motive de inactivitate. Apasă Esc pentru a crea una nouă.",
     "chainpadError": "O eroare critică a apărut in timpul updatării conținutului. Pagina rămâne în modul citire pentru a ne asigura ca nu vei pierde conținutul.<br>Apasă <em>Esc</em> pentru a continua vizualizarea acestei file sau reîncarcă pagina pentru a încerca să o editezi din nou.",
     "invalidHashError": "Documentul solicitat are un URL invalid.",
-    "errorCopy": " Încă mai poți copia conținutul într-o altă locație prin apăsarea butonului <em>Esc</em>.<br>După ce vei părăsi această pagină ea va dispărea!",
+    "errorCopy": " Încă mai poți copia conținutul într-o altă locație prin apăsarea butonului <em>Esc</em>.",
     "errorRedirectToHome": "Apasă <em>1Esc</em>2 pentru a fi redirecționat spre CryptDrive-ul tău.",
     "newVersionError": "O nouă versiune CryptPad este disponibilă.<br><a href='#'>Reîncarcă pagina</a> pentru a folosi noua versiune, sau apasă escape pentru a-ți accesa conținutul în <b>modul offline</b>.",
     "deletedFromServer": "Pad șters de pe server",

@@ -377,7 +377,7 @@
     "fm_info_recent": "Estos documentos han sido abiertas o modificadas recientemente por ti o por tus colaboradores.",
     "fm_info_sharedFolder": "Esta es una carpeta compartida. Usted no ha ingresado a su cuenta por lo que solo tiene acceso en modo solo lectura. <br><a href=\"/register/\">ingresar</a> o <a href=\"/login/\">ingresar</a> para poder importarla a su Cryptdrive y modificarla.",
     "fm_info_owned": "Usted es el dueño de los documentos que se presentan. Esto significa que puede eliminarlos de manera permanente del servidor cuando lo desee. Si lo hace, los otros usuarios no podrán acceder a ellos nunca más.",
-    "fm_renamedPad": "Ha definido un nombre personalizado para este documento. El título compartido es: br><b>{0}</b>",
+    "fm_renamedPad": "Ha definido un nombre personalizado para este documento. El título compartido es: <br><b>{0}</b>",
     "fm_canBeShared": "Esta carpeta puede ser compartida",
     "fm_prop_tagsList": "Etiquetas",
     "fm_burnThisDriveButton": "Borre toda la información que ha sido almacenada por CryptPad en su navegador",
