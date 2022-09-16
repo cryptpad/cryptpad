@@ -1,5 +1,6 @@
 var EN = require("../../www/common/translations/messages.json");
 var Util = require("../../www/common/common-util.js");
+var Fs = require("fs");
 
 var simpleTags = [
     '<br>',
@@ -56,7 +57,7 @@ var getTags = S => {
     if (typeof(S) !== 'string') { return []; }
 
     var tags = [];
-    S.replace(/<[\s\S]*?>/g, function (html) {
+    S.replace(/(<[\s\S]*?>|\{\d+\})/g, function (html) {
         tags.push(html);
     });
     return tags;
@@ -73,20 +74,22 @@ var getTagCount = T => {
 // bidirectional comparison
 var compareMarkup = (A, B) => {
     // if the frequency of some key in A does not match that of the same key in B
-    if (Object.keys(A).some(k => {
-        return A[k] !== B[k];
-    })) {
-        return false;
-    }
+    var diff = {};
+
+    var compare = k => {
+        if (diff[k]) { return; }
+
+        var a = A[k] || 0;
+        var b = B[k] || 0;
+        if (a === b) { return; }
+        diff[k] = b - a;
+    };
+
+    Object.keys(A).forEach(compare);
 
     // same for B
-    if (Object.keys(B).some(k => {
-        return A[k] !== B[k];
-    })) {
-        return false;
-    }
-
-    return true;
+    Object.keys(B).forEach(compare);
+    return diff;
 };
 
 var getReferenceMarkup = (function () {
@@ -100,12 +103,13 @@ var getReferenceMarkup = (function () {
     };
 }());
 
+var finalErrorCount = 0;
 var processLang = function (map, lang, primary) {
     var announced = false;
     var announce = function () {
         if (announced) { return; }
         announced = true;
-        console.log("NEXT LANGUAGE: ", lang);
+        console.log("## LANGUAGE: %s\n", lang);
     };
 
     var special = special_rules[lang] || noop;
@@ -120,11 +124,17 @@ var processLang = function (map, lang, primary) {
         var ref = getReferenceMarkup(k);
         var tags = getTags(s);
         var tagCount = getTagCount(tags);
-        var markupMatches = compareMarkup(ref, tagCount);
+
+        var markupDiff = compareMarkup(ref, tagCount);
+
+        //console.log(markupDiff);
+        var markupMatches = Object.keys(markupDiff).length === 0;
 
         //console.log(ref);
 
         tags.forEach(html => {
+            if (/\{\d+\}/.test(html)) { return; }
+
             if (simpleTags.includes(html)) {
                 found_tags[html] = 1;
                 return;
@@ -145,49 +155,39 @@ var processLang = function (map, lang, primary) {
         var specialViolation = special(s);
 
         if (usesHTML || weirdCapitalization || specialViolation || !markupMatches) {
+            finalErrorCount++;
             announce();
-            console.log("%s", s);
+            console.log("`[%s]`\n", k);
+            console.log("`%s`", s);
 
             if (!markupMatches) {
-                console.log("Markup does not match base translation");
+                console.log("\nMarkup does not match base translation");
 
-                console.log("\nEnglish: \n\n%s\n", EN[k]);
-                console.log(tagCount);
-                console.log(ref);
+                console.log("\n**Reference**: \n\n`%s`\n", EN[k]);
+                //console.log('base', ref);
+                //console.log('translation', tagCount);
+                console.log('**diff**:\n\n```\n%s\n```', JSON.stringify(markupDiff, null, 2));
+
+                console.log();
             }
             //if (mismatchedTags.length) { console.log(mismatchedTags); } // XXX
-            console.log("[%s]\n", k);
         }
     });
 };
 
+var langs = Fs.readdirSync("www/common/translations").filter(name => {
+    return /messages\..+\.json$/.test(name);
+}).map(name => {
+    var code;
+    name.replace(/messages\.(.+)\.json$/, (all, _code) => {
+        code = _code;
+    });
+    return code;
+});
+
 processLang(EN, 'en', true);
 
-[
-  'ar',
-  //'bn_BD',
-  'ca',
-  'cs',
-  'de',
-  'es',
-  'eu',
-  'fi',
-  'fr',
-  'hi',
-  'it',
-  'ja',
-  'nb',
-  'nl',
-  'pl',
-  'pt-br',
-  'ro',
-  'ru',
-  'sv',
-  //'te',
-  'tr',
-  'uk',
-  'zh',
-].forEach(function (lang) {
+langs.forEach(function (lang) {
     try {
         var map = require("../../www/common/translations/messages." + lang + ".json");
         if (!Object.keys(map).length) { return; }
@@ -201,3 +201,7 @@ simpleTags.forEach(html => {
     if (found_tags[html]) { return; }
     console.log(`html exemption '${html}' is unnecessary.`);
 });
+
+if (finalErrorCount) {
+    console.log(`\nTotal errors: ${finalErrorCount}`);
+}
