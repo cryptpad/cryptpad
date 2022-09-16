@@ -393,7 +393,6 @@
     "settings_autostoreNo": "Manuel (ne pas demander)",
     "settings_autostoreMaybe": "Manuel (toujours demander)",
     "settings_userFeedbackTitle": "Retour d'expérience",
-    "settings_userFeedbackHint1": "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs. ",
     "settings_userFeedbackHint2": "Le contenu de vos documents et les clés de déchiffrement ne seront jamais partagés avec le serveur.",
     "settings_userFeedback": "Activer l'envoi de retours d'expérience",
     "settings_deleteTitle": "Suppression du compte",

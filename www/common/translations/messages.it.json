@@ -384,7 +384,6 @@
     "settings_importConfirm": "Sei sicuro di voler importare i tuoi documenti recenti da questo browser sul tuo account CryptDrive?",
     "settings_autostoreMaybe": "Manuale (chiedi sempre)",
     "settings_userFeedbackTitle": "Feedback",
-    "settings_userFeedbackHint1": "CryptPad fornisce solo alcuni feedback basilari al server, per aiutarci a migliorare la tua esperienza. ",
     "settings_userFeedbackHint2": "Il contenuto dei tuoi documenti non sarà mai condiviso con il server.",
     "settings_userFeedback": "Abilita feedback dell'utente",
     "settings_deleteTitle": "Cancellazione account",

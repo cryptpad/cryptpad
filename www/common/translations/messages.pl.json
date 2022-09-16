@@ -302,7 +302,6 @@
     "settings_deleteTitle": "Usunięcie konta",
     "settings_userFeedback": "Włącz informacje zwrotne od użytkowników",
     "settings_userFeedbackHint2": "Zawartość Twoich dokumentów nigdy nie będzie udostępniana serwerowi.",
-    "settings_userFeedbackHint1": "CryptPad zapewnia pewne bardzo podstawowe informacje zwrotne dla serwera, abyśmy wiedzieli, jak poprawić Twoje doświadczenie. ",
     "settings_userFeedbackTitle": "Informacja zwrotna",
     "settings_autostoreMaybe": "Ręcznie (zawsze pytaj)",
     "settings_autostoreNo": "Ręcznie (nigdy nie pytaj)",

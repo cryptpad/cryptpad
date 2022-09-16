@@ -1266,7 +1266,6 @@
     "share_contactPasswordAlert": "Tato položka je chráněna heslem. Protože jej sdílíte s kontaktem CryptPad, příjemce nebude muset zadávat heslo.",
     "share_linkPasswordAlert": "Tato položka je chráněna heslem. Při odeslání odkazu bude muset příjemce zadat heslo.",
     "admin_supportInitHelp": "Váš server ještě nemá nastavený mailbox podpory. Pokud chcete, aby poštovní schránka podpory přijímala zprávy od vašich uživatelů, měli byste požádat správce serveru, aby spustil skript umístěný v „./scripts/generate-admin-keys.js“ a poté uložil veřejný klíč do souboru „config.js \" a zaslal vám soukromý klíč.",
-    "settings_userFeedbackHint1": "CryptPad odesílá serveru velmi základní zpětnou vazbu, abychom věděli, jak jej vylepšit. ",
     "cba_properties": "Barvy uživatelů (experimentální)",
     "admin_supportListHint": "Zde je seznam tiketů zaslaných uživateli do schránky podpory. Všichni administrátoři mohou vidět zprávy a jejich odpovědi. Uzavřený ticket nelze znovu otevřít. Můžete pouze odstranit (skrýt) uzavřené tickety a odstraněné tickety jsou stále viditelné pro ostatní administrátory.",
     "cba_disable": "Vymazat a zakázat",

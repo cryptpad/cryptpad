@@ -386,7 +386,6 @@
     "settings_autostoreNo": "Manuell (nie nachfragen)",
     "settings_autostoreMaybe": "Manuell (immer nachfragen)",
     "settings_userFeedbackTitle": "Rückmeldung",
-    "settings_userFeedbackHint1": "CryptPad sendet grundlegende Rückmeldungen zum Server, um die Benutzererfahrung verbessern zu können. ",
     "settings_userFeedbackHint2": "Der Inhalt deiner Dokumente wird nie mit dem Server geteilt.",
     "settings_userFeedback": "Rückmeldungen aktivieren",
     "settings_deleteTitle": "Löschung des Accounts",

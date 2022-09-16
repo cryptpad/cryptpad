@@ -215,7 +215,6 @@
     "settings_autostoreHint": "<b>自動</b> アクセスした全てのドキュメントをCryptDriveに保存します。<br><b>手動（常に確認）</b> 保存していないドキュメントにアクセスした際、CryptDriveに保存するかどうかを確認します。<br><b>手動（確認しない）</b> アクセス先のドキュメントはCryptDriveに自動で保存されません。保存オプションは表示されません。",
     "settings_userFeedback": "ユーザーフィードバックを有効にする",
     "settings_userFeedbackHint2": "あなたのドキュメントのコンテンツがサーバーと共有されることはありません。",
-    "settings_userFeedbackHint1": "CryptPadは、ユーザーエクスペリエンスの向上のため、いくつかの非常に基本的なフィードバックを、サーバーに提供します。 ",
     "settings_userFeedbackTitle": "フィードバック",
     "settings_autostoreYes": "自動",
     "settings_importConfirm": "このブラウザで最近利用したドキュメントを、あなたのユーザーアカウントのCryptDriveにインポートしますか？",

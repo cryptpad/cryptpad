@@ -399,7 +399,6 @@
     "settings_autostoreNo": "Manuaalinen (älä kysy)",
     "settings_autostoreMaybe": "Manuaalinen (kysy aina)",
     "settings_userFeedbackTitle": "Palaute",
-    "settings_userFeedbackHint1": "CryptPad tarjoaa palvelimelle hyvin yksinkertaista palautetta kertoakseen meille, miten voimme kehittää käyttäjäkokemustasi. ",
     "settings_userFeedbackHint2": "Padisi sisältöä ei koskaan jaeta palvelimen kanssa.",
     "settings_userFeedback": "Salli käyttäjäpalaute",
     "settings_deleteTitle": "Käyttäjätilin poisto",

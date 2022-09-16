@@ -309,7 +309,6 @@
     "settings_deleteTitle": "Account verwijderen",
     "settings_userFeedback": "Gebruikersfeedback inschakelen",
     "settings_userFeedbackHint2": "De inhoud van uw werkomgeving zal nooit gedeeld worden met de server.",
-    "settings_userFeedbackHint1": "CryptPad verstuurt basisfeedback naar de server, om ons te vertellen hoe we uw ervaring kunnen verbeteren. ",
     "settings_userFeedbackTitle": "Feedback",
     "settings_autostoreMaybe": "Handmatig (altijd vragen)",
     "settings_autostoreNo": "Handmatig (nooit vragen)",

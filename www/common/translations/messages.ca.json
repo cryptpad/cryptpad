@@ -400,7 +400,6 @@
     "settings_autostoreNo": "Manual (sense preguntar)",
     "settings_autostoreMaybe": "Manual (preguntar sempre)",
     "settings_userFeedbackTitle": "Retroacció",
-    "settings_userFeedbackHint1": "CryptPad pot enviar retroaccions molt limitades al servidor, de forma que ens permeti millorar l'experiència dels usuaris. ",
     "settings_userFeedbackHint2": "El contingut dels vostres documents i les claus de desxifrat no es compartiran mai amb el servidor.",
     "settings_userFeedback": "Activar l'enviament de retroaccions",
     "settings_deleteTitle": "Supressió del compte",
