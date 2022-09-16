@@ -302,6 +302,7 @@
     "settings_deleteTitle": "Видалення облікового запису",
     "settings_userFeedback": "Ввімкнути зворотний зв'язок",
     "settings_userFeedbackHint2": "Вміст ваших документів ніколи не передаватиметься серверу.",
+    "settings_userFeedbackHint1": "CryptPad може надсилати серверу мінімальний зворотний відгук, щоб ми розуміли, як слід удосконалити інтерфейс. ",
     "settings_userFeedbackTitle": "Зворотний зв'язок",
     "settings_autostoreMaybe": "Вручну",
     "settings_autostoreNo": "Запитувати",

@@ -466,6 +466,7 @@
     "settings_deleteTitle": "Ezabatu kontua",
     "settings_userFeedback": "Gaitu erabiltzailearen feedbacka",
     "settings_userFeedbackHint2": "Zure dokumentuen edukia ez da inoiz zerbitzariarekin partekatuko.",
+    "settings_userFeedbackHint1": "CryptPad-ek oinarrizko feedbacka ematen dio zerbitzariari, zure esperientzia nola hobetu jakiteko. ",
     "upload_tooLargeBrief": "Fitxategiak {0}MB-ko muga gainditzen du",
     "todo_removeTaskTitle": "Kendu zeregin hau zure egitekoen zerrendatik",
     "todo_markAsIncompleteTitle": "Markatu zeregin hau osatugabe gisa",

@@ -187,6 +187,7 @@
     "settings_import": "滙入",
     "settings_importConfirm": "您确定要将最近的文档从此浏览器导入到您用户帐户的 CryptDrive 吗？",
     "settings_importDone": "滙入完成",
+    "settings_userFeedbackHint1": "CryptPad 會提供一些基本的反饋到伺服器，以讓我們知道如何改善用戶體驗。",
     "settings_userFeedbackHint2": "您的文档内容永远不会与服务器共享。",
     "settings_userFeedback": "啟用用戶反饋功能",
     "settings_anonymous": "你尚未登入，在此瀏覽器上進行特別設定。",

@@ -138,6 +138,7 @@
     "fm_newFile": "Nuevo documento",
     "fm_type": "Tipo",
     "fm_categoryError": "No se pudo abrir la categoría seleccionada, mostrando la raíz.",
+    "settings_userFeedbackHint1": "CryptPad suministra informaciones muy básicas al servidor, para ayudarnos a mejorar vuestra experiencia.",
     "settings_userFeedbackHint2": "El contenido de tus documentos nunca será compartido con el servidor.",
     "settings_userFeedback": "Activar feedback",
     "settings_anonymous": "No has iniciado sesión. Tus ajustes se aplicarán sólo a este navegador.",

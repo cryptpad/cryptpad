@@ -162,6 +162,7 @@
     "settings_import": "Importă",
     "settings_importConfirm": "Ești sigur că vrei să imporți pad-urile recente ale acestui browser în contul tău de CryptDrive?",
     "settings_importDone": "Import complet",
+    "settings_userFeedbackHint1": "CryptPad oferă niște feedback foarte simplu serverului, pentru a ne informa cum putem să îți îmbunătățim experiența voastră.",
     "settings_userFeedbackHint2": "Conținutul pad-ului tău nu va fi împărțit cu serverele.",
     "settings_userFeedback": "Activează feedback",
     "settings_anonymous": "Nu ești logat. Setările sunt specifice browser-ului.",

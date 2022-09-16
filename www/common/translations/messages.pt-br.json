@@ -186,6 +186,7 @@
     "settings_import": "Import",
     "settings_importConfirm": "Você tem certeza de que quer importar documentos recentes deste navegador para o CryptDrive de sua conta de usuário?",
     "settings_importDone": "Import completed",
+    "settings_userFeedbackHint1": "CryptPad fornece feedback básicos para o servidor, para sabermos como melhorar sua experiência. ",
     "settings_userFeedbackHint2": "O conteúdo de seus documentos nunca será compartilhado com o servidor.",
     "settings_userFeedback": "Enable user feedback",
     "settings_anonymous": "You are not logged in. Settings here are specific to this browser.",

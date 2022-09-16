@@ -401,7 +401,7 @@
     "settings_autostoreNo": "Manual (never ask)",
     "settings_autostoreMaybe": "Manual (always ask)",
     "settings_userFeedbackTitle": "Feedback",
-    "settINGS_userFeedbackHint1": "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ",
+    "settings_userFeedbackHint1": "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ",
     "settings_userFeedbackHint2": "The content of your documents will never be shared with the server.",
     "settings_userFeedback": "Enable user feedback",
     "settings_deleteTitle": "Account deletion",
