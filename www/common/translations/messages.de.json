@@ -1487,5 +1487,18 @@
     "og_contact": "{0}: Kontakt",
     "og_teamDrive": "Team-Drive",
     "og_default": "CryptPad: Ende-zu-Ende-verschlüsselte Suite zur Zusammenarbeit",
-    "ui_jsRequired": "JavaScript muss aktiviert sein, um die Verschlüsselung in deinem Browser zu ermöglichen"
+    "ui_jsRequired": "JavaScript muss aktiviert sein, um die Verschlüsselung in deinem Browser zu ermöglichen",
+    "admin_restoreArchivedPins": "Liste der Dokumente wiederherstellen",
+    "admin_archivePinLog": "Liste der Dokumente archivieren",
+    "admin_getPinList": "Liste der gespeicherten Dokumente",
+    "admin_pinLogArchived": "Liste der Dokumente wurde archiviert",
+    "admin_pinLogAvailable": "Liste der Dokumente ist verfügbar",
+    "admin_lastPinTime": "Letzte Speicheraktivität",
+    "admin_firstPinTime": "Erste Speicheraktivität",
+    "og_login": "Melde dich bei {0} an",
+    "admin_documentConflict": "Archivieren/Wiederherstellen",
+    "og_register": "Registriere einen Account auf {0}",
+    "admin_conflictExplanation": "Es gibt zwei Versionen dieses Dokuments. Wenn du die archivierte Version wiederherstellst, wird die aktuelle Version überschrieben. Wenn du die aktuelle Version archivierst, überschreibst du die archivierte Version. Beide Aktionen können nicht rückgängig gemacht werden.",
+    "admin_note": "Abo-Notiz",
+    "admin_planName": "Abo-Name"
 }
