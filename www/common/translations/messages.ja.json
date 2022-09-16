@@ -1005,7 +1005,7 @@
     "register_emailWarning0": "ユーザー名にメールアドレスが入力されています。",
     "fm_tags_used": "使用数",
     "fm_deletedPads": "これらのドキュメントはサーバーにありません。あなたのCryptDriveから削除されています: {0}",
-    "fm_renamedPad": "このドキュメントにユーザー定義の名前を設定しました。共有のファイル名は「<b>{0}</b>」です",
+    "fm_renamedPad": "このドキュメントにユーザー定義の名前を設定しました。<br>共有のファイル名は「<b>{0}</b>」です",
     "fm_ownedPadsName": "所有",
     "burnAfterReading_generateLink": "下のボタンをクリックするとリンクを生成します。",
     "fm_restricted": "アクセス権がありません",
