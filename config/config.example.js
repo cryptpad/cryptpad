@@ -110,6 +110,7 @@ module.exports = {
      *  To give access to the admin panel to a user account, just add their public signing
      *  key, which can be found on the settings page for registered users.
      *  Entries should be strings separated by a comma.
+     *  NOTE: Do not forget to remove the block comment below!
      */
 /*
     adminKeys: [
