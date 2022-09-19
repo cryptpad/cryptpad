@@ -1254,9 +1254,10 @@ Messages.calendar_rec_freq_weekly = "weeks";
 Messages.calendar_rec_freq_monthly = "months";
 Messages.calendar_rec_freq_yearly = "years";
 
-Messages.calendar_rec_until_no = "No end";
-Messages.calendar_rec_until_date = "Until";
-Messages.calendar_rec_until_count = "Ends after";
+Messages.calendar_rec_until = "Stop Repeating"
+Messages.calendar_rec_until_no = "Never";
+Messages.calendar_rec_until_date = "On";
+Messages.calendar_rec_until_count = "After";
 Messages.calendar_rec_until_count2 = "occurences";
 
 Messages.calendar_rec_monthly_pick = "Repeats on";
@@ -1653,7 +1654,10 @@ APP.recurrenceRule = {
                 interval,
                 $freq[0]
             ]);
-            var until = h('div.cp-calendar-rec-block.radio-group', untilEls);
+            var until = h('div.cp-calendar-rec-block.radio-group', [
+                h('div.cp-calendar-rec-block-title', Messages.calendar_rec_until),
+                untilEls
+            ]);
 
             var expand = h('div');
             var $expand = $(expand);
