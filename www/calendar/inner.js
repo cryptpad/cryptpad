@@ -1700,7 +1700,7 @@ APP.recurrenceRule = {
                         n = i * 7 + j;
                         if (n > 31) { break; }
                         l.push(h('button.btn.no-margin.cp-calendar-monthly-pick-el' +
-                                    (active.includes(n) ? '.btn-secondary' : '.btn-default'), {
+                                    (active.includes(n) ? '.btn-primary' : '.btn-default'), {
                                 'data-value': n
                              }, n));
                     }
@@ -1710,10 +1710,10 @@ APP.recurrenceRule = {
                 var pickr = h('div.cp-calendar-monthly-pick', lines);
                 $(pickr).find('button').click(function () {
                     var $b = $(this);
-                    if ($b.is('.btn-secondary')) {
-                        return $b.removeClass('btn-secondary').addClass('btn-default');
+                    if ($b.is('.btn-primary')) {
+                        return $b.removeClass('btn-primary').addClass('btn-default');
                     }
-                    $b.removeClass('btn-default').addClass('btn-secondary');
+                    $b.removeClass('btn-default').addClass('btn-primary');
                 });
                 var radioPickContent = [
                     h('span', Messages.calendar_rec_monthly_pick),
