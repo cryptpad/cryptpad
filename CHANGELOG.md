@@ -45,7 +45,7 @@ To update from `5.0.0` to `5.1.0`:
 * Administration:
   * The instance admin panel now features a "Database" tab which makes it possible to generate reports for accounts, documents, and "login blocks". This finally enables administrators to review document and account metadata, archive or restore data, and generally perform actions that used to require specialized knowledge about the platform's data storage formats.
   * Since the _Database_ tab identifies accounts by their public signing keys, we made it easier to access these keys by adding a button to support tickets which copies the author's key to your clipboard.
-* Thanks to a contributor, the platform is now available in European Portuguese in addition to the existing Brazilian Portuguese translation.
+* Thanks to contributors, the platform is now available in Spanish (100%) and  European Portuguese (91%).
 * We've updated our mermaid integration to [v9.1.7](https://github.com/mermaid-js/mermaid/releases/tag/v9.1.7).
 * Spellcheck is now enabled by default in our rich text editor and can be disabled via the settings page in case you have not already done so.
 * Our code editor now includes a highlighting module for _asciidoc_ syntax.
