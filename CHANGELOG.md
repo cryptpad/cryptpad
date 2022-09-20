@@ -53,6 +53,7 @@ To update from `5.0.0` to `5.1.0`:
 * Various links throughout the platform have been updated to reflect that we've migrated our documentation from docs.cryptpad.fr to [docs.cryptpad.org](https://docs.cryptpad.org). The old domain now redirects to the new one to preserve compatibility with old instances or any other pages that have linked to it.
 * We've updated our issue templates on GitHub to use their new _Issue Forms_ functionality, making it easier to correctly submit a well-formatted bug report or feature request.
 * The project's readme now includes a widget indicating the completeness of CryptPad's translations on our Weblate instance.
+* We've added a placeholder to pages' basic HTML to make it easier to tell that something is happening before the proper loading screen is displayed.
 
 ## Bug fixes
 
@@ -63,9 +64,12 @@ To update from `5.0.0` to `5.1.0`:
   * A change in the internal format of each instance's name, location, and description caused these fields not to be included in telemetry for instances that had opted into the [public instance directory](https://cryptpad.org/instances/). We've corrected this so such instances provide all the necessary information.
   * We've corrected some logic for displaying configured URLs for privacy policies, terms of service, and similar resources such that relative URLs are considered relative to the top-level domain (rather than the sandbox domain).
   * The "Launch time" value on the admin panel was using a hard-coded rather than the relevant translation, and was not correctly updating when the "Refresh" button was clicked. Both issues have been fixed.
+  * Members of editing sessions are correctly informed when administrators archive active channels.
+  * The _Custom limits_ section of the API is now displayed in a somewhat nicer table.
 * A flaw in some of the styles for the kanban app made it impossible to add text to an empty card via the usual inline text field UI. Adding placeholder content to this field made the default click events work as expected.
 * Dropdowns with text content containing quotes (such as those that could be created in the form app) caused an invalid CSS selector to be constructed, which resulted in rendering issues. Such quotes are now properly escaped.
 * We found that some message handlers in CryptPad were receiving and trying to parse messages from unexpected sources (browser extensions). These messages triggered parsing errors which cause CryptPad's error screen to be displayed. We now guard against such messages and ignore them when they are not in the expected format or when they otherwise trigger parsing errors.
+* We updated our translation linting script to compare markup and variable substitution patterns across different translations. We identified and fixed quite a few errors (invalid markup, incomplete translations), and expect to have an easier time ensuring consistency going forward.
 
 # 5.0.0
 
