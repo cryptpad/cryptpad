@@ -26,7 +26,6 @@
         }
     }
 
-
     .cp-admin-setlimit-form, .cp-admin-broadcast-form {
         label {
             font-weight: normal !important;
@@ -46,6 +45,10 @@
         }
     }
     .cp-admin-getlimits {
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         code {
             cursor: pointer;
         }
@@ -62,6 +65,9 @@
                 max-width: 500px;
             }
             @media screen and (max-width: 1200px) {
+                button.cp-report {
+                    display: none;
+                }
                 :is(td, th).note {
                     display: none;
                 }

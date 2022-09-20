@@ -1608,8 +1608,6 @@ define([
                     return obj[a].limit > obj[b].limit;
                 });
 
-                var compact = list.length > 10;
-
                 var content = list.map(function (key) {
                     var user = obj[key];
                     var limit = getPrettySize(user.limit);
@@ -1617,42 +1615,50 @@ define([
                                 Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
                                 Messages._getKey('admin_limitNote', [user.note]);
 
+                    var infoButton = h('button.btn.primary.cp-report', {
+                        style: 'margin-left: 10px; cursor: pointer;',
+                    }, Messages.admin_diskUsageButton);
+
+                    $(infoButton).click(() => {
+                         console.log(key);
+                         getAccountData(key, (err, data) => {
+                             if (err) { return void console.error(err); }
+                             console.log(data);
+                             var table = renderAccountData(data);
+                             UI.alert(table, () => {
+
+                             }, {
+                                wide: true,
+                             });
+                         });
+                    });
+
                     var keyEl = h('code.cp-limit-key', key);
                     $(keyEl).click(function () {
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                     });
-                    if (compact) {
-                        return h('tr.cp-admin-limit', {
-                            title: title
-                        }, [
-                            h('td', keyEl),
-                            h('td.limit', limit),
-                            h('td.plan', user.plan),
-                            h('td.note', user.note)
-                        ]);
-                    }
-                    return h('li.cp-admin-limit', [
-                        keyEl,
-                        h('ul.cp-limit-data', [
-                            h('li.limit', Messages._getKey('admin_limit', [limit])),
-                            h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
-                            h('li.note', Messages._getKey('admin_limitNote', [user.note]))
-                        ])
+
+                    var attr = { title: title };
+                    return h('tr.cp-admin-limit', [
+                        h('td', [
+                            keyEl,
+                            infoButton,
+                        ]),
+                        h('td.limit', attr, limit),
+                        h('td.plan', attr, user.plan),
+                        h('td.note', attr, user.note)
                     ]);
                 });
-                if (compact) {
-                    return $div.append(h('table.cp-admin-all-limits', [
-                        h('tr', [
-                            h('th', Messages.settings_publicSigningKey),
-                            h('th.limit', Messages.admin_planlimit),
-                            h('th.plan', Messages.admin_planName),
-                            h('th.note', Messages.admin_note)
-                        ]),
-                    ].concat(content)));
-                }
-                $div.append(h('ul.cp-admin-all-limits', content));
+                return $div.append(h('table.cp-admin-all-limits', [
+                    h('tr', [
+                        h('th', Messages.settings_publicSigningKey),
+                        h('th.limit', Messages.admin_planlimit),
+                        h('th.plan', Messages.admin_planName),
+                        h('th.note', Messages.admin_note)
+                    ]),
+                ].concat(content)));
             });
         };
         APP.refreshLimits();
