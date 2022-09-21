@@ -58,7 +58,9 @@ define([
         var parsed = Hash.parsePadUrl(href);
         var hash = parsed.hash;
         var name = fData.filename || fData.title;
+        console.log("downloadFile hash: " + hash);
         var secret = Hash.getSecrets('file', hash, fData.password);
+        console.log("secret", secret)
         var src = (ctx.fileHost || '') + Hash.getBlobPathFromHex(secret.channel);
         var key = secret.keys && secret.keys.cryptKey;
 

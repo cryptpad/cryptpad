@@ -419,7 +419,8 @@ define([
                                 cb(true);
                             }
                         };
-                        if (parsed.type === "file") {
+                        console.log("parsed type: " + parsed.type)
+                        if (parsed.type === "file" || parsed.type === "sign") {
                             // `hasChannelHistory` doesn't work for files (not a channel)
                             // `getFileSize` is not adapted to channels because of metadata
                             Cryptpad.getFileSize(currentPad.href, password, function (e, size) {
@@ -457,6 +458,7 @@ define([
                     }
                     // Otherwise, get pad data from channel id
                     var edit = parsed.hashData.mode === 'edit';
+                    console.log("here " + parsed.hashData.type);
                     Cryptpad.getPadDataFromChannel({
                         channel: parsed.hashData.channel,
                         edit: edit,
@@ -509,12 +511,14 @@ define([
                         passwordCfg.value = newPadPassword;
                     }
 
+                    console.log("check password");
                     // Pad not stored && password required: always ask for the password
                     if (!stored && parsed.hashData.password && !newPadPasswordForce) {
+                        console.log("ask password");
                         return void askPassword(true, passwordCfg);
                     }
 
-                    if (parsed.type === "file") {
+                    if (parsed.type === "file" || parsed.type === "sign") {
                         // `hasChannelHistory` doesn't work for files (not a channel)
                         // `getFileSize` is not adapted to channels because of metadata
                         Cryptpad.getFileSize(currentPad.href, password, w(function (e, size) {
@@ -591,7 +595,7 @@ define([
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
-            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
+            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file', 'sign'].indexOf(currentPad.app) !== -1;
             var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
             var ooDownloadData = {};
 
@@ -2052,7 +2056,9 @@ define([
                     if (Cryptpad.fromFileData && isOO && Cryptpad.fromFileData.href) {
                         var d = Cryptpad.fromFileData;
                         var _p = Utils.Hash.parsePadUrl(d.href);
+                        console.log("type: "+ _p.type + " currentPad.app " + currentPad.app);
                         if (_p.type === currentPad.app) {
+                            console.log("in matching")
                             data.template = d.href;
                             templatePw = d.password;
                         }

@@ -238,6 +238,9 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         return k;
     };
     var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
+        if (type=="sign")
+           type == "file";
+
         if (!hash) { return; }
         var options = [];
         var parsed = {};
@@ -362,9 +365,12 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             return parsed;
         }
         parsed.getHash = function () { return hashArr.join('/'); };
+        if (type == "sign")
+            type = "file";
+
         if (['media', 'file', 'sign'].indexOf(type) !== -1) {
             parsed.type = 'file';
-
+            console.log("in getHash1 ", type)
             parsed.getOptions = function () {
                 return {
                     embed: parsed.embed,
@@ -377,6 +383,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             };
 
             parsed.getHash = function (opts) {
+                console.log("in getHash2", opts)
                 var hash = hashArr.slice(0, 4).join('/') + '/';
                 var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
                 if (owner) { hash += owner + '/'; }
@@ -385,6 +392,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 if (opts.present) { hash += 'present/'; }
                 if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
                 if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
+                console.log("return hash", hash)
                 return hash;
             };
 
@@ -490,7 +498,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             // If it doesn't start with http(s), it should be a relative href
             if (!/^\/($|[^\/])/.test(href)) { return ret; }
             idx = href.indexOf('/#');
-            ret.type = href.slice(1, idx);
+            ret.type = href.slice(1, idx).replace("sign", "file");
             if (idx === -1) { return ret; }
             ret.hash = href.slice(idx + 2);
             ret.hashData = parseTypeHash(ret.type, ret.hash);
@@ -505,6 +513,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         idx = href.indexOf('/#');
         if (idx === -1) { return ret; }
         ret.hash = href.slice(idx + 2);
+        console.log("in href indexof");
         ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
     };
@@ -531,35 +540,46 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
      */
     Hash.getSecrets = function (type, secretHash, password) {
         var secret = {};
+        console.log("in getSecrets type " + type + " secretHash " + secretHash);
         var generate = function () {
             secret.keys = Crypto.createEditCryptor2(void 0, void 0, password);
             secret.channel = base64ToHex(secret.keys.chanId);
             secret.version = 2;
             secret.type = type;
         };
+        console.log("in getSecrets1");
         if (!secretHash) {
             generate();
             return secret;
         } else {
+            console.log("in getSecrets2");
             var parsed;
             var hash;
+            console.log("in getSecrets3");
             if (secretHash) {
-                if (!type) { throw new Error("getSecrets with a hash requires a type parameter"); }
+                if (!type) { console.log("type error"); throw new Error("getSecrets with a hash requires a type parameter"); }
                 parsed = parseTypeHash(type, secretHash);
+                console.log("got parsed: ", parsed);
                 hash = secretHash;
+                console.log("got hash: " + hash);
             }
+            console.log("in getSecrets3a ", hash);
             if (hash.length === 0) {
                 generate();
+                console.log("in getSecrets3b");
                 return secret;
             }
+            console.log("in getSecrets3c version " + parsed.version);
             // old hash system : #{hexChanKey}{cryptKey}
             // new hash system : #/{hashVersion}/{b64ChanKey}/{cryptKey}
             if (parsed.version === 0) {
+                console.log("in getSecrets3d");
                 // Old hash
                 secret.channel = parsed.channel;
                 secret.key = parsed.key;
                 secret.version = 0;
             } else if (parsed.version === 1) {
+                console.log("in getSecrets4 parsed.type " + parsed.type);
                 // New hash
                 secret.version = 1;
                 if (parsed.type === "pad") {
@@ -578,6 +598,8 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                         }
                     }
                 } else if (parsed.type === "file") {
+                    console.log("in getSecrets5");
+                    console.log("Found type: file");
                     secret.channel = base64ToHex(parsed.channel);
                     secret.keys = {
                         fileKeyStr: parsed.key,
@@ -608,6 +630,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                         }
                     }
                 } else if (parsed.type === "file") {
+                    console.log("Parsing channel for file");
                     secret.keys = Crypto.createFileCryptor2(parsed.key, password);
                     secret.channel = base64ToHex(secret.keys.chanId);
                     secret.key = secret.keys.fileKeyStr;

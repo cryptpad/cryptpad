@@ -1071,9 +1071,15 @@ define([
                 console.log("public " , metaData);
 
                 // TODO: Load pdf
-                data = { channel: secret.channel, href: "/file/#/" + priv.filehash}
+ 		var href;	
+		if (priv.filehash.startsWith("#"))
+			href = "/file/" + priv.filehash;
+		else
+			href = "/file/#/" + priv.filehash;
+                data = { channel: secret.channel, href: href}
 
                 //var _downloadFile = function (ctx, fData, cb, updateProgress) {
+                console.log("DATA ", data);
                 MakeBackup.downloadFile(ctx, data, function(err, obj) {
                   // Store the PDF data, as we will need it to insert the images
                   pdfData = obj.content;

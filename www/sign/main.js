@@ -13,9 +13,11 @@ define([
     }).nThen(function (waitFor) {
         var obj = SFCommonO.initIframe(waitFor, true);
         href = obj.href;
-        hash = obj.hash;
+        hash = obj.hash.replace("/sign/", "/file/   ");
+        console.log("hash: " + hash);
     }).nThen(function (/*waitFor*/) {
         var addData = function (meta, Cryptpad, user, Utils) {
+            console.log("filehash: " + Utils.currentPad.hash);
             meta.filehash = Utils.currentPad.hash;
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
@@ -31,6 +33,7 @@ define([
                     Cryptpad.getSignCollections(cb);
             });
         };
+        console.log("sfcommon hash: " + hash);
         SFCommonO.start({
             cache: true,
             hash: hash,

@@ -381,6 +381,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
                 }, Messages.fc_open)),
+                h('li', h('a.cp-app-drive-context-sign.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faFolderOpen,
+                }, "Sign")),
                 h('li', h('a.cp-app-drive-context-openro.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
@@ -1135,7 +1139,7 @@ define([
         // `app`: true (force open wiht the app), false (force open in preview),
         //        falsy (open in preview if default is not using the app)
         var defaultInApp = ['application/pdf'];
-        var openFile = function (el, isRo, app) {
+        var openFile = function (el, isRo, app, sign) {
             var data = manager.getFileData(el);
 
             if (data.static) {
@@ -1162,8 +1166,11 @@ define([
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe === true || APP.newSharedFolder) {
-                return void common.openURL(Hash.getNewPadURL(href, obj));
+            if (useUnsafe === true || APP.newSharedFolder) {	
+                url = Hash.getNewPadURL(href, obj);
+            	if (sign)
+			url = url.replace("/file/", "/sign/"); 
+                return void common.openURL(url);
             }
 
             // Get hidden hash
@@ -1172,7 +1179,11 @@ define([
             if (isRo) { opts.view = true; }
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
-            common.openURL(Hash.getNewPadURL(hiddenHref, obj));
+	    console.log("Hiddenref", hiddenHref);
+	    var url = Hash.getNewPadURL(hiddenHref, obj);
+            if (sign)
+		url = url.replace("/file/", "/sign/"); 
+ 	    common.openURL(url);
         };
         var openIn = function (type, path, team, fData) {
             var obj = {
@@ -1424,7 +1435,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'preview', 'openincode', 'expandall', 'collapseall',
+                    show = ['open', 'sign', 'openro', 'preview', 'openincode', 'expandall', 'collapseall',
                             'color', 'download', 'share', 'savelocal', 'rename', 'delete',
                             'makeacopy', 'openinsheet', 'openindoc', 'openinpresentation',
                             'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
@@ -4542,6 +4553,16 @@ define([
                         return;
                     }
                     openFile(el, false, true);
+                });
+            }
+            else if ($this.hasClass('cp-app-drive-context-sign')) {
+                paths.forEach(function (p) {
+                    var el = manager.find(p.path);
+                    if (files.restrictedFolders[el]) {
+                        UI.warn(Messages.fm_restricted);
+                        return;
+                    }
+                    openFile(el, false, true, true);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-openro')) {
