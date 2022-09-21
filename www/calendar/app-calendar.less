@@ -286,6 +286,9 @@
                 flex-flow: column;
                 .cp-notif-entry {
                     margin-bottom: 2px;
+                    border-radius: @variables_radius;
+                    background-color: fade(@cryptpad_text_col, 10%);
+                    padding: 0.25rem;
                     .cp-notif-value {
                         width: 170px;
                         display: inline-flex;
@@ -295,8 +298,19 @@
                         }
                     }
                     span:not(:last-child) {
-                        margin-right: 5px;
+                        margin: 0px 5px;
                     }
+                    .btn-danger-outline {
+                        margin-right: 0px !important;
+                        background-color: transparent;
+                        color: @cryptpad_text_col;
+                        border-color: @cryptpad_text_col;
+                        &:hover {
+                            color: @cp_buttons-red-color;
+                            background-color: @cp_buttons-red;
+                            border-color: @cp_buttons-red;
+                        }
+                      }
                 }
             }
             .cp-notif-empty {
@@ -346,8 +360,17 @@
                 width: 80px !important;
                 margin-bottom: 0 !important;
             }
+            .cp-checkmark {
+                margin-right: 0.5rem;
+            }
         }
         .cp-calendar-rec-block {
+            .cp-calendar-rec-block-title {
+                margin-bottom: 0.5rem !important;
+            }
+            .cp-radio {
+                margin-bottom: 0.5rem;
+            }
             input[type="radio"]:not(:checked) ~ .cp-checkmark-label {
                 input {
                     filter: grayscale(1);

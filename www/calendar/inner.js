@@ -1254,9 +1254,10 @@ Messages.calendar_rec_freq_weekly = "weeks";
 Messages.calendar_rec_freq_monthly = "months";
 Messages.calendar_rec_freq_yearly = "years";
 
-Messages.calendar_rec_until_no = "No end";
-Messages.calendar_rec_until_date = "Until";
-Messages.calendar_rec_until_count = "Ends after";
+Messages.calendar_rec_until = "Stop Repeating"
+Messages.calendar_rec_until_no = "Never";
+Messages.calendar_rec_until_date = "On";
+Messages.calendar_rec_until_count = "After";
 Messages.calendar_rec_until_count2 = "occurences";
 
 Messages.calendar_rec_monthly_pick = "Repeats on";
@@ -1653,7 +1654,10 @@ APP.recurrenceRule = {
                 interval,
                 $freq[0]
             ]);
-            var until = h('div.cp-calendar-rec-block.radio-group', untilEls);
+            var until = h('div.cp-calendar-rec-block.radio-group', [
+                h('div.cp-calendar-rec-block-title', Messages.calendar_rec_until),
+                untilEls
+            ]);
 
             var expand = h('div');
             var $expand = $(expand);
@@ -1696,7 +1700,7 @@ APP.recurrenceRule = {
                         n = i * 7 + j;
                         if (n > 31) { break; }
                         l.push(h('button.btn.no-margin.cp-calendar-monthly-pick-el' +
-                                    (active.includes(n) ? '.btn-secondary' : '.btn-default'), {
+                                    (active.includes(n) ? '.btn-primary' : '.btn-default'), {
                                 'data-value': n
                              }, n));
                     }
@@ -1706,10 +1710,10 @@ APP.recurrenceRule = {
                 var pickr = h('div.cp-calendar-monthly-pick', lines);
                 $(pickr).find('button').click(function () {
                     var $b = $(this);
-                    if ($b.is('.btn-secondary')) {
-                        return $b.removeClass('btn-secondary').addClass('btn-default');
+                    if ($b.is('.btn-primary')) {
+                        return $b.removeClass('btn-primary').addClass('btn-default');
                     }
-                    $b.removeClass('btn-default').addClass('btn-secondary');
+                    $b.removeClass('btn-default').addClass('btn-primary');
                 });
                 var radioPickContent = [
                     h('span', Messages.calendar_rec_monthly_pick),
@@ -1928,9 +1932,13 @@ APP.recurrenceRule = {
             $list[0],
             h('span.cp-notif-empty', Messages.calendar_noNotification)
         ]);
+
+        Messages.calendar_addNotification = "Remove reminder"; // XXX
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
-            var del = h('button.btn.btn-danger-outline.small.fa.fa-times');
+            var del = h('button.btn.btn-danger-outline.small.fa.fa-times',
+                {'title': Messages.calendar_addNotification}
+            );
             var minutes = value * unitValue;
             if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
             var span = h('span.cp-notif-entry', {
