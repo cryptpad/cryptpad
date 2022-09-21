@@ -961,9 +961,9 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             var schedule = {
                 id: Util.uid(),
                 calendarId: event.calendarId,
-                title: Util.fixHTML(event.title),
+                title: event.title,
                 category: "time",
-                location: Util.fixHTML(event.location),
+                location: event.location,
                 start: +startDate,
                 isAllDay: event.isAllDay,
                 end: +endDate,
