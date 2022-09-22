@@ -105,7 +105,7 @@ define([
             'cp-admin-update-available',
             'cp-admin-checkup',
             'cp-admin-block-daily-check',
-            //'cp-admin-provide-aggregate-statistics',
+            'cp-admin-provide-aggregate-statistics',
             'cp-admin-list-my-instance',
 
             'cp-admin-consent-to-contact',
