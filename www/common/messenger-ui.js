@@ -710,6 +710,7 @@ define([
             var curvePublic = info.curvePublic;
             contactsData[curvePublic] = info;
 
+            if (!Array.isArray(types)) { return; }
             if (types.indexOf('displayName') !== -1) {
                 var name = info.displayName;
 
