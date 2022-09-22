@@ -1469,6 +1469,26 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        // public instances are expected to be open for registration
+        // if this is not a public instance, pass this test immediately
+        if (!ApiConfig.listMyInstance) { return cb(true); }
+        // if it's public but registration is not registricted, that's also a pass
+        if (!ApiConfig.restrictRegistration) { return void cb(true); }
+
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            "The administrators of this instance have opted in to inclusion in ",
+            link('https://cryptpad.org/instances/', 'the public instance directory'),
+            ' but have disabled registration, which is expected to be open.',
+            h('br'),
+            h('br'),
+            " Registration can be reopened using the instance's admin panel.",
+        ]));
+
+        cb(false);
+    });
+
     var serverToken;
     Tools.common_xhr('/', function (xhr) {
         serverToken = xhr.getResponseHeader('server');
