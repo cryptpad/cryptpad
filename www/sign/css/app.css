@@ -5,12 +5,32 @@
     src: url(/sign/vendor/fonts/Caveat-Regular.ttf) format('truetype');
 }
 
-#container-pages {
+body {
+    display: flex;
+    flex-flow: column;
+}
+
+#signpdf {
+    display: flex;
+    flex: 1;
     overflow: auto;
+}
+
+#container-pages {
+    flex: 1;
+    overflow: auto;
+    padding-bottom: 30px !important;
+    height: 100% !important;
 }
 
 #sidebarTools {
     width: 350px;
+    display: flex;
+    flex-flow: column;
+}
+
+#sidebarTools-emptyspace {
+    flex: 1;
 }
 
 #sidebarTools .list-item-add label:hover {
@@ -39,6 +59,5 @@
 }
 
 #sidebarTools  {
-  position: fixed;
-  margin-top: 110px;
+  position: relative;
 }

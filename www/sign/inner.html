@@ -24,6 +24,7 @@
         <div id="cp-app-file-feedback" class="cp-app-file-block cp-app-file-hidden">
         </div>
     </div>
+    <div id="signpdf">
     <div style="height: 65px;" class="d-md-none"></div>
         <div id="container-pages" class="col-12 pt-1 pb-1 text-center vh-100">
         </div>
@@ -66,8 +67,9 @@
               <div class="d-grid gap-2 mt-2">
                   <button type="button" id="btn-add-svg" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#modalAddSvg"><i class="bi bi-plus-circle"></i> Ajouter un élément</button>
               </div>
-
-              <form class="position-absolute bottom-0 pb-2 ps-0 pe-4 w-100 d-none d-sm-none d-md-block" id="form_pdf" action="/sign" method="post" enctype="multipart/form-data">
+              </div>
+	      <div class="sidebarTools-emptyspace" />
+              <form id="form_pdf" action="/sign" method="post" enctype="multipart/form-data">
                     <input id="input_pdf" name="pdf" type="file" class="d-none" />
                     <input id="input_svg" name="svg[]" type="file" class="d-none" />
                     <div class="d-grid gap-2 mt-2">
@@ -136,5 +138,6 @@
       </div>
     </div>
     <span id="is_mobile" class="d-md-none"></span>
+    </div>
   </body>
 </html>
