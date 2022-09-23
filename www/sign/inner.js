@@ -5,6 +5,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-interface.js',
     '/customize/messages.js',
 
@@ -27,6 +28,7 @@ define([
     nThen,
     SFCommon,
     Hash,
+    Util,
     UI,
     Messages,
     MediaTag,
@@ -167,7 +169,7 @@ define([
                           return;
                       }
                       item.scale = event.target.width * event.target.scaleX / event.target.canvas.width;
-                      storeCollections();
+                      //storeCollections();
                   });
                   canvasEdition.on("text:changed", function(event) {
                        if (!event.target instanceof fabric.IText) {
@@ -213,6 +215,10 @@ define([
 
     var storeCollections = function () {
         var sframeChan = APP.common.getSframeChannel();
+        svgCollections = svgCollections.map(function (svg) {
+            delete svg.svg;
+            return svg;
+        });
         sframeChan.query("Q_SIGNCOLLECTIONS_SET", JSON.stringify(svgCollections), function (err, err2) {
             if (err || err2) { return void UI.log(err || err2); }
             console.log(APP.common.getMetadataMgr().getUserData());
@@ -397,6 +403,27 @@ define([
         checkbox.checked = false;
     };
 
+    var getBase64FromItem = function (svgObj, waitFor) {
+        var common = APP.common;
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var ctx = {
+             fileHost: privateData.fileHost,
+             get: common.getPad,
+             sframeChan: common.getSframeChannel(),
+             cache: common.getCache()
+        };
+        var parsed = Hash.parsePadUrl(svgObj.url, svgObj.password);
+        var data = { channel: parsed.channel, href: svgObj.url, password: svgObj.password };
+        MakeBackup.downloadFile(ctx, data, waitFor(function(err, obj) {
+            var reader = new FileReader();
+            reader.readAsDataURL(obj.content);
+            reader.onload = waitFor(function(e) {
+                var svgDataURL = e.target.result;
+                svgObj.svg = svgDataURL.replace('data:application/octet-stream;', 'data:image/svg+xml;');
+            });
+        }));
+    };
+
     var displaysSVG = function() {
         document.getElementById('svg_list').innerHTML = "";
         document.getElementById('svg_list_signature').innerHTML = "";
@@ -407,6 +434,7 @@ define([
         });
         svgCollections.forEach((svg, i) => {
             var svgHtmlChild = getHtmlSvg(svg, i);
+            console.warn(svg);
             if(svg.type) {
                 document.getElementById('svg_list_'+svg.type).appendChild(svgHtmlChild);
                 return;
@@ -426,8 +454,18 @@ define([
         document.querySelectorAll('.btn-svg-list-suppression').forEach(function(item) {
             item.addEventListener('click', function() {
                 svgCollections.splice(this.dataset.index, 1);
-                displaysSVG();
-                storeCollections();
+
+                var n = nThen;
+                svgCollections.forEach(function (svgObj) {
+                    if (svgObj.svg) { return; }
+                    n = n(function (waitFor) {
+                        getBase64FromItem(svgObj, waitFor);
+                    }).nThen;
+                });
+                n(function () {
+                    displaysSVG();
+                    storeCollections();
+                });
             });
         });
     };
@@ -725,16 +763,27 @@ define([
             if(document.getElementById('nav-import-tab').classList.contains('active')) {
                 svgItem.svg = document.getElementById('img-upload').src;
             }
-            svgCollections.push(svgItem);
-            displaysSVG();
-            storeCollections()
-            
-            var svg_list_id = "svg_list";
-            if(svgItem.type) {
-                svg_list_id = svg_list_id + "_" + svgItem.type;
-            }
 
-            document.querySelector('#'+svg_list_id+' label:last-child').click();
+            var svgDataURL = svgItem.svg;
+            var a = atob(svgItem.svg.replace("data:image/svg+xml;base64,", ""));
+            var blob = new Blob([a], {type: 'image/svg+xml'});
+            APP.FM2.handleFile(blob, {
+                callback: function (obj) {
+                    var type = svgItem.type;
+                    svgItem = obj;
+                    svgItem.type = type;
+                    svgCollections.push(svgItem);
+                    svgItem.svg = svgDataURL;
+                    displaysSVG();
+                    storeCollections();
+                    var svg_list_id = "svg_list";
+                    if(svgItem.type) {
+                        svg_list_id = svg_list_id + "_" + svgItem.type;
+                    }
+
+                    document.querySelector('#'+svg_list_id+' label:last-child').click();
+                }
+            });
         });
 
 
@@ -997,15 +1046,25 @@ define([
       getCollections(function(collections) {
         if (collections)
           svgCollections = collections;
-        opentype.load('/sign/vendor/fonts/Caveat-Regular.ttf', function(err, font) {
-            fontCaveat = font;
-        });
 
-        createSignaturePad();
-        responsiveDisplay();
-        displaysSVG();
-        stateAddLock();
-        createEventsListener();
+
+        var n = nThen;
+        svgCollections.forEach(function (svgObj) {
+            n = n(function (waitFor) {
+                getBase64FromItem(svgObj, waitFor);
+            }).nThen;
+        });
+        n(function () {
+            opentype.load('/sign/vendor/fonts/Caveat-Regular.ttf', function(err, font) {
+                fontCaveat = font;
+            });
+
+            createSignaturePad();
+            responsiveDisplay();
+            displaysSVG();
+            stateAddLock();
+            createEventsListener();
+        });
       });
     };
 
@@ -1065,6 +1124,22 @@ define([
            body: $('body')
         };
         APP.FM = common.createFileManager(fmConfig)
+        var fmConfig2 = {
+           teamId: APP.team,
+           noStore: true,
+           noHandlers: true,
+           onUploaded: function (ev, data) {
+                if (!data || !data.url) { return; }
+                if (!ev.callback) { return; }
+                console.error(data, ev);
+                ev.callback({
+                    url: data.url,
+                    password: data.password
+                });
+           },
+           body: $('body')
+        };
+        APP.FM2 = common.createFileManager(fmConfig2)
 
         if (!uploadMode) {
             (function () {
