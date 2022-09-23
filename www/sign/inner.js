@@ -523,6 +523,7 @@ define([
 
     var createAndAddSvgInCanvas = function(canvas, item, x, y, height = null) {
         save.removeAttribute('disabled');
+        document.getElementById('store').removeAttribute('disabled');
         save_mobile.removeAttribute('disabled');
 
         if(!height) {
@@ -835,6 +836,22 @@ define([
             });
         });
 
+        document.getElementById('store').addEventListener('click', function(event) {
+            event.preventDefault();
+            var items = []
+            canvasEditions.forEach(function(canvasEdition, index) {
+                items.push({ 
+                  data: canvasEdition.toDataURL(), index: index,
+                  name: index + '.png',  type: 'image/png'
+                });
+            })
+            prepareDoc(pdfData, items).then(pdfBytes => {
+              var blob = new Blob([pdfBytes.buffer], { type: "application/pdf" })
+              blob.name = pdfTitle.replace(".pdf", "-signed.pdf");
+              APP.FM.handleFile(blob);
+            });
+        });
+
         document.getElementById('save_mobile').addEventListener('click', function(event) {
             document.getElementById('save').click();
         });
@@ -1040,13 +1057,13 @@ define([
         var toolbar = APP.toolbar = Toolbar.create(configTb);
 
         var fmConfig = {
-                   teamId: APP.team,
-                   noHandlers: true,
-                   onUploaded: function () {
-                       refresh();
-                   },
-                   body: $('body')
-               };
+           teamId: APP.team,
+           noHandlers: true,
+           onUploaded: function () {
+               refresh();
+           },
+           body: $('body')
+        };
         APP.FM = common.createFileManager(fmConfig)
 
         if (!uploadMode) {
