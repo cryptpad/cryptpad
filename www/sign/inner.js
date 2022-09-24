@@ -278,7 +278,8 @@ define([
             if(input.value.match(/^data:/)) {
                 document.getElementById('svg_selected').src = input.value;
             } else {
-                document.getElementById('svg_selected').src = input.dataset.svg;
+                if (input.dataset && input.dataset.svg)
+                  document.getElementById('svg_selected').src = input.dataset.svg;
             }
         } else {
             document.getElementById('btn_svn_select').classList.remove('d-none');
@@ -413,10 +414,13 @@ define([
              cache: common.getCache()
         };
         var parsed = Hash.parsePadUrl(svgObj.url, svgObj.password);
+	if (!parsed.channel || parsed.channel.length<=32)
+		return;
         var data = { channel: parsed.channel, href: svgObj.url, password: svgObj.password };
         MakeBackup.downloadFile(ctx, data, waitFor(function(err, obj) {
             var reader = new FileReader();
-            reader.readAsDataURL(obj.content);
+	    if (obj)
+              reader.readAsDataURL(obj.content);
             reader.onload = waitFor(function(e) {
                 var svgDataURL = e.target.result;
                 svgObj.svg = svgDataURL.replace('data:application/octet-stream;', 'data:image/svg+xml;');
