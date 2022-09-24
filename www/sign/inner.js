@@ -414,13 +414,13 @@ define([
              cache: common.getCache()
         };
         var parsed = Hash.parsePadUrl(svgObj.url, svgObj.password);
-	if (!parsed.channel || parsed.channel.length<=32)
-		return;
-        var data = { channel: parsed.channel, href: svgObj.url, password: svgObj.password };
+        var secret = Hash.getSecrets(parsed.type, parsed.hash, svgObj.password);
+        if (!secret.channel || secret.channel.length<=32) { return; }
+        var data = { channel: secret.channel, href: svgObj.url, password: svgObj.password };
         MakeBackup.downloadFile(ctx, data, waitFor(function(err, obj) {
             var reader = new FileReader();
-	    if (obj)
-              reader.readAsDataURL(obj.content);
+            if (!obj) { return; }
+            reader.readAsDataURL(obj.content);
             reader.onload = waitFor(function(e) {
                 var svgDataURL = e.target.result;
                 svgObj.svg = svgDataURL.replace('data:application/octet-stream;', 'data:'+(svgObj.mime || 'image/svg+xml')+';');
@@ -436,39 +436,47 @@ define([
         document.querySelectorAll('.btn-add-svg-type').forEach(function(item) {
             item.classList.remove('d-none');
         });
+        var n = nThen;
         svgCollections.forEach((svg, i) => {
-            var svgHtmlChild = getHtmlSvg(svg, i);
-            console.warn(svg);
-            if(svg.type) {
-                document.getElementById('svg_list_'+svg.type).appendChild(svgHtmlChild);
-                return;
-            }
-            document.getElementById('svg_list').appendChild(svgHtmlChild);
+            if (svg.svg) { return; }
+            n = n(function (waitFor) {
+                getBase64FromItem(svg, waitFor);
+            }).nThen;
         });
+        n(function () {
+            svgCollections.forEach((svg, i) => {
+                var svgHtmlChild = getHtmlSvg(svg, i);
+                if(svg.type) {
+                    document.getElementById('svg_list_'+svg.type).appendChild(svgHtmlChild);
+                    return;
+                }
+                document.getElementById('svg_list').appendChild(svgHtmlChild);
+            });
 
-        if(svgCollections.length > 0) {
-            document.getElementById('btn-add-svg').classList.add('btn-light');
-            document.getElementById('btn-add-svg').classList.remove('btn-primary');
-        }
+            if(svgCollections.length > 0) {
+                document.getElementById('btn-add-svg').classList.add('btn-light');
+                document.getElementById('btn-add-svg').classList.remove('btn-primary');
+            }
 
-        if(document.getElementById('btn-add-svg').classList.contains('btn-primary')) {
-            document.getElementById('btn-add-svg').focus();
-        }
+            if(document.getElementById('btn-add-svg').classList.contains('btn-primary')) {
+                document.getElementById('btn-add-svg').focus();
+            }
 
-        document.querySelectorAll('.btn-svg-list-suppression').forEach(function(item) {
-            item.addEventListener('click', function() {
-                svgCollections.splice(this.dataset.index, 1);
+            document.querySelectorAll('.btn-svg-list-suppression').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    svgCollections.splice(this.dataset.index, 1);
 
-                var n = nThen;
-                svgCollections.forEach(function (svgObj) {
-                    if (svgObj.svg) { return; }
-                    n = n(function (waitFor) {
-                        getBase64FromItem(svgObj, waitFor);
-                    }).nThen;
-                });
-                n(function () {
-                    displaysSVG();
-                    storeCollections();
+                    var n = nThen;
+                    svgCollections.forEach(function (svgObj) {
+                        if (svgObj.svg) { return; }
+                        n = n(function (waitFor) {
+                            getBase64FromItem(svgObj, waitFor);
+                        }).nThen;
+                    });
+                    n(function () {
+                        displaysSVG();
+                        storeCollections();
+                    });
                 });
             });
         });
@@ -769,16 +777,8 @@ define([
             }
 
             var svgDataURL = svgItem.svg;
-            var a;
-            var mime;
-            if (svgItem.svg.startsWith('data:image/svg+xml;base64,')) {
-                mime = "image/svg+xml";
-                a = atob(svgItem.svg.replace("data:image/svg+xml;base64,", ""));
-            } else {
-                mime = "image/png";
-                a = atob(svgItem.svg.replace("data:image/png;base64,", ""));
-            }
-            var blob = new Blob([a], {type: mime});
+            var blob = dataURLtoBlob(svgItem.svg);
+            var mime = blob.type;
             APP.FM2.handleFile(blob, {
                 callback: function (obj) {
                     var type = svgItem.type;
