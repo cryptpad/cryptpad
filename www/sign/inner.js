@@ -419,7 +419,7 @@ define([
             reader.readAsDataURL(obj.content);
             reader.onload = waitFor(function(e) {
                 var svgDataURL = e.target.result;
-                svgObj.svg = svgDataURL.replace('data:application/octet-stream;', 'data:image/svg+xml;');
+                svgObj.svg = svgDataURL.replace('data:application/octet-stream;', 'data:'+(svgObj.mime || 'image/svg+xml')+';');
             });
         }));
     };
@@ -765,13 +765,22 @@ define([
             }
 
             var svgDataURL = svgItem.svg;
-            var a = atob(svgItem.svg.replace("data:image/svg+xml;base64,", ""));
-            var blob = new Blob([a], {type: 'image/svg+xml'});
+            var a;
+            var mime;
+            if (svgItem.svg.startsWith('data:image/svg+xml;base64,')) {
+                mime = "image/svg+xml";
+                a = atob(svgItem.svg.replace("data:image/svg+xml;base64,", ""));
+            } else {
+                mime = "image/png";
+                a = atob(svgItem.svg.replace("data:image/png;base64,", ""));
+            }
+            var blob = new Blob([a], {type: mime});
             APP.FM2.handleFile(blob, {
                 callback: function (obj) {
                     var type = svgItem.type;
                     svgItem = obj;
                     svgItem.type = type;
+                    svgItem.mime = mime;
                     svgCollections.push(svgItem);
                     svgItem.svg = svgDataURL;
                     displaysSVG();
