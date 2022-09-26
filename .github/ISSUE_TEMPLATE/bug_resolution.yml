@@ -1,5 +1,5 @@
-name: Bug report
-description: Report a reproducible bug for CryptPad. (NOT to be used for support questions.)
+name: Reproducible bug report
+description: Report a reproducible bug ONLY, otherwise see the links below
 labels: ["bug"]
 body:
   - type: checkboxes
