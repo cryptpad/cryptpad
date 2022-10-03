@@ -1,10 +1,10 @@
 blank_issues_enabled: false
 contact_links:
   - name: Bug report
-    url: https://forum.cryptpad.org/t/bug-reports
+    url: https://forum.cryptpad.org/t/bug-report
     about: Use the appropriate tags & describe your issue in much details as possible
   - name: Feature request
-    url: https://forum.cryptpad.org/t/feature-requests
+    url: https://forum.cryptpad.org/t/feature-request
     about: Check if an existing topic doesn't already cover the feature you'd like
   - name: Generic question
     url: https://forum.cryptpad.org/t/general
