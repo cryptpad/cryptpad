@@ -82,6 +82,12 @@ var setHeaders = (function () {
     } else {
         padHeaders['Content-Security-Policy'] = Default.padContentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
     }
+    const signHeaders = Util.clone(headers);
+    if (typeof(config.signContentSecurity) === 'string') {
+        signHeaders['Content-Security-Policy'] = config.signContentSecurity;
+    } else {
+        signHeaders['Content-Security-Policy'] = Default.signContentSecurity(Env.httpUnsafeOrigin, Env.httpSafeOrigin);
+    }
     if (Object.keys(headers).length) {
         return function (req, res) {
             // apply a bunch of cross-origin headers for XLSX export in FF and printing elsewhere
@@ -114,7 +120,10 @@ var setHeaders = (function () {
                     /^\/unsafeiframe\/inner\.html.*$/,
                 ].some((regex) => {
                     return regex.test(req.url);
-                }) ? padHeaders : headers;
+                }) ? padHeaders : [/^\/sign\/.*$/].some((regex) => { 
+		    return regex.test(req.url);
+                }) ? signHeaders : headers;
+
             applyHeaderMap(res, h);
         };
     }
