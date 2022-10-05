@@ -16,11 +16,12 @@ define([
     '/sign/vendor/opentype.min.js?1.3.3',
     '/sign/vendor/pdf-lib.js',
     '/bower_components/file-saver/FileSaver.min.js',
+    '/sign/vendor/pkcs7sign.all.js',
+    '/sign/webextsigner.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/sign/app-sign.less',
-
 ], function (
     $,
     bootstrap,
@@ -36,8 +37,14 @@ define([
     fabric,
     SignaturePad,
     opentype,
-    pdflib)
+    pdflib, 
+    FileSaver,
+    PKCS7Sign,
+    webextsigner)
 {
+    console.log("WebExt", webextsigner);
+    console.log("PKCS", PKCS7Sign);
+    var pkcs7sign = new PKCS7Sign();
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
 
@@ -64,6 +71,7 @@ define([
     var menuOffcanvas = null;
     var currentCursor = null;
     var signaturePad = null;
+    var signedImage = null;
 
     var loadPDF = async function(url, pdfjsLib) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = '/sign/vendor/pdf.worker.js?legacy';
@@ -77,16 +85,15 @@ define([
             }
             for(var pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++ ) {
                 pdf.getPage(pageNumber).then(function(page) {
-                  var scale = 1.5;
+                  var scale = 1;
                   var viewport = page.getViewport({scale: scale});
                   if(viewport.width > document.getElementById('container-pages').clientWidth - 40) {
                       viewport = page.getViewport({scale: 1});
                       scale = (document.getElementById('container-pages').clientWidth - 40) / viewport.width;
                       viewport = page.getViewport({ scale: scale });
                   }
-
                   currentScale = scale;
-
+		  console.log("Scale: " + currentScale);
                   var pageIndex = page.pageNumber - 1;
 
                   document.getElementById('form_pdf').insertAdjacentHTML('beforeend', '<input name="svg[' + pageIndex + ']" id="data-svg-' + pageIndex + '" type="hidden" value="" />');
@@ -119,8 +126,7 @@ define([
                       if(!input_selected) {
                           return;
                       }
-
-                      createAndAddSvgInCanvas(canvasEdition, input_selected.value, event.layerX, event.layerY, input_selected.dataset.height);
+                      createAndAddSvgInCanvas(canvasEdition, input_selected.value, event.layerX, event.layerY, input_selected.dataset.height, input_selected.id=="radio_svg_3");
                       input_selected.checked = false;
                       input_selected.dispatchEvent(new Event("change"));
                   });
@@ -169,6 +175,8 @@ define([
                           return;
                       }
                       item.scale = event.target.width * event.target.scaleX / event.target.canvas.width;
+		      console.log(item.scale)
+		      console.log(item.signScale);
                       //storeCollections();
                   });
                   canvasEdition.on("text:changed", function(event) {
@@ -342,6 +350,9 @@ define([
         }
         if(svg.type == 'rubber_stamber') {
             svgButton.innerHTML += '<i class="bi bi-card-text text-black align-middle float-start"></i>';
+        }
+        if(svg.type == 'digital_signature') {
+            svgButton.innerHTML += '<i class="bi bi-shield-check text-black align-middle float-start"></i>';
         }
         if(svg.type) {
             document.querySelector('.btn-add-svg-type[data-type="'+svg.type+'"]').classList.add('d-none');
@@ -571,7 +582,7 @@ define([
         return canvas.add(item);
     };
 
-    var createAndAddSvgInCanvas = function(canvas, item, x, y, height = null) {
+    var createAndAddSvgInCanvas = function(canvas, item, x, y, height = null, signed = false) {
         save.removeAttribute('disabled');
         document.getElementById('store').removeAttribute('disabled');
         save_mobile.removeAttribute('disabled');
@@ -584,12 +595,22 @@ define([
            fabric.Image.fromURL(item, function(myImg, err) {
              let imgWidth = myImg.width;
              let imgHeight = myImg.height;
-             myImg.scaleToHeight(200);
-             myImg.scaleToWidth(200);
+             myImg.scaleToHeight(100);
+             myImg.scaleToWidth(100);
+             if (signed) {
+		myImg.signed = true;
+		myImg.signPosX = x - 100;
+		myImg.signPosY = y - 100;
+		myImg.signWidth = 100;
+		myImg.signHeight = 100;
+                myImg.signScale = myImg.scale;
+		signedImage = myImg;
+	}
              addObjectInCanvas(canvas, myImg).setActiveObject(myImg);
            }, { left: x - 100, top: y -100});
            return;
         }
+ 
 
         if(item == 'text') {
             var textbox = new fabric.Textbox('Texte à modifier', {
@@ -670,12 +691,12 @@ define([
         pdfPages.forEach(function(page, pageIndex) {
             var renderTask = pdfRenderTasks[pageIndex];
 
-            if(scale == 'auto' && page.getViewport({scale: 1.5}).width > document.getElementById('container-pages').clientWidth - 40) {
+            if(scale == 'auto' && page.getViewport({scale: 1}).width > document.getElementById('container-pages').clientWidth - 40) {
                 scale = (document.getElementById('container-pages').clientWidth - 40) / page.getViewport({scale: 1}).width;
             }
 
             if(scale == 'auto') {
-                scale = 1.5;
+                scale = 1;
             }
 
             var viewport = page.getViewport({scale: scale});
@@ -869,16 +890,51 @@ define([
            document.getElementById('btn_modal_ajouter').focus();
     };
 
+
+        var certificate = "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"
+
+
         async function prepareDoc(pdfData, items) {
            var buffer = await pdfData.arrayBuffer();
            var pdfDoc = await pdflib.PDFDocument.load(buffer);
+	   var pageHeight = 1000;
            pdfDoc.setTitle(pdfTitle);
            items.forEach(async (item) => {
              var img = await pdfDoc.embedPng(item.data);
              var page = pdfDoc.getPages()[item.index]
              page.drawImage(img, { x: 0, y: 0, width: page.getWidth(), height: page.getHeight()})
+             pageHeight = page.getHeight();
            });
-          return await pdfDoc.save();
+           const modifiedPdfBytes = await pdfDoc.save({ useObjectStreams: false });
+           if (signedImage == null)
+              return modifiedPdfBytes;
+	   else { 
+              var canvasPDF = document.getElementById('canvas-pdf-' + 0);
+              console.log("canvasPDF: ", canvasPDF.width);
+              console.log("canvasPDF: ", canvasPDF.height);
+              console.log("canvasEdition: ", canvasEditions[0].width);
+              console.log("canvasEdition: ", canvasEditions[0].height);
+	      var page0 = pdfDoc.getPages()[0]
+              console.log("pageX: ", page0.getWidth());
+              console.log("pageY: ", page0.getHeight());
+
+              var confirmation = confirm("Would you like to use the local certificate");
+              if (confirmation) {
+                    var passphrase = prompt("Enter the passphrase for the certificate");
+                    return pkcs7sign.sign(modifiedPdfBytes, certificate, signedImage._element.src , signedImage.left, 
+                                   page0.getHeight() - signedImage.top - signedImage.height * signedImage.scaleY, 
+                                   signedImage.width * signedImage.scaleX, signedImage.height * signedImage.scaleY, 
+                                   "CryptPad Digital Signature", passphrase);
+
+              } else {
+                    var passphrase = prompt("Enter the passphrase for the hardware token");
+                    webextsigner.setSframeChannel(APP.common.getSframeChannel());
+                    return pkcs7sign.sign(modifiedPdfBytes, certificate, signedImage._element.src , signedImage.left, 
+                                   page0.getHeight() - signedImage.top - signedImage.height * signedImage.scaleY, 
+                                   signedImage.width * signedImage.scaleX, signedImage.height * signedImage.scaleY, 
+                                   "CryptPad Digital Signature", passphrase, webextsigner);
+              }
+           } 
         }
 
         document.getElementById('save').addEventListener('click', function(event) {

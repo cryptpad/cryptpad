@@ -32,6 +32,20 @@ define([
             sframeChan.on('Q_SIGNCOLLECTIONS_GET', function (data, cb) {
                     Cryptpad.getSignCollections(cb);
             });
+            sframeChan.on('Q_SIGN_DOCUMENT', function (data, cb) {
+                    window.signDocCB = function(data) {
+                      console.log("SIGNDOCUMENT: sign CB");
+                      cb(data);
+                    }
+                    window.postMessage({ type: "CRYPTPAD_SIGN", data: data.data, passphrase: data.passphrase }, "*");
+            });
+            sframeChan.on('Q_GET_CERTIFICATE', function (data, cb) {
+                    window.getCertificateCB = function(data) {
+                      console.log("SIGNDOCUMENT: getCertificate CB ", data);
+                      cb(data);
+                    }
+                    window.postMessage({ type: "CRYPTPAD_CERTIFICATE", data: "", passphrase: data.passphrase }, "*");
+            });
         };
         console.log("sfcommon hash: " + hash);
         SFCommonO.start({

@@ -62,6 +62,11 @@
                   <input type="radio" class="btn-check" id="radio_svg_check" data-height="18" name="svg_2_add" autocomplete="off" value="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2hlY2stbGciIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHBhdGggZD0iTTEyLjczNiAzLjk3YS43MzMuNzMzIDAgMCAxIDEuMDQ3IDBjLjI4Ni4yODkuMjkuNzU2LjAxIDEuMDVMNy44OCAxMi4wMWEuNzMzLjczMyAwIDAgMS0xLjA2NS4wMkwzLjIxNyA4LjM4NGEuNzU3Ljc1NyAwIDAgMSAwLTEuMDYuNzMzLjczMyAwIDAgMSAxLjA0NyAwbDMuMDUyIDMuMDkzIDUuNC02LjQyNWEuMjQ3LjI0NyAwIDAgMSAuMDItLjAyMloiLz4KPC9zdmc+Cg==">
                   <label draggable="true" id="label_svg_check" class="btn btn-outline-secondary text-black text-start btn-svg" for="radio_svg_check"><i class="bi bi-check-square"></i> Case à cocher</label>
               </div>
+              <div id="svg_list_digital_signature" class="list-item-add"></div>
+              <div class="d-grid gap-2 mb-2 list-item-add">
+                  <input type="radio" class="btn-check" id="radio_digital_signature_add" name="svg_2_add" autocomplete="off" value="digital_signature" />
+                  <label data-bs-toggle="modal" data-bs-target="#modalAddSvg" data-type="digital_signature" data-modalnav="#nav-import-tab" class="btn btn-outline-secondary text-black text-start btn-add-svg-type" for="radio_svg_digital_signature_add" id="label_svg_digital_signature_add"><i class="bi bi-shield-check"></i> Digital Signature <small class="text-muted float-end">Ajouter</small></label>
+              </div>
               <div id="svg_list" class="d-grid gap-2 mt-2 mb-2 list-item-add"></div>
 
               <div class="d-grid gap-2 mt-2">
@@ -72,7 +77,7 @@
               <form id="form_pdf" action="/sign" method="post" enctype="multipart/form-data">
                     <input id="input_pdf" name="pdf" type="file" class="d-none" />
                     <input id="input_svg" name="svg[]" type="file" class="d-none" />
-                    <div class="d-grid gap-2 mt-2">
+                    <div id="downloadButton" class="d-grid gap-2 mt-2">
                         <button class="btn btn-primary" disabled="disabled" type="submit" id="save"><i class="bi bi-download"></i> Télécharger le PDF Signé</button>
                     </div>
                     <div class="d-grid gap-2 mt-2">
