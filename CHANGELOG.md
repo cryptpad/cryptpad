@@ -1,3 +1,176 @@
+# 5.1.0
+
+## Goals
+
+We had two new members join our team in the time since our previous release.
+
+Mathilde joined us as an administrator of CryptPad.fr, so we decided to put some unplanned time towards the platform's administrative tooling to simplify some common workflows.
+
+Maxime joined us for a summer internship as a front-end developer, and took initiative on a number of popular issues from our tracker on GitHub.
+
+## Update notes
+
+* We applied a minor optimization to CryptPad's caching rules which should result in a slight decrease of many pages' loading times, thanks to some helpful profiling by one of our users.
+
+
+* We have started implementing a very basic build system for CryptPad which, at the moment, is only responsible for generating a few static HTML pages.
+  * These pages include the _opengraph_ tags which describe how previews of the page should be rendered in social media posts, messenger applications, and search engine summaries.
+  * For the moment we haven't configured the system to build distinct pages for every language, so they will include text which is hardcoded in a single language which defaults to English. This can be configured in `config/config.js` (for example: `preferredLanguage: 'de',`). We intend to improve this in the future.
+  * They also update the content of the page's `<noscript>` tag, which is displayed in the event that the user has disabled JavaScript in their browser. The build system includes every translation of this message that is available, rather than just the English and French translations that were displayed previously.
+  * We've included some new tests on the checkup page to detect whether these customized pages have been built, and to remind administrators to generate them otherwise (using `npm run build`).
+  * Because the generated pages are based on the current default versions of these pages, updating to future versions of the software without re-building could result in errors due to outdated code being served. We'll include reminders in the update steps as we do for other common errors.
+
+
+* In order for the above changes to be effective, you'll need to update your NGINX configuration file. You can use git to see what has changed since v5.0.0 by running `git diff 5.0.0...main ./docs` in the root of your CryptPad repository.
+
+
+* We've updated the home page to use a distinct version of the CryptPad logo for its main image. This makes it easier to customize the home page itself without impacting the rest of the platform. To override the default image, include your own at `/customize/CryptPad_logo_hero.svg`.
+
+
+* Finally, a number of admins had opted into inclusion in our public instance directory but had not configured pages for their privacy policy or terms of service, which caused the checkup page to display an error. We've updated this error message to point directly to the relevant documentation, since the previous values were not sufficiently clear.
+
+
+To update from `5.0.0` to `5.1.0`:
+
+1. Update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` and reload its configuration
+2. Stop your API server
+3. Fetch the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Run `npm run build` to generate the new static pages
+5. Restart your server
+6. Review your instance's checkup page to ensure that you are passing all tests
+
+## Features
+
+* Administration:
+  * The instance admin panel now features a "Database" tab which makes it possible to generate reports for accounts, documents, and "login blocks". This finally enables administrators to review document and account metadata, archive or restore data, and generally perform actions that used to require specialized knowledge about the platform's data storage formats.
+  * Since the _Database_ tab identifies accounts by their public signing keys, we made it easier to access these keys by adding a button to support tickets which copies the author's key to your clipboard.
+* Thanks to contributors, the platform is now available in Spanish (100%) and  European Portuguese (91%).
+* We've updated our mermaid integration to [v9.1.7](https://github.com/mermaid-js/mermaid/releases/tag/v9.1.7).
+* Spellcheck is now enabled by default in our rich text editor and can be disabled via the settings page in case you have not already done so.
+* Our code editor now includes a highlighting module for _asciidoc_ syntax.
+* The contact page has been updated to reflect that we have migrated our Mastodon account to [Fosstodon.org/@cryptpad](https://fosstodon.org/@cryptpad)
+* Various links throughout the platform have been updated to reflect that we've migrated our documentation from docs.cryptpad.fr to [docs.cryptpad.org](https://docs.cryptpad.org). The old domain now redirects to the new one to preserve compatibility with old instances or any other pages that have linked to it.
+* We've updated our issue templates on GitHub to use their new _Issue Forms_ functionality, making it easier to correctly submit a well-formatted bug report or feature request.
+* The project's readme now includes a widget indicating the completeness of CryptPad's translations on our Weblate instance.
+* We've added a placeholder to pages' basic HTML to make it easier to tell that something is happening before the proper loading screen is displayed.
+
+## Bug fixes
+
+* Thanks to some detailed reports from users of our spreadsheet editor we were able to reproduce an error that caused very large changes to be saved incorrectly. Such changes trigger multi-part messages to be created, but only the first message was correctly sent to the server. The client has now been updated to correctly send each part of the patch.
+* The behaviour of the long-form text input editor in our form app was not consistent with markdown-editing interfaces on the rest of the platform, so we enabled the same functionality as elsewhere.
+* Administration
+  * We found that the quantity of support tickets shown for each category was sometimes inaccurate, so we corrected the way this number was computed.
+  * A change in the internal format of each instance's name, location, and description caused these fields not to be included in telemetry for instances that had opted into the [public instance directory](https://cryptpad.org/instances/). We've corrected this so such instances provide all the necessary information.
+  * We've corrected some logic for displaying configured URLs for privacy policies, terms of service, and similar resources such that relative URLs are considered relative to the top-level domain (rather than the sandbox domain).
+  * The "Launch time" value on the admin panel was using a hard-coded rather than the relevant translation, and was not correctly updating when the "Refresh" button was clicked. Both issues have been fixed.
+  * Members of editing sessions are correctly informed when administrators archive active channels.
+  * The _Custom limits_ section of the API is now displayed in a somewhat nicer table.
+* A flaw in some of the styles for the kanban app made it impossible to add text to an empty card via the usual inline text field UI. Adding placeholder content to this field made the default click events work as expected.
+* Dropdowns with text content containing quotes (such as those that could be created in the form app) caused an invalid CSS selector to be constructed, which resulted in rendering issues. Such quotes are now properly escaped.
+* We found that some message handlers in CryptPad were receiving and trying to parse messages from unexpected sources (browser extensions). These messages triggered parsing errors which cause CryptPad's error screen to be displayed. We now guard against such messages and ignore them when they are not in the expected format or when they otherwise trigger parsing errors.
+* We updated our translation linting script to compare markup and variable substitution patterns across different translations. We identified and fixed quite a few errors (invalid markup, incomplete translations), and expect to have an easier time ensuring consistency going forward.
+
+# 5.0.0
+
+## Goals
+
+This release was centered around two main goals:
+
+1. Implement a new, more modern and minimalist design with rounded corners and simpler colors
+2. Remove detailed information about the open-source project from the platform itself and instead host it on the recently deployed project site (https://cryptpad.org)
+
+## Update notes
+
+Recent versions of CryptPad have introduced strict configuration requirements. If you are not already running version `4.14.1` then we recommend you read the notes of our past few releases and apply their updates in sequence. Each version introduces new tests on the checkup page which will help to identify configuration errors that may result in a non-functional server unless corrected.
+
+Version 5.0.0 introduces a new server-side API (`/api/instance`) which serves customized information (server name, description, hosting location) from the admin panel so that it can be displayed on the redesigned home page.
+
+We've done some extra work relative to similar APIs we've introduced in the past to ensure that the client-side code will continue to work without it. The upgrade process should go smoothly even if you fail to apply the suggested updates to your reverse proxy configuration (see `cryptpad/docs/example.nginx.conf`). If this data cannot be retrieved by the client it will fall back to some sensible defaults, but we recommend you take the time to fix it now in case this API ceases to be optional in some future release. The checkup page will identify whether the API is accessible and display an error otherwise.
+
+```diff
+diff --git a/docs/example.nginx.conf b/docs/example.nginx.conf
+index a2d1cb1ce..23139c58c 100644
+--- a/docs/example.nginx.conf
++++ b/docs/example.nginx.conf
+@@ -183,7 +183,7 @@ server {
+     # /api/config is loaded once per page load and is used to retrieve
+     # the caching variable which is applied to every other resource
+     # which is loaded during that session.
+-    location ~ ^/api/(config|broadcast).*$ {
++    location ~ ^/api/.*$ {
+         proxy_pass http://localhost:3000;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header Host $host;
+```
+
+To update from `4.14.1` to `5.0.0`:
+
+1. Update your reverse proxy configuration to forward all `/api/` requests to the API server, as per the diff shown above, and reload your reverse proxy config
+2. Stop your API server
+3. Fetch the latest code with git
+4. Install the latest dependencies with `bower update` and `npm i`
+5. Restart your server
+6. Review your instance's checkup page to ensure that you are passing all tests
+
+## Features
+
+* The most notable feature of this release is its new look: with rounded corners, a more subtle use of colors, and some updated icons.
+* As noted above, instance information from the admin panel is now displayed on the home page, making it easier to customize a CryptPad instance without having to edit so many files on the server. In particular, the home page will now display:
+  1. The instance's configured name or its domain (as a default).
+  2. The instance's description or a default string.
+  3. The instance's hosting location (if specified).
+  4. An optional notice to be displayed as a banner.
+* Many of the informational pages have been replaced by a link the project site (cryptpad.org). Links to optional, instance-specific pages like its terms of service, privacy policy, legal notice and contact information are displayed inline, allowing for a smaller footer.
+* The drive's directory tree (also shown in teams) can now be resized by dragging its border.
+* The checkup page features several new tests, including some which only apply to public instances (a description and location are expected if you have opted into the public instance directory (https://cryptpad.org/instances/).
+
+## Bug fixes
+
+* The font selector in our OnlyOffice-based editors (sheets, docs, presentations) now supports several new fonts, and we've fixed a rendering error which caused the wrong font to be selected when clicking on certain options in the dropdown list (https://github.com/xwiki-labs/cryptpad/issues/898).
+* Clicking on an option in the user administration menu (in the top-right corner) didn't automatically close the menu in some cases because some browsers emitted an event while others did not. We now explicitly close this menu when any of its options are clicked.
+* We now guard against a type error that occurred when trying to generate a list of documents to "pin" while shared folders were still in the process of synchronizing.
+* Thanks to a user report we identified that when a premium user uploaded to a non-premium team the error message incorrectly indicated that the uploaded file exceeded the premium size limit (rather than the non-premium size limit). This resulted in confusing behaviour where a 30MB file was described as being over the 150MB file upload limit. We've updated the resulting error message to display the appropriate size limit and indicate that it is relative to the target drive or team, rather than the user's account.
+* Another user reported that they had trouble exporting OnlyOffice documents that contained certain unprintable control characters in their file names. We now remove those unprintable characters when exporting.
+* We noticed that very long messages in team invitation links could overflow their container, so we fixed its incorrect styles.
+* We observed that some third-party instances had been incorrectly configured such that when they entered an editor's URL (such as `/pad`) they only observed a blank page rather than being redirected to the appropriate URL which contained a trailing slash (ie. `/pad/`). We've added a script which detects such cases and redirects to the appropriate URL if it exists.
+
+# 4.14.1
+
+This minor release fixes a number of bugs that we noticed after deploying 4.14.0.
+
+* A bug in the code responsible for loading document metadata caused documents to be incorrectly treated as if they had no owners. As a result, several options in the Drive's UI did not work as expected:
+  * owned documents could not be destroyed from the access menu.
+  * document passwords could not be changed from the access menu.
+  * document history could not be trimmed from the properties menu.
+* We also found that some components did not behave as expected in the Drive UI while in history mode:
+  * it was not possible to open shared folders' menus (properties, share, access) to view what their properties were in the past (in the event that they had been deleted or had their passwords changed).
+  * shared folders names were not correctly displayed even when their data was available.
+* Some last minute changes to the checkup page before the 4.14.0 release caused a default error message to be incorrectly concatenated with the intended error message for each failing test.
+* A rule in one of our translation linting scripts incorrectly flagged the "ise" in the word "milliseconds" as an instance of the UK-English "-ise" suffix (we use "-ize" elsewhere).
+* An admin of a third-party instance found that they were unable to load their checkup page. As it turned out, they were trying to access it via `/checkup` instead of `/checkup/`. We've updated our example NGINX config to rewrite this URL to include the trailing slash.
+* Some of the comments in `cryptpad/config/config.example.js` were outdated or incorrect and have been removed or corrected.
+* The "About CryptPad" now correctly accepts handles custom links provided as protocol-relative URLs.
+* A number of pages did not set custom titles and instead used the default "CryptPad". They now update the document title, making it possible to distinguish between such pages when you have multiple tabs open.
+* The forms and kanban apps both allow users to write content in Markdown, but did not always display the toolbar above their editors. This was because they inferred the user's preferred editor configuration based on whether they had collapsed the toolbar in the code editor. Since these apps don't offer an easy way to display the toolbar once more, we decided that it was better to just display it all the time.
+
+We've also merged a few significant improvements:
+
+* The Polish translation was updated by Dariusz Laska.
+* A significant percentage (currently 66%) of the Ukrainian translation has also been completed and enabled.
+* We've updated Mermaidjs to version 9.0.0, which fixes a number of bugs and also introduces support for [`gitGraph` diagrams](https://mermaid-js.github.io/mermaid/#/gitgraph?id=gitgraph-diagrams)
+* Users on cryptpad.fr will no longer be warned that they are leaving the platform when they open a link to our documentation. Users on third-party instances will continue to see the usual warning, since they really are navigating to a site operated by different admins.
+
+Our `4.14.0` release notes introduced breaking changes. If you are not already running `4.14.0` we recommend updating to that first, then updating to `4.14.1` once you've confirmed that you are correctly passing all the tests on your instance's checkup page.S
+
+To do so:
+
+1. Stop your server
+2. Get the latest code with git
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+5. Review your instance's checkup page to ensure that you are passing all tests
+
 # 4.14.0
 
 ## Goals
@@ -8,7 +181,7 @@ Our main goal for this release was to follow up on some of the findings of the [
 
 This release includes **BREAKING CHANGES**, especially if you have not configured your instance correctly. We advise that you read the following section carefully and follow its recommendations as closely as possible if you operate your own CryptPad instance.
 
-First, some review: CryptPad is designed to be deployed using two domains. One is the primary domain which users enter into their address bar, while the second is a "sandbox" that is loaded indirectly. Sensitive operations like cryptographic key management are performed in the scope of the primary domain, while the sandbox is used to load the majority of the platform's UI. If there is a vulnerability in the sandbox, it is at least limited in scope because of measures we've taken to prevent it from accessing user accounts' keys. We initially introduced this system [nearly five years ago](https://blog.cryptpad.org/2017/08/30/CryptPad-s-new-Secure-Cross-Domain-Iframe/), it is described in [our admin installation guide](https://docs.cryptpad.fr/en/admin_guide/installation.html#domains), and we've done our best to make sure admins are aware of its importance. Even so, only a small number of our admins follow our recommendations.
+First, some review: CryptPad is designed to be deployed using two domains. One is the primary domain which users enter into their address bar, while the second is a "sandbox" that is loaded indirectly. Sensitive operations like cryptographic key management are performed in the scope of the primary domain, while the sandbox is used to load the majority of the platform's UI. If there is a vulnerability in the sandbox, it is at least limited in scope because of measures we've taken to prevent it from accessing user accounts' keys. We initially introduced this system [nearly five years ago](https://blog.cryptpad.org/2017/08/30/CryptPad-s-new-Secure-Cross-Domain-Iframe/), it is described in [our admin installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html#domains), and we've done our best to make sure admins are aware of its importance. Even so, only a small number of our admins follow our recommendations.
 
 Since we've tried every other option we could think of to inform administrators of the risks of storing sensitive data on a misconfigured CryptPad instance, we are now adopting a more drastic policy where correct behaviour is _enforced_ in the code itself. What that means for admins is that if you fail to implement configuration parameters which we consider essential, then various parts of the codebase will detect this and _refuse to operate_.
 
@@ -34,7 +207,7 @@ We're also recommending a few more updates, but we don't expect that these will 
   * The API server will check the version of its runtime when it launches. It will print a warning to your server logs and set a public flag in `/api/config` indicating that it should be updated. There is a corresponding test on the checkup page which checks for the presence of this flag for admins that aren't in the habit of reviewing their logs.
 * The recommended NGINX config file also includes some minor changes. You can compare the current version (in `cryptpad/docs/example.nginx.conf`) against your live config with a diff tool. There are also new tests on the checkup page which will identify whether the newly changed headers have been correctly applied.
 * There are updates to our dependencies using both `npm` and `bower`.
-* There are a number of new configuration parameters that can be customized via `application_config.js`. Some are optional. A number of other parameters, such as URLs for a privacy policy and terms of service, will be expected if your instance permits registration. The checkup page will display warnings if these are absent. Configuration via `application_config.js` is described in [our docs](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config).
+* There are a number of new configuration parameters that can be customized via `application_config.js`. Some are optional. A number of other parameters, such as URLs for a privacy policy and terms of service, will be expected if your instance permits registration. The checkup page will display warnings if these are absent. Configuration via `application_config.js` is described in [our docs](https://docs.cryptpad.org/en/admin_guide/customization.html#application-config).
 
 We've also made a number of changes and additions to the instance admin panel:
 
@@ -92,7 +265,7 @@ To update from  4.13.0 to 4.14.0:
 * The drive's _history mode_ now displays the appropriate document id in the properties menu in cases where an earlier version of a document had a different id (due to a password change).
 * During development of a new feature we discovered that the server could respond to HTTP requests with _stack traces_ in cases where the request triggered an error. These responses could contain information about the server's directory structure, so we now handle these errors and send the client a page indicating that there was an internal server error.
 * Attempting to convert office documents could mistakenly trigger two concurrent downloads of the client-side conversion engine. Now it is only downloaded once, so conversion should be roughly twice as fast for cases where the WebAssembly blob was not already cached.
-* A number of users reported various actions which could cause documents in their team drives to be duplicated. These duplicated entries are _references to the same document as the original_, not complete copies, so care should be taken **not to use the destroy option** when removing them from your drive. If a user accidentally destroys a document then it should be possible for an administrator to restore its content via the admin panel if the user can provide a [safe link](https://docs.cryptpad.fr/en/user_guide/user_account.html?highlight=safe%20link#confidentiality) that they can find using the drive's _history mode_.
+* A number of users reported various actions which could cause documents in their team drives to be duplicated. These duplicated entries are _references to the same document as the original_, not complete copies, so care should be taken **not to use the destroy option** when removing them from your drive. If a user accidentally destroys a document then it should be possible for an administrator to restore its content via the admin panel if the user can provide a [safe link](https://docs.cryptpad.org/en/user_guide/user_account.html?highlight=safe%20link#confidentiality) that they can find using the drive's _history mode_.
 
 # 4.13.0
 
@@ -229,7 +402,7 @@ We've also updated the checkup page to test for the expected server behaviour an
 
 Our team has limited resources, so we've chosen to introduce the new (and **experimental**) office editors gradually to avoid getting overwhelmed by support tickets as was the case when we introduced the current spreadsheet editor in 2019. In order to support this we've implemented an **early access** system which _optionally_ restricts the use of these editors to premium subscribers. We will enable this system on CryptPad.fr, but admins of independent instances can enable them at their discretion.
 
-To enable the use of the OnlyOffice Document and Presentation editor for everyone on your instance, edit your [customize/application_config.js](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config) file to include `AppConfig.enableEarlyAccess = true;`.
+To enable the use of the OnlyOffice Document and Presentation editor for everyone on your instance, edit your [customize/application_config.js](https://docs.cryptpad.org/en/admin_guide/customization.html#application-config) file to include `AppConfig.enableEarlyAccess = true;`.
 
 If you wish to avoid a rush of support tickets from your users by limiting early access to users with custom quota increases, add another line like so `AppConfig.premiumTypes = ['doc', 'presentation'];`.
 
@@ -292,7 +465,7 @@ To update from 4.10.0 to 4.11.0:
   * The term "Anonymous" was only ever intended to convey the classical sense of the word ("without name or attribution") rather than the stricter modern sense "indistinguishable from a meaningfully large set of other individuals". To be clear, this is a change of terminology, not behaviour. To prevent your IP address from being revealed to the host server while using CryptPad the best option has always been, and continues to be [Tor browser](https://www.torproject.org/download/).
   * Going forward, if you see "anonymize" in CryptPad (such as in forms), you can take it to mean that extra efforts are being taken to make protocol-level metadata indistinguishable from that of other users, while "Guest" means only that you haven't registered or have removed your display name.
 * While we were reconsidering the notion of guest accounts we decided that it would be useful to be able to distinguish one guest from another. We decided to implement this by hooking into the existing system for displaying users' profile pictures by mapping a list of emojis to guests' randomly generated identifiers.
-  * We chose a list of emojis that we hoped nobody would find objectionable ('🙈 🦀 🐞 🦋 🐬 🐋 🐢 🦉 🦆 🐧 🦡 🦘 🦨 🦦 🦥 🐼 🐻 🦝 🦓 🐄 💮️ 🐙️ 🌸️ 🌻️ 🐝️ 🐐 🦙 🦒 🐘 🦏 🐁 🐹 🐰 🦫 🦔 🐨 🐱 🐺 👺 👹 👽 👾 🤖'), but we realize that cultures and contexts differ widely. As such, we've made this configurable on a per-instance basis. A custom list of emojis can be set in `customize/application_config.js` as an array of single-emoji strings (`AppConfig.emojiAvatars = ['🥦', '🧄', '🍄', '🌶️'];`) or as an empty array if you prefer not to display any emojis (`AppConfig.emojiAvatars = [];`). See [our admin docs](https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config) for more info on customization.
+  * We chose a list of emojis that we hoped nobody would find objectionable ('🙈 🦀 🐞 🦋 🐬 🐋 🐢 🦉 🦆 🐧 🦡 🦘 🦨 🦦 🦥 🐼 🐻 🦝 🦓 🐄 💮️ 🐙️ 🌸️ 🌻️ 🐝️ 🐐 🦙 🦒 🐘 🦏 🐁 🐹 🐰 🦫 🦔 🐨 🐱 🐺 👺 👹 👽 👾 🤖'), but we realize that cultures and contexts differ widely. As such, we've made this configurable on a per-instance basis. A custom list of emojis can be set in `customize/application_config.js` as an array of single-emoji strings (`AppConfig.emojiAvatars = ['🥦', '🧄', '🍄', '🌶️'];`) or as an empty array if you prefer not to display any emojis (`AppConfig.emojiAvatars = [];`). See [our admin docs](https://docs.cryptpad.org/en/admin_guide/customization.html#application-config) for more info on customization.
   * Users can edit their display name inline in the user list or on their settings page, in which case their avatar will be one or two letters from their name (their first two initials if their name contains at least one space, otherwise the first two letters of their name).
   * Once these initial improvements had been made to the user list, the lack of support for emoji avatars in a number of places felt very conspicuous, so we've done our best to implement them consistently across every social aspect of the platform. Default emoji avatars are also displayed in comments in the rich text editor, in authorship data in our code/markdown editor, in tooltips when you hover over the marker for remote users' cursor location, in the "currently editing" indicator for Kanban cards, in the share and access menus, and in the "contacts" app.
 * The file upload dialog now includes a preview of the media that you are about to upload (as long as it's something CryptPad is capable of displaying) as well as a text field for describing the media. Descriptive text is added to the file's encrypted metadata and is applied to rendered media as `alt` or `title` attributes wherever applicable. This coincides with a broader effort to improve keyboard navigation and add support for screen-readers.
@@ -342,7 +515,7 @@ It seems that some browser developers thought to do the same thing, because we n
 
 ## Update notes
 
-4.10.0 includes some minor changes to [the checkup page](https://docs.cryptpad.fr/fr/admin_guide/installation.html#diagnostics). Some admins have included screenshots of this page in bug reports or requests for support along with details of problems they suspect of being related. Because we've observed that the root of many issues is the browser (sometimes in addition to the server) we have decided to include details about the browser in this page's summary.
+4.10.0 includes some minor changes to [the checkup page](https://docs.cryptpad.org/fr/admin_guide/installation.html#diagnostics). Some admins have included screenshots of this page in bug reports or requests for support along with details of problems they suspect of being related. Because we've observed that the root of many issues is the browser (sometimes in addition to the server) we have decided to include details about the browser in this page's summary.
 
 Up until now the checkup page only tested observable behaviour of the server such as HTTP headers on particular resources, configuration parameters distributed to the client, and the availability of essential resources. This practice meant that a report for an instance should have been the same regardless of the device that was used to generate the report. In light of a serious regression in Chrome (and all its derivatives) we decided that objectiveness was less important than utility and introduced some tests which check whether the client running the diagnostics interprets the provided server configuration. Terrible browsers (ie. every browser that is available on iOS) will fail these tests every time because they don't implement the expected APIs, but we've tried to detect these cases and warn that they are expected.
 
@@ -399,7 +572,7 @@ We allocated most of this release cycle towards a schedule of one-on-one user in
 
 It appears our promotion of the checkup page through our recent release notes and the inclusion of a link to it from the instance admin have been moderately successful. We've observed that more instance admins are noticing and fixing some common configuration issues.
 
-This release features some minor changes to one instance configuration test which incorrectly provided an exemption for the use of `http://localhost:3000` as an `httpUnsafeOrigin` value. This exemption was provided because this value is valid for local development. However, it suppressed errors when this configuration was used for production instances where it could cause a variety of problems. As usual, we recommend checking your instance's admin page after updating to confirm that you are passing the latest tests. Information about the checkup page is included in [our documentation](https://docs.cryptpad.fr/en/admin_guide/admin_panel.html#network).
+This release features some minor changes to one instance configuration test which incorrectly provided an exemption for the use of `http://localhost:3000` as an `httpUnsafeOrigin` value. This exemption was provided because this value is valid for local development. However, it suppressed errors when this configuration was used for production instances where it could cause a variety of problems. As usual, we recommend checking your instance's admin page after updating to confirm that you are passing the latest tests. Information about the checkup page is included in [our documentation](https://docs.cryptpad.org/en/admin_guide/admin_panel.html#network).
 
 To update from 4.8.0 to 4.9.0:
 
@@ -597,7 +770,7 @@ This release includes very few new features aside from those already mentioned i
 
 ## Goals
 
-This release cycle we aimed to complete three major milestones: the official release of our calendar app, the ability for admins to close registration on their instance, and the deployment of the admin section of our [official documentation](https://docs.cryptpad.fr/en/admin_guide/index.html). We spent the remainder of our time addressing a growing backlog of issues on GitHub by fixing a number of weird bugs.  
+This release cycle we aimed to complete three major milestones: the official release of our calendar app, the ability for admins to close registration on their instance, and the deployment of the admin section of our [official documentation](https://docs.cryptpad.org/en/admin_guide/index.html). We spent the remainder of our time addressing a growing backlog of issues on GitHub by fixing a number of weird bugs.  
 
 ## Update notes
 
@@ -793,7 +966,7 @@ To update from 4.1.0 to 4.2.0:
 * We've reverted the styles for the rich text editor so that the document always has a white background, even in dark mode, since we could not guarantee that documents would be legible to all users if custom text colors had been applied. While we were looking at this editor, we also repositioned several buttons used to control the page's layout, including the width of the document, the presence of the table of contents, and its comments.
 * We've continued to improve several key parts of the platform to accommodate offline usage. Teams, shared folders within teams, and the file app can now load and display content cached within the browser even if the client cannot establish a connection to our API server.
 * The content of _whiteboard_ documents can now be downloaded directly from within team or user drives, rather than exclusively from within the whiteboard editor itself. To do so, right-click a whiteboard and choose _download_ to export a PNG file.
-* Since we now regularly serve more than 125 thousand visitors a week it's gotten quite difficult to keep up with support tickets. To help alleviate this burden we're taking steps to increase the visibility of our documentation (https://docs.cryptpad.fr). The support ticket page now displays a link to that documentation above the form to create a new ticket.
+* Since we now regularly serve more than 125 thousand visitors a week it's gotten quite difficult to keep up with support tickets. To help alleviate this burden we're taking steps to increase the visibility of our documentation (https://docs.cryptpad.org). The support ticket page now displays a link to that documentation above the form to create a new ticket.
 * Several users have reported confusion regarding various password fields in CryptPad, in the access menu, pad creation screen, when uploading new files, and when creating a shared folder. We've updated the text associated with these fields to better indicate that they are not requesting your user password, but rather that they allow you to add an optional password as an additional layer of protection.
 * Server administrators can now refresh the _performance_ table on the admin panel without reloading the page.
 * We've begun working on a _checkup_ page for CryptPad to help administrators identify and fix common misconfigurations of the platform. It's still in a very basic state, but we hope to to make it a core part of the server installation guide that is under development.
@@ -911,7 +1084,7 @@ To update from 3.25.1 to 4.0.0:
 Finally, the "rebrand" part of this release:  
 
 * Our home page features our new logo, a cleaner layout, new text (notably dropping the use of "zero-knowledge" from our explanation), new app icons, softer colors, neater fonts, and a custom illustration of a document shredder that hints at how CryptPad works.
-* We no longer include a FAQ page with each instance, and instead link to relevant parts of our dedicated documentation platform (https://docs.cryptpad.fr) from any place that previously referenced the FAQ. This will make it easier for translators to focus on text for the platform's interface if they wish. An updated Frequently Asked Questions will be added to the documentation in the near future.
+* We no longer include a FAQ page with each instance, and instead link to relevant parts of our dedicated documentation platform (https://docs.cryptpad.org) from any place that previously referenced the FAQ. This will make it easier for translators to focus on text for the platform's interface if they wish. An updated Frequently Asked Questions will be added to the documentation in the near future.
 * Each of our editors now features a dedicated favicon to make it easier to distinguish different CryptPad tabs in your browser.
 * The contact page now points to _Element_ instead of Riot, since the Matrix team rebranded in the last while as well.
 * The "pricing" or "features" page (features.html) reads the server's configured storage limits from a server endpoint and displays them, rather than hardcoding the default values in the text.
@@ -1217,7 +1390,7 @@ This release was developed over a longer period than usual due to holidays, our 
 
 We've had a few disgruntled administrators contact us about our apparent _failure to provide a docker image_ or to otherwise support their preferred configuration. With that in mind, this is a periodic reminder that CryptPad is provided to the public under the terms of the AGPL (found within this repository in the [LICENSE file](./LICENSE)) which implies on our part no warranty, liability, or responsibility to configure your server for you. We do our best to provide the necessary information to correctly launch your own instance of the software given our limited budget, however, all such files are provided **AS IS** and are only intended to function under the narrow circumstances of usage which we recommend within the comments of the provided example configuration files.  
 
-With that said, the vast majority of our community acts kindly and courteously towards us and each other. We really do appreciate it, and we'll continue to help you to the best of our ability. With that in mind, we're happy to announce that we've written and deployed a first version of our user guide, available at https://docs.cryptpad.fr. The work that went into this was funded by NLnet foundation as an NGI Zero PET (Privacy-Enhancing Technology) grant. We are currently working on two more guides intended for developers and administrators, and will deploy them to the same domain as they are completed. In the meantime we have begun to update our README, GitHub wiki, and other resources to reflect the current recommended practices and remove references to unsupported configurations.  
+With that said, the vast majority of our community acts kindly and courteously towards us and each other. We really do appreciate it, and we'll continue to help you to the best of our ability. With that in mind, we're happy to announce that we've written and deployed a first version of our user guide, available at https://docs.cryptpad.org. The work that went into this was funded by NLnet foundation as an NGI Zero PET (Privacy-Enhancing Technology) grant. We are currently working on two more guides intended for developers and administrators, and will deploy them to the same domain as they are completed. In the meantime we have begun to update our README, GitHub wiki, and other resources to reflect the current recommended practices and remove references to unsupported configurations.  
 
 If you're only reading this for instructions on how to update your instance from 3.20.1 to 3.21.0:  
 

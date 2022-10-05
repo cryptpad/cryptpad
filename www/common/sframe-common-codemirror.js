@@ -272,6 +272,13 @@ define([
             if (/text\/x/.test(mode)) {
                 CMeditor.autoLoadMode(editor, 'clike');
                 editor.setOption('mode', mode);
+            } else if (mode === 'asciidoc') {
+                CMeditor.autoLoadMode(editor, mode, {
+                    path: function () {
+                        return 'cm-extra/asciidoc/asciidoc';
+                    }
+                });
+                editor.setOption('mode', mode);
             } else {
                 if (mode !== "text") {
                     CMeditor.autoLoadMode(editor, mode);

@@ -8,6 +8,7 @@ define([
             // json plugin
             text: '/bower_components/requirejs-plugins/lib/text',
             json: '/bower_components/requirejs-plugins/src/json',
+            optional: '/lib/optional/optional',
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
             "jquery": "/bower_components/jquery/dist/jquery.min",
             "mermaid": "/lib/mermaid/mermaid.min",
@@ -19,6 +20,7 @@ define([
             'netflux-client': '/bower_components/netflux-websocket/netflux-client',
             'chainpad-netflux': '/bower_components/chainpad-netflux/chainpad-netflux',
             'chainpad-listmap': '/bower_components/chainpad-listmap/chainpad-listmap',
+            'cm-extra': '/lib/codemirror-extra-modes'
         },
         map: {
             '*': {

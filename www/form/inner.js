@@ -30,6 +30,8 @@ define([
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
 
+    'cm/addon/edit/closebrackets',
+    'cm/addon/edit/matchbrackets',
     'cm/addon/display/placeholder',
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',

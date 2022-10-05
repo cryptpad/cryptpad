@@ -372,7 +372,7 @@ define([
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
-                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders'),
+                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders'),
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
@@ -1205,12 +1205,12 @@ define([
             whiteboard: 'whiteboard',
         };
 
-        var href = "https://docs.cryptpad.fr/en/user_guide/applications.html";
+        var href = "https://docs.cryptpad.org/en/user_guide/applications.html";
         if (apps[type]) {
-            href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
+            href = "https://docs.cryptpad.org/en/user_guide/apps/" + apps[type] + ".html";
         }
         if (type === 'drive') {
-            href = "https://docs.cryptpad.fr/en/user_guide/drive.html";
+            href = "https://docs.cryptpad.org/en/user_guide/drive.html";
         }
         href = Pages.localizeDocsLink(href);
 
@@ -1365,7 +1365,7 @@ define([
             else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
             else { $usage.addClass('cp-limit-usage-above'); }
             var $text = $('<span>', {'class': 'cp-limit-usage-text'});
-            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit]));
+            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit])); // TODO avoid use of .html() if possible
             $container.prepend($text);
             $limit.append($usage);
         };
@@ -1476,7 +1476,7 @@ define([
             options.forEach(function (o) {
                 if (!isValidOption(o)) { return; }
                 if (isElement(o)) { return $innerblock.append(o); }
-                var $el = $('<' + o.tag + '>', o.attributes || {});
+                var $el = $(h(o.tag, (o.attributes || {})));
 
                 if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
                     o.content = [o.content];
@@ -1540,7 +1540,8 @@ define([
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
                 setActive($val);
                 try {
                     $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
@@ -1627,7 +1628,8 @@ define([
                 window.clearTimeout(to);
                 var c = String.fromCharCode(e.which);
                 pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                // We use JSON.stringify here to escape quotes
+                var $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first');
                 if ($value.length) {
                     setActive($value);
                     $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
@@ -1639,7 +1641,8 @@ define([
 
             $container.setValue = function (val, name, sync) {
                 value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(val)+']');
                 var textValue = name || $val.text() || val;
                 var f = function () {
                     $button.find('.cp-dropdown-button-title').text(textValue);
@@ -1666,20 +1669,18 @@ define([
 
         var template = function (line, link) {
             if (!line || !link) { return; }
-            var p = $('<p>').html(line)[0]; // XXX
+            var p = Pages.setHTML(h('p'), line);
             var sub = link.cloneNode(true);
-
-// XXX use URL if you need to?
-/*  This is a hack to make relative URLs point to the main domain
-    instead of the sandbox domain. It will break if the admins have specified
-    some less common URL formats for their customizable links, such as if they've
-    used a protocal-relative absolute URL. The URL API isn't quite safe to use
-    because of IE (thanks, Bill).  */
-            var href = sub.getAttribute('href');
-            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var href;
+            try {
+                href = new URL(sub.getAttribute('href'), origin).href;
+            } catch (err) {
+                return; // don't return anything to display if their href causes URL to throw
+            }
             var a = p.querySelector('a');
             if (!a) { return; }
             sub.innerText = a.innerText;
+            sub.setAttribute('href', href);
             p.replaceChild(sub, a);
             return p;
         };
@@ -1734,6 +1735,17 @@ define([
         var padType = metadataMgr.getMetadata().type;
 
         var options = [];
+        options.push({
+            tag: 'div',
+            attributes: {'class': 'cp-user-menu-logo'},
+            content: h('span', [
+                h('img', {
+                    src: '/customize/CryptPad_logo_grey.svg',
+                    "aria-hidden": true,
+                }),
+                h('span.cp-user-menu-logo-text', "CryptPad")
+            ]),
+        });
         if (config.displayNameCls) {
             var userAdminContent = [];
             if (accountName) {
@@ -1859,7 +1871,7 @@ define([
             attributes: {
                 'target': '_blank',
                 'rel': 'noopener',
-                'href': 'https://docs.cryptpad.fr',
+                'href': 'https://docs.cryptpad.org',
                 'class': 'fa fa-book'
             },
             content: h('span', Messages.docs_link)
@@ -2007,8 +2019,7 @@ define([
             }
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
-        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon);//.append($userbig);
+        var $userButton = $('<div>').append($icon);
         if (accountName) {
             $userButton = $('<div>').append(accountName);
         }
@@ -2018,6 +2029,15 @@ define([
             // If no display name, do not display the parentheses
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
         }*/
+
+        options.forEach(function (option) {
+            var f = option.action;
+            if (!f) { return; }
+            option.action = function () {
+                f();
+                return true;
+            };
+        });
         var dropdownConfigUser = {
             buttonContent: $userButton[0],
             options: options, // Entries displayed in the menu
@@ -2161,7 +2181,7 @@ define([
         var $modal = modal.$modal;
         var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
 
-        var $description = $('<p>').html(Messages.creation_newPadModalDescription);
+        var $description = $(Pages.setHTML(h('p'), Messages.creation_newPadModalDescription));
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 
@@ -2366,7 +2386,7 @@ define([
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
                 h('span', newPadH3Title),
-                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
+                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
             ])
         ]);
         $creation.append(title);
@@ -2800,6 +2820,8 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
+                // XXX You can still use the current version in read-only mode by pressing Esc.
+                // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }

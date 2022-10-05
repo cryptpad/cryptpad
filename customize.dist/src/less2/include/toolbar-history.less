@@ -1,4 +1,5 @@
 @import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
 
 .history_main () {
     --LessLoader_require: LessLoader_currentFile();
@@ -88,12 +89,19 @@
             }
             button {
                 margin: 0 5px;
-                border: 1px solid @cryptpad_text_col;
+                border: 1px solid @cp_toolbar-fg;
+                background-color: @cp_toolbar-bg;
+                color: @cp_toolbar-fg;
+                border-radius: @variables_radius;
                 text-transform: uppercase;
                 display: inline-flex;
                 align-items: center;
                 .fa:not(:last-child) {
                     margin-right: 5px;
+                }
+                &:hover {
+                    // XXX DB: check hover in light/dark themes
+                    background-color: fade(@cp_toolbar-fg, 30%);
                 }
                 &:disabled {
                     cursor: not-allowed !important;
@@ -233,9 +241,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-left: 40px;
+            margin: 5px 0px 5px 40px;
             button {
                 width: 50px;
+                color: @cp_toolbar-fg;
+                border-radius: @variables_radius;
                 .fa:first-child:not(:last-child) {
                     margin-right: 5px;
                 }

@@ -2,7 +2,6 @@
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/support.less';
 @import (reference) '../../customize/src/less2/include/charts.less';
-
 &.cp-app-admin {
 
     .framework_min_main();
@@ -21,10 +20,11 @@
         text-decoration: underline;
     }
 
-    .alert.alert-info.cp-admin-bigger-alert {
-        font-size: 16px;
+    .alert.alert-info, .alert.alert-danger {
+        &.cp-admin-bigger-alert {
+            font-size: 16px;
+        }
     }
-
 
     .cp-admin-setlimit-form, .cp-admin-broadcast-form {
         label {
@@ -39,13 +39,16 @@
         }
     }
     .cp-admin-setlimit-form,
-    .cp-admin-setjurisdiction-form,
-    .cp-admin-setdescription-form {
+    .cp-admin-setter {
         + button {
             margin-top: 5px !important;
         }
     }
     .cp-admin-getlimits {
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         code {
             cursor: pointer;
         }
@@ -62,12 +65,15 @@
                 max-width: 500px;
             }
             @media screen and (max-width: 1200px) {
-                td.note {
+                button.cp-report {
+                    display: none;
+                }
+                :is(td, th).note {
                     display: none;
                 }
             }
             @media screen and (max-width: 1400px) {
-                td.plan {
+                :is(td, th).plan {
                     display: none;
                 }
             }
@@ -110,6 +116,9 @@
             align-items: top;
             .cp-support-title-buttons {
                 flex-shrink: 0;
+                button i {
+                    margin-right: 0px;
+                }
             }
         }
         .cp-support-collapsed {
@@ -207,11 +216,6 @@
 
     input.cp-admin-inval {
         border-color: red !important;
-    }
-    input[type="text"], textarea {
-        &.cp-listing-info[disabled] {
-            border: 1px solid transparent !important; //1px solid transparent !imprortant;;//none !important;
-        }
     }
 
     .cp-admin-nopassword {
@@ -332,6 +336,28 @@
     }
     .cp-charts-row.heading {
         font-weight: bold;
+    }
+    table.cp-admin-all-limits,
+    table.cp-metadata-history,
+    table.cp-account-stats,
+    table.cp-block-stats,
+    table.cp-pin-list,
+    table.cp-document-stats {
+        @color: #777; // XXX
+        border: 1px solid @color;
+        margin: 15px;
+        td, pre {
+            color: @cryptpad_text_col;
+        }
+        td, th {
+            max-width: 60vw; // XXX
+            border: 1px solid @color;
+            padding: 5px;
+            .scroll {
+                max-width: 500px;
+                overflow-x: auto;
+            }
+        }
     }
 }
 

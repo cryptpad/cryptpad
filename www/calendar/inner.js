@@ -27,6 +27,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
 ], function (
     $,
@@ -616,7 +617,7 @@ define([
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
-            buttonCls: 'btn btn-cancel fa fa-ellipsis-h small'
+            buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions'
         };
         return UIElements.createDropdown(dropdownConfig)[0];
     };

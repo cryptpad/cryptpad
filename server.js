@@ -148,6 +148,9 @@ app.use(function (req, res, next) {
     next();
 });
 
+// serve custom app content from the customize directory
+// useful for testing pages customized with opengraph data
+app.use(Express.static(__dirname + '/customize/www'));
 app.use(Express.static(__dirname + '/www'));
 
 // FIXME I think this is a regression caused by a recent PR
@@ -237,6 +240,8 @@ var serveConfig = makeRouteCache(function (host) {
             enableEmbedding: Env.enableEmbedding,
             fileHost: Env.fileHost,
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
+            listMyInstance: Env.listMyInstance,
+            accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
     ].join(';\n')
@@ -261,6 +266,22 @@ var serveBroadcast = makeRouteCache(function (host) {
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
+var define = function (obj) {
+    return `define(function (){
+    return ${JSON.stringify(obj, null, '\t')};
+});`
+};
+
+app.get('/api/instance', function (req, res) { // XXX use caching?
+    res.setHeader('Content-Type', 'text/javascript');
+    res.send(define({
+        name: Env.instanceName,
+        description: Env.instanceDescription,
+        location: Env.instanceJurisdiction,
+        notice: Env.instanceNotice,
+    }));
+});
+
 var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
 var fivehundred_path = Path.resolve(__dirname + '/customize.dist/500.html');
 var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
@@ -282,6 +303,23 @@ var send500 = function (res, path) {
         send500(res);
     });
 };
+
+app.get('/api/updatequota', function (req, res) {
+    if (!Env.accounts_api) {
+        res.status(404);
+        return void send404(res);
+    }
+    var Quota = require("./lib/commands/quota");
+    Quota.updateCachedLimits(Env, (e) => {
+        if (e) {
+            Env.Log.warn('UPDATE_QUOTA_ERR', e);
+            res.status(500);
+            return void send500(res);
+        }
+        Env.Log.info('QUOTA_UPDATED', {});
+        res.send();
+    });
+});
 
 app.get('/api/profiling', function (req, res, next) {
     if (!Env.enableProfiling) { return void send404(res); }

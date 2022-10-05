@@ -8,13 +8,12 @@ define([
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
-        var urlArgs = Config.requireConf.urlArgs;
 
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
 
         var termsLink = Pages.customURLs.terms;
         $(tos).find('a').attr({
-            href: termsLink, // '/terms.html',
+            href: termsLink,
             target: '_blank',
             tabindex: '-1',
         });
@@ -25,10 +24,9 @@ define([
                     Pages.infopageTopbar(),
                     h('div.container.cp-container', [
                         h('div.row.cp-page-title', h('h1', Msg.register_header)),
-                        //h('div.row.cp-register-det', content),
                     ].concat(content)),
+                    Pages.infopageFooter(),
                 ]),
-                Pages.infopageFooter(),
             ];
         };
 
@@ -52,13 +50,14 @@ define([
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
                 h('div.cp-reg-form.col-md-6', [
-                    h('img.img-fluid', {
-                        src: '/customize/images/swallow-the-key.png?' + urlArgs
-                    }),
                     h('div#userForm.form-group.hidden', [
-                        h('a', {
-                            href: '/features.html'
-                        }, Msg.register_whyRegister),
+                        h('div.cp-register-instance', [
+                            Msg._getKey('register_instance', [ Pages.Instance.name ]),
+                            h('br'),
+                            h('a', {
+                                href: '/features.html'
+                            }, Msg.register_whyRegister)
+                        ]),
                         h('input.form-control#username', {
                             type: 'text',
                             autocomplete: 'off',

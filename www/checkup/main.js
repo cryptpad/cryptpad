@@ -22,6 +22,8 @@ define([
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Pages, Tools, AppConfig) {
+    window.CHECKUP_MAIN_LOADED = true;
+
     var Assert = Assertions();
     var trimSlashes = function (s) {
         if (typeof(s) !== 'string') { return s; }
@@ -73,6 +75,7 @@ define([
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
     var fileHost = ApiConfig.fileHost;
+    var accounts_api = ApiConfig.accounts_api || AppConfig.accounts_api || undefined;
 
     var getAPIPlaceholderPath = function (relative) {
         var absolute;
@@ -984,7 +987,7 @@ define([
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
-                    AppConfig.accounts_api,
+                    accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
 
@@ -1023,7 +1026,7 @@ define([
                     $sandbox,
                     API_URL.origin,
                     isHTTPS(fileHost)? fileHost: undefined,
-                    AppConfig.accounts_api,
+                    accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -1160,11 +1163,11 @@ define([
     });
 
     var POLICY_ADVISORY = " This link will be included in the home page footer and 'About CryptPad' menu. It's advised that you either provide one or disable registration.";
-    var APPCONFIG_DOCS_LINK = function (key) {
+    var APPCONFIG_DOCS_LINK = function (key, href) {
         return h('span', [
             " See ",
             h('a', {
-                href: 'https://docs.cryptpad.fr/en/admin_guide/customization.html#application-config',
+                href: href || 'https://docs.cryptpad.org/en/admin_guide/customization.html#application-config',
                 target: "_blank",
                 rel: 'noopener noreferrer',
             }, "the relevant documentation"),
@@ -1172,6 +1175,10 @@ define([
             code(key),
             ' value.',
         ]);
+    };
+
+    var TERMS_DOCS_LINK = function (key) {
+        return APPCONFIG_DOCS_LINK(key, 'https://docs.cryptpad.org/en/admin_guide/customization.html#links-to-terms-of-service-privacy-policy-and-imprint-pages');
     };
 
     var isValidInfoURL = function (url) {
@@ -1198,7 +1205,7 @@ define([
         msg.appendChild(h('span', [
             'No terms of service were specified.',
             POLICY_ADVISORY,
-            APPCONFIG_DOCS_LINK('terms'),
+            TERMS_DOCS_LINK('terms'),
         ]));
         cb(isValidInfoURL(url) || url);
     });
@@ -1213,7 +1220,7 @@ define([
         msg.appendChild(h('span', [
             'No legal entity data was specified.',
             POLICY_ADVISORY,
-            APPCONFIG_DOCS_LINK('imprint'),
+            TERMS_DOCS_LINK('imprint'),
         ]));
         cb(isValidInfoURL(url) || url);
     });
@@ -1227,7 +1234,7 @@ define([
         msg.appendChild(h('span', [
             'No privacy policy was specified.',
             POLICY_ADVISORY,
-            APPCONFIG_DOCS_LINK('privacy'),
+            TERMS_DOCS_LINK('privacy'),
         ]));
         cb(isValidInfoURL(url) || url);
     });
@@ -1364,9 +1371,185 @@ define([
         });
     });
 
+    assert(function (cb, msg) {
+        var url = '/api/instance';
+        msg.appendChild(h('span', [
+            link(url, url),
+            " did not load as expected. This is most likely caused by a missing directive in your reverse proxy or an outdated version of the API server.",
+        ]));
+
+        require([
+            `optional!${url}`,
+        ], function (Instance) {
+            // if the URL fails to load then an empty object will be returned
+            // this can be interpreted as a failure, even though the rest of the platform should still work
+            if (!Object.keys(Instance).length) {
+                return void cb(Instance);
+            }
+            cb(true);
+        });
+    });
+
+    assert(function (cb, msg) {
+        if (!ApiConfig.listMyInstance) { return void cb(true); }
+        msg.appendChild(h('span', [
+            "The administrators of this instance have opted in to inclusion in ",
+            link('https://cryptpad.org/instances/', 'the public instance directory'),
+            ' but have not configured at least one of the expected ',
+            code('description'),
+            ' or ',
+            code('location'),
+            ' text fields via the instance admin panel.',
+        ]));
+        var expected = [
+            'description',
+            'location',
+            //'name',
+            // 'notice',
+        ];
+
+        var url = '/api/instance';
+        require([
+            `optional!${url}`,
+        ], function (Instance) {
+            var good = expected.every(function (k) {
+                var val = Instance[k];
+                return (val && typeof(val) === 'object' && typeof(val.default) === 'string' && val.default.trim());
+            });
+            return void cb(good || Instance);
+        });
+    });
+
+    [
+        '/',
+        '/index.html',
+        '/contact.html',
+        '/code/',
+        '/pad/index.html',
+    ].forEach(url => {
+        assert(function (cb, msg) {
+            try {
+                url = new URL(url, ApiConfig.httpUnsafeOrigin).href;
+            } catch (err) {
+                console.error(err);
+            }
+
+            Tools.common_xhr(url, xhr => {
+                xhr.done(res => {
+                    var dom = new DOMParser().parseFromString(res, 'text/html');
+                    var sels = [
+                        'og:url',
+                        'og:type',
+                        'og:title',
+                        'og:description',
+                        'og:image',
+                        'twitter:card',
+                    ];
+                    var missing = [];
+                    sels.forEach(sel => {
+                        var selector = `meta[property="${sel}"]`;
+                        var el = dom.querySelector(selector);
+                        if (!el) { missing.push(selector); }
+                    });
+                    if (!missing.length) { return void cb(true); }
+
+                    setWarningClass(msg);
+                    msg.appendChild(h('span', [
+                        h('p', [
+                            link(url, url),
+                            ' is missing several attributes which provide better previews on social media sites and messengers. ',
+                            "The administrator of this instance can generate them with ", code('npm run build'), '.',
+                        ]),
+                        h('p', "Missing attributes: "),
+                        h('ul', missing.map(q => h('li', h('code', q)))),
+                    ]));
+                    cb(false);
+                });
+            });
+        });
+    });
+
+    assert(function (cb, msg) {
+        // public instances are expected to be open for registration
+        // if this is not a public instance, pass this test immediately
+        if (!ApiConfig.listMyInstance) { return cb(true); }
+        // if it's public but registration is not registricted, that's also a pass
+        if (!ApiConfig.restrictRegistration) { return void cb(true); }
+
+        setWarningClass(msg);
+        msg.appendChild(h('span', [
+            "The administrators of this instance have opted in to inclusion in ",
+            link('https://cryptpad.org/instances/', 'the public instance directory'),
+            ' but have disabled registration, which is expected to be open.',
+            h('br'),
+            h('br'),
+            " Registration can be reopened using the instance's admin panel.",
+        ]));
+
+        cb(false);
+    });
+
+    var compareCustomized = function (a, b, cb) {
+        var getText = (url, done) => {
+            Tools.common_xhr(url, xhr => {
+                xhr.done(done);
+            });
+        };
+
+        var A, B;
+        nThen(w => {
+            getText(a, w(res => {
+                A = res;
+            }));
+            getText(b, w(res => {
+                B = res;
+            }));
+        }).nThen(() => {
+            cb(void 0, A === B);
+        });
+    };
+
+    var CUSTOMIZATIONS = [];
+    // check whether some important pages have been customized
+    assert(function (cb /*, msg */) {
+        nThen(function (w) {
+            // add whatever custom pages you want here
+            [
+                'application_config.js',
+                'pages.js',
+            ].forEach(resource => {
+                // sort this above errors and warnings and style in a neutral color.
+                var A = `/customize.dist/${resource}`;
+                var B = `/customize/${resource}`;
+                compareCustomized(A, B, w((err, same) => {
+                    if (err || same) { return; }
+                    CUSTOMIZATIONS.push(resource);
+                }));
+            });
+        }).nThen(function () {
+            // Implementing these checks as a test was an easy way to ensure that
+            // they completed before the final report was shown. It's intentional
+            // that this always passes
+            cb(true);
+        });
+    });
+
     var serverToken;
-    Tools.common_xhr('/', function (xhr) {
-        serverToken = xhr.getResponseHeader('server');
+    assert(function (cb, msg) {
+        Tools.common_xhr('/', function (xhr) {
+            serverToken = xhr.getResponseHeader('server');
+
+            msg.appendChild(h('span', [
+                `Due to its use of `,
+                h('em', `CloudFlare`),
+                ` this instance may be inaccessible by users of the Tor network, and generally less secure because of the additional point of failure where code can be intercepted and modified by bad actors.`,
+            ]));
+
+            //if (1) { return void cb(false || {serverToken}); }
+            cb(!/cloudflare/i.test(serverToken) || {
+                serverToken,
+            });
+        });
     });
 
     var row = function (cells) {
@@ -1383,11 +1566,11 @@ define([
             console.error(err);
         }
 
-        return h('div.error', [
+        return h(`div.errorcp-test-status.${obj.type}`, [
             h('h5', obj.message),
             h('div.table-container',
                 h('table', [
-                    row(["Failed test number", obj.test + 1]),
+                    row(["Test number", obj.test + 1]),
                     row(["Returned value", h('pre', code(printableValue))]),
                 ])
             ),
@@ -1431,38 +1614,88 @@ define([
     };
 
     Assert.run(function (state) {
-        var errors = state.errors;
+        var isWarning = function (x) {
+            return x && /cp\-warning/.test(x.getAttribute('class'));
+        };
+
+        var isInfo = x => x && /cp\-info/.test(x.getAttribute('class'));
+        var errors = state.errors; // TODO anomalies might be better?
+
+        var categories = {
+            error: 0,
+            info: 0,
+            warning: 0,
+        };
+
+        errors.forEach(obj => {
+            if (isWarning(obj.message)) {
+                obj.type = 'warning';
+            } else if (isInfo(obj.message)) {
+                obj.type = 'info';
+                state.passed++;
+            } else {
+                obj.type = 'error';
+            }
+            Util.inc(categories, obj.type);
+        });
+
         var failed = errors.length;
 
         Messages.assert_numberOfTestsPassed = "{0} / {1} tests passed.";
 
-        var statusClass = failed? 'failure': 'success';
+        var statusClass;
+        if (categories.error !== 0) {
+            statusClass = 'failure';
+        } else if (categories.warning !== 0) {
+            statusClass = 'failure';
+        } else if (categories.info !== 0) {
+            statusClass = 'neutral';
+        } else {
+            statusClass = 'success';
+        }
 
         var failedDetails = "Details found below";
         var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors or incorrect behaviour.";
         var details = h('p.cp-notice-details', failed? failedDetails: successDetails);
 
+        var sortMethod = function (a, b) {
+            if (a.type === 'info' && b.type !== 'info') {
+                return 1;
+            }
+            if (a.type === 'warning' && b.type !== 'warning') {
+                return 1;
+            }
+            return a.test - b.test;
+        };
+
+        var customizations;
+        if (CUSTOMIZATIONS.length) {
+            customizations = h('div.cp-notice-customizations', [
+                h('p', `The following assets have been customized for this instance:`),
+                h('ul', CUSTOMIZATIONS.map(asset => {
+                    var href = `/customize/${asset}`;
+                    return h('li', [
+                        h('a', {
+                            href: `href?${+new Date()}`,
+                            target: '_blank',
+                        }, href),
+                    ]);
+                })),
+                h('p', `Unexpected behaviour could be related to these changes. If you are this instance's administrator, please try temporarily disabling them before submitting a bug report.`),
+            ]);
+        }
+
         var summary = h('div.summary.' + statusClass, [
             versionStatement(),
             serverStatement(serverToken),
             browserStatement(),
+            customizations,
             h('p', Messages._getKey('assert_numberOfTestsPassed', [
                 state.passed,
                 state.total
             ])),
             details,
         ]);
-
-        var isWarning = function (x) {
-            return x && /cp\-warning/.test(x.getAttribute('class'));
-        };
-
-        var sortMethod = function (a, b) {
-            if (isWarning(a.message) && !isWarning(b.message)) {
-                return 1;
-            }
-            return a.test - b.test;
-        };
 
         var report = h('div.report', [
             summary,

@@ -626,6 +626,7 @@ define([
         // UI containers
         var $tree = APP.$tree = $("#cp-app-drive-tree");
         var $content = APP.$content = $("#cp-app-drive-content");
+        var $contentContainer = APP.$content = $("#cp-app-drive-content-container");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
         var $contextMenu = createContextMenu(common).appendTo($appContainer);
@@ -634,6 +635,26 @@ define([
         var $defaultContextMenu = $("#cp-app-drive-context-default");
         var $trashTreeContextMenu = $("#cp-app-drive-context-trashtree");
         var $trashContextMenu = $("#cp-app-drive-context-trash");
+
+
+        var splitter = h('div.cp-splitter', [
+            h('i.fa.fa-ellipsis-v')
+        ]);
+        $contentContainer.append(splitter);
+        APP.$splitter = $(splitter).on('mousedown', function (e) {
+            e.preventDefault();
+            var x = e.pageX;
+            var w = $tree.width();
+            var handler = function (evt) {
+                if (evt.type === 'mouseup') {
+                    $(window).off('mouseup mousemove', handler);
+                    return;
+                }
+                $tree.css('width', (w - x + evt.pageX) + 'px');
+            };
+            $(window).off('mouseup mousemove', handler);
+            $(window).on('mouseup mousemove', handler);
+        });
 
         // TOOLBAR
 
@@ -2624,7 +2645,7 @@ define([
             }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
-                var docsLink = 'https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types';
+                var docsLink = 'https://docs.cryptpad.org/en/user_guide/user_account.html#account-types';
                 $box.html(msg).find('a[href="#docs"]').each(function () {
                     $(this).attr({
                         href: Pages.localizeDocsLink(docsLink),
@@ -2751,7 +2772,7 @@ define([
         // Get the upload options
         var addSharedFolderModal = function (cb) {
 
-            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners"));
+            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners"));
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -3391,6 +3412,7 @@ define([
             APP.toolbar.$bottomL.append(APP.$collapseButton);
             APP.$collapseButton.off('click').on('click', function () {
                 APP.$tree.toggle();
+                APP.$splitter.toggle(APP.$tree.is(':visible'));
                 checkCollapseButton();
             });
         };
@@ -4525,6 +4547,14 @@ define([
             var type = $contextMenu.attr('data-menu-type');
             var $this = $(this);
 
+            var prefix = /cp\-app\-drive\-context\-/;
+            var command = Util.slice(this.classList)
+                .map(c => {
+                    if (!prefix.test(c)) { return; }
+                    return c.replace(prefix, '');
+                }).filter(Boolean);
+            console.log(command);
+
             var el, data;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
@@ -4725,7 +4755,7 @@ define([
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
                                 UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
-                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
+                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                             ]),
                         ]);
                         return void UI.confirm(convertContent, function(res) {
@@ -4784,9 +4814,13 @@ define([
                         common: common
                     };
                     if (padType === 'file') {
-                        return void Share.getFileShareModal(common, padData);
+                        return void Share.getFileShareModal(common, padData, function (err) {
+                            if (err) { UI.warn(Messages.error); }
+                        });
                     }
-                    Share.getShareModal(common, padData);
+                    Share.getShareModal(common, padData, function (err) {
+                        if (err) { UI.warn(Messages.error); }
+                    });
                 }
             }
             else if ($this.hasClass('cp-app-drive-context-savelocal')) {
@@ -4875,7 +4909,10 @@ define([
                     el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
                 }
                 APP.getProperties(el, function (e) {
-                    if (e) { return void logError(e); }
+                    if (e) {
+                        UI.warn(Messages.error);
+                        return void logError(e, el);
+                    }
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-access")) {
@@ -4886,7 +4923,10 @@ define([
                     el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
                 }
                 APP.getAccess(el, function (e) {
-                    if (e) { return void logError(e); }
+                    if (e) {
+                        UI.warn(Messages.error);
+                        return void logError(e);
+                    }
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {
@@ -5130,14 +5170,17 @@ define([
                     if (!obj || typeof(obj) !== "object" || Object.keys(obj).length === 0) {
                         return;
                     }
+                    manager.setHistoryMode(true);
                     copyObjectValue(folders[history.sfId], obj);
                     refresh();
                     return;
                 }
+
                 history.sfId = false;
 
                 var ok = manager.isValidDrive(obj.drive);
                 if (!ok) { return; }
+                manager.setHistoryMode(true);
 
                 var restricted  = files.restrictedFolders;
                 copyObjectValue(files, obj.drive);
@@ -5147,6 +5190,7 @@ define([
                 refresh();
             };
             history.onLeaveHistory = function () {
+                manager.setHistoryMode(false);
                 copyObjectValue(files, proxy.drive);
                 refresh();
             };

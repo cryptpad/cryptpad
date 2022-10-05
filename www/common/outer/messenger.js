@@ -238,6 +238,8 @@ define([
     var removeFromFriendList = function (ctx, curvePublic, cb) {
         var proxy = ctx.store.proxy;
         var friends = proxy.friends;
+        // FIXME this probably shouldn't happen, but functions that take callbacks
+        // should be guaranteed to call back.
         if (!friends) { return; }
         delete friends[curvePublic];
         Realtime.whenRealtimeSyncs(ctx.store.realtime, function () {
@@ -447,7 +449,12 @@ define([
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encrypt(msgStr);
-            channel.wc.bcast(cryptMsg).then(function () {}, function (err) {
+            channel.wc.bcast(cryptMsg).then(function () {
+                onFriendRemoved(ctx, curvePublic, data.channel);
+                removeFromFriendList(ctx, curvePublic, function () {
+                    cb();
+                });
+            }, function (err) {
                 if (err) { return void cb({error:err}); }
                 onFriendRemoved(ctx, curvePublic, data.channel);
                 removeFromFriendList(ctx, curvePublic, function () {

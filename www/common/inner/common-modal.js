@@ -18,6 +18,8 @@ define([
         data.allowed = obj.allowed;
         data.rejected = obj.rejected;
     };
+    // trying to get data from server
+    // should be authoritative, so override whatever you have in memory
     Modal.loadMetadata = function (Env, data, waitFor, redraw) {
         Env.common.getPadMetadata({
             channel: data.channel
@@ -35,6 +37,7 @@ define([
         nThen(function (waitFor) {
             var priv = common.getMetadataMgr().getPrivateData();
             var base = priv.origin;
+            // this fetches attributes from your shared worker's memory
             common.getPadAttribute('', waitFor(function (err, val) {
                 if (err || !val) {
                     if (opts.access) {
@@ -50,6 +53,14 @@ define([
                     }
                     return;
                 }
+                // we delete owners because this query to the worker
+                // is concurrent with the call to the server.
+                // we shouldn't trust local information about ownership or expiration
+                // over that provided by the server, so we simply ignore the local version.
+                // this could be made more correct at the expense of some latency by not
+                // running the two queries concurrently, but we consider responsiveness
+                // more of a priority I guess. Maybe reconsider that if you find
+                // that this causes any bugs.
                 if (!val.fileType) {
                     delete val.owners;
                     delete val.expire;
@@ -59,8 +70,10 @@ define([
                 if (data.roHref) { data.roHref = base + data.roHref; }
             }), opts.href);
 
+            if (opts.channel) { data.channel = opts.channel; }
             // If this is a file, don't try to look for metadata
             if (opts.channel && opts.channel.length > 32) { return; }
+            // this fetches data from the server
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
             if (opts.channel) { data.channel = opts.channel; }

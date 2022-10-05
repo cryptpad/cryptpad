@@ -51,7 +51,8 @@ define([
             pfx: window.location.origin,
             theme: localStorage[themeKey],
             themeOS: localStorage[themeKey+'_default'],
-            lang: lang
+            lang: lang,
+            time: window.CP_preloadingTime
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
@@ -1953,6 +1954,12 @@ define([
             var startRealtime = function (rtConfig) {
                 rtConfig = rtConfig || {};
                 rtStarted = true;
+
+                // Remove the outer placeholder once iframe overwrites it for sure
+                var placeholder = document.querySelector('#placeholder');
+                if (placeholder && typeof(placeholder.remove) === 'function') {
+                    placeholder.remove();
+                }
 
                 var replaceHash = function (hash) {
                     // The pad has just been created but is not stored yet. We'll switch

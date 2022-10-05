@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "4.14.0",
+  "version": "5.1.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -49,7 +49,7 @@
     "unused-translations": "node ./scripts/translations/unused-translations.js",
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
-    "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;",
-    "evict-inactive": "node scripts/evict-inactive.js"
+    "evict-inactive": "node scripts/evict-inactive.js",
+    "build": "node scripts/build.js"
   }
 }

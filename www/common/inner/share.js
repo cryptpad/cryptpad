@@ -304,7 +304,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders"));
+            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders"));
         });
         return link;
     };
@@ -794,7 +794,7 @@ define([
         opts.access = true; // Allow the use of the modal even if the pad is not stored
 
         var hashes = opts.hashes;
-        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return; }
+        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return cb("NO_HASHES"); }
 
         var teams = getEditableTeams(common, opts);
         opts.teams = teams;
