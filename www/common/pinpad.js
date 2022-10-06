@@ -249,6 +249,15 @@ var factory = function (Util, Rpc) {
                 }, cb);
             };
 
+            exp.deleteLine = function (obj, cb) {
+                rpc.send('DELETE_LINE', {
+                    channel: obj.channel,
+                    hash: obj.hash,
+                    proof: obj.proof
+                }, cb);
+            };
+
+
 
             cb(e, exp);
         });

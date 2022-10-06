@@ -245,7 +245,7 @@ define([
                     Cryptpad.getFormKeys(w(function (keys) {
                         myKeys = keys;
                     }));
-                    Cryptpad.getFormAnswer({channel: data.channel}, w(function (obj) {
+                    Cryptpad.getFormAnswer({channel: data.channel}, true, w(function (obj) {
                         if (!obj || obj.error) {
                             if (obj && obj.error === "ENODRIVE") {
                                 var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
@@ -285,6 +285,7 @@ define([
                             var parsed = JSON.parse(res.content);
                             parsed._isAnon = answer.anonymous;
                             parsed._time = messages[0].time;
+                            if (answer.deletable !== false) { parsed._hash = answer.hash; }
                             cb(parsed);
                         } catch (e) {
                             cb({error: e});
@@ -347,10 +348,22 @@ define([
                             hash: hash,
                             curvePrivate: ephemeral_private,
                             anonymous: Boolean(data.anonymous)
+                        }, function (obj) {
+                            var res = data.results;
+                            res._isAnon = data.anonymous;
+                            res._time = +new Date();
+                            if (obj.deletable !== false) { res._hash = hash; }
+                            cb({
+                                error: err,
+                                response: response,
+                                results: res
+                            });
                         });
-                        cb({error: err, response: response, hash: hash});
                     });
                 });
+            });
+            sframeChan.on("Q_FORM_DELETE_ANSWER", function (data, cb) {
+                Cryptpad.deleteFormAnswers(data, cb);
             });
         };
         SFCommonO.start({

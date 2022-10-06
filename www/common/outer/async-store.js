@@ -2179,6 +2179,13 @@ define([
             }
         };
 
+        Store.deletePadLine = function (clientId, data, cb) {
+            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            store.rpc.deleteLine(data, function (e) {
+                cb({error:e});
+            });
+        };
+
         // GET_FULL_HISTORY from sframe-common-outer
         Store.getFullHistory = function (clientId, data, cb) {
             var network = store.network;

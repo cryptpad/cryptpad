@@ -2917,8 +2917,24 @@ define([
             $desc.find('a').click(linkClickHandler);
         }
 
+        var del;
+        if (answers._hash && (true  // XXX XXX XXX
+            || content.answers.canDelete)) {
+            del = h('button.btn.btn-danger', 'DELETE');
+            $(del).click(function () {
+                var sframeChan = framework._.sfCommon.getSframeChannel();
+                sframeChan.query("Q_FORM_DELETE_ANSWER", {
+                    channel: content.answers.channel,
+                    hash: answers._hash
+                }, function (err, obj) {
+                    framework._.sfCommon.gotoURL();
+                });
+            });
+        }
+
         var actions = h('div.cp-form-submit-actions', [
             action,
+            del,
             responses || undefined
         ]);
 
@@ -3170,9 +3186,9 @@ define([
 
                 $send.removeAttr('disabled');
                 $send.text(Messages.form_update);
-                APP.hasAnswered = true;
+                APP.hasAnswered = data.results;
                 APP.answeredInForm = false;
-                showAnsweredPage(framework, content, { '_time': +new Date() });
+                showAnsweredPage(framework, content, APP.hasAnswered);
                 if (content.answers.cantEdit) {
                     $(radioContainer).hide();
                 }
@@ -3323,6 +3339,7 @@ define([
         var evOnChange = Util.mkEvent();
         if (!APP.isEditor) {
             var _answers = Util.clone(answers || {});
+            delete _answers._hash;
             delete _answers._proof;
             delete _answers._userdata;
             evOnChange.reg(function (noBeforeUnload, isSave) {
@@ -3917,7 +3934,7 @@ define([
 
         // If the form is already submitted, show an info message
         if (APP.hasAnswered) {
-            showAnsweredPage(framework, content, answers);
+            showAnsweredPage(framework, content, APP.hasAnswered);
             $container.prepend(h('div.alert.alert-info',
                 Messages._getKey('form_alreadyAnswered', [
                     new Date(answers._time || APP.lastAnswerTime).toLocaleString()])));
@@ -4654,9 +4671,9 @@ define([
                     if (answers) {
                         var myAnswersObj = answers[curve1] || answers[curve2] || undefined;
                         if (myAnswersObj) {
-                            APP.hasAnswered = true;
                             myAnswers = myAnswersObj.msg;
                             myAnswers._time = myAnswersObj.time;
+                            APP.hasAnswered = myAnswers;
                         }
                     }
                     // If we have a non-anon answer, we can't answer anonymously later
@@ -4686,7 +4703,7 @@ define([
                 var answers;
                 if (obj && !obj.error) {
                     answers = obj;
-                    APP.hasAnswered = true;
+                    APP.hasAnswered = answers;
                     // If we have a non-anon answer, we can't answer anonymously later
                     if (!obj._isAnon) { APP.cantAnon = true; }
                 }

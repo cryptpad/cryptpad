@@ -132,31 +132,101 @@ define([
             });
         });
     };
-    common.getFormAnswer = function (data, cb) {
+    common.getFormAnswer = function (data, onlyLast, cb) {
         postMessage("GET", {
             key: ['forms', data.channel],
-        }, cb);
-    };
-    common.storeFormAnswer = function (data) {
-        postMessage("SET", {
-            key: ['forms', data.channel],
-            value: {
-                hash: data.hash,
-                curvePrivate: data.curvePrivate,
-                anonymous: data.anonymous
-            }
         }, function (obj) {
-            if (obj && obj.error) {
-                if (obj.error === "ENODRIVE") {
-                    var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
-                    if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
-                    localStorage.CP_formAnswered = JSON.stringify(answered);
-                    return;
-                }
-                console.error(obj.error);
+            if (!obj || obj.error) { return void cb(obj); }
+            if (!Array.isArray(obj)) {
+                obj.deletable = false;
+                obj = [obj];
             }
-        });
 
+            var last = obj[obj.length - 1];
+            if (obj.length && obj[0].deletable === false) { last.deletable === false; }
+            if (onlyLast) { return void cb(last); }
+            return void cb(obj);
+        });
+    };
+    common.storeFormAnswer = function (data, cb) {
+        var answer = {
+            hash: data.hash,
+            curvePrivate: data.curvePrivate,
+            anonymous: data.anonymous
+        };
+        var answers = [];
+        Nthen(function (waitFor) {
+            common.getFormAnswer(data, false, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                answers = obj;
+            }));
+        }).nThen(function () {
+            answers.push(answer);
+            postMessage("SET", {
+                key: ['forms', data.channel],
+                value: answers
+            }, function (obj) {
+                if (obj && obj.error) {
+                    if (obj.error === "ENODRIVE") {
+                        var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                        if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
+                        localStorage.CP_formAnswered = JSON.stringify(answered);
+                        return;
+                    }
+                    console.error(obj.error);
+                }
+            });
+            cb({
+                deletable: answers[0].deletable !== false
+            });
+        });
+    };
+    common.deleteFormAnswers = function (data, cb) {
+        common.getFormAnswer(data, false, function (obj) {
+            if (!obj || obj.error) { return void cb(); }
+            if (!obj.length) { return void cb(); }
+            if (obj[0].deletable === false) { return void cb({error: 'EINVAL'}); }
+            var n = Nthen;
+            var nacl, theirs;
+            n = n(function (waitFor) {
+                require(['/bower_components/tweetnacl/nacl-fast.min.js'], waitFor(function () {
+                    nacl = window.nacl;
+                    var s = new Uint8Array(32);
+                    theirs = nacl.box.keyPair.fromSecretKey(s);
+                }));
+            }).nThen;
+            var toDelete = [];
+            obj.forEach(function (answer) {
+                n = n(function (waitFor) {
+                    var hash = answer.hash;
+                    var h = nacl.util.decodeUTF8(hash);
+
+                    // Make proof
+                    var curve = answer.curvePrivate;
+                    var mySecret = nacl.util.decodeBase64(curve);
+                    var nonce = nacl.randomBytes(24);
+                    var proofBytes = nacl.box(h, nonce, theirs.publicKey, mySecret);
+                    var proof = nacl.util.encodeBase64(nonce) +'|'+ nacl.util.encodeBase64(proofBytes);
+                    var lineData = {
+                        channel: data.channel,
+                        hash: hash,
+                        proof: proof
+                    };
+                    postMessage("DELETE_PAD_LINE", lineData, waitFor(function (obj) {
+                        if (obj || obj.error) { return; }
+                        toDelete.push(hash);
+                    }));
+                }).nThen;
+            });
+            n(function () {
+                obj = obj.filter(function (answer) { return !toDelete.includes(answer.hash); });
+                if (!obj.length) { obj = undefined; }
+                postMessage("SET", {
+                    key: ['forms', data.channel],
+                    value: obj
+                }, cb);
+            });
+        });
     };
 
     common.makeNetwork = function (cb) {
