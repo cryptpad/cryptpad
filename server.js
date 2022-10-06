@@ -1,5 +1,5 @@
 /*
-    globals require console
+    globals process
 */
 var Express = require('express');
 var Http = require('http');
@@ -8,7 +8,6 @@ var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
 var Default = require("./lib/defaults");
-var Keys = require("./lib/keys");
 
 var config = require("./lib/load-config");
 var Env = require("./lib/env").create(config);
@@ -116,16 +115,17 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 });
 }());
 
+const serveStatic = Express.static(Env.paths.blob, {
+    setHeaders: function (res) {
+        res.set('Access-Control-Allow-Origin', Env.enableEmbedding? '*': Env.permittedEmbedders);
+        res.set('Access-Control-Allow-Headers', 'Content-Length');
+        res.set('Access-Control-Expose-Headers', 'Content-Length');
+    }
+});
+
 app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
-        Express.static(Env.paths.blob, {
-            setHeaders: function (res, path, stat) {
-                res.set('Access-Control-Allow-Origin', Env.enableEmbedding? '*': Env.permittedEmbedders);
-                res.set('Access-Control-Allow-Headers', 'Content-Length');
-                res.set('Access-Control-Expose-Headers', 'Content-Length');
-            }
-        })(req, res, next);
-        return;
+        return void serveStatic(req, res, next);
     }
     next();
 });
@@ -217,7 +217,7 @@ var makeRouteCache = function (template, cacheName) {
     };
 };
 
-var serveConfig = makeRouteCache(function (host) {
+var serveConfig = makeRouteCache(function () {
     return [
         'define(function(){',
         'return ' + JSON.stringify({
@@ -245,10 +245,10 @@ var serveConfig = makeRouteCache(function (host) {
             accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
-    ].join(';\n')
+    ].join(';\n');
 }, 'configCache');
 
-var serveBroadcast = makeRouteCache(function (host) {
+var serveBroadcast = makeRouteCache(function () {
     var maintenance = Env.maintenance;
     if (maintenance && maintenance.end && maintenance.end < (+new Date())) {
         maintenance = undefined;
@@ -261,21 +261,21 @@ var serveBroadcast = makeRouteCache(function (host) {
             maintenance: maintenance
         }, null, '\t'),
         '});'
-    ].join(';\n')
+    ].join(';\n');
 }, 'broadcastCache');
 
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
-var define = function (obj) {
+var defineBlock = function (obj) {
     return `define(function (){
     return ${JSON.stringify(obj, null, '\t')};
-});`
+});`;
 };
 
 app.get('/api/instance', function (req, res) { // XXX use caching?
     res.setHeader('Content-Type', 'text/javascript');
-    res.send(define({
+    res.send(defineBlock({
         name: Env.instanceName,
         description: Env.instanceDescription,
         location: Env.instanceJurisdiction,
@@ -322,7 +322,7 @@ app.get('/api/updatequota', function (req, res) {
     });
 });
 
-app.get('/api/profiling', function (req, res, next) {
+app.get('/api/profiling', function (req, res) {
     if (!Env.enableProfiling) { return void send404(res); }
     res.setHeader('Content-Type', 'text/javascript');
     res.send(JSON.stringify({
@@ -330,13 +330,13 @@ app.get('/api/profiling', function (req, res, next) {
     }));
 });
 
-app.use(function (req, res, next) {
+app.use(function (req, res) {
     res.status(404);
     send404(res, custom_four04_path);
 });
 
 // default message for thrown errors in ExpressJS routes
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     Env.Log.error('EXPRESSJS_ROUTING', {
         error: err.stack || err,
     });
@@ -378,7 +378,7 @@ nThen(function (w) {
         Http.createServer(app).listen(Env.httpSafePort, Env.httpAddress, w());
     }
 }).nThen(function () {
-    var wsConfig = { server: httpServer };
+    //var wsConfig = { server: httpServer };
 
     // Initialize logging then start the API server
     require("./lib/log").create(config, function (_log) {
