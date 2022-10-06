@@ -2,7 +2,9 @@
 
 CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data is encrypted, the service and its administrators have no way of seeing the content being edited and stored.
 
-![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
+![Drive screenshot](screenshot.png "preview of the CryptDrive")
+
+![Suite screenshots](screenshot-suite.png "all CyptPad applications: Document, Sheet, Presentation, Form, Kanban, Code, Rich Text, Whiteboard")
 
 # Installation
 
@@ -62,10 +64,12 @@ More information about this can be found in [our translation guide](/customize.d
 
 # Contacting Us
 
-You can reach members of the CryptPad development team on [Twitter](https://twitter.com/cryptpad),
-via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on our
-[Matrix channel](https://riot.im/app/#/room/#cryptpad:matrix.org), or by
-[e-mail](mailto:research@xwiki.com).
+The best places to reach the development team and the community are the [CryptPad Forum](https://forum.cryptpad.org) and the [Matrix chat](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
+
+The team is also on social media:
+- Mastodon: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
+- Twitter: [@cryptpad](https://twitter.com/cryptpad)
+
 
 # Team
 
