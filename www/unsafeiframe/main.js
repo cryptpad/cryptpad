@@ -60,7 +60,7 @@ define([
                 var msgEv = Utils.Util.mkEvent();
                 var iframe = $('#sbox-unsafe-iframe')[0].contentWindow;
                 var postMsg = function (data) {
-                    iframe.postMessage(data, '*');
+                    iframe.postMessage(data, ApiConfig.httpUnsafeOrigin);
                 };
                 var w = waitFor();
                 var whenReady = function (msg) {

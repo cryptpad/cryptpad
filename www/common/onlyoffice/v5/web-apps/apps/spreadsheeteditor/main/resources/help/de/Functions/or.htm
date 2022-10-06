@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>ODER-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>ODER-Funktion</h1>
+			<p>Die Funktion <b>ODER</b> gehört zur Gruppe der logischen Funktionen. Sie wird genutzt, um zu überprüfen, ob die eingegebene Bedingung in einer Prüfung WAHR oder FALSCH ist. Wenn alle Argumente als FALSCH bewertet werden, gibt die Funktion den Wert FALSCH zurück.</p>
+			<p>Die Formelsyntax der Funktion <b>ODER</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>ODER(Wahrheitswert1;[Wahrheitswert2]; ...)</em></b></p> 
+			<p><b><em>Wahrheitswert1; Wahrheitswert2;...</em></b> ist ein Wert ist, der manuell eingegeben wird oder in die Zelle eingeschlossen ist, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>ODER</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Logisch</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>ODER</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.<p class="note"><b>Hinweis</b>: Sie können bis zu <b>255</b> logische Werte eingeben.</p>
+			</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt. Wenn eines der Argumente als WAHR bewertet wird, gibt die Funktion den Wert WAHR zurück.</p>
+			<p><em>Beispiel:</em></p>
+			<p>Es gibt 3 Argumente: <em>Wahrheitswert1</em> = <b>A1&lt;10</b>, <em>Wahrheitswert2</em> = <b>34&lt;10</b>, <em>Wahrheitswert3</em> = <b>50&lt;10</b>, es gilt <b>A1</b> ist <b>12</b>. Alle logischen Ausdrücke sind <b>FALSCH</b>. Also gibt die Funktion den Wert <b>FALSCH</b> zurück.</p>
+			<p style="text-indent: 150px;"><img alt="ODER-Funktion: FALSCH" src="../images/orfalse.png" /></p>
+			<p>Ändert man den Wert <b>A1</b> von <b>12</b> auf <b>2</b>, gibt die Funktion den Wert <b>WAHR</b> zurück:</p>
+			<p style="text-indent: 150px;"><img alt="ODER-Funktion: WAHR" src="../images/ortrue.png" /></p>
+		</div>
+	</body>
+</html>

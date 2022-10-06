@@ -49,7 +49,8 @@ define([
             hideDuplicate: true
         },
         pad: {
-            width: true
+            width: true,
+            spellcheck: true
         },
         security: {
             unsafeLinks: false
@@ -1159,8 +1160,9 @@ define([
                 expire = data.expire;
             }
 
-            var storeLocally = data.teamId === -1;
+            //var storeLocally = data.teamId === -1;
             if (data.teamId === -1) { data.teamId = undefined; }
+            if (data.teamId) { data.teamId = Number(data.teamId); }
 
             // If a teamId is provided, it means we want to store the pad in a specific
             // team drive. In this case, we just need to check if the pad is already
@@ -1170,11 +1172,8 @@ define([
             // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
             var sendTo = [];
-            var inMyDrive;
+            var inTargetDrive, inMyDrive;
             getAllStores().forEach(function (s) {
-                if (data.teamId && s.id !== data.teamId) { return; }
-                if (storeLocally && s.id) { return; }
-
                 // If this is an edit link but we don't have edit rights, this entry is not useful
                 if (h.mode === "edit" && s.id && !s.secondaryKey) {
                     return;
@@ -1185,15 +1184,14 @@ define([
                     sendTo.push(s.id);
                 }
 
-                // If we've just accepted ownership for a pad stored in a shared folder,
-                // we need to make a copy of this pad in our drive. We're going to check
-                // if the pad is stored in our MAIN drive.
-                // We only need to check this if the current manager is the target (data.teamId)
-                if (data.teamId === s.id) {
-                    inMyDrive = res.some(function (obj) {
-                        return !obj.fId;
-                    });
+                // Check if the pad is already stored in the specified drive (data.teamId)
+                if ((!s.id && !data.teamId) || Number(s.id) === data.teamId) {
+                    if (!inTargetDrive) {
+                        inTargetDrive = res.length;
+                    }
                 }
+
+                if (!s.id) { inMyDrive = res.length; }
 
                 Array.prototype.push.apply(allData, res);
             });
@@ -1231,7 +1229,7 @@ define([
             });
 
             // Add the pad if it does not exist in our drive
-            if (!contains || (data.forceSave && !inMyDrive)) {
+            if (!contains || (data.forceSave && !inTargetDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
@@ -1258,7 +1256,8 @@ define([
                     }, cb);
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
-                        stored: true
+                        stored: true,
+                        inMyDrive: inMyDrive || (!contains && !data.teamId) // display "store in cryptdrive" entry
                     });
                     return;
                 }

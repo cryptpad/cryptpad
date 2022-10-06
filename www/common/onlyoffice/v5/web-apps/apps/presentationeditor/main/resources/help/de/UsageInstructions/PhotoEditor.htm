@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Bild bearbeiten</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Die Beschreibung des Foto-Editor-Plugins für ONLYOFFICE Editoren, mit dem Bilder bearbeitet werden können" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Bild bearbeiten</h1>
+        <p>ONLYOFFICE <a href="https://www.onlyoffice.com/de/presentation-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> hat einen sehr effektiven Fotoeditor, mit dem Sie das Bild mit Filtern anpassen und alle Arten von Anmerkungen einfügen können.</p>
+        <ol>
+            <li>Wählen Sie das Bild in Ihrer Präsentation aus.</li>
+            <li>
+                Öffnen Sie die Registerkarte <b>Plugins</b> und wählen Sie den Menüpunkt <img alt="Foto-Editor Plugin - Symbol" src="../images/photoeditor.png" /> <b>Foto-Editor</b> aus.<br />
+                Sie befinden sich jetzt im Bearbeitungsmodus.
+                <ul>
+                    <li>
+                        Unter dem Bild finden Sie die folgenden Kontrollkästchen und Schieberegler für Filter:
+                        <ul>
+                            <li><b>Graustufe</b>, <b>Sepia</b>, <b>Sepia 2</b>, <b>Blur</b>, <b>Emboss</b>, <b>Invertieren</b>, <b>Schärfen</b>;</li>
+                            <li><b>Weiß entfernen</b> (<em>Grenzwert</em>, <em>Abstand</em>), <b>Farbtransparenz</b>, <b>Helligkeit</b>, <b>Rauschen</b>, <b>Verpixelt</b>, <b>Farbfilter</b>;</li>
+                            <li><b>Farbton</b>, <b>Multiplizieren</b>, <b>Mix</b>.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Links neben den Filtern finden Sie die folgenden Schaltflächen
+                        <ul>
+                            <li><b>Rückgängig machen</b>, <b>Wiederholen</b> und <b>Zurücksetzen</b>;</li>
+                            <li><b>Löschen</b>, <b>Alles löschen</b>;</li>
+                            <li><b>Menge</b> (<em>Benutzerdefiniert</em>, <em>Quadrat</em>, <em>3:2</em>, <em>4:3</em>, <em>5:4</em>, <em>7:5</em>, <em>16:9</em>);</li>
+                            <li><b>Kippen</b> (<em>Kippen X</em>, <em>Kippen Y</em>, <em>Zurücksetzen</em>);</li>
+                            <li><b>Drehen</b> (<em>30 Grad.</em>, <em>-30 Grad.</em>,<em>Schieberegler für manuelle Drehung</em>);</li>
+                            <li><b>Zeichnen</b> (<em>Frei</em>, <em>Gerade</em>, <em>Farbe</em>, <em>Schieberegler für Größe</em>);</li>
+                            <li><b>Form</b> (<em>Rechteck</em>, <em>Kreis</em>, <em>Dreieck</em>, <em>Ausfüllen</em>, <em>Strich</em>, <em>Strichgröße</em>);</li>
+                            <li><b>Symbol</b> (<em>Pfeile</em>, <em>Sterne</em>, <em>Polygon</em>, <em>Speicherort</em>, <em>Herz</em>, <em>Blase</em>, <em>Benutzerdefiniertes Symbol</em>, <em>Farbe</em>);</li>
+                            <li><b>Text</b> (<em>Fett</em>, <em>Kursiv</em>, <em>Unterstrichen</em>, <em>Links</em>, <em>Zentriert</em>, <em>Rechts</em>, <em>Farbe</em>, <em>Textgröße</em>);</li>
+                            <li><b>Schablone</b>.</li>
+                        </ul>
+                    </li>
+                </ul>
+                Sie können alle diese Einstellungen probieren. Sie können immer Ihre Aktionen rückgängig machen.<br />
+            <li>
+                Wenn Sie bereit sind, klicken Sie auf die Schaltfläche <b>OK</b>.
+            </li>
+        </ol>
+        <p>Das bearbeitete Bild ist jetzt in der Präsentation enthalten.</p>
+        <img class="gif" alt="Foto-Editor Plugin - gif" src="../images/image_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

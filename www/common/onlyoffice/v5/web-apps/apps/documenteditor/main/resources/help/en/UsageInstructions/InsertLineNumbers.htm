@@ -1,0 +1,54 @@
+﻿﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert line numbers</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Insert line numbers in the Document Editor" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Insert line numbers</h1>
+        <p>The ONLYOFFICE <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> can count lines in your document automatically. This feature can be useful when you need to refer to a specific line of the document, e.g. in a legal agreement or a code script. Use the <img alt="Line Numbers icon" src="../images/linenumbers_icon.png" /> <b>Line Numbers</b> tool to apply line numbering to the document. Please note that the line numbering sequence is not applied to the text in the objects such as tables, text boxes, charts, headers/footers, etc. These objects are treated as one line.</p>
+        <h2>Applying line numbering</h2>
+        <ol>
+            <li>Open the <b>Layout</b> tab located at the top toolbar and click on the <img alt="Line Numbers icon" src="../images/linenumbers_icon.png" /><b>Line Numbers</b> icon.</li>
+            <li>
+                Choose the required parameters for a quick set-up in the opened drop-down menu:
+                <ul>
+                    <li><b>Continuous</b> - each line of the document will be assigned a sequence number.</li>
+                    <li><b>Restart Each Page</b> - the line numbering sequence will restart on each page of the document.</li>
+                    <li><b>Restart Each Section</b> - the line numbering sequence will restart in each section of the document. Please refer to <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">this guide</a> to learn more about section breaks.</li>
+                    <li><b>Suppress for Current Paragraph</b> - the current paragraph will be skipped in the line numbering sequence. To exclude several paragraphs from the sequence, select them via the left-mouse button before applying this parameter.</li>
+                </ul>
+            </li>
+            <li>
+                Specify the advanced parameters if needed. Click the <b>Line Numbering Options</b> item in the <b>Line Numbers</b> drop-down menu. Check the <b>Add line numbering</b> box to apply the line numbering to the document and to access the advanced parameters of the option:
+                <p><img alt="Line Numbering window" src="../images/linenumbers_window.png" /></p>
+                <ul>
+                    <li><b>Start at</b> sets the starting numeric value of the line numbering sequence. The parameter is set to <b>1</b> by default.</li>
+                    <li><b>From text</b> specifies the distance between the line numbers and the text. Enter the required value in cm. The parameter is set to <b>Auto</b> by default.</li>
+                    <li><b>Count by</b> specifies the sequence numbers that are displayed if not counted by 1, i.e. the numbers are counted in a bunch by 2s, 3s, 4s, etc. Enter the required numeric value. The parameter is set to <b>1</b> by default.</li>
+                    <li><b>Restart Each Page</b> - the line numbering sequence will restart on each page of the document.</li>
+                    <li><b>Restart Each Section</b>the line numbering sequence will restart in each section of the document.</li>
+                    <li><b>Continuous</b> - each line of the document will be assigned a sequence number.</li>
+                    <li>The <b>Apply changes to</b> parameter specifies the part of the document you want to assign sequence numbers to. Choose one of the available presets: <b>Current section</b> to apply line numbering to the selected section of the document; <b>This point forward</b> to apply line numbering to the text following the current cursor position; <b>Whole document</b> to apply line numbering to the whole document. The parameter is set to <b>Whole document</b> by default.</li>
+                    <li>Click <b>OK</b> to apply the changes.</li>
+                </ul>
+            </li>
+        </ol>
+        <h2>Removing line numbering</h2>
+        <p>To remove the line numbering sequence,</p>
+        <ol>
+            <li>open the <b>Layout</b> tab located at the top toolbar and click on the <img alt="Line Numbers icon" src="../images/linenumbers_icon.png" /> <b>Line Numbers</b> icon,</li>
+            <li>choose the <b>None</b> option in the opened drop-down menu or choose the <b>Line Numbering Options</b> item in the menu and deactivate the <b>Add line numbering box</b> in the opened <b>Line Numbers</b> window.</li>
+        </ol>
+    </div>
+</body>
+</html>

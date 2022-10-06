@@ -50,11 +50,6 @@ define([
             var key = $el.data('localization');
             $el.html(Messages[key]);
         };
-        var translateAppend = function (i, e) {
-            var $el = $(e);
-            var key = $el.data('localization-append');
-            $el.append(Messages[key]);
-        };
         var translateTitle = function () {
             var $el = $(this);
             var key = $el.data('localization-title');
@@ -66,11 +61,9 @@ define([
             $el.attr('placeholder', Messages[key]);
         };
         $('[data-localization]').each(translateText);
-        $('[data-localization-append]').each(translateAppend);
         $('[data-localization-title]').each(translateTitle);
         $('[data-localization-placeholder]').each(translatePlaceholder);
         $('#pad-iframe').contents().find('[data-localization]').each(translateText);
-        $('#pad-iframe').contents().find('[data-localization-append]').each(translateAppend);
         $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
         $('#pad-iframe').contents().find('[data-localization-placeholder]').each(translatePlaceholder);
     };

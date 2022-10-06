@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>ZZR-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>ZZR-Funktion</h1>
+			<p>Die Funktion <b>ZZR</b> gehört zur Gruppe der Finanzmathematischen Funktionen. Sie gibt die Anzahl der Zahlungsperioden einer Investition zurück, die auf periodischen, gleichbleibenden Zahlungen sowie einem konstanten Zinssatz basiert.</p>
+			<p>Die Formelsyntax der Funktion <b>ZZR</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>ZZR(Zins,Rmz,Bw,[Zw],[F])</em></b></p> 
+			<p><em>Dabei gilt:</em></p>
+				<p style="text-indent: 50px;"><b><em>Zins</em></b> ist der Zinssatz pro Periode.</p> 
+				<p style="text-indent: 50px;"><b><em>Rmz</em></b> ist der Zahlungsbetrag.</p>
+				<p style="text-indent: 50px;"><b><em>Bw</em></b> ist der gegenwärtige Wert der Zahlungen.</p> 
+				<p style="text-indent: 50px;"><b><em>Zw</em></b> ist der Zukunftswert der Investition. Dieses Argument ist optional. Fehlt das Argument <b><em>Zw</em></b>, wird es als 0 (Null) angenommen.</p>
+				<p style="text-indent: 50px;"><b><em>F</em></b> gibt den Zeitraum an, wann die Zahlungen fällig sind. Dieses Argument ist optional. Fehlt das Argument oder ist auf 0 festgelegt, nimmt die Funktion an, dass die Zahlungen am Ende der Periode fällig sind. Ist das Argument 1, werden die Zahlungen zu Beginn des Zeitraums fällig.</p>
+			<p class="note"><b>Hinweis:</b> für alle Argumente werden die Beträge, die Sie zahlen, beispielsweise Einlagen für Sparguthaben oder andere Abhebungen, durch negative Zahlen dargestellt. Beträge, die Sie erhalten, beispielsweise Dividendenzahlungen und andere Einlagen, werden durch positive Zahlen dargestellt.</p>
+			<p>Die nummerischen Werte werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>ZZR</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Finanzmathematische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>ZZR</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="ZZR-Funktion" src="../images/nper.png" /></p>
+		</div>
+	</body>
+</html>

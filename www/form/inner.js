@@ -30,6 +30,8 @@ define([
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
 
+    'cm/addon/edit/closebrackets',
+    'cm/addon/edit/matchbrackets',
     'cm/addon/display/placeholder',
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
@@ -706,7 +708,7 @@ define([
             }
             var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
-                title: Util.fixHTML(data)
+                title: data,
             }, [
                 opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
                 opts.type === 'day' ? h('span.cp-form-weekday-separator', ' - ') : undefined,
@@ -865,7 +867,7 @@ define([
             if (totalMax.value) {
                 $total.find('[data-id]').removeClass('cp-poll-best');
                 totalMax.data.forEach(function (k) {
-                    $total.find('[data-id="'+k+'"]').addClass('cp-poll-best');
+                    $total.find('[data-id="'+ (k.replace(/"/g, '\\"')) + '"]').addClass('cp-poll-best');
                 });
             }
         };
@@ -986,6 +988,12 @@ define([
         });
     });
 
+    var linkClickHandler = function (ev) {
+        ev.preventDefault();
+        var href = ($(this).attr('href') || '').trim();
+        if (!href) { return; }
+        APP.common.openUnsafeURL(href);
+    };
 
     var STATIC_TYPES = {
         md: {
@@ -999,6 +1007,8 @@ define([
                 }, opts.text);
                 var $tag = $(tag);
                 DiffMd.apply(DiffMd.render(opts.text || ''), $tag, APP.common);
+                $tag.find('a').click(linkClickHandler);
+
                 var cursorGetter;
                 return {
                     tag: tag,
@@ -1410,7 +1420,7 @@ define([
                 redraw();
 
                 var hintDiv = h('div.cp-form-conditional-hint', [
-                    h('div.cp-form-conditional-hint', Messages.form_condition_hint)
+                    h('div.cp-form-conditional-hint', Messages.form_conditional_hint)
                 ]);
                 var $hint = $(hintDiv).prependTo(tag);
 
@@ -2677,7 +2687,7 @@ define([
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 
-//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea
+//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
                         TYPES[type].icon.cloneNode(),
@@ -2904,6 +2914,7 @@ define([
         if (content.answers.msg) {
             var $desc = $(description);
             DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
+            $desc.find('a').click(linkClickHandler);
         }
 
         var actions = h('div.cp-form-submit-actions', [
@@ -3370,7 +3381,7 @@ define([
                     if (!model) { return; }
                     content.form[_uid] = {
                         //q: Messages.form_default,
-                        opts: Util.clone(model.defaultOpts),
+                        opts: model.defaultOpts ? Util.clone(model.defaultOpts) : undefined,
                         type: type,
                     };
                     if (full || inSection) {

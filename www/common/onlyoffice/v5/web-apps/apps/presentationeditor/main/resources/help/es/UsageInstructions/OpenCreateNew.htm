@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cree una presentación nueva o abra la existente</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Open a recently edited presentation, create a new one, or return to the list of existing presentations" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Cree una presentación nueva o abra la existente</h1>
+            <h3>Para crear una nueva presentación</h3>
+            <div class="onlineDocumentFeatures">
+                <p>En el <em>editor en línea</em></p>
+                <ol>
+                    <li>haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior,</li>
+                    <li>seleccione la opción <b>Crear nuevo</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>En el <em>editor de escritorio </em></p>
+                <ol>
+                    <li>en la ventana principal del programa, seleccione la opción del menú <b> Presentación</b> de la sección <b>Crear nuevo</b> de la barra lateral izquierda - se abrirá un nuevo archivo en una nueva pestaña,</li>
+                    <li>cuando se hayan realizado todos los cambios deseados, haga clic en el icono <img alt="Icono Guardar" src="../images/save.png" /> <b>Guardar</b> de la esquina superior izquierda o cambie a la pestaña <b>Archivo</b>y seleccione la opción <b>Guardar como</b> del menú.</li>
+                    <li>en la ventana de gestión de archivos, seleccione la ubicación del archivo, especifique su nombre, elija el formato en el que desea guardar el presentación (PPTX, Plantilla de presentación (POTX), ODP, OTP, PDF o PDFA) y haga clic en el botón <b>Guardar</b>.</li>
+                </ol>
+            </div>
+
+            <div class="desktopDocumentFeatures">
+                <h3>Para abrir una presentación existente</h3>
+                <p>En el <em>editor de escritorio </em></p>
+                <ol>
+                    <li>en la ventana principal del programa, seleccione la opción <b>Abrir archivo local</b> en la barra lateral izquierda,</li>
+                    <li>seleccione la presentación deseada en la ventana de gestión de archivos y haga clic en el botón <b>Abrir</b>.</li>
+                </ol>
+                <p>También puede hacer clic con el botón derecho sobre la presentación deseada en la ventana de gestión de archivos, seleccionar la opción <b>Abrir con</b> y elegir la aplicación correspondiente en el menú. Si los archivos de documentos de Office están asociados con la aplicación, también puede abrir presentaciones haciendo doble clic sobre el nombre del archivo en la ventana del explorador de archivos.</p>
+                <p>Todos los directorios a los que ha accedido utilizando el editor de escritorio se mostrarán en la lista de <b>Carpetas recientes</b> para que posteriormente pueda acceder rápidamente a ellos. Haga clic en la carpeta correspondiente para seleccionar uno de los archivos almacenados en ella.</p>
+            </div>
+
+            <h3>Para abrir una presentación recientemente editada</h3>
+            <div class="onlineDocumentFeatures">
+                <p>En el <em>editor en línea</em></p>
+                <ol>
+                    <li>haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior,</li>
+                    <li>seleccione la opción <b>Abrir reciente</b>,</li>
+                    <li>elija la presentación que desee de la lista de documentos recientemente editados.</li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>En el <em>editor de escritorio </em></p>
+                <ol>
+                    <li>en la ventana principal del programa, seleccione la opción <b>Archivos recientes</b> en la barra lateral izquierda,</li>
+                    <li>elija la presentación que desee de la lista de documentos recientemente editados.</li>
+                </ol>
+            </div>
+
+            <p>Para abrir la carpeta donde se encuentra el archivo <span class="onlineDocumentFeatures">en una nueva pestaña del navegador en la <em>versión en línea</em>,</span> <span class="desktopDocumentFeatures">en la ventana del explorador de archivos en la <em>versión de escritorio</em>,</span> haga clic en el icono <img alt="Abrir ubicación de archivo" src="../images/gotodocuments.png" /> <b>Abrir ubicación de archivo</b> en el lado derecho de la cabecera del editor. Como alternativa, puede cambiar a la pestaña <b>Archivo</b> en la barra de herramientas superior y seleccionar la opción <b>Abrir ubicación de archivo</b>.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función AGREGAR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función AGREGAR</h1>
+			<p>La función <b>AGREGAR</b> es una función matemática y trigonométrica. La función se usa para devolver un agregado en una lista o base de datos La función <b>AGREGAR</b> se puede aplicar a diferentes funciones agregadas a una lista o base de datos con la opción de ignorar columnas ocultas y valores de error.</p>
+			<p>La sintaxis de la función <b>AGREGAR</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>AGREGAR(función_núm, opciones, ref1 [, ref2], ...)</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>Función_núm</em></b> es un valor numérico que especifica qué función usar. Los posibles valores se listan en la tabla de abajo.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>función_núm<br /></b></td>
+                    <td><b>Función</b></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">PROMEDIO</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">CONTAR</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">CONTARA</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">PRODUCTO</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="../Functions/stdev-s.htm" onclick="onhyperlinkclick(this)">DESVEST.M</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><a href="../Functions/stdev-p.htm" onclick="onhyperlinkclick(this)">DESVEST.P</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUMA</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td><a href="../Functions/var-s.htm" onclick="onhyperlinkclick(this)">VAR.S</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td><a href="../Functions/var-p.htm" onclick="onhyperlinkclick(this)">VAR.P</a></td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td><a href="../Functions/median.htm" onclick="onhyperlinkclick(this)">MEDIANA</a></td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td><a href="../Functions/mode-sngl.htm" onclick="onhyperlinkclick(this)">MODA.UNO</a></td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td><a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">K.ESIMO.MAYOR</a></td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td><a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">K.ESIMO.MENOR</a></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td><a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">PERCENTIL.INC</a></td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td><a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">CUARTIL.INC</a></td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td><a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">PERCENTIL.EXC</a></td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td><a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">CUARTIL.EXC</a></td>
+                </tr>
+            </table> 
+			<p style="text-indent: 50px;"><b><em>opciones</em></b> es un valor numérico que especifica qué valores deben ignorarse. Los posibles valores se listan en la tabla de abajo.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Valor numérico<br /></b></td>
+                    <td><b>Conducta</b></td>
+                </tr>
+                <tr>
+                    <td>0 u omitido</td>
+                    <td>Ignore las funciones anidadas <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SUBTOTALES</a> y AGREGAR</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Ignore filas ocultas, las funciones anidadas <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SUBTOTALES</a> y AGREGAR</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Ignore valores de error, las funciones anidadas <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SUBTOTALES</a> y AGREGAR</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Ignore filas ocultas, valores de error, las funciones anidadas <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SUBTOTALES</a> y AGREGAR</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>No ignore nada</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Ignore filas ocultas</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Ignore valores de error</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Ignore filas ocultas y valores de error</td>
+                </tr>
+            </table>
+            <p style="text-indent: 50px;"><b><em>Ref1(2)</em></b> es hasta 253 valores numéricos o una referencia al rango de celdas que contiene los valores para los que desea el valor agregado.</p>
+            <p class="note"><b>Nota</b>: si quiere usar una de las siguientes funciones: <a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">K.ESIMO.MAYOR</a>, <a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">K.ESIMO.MENOR</a>, <a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">PERCENTIL.INC</a>, <a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">CUARTIL.INC</a>, <a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">PERCENTIL.EXC</a>, o <a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">CUARTIL.EXC</a>, <b><em>ref1</em></b> deben ser una referencia al rango de la celda y <b><em>ref2</em></b> debe ser el segundo argumento que se necesita para estas funciones (<b><em>k</em></b> o <b><em>cuarto</em></b>).</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Función<br /></b></td>
+                    <td><b>Sintaxis</b></td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">K.ESIMO.MAYOR</a></td>
+                    <td>K.ESIMO.MAYOR(matriz, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">K.ESIMO.MENOR</a></td>
+                    <td>K.ESIMO.MENOR(matriz, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">PERCENTIL.INC</a></td>
+                    <td>PERCENTIL.INC(matriz, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">CUARTIL.INC</a></td>
+                    <td>CUARTIL.INC(matriz, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">PERCENTIL.EXC</a></td>
+                    <td>PERCENTIL.EXC(matriz, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">CUARTIL.EXC</a></td>
+                    <td>CUARTIL.EXC(matriz, k)</td>
+                </tr>
+            </table>
+            <p>Para aplicar la función <b>AGREGAR</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>haga clic en el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de función <b>Matemáticas y trigonometría</b> en la lista,</li>
+			<li>haga clic en la función <b>AGREGAR</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+            <p>La función de abajo muestra el resultado devuelto por la función <b>AGREGAR</b> cuando la función <b>SUMA</b> se aplica.</p>
+			<p style="text-indent: 150px;"><img alt="Función AGREGAR" src="../images/aggregate.png" /></p>
+            <p>La función de abajo muestra el resultado devuelto por la función <b>AGREGAR</b> cuando la función <b>K.ESIMO.MAYOR</b> se aplica,  <b><em>ref1</em></b> es una referencia al rango de celdas, y <b><em>k</em></b> es igual a 2. La función devuelve el segundo valor más grande en celdas A1-A4.</p>
+            <p style="text-indent: 150px;"><img alt="Función AGREGAR" src="../images/aggregate2.png" /></p>
+		</div>
+	</body>
+</html>

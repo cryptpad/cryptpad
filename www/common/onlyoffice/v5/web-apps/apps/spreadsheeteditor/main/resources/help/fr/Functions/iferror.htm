@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction SIERREUR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction SIERREUR</h1>
+			<p>La fonction <b>SIERREUR</b> est l'une des fonctions logiques. Elle est utilisée pour vérifier s'il y a une erreur dans le premier argument de la formule. La fonction renvoie le résultat de la formule s'il n'y a pas d'erreur, ou la valeur_si_erreur si une formule génère une erreur.</p>
+			<p>La syntaxe de la fonction <b>SIERREUR</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>SIERREUR(valeur,valeur_si_erreur,)</em></b></p> 
+			<p>où <b><em>valeur</em></b> et <b><em>valeur_si_erreur</em></b> sont les valeurs saisies à la main ou incluses dans les cellules auxquelles il est fait référence.</p>
+			<p>Pour appliquer la fonction <b>SIERREUR</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Logiques</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>SIERREUR</b>,</li>
+			<li>insérez les arguments requis en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p><em>Par exemple :</em></p>
+			<p>Il y a deux arguments : <em>valeur</em> = <b>A1/B1</b>, <em>valeur_si_erreur</em> = <b>"erreur"</b>, où <b>A1</b> est <b>12</b>, <b>B1</b> est <b>3</b>. La formule dans le premier argument ne contient aucune erreur. Donc, la fonction renvoie le résultat du calcul.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction SIERREUR :" src="../images/noerror.png" /></p>
+			<p>Si nous changeons la valeur de <b>B1</b> <b>3</b> à <b>0</b>, comme la division par zéro n'est pas possible, la fonction renvoie <b>erreur</b> :</p>
+			<p style="text-indent: 150px;"><img alt="Fonction SIERREUR : si erreur" src="../images/iferror.png" /></p>
+		</div>
+	</body>
+</html>

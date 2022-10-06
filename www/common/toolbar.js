@@ -463,15 +463,18 @@ MessengerUI, Messages, Pages) {
     createCollapse = function (toolbar) {
         var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
         var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
+        var notif = h('span.cp-collapsed-notif');
 
         var $button = $(h('button.cp-toolbar-collapse',[
             up,
-            down
+            down,
+            notif
         ]));
         var $up = $(up);
         var $down = $(down);
         toolbar.$bottomR.prepend($button);
         $down.hide();
+        $(notif).hide();
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
@@ -482,6 +485,7 @@ MessengerUI, Messages, Pages) {
             } else {
                 $up.show();
                 $down.hide();
+                $(notif).hide();
             }
         });
     };
@@ -574,7 +578,7 @@ MessengerUI, Messages, Pages) {
             throw new Error("You must provide a `metadataMgr` to display the share button");
         }
 
-        var $shareBlock = $(h('button.cp-toolar-share-button', [
+        var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
             h('i.fa.fa-shhare-alt'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
@@ -582,6 +586,9 @@ MessengerUI, Messages, Pages) {
             hidden: true
         });
         $shareBlock.click(function () {
+            if (!config.metadataMgr.getPrivateData().isTop) {
+                return void UIElements.openDirectlyConfirmation(Common);
+            }
             if (toolbar.isDeleted) {
                 return void UI.warn(Messages.deletedFromServer);
             }
@@ -605,11 +612,14 @@ MessengerUI, Messages, Pages) {
             throw new Error("You must provide a `metadataMgr` to display the access button");
         }
 
-        var $accessBlock = $(h('button.cp-toolar-access-button', [
+        var $accessBlock = $(h('button.cp-toolar-access-button.cp-toolbar-button-primary', [
             h('i.fa.fa-unlock-alt'),
             h('span.cp-button-name', Messages.accessButton)
         ]));
-        $accessBlock.click(function () { 
+        $accessBlock.click(function () {
+            if (!config.metadataMgr.getPrivateData().isTop) {
+                return void UIElements.openDirectlyConfirmation(Common);
+            }
             if (toolbar.isDeleted) {
                 return void UI.warn(Messages.deletedFromServer);
             }
@@ -632,7 +642,7 @@ MessengerUI, Messages, Pages) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
 
-        var $shareBlock = $(h('button.cp-toolar-share-button', [
+        var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
             h('i.fa.fa-shhare-alt'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
@@ -896,7 +906,7 @@ MessengerUI, Messages, Pages) {
             href: href,
             title: buttonTitle,
             'class': "cp-toolbar-link-logo"
-        }).append(UIElements.getSvgLogo());
+        }).append(UI.getIcon(privateData.app));
 
         var onClick = function (e) {
             e.preventDefault();
@@ -1173,6 +1183,9 @@ MessengerUI, Messages, Pages) {
 
         Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders'], {
             onMessage: function (data, el) {
+                if (toolbar.$top.hasClass('toolbar-hidden')) {
+                    $('.cp-collapsed-notif').css('display', '');
+                }
                 if (el) {
                     $(div).prepend(el);
                 }

@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>F.VERT-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>F.VERT-Funktion</h1>
+			<p>Die Funktion <b>F.VERT</b> gehört zur Gruppe der statistischen Funktionen. Sie gibt die Werte der Verteilungsfunktion einer F-verteilten Zufallsvariablen zurück. Mit dieser Funktion können Sie feststellen, ob zwei Datenmengen unterschiedlichen Streuungen unterliegen.</p>
+			<p>Die Formelsyntax der Funktion <b>F.VERT</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>F.VERT(x;Freiheitsgrade1;Freiheitsgrade2;Kumuliert)</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>x</em></b> ist der Wert, für den die Funktion ausgewertet werden soll. Ein nummerischer Wert, der größer ist als 0.</p>
+			<p style="text-indent: 50px;"><b><em>Freiheitsgrade1</em></b> ist die Anzahl der Freiheitsgrade im Zähler. Ein nummerischer Wert, der größer ist als 0 und kleiner als 10^10.</p>
+			<p style="text-indent: 50px;"><b><em>Freiheitsgrade2</em></b> ist die Anzahl der Freiheitsgrade im Nenner. Ein nummerischer Wert, der größer ist als 0 und kleiner als 10^10.</p>
+			<p style="text-indent: 50px;"><b><em>Kumuliert </em></b> ist der Wahrheitswert (WAHR oder FALSCH), der den Typ der Funktion bestimmt Ist Kumuliert mit WAHR belegt, gibt F.VERT den Wert der Verteilungsfunktion zurück. Ist Kumuliert mit FALSCH belegt, gibt F.VERT den Wert der Dichtefunktion zurück.</p>
+            <p>Die Argumente werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+ 			<p>Anwendung der Funktion <b>F.VERT</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Statistische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>F.VERT</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="F.VERT-Funktion" src="../images/f-dist.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ein neues Dokument erstellen oder ein vorhandenes öffnen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Im Dokumenteneditor können Sie eine kürzlich bearbeitete Dokument öffnen, ein neues Dokument erstellen oder zur Liste der vorhandenen Dokument zurückkehren" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ein neues Dokument erstellen oder ein vorhandenes öffnen</h1>
+            <p>Im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> können Sie eine kürzlich bearbeitete Dokument öffnen, ein neues Dokument erstellen oder zur Liste der vorhandenen Dokument zurückkehren.</p>
+			<h3>Ein neues Dokument erstellen:</h3>
+            <div class="onlineDocumentFeatures">
+                <p><em>Online-Editor</em></p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Neu erstellen</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p><em>Desktop-Editor</em></p>
+                <ol>
+                    <li>Wählen Sie im Hauptfenster des Programms das Menü <b>Dokument</b> im Abschnitt <b>Neu erstellen</b> der linken Seitenleiste aus - eine neue Datei wird in einer neuen Registerkarte geöffnet.</li>
+                    <li>Wenn Sie alle gewünschten Änderungen durchgeführt haben, klicken Sie auf das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/save.png" /> in der oberen linken Ecke oder wechseln Sie in die Registerkarte <b>Datei</b> und wählen Sie das Menü <b>Speichern als</b> aus.</li>
+                    <li>Wählen Sie im Fenster Dateiverwaltung den Speicherort, geben Sie den Namen an, wählen Sie das Format aus in dem Sie das Dokument speichern möchten (DOCX, Dokumentvorlage (DOTX), ODT, OTT, RTF, TXT, PDF oder PDFA) und klicken Sie auf die Schaltfläche <b>Speichern</b>.</li>
+                </ol>
+            </div>
+
+            <div class="desktopDocumentFeatures">
+                <h3>Ein vorhandenes Dokument öffnen:</h3>
+                <p><em>Desktop-Editor</em></p>
+                <ol>
+                    <li>Wählen Sie in der linken Seitenleiste im Hauptfenster des Programms den Menüpunkt <b>Lokale Datei öffnen</b>.</li>
+                    <li>Wählen Sie im Fenster Dateiverwaltung das gewünschte Dokument aus und klicken Sie auf die Schaltfläche <b>Öffnen</b>.</li>
+                </ol>
+                <p>Sie können auch im Fenster Dateiverwaltung mit der rechten Maustaste auf das gewünschte Dokument klicken, die Option <b>Öffnen mit</b> auswählen und die gewünschte Anwendung aus dem Menü auswählen. Wenn die Office-Dokumentdateien mit der Anwendung verknüpft sind, können Sie Dokumente auch öffnen, indem Sie im Datei-Explorer-Fenster auf den Dateinamen doppelklicken.</p>
+                <p>Alle Verzeichnisse, auf die Sie mit dem Desktop-Editor zugegriffen haben, werden in der Liste <b>Aktuelle Ordner</b> angezeigt, um Ihnen einen schnellen Zugriff zu ermöglichen. Klicken Sie auf den gewünschten Ordner, um eine der darin gespeicherten Dateien auszuwählen.</p>
+            </div>
+
+                <h3>Öffnen eines kürzlich bearbeiteten Dokuments:</h3>
+            <div class="onlineDocumentFeatures">
+                <p><em>Online-Editor</em></p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Zuletzt verwendet...</b>.</li>
+                    <li>Wählen Sie das gewünschte Dokument aus der Liste mit den zuletzt bearbeiteten Dokumenten aus.</li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p><em>Desktop-Editor</em></p>
+                <ol>
+                    <li>Wählen Sie in der linken Seitenleiste im Hauptfenster des Programms den Menüpunkt <b>Aktuelle Dateien</b>.</li>
+                    <li>Wählen Sie das gewünschte Dokument aus der Liste mit den zuletzt bearbeiteten Dokumenten aus.</li>
+                </ol>
+            </div>
+
+                <p>Um den Ordner in dem die Datei gespeichert ist in der <em>Online-Version</em> <span class="onlineDocumentFeatures">in einem neuen Browser-Tab</span> oder in der <em>Desktop-Version</em> im Fenster <span class="desktopDocumentFeatures">Datei-Explorer</span> zu öffnen, klicken Sie auf der rechten Seite des Editor-Hauptmenüs auf das Symbol <img alt="Dateispeicherort öffnen" src="../images/gotodocuments.png" /> <b>Dateispeicherort öffnen</b>. Alternativ können Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b> wechseln und die Option <b>Dateispeicherort öffnen</b> auswählen.</p>
+            </div>
+	</body>
+</html>

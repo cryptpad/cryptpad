@@ -36,7 +36,6 @@ define([
         init: function () {
             require([
                 'mermaid',
-                'css!/code/mermaid-new.css'
             ], function (_Mermaid) {
                 console.debug("loaded mermaid");
                 if (Mermaid.__stubbed) {
@@ -202,7 +201,7 @@ define([
 
     renderer.code = function (code, language) {
         if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
-        if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
+        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram|GitGraph)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
@@ -346,7 +345,7 @@ define([
             ]),
             h('br'),
             h('a.cp-learn-more', {
-                href: Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#remote-content'),
+                href: Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#remote-content'),
             }, [
                 Messages.resources_learnWhy
             ]),

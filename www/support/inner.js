@@ -49,6 +49,9 @@ define([
             'cp-support-language',
             'cp-support-form',
         ],
+        'debugging': [ // Msg.support_cat_debugging
+            'cp-support-debugging-data',
+        ],
     };
 
     var supportKey = ApiConfig.supportMailbox;
@@ -169,6 +172,10 @@ define([
 
     create['subscribe'] = function () {
         if (!Pages.areSubscriptionsAllowed()) { return; }
+        try {
+            if (common.getMetadataMgr().getPrivateData().plan) { return; }
+        } catch (err) {}
+
         var url = Pages.accounts.upgradeURL;
         var accountsLink = h('a', {
             href: url,
@@ -191,7 +198,7 @@ define([
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true); // Msg.support_formHint, .support_formTitle, .support_formButton
-        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.fr/en/user_guide/index.html');
+        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.org/en/user_guide/index.html');
 
         var form = APP.support.makeForm();
 
@@ -221,6 +228,16 @@ define([
         return $div;
     };
 
+    create['debugging-data'] = function () {
+        var key = 'debugging-data';
+        var $div = makeBlock(key); // Msg.support_debuggingDataTitle.support_debuggingDataHint;
+        var data = APP.support.getDebuggingData().sender;
+
+        var content = h('pre.debug-data', JSON.stringify(data, null, 2));
+        $div.append(content);
+
+        return $div;
+    };
 
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
@@ -231,6 +248,12 @@ define([
         cat.forEach(function (c) {
             APP.$rightside.find('.'+c).show();
         });
+    };
+
+    var icons = {
+        tickets: 'fa-envelope-o',
+        new: 'fa-life-ring',
+        debugging: 'fa-wrench',
     };
 
     var createLeftside = function () {
@@ -246,8 +269,12 @@ define([
                 'class': 'cp-sidebarlayout-category',
                 'data-category': key
             }).appendTo($categories);
-            if (key === 'tickets') { $category.append($('<span>', {'class': 'fa fa-envelope-o'})); }
-            if (key === 'new') { $category.append($('<span>', {'class': 'fa fa-life-ring'})); }
+            var iconClass = icons[key];
+            if (iconClass) {
+                $category.append(h('span', {
+                    class: 'fa ' + iconClass,
+                }));
+            }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');

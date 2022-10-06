@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Text aus einem Bild extrahieren</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Die Beschreibung des OCR-Plugins für ONLYOFFICE Editoren, mit dem Text aus einem Bild extrahiert und in Dokumente eingefügt werden kann" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Text aus einem Bild extrahieren</h1>
+        <p>Mit ONLYOFFICE <a href="https://www.onlyoffice.com/de/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> können Sie Text aus einem Bild (.png .jpg) extrahieren und in Ihr Dokument einfügen.</p>
+        <ol>
+            <li>Öffnen Sie Ihr Dokument und platzieren Sie den Cursor an der Stelle, an der Sie den Text einfügen möchten.</li>
+            <li>Öffnen Sie die Registerkarte <b>Plugins</b> und wählen Sie den Menüpunkt <img alt="OCR Plugin - Symbol" src="../images/ocr.png" /> <b>OCR</b> aus.</li>
+            <li>Klicken Sie auf <b>Datei laden</b> und wählen Sie das Bild aus.</li>
+            <li>Wählen Sie die Erkennungssprache aus dem Drop-Down-Menü <b>Sprache auswählen</b>.</li>
+            <li>Klicken Sie auf <b>Erkennen</b>.</li>
+            <li>Klicken Sie auf <b>Text einfügen</b>.</li>
+        </ol>
+        <p>Sie sollten den eingefügten Text auf Fehler und Layout überprüfen.</p>
+        <img class="gif" alt="OCR Plugin gif" src="../images/ocr_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

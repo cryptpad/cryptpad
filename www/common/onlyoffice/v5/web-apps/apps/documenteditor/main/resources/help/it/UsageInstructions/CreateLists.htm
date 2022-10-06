@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Creare elenchi</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Creare elenchi" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Creare elenchi</h1>
+        <p>Per creare un elenco nel documento,</p>
+        <ol>
+            <li>posiziona il cursore sulla posizione in cui verrà avviato un elenco (può trattarsi di una nuova riga o del testo già inserito),</li>
+            <li>passare alla scheda <b>Home</b> della barra degli strumenti superiore,</li>
+            <li>
+                selezionare il tipo di elenco che si desidera avviare:
+                <ul>
+                    <li><b>Elenco non ordinato</b> con marcatori, viene creato utilizzando l'icona <b>Elenchi puntati</b> <img alt="Elenco non ordinato" src="../images/bullets.png" /> situata nella barra degli strumenti superiore</li>
+                    <li>
+                        <b>Elenco ordinato</b> con cifre o lettere viene creato utilizzando l'icona <b>Elenchi numerati</b> <img alt="Elenco ordinato" src="../images/numbering.png" /> situata nella barra degli strumenti superiore
+                        <p class="note"><b>Nota</b>: fare clic sulla freccia verso il basso accanto all'icona <b>Elenchi puntati</b> o <b>Elenchi numerati</b> per selezionare l'aspetto dell'elenco.</p>
+                    </li>
+                </ul>
+            </li>
+            <li>ora ogni volta che si preme il tasto <b>Invio</b> alla fine della riga apparirà una nuova voce di elenco ordinata o non ordinata. Per evitare questo, premere il tasto <b>Backspace</b> e continuare con il paragrafo di testo comune.</li>
+        </ol>
+        <p>Il programma crea automaticamente elenchi numerati quando si immette la cifra 1 con un punto o una parentesi e uno spazio dopo di essa: <b>1.</b>, <b>1)</b>. Gli elenchi puntati possono essere creati automaticamente quando si immettono i caratteri <b>-</b>, <b>*</b> e uno spazio dopo di essi.</p>
+        <p>È inoltre possibile modificare il rientro del testo negli elenchi e nella relativa nidificazione utilizzando le icone <b>Elenco a più livelli</b> <img alt="Elenco a più livelli" src="../images/outline.png" />, <b>Riduci rientro</b> <img alt="Riduci rientro" src="../images/decreaseindent.png" />, <b>Aumenta rientro</b> <img alt="Aumenta rientro" src="../images/increaseindent.png" /> nella scheda <b>Home</b> della barra degli strumenti superiore.</p>
+        <p class="note"><b>Nota</b>: i parametri di rientro e spaziatura aggiuntivi possono essere modificati nella barra laterale destra e nella finestra delle impostazioni avanzate. Per ulteriori informazioni, leggere la sezione <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Modificare i rientri di paragrafo</a> e <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Impostare l’interliane del paragrafo</a>.</p>
+        <h3>Unire e separare elenchi</h3>
+        <p>Per unire un elenco a quello precedente:</p>
+        <ol>
+            <li>fare clic sulla prima voce del secondo elenco con il tasto destro del mouse,</li>
+            <li>utilizzare l'opzione <b>Unisci all'elenco precedente</b> dal menu contestuale.</li>
+        </ol>
+        <p>Gli elenchi saranno uniti e la numerazione continuerà in conformità con la prima numerazione.</p>
+        <p>Per separare un elenco:</p>
+        <ol>
+            <li>fare clic sulla voce dell'elenco in cui si desidera iniziare un nuovo elenco con il tasto destro del mouse,</li>
+            <li>utilizzare l'opzione <b>Inizia nuovo elenco</b> dal menu contestuale.</li>
+        </ol>
+        <p>L'elenco verrà separato e la numerazione nel secondo elenco inizierà di nuovo.</p>
+        <h3>Modificare la numerazione</h3>
+        <p>Per continuare la numerazione sequenziale nel secondo elenco in base alla numerazione dell'elenco precedente:</p>
+        <ol>
+            <li>fare clic sulla prima voce del secondo elenco con il tasto destro del mouse,</li>
+            <li>utilizzare l'opzione <b>Continua la numerazione</b> dal menu contestuale.</li>
+        </ol>
+        <p>La numerazione continuerà in conformità con la prima numerazione dell'elenco.</p>
+        <p>Per impostare un determinato valore iniziale di numerazione:</p>
+        <ol>
+            <li>fare clic sulla voce dell'elenco in cui si desidera applicare un nuovo valore di numerazione con il pulsante destro del mouse,</li>
+            <li>utilizzare l'opzione <b>Imposta valore di numerazione</b> dal menu contestuale,</li>
+            <li>nella nuova finestra che si apre, impostare il valore numerico necessario e fare clic sul pulsante <b>OK</b>.</li>
+        </ol>
+        <h3>Modificare le impostazioni dell'elenco</h3>
+        <p>Per modificare le impostazioni dell'elenco puntato o numerato, ad esempio un tipo di punto elenco/numero, l'allineamento, le dimensioni e il colore:</p>
+        <ol>
+            <li>fare clic su una voce di elenco esistente o selezionare il testo che si desidera formattare come elenco,</li>
+            <li>fare click sull’icona <b>Elenchi puntati</b> <img alt="Elenchi puntati" src="../images/bullets.png" /> o <b>Elenchi numerati</b> <img alt="Elenchi numerati" src="../images/numbering.png" /> inella scheda <b>Home</b> della barra degli strumenti superiore,</li>
+            <li>selezionare l'opzione <b>Impostazioni elenco</b>,</li>
+            <li>
+                si aprirà la finestra <b>Impostazioni elenco</b>. La finestra delle impostazioni dell'elenco puntato è simile alla seguente:
+                <p><img alt="Impostazioni elenco" src="../images/bulletedlistsettings.png" /></p>
+                <p>La finestra delle impostazioni dell'elenco numerato è simile alla seguente:</p>
+                <p><img alt="Impostazioni elenco" src="../images/orderedlistsettings.png" /></p>
+                <p>Per l'elenco puntato, è possibile scegliere un carattere utilizzato come <b>punto elenco</b>, mentre per l'elenco numerato è possibile scegliere il <b>tipo di numerazione</b>. Le opzioni <b>Allineamento</b>, <b>Dimensione</b> e <b>Colore</b> sono le stesse sia per gli elenchi puntati che per quelli numerati.</p>
+                <ul>
+                    <li><b>Punto elenco</b> - consente di selezionare il carattere necessario utilizzato per l'elenco puntato. Quando si fa clic sul campo <b>Carattere e simbolo</b>, viene visualizzata la finestra <b>Simbolo</b> che consente di scegliere uno dei caratteri disponibili. Per ulteriori informazioni su come lavorare con i simboli, è possibile fare riferimento a <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">questo articolo</a>.</li>
+                    <li><b>Tipo</b> - consente di selezionare il tipo di numerazione necessaria utilizzata per l'elenco numerato. Sono disponibili le seguenti opzioni: <em>Nessuno</em>, <em>1, 2, 3,...</em>, <em>a, b, c,...</em>, <em>A, B, C,...</em>, <em>i, ii, iii,...</em>, <em>I, II, III,...</em>.</li>
+                    <li><b>Allineamento</b> - consente di selezionare il tipo di allineamento del punto elenco/numero necessario, utilizzato per allineare i punti elenco/numeri orizzontalmente all'interno dello spazio a loro designato. I tipi di allineamento disponibili sono i seguenti: <em>A sinistra</em>, <em>Al centro</em>, <em>A destra</em>.</li>
+                    <li><b>Dimensione</b> - consente di selezionare la dimensione necessaria del punto elenco/numero. L'opzione <em>Come un testo</em> è selezionata per impostazione predefinita. Quando questa opzione è selezionata, la dimensione del punto elenco o del numero corrisponde alla dimensione del testo. È possibile scegliere una delle dimensioni predefinite da <em>8</em> a <em>96</em>.</li>
+                    <li><b>Colore</b> - permette di selezionare il colore necessario del punto elenco/numero. L'opzione <em>Come un testo</em> è selezionata per impostazione predefinita. Quando questa opzione è selezionata, il colore del punto elenco o del numero corrisponde al colore del testo. È possibile scegliere l'opzione <b>Automatico</b> per applicare il colore automatico oppure selezionare uno dei <em>colori del tema</em> o i <em>colori standard</em> nella tavolozza oppure <em>specificare un colore personalizzato</em>.</li>
+                </ul>
+                <p>Tutte le modifiche vengono visualizzate nel campo <b>Anteprima</b>.</p>
+            </li>
+            <li>fare clic su <b>OK</b> per applicare le modifiche e chiudere la finestra delle impostazioni.</li>
+        </ol>
+        <p>Per modificare le impostazioni dell'elenco a più livelli,</p>
+        <ol>
+            <li>fare clic su una voce dell’elenco,</li>
+            <li>fare clic sull'icona <b>Elenco a più livelli</b> <img alt="Elenco a più livelli" src="../images/outline.png" /> nella scheda <b>Home</b> della barra degli strumenti superiore,</li>
+            <li>selezionare l'opzione <b>Impostazioni elenco</b>,</li>
+            <li>
+                si aprirà la finestra <b>Impostazioni elenco</b>. La finestra delle impostazioni Elenco a più livelli è simile alla seguente:
+                <p><img alt="Elenco a più livelli - Impostazioni elenco" src="../images/multilevellistsettings.png" /></p>
+                <p>Scegliere il livello desiderato dell'elenco nel campo <b>Livello</b> a sinistra, quindi utilizzare i pulsanti in alto per regolare l'aspetto del punto elenco o del numero per il livello selezionato:</p>
+                <ul>
+                    <li><b>Tipo</b> - consente di selezionare il tipo di numerazione necessario utilizzato per l'elenco numerato o il carattere necessario utilizzato per l'elenco puntato. Le seguenti opzioni sono disponibili per l'elenco numerato: <em>Nessuno</em>, <em>1, 2, 3,...</em>, <em>a, b, c,...</em>, <em>A, B, C,...</em>, <em>i, ii, iii,...</em>, <em>I, II, III,...</em>. Per l'elenco puntato, è possibile scegliere uno dei simboli predefiniti o utilizzare l'opzione <b>Nuovo punto elenco</b>. Quando si fa clic su questa opzione, viene visualizzata la finestra <b>Simbolo</b> che consente di scegliere uno dei caratteri disponibili. Per ulteriori informazioni su come lavorare con i simboli, è possibile fare riferimento a <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">questo articolo</a>.</li>
+                    <li><b>Allineamento</b> - consente di selezionare il tipo di allineamento di punti elenco/numeri necessario, utilizzato per allineare i punti elenco/numeri orizzontalmente all'interno dello spazio a loro designato all'inizio del paragrafo. I tipi di allineamento disponibili sono i seguenti: <em>A sinistra</em>, <em>Al centro</em>, <em>A destra</em>.</li>
+                    <li><b>Dimensione</b> - consente di selezionare la dimensione necessaria del punto elenco/numero. L'opzione <em>Come un testo</em> è selezionata per impostazione predefinita. È possibile scegliere una delle dimensioni predefinite da <em>8</em> a <em>96</em>.</li>
+                    <li><b>Colore</b> - consente di selezionare il colore del punto elenco/numero necessario. L'opzione <em>Come un testo</em> è selezionata per impostazione predefinita. Quando questa opzione è selezionata, il colore del punto elenco o del numero corrisponde al colore del testo. È possibile scegliere l'opzione <b>Automatico</b> per applicare il colore automatico, oppure selezionare uno dei <em>colori del tema</em> o <em>colori standard</em> nella tavolozza o <em>specificare un colore personalizzato</em>.</li>
+                </ul>
+                <p>Tutte le modifiche vengono visualizzate nel campo <b>Anteprima</b>.</p>
+            </li>
+            <li>fare clic su <b>OK</b> per applicare le modifiche e chiudere la finestra delle impostazioni.</li>
+        </ol>
+    </div>
+</body>
+</html>

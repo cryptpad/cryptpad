@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Use formatted tables</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Apply a table template to the selected cell range and automatically enable the filter." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Use formatted tables</h1>
+            <h3>Create a new formatted table</h3>
+            <p>To make it easier for you to work with data, the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> allows you to apply a table template to the selected cell range and automatically enable the filter. To do that,</p>
+            <ol>
+                <li>select a range of cells you need to format,</li>
+                <li>click the <b>Format as table template</b> <img alt="Format as table template" src="../images/tabletemplate.png" /> icon situated on the <b>Home</b> tab of the top toolbar.</li>
+                <li>select the required template in the gallery,</li>
+                <li>in the opened pop-up window, check the cell range to be formatted as a table,</li>
+                <li>check the <b>Title</b> if you wish the table headers to be included in the selected cell range, otherwise, the header row will be added at the top while the selected cell range will be moved one row down,</li>
+                <li>click the <b>OK</b> button to apply the selected template.</li>
+            </ol>
+            <p>The template will be applied to the selected range of cells, and you will be able to edit the table headers and <a href="SortData.htm" onclick="onhyperlinkclick(this)">apply the filter</a> to work with your data.</p>
+            <p>It's also possible to insert a formatted table using the <b>Table</b> button on the <b>Insert</b> tab. In this case, the default table template is applied.</p>
+            <p class="note"><b>Note</b>: once you create a new formatted table, the <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">default name</a> (<em>Table1</em>, <em>Table2</em>, etc.) will be automatically assigned to the table. You can change this name making it more meaningful and use it for further work.</p>
+            <p>If you enter a new value in the cell below the last row of the table (if the table does not have the Total row) or in the cell to the right of the last column of the table, the formatted table will be automatically extended to include a new row or column. If you do not want to expand the table, click the <b>Paste</b> special button that will appear and select the <b>Undo table autoexpansion</b> option. Once you undo this action, the <b>Redo table autoexpansion</b> option will be available in this menu.</p>
+            <p><img alt="Undo table autoexpansion" src="../images/undoautoexpansion.png" /></p>
+            <p class="note"><b>Note</b>: To enable/disable table auto-expansion, select the <b>Stop automatically expanding tables</b> option in the <b>Paste</b> special button menu or go to <b>Advanced Settings</b> -> <b>Spell Checking</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b> -> <b>AutoFormat As You Type</b>.</p>
+            <h3>Select rows and columns</h3>
+            <p>To select an entire row in the formatted table, move the mouse cursor over the left border of the table row until it turns into the black arrow <img alt="Select row" src="../images/selectrow_cursor.png" />, then left-click.</p>
+            <p><img alt="Select row" src="../images/selectrow.png" /></p>
+            <p>To select an entire column in the formatted table, move the mouse cursor over the top edge of the column header until it turns into the black arrow <img alt="Select column" src="../images/selectcolumn_cursor.png" />, then left-click. If you click once, the column data will be selected (as it is shown on the image below); if you click twice, the entire column including the header will be selected.</p>
+            <p><img alt="Select column" src="../images/selectcolumn.png" /></p>
+            <p>To select an entire formatted table, move the mouse cursor over the upper left corner of the formatted table until it turns into the diagonal black arrow <img alt="Select table" src="../images/selecttable_cursor.png" />, then left-click.</p>
+            <p><img alt="Select table" src="../images/selecttable.png" /></p>
+            <h3>Edit formatted tables</h3>
+            <p>Some of the table settings can be changed using the <b>Table settings</b> tab of the right sidebar that will open if you select at least one cell within the table with the mouse and click the <b>Table settings</b> <img alt="Table settings icon" src="../images/table_settings_icon.png" /> icon on the right.</p>
+            <p><img alt="Table settings tab" src="../images/tablesettingstab.png" /></p>
+            <p>The <b>Rows</b> and <b>Columns</b> sections on the top allow you to emphasize certain rows/columns applying specific formatting to them, or highlight different rows/columns with different background colors to clearly distinguish them. The following options are available:</p>
+            <ul>
+                <li><b>Header</b> - allows you to display the header row.</li>
+                <li>
+                    <b>Total</b> - adds the <b>Summary</b> row at the bottom of the table.
+                    <p class="note"><b>Note</b>: if this option is selected, you can also select a function to calculate the summary values. Once you select a cell in the <b>Summary</b> row, the <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> button will be available to the right of the cell. Click it and choose the necessary function from the list: <em>Average</em>, <em>Count</em>, <em>Max</em>, <em>Min</em>, <em>Sum</em>, <em>StdDev</em>, or <em>Var</em>. The <em>More functions</em> option allows you to open the <b>Insert Function</b> window and choose any other function. If you choose the <em>None</em> option, the currently selected cell in the <b>Summary</b> row will not display a summary value for this column.</p>
+                    <p><img alt="Summary" src="../images/summary.png" /></p>
+                </li>
+                <li><b>Banded</b> - enables the background color alternation for odd and even rows.</li>
+                <li><b>Filter button</b> - allows you to display the drop-down arrows <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in each cell of the header row. This option is only available when the <b>Header</b> option is selected.</li>
+                <li><b>First</b> - emphasizes the leftmost column in the table with special formatting.</li>
+                <li><b>Last</b> - emphasizes the rightmost column in the table with special formatting.</li>
+                <li><b>Banded</b> - enables the background color alternation for odd and even columns.</li>
+            </ul>
+            <p>
+                The <b>Select From Template</b> section allows you to choose one of the predefined tables styles. Each template combines certain formatting parameters, such as a background color, border style, row/column banding, etc.
+                Depending on the options checked in the <b>Rows</b> and/or <b>Columns</b> sections above, the templates set will be displayed differently. For example, if you've checked the <b>Header</b> option in the <b>Rows</b> section and the <b>Banded</b> option in the <b>Columns</b> section, the displayed templates list will include only templates with the header row and banded columns enabled:
+            </p>
+            <p><img alt="Templates list" src="../images/templateslist.png" /></p>
+            <p>If you want to remove the current table style (background color, borders, etc.) without removing the table itself, apply the <b>None</b> template from the template list:</p>
+            <p><img alt="None templates" src="../images/nonetemplate.png" /></p>
+            <p>The <b>Resize table</b> section allows you to change the cell range the table formatting is applied to. Click the <b>Select Data</b> button - a new pop-up window will open. Change the link to the cell range in the entry field or select the necessary cell range in the worksheet with the mouse and click the <b>OK</b> button.</p>
+            <p class="note"><b>Note</b>: The headers must remain in the same row, and the resulting table range must overlap the original table range.</p>
+            <p><img alt="Resize table" src="../images/resizetable.png" /></p>
+            <p>The <b>Rows & Columns</b> <img alt="Rows & Columns" src="../images/rowsandcolumns.png" /> section allows you to perform the following operations:</p>
+            <ul>
+                <li><b>Select</b> a row, column, all columns data excluding the header row, or the entire table including the header row.</li>
+                <li><b>Insert</b> a new row above or below the selected one as well as a new column to the left or the right of the selected one.</li>
+                <li><b>Delete</b> a row, column (depending on the cursor position or the selection), or the entire table.</li>
+            </ul>
+            <p class="note"><b>Note</b>: the options of the <b>Rows & Columns</b> section are also accessible from the <b>right-click menu</b>.</p>
+            <p>The <img alt="Remove duplicates" src="../images/removeduplicates.png" /> <b>Remove duplicates</b> option can be used if you want to remove duplicate values from the formatted table. For more details on removing duplicates, please refer to <a href="RemoveDuplicates.htm" onclick="onhyperlinkclick(this)">this page</a>.</p>
+            <p>The <img alt="Convert to range" src="../images/converttorange.png" /> <b>Convert to range</b> option can be used if you want to transform the table into a regular data range removing the filter but preserving the table style (i.e. cell and font colors, etc.). Once you apply this option, the <b>Table settings</b> tab on the right sidebar will be unavailable.</p>
+            <p>The <img alt="Insert slicer" src="../images/insertslicer.png" /> <b>Insert slicer</b> option is used to create a slicer for the formatted table. For more details on working with slicers, please refer to <a href="Slicers.htm" onclick="onhyperlinkclick(this)">this page</a>.</p>
+            <p>The <img alt="Insert pivot table" src="../images/insertpivot.png" /> <b>Insert pivot table</b> option is used to create a pivot table on the base of the formatted table. For more details on working with pivot tables, please refer to <a href="PivotTables.htm" onclick="onhyperlinkclick(this)">this page</a>.</p>
+            <h3>Adjust formatted table advanced settings</h3>
+            <p>To change the advanced table properties, use the <b>Show advanced settings</b> link on the right sidebar. The 'Table - Advanced Settings' window will open:</p>
+            <p><img alt="Table - Advanced Settings" src="../images/tableadvancedsettings.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows you to specify the <b>Title</b> and the <b>Description</b> which will be read to people with vision or cognitive impairments to help them better understand what information the table contains.</p>
+            <p class="note"><b>Note</b>: To enable/disable table auto-expansion, go to <b>Advanced Settings</b> -> <b>Spell Checking</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b> -> <b>AutoFormat As You Type</b>.</p>
+        </div>
+	</body>
+</html>

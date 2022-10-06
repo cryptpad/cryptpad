@@ -5,7 +5,7 @@ define([
 ], function (ApiConfig, nThen, Util) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v4';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v5';
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
@@ -113,6 +113,27 @@ define([
             return '<m_nFormatTo>'+id+'</m_nFormatTo>';
         };
 
+        // Sanitize file names
+        var illegalRe = /[\/\?<>\\:\*\|"]/g;
+        var controlRe = /[\x00-\x1f\x80-\x9f]/g;
+        var reservedRe = /^\.+$/;
+        var safeRe = /[&'%!"{}[\]]/g;
+        var sanitize = function (input) {
+            if (typeof input !== 'string') { return 'file'; }
+            var s = input.split('.');
+            var ext = s.pop() || 'bin';
+            var name = s.join('');
+            var replacement = '';
+            console.error(name);
+            var sanitized = name
+                .replace(illegalRe, replacement)
+                .replace(controlRe, replacement)
+                .replace(reservedRe, replacement)
+                .replace(safeRe, replacement);
+            sanitized = sanitized || 'file';
+            return sanitized.slice(0, 255) + '.' + ext;
+        };
+
         var x2tConvertDataInternal = function(x2t, obj) {
             var data = obj.data;
             var fileName = obj.fileName;
@@ -207,6 +228,7 @@ define([
 
         var convert = function (obj, cb) {
             console.error(obj);
+            obj.fileName = sanitize(obj.fileName);
             getX2T(function (x2t) {
                 // Fonts
                 fetchFonts(x2t, obj, function () {

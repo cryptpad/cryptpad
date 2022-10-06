@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten ausschneiden/kopieren/einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Cut/copy/paste data using the keyboard shortcuts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Daten ausschneiden/kopieren/einfügen</h1>
+            <h3>Zwischenablage verwenden</h3>
+            <p>Um die Daten in Ihrer aktuellen Kalkulationstabelle auszuschneiden, zu kopieren oder einzufügen, nutzen Sie die entsprechenden Optionen aus dem Rechtsklickmenü oder die Symbole des <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a>, die auf jeder beliebigen Registerkarte in der oberen Symbolleiste verfügbar sind:</p>
+            <ul>
+                <li><p><b>Ausschneiden</b> - wählen Sie die entsprechenden Daten aus und nutzen Sie die Option <b>Ausschneiden</b> im Rechtsklickmenü, um die gewählten Daten zu löschen und in der Zwischenablage des Rechners zu speichern. <span class="onlineDocumentFeatures">Die ausgeschnittenen Daten können später an einer anderen Stelle in derselben Tabelle wieder eingefügt werden.</span></p></li>
+                <li><p><b>Kopieren</b> – wählen Sie die gewünschten Daten aus und klicken Sie im Rechtsklickmenü auf <b>Kopieren</b> <img alt="Kopieren" src="../images/copy.png" /> oder klicken Sie in der oberen Symbolleiste auf das Symbol <b>Kopieren</b>, um die Auswahl in die Zwischenablage Ihres Computers zu kopieren. <span class="onlineDocumentFeatures">Die kopierten Daten können später an eine andere Stelle in demselben Blatt, in eine andere Tabelle oder in ein anderes Programm eingefügt werden.</span></p></li>
+                <li><p><b>Einfügen</b> - wählen Sie die gewünschte Stelle aus und klicken Sie in der oberen Symbolleiste auf <b>Einfügen</b> <img alt="Einfügen" src="../images/paste.png" /> oder klicken Sie mit der rechten Maustaste auf die gewünschte Stelle und wählen Sie <b>Einfügen</b> aus der Menüleiste aus, um die vorher kopierten bzw. ausgeschnittenen Daten aus der Zwischenablage an der aktuellen Cursorposition einzufügen. <span class="onlineDocumentFeatures">Die Daten können vorher aus demselben Blatt, einer anderen Tabelle oder einem anderen Programm kopiert werden.</span></p>
+                </li>
+            </ul>
+            <p><span class="onlineDocumentFeatures">In der <em>Online-Version</em> können nur die folgenden Tastenkombinationen zum Kopieren oder Einfügen von Daten aus/in eine andere Tabelle oder ein anderes Programm verwendet werden.</span> <span class="desktopDocumentFeatures">In der <em>Desktop-Version</em> können sowohl die entsprechenden Schaltflächen/Menüoptionen als auch Tastenkombinationen für alle Kopier-/Einfügevorgänge verwendet werden:</span></p>
+            <ul>
+                <li><b>STRG+X</b> - Ausschneiden;</li>
+                <li><b>STRG+C</b> - Kopieren;</li>
+                <li><b>STRG+V</b> - Einfügen.</li>
+            </ul>
+            <p class="note"><b>Hinweis</b>: Wenn Sie Daten innerhalb einer Kalkulationstabelle ausschneiden und einfügen wollen, können Sie die gewünschte(n) Zelle(n) auch einfach auswählen. Wenn Sie nun den Mauszeiger über die Auswahl bewegen ändert sich der Zeiger in das <img alt="Pfeil" src="../images/arrow.png" /> Symbol und Sie können die Auswahl in die gewünschte Position ziehen.</p>
+            <h3>Inhalte einfügen mit Optionen</h3>
+            <p>Wenn Sie den kopierten Text eingefügt haben, erscheint neben der unteren rechten Ecke der eingefügten Zelle(n) das Menü <b>Einfügeoptionen</b> <img alt="Einfügen mit Sonderoptionen" src="../images/pastespecialbutton.png" />. Klicken Sie auf diese Schaltfläche, um die gewünschte Einfügeoption auszuwählen.</p>
+            <p>Für das Eifügen von Zellen/Zellbereichen mit formatierten Daten sind die folgenden Optionen verfügbar:</p>
+            <ul>
+                <li><em>Einfügen</em> - der Zellinhalt wird einschließlich Datenformatierung eingefügt. Diese Option ist standardmäßig ausgewählt.</li>
+                <li>Wenn die kopierten Daten Formeln enthalten, stehen folgende Optionen zur Verfügung:<ul>
+                        <li><em>Nur Formel einfügen</em> - ermöglicht das Einfügen von Formeln ohne Einfügen der Datenformatierung.</li>
+                        <li><em>Formel + Zahlenformat</em> - ermöglicht das Einfügen von Formeln mit der auf Zahlen angewendeten Formatierung.</li>
+                        <li><em>Formel + alle Formatierungen</em> - ermöglicht das Einfügen von Formeln mit allen Datenformatierungen.</li>
+                        <li><em>Formel ohne Rahmenlinien</em> - ermöglicht das Einfügen von Formeln mit allen Datenformatierungen außer Zellenrahmen.</li>
+                        <li><em>Formel + Spaltenbreite</em> - ermöglicht das Einfügen von Formeln mit allen Datenformatierungen einschließlich Breite der Quellenspalte für den Zellenbereich, in den Sie die Daten einfügen.</li>
+                    </ul>
+                </li>
+                <li>Die folgenden Optionen ermöglichen das Einfügen des Ergebnisses der kopierten Formel, ohne die Formel selbst einzufügen:<ul>
+                        <li><em>Nur Wert einfügen</em> - ermöglicht das Einfügen der Formelergebnisse ohne Einfügen der Datenformatierung.</li>
+                        <li><em>Wert + Zahlenformat</em> - ermöglicht das Einfügen der Formelergebnisse mit der auf Zahlen angewendeten Formatierung.</li>
+                        <li><em>Wert + alle Formatierungen</em> - ermöglicht das Einfügen der Formelergebnisse mit allen Datenformatierungen.</li>
+                    </ul>
+                </li>
+                <li><em>Nur Formatierung einfügen</em> - ermöglicht das Einfügen der Zellenformatierung ohne Einfügen des Zelleninhalts.</li>
+                <li><em>Transponieren</em> - ermöglicht das Einfügen von Daten, die Spalten in Zeilen und Zeilen in Spalten ändern. Diese Option ist nur für normale Datenbereiche verfügbar und nicht für formatierte Tabellen.</li>
+            </ul>
+            <p><img alt="Einfügeoptionen" src="../images/pastespecial.png" /></p>
+            <p>Wenn Sie den Inhalt einer einzelnen Zelle oder eines Textes in AutoFormen einfügen, sind die folgenden Optionen verfügbar:</p>
+            <ul>
+                <li><em>Quellenformatierung</em> - die Quellformatierung der kopierten Daten wird beizubehalten.</li>
+                <li><em>Zielformatierung</em> - ermöglicht das Anwenden der bereits für die Zelle/AutoForm verwendeten Formatierung auf die eingefügten Daten.</li>
+            </ul>
+            <p>Zum Einfügen von durch Trennzeichen getrenntem Text, der aus einer <b>.txt</b> -Datei kopiert wurde, stehen folgende Optionen zur Verfügung:</p>
+            <p class="note">Der durch Trennzeichen getrennte Text kann mehrere Datensätze enthalten, wobei jeder Datensatz einer einzelnen Tabellenzeile entspricht. Jeder Datensatz kann mehrere durch Trennzeichen getrennte Textwerte enthalten (z. B. Komma, Semikolon, Doppelpunkt, Tabulator, Leerzeichen oder ein anderes Zeichen). Die Datei sollte als Klartext-Datei <b>.txt</b> gespeichert werden.</p>
+            <ul>
+                <li><em>Nur Text beibehalten</em> - Ermöglicht das Einfügen von Textwerten in eine einzelne Spalte, in der jeder Zelleninhalt einer Zeile in einer Quelltextdatei entspricht.</li>
+                <li><em>Textimport-Assistent verwenden</em> - Ermöglicht das Öffnen des <b>Textimport-Assistenten</b>, mit dessen Hilfe Sie die Textwerte auf einfache Weise in mehrere Spalten aufteilen können, wobei jeder durch ein Trennzeichen getrennte Textwert in eine separate Zelle eingefügt wird.<p>Wählen Sie im Fenster <b>Textimport-Assistent</b> das Trennzeichen aus der Dropdown-Liste <b>Trennzeichen</b> aus, das für die durch Trennzeichen getrennten Daten verwendet wurde. Die in Spalten aufgeteilten Daten werden im Feld <b>Vorschau</b> unten angezeigt. Wenn Sie mit dem Ergebnis zufrieden sind, drücken Sie die Taste <b>OK</b>.</p>
+                </li>
+            </ul>
+            <p><img alt="Textimport-Assistent" src="../images/textimportwizard.png" /></p>
+            <p>Wenn Sie durch Trennzeichen getrennte Daten aus einer Quelle eingefügt haben die keine reine Textdatei ist (z. B. Text, der von einer Webseite kopiert wurde usw.), oder wenn Sie die Funktion <em>Nur Text beibehalten</em> angewendet haben und nun die Daten aus einer einzelnen Spalte in mehrere Spalten aufteilen möchten, können Sie die Option <b>Text zu Spalten</b> verwenden.</p>
+            <p>Daten in mehrere Spalten aufteilen:</p>
+            <ol>
+                <li>Wählen Sie die gewünschte Zelle oder Spalte aus, die Daten mit Trennzeichen enthält.</li>
+                <li>Klicken Sie auf der rechten Seitenleiste auf die Schaltfläche <b>Text zu Spalten</b>. Der <b>Assistent Text zu Spalten</b> wird geöffnet.</li>
+                <li>Wählen Sie in der Dropdown-Liste <b>Trennzeichen</b> das Trennzeichen aus, das Sie für die durch Trennzeichen getrennten Daten verwendet haben, schauen Sie sich die Vorschau im Feld darunter an und klicken Sie auf <b>OK</b>.</li>
+            </ol>
+            <p>Danach befindet sich jeder durch das Trennzeichen getrennte Textwert in einer separaten Zelle.</p>
+            <p class="note">Befinden sich Daten in den Zellen rechts von der Spalte, die Sie teilen möchten, werden diese überschrieben.</p>
+            <h3>Auto-Ausfülloption</h3>
+            <p>Wenn Sie mehrere Zellen mit denselben Daten ausfüllen wollen, verwenden Sie die Option <b>Auto-Ausfüllen</b>:</p>
+            <ol>
+                <li>Wählen Sie eine Zelle/einen Zellenbereich mit den gewünschten Daten aus.</li>
+                <li>Bewegen Sie den Mauszeiger über den Füllpunkt in der rechten unteren Ecke der Zelle. Der Cursor wird zu einem schwarzen Pluszeichen:<p><img alt="Auto-Ausfüllen" src="../images/autofill.png" /></p>
+                </li>
+                <li>Ziehen Sie den Ziehpunkt über die angrenzenden Zellen, die Sie mit den ausgewählten Daten füllen möchten.</li>
+            </ol>
+            <p class="note"><b>Hinweis</b>: Wenn Sie eine Reihe von Zahlen (z. B. 1, 2, 3, 4...; 2, 4, 6, 8... usw.) oder Datumsangaben erstellen wollen, geben Sie mindestens zwei Startwerte ein und erweitern Sie die Datenreihe, indem Sie beide Zellen markieren und dann den Ziehpunkt ziehen bis Sie den gewünschten Maximalwert erreicht haben.</p>
+            <h3>Zellen in einer Spalte mit Textwerten füllen</h3>
+            <p>Wenn eine Spalte in Ihrer Tabelle einige Textwerte enthält, können Sie einfach jeden Wert in dieser Spalte ersetzen oder die nächste leere Zelle ausfüllen, indem Sie einen der bereits vorhandenen Textwerte auswählen.</p>
+            <p>Klicken Sie mit der rechten Maustaste auf die gewünschte Zelle und wählen Sie im Kontextmenü die Option <b>Aus Dropdown-Liste auswählen</b>.</p>
+            <p><img alt="Aus Dropdown-Liste auswählen" src="../images/selectfromlist.png" /></p>
+            <p>Wählen Sie einen der verfügbaren Textwerte, um den aktuellen Text zu ersetzen oder eine leere Zelle auszufüllen.</p>
+            
+        </div>
+	</body>
+</html>

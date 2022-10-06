@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'cptools';
-  src:  url('fonts/cptools.eot?6tk5ck');
-  src:  url('fonts/cptools.eot?6tk5ck#iefix') format('embedded-opentype'),
-    url('fonts/cptools.ttf?6tk5ck') format('truetype'),
-    url('fonts/cptools.woff?6tk5ck') format('woff'),
-    url('fonts/cptools.svg?6tk5ck#cptools') format('svg');
+  src:  url('fonts/cptools.eot?pmxg4b');
+  src:  url('fonts/cptools.eot?pmxg4b#iefix') format('embedded-opentype'),
+    url('fonts/cptools.ttf?pmxg4b') format('truetype'),
+    url('fonts/cptools.woff?pmxg4b') format('woff'),
+    url('fonts/cptools.svg?pmxg4b#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,6 +26,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.cptools-drive:before {
+  content: "\e920";
+}
 .cptools-form-conditional:before {
   content: "\e900";
 }

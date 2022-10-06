@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -11,9 +12,18 @@ define([
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/customize/pages.js',
-], function ($, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
+], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
     var Share = {};
+
+    var embeddableApps = [
+        'code',
+        'form',
+        'kanban',
+        'pad',
+        'slide',
+        'whiteboard',
+    ].map(app => `/${app}/`);
 
     var createShareWithFriends = function (config, onShare, linkGetter) {
         var common = config.common;
@@ -291,7 +301,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders"));
+            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders"));
         });
         return link;
     };
@@ -720,7 +730,7 @@ define([
         opts.access = true; // Allow the use of the modal even if the pad is not stored
 
         var hashes = opts.hashes;
-        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return; }
+        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return cb("NO_HASHES"); }
 
         var teams = getEditableTeams(common, opts);
         opts.teams = teams;
@@ -771,7 +781,7 @@ define([
             icon: "fa fa-link",
             active: !contactsActive,
         }];
-        if (!opts.static) {
+        if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,
                 title: Messages.share_embedCategory,
@@ -965,11 +975,16 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !hasFriends,
-        }, {
-            getTab: getFileEmbedTab,
-            title: Messages.share_embedCategory,
-            icon: "fa fa-code",
         }];
+
+        if (ApiConfig.enableEmbedding) {
+            tabs.push({
+                getTab: getFileEmbedTab,
+                title: Messages.share_embedCategory,
+                icon: "fa fa-code",
+            });
+        }
+
         Modal.getModal(common, opts, tabs, cb);
     };
 

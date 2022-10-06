@@ -61,7 +61,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 4; // version of the .bin, patches and ChainPad formats
+    var NEW_VERSION = 5; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
@@ -215,7 +215,7 @@ define([
             var tabId = metadataMgr.getNetfluxId() + '-' + obj.id;
             if (content.ids[tabId]) {
                 delete content.ids[tabId];
-                delete content.locks[tabId];
+                if (content.locks) { delete content.locks[tabId]; }
                 APP.onLocal();
             }
         };
@@ -1253,7 +1253,9 @@ define([
                 changes: parseChanges(changes, obj.type === "cp_theme"),
                 changesIndex: ooChannel.cpIndex || 0,
                 locks: getUserLock(getId(), true),
-                excelAdditionalInfo: obj.excelAdditionalInfo
+                excelAdditionalInfo: obj.excelAdditionalInfo,
+                startSaveChanges: obj.startSaveChanges,
+                endSaveChanges: obj.endSaveChanges
             }, null, function (err, hash) {
                 if (err) {
                     return void console.error(err);
@@ -1263,15 +1265,27 @@ define([
                     clearTimeout(pendingChanges[uid]);
                     delete pendingChanges[uid];
                 }
-                // Call unSaveLock to tell onlyoffice that the patch was sent.
-                // It will allow you to make changes to another cell.
-                // If there is an error and unSaveLock is not called, onlyoffice
-                // will try to send the patch again
-                send({
-                    type: "unSaveLock",
-                    index: ooChannel.cpIndex,
-                    time: +new Date()
-                });
+
+                // If endSaveChanges is false, it means the patch is split into
+                // several set of changes and this is only a part of it. The last
+                // part will have this value to "true"
+                if (!obj.endSaveChanges) {
+                    send({
+                        type: "savePartChanges",
+                        changesIndex: -1,
+                        time: +new Date()
+                    });
+                } else {
+                    // Call unSaveLock to tell onlyoffice that the patch was sent.
+                    // It will allow you to make changes to another cell.
+                    // If there is an error and unSaveLock is not called, onlyoffice
+                    // will try to send the patch again
+                    send({
+                        type: "unSaveLock",
+                        index: ooChannel.cpIndex,
+                        time: +new Date()
+                    });
+                }
                 // Increment index and update latest hash
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
@@ -1361,7 +1375,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, '*');
+                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
             };
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;
@@ -1372,7 +1386,6 @@ define([
                     // We only need to release locks for sheets
                     if (type !== "sheet" && obj.type === "releaseLock") { return; }
                     if (type === "presentation" && obj.type === "cp_theme") {
-                        // XXX
                         console.error(obj);
                         return;
                     }
@@ -1406,15 +1419,17 @@ define([
                             }
                             break;
                         case "cursor":
-                            cursor.updateCursor({
-                                type: "cursor",
-                                messages: [{
-                                    cursor: obj.cursor,
-                                    time: +new Date(),
-                                    user: myUniqueOOId,
-                                    useridoriginal: myOOId
-                                }]
-                            });
+                            if (cursor && cursor.updateCursor) {
+                                cursor.updateCursor({
+                                    type: "cursor",
+                                    messages: [{
+                                        cursor: obj.cursor,
+                                        time: +new Date(),
+                                        user: myUniqueOOId,
+                                        useridoriginal: myOOId
+                                    }]
+                                });
+                            }
                             break;
                         case "getLock":
                             handleLock(obj, send);
@@ -1501,6 +1516,49 @@ define([
                                 APP.onDocumentUnlock = undefined;
                             }
                             break;
+                        case 'openDocument':
+                            // When duplicating a slide, OO may ask the URLs of the images
+                            // in that slide
+                            var _obj = obj.message;
+                            if (_obj.c === "imgurls") {
+                                var _mediasSources = getMediasSources();
+                                var images = _obj.data || [];
+                                if (!Array.isArray(images)) { return; }
+                                var urls = [];
+                                nThen(function (waitFor) {
+                                    images.forEach(function (name) {
+                                        if (/^data\:image/.test(name)) {
+                                            Util.fetch(name, waitFor(function (err, u8) {
+                                                if (err) { return; }
+                                                var b = new Blob([u8]);
+                                                urls.push(URL.createObjectURL(b));
+                                            }));
+                                            return;
+                                        }
+                                        var data = _mediasSources[name];
+                                        if (!data) { return; }
+                                        var media = mediasData[data.src];
+                                        if (!media) { return; }
+                                        urls.push({
+                                            path: name,
+                                            url: media.blobUrl,
+                                        });
+                                    });
+                                }).nThen(function () {
+                                    send({
+                                        type: "documentOpen",
+                                        data: {
+                                            type: "imgurls",
+                                            status: "ok",
+                                            data: {
+                                                urls: urls,
+                                                error: 0
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+                            break;
                     }
                 });
             });
@@ -1515,6 +1573,16 @@ define([
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var images = (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {};
+
+            // Fix race condition which could drop images sometimes
+            // ==> make sure each image has a 'media/image_name.ext' entry as well
+            Object.keys(images).forEach(function (img) {
+                if (/^media\//.test(img)) { return; }
+                if (images['media/'+img]) { return; }
+                images['media/'+img] = images[img];
+            });
+
+            // Add theme images
             var theme = e && window.frames[0].AscCommon.g_image_loader.map_image_index;
             if (theme) {
                 Object.keys(theme).forEach(function (url) {
@@ -1523,6 +1591,7 @@ define([
                     }
                 });
             }
+
             sframeChan.query('Q_OO_CONVERT', {
                 data: data,
                 type: type,
@@ -1599,10 +1668,6 @@ define([
                         var $tb = $iframe.find('head');
                         var css = // Old OO
                                   //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
-                                  '#slot-btn-inschart { display: none !important; }' + // XXX XXX
-                                  '#slot-btn-insertchart { display: none !important; }' + // XXX XXX
-                                  '#slot-btn-instable { display: none !important; }' + // XXX XXX
-                                  '#slot-btn-inserttable { display: none !important; }' + // XXX XXX
                                   //'#fm-btn-save { display: none !important; }' +
                                   //'#panel-settings-general tr.autosave { display: none !important; }' +
                                   //'#panel-settings-general tr.coauth { display: none !important; }' +
@@ -1647,29 +1712,6 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
-                        // XXX remove the following block
-                        try {
-                        var app = common.getMetadataMgr().getPrivateData().ooType;
-                        var d, hasChart;
-                        if (app === 'doc') {
-                            d = getEditor().GetDocument();
-                            hasChart = d.GetAllCharts().length || d.Document.Content.some(function (obj) {
-                                return obj instanceof getWindow().AscCommonWord.CTable;
-                            });
-                            if (hasChart) { Feedback.send('OO_DOC_CHART', true); }
-                        } else if (app === 'presentation') {
-                            d = getEditor().GetPresentation().Presentation;
-                            hasChart = d.Slides.some(function (slide) {
-                                return slide.getDrawingObjects().some(function (obj) {
-                                    return obj instanceof getWindow().AscFormat.CChartSpace || obj instanceof getWindow().AscFormat.CGraphicFrame;
-                                });
-                            });
-                            if (hasChart) { Feedback.send('OO_SLIDE_CHART', true); }
-                        }
-                        } catch (e) {}
-
-
-
                         evOnSync.fire();
                         var onMigrateRdy = Util.mkEvent();
                         onMigrateRdy.reg(function () {
@@ -1776,6 +1818,7 @@ define([
                         }
 
                         if (APP.isDownload) {
+                            delete APP.isDownload;
                             var bin = getContent();
                             if (!supportsXLSX()) {
                                 return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
@@ -1933,7 +1976,7 @@ define([
             };
             APP.changeTheme = function (id) {
                 /*
-                // XXX disabled:
+                // disabled:
 Uncaught TypeError: Cannot read property 'calculatedType' of null
     at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
                 */
@@ -1980,6 +2023,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
                 if (blobUrl) {
+                    delete downloadImages[name];
                     debug("CryptPad Image already loaded " + blobUrl);
                     return void callback(blobUrl);
                 }
@@ -2528,7 +2572,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 type:'text/javascript',
                 src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
             });
-            $('#cp-app-oo-editor').append(s);
+            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
 
             var hashes = content.hashes || {};
             var idx = sortCpIndex(hashes);
@@ -2883,8 +2927,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
-            } else if (content && content.version <= 3) { // V2 or V3
-                version = 'v2b/';
+            } else if (content && content.version <= 4) { // V2 or V3
+                version = content.version <= 3 ? 'v2b/' : 'v4/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {

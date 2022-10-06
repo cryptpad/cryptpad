@@ -554,7 +554,7 @@ define([
                         return;
                     }
 
-                    if (testing) { return void proceed(result); }
+                    //if (testing) { return void proceed(result); }
 
                     if (!(proxy.curvePrivate && proxy.curvePublic &&
                           proxy.edPrivate && proxy.edPublic)) {

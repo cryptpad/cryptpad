@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Inserire simboli e caratteri</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Inserire simboli e caratteri" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Inserire simboli e caratteri</h1>
+        <p>Durante il processo di lavoro potrebbe essere necessario inserire un simbolo che non si trova sulla tastiera. Per inserire tali simboli nel tuo documento, usa l’opzione <img alt="Inserisci simbolo" src="../images/insert_symbol_icon.png" /> <b>Inserisci simbolo</b> e segui questi semplici passaggi:</p>
+        <ul>
+            <li>posiziona il cursore nella posizione in cui deve essere inserito un simbolo speciale,</li>
+            <li>passa alla scheda <b>Inserisci</b> della barra degli strumenti in alto,</li>
+            <li>
+                fai clic sull’icona <img alt="Simbolo" src="../images/insert_symbol_icon.png" /> <b>Simbolo</b>,
+                <p><img alt="Inserisci simbolo" src="../images/insert_symbol_window.png" /></p>
+            </li>
+            <li>viene visualizzata la scheda di dialogo <b>Simbolo</b> da cui è possibile selezionare il simbolo appropriato,</li>
+            <li>
+                <p>utilizza la sezione <b>Intervallo</b> per trovare rapidamente il simbolo necessario. Tutti i simboli sono divisi in gruppi specifici, ad esempio seleziona "Simboli di valuta” se desideri inserire un carattere di valuta.</p>
+                <p>se questo carattere non è nel set, seleziona un carattere diverso. Molti di loro hanno anche caratteri diversi dal set standard.</p>
+                <p>in alternativa, immetti il valore esadecimale Unicode del simbolo desiderato nel campo <b>valore Unicode HEX</b>. Questo codice si trova nella <b>Mappa caratteri</b>.</p>
+                <p>i simboli utilizzati in precedenza vengono visualizzati anche nel campo <b>Simboli usati di recente</b>,</p>
+            </li>
+            <li>fai clic su <b>Inserisci</b>. Il carattere selezionato verrà aggiunto al documento.</li>
+        </ul>
+
+        <h2>Inserire simboli ASCII</h2>
+        <p>La tabella ASCII viene anche utilizzata per aggiungere caratteri.</p>
+        <p>Per fare ciò, tieni premuto il tasto ALT e usa il tastierino numerico per inserire il codice carattere.</p>
+        <p class="note"><b>Nota</b>: assicurarsi di utilizzare il tastierino numerico, non i numeri sulla tastiera principale. Per abilitare il tastierino numerico, premere il tasto Bloc Num.</p>
+        <p>Ad esempio, per aggiungere ad un paragrafo il carattere (§), premere e tenere premuto il tasto ALT mentre si digita 789 e quindi rilasciare il tasto ALT.</p>
+
+        <h2>Inserire simboli usando la tabella Unicode</h2>
+        <p>Ulteriori caratteri e simboli possono essere trovati anche nella tabella dei simboli di Windows. Per aprire questa tabella, effettuate una delle seguenti operazioni:</p>
+        <ul>
+            <li>nel campo Ricerca scrivi 'Tabella caratteri' e aprila,</li>
+            <li>
+                in alternativa premi contemporaneamente Win + R, quindi nella seguente finestra digita <code>charmap.exe</code> e fai clic su OK.
+                <p><img alt="Inserisci simbolo" src="../images/insert_symbols_windows.png" /></p>
+            </li>
+        </ul>
+        <p>Nella <b>Mappa caratteri</b> aperta, selezionare uno dei <b>Set di caratteri</b>, <b>Gruppi</b> e <b>Caratteri</b>. Quindi, fai clic sui caratteri necessari, copiali negli appunti e incollali nella posizione corretta del documento.</p>
+    </div>
+</body>
+</html>

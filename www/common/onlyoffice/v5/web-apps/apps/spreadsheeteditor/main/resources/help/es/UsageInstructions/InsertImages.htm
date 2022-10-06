@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte imágenes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your spreadsheet and adjust its position and size" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte imágenes</h1>
+			<p>El editor de hojas de cálculo le permite insertar imágenes de los formatos más populares en su hoja de cálculo. Los siguientes formatos de imágenes son compatibles: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Inserte una imagen</h3>
+            <p>Para insertar una imagen en la hoja de cálculo,</p>
+			<ol>
+				<li>ponga el cursor en un lugar donde quiera que aparezca la imagen,</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>haga clic en el icono <img alt="Icono Imagen" src="../images/image.png" /> <b>Imagen</b> en la barra de herramientas superior,</li>
+				<li>seleccione una de las opciones siguientes para cargar la imagen:<ul>
+						<li>la opción <b>Imagen desde archivo</b> abrirá la ventana de diálogo para la selección de archivo. Navegue el disco duro de su ordenador para encontrar un archivo correspondiente y haga clic en el botón <b>Abrir</b></li>
+						<li>la opción <b>Imagen desde URL</b> abrirá la ventana donde usted puede introducir la dirección web de la imagen correspondiente; después haga clic en el botón <b>OK</b></li>
+                        <li class="onlineDocumentFeatures">la opción <b>Imagen desde almacenamiento</b> abrirá la ventana <b>Seleccionar fuente de datos</b>. Seleccione una imagen almacenada en su portal y haga clic en el botón <b>OK</b></li>
+					</ul>
+				</li>
+			</ol>
+            <p>Después, la imagen se añadirá a su hoja de cálculo.</p>
+            <h3>Ajustes de imagen</h3>
+            <p>Una vez añadida la imagen usted puede <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">cambiar su tamaño y posición.</a></p>
+            <p>Para especificar las dimensiones exactas de la imagen:</p>
+            <ol>
+                <li>seleccione la imagen a la que usted quiere cambiar el tamaño con el ratón,</li>
+                <li>pulse el icono <b>Ajustes de imagen</b> <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> en la barra derecha lateral,<p><img alt="Ventana Ajustes de imagen Panel derecho" src="../images/imagesettings.png" /></p>
+                </li>
+                <li>En la sección <b>Tamaño</b>, establezca los valores de <b>Ancho</b> y <b>Altura</b> necesarios. Si hace clic en el botón <b>proporciones constantes</b>  (en este caso estará así <img alt="Icono de proporciones constantes activado" src="../images/constantproportionsactivated.png" />), el ancho y la altura se cambiarán manteniendo la relación de aspecto original de la imagen. Para recuperar el tamaño predeterminado de la imagen añadida, pulse el botón <b>Tamaño Predeterminado</b>.</li>
+            </ol>
+            <p>Para recortar la imagen:</p>
+            <p>Haga clic en el botón <b>Recortar</b> para activar las manijas de recorte que aparecen en las esquinas de la imagen y en el centro de cada lado. Arrastre manualmente los controles para establecer el área de recorte. Puede mover el cursor del ratón sobre el borde del área de recorte para que se convierta en el icono <img alt="Flecha" src="../images/arrow.png" /> y arrastrar el área.</p>
+            <ul>
+                <li>Para recortar un solo lado, arrastre la manija situada en el centro de este lado.</li>
+                <li>Para recortar simultáneamente dos lados adyacentes, arrastre una de las manijas de las esquinas.</li>
+                <li>Para recortar por igual dos lados opuestos de la imagen, mantenga pulsada la tecla <em>Ctrl</em> al arrastrar la manija en el centro de uno de estos lados.</li>
+                <li>Para recortar por igual todos los lados de la imagen, mantenga pulsada la tecla <em>Ctrl</em> al arrastrar cualquiera de las manijas de las esquinas.</li>
+            </ul>
+            <p>Cuando se especifique el área de recorte, haga clic en el botón <b>Recortar</b> de nuevo, o pulse la tecla <em>Esc</em>, o haga clic en cualquier lugar fuera del área de recorte para aplicar los cambios.</p>
+            <p>Una vez seleccionada el área de recorte, también es posible utilizar las opciones de <b>Rellenar</b> y <b>Ajustar</b> disponibles en el menú desplegable <b>Recortar</b>. Haga clic de nuevo en el botón <b>Recortar</b> y elija la opción que desee:</p>
+            <ul>
+                <li>Si selecciona la opción <b>Rellenar</b>, la parte central de la imagen original se conservará y se utilizará para rellenar el área de recorte seleccionada, mientras que las demás partes de la imagen se eliminarán.</li>
+                <li>Si selecciona la opción <b>Ajustar</b>, la imagen se redimensionará para que se ajuste a la altura o anchura del área de recorte. No se eliminará ninguna parte de la imagen original, pero pueden aparecer espacios vacíos dentro del área de recorte seleccionada.</li>
+            </ul>
+            <p>Para girar la imagen:</p>
+            <ol>
+                <li>seleccione la imagen que desea girar con el ratón,</li>
+                <li>pulse el icono <b>Ajustes de imagen</b> <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> en la barra derecha lateral,</li>
+                <li>en la sección <b>Rotación</b> haga clic en uno de los botones:<ul>
+                        <li><img alt="Icono de rotación en sentido contrario a las agujas del reloj" src="../images/rotatecounterclockwise.png" /> para girar la imagen 90 grados en sentido contrario a las agujas del reloj</li>
+                        <li><img alt="Icono de rotación en el sentido de las agujas del reloj" src="../images/rotateclockwise.png" /> para girar la imagen 90 grados en el sentido de las agujas del reloj</li>
+                        <li><img alt="Icono de voltear horizontalmente" src="../images/fliplefttoright.png" /> para voltear la imagen horizontalmente (de izquierda a derecha)</li>
+                        <li><img alt="Icono de voltear verticalmente" src="../images/flipupsidedown.png" /> para voltear la imagen verticalmente (al revés)</li>
+                    </ul>
+                    <p class="note"><b>Nota</b>: como alternativa, puede hacer clic con el botón derecho del ratón en la imagen y utilizar la opción <b>Girar</b> del menú contextual.</p>
+                </li>
+            </ol>
+            <p>Para reemplazar la imagen insertada,</p>
+			<ol>
+				<li>seleccione la imagen que usted quiere reemplazar con el ratón,</li>
+				<li>pulse el icono <b>Ajustes de imagen</b> <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> en la barra derecha lateral,</li>
+				<li>en la sección <b>Reemplazar imagen</b> pulse el botón necesario: <b>De archivo</b> o <b>De URL</b> y seleccione la imagen deseada.<p class="note"><b>Nota</b>: también puede hacer clic derecho en la imagen y usar la opción <b>Reemplazar imagen</b> del menú contextual.</p>
+                </li>
+			</ol>
+			<p>La imagen seleccionada será reemplazada.</p>           
+            <p>Cuando se selecciona la imagen, el icono <b>Ajustes de forma</b> <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> también está disponible a la derecha. Puede hacer clic en este icono para abrir la pestaña<b>Ajustes de forma</b> en la barra de tareas derecha y ajustar la forma, tipo de <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>estilo</b></a>, tamaño y color así como cambiar el tipo de forma seleccionando otra forma del menú <b>Cambiar autoforma</b>. La forma de la imagen cambiará correspondientemente.</p>
+            <p><img alt="Pestaña Ajustes de forma" src="../images/right_image_shape.png" /></p>
+            <p>Para cambiar los ajustes avanzados, haga clic derecho sobre la imagen y seleccione la opción <b>Ajustes avanzados</b> en el menú contextual o pulse el enlace <b>Mostrar ajustes avanzados</b> en la derecha barra lateral. Se abrirá la ventana con parámetros de la imagen:</p>
+            <p><img alt="Imagen - ajustes avanzados: Rotación" src="../images/imageadvancedsettings1.png" /></p>
+            <p>La pestaña <b>Rotación</b> contiene los siguientes parámetros:</p>
+            <ul>
+                <li><b>Ángulo</b> - utilice esta opción para girar la imagen en un ángulo exactamente especificado. Introduzca el valor deseado en grados en el campo o ajústelo con las flechas de la derecha.</li>
+                <li><b>Volteado</b> - marque la casilla <b>Horizontalmente</b> para voltear la imagen horizontalmente (de izquierda a derecha) o la casilla<b>Verticalmente </b> para voltear imagen verticalmente (al revés).</li>
+            </ul>
+            <p><img alt="Imagen - ajustes avanzados" src="../images/imageadvancedsettings.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>
+			<p>Para borrar la imagen insertada, haga clic en esta y pulse la tecla <b>Eliminar</b>.</p>
+		</div>
+	</body>
+</html>

@@ -149,6 +149,7 @@ var factory = function () {
     justify-content: center;
     box-sizing: border-box;
     vertical-align: top;
+    border-radius: 5px;
 }
 .mediatag-progress-bar {
     position: absolute;

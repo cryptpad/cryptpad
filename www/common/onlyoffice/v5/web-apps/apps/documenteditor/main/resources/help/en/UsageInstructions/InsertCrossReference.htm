@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert cross-references</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Use cross-references to create links leading to other parts of the same document" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Insert cross-references</h1>
+        <p>In the <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, cross-references are used to create links leading to other parts of the same document, e.g. headings or objects such as charts or tables. Such references appear in the form of a hyperlink.</p>
+        <h2>Creating a cross-reference</h2>
+        <ol>
+            <li>Position your cursor in the place you want to insert a cross-reference.</li>
+            <li>Go to the <b>References</b> tab and click on the <b>Cross-reference</b> icon.</li>
+            <li>
+                Set the required parameters in the opened <b>Cross-reference</b> window:
+                <p><img alt="Cross-reference window" src="../images/cross_refference_window.png" /></p>
+                <ul>
+                    <li>The <b>Reference type</b> drop-down menu specifies the item you wish to refer to, i.e. a numbered item (set by default), <em>a heading, a bookmark, a footnote, an endnote, an equation, a figure,</em> and <em>a table</em>. Choose the required item type.</li>
+                    <li>
+                        The <b>Insert reference to</b> drop-down menu specifies the text or numeric value of a reference you want to insert depending on the item you chose in the <b>Reference type</b> menu. For example, if you chose the <b>Heading</b> option, you may specify the following contents: <em>Heading text, Page number, Heading number, Heading number (no context), Heading number (full context), Above/below</em>.
+                        <details class="details-example">
+                            <summary>The full list of the options provided depending on the chosen reference type</summary>
+                            <table class="cross-reference">
+                                <tr>
+                                    <th>Reference type</th>
+                                    <th>Insert reference to</th>
+                                    <th style="text-align: left;">Description</th>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Numbered item</td>
+                                    <td style="text-align: left;">Page number</td>
+                                    <td style="text-align: left;">Inserts the page number of the numbered item</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph number</td>
+                                    <td style="text-align: left;">Inserts the paragraph number of the numbered item</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph number (no context)</td>
+                                    <td style="text-align: left;">Inserts an abbreviated paragraph number. The reference is made to the specific item of the numbered list only, e.g., instead of “4.1.1” you refer to “1” only</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph number (full context)</td>
+                                    <td style="text-align: left;">Inserts a full paragraph number, e.g., “4.1.1”</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph text</td>
+                                    <td style="text-align: left;">Inserts the text value of the paragraph, e.g., if you have “4.1.1. Terms and Conditions”, you refer to “Terms and Conditions” only</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Above/below</td>
+                                    <td style="text-align: left;">Inserts the words “above” or “below” depending on the position of the item</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Heading</td>
+                                    <td style="text-align: left;">Heading text</td>
+                                    <td style="text-align: left;">Inserts the entire text of the heading</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Page number</td>
+                                    <td style="text-align: left;">Inserts the page number of the heading</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Heading number</td>
+                                    <td style="text-align: left;">Inserts the sequence number of the heading</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Heading number (no context)</td>
+                                    <td style="text-align: left;">Inserts an abbreviated heading number. Make sure the cursor point is in the section you are referencing to, e.g., you are in section 4 and you wish to refer to heading 4.B, so instead of “4.B” you receive “B” only</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Heading number (full context)</td>
+                                    <td style="text-align: left;">Inserts a full heading number even if the cursor point is in the same section</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Above/below</td>
+                                    <td style="text-align: left;">Inserts the words “above” or “below” depending on the position of the item</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Bookmark</td>
+                                    <td style="text-align: left;">Bookmark text</td>
+                                    <td style="text-align: left;">Inserts the entire text of the bookmark</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Page number</td>
+                                    <td style="text-align: left;">Inserts the page number of the bookmark</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph number</td>
+                                    <td style="text-align: left;">Inserts the paragraph number of the bookmark</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph number (no context)</td>
+                                    <td style="text-align: left;">Inserts an abbreviated paragraph number. The reference is made to the specific item only, e.g., instead of “4.1.1” you refer to “1” only</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Paragraph number (full context)</td>
+                                    <td style="text-align: left;">Inserts a full paragraph number, e.g., “4.1.1”</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Above/below</td>
+                                    <td style="text-align: left;">Inserts the words “above” or “below” depending on the position of the item</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4">Footnote</td>
+                                    <td style="text-align: left;">Footnote number</td>
+                                    <td style="text-align: left;">Inserts the footnote number</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Page number</td>
+                                    <td style="text-align: left;">Inserts the page number of the footnote</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Above/below</td>
+                                    <td style="text-align: left;">Inserts the words “above” or “below” depending on the position of the item</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Footnote number (formatted)</td>
+                                    <td style="text-align: left;">Inserts the number of the footnote formatted as a footnote. The numbering of the actual footnotes is not affected</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4">Endnote</td>
+                                    <td style="text-align: left;">Endnote number</td>
+                                    <td style="text-align: left;">Inserts the endnote number</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Page number</td>
+                                    <td style="text-align: left;">Inserts the page number of the endnote</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Above/below</td>
+                                    <td style="text-align: left;">Inserts the words “above” or “below” depending on the position of the item</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Endnote number (formatted)</td>
+                                    <td style="text-align: left;">Inserts the number of the endnote formatted as an endnote. The numbering of the actual endnotes is not affected</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="5">Equation / Figure / Table</td>
+                                    <td style="text-align: left;">Entire caption</td>
+                                    <td style="text-align: left;">Inserts the full text of the caption</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Only label and number</td>
+                                    <td style="text-align: left;">Inserts the label and object number only, e.g., “Table 1.1”</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Only caption text</td>
+                                    <td style="text-align: left;">Inserts the text of the caption only</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Page number</td>
+                                    <td style="text-align: left;">Inserts the page number containing the referenced object</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Above/below</td>
+                                    <td style="text-align: left;">Inserts the words “above” or “below” depending on the position of the item</td>
+                                </tr>
+                            </table>
+                        </details>
+                        <br />
+                    </li>
+
+                    <li>Check the <b>Insert as hyperlink</b> box to turn the reference into an active link.</li>
+                    <li>Check the <b>Include above/below</b> box (if available) to specify the position of the item you refer to. The ONLYOFFICE Document Editor will automatically insert words “<em>above</em>” or “<em>below</em>” depending on the position of the item.</li>
+                    <li>Check the <b>Separate numbers with</b> box to specify the separator in the box to the right. The separators are needed for full context references.</li>
+                    <li>The <b>For which</b> field offers you the items available according to the <b>Reference type</b> you have chosen, e.g. if you chose the <b>Heading</b> option, you will see the full list of the headings in the document.</li>
+                </ul>
+            </li>
+            <li>Click <b>Insert</b> to create a cross-reference.</li>
+        </ol>
+        <h2>Removing a cross-reference</h2>
+        <p>To delete a cross-reference, select the cross-reference you wish to remove and press the <b>Delete</b> key.</p>
+    </div>
+</body>
+</html>

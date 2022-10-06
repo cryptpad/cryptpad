@@ -135,6 +135,14 @@ define([
             rel: 'noreferrer noopener'
         }).appendTo($block).hide();
 
+        APP.$link.click(function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var href = $(this).attr('href').trim();
+            if (!href) { return; }
+            common.openUnsafeURL(href);
+        });
+
         APP.$linkEdit = $();
         if (APP.readOnly) { return; }
 
@@ -271,7 +279,7 @@ define([
         // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
-            $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+            $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
             addCancel();
             return;
         }
@@ -522,7 +530,7 @@ define([
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
         $category.append($('<span>', {'class': 'fa fa-user'}));
         $category.addClass('cp-leftside-active');
-        $category.append(Messages.profileButton);
+        $category.text(Messages.profileButton);
     };
 
     var init = function () {
@@ -599,11 +607,12 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
 
+        common.setTabTitle(Messages.profileButton);
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
 
-            var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
+            var $p = $('<p>', {id: CREATE_ID}).text(Messages.profile_register);
             var $a = $('<a>', {
                 href: APP.origin + '/register/'
             });

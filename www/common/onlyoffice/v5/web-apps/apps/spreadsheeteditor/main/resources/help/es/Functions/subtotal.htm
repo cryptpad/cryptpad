@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función SUBTOTALES</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función SUBTOTALES</h1>
+			<p>La función <b>SUBTOTALES</b> es una función matemática y trigonométrica. La función se usa para devolver un subtotal en una lista o base de datos</p>
+			<p>La sintaxis de la función <b>SUBTOTALES</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>SUBTOTALES(número-función, lista-argumento)</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>número-función</em></b> es un valor numérico que especifica qué función usar para el subtotal. Los posibles valores se listan en la tabla de abajo. Para los argumentos de <em>número-función</em> del 1 al 11, la función <b>SUBTOTALES</b> incluye valores de las filas que se han ocultado manualmente. Para los argumentos de <em>número-función</em> del 101 al 111, la función <b>SUBTOTALES</b> ignora valores de las filas que se han ocultado manualmente. Los valores ocultados por filtros siempre se excluyen.</p> 
+			<p style="text-indent: 50px;"><b><em>lista-argumento</em></b> es una referencia al rango de celdas que contiene los valores para los que desea el subtotal.</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>número-función<br />(incluye valores ocultos)</b></td>
+                    <td><b>número-función<br />(excluye valores ocultos)</b></td>
+					<td><b>Función</b></td>
+				</tr>
+				<tr>
+					<td>1</td>
+                    <td>101</td>
+					<td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">PROMEDIO</a></td>
+				</tr>
+                <tr>
+                    <td>2</td>
+                    <td>102</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">CONTAR</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>103</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">CONTARA</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>104</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>105</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>106</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">PRODUCTO</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>107</td>
+                    <td><a href="../Functions/stdev.htm" onclick="onhyperlinkclick(this)">DESVEST</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>108</td>
+                    <td><a href="../Functions/stdevp.htm" onclick="onhyperlinkclick(this)">DESVESTP</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>109</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUMA</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>110</td>
+                    <td><a href="../Functions/var.htm" onclick="onhyperlinkclick(this)">VAR</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>111</td>
+                    <td><a href="../Functions/varp.htm" onclick="onhyperlinkclick(this)">VARP</a></td>
+                </tr>
+			</table>
+			<p>Para aplicar la función <b>SUBTOTALES</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de función <b>Matemáticas y trigonometría</b> en la lista,</li>
+			<li>haga clic en la función <b>SUBTOTALES</b>,</li>
+			<li>introduzca los argumentos requeridos separándolos por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función SUBTOTALES" src="../images/subtotal.png" /></p>
+            <p>La figura de abajo muestra el resultado devuelto por la función <b>SUBTOTALES</b> cuandose ocultan varias filas.</p>
+            <p style="text-indent: 150px;"><img alt="Función SUBTOTALES" src="../images/subtotal2.png" /></p>
+		</div>
+	</body>
+</html>

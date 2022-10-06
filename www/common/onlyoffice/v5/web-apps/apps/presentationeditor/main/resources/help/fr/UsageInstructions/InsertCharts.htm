@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer et modifier des graphiques</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insérer un graphique dans votre présentation et configurer ses paramètres" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer et modifier des graphiques</h1>
+            <h3>Insérer un graphique</h3>
+			<p><b>Pour insérer un graphique</b> dans <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a>,</p>
+            <ol>
+                <li>placez le curseur à l'endroit où vous voulez insérer un graphique,</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+                <li>cliquez sur l'icône <b>Graphique</b> <img alt="L'icône Insérer un graphique" src="../images/insertchart.png" /> de la barre d'outils supérieure,</li>
+				<li>choisissez le type de graphique approprié: <details class="details-example"><summary>Graphique à colonnes</summary>
+                <ul>
+                    <li>Histogramme groupé</li>
+                    <li>Histogramme empilé</li>
+                    <li>Histogramme empilé 100 %</li>
+                    <li>Histogramme groupé en 3D</li>
+                    <li>Histogramme empilé en 3D</li>
+                    <li>Histogramme empilé 100 % en 3D</li>
+                    <li>Histogrammes en 3D</li>
+                </ul>
+                </details> <details class="details-example"><summary>Graphiques en ligne</summary>
+                <ul>
+                    <li>Ligne</li>
+                    <li>Lignes empilées</li>
+                    <li>Lignes empilées 100 %</li>
+                    <li>Lignes avec marques de données</li>
+                    <li>Lignes empilées avec marques de données</li>
+                    <li>Lignes empilées 100 % avec des marques de données</li>
+                    <li>Lignes 3D</li>
+                </ul>
+                </details> <details class="details-example"><summary>Graphiques en secteurs</summary>
+                <ul>
+                    <li>Secteurs</li>
+                    <li>Donut</li>
+                    <li>Camembert 3D</li>
+                </ul>
+                </details> <details class="details-example"><summary>Graphiques à barres</summary>
+                <ul>
+                    <li>Barres groupées</li>
+                    <li>Barres empilées</li>
+                    <li>Barres empilées 100 %</li>
+                    <li>Barres groupées en 3D</li>
+                    <li>Barres empilées en 3D</li>
+                    <li>Barres empilées 100 % en 3D</li>
+                </ul>
+                </details> <details class="details-example"><summary>Graphiques en aires</summary>
+                <ul>
+                    <li>Aires</li>
+                    <li>Aires empilées</li>
+                    <li>Aires empilées 100 %</li>
+                </ul>
+                </details> <details class="details-example"><summary>Graphiques boursiers</summary></details> <details class="details-example"><summary>Nuage de points (XY)</summary>
+                <ul>
+                    <li>Disperser</li>
+                    <li>Barres empilées</li>
+                    <li>Disperser avec lignes lissées et marqueurs</li>
+                    <li>Disperser avec lignes lissées</li>
+                    <li>Disperser avec des lignes droites et marqueurs</li>
+                    <li>Disperser avec des lignes droites</li>
+                </ul>
+                </details> <details class="details-example"><summary>Graphiques Combo</summary>
+               <ul>
+                    <li>Histogramme groupé - courbes</li>
+                    <li>Histogramme groupé - courbe sur un axe secondaire</li>
+                    <li>Aires empilées - histogramme groupé</li>
+                    <li>Combinaison personnalisée</li>
+                </ul>
+                </details>
+                </li>
+                <li>
+                    lorsque la fenêtre <b>Éditeur du graphique</b> s'affiche, vous pouvez saisir les données à en utilisant des boutons suivants:
+                    <ul>
+                        <li><img alt="Copier" src="../images/copy.png" /> et <img alt="Coller" src="../images/paste.png" /> pour copier et coller des données</li>
+                        <li><img alt="Annuler" src="../images/undo1.png" /> et <img alt="Rétablir" src="../images/redo1.png" /> pour annuler et rétablir une action</li>
+                        <li><img alt="Insérer une fonction" src="../images/insertfunction.png" /> pour insérer une fonction,</li>
+                        <li><img alt="Réduire les décimales" src="../images/decreasedec.png" /> et <img alt="Ajouter une décimale" src="../images/increasedec.png" /> pour réduire et ajouter une décimale</li>
+                        <li><img alt="Format numérique" src="../images/numberformat.png" /> modifier le format de nombre, c'est à dire l'apparence d'un nombre saisi</li>
+                        <li><img alt="Type de graphique" src="../images/charttypebutton.png" /> pour modifier le type de graphique.</li>
+                    </ul>
+                    <p><img alt="Éditeur de graphique" src="../images/charteditor.png" /></p>
+                </li>
+                <li>Cliquez sur le bouton <b>Sélection de données</b> dans la fenêtre <b>Éditeur du graphique</b>. La fenêtre <b>Données du graphique</b> s'affiche.
+                    <ol>
+                        <li>
+                            Utiliser la boîte de dialogue<b> Données du graphique</b> pour gérer la <b>Plage de données du graphique</b>, la <b>Série de la légende</b>, le <b>Nom de l'axe horizontal</b>, et <b>Changer de ligne ou de colonne</b>.
+                            <p><img alt="La fenêtre Données du graphique" src="../images/chartdata.png" /></p>
+                            <ul>
+                                <li>
+                                    <b><b>Plage de données du graphique</b></b> - sélectionnez les données pour votre graphique.
+                                    <ul>
+                                        <li>
+                                            Cliquez sur l'icône <img alt="Plage de données source" src="../images/changerange.png" /> à droite de la boîte <b>Plage de données du graphique</b> pour sélectionner la plage de données.
+                                            <p><img alt="La fenêtre Sélectionner une plage de données" src="../images/selectdata.png" /></p>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>Série de la légende</b> - ajouter, modifier ou supprimer les entrées de légende. Tapez ou sélectionnez le nom de série des entrées de légende.
+                                    <ul>
+                                        <li>Dans la <b>Série de la légende</b>, cliquez sur le bouton <b>Ajouter</b>.</li>
+                                        <li>
+                                            Dans la fenêtre <b>Modifier la série</b> saisissez une nouvelle entrée de légende ou cliquez sur l'icône <img alt="Plage de données source" src="../images/changerange.png" /> à droite de la boîte <b>Nom de la série</b>.
+                                            <p><img alt="La fenêtre Modifier la série" src="../images/editseries.png" /></p>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>Nom de l'axe horizontal</b> - modifier le texte de l'étiquette de l'axe
+                                    <ul>
+                                        <li>Dans la fenêtre<b> Nom de l'axe horizontal</b> cliquez sur <b>Modifier</b>.</li>
+                                        <li>
+                                            Dans la fenêtre <b>Étiquette de l'axe</b>, saisissez les étiquettes que vous souhaitez ajouter ou cliquez sur l'icône <img alt="Plage de données source" src="../images/changerange.png" /> à droite de la boîte <b>Plage de données de l'étiquette de l'axe</b> pour sélectionner la plage de données.
+                                            <p><img alt="La fenêtre Étiquettes de l'axe" src="../images/axislabels.png" /></p>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><b>Changer de ligne ou de colonne </b>- modifier le façon de traçage des données dans la feuille de calcul. Changer de ligne ou de colonne pour afficher des données sur un autre axe. </li>
+                            </ul>
+                        </li>
+                        <li>Cliquez sur <b>OK</b> pour appliquer toutes les modifications et fermer la fenêtre.</li>
+                    </ol>
+                </li>
+                <li>
+                    Cliquez sur le bouton Modifier le type de graphique dans la fenêtre <b>Éditeur du graphique</b> pour choisir le type et le style du graphique. Sélectionnez le graphique approprié dans des sections disponibles: Colonne, Graphique en ligne, Graphique à secteurs, En barres, En aires,  Nuages de points (XY), Boursier.
+                    <p><img alt="La fenêtre Type de graphique" src="../images/charttype.png" /></p>
+                    <p>Lorsque vous choisissez <b>Graphiques Combo</b>, la fenêtre <b>Type de graphique</b> représente les séries du graphiques et permet de choisir les types de graphiques à combiner et de sélectionner la série de données à placer sur l'axe secondaire.</p>
+                    <p><img alt="La fenêtre Type de graphique Combo" src="../images/charttype_combo.png" /></p>
+                </li>
+                <li>
+                    paramétrer le graphique en cliquant sur <b>Modifier le graphique</b> dans la fenêtre <b>Éditeur du graphique.</b> La fenêtre <b>Graphique - Paramètres avancés</b> s'affiche.
+                    <p><img alt="La fenêtre Graphique - Paramètres avancés" src="../images/chartsettings_layout.png" /></p>
+                    <p>L'onglet <b>Disposition</b> vous permet de modifier la disposition des éléments de graphique.</p>
+                    <ul>
+                        <li>
+                            Spécifiez la position du <b>Titre du graphique</b> sur votre graphique en sélectionnant l'option voulue dans la liste déroulante:
+                            <ul>
+                                <li><b>Rien</b> pour ne pas afficher le titre du graphique,</li>
+                                <li><b>Superposition</b> pour superposer et centrer le titre sur la zone de tracé,</li>
+                                <li><b>Sans superposition</b> pour afficher le titre au-dessus de la zone de tracé.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Spécifiez la position de la <b>Légende</b> sur votre graphique en sélectionnant l'option voulue dans la liste déroulante:
+                            <ul>
+                                <li><b>Rien</b> pour ne pas afficher de légende,</li>
+                                <li><b>En bas</b> pour afficher la légende et l'aligner au bas de la zone de tracé,</li>
+                                <li><b>En haut</b> pour afficher la légende et l'aligner en haut de la zone de tracé,</li>
+                                <li><b>À droite</b> pour afficher la légende et l'aligner à droite de la zone de tracé,</li>
+                                <li><b>À gauche</b> pour afficher la légende et l'aligner à gauche de la zone de tracé,</li>
+                                <li><b>Superposition à gauche </b>pour superposer et centrer la légende à gauche de la zone de tracé,</li>
+                                <li><b>Superposition à droite</b> pour superposer et centrer la légende à droite de la zone de tracé.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Spécifiez les paramètres des <b>Étiquettes de données</b> (c'est-à-dire les étiquettes de texte représentant les valeurs exactes des points de données):<br />
+                            <ul>
+                                <li>
+                                    spécifiez la position des <b>Étiquettes de données</b> par rapport aux points de données en sélectionnant l'option nécessaire dans la liste déroulante. Les options disponibles varient en fonction du type de graphique sélectionné.
+                                    <ul>
+                                        <li>Pour les graphiques en <b>Colonnes/Barres</b>, vous pouvez choisir les options suivantes: <b>Rien</b>, <b>Au</b> <b>centre</b>, <b>En haut</b> <b>à</b> <b>l'intérieur</b>, <b>En haut à</b> <b>l'intérieur</b>, <b>En haut à l'extérieur</b>.</li>
+                                        <li>Pour les graphiques en <b>Ligne/ Nuage de points (XY)/Boursier</b>, vous pouvez choisir les options suivantes: <b>Rien</b>, <b>Au</b> <b>centre</b>, <b><b>À</b> gauche, À</b> <b>droite</b>, <b>En haut</b>, <b>En bas</b>.</li>
+                                        <li>Pour les graphiques <b>Secteur</b>, vous pouvez choisir les options suivantes: <b>Rien</b>, <b>Au <b>c</b>entre</b>, <b>Ajuster à la largeur</b>, <b>En haut à</b> <b>l'intérieur</b>, <b>En haut à l'extérieur</b>.</li>
+                                        <li>Pour les graphiques en <b>Aire</b> ainsi que pour les graphiques <b>3D en Colonnes</b>, <b>Ligne</b>, <b>Barres</b> et <b>Combo</b> vous pouvez choisir les options suivantes: <b>Rien</b>, <b>Au centre</b>.</li>
+                                    </ul>
+                                </li>
+                                <li>sélectionnez les données que vous souhaitez inclure dans vos étiquettes en cochant les cases correspondantes: <b>Nom de la série</b>, <b>Nom de la catégorie</b>, <b>Valeur</b>,</li>
+                                <li>entrez un caractère (virgule, point-virgule, etc.) que vous souhaitez utiliser pour séparer plusieurs étiquettes dans le champ de saisie Séparateur des étiquettes de données.</li>
+                            </ul>
+                        </li>
+                        <li><b>Lignes</b> - permet de choisir un style de ligne pour les graphiques en<b> Ligne/Nuage de points (XY</b>). Vous pouvez choisir parmi les options suivantes: <b>Droit</b> pour utiliser des lignes droites entre les points de données, <b>Lisse</b> pour utiliser des courbes lisses entre les points de données, ou <b>Rien</b> pour ne pas afficher les lignes.</li>
+                        <li>
+                            <b>Marqueurs</b> - est utilisé pour spécifier si les marqueurs doivent être affichés (si la case est cochée) ou non (si la case n'est pas cochée) pour les graphiques <b>Ligne/Nuage de points (XY</b>).
+                            <p class="note"><b>Remarque</b>: les options <b>Lignes</b> et <b>Marqueurs</b> sont disponibles uniquement pour les graphiques <b>en Ligne</b> et <b>Ligne/Nuage de points (XY</b>).</p>
+                        </li>
+                    </ul>
+                    <p><img alt="La fenêtre Graphique - Paramètres avancés" src="../images/chartsettings_verticalaxis.png" /></p>
+                    <p>L'onglet <b>Axe vertical</b> vous permet de modifier les paramètres de l'axe vertical, également appelés axe des valeurs ou axe y, qui affiche des valeurs numériques. Notez que l'axe vertical sera l'axe des catégories qui affiche des étiquettes de texte pour les <b>Graphiques à barres</b>. Dans ce cas, les options de l'onglet <b>Axe vertical</b> correspondront à celles décrites dans la section suivante. Pour les Graphiques <b>Nuage de points (XY</b>), les deux axes sont des axes de valeur.</p>
+                    <p class="note"><b>Remarque</b>: les sections <b>Paramètres des axes</b> et <b>Quadrillage</b> seront désactivées pour les <b>Graphiques à secteurs</b>, car les graphiques de ce type n'ont ni axes ni lignes de quadrillage.</p>
+                    <ul>
+                        <li> sélectionnez <b>Masquer l'axe</b> pour masquer l'axe vertical du graphique, laissez cette option décochée pour afficher l'axe.</li>
+                        <li>
+                            définissez l'orientation du Titre en choisissant l'option appropriée de la liste déroulante:
+                            <ul>
+                                <li><b>Rien</b> pour ne pas afficher le titre de l'axe vertical</li>
+                                <li><b>Incliné</b> pour afficher le titre de bas en haut à gauche de l'axe vertical,</li>
+                                <li><b>Horizontal</b> pour afficher le titre horizontalement à gauche de l'axe vertical.</li>
+                            </ul>
+                        </li>
+                        <li><b>Valeur minimal</b>e sert à définir la valeur la plus basse à afficher au début de l'axe vertical. L'option <b>Auto</b> est sélectionnée par défaut, dans ce cas la valeur minimale est calculée automatiquement en fonction de la plage de données sélectionnée. Vous pouvez sélectionner l'option <b>Fixé</b> dans la liste déroulante et spécifier une valeur différente dans le champ de saisie sur la droite.</li>
+                        <li><b>Valeur maximale</b> sert à définir la valeur la plus élevée à afficher à la fin de l'axe vertical. L'option <b>Auto</b> est sélectionnée par défaut, dans ce cas la valeur maximale est calculée automatiquement en fonction de la plage de données sélectionnée. Vous pouvez sélectionner l'option <b>Fixé</b> dans la liste déroulante et spécifier une valeur différente dans le champ de saisie sur la droite.</li>
+                        <li><b>Axes croisés</b> - est utilisé pour spécifier un point sur l'axe vertical où l'axe horizontal doit le traverser. L'option <b>Auto</b> est sélectionnée par défaut, dans ce cas la valeur du point d'intersection est calculée automatiquement en fonction de la plage de données sélectionnée. Vous pouvez sélectionner l'option <b>Valeur</b> dans la liste déroulante et spécifier une valeur différente dans le champ de saisie à droite, ou définir le point d'intersection des axes à la <b>Valeur minimum/maximum</b> sur l'axe vertical.</li>
+                        <li><b>Unités d'affichage</b> - est utilisé pour déterminer la représentation des valeurs numériques le long de l'axe vertical. Cette option peut être utile si vous travaillez avec de grands nombres et souhaitez que les valeurs sur l'axe soient affichées de manière plus compacte et plus lisible (par exemple, vous pouvez représenter 50 000 comme 50 en utilisant les unités d'affichage de <b>Milliers</b>). Sélectionnez les unités souhaitées dans la liste déroulante: <b>Centaines</b>, <b>Milliers</b>, <b>10 000</b>, <b>100 000</b>, <b>Millions</b>, <b>10 000 000</b>, <b>100 000 000</b>, <b>Milliards</b>, <b>Billions</b>, ou choisissez l'option <b>Rien</b> pour retourner aux unités par défaut.</li>
+                        <li><b>Valeurs dans l'ordre inverse</b> - est utilisé pour afficher les valeurs dans la direction opposée. Lorsque la case n'est pas cochée, la valeur la plus basse est en bas et la valeur la plus haute est en haut de l'axe. Lorsque la case est cochée, les valeurs sont triées de haut en bas.</li>
+                        <li>
+                            La section <b>Options de graduations</b> permet d'ajuster l'apparence des graduations sur l'échelle verticale. Les graduations du type principal sont les divisions à plus grande échelle qui peuvent avoir des étiquettes affichant des valeurs numériques. Les graduations du type secondaire sont les subdivisions d'échelle qui sont placées entre les graduations principales et n'ont pas d'étiquettes. Les graduations définissent également l'endroit où le quadrillage peut être affiché, si l'option correspondante est définie dans l'onglet <b>Disposition</b>. Les listes déroulantes <b>Type principal/secondaire</b> contiennent les options de placement suivantes:
+                            <ul>
+                                <li><b>Rien</b> pour ne pas afficher les graduations principales/secondaires,</li>
+                                <li><b>Sur l'axe </b>pour afficher les graduations principales/secondaires des deux côtés de l'axe,</li>
+                                <li><b>Dans</b> pour afficher les graduations principales/secondaires dans l'axe,</li>
+                                <li><b>A l'extérieur</b> pour afficher les graduations principales/secondaires à l'extérieur de l'axe.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            La section <b>Options d'étiquettes</b> permet d'ajuster l'apparence des étiquettes de graduations du type principal qui affichent des valeurs. Pour spécifier la <b>Position de l'étiquette</b> par rapport à l'axe vertical, sélectionnez l'option voulue dans la liste déroulante:
+                            <ul>
+                                <li><b>Rien</b> pour ne pas afficher les étiquettes de graduations,</li>
+                                <li><b>En</b> <b>bas </b>pour afficher les étiquettes de graduations à gauche de la zone de tracé,</li>
+                                <li><b>En</b> <b>haut</b> pour afficher les étiquettes de graduations à droite de la zone de tracé,</li>
+                                <li><b>À côté de l'axe</b> pour afficher les étiquettes de graduations à côté de l'axe.</li>
+                                <li>
+                                    Pour définir le Format d'étiquette cliquez sur le bouton format d'étiquette et choisissez la catégorie appropriée.
+                                    <p>Les catégories du format d'étiquette disponibles:</p>
+                                    <ul>
+                                        <li>Général</li>
+                                        <li>Numérique</li>
+                                        <li>Scientifique</li>
+                                        <li>Comptabilité</li>
+                                        <li>Monétaire</li>
+                                        <li>Date</li>
+                                        <li>Temps</li>
+                                        <li>Pourcentage</li>
+                                        <li>Fraction</li>
+                                        <li>Texte</li>
+                                        <li>Personnalisé</li>
+                                    </ul>
+                                    <p>Les options du format d'étiquette varient en fonction de la catégorie sélectionné. Pour en savoir plus sur la modification du format de nombre, veuillez consulter <a href="https://helpcenter.onlyoffice.com/ONLYOFFICE-Editors/ONLYOFFICE-Spreadsheet-Editor/UsageInstructions/ChangeNumberFormat.aspx">cette page</a>.</p>
+                                </li>
+                                <li>Activez <b>Lié à la source</b> pour conserver la représentation de nombre de la source de données du graphique.</li>
+                             </ul>
+                        </li>
+                    </ul>
+                    <p>
+                        <img alt="La fenêtre Graphique - Paramètres avancés" src="../images/chartsettings_secondaryaxis1.png" />
+                    </p>
+                    <p class="note"><b>Remarque</b>: Les axes secondaires sont disponibles sur les graphiques <b>Combo </b>uniquement.</p>
+                    <p><b>Axes secondaires</b> sont utiles pour des graphiques Combo lorsque les nombres varient considérablement, ou lorsque des types de données mixtes sont utilisés pour créer un graphique. Avec des <b>axes secondaires</b> on peut lire et comprendre un graphique combiné plus facilement.</p>
+                    <p> L'onglet <b>Second axe vertical/horizontal</b> s'affiche lorsque vous choisissez une série de données appropriée pour votre graphique combiné. Les options et les paramètres disponibles sous l'onglet <b>Second axe vertical/horizontal</b> sont les mêmes que ceux sous l'onglet <b>Axe vertical/horizontal</b>. Pour une description détaillée des options disponibles sous l'onglet <b>Axe vertical/horizontal</b>, veuillez consulter les sections appropriées ci-dessus/ci-dessous.</p>
+                    <p><img alt="La fenêtre Graphique - Paramètres avancés" src="../images/chartsettings_horizontalaxis.png" /></p>
+                    <p>L'onglet <b>Axe horizontal</b> vous permet de modifier les paramètres de l'axe horizontal, également appelés axe des catégories ou axe x, qui affiche des étiquettes textuels. Notez que l'axe horizontal sera l'axe des valeurs qui affiche des valeurs numériques pour les <b>Graphiques à barres</b>. Dans ce cas, les options de l'onglet <b>Axe horizontal</b> correspondent à celles décrites dans la section précédente. Pour les Graphiques <b>Nuage de points (XY</b>), les deux axes sont des axes de valeur.</p>
+                    <ul>
+                        <li> sélectionnez <b>Masquer l'axe</b> pour masquer l'axe horizontal du graphique, laissez cette option décochée pour afficher l'axe.</li>
+                        <li>
+                            définissez l'orientation du <b>Titre</b> en choisissant l'option appropriée de la liste déroulante:
+                            <ul>
+                                <li><b>Rien</b> pour ne pas afficher le titre de l'axe horizontal.</li>
+                                <li><b>Sans superposition</b> pour afficher le titre en-dessous de l'axe horizontal.</li>
+                            </ul>
+                        </li>
+                        <li>La section <b>Quadrillage</b> permet de spécifier les lignes du <b>Quadrillage horizontal</b> que vous souhaitez afficher en sélectionnant l'option voulue dans la liste déroulante: <b>Rien</b>, <b>Principaux</b>, <b>Secondaires</b> ou <b>Principaux et secondaires</b>. </b>.</li>
+                        <li>Intersection de l'axe est utilisé pour spécifier un point sur l'axe horizontal où l'axe  vertical doit le traverser. L'option <b>Auto</b> est sélectionnée par défaut, dans ce cas la valeur du point d'intersection est calculée automatiquement en fonction de la plage de données sélectionnée. Vous pouvez sélectionner l'option <b>Valeur</b> dans la liste déroulante et spécifier une valeur différente dans le champ de saisie à droite, ou définir le point d'intersection des axes à la <b>Valeur minimum/maximum</b> (correspondant à la première et la dernière catégorie) sur l'axe vertical.</li>
+                        <li>Position de l'étiquette - est utilisé pour spécifier où les étiquettes de l'axe doivent être placés: <b>Graduation</b> ou <b>Entre </b><b>graduations</b>.</li>
+                        <li><b>Valeurs dans l'ordre inverse</b> - est utilisé pour afficher les catégories dans la direction opposée. Lorsque la case est désactivée, les valeurs sont affichées de gauche à droite. Lorsque la case est activée, les valeurs sont affichées de droite à gauche.</li>
+                        <li>
+                            La section <b>Options de graduations</b> permet d'ajuster l'apparence des graduations sur l'échelle horizontale. Les graduations du type principal sont les divisions à plus grande échelle qui peuvent avoir des étiquettes affichant des valeurs de catégorie. Les graduations du type mineure sont les divisions à moins grande d'échelle qui sont placées entre les graduations principales et n'ont pas d'étiquettes. Les graduations définissent également l'endroit où le quadrillage peut être affiché, si l'option correspondante est définie dans l'onglet <b>Disposition</b>. Vous pouvez ajuster les paramètres de graduation suivants:
+                            <ul>
+                                <li><b>Type principal/secondaire</b> est utilisé pour spécifier les options de placement suivantes: <b>Rien</b> pour ne pas afficher les graduations principales/secondaires, <b>Sur l'axe</b> pour afficher les graduations principales/secondaires des deux côtés de l'axe, <b>Dans</b> pour afficher les graduations principales/secondaires dans l'axe, <b>A l'extérieur</b> pour afficher les graduations principales/secondaires à l'extérieur de l'axe.</li>
+                                <li><b>Intervalle entre les marques</b> - est utilisé pour spécifier le nombre de catégories à afficher entre deux marques de graduation adjacentes.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            La section <b>Options d'étiquettes</b> permet d'ajuster l'apparence des étiquettes qui affichent des catégories.
+                            <ul>
+                                <li><b>Position de l'étiquette</b> est utilisé pour spécifier où les étiquettes de l'axe doivent être placés par rapport à l'axe horizontal: Sélectionnez l'option souhaitée dans la liste déroulante: <b>Rien</b> pour ne pas afficher les étiquettes de catégorie, <b>En bas</b> pour afficher les étiquettes de catégorie au bas de la zone de tracé, <b>En haut</b> pour afficher les étiquettes de catégorie en haut de la zone de tracé, <b>À côté de l'axe</b> pour afficher les étiquettes de catégorie à côté de l'axe.</li>
+                                <li>Distance de l'étiquette de l'axe - est utilisé pour spécifier la distance entre les étiquettes et l'axe. Spécifiez la valeur nécessaire dans le champ situé à droite. Plus la valeur que vous définissez est élevée, plus la distance entre l'axe et les étiquettes est grande.</li>
+                                <li><b>Intervalle entre les étiquettes</b> - est utilisé pour spécifier la fréquence à laquelle les étiquettes doivent être affichés. L'option <b>Auto</b> est sélectionnée par défaut, dans ce cas les étiquettes sont affichés pour chaque catégorie. Vous pouvez sélectionner l'option <b>Manuel</b> dans la liste déroulante et spécifier la valeur voulue dans le champ de saisie sur la droite. Par exemple, entrez 2 pour afficher les étiquettes pour une catégorie sur deux.</li>
+                                <li>
+                                    Pour définir le <b>Format d'étiquette</b> cliquez sur le bouton format d'étiquette et choisissez la catégorie appropriée.
+                                    <p>Les catégories du format d'étiquette disponibles:</p>
+                                    <ul>
+                                        <li>Général</li>
+                                        <li>Numérique</li>
+                                        <li>Scientifique</li>
+                                        <li>Comptabilité</li>
+                                        <li>Monétaire</li>
+                                        <li>Date</li>
+                                        <li>Temps</li>
+                                        <li>Pourcentage</li>
+                                        <li>Fraction</li>
+                                        <li>Texte</li>
+                                        <li>Personnalisé</li>
+                                    </ul>
+                                    <p>Les options du format d'étiquette varient en fonction de la catégorie sélectionné. Pour en savoir plus sur la modification du format de nombre, veuillez consulter <a href="https://helpcenter.onlyoffice.com/ONLYOFFICE-Editors/ONLYOFFICE-Spreadsheet-Editor/UsageInstructions/ChangeNumberFormat.aspx" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+                                </li>
+                                <li>Activez <b>Lié à la source</b> pour conserver la représentation de nombre de la source de données du graphique.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><img alt="La fenêtre Graphique - Paramètres avancés Alignement dans une cellule" src="../images/chartsettings_cellsnapping.png" /></p>
+                    <p>L'onglet<b> Alignement dans une cellule</b> comprend les options suivantes:</p>
+                    <ul>
+                        <li><b>Déplacer et dimensionner avec des cellules</b> - cette option permet de placer le graphique derrière la cellule. Quand une cellule se déplace (par exemple: insertion ou suppression des lignes/colonnes), le graphique se déplace aussi. Quand vous ajustez la largeur ou la hauteur de la cellule, la dimension du graphique s'ajuste aussi.</li>
+                        <li><b>Déplacer sans dimensionner avec les cellules</b> - cette option permet de placer le graphique derrière la cellule mais d'empêcher son redimensionnement. Quand une cellule se déplace, le graphique se déplace aussi, mais si vous redimensionnez la cellule, le graphique demeure inchangé.</li>
+                        <li><b>Ne pas déplacer et dimensionner avec les cellules</b> - cette option empêche le déplacement ou redimensionnement du graphique si la position ou la dimension de la cellule restent inchangées.</li>
+                    </ul>
+                    <p><img alt="La fenêtre Paramètres du graphique" src="../images/chartsettings_alternativetext.png" /></p>
+                    <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du graphique.</p>
+                </li>
+                <li>Une fois le graphique ajouté, on peut également <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">modifier sa taille et sa position</a>.
+                    <p>Vous pouvez définir <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">la position du graphique</a> sur la diapositive en le faisant glisser à l'horizontale/verticale.</p>
+                </li>
+            </ol>
+            <p>On peut ajouter un graphique dans l'espace réservé en cliquant sur l'icône Insérer un graphique <img alt="L'icône Insérer un graphique" src="../images/placeholder_chart.png" /> à l'intérieur de l'espace et sélectionnant le type du graphique approprié:</p>
+            <p><img alt="Ajouter un graphique dans l'espace réservé" src="../images/placeholder_object.png" /></p>	
+            <p>On peut aussi ajouter un graphique à la disposition de diapositive.  Pour en savoir plus, veuillez consulter <a href="../UsageInstructions/SetSlideParameters.htm#addtolayout" onclick="onhyperlinkclick(this)">cet article</a>.</p>					
+			<hr />
+            <h3>Modifier les éléments de graphique</h3>
+            <p>Pour modifier le <b>Titre</b> du graphique, sélectionnez le texte par défaut à l'aide de la souris et saisissez le vôtre à la place.</p>
+            <p>Pour modifier la mise en forme de la police dans les éléments de texte, tels que le titre du graphique, les titres des axes, les entrées de légende, les étiquettes de données, etc., sélectionnez l'élément de texte nécessaire en cliquant dessus. Utilisez ensuite les icônes de l'onglet <b>Accueil</b> de la barre d'outils supérieure pour modifier <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">le type de police, la taille, la couleur</a>.</p>
+            <p>Une fois le graphique sélectionné, l'icône <b>Paramètres de la forme</b> <img alt="L'icône Paramètres de la forme" src="../images/shape_settings_icon.png" /> est aussi disponible à la droite car une forme est utilisé en arrière plan du graphique. Vous pouvez appuyer sur cette icône pour accéder l'onglet <b>Paramètres de la forme</b> dans la barre latérale droite et configurer <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">le Remplissage</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">le Trait</a> et le <b>Style d'habillage</b> de la forme. Veuillez noter qu'on ne peut pas modifier le type de la forme.</p>
+            <p>
+                Sous l'onglet <b>Paramètres de la forme</b> dans le panneau droit, vous pouvez configurer la zone du graphique là-même aussi que les éléments du graphique tels que la <I>zone de tracé</I>, <I>la série de données</I>, <I>le titre du graphique</I>, <I>la légende</I> et les autres et ajouter les différents types de remplissage. Sélectionnez l'élément du graphique nécessaire en cliquant sur le bouton gauche de la souris et choisissez le type de remplissage approprié: <em>couleur de remplissage</em>, <I>remplissage en dégradé</I>,<I> image ou texture</I>, <I>modèle</I>. Configurez les paramètres du remplissage et spécifier le niveau <em>d'opacité </em> si nécessaire. Lorsque vous sélectionnez l'axe vertical ou horizontal ou le quadrillage, vous pouvez configurer le paramètres du trait seulement sous l'onglet <b>Paramètres de la forme</b>: <I>couleur</I>, <I>taille</I> et <I>type</I>. Pour plus de détails sur utilisation des couleurs de la forme, du remplissage et du trait veuillez accéder à <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">cet page</a>.
+            </p>
+            <p class="note"><b>Remarque</b>: l'option <b>Ajouter un ombre</b> est aussi disponible sous l'onglet <b>Paramètres de la forme</b>, mais elle est désactivée pour les éléments du graphique.</p>
+            <p>Si vous voulez redimensionner les éléments du graphique, sélectionnez l'élément nécessaire en cliquant sur le bouton gauche de la souris et faites glisser un des huit carreaux blancs <img alt="L'icône Carreaux" src="../images/resize_square.png" /> le long du périmètre de l'élément.</p>
+            <p><img alt="Redimensionnement des éléments du graphique" src="../images/resizeelement.png" /></p>
+            <p>Pour modifier la position d'un élément, cliquez sur cet élément avec le bouton gauche de souris,  <img alt="Flèche" src="../images/arrow.png" />, maintenir le bouton gauche de la souris enfoncé et faites-le glisser avers la position souhaité.</p>
+            <p><img alt="Déplacer les éléments du graphique" src="../images/moveelement.png" /></p>
+            <p>Pour supprimer un élément de graphique, sélectionnez-le en cliquant sur le bouton gauche et appuyez sur la touche <b>Suppr</b>.</p>
+            <p>Vous pouvez également faire pivoter les graphiques 3D à l'aide de la souris. Faites un clic gauche dans la zone de tracé et maintenez le bouton de la souris enfoncé. Faites glisser le curseur sans relâcher le bouton de la souris pour modifier l'orientation du graphique 3D.</p>
+            <p><img alt="Graphique 3D" src="../images/3dchart.png" /></p>
+            <hr />
+            <h3>Ajuster les paramètres du graphique</h3>
+			<img alt="L'onglet Graphique" src="../images/charttab.png" />
+			<p>Modifiez la taille, le type et le style du graphique aussi que les données utilisés pour créer un graphique sur la barre latérale droite. Pour l'activer, cliquez sur le graphique et sélectionne l'icône <b>Paramètres du graphique</b> <img alt="L'icône Paramètres du graphique" src="../images/chart_settings_icon.png" /> à droite.</p>
+			<p>La section <b>Taille</b> vous permet de modifier la largeur et/ou la hauteur du graphique.  Lorsque le bouton <b>Proportions constantes</b> <img alt="L'icône Proportions constantes" src="../images/constantproportions.png" /> est activé (dans ce cas, il ressemble à ceci <img alt="L'icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), la largeur et la hauteur seront changées en même temps, le ratio d'aspect du graphique original sera préservé.</p>
+			<p>La section <b>Modifier le type de graphique</b> vous permet de modifier le type et/ou le style de graphique sélectionné à l'aide du menu déroulant correspondant. </p>
+			<p>Pour sélectionner le <b>Style</b> de graphique nécessaire, utilisez le deuxième menu déroulant de la section <b>Modifier le type de graphique</b>.</p>            
+            <p>Le bouton <b>Modifier les données</b> vous permet d'ouvrir la fenêtre <b>Éditeur de graphique</b> et d'éditer les données comme décrit ci-dessus.</p>
+            <p class="note"><b>Remarque</b>: pour ouvrir rapidement la fenêtre <b>Éditeur de graphiques</b>, vous pouvez également double-cliquer sur le graphique dans le document.</p>
+            <p>L'option <b>Afficher les paramètres avancés</b> dans la barre latérale droite permet d'ouvrir la fenêtre <b>Graphique - Paramètres avancés</b> dans laquelle vous pouvez définir le texte alternatif:</p>
+            <p><img alt="La fenêtre Graphique - Paramètres avancés" src="../images/chartsettings7.png" /></p>
+            <hr />
+			<p>Pour <b>supprimer</b> un graphique inséré, sélectionnez-le avec la souris et appuyez sur la touche <b>Suppr</b>.</p>
+            <p>Pour apprendre à <b>aligner</b> un graphique sur la diapositive ou à <b>organiser</b> plusieurs objets, reportez-vous à la section <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Aligner et organiser les objets dans une diapositive</a> .</p>
+		</div>
+	</body>
+</html>

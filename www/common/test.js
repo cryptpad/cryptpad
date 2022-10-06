@@ -1,5 +1,14 @@
 define([], function () {
     if (window.__CRYPTPAD_TEST_OBJ_) { return window.__CRYPTPAD_TEST_OBJ_; }
+/*
+    // XXX localhost secureiframe fix
+    var out = function () {};
+    out.options = {};
+    out.testing = false;
+    out.registerInner = function () { };
+    out.registerOuter = function () { };
+    return out;
+*/
 
     var locks = [];
     var tests = [];
@@ -153,8 +162,9 @@ define([], function () {
     out.registerInner = function () { };
     out.registerOuter = function () { };
 
-    if (document.cookie.indexOf('test=') === 0) {
-        try {
+
+    try {
+        if (document.cookie.indexOf('test=') === 0) {
             var x = JSON.parse(decodeURIComponent(document.cookie.replace('test=', '')));
             if (x.test === 'auto') {
                 out.options = x.opts;
@@ -165,8 +175,8 @@ define([], function () {
                 enableManual();
                 console.log("Enable manual testing " + window.origin);
             }
-        } catch (e) { }
-    }
+        }
+    } catch (e) { }
 
     return out;
 });

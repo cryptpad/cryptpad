@@ -1,8 +1,9 @@
 // This file provides the API for the channel for talking to and from the sandbox iframe.
 define([
     //'/common/sframe-protocol.js',
-    '/common/common-util.js'
-], function (/*SFrameProtocol,*/ Util) {
+    '/common/common-util.js',
+    '/api/config',
+], function (/*SFrameProtocol,*/ Util, ApiConfig) {
 
     var mkTxid = function () {
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
@@ -156,10 +157,25 @@ define([
             });
         };
 
+        var trusted = [
+            ApiConfig.httpUnsafeOrigin,
+            ApiConfig.httpSafeOrigin,
+            '', // sharedworkers
+        ];
+
         onMsg.reg(function (msg) {
             if (!chanLoaded) { return; }
             if (!msg.data || msg.data === '_READY') { return; }
-            var data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
+            if (!trusted.includes(msg.origin)) { return; }
+
+            var data;
+            // apparently some browser extensions send messages to random targets
+            // which can trigger parse errors that interrupt normal behaviour
+            try {
+                data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
+            } catch (err) {
+                console.error(err);
+            }
             if (typeof(data.ack) !== "undefined") {
                 if (acks[data.txid]) { acks[data.txid](!data.ack); }
             } else if (typeof(data.q) === 'string') {

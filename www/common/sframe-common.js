@@ -662,6 +662,9 @@ define([
         });
     };
 
+    funcs.openDirectly = function () {
+        ctx.sframeChan.event('EV_OPEN_URL_DIRECTLY');
+    };
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.getBounceURL = function (url) {
@@ -762,7 +765,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, '*');
+                iframe.postMessage(data, ApiConfig.httpUnsafeOrigin);
             };
             SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
         }).nThen(function (waitFor) {
@@ -804,7 +807,7 @@ define([
                 if (i) { i.classList = 'fa fa-shhare-alt'; }
                 var a = error.querySelector('a');
                 if (a) {
-                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/user_account.html#confidentiality"));
+                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
                 }
                 UI.errorLoadingScreen(error);
             });
@@ -853,6 +856,8 @@ define([
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
                 if (err === 'DELETED') {
+                    // XXX You can still use the current version in read-only mode by pressing Esc.
+                    // what if they don't have a keyboard (ie. mobile)
                     msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
                 }
                 if (err === "INVALID_HASH") {

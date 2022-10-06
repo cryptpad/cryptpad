@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función de búsqueda</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search and replace function in Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Función "Encontrar y Reemplazar"</h1>
+			<p><b>Para buscar</b> los caracteres, palabras o frases usadas en la presentación que se está editando actualmente, haga clic en el icono <img alt="Icono Buscar" src="../images/searchicon.png" /> situado en la barra lateral izquierda o use la combinación de teclas <em>Ctrl+F</em>.</p>
+			<p>Se abrirá la ventana <b>Encontrar y reemplazar</b>:</p><img alt="Ventana de búsqueda y sustitución" src="../images/search_window.png" /><ol>
+			<li>Introduzca su consulta en el campo correspondiente.</li>
+                <li>Especifique los parámetros de búsqueda al hacer clic en el icono <img alt="Icono Buscar opciones" src="../images/search_options.png" /> y marcar las opciones necesarias:<ul>
+                        <li><b>Sensible a mayúsculas y minúsculas</b> - se usa para encontrar solamente las ocurrencias escritas en el mismo tipo de letra (minúsculas o mayúsculas) que su consulta (por ejemplo, si su consulta es 'Editor' y esta opción está seleccionada, palabras como 'editor' o 'EDITOR', etc., no se mostrarán. Para desactivar esta opción haga clic en él de nuevo.</li><!--<li><b>Highlight results</b> - is used to highlight all found occurrences at once. To disable this option and remove the highlight click the option once again.</li>--></ul>
+                </li>
+			<li>Pulse uno de los <b>botones de flecha</b> a la derecha. La búsqueda se realizará o hacia el principio de la presentación (si pulsa el botón <img alt="Botón de flecha izquierda" src="../images/searchupbutton.png" />) o hacia el final de la presentación (si pulsa el botón <img alt="Botón de flecha derecha" src="../images/searchdownbutton.png" />) de la posición actual de cursor. <!--<p class="note"><b>Note</b>: when the <b>Highlight results</b> option is enabled, use these buttons to navigate through the highlighted results.</p>--></li>
+			</ol>
+			<p>La primera diapositiva en la dirección seleccionada que contiene los caracteres introducidos se resaltará en la lista de diapositivas y se mostrará en el área de trabajo con los caracteres necesarios resaltados. Si no es la diapositiva que está buscando, haga clic en el botón de nuevo para encontrar la siguiente diapositiva que contiene los caracteres introducidos.</p>
+            <p><b>Para reemplazar</b> una o más ocurrencias de los caracteres encontrados, haga clic en el enlace <b>Reemplazar</b> ue aparece debajo del campo de entrada de datos o utilice la combinación de teclas <em>Ctrl+H</em>. Se cambiará la ventana <b>Encontrar y reemplazar</b>:</p>
+            <p><img alt="Ventana de búsqueda y sustitución" src="../images/search_replace_window.png" /></p>
+            <ol>
+                <li>Introduzca el texto de sustitución en el campo apropiado debajo.</li>
+                <li>Pulse el botón <b>Reemplazar</b> para reemplazar la ocurrencia actualmente seleccionada o el botón <b>Reemplazar todo</b> para reemplazar todas las ocurrencias encontradas.</li>
+            </ol>
+            <p>Para esconder el campo de sustitución haga clic en el enlace <b>Esconder Sustitución</b>.</p> 
+		</div>
+	</body>
+</html>
