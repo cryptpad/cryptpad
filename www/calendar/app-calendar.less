@@ -231,6 +231,7 @@
         .tui-full-calendar-popup-detail {
             font: @colortheme_app-font;
             color: @cryptpad_text_col;
+            box-shadow: @cryptpad_ui_shadow;
             .tui-full-calendar-popup-container {
                 padding-bottom: 17px;
             }
@@ -246,6 +247,10 @@
                     flex: 1;
                     margin: 0;
                 }
+            }
+            .tui-full-calendar-popup-top-line {
+                border-radius: 10px 10px 0px 0px;
+                height: 10px;
             }
             .tui-full-calendar-popup-vertical-line {
                 visibility: hidden;
