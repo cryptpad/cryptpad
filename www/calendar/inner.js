@@ -1933,11 +1933,11 @@ APP.recurrenceRule = {
             h('span.cp-notif-empty', Messages.calendar_noNotification)
         ]);
 
-        Messages.calendar_addNotification = "Remove reminder"; // XXX
+        Messages.calendar_removeNotification = "Remove reminder"; // XXX
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
             var del = h('button.btn.btn-danger-outline.small.fa.fa-times',
-                {'title': Messages.calendar_addNotification}
+                {'title': Messages.calendar_removeNotification}
             );
             var minutes = value * unitValue;
             if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
