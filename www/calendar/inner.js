@@ -347,7 +347,6 @@ define([
             APP.editModalData = obj.data && obj.data.root;
             return Messages.poll_edit;
         },
-        popupDelete: function() { return Messages.kanban_delete; },
         popupDetailLocation: function(schedule) {
             var l = schedule.location;
             var str = Util.fixHTML(l);
@@ -2135,10 +2134,19 @@ APP.recurrenceRule = {
             var $el = $(el);
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
             $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
-            $el.find('.tui-full-calendar-popup-delete').addClass('btn btn-danger');
-            $el.find('.tui-full-calendar-popup-delete .tui-full-calendar-icon').addClass('fa fa-trash').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
 
+            var delButton = h('button.btn.btn-danger', [
+                h('i.fa.fa-trash'),
+                h('span', Messages.kanban_delete)
+            ]);
+            var $del = $el.find('.tui-full-calendar-popup-delete').hide();
+            $del.after(delButton);
+            UI.confirmButton(delButton, {
+                classes: 'danger'
+            }, function () {
+                $del.click();
+            });
             var $section = $el.find('.tui-full-calendar-section-button');
             var ev = APP.editModalData;
             var data = ev.schedule || {};
@@ -2161,7 +2169,7 @@ APP.recurrenceRule = {
                 h('i.fa.fa-times'),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
-            $b.click(function () {
+            UI.confirmButton($b[0], { classes: 'secondary' }, function () {
                 var originalId = id.split('|')[0];
                 var originalEvent = Util.find(APP.calendars,
                         [ev.schedule.calendarId, 'content', 'content', originalId]);
