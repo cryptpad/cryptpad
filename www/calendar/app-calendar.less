@@ -242,7 +242,7 @@
                 margin-top: 10px;
                 border: 0;
                 display: flex;
-                align-items: center;
+                align-items: start;
                 button {
                     flex: 1;
                     margin: 0;
@@ -422,6 +422,19 @@
                 margin-right: 20px;
             }
         }
+        button.cp-calendar-pick-el {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:not(:last-child) {
+                margin-right: 5px;
+            }
+        }
+        div.cp-calendar-weekly-pick {
+            button {
+                width: 50px;
+            }
+        }
         div.cp-calendar-monthly-pick {
             display: flex;
             flex-flow: column;
@@ -433,11 +446,8 @@
                 button {
                     height: 25px;
                     width: 25px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    &:not(:last-child) {
-                        margin-right: 5px;
+                    &.lastday {
+                        width: 115px;
                     }
                 }
             }
