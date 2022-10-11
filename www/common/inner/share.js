@@ -301,7 +301,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders"));
+            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders"));
         });
         return link;
     };

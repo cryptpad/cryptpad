@@ -1,5 +1,5 @@
-name: Bug report
-description: Report a reproducible bug for CryptPad. (NOT to be used for support questions.)
+name: Reproducible bug report
+description: Report a reproducible bug ONLY, otherwise see the links below
 labels: ["bug"]
 body:
   - type: checkboxes
@@ -14,13 +14,13 @@ body:
       label: I've found a bug and checked that ...
       description: Prior to placing the issue, please check following:** *(fill out each checkbox with an `X` once done)*
       options:
-      - label: ... I understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
+      - label: I understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
         required: true
-      - label: ... I have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
+      - label: I have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
         required: true
-      - label: ... I have understood that answers are voluntary and community-driven, and not commercial support.
+      - label: I have understood that answers are voluntary and community-driven, and not commercial support.
         required: true
-      - label: ... I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.fr/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
+      - label: I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
         required: true
   - type: textarea
     attributes:

@@ -16,6 +16,7 @@ var map = {
     //'nl': 'Nederlands'
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
+    'pt-pt': 'Português do Portugal',
     'ro': 'Română',
     'ru': 'Русский',
     //'sv': 'Svenska',

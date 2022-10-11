@@ -372,7 +372,7 @@ define([
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
-                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders'),
+                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders'),
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
@@ -1205,12 +1205,12 @@ define([
             whiteboard: 'whiteboard',
         };
 
-        var href = "https://docs.cryptpad.fr/en/user_guide/applications.html";
+        var href = "https://docs.cryptpad.org/en/user_guide/applications.html";
         if (apps[type]) {
-            href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
+            href = "https://docs.cryptpad.org/en/user_guide/apps/" + apps[type] + ".html";
         }
         if (type === 'drive') {
-            href = "https://docs.cryptpad.fr/en/user_guide/drive.html";
+            href = "https://docs.cryptpad.org/en/user_guide/drive.html";
         }
         href = Pages.localizeDocsLink(href);
 
@@ -1740,7 +1740,10 @@ define([
             tag: 'div',
             attributes: {'class': 'cp-user-menu-logo'},
             content: h('span', [
-                h('img', {src: '/customize/CryptPad_logo_grey.svg',alt: 'CryptPad logo',}), // XXX hardcoded alt text?
+                h('img', {
+                    src: '/customize/CryptPad_logo_grey.svg',
+                    "aria-hidden": true,
+                }),
                 h('span.cp-user-menu-logo-text', "CryptPad")
             ]),
         });
@@ -1869,7 +1872,7 @@ define([
             attributes: {
                 'target': '_blank',
                 'rel': 'noopener',
-                'href': 'https://docs.cryptpad.fr',
+                'href': 'https://docs.cryptpad.org',
                 'class': 'fa fa-book'
             },
             content: h('span', Messages.docs_link)
@@ -2384,7 +2387,7 @@ define([
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
                 h('span', newPadH3Title),
-                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
+                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
             ])
         ]);
         $creation.append(title);
@@ -2818,6 +2821,8 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
+                // XXX You can still use the current version in read-only mode by pressing Esc.
+                // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }

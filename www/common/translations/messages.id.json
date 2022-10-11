@@ -19,12 +19,12 @@
     },
     "typeError": "Dokumen ini tidak sesuai dengan aplikasi yang dipilih",
     "common_connectionLost": "<b>Koneksi Server Terputus</b><br>Kau sekarang di mode baca hingga koneksi kembali.",
-    "main_title": "Cryptpad: Informasi Aman, Kolaborasi Waktu Nyata",
-    "fc_open_ro": "Buka (<i>read-only</i>)",
+    "main_title": "CryptPad: Informasi Aman, Kolaborasi Waktu Nyata",
+    "fc_open_ro": "Buka (read-only)",
     "fc_open": "Buka",
     "exportButton": "Ekspor",
     "invalidHashError": "URL dari dokumen yang ada minta tidaklah valid.",
-    "errorRedirectToHome": "Tekan <em>Esc</em> untuk diarahkan ke CryptDrive anda.",
+    "errorRedirectToHome": "Tekan Esc untuk diarahkan ke CryptDrive anda.",
     "inactiveError": "Dokumen ini telah dihapus karena tidak ada aktivitas. Tekan Esc untuk membuat dokumen baru.",
     "deletedError": "Dokumen ini telah dihapus dan tidak lagi tersedia."
 }

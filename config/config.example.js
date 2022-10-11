@@ -110,12 +110,15 @@ module.exports = {
      *  To give access to the admin panel to a user account, just add their public signing
      *  key, which can be found on the settings page for registered users.
      *  Entries should be strings separated by a comma.
+     *  adminKeys: [
+     *      "[cryptpad-user1@my.awesome.website/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=]",
+     *      "[cryptpad-user2@my.awesome.website/jA-9c5iNuG7SyxzGCjwJXVnk5NPfAOO8fQuQ0dC83RE=]",
+     *  ]
+     *
      */
-/*
     adminKeys: [
-        //"[cryptpad-user1@my.awesome.website/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=]",
+
     ],
-*/
 
     /* =====================
      *        STORAGE

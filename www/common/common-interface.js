@@ -660,7 +660,7 @@ define([
         opt = opt || {};
 
         var inputBlock = opt.password ? UI.passwordInput() :
-                            (opt.typeInput ? dialog.textTypeInput(opt.typeInput) : dialog.textInput());
+                            (opt.typeInput ? dialog.textTypeInput(opt.typeInput) : dialog.textInput(opt && opt.inputOpts));
         var input = $(inputBlock).is('input') ? inputBlock : $(inputBlock).find('input')[0];
         input.value = typeof(def) === 'string'? def: '';
 
@@ -1041,7 +1041,7 @@ define([
         });
         if (exitable) {
             $(window).focus();
-            $(window).keydown(function (e) {
+            $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
                     $loading.hide();
                     if (typeof(exitable) === "function") { exitable(); }
