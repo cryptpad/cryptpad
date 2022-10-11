@@ -286,6 +286,9 @@
             }
             .cp-calendar-notif-list-container {
                 margin-bottom: 10px;
+                .cp-notif-label {
+                    margin-top: 0.5em;
+                }
             }
             .cp-calendar-notif-list {
                 display: flex;
@@ -323,6 +326,11 @@
             }
             .cp-notif-empty {
                 display: none;
+                margin-bottom: 2px;
+                border-radius: @variables_radius;
+                background-color: fade(@cryptpad_text_col, 10%);
+                padding: 0.25rem 0.5rem;
+                line-height: 30px;
             }
             .cp-calendar-notif-list:empty ~ .cp-notif-empty {
                 display: block;
