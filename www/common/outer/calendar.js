@@ -841,6 +841,8 @@ define([
         var ev = c.proxy.content[data.ev.id];
         if (!ev) { return void cb({error: "EINVAL"}); }
 
+        data.rawData = data.rawData || {};
+
         // update the event
         var changes = data.changes || {};
         var type = data.type || {};
@@ -893,7 +895,7 @@ define([
             if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
                 cleanAfter(type.when);
             } else {
-                ev.recUpdate = RECUPDATE;
+                update = ev.recUpdate = RECUPDATE;
             }
         }
 
@@ -954,6 +956,9 @@ define([
         Object.keys(changes).forEach(function (key) {
             if (!alwaysAll.includes(key) && type.which === "one") {
                 if (key === "recurrenceRule") {
+                    if (data.rawData && data.rawData.isOrigin) {
+                        return (ev[key] = changes[key]);
+                    }
                     // Always "from", never "one" for recurrence rules
                     update.from[type.when] = update.from[type.when] || {};
                     return (update.from[type.when][key] = changes[key]);

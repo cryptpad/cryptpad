@@ -604,7 +604,17 @@ define([
                 var nextRule = nextRules.shift();
 
                 if (_start >= _endMonth) { return; }
-                if (rule.until < _startMonth) { return; }
+
+                // Check the "until" date of the latest rule we can use and stop now
+                // if the recurrence ends before the current month
+                var until = rule.until;
+                var _nextRules = nextRules.slice();
+                var _nextRule = nextRule;
+                while (_nextRule && _nextRule._start && _nextRule._start < _startMonth) {
+                    until = nextRule.until;
+                    _nextRule = _nextRules.shift();
+                }
+                if (until < _startMonth) { return; }
 
                 var endData = getEndData(_start, _end);
 
@@ -626,7 +636,8 @@ define([
                 rule.freq = 'yearly';
                 rule.count = 10;
                 */
-                debug('Iterate over', obj);
+                debug('Iterate over', obj.title, obj);
+                debug('Use rule', rule);
 
                 var count = rule.count;
                 var c = 1;
@@ -671,6 +682,19 @@ define([
                             newrule = true;
                         }
 
+                        var useNewRule = function () {
+                            if (!newrule) { return; }
+                            debug('Use new rule', nextRule);
+                            _ev._count = c;
+                            count = nextRule.count;
+                            c = 1;
+                            evS = +_evS;
+                            obj = _ev;
+                            rule = nextRule;
+                            nextRule = nextRules.shift();
+                        };
+
+
                         if (c >= count) { // Limit reached
                             debug(_evS.toLocaleDateString(), 'count');
                             stop = true;
@@ -694,6 +718,7 @@ define([
                         if (_evE < _startMonth) { // Ended before the current month
                             // Nothing to display but continue the recurrence
                             debug(_evS.toLocaleDateString(), 'startMonth');
+                            if (newrule) { useNewRule(); }
                             return;
                         }
                         // If a recurring event start and end in different months, make sure
@@ -712,13 +737,7 @@ define([
                         // Add this event
                         toAdd.push(_ev);
                         if (newrule) {
-                            _ev._count = c;
-                            count = nextRule.count;
-                            c = 1;
-                            evS = +_evS;
-                            obj = _ev;
-                            rule = nextRule;
-                            nextRule = nextRules.shift();
+                            useNewRule();
                             return true;
                         }
                     });
