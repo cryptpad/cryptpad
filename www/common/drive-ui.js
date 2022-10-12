@@ -2645,7 +2645,7 @@ define([
             }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
-                var docsLink = 'https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types';
+                var docsLink = 'https://docs.cryptpad.org/en/user_guide/user_account.html#account-types';
                 $box.html(msg).find('a[href="#docs"]').each(function () {
                     $(this).attr({
                         href: Pages.localizeDocsLink(docsLink),
@@ -2772,7 +2772,7 @@ define([
         // Get the upload options
         var addSharedFolderModal = function (cb) {
 
-            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners"));
+            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners"));
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -4755,7 +4755,7 @@ define([
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
                                 UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
-                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
+                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                             ]),
                         ]);
                         return void UI.confirm(convertContent, function(res) {

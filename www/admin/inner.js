@@ -105,7 +105,7 @@ define([
             'cp-admin-update-available',
             'cp-admin-checkup',
             'cp-admin-block-daily-check',
-            //'cp-admin-provide-aggregate-statistics',
+            'cp-admin-provide-aggregate-statistics',
             'cp-admin-list-my-instance',
 
             'cp-admin-consent-to-contact',
@@ -200,6 +200,7 @@ define([
         var data = {
             generated: +new Date(),
             key: key,
+            safeKey: Util.escapeKeyCharacters(key),
         };
 
         return void nThen(function (w) {
@@ -376,7 +377,16 @@ define([
         row(Messages.admin_generatedAt, new Date(data.generated));
 
         // signing key
-        row(Messages.settings_publicSigningKey, data.key);
+        if (data.key === data.safeKey) {
+            row(Messages.settings_publicSigningKey, h('code', data.key));
+        } else {
+            row(Messages.settings_publicSigningKey, h('span', [
+                h('code', data.key),
+                ', ',
+                h('br'),
+                h('code', data.safeKey),
+            ]));
+        }
 
         // First pin activity time
         row(Messages.admin_firstPinTime, maybeDate(data.first));
@@ -701,7 +711,7 @@ define([
         var row = tableObj.row;
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
-        row(Messages.documentID, data.id);
+        row(Messages.documentID, h('code', data.id));
         row(Messages.admin_documentType, localizeType(data.type));
         row(Messages.admin_documentSize, data.size? getPrettySize(data.size): Messages.ui_undefined);
 
@@ -778,7 +788,72 @@ define([
 
         }
 
-        if (data.live) {
+        if (data.live && data.archived) {
+            let disableButtons;
+            let restoreButton = danger(Messages.admin_unarchiveButton, function () {
+                justifyRestorationDialog('', reason => {
+                    nThen(function (w) {
+                        sframeCommand('REMOVE_DOCUMENT', {
+                            id: data.id,
+                            reason: reason,
+                        }, w(err => {
+                            if (err) {
+                                w.abort();
+                                return void UI.warn(Messages.error);
+                            }
+                        }));
+                    }).nThen(function () {
+                        sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
+                            id: data.id,
+                            reason: reason,
+                        }, (err /*, response */) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.restoredFromServer);
+                            disableButtons();
+                        });
+                    });
+                });
+            });
+
+            let archiveButton = danger(Messages.admin_archiveButton, function () {
+                justifyArchivalDialog('', result => {
+                    sframeCommand('ARCHIVE_DOCUMENT', {
+                        id: data.id,
+                        reason: result,
+                    }, (err /*, response */) => {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.log(Messages.archivedFromServer);
+                        disableButtons();
+                    });
+                });
+            });
+
+            disableButtons = function () {
+                [archiveButton, restoreButton].forEach(el => {
+                    disable($(el));
+                });
+            };
+
+            row(h('span', [
+                Messages.admin_documentConflict,
+                h('br'),
+                h('small', Messages.ui_experimental),
+            ]), h('span', [
+                h('div.alert.alert-danger.cp-admin-bigger-alert', [
+                    Messages.admin_conflictExplanation,
+                ]),
+                h('p', [
+                    restoreButton,
+                    archiveButton,
+                ]),
+            ]));
+        } else if (data.live) {
         // archive
             var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
                 justifyArchivalDialog('', result => {
@@ -799,9 +874,7 @@ define([
                 archiveDocumentButton,
                 h('small', Messages.admin_archiveHint),
             ]));
-        }
-
-        if (data.archived && !data.live) {
+        } else if (data.archived) {
             var restoreDocumentButton = primary(Messages.admin_unarchiveButton, function () {
                 justifyRestorationDialog('', reason => {
                     sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
@@ -1017,7 +1090,7 @@ define([
         var row = tableObj.row;
 
         row(Messages.admin_generatedAt, maybeDate(data.generated));
-        row(Messages.admin_blockKey, data.key);
+        row(Messages.admin_blockKey, h('code', data.key));
         row(Messages.admin_blockAvailable, localizeState(data.live));
         row(Messages.admin_blockArchived, localizeState(data.archived));
 
@@ -1535,8 +1608,6 @@ define([
                     return obj[a].limit > obj[b].limit;
                 });
 
-                var compact = list.length > 10;
-
                 var content = list.map(function (key) {
                     var user = obj[key];
                     var limit = getPrettySize(user.limit);
@@ -1544,33 +1615,50 @@ define([
                                 Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
                                 Messages._getKey('admin_limitNote', [user.note]);
 
+                    var infoButton = h('button.btn.primary.cp-report', {
+                        style: 'margin-left: 10px; cursor: pointer;',
+                    }, Messages.admin_diskUsageButton);
+
+                    $(infoButton).click(() => {
+                         console.log(key);
+                         getAccountData(key, (err, data) => {
+                             if (err) { return void console.error(err); }
+                             console.log(data);
+                             var table = renderAccountData(data);
+                             UI.alert(table, () => {
+
+                             }, {
+                                wide: true,
+                             });
+                         });
+                    });
+
                     var keyEl = h('code.cp-limit-key', key);
                     $(keyEl).click(function () {
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                     });
-                    if (compact) {
-                        return h('tr.cp-admin-limit', {
-                            title: title
-                        }, [
-                            h('td', keyEl),
-                            h('td.limit', Messages._getKey('admin_limit', [limit])),
-                            h('td.plan', Messages._getKey('admin_limitPlan', [user.plan])),
-                            h('td.note', Messages._getKey('admin_limitNote', [user.note]))
-                        ]);
-                    }
-                    return h('li.cp-admin-limit', [
-                        keyEl,
-                        h('ul.cp-limit-data', [
-                            h('li.limit', Messages._getKey('admin_limit', [limit])),
-                            h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
-                            h('li.note', Messages._getKey('admin_limitNote', [user.note]))
-                        ])
+
+                    var attr = { title: title };
+                    return h('tr.cp-admin-limit', [
+                        h('td', [
+                            keyEl,
+                            infoButton,
+                        ]),
+                        h('td.limit', attr, limit),
+                        h('td.plan', attr, user.plan),
+                        h('td.note', attr, user.note)
                     ]);
                 });
-                if (compact) { return $div.append(h('table.cp-admin-all-limits', content)); }
-                $div.append(h('ul.cp-admin-all-limits', content));
+                return $div.append(h('table.cp-admin-all-limits', [
+                    h('tr', [
+                        h('th', Messages.settings_publicSigningKey),
+                        h('th.limit', Messages.admin_planlimit),
+                        h('th.plan', Messages.admin_planName),
+                        h('th.note', Messages.admin_note)
+                    ]),
+                ].concat(content)));
             });
         };
         APP.refreshLimits();

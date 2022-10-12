@@ -1041,7 +1041,7 @@ define([
         });
         if (exitable) {
             $(window).focus();
-            $(window).keydown(function (e) {
+            $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
                     $loading.hide();
                     if (typeof(exitable) === "function") { exitable(); }

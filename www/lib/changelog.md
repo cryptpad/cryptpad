@@ -8,7 +8,7 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jscolor v2.0.5](https://jscolor.com/) for providing a consistent color picker across all browsers
 * [jquery.ui 1.12.1](https://jqueryui.com/) for its 'autocomplete' extension which is used for our tag picker
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
-* [mermaid 9.1.6](https://github.com/mermaid-js/mermaid/releases/tag/8.13.4) extends our markdown integration to support a variety of diagram types
+* [mermaid 9.1.7](https://github.com/mermaid-js/mermaid/releases/tag/8.13.4) extends our markdown integration to support a variety of diagram types
 * [Fabricjs 4.6.0](https://github.com/fabricjs/fabric.js) and [Fabric-history](https://github.com/lyzerk/fabric-history) for the whiteboard app
 * [Requirejs optional module plugin](https://stackoverflow.com/a/27422370)
 * [asciidoc.js 2.0.0](https://github.com/asciidoctor/codemirror-asciidoc/releases/tag/2.0.0) with slight changes to match the format of other codemirror modes

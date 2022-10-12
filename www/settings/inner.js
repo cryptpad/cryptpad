@@ -1704,7 +1704,7 @@ define([
         drive: 'fa fa-hdd-o',
         cursor: 'fa fa-i-cursor',
         code: 'fa fa-file-code-o',
-        pad: 'fa fa-file-word-o',
+        pad: 'cptools cptools-richtext',
         security: 'fa fa-lock',
         subscription: 'fa fa-star-o',
         kanban: 'cptools cptools-kanban',
