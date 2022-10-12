@@ -2927,6 +2927,10 @@ define([
                     channel: content.answers.channel,
                     hash: answers._hash
                 }, function (err, obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                        return void UI.warn(Messages.error);
+                    }
                     framework._.sfCommon.gotoURL();
                 });
             });

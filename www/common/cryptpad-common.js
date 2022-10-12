@@ -137,13 +137,9 @@ define([
             key: ['forms', data.channel],
         }, function (obj) {
             if (!obj || obj.error) { return void cb(obj); }
-            if (!Array.isArray(obj)) {
-                obj.deletable = false;
-                obj = [obj];
-            }
+            if (!Array.isArray(obj)) { obj = [obj]; }
 
             var last = obj[obj.length - 1];
-            if (obj.length && obj[0].deletable === false) { last.deletable === false; }
             if (onlyLast) { return void cb(last); }
             return void cb(obj);
         });
@@ -176,16 +172,14 @@ define([
                     console.error(obj.error);
                 }
             });
-            cb({
-                deletable: answers[0].deletable !== false
-            });
+            cb();
         });
     };
-    common.deleteFormAnswers = function (data, cb) {
+    common.deleteFormAnswers = function (data, _cb) {
+        var cb = Util.once(_cb);
         common.getFormAnswer(data, false, function (obj) {
             if (!obj || obj.error) { return void cb(); }
             if (!obj.length) { return void cb(); }
-            if (obj[0].deletable === false) { return void cb({error: 'EINVAL'}); }
             var n = Nthen;
             var nacl, theirs;
             n = n(function (waitFor) {
@@ -213,6 +207,10 @@ define([
                         proof: proof
                     };
                     postMessage("DELETE_PAD_LINE", lineData, waitFor(function (obj) {
+                        if (obj && obj.error === 'EFORBIDDEN') {
+                            waitFor.abort();
+                            return void cb(obj);
+                        }
                         if (obj || obj.error) { return; }
                         toDelete.push(hash);
                     }));

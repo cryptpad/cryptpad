@@ -122,6 +122,8 @@ define([
                     return false;
                 }
             };
+
+            var deleteLines = false; // "false" to support old forms
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
                 var cb = Utils.Util.once(_cb);
                 var myKeys = {};
@@ -183,6 +185,9 @@ define([
                         validateKey: keys.secondaryValidateKey,
                         owners: [myKeys.edPublic],
                         crypto: crypto,
+                        metadata: {
+                            deleteLines: true
+                        }
                         //Cache: Utils.Cache // TODO enable cache for form responses when the cache stops evicting old answers
                     };
                     var results = {};
@@ -206,7 +211,10 @@ define([
                             cb();
                         });
                     };
-                    config.onReady = function () {
+                    config.onReady = function (obj) {
+                        if (obj && obj.metadata && obj.metadata.deleteLines) {
+                            deleteLines = true;
+                        }
                         var myKey;
                         // If we have submitted an anonymous answer, retrieve it
                         if (myFormKeys.curvePublic && results[myFormKeys.curvePublic]) {
@@ -261,6 +269,9 @@ define([
                         }
                         answer = obj;
                     }));
+                    Cryptpad.getPadMetadata({channel: data.channel}, w(function (md) {
+                        if (md && md.deleteLines) { deleteLines = true; }
+                    }));
                 }).nThen(function () {
                     if (answer.anonymous) {
                         if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
@@ -285,7 +296,7 @@ define([
                             var parsed = JSON.parse(res.content);
                             parsed._isAnon = answer.anonymous;
                             parsed._time = messages[0].time;
-                            if (answer.deletable !== false) { parsed._hash = answer.hash; }
+                            if (deleteLines) { parsed._hash = answer.hash; }
                             cb(parsed);
                         } catch (e) {
                             cb({error: e});
@@ -348,11 +359,11 @@ define([
                             hash: hash,
                             curvePrivate: ephemeral_private,
                             anonymous: Boolean(data.anonymous)
-                        }, function (obj) {
+                        }, function () {
                             var res = data.results;
                             res._isAnon = data.anonymous;
                             res._time = +new Date();
-                            if (obj.deletable !== false) { res._hash = hash; }
+                            if (deleteLines) { res._hash = hash; }
                             cb({
                                 error: err,
                                 response: response,
@@ -363,6 +374,9 @@ define([
                 });
             });
             sframeChan.on("Q_FORM_DELETE_ANSWER", function (data, cb) {
+                if (!deleteLines) {
+                    return void cb({error: 'EFORBIDDEN'});
+                }
                 Cryptpad.deleteFormAnswers(data, cb);
             });
         };
