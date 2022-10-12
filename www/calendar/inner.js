@@ -2165,11 +2165,11 @@ APP.recurrenceRule = {
                 });
             }
             // This is a recurring event, add button to stop recurrence now
-            var $b = $(h('button.btn.btn-secondary', [
+            var $b = $(h('button.btn.btn-default', [
                 h('i.fa.fa-times'),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
-            UI.confirmButton($b[0], { classes: 'secondary' }, function () {
+            UI.confirmButton($b[0], { classes: 'btn-default' }, function () {
                 var originalId = id.split('|')[0];
                 var originalEvent = Util.find(APP.calendars,
                         [ev.schedule.calendarId, 'content', 'content', originalId]);
