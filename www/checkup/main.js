@@ -1566,7 +1566,7 @@ define([
             console.error(err);
         }
 
-        return h(`div.errorcp-test-status.${obj.type}`, [
+        return h(`div.error.cp-test-status.${obj.type}`, [
             h('h5', obj.message),
             h('div.table-container',
                 h('table', [
