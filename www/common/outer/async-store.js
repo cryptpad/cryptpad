@@ -2179,9 +2179,9 @@ define([
             }
         };
 
-        Store.deletePadLine = function (clientId, data, cb) {
+        Store.deleteMailboxMessage = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.deleteLine(data, function (e) {
+            store.rpc.deleteMailboxMessage(data, function (e) {
                 cb({error:e});
             });
         };

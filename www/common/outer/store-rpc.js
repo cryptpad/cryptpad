@@ -88,7 +88,7 @@ define([
             GET_LAST_HASH: Store.getLastHash,
             GET_SNAPSHOT: Store.getSnapshot,
             CORRUPTED_CACHE: Store.corruptedCache,
-            DELETE_PAD_LINE: Store.deletePadLine,
+            DELETE_MAILBOX_MESSAGE: Store.deleteMailboxMessage,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,

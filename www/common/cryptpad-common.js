@@ -206,12 +206,11 @@ define([
                         hash: hash,
                         proof: proof
                     };
-                    postMessage("DELETE_PAD_LINE", lineData, waitFor(function (obj) {
-                        if (obj && obj.error === 'EFORBIDDEN') {
+                    postMessage("DELETE_MAILBOX_MESSAGE", lineData, waitFor(function (obj) {
+                        if (obj && obj.error) {
                             waitFor.abort();
                             return void cb(obj);
                         }
-                        if (obj || obj.error) { return; }
                         toDelete.push(hash);
                     }));
                 }).nThen;
