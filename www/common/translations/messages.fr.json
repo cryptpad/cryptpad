@@ -1500,5 +1500,7 @@
     "og_features": "{0} Fonctionnalités",
     "og_encryptedAppType": "Chiffré {0}",
     "admin_conflictExplanation": "Il existe deux versions de ce document. La restauration de la version archivée va écraser la version courante. L'archivage de la version courante va écraser le document archivé. Aucune de ces actions ne peut être annulée.",
-    "admin_documentConflict": "Archiver/restaurer"
+    "admin_documentConflict": "Archiver/restaurer",
+    "fm_rmFilter": "Désactiver le filtre",
+    "fm_filterBy": "Filtrer"
 }
