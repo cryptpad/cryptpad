@@ -3164,7 +3164,6 @@ define([
                 $block.find('a.cp-app-drive-rm-filter')
                 .click(function () {
                     APP.store[FILTER_BY] = undefined;
-                    localStore.put(FILTER_BY, undefined);
                     APP.displayDirectory(currentPath);
                 });
             }
@@ -3172,7 +3171,6 @@ define([
             .click(function () {
                 var type = $(this).attr('data-type') || 'invalid-filter';
                 APP.store[FILTER_BY] = type;
-                localStore.put(FILTER_BY, type);
                 APP.displayDirectory([FILTER, type, currentPath]);
             });
 
@@ -4069,7 +4067,6 @@ define([
                 currentPath = path;
             } else {
                 APP.store[FILTER_BY] = undefined;
-                localStore.put(FILTER_BY, undefined);
             }
             var isInRoot = manager.isPathIn(path, [ROOT]);
             var inTrash = manager.isPathIn(path, [TRASH]);
