@@ -967,6 +967,9 @@
             }
         }
     }
+    .cp-toolbar-dropdown-nowrap {
+        white-space: nowrap;
+    }
     .cp-toolbar-bottom {
         color: @cp_toolbar-bottom-fg;
         display: inline-flex;
@@ -998,11 +1001,15 @@
             .fa, .cptools {
                 margin-right: 5px;
             }
+            .cp-dropdown-button-title .cp-icon {
+                margin-left: 5px;
+            }
             &:hover {
                 background-color: fade(@cp_toolbar-bottom-bg, 70%);
             }
         }
         .cp-toolbar-bottom-left > button,
+        .cp-toolbar-bottom-left > span > button,
         .cp-toolbar-bottom-mid > button,
         .cp-toolbar-bottom-right > button,
         .cp-toolbar-bottom-right > span > button {
@@ -1070,7 +1077,7 @@
                 .cp-toolbar-name, .cp-button-name {
                     display: none;
                 }
-                i {
+                i, span {
                     margin-right: 0;
                 }
             }
