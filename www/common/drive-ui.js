@@ -3023,7 +3023,7 @@ define([
             }
 
             return options;
-        }
+        };
         var createNewButton = function (isInRoot, $container) {
             if (!APP.editable) { return; }
             if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
