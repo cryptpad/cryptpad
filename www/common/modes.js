@@ -7,6 +7,7 @@ define([
     var list = Modes.list = [
         "APL apl .apl",
         "ASCII-Armor asciiarmor .asc",
+        "AsciiDoc asciidoc .adoc",
         "ASN.1 asn.1 .asn1",
         "Asterisk asterisk",
         "Brainfuck brainfuck .b",

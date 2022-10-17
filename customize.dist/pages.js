@@ -95,7 +95,7 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "5.0.0";
+    Pages.versionString = "5.1.0";
 
     var customURLs = Pages.customURLs = {};
     (function () {
@@ -143,14 +143,14 @@ define([
     Pages.privacyLink = footLink(customURLs.privacy, 'privacy');
     Pages.termsLink = footLink(customURLs.terms, 'terms');
     Pages.sourceLink = footLink(customURLs.source, 'footer_source');
-    Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
+    Pages.docsLink = footLink('https://docs.cryptpad.org', 'docs_link');
     Pages.roadmapLink = footLink(customURLs.roadmap, 'footer_roadmap');
 
 
     Pages.infopageFooter = function () {
         var donateButton;
         if (!ApiConfig.removeDonateButton) {
-            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money'); // XXX DB: add OpenCollective icon // XXX
+            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money'); // TODO migrate to forkawesome and use the OpenCollective icon
         }
 
         return h('footer.cp-footer', [
@@ -228,7 +228,7 @@ define([
                     h('i.fa.fa-info-circle'),
                     Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features
                 ]),
-                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.fr'},
+                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'},
                     [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),
             ].concat(rightLinks)
         );

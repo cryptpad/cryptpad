@@ -14,7 +14,7 @@
     "login_password": "Heslo",
     "login_username": "Uživatelské jméno",
     "padNotPinned": "Tento dokument expiruje za 3 měsíce neaktivity, {0}přihlašte se{1} nebo {2}se registrujte{3} pro jeho uchování.",
-    "onLogout": "Jste odhlášení, {0}klikněte zde{1} pro přihlášení<br>nebo zmáčkněte <em>Escape</em> pro čtení dokumentu.",
+    "onLogout": "Jste odhlášení, {0}klikněte zde{1} pro přihlášení<br>nebo zmáčkněte Esc pro čtení dokumentu.",
     "typeError": "Tento dokument není kompatibilní s vybranou aplikací",
     "common_connectionLost": "<b>Spojení se serverem ztraceno</b><br>Nyní jste v režimu čtení, dokud nebude spojení obnoveno.",
     "type": {

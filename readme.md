@@ -2,17 +2,19 @@
 
 CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data is encrypted, the service and its administrators have no way of seeing the content being edited and stored.
 
-![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
+![Drive screenshot](screenshot.png "preview of the CryptDrive")
+
+![Suite screenshots](screenshot-suite.png "all CyptPad applications: Document, Sheet, Presentation, Form, Kanban, Code, Rich Text, Whiteboard")
 
 # Installation
 
 ## For development
 
-Our [developer guide](https://docs.cryptpad.fr/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
+Our [developer guide](https://docs.cryptpad.org/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
 
 ## For production
 
-Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.fr/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
+Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
 
 ## Current version
 
@@ -54,15 +56,20 @@ meet our strict criteria for safety.
 # Translations
 
 CryptPad can be translated with nothing more than a web browser via our
-[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/). See the state of the translated languages:
+
+![](https://weblate.cryptpad.fr/widgets/cryptpad/-/app/multi-auto.svg)
+
 More information about this can be found in [our translation guide](/customize.dist/translations/README.md).
 
 # Contacting Us
 
-You can reach members of the CryptPad development team on [Twitter](https://twitter.com/cryptpad),
-via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on our
-[Matrix channel](https://riot.im/app/#/room/#cryptpad:matrix.org), or by
-[e-mail](mailto:research@xwiki.com).
+The best places to reach the development team and the community are the [CryptPad Forum](https://forum.cryptpad.org) and the [Matrix chat](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
+
+The team is also on social media:
+- Mastodon: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
+- Twitter: [@cryptpad](https://twitter.com/cryptpad)
+
 
 # Team
 
@@ -70,7 +77,7 @@ CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), 
 
 # Contributing
 
-We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.fr/en/how_to_contribute.html). 
+We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.org/en/how_to_contribute.html).
 
 If you have any questions or comments, or if you're interested in contributing to CryptPad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
 
