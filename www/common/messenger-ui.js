@@ -590,8 +590,9 @@ define([
                 if (!channel.isFriendChat) { return; }
                 var curvePublic = channel.curvePublic;
                 var friend = contactsData[curvePublic] || friendData;
+                var name = Util.fixHTML(UI.getDisplayName(friend.name || friend.displayName));
                 var content = h('div', [
-                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [Util.fixHTML(friend.name)])),
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [ name ])),
                 ]);
                 UI.confirm(content, function (yes) {
                     if (!yes) { return; }
@@ -709,6 +710,7 @@ define([
             var curvePublic = info.curvePublic;
             contactsData[curvePublic] = info;
 
+            if (!Array.isArray(types)) { return; }
             if (types.indexOf('displayName') !== -1) {
                 var name = info.displayName;
 

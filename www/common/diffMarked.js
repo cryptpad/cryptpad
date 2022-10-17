@@ -345,7 +345,7 @@ define([
             ]),
             h('br'),
             h('a.cp-learn-more', {
-                href: Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#remote-content'),
+                href: Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#remote-content'),
             }, [
                 Messages.resources_learnWhy
             ]),

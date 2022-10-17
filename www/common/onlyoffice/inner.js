@@ -1253,7 +1253,9 @@ define([
                 changes: parseChanges(changes, obj.type === "cp_theme"),
                 changesIndex: ooChannel.cpIndex || 0,
                 locks: getUserLock(getId(), true),
-                excelAdditionalInfo: obj.excelAdditionalInfo
+                excelAdditionalInfo: obj.excelAdditionalInfo,
+                startSaveChanges: obj.startSaveChanges,
+                endSaveChanges: obj.endSaveChanges
             }, null, function (err, hash) {
                 if (err) {
                     return void console.error(err);
@@ -1263,15 +1265,27 @@ define([
                     clearTimeout(pendingChanges[uid]);
                     delete pendingChanges[uid];
                 }
-                // Call unSaveLock to tell onlyoffice that the patch was sent.
-                // It will allow you to make changes to another cell.
-                // If there is an error and unSaveLock is not called, onlyoffice
-                // will try to send the patch again
-                send({
-                    type: "unSaveLock",
-                    index: ooChannel.cpIndex,
-                    time: +new Date()
-                });
+
+                // If endSaveChanges is false, it means the patch is split into
+                // several set of changes and this is only a part of it. The last
+                // part will have this value to "true"
+                if (!obj.endSaveChanges) {
+                    send({
+                        type: "savePartChanges",
+                        changesIndex: -1,
+                        time: +new Date()
+                    });
+                } else {
+                    // Call unSaveLock to tell onlyoffice that the patch was sent.
+                    // It will allow you to make changes to another cell.
+                    // If there is an error and unSaveLock is not called, onlyoffice
+                    // will try to send the patch again
+                    send({
+                        type: "unSaveLock",
+                        index: ooChannel.cpIndex,
+                        time: +new Date()
+                    });
+                }
                 // Increment index and update latest hash
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;

@@ -618,6 +618,14 @@ define([
                 }
             }, waitFor(function (fw) { framework = fw; }));
 
+            $('#cp-app-code-editor').append([
+                h('div#cp-app-code-container', h('textarea#editor1', {name:'editor1'})),
+                h('div#cp-app-code-preview', [
+                    h('div#cp-app-code-preview-content'),
+                    h('div#cp-app-code-print')
+                ])
+            ]);
+
             nThen(function (waitFor) {
                 $(waitFor());
             }).nThen(function () {

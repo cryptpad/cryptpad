@@ -78,6 +78,7 @@ define([
     var TAGS_NAME = Messages.fm_tagsName;
     var SHARED_FOLDER = 'sf';
     var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
+    var FILTER = "filter";
 
     // Icons
     var faFolder = 'cptools-folder';
@@ -1149,8 +1150,12 @@ define([
             common.getMediaTagPreview(mts, idx);
         };
 
+        var FILTER_BY = "filterBy";
+
         var refresh = APP.refresh = function () {
-            APP.displayDirectory(currentPath);
+            var type = APP.store[FILTER_BY];
+            var path = type ? [FILTER, type, currentPath] : currentPath;
+            APP.displayDirectory(path);
         };
 
         // `app`: true (force open wiht the app), false (force open in preview),
@@ -2645,7 +2650,7 @@ define([
             }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
-                var docsLink = 'https://docs.cryptpad.fr/en/user_guide/user_account.html#account-types';
+                var docsLink = 'https://docs.cryptpad.org/en/user_guide/user_account.html#account-types';
                 $box.html(msg).find('a[href="#docs"]').each(function () {
                     $(this).attr({
                         href: Pages.localizeDocsLink(docsLink),
@@ -2772,7 +2777,7 @@ define([
         // Get the upload options
         var addSharedFolderModal = function (cb) {
 
-            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners"));
+            var docsHref = common.getBounceURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners"));
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -2946,6 +2951,79 @@ define([
                 openIn(type, path, APP.team);
             });
         };
+        var getNewPadOptions = function (isInRoot) {
+            var options = [];
+            if (isInRoot) {
+                options.push({
+                    class: 'cp-app-drive-new-folder',
+                    icon: $folderIcon.clone()[0],
+                    name: Messages.fm_folder,
+                });
+                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
+                    options.push({
+                        class: 'cp-app-drive-new-shared-folder',
+                        icon: $sharedFolderIcon.clone()[0],
+                        name: Messages.fm_sharedFolder,
+                    });
+                }
+                options.push({ separator: true });
+                options.push({
+                    class: 'cp-app-drive-new-fileupload',
+                    icon: getIcon('fileupload')[0],
+                    name: Messages.uploadButton,
+                });
+                if (APP.allowFolderUpload) {
+                    options.push({
+                        class: 'cp-app-drive-new-folderupload',
+                        icon: getIcon('folderupload')[0],
+                        name: Messages.uploadFolderButton,
+                    });
+                }
+                options.push({ separator: true });
+                options.push({
+                    class: 'cp-app-drive-new-link',
+                    icon: getIcon('link')[0],
+                    name: Messages.fm_link_new,
+                });
+                options.push({ separator: true });
+            }
+            getNewPadTypes().forEach(function (type) {
+                var typeClass = 'cp-app-drive-new-doc';
+
+                var premium = common.checkRestrictedApp(type);
+                if (premium < 0) {
+                    typeClass += ' cp-app-hidden cp-app-disabled';
+                } else if (premium === 0) {
+                    typeClass += ' cp-app-disabled';
+                }
+
+                options.push({
+                    class: typeClass,
+                    type: type,
+                    icon: getIcon(type)[0],
+                    name: Messages.type[type],
+                });
+            });
+
+            if (APP.store[FILTER_BY]) {
+                var typeFilter = APP.store[FILTER_BY];
+                options = options.filter((obj) => {
+                    if (obj.separator) { return false; }
+
+                    if (typeFilter === 'link') {
+                        return obj.class.includes('cp-app-drive-new-link');
+                    }
+                    if (typeFilter === 'file') {
+                        return obj.class.includes('cp-app-drive-new-fileupload');
+                    }
+                    if (getNewPadTypes().indexOf(typeFilter) !== -1) {
+                        return typeFilter === obj.type;
+                    }
+                });
+            }
+
+            return options;
+        }
         var createNewButton = function (isInRoot, $container) {
             if (!APP.editable) { return; }
             if (!APP.loggedIn) { return; } // Anonymous users can use the + menu in the toolbar
@@ -2953,59 +3031,62 @@ define([
             if (!manager.isPathIn(currentPath, [ROOT, 'hrefArray'])) { return; }
 
             // Create dropdown
+            var options = getNewPadOptions(isInRoot).map(function (obj) {
+                if (obj.separator) { return { tag: 'hr' }; }
+                var newObj = {
+                    tag: 'a',
+                    attributes: { 'class': obj.class },
+                    content: [ obj.icon, obj.name ]
+                };
+                if (obj.type) {
+                    newObj.attributes['data-type'] = obj.type;
+                    newObj.attributes['href'] = '#';
+                }
+                return newObj;
+            });
+            var dropdownConfig = {
+                buttonContent: [
+                    h('i.fa.fa-plus'),
+                    h('span.cp-button-name', Messages.fm_newButton),
+                ],
+                buttonCls: 'cp-toolbar-dropdown-nowrap',
+                options: options,
+                feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
+                common: common
+            };
+            var $block = UIElements.createDropdown(dropdownConfig);
+
+            // Custom style:
+            $block.find('button').addClass('cp-app-drive-toolbar-new');
+
+            addNewPadHandlers($block, isInRoot);
+
+            $container.append($block);
+        };
+
+        var createFilterButton = function (isTemplate, $container) {
+            if (!APP.loggedIn) { return; }
+            Messages.fm_filterBy = 'Filter by'; // XXX: English hardcoded
+            Messages.fm_rmFilter = 'Disable filter'; // XXX: English hardcoded
+
+            // Create dropdown
             var options = [];
-            if (isInRoot) {
+            if (APP.store[FILTER_BY]) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-folder pewpew'},
+                    attributes: {
+                        'class': 'cp-app-drive-rm-filter',
+                    },
                     content: [
-                        $folderIcon.clone()[0],
-                        Messages.fm_folder,
-                    ],
-                });
-                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
-                    options.push({
-                        tag: 'a',
-                        attributes: {'class': 'cp-app-drive-new-shared-folder'},
-                        content: [
-                            $sharedFolderIcon.clone()[0],
-                            Messages.fm_sharedFolder,
-                        ],
-                    });
-                }
-                options.push({tag: 'hr'});
-                options.push({
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-fileupload'},
-                    content: [
-                        getIcon('fileupload')[0],
-                        Messages.uploadButton,
-                    ],
-                });
-                if (APP.allowFolderUpload) {
-                    options.push({
-                        tag: 'a',
-                        attributes: {'class': 'cp-app-drive-new-folderupload'},
-                        content: [
-                            getIcon('folderupload')[0],
-                            Messages.uploadFolderButton,
-                        ],
-                    });
-                }
-                options.push({tag: 'hr'});
-                options.push({
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-link'},
-                    content: [
-                        getIcon('link')[0],
-                        Messages.fm_link_new,
+                        h('i.fa.fa-times'),
+                        Messages.fm_rmFilter,
                     ],
                 });
                 options.push({tag: 'hr'});
             }
             getNewPadTypes().forEach(function (type) {
                 var attributes = {
-                    'class': 'cp-app-drive-new-doc',
+                    'class': 'cp-app-drive-filter-doc',
                     'data-type': type,
                     'href': '#'
                 };
@@ -3026,21 +3107,72 @@ define([
                     ],
                 });
             });
+            if (!isTemplate) {
+                options.push({tag: 'hr'});
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-app-drive-filter-doc',
+                        'data-type': 'link'
+                    },
+                    content: [
+                        getIcon('link')[0],
+                        Messages.fm_link_type,
+                    ],
+                });
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-app-drive-filter-doc',
+                        'data-type': 'file',
+                        'href': '#'
+                    },
+                    content: [
+                        getIcon('file')[0],
+                        Messages.type['file'],
+                    ],
+                });
+            }
             var dropdownConfig = {
                 buttonContent: [
-                    h('span.fa.fa-plus'),
-                    h('span', Messages.fm_newButton),
+                    h('i.fa.fa-filter'),
+                    h('span.cp-button-name', Messages.fm_filterBy),
                 ],
+                buttonCls: 'cp-toolbar-dropdown-nowrap',
                 options: options,
-                feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
+                feedback: 'DRIVE_FILTERBY',
                 common: common
             };
+            if (APP.store[FILTER_BY]) {
+                var type = APP.store[FILTER_BY];
+                var message = type === 'link' ? Messages.fm_link_type : Messages.type[type];
+                dropdownConfig.buttonContent.push(
+                    h('span.cp-button-name', ':'),
+                    getIcon(type)[0],
+                    h('span.cp-button-name', message)
+                );
+            }
             var $block = UIElements.createDropdown(dropdownConfig);
 
-            // Custom style:
-            $block.find('button').addClass('cp-app-drive-toolbar-new');
+            // Add style
+            if (APP.store[FILTER_BY]) {
+                $block.find('button').addClass('cp-toolbar-button-active');
+            }
 
-            addNewPadHandlers($block, isInRoot);
+            // Add handlers
+            if (APP.store[FILTER_BY]) {
+                $block.find('a.cp-app-drive-rm-filter')
+                .click(function () {
+                    APP.store[FILTER_BY] = undefined;
+                    APP.displayDirectory(currentPath);
+                });
+            }
+            $block.find('a.cp-app-drive-filter-doc')
+            .click(function () {
+                var type = $(this).attr('data-type') || 'invalid-filter';
+                APP.store[FILTER_BY] = type;
+                APP.displayDirectory([FILTER, type, currentPath]);
+            });
 
             $container.append($block);
         };
@@ -3302,65 +3434,38 @@ define([
             return keys;
         };
 
+        var filterPads = function (files, type, path, useId) {
+            var root = path && manager.find(path);
+
+            return files
+                .filter(function (e) {
+                    return useId ? manager.isFile(e) : (path && manager.isFile(root[e]));
+                })
+                .filter(function (e) {
+                    var id = useId ? e : root[e];
+                    var data = manager.getFileData(id);
+                    if (type === 'link') { return data.static; }
+                    var href = data.href || data.roHref;
+                    return href ? (href.split('/')[1] === type) : true;
+                    // if types are unreachable, display files to avoid misleading the user
+                });
+        };
+
         // Create the ghost icon to add pads/folders
         var createNewPadIcons = function ($block, isInRoot) {
             var $container = $('<div>');
-            if (isInRoot) {
-                // Folder
-                var $element1 = $('<li>', {
-                    'class': 'cp-app-drive-new-folder cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
-                }).prepend($folderIcon.clone()).appendTo($container);
-                $element1.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                    .text(Messages.fm_folder));
-                // Shared Folder
-                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
-                    var $element3 = $('<li>', {
-                        'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
-                                 'cp-app-drive-element-grid'
-                    }).prepend($sharedFolderIcon.clone()).appendTo($container);
-                    $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                        .text(Messages.fm_sharedFolder));
-                }
-                // Upload file
-                var $elementFileUpload = $('<li>', {
-                    'class': 'cp-app-drive-new-fileupload cp-app-drive-element-row ' +
-                        'cp-app-drive-element-grid'
-                }).prepend(getIcon('fileupload')).appendTo($container);
-                $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.uploadButton));
-                // Upload folder
-                if (APP.allowFolderUpload) {
-                    var $elementFolderUpload = $('<li>', {
-                        'class': 'cp-app-drive-new-folderupload cp-app-drive-element-row ' +
-                        'cp-app-drive-element-grid'
-                    }).prepend(getIcon('folderupload')).appendTo($container);
-                    $elementFolderUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                        .text(Messages.uploadFolderButton));
-                }
-                // Link
-                var $elementLink = $('<li>', {
-                    'class': 'cp-app-drive-new-link cp-app-drive-element-row ' +
-                        'cp-app-drive-element-grid'
-                }).prepend(getIcon('link')).appendTo($container);
-                $elementLink.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.fm_link_type));
-            }
-            // Pads
-            getNewPadTypes().forEach(function (type) {
-                var $element = $('<li>', {
-                    'class': 'cp-app-drive-new-doc cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
-                }).prepend(getIcon(type)).appendTo($container);
-                $element.append($('<span>', {'class': 'cp-app-drive-new-name'})
-                    .text(Messages.type[type]));
-                $element.attr('data-type', type);
+            getNewPadOptions(isInRoot).forEach(function (obj) {
+                if (obj.separator) { return; }
 
-                var premium = common.checkRestrictedApp(type);
-                if (premium < 0) {
-                    $element.addClass('cp-app-hidden cp-app-disabled');
-                } else if (premium === 0) {
-                    $element.addClass('cp-app-disabled');
+                var $element = $('<li>', {
+                    'class': obj.class + ' cp-app-drive-element-row ' +
+                             'cp-app-drive-element-grid'
+                }).prepend(obj.icon).appendTo($container);
+                $element.append($('<span>', { 'class': 'cp-app-drive-new-name' })
+                    .text(obj.name));
+
+                if (obj.type) {
+                    $element.attr('data-type', obj.type);
                 }
             });
 
@@ -3435,7 +3540,7 @@ define([
 
         // Unsorted element are represented by "href" in an array: they don't have a filename
         // and they don't hav a hierarchical structure (folder/subfolders)
-        var displayHrefArray = function ($container, rootName, draggable) {
+        var displayHrefArray = function ($container, rootName, draggable, typeFilter) {
             var unsorted = files[rootName];
             if (unsorted.length) {
                 var $fileHeader = getFileListHeader(true);
@@ -3445,6 +3550,7 @@ define([
             var sortBy = APP.store[SORT_FILE_BY];
             sortBy = sortBy === "" ? sortBy = 'name' : sortBy;
             var sortedFiles = sortElements(false, [rootName], keys, sortBy, !getSortFileDesc(), true);
+            sortedFiles = typeFilter ? filterPads(sortedFiles, typeFilter, false, true) : sortedFiles;
             sortedFiles.forEach(function (id) {
                 var file = manager.getFileData(id);
                 if (!file) {
@@ -3526,7 +3632,7 @@ define([
             createGhostIcon($container);
         };
 
-        var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
+        var displayTrashRoot = function ($list, $folderHeader, $fileHeader, typeFilter) {
             var filesList = [];
             var root = files[TRASH];
             var isEmpty = true;
@@ -3549,14 +3655,25 @@ define([
                 isEmpty = false;
             });
 
+            var sortedFolders = typeFilter ? [] : sortTrashElements(true, filesList, null, !getSortFolderDesc());
+            var sortedFiles = sortTrashElements(false, filesList, APP.store[SORT_FILE_BY], !getSortFileDesc);
+
+            if (typeFilter) {
+                var ids = sortedFiles.map(function (obj) { return obj.element; });
+                var idsFilter = filterPads(ids, typeFilter, false, true);
+                sortedFiles = sortedFiles.filter(function (obj) {
+                    return (idsFilter.indexOf(obj.element) !== -1);
+                });
+                // prevent trash emptying while filter is active
+                isEmpty = true;
+            }
+
             if (!isEmpty) {
                 var $empty = createEmptyTrashButton();
                 $content.append($empty);
             }
 
-            var sortedFolders = sortTrashElements(true, filesList, null, !getSortFolderDesc());
-            var sortedFiles = sortTrashElements(false, filesList, APP.store[SORT_FILE_BY], !getSortFileDesc());
-            if (manager.hasSubfolder(root, true)) { $list.append($folderHeader); }
+            if (!typeFilter && manager.hasSubfolder(root, true)) { $list.append($folderHeader); }
             sortedFolders.forEach(function (f) {
                 var $element = createElement([TRASH], f.spath, root, true);
                 $list.append($element);
@@ -3728,7 +3845,7 @@ define([
             });
         };
 
-        var displayRecent = function ($list) {
+        var displayRecent = function ($list, typeFilter) {
             var filesList = manager.getRecentPads();
             var limit = 20;
 
@@ -3743,6 +3860,14 @@ define([
             var header7, header28, headerOld;
             var i = 0;
             var channels = [];
+
+            if (typeFilter) {
+                var ids = filesList.map(function (arr) { return arr[0]; });
+                var idsFilter = filterPads(ids, typeFilter, false, true);
+                filesList = filesList.filter(function (arr) {
+                    return (idsFilter.indexOf(arr[0]) !== -1);
+                });
+            }
 
             $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active1Day)));
             filesList.some(function (arr) {
@@ -3932,6 +4057,17 @@ define([
             $content.html("");
             sel.$selectBox = $('<div>', {'class': 'cp-app-drive-content-select-box'})
                 .appendTo($content);
+
+            var typeFilter;
+            var isFilter = path[0] === FILTER;
+            if (isFilter) {
+                if (path.length < 3) { return; }
+                typeFilter = path[1];
+                path = path[2];
+                currentPath = path;
+            } else {
+                APP.store[FILTER_BY] = undefined;
+            }
             var isInRoot = manager.isPathIn(path, [ROOT]);
             var inTrash = manager.isPathIn(path, [TRASH]);
             var isTrashRoot = manager.comparePath(path, [TRASH]);
@@ -3939,6 +4075,8 @@ define([
             var isAllFiles = manager.comparePath(path, [FILES_DATA]);
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
             var isSearch = path[0] === SEARCH;
+            var isRecent = path[0] === RECENT;
+            var isOwned = path[0] === OWNED;
             var isTags = path[0] === TAGS;
             // ANON_SHARED_FOLDER
             var isSharedFolder = path[0] === SHARED_FOLDER && APP.newSharedFolder;
@@ -4040,6 +4178,9 @@ define([
             if (!readOnlyFolder) {
                 createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
+            if (!isTags && !isSearch) {
+                createFilterButton(isTemplate, APP.toolbar.$bottomL);
+            }
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
@@ -4075,16 +4216,16 @@ define([
             var $fileHeader = getFileListHeader(true);
 
             if (isTemplate) {
-                displayHrefArray($list, path[0], true);
+                displayHrefArray($list, path[0], true, typeFilter);
             } else if (isAllFiles) {
                 displayAllFiles($list);
             } else if (isTrashRoot) {
-                displayTrashRoot($list, $folderHeader, $fileHeader);
+                displayTrashRoot($list, $folderHeader, $fileHeader, typeFilter);
             } else if (isSearch) {
                 displaySearch($list, path[1]);
-            } else if (path[0] === RECENT) {
-                displayRecent($list);
-            } else if (path[0] === OWNED) {
+            } else if (isRecent) {
+                displayRecent($list, typeFilter);
+            } else if (isOwned) {
                 displayOwned($list);
             } else if (isTags) {
                 displayTags($list);
@@ -4093,11 +4234,12 @@ define([
                 displaySharedFolder($list);
             } else {
                 if (!inTrash) { $dirContent.contextmenu(openContextMenu('content')); }
-                if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
+                if (!isFilter && manager.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
-                var sortedFolders = sortElements(true, path, keys, null, !getSortFolderDesc());
+                var sortedFolders = isFilter ? [] : sortElements(true, path, keys, null, !getSortFolderDesc());
                 var sortedFiles = sortElements(false, path, keys, APP.store[SORT_FILE_BY], !getSortFileDesc());
+                sortedFiles = isFilter ? filterPads(sortedFiles, typeFilter, path) : sortedFiles;
                 sortedFolders.forEach(function (key) {
                     if (manager.isFile(root[key])) { return; }
                     var $element = createElement(path, key, root, true);
@@ -4755,7 +4897,7 @@ define([
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
                                 UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
-                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
+                                UI.createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                             ]),
                         ]);
                         return void UI.confirm(convertContent, function(res) {
