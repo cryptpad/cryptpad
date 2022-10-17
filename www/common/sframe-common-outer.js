@@ -51,7 +51,8 @@ define([
             pfx: window.location.origin,
             theme: localStorage[themeKey],
             themeOS: localStorage[themeKey+'_default'],
-            lang: lang
+            lang: lang,
+            time: window.CP_preloadingTime
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;

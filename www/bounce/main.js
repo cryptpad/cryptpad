@@ -64,7 +64,7 @@ define(['/api/config'], function (ApiConfig) {
     // If we ever abandon the cryptpad.fr domain someone could squat it and abuse this trust.
     // If the docs domain is a subdomain of the current one then redirect automatically.
     // We might make the docs domain configurable at some point in the future.
-    if (target.host === 'docs.cryptpad.fr' && target.host.endsWith(host.host)) {
+    if (target.host === 'docs.cryptpad.org' && target.host.endsWith(host.host)) {
         return void go();
     }
 

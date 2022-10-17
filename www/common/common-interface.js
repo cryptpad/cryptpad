@@ -631,7 +631,7 @@ define([
         var frame = dialog.frame([
             message,
             dialog.nav(ok),
-        ]);
+        ], opt);
 
         if (opt.forefront) { $(frame).addClass('forefront'); }
         var listener;
@@ -660,7 +660,7 @@ define([
         opt = opt || {};
 
         var inputBlock = opt.password ? UI.passwordInput() :
-                            (opt.typeInput ? dialog.textTypeInput(opt.typeInput) : dialog.textInput());
+                            (opt.typeInput ? dialog.textTypeInput(opt.typeInput) : dialog.textInput(opt && opt.inputOpts));
         var input = $(inputBlock).is('input') ? inputBlock : $(inputBlock).find('input')[0];
         input.value = typeof(def) === 'string'? def: '';
 
@@ -725,7 +725,7 @@ define([
             message,
             dialog.nav(opt.reverseOrder?
                 [ok, cancel]: [cancel, ok]),
-        ]);
+        ], opt);
 
         var listener;
         var close = Util.once(function (bool, ev) {
@@ -1003,6 +1003,7 @@ define([
         $loading.addClass("cp-loading-hidden"); // Hide the loading screen
         $loading.find('.cp-loading-progress').remove(); // Remove the progress list
         setTimeout(cb, 750);
+        $('head > link[href^="/customize/src/pre-loading.css"]').remove();
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
@@ -1040,7 +1041,7 @@ define([
         });
         if (exitable) {
             $(window).focus();
-            $(window).keydown(function (e) {
+            $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
                     $loading.hide();
                     if (typeof(exitable) === "function") { exitable(); }

@@ -198,7 +198,7 @@ define([
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true); // Msg.support_formHint, .support_formTitle, .support_formButton
-        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.fr/en/user_guide/index.html');
+        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.org/en/user_guide/index.html');
 
         var form = APP.support.makeForm();
 

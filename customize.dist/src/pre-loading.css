@@ -1,12 +1,9 @@
-@font-face {
-  font-family: 'Open Sans';
-  src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
-  src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
-       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
-       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
-       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular') format('svg');
-  font-weight: normal;
-  font-style: normal;
+.cp-app-noscroll body {
+    background: transparent;
+}
+.cp-app-noscroll #placeholder {
+    z-index: 9999999; /* loading screen -1 */
+    background-color: transparent;
 }
 
 #placeholder {
@@ -26,14 +23,15 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    font: 20px 'Helvetica Neue', sans-serif !important;
 }
-@media (prefers-color-scheme: dark) {
-    #placeholder {
-        background-color: #212121; /* @cp_loading-bg (dark) */
-        color: #EEEEEE; /* @cp_loading-fg (dark) */
-    }
+html:not(.cp-app-noscroll) #placeholder.dark-theme {
+    background-color: #212121; /* @cp_loading-bg (dark) */
 }
+#placeholder.dark-theme {
+    color: #EEEEEE; /* @cp_loading-fg (dark) */
+}
+
 #placeholder .placeholder-logo-container {
     height: 300px;
     width: 300px;
@@ -41,6 +39,8 @@
     flex: 0 1 auto;
     min-height: 0;
     text-align: center;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
 }
 #placeholder .placeholder-logo-container img {
     max-width: 100%;
@@ -56,6 +56,11 @@
     display: flex;
     flex-flow: column;
     align-items: center;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
+}
+#placeholder .placeholder-message-container p {
+    margin-top: 0;
 }
 #placeholder .placeholder-logo {
     margin-left: auto;
@@ -65,6 +70,11 @@
     width: auto;
     height: auto;
     margin-bottom: 2em;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @media screen and (max-width: 500px) {
@@ -88,3 +98,17 @@
         display: none;
     }
 }
+:is(div, noscript) > p.noscript {
+    font-family: sans-serif;
+    z-index: 999;
+    padding: 15px;
+    font-size: 20px;
+    margin-top: 30px !important;
+    max-width: 800px;
+    margin: auto;
+
+    background-color: #424242;
+    color: #eee;
+    border-radius: 5px;
+}
+
