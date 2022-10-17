@@ -3066,8 +3066,6 @@ define([
 
         var createFilterButton = function (isTemplate, $container) {
             if (!APP.loggedIn) { return; }
-            Messages.fm_filterBy = 'Filter by'; // XXX: English hardcoded
-            Messages.fm_rmFilter = 'Disable filter'; // XXX: English hardcoded
 
             // Create dropdown
             var options = [];
