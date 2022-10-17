@@ -1500,5 +1500,7 @@
     "ui_jsRequired": "JavaScript must be enabled to perform encryption in your browser",
     "og_encryptedAppType": "Encrypted {0}",
     "admin_documentConflict": "Archive/restore",
-    "admin_conflictExplanation": "Two versions of this document exist. Restoring the archived version will overwrite the live version. Archiving the live version will overwrite the archived version. Neither action can be undone."
+    "admin_conflictExplanation": "Two versions of this document exist. Restoring the archived version will overwrite the live version. Archiving the live version will overwrite the archived version. Neither action can be undone.",
+    "fm_filterBy": "Filter",
+    "fm_rmFilter": "Remove filter"
 }
