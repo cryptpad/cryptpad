@@ -207,7 +207,9 @@ define([
                         proof: proof
                     };
                     postMessage("DELETE_MAILBOX_MESSAGE", lineData, waitFor(function (obj) {
-                        if (obj && obj.error) {
+                        if (obj && obj.error && obj.error !== 'HASH_NOT_FOUND') {
+                            // If HASH_NOT_FOUND, the message is already deleted
+                            // so we can delete it locally
                             waitFor.abort();
                             return void cb(obj);
                         }

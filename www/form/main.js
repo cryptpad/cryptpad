@@ -373,6 +373,10 @@ define([
                     });
                 });
             });
+            sframeChan.on("Q_FORM_DELETE_ALL_ANSWERS", function (data, cb) {
+                if (!data || !data.channel) { return void cb({error: 'EINVAL'}); }
+                Cryptpad.clearOwnedChannel(data.channel, cb);
+            });
             sframeChan.on("Q_FORM_DELETE_ANSWER", function (data, cb) {
                 if (!deleteLines) {
                     return void cb({error: 'EFORBIDDEN'});

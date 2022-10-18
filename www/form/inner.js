@@ -2612,12 +2612,19 @@ define([
         );
     };
 
+    Messages.form_deleteAll = "Delete all"; // XXX
+
     var renderResults = APP.renderResults = function (content, answers, showUser) {
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
+        var metadataMgr = APP.common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
+
+
         var title = framework._.title.title || framework._.title.defaultTitle;
-        $container.append(h('h1.cp-form-view-title', title));
+        var titleDiv = h('h1.cp-form-view-title', title);
+        $container.append(titleDiv);
 
         var answerCount = Object.keys(answers || {}).length;
 
@@ -2666,6 +2673,25 @@ define([
                 title: title,
                 content: arr
             });
+        });
+
+        APP.common.getPadMetadata({channel: content.answers.channel}, function (md) {
+            if (!Object.keys(answers || {}).length) { return; }
+            var owners = md.owners;
+            if (!Array.isArray(owners) || !owners.length) { return; }
+            var owned = APP.common.isOwned(owners);
+            if (!owned) { return; }
+            var button = h('button.btn.btn-danger.cp-form-results-delete', Messages.form_deleteAll);
+            UI.confirmButton(button, {classes:'danger'}, function () {
+                var sframeChan = framework._.sfCommon.getSframeChannel();
+                sframeChan.query('Q_FORM_DELETE_ALL_ANSWERS', {
+                    channel: content.answers.channel
+                }, function (err, obj) {
+                    if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
+                    APP.getResults();
+                });
+            });
+            $controls.append(button);
         });
 
         var summary = true;
@@ -4587,6 +4613,14 @@ define([
 
         framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
+            if (APP.isEditor) {
+                framework.feedback('FORM_EDITOR');
+            } else if (!APP.isEditor && priv.form_auditorKey) {
+                framework.feedback('FORM_AUDITOR');
+            } else {
+                framework.feedback('FORM_PARTICIPANT');
+            }
+
 
             if (APP.isEditor) {
                 if (!content.form) {
@@ -4624,7 +4658,7 @@ define([
                 return void UI.errorLoadingScreen(Messages.form_invalid);
             }
 
-            var getResults = function (key) {
+            var getResults = APP.getResults = function (key) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
@@ -4634,7 +4668,7 @@ define([
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
-                    $body.addClass('cp-app-form-results');
+                    if (key) { $body.addClass('cp-app-form-results'); }
                     renderResults(content, answers);
                 });
             };
