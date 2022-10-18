@@ -2918,8 +2918,8 @@ define([
         }
 
         var del;
-        if (answers._hash && (true  // XXX XXX XXX
-            || content.answers.canDelete)) {
+        var canDelete = !viewOnly && content.answers.version >= 2;
+        if (answers._hash && canDelete) {
             del = h('button.btn.btn-danger', 'DELETE');
             $(del).click(function () {
                 var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -3369,6 +3369,8 @@ define([
             if (!APP.isEditor) { return; }
             var full = !uid;
             var addControl = function (type) {
+                if (type === "section" && inSection) { return; }
+
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
                     'data-type': type
@@ -4221,20 +4223,40 @@ define([
             var $editable = $(editableContainer);
             var refreshEditable = function () {
                 $editable.empty();
+
+                var canDelete = content.answers.version >= 2;
+                Messages.form_editable_off = "One time only"; // XXX
+                Messages.form_editable_on = "One time and edit"; // XXX
+                Messages.form_editable_on_del = "One time and edit/delete"; // XXX
+                Messages.form_editable_mult = "Multiple times"; // XXX
+
                 var editable = !content.answers.cantEdit;
                 var radioOn = UI.createRadio('cp-form-editable', 'cp-form-editable-on',
-                        Messages.form_anonymous_on, Boolean(editable), {
-                            input: { value: 1 },
-                        });
-                var radioOff = UI.createRadio('cp-form-editable', 'cp-form-editable-off',
-                        Messages.form_anonymous_off, !editable, {
+                        Messages.form_editable_off, !editable, {
                             input: { value: 0 },
+                        });
+                var editableOnStr = canDelete ? Messages.form_editable_on_del
+                                              : Messages.form_editable_on;
+                var radioOff = UI.createRadio('cp-form-editable', 'cp-form-editable-off',
+                        editableOnStr, !!editable, {
+                            input: { value: 1 },
                         });
                 var radioContainer = h('div.cp-form-editable-radio', [radioOn, radioOff]);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
                     var val = $('input:radio[name="cp-form-editable"]:checked').val();
                     val = Number(val) || 0;
                     content.answers.cantEdit = !val;
+                    if (canDelete) {
+                        sframeChan.query('Q_SET_PAD_METADATA', {
+                            channel: content.answers.channel,
+                            command: 'ALLOW_LINE_DELETION',
+                            value: [Boolean(val)],
+                            //teamId: teamOwner // XXX?
+                        }, function (err, res) {
+                            err = err || (res && res.error);
+                            if (err) { console.error(err); }
+                        });
+                    }
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
@@ -4584,6 +4606,7 @@ define([
                     content.answers.channel = Hash.createChannelId();
                     content.answers.publicKey = priv.form_public;
                     content.answers.validateKey = priv.form_answerValidateKey;
+                    content.answers.version = 2;
                     framework.localChange();
                 }
                 checkIntegrity();
