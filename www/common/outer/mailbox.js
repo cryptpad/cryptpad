@@ -177,6 +177,15 @@ proxy.mailboxes = {
             hideMessage(ctx, type, hash, ctx.clients.filter(function (clientId) {
                 return clientId !== cId;
             }));
+
+            var uid = hash.slice(9).split('-')[0];
+            var d = Util.find(ctx, ['store', 'proxy', 'hideReminders', uid]);
+            if (!d) {
+                var h = ctx.store.proxy.hideReminders = ctx.store.proxy.hideReminders || {};
+                d = h[uid] = h[uid] || [];
+            }
+            var delay = hash.split('-')[1];
+            if (delay && !d.includes(delay)) { d.push(Number(delay)); }
             return;
         }
 
@@ -590,6 +599,9 @@ proxy.mailboxes = {
             });
         };
 
+        mailbox.hideMessage = function (type, msg) {
+            hideMessage(ctx, type, msg.hash, ctx.clients);
+        };
         mailbox.showMessage = function (type, msg, cId, cb) {
             if (type === "reminders" && msg) {
                 ctx.boxes.reminders.content[msg.hash] = msg.msg;

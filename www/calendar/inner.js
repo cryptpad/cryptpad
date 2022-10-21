@@ -17,6 +17,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
     '/calendar/export.js',
+    '/calendar/recurrence.js',
     '/lib/datepicker/flatpickr.js',
 
     '/common/inner/share.js',
@@ -48,6 +49,7 @@ define([
     AppConfig,
     Calendar,
     Export,
+    Rec,
     Flatpickr,
     Share, Access, Properties
     )
@@ -134,6 +136,67 @@ define([
         return weekDays.map(function (day) { return day.replace(/^./, function (str) { return str.toUpperCase(); }); });
     };
 
+    // Get week number in our calendar view
+    var ISO8601_week_no = function (dt) {
+        var tdt = new Date(dt.valueOf());
+        var dayn = (dt.getDay() + 6) % 7;
+        tdt.setDate(tdt.getDate() - dayn + 3);
+        var firstThursday = tdt.valueOf();
+        tdt.setMonth(0, 1);
+        if (tdt.getDay() !== 4) {
+            tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+        }
+        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+    };
+
+    var updateDateRange = function () {
+        var range = APP.calendar._renderRange;
+        var start = range.start._date.toLocaleDateString();
+        var end = range.end._date.toLocaleDateString();
+        var week = ISO8601_week_no(range.start._date);
+        var date = [
+            h('b.cp-small', Messages._getKey('calendar_weekNumber', [week])),
+            h('b', start),
+            h('span', ' - '),
+            h('b', end),
+        ];
+        if (APP.calendar._viewName === "day") {
+            date = h('b', start);
+        } else if (APP.calendar._viewName === "month") {
+            var month;
+            var mid = new Date(Math.floor(((+range.start._date) + (+range.end._date)) / 2));
+            try {
+                month = mid.toLocaleString('default', {
+                    month: 'long',
+                    year:'numeric'
+                });
+                month = month.replace(/^./, function (str) { return str.toUpperCase(); });
+                date = h('b', month);
+            } catch (e) {
+                // Use same as week range: first day of month to last day of month
+            }
+        }
+        APP.toolbar.$bottomM.empty().append(h('div', date));
+    };
+    APP.moveToDate = function (time) {
+        var cal = APP.calendar;
+        if (!cal) { return; }
+
+        // Move calendar to correct date
+        var d = new Date(time);
+        cal.setDate(d);
+        updateDateRange();
+
+        if (cal.getViewName() === 'month') { return; }
+
+        // Scroll to correct time
+        setTimeout(function () {
+            var h = d.toLocaleTimeString('en-US', { hour12: 0, timeStyle: "short" }).slice(0,2);
+            h = Number(h) % 24;
+            var $h = $('.tui-full-calendar-timegrid-timezone .tui-full-calendar-timegrid-hour');
+            try { $h.get(h).scrollIntoView(); } catch (e) { console.error(e); }
+        });
+    };
 
     var getCalendars = function () {
         var LOOKUP = {};
@@ -170,6 +233,8 @@ define([
         });
     };
     var getSchedules = function () {
+        APP.recurringEvents = [];
+        APP.recurringDone = [];
         var s = [];
         var calendars = Object.keys(APP.calendars);
         if (APP.currentCalendar) {
@@ -200,19 +265,36 @@ define([
                 if (c.readOnly) {
                     obj.isReadOnly = true;
                 }
-                s.push(data.content[uid]);
+                if (obj.recurrenceRule) {
+                    APP.recurringEvents.push(obj);
+                }
+                s.push(Util.clone(data.content[uid]));
             });
         });
         return s;
     };
+
+    var applyUpdates = Rec.applyUpdates;
+
+    var updateRecurring = function () {}; // Defined later
     var renderCalendar = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
 
-        cal.clear();
-        cal.setCalendars(getCalendars());
-        cal.createSchedules(getSchedules(), true);
-        cal.render();
+        try {
+            cal.clear();
+            cal.setCalendars(getCalendars());
+            cal.createSchedules(applyUpdates(getSchedules()), true);
+            cal.render();
+            if (APP.initTime && APP.moveToDate) {
+                APP.moveToDate(APP.initTime);
+                delete APP.initTime;
+            }
+            Rec.resetCache();
+            updateRecurring();
+        } catch (e) {
+            console.error(e);
+        }
     };
     var onCalendarUpdate = function (data) {
         var cal = APP.calendar;
@@ -261,11 +343,21 @@ define([
         monthGridHeaderExceed: function(hiddenSchedules) {
             return '<span class="tui-full-calendar-weekday-grid-more-schedules">' + Messages._getKey('calendar_more', [hiddenSchedules]) + '</span>';
         },
-        popupEdit: function() { return Messages.poll_edit; },
-        popupDelete: function() { return Messages.kanban_delete; },
+        popupEdit: function(obj) {
+            APP.editModalData = obj.data && obj.data.root;
+            return Messages.poll_edit;
+        },
         popupDetailLocation: function(schedule) {
-            // TODO detect url and create 'a' tag
-            return Messages._getKey('calendar_location', [Util.fixHTML(schedule.location)]);
+            var l = schedule.location;
+            var str = Util.fixHTML(l);
+            delete APP.nextLocationUid;
+            if (/^https?:\/\//.test(l)) {
+                var uid = "cp-link-"+Util.uid();
+                str = `<a href="${l}" id="${uid}">${str}</a>`;
+                APP.nextLocationUid = uid;
+            }
+
+            return Messages._getKey('calendar_location', [str]);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -767,47 +859,51 @@ define([
 
     };
 
-    var ISO8601_week_no = function (dt) {
-        var tdt = new Date(dt.valueOf());
-        var dayn = (dt.getDay() + 6) % 7;
-        tdt.setDate(tdt.getDate() - dayn + 3);
-        var firstThursday = tdt.valueOf();
-        tdt.setMonth(0, 1);
-        if (tdt.getDay() !== 4) {
-            tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+    var _updateRecurring = function () {
+        var cal = APP.calendar;
+        if (!cal) { return; }
+
+        var range = APP.calendar._renderRange;
+        var startView = range.start._date;
+        var endView = range.end._date;
+        endView.setDate(endView.getDate() + 1);
+
+        var midView = new Date(((+startView) + (+endView)) / 2);
+
+        // We want to generate recurring events month per month.
+        // In "month" view, we may see up to 3 different months
+        // at the same time.
+        var startId = Rec.getMonthId(startView);
+        var midId = Rec.getMonthId(midView);
+        var endId = Rec.getMonthId(endView);
+        var todo = Util.deduplicateString([startId, midId, endId]);
+        todo = todo.filter(function (monthId) {
+            return !APP.recurringDone.includes(monthId);
+        });
+
+        var toAdd = Rec.getRecurring(todo, APP.recurringEvents);
+
+        // Mark selected months as done
+        todo.forEach(function (monthId) { APP.recurringDone.push(monthId); });
+
+        cal.createSchedules(applyUpdates(toAdd));
+    };
+    updateRecurring = function () {
+        try {
+            _updateRecurring();
+        } catch (e) {
+            console.error(e);
         }
-        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
     };
 
-    var updateDateRange = function () {
-        var range = APP.calendar._renderRange;
-        var start = range.start._date.toLocaleDateString();
-        var end = range.end._date.toLocaleDateString();
-        var week = ISO8601_week_no(range.start._date);
-        var date = [
-            h('b.cp-small', Messages._getKey('calendar_weekNumber', [week])),
-            h('b', start),
-            h('span', ' - '),
-            h('b', end),
-        ];
-        if (APP.calendar._viewName === "day") {
-            date = h('b', start);
-        } else if (APP.calendar._viewName === "month") {
-            var month;
-            var mid = new Date(Math.floor(((+range.start._date) + (+range.end._date)) / 2));
-            try {
-                month = mid.toLocaleString('default', {
-                    month: 'long',
-                    year:'numeric'
-                });
-                month = month.replace(/^./, function (str) { return str.toUpperCase(); });
-                date = h('b', month);
-            } catch (e) {
-                // Use same as week range: first day of month to last day of month
-            }
-        }
-        APP.toolbar.$bottomM.empty().append(h('div', date));
-    };
+/*
+UPDATE A RECCURENT EVENT:
+ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a value equals to the DTSTART of this recurring event)
+*/
+
+
+    var diffDate = Rec.diffDate;
+
     var makeCalendar = function (view) {
         var store = window.cryptpadStore;
 
@@ -857,12 +953,6 @@ define([
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            // TODO Recurrence (later)
-            // On creation, select a recurrence rule (daily / weekly / monthly / more weird rules)
-            // then mark it under recurrence rule with a uid (the same for all the recurring events)
-            // ie: recurrenceRule: DAILY|{uid}
-            // Use template to hide "recurrenceRule" from the detailPopup or at least to use
-            // a non technical value
             var reminders = APP.notificationsEntries;
 
             var startDate = event.start._date;
@@ -871,13 +961,14 @@ define([
             var schedule = {
                 id: Util.uid(),
                 calendarId: event.calendarId,
-                title: Util.fixHTML(event.title),
+                title: event.title,
                 category: "time",
-                location: Util.fixHTML(event.location),
+                location: event.location,
                 start: +startDate,
                 isAllDay: event.isAllDay,
                 end: +endDate,
                 reminders: reminders,
+                recurrenceRule: APP.recurrenceRule
             };
 
             newEvent(schedule, function (err) {
@@ -891,35 +982,151 @@ define([
         cal.on('beforeUpdateSchedule', function(event) {
             var changes = event.changes || {};
             delete changes.state;
+
             if (changes.end) { changes.end = +new Date(changes.end._date); }
             if (changes.start) { changes.start = +new Date(changes.start._date); }
             var old = event.schedule;
+            var id = old.id.split('|')[0];
 
-            var oldReminders = Util.find(APP.calendars, [old.calendarId, 'content', 'content', old.id, 'reminders']);
-            var reminders = APP.notificationsEntries;
-            if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
-                changes.reminders = reminders;
+            var originalEvent = Util.find(APP.calendars, [old.calendarId, 'content', 'content', id]);
+
+            var ev = APP.calendar.getSchedule(old.id, old.calendarId);
+            var evOrig = APP.calendar.getSchedule(id, old.calendarId);
+
+            var isOrigin = id === old.id;
+            var wasRecurrent = Boolean(originalEvent.recurrenceRule);
+
+            if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
+                var oldReminders = ev.raw.reminders || originalEvent.reminders;
+                var reminders = APP.notificationsEntries;
+                if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
+                    changes.reminders = reminders;
+                }
+
+                var oldRec = ev.recurrenceRule;
+                var rec = APP.recurrenceRule;
+                if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
+                    changes.recurrenceRule = rec;
+                }
             }
 
-            updateEvent({
-                ev: old,
-                changes: changes
-            }, function (err) {
-                if (err) {
-                    console.error(err);
-                    return void UI.warn(err);
+
+            if (!event.triggerEventName || event.triggerEventName !== "click") {
+                APP.recurrenceRule = ev.recurrenceRule;
+            }
+
+            var afterConfirm = function () {
+                var raw = (ev && ev.raw) || {};
+                var rawData = { // Exact start and end of the selected event
+                    start: raw.start || ev.start,
+                    end: raw.end || ev.end,
+                    isOrigin: isOrigin
+                };
+                if (['one', 'from'].includes(APP.editType)) {
+                    if (changes.start) {
+                        changes.start = diffDate(raw.start || ev.start, changes.start);
+                    }
+                    if (changes.end) {
+                        changes.end = diffDate(raw.end || ev.end, changes.end);
+                    }
                 }
-                cal.updateSchedule(old.id, old.calendarId, changes);
+
+                old.id = id;
+                updateEvent({
+                    ev: old,
+                    changes: changes,
+                    rawData: rawData,
+                    type: {
+                        which: APP.editType,
+                        when: raw.start || ev.start
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return void UI.warn(err);
+                    }
+                    //cal.updateSchedule(old.id, old.calendarId, changes);
+                });
+            };
+
+            // XXX
+            Messages.calendar_rec_warn_delall = "The recurrence rule was deleted. Only the original event on {0} will be kept.";
+            Messages.calendar_rec_warn_del = "The recurrence rule was deleted. All occurences after the selected one will be removed.";
+            Messages.calendar_rec_warn_updateall = "The recurrence rule was modified. Only the original event on {0} will be kept and new occurences will be created.";
+            Messages.calendar_rec_warn_update = "The recurrence rule was modified. All occurences after the selected one will be removed and recreated with the new rule."; // XXX NOTE: the "count" value will be reset
+
+            // Confirm modal: select which recurring events to update
+            if (!Object.keys(changes).length) { return void afterConfirm(); }
+            if (!wasRecurrent) { return void afterConfirm(); }
+
+            var list = ['one','from','all'];
+            if (isOrigin) { list = ['one', 'all']; }
+            if ((changes.start || changes.end) && !isOrigin) {
+                list = list.filter(function (item) {
+                    return item !== "all";
+                });
+            }
+
+            var radioEls = list.map(function (k, i) {
+                return UI.createRadio('cp-calendar-rec-edit', 'cp-calendar-rec-edit-'+k,
+                           Messages['calendar_rec_edit_'+k], !i, {input:{ 'data-value':k }});
             });
+            var p = h('p', Messages.calendar_rec_edit);
+            var warn = h('div.alert.alert-warning');
+            var content = h('div', [
+                warn,
+                p,
+                radioEls
+            ]);
+            UI.confirm(content, function (yes) {
+                if (!yes) { return; }
+                var r = $(content).find('input[name="cp-calendar-rec-edit"]:checked')
+                                .data('value');
+                APP.editType = r;
+                afterConfirm();
+            });
+            $(content).closest('.alertify').on('mousedown', function (e) {
+                e.stopPropagation();
+            });
+
+            var $p = $(p);
+            var $warn = $(warn);
+            var $radio = $(radioEls);
+            var recurrenceWarn = function () {
+                if (typeof(changes.recurrenceRule) === "undefined") {
+                    $p.show();
+                    return $warn.hide();
+                }
+                $warn.show();
+                $p.hide();
+                var val = $radio.find('input[name="cp-calendar-rec-edit"]:checked')
+                                        .data('value');
+
+
+                if (!changes.recurrenceRule) { // Rule was deleted
+                    if (!val || val === "all") {
+                        return $warn.text(Messages._getKey('calendar_rec_warn_delall', [
+                            new Date(evOrig.start).toLocaleDateString()
+                        ]));
+                    }
+                    return $warn.text(Messages.calendar_rec_warn_del);
+                }
+                if (!val || val === "all") {
+                    return $warn.text(Messages._getKey('calendar_rec_warn_updateall', [
+                        new Date(evOrig.start).toLocaleDateString()
+                    ]));
+                }
+                return $warn.text(Messages.calendar_rec_warn_update);
+            };
+            recurrenceWarn();
+            $radio.find('input[type="radio"]').on('change', recurrenceWarn);
         });
         cal.on('beforeDeleteSchedule', function(event) {
-            var data = event.schedule;
             deleteEvent(event.schedule, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                cal.deleteSchedule(data.id, data.calendarId);
             });
         });
 
@@ -930,7 +1137,6 @@ define([
         });
 
         updateDateRange();
-
         renderCalendar();
 
         // Toolbar
@@ -965,6 +1171,7 @@ define([
             var mode = $(this).attr('data-value');
             cal.changeView(mode);
             updateDateRange();
+            updateRecurring();
             store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
@@ -983,22 +1190,691 @@ define([
         var goLeft = h('button.fa.fa-chevron-left');
         var goRight = h('button.fa.fa-chevron-right');
         var goToday = h('button', Messages.calendar_today);
+        var goDate = h('button.fa.fa-calendar');
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
+            updateRecurring();
         });
         $(goRight).click(function () {
             cal.next();
             updateDateRange();
+            updateRecurring();
         });
         $(goToday).click(function () {
-            cal.today();
+            APP.moveToDate(+new Date());
+            //cal.today();
             updateDateRange();
+            updateRecurring();
+        });
+        $(goDate).click(function () {
+            var f = Flatpickr(goDate, {
+                enableTime: false,
+                defaultDate: APP.calendar.getDate()._date,
+                //dateFormat: dateFormat,
+                onChange: function (date) {
+                    date[0].setHours(12);
+                    f.destroy();
+                    APP.moveToDate(+date[0]);
+                    updateDateRange();
+                    updateRecurring();
+                },
+                onClose: function () {
+                    setTimeout(f.destroy);
+                }
+            });
+            f.open();
         });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
-            goLeft, goToday, goRight
+            goLeft, goToday, goRight, goDate
         ]));
 
+    };
+
+
+// XXX
+Messages.calendar_rec = "Repeat"; // XXX
+Messages.calendar_rec_no = "None";
+Messages.calendar_rec_daily = "Daily";
+Messages.calendar_rec_weekly = "Weekly on {0}";
+// getWeekDays(true)[date.getDay()];
+
+Messages.calendar_rec_monthly = "Monthly, day {1}";
+Messages.calendar_rec_yearly = "Yearly on {2}";
+// a.toLocaleDateString(undefined, {month:"long", day:"2-digit"})
+
+Messages.calendar_rec_weekend = "Every weekend (Saturday and Sunday)";
+Messages.calendar_rec_weekdays = "Every week, Monday to Friday";
+
+Messages.calendar_rec_custom = "Custom";
+
+Messages.calendar_rec_txt = "Repeat every";
+Messages.calendar_rec_freq_daily = "days";
+Messages.calendar_rec_freq_weekly = "weeks";
+Messages.calendar_rec_freq_monthly = "months";
+Messages.calendar_rec_freq_yearly = "years";
+
+Messages.calendar_rec_until = "Stop Repeating";
+Messages.calendar_rec_until_no = "Never";
+Messages.calendar_rec_until_date = "On";
+Messages.calendar_rec_until_count = "After";
+Messages.calendar_rec_until_count2 = "occurences";
+
+Messages.calendar_rec_monthly_pick = "Repeats on";
+
+Messages.calendar_nth_1 = "first";
+Messages.calendar_nth_2 = "second";
+Messages.calendar_nth_3 = "third";
+Messages.calendar_nth_4 = "fourth";
+Messages.calendar_nth_5 = "fifth";
+Messages.calendar_nth_last = "last";
+
+Messages.calendar_rec_monthly_nth = "Every {0} {1} of the month";
+Messages.calendar_rec_yearly_nth = "Every {0} {1} of {2}";
+Messages.calendar_rec_every_date = "Every {0}";
+
+Messages.calendar_month_last = "last day";
+
+Messages.calendar_list = "{0}, {1}";
+Messages.calendar_list_end = "{0} or {1}";
+
+Messages.calendar_str_yearly = "{0} year(s)";
+Messages.calendar_str_monthly = "{0} month(s)";
+Messages.calendar_str_weekly = "{0} week(s)";
+Messages.calendar_str_daily = "{0} day(s)";
+
+Messages.calendar_str_day = "on {0}";
+Messages.calendar_str_monthday = "on the {0}";
+Messages.calendar_str_nthdayofmonth = "on the {0} of {1}";
+
+Messages.calendar_str_for = "for {0} times";
+Messages.calendar_str_until = "until {0}";
+
+Messages.calendar_str_filter = "Filters:";
+Messages.calendar_str_filter_month = "Months: {0}";
+Messages.calendar_str_filter_weekno = "Weeks: {0}";
+Messages.calendar_str_filter_yearday = "Days of year: {0}";
+Messages.calendar_str_filter_monthday = "Days of month: {0}";
+Messages.calendar_str_filter_day = "Days: {0}";
+
+Messages.calendar_rec_edit = "This event is configured to repeat itself.";
+Messages.calendar_rec_edit_one = "Edit only this event";
+Messages.calendar_rec_edit_from = "Edit all events from this one";
+Messages.calendar_rec_edit_all = "Edit all events";
+
+Messages.calendar_rec_stop = "Stop recurrence";
+Messages.calendar_rec_updated = "Rule updated on {0}";
+
+    var WEEKDAYS = getWeekDays(true);
+    var listItems = function (_arr) {
+        var arr = _arr.slice();
+        if (arr.length === 1) {
+            return arr[0];
+        }
+        var shift = function () {
+            var i = arr.shift();
+            if (i === -1) { return Messages.calendar_month_last; }
+            return i;
+        };
+        var str = shift();
+        var i = 0;
+        while (arr.length > 1 && i < 367) {
+            str = Messages._getKey('calendar_list', [str, shift()]);
+            i++;
+        }
+        str = Messages._getKey('calendar_list_end', [str, shift()]);
+        return str;
+    };
+    var translate = function (rule) {
+        var str = "";
+        if (!rule || !rule.freq) { return; }
+        var tmp = new Date();
+
+        // Freq, interval
+        str = Messages._getKey('calendar_str_'+rule.freq, [rule.interval || 1]);
+
+        var m = rule.by && rule.by.month;
+        var d = rule.by && rule.by.day;
+        var md = rule.by && rule.by.monthday;
+
+        var ord = false;
+        if (d) {
+            d = d.map(function (str) {
+                var nth = str.slice(0, -2);
+                nth = (nth === '-1') ? 'last' : nth;
+                ord = Boolean(nth);
+                var day = str.slice(-2);
+                var n = Rec.DAYORDER.indexOf(day);
+                var dayStr = WEEKDAYS[n];
+                if (nth) { return Messages['calendar_nth_'+nth] + " " + dayStr; }
+                return dayStr;
+            });
+        }
+        if (m) {
+            m = m.map(function (n) {
+                tmp.setMonth(n-1);
+                return tmp.toLocaleDateString(undefined, { month: 'long' });
+            });
+        }
+
+        // Until / count
+        var end = "";
+        if (rule.count) {
+            end += " " + Messages._getKey('calendar_str_for', [rule.count]);
+        }
+        if (rule.until) {
+            end += " " + Messages._getKey('calendar_str_until', [
+                new Date(rule.until).toLocaleDateString(undefined, {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                })
+            ]);
+        }
+
+        var filters = [];
+        // nth day (of month)
+        if (rule.freq === "yearly" && m && m.length === 1 && d && d.length === 1
+            && Object.keys(rule.by).length === 2) {
+            str += " " + Messages._getKey('calendar_str_nthdayofmonth', [
+                d[0],
+                m[0]
+            ]);
+        } else if (rule.freq === "monthly" && d && d.length === 1 && ord
+            && Object.keys(rule.by).length === 1) {
+            str += " " + Messages._getKey('calendar_str_monthday', [
+                d[0]
+            ]);
+        } else if (rule.freq === "monthly" && md && Object.keys(rule.by).length === 1) {
+            str += " " + Messages._getKey('calendar_str_monthday', [listItems(md)]);
+        } else if (rule.freq === "weekly" && d && Object.keys(rule.by).length === 1) {
+            str += " " + Messages._getKey('calendar_str_day', [listItems(d)]);
+        } else if (rule.by) {
+            filters = Object.keys(rule.by).map(function (k) {
+                var val = rule.by[k];
+                if (k === "month") { val = m; }
+                if (k === "day") { val = d; }
+                return Messages._getKey('calendar_str_filter_'+k, [listItems(val)]);
+            });
+        }
+
+        str += end;
+
+        return {
+            str: Messages._getKey('calendar_rec_every_date', [str]),
+            filters: filters
+        };
+    };
+
+    var getMonthlyPattern = function (date, yearly) {
+        var d = new Date(+date);
+        var day = d.getDay();
+        var monthday = d.getDate();
+
+        // Check nth day
+        var s = new Date(+d);
+        s.setDate(1);
+        while (s.getDay() !== day) { s.setDate(s.getDate() + 1); }
+        var nth = ((monthday - s.getDate()) / 7) + 1;
+
+        // Check last day
+        var m = d.getMonth();
+        d.setDate(d.getDate() + 7);
+        var last = d.getMonth() !== m;
+
+        var dayCode = Rec.DAYORDER[day];
+        var dayStr = WEEKDAYS[day];
+        var monthStr = date.toLocaleDateString(undefined, { month: 'long' });
+
+        var key = yearly ? "yearly" : "monthly";
+        return {
+            nth: nth + dayCode,
+            str: Messages._getKey('calendar_rec_'+key+'_nth', [
+                Messages['calendar_nth_'+nth],
+                dayStr,
+                monthStr
+            ]),
+            last: last ? '-1' + dayStr : undefined,
+            lastStr: Messages._getKey('calendar_rec_'+key+'_nth', [
+                Messages['calendar_nth_last'],
+                dayStr,
+                monthStr
+            ]),
+            // Messages.calendar_rec_yearly_nth
+            // Messages.calendar_rec_monthly_nth
+        };
+    };
+
+    var getRecurrenceInput = function (date) {
+        APP.recurrenceRule = '';
+
+        var obj = APP.editModalData;
+        if (obj.id) { // Edit mode, recover recurrence data
+            var cal = obj.selectedCal.id;
+            var calData = APP.calendars[cal];
+            if (calData) {
+                var ev = APP.calendar.getSchedule(obj.id, cal);
+                APP.recurrenceRule = ev.recurrenceRule || '';
+            }
+        }
+        var updatedOn = APP.recurrenceRule && APP.recurrenceRule._next;
+        if (updatedOn) { delete APP.recurrenceRule._next; }
+        APP.wasRecurrent = Boolean(APP.recurrenceRule);
+
+// XXX TEST
+/*
+APP.recurrenceRule = {
+    freq: 'yearly',
+    interval: 2,
+    count: 30,
+    until: 1924902000000,
+    by: {
+        month: [1, 3, 5, 7, 9, 11],
+        weekno: [1, 11, 21, 31, 41, 51],
+        day: ["MO","TU","WE","TH","FR"]
+    }
+};
+*/
+
+        var basicStr = {};
+
+        var options = [{
+            tag: 'a',
+            attributes: {
+                'class': 'cp-calendar-recurrence',
+                'data-value': '',
+                'href': '#',
+            },
+            content: Messages.calendar_rec_no
+        }];
+        // Basic recurrence
+        ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
+            basicStr[rec] = JSONSortify({freq: rec});
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-calendar-recurrence',
+                    'data-value': basicStr[rec],
+                    'href': '#',
+                },
+                content: Messages._getKey('calendar_rec_' + rec, [
+                    getWeekDays(true)[date.getDay()],
+                    date.getDate(),
+                    date.toLocaleDateString(undefined, {month:"long", day:"2-digit"})
+                ])
+            });
+        });
+        // Weekdays / Weekend
+        var isWeekend = [0,6].includes(date.getDay());
+        var weekValue = isWeekend ? ['SA', 'SU'] : ['MO', 'TU', 'WE', 'TH', 'FR'];
+        basicStr.days = JSONSortify({
+            freq: 'daily',
+            by: { day: weekValue }
+        });
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-calendar-recurrence',
+                'data-value': basicStr.days,
+                'href': '#',
+            },
+            content: Messages['calendar_rec_' + (isWeekend ? 'weekend' : 'weekdays')]
+        });
+        // Custom
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-calendar-recurrence',
+                'data-value': 'custom',
+                'href': '#',
+            },
+            content: Messages.calendar_rec_custom
+        });
+
+        var dropdownConfig = {
+            text: Messages.calendar_rec_no,
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            common: common,
+            buttonCls: 'btn btn-secondary',
+            caretDown: true,
+        };
+        var $block = UIElements.createDropdown(dropdownConfig);
+
+        var translated = h('div.cp-calendar-rec-translated');
+        var $translated = $(translated);
+        var _addTranslation = function () {
+            $translated.empty();
+
+            // Dropdown value
+            var recStr = JSONSortify(APP.recurrenceRule);
+            var set = Object.keys(basicStr).some(function (k) {
+                if (recStr === basicStr[k]) {
+                    $block.setValue(basicStr[k]);
+                    $translated.empty();
+                    return true;
+                }
+            });
+            if (set) { return; }
+            $block.setValue(APP.recurrenceRule ? 'custom' : '');
+
+            // Text value
+
+            var ruleObj = translate(APP.recurrenceRule);
+            if (!ruleObj || !ruleObj.str) { return; }
+            $translated.append(h('div.cp-calendar-rec-translated-str', ruleObj.str));
+
+            if (!ruleObj.filters || !Array.isArray(ruleObj.filters)
+                    || !ruleObj.filters.length) { return; }
+            var toAdd = [];
+            toAdd = ruleObj.filters.map(function (str) {
+                return h('li', str);
+            });
+            $translated.append([
+                h('div', Messages.calendar_str_filter),
+                h('ul', toAdd)
+            ]);
+        };
+        var addUpdate = function () {
+            if (!updatedOn) { return; }
+            var d = new Date(updatedOn).toLocaleDateString();
+            $translated.append(h('div', Messages._getKey('calendar_rec_updated', [d])));
+        };
+        var addTranslation = function () {
+            _addTranslation();
+            addUpdate();
+        };
+
+        addTranslation();
+
+
+
+        var showCustom = function () {
+            var rec = APP.recurrenceRule || {};
+
+            var interval = h('input', {
+                type: "number",
+                min: 1,
+                max: 1000,
+                value: rec.interval || 1
+            });
+
+            var options = [];
+            ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
+                options.push({
+                    tag: 'a',
+                    attributes: {
+                        'class': 'cp-calendar-recurrence-freq',
+                        'data-value': rec,
+                        'href': '#',
+                    },
+                    content: Messages['calendar_rec_freq_' + rec]
+                });
+            });
+            var dropdownConfig = {
+                text: Messages.calendar_rec_freq_daily,
+                options: options, // Entries displayed in the menu
+                isSelect: true,
+                common: common,
+                buttonCls: 'btn btn-secondary',
+                caretDown: true,
+            };
+            var $freq = UIElements.createDropdown(dropdownConfig);
+            $freq.setValue(rec.freq || 'daily');
+
+            var radioNo = UI.createRadio('cp-calendar-rec-until', 'cp-calendar-rec-until-no',
+                       Messages.calendar_rec_until_no, !rec.until && !rec.count, {});
+            var pickr;
+            var untilDate = [
+                h('span', Messages.calendar_rec_until_date),
+                pickr = h('input', {readonly:"readonly"})
+            ];
+            var startPickr = Flatpickr(pickr, {
+                enableTime: false,
+                minDate: date,
+                //dateFormat: dateFormat,
+                onChange: function () {
+                    //endPickr.set('minDate', startPickr.parseDate(s.value));
+                }
+            });
+            var endDate = new Date(+date);
+            endDate.setMonth(endDate.getMonth() + 1);
+            startPickr.setDate(rec.until ? new Date(rec.until) : endDate);
+            var radioDate = UI.createRadio('cp-calendar-rec-until', 'cp-calendar-rec-until-date',
+                       untilDate, Boolean(rec.until), {input:{'data-value':'date'}});
+            var untilCount = [
+                h('span', Messages.calendar_rec_until_count),
+                h('input', {type: "number", value: (rec.count || 5), min: 2}),
+                h('span', Messages.calendar_rec_until_count2),
+            ];
+            var radioCount = UI.createRadio('cp-calendar-rec-until', 'cp-calendar-rec-until-count',
+                       untilCount, Boolean(rec.count), {input:{'data-value':'count'}});
+            var untilEls = [radioNo, radioDate, radioCount];
+            $(untilEls).find('.cp-checkmark-label input').click(function () {
+                $(this).closest('.cp-radio').find('input[type="radio"]').prop('checked', true);
+            });
+
+            var repeat = h('div.cp-calendar-rec-inline', [
+                h('span', Messages.calendar_rec_txt),
+                interval,
+                $freq[0]
+            ]);
+            var until = h('div.cp-calendar-rec-block.radio-group', [
+                h('div.cp-calendar-rec-block-title', Messages.calendar_rec_until),
+                untilEls
+            ]);
+
+            var expand = h('div');
+            var $expand = $(expand);
+            var EXPAND = {};
+            EXPAND.daily = function () {};
+            EXPAND.weekly = function () {
+                $expand.attr('class', 'cp-calendar-rec-inline cp-calendar-weekly-pick');
+                var days = getWeekDays();
+                var active = (rec.by && rec.by.day) || [Rec.DAYORDER[date.getDay()]];
+                var line = [], dayCode;
+                for (var i = 1; i < 8; i++) {
+                    dayCode = Rec.DAYORDER[i%7];
+                    line.push(h('button.btn.no-margin.cp-calendar-pick-el' +
+                                (active.includes(dayCode) ? '.btn-primary' : '.btn-default'), {
+                            'data-value': dayCode
+                         }, days[i%7]));
+                }
+                $expand.append(line);
+                $expand.find('button').click(function () {
+                    var $b = $(this);
+                    if ($b.is('.btn-primary')) {
+                        return $b.removeClass('btn-primary').addClass('btn-default');
+                    }
+                    $b.removeClass('btn-default').addClass('btn-primary');
+                });
+            };
+            EXPAND.monthly = function () {
+                $expand.attr('class', 'cp-calendar-rec-block radio-group');
+                // Display one or two radio options accordingly
+                var checked = (rec.by && rec.by.day) || [];
+                var pattern = getMonthlyPattern(date);
+                var radioNth = UI.createRadio('cp-calendar-rec-monthly', 'cp-calendar-rec-monthly-nth',
+                    pattern.str, checked.includes(pattern.nth),
+                    {input:{'data-value':pattern.nth }});
+                $expand.append(radioNth);
+
+                if (pattern.last) {
+                    var radioLast = UI.createRadio('cp-calendar-rec-monthly', 'cp-calendar-rec-monthly-last',
+                        pattern.lastStr, checked.includes(pattern.last),
+                        {input:{ 'data-value': pattern.last }});
+                    $expand.append(radioLast);
+                }
+
+                var active = (rec.by && rec.by.monthday) || [date.getDate()];
+                var lines = [], l, n;
+                for (var i = 0; i < 5; i++) {
+                    l = [];
+                    for (var j = 1; j < 8; j++) {
+                        n = i * 7 + j;
+                        if (n > 31) {
+                            l.push(h('button.btn.no-margin.cp-calendar-pick-el.lastday' +
+                                        (active.includes(-1) ? '.btn-primary' : '.btn-default'), {
+                                    'data-value': -1
+                                 }, Messages.calendar_month_last));
+                            break;
+                        }
+                        l.push(h('button.btn.no-margin.cp-calendar-pick-el' +
+                                    (active.includes(n) ? '.btn-primary' : '.btn-default'), {
+                                'data-value': n
+                             }, n));
+                    }
+                    lines[i] = h('div', l);
+                }
+
+                var pickr = h('div.cp-calendar-monthly-pick', lines);
+                $(pickr).find('button').click(function () {
+                    var $b = $(this);
+                    if ($b.is('.btn-primary')) {
+                        return $b.removeClass('btn-primary').addClass('btn-default');
+                    }
+                    $b.removeClass('btn-default').addClass('btn-primary');
+                });
+                var radioPickContent = [
+                    h('span', Messages.calendar_rec_monthly_pick),
+                    pickr
+                ];
+                var radioPick = UI.createRadio('cp-calendar-rec-monthly', 'cp-calendar-rec-monthly-pick',
+                       radioPickContent, !checked.length, {input:{'data-value':'pick'}});
+                $expand.append(radioPick);
+
+                $expand.find('.cp-checkmark-label button').click(function () {
+                    $(this).closest('.cp-radio').find('input[type="radio"]').prop('checked', true);
+                });
+            };
+            EXPAND.yearly = function () {
+                $expand.attr('class', 'cp-calendar-rec-block radio-group');
+
+                var checked = (rec.by && rec.by.day) || [];
+
+                var radioDate = UI.createRadio('cp-calendar-rec-yearly',
+                    'cp-calendar-rec-yearly-date',
+                    Messages._getKey('calendar_rec_every_date', [
+                        date.toLocaleDateString(undefined, { month: 'long', day: 'numeric'})
+                    ]), !checked.length, { 'data-value': '' });
+                $expand.append(radioDate);
+
+                var pattern = getMonthlyPattern(date, true);
+                var radioNth = UI.createRadio('cp-calendar-rec-yearly', 'cp-calendar-rec-yearly-nth',
+                    pattern.str, checked.includes(pattern.nth),
+                    {input:{ 'data-value': pattern.nth }});
+                $expand.append(radioNth);
+
+                if (pattern.last) {
+                    var radioLast = UI.createRadio('cp-calendar-rec-yearly', 'cp-calendar-rec-yearly-last',
+                        pattern.lastStr, checked.includes(pattern.last),
+                        {input:{ 'data-value': pattern.last }});
+                    $expand.append(radioLast);
+                }
+            };
+            EXPAND[rec.freq || "daily"]();
+
+            var currentFreq = rec.freq || 'daily';
+            $freq.onChange.reg(function (prettyVal, val) {
+                if (val === currentFreq || !val) { return; }
+                currentFreq = val;
+                rec = {};
+                $expand.empty();
+                EXPAND[val]();
+            });
+
+
+            var content = [repeat, expand, until];
+
+            var $modal;
+            var modal = UI.dialog.customModal(content, {
+                buttons: [{
+                    className: 'cancel',
+                    name: Messages.cancel,
+                    onClick: function () {
+                        if (!APP.recurrenceRule) { $block.setValue(''); }
+                    },
+                    keys: [27]
+                }, {
+                    className: 'primary',
+                    name: Messages.settings_save,
+                    onClick: function () {
+                        var freq = $freq.getValue();
+
+                        var rec = APP.recurrenceRule = {
+                            freq: freq,
+                            interval: Number($(interval).val()) || 1,
+                            by: {}
+                        };
+                        if (rec.interval === 1) { delete rec.interval; }
+
+                        var until = $modal.find('input[name="cp-calendar-rec-until"]:checked').data('value');
+                        if (until === "count") {
+                            rec.count = $(radioCount).find('input[type="number"]').val();
+                        } else if (until === "date") {
+                            var _date = Flatpickr.parseDate(pickr.value);
+                            _date.setDate(_date.getDate()+1);
+                            rec.until = +_date - 1;
+                        }
+
+                        if (freq === "weekly") {
+                            rec.by.day = [];
+                            $expand.find('button.cp-calendar-pick-el.btn-primary')
+                                    .each(function (i, el) {
+                                rec.by.day.push($(el).data('value'));
+                            });
+                            if (!rec.by.day.length) { delete rec.by.day; }
+                        }
+
+                        if (freq === "monthly") {
+                            var _m = $expand.find('input[name="cp-calendar-rec-monthly"]:checked').data('value');
+                            if (_m === "pick") {
+                                rec.by.monthday = [];
+                                $expand.find('div.cp-calendar-monthly-pick button.btn-primary')
+                                        .each(function (i, el) {
+                                    rec.by.monthday.push($(el).data('value'));
+                                });
+                                if (!rec.by.monthday.length) { delete rec.by.monthday; }
+                            } else {
+                                rec.by.day = [_m];
+                            }
+                        }
+
+                        if (freq === "yearly") {
+                            var _y = $expand.find('input[name="cp-calendar-rec-yearly"]:checked').data('value');
+                            if (_y) {
+                                rec.by.month = [date.getMonth()+1];
+                                rec.by.day = [_y];
+                            }
+                        }
+
+                        if (!Object.keys(rec.by).length) { delete rec.by; }
+
+                        addTranslation();
+                    },
+                    keys: [13]
+                }]
+            });
+            $modal = $(modal);
+            UI.openCustomModal(modal);
+            $modal.closest('.alertify').on('mousedown', function (e) {
+                e.stopPropagation();
+            });
+        };
+
+        $block.onChange.reg(function(name, val) {
+            if (val === "custom") { return void showCustom(); }
+            APP.recurrenceRule = val;
+            addTranslation();
+        });
+
+        return h('div.cp-calendar-recurrence-container', [
+            h('span.cp-recurrence-label', [
+                h('i.fa.fa-repeat', {'aria-hidden':'true'}),
+                Messages.calendar_rec]),
+            $block[0],
+            translated
+        ]);
     };
 
     var parseNotif = function (minutes) {
@@ -1020,7 +1896,13 @@ define([
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
         // DEFAULT HERE [10] ==> 10 minutes before the event
-        var oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', ev.id, 'reminders']) || [10];
+        var id = (ev.id && ev.id.split('|')[0]) || undefined;
+        var _ev = APP.calendar.getSchedule(ev.id, calId);
+        var oldReminders = _ev && _ev.raw && _ev.raw.reminders;
+        if (!oldReminders) {
+            oldReminders = Util.find(APP.calendars, [calId, 'content', 'content', id, 'reminders']) || [60];
+        }
+
         APP.notificationsEntries = [];
         var number = h('input.tui-full-calendar-content', {
             type: "number",
@@ -1064,13 +1946,20 @@ define([
         var addNotif = h('button.btn.btn-primary-outline.fa.fa-plus');
         var $list = $(h('div.cp-calendar-notif-list'));
         var listContainer = h('div.cp-calendar-notif-list-container', [
-            h('span.cp-notif-label', Messages.calendar_notifications),
+            h('span.cp-notif-label', [
+                h('i.fa.fa-bell', {'aria-hidden':'true'}),
+                Messages.calendar_notifications
+            ]),
             $list[0],
             h('span.cp-notif-empty', Messages.calendar_noNotification)
         ]);
+
+        Messages.calendar_removeNotification = "Remove reminder"; // XXX
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
-            var del = h('button.btn.btn-danger-outline.small.fa.fa-times');
+            var del = h('button.btn.btn-danger-outline.small.fa.fa-times',
+                {'title': Messages.calendar_removeNotification}
+            );
             var minutes = value * unitValue;
             if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
             var span = h('span.cp-notif-entry', {
@@ -1182,6 +2071,14 @@ define([
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
 
+            var $container = $el.closest('.tui-full-calendar-floating-layer');
+            $container.addClass('cp-calendar-popup-flex');
+            $container.css('display', 'flex').mousedown(function (e) {
+                if ($(e.target).is('.cp-calendar-popup-flex')) {
+                    $el.find('.tui-full-calendar-popup-close').click();
+                }
+            });
+
             var calendars = APP.calendars || {};
             var show = false;
             $el.find('.tui-full-calendar-dropdown-menu li').each(function (i, li) {
@@ -1203,31 +2100,33 @@ define([
             if (!isUpdate) { $el.find('.tui-full-calendar-dropdown-menu li').first().click(); }
 
             var $button = $el.find('.tui-full-calendar-section-button-save');
+
+            var $startDate = $el.find('#tui-full-calendar-schedule-start-date');
+            var startDate = Flatpickr.parseDate($startDate.val());
+
+            var divRec = getRecurrenceInput(startDate);
+            $button.before(divRec);
+
             var div = getNotificationDropdown();
             $button.before(div);
 
+            // Use Flatpickr with or without time depending on allday checkbox
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
-            var $start = $el.find('.tui-full-calendar-section-start-date');
-            var $dash = $el.find('.tui-full-calendar-section-date-dash');
-            var $end = $el.find('.tui-full-calendar-section-end-date');
             var allDay = $cbox.is(':checked');
-            if (allDay) {
-                $start.hide();
-                $dash.hide();
-                $end.hide();
-            }
+            var allDayFormat = 'Y-m-d';
+            var timeFormat = '';
+            var setFormat = function (allDay) {
+                var s = window.CP_startPickr;
+                var e = window.CP_endPickr;
+                if (!timeFormat) { timeFormat = s.config.dateFormat; }
+                s.set('dateFormat', allDay ? allDayFormat : timeFormat);
+                e.set('dateFormat', allDay ? allDayFormat : timeFormat);
+            };
+            setFormat(allDay);
             $el.find('.tui-full-calendar-section-allday').click(function () {
                 setTimeout(function () {
                     var allDay = $cbox.is(':checked');
-                    if (allDay) {
-                        $start.hide();
-                        $dash.hide();
-                        $end.hide();
-                        return;
-                    }
-                    $start.show();
-                    $dash.show();
-                    $end.show();
+                    setFormat(allDay);
                 });
             });
         };
@@ -1235,9 +2134,65 @@ define([
             var $el = $(el);
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
             $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
-            $el.find('.tui-full-calendar-popup-delete').addClass('btn btn-danger');
-            $el.find('.tui-full-calendar-popup-delete .tui-full-calendar-icon').addClass('fa fa-trash').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
+
+            var delButton = h('button.btn.btn-danger', [
+                h('i.fa.fa-trash'),
+                h('span', Messages.kanban_delete)
+            ]);
+            var $del = $el.find('.tui-full-calendar-popup-delete').hide();
+            $del.after(delButton);
+            UI.confirmButton(delButton, {
+                classes: 'danger'
+            }, function () {
+                $del.click();
+            });
+            var $section = $el.find('.tui-full-calendar-section-button');
+            var ev = APP.editModalData;
+            var data = ev.schedule || {};
+            var id = data.id;
+            if (!id) { return; }
+            if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
+
+            if (APP.nextLocationUid) {
+                var uid = APP.nextLocationUid;
+                delete APP.nextLocationUid;
+                var $a = $el.find('#'+uid);
+                $a.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    common.openUnsafeURL($a.attr('href'));
+                });
+            }
+            // This is a recurring event, add button to stop recurrence now
+            var $b = $(h('button.btn.btn-default', [
+                h('i.fa.fa-times'),
+                h('span', Messages.calendar_rec_stop)
+            ])).insertBefore($section);
+            UI.confirmButton($b[0], { classes: 'btn-default' }, function () {
+                var originalId = id.split('|')[0];
+                var originalEvent = Util.find(APP.calendars,
+                        [ev.schedule.calendarId, 'content', 'content', originalId]);
+                var rec = originalEvent.recurrenceRule;
+                if (!rec) { return; }
+                rec.until = (ev.schedule.raw && ev.schedule.raw.start) - 1;
+                data.id = originalId;
+                updateEvent({
+                    ev: data,
+                    changes: {
+                        recurrenceRule: rec
+                    },
+                    type: {
+                        which: 'all'
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return void UI.warn(err);
+                    }
+                    $b.closest('.tui-full-calendar-floating-layer').hide();
+                });
+            });
         };
         var onPopupRemoved = function () {
             var start, end;
@@ -1313,6 +2268,8 @@ define([
                 }, function (obj) {
                     if (obj && obj.error) { console.error(obj.error); }
                 });
+            } else if (privateData.calendarOpts) {
+                APP.initTime = privateData.calendarOpts.time;
             }
             store.get('calendarView', makeCalendar);
             UI.removeLoadingScreen();
