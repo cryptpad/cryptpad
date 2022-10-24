@@ -1049,11 +1049,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 });
             };
 
-            // XXX
-            Messages.calendar_rec_warn_delall = "The recurrence rule was deleted. Only the original event on {0} will be kept.";
-            Messages.calendar_rec_warn_del = "The recurrence rule was deleted. All occurences after the selected one will be removed.";
-            Messages.calendar_rec_warn_updateall = "The recurrence rule was modified. Only the original event on {0} will be kept and new occurences will be created.";
-            Messages.calendar_rec_warn_update = "The recurrence rule was modified. All occurences after the selected one will be removed and recreated with the new rule."; // XXX NOTE: the "count" value will be reset
 
             // Confirm modal: select which recurring events to update
             if (!Object.keys(changes).length) { return void afterConfirm(); }
@@ -1881,7 +1876,6 @@ APP.recurrenceRule = {
             h('span.cp-notif-empty', Messages.calendar_noNotification)
         ]);
 
-        Messages.calendar_removeNotification = "Remove reminder"; // XXX
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
             var del = h('button.btn.btn-danger-outline.small.fa.fa-times',
