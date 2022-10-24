@@ -1555,5 +1555,10 @@
     "calendar_nth_last": "dernier",
     "calendar_nth_5": "cinquième",
     "calendar_nth_4": "quatrième",
-    "calendar_nth_3": "troisième"
+    "calendar_nth_3": "troisième",
+    "calendar_removeNotification": "Supprimer le rappel",
+    "calendar_rec_warn_updateall": "La règle de répétition de cet événement a été modifiée. Le premier événement sur {0} sera conservé, tous les autres seront remplacés.",
+    "calendar_rec_warn_update": "La règle de répétition de cet événement a été modifiée. Les événements futurs seront remplacés.",
+    "calendar_rec_warn_delall": "Cet événement ne sera plus répété. Le premier événement du {0} sera conservé, tous les autres seront supprimés.",
+    "calendar_rec_warn_del": "Cet événement ne sera plus répété. Les événements futurs seront supprimés."
 }

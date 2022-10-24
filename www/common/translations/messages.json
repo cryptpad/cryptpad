@@ -1511,7 +1511,7 @@
     "calendar_rec_weekly": "Weekly on {0}",
     "calendar_rec_edit_all": "Edit all events",
     "calendar_rec_monthly": "Monthly, day {1}",
-    "calendar_rec_edit_from": "Edit all future events",
+    "calendar_rec_edit_from": "Edit future events",
     "calendar_rec_yearly": "Yearly on {2}",
     "calendar_rec_edit_one": "Edit only this event",
     "calendar_rec_weekend": "Daily on weekends",
@@ -1555,5 +1555,10 @@
     "calendar_rec_yearly_nth": "Every {0} {1} of {2}",
     "calendar_rec_monthly_nth": "Every {0} {1} of the month",
     "calendar_nth_last": "last",
-    "calendar_nth_5": "fifth"
+    "calendar_nth_5": "fifth",
+    "calendar_rec_warn_del": "This event will no longer repeat. Future events will be removed.",
+    "calendar_rec_warn_delall": "This event will no longer repeat. The first event on {0} will be kept, all others will be removed.",
+    "calendar_rec_warn_update": "The rule for repeating this event was modified. Future events will be replaced.",
+    "calendar_rec_warn_updateall": "The rule for repeating this event was modified. The first event on {0} will be kept, all others will be replaced.",
+    "calendar_removeNotification": "Remove reminder"
 }
