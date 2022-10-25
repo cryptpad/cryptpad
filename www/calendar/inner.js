@@ -123,11 +123,21 @@ define([
         return (brightness > 125) ? '#424242' : '#EEEEEE';
     };
 
+    var getDateLanguage = function () {
+        console.error(Messages._languageUsed);
+        try {
+            new Date().toLocaleDateString(Messages._languageUsed, { weekday: 'long' });
+            return Messages._languageUsed;
+        } catch (e) {
+            return;
+        }
+    };
+
     var getWeekDays = function (large) {
         var baseDate = new Date(2017, 0, 1); // just a Sunday
         var weekDays = [];
         for(var i = 0; i < 7; i++) {
-            weekDays.push(baseDate.toLocaleDateString(undefined, { weekday: 'long' }));
+            weekDays.push(baseDate.toLocaleDateString(getDateLanguage(), { weekday: 'long' }));
             baseDate.setDate(baseDate.getDate() + 1);
         }
         if (!large) {
@@ -1275,7 +1285,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         if (m) {
             m = m.map(function (n) {
                 tmp.setMonth(n-1);
-                return tmp.toLocaleDateString(undefined, { month: 'long' });
+                return tmp.toLocaleDateString(getDateLanguage(), { month: 'long' });
             });
         }
 
@@ -1286,7 +1296,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }
         if (rule.until) {
             end += " " + Messages._getKey('calendar_str_until', [
-                new Date(rule.until).toLocaleDateString(undefined, {
+                new Date(rule.until).toLocaleDateString(getDateLanguage(), {
                     month: "long",
                     day: "numeric",
                     year: "numeric"
@@ -1346,7 +1356,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
         var dayCode = Rec.DAYORDER[day];
         var dayStr = WEEKDAYS[day];
-        var monthStr = date.toLocaleDateString(undefined, { month: 'long' });
+        var monthStr = date.toLocaleDateString(getDateLanguage(), { month: 'long' });
 
         var key = yearly ? "yearly" : "monthly";
         return {
@@ -1422,7 +1432,7 @@ APP.recurrenceRule = {
                 content: Messages._getKey('calendar_rec_' + rec, [
                     getWeekDays(true)[date.getDay()],
                     date.getDate(),
-                    date.toLocaleDateString(undefined, {month:"long", day:"2-digit"})
+                    date.toLocaleDateString(getDateLanguage(), {month:"long", day:"2-digit"})
                 ])
             });
         });
@@ -1677,7 +1687,7 @@ APP.recurrenceRule = {
                 var radioDate = UI.createRadio('cp-calendar-rec-yearly',
                     'cp-calendar-rec-yearly-date',
                     Messages._getKey('calendar_rec_every_date', [
-                        date.toLocaleDateString(undefined, { month: 'long', day: 'numeric'})
+                        date.toLocaleDateString(getDateLanguage(), { month: 'long', day: 'numeric'})
                     ]), !checked.length, { 'data-value': '' });
                 $expand.append(radioDate);
 
