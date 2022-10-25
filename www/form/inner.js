@@ -2651,6 +2651,21 @@ define([
             }), title);
         });
 
+        // Export JSON
+        Messages.form_exportJSON = "Export as JSON"; // XXX
+        var exportJSONButton = h('button.btn.btn-primary', [
+            h('i.cptools.cptools-code'),
+            Messages.form_exportJSON
+        ]);
+        $(exportJSONButton).appendTo($controls);
+        $(exportJSONButton).click(function () {
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
+            if (!arr) { return void UI.warn(Messages.error); }
+            window.saveAs(new Blob([arr], {
+                type: 'application/json'
+            }), title+".json");
+        });
+
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
             h('i.fa.fa-file-excel-o'),
@@ -2658,7 +2673,7 @@ define([
         ]);
         $(export2Button).appendTo($controls);
         $(export2Button).click(function () {
-            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), true);
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "array");
             if (!arr) { return void UI.warn(Messages.error); }
             var sframeChan = framework._.sfCommon.getSframeChannel();
             var title = framework._.title.title || framework._.title.defaultTitle;
