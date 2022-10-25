@@ -146,6 +146,7 @@ define([
     };
     common.storeFormAnswer = function (data, cb) {
         var answer = {
+            uid: data.uid,
             hash: data.hash,
             curvePrivate: data.curvePrivate,
             anonymous: data.anonymous
@@ -171,8 +172,8 @@ define([
                     }
                     console.error(obj.error);
                 }
+                cb();
             });
-            cb();
         });
     };
     common.deleteFormAnswers = function (data, _cb) {

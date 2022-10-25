@@ -162,6 +162,9 @@ define([
                     Cryptpad.makeNetwork(w(function (err, nw) {
                         network = nw;
                     }));
+                    Cryptpad.getPadMetadata({channel: data.channel}, w(function (md) {
+                        if (md && md.deleteLines) { deleteLines = true; }
+                    }));
                 }).nThen(function () {
                     if (!network) { return void cb({error: "E_CONNECT"}); }
 
@@ -212,9 +215,6 @@ define([
                         });
                     };
                     config.onReady = function (obj) {
-                        if (obj && obj.metadata && obj.metadata.deleteLines) {
-                            deleteLines = true;
-                        }
                         var myKey;
                         // If we have submitted an anonymous answer, retrieve it
                         if (myFormKeys.curvePublic && results[myFormKeys.curvePublic]) {
@@ -236,8 +236,14 @@ define([
                                 delete results[parsed._proof.key];
                             }
                         }
+
+                        parsed._time = cfg && cfg.time;
+                        if (deleteLines) { parsed._hash = hash; }
+
                         if (data.cantEdit && results[senderCurve]) { return; }
-                        results[senderCurve] = {
+                        results[senderCurve] = results[senderCurve] || {};
+                        var uid = parsed._uid || '000';
+                        results[senderCurve][uid] = {
                             msg: parsed,
                             hash: hash,
                             time: cfg && cfg.time
@@ -247,13 +253,13 @@ define([
                 });
             });
             sframeChan.on("Q_FETCH_MY_ANSWERS", function (data, cb) {
-                var answer;
+                var answers = [];
                 var myKeys;
                 nThen(function (w) {
                     Cryptpad.getFormKeys(w(function (keys) {
                         myKeys = keys;
                     }));
-                    Cryptpad.getFormAnswer({channel: data.channel}, true, w(function (obj) {
+                    Cryptpad.getFormAnswer({channel: data.channel}, false, w(function (obj) {
                         if (!obj || obj.error) {
                             if (obj && obj.error === "ENODRIVE") {
                                 var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
@@ -267,42 +273,68 @@ define([
                             w.abort();
                             return void cb(obj);
                         }
-                        answer = obj;
+                        // Get the latest edit per uid
+                        var temp = {};
+                        obj.forEach(function (ans) {
+                            var uid = ans.uid || '000';
+                            temp[uid] = ans;
+                        });
+                        answers = Object.values(temp);
                     }));
                     Cryptpad.getPadMetadata({channel: data.channel}, w(function (md) {
                         if (md && md.deleteLines) { deleteLines = true; }
                     }));
                 }).nThen(function () {
-                    if (answer.anonymous) {
-                        if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
-                        myKeys = getAnonymousKeys(myKeys.formSeed, data.channel);
-                    }
-                    Cryptpad.getHistoryRange({
-                        channel: data.channel,
-                        lastKnownHash: answer.hash,
-                        toHash: answer.hash,
-                    }, function (obj) {
-                        if (obj && obj.error) { return void cb(obj); }
-                        var messages = obj.messages;
-                        if (!messages.length) { return void cb(); }
-                        if (obj.lastKnownHash !== answer.hash) { return void cb(); }
-                        try {
-                            var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
-                                validateKey: data.validateKey,
-                                ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
-                                my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
-                                their_public: Nacl.util.decodeBase64(data.publicKey)
-                            });
-                            var parsed = JSON.parse(res.content);
-                            parsed._isAnon = answer.anonymous;
-                            parsed._time = messages[0].time;
-                            if (deleteLines) { parsed._hash = answer.hash; }
-                            cb(parsed);
-                        } catch (e) {
-                            cb({error: e});
-                        }
+                    var n = nThen;
+                    var err;
+                    var all = {};
+                    answers.forEach(function (answer) {
+                        n = n(function(waitFor) {
+                            var finalKeys = myKeys;
+                            if (answer.anonymous) {
+                                if (!myKeys.formSeed) {
+                                    err = 'ANONYMOUS_ERROR';
+                                    console.error('ANONYMOUS_ERROR', answer);
+                                    return;
+                                }
+                                finalKeys = getAnonymousKeys(myKeys.formSeed, data.channel);
+                            }
+                            Cryptpad.getHistoryRange({
+                                channel: data.channel,
+                                lastKnownHash: answer.hash,
+                                toHash: answer.hash,
+                            }, waitFor(function (obj) {
+                                if (obj && obj.error) { err = obj.error; return; }
+                                var messages = obj.messages;
+                                if (!messages.length) {
+                                    // XXX TODO delete from drive.forms
+                                    return;
+                                }
+                                if (obj.lastKnownHash !== answer.hash) { return; }
+                                try {
+                                    var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
+                                        validateKey: data.validateKey,
+                                        ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
+                                        my_private: Nacl.util.decodeBase64(finalKeys.curvePrivate),
+                                        their_public: Nacl.util.decodeBase64(data.publicKey)
+                                    });
+                                    var parsed = JSON.parse(res.content);
+                                    parsed._isAnon = answer.anonymous;
+                                    parsed._time = messages[0].time;
+                                    if (deleteLines) { parsed._hash = answer.hash; }
+                                    var uid = parsed._uid || '000';
+                                    if (all[uid] && !all[uid]._isAnon) { parsed._isAnon = false; }
+                                    all[uid] = parsed;
+                                } catch (e) {
+                                    err = e;
+                                }
+                            }));
+                        }).nThen;
                     });
-
+                    n(function () {
+                        if (err) { return void cb({error: err}); }
+                        cb(all);
+                    });
                 });
 
             });
@@ -346,6 +378,8 @@ define([
                     }
 
                     var crypto = Utils.Crypto.Mailbox.createEncryptor(myKeys);
+                    var uid = data.results._uid || Utils.Util.uid();
+                    data.results._uid = uid;
                     var text = JSON.stringify(data.results);
                     var ciphertext = crypto.encrypt(text, box.publicKey);
 
@@ -355,6 +389,7 @@ define([
                         ciphertext
                     ], function (err, response) {
                         Cryptpad.storeFormAnswer({
+                            uid: uid,
                             channel: box.channel,
                             hash: hash,
                             curvePrivate: ephemeral_private,

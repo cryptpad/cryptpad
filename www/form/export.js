@@ -39,29 +39,32 @@ define([
         array.push(questions);
 
         Object.keys(answers || {}).forEach(function (key) {
-            var obj = answers[key];
-            csv += '\n';
-            var time = new Date(obj.time).toISOString();
-            var msg = obj.msg || {};
-            var user = msg._userdata || {};
-            var line = [];
-            line.push(time);
-            line.push(user.name || Messages.anonymous);
-            order.forEach(function (key) {
-                var type = form[key].type;
-                if (!TYPES[type]) { return; } // Ignore static types
-                if (TYPES[type].exportCSV) {
-                    var res = TYPES[type].exportCSV(msg[key], form[key]);
-                    Array.prototype.push.apply(line, res);
-                    return;
-                }
-                line.push(String(msg[key] || ''));
+            var _obj = answers[key];
+            Object.keys(_obj).forEach(function (uid) {
+                var obj = _obj[uid];
+                csv += '\n';
+                var time = new Date(obj.time).toISOString();
+                var msg = obj.msg || {};
+                var user = msg._userdata || {};
+                var line = [];
+                line.push(time);
+                line.push(user.name || Messages.anonymous);
+                order.forEach(function (key) {
+                    var type = form[key].type;
+                    if (!TYPES[type]) { return; } // Ignore static types
+                    if (TYPES[type].exportCSV) {
+                        var res = TYPES[type].exportCSV(msg[key], form[key]);
+                        Array.prototype.push.apply(line, res);
+                        return;
+                    }
+                    line.push(String(msg[key] || ''));
+                });
+                line.forEach(function (v, i) {
+                    if (i) { csv += ','; }
+                    csv += escapeCSV(v);
+                });
+                array.push(line);
             });
-            line.forEach(function (v, i) {
-                if (i) { csv += ','; }
-                csv += escapeCSV(v);
-            });
-            array.push(line);
         });
         if (isArray) { return array; }
         return csv;
