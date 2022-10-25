@@ -1443,7 +1443,7 @@ APP.recurrenceRule = {
             freq: 'daily',
             by: { day: weekValue }
         });
-        options.push({
+        options.splice(2, 0, {
             tag: 'a',
             attributes: {
                 'class': 'cp-calendar-recurrence',
