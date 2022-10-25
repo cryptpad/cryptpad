@@ -1061,7 +1061,7 @@ define([
                 var requestBlock = h('p', requestButton);
                 var $requestBlock = $(requestBlock).hide();
                 content.push(requestBlock);
-                sframeChan.query('Q_REQUEST_ACCESS', {
+                sframeChan.query('Q_CONTACT_OWNER', {
                     send: false,
                     metadata: data
                 }, function (err, obj) {
@@ -1072,9 +1072,10 @@ define([
                     $requestBlock.show().find('button').click(function () {
                         if (spinner.getState()) { return; }
                         spinner.spin();
-                        sframeChan.query('Q_REQUEST_ACCESS', {
+                        sframeChan.query('Q_CONTACT_OWNER', {
                             send: true,
-                            metadata: data
+                            metadata: data,
+                            query: "REQUEST_PAD_ACCESS"
                         }, function (err, obj) {
                             if (obj && obj.state) {
                                 UI.log(Messages.requestEdit_sent);

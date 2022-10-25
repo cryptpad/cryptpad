@@ -3191,6 +3191,17 @@ define([
                 if (content.answers.cantEdit) {
                     $(radioContainer).hide();
                 }
+
+                // TODO show the author that they can "mute" the pad
+                var priv = metadataMgr.getPrivateData();
+                sframeChan.query('Q_CONTACT_OWNER', {
+                    send: true,
+                    query: "FORM_RESPONSE",
+                    msgData: { channel: priv.channel }
+                }, function (err, obj) {
+                    if (err || !obj || !obj.state) { return console.error('ENOTIFY'); }
+                });
+
             });
         });
 

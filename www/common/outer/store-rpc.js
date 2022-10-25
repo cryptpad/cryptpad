@@ -79,7 +79,7 @@ define([
             GET_HISTORY: Store.getHistory,
             GET_HISTORY_RANGE: Store.getHistoryRange,
             IS_NEW_CHANNEL: Store.isNewChannel,
-            REQUEST_PAD_ACCESS: Store.requestPadAccess,
+            CONTACT_PAD_OWNER: Store.contactPadOwner,
             GIVE_PAD_ACCESS: Store.givePadAccess,
             BURN_PAD: Store.burnPad,
             GET_PAD_METADATA: Store.getPadMetadata,
