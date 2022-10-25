@@ -2334,6 +2334,12 @@ define([
                         }
                     }
                 });
+                var sortNode = function (order) {
+                    order.forEach(function (uid) {
+                        $tag.append($tag.find('[data-id="'+uid+'"]'));
+                    });
+                };
+
                 return {
                     tag: tag,
                     isEmpty: function () { return !this.getValue(); },
@@ -2348,7 +2354,7 @@ define([
                         var toSort = extractValues(opts.values).map(function (val) {
                             return invMap[val];
                         });
-                        sortable.sort(toSort);
+                        sortNode(toSort);
                         reorder(true);
                     },
                     setEditable: function (state) {
@@ -2365,7 +2371,7 @@ define([
                         var toSort = val.map(function (val) {
                             return invMap[val];
                         });
-                        sortable.sort(toSort);
+                        sortNode(toSort);
                         reorder();
                     }
                 };
