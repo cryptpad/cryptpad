@@ -1955,7 +1955,7 @@ define([
             // If send is true, send the request to the owner.
             if (owner) {
                 if (data.send) {
-                    store.mailbox.sendTo(data.query, {
+                    Mailbox.sendToAnon(store.anon_rpc, data.query, {
                         channel: data.channel,
                         data: data.msgData
                     }, {
