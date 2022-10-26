@@ -13,8 +13,71 @@ define([
         value += '"' + vv + '"';
         return value;
     };
-    Export.results = function (content, answers, TYPES, order, isArray) {
+
+    var exportJSON = function (content, answers, TYPES, order) {
+        var form = content.form;
+        var res = {
+            questions: {},
+            responses: []
+        };
+        var q = res.questions;
+        var r = res.responses;
+
+        // Add questions
+        var i = 1;
+        order.forEach(function (key) {
+            var obj = form[key];
+            if (!obj) { return; }
+            var type = obj.type;
+            if (!TYPES[type]) { return; } // Ignore static types
+            var id = `q${i++}`;
+            if (TYPES[type] && TYPES[type].exportCSV) {
+                var _obj = Util.clone(obj);
+                _obj.q = "tmp";
+                q[id] = {
+                    question: obj.q,
+                    items: TYPES[type].exportCSV(false, _obj).map(function (str) {
+                        return str.slice(6); // Remove "tmp | "
+                    })
+                };
+            } else {
+                q[id] = obj.q || Messages.form_default;
+            }
+        });
+
+        Object.keys(answers || {}).forEach(function (key) {
+            var obj = answers[key];
+            var time = new Date(obj.time).toISOString();
+            var msg = obj.msg || {};
+            var user = msg._userdata || {};
+            var data = {
+                '_time': time,
+                '_name': user.name || Messages.anonymous
+            };
+
+            var i = 1;
+            order.forEach(function (key) {
+                if (!form[key]) { return; }
+                var type = form[key].type;
+                if (!TYPES[type]) { return; } // Ignore static types
+                var id = `q${i++}`;
+                if (TYPES[type].exportCSV) {
+                    data[id] = TYPES[type].exportCSV(msg[key], form[key]);
+                    return;
+                }
+                data[id] = msg[key];
+            });
+            r.push(data);
+        });
+
+        return JSON.stringify(res, 0, 2);
+    };
+    Export.results = function (content, answers, TYPES, order, format) {
         if (!content || !content.form) { return; }
+
+        if (format === "json") { return exportJSON(content, answers, TYPES, order); }
+
+        var isArray = format === "array";
         var csv = "";
         var array = [];
         var form = content.form;

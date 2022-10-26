@@ -6,13 +6,21 @@ define([
     '/common/sframe-common-outer.js',
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
 
-    // Loaded in load #2
+    var hash, href;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
-        SFCommonO.initIframe(waitFor);
+        var obj = SFCommonO.initIframe(waitFor, true);
+        href = obj.href;
+        hash = obj.hash;
     }).nThen(function (/*waitFor*/) {
-        var addData = function (meta) {
+        var addData = function (meta, Cryptpad, user, Utils) {
+            if (hash) {
+                var parsed = Utils.Hash.parsePadUrl(href);
+                if (parsed.hashData && parsed.hashData.newPadOpts) {
+                    meta.calendarOpts  = Utils.Hash.decodeDataOptions(parsed.hashData.newPadOpts);
+                }
+            }
             meta.calendarHash = Boolean(window.location.hash);
         };
         SFCommonO.start({

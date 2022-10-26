@@ -1947,42 +1947,23 @@ define([
             }).nThen(cb);
         };
 
-        // requestPadAccess is used to check if we have a way to contact the owner
-        // of the pad AND to send the request if we want
-        // data.send === false ==> check if we can contact them
-        // data.send === true  ==> send the request
-        Store.requestPadAccess = function (clientId, data, cb) {
+        // contactPadOwner is used to send "REQUEST_ACCESS" messages
+        // and to notify form owners when sending a response
+        Store.contactPadOwner = function (clientId, data, cb) {
             var owner = data.owner;
-
-            // If the owner was not is the pad metadata, check if it is a friend.
-            // We'll contact the first owner for whom we know the mailbox
-            /* // TODO decide whether we want to re-enable this feature for our own contacts
-               // communicate the exception to users that 'muting' won't apply to friends
-            check mailbox in our contacts is not compatible with the new "mute pad" feature
-            var owners = data.owners;
-            if (!owner && Array.isArray(owners)) {
-                var friends = store.proxy.friends || {};
-                // If we have friends, check if an owner is one of them (with a mailbox)
-                if (Object.keys(friends).filter(function (curve) { return curve !== 'me'; }).length) {
-                    owners.some(function (edPublic) {
-                        return Object.keys(friends).some(function (curve) {
-                            if (curve === "me") { return; }
-                            if (edPublic === friends[curve].edPublic &&
-                                friends[curve].notifications) {
-                                owner = friends[curve];
-                                return true;
-                            }
-                        });
-                    });
-                }
-            }
-            */
 
             // If send is true, send the request to the owner.
             if (owner) {
                 if (data.send) {
-                    store.mailbox.sendTo('REQUEST_PAD_ACCESS', {
-                        channel: data.channel
+                    var sendTo = function (query, msg, user, _cb) {
+                        if (store.mailbox) {
+                            return store.mailbox.sendTo(query, msg, user, _cb);
+                        }
+                        Mailbox.sendToAnon(store.anon_rpc, query, msg, user, _cb);
+                    };
+                    sendTo(data.query, {
+                        channel: data.channel,
+                        data: data.msgData
                     }, {
                         channel: owner.notifications,
                         curvePublic: owner.curvePublic

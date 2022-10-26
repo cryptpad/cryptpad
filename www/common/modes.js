@@ -12,7 +12,7 @@ define([
         "Asterisk asterisk",
         "Brainfuck brainfuck .b",
         "C text/x-csrc .c",
-        "C text/x-c++src .cpp",
+        "C++ text/x-c++src .cpp",
         "C-like clike .c",
         "Clojure clojure .clj",
         "CMake cmake _", /* no extension */
@@ -50,7 +50,6 @@ define([
         "HTML htmlmixed .html",
         "HTTP http _", /* no extension */
         "IDL idl .idl",
-        "JADE jade .jade",
         "Java text/x-java .java",
         "JavaScript javascript .js",
         "Jinja2 jinja2 .j2",

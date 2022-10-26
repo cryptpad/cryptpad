@@ -8,7 +8,6 @@ www/common/onlyoffice/v2*
 www/common/onlyoffice/v4
 www/common/onlyoffice/v5
 
-server.js
 www/scratch
 www/accounts
 www/lib

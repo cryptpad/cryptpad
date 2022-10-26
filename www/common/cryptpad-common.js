@@ -1224,8 +1224,8 @@ define([
     pad.onMetadataEvent = Util.mkEvent();
     pad.onChannelDeleted = Util.mkEvent();
 
-    pad.requestAccess = function (data, cb) {
-        postMessage("REQUEST_PAD_ACCESS", data, cb);
+    pad.contactOwner = function (data, cb) {
+        postMessage("CONTACT_PAD_OWNER", data, cb);
     };
     pad.giveAccess = function (data, cb) {
         postMessage("GIVE_PAD_ACCESS", data, cb);

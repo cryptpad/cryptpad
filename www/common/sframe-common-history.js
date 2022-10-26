@@ -80,7 +80,7 @@ define([
             try {
                 var val = JSON.parse(states[idx].getContent().doc);
                 var md = config.extractMetadata(val);
-                var users = Object.keys(md.users).sort();
+                var users = Object.keys(md.users || {}).sort();
                 return users.join();
             } catch (e) {
                 console.error(e);
