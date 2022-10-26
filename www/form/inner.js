@@ -2334,6 +2334,12 @@ define([
                         }
                     }
                 });
+                var sortNode = function (order) {
+                    order.forEach(function (uid) {
+                        $tag.append($tag.find('[data-id="'+uid+'"]'));
+                    });
+                };
+
                 return {
                     tag: tag,
                     isEmpty: function () { return !this.getValue(); },
@@ -2348,7 +2354,7 @@ define([
                         var toSort = extractValues(opts.values).map(function (val) {
                             return invMap[val];
                         });
-                        sortable.sort(toSort);
+                        sortNode(toSort);
                         reorder(true);
                     },
                     setEditable: function (state) {
@@ -2365,7 +2371,7 @@ define([
                         var toSort = val.map(function (val) {
                             return invMap[val];
                         });
-                        sortable.sort(toSort);
+                        sortNode(toSort);
                         reorder();
                     }
                 };
@@ -2658,6 +2664,21 @@ define([
             }), title);
         });
 
+        // Export JSON
+        Messages.form_exportJSON = "Export as JSON"; // XXX
+        var exportJSONButton = h('button.btn.btn-primary', [
+            h('i.cptools.cptools-code'),
+            Messages.form_exportJSON
+        ]);
+        $(exportJSONButton).appendTo($controls);
+        $(exportJSONButton).click(function () {
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
+            if (!arr) { return void UI.warn(Messages.error); }
+            window.saveAs(new Blob([arr], {
+                type: 'application/json'
+            }), title+".json");
+        });
+
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
             h('i.fa.fa-file-excel-o'),
@@ -2665,7 +2686,7 @@ define([
         ]);
         $(export2Button).appendTo($controls);
         $(export2Button).click(function () {
-            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), true);
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "array");
             if (!arr) { return void UI.warn(Messages.error); }
             var sframeChan = framework._.sfCommon.getSframeChannel();
             var title = framework._.title.title || framework._.title.defaultTitle;
@@ -3222,6 +3243,17 @@ define([
                 if (content.answers.cantEdit) {
                     $(radioContainer).hide();
                 }
+
+                // TODO show the author that they can "mute" the pad
+                var priv = metadataMgr.getPrivateData();
+                sframeChan.query('Q_CONTACT_OWNER', {
+                    send: true,
+                    query: "FORM_RESPONSE",
+                    msgData: { channel: priv.channel }
+                }, function (err, obj) {
+                    if (err || !obj || !obj.state) { return console.error('ENOTIFY'); }
+                });
+
             });
         });
 

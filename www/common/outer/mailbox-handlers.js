@@ -575,6 +575,59 @@ define([
         cb();
     };
 
+    // Hide duplicates when receiving a form notification:
+    // Keep only one notification per channel
+    var formNotifs = {};
+    handlers['FORM_RESPONSE'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var hash = data.hash;
+        var content = msg.content;
+
+        var channel = content.channel;
+        if (!channel) { return void cb(true); }
+
+        var title, href;
+        ctx.Store.getAllStores().some(function (s) {
+            var res = s.manager.findChannel(channel);
+            // Check if the pad is in our drive
+            return res.some(function (obj) {
+                if (!obj.data) { return; }
+                if (href && !obj.data.href) { return; } // We already have the VIEW url, we need EDIT
+                href = obj.data.href || obj.data.roHref;
+                title = obj.data.filename || obj.data.title;
+                if (obj.data.href) { return true; } // Abort only if we have the EDIT url
+            });
+        });
+
+        // If we don't have the edit url, ignore this notification
+        if (!href) { return void cb(true); }
+
+        // Add the title
+        content.href = href;
+        content.title = title;
+
+        // Remove duplicates
+        var old = formNotifs[channel];
+        var toRemove = old ? old.data : undefined;
+
+        // Update the data
+        formNotifs[channel] = {
+            data: {
+                type: box.type,
+                hash: hash
+            }
+        };
+
+        cb(false, toRemove);
+    };
+    removeHandlers['FORM_RESPONSE'] = function (ctx, box, data, hash) {
+        var content = data.content;
+        var channel = content.channel;
+        var old = formNotifs[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete formNotifs[channel];
+        }
+    };
     // Hide duplicates when receiving a SHARE_PAD notification:
     // Keep only one notification per channel: the stronger and more recent one
     var comments = {};

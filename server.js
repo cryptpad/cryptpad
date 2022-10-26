@@ -1,5 +1,5 @@
 /*
-    globals require console
+    globals process
 */
 var Express = require('express');
 var Http = require('http');
@@ -8,7 +8,6 @@ var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
 var Default = require("./lib/defaults");
-var Keys = require("./lib/keys");
 
 var config = require("./lib/load-config");
 var Env = require("./lib/env").create(config);
@@ -116,16 +115,17 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 });
 }());
 
+const serveStatic = Express.static(Env.paths.blob, {
+    setHeaders: function (res) {
+        res.set('Access-Control-Allow-Origin', Env.enableEmbedding? '*': Env.permittedEmbedders);
+        res.set('Access-Control-Allow-Headers', 'Content-Length');
+        res.set('Access-Control-Expose-Headers', 'Content-Length');
+    }
+});
+
 app.use('/blob', function (req, res, next) {
     if (req.method === 'HEAD') {
-        Express.static(Path.join(__dirname, Env.paths.blob), {
-            setHeaders: function (res, path, stat) {
-                res.set('Access-Control-Allow-Origin', Env.enableEmbedding? '*': Env.permittedEmbedders);
-                res.set('Access-Control-Allow-Headers', 'Content-Length');
-                res.set('Access-Control-Expose-Headers', 'Content-Length');
-            }
-        })(req, res, next);
-        return;
+        return void serveStatic(req, res, next);
     }
     next();
 });
@@ -150,32 +150,33 @@ app.use(function (req, res, next) {
 
 // serve custom app content from the customize directory
 // useful for testing pages customized with opengraph data
-app.use(Express.static(__dirname + '/customize/www'));
-app.use(Express.static(__dirname + '/www'));
+app.use(Express.static(Path.resolve('customize/www')));
+app.use(Express.static(Path.resolve('www')));
 
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
 
 var mainPages = config.mainPages || Default.mainPages();
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
-app.get(mainPagePattern, Express.static(__dirname + '/customize'));
-app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
+app.get(mainPagePattern, Express.static(Path.resolve('customize')));
+app.get(mainPagePattern, Express.static(Path.resolve('customize.dist')));
 
-app.use("/blob", Express.static(Path.join(__dirname, Env.paths.blob), {
+app.use("/blob", Express.static(Env.paths.blob, {
     maxAge: Env.DEV_MODE? "0d": "365d"
 }));
-app.use("/datastore", Express.static(Path.join(__dirname, Env.paths.data), {
+app.use("/datastore", Express.static(Env.paths.data, {
     maxAge: "0d"
 }));
-app.use("/block", Express.static(Path.join(__dirname, Env.paths.block), {
+
+app.use("/block", Express.static(Env.paths.block, {
     maxAge: "0d",
 }));
 
-app.use("/customize", Express.static(__dirname + '/customize'));
-app.use("/customize", Express.static(__dirname + '/customize.dist'));
-app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
-app.use(/^\/[^\/]*$/, Express.static('customize'));
-app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
+app.use("/customize", Express.static(Path.resolve('customize')));
+app.use("/customize", Express.static(Path.resolve('customize.dist')));
+app.use("/customize.dist", Express.static(Path.resolve('customize.dist')));
+app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize')));
+app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize.dist')));
 
 // if dev mode: never cache
 var cacheString = function () {
@@ -216,7 +217,7 @@ var makeRouteCache = function (template, cacheName) {
     };
 };
 
-var serveConfig = makeRouteCache(function (host) {
+var serveConfig = makeRouteCache(function () {
     return [
         'define(function(){',
         'return ' + JSON.stringify({
@@ -244,10 +245,10 @@ var serveConfig = makeRouteCache(function (host) {
             accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
-    ].join(';\n')
+    ].join(';\n');
 }, 'configCache');
 
-var serveBroadcast = makeRouteCache(function (host) {
+var serveBroadcast = makeRouteCache(function () {
     var maintenance = Env.maintenance;
     if (maintenance && maintenance.end && maintenance.end < (+new Date())) {
         maintenance = undefined;
@@ -260,21 +261,21 @@ var serveBroadcast = makeRouteCache(function (host) {
             maintenance: maintenance
         }, null, '\t'),
         '});'
-    ].join(';\n')
+    ].join(';\n');
 }, 'broadcastCache');
 
 app.get('/api/config', serveConfig);
 app.get('/api/broadcast', serveBroadcast);
 
-var define = function (obj) {
+var defineBlock = function (obj) {
     return `define(function (){
     return ${JSON.stringify(obj, null, '\t')};
-});`
+});`;
 };
 
 app.get('/api/instance', function (req, res) { // XXX use caching?
     res.setHeader('Content-Type', 'text/javascript');
-    res.send(define({
+    res.send(defineBlock({
         name: Env.instanceName,
         description: Env.instanceDescription,
         location: Env.instanceJurisdiction,
@@ -282,10 +283,10 @@ app.get('/api/instance', function (req, res) { // XXX use caching?
     }));
 });
 
-var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
-var fivehundred_path = Path.resolve(__dirname + '/customize.dist/500.html');
-var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
-var custom_fivehundred_path = Path.resolve(__dirname + '/customize/500.html');
+var four04_path = Path.resolve('customize.dist/404.html');
+var fivehundred_path = Path.resolve('customize.dist/500.html');
+var custom_four04_path = Path.resolve('customize/404.html');
+var custom_fivehundred_path = Path.resolve('/customize/500.html');
 
 var send404 = function (res, path) {
     if (!path && path !== four04_path) { path = four04_path; }
@@ -321,7 +322,7 @@ app.get('/api/updatequota', function (req, res) {
     });
 });
 
-app.get('/api/profiling', function (req, res, next) {
+app.get('/api/profiling', function (req, res) {
     if (!Env.enableProfiling) { return void send404(res); }
     res.setHeader('Content-Type', 'text/javascript');
     res.send(JSON.stringify({
@@ -329,13 +330,13 @@ app.get('/api/profiling', function (req, res, next) {
     }));
 });
 
-app.use(function (req, res, next) {
+app.use(function (req, res) {
     res.status(404);
     send404(res, custom_four04_path);
 });
 
 // default message for thrown errors in ExpressJS routes
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     Env.Log.error('EXPRESSJS_ROUTING', {
         error: err.stack || err,
     });
@@ -346,7 +347,7 @@ app.use(function (err, req, res, next) {
 var httpServer = Env.httpServer = Http.createServer(app);
 
 nThen(function (w) {
-    Fs.exists(__dirname + "/customize", w(function (e) {
+    Fs.exists(Path.resolve("customize"), w(function (e) {
         if (e) { return; }
         console.log("CryptPad is customizable, see customize.dist/readme.md for details");
     }));
@@ -377,7 +378,7 @@ nThen(function (w) {
         Http.createServer(app).listen(Env.httpSafePort, Env.httpAddress, w());
     }
 }).nThen(function () {
-    var wsConfig = { server: httpServer };
+    //var wsConfig = { server: httpServer };
 
     // Initialize logging then start the API server
     require("./lib/log").create(config, function (_log) {
