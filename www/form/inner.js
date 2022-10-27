@@ -4072,7 +4072,7 @@ define([
                     new Date(lastTime).toLocaleString()])));
         }
 
-        if (APP.isClosed || content.answers.cantEdit) {
+        if (APP.isClosed || (APP.hasAnswered && content.answers.cantEdit)) {
             APP.formBlocks.forEach(function (b) {
                 if (!b.setEditable) { return; }
                 b.setEditable(false);
@@ -4910,8 +4910,10 @@ define([
         // repeatedly, we'll only "redraw" once with the latest content.
         var _redraw = Util.notAgainForAnother(function (framework, content) {
             var answers, temp;
-            if (!APP.isEditor) { answers = getFormResults(true); }
-            else { temp = getTempFields(); }
+            if (!APP.isEditor) {
+                answers = getFormResults(true);
+                if (answers) { answers._isAnon = !APP.cantAnon; }
+            } else { temp = getTempFields(); }
             if (APP.inAnsweredPage) {
                 return void APP.getMyAnswers();
             }
