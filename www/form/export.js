@@ -46,28 +46,31 @@ define([
         });
 
         Object.keys(answers || {}).forEach(function (key) {
-            var obj = answers[key];
-            var time = new Date(obj.time).toISOString();
-            var msg = obj.msg || {};
-            var user = msg._userdata || {};
-            var data = {
-                '_time': time,
-                '_name': user.name || Messages.anonymous
-            };
+            var userObj = answers[key];
+            Object.keys(userObj).forEach(function (k) {
+                var obj = userObj[k];
+                var time = new Date(obj.time).toISOString();
+                var msg = obj.msg || {};
+                var user = msg._userdata || {};
+                var data = {
+                    '_time': time,
+                    '_name': user.name || Messages.anonymous
+                };
 
-            var i = 1;
-            order.forEach(function (key) {
-                if (!form[key]) { return; }
-                var type = form[key].type;
-                if (!TYPES[type]) { return; } // Ignore static types
-                var id = `q${i++}`;
-                if (TYPES[type].exportCSV) {
-                    data[id] = TYPES[type].exportCSV(msg[key], form[key]);
-                    return;
-                }
-                data[id] = msg[key];
+                var i = 1;
+                order.forEach(function (key) {
+                    if (!form[key]) { return; }
+                    var type = form[key].type;
+                    if (!TYPES[type]) { return; } // Ignore static types
+                    var id = `q${i++}`;
+                    if (TYPES[type].exportCSV) {
+                        data[id] = TYPES[type].exportCSV(msg[key], form[key]);
+                        return;
+                    }
+                    data[id] = msg[key];
+                });
+                r.push(data);
             });
-            r.push(data);
         });
 
         return JSON.stringify(res, 0, 2);
