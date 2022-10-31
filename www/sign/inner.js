@@ -72,6 +72,7 @@ define([
     var currentCursor = null;
     var signaturePad = null;
     var signedImage = null;
+    var canvasScaleFactor = 1;
 
     var loadPDF = async function(url, pdfjsLib) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = '/sign/vendor/pdf.worker.js?legacy';
@@ -88,7 +89,6 @@ define([
                   var scale = 1;
                   var viewport = page.getViewport({scale: scale});
                   if(viewport.width > document.getElementById('container-pages').clientWidth - 40) {
-                      viewport = page.getViewport({scale: 1});
                       scale = (document.getElementById('container-pages').clientWidth - 40) / viewport.width;
                       viewport = page.getViewport({ scale: scale });
                   }
@@ -107,6 +107,10 @@ define([
                   canvasPDF.width = viewport.width;
                   canvasEditionHTML.height = canvasPDF.height;
                   canvasEditionHTML.width = canvasPDF.width;
+                  console.log("canvasPDF: w", canvasPDF.width);
+                  console.log("canvasPDF: h", canvasPDF.height);
+                  console.log("canvasEdition: edition w", canvasEditionHTML.width);
+                  console.log("canvasEdition: edition h", canvasEditionHTML.height);
 
                   var renderContext = {
                     canvasContext: context,
@@ -120,7 +124,6 @@ define([
                     selection : false,
                     allowTouchScrolling: true
                   });
-
                   document.getElementById('canvas-container-' + pageIndex).addEventListener('drop', function(event) {
                       var input_selected = document.querySelector('input[name="svg_2_add"]:checked');
                       if(!input_selected) {
@@ -599,15 +602,15 @@ define([
              myImg.scaleToWidth(100);
              if (signed) {
 		myImg.signed = true;
-		myImg.signPosX = x - 100;
-		myImg.signPosY = y - 100;
+		myImg.signPosX = x - 50;
+		myImg.signPosY = y - 50;
 		myImg.signWidth = 100;
 		myImg.signHeight = 100;
                 myImg.signScale = myImg.scale;
 		signedImage = myImg;
 	}
              addObjectInCanvas(canvas, myImg).setActiveObject(myImg);
-           }, { left: x - 100, top: y -100});
+           }, { left: x - 50, top: y - 50});
            return;
         }
  
@@ -673,6 +676,34 @@ define([
 
         resizeTimeout = setTimeout(resizePDF(currentScale), 50);
     };
+
+    var resizeCanvas = function (scale) {
+        pdfPages.forEach(function(page, pageIndex) {
+            var canvasEdition = canvasEditions[pageIndex];
+            console.log("canvas scale", scale);
+
+            canvasEdition.setWidth(canvasEdition.getWidth() * scale);
+            canvasEdition.setHeight(canvasEdition.getHeight() * scale);
+            var canvasEditionHTML = document.getElementById('canvas-edition-' + pageIndex);
+            canvasEditionHTML.width = canvasEdition.width;
+            canvasEditionHTML.height = canvasEdition.height;
+            var objects = canvasEdition.getObjects();
+            for (var i in objects) {
+               objects[i].scaleX = objects[i].scaleX * scale;
+               objects[i].scaleY = objects[i].scaleY * scale;
+               objects[i].left = objects[i].left * scale;
+               objects[i].top = objects[i].top * scale;
+               objects[i].setCoords();
+            }
+
+            canvasEdition.renderAll();
+            canvasEdition.calcOffset();
+
+            console.log("canvasEdition resize");
+            console.log("canvasEdition: edition w", canvasEdition.width);
+            console.log("canvasEdition: edition h", canvasEdition.height);
+         });
+    }
 
     var resizePDF = function (scale = 'auto') {
         renderComplete = true;
@@ -910,10 +941,10 @@ define([
               return modifiedPdfBytes;
 	   else { 
               var canvasPDF = document.getElementById('canvas-pdf-' + 0);
-              console.log("canvasPDF: ", canvasPDF.width);
-              console.log("canvasPDF: ", canvasPDF.height);
-              console.log("canvasEdition: ", canvasEditions[0].width);
-              console.log("canvasEdition: ", canvasEditions[0].height);
+              console.log("canvasPDF: w", canvasPDF.width);
+              console.log("canvasPDF: h", canvasPDF.height);
+              console.log("canvasEdition: edition w", canvasEditions[0].width);
+              console.log("canvasEdition: edition h", canvasEditions[0].height);
 	      var page0 = pdfDoc.getPages()[0]
               console.log("pageX: ", page0.getWidth());
               console.log("pageY: ", page0.getHeight());
@@ -940,13 +971,16 @@ define([
         document.getElementById('save').addEventListener('click', function(event) {
             event.preventDefault();
             var items = []
-            console.log(canvasEditions)
+            // temporarey resize of canvas to improve rendering quality
+            resizeCanvas(4);
             canvasEditions.forEach(function(canvasEdition, index) {
                 items.push({ 
                   data: canvasEdition.toDataURL(), index: index,
                   name: index + '.png',  type: 'image/png'
                 });
             })
+            // restore previous canvas size 
+            resizeCanvas(0.25);
             console.log(items);
             prepareDoc(pdfData, items).then(pdfBytes => {
               var blob = new Blob([pdfBytes.buffer], { type: "application/pdf" })
