@@ -991,12 +991,16 @@ define([
         document.getElementById('store').addEventListener('click', function(event) {
             event.preventDefault();
             var items = []
+            // temporarey resize of canvas to improve rendering quality
+            resizeCanvas(4);
             canvasEditions.forEach(function(canvasEdition, index) {
                 items.push({ 
                   data: canvasEdition.toDataURL(), index: index,
                   name: index + '.png',  type: 'image/png'
                 });
             })
+            // restore previous canvas size 
+            resizeCanvas(0.25);
             prepareDoc(pdfData, items).then(pdfBytes => {
               var blob = new Blob([pdfBytes.buffer], { type: "application/pdf" })
               blob.name = pdfTitle.replace(".pdf", "-signed.pdf");
