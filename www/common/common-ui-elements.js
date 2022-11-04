@@ -352,10 +352,35 @@ define([
         });
 
         var linkName, linkPassword, linkMessage, linkError, linkSpinText;
-        var linkForm, linkSpin, linkResult;
+        var linkForm, linkSpin, linkResult, linkUses;
         var linkWarning;
         // Invite from link
         var dismissButton = h('span.fa.fa-times');
+
+        var options = [{
+            tag: 'a',
+            attributes: {'data-value': 'VIEWER', href:'#'},
+            content: h('span', Messages.team_viewers),
+        }, {
+            tag: 'a',
+            attributes: {'data-value': 'MEMBER', href:'#'},
+            content: h('span', Messages.team_members),
+        }];
+        var dropdownConfig = {
+            text: Messages.team_viewers, // Button initial text
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            caretDown: true,
+            common: common,
+            buttonCls: 'btn'
+        };
+        var $block = UIElements.createDropdown(dropdownConfig);
+        $block.setValue('VIEWER');
+Messages.team_inviteRole = "Initial role"; // XXX
+Messages.team_inviteUses = "Max uses (0 = infinite)"; // XXX
+
+
+
         var linkContent = h('div.cp-share-modal', [
             h('p', Messages.team_inviteLinkTitle ),
             linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
@@ -387,7 +412,20 @@ define([
                 linkMessage = h('textarea.cp-teams-invite-message', {
                     placeholder: Messages.team_inviteLinkNoteMsg,
                     rows: 3
-                })
+                }),
+                h('div.cp-teams-invite-block.cp-teams-invite-role',
+                    h('span', Messages.team_inviteRole),
+                    $block[0]
+                ),
+                h('div.cp-teams-invite-block.cp-teams-invite-uses',
+                    h('span', Messages.team_inviteUses),
+                    linkUses = h('input', {
+                        type: 'number',
+                        min: 0,
+                        max: 999,
+                        value: 1
+                    })
+                ),
             ]),
             linkSpin = h('div.cp-teams-invite-spinner', {
                 style: 'display: none;'
@@ -400,17 +438,18 @@ define([
             }, h('textarea', {
                 readonly: 'readonly'
             })),
-            linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
+            linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', { // XXX remove warning?
                 style: "display: none;"
             }, [
                 h('span.cp-inline-alert-text', Messages.team_inviteLinkWarning),
                 dismissButton
             ])
         ]);
+        $(linkUses).on('change keyup', function(e) {
+            if (e.target.value === '') { e.target.value = 0; }
+        });
         $(linkMessage).keydown(function (e) {
-            if (e.which === 13) {
-                e.stopPropagation();
-            }
+            if (e.which === 13) { e.stopPropagation(); }
         });
         var localStore = window.cryptpadStore;
         localStore.get('hide-alert-teamInvite', function (val) {
@@ -428,6 +467,11 @@ define([
             var $nav = $linkContent.closest('.alertify').find('nav');
             $(linkError).text('').hide();
             var name = $(linkName).val();
+
+            var uses = Number($(linkUses).val());
+            if (isNaN(uses) || !uses) { uses = -1; }
+            var role = $block.getValue() || 'VIEWER';
+
             var pw = $(linkPassword).find('input').val();
             var msg = $(linkMessage).val();
             var hash = Hash.createRandomHash('invite', pw);
@@ -461,6 +505,8 @@ define([
                     hash: hash,
                     teamId: config.teamId,
                     seeds: seeds,
+                    role: role,
+                    uses: uses
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         waitFor.abort();
