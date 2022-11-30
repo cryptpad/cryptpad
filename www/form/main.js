@@ -424,6 +424,10 @@ define([
                 }
                 Cryptpad.deleteFormAnswers(data, cb);
             });
+            sframeChan.on("Q_FORM_MUTE", function (data, cb) {
+                if (!Utils.secret) { return void cb({error: 'EINVAL'}); }
+                Cryptpad.muteChannel(Utils.secret.channel, data.muted, cb);
+            });
         };
         SFCommonO.start({
             addData: addData,

@@ -4317,6 +4317,34 @@ define([
             };
             refreshAnon();
 
+            Messages.form_allowNotifications = "Receive notifications on new messages"; // XXX
+
+            // Mute form responses
+            var notifContainer = h('div.cp-form-anon-container');
+            var $notif = $(notifContainer);
+            var refreshNotif = function () {
+                $notif.empty();
+                if (!APP.common.isLoggedIn()) { return; }
+                var metadataMgr = APP.common.getMetadataMgr();
+                var priv = metadataMgr.getPrivateData();
+                var isMuted = priv.isChannelMuted;
+                var cbox = UI.createCheckbox('cp-form-muted',
+                           Messages.form_allowNotifications, !isMuted, {});
+                var radioContainer = h('div.cp-form-mute-radio', [cbox]);
+                var $r = $(radioContainer).find('input').on('change', function() {
+                    var val = Util.isChecked($r);
+                    sframeChan.query('Q_FORM_MUTE', {
+                        muted: !val
+                    }, function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) { return void UI.warn(Messages.error); }
+                        UI.log(Messages.saved);
+                    });
+                });
+                $anon.append(h('div.cp-form-actions', radioContainer));
+            };
+            refreshNotif();
+
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
             var $privacy = $(privacyContainer);
@@ -4527,6 +4555,7 @@ define([
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshAnon);
+            evOnChange.reg(refreshNotif);
             evOnChange.reg(refreshEditable);
             evOnChange.reg(refreshEndDate);
             evOnChange.reg(refreshColorTheme);
@@ -4536,6 +4565,7 @@ define([
                 preview,
                 endDateContainer,
                 anonContainer,
+                notifContainer,
                 privacyContainer,
                 editableContainer,
                 resultsType,

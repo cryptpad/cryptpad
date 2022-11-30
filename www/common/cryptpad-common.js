@@ -168,7 +168,7 @@ define([
                         var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
                         if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
                         localStorage.CP_formAnswered = JSON.stringify(answered);
-                        return;
+                        return void cb();
                     }
                     console.error(obj.error);
                 }
@@ -226,6 +226,31 @@ define([
                     value: obj
                 }, cb);
             });
+        });
+    };
+    common.muteChannel = function (channel, state, cb) {
+        var mutedChannels = [];
+        Nthen(function (waitFor) {
+            postMessage("GET", {
+                key: ['mutedChannels'],
+            }, waitFor(function (obj) {
+                if (obj && obj.error) { waitFor.abort(); return void cb(obj); }
+                mutedChannels = obj || [];
+            }));
+        }).nThen(function () {
+            if (state) {
+                if (!mutedChannels.includes(channel)) {
+                    mutedChannels.push(channel);
+                }
+            } else {
+                mutedChannels = mutedChannels.filter(function (chan) {
+                    return chan !== channel;
+                });
+            }
+            postMessage("SET", {
+                key: ['mutedChannels'],
+                value: mutedChannels
+            }, cb);
         });
     };
 

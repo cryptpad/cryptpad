@@ -710,6 +710,12 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
+                    if (metaObj.priv && Array.isArray(metaObj.priv.mutedChannels)
+                            && metaObj.priv.mutedChannels.includes(secret.channel)) {
+                        delete metaObj.priv.mutedChannes;
+                        additionalPriv.isChannelMuted = true;
+                    }
+
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
                     var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,

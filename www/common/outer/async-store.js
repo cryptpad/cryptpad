@@ -659,6 +659,7 @@ define([
                     offline: store.proxy && store.offline,
                     teams: teams,
                     plan: store.ready ? (account.plan || '') : undefined,
+                    mutedChannels: proxy.mutedChannels
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));

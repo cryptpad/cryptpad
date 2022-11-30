@@ -20,6 +20,10 @@ define([
         if (!curvePublic) { return false; }
         return Boolean(muted[curvePublic]);
     };
+    var isChannelMuted = function (ctx, channel) {
+        var muted = ctx.store.proxy.mutedChannels || [];
+        return muted.includes(channel);
+    };
 
     // Store the friend request displayed to avoid duplicates
     var friendRequest = {};
@@ -585,6 +589,8 @@ define([
 
         var channel = content.channel;
         if (!channel) { return void cb(true); }
+
+        if (isChannelMuted(ctx, channel)) { return void cb(true); }
 
         var title, href;
         ctx.Store.getAllStores().some(function (s) {
