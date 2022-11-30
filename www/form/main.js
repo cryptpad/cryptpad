@@ -230,19 +230,25 @@ define([
                     config.onMessage = function (msg, peer, vKey, isCp, hash, senderCurve, cfg) {
                         var parsed = Utils.Util.tryParse(msg);
                         if (!parsed) { return; }
+                        var uid = parsed._uid || '000';
+
+                        // If we have a "non-anonymous" answer, it may be the edition of a
+                        // previous anonymous answer. Check if a previous anonymous answer exists
+                        // with the same uid and delete it.
                         if (parsed._proof) {
                             var check = checkAnonProof(parsed._proof, data.channel, curvePrivate);
-                            if (check) {
-                                delete results[parsed._proof.key];
+                            var theirAnonKey = parsed._proof.key;
+                            if (check && results[theirAnonKey] && results[theirAnonKey][uid]) {
+                                delete results[theirAnonKey][uid];
                             }
                         }
 
                         parsed._time = cfg && cfg.time;
                         if (deleteLines) { parsed._hash = hash; }
 
-                        if (data.cantEdit && results[senderCurve]) { return; }
+                        if (data.cantEdit && results[senderCurve]
+                                          && results[senderCurve][uid]) { return; }
                         results[senderCurve] = results[senderCurve] || {};
-                        var uid = parsed._uid || '000';
                         results[senderCurve][uid] = {
                             msg: parsed,
                             hash: hash,

@@ -3040,6 +3040,7 @@ define([
                 h('span.cp-form-submit-time', date),
                 h('span.cp-form-submit-action', action),
                 h('span.cp-form-submit-del', del),
+                answer._isAnon ? h('span', h('i.fa.fa-user-secret')) : undefined // XXX title?
             ]));
         });
 
