@@ -276,6 +276,7 @@
                 }
             }
             div.cp-form-creator-content {
+                position: relative;
                 .cp-form-block-type {
                     margin-top: -35px;
                     &.editable {
@@ -924,8 +925,12 @@
         display: flex;
         flex-flow: column;
         align-items: baseline;
-        .cp-radio {
+        .cp-radio, .cp-checkmark {
             display: inline-flex;
+            max-width: 100%;
+        }
+        .cp-checkmark-label {
+            overflow: auto;
         }
     }
     .cp-form-type-multiradio {
@@ -938,6 +943,8 @@
                 vertical-align: middle;
                 &:first-child {
                     min-width: 200px;
+                    max-width: 350px;
+                    overflow: auto;
                 }
                 .cp-radio-mark {
                     margin: auto;
@@ -951,8 +958,11 @@
     .cp-form-type-sort {
         cursor: grab;
         padding: 5px;
+        display: flex;
+        align-items: center;
+        overflow: auto;
         .cp-form-handle {
-            margin-right: 5px;
+            min-width: 12px;
         }
         .cp-form-sort-order {
             border: 1px solid @cryptpad_text_col;
@@ -971,12 +981,14 @@
     .cp-form-type-poll-container {
         overflow: auto;
         .cp-form-poll-hint {
-            margin-bottom: 10px;
+            position: absolute;
         }
     }
     .cp-form-type-poll {
+        margin-top: 32px; // cp-form-poll-hint is "absolute"
         display: inline-flex;
         flex-flow: column;
+        width: 100%;
         & > div {
             display: flex;
         }
@@ -986,7 +998,6 @@
         .cp-form-poll-body {
             flex-flow: column;
             max-height: 225px;
-            overflow: auto;
 
             & > div {
                 display: flex;
@@ -1000,9 +1011,7 @@
             justify-content: center;
             margin-top:5px;
             margin-left:5px;
-            &:first-child {
-                width: 200px;
-            }
+            flex-shrink: 0;
             button {
                 width: 100%;
                 border-top: 0px;
@@ -1048,6 +1057,9 @@
         .cp-poll-time-day {
             flex-basis: 100px;
             border-bottom: 1px solid @cryptpad_text_col;
+            &:first-child {
+                border-color: @cp_form-bg1 !important;
+            }
         }
         &:not(.cp-form-poll-switch) {
             & > div {
@@ -1055,14 +1067,38 @@
                     margin-bottom: 5px;
                 }
             }
-            .cp-form-poll-body {
-                &::-webkit-scrollbar {
-                  display: none;
+
+            .cp-poll-cell {
+                &:first-child {
+                    min-width: 200px;
+                    background: #424242;
+                    position: absolute;
+                    margin-left: 0;
+                    background: @cp_form-bg1;
                 }
-                -ms-overflow-style: none;  /* IE and Edge */
-                scrollbar-width: none;  /* Firefox */
+                &:nth-child(2) {
+                    margin-left: 205px;
+                }
             }
+
+            .cp-form-poll-option, .cp-poll-time-day, .cp-form-poll-choice {
+                flex-grow: 1;
+                flex-shrink: 0;
+            }
+
             .cp-form-poll-option, .cp-poll-time-day {
+                span {
+                    text-overflow: ellipsis;
+                    max-width: 100%;
+                    overflow: hidden;
+                    line-height: 1.2;
+                    hyphens: auto;
+
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                }
+
                 flex-flow: column;
                 text-align: center;
                 .cp-form-weekday-separator {
@@ -1083,9 +1119,6 @@
                 flex-flow: column;
                 &.cp-form-poll-body {
                     flex-flow: row;
-                    max-width: 550px;
-                    max-height: unset;
-                    scroll-snap-type: x mandatory;
                     & > div {
                         flex-flow: column;
                     }
@@ -1100,11 +1133,22 @@
                 }
             }
             .cp-form-poll-option, .cp-poll-switch {
+                span {
+                    text-overflow: ellipsis;
+                    max-width: 100%;
+                    overflow: hidden;
+                    max-height: 100%;
+                    line-height: 1.2;
+                    text-align: center;
+                }
                 width: 200px;
                 .cp-form-weekday-separator {
                     margin-right: 5px;
                     margin-left: 5px;
                 }
+            }
+            div.cp-poll-time-day-container {
+                width: auto !important;
             }
             .cp-poll-time-day {
                 flex-basis: 40px;

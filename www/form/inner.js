@@ -725,7 +725,7 @@ define([
 
         // Add an initial row to "time" values containing the days
         if (opts.type === "time") {
-            var days = [h('div.cp-poll-cell')];
+            var days = [h('div.cp-poll-cell.cp-poll-time-day')];
             var _days = {};
             extractValues(opts.values).forEach(function (d) {
                 var date = new Date(d);
@@ -745,7 +745,8 @@ define([
                     h('span', day)
                 ]));
             });
-            lines.unshift(h('div', days));
+            var w = 200 + 105*(opts.values.length || 1);
+            lines.unshift(h('div.cp-poll-time-day-container', {style: 'width:'+w+'px;'}, days));
         }
 
         // Add answers
