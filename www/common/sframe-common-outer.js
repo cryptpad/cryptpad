@@ -942,7 +942,7 @@ define([
                     var metadata = data.metadata;
                     var add = data.add;
                     var _secret = secret;
-                    if (metadata && (metadata.href || metadata.roHref) && !metadata.fakeHref) {
+                    if (metadata && (metadata.href || metadata.roHref)) {
                         var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
                         _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
                     }

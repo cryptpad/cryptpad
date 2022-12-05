@@ -1152,10 +1152,10 @@ define([
 
         var FILTER_BY = "filterBy";
 
-        var refresh = APP.refresh = function () {
+        var refresh = APP.refresh = function (cb) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
-            APP.displayDirectory(path);
+            APP.displayDirectory(path, undefined, cb);
         };
 
         // `app`: true (force open wiht the app), false (force open in preview),
@@ -4290,10 +4290,12 @@ define([
 
             appStatus.ready(true);
         };
-        var displayDirectory = APP.displayDirectory = function (path, force) {
+        var displayDirectory = APP.displayDirectory = function (path, force, cb) {
+            cb = cb || function () {};
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
             if (history.isHistoryMode) {
-                return void _displayDirectory(path, force);
+                _displayDirectory(path, force);
+                return void cb();
             }
             if (!manager.comparePath(currentPath, path)) {
                 removeSelected();
@@ -4302,6 +4304,7 @@ define([
                 copyObjectValue(files, proxy.drive);
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
+                    cb();
                 });
             });
         };
@@ -5347,8 +5350,9 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        refresh();
-        UI.removeLoadingScreen();
+        refresh(function () {
+            UI.removeLoadingScreen();
+        });
 
         /*
         if (!APP.team) {
