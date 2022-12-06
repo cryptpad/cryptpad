@@ -930,10 +930,22 @@
             max-width: 100%;
         }
         .cp-checkmark-label {
-            overflow: auto;
+            word-break: break-word;
         }
     }
+    .cp-form-multiradio-container {
+        overflow: auto;
+    }
     .cp-form-type-multiradio {
+        .cp-form-multiradio-header {
+            white-space: nowrap;
+            span {
+                text-align: center;
+                max-width: 30ch;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
         display: table;
         & > * {
             display: table-row;
@@ -942,11 +954,25 @@
                 padding: 5px 20px;
                 vertical-align: middle;
                 &:first-child {
-                    min-width: 200px;
-                    max-width: 350px;
-                    overflow: auto;
+                    //overflow: auto;
+                    max-width: 300px;
+                    min-width: 300px;
+                    width: 300px;
+                    position: absolute;
+                    left: 20px;
+                    word-break: break-word;
+                    background: @cp_form-bg1;
+                    z-index: 2;
                 }
-                .cp-radio-mark {
+                &:nth-child(2) {
+                    visibility: hidden;
+                    //overflow: auto;
+                    max-width: 300px;
+                    min-width: 300px;
+                    width: 300px;
+                    word-break: break-word;
+                }
+                .cp-radio-mark, .cp-checkmark-mark {
                     margin: auto;
                 }
             }
@@ -960,7 +986,7 @@
         padding: 5px;
         display: flex;
         align-items: center;
-        overflow: auto;
+        word-break: break-word;
         .cp-form-handle {
             min-width: 12px;
         }
@@ -994,6 +1020,7 @@
         }
         .cp-poll-total {
             display: flex;
+            width: 100%;
         }
         .cp-form-poll-body {
             flex-flow: column;
@@ -1012,6 +1039,8 @@
             margin-top:5px;
             margin-left:5px;
             flex-shrink: 0;
+            flex-grow: 1;
+            word-break: break-word;
             button {
                 width: 100%;
                 border-top: 0px;
@@ -1061,6 +1090,19 @@
                 border-color: @cp_form-bg1 !important;
             }
         }
+        .cp-form-poll-option, .cp-poll-time-day {
+            span {
+                text-overflow: ellipsis;
+                max-width: 100%;
+                overflow: hidden;
+                line-height: 1.2;
+                hyphens: auto;
+                text-align: center;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+        }
         &:not(.cp-form-poll-switch) {
             & > div {
                 &:last-child {
@@ -1087,18 +1129,6 @@
             }
 
             .cp-form-poll-option, .cp-poll-time-day {
-                span {
-                    text-overflow: ellipsis;
-                    max-width: 100%;
-                    overflow: hidden;
-                    line-height: 1.2;
-                    hyphens: auto;
-
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                }
-
                 flex-flow: column;
                 text-align: center;
                 .cp-form-weekday-separator {
@@ -1134,12 +1164,7 @@
             }
             .cp-form-poll-option, .cp-poll-switch {
                 span {
-                    text-overflow: ellipsis;
-                    max-width: 100%;
-                    overflow: hidden;
                     max-height: 100%;
-                    line-height: 1.2;
-                    text-align: center;
                 }
                 width: 200px;
                 .cp-form-weekday-separator {

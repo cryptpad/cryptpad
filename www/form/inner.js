@@ -745,8 +745,14 @@ define([
                     h('span', day)
                 ]));
             });
-            var w = 200 + 105*(opts.values.length || 1);
+            var w = 200 + 105*(opts.values.length || 1); // XXX cells can grow bigger than 100px
             lines.unshift(h('div.cp-poll-time-day-container', {style: 'width:'+w+'px;'}, days));
+            setTimeout(function () {
+                var w2 = $('div.cp-form-poll-body').width();
+                if (w < w2) { $('div.cp-poll-time-day-container').width(w2); }
+                var cellWidth = $(lines).find('div.cp-poll-cell.cp-form-poll-option').first().width();
+                $('div.cp-poll-cell.cp-poll-time-day').css('flex-basis', cellWidth);
+            });
         }
 
         // Add answers
@@ -1858,13 +1864,23 @@ define([
                         return radio;
                     });
                     els.unshift(h('div.cp-form-multiradio-item', item));
+                    els.unshift(h('div.cp-form-multiradio-item', item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
-                var header = extractValues(opts.values).map(function (v) { return h('span', v); });
+                var header = extractValues(opts.values).map(function (v) {
+                    return h('span', {
+                        title: Util.fixHTML(v)
+                    }, v);
+                });
                 header.unshift(h('span'));
+                var elh = h('span');
+                elh.innerHTML = '&nbsp;';
+                header.unshift(elh);
                 lines.unshift(h('div.cp-form-multiradio-header', header));
 
-                var tag = h('div.radio-group.cp-form-type-multiradio', lines);
+                var tag = h('div.cp-form-multiradio-container',
+                            h('div.radio-group.cp-form-type-multiradio', lines)
+                          );
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 var $tag = $(tag);
@@ -2120,6 +2136,7 @@ define([
                         return cbox;
                     });
                     els.unshift(h('div.cp-form-multiradio-item', item));
+                    els.unshift(h('div.cp-form-multiradio-item', item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
 
@@ -2141,11 +2158,20 @@ define([
                     });
                 });
 
-                var header = extractValues(opts.values).map(function (v) { return h('span', v); });
+                var header = extractValues(opts.values).map(function (v) {
+                    return h('span', {
+                        title: Util.fixHTML(v)
+                    }, v);
+                });
                 header.unshift(h('span'));
+                var elh = h('span');
+                elh.innerHTML = '&nbsp;';
+                header.unshift(elh);
                 lines.unshift(h('div.cp-form-multiradio-header', header));
 
-                var tag = h('div.radio-group.cp-form-type-multiradio', lines);
+                var tag = h('div.cp-form-multiradio-container',
+                            h('div.radio-group.cp-form-type-multiradio', lines)
+                          );
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
