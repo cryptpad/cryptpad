@@ -160,6 +160,7 @@
             },
             expect: expect,
             handle: handle,
+            _pending: pending,
         };
     };
 
@@ -185,6 +186,14 @@
     Util.uid = function () {
         return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
             .toString(32).replace(/\./g, '');
+    };
+
+    Util.guid = function (map) {
+        var id = Util.uid();
+        // the guid (globally unique id) is valid if it does already exist in the map
+        if (typeof(map[id]) === 'undefined') { return id; }
+        // otherwise try again
+        return Util.guid(map);
     };
 
     Util.fixHTML = function (str) {
