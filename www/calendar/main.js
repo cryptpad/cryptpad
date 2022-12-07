@@ -21,10 +21,12 @@ define([
                     meta.calendarOpts  = Utils.Hash.decodeDataOptions(parsed.hashData.newPadOpts);
                 }
             }
-            meta.calendarHash = Boolean(window.location.hash);
+            meta.calendarHash = hash;
         };
         SFCommonO.start({
             addData: addData,
+            hash: hash,
+            href: href,
             noRealtime: true,
             cache: true,
         });

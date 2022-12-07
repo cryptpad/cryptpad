@@ -37,20 +37,18 @@ define([
             }));
         }
 
-        if (!data.fakeHref) {
-            if (data.href) {
-                $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
-                $d.append(UI.dialog.selectable(data.href, {
-                    id: 'cp-app-prop-link',
-                }));
-            }
+        if (data.href) {
+            $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
+            $d.append(UI.dialog.selectable(data.href, {
+                id: 'cp-app-prop-link',
+            }));
+        }
 
-            if (data.roHref && !opts.noReadOnly) {
-                $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
-                $d.append(UI.dialog.selectable(data.roHref, {
-                    id: 'cp-app-prop-rolink',
-                }));
-            }
+        if (data.roHref && !opts.noReadOnly) {
+            $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
+            $d.append(UI.dialog.selectable(data.roHref, {
+                id: 'cp-app-prop-rolink',
+            }));
         }
 
         if (data.tags && Array.isArray(data.tags)) {

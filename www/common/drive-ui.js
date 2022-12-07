@@ -2945,7 +2945,8 @@ define([
                 $block.find('a.cp-app-drive-new-link, li.cp-app-drive-new-link').click(showLinkModal);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
-                .click(function () {
+                .on('click auxclick', function (e) {
+                e.preventDefault();
                 var type = $(this).attr('data-type') || 'pad';
                 var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                 openIn(type, path, APP.team);
@@ -3040,7 +3041,7 @@ define([
                 };
                 if (obj.type) {
                     newObj.attributes['data-type'] = obj.type;
-                    newObj.attributes['href'] = '#';
+                    newObj.attributes['href'] = APP.origin + Hash.hashToHref('', obj.type);
                 }
                 return newObj;
             });

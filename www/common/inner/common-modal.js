@@ -42,11 +42,13 @@ define([
                 if (err || !val) {
                     if (opts.access) {
                         data.password = priv.password;
-                        // Access modal and the pad is not stored: we're not an owner
-                        // so we don't need the correct href, just the type
-                        var h = Hash.createRandomHash(priv.app, priv.password);
-                        data.fakeHref = true;
-                        data.href = base + priv.pathname + '#' + h;
+                        // Access modal and the pad is not stored: get the hashes from outer
+                        var hashes = priv.hashes || {};
+                        data.href = Hash.hashToHref(hashes.editHash || hashes.fileHash, priv.app);
+                        if (hashes.viewHash) {
+                            data.roHref = Hash.hashToHref(hashes.viewHash, priv.app);
+                        }
+                        data.isNotStored = true;
                     } else {
                         waitFor.abort();
                         return void cb(err || 'EEMPTY');

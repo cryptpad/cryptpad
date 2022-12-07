@@ -913,14 +913,14 @@ define([
             cleanKeys(update.one);
         }
 
-        if (changes.start && (!type.which || type.which === "all")) {
+        if (changes.start && update && (!type.which || type.which === "all")) {
             var diff = changes.start - ev.start;
             var newOne = {};
             var newFrom = {};
-            Object.keys(update.one).forEach(function (time) {
+            Object.keys(update.one || {}).forEach(function (time) {
                 newOne[Number(time)+diff] = update.one[time];
             });
-            Object.keys(update.from).forEach(function (time) {
+            Object.keys(update.from || {}).forEach(function (time) {
                 newFrom[Number(time)+diff] = update.from[time];
             });
             update.one = newOne;
