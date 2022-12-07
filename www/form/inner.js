@@ -3995,6 +3995,15 @@ define([
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg).appendTo($container);
             var refreshResponse = function () {
+                var text = Messages.form_addMsg;
+                var btn = h('button.btn.btn-secondary.cp-form-response-button', text);
+                $(btn).click(function () {
+                    if (!APP.responseDiv) { APP.getResponseMsgEditor(true); }
+                    $responseMsg.append(APP.responseDiv);
+                    $(btn).hide();
+                }).hide();
+                $responseMsg.append(btn);
+
                 if (content.answers.msg || APP.responseDiv) {
                     if (!APP.responseDiv) { APP.getResponseMsgEditor(); }
                     $responseMsg.append(APP.responseDiv);
@@ -4010,14 +4019,7 @@ define([
                     editor.focus();
                     return;
                 }
-                var text = Messages.form_addMsg;
-                var btn = h('button.btn.btn-secondary.cp-form-response-button', text);
-                $(btn).click(function () {
-                    if (!APP.responseDiv) { APP.getResponseMsgEditor(true); }
-                    $responseMsg.append(APP.responseDiv);
-                    $(btn).hide();
-                });
-                $responseMsg.append(btn);
+                $(btn).show();
             };
             refreshResponse();
         }
