@@ -207,7 +207,6 @@ define([
                         nThen(function (waitFor) {
                             accessKeys.forEach(function (obj) {
                                 Pinpad.create(network, obj, waitFor(function (e) {
-                                    console.log('done', obj);
                                     if (e) { console.error(e); }
                                 }));
                             });
