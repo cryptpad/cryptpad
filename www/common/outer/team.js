@@ -1043,6 +1043,7 @@ define([
                 var member = members[curve];
                 if (!member.inviteChannel) { return; }
                 if (!member.hash) { return; }
+                if (!teamData.hash) { delete member.hash; return; }
                 try {
                     member.hash = Invite.decryptHash(member.hash, teamData.hash);
                 } catch (e) { console.error(e); }

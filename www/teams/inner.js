@@ -834,14 +834,16 @@ define([
             status,
         ];
         if (data.inviteChannel) {
-            var copy = h('span.fa.fa-copy');
-            $(copy).click(function () {
-                var privateData = common.getMetadataMgr().getPrivateData();
-                var origin = privateData.origin;
-                var href = origin + Hash.hashToHref(data.hash, 'teams');
-                var success = Clipboard.copy(href);
-                if (success) { UI.log(Messages.shareSuccess); }
-            }).prependTo(actions);
+            if (data.hash) {
+                var copy = h('span.fa.fa-copy');
+                $(copy).click(function () {
+                    var privateData = common.getMetadataMgr().getPrivateData();
+                    var origin = privateData.origin;
+                    var href = origin + Hash.hashToHref(data.hash, 'teams');
+                    var success = Clipboard.copy(href);
+                    if (success) { UI.log(Messages.shareSuccess); }
+                }).prependTo(actions);
+            }
             content = [
                 avatar,
                 name,
@@ -1380,7 +1382,7 @@ define([
                     Messages._getKey('team_inviteFromMsg',
                     [Util.fixHTML(getDisplayName(json.author.displayName)),
                     Util.fixHTML(json.teamName)])));
-                if (typeof(json.message) === 'string') {
+                if (typeof(json.message) === 'string' && json.message) {
                     var message = h('div.cp-teams-invite-message');
                     json.message.split('\n').forEach(line => {
                         if (line.trim()) {
