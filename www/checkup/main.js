@@ -900,7 +900,7 @@ define([
         'child-src': '',
         'frame-src': '',
         'script-src': '',
-        'connect-src': "This rule restricts which URLs can be loaded by scripts. Overly permissive settings can allow users to be tracking using external resources, while overly restrictive settings may block pages from loading entirely.",
+        'connect-src': " This rule restricts which URLs can be loaded by scripts. Overly permissive settings can allow users to be tracked using external resources, while overly restrictive settings may block pages from loading entirely.",
         'img-src': '',
         'media-src': '',
         'worker-src': '',
