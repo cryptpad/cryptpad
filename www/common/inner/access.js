@@ -102,6 +102,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
                         value: [ed],
                         teamId: teamOwner

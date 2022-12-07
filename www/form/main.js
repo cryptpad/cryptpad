@@ -44,6 +44,7 @@ define([
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_FORM_PIN', function (data) {
                 channels.answersChannel = data.channel;
+                Cryptpad.changeMetadata();
                 Cryptpad.getPadAttribute('answersChannel', function (err, res) {
                     // If already stored, don't pin it again
                     if (res && res === data.channel) { return; }
@@ -214,7 +215,7 @@ define([
                             cb();
                         });
                     };
-                    config.onReady = function (obj) {
+                    config.onReady = function () {
                         var myKey;
                         // If we have submitted an anonymous answer, retrieve it
                         if (myFormKeys.curvePublic && results[myFormKeys.curvePublic]) {

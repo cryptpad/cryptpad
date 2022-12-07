@@ -745,7 +745,7 @@ define([
                     h('span', day)
                 ]));
             });
-            var w = 200 + 105*(opts.values.length || 1); // XXX cells can grow bigger than 100px
+            var w = 200 + 105*(opts.values.length || 1);
             lines.unshift(h('div.cp-poll-time-day-container', {style: 'width:'+w+'px;'}, days));
             setTimeout(function () {
                 var w2 = $('div.cp-form-poll-body').width();
@@ -2653,7 +2653,7 @@ define([
         Object.keys(answers || {}).forEach(function (curve) {
             var all = answers[curve];
             Object.keys(all || {}).forEach(function (uid) {
-                _answers[curve + '|' + uid] = all[uid]
+                _answers[curve + '|' + uid] = all[uid];
             });
         });
         return _answers;
@@ -2669,9 +2669,6 @@ define([
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
-        var metadataMgr = APP.common.getMetadataMgr();
-        var priv = metadataMgr.getPrivateData();
-
 
         var title = framework._.title.title || framework._.title.defaultTitle;
         var titleDiv = h('h1.cp-form-view-title', title);
@@ -2943,6 +2940,7 @@ define([
         return footer;
     };
 
+    var updateForm;
     var showAnsweredPage = function (framework, content, answers) {
         var $formContainer = $('div.cp-form-creator-content').hide();
         var $resContainer = $('div.cp-form-creator-results').hide();
@@ -3067,7 +3065,6 @@ define([
                 h('span.cp-form-submit-time', date),
                 h('span.cp-form-submit-action', action),
                 h('span.cp-form-submit-del', del),
-                answer._isAnon ? h('span', h('i.fa.fa-user-secret')) : undefined // XXX title?
             ]));
         });
 
@@ -3461,7 +3458,7 @@ define([
             reset, send
         ]);
     };
-    var updateForm = function (framework, content, editable, answers, temp) {
+    updateForm = function (framework, content, editable, answers, temp) {
         var $container = $('div.cp-form-creator-content');
         if (!$container.length) { return; } // Not ready
 
@@ -3607,7 +3604,7 @@ define([
         var updateAddInline = APP.updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
             // Add before existing question
-            $container.find('.cp-form-block').each(function (i, el) {
+            $container.find('.cp-form-block:not(.nodrag)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
@@ -3817,7 +3814,9 @@ define([
 
                             $(editButtons).find('.cp-form-preview-button').remove();
 
-                            _answers = getBlockAnswers(APP.answers, uid);
+                            var _ans = parseAnswers(APP.answers);
+                            _answers = getBlockAnswers(_ans, uid);
+
                             data = model.get(block.opts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
@@ -3987,7 +3986,42 @@ define([
             }
         }
 
+        if (APP.responseDiv) { $(APP.responseDiv).detach(); }
         $container.empty().append(_content);
+
+
+// XXX Delete key form_updateMsg
+        if (editable) {
+            var responseMsg = h('div.cp-form-response-msg-container');
+            var $responseMsg = $(responseMsg).appendTo($container);
+            var refreshResponse = function () {
+                if (content.answers.msg || APP.responseDiv) {
+                    if (!APP.responseDiv) { APP.getResponseMsgEditor(); }
+                    $responseMsg.append(APP.responseDiv);
+
+                    if (!temp || !temp.response || !temp.response.cursor) { return; }
+                    var editor = APP.responseEditor;
+                    var c = temp.response.cursor;
+                    var from = c.from;
+                    var to = c.to;
+                    editor.setSelection(from, to);
+                    editor.refresh();
+                    editor.save();
+                    editor.focus();
+                    return;
+                }
+                var text = Messages.form_addMsg;
+                var btn = h('button.btn.btn-secondary.cp-form-response-button', text);
+                $(btn).click(function () {
+                    if (!APP.responseDiv) { APP.getResponseMsgEditor(true); }
+                    $responseMsg.append(APP.responseDiv);
+                    $(btn).hide();
+                });
+                $responseMsg.append(btn);
+            };
+            refreshResponse();
+        }
+
 
         getSections(content).forEach(function (uid) {
             var block = content.form[uid];
@@ -4150,6 +4184,15 @@ define([
                 temp[data.uid] = cursor;
             }
         });
+        if (APP.responseEditor && APP.responseEditor.hasFocus()) {
+            var editor = APP.responseEditor;
+            temp.response = {
+                cursor: {
+                    from: editor.getCursor('from'),
+                    to: editor.getCursor('to'),
+                }
+            };
+        }
         return temp;
     };
 
@@ -4224,6 +4267,7 @@ define([
 
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
+            var resultsStr = h('div');
             var $results = $(resultsType);
             var refreshPublic = function () {
                 $results.empty();
@@ -4232,6 +4276,7 @@ define([
                 if (content.answers.privateKey) { makePublicDiv = undefined; }
                 var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
                 $results.append(h('span.cp-form-results-type', publicText));
+                $(resultsStr).text(publicText);
                 $results.append(makePublicDiv);
                 var $makePublic = $(makePublic).click(function () {
                     UI.confirm(Messages.form_makePublicWarning, function (yes) {
@@ -4249,92 +4294,26 @@ define([
             };
             refreshPublic();
 
-            var responseMsg = h('div.cp-form-response-msg-container');
-            var $responseMsg = $(responseMsg);
-            var refreshResponse = function () {
-                $responseMsg.empty();
-                var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
-                var btn = h('button.btn.btn-secondary', text);
-                $(btn).click(function () {
-                    var editor;
-                    if (!APP.responseModal) {
-                        var t = h('textarea');
-                        var p = h('p', Messages.form_responseMsg);
-                        var div = h('div', [
-                            p,
-                            h('div.cp-form-response-modal', t),
-                        ]);
-                        var cm = window.my_cm = SFCodeMirror.create("gfm", CMeditor, t);
-                        editor = APP.responseEditor = cm.editor;
-                        var markdownTb = APP.common.createMarkdownToolbar(editor, {
-                            embed: function (mt) {
-                                editor.focus();
-                                editor.replaceSelection($(mt)[0].outerHTML);
-                            }
-                        });
-                        $(markdownTb.toolbar).insertAfter($(p));
-                        $(markdownTb.toolbar).show();
-
-                        cm.configureTheme(APP.common, function () {});
-                        editor.setOption('lineNumbers', true);
-                        editor.setOption('lineWrapping', true);
-                        editor.setOption('styleActiveLine', true);
-                        editor.setOption('readOnly', false);
-                        setTimeout(function () {
-                            editor.setValue(content.answers.msg || '');
-                            editor.refresh();
-                            editor.save();
-                            editor.focus();
-                        });
-
-                        var buttons = [{
-                            className: 'cancel',
-                            name: Messages.cancel,
-                            onClick: function () {},
-                            keys: [27]
-                        },
-                        {
-                            className: 'primary',
-                            name: Messages.settings_save,
-                            onClick: function () {
-                                var v = editor.getValue();
-                                content.answers.msg = v.slice(0, 2000); // XXX 4.11.0 max length?
-                                framework.localChange();
-                                framework._.cpNfInner.chainpad.onSettle(function () {
-                                    UI.log(Messages.saved);
-                                    refreshResponse();
-                                });
-                            },
-                            //keys: []
-                        }];
-                        APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
-                    } else {
-                        editor = APP.responseEditor;
-                        setTimeout(function () {
-                            editor.setValue(content.answers.msg || '');
-                            editor.refresh();
-                            editor.save();
-                            editor.focus();
-                        });
-                    }
-                    UI.openCustomModal(APP.responseModal);
-                });
-                $responseMsg.append(btn);
-            };
-            refreshResponse();
+            Messages.form_anonymized = "Responses are anonymized"; // XXX
 
             // Make answers anonymous
             var anonContainer = h('div.cp-form-anon-container');
+            var anonStr = h('div');
             var $anon = $(anonContainer);
+            var $anonStr = $(anonStr);
             var refreshAnon = function () {
                 $anon.empty();
                 var anonymous = content.answers.makeAnonymous;
+                if (anonymous) { $anonStr.text(Messages.form_anonymized); }
+                else { $anonStr.text(''); }
                 var cbox = UI.createCheckbox('cp-form-make-anon',
                            Messages.form_makeAnon, anonymous, {});
                 var radioContainer = h('div.cp-form-anon-radio', [cbox]);
                 var $r = $(radioContainer).find('input').on('change', function() {
                     var val = Util.isChecked($r);
                     content.answers.makeAnonymous = val;
+                    if (val) { $anonStr.text(Messages.form_anonymized); }
+                    else { $anonStr.text(''); }
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
@@ -4344,11 +4323,13 @@ define([
             };
             refreshAnon();
 
-            Messages.form_allowNotifications = "Receive notifications on new messages"; // XXX
+            Messages.form_allowNotifications = "Notifications for new responses"; // XXX
 
             // Mute form responses
             var notifContainer = h('div.cp-form-anon-container');
+            var notifStr = h('div');
             var $notif = $(notifContainer);
+            var $notifStr = $(notifStr);
             var refreshNotif = function () {
                 $notif.empty();
                 if (!APP.common.isLoggedIn()) { return; }
@@ -4357,6 +4338,9 @@ define([
                 var isMuted = priv.isChannelMuted;
                 var cbox = UI.createCheckbox('cp-form-muted',
                            Messages.form_allowNotifications, !isMuted, {});
+
+                if (!isMuted) { $notifStr.text(Messages.form_allowNotifications); }
+                else { $notifStr.text(''); }
                 var radioContainer = h('div.cp-form-mute-radio', [cbox]);
                 var $r = $(radioContainer).find('input').on('change', function() {
                     var val = Util.isChecked($r);
@@ -4366,6 +4350,8 @@ define([
                         err = err || (res && res.error);
                         if (err) { return void UI.warn(Messages.error); }
                         UI.log(Messages.saved);
+                        if (val) { $notifStr.text(Messages.form_allowNotifications); }
+                        else { $notifStr.text(''); }
                     });
                 });
                 $anon.append(h('div.cp-form-actions', radioContainer));
@@ -4374,9 +4360,20 @@ define([
 
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
+            var privacyStr = h('div');
             var $privacy = $(privacyContainer);
+            var $privacyStr = $(privacyStr);
             var refreshPrivacy = function () {
                 $privacy.empty();
+
+                var updateStr = function (val) {
+                    $privacyStr.empty().append([
+                        h('span', Messages.form_anonymous),
+                        h('br'),
+                        h('span', Messages['form_anonymous_'+ (val ? 'on' : 'off')])
+                    ]);
+                };
+
                 var anonymous = content.answers.anonymous;
                 var radioOn = UI.createRadio('cp-form-privacy', 'cp-form-privacy-on',
                         Messages.form_anonymous_on, Boolean(anonymous), {
@@ -4387,6 +4384,7 @@ define([
                             input: { value: 0 },
                         });
                 var radioContainer = h('div.cp-form-privacy-radio', [radioOn, radioOff]);
+                updateStr(anonymous);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
                     var val = $('input:radio[name="cp-form-privacy"]:checked').val();
                     val = Number(val) || 0;
@@ -4394,6 +4392,7 @@ define([
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
+                        updateStr(val);
                     });
                 });
                 $privacy.append(h('div.cp-form-status', Messages.form_anonymous));
@@ -4403,16 +4402,34 @@ define([
 
             // Allow responses edition
             var editableContainer = h('div.cp-form-editable-container');
+            var editableStr = h('div');
             var $editable = $(editableContainer);
+            var $editableStr = $(editableStr);
             var refreshEditable = function () {
                 $editable.empty();
 
                 var canDelete = content.answers.version >= 2;
+
+                Messages.form_editable_str = "Submission:"; // XXX delete old key "form_editable"?
+
                 Messages.form_editable_off = "One time only"; // XXX
                 Messages.form_editable_on = "One time and edit"; // XXX
                 Messages.form_editable_on_del = "One time and edit/delete"; // XXX
                 Messages.form_multiple = "Multiple times"; // XXX
                 Messages.form_multiple_edit = "Multiple times and edit/delete"; // XXX
+
+                var updateStr = function (edit, mult) {
+                    var key = '';
+                    if (!edit && !mult) { key = 'editable_off'; }
+                    if (edit && !mult) { key = 'editable_on_del'; }
+                    if (!edit && mult) { key = 'multiple'; }
+                    if (edit && mult) { key = 'multiple_edit'; }
+                    $editableStr.empty().append([
+                        h('span', Messages.form_editable_str),
+                        h('br'),
+                        h('span', Messages['form_'+key])
+                    ]);
+                };
 
                 var editable = !content.answers.cantEdit;
                 var mult = !!content.answers.multiple;
@@ -4436,6 +4453,7 @@ define([
                             input: { value: 3 },
                         });
                 var radioContainer = h('div.cp-form-editable-radio', [radioOn, radioOff, radioMult, radioMultEdit]);
+                updateStr(editable, mult);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
                     var val = $('input:radio[name="cp-form-editable"]:checked').val();
                     val = Number(val) || 0;
@@ -4443,29 +4461,38 @@ define([
                     content.answers.cantEdit = val === 0 || val === 2;
                     content.answers.multiple = val === 2 || val === 3;
                     if (canDelete) {
-                        sframeChan.query('Q_SET_PAD_METADATA', {
-                            channel: content.answers.channel,
-                            command: 'ALLOW_LINE_DELETION',
-                            value: [Boolean(val)],
-                            //teamId: teamOwner // XXX TODO
-                        }, function (err, res) {
-                            err = err || (res && res.error);
-                            if (err) { console.error(err); }
+                        APP.common.getPadMetadata({channel: content.answers.channel}, function (md) {
+                            var owners = md.owners;
+                            if (!Array.isArray(owners) || !owners.length) { return; }
+                            var owned = APP.common.isOwned(owners);
+                            if (!owned) { return; }
+                            sframeChan.query('Q_SET_PAD_METADATA', {
+                                channel: content.answers.channel,
+                                command: 'ALLOW_LINE_DELETION',
+                                value: [val === 1 || val === 3],
+                                teamId: owned !== true && Number(owned)
+                            }, function (err, res) {
+                                err = err || (res && res.error);
+                                if (err) { console.error(err); }
+                            });
                         });
                     }
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
+                        updateStr(!content.answers.cantEdit, content.answers.multiple);
                     });
                 });
-                $editable.append(h('div.cp-form-status', Messages.form_editable));
+                $editable.append(h('div.cp-form-status', Messages.form_editable_str));
                 $editable.append(h('div.cp-form-actions', radioContainer));
             };
             refreshEditable();
 
             // End date / Closed state
             var endDateContainer = h('div.cp-form-status-container');
+            var endDateStr = h('div');
             var $endDate = $(endDateContainer);
+            var $endDateStr = $(endDateStr);
             var refreshEndDate = function () {
                 $endDate.empty();
 
@@ -4481,6 +4508,8 @@ define([
                     text = Messages._getKey('form_willClose', [date]);
                     buttonTxt = Messages.form_removeEnd;
                 }
+
+                $endDateStr.text(text);
 
                 var button = h('button.btn.btn-secondary', buttonTxt);
 
@@ -4586,17 +4615,49 @@ define([
             evOnChange.reg(refreshEditable);
             evOnChange.reg(refreshEndDate);
             evOnChange.reg(refreshColorTheme);
-            //evOnChange.reg(refreshResponse);
 
-            return [
-                preview,
+            Messages.form_settingsButton = "Form settings"; // XXX
+
+            var modal = UI.createModal({
+                id: 'cp-form-settings',
+                $body: $('body')
+            });
+            var $modal = modal.$modal;
+            $modal.find('.cp-modal').append([
+                h('h2', [
+                    h('i.fa.fa-wrench'),
+                    h('span', Messages.form_settingsButton)
+                ]),
                 endDateContainer,
                 anonContainer,
                 notifContainer,
                 privacyContainer,
                 editableContainer,
                 resultsType,
-                responseMsg,
+            ]);
+            var modalBtn = h('button.btn.btn-secondary', [
+                h('i.fa.fa-wrench'),
+                h('span', Messages.form_settingsButton)
+            ]);
+            $(modalBtn).click(function () {
+                setTimeout(function () {
+                    modal.show();
+                });
+            });
+
+            var previewSettings = h('div.cp-form-settings-preview', [
+                modalBtn,
+                endDateStr,
+                anonStr,
+                notifStr,
+                privacyStr,
+                editableStr,
+                resultsStr
+            ]);
+
+            return [
+                preview,
+                previewSettings,
                 colorTheme
             ];
         };
@@ -4960,6 +5021,138 @@ define([
 
             getMyAnswers();
 
+        });
+
+        APP.getResponseMsgEditor = function (focus) {
+            var t = h('textarea');
+            var p = h('p', Messages.form_responseMsg);
+
+            var preview = h('button.btn.btn-default.cp-form-preview-button',[
+                h('i.fa.fa-eye'),
+                h('span', Messages.form_preview_button)
+            ]);
+            var edit = h('button.btn.btn-default.cp-form-edit-button', [
+                h('i.fa.fa-pencil'),
+                h('span', Messages.form_editBlock)
+            ]);
+            var del = h('button.btn.btn-danger-alt', [
+                h('i.fa.fa-trash-o'),
+                h('span', Messages.form_delete)
+            ]);
+            var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
+
+            var editDiv, previewDiv;
+            var div = h('div.cp-form-block.editable.nodrag', [
+                h('div.cp-form-block-content', [
+                    p,
+                    editDiv = h('div.cp-form-response-modal', t),
+                    previewDiv = h('div.cp-form-response-preview#cp-response-preview'),
+                    editButtons
+                ]),
+            ]);
+            var cm = APP.responseCM = SFCodeMirror.create("gfm", CMeditor, t);
+            var editor = APP.responseEditor = cm.editor;
+
+            var markdownTb = APP.common.createMarkdownToolbar(editor, {
+                embed: function (mt) {
+                    editor.focus();
+                    editor.replaceSelection($(mt)[0].outerHTML);
+                }
+            });
+            var $tb = $(markdownTb.toolbar).insertAfter($(p));
+
+            var $edit = $(editDiv);
+            var $preview = $(previewDiv);
+            var $p = $(preview);
+            var $e = $(edit);
+            var previewState = true;
+
+            var updatePreview = function () {
+                if (!previewState) { return; }
+                DiffMd.apply(DiffMd.render(content.answers.msg), $preview, APP.common);
+                $preview.find('a').click(linkClickHandler);
+            };
+
+            $e.click(function () {
+                previewState = false;
+                $p.show();
+                $e.hide();
+                $edit.show();
+                $preview.hide();
+                editor.refresh();
+                $tb.show();
+            });
+            APP.$e = $e;
+            APP.$p = $p;
+            $p.click(function () {
+                previewState = true;
+                updatePreview();
+
+                $e.show();
+                $p.hide();
+                $edit.hide();
+                $preview.show();
+                $tb.hide();
+            });
+            if (focus) { $e.click(); }
+            else { $p.click(); }
+
+
+            $(del).click(function () {
+                content.answers.msg = '';
+                editor.setValue('');
+                framework.localChange();
+                $(APP.responseDiv).detach();
+                $('.cp-form-response-button').show();
+            });
+
+            cm.configureTheme(APP.common, function () {});
+            editor.setOption('lineNumbers', true);
+            editor.setOption('lineWrapping', true);
+            editor.setOption('styleActiveLine', true);
+            editor.setOption('readOnly', false);
+            setTimeout(function () {
+                editor.setValue(content.answers.msg || '');
+                editor.refresh();
+                editor.save();
+                if (!focus) { return; }
+                editor.focus();
+            });
+            APP.responseDiv = div;
+
+            editor.on('change', function () {
+                content.answers.msg = editor.getValue();
+                framework.localChange();
+            });
+            evOnChange.reg(function () {
+                if (!APP.responseCM) { return; }
+                APP.responseCM.contentUpdate({content: content.answers.msg});
+                framework.localChange();
+                updatePreview();
+            });
+        };
+
+        // Disable flatpickr click propagation
+        var MutationObserver = window.MutationObserver;
+        var onFlatPickr = function (el) {
+            $(el).on('mousedown mouseup click', function (e) {
+                e.stopPropagation();
+            });
+        };
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                var node;
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    node = mutation.addedNodes[i];
+                    if (node.classList && node.classList.contains('flatpickr-calendar')) {
+                        onFlatPickr(node);
+                    }
+                }
+            });
+        });
+        observer.observe($('body')[0], {
+            childList: true,
+            subtree: false
         });
 
         // Only redraw once every 500ms on remote change.

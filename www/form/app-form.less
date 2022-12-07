@@ -193,28 +193,20 @@
                         display: flex;
                         justify-content: space-between;
                         flex-wrap: wrap;
+                        .cp-form-settings-preview {
+                            min-width: 260px;
+                            margin-right: 20px;
+                        }
+                        .cp-form-color-theme-container {
+                            max-width: 300px;
+                        }
                         & > div {
-                            flex-basis: 33.333333%;
+                            flex: 1;
                             padding-right: 20px;
                         }
                     }
                 }
             }
-            @media screen and (max-width: 600px) and (min-width: 400px) {
-                .cp-form-creator-settings {
-                    & > div {
-                        flex-basis: 50% !important;
-                    }
-                }
-            }
-            @media screen and (max-width: 400px) {
-                .cp-form-creator-settings {
-                    & > div {
-                        flex-basis: 100% !important;
-                    }
-                }
-            }
-
             .cp-form-creator-settings {
                 .cp-form-actions {
                     margin-top: 5px;
@@ -227,6 +219,15 @@
                     flex-flow: column;
                     button {
                         margin-bottom: 20px;
+                    }
+                }
+
+                div.cp-form-settings-preview {
+                    background: @cp_form-bg1;
+                    padding: 10px;
+                    border-radius: @variables_radius_L;
+                    & > *:not(:last-child) {
+                        margin-bottom: 10px;
                     }
                 }
 
@@ -667,7 +668,7 @@
                         }
                     }
                     &.editable {
-                        cursor: grab;
+                       &:not(.nodrag) { cursor: grab; }
                         .cp-form-edit-save {
                             margin-top: 20px;
                             button {
@@ -1221,6 +1222,31 @@
         .CodeMirror {
             border: 1px solid @cp_forms-border;
         }
+    }
+
+    #cp-form-settings {
+        .cp-modal {
+            text-align: left;
+            width: 500px;
+            padding: 24px;
+            h2 {
+                font-size: 20px;
+                line-height: 40px;
+                margin-top: -12px;
+                i {
+                    margin-right: 5px;
+                }
+            }
+            & > *:not(h2) {
+                color: @cryptpad_text_col;
+            }
+            & > div:not(:last-child) {
+                margin-bottom: 10px;
+            }
+        }
+    }
+    & > .flatpickr-calendar {
+        z-index: 100001;
     }
 
     .charts_main();
