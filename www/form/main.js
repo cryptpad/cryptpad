@@ -265,7 +265,7 @@ define([
                     Cryptpad.getFormKeys(w(function (keys) {
                         myKeys = keys;
                     }));
-                    Cryptpad.getFormAnswer({channel: data.channel}, false, w(function (obj) {
+                    Cryptpad.getFormAnswer({channel: data.channel}, w(function (obj) {
                         if (!obj || obj.error) {
                             if (obj && obj.error === "ENODRIVE") {
                                 var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
@@ -354,11 +354,6 @@ define([
                         // We can create a seed in localStorage.
                         if (!keys.formSeed) {
                             // No drive mode
-                            var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
-                            if(answered.indexOf(data.channel) !== -1) {
-                                // Already answered: abort
-                                return void cb({ error: "EANSWERED" });
-                            }
                             keys = { formSeed: noDriveSeed };
                         }
                         myKeys = keys;

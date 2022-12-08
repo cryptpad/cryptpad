@@ -3218,7 +3218,8 @@ define([
                 $(anonOffContent).append(h('span.cp-form-anon-answer-input', [
                     Messages.form_answerAs,
                     h('input', {
-                        value: user.name || '',
+                        value: (typeof(APP.cantAnon) === "string" && APP.cantAnon)
+                                || user.name || '',
                         placeholder: Messages.form_anonName
                     })
                 ]));
@@ -3227,7 +3228,8 @@ define([
                 $anonName.on('click input', function () {
                     if (!Util.isChecked($off)) { $off.prop('checked', true); }
                 });
-            } else if (APP.cantAnon) {
+            }
+            if (APP.cantAnon) {
                 // You've already answered with your credentials
                 $(anonRadioOn).find('input').attr('disabled', 'disabled');
                 $(anonRadioOff).find('input[type="radio"]').prop('checked', true);
@@ -4143,13 +4145,17 @@ define([
             });
         }
 
+        var loggedIn = framework._.sfCommon.isLoggedIn();
+
         // In view mode, add "Submit" and "reset" buttons
         APP.cantAnon = Object.keys(answers || {}).length && !answers._isAnon;
+        if (!loggedIn && answers && answers._userdata && answers._userdata.name) {
+            APP.cantAnon = answers._userdata.name;
+        }
         $container.append(makeFormControls(framework, content, evOnChange));
 
         // In view mode, tell the user if answers are forced to be anonymous or authenticated
         var infoTxt;
-        var loggedIn = framework._.sfCommon.isLoggedIn();
         if (content.answers.makeAnonymous) {
             infoTxt = Messages.form_anonAnswer;
         } else if (!content.answers.anonymous && loggedIn && !content.answers.cantEdit) {

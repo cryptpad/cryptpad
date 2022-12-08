@@ -2162,8 +2162,8 @@ define([
         };
 
         Store.deleteMailboxMessage = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.deleteMailboxMessage(data, function (e) {
+            if (!store.anon_rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            store.anon_rpc.send('DELETE_MAILBOX_MESSAGE', data, function (e) {
                 cb({error:e});
             });
         };
@@ -2961,6 +2961,9 @@ define([
                 }
                 if (!rt.proxy.uid && store.noDriveUid) {
                     rt.proxy.uid = store.noDriveUid;
+                }
+                if (!rt.proxy.form_seed && data.form_seed) {
+                    rt.proxy.form_seed = data.form_seed;
                 }
                 /*
                 // deprecating localStorage migration as of 4.2.0
