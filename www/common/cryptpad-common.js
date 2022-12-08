@@ -227,6 +227,7 @@ define([
             }).nThen;
             var toDelete = [];
             obj.forEach(function (answer) {
+                if (answer.uid !== data.uid) { return; }
                 n = n(function (waitFor) {
                     var hash = answer.hash;
                     var h = nacl.util.decodeUTF8(hash);

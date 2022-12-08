@@ -3050,7 +3050,7 @@ define([
                     var sframeChan = framework._.sfCommon.getSframeChannel();
                     sframeChan.query("Q_FORM_DELETE_ANSWER", {
                         channel: content.answers.channel,
-                        hash: answers._hash
+                        uid: uid
                     }, function (err, obj) {
                         if (obj && obj.error) {
                             console.error(obj.error);
