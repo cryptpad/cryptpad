@@ -2890,15 +2890,22 @@ define([
     };
 
     var addResultsButton = function (framework, content, answers) {
+        var sframeChan = framework._.sfCommon.getSframeChannel();
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
         var $res = $(h('button.btn.btn-default.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
+        var it = setInterval(function () {
+            sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                var answers = obj && obj.results;
+                var l = getAnswersLength(answers);
+                $res.find('span.cp-button-name').text(Messages._getKey('form_results', [l]));
+            });
+        }, 30000);
         $res.click(function () {
             $res.attr('disabled', 'disabled');
-            var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                 var answers = obj && obj.results;
                 if (answers) { APP.answers = answers; }
@@ -2906,6 +2913,7 @@ define([
                 $('body').addClass('cp-app-form-results');
                 renderResults(content, answers);
                 $res.remove();
+                clearInterval(it);
                 var $editor = $(h('button.btn.btn-default', [
                     h('i.fa.fa-pencil'),
                     h('span.cp-button-name', Messages.form_editor)
