@@ -675,7 +675,7 @@
     "support_cat_tickets": "Tickets existants",
     "support_listTitle": "Tickets de support",
     "support_answer": "Répondre",
-    "support_close": "Fermer le ticket",
+    "support_close": "Clore le ticket",
     "support_remove": "Supprimer le ticket",
     "support_showData": "Afficher/cacher les données de l'utilisateur",
     "support_from": "<b>De :</b> {0}",
