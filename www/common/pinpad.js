@@ -249,16 +249,6 @@ var factory = function (Util, Rpc) {
                 }, cb);
             };
 
-            exp.deleteMailboxMessage = function (obj, cb) {
-                rpc.send('DELETE_MAILBOX_MESSAGE', {
-                    channel: obj.channel,
-                    hash: obj.hash,
-                    proof: obj.proof
-                }, cb);
-            };
-
-
-
             cb(e, exp);
         });
     };

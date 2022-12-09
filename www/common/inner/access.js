@@ -102,6 +102,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
                         value: [ed],
                         teamId: teamOwner
@@ -335,11 +336,6 @@ define([
                 }
             }).nThen(function (waitFor) {
                 var href = data.href;
-                var hashes = priv.hashes || {};
-                var bestHash = hashes.editHash || hashes.viewHash || hashes.fileHash;
-                if (data.fakeHref) {
-                    href = Hash.hashToHref(bestHash, priv.app);
-                }
                 sel.forEach(function (el) {
                     var curve = $(el).attr('data-curve');
                     if (curve === user.curvePublic) { return; }
@@ -928,12 +924,7 @@ define([
                         }
 
                         var href = data.href;
-                        var hashes = priv.hashes || {};
-                        var bestHash = hashes.editHash || hashes.viewHash || hashes.fileHash;
-                        if (data.fakeHref) {
-                            href = Hash.hashToHref(bestHash, priv.app);
-                        }
-                        var isNotStored = Boolean(data.fakeHref);
+                        var isNotStored = Boolean(data.isNotStored);
                         sframeChan.query(q, {
                             teamId: typeof(owned) !== "boolean" ? owned : undefined,
                             href: href,
@@ -1055,7 +1046,7 @@ define([
             var owned = Modal.isOwned(Env, data);
 
             // Request edit access
-            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref) && !owned && !opts.calendar && priv.app !== 'form') {
+            if (common.isLoggedIn() && data.roHref && !owned && !opts.calendar && priv.app !== 'form') {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);

@@ -44,6 +44,7 @@ define([
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_FORM_PIN', function (data) {
                 channels.answersChannel = data.channel;
+                Cryptpad.changeMetadata();
                 Cryptpad.getPadAttribute('answersChannel', function (err, res) {
                     // If already stored, don't pin it again
                     if (res && res === data.channel) { return; }
@@ -206,7 +207,6 @@ define([
                         nThen(function (waitFor) {
                             accessKeys.forEach(function (obj) {
                                 Pinpad.create(network, obj, waitFor(function (e) {
-                                    console.log('done', obj);
                                     if (e) { console.error(e); }
                                 }));
                             });
@@ -214,7 +214,7 @@ define([
                             cb();
                         });
                     };
-                    config.onReady = function (obj) {
+                    config.onReady = function () {
                         var myKey;
                         // If we have submitted an anonymous answer, retrieve it
                         if (myFormKeys.curvePublic && results[myFormKeys.curvePublic]) {
@@ -265,7 +265,7 @@ define([
                     Cryptpad.getFormKeys(w(function (keys) {
                         myKeys = keys;
                     }));
-                    Cryptpad.getFormAnswer({channel: data.channel}, false, w(function (obj) {
+                    Cryptpad.getFormAnswer({channel: data.channel}, w(function (obj) {
                         if (!obj || obj.error) {
                             if (obj && obj.error === "ENODRIVE") {
                                 var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
@@ -354,11 +354,6 @@ define([
                         // We can create a seed in localStorage.
                         if (!keys.formSeed) {
                             // No drive mode
-                            var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
-                            if(answered.indexOf(data.channel) !== -1) {
-                                // Already answered: abort
-                                return void cb({ error: "EANSWERED" });
-                            }
                             keys = { formSeed: noDriveSeed };
                         }
                         myKeys = keys;

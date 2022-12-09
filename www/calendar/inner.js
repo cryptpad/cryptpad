@@ -124,7 +124,6 @@ define([
     };
 
     var getDateLanguage = function () {
-        console.error(Messages._languageUsed);
         try {
             new Date().toLocaleDateString(Messages._languageUsed, { weekday: 'long' });
             return Messages._languageUsed;

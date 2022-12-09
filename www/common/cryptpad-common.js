@@ -125,6 +125,12 @@ define([
                 formSeed = obj;
             }));
         }).nThen(function () {
+            if (!formSeed) { // no drive mode
+                formSeed = localStorage.CP_formSeed || Hash.createChannelId();
+                localStorage.CP_formSeed = formSeed;
+            } else {
+                delete localStorage.CP_formSeed;
+            }
             cb({
                 curvePrivate: curvePrivate,
                 curvePublic: curvePrivate && Hash.getCurvePublicFromPrivate(curvePrivate),
@@ -132,16 +138,39 @@ define([
             });
         });
     };
-    common.getFormAnswer = function (data, onlyLast, cb) {
+    common.getFormAnswer = function (data, cb) {
         postMessage("GET", {
             key: ['forms', data.channel],
         }, function (obj) {
-            if (!obj || obj.error) { return void cb(obj); }
-            if (!Array.isArray(obj)) { obj = [obj]; }
+            if (obj && obj.error === "ENODRIVE") {
+                var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
+                return void cb(all[data.channel]);
+            }
+            if (obj && obj.error) { return void cb(obj); }
 
-            var last = obj[obj.length - 1];
-            if (onlyLast) { return void cb(last); }
-            return void cb(obj);
+            if (obj) {
+                if (!Array.isArray(obj)) { obj = [obj]; }
+                return void cb(obj);
+            }
+
+            // We have a drive and no answer but maybe we had
+            // previous "nodrive" answers: migrate
+            var old = Util.tryParse(localStorage.CP_formAnswers || "{}");
+            if (Array.isArray(old[data.channel])) {
+                var d = old[data.channel];
+                return void postMessage("SET", {
+                    key: ['forms', data.channel],
+                    value: d
+                }, function (obj) {
+                    // Delete old data if it was correctly stored in the drive
+                    if (obj && obj.error) { return void cb(d); }
+                    delete old[data.channel];
+                    localStorage.CP_formAnswers = JSON.stringify(old);
+                    cb(d);
+                });
+            }
+
+            cb();
         });
     };
     common.storeFormAnswer = function (data, cb) {
@@ -153,7 +182,7 @@ define([
         };
         var answers = [];
         Nthen(function (waitFor) {
-            common.getFormAnswer(data, false, waitFor(function (obj) {
+            common.getFormAnswer(data, waitFor(function (obj) {
                 if (!obj || obj.error) { return; }
                 answers = obj;
             }));
@@ -165,9 +194,15 @@ define([
             }, function (obj) {
                 if (obj && obj.error) {
                     if (obj.error === "ENODRIVE") {
+                        var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
+                        all[data.channel] = answers;
+                        localStorage.CP_formAnswers = JSON.stringify(all);
+/*
+
                         var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
                         if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
                         localStorage.CP_formAnswered = JSON.stringify(answered);
+*/
                         return void cb();
                     }
                     console.error(obj.error);
@@ -178,7 +213,7 @@ define([
     };
     common.deleteFormAnswers = function (data, _cb) {
         var cb = Util.once(_cb);
-        common.getFormAnswer(data, false, function (obj) {
+        common.getFormAnswer(data, function (obj) {
             if (!obj || obj.error) { return void cb(); }
             if (!obj.length) { return void cb(); }
             var n = Nthen;
@@ -192,6 +227,7 @@ define([
             }).nThen;
             var toDelete = [];
             obj.forEach(function (answer) {
+                if (answer.uid !== data.uid) { return; }
                 n = n(function (waitFor) {
                     var hash = answer.hash;
                     var h = nacl.util.decodeUTF8(hash);
@@ -224,7 +260,16 @@ define([
                 postMessage("SET", {
                     key: ['forms', data.channel],
                     value: obj
-                }, cb);
+                }, function (_obj) {
+                    if (_obj && _obj.error === "ENODRIVE") {
+                        var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
+                        if (obj) { all[data.channel] = obj; }
+                        else { delete all[data.channel]; }
+                        localStorage.CP_formAnswers = JSON.stringify(all);
+                        return void cb();
+                    }
+                    return void cb(_obj);
+                });
             });
         });
     };
@@ -2480,6 +2525,7 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
+                form_seed: localStorage.CP_formSeed,
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
