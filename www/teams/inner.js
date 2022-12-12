@@ -717,10 +717,10 @@ define([
             }, ' ' + Messages.team_pendingOwner));
         }
         if (data.pending && data.inviteChannel && data.remaining === -1) { // Invite link
-            Messages.team_linkUsesInfinite = "(infinite uses)"; // XXX
+            Messages.team_linkUsesInfinite = "(infinite uses)"; // XXX DB done
             $(name).append(h('em', ' ' + Messages.team_linkUsesInfinite));
         } else if (data.pending && data.inviteChannel) {
-            Messages.team_linkUses = "({0}/{1} remaining)"; // XXX
+            Messages.team_linkUses = "({0}/{1} remaining)"; // XXX DB done
             $(name).append(h('em', ' ' + Messages._getKey('team_linkUses', [
                 data.remaining || 1,
                 data.totalUses || 1
