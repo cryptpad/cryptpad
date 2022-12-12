@@ -229,6 +229,9 @@
                     & > *:not(:last-child) {
                         margin-bottom: 10px;
                     }
+                    .cp-form-setting-title {
+                        color: @cryptpad_color_link;
+                    }
                 }
 
                 .cp-form-color-container {
@@ -251,12 +254,6 @@
                             cursor: pointer;
                         }
                     }
-                }
-
-                .cp-form-response-msg-container button {
-                    white-space: initial;
-                    line-height: 25px;
-                    padding: 5.5px 6px;
                 }
             }
             div.cp-form-filler-container {
@@ -406,7 +403,7 @@
                     display: flex;
                     flex-flow: column;
                     margin: 20px 0px 0px 0px;
-                    padding-bottom: 100px;
+                    padding-bottom: 75px;
                     &> div:first-child {
                         display: flex;
                         height: 100%;
@@ -449,6 +446,17 @@
                                 margin-right: 50px;
                             }
                         }
+                    }
+                }
+                .cp-form-response-msg-container {
+                    padding-bottom: 75px;
+                    button {
+                        white-space: initial;
+                        line-height: 25px;
+                        padding: 5.5px 6px;
+                    }
+                    .cp-form-response-msg-hint {
+                        color: @cryptpad_color_link;
                     }
                 }
 
@@ -1247,6 +1255,9 @@
             }
             & > div:not(:last-child) {
                 margin-bottom: 10px;
+            }
+            .cp-form-setting-title {
+                color: @cryptpad_color_link;
             }
         }
     }

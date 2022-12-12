@@ -2646,7 +2646,7 @@ define([
         );
     };
 
-    Messages.form_deleteAll = "Delete all"; // XXX
+    Messages.form_deleteAll = "Delete all"; // XXX DB done
 
     var parseAnswers = function (answers) {
         var _answers = {};
@@ -2707,7 +2707,7 @@ define([
         });
 
         // Export JSON
-        Messages.form_exportJSON = "Export as JSON"; // XXX
+        Messages.form_exportJSON = "Export as JSON"; // XXX DB done
         var exportJSONButton = h('button.btn.btn-primary', [
             h('i.cptools.cptools-code'),
             Messages.form_exportJSON
@@ -2990,7 +2990,7 @@ define([
             });
         }
 
-        Messages.form_answer_new = "New responses"; // XXX
+        Messages.form_answer_new = "New responses"; // XXX DB done
         var newAnswer;
         if (content.answers.multiple) {
             newAnswer = h('button.btn.btn-primary', [
@@ -3078,7 +3078,7 @@ define([
 
         var table = h('div.cp-form-submit-table', entries);
 
-        Messages.form_alreadyAnsweredMult = "You responded to this form on:";
+        Messages.form_alreadyAnsweredMult = "You responded to this form on:"; // XXX DB done
 
         var title = framework._.title.title || framework._.title.defaultTitle;
 
@@ -4339,7 +4339,7 @@ define([
             };
             refreshAnon();
 
-            Messages.form_allowNotifications = "Notifications for new responses"; // XXX
+            Messages.form_allowNotifications = "Receive notifications on new messages"; // XXX DB done
 
             // Mute form responses
             var notifContainer = h('div.cp-form-anon-container');
@@ -4386,7 +4386,7 @@ define([
 
                 var updateStr = function (val) {
                     $privacyStr.empty().append([
-                        h('span', Messages.form_anonymous),
+                        h('span.cp-form-setting-title', Messages.form_anonymous),
                         h('br'),
                         h('span', Messages['form_anonymous_'+ (val ? 'on' : 'off')])
                     ]);
@@ -4413,7 +4413,7 @@ define([
                         updateStr(val);
                     });
                 });
-                $privacy.append(h('div.cp-form-status', Messages.form_anonymous));
+                $privacy.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_anonymous));
                 $privacy.append(h('div.cp-form-actions', radioContainer));
             };
             refreshPrivacy();
@@ -4431,6 +4431,7 @@ define([
                 Messages.form_editable_str = "Submission:"; // XXX delete old key "form_editable"?
 
                 Messages.form_editable_off = "One time only"; // XXX
+                Messages.form_editable_off = "One time only"; // XXX DB done this block
                 Messages.form_editable_on = "One time and edit"; // XXX
                 Messages.form_editable_on_del = "One time and edit/delete"; // XXX
                 Messages.form_multiple = "Multiple times"; // XXX
@@ -4443,7 +4444,7 @@ define([
                     if (!edit && mult) { key = 'multiple'; }
                     if (edit && mult) { key = 'multiple_edit'; }
                     $editableStr.empty().append([
-                        h('span', Messages.form_editable_str),
+                        h('span.cp-form-setting-title', Messages.form_editable_str),
                         h('br'),
                         h('span', Messages['form_'+key])
                     ]);
@@ -4501,7 +4502,7 @@ define([
                         updateStr(!content.answers.cantEdit, content.answers.multiple);
                     });
                 });
-                $editable.append(h('div.cp-form-status', Messages.form_editable_str));
+                $editable.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_editable_str));
                 $editable.append(h('div.cp-form-actions', radioContainer));
             };
             refreshEditable();
@@ -4649,9 +4650,9 @@ define([
                 endDateContainer,
                 anonContainer,
                 notifContainer,
+                resultsType,
                 privacyContainer,
                 editableContainer,
-                resultsType,
             ]);
             var modalBtn = h('button.btn.btn-secondary', [
                 h('i.fa.fa-wrench'),
@@ -4668,9 +4669,9 @@ define([
                 endDateStr,
                 anonStr,
                 notifStr,
+                resultsStr,
                 privacyStr,
-                editableStr,
-                resultsStr
+                editableStr
             ]);
 
             return [
@@ -5052,7 +5053,7 @@ define([
 
         APP.getResponseMsgEditor = function (focus) {
             var t = h('textarea');
-            var p = h('p', Messages.form_responseMsg);
+            var p = h('p.cp-form-response-msg-hint', Messages.form_responseMsg);
 
             var preview = h('button.btn.btn-default.cp-form-preview-button',[
                 h('i.fa.fa-eye'),
