@@ -1038,6 +1038,17 @@ define([
                 });
             }
 
+            // Decrypt hash for invite links
+            Object.keys(members).forEach(function (curve) {
+                var member = members[curve];
+                if (!member.inviteChannel) { return; }
+                if (!member.hash) { return; }
+                if (!teamData.hash) { delete member.hash; return; }
+                try {
+                    member.hash = Invite.decryptHash(member.hash, teamData.hash);
+                } catch (e) { console.error(e); }
+            });
+
             cb(members);
         });
     };
@@ -1580,10 +1591,12 @@ define([
         var message = data.message;
         var name = data.name;
 
-        /*
-        var password = data.password;
+        //var password = data.password;
         var hash = data.hash;
-        */
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        try {
+            var encryptedHash = Invite.encryptHash(hash, teamData.hash);
+        } catch (e) { console.error(e); }
 
         // derive { channel, cryptKey} for the preview content channel
         var previewKeys = Invite.derivePreviewKeys(seeds.preview);
@@ -1594,6 +1607,10 @@ define([
         // randomly generate ephemeral keys for ownership of the above content
         // and a placeholder in the roster
         var ephemeralKeys = Invite.generateKeys();
+
+        // Initial role of the invited users
+        var role = data.role || "VIEWER"; // XXX
+        var uses = data.uses || 1;
 
         nThen(function (w) {
 
@@ -1652,9 +1669,12 @@ define([
                 };
                 putOpts.metadata.validateKey = sign.validateKey;
 
+
+
+
                 // available only with the link and the content
                 var inviteContent = {
-                    teamData: getInviteData(ctx, teamId, false),
+                    teamData: getInviteData(ctx, teamId, role === "MEMBER"),
                     ephemeral: {
                         edPublic: ephemeralKeys.edPublic,
                         edPrivate: ephemeralKeys.edPrivate,
@@ -1692,6 +1712,10 @@ define([
                     curvePublic: ephemeralKeys.curvePublic,
                     displayName: data.name,
                     pending: true,
+                    remaining: uses,
+                    totalUses: uses,
+                    role: role,
+                    hash: encryptedHash,
                     inviteChannel: inviteKeys.channel,
                     previewChannel: previewKeys.channel,
                 }
@@ -1821,20 +1845,22 @@ define([
             }));
         }).nThen(function () {
             var tempRpc = {};
-            initRpc(ctx, tempRpc, inviteContent.ephemeral, function (err) {
-                if (err) { return; }
-                var rpc = tempRpc.rpc;
-                if (rosterState.inviteChannel) {
-                    rpc.removeOwnedChannel(rosterState.inviteChannel, function (err) {
-                        if (err) { console.error(err); }
-                    });
-                }
-                if (rosterState.previewChannel) {
-                    rpc.removeOwnedChannel(rosterState.previewChannel, function (err) {
-                        if (err) { console.error(err); }
-                    });
-                }
-            });
+            if (!rosterState.remaining || rosterState.remaining === 1) {
+                initRpc(ctx, tempRpc, inviteContent.ephemeral, function (err) {
+                    if (err) { return; }
+                    var rpc = tempRpc.rpc;
+                    if (rosterState.inviteChannel) {
+                        rpc.removeOwnedChannel(rosterState.inviteChannel, function (err) {
+                            if (err) { console.error(err); }
+                        });
+                    }
+                    if (rosterState.previewChannel) {
+                        rpc.removeOwnedChannel(rosterState.previewChannel, function (err) {
+                            if (err) { console.error(err); }
+                        });
+                    }
+                });
+            }
             // Add the team to our list and join...
             joinTeam(ctx, {
                 team: inviteContent.teamData

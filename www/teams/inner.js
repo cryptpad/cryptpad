@@ -17,6 +17,7 @@ define([
     '/customize/application_config.js',
     '/common/messenger-ui.js',
     '/common/inner/invitation.js',
+    '/common/clipboard.js',
     '/common/make-backup.js',
     '/customize/messages.js',
 
@@ -43,6 +44,7 @@ define([
     AppConfig,
     MessengerUI,
     InviteInner,
+    Clipboard,
     Backup,
     Messages)
 {
@@ -714,6 +716,20 @@ define([
                 title: Messages.team_pendingOwnerTitle
             }, ' ' + Messages.team_pendingOwner));
         }
+        if (data.pending && data.inviteChannel && data.remaining === -1) { // Invite link
+            Messages.team_linkUsesInfinite = "(infinite uses)"; // XXX DB done
+            $(name).append(h('em', ' ' + Messages.team_linkUsesInfinite));
+        } else if (data.pending && data.inviteChannel) {
+            Messages.team_linkUses = "({0}/{1} remaining)"; // XXX DB done
+            $(name).append(h('em', ' ' + Messages._getKey('team_linkUses', [
+                data.remaining || 1,
+                data.totalUses || 1
+            ])));
+        }
+        if (data.pending && data.inviteChannel) {
+            var r = data.role === "MEMBER" ? Messages.team_members : Messages.team_viewers;
+            $(name).append(h('em', ' (' + r + ')'));
+        }
         // Status
         var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
         // Actions
@@ -817,6 +833,23 @@ define([
             actions,
             status,
         ];
+        if (data.inviteChannel) {
+            if (data.hash) {
+                var copy = h('span.fa.fa-copy');
+                $(copy).click(function () {
+                    var privateData = common.getMetadataMgr().getPrivateData();
+                    var origin = privateData.origin;
+                    var href = origin + Hash.hashToHref(data.hash, 'teams');
+                    var success = Clipboard.copy(href);
+                    if (success) { UI.log(Messages.shareSuccess); }
+                }).prependTo(actions);
+            }
+            content = [
+                avatar,
+                name,
+                actions
+            ];
+        }
         var div = h('div.cp-team-roster-member', content);
         if (data.profile) {
             $(div).dblclick(function (e) {
@@ -872,7 +905,7 @@ define([
             if (!roster[k].pending) { return; }
             if (!roster[k].inviteChannel) { return; }
             roster[k].curvePublic = k;
-            return roster[k].role === "VIEWER" || !roster[k].role;
+            return roster[k].role === "MEMBER" || roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
@@ -1349,7 +1382,7 @@ define([
                     Messages._getKey('team_inviteFromMsg',
                     [Util.fixHTML(getDisplayName(json.author.displayName)),
                     Util.fixHTML(json.teamName)])));
-                if (typeof(json.message) === 'string') {
+                if (typeof(json.message) === 'string' && json.message) {
                     var message = h('div.cp-teams-invite-message');
                     json.message.split('\n').forEach(line => {
                         if (line.trim()) {
@@ -1524,12 +1557,12 @@ define([
                         $div.empty().append(content);
                     });
                 }
-                var $divLink = $('div.cp-team-link').empty();
+                /*var $divLink = $('div.cp-team-link').empty();
                 if ($divLink.length) {
                     refreshLink(common, function (content) {
                         $divLink.append(content);
                     });
-                }
+                }*/
                 var $divCreate = $('div.cp-team-create');
                 if ($divCreate.length) {
                     refreshCreate(common, function (content) {
