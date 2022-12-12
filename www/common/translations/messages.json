@@ -1563,7 +1563,7 @@
     "calendar_removeNotification": "Remove reminder",
     "team_inviteRole": "Initial role",
     "team_inviteUses": "Use(s) allowed for this link (0 = no limit)",
-    "form_exportJSON": "Export as JSON",
+    "form_exportJSON": "Export to JSON",
     "form_alreadyAnsweredMult": "You responded to this form on:",
     "form_responseNotification": "New responses to form: <b>{0}</b>",
     "form_deleteAll": "Delete all",
@@ -1574,5 +1574,7 @@
     "form_editable_on_del": "One time and edit/delete",
     "form_multiple": "Multiple times",
     "form_multiple_edit": "Multiple times and edit/delete",
-    "form_editable_str": "Submission"
+    "form_editable_str": "Submission",
+    "team_linkUsesInfinite": "(unlimited uses)",
+    "team_linkUses": "({0}/{1} remaining)"
 }
