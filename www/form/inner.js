@@ -2646,8 +2646,6 @@ define([
         );
     };
 
-    Messages.form_deleteAll = "Delete all"; // XXX DB done
-
     var parseAnswers = function (answers) {
         var _answers = {};
         Object.keys(answers || {}).forEach(function (curve) {
@@ -2707,7 +2705,6 @@ define([
         });
 
         // Export JSON
-        Messages.form_exportJSON = "Export as JSON"; // XXX DB done
         var exportJSONButton = h('button.btn.btn-primary', [
             h('i.cptools.cptools-code'),
             Messages.form_exportJSON
@@ -2990,7 +2987,6 @@ define([
             });
         }
 
-        Messages.form_answer_new = "New responses"; // XXX DB done
         var newAnswer;
         if (content.answers.multiple) {
             newAnswer = h('button.btn.btn-primary', [
@@ -3078,7 +3074,6 @@ define([
 
         var table = h('div.cp-form-submit-table', entries);
 
-        Messages.form_alreadyAnsweredMult = "You responded to this form on:"; // XXX DB done
 
         var title = framework._.title.title || framework._.title.defaultTitle;
 
@@ -4339,7 +4334,6 @@ define([
             };
             refreshAnon();
 
-            Messages.form_allowNotifications = "Receive notifications on new messages"; // XXX DB done
 
             // Mute form responses
             var notifContainer = h('div.cp-form-anon-container');
@@ -4427,15 +4421,6 @@ define([
                 $editable.empty();
 
                 var canDelete = content.answers.version >= 2;
-
-                Messages.form_editable_str = "Submission:"; // XXX delete old key "form_editable"?
-
-                Messages.form_editable_off = "One time only"; // XXX
-                Messages.form_editable_off = "One time only"; // XXX DB done this block
-                Messages.form_editable_on = "One time and edit"; // XXX
-                Messages.form_editable_on_del = "One time and edit/delete"; // XXX
-                Messages.form_multiple = "Multiple times"; // XXX
-                Messages.form_multiple_edit = "Multiple times and edit/delete"; // XXX
 
                 var updateStr = function (edit, mult) {
                     var key = '';
