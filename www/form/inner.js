@@ -4384,7 +4384,7 @@ define([
 
                 var updateStr = function (val) {
                     $privacyStr.empty().append([
-                        h('span', Messages.form_anonymous),
+                        h('span.cp-form-setting-title', Messages.form_anonymous),
                         h('br'),
                         h('span', Messages['form_anonymous_'+ (val ? 'on' : 'off')])
                     ]);
@@ -4411,7 +4411,7 @@ define([
                         updateStr(val);
                     });
                 });
-                $privacy.append(h('div.cp-form-status', Messages.form_anonymous));
+                $privacy.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_anonymous));
                 $privacy.append(h('div.cp-form-actions', radioContainer));
             };
             refreshPrivacy();
@@ -4442,7 +4442,7 @@ define([
                     if (!edit && mult) { key = 'multiple'; }
                     if (edit && mult) { key = 'multiple_edit'; }
                     $editableStr.empty().append([
-                        h('span', Messages.form_editable_str),
+                        h('span.cp-form-setting-title', Messages.form_editable_str),
                         h('br'),
                         h('span', Messages['form_'+key])
                     ]);
@@ -4500,7 +4500,7 @@ define([
                         updateStr(!content.answers.cantEdit, content.answers.multiple);
                     });
                 });
-                $editable.append(h('div.cp-form-status', Messages.form_editable_str));
+                $editable.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_editable_str));
                 $editable.append(h('div.cp-form-actions', radioContainer));
             };
             refreshEditable();
@@ -4648,9 +4648,9 @@ define([
                 endDateContainer,
                 anonContainer,
                 notifContainer,
+                resultsType,
                 privacyContainer,
                 editableContainer,
-                resultsType,
             ]);
             var modalBtn = h('button.btn.btn-secondary', [
                 h('i.fa.fa-wrench'),
@@ -4667,9 +4667,9 @@ define([
                 endDateStr,
                 anonStr,
                 notifStr,
+                resultsStr,
                 privacyStr,
-                editableStr,
-                resultsStr
+                editableStr
             ]);
 
             return [
