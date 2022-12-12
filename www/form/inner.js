@@ -2688,38 +2688,45 @@ define([
         $timeline.append(makeTimeline(answers));
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
-        var exportButton = h('button.btn.btn-primary', [
-            h('i.fa.fa-download'),
-            Messages.form_exportCSV
-        ]);
-        $(exportButton).appendTo($controls);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
 
-        $(exportButton).click(function () {
-            var csv = Exporter.results(content, answers, TYPES, getFullOrder(content));
-            if (!csv) { return void UI.warn(Messages.error); }
-            var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
-            var title = Util.fixFileName(suggestion) + '.csv';
-            window.saveAs(new Blob([csv], {
-                type: 'text/csv'
-            }), title);
-        });
-
-        // Export JSON
-        Messages.form_exportJSON = "Export as JSON"; // XXX DB done
-        var exportJSONButton = h('button.btn.btn-primary', [
-            h('i.cptools.cptools-code'),
-            Messages.form_exportJSON
-        ]);
-        $(exportJSONButton).appendTo($controls);
-        $(exportJSONButton).click(function () {
-            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
-            if (!arr) { return void UI.warn(Messages.error); }
-            window.saveAs(new Blob([arr], {
-                type: 'application/json'
-            }), title+".json");
-        });
+        var options = [{
+            tag: 'a',
+            attributes: {'class': 'cp-form-export-csv fa fa-table'},
+            content: h('span', Messages.form_exportCSV),
+            action: function () {
+                var csv = Exporter.results(content, answers, TYPES, getFullOrder(content));
+                if (!csv) { return void UI.warn(Messages.error); }
+                var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
+                var title = Util.fixFileName(suggestion) + '.csv';
+                window.saveAs(new Blob([csv], {
+                    type: 'text/csv'
+                }), title);
+            },
+        }, {
+            tag: 'a',
+            attributes: {'class': 'cp-form-export-json cptools cptools-code'},
+            content: h('span', Messages.form_exportJSON),
+            action: function () {
+                var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
+                if (!arr) { return void UI.warn(Messages.error); }
+                window.saveAs(new Blob([arr], {
+                    type: 'application/json'
+                }), title+".json");
+            },
+        }];
+        var dropdownExport = {
+            buttonContent: [
+                h('i.fa.fa-download'),
+                h('span', Messages.exportButton)
+            ],
+            buttonCls: 'btn btn-primary',
+            options: options, // Entries displayed in the menu
+            common: framework._.sfCommon
+        };
+        var $exp = UIElements.createDropdown(dropdownExport);
+        $exp.appendTo($controls);
 
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
