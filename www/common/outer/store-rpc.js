@@ -79,7 +79,7 @@ define([
             GET_HISTORY: Store.getHistory,
             GET_HISTORY_RANGE: Store.getHistoryRange,
             IS_NEW_CHANNEL: Store.isNewChannel,
-            REQUEST_PAD_ACCESS: Store.requestPadAccess,
+            CONTACT_PAD_OWNER: Store.contactPadOwner,
             GIVE_PAD_ACCESS: Store.givePadAccess,
             BURN_PAD: Store.burnPad,
             GET_PAD_METADATA: Store.getPadMetadata,
@@ -88,6 +88,7 @@ define([
             GET_LAST_HASH: Store.getLastHash,
             GET_SNAPSHOT: Store.getSnapshot,
             CORRUPTED_CACHE: Store.corruptedCache,
+            DELETE_MAILBOX_MESSAGE: Store.deleteMailboxMessage,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,

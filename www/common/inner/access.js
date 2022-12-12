@@ -102,6 +102,7 @@ define([
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
+                        channels: otherChan,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
                         value: [ed],
                         teamId: teamOwner
@@ -1051,7 +1052,7 @@ define([
                 var requestBlock = h('p', requestButton);
                 var $requestBlock = $(requestBlock).hide();
                 content.push(requestBlock);
-                sframeChan.query('Q_REQUEST_ACCESS', {
+                sframeChan.query('Q_CONTACT_OWNER', {
                     send: false,
                     metadata: data
                 }, function (err, obj) {
@@ -1062,9 +1063,10 @@ define([
                     $requestBlock.show().find('button').click(function () {
                         if (spinner.getState()) { return; }
                         spinner.spin();
-                        sframeChan.query('Q_REQUEST_ACCESS', {
+                        sframeChan.query('Q_CONTACT_OWNER', {
                             send: true,
-                            metadata: data
+                            metadata: data,
+                            query: "REQUEST_PAD_ACCESS"
                         }, function (err, obj) {
                             if (obj && obj.state) {
                                 UI.log(Messages.requestEdit_sent);

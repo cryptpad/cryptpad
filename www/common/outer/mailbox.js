@@ -164,6 +164,22 @@ proxy.mailboxes = {
             });
         });
     };
+    Mailbox.sendToAnon = function (anonRpc, type, msg, user, cb) {
+        var Nacl = Crypto.Nacl;
+        var curveSeed = Nacl.randomBytes(32);
+        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
+        var curvePrivate = Nacl.util.encodeBase64(curvePair.secretKey);
+        var curvePublic = Nacl.util.encodeBase64(curvePair.publicKey);
+        sendTo({
+            store: {
+                anon_rpc: anonRpc,
+                proxy: {
+                    curvePrivate: curvePrivate,
+                    curvePublic: curvePublic
+                }
+            }
+        }, type, msg, user, cb);
+    };
 
     // Mark a message as read
     var dismiss = function (ctx, data, cId, cb) {
