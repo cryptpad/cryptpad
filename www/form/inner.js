@@ -5042,7 +5042,7 @@ define([
 
         APP.getResponseMsgEditor = function (focus) {
             var t = h('textarea');
-            var p = h('p', Messages.form_responseMsg);
+            var p = h('p.cp-form-response-msg-hint', Messages.form_responseMsg);
 
             var preview = h('button.btn.btn-default.cp-form-preview-button',[
                 h('i.fa.fa-eye'),
