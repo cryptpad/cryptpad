@@ -352,34 +352,22 @@ define([
         });
 
         var linkName, linkPassword, linkMessage, linkError, linkSpinText;
-        var linkForm, linkSpin, linkResult, linkUses;
+        var linkForm, linkSpin, linkResult, linkUses, linkRole;
         var linkWarning;
         // Invite from link
         var dismissButton = h('span.fa.fa-times');
 
-        var options = [{
-            tag: 'a',
-            attributes: {'data-value': 'VIEWER', href:'#'},
-            content: h('span', Messages.team_viewers),
-        }, {
-            tag: 'a',
-            attributes: {'data-value': 'MEMBER', href:'#'},
-            content: h('span', Messages.team_members),
-        }];
-        var dropdownConfig = {
-            text: Messages.team_viewers, // Button initial text
-            options: options, // Entries displayed in the menu
-            isSelect: true,
-            caretDown: true,
-            common: common,
-            buttonCls: 'btn'
-        };
-        var $block = UIElements.createDropdown(dropdownConfig);
-        $block.setValue('VIEWER');
+        var roleViewer = UI.createRadio('cp-team-role', 'cp-team-role-viewer',
+                Messages.team_viewers, true, {
+                    input: { value: 'VIEWER' },
+                });
+        var roleMember = UI.createRadio('cp-team-role', 'cp-team-role-member',
+                Messages.team_members, false, {
+                    input: { value: 'MEMBER' },
+                });
+
 Messages.team_inviteRole = "Initial role"; // XXX
 Messages.team_inviteUses = "Max uses (0 = infinite)"; // XXX
-
-
 
         var linkContent = h('div.cp-share-modal', [
             h('p', Messages.team_inviteLinkTitle ),
@@ -413,9 +401,10 @@ Messages.team_inviteUses = "Max uses (0 = infinite)"; // XXX
                     placeholder: Messages.team_inviteLinkNoteMsg,
                     rows: 3
                 }),
-                h('div.cp-teams-invite-block.cp-teams-invite-role',
+                linkRole = h('div.cp-teams-invite-block.cp-teams-invite-role',
                     h('span', Messages.team_inviteRole),
-                    $block[0]
+                    roleViewer,
+                    roleMember
                 ),
                 h('div.cp-teams-invite-block.cp-teams-invite-uses',
                     h('span', Messages.team_inviteUses),
@@ -470,7 +459,8 @@ Messages.team_inviteUses = "Max uses (0 = infinite)"; // XXX
 
             var uses = Number($(linkUses).val());
             if (isNaN(uses) || !uses) { uses = -1; }
-            var role = $block.getValue() || 'VIEWER';
+
+            var role = $(linkRole).find("input[name='cp-team-role']:checked").val() || 'VIEWER';
 
             var pw = $(linkPassword).find('input').val();
             var msg = $(linkMessage).val();
