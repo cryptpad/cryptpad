@@ -1574,5 +1574,7 @@
     "form_alreadyAnsweredMult": "Vous avez répondu à ce formulaire sur :",
     "form_exportJSON": "Exporter au format JSON",
     "team_inviteUses": "Nombre d'utilisations autorisées pour ce lien (0 = sans limite)",
-    "team_inviteRole": "Rôle initial"
+    "team_inviteRole": "Rôle initial",
+    "team_linkUses": "({0}/{1} restant)",
+    "team_linkUsesInfinite": "(usages illimités)"
 }
