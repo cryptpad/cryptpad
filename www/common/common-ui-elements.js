@@ -377,7 +377,7 @@ define([
         var $block = UIElements.createDropdown(dropdownConfig);
         $block.setValue('VIEWER');
 Messages.team_inviteRole = "Initial role"; // XXX
-Messages.team_inviteUses = "Max uses (0 = infinite)"; // XXX
+Messages.team_inviteUses = "Use(s) allowed for this link (0 = no limit)"; // XXX
 
 
 
@@ -418,13 +418,13 @@ Messages.team_inviteUses = "Max uses (0 = infinite)"; // XXX
                     $block[0]
                 ),
                 h('div.cp-teams-invite-block.cp-teams-invite-uses',
-                    h('span', Messages.team_inviteUses),
                     linkUses = h('input', {
                         type: 'number',
                         min: 0,
                         max: 999,
                         value: 1
-                    })
+                    }),
+                    h('span', Messages.team_inviteUses)
                 ),
             ]),
             linkSpin = h('div.cp-teams-invite-spinner', {
