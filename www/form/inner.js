@@ -4346,9 +4346,11 @@ define([
             var notifStr = h('div');
             var $notif = $(notifContainer);
             var $notifStr = $(notifStr);
-            var refreshNotif = function () {
+            var refreshNotif = APP.refreshNotif = function () {
                 $notif.empty();
+                if (typeof(APP.isOwned) === "undefined") { return; }
                 if (!APP.common.isLoggedIn()) { return; }
+                if (APP.isOwned !== true) { return; }
                 var metadataMgr = APP.common.getMetadataMgr();
                 var priv = metadataMgr.getPrivateData();
                 var isMuted = priv.isChannelMuted;
@@ -4870,6 +4872,15 @@ define([
                 framework.feedback('FORM_PARTICIPANT');
             }
 
+            APP.common.getPadMetadata({channel: content.answers.channel}, function (md) {
+                var owners = md.owners;
+                if (!Array.isArray(owners) || !owners.length) {
+                    APP.isOwned = false;
+                } else {
+                    APP.isOwned = APP.common.isOwned(owners);
+                }
+                if (APP.refreshNotif) { APP.refreshNotif(); }
+            });
 
             if (APP.isEditor) {
                 if (!content.form) {
