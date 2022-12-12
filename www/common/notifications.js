@@ -343,7 +343,6 @@ define([
         var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
         var href = msg.content.href;
 
-        Messages.form_responseNotification = "New responses have been sent to your form <b>{0}</b>"; // XXX DB done
         content.getFormatText = function() {
             return Messages._getKey('form_responseNotification', [title]);
         };

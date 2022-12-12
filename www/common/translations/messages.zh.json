@@ -276,7 +276,7 @@
     "contacts_confirmRemove": "确定要从联系人中删除 <em>{0}</em> 吗？",
     "contacts_remove": "删除此联系人",
     "contacts_send": "发送",
-    "contacts_request": "<em>{0}</em> 想将您添加为联系人。 <b>接受</b>？",
+    "contacts_request": "<em>{0}</em> 想将您添加为联系人。 <b>要接受吗</b>？",
     "contacts_rejected": "联系人邀请被拒绝",
     "contacts_added": "联系人已接受邀请。",
     "contacts_title": "联系人",
@@ -1414,7 +1414,7 @@
     "admin_enableDiskMeasurementsHint": "如果启用，JSON API 端点将在 <code>/api/profiling</code> 下公开。 这会在下面设置的时间窗口内保持磁盘 I/O 的运行测量。 此设置可能会影响服务器性能并可能泄露敏感数据。 除非您知道自己在做什幺，否则建议您禁用此设置。",
     "admin_enableDiskMeasurementsTitle": "测量磁盘性能",
     "admin_infoNotice2": "有关详细信息，请参阅“网络”选项卡。",
-    "admin_infoNotice1": "使用以下字段来描述您的实例。 此信息将用于 CryptPad 未来版本的实例首页。 仅当您选择加入公共 CryptPad 实例列表时，它才会作为服务器遥测的一部分发送。",
+    "admin_infoNotice1": "使用以下字段来描述您的实例。 此信息用于 CryptPad 的实例前端页。 如果您选择加入公共 CryptPad 实例列表，它会同时作为服务器遥测的一部分信息发送。",
     "admin_reviewCheckupNotice": "建议查看 <a>checkup</a> 页面以确认此实例配置正确。",
     "admin_cacheEvictionRequired": "服务器已使用新设置进行了更新。 请使用 <b>刷新缓存</b> 按钮确保此更改对所有用户可见。",
     "fivehundred_internalServerError": "内部服务器错误",
@@ -1437,5 +1437,9 @@
     "ui_restore": "恢复",
     "ui_archive": "归档",
     "ui_undefined": "未知",
-    "admin_documentType": "類型"
+    "admin_documentType": "類型",
+    "admin_generatedAt": "报告时间戳",
+    "admin_cat_database": "数据库",
+    "admin_uptimeHint": "启动服务器的日期和时间",
+    "admin_uptimeTitle": "启动时间"
 }

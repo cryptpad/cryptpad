@@ -180,7 +180,7 @@
     "contacts_confirmRemove": "Czy na pewno chcesz usunąć <em>{0}</em> ze swoich kontaktów?",
     "contacts_remove": "Usuń ten kontakt",
     "contacts_send": "Wyślij",
-    "contacts_request": "<em>{0}</em> chciałby dodać Cię jako kontakt. <b>Akceptujesz</b>?",
+    "contacts_request": "<em>{0}</em> chciał(a)by dodać Cię jako kontakt. <b>Akceptujesz</b>?",
     "contacts_rejected": "Zaproszenie do kontaktu odrzucone",
     "contacts_added": "Zaproszenie do kontaktu przyjęte.",
     "contacts_title": "Kontakty",
@@ -1397,5 +1397,6 @@
     "admin_descriptionTitle": "Opis istancji",
     "ui_saved": "{0} zapisano",
     "admin_nameHint": "Wyświetlana nazwa dla tego urządzenia z listy publicznych instacji na stronie cryptpad.org",
-    "admin_archiveNote": "Notatka"
+    "admin_archiveNote": "Notatka",
+    "common_connectionLost": "<b>Utracono połączenie z serwerem</b><br>Dopóki połączenie nie wróci, włączony będzie tryb tylko do odczytu."
 }

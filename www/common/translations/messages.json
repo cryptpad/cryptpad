@@ -1560,5 +1560,21 @@
     "calendar_rec_warn_delall": "This event will no longer repeat. The first event on {0} will be kept, all others will be removed.",
     "calendar_rec_warn_update": "The rule for repeating this event was modified. Future events will be replaced.",
     "calendar_rec_warn_updateall": "The rule for repeating this event was modified. The first event on {0} will be kept, all others will be replaced.",
-    "calendar_removeNotification": "Remove reminder"
+    "calendar_removeNotification": "Remove reminder",
+    "team_inviteRole": "Initial role",
+    "team_inviteUses": "Use(s) allowed for this link (0 = no limit)",
+    "form_exportJSON": "Export to JSON",
+    "form_alreadyAnsweredMult": "You responded to this form on:",
+    "form_responseNotification": "New responses to form: <b>{0}</b>",
+    "form_deleteAll": "Delete all",
+    "form_answer_new": "Submit again",
+    "form_allowNotifications": "Notifications for new responses",
+    "form_editable_off": "One time only",
+    "One time only": "One time and edit",
+    "form_editable_on_del": "One time and edit/delete",
+    "form_multiple": "Multiple times",
+    "form_multiple_edit": "Multiple times and edit/delete",
+    "form_editable_str": "Submission",
+    "team_linkUsesInfinite": "(unlimited uses)",
+    "team_linkUses": "({0}/{1} remaining)"
 }
