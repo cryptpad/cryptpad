@@ -1609,7 +1609,7 @@ define([
         var ephemeralKeys = Invite.generateKeys();
 
         // Initial role of the invited users
-        var role = data.role || "VIEWER"; // XXX
+        var role = data.role || "VIEWER";
         var uses = data.uses || 1;
 
         nThen(function (w) {

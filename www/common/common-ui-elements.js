@@ -366,8 +366,6 @@ define([
                     input: { value: 'MEMBER' },
                 });
 
-Messages.team_inviteRole = "Initial role"; // XXX
-Messages.team_inviteUses = "Use(s) allowed for this link (0 = no limit)"; // XXX
 
         var linkContent = h('div.cp-share-modal', [
             h('p', Messages.team_inviteLinkTitle ),
@@ -427,7 +425,7 @@ Messages.team_inviteUses = "Use(s) allowed for this link (0 = no limit)"; // XXX
             }, h('textarea', {
                 readonly: 'readonly'
             })),
-            linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', { // XXX remove warning?
+            linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
                 style: "display: none;"
             }, [
                 h('span.cp-inline-alert-text', Messages.team_inviteLinkWarning),

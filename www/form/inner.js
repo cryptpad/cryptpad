@@ -4305,7 +4305,6 @@ define([
             };
             refreshPublic();
 
-            Messages.form_anonymized = "Responses are anonymized"; // XXX
 
             // Make answers anonymous
             var anonContainer = h('div.cp-form-anon-container');
