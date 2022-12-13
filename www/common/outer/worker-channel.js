@@ -171,10 +171,12 @@ define([
             var data;
             // apparently some browser extensions send messages to random targets
             // which can trigger parse errors that interrupt normal behaviour
+            // we therefore log a warning and ignore any messages we can't parse
             try {
                 data = typeof(msg.data) === "object" ? msg.data : JSON.parse(msg.data);
             } catch (err) {
-                console.error(err);
+                console.warn(err);
+                return;
             }
             if (typeof(data.ack) !== "undefined") {
                 if (acks[data.txid]) { acks[data.txid](!data.ack); }
