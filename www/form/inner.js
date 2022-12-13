@@ -4866,7 +4866,7 @@ define([
                 framework.feedback('FORM_PARTICIPANT');
             }
 
-            APP.common.getPadMetadata({channel: content.answers.channel}, function (md) {
+            APP.common.getPadMetadata({channel: priv.channel}, function (md) {
                 var owners = md.owners;
                 if (!Array.isArray(owners) || !owners.length) {
                     APP.isOwned = false;
