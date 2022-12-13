@@ -833,7 +833,7 @@
     "team_inviteLinkNote": "Add a personal message",
     "team_inviteLinkNoteMsg": "This message will be shown before the recipient decides whether to join this team.",
     "team_inviteLinkLoading": "Generating your link",
-    "team_inviteLinkWarning": "The first person to access this link will be able to join this team and view its contents. Share it carefully.",
+    "team_inviteLinkWarning": "People who access this link will be able to join this team and view its contents. Share it carefully.",
     "team_inviteLinkErrorName": "Please add a name for the person you're inviting. They can change it later. ",
     "team_inviteLinkCreate": "Create link",
     "team_inviteLinkCopy": "Copy link",
