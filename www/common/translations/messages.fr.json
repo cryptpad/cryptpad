@@ -1571,8 +1571,10 @@
     "form_answer_new": "Soumettre de nouveau",
     "form_deleteAll": "Tout supprimer",
     "form_responseNotification": "Nouvelles réponses au formulaire : <b>{0}</b>",
-    "form_alreadyAnsweredMult": "Vous avez répondu à ce formulaire sur :",
-    "form_exportJSON": "Exporter au format JSON",
-    "team_inviteUses": "Nombre d'utilisations autorisées pour ce lien (0 = sans limite)",
-    "team_inviteRole": "Rôle initial"
+    "form_alreadyAnsweredMult": "Réponses précédentes à ce formulaire :",
+    "form_exportJSON": "Exporter en JSON",
+    "team_inviteUses": "Utilisations autorisées pour ce lien (0 = sans limite)",
+    "team_inviteRole": "Rôle initial",
+    "team_linkUses": "({0}/{1} restant)",
+    "team_linkUsesInfinite": "(usages illimités)"
 }
