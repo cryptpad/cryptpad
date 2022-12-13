@@ -1510,7 +1510,7 @@
     "calendar_str_filter_day": "Tage: {0}",
     "calendar_rec_edit": "Dies ist ein sich wiederholendes Ereignis",
     "calendar_rec_edit_one": "Nur dieses Ereignis bearbeiten",
-    "calendar_rec_edit_from": "Alle zukünftigen Ereignisse bearbeiten",
+    "calendar_rec_edit_from": "Zukünftige Ereignisse bearbeiten",
     "calendar_rec_edit_all": "Alle Ereignisse bearbeiten",
     "calendar_rec_stop": "Nicht mehr wiederholen",
     "calendar_month_last": "letzter Tag",
@@ -1552,5 +1552,13 @@
     "calendar_str_weekly": "{0} Woche(n)",
     "calendar_str_nthdayofmonth": "am {0} im {1}",
     "calendar_str_day": "am {0}",
-    "calendar_nth_last": "letzten"
+    "calendar_nth_last": "letzten",
+    "calendar_str_filter_monthday": "Tage im Monat: {0}",
+    "calendar_str_filter_yearday": "Tage im Jahr: {0}",
+    "calendar_rec_updated": "Regel aktualisiert am {0}",
+    "calendar_rec_warn_delall": "Dieses Ereignis wird nicht mehr wiederholt. Das erste Ereignis am {0} bleibt unverändert, alle anderen werden entfernt.",
+    "calendar_rec_warn_del": "Dieses Ereignis wird nicht mehr wiederholt. Zukünftige Ereignisse werden entfernt.",
+    "calendar_removeNotification": "Erinnerung entfernen",
+    "calendar_rec_warn_updateall": "Die Regel für die Wiederholung dieses Ereignisses wurde geändert. Das erste Ereignis am {0} bleibt unverändert, alle anderen werden ersetzt.",
+    "calendar_rec_warn_update": "Die Regel für die Wiederholung dieses Ereignisses wurde geändert. Zukünftige Ereignisse werden ersetzt."
 }
