@@ -833,7 +833,7 @@
     "team_inviteLinkNote": "Add a personal message",
     "team_inviteLinkNoteMsg": "This message will be shown before the recipient decides whether to join this team.",
     "team_inviteLinkLoading": "Generating your link",
-    "team_inviteLinkWarning": "The first person to access this link will be able to join this team and view its contents. Share it carefully.",
+    "team_inviteLinkWarning": "People who access this link will be able to join this team and view its contents. Share it carefully.",
     "team_inviteLinkErrorName": "Please add a name for the person you're inviting. They can change it later. ",
     "team_inviteLinkCreate": "Create link",
     "team_inviteLinkCopy": "Copy link",
@@ -1570,11 +1570,11 @@
     "form_answer_new": "Submit again",
     "form_allowNotifications": "Notifications for new responses",
     "form_editable_off": "One time only",
-    "One time only": "One time and edit",
     "form_editable_on_del": "One time and edit/delete",
     "form_multiple": "Multiple times",
     "form_multiple_edit": "Multiple times and edit/delete",
     "form_editable_str": "Submission",
     "team_linkUsesInfinite": "(unlimited uses)",
-    "team_linkUses": "({0}/{1} remaining)"
+    "team_linkUses": "({0}/{1} remaining)",
+    "form_anonymized": "Responses are anonymized"
 }
