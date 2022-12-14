@@ -335,6 +335,28 @@ define([
         }
     };
 
+    handlers['FORM_RESPONSE'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('form_responseNotification', [title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['COMMENT_REPLY'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
@@ -481,6 +503,18 @@ define([
         var missed = content.msg.missed;
         var start = msg.start;
         var title = Util.fixHTML(msg.title);
+        content.handler = function () {
+            var priv = common.getMetadataMgr().getPrivateData();
+            var time = Util.find(data, ['content', 'msg', 'content', 'start']);
+            if (priv.app === "calendar" && window.APP && window.APP.moveToDate) {
+                return void window.APP.moveToDate(time);
+            }
+            var url = Hash.hashToHref('', 'calendar');
+            var optsUrl = Hash.getNewPadURL(url, {
+                time: time
+            });
+            common.openURL(optsUrl);
+        };
         content.getFormatText = function () {
             var now = +new Date();
 

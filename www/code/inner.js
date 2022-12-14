@@ -68,6 +68,7 @@ define([
         'markdown',
         'gfm',
         'html',
+        'asciidoc',
         'htmlembedded',
         'htmlmixed',
         'index.html',
@@ -142,6 +143,31 @@ define([
     previews['markdown'] = previews['gfm'];
     previews['htmlmixed'] = function (val, $div, common) {
         DiffMd.apply(val, $div, common);
+    };
+    previews['asciidoc'] = function (val, $div, common) {
+        require([
+            'asciidoctor',
+            '/lib/highlight/highlight.pack.js',
+            'css!/lib/highlight/styles/' + (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
+        ], function (asciidoctor) {
+            var reg = asciidoctor.Extensions.create();
+            var Highlight = window.hljs;
+
+            reg.inlineMacro('media-tag', function () {
+                var t = this;
+                t.process(function (parent, target) {
+                    var d = target.split('|');
+                    return t.createInline(parent, 'quoted', `<media-tag src="${d[0]}" data-crypto-key="${d[1]}"></media-tag>`).convert();
+                });
+            });
+
+            var html = asciidoctor.convert(val, { attributes: 'showtitle', extension_registry: reg });
+
+            DiffMd.apply(html, $div, common);
+            $div.find('pre code').each(function (i, el) {
+                Highlight.highlightBlock(el);
+            });
+        });
     };
 
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
@@ -370,9 +396,17 @@ define([
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is enabled
-                framework.setMediaTagEmbedder(function (mt) {
+                framework.setMediaTagEmbedder(function (mt, d) {
                     editor.focus();
-                    editor.replaceSelection($(mt)[0].outerHTML);
+                    var txt = $(mt)[0].outerHTML;
+                    if (editor.getMode().name === "asciidoc") {
+                        if (d.static) {
+                            txt = d.href + `[${d.name}]`;
+                        } else {
+                            txt = `media-tag:${d.src}|${d.key}[]`;
+                        }
+                    }
+                    editor.replaceSelection(txt);
                 });
             } else {
                 // Embedding is disabled

@@ -91,7 +91,10 @@
                 height: 100%;
                 border-bottom-left-radius: 3px;
                 border-bottom-right-radius: 3px;
-                background-color: @cp_buttons-primary;
+                background-color: @cp_buttons-default-color;
+                &.btn-primary, &.btn-secondary {
+                    background-color: @cp_buttons-primary;
+                }
                 &.danger, &.btn-danger, &.danger-alt, &.btn-danger-alt {
                     background-color: @cp_buttons-red;
                 }
@@ -326,6 +329,9 @@
                         svg {
                             fill: @cryptpad_text_col;
                         }
+                    }
+                    .flatpickr-monthDropdown-month {
+                        background: @cp_flatpickr-bg;
                     }
                 }
                 .flatpickr-current-month {
