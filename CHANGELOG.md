@@ -4,21 +4,6 @@
 
 This release is focused on addressing long-standing user feedback with new features. The most requested are improvements to Forms—multiple submissions and the ability to delete responses—as well as recurring events in Calendar.
 
-
-## Update notes
-
-To update from `5.1.0` to `5.2.0`:
-
-1. Update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` and reload its configuration
-2. Stop your API server
-3. Fetch the latest code with git
-4. Install the latest dependencies with `bower update` and `npm i`
-5. Run `npm run build` to generate the new static pages
-5. Restart your server
-6. Review your instance's checkup page to ensure that you are passing all tests
-
-<!-- XXX Notes about changes to Nginx conf -->
-
 ## Features
 
 - Forms
@@ -36,7 +21,7 @@ To update from `5.1.0` to `5.2.0`:
     - easily stop repetition from event preview
 
 - Drive 
-  - filter by doc type
+  - New button to filter the drive view by document type
 
 - Teams
   - Improved onboarding with the ability to use the same invitation link for a set number of people. Previously each link was limited to one use
@@ -44,11 +29,32 @@ To update from `5.1.0` to `5.2.0`:
 
 - Code
   - Asciidoc syntax support AND asciidoc rendering
-  - handle jade language 
-  - don't suggest c-language highlighting twice
+  - New jade language support
+  - Removed duplicate C-language option
 
 - /checkup/
   - [new test to confirm that public instances are open for registration](https://github.com/xwiki-labs/cryptpad/commit/174d97c442d5400d512dfccc478fd9fbd6fa075c)
+
+## Update notes
+
+To update from `5.1.0` to `5.2.0`:
+
+1. Read the **Nginx** section below and update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` 
+2. Reload nginx
+3. Stop your API server
+4. Fetch the latest code with git
+5. Install the latest dependencies with `bower update` and `npm i`
+6. Restart your server
+7. Review your instance's checkup page to ensure that all tests are passing
+
+### Nginx
+
+We introduced some new parameters in our Nginx config:
+- Internet Protocol version 6 ([IPv6](https://en.wikipedia.org/wiki/IPv6)) support
+- TLS generation, see [the recent tutorial](https://blog.cryptpad.org/2022/12/12/tutorial-nginx-tls-acme/) on our blog
+- Better [TLS sessions](https://vincent.bernat.ch/en/blog/2011-ssl-session-reuse-rfc5077),  handling timeout, tickets & longer cache
+- Longer [HTTP Strict Transport Security](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) (HSTS), now 2 years
+- [Online Certificate Status Protocol](https://en.wikipedia.org/wiki/OCSP_stapling) (OCSP) stapling support
 
 
 # 5.1.0
