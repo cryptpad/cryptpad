@@ -1,5 +1,5 @@
 {
-    "main_title": "CryptPad: Zusammenarbeit in Echtzeit ohne Preisgabe von Informationen",
+    "main_title": "CryptPad: Zusammenarbeit in Echtzeit mit Schutz der Privatsphäre",
     "type": {
         "pad": "Rich Text",
         "code": "Code",
@@ -831,7 +831,7 @@
     "team_inviteLinkNote": "Persönliche Nachricht hinzufügen",
     "team_inviteLinkNoteMsg": "Diese Nachricht wird angezeigt, bevor der Empfänger entscheidet, ob er diesem Team beitreten möchte.",
     "team_inviteLinkLoading": "Dein Link wird generiert",
-    "team_inviteLinkWarning": "Die erste Person, die auf diesen Link zugreift, kann diesem Team beitreten und dessen Inhalte einsehen. Teile ihn sorgfältig.",
+    "team_inviteLinkWarning": "Personen, die auf diesen Link zugreifen, können diesem Team beitreten und dessen Inhalte einsehen. Teile ihn sorgfältig.",
     "team_inviteLinkErrorName": "Bitte gib einen Namen für die eingeladene Person ein. Er kann später geändert werden. ",
     "team_inviteLinkCreate": "Link erstellen",
     "team_inviteLinkCopy": "Link kopieren",
@@ -1560,5 +1560,21 @@
     "calendar_rec_warn_del": "Dieses Ereignis wird nicht mehr wiederholt. Zukünftige Ereignisse werden entfernt.",
     "calendar_removeNotification": "Erinnerung entfernen",
     "calendar_rec_warn_updateall": "Die Regel für die Wiederholung dieses Ereignisses wurde geändert. Das erste Ereignis am {0} bleibt unverändert, alle anderen werden ersetzt.",
-    "calendar_rec_warn_update": "Die Regel für die Wiederholung dieses Ereignisses wurde geändert. Zukünftige Ereignisse werden ersetzt."
+    "calendar_rec_warn_update": "Die Regel für die Wiederholung dieses Ereignisses wurde geändert. Zukünftige Ereignisse werden ersetzt.",
+    "form_anonymized": "Antworten werden anonymisiert",
+    "form_editable_str": "Absenden",
+    "form_answer_new": "Erneut absenden",
+    "form_exportJSON": "Als JSON exportieren",
+    "form_deleteAll": "Alle löschen",
+    "form_responseNotification": "Neue Antworten für das Formular: <b>{0}</b>",
+    "form_alreadyAnsweredMult": "Du hast dieses Formular beantwortet am:",
+    "form_editable_on_del": "Einmalig und Bearbeiten/Löschen",
+    "form_multiple_edit": "Mehrmals und Bearbeiten/Löschen",
+    "form_multiple": "Mehrmals",
+    "form_editable_off": "Einmalig",
+    "form_allowNotifications": "Benachrichtigungen über neue Antworten",
+    "team_inviteRole": "Erste Rolle",
+    "team_linkUsesInfinite": "(unbegrenzte Verwendungen)",
+    "team_inviteUses": "Erlaubte Verwendung(en) dieses Links (0 = keine Begrenzung)",
+    "team_linkUses": "({0}/{1} verbleibend)"
 }
