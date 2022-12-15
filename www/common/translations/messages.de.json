@@ -1576,5 +1576,6 @@
     "team_inviteRole": "Erste Rolle",
     "team_linkUsesInfinite": "(unbegrenzte Verwendungen)",
     "team_inviteUses": "Erlaubte Verwendung(en) dieses Links (0 = keine Begrenzung)",
-    "team_linkUses": "({0}/{1} verbleibend)"
+    "team_linkUses": "({0}/{1} verbleibend)",
+    "form_settingsButton": "Formulareinstellungen"
 }
