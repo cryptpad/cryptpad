@@ -1957,7 +1957,7 @@ define([
             if (owner) {
                 if (data.send) {
                     var sendTo = function (query, msg, user, _cb) {
-                        if (store.mailbox) {
+                        if (store.mailbox && !data.anon) {
                             return store.mailbox.sendTo(query, msg, user, _cb);
                         }
                         Mailbox.sendToAnon(store.anon_rpc, query, msg, user, _cb);

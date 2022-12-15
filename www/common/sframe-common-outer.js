@@ -1073,6 +1073,7 @@ define([
 
                         Cryptpad.padRpc.contactOwner({
                             send: send,
+                            anon: data.anon,
                             query: data.query,
                             msgData: data.msgData,
                             channel: _secret.channel,

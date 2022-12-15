@@ -3348,6 +3348,7 @@ define([
                 var priv = metadataMgr.getPrivateData();
                 sframeChan.query('Q_CONTACT_OWNER', {
                     send: true,
+                    anon: true,
                     query: "FORM_RESPONSE",
                     msgData: { channel: priv.channel }
                 }, function (err, obj) {
