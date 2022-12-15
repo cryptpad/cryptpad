@@ -4627,7 +4627,6 @@ define([
             evOnChange.reg(refreshEndDate);
             evOnChange.reg(refreshColorTheme);
 
-            Messages.form_settingsButton = "Form settings"; // XXX
 
             var modal = UI.createModal({
                 id: 'cp-form-settings',
