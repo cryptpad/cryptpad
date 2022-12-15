@@ -39,7 +39,7 @@ This release is focused on addressing long-standing user feedback with new featu
 
 To update from `5.1.0` to `5.2.0`:
 
-1. Read the **Nginx** section below and update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` 
+1. Read the **Nginx** section below to ensure you are using the right version and update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` 
 2. Reload nginx
 3. Stop your API server
 4. Fetch the latest code with git
@@ -49,13 +49,12 @@ To update from `5.1.0` to `5.2.0`:
 
 ### Nginx
 
-We introduced some new parameters in our Nginx config:
+We added some directives that may cause issues with older versions of Nginx. We now recommend and only support [Nginx stable](https://nginx.org/en/download.html). Please note that if you are running below `v1.14.2`, applying this update will likely result in breakage.
 - Internet Protocol version 6 ([IPv6](https://en.wikipedia.org/wiki/IPv6)) support
 - TLS generation, see [the recent tutorial](https://blog.cryptpad.org/2022/12/12/tutorial-nginx-tls-acme/) on our blog
 - Better [TLS sessions](https://vincent.bernat.ch/en/blog/2011-ssl-session-reuse-rfc5077),  handling timeout, tickets & longer cache
 - Longer [HTTP Strict Transport Security](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) (HSTS), now 2 years
 - [Online Certificate Status Protocol](https://en.wikipedia.org/wiki/OCSP_stapling) (OCSP) stapling support
-
 
 # 5.1.0
 
