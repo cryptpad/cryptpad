@@ -34,6 +34,7 @@ This release is focused on addressing long-standing user feedback with new featu
 
 - /checkup/
   - [new test to confirm that public instances are open for registration](https://github.com/xwiki-labs/cryptpad/commit/174d97c442d5400d512dfccc478fd9fbd6fa075c)
+  - new test to check that the host provides an HSTS header
 
 ## Update notes
 
