@@ -900,7 +900,7 @@ define([
             .filter(Boolean)
             .forEach(line => {
                 line.replace(/([^:]+):(.*)/, (all, key, value) => {
-                    H[key] = value;
+                    H[key] = value.trim();
                 });
             });
         return H;
@@ -1580,7 +1580,7 @@ define([
 
             // check for a numerical value of max-age
             // and the use of includeSubDomains
-            if (/max\-age=\d+/.test(HSTS) && /includeSubdomains/.test(HSTS)) {
+            if (/max\-age=\d+/.test(HSTS) && /includeSubDomains/.test(HSTS)) {
                 return void cb(true);
             }
 
