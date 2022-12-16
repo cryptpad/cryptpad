@@ -893,6 +893,19 @@ define([
     });
 */
 
+    var parseResponseHeaders = xhr => {
+        var H = {};
+        xhr.getAllResponseHeaders()
+            .split(/\r|\n/)
+            .filter(Boolean)
+            .forEach(line => {
+                line.replace(/([^:]+):(.*)/, (all, key, value) => {
+                    H[key] = value.trim();
+                });
+            });
+        return H;
+    };
+
     var CSP_DESCRIPTIONS = {
         'default-src': '',
         'style-src': '',
@@ -1549,6 +1562,30 @@ define([
             cb(!/cloudflare/i.test(serverToken) || {
                 serverToken,
             });
+        });
+    });
+
+    assert(function (cb, msg) {
+        // provide an exception for development instances
+        if (isLocalhost(trimmedUnsafe) && isLocalhost(window.location.href)) {
+            return void cb(true);
+        }
+
+        msg.appendChild(h('span', [
+            'This instance is not configured to require HTTP Strict Transport Security (HSTS) - which instructs clients to only interact with it over a secure connection.',
+        ]));
+        Tools.common_xhr('/', function (xhr) {
+            var H = parseResponseHeaders(xhr);
+            var HSTS = H['strict-transport-security'];
+
+            // check for a numerical value of max-age
+            // and the use of includeSubDomains
+            if (/max\-age=\d+/.test(HSTS) && /includeSubDomains/.test(HSTS)) {
+                return void cb(true);
+            }
+
+            // else call back with the value
+            cb(HSTS);
         });
     });
 

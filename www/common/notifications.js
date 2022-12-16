@@ -335,6 +335,28 @@ define([
         }
     };
 
+    handlers['FORM_RESPONSE'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('form_responseNotification', [title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['COMMENT_REPLY'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;

@@ -1071,6 +1071,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 });
             }
 
+            // Messages.calendar_rec_edit_all, .calendar_rec_edit_from, .calendar_rec_edit_one
             var radioEls = list.map(function (k, i) {
                 return UI.createRadio('cp-calendar-rec-edit', 'cp-calendar-rec-edit-'+k,
                            Messages['calendar_rec_edit_'+k], !i, {input:{ 'data-value':k }});
@@ -1262,6 +1263,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         var tmp = new Date();
 
         // Freq, interval
+        // Messages.calendar_str_daily, .calendar_str_weekly, .calendar_str_monthly, .calendar_str_yearly
         str = Messages._getKey('calendar_str_'+rule.freq, [rule.interval || 1]);
 
         var m = rule.by && rule.by.month;
@@ -1304,6 +1306,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }
 
         var filters = [];
+        // Messages.calendar_str_filter_day, .calendar_str_filter_month
+        // Messages.calendar_str_filter_monthday, .calendar_str_filter_weekno, .calendar_str_filter_yearday
         // nth day (of month)
         if (rule.freq === "yearly" && m && m.length === 1 && d && d.length === 1
             && Object.keys(rule.by).length === 2) {
@@ -1358,6 +1362,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         var monthStr = date.toLocaleDateString(getDateLanguage(), { month: 'long' });
 
         var key = yearly ? "yearly" : "monthly";
+        // Messages.calendar_nth_1, .calendar_nth_2, .calendar_nth_3
+        // Messages.calendar_nth_4, .calendar_nth_5, .calendar_nth_last
         return {
             nth: nth + dayCode,
             str: Messages._getKey('calendar_rec_'+key+'_nth', [
@@ -1371,8 +1377,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 dayStr,
                 monthStr
             ]),
-            // Messages.calendar_rec_yearly_nth
-            // Messages.calendar_rec_monthly_nth
+            // Messages.calendar_rec_yearly_nth, .calendar_rec_monthly_nth
         };
     };
 
@@ -1419,6 +1424,7 @@ APP.recurrenceRule = {
             content: Messages.calendar_rec_no
         }];
         // Basic recurrence
+        // Messages.calendar_rec_daily, .calendar_rec_weekly, .calendar_rec_monthly, .calendar_rec_yearly, .calendar_rec_weekdays, .calendar_rec_weekend
         ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
             basicStr[rec] = JSONSortify({freq: rec});
             options.push({
@@ -1530,6 +1536,8 @@ APP.recurrenceRule = {
                 value: rec.interval || 1
             });
 
+            // Messages.calendar_rec_freq_daily, .calendar_rec_freq_weekly
+            // Messages.calendar_rec_freq_monthly, .calendar_rec_freq_yearly
             var options = [];
             ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
                 options.push({

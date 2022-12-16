@@ -249,7 +249,6 @@ var factory = function (Util, Rpc) {
                 }, cb);
             };
 
-
             cb(e, exp);
         });
     };
