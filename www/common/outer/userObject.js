@@ -304,6 +304,10 @@ define([
             var newParent = exp.find(path);
             var tempName = exp.isFile(element) ? Hash.createChannelId() : key;
             var newName = exp.getAvailableName(newParent, tempName);
+            if (Array.isArray(newParent)) {
+                newParent.push(element);
+                return;
+            }
             newParent[newName] = element;
         };
 
