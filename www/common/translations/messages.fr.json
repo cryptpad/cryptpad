@@ -1577,5 +1577,6 @@
     "team_linkUses": "({0}/{1} restant)",
     "team_linkUsesInfinite": "(usages illimités)",
     "form_anonymized": "Réponses anonymisées",
-    "form_settingsButton": "Réglages Formulaire"
+    "form_settingsButton": "Réglages Formulaire",
+    "form_editable_on": "Une seule fois et éditer"
 }
