@@ -2439,6 +2439,27 @@ define([
         // Clients management
         var driveEventClients = [];
 
+        // Check if this is a channel that we shouldn't leave when closing the debug app
+        var alwaysOnline = function (chanId) {
+            if (!store) { return; }
+            // Drive
+            if (store.driveChannel === chanId) { return true; }
+            // Shared folders
+            if (SF.isSharedFolderChannel(chanId)) { return true; }
+            // Teams
+            if (Util.find(store, ['proxy', 'teams'])) {
+                var t = Util.find(store, ['proxy', 'teams']) || {};
+                return Object.keys(t).some(function (id) {
+                    return t[id].channel === chanId;
+                });
+            }
+            // Profile
+            if (Util.find(store, ['proxy', 'profile', 'href'])) {
+                return Hash.hrefToHexChannelId(Util.find(store, ['proxy', 'profile', 'href']))
+                        === chanId;
+            }
+        };
+
         var dropChannel = Store.dropChannel = function (chanId) {
             console.error('Drop channel', chanId);
 
@@ -2451,6 +2472,14 @@ define([
             try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
+
+            try {
+                if (alwaysOnline(chanId)) {
+                    delete Store.channels[chanId];
+                    return;
+                }
+            } catch (e) { console.error(e); }
+
             try {
                 Cache.leaveChannel(chanId);
             } catch (e) { console.error(e); }
