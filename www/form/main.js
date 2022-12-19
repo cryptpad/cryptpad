@@ -141,12 +141,13 @@ define([
                         CPNetflux = _CPNetflux;
                         Pinpad = _Pinpad;
                     }));
+                    var personalDrive = !Cryptpad.initialTeam || Cryptpad.initialTeam === -1;
                     Cryptpad.getAccessKeys(w(function (_keys) {
                         if (!Array.isArray(_keys)) { return; }
                         accessKeys = _keys;
 
                         _keys.some(function (_k) {
-                            if ((!Cryptpad.initialTeam && !_k.id) || Cryptpad.initialTeam === _k.id) {
+                            if ((personalDrive && !_k.id) || Cryptpad.initialTeam === _k.id) {
                                 myKeys = _k;
                                 return true;
                             }
