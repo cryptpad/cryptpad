@@ -4,11 +4,9 @@
 var Express = require('express');
 var Http = require('http');
 var Fs = require('fs');
-//var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
 
-//var Keys = require("./lib/keys");
 var OS = require("node:os");
 var Cluster = require("node:cluster");
 
@@ -51,19 +49,43 @@ COMMANDS.GET_PROFILING_DATA = function (msg, cb) {
 };
 
 nThen(function (w) {
-    Fs.exists(__dirname + "/customize", w(function (e) {
-        if (e) { return; }
-        console.log("CryptPad is customizable, see customize.dist/readme.md for details");
-    }));
-}).nThen(function (w) {
     require("./lib/log").create(config, w(function (_log) {
         Env.Log = _log;
         config.log = _log;
     }));
 }).nThen(function (w) {
+    Fs.exists("customize", w(function (e) {
+        if (e) { return; }
+        Env.Log.info('NO_CUSTOMIZE_FOLDER', {
+            message: "CryptPad is customizable, see customize.dist/readme.md for details",
+        });
+    }));
+}).nThen(function () {
+    // check that a valid origin was provided in the config
+    try {
+        var url = new URL('', Env.httpUnsafeOrigin).href;
+        Env.Log.info("WEBSERVER_LISTENING", {
+            origin: url,
+        });
+
+        if (!Env.admins.length) {
+            Env.Log.info('NO_ADMIN_CONFIGURED', {
+                message: `Your instance is not correctly configured for production usage. Review its checkup page for more information.`,
+                details: new URL('/checkup/', Env.httpUnsafeOrigin).href,
+            });
+        }
+    } catch (err) {
+        Env.Log.error("INVALID_ORIGIN", {
+            httpUnsafeOrigin: Env.httpUnsafeOrigin,
+        });
+        process.exit(1);
+    }
+}).nThen(function (w) {
     Env.httpServer = Http.createServer(app);
-    Env.httpServer.listen(3003, '::', w(function () { // XXX 3003 should not be hardcoded
-        console.log("Socket server is listening on 3003"); // XXX
+    Env.httpServer.listen(Env.websocketPort, '::', w(function () {
+        Env.Log.info('WEBSOCKET_LISTENING', {
+            port: Env.websocketPort,
+        });
     }));
 }).nThen(function (w) {
     var limit = Env.maxWorkers;
@@ -106,6 +128,20 @@ nThen(function (w) {
 
             command(content, cb);
         });
+
+        worker.on('exit', (code, signal) => {
+            if (!signal && code === 0) { return; }
+            // relaunch http workers if they crash
+            Env.Log.error('HTTP_WORKER_EXIT', {
+                signal,
+                code,
+            });
+            // update the environment with the latest state before relaunching
+            workerState.Env = Environment.serialize(Env);
+            launchWorker(function () {
+                Env.Log.info('HTTP_WORKER_RELAUNCH', {});
+            });
+        });
     };
 
     var txids = {};
@@ -127,12 +163,12 @@ nThen(function (w) {
     };
 
     var throttledEnvChange = Util.throttle(function () {
-        Env.Log.info('WORKER_ENV_UPDATE', 'Updating HTTP workers with latest state'); // XXX
-        broadcast('ENV_UPDATE', Environment.serialize(Env)); //JSON.stringify(Env));
+        Env.Log.info('WORKER_ENV_UPDATE', 'Updating HTTP workers with latest state');
+        broadcast('ENV_UPDATE', Environment.serialize(Env));
     }, 250);
 
     var throttledCacheFlush = Util.throttle(function () {
-        Env.Log.info('WORKER_CACHE_FLUSH', 'Instructing HTTP workers to flush cache'); // XXX
+        Env.Log.info('WORKER_CACHE_FLUSH', 'Instructing HTTP workers to flush cache');
         broadcast('FLUSH_CACHE', Env.FRESH_KEY);
     }, 250);
 
@@ -145,36 +181,6 @@ nThen(function (w) {
         }
         launchWorker(w());
     });
-}).nThen(function () {
-    // Nothing async happens here but I'm using this function scope
-    // as a logical grouping for readability
-    var fancyURL = function (domain, path) {
-        try {
-            if (domain && path) { return new URL(path, domain).href; }
-            return new URL(domain);
-        } catch (err) {}
-        return false;
-    };
-
-    var host = Env.httpAddress;
-    var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
-
-    var port = Env.httpPort;
-    var ps = port === 80? '': ':' + port;
-
-    var roughAddress = 'http://' + hostName + ps;
-    var betterAddress = fancyURL(Env.httpUnsafeOrigin);
-
-    if (betterAddress) {
-        console.log('Serving content for %s via %s.\n', betterAddress, roughAddress);
-    } else {
-        console.log('Serving content via %s.\n', roughAddress);
-    }
-    if (!Env.admins.length) {
-        console.log("Your instance is not correctly configured for safe use in production.\nSee %s for more information.\n",
-            fancyURL(Env.httpUnsafeOrigin, '/checkup/') || 'https://your-domain.com/checkup/'
-        );
-    }
 }).nThen(function () {
     if (Env.shouldUpdateNode) {
         Env.Log.warn("NODEJS_OLD_VERSION", {
