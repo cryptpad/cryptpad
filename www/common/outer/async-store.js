@@ -1803,6 +1803,7 @@ define([
             };
             var conf = {
                 Cache: Cache, // ICE pad cache
+                priority: 1,
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },
