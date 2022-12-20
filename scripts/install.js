@@ -10,6 +10,7 @@ var Env = require("../lib/env").create(config);
 Env.Log = { error: console.log };
 
 var path = Path.join(Env.paths.decree, 'decree.ndjson');
+var token;
 nThen(function (w) {
     Decrees.load(Env, w(function (err) {
         if (err) {
@@ -26,7 +27,7 @@ nThen(function (w) {
 }).nThen(function (w) {
     if (Env.installToken) { return; }
     console.log(Env.paths.decree);
-    var token = Hash.createChannelId() + Hash.createChannelId();
+    token = Hash.createChannelId() + Hash.createChannelId();
     var decree = ["ADD_INSTALL_TOKEN",[token],"",+new Date()];
     Fs.appendFile(path, JSON.stringify(decree) + '\n', w(function (err) {
         if (err) { console.log(err); return; }
