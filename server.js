@@ -82,7 +82,7 @@ nThen(function (w) {
     }
 }).nThen(function (w) {
     Env.httpServer = Http.createServer(app);
-    Env.httpServer.listen(Env.websocketPort, '::', w(function () {
+    Env.httpServer.listen(Env.websocketPort, 'localhost', w(function () {
         Env.Log.info('WEBSOCKET_LISTENING', {
             port: Env.websocketPort,
         });
