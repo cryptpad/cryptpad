@@ -463,9 +463,22 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         if (typeof(members[curve]) !== 'undefined') { throw new Error("MEMBER_ALREADY_PRESENT"); }
 
         // copy the new profile from the old one
-        members[curve] = Util.clone(members[author]);
-        // and erase the old one
-        delete members[author];
+        var clone = Util.clone(members[author]);
+        delete clone.remaining;
+        delete clone.totalUses;
+        delete clone.inviteChannel;
+        delete clone.previewChannel;
+        members[curve] = clone;
+
+        // XXX
+        var remaining = members[author].remaining || 1;
+        if (remaining === -1) { return true; } // Infinite uses, keep the link
+        if (remaining > 1) { // Remove 1 use
+            members[author].remaining = remaining - 1;
+        } else { // Disable link
+            delete members[author];
+        }
+
         return true;
     };
 

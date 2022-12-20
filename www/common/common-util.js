@@ -36,6 +36,7 @@
     };
 
     Util.clone = function (o) {
+        if (o === undefined || o === null) { return o; }
         return JSON.parse(JSON.stringify(o));
     };
 

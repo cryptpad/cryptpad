@@ -710,6 +710,12 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
+                    if (metaObj.priv && Array.isArray(metaObj.priv.mutedChannels)
+                            && metaObj.priv.mutedChannels.includes(secret.channel)) {
+                        delete metaObj.priv.mutedChannes;
+                        additionalPriv.isChannelMuted = true;
+                    }
+
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
                     var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,
@@ -942,7 +948,7 @@ define([
                     var metadata = data.metadata;
                     var add = data.add;
                     var _secret = secret;
-                    if (metadata && (metadata.href || metadata.roHref) && !metadata.fakeHref) {
+                    if (metadata && (metadata.href || metadata.roHref)) {
                         var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
                         _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
                     }
@@ -1010,9 +1016,9 @@ define([
                     });
                 });
 
-                // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
+                // CONTACT_OWNER is used both to check IF we can contact an owner (send === false)
                 // AND also to send the request if we want (send === true)
-                sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                sframeChan.on('Q_CONTACT_OWNER', function (data, cb) {
                     if (readOnly && hashes.editHash) {
                         return void cb({error: 'ALREADYKNOWN'});
                     }
@@ -1030,8 +1036,6 @@ define([
                     var crypto = Crypto.createEncryptor(_secret.keys);
                     nThen(function (waitFor) {
                         // Try to get the owner's mailbox from the pad metadata first.
-                        // If it's is an older owned pad, check if the owner is a friend
-                        // or an acquaintance (from async-store directly in requestAccess)
                         var todo = function (obj) {
                             owners = obj.owners;
 
@@ -1065,11 +1069,13 @@ define([
                         }));
                     }).nThen(function () {
                         // If we are just checking (send === false) and there is a mailbox field, cb state true
-                        // If there is no mailbox, we'll have to check if an owner is a friend in the worker
                         if (!send) { return void cb({state: Boolean(owner)}); }
 
-                        Cryptpad.padRpc.requestAccess({
+                        Cryptpad.padRpc.contactOwner({
                             send: send,
+                            anon: data.anon,
+                            query: data.query,
+                            msgData: data.msgData,
                             channel: _secret.channel,
                             owner: owner,
                             owners: owners

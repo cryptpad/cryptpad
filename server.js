@@ -1,5 +1,5 @@
 /*
-    globals require console
+    globals process
 */
 var Express = require('express');
 var Http = require('http');
@@ -7,7 +7,8 @@ var Fs = require('fs');
 //var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
-var Keys = require("./lib/keys");
+
+//var Keys = require("./lib/keys");
 var OS = require("node:os");
 var Cluster = require("node:cluster");
 
@@ -35,9 +36,9 @@ COMMANDS.LOG = function (msg, cb) {
 
 COMMANDS.UPDATE_QUOTA = function (msg, cb) {
     var Quota = require("./lib/commands/quota");
-    Quota.updateCachedLimits(Env, (e) => {
-        if (e) {
-            Env.Log.warn('UPDATE_QUOTA_ERR', e);
+    Quota.updateCachedLimits(Env, (err) => {
+        if (err) {
+            Env.Log.warn('UPDATE_QUOTA_ERR', err);
             return void cb(err);
         }
         Env.Log.info('QUOTA_UPDATED', {});
@@ -138,18 +139,15 @@ nThen(function (w) {
     Env.envUpdated.reg(throttledEnvChange);
     Env.cacheFlushed.reg(throttledCacheFlush);
 
-    var logCPULimit = Util.once(function (index) {
-        Env.Log.info('HTTP_WORKER_LIMIT', `(Opting not to use available CPUs beyond ${index})`);
-    });
-
     OS.cpus().forEach((cpu, index) => {
         if (limit && index >= limit) {
             return;
-            //return logCPULimit(index);
         }
         launchWorker(w());
     });
-}).nThen(function (w) {
+}).nThen(function () {
+    // Nothing async happens here but I'm using this function scope
+    // as a logical grouping for readability
     var fancyURL = function (domain, path) {
         try {
             if (domain && path) { return new URL(path, domain).href; }
@@ -184,7 +182,6 @@ nThen(function (w) {
             currentVersion: process.version,
         });
     }
-
     if (Env.OFFLINE_MODE) { return; }
     //if (Env.websocketPath) { return; } // XXX
 

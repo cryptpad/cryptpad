@@ -125,6 +125,12 @@ define([
                 formSeed = obj;
             }));
         }).nThen(function () {
+            if (!formSeed) { // no drive mode
+                formSeed = localStorage.CP_formSeed || Hash.createChannelId();
+                localStorage.CP_formSeed = formSeed;
+            } else {
+                delete localStorage.CP_formSeed;
+            }
             cb({
                 curvePrivate: curvePrivate,
                 curvePublic: curvePrivate && Hash.getCurvePublicFromPrivate(curvePrivate),
@@ -135,28 +141,162 @@ define([
     common.getFormAnswer = function (data, cb) {
         postMessage("GET", {
             key: ['forms', data.channel],
-        }, cb);
-    };
-    common.storeFormAnswer = function (data) {
-        postMessage("SET", {
-            key: ['forms', data.channel],
-            value: {
-                hash: data.hash,
-                curvePrivate: data.curvePrivate,
-                anonymous: data.anonymous
-            }
         }, function (obj) {
-            if (obj && obj.error) {
-                if (obj.error === "ENODRIVE") {
-                    var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
-                    if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
-                    localStorage.CP_formAnswered = JSON.stringify(answered);
-                    return;
-                }
-                console.error(obj.error);
+            if (obj && obj.error === "ENODRIVE") {
+                var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
+                return void cb(all[data.channel]);
             }
-        });
+            if (obj && obj.error) { return void cb(obj); }
 
+            if (obj) {
+                if (!Array.isArray(obj)) { obj = [obj]; }
+                return void cb(obj);
+            }
+
+            // We have a drive and no answer but maybe we had
+            // previous "nodrive" answers: migrate
+            var old = Util.tryParse(localStorage.CP_formAnswers || "{}");
+            if (Array.isArray(old[data.channel])) {
+                var d = old[data.channel];
+                return void postMessage("SET", {
+                    key: ['forms', data.channel],
+                    value: d
+                }, function (obj) {
+                    // Delete old data if it was correctly stored in the drive
+                    if (obj && obj.error) { return void cb(d); }
+                    delete old[data.channel];
+                    localStorage.CP_formAnswers = JSON.stringify(old);
+                    cb(d);
+                });
+            }
+
+            cb();
+        });
+    };
+    common.storeFormAnswer = function (data, cb) {
+        var answer = {
+            uid: data.uid,
+            hash: data.hash,
+            curvePrivate: data.curvePrivate,
+            anonymous: data.anonymous
+        };
+        var answers = [];
+        Nthen(function (waitFor) {
+            common.getFormAnswer(data, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                answers = obj;
+            }));
+        }).nThen(function () {
+            answers.push(answer);
+            postMessage("SET", {
+                key: ['forms', data.channel],
+                value: answers
+            }, function (obj) {
+                if (obj && obj.error) {
+                    if (obj.error === "ENODRIVE") {
+                        var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
+                        all[data.channel] = answers;
+                        localStorage.CP_formAnswers = JSON.stringify(all);
+/*
+
+                        var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
+                        if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
+                        localStorage.CP_formAnswered = JSON.stringify(answered);
+*/
+                        return void cb();
+                    }
+                    console.error(obj.error);
+                }
+                cb();
+            });
+        });
+    };
+    common.deleteFormAnswers = function (data, _cb) {
+        var cb = Util.once(_cb);
+        common.getFormAnswer(data, function (obj) {
+            if (!obj || obj.error) { return void cb(); }
+            if (!obj.length) { return void cb(); }
+            var n = Nthen;
+            var nacl, theirs;
+            n = n(function (waitFor) {
+                require(['/bower_components/tweetnacl/nacl-fast.min.js'], waitFor(function () {
+                    nacl = window.nacl;
+                    var s = new Uint8Array(32);
+                    theirs = nacl.box.keyPair.fromSecretKey(s);
+                }));
+            }).nThen;
+            var toDelete = [];
+            obj.forEach(function (answer) {
+                if (answer.uid !== data.uid) { return; }
+                n = n(function (waitFor) {
+                    var hash = answer.hash;
+                    var h = nacl.util.decodeUTF8(hash);
+
+                    // Make proof
+                    var curve = answer.curvePrivate;
+                    var mySecret = nacl.util.decodeBase64(curve);
+                    var nonce = nacl.randomBytes(24);
+                    var proofBytes = nacl.box(h, nonce, theirs.publicKey, mySecret);
+                    var proof = nacl.util.encodeBase64(nonce) +'|'+ nacl.util.encodeBase64(proofBytes);
+                    var lineData = {
+                        channel: data.channel,
+                        hash: hash,
+                        proof: proof
+                    };
+                    postMessage("DELETE_MAILBOX_MESSAGE", lineData, waitFor(function (obj) {
+                        if (obj && obj.error && obj.error !== 'HASH_NOT_FOUND') {
+                            // If HASH_NOT_FOUND, the message is already deleted
+                            // so we can delete it locally
+                            waitFor.abort();
+                            return void cb(obj);
+                        }
+                        toDelete.push(hash);
+                    }));
+                }).nThen;
+            });
+            n(function () {
+                obj = obj.filter(function (answer) { return !toDelete.includes(answer.hash); });
+                if (!obj.length) { obj = undefined; }
+                postMessage("SET", {
+                    key: ['forms', data.channel],
+                    value: obj
+                }, function (_obj) {
+                    if (_obj && _obj.error === "ENODRIVE") {
+                        var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
+                        if (obj) { all[data.channel] = obj; }
+                        else { delete all[data.channel]; }
+                        localStorage.CP_formAnswers = JSON.stringify(all);
+                        return void cb();
+                    }
+                    return void cb(_obj);
+                });
+            });
+        });
+    };
+    common.muteChannel = function (channel, state, cb) {
+        var mutedChannels = [];
+        Nthen(function (waitFor) {
+            postMessage("GET", {
+                key: ['mutedChannels'],
+            }, waitFor(function (obj) {
+                if (obj && obj.error) { waitFor.abort(); return void cb(obj); }
+                mutedChannels = obj || [];
+            }));
+        }).nThen(function () {
+            if (state) {
+                if (!mutedChannels.includes(channel)) {
+                    mutedChannels.push(channel);
+                }
+            } else {
+                mutedChannels = mutedChannels.filter(function (chan) {
+                    return chan !== channel;
+                });
+            }
+            postMessage("SET", {
+                key: ['mutedChannels'],
+                value: mutedChannels
+            }, cb);
+        });
     };
 
     common.makeNetwork = function (cb) {
@@ -1154,8 +1294,8 @@ define([
     pad.onMetadataEvent = Util.mkEvent();
     pad.onChannelDeleted = Util.mkEvent();
 
-    pad.requestAccess = function (data, cb) {
-        postMessage("REQUEST_PAD_ACCESS", data, cb);
+    pad.contactOwner = function (data, cb) {
+        postMessage("CONTACT_PAD_OWNER", data, cb);
     };
     pad.giveAccess = function (data, cb) {
         postMessage("GIVE_PAD_ACCESS", data, cb);
@@ -2385,6 +2525,7 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
+                form_seed: localStorage.CP_formSeed,
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],

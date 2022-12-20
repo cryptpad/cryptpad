@@ -21,25 +21,30 @@ html, body {
         padding-top: 15px;
     }
 
-    .summary, .failure, .error, .success {
+    .cp-test-status, .summary {
         margin-bottom: 1em;
         border-radius: @corner;
+        padding: 15px;
+        &.success {
+            border: 1px solid green;
+        }
+        &.failure {
+            border: 1px solid red;
+        }
+        &.error {
+            border: 1px solid red;
+        }
+        &.warning {
+            border: 1px solid yellow;
+        }
     }
+    //.summary, .failure, .error, .success { }
 
     .pending {
         border: 1px solid @cryptpad_text_col;
         .fa {
             margin-right: 20px;
         }
-    }
-    .success {
-        border: 1px solid green;
-    }
-    .failure {
-        border: 1px solid red;
-    }
-    .error {
-        border: 1px solid red;
     }
     .hidden {
         display: none;
@@ -84,13 +89,18 @@ html, body {
             word-break: keep-all;
             font-style: italic;
         }
-        a {
-            color: @cryptpad_color_link;
-        }
     }
 
-    .cp-notice-browser, .cp-notice-details, .cp-notice-other {
+    a {
+        color: @cryptpad_color_link;
+    }
+
+    .cp-notice-browser, .cp-notice-details, .cp-notice-other, .cp-notice-customizations {
         font-size: 70%;
+    }
+    .cp-notice-customizations {
+        border: 1px solid #777;
+        padding: 5px;
     }
     .underline { text-decoration: underline; }
     .cp-app-checkup-version, .cp-app-checkup-browser {
