@@ -116,13 +116,12 @@ nThen(function (w) {
             }
 
             const cb = Util.once(Util.mkAsync(function (err, value) {
-                value = Math.random();
                 worker.send({
                     type: 'REPLY',
                     error: Util.serializeError(err),
                     txid: txid,
                     pid: msg.pid,
-                    value: value, // XXX
+                    value: value,
                 });
             }));
 
