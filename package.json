@@ -50,6 +50,7 @@
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
     "evict-inactive": "node scripts/evict-inactive.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "install": "node scripts/install.js"
   }
 }
