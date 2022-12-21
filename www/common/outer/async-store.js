@@ -342,10 +342,11 @@ define([
             cb(account);
         };
 
-        // clearOwnedChannel is only used for private chat at the moment
+        // clearOwnedChannel is only used for private chat and forms
         Store.clearOwnedChannel = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.clearOwnedChannel(data, function (err) {
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            s.rpc.clearOwnedChannel(data.channel, function (err) {
                 cb({error:err});
             });
         };

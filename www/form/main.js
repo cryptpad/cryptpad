@@ -147,7 +147,7 @@ define([
                         accessKeys = _keys;
 
                         _keys.some(function (_k) {
-                            if ((personalDrive && !_k.id) || Cryptpad.initialTeam === _k.id) {
+                            if ((personalDrive && !_k.id) || Cryptpad.initialTeam === Number(_k.id)) {
                                 myKeys = _k;
                                 return true;
                             }
@@ -412,7 +412,7 @@ define([
             });
             sframeChan.on("Q_FORM_DELETE_ALL_ANSWERS", function (data, cb) {
                 if (!data || !data.channel) { return void cb({error: 'EINVAL'}); }
-                Cryptpad.clearOwnedChannel(data.channel, cb);
+                Cryptpad.clearOwnedChannel(data, cb);
             });
             sframeChan.on("Q_FORM_DELETE_ANSWER", function (data, cb) {
                 if (!deleteLines) {
