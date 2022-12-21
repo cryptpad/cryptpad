@@ -28,9 +28,9 @@ git fetch origin --tags
 git checkout 5.2.1
 ```
 
-3. Install the latest dependencies with `bower update` and `npm i`
-4. Restart your server
-5. Review your instance's checkup page to ensure that you are passing all tests
+1. Install the latest dependencies with `bower update`
+2. Restart your server
+3. Review your instance's checkup page to ensure that you are passing all tests
 
 # 5.2.0
 
