@@ -53,6 +53,6 @@
     "evict-inactive": "node scripts/evict-inactive.js",
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
-    "install": "node scripts/install.js"
+    "installtoken": "node scripts/install.js"
   }
 }

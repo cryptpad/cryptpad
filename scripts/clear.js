@@ -23,7 +23,7 @@ p.ask(function (answer) {
     var n = nThen;
     Object.values(paths).forEach(function (path) {
         console.log(`Deleting ${path}`);
-        fs.rmSync(path, { recursive: true, force: true });
+        Fs.rmSync(path, { recursive: true, force: true });
         console.log('Deleted');
     });
     console.log('Success');
