@@ -509,6 +509,7 @@ define([
                 contentUpdate(newContent, function () { return function () {}; });
             }
 
+            console.error('REMOVE LAODING SCREEN - CACHE');
             UI.removeLoadingScreen(emitResize);
         };
         var onReady = function () {
@@ -589,6 +590,7 @@ define([
                     common.getMetadataMgr().setDegraded(false);
                 }
 
+                console.error('REMOVE LOADING SCREEN - ONLINE');
                 UI.removeLoadingScreen(emitResize);
 
                 if (AppConfig.textAnalyzer && textContentGetter) {

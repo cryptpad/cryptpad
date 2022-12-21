@@ -39,6 +39,7 @@ define([
 
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
+    var onJoinedEvt = Util.mkEvent(true);
 
     // Number of days before deleting the cache for a channel or blob
     var CACHE_MAX_AGE = 90; // DAYS
@@ -1808,14 +1809,18 @@ define([
                     postMessage(clientId, "PAD_CACHE");
                 },
                 onCacheReady: function () {
+                    console.error('PAD CACHE READY');
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
+                    console.error('PAD READY');
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
+                    postMessage(clientId, "PAD_READY", pad.noCache);
+                    /*
                     if (!store.proxy) {
                         postMessage(clientId, "PAD_READY", pad.noCache);
                         return;
@@ -1823,6 +1828,7 @@ define([
                     onReadyEvt.reg(function () {
                         postMessage(clientId, "PAD_READY", pad.noCache);
                     });
+                    */
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -1876,6 +1882,9 @@ define([
                 metadata: data.metadata,
                 network: store.network || store.networkPromise,
                 websocketURL: NetConfig.getWebsocketURL(),
+                onInit: function () {
+                    onJoinedEvt.fire();
+                },
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
                     channel.sendMessage = function (msg, cId, cb) {
@@ -2729,8 +2738,11 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 }, true);
             }).nThen(function (waitFor) {
+                console.error('SF CACHE READY');
+
                 loadUniversal(Team, 'team', waitFor, clientId);
             }).nThen(function (waitFor) {
+                console.error('TEAM CACHE READY');
                 loadUniversal(Calendar, 'calendar', waitFor);
             }).nThen(function () {
                 cb();
@@ -2802,6 +2814,7 @@ define([
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
             }).nThen(function () {
+                console.error('SF & TEAM READY');
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };
@@ -2950,6 +2963,7 @@ define([
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
             }).on('cacheready', function (info) {
+                console.error('DRIVE CACHE READY');
                 store.offline = true;
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
@@ -2982,6 +2996,7 @@ define([
                     onCacheReadyEvt.fire();
                 });
             }).on('ready', function (info) {
+                console.error('DRIVE READY');
                 delete store.networkTimeout;
                 if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
@@ -3219,6 +3234,30 @@ define([
             }
 
             store.data = data;
+            if (data.noDrive) {
+                return void onNoDrive(clientId, function (obj) {
+                    if (obj && obj.error) {
+                        // if we can't properly initialize the noDrive mode, use normal mode
+                        if (obj.error === 'GET_HK') {
+                            data.noDrive = false;
+                            Store.init(clientId, data, _callback);
+                            Feedback.send("NO_DRIVE_ERROR", true);
+                            return;
+                        }
+                    }
+                    callback(obj);
+                    onJoinedEvt.reg(function () {
+                        connect(clientId, data, function (ret) {
+                            if (Object.keys(store.proxy).length === 1) {
+                                Feedback.send("FIRST_APP_USE", true);
+                            }
+                            if (ret && ret.error) {
+                                initialized = false;
+                            }
+                        });
+                    });
+                });
+            }
             connect(clientId, data, function (ret) {
                 if (Object.keys(store.proxy).length === 1) {
                     Feedback.send("FIRST_APP_USE", true);
