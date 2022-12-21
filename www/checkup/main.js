@@ -1579,8 +1579,7 @@ define([
             var HSTS = H['strict-transport-security'];
 
             // check for a numerical value of max-age
-            // and the use of includeSubDomains
-            if (/max\-age=\d+/.test(HSTS) && /includeSubDomains/.test(HSTS)) {
+            if (/max\-age=\d+/.test(HSTS)) {
                 return void cb(true);
             }
 
