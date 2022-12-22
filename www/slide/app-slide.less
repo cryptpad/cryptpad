@@ -147,6 +147,16 @@
         }
     }
 
+    @media (max-width: @browser_media-medium-screen) {
+        #cp-app-slide-editor {
+            #cp-app-slide-editor-container {
+                .CodeMirror-sizer > div {
+                    padding-bottom: 100px;
+                }
+            }
+        }
+    }
+
     /* Slide position (print mode) */
     @ratio:0.9;
     @media print {
