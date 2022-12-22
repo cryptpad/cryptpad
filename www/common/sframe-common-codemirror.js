@@ -140,10 +140,15 @@ define([
         return text.trim();
     };
 
+    var isMobile = window.orientation || (typeof(screen) !== "undefined" && screen.orientation);
+
     module.mkIndentSettings = function (editor, metadataMgr) {
         var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
             if (typeof(units) !== 'number') { return; }
             var doc = editor.getDoc();
+            if (isMobile && fontSize < 16) {
+                fontSize = 16;
+            }
             editor.setOption('indentUnit', units);
             editor.setOption('tabSize', units);
             editor.setOption('indentWithTabs', useTabs);
