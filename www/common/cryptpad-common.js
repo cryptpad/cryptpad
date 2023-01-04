@@ -571,8 +571,8 @@ define([
         }, todo);
     };
 
-    common.clearOwnedChannel = function (channel, cb) {
-        postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
+    common.clearOwnedChannel = function (data, cb) {
+        postMessage("CLEAR_OWNED_CHANNEL", data, cb);
     };
     // "force" allows you to delete your drive ID
     common.removeOwnedChannel = function (data, cb) {

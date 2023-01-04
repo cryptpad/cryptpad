@@ -1,3 +1,37 @@
+# 5.2.1
+
+## Goals
+
+This minor releases fixes a bug with one of the Form features introduced in 5.2.0.
+
+We took the opportunity to include two other fixes for older issues.
+
+## Bug Fixes
+
+- The option to delete all responses to a form was not available to form authors when the form had been created in a drive (user or team) using the **+ NEW** button
+
+- Drag & drop from a shared folder into the Templates folder made documents "disappear". They would reappear in the root of the drive when using a new worker (after all CryptPad tabs had been closed)
+
+- Clicking a link in a Calendar event location field failed to open
+
+## Update notes
+
+Our `5.2.0` release introduced some changes to the Nginx configuration. If you are not already running `5.2.0` we recommend following the upgrade notes for that version first, and then updating to `5.2.1`
+
+To do so:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 5.2.1
+```
+
+1. Install the latest dependencies with `bower update`
+2. Restart your server
+3. Review your instance's checkup page to ensure that you are passing all tests
+
 # 5.2.0
 
 ## Goals
