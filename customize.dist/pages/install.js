@@ -14,9 +14,11 @@ define([
             return;
         }
 
+/*
 Msg.install_header = "CryptPad Install"; // XXX
 Msg.install_notes = "<ul class=\"cp-notes-list\"><li>Create your first admin account using this form.</li>" +
                     "<li>Please note your password carefully. <span class=\"red\">If you lose it there is no way we can recover your data.</span></li></ul>"; // XXX
+*/
 Msg.install_token = "Install token";
 
         document.title = Msg.install_header;
@@ -26,7 +28,8 @@ Msg.install_token = "Install token";
                 h('div#cp-main', [
                     //Pages.infopageTopbar(),
                     h('div.container.cp-container', [
-                        h('div.row.cp-page-title', h('h1', Msg.install_header)),
+                        //h('div.row.cp-page-title', h('h1', Msg.install_header)),
+                        h('div.row.cp-page-title', h('h1', Msg.register_header)),
                     ].concat(content)),
                     Pages.infopageFooter(),
                 ]),
@@ -37,7 +40,8 @@ Msg.install_token = "Install token";
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
-                    Pages.setHTML(h('div.cp-register-notes'), Msg.install_notes)
+                    //Pages.setHTML(h('div.cp-register-notes'), Msg.install_notes)
+                    Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group.hidden', [
