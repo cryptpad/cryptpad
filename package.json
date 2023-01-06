@@ -30,14 +30,16 @@
     "ws": "^3.3.1"
   },
   "devDependencies": {
+    "jquery": "3.6.0",
     "jshint": "^2.13.4",
     "less": "3.7.1",
     "lesshint": "6.3.7",
     "selenium-webdriver": "^3.6.0"
   },
   "scripts": {
+    "install:components": "node scripts/copy-components.js",
     "start": "node server.js",
-    "dev": "DEV=1 node server.js",
+    "dev": "npm run install:components && DEV=1 node server.js",
     "fresh": "FRESH=1 node server.js",
     "offline": "FRESH=1 OFFLINE=1 node server.js",
     "offlinedev": "DEV=1 OFFLINE=1 node server.js",

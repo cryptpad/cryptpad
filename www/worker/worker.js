@@ -13,7 +13,7 @@ require.config({
         baseUrl: '/',
         paths: { 
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
-            "jquery": "/bower_components/jquery/dist/jquery.min",
+            "jquery": "/components/jquery/dist/jquery.min",
             // json.sortify same
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
             cm: '/bower_components/codemirror'
