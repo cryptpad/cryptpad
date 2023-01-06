@@ -936,7 +936,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             '/bower_components/nthen/index.js',
             '/bower_components/chainpad-crypto/crypto.js',
             '/common/common-feedback.js',
-            //'/bower_components/tweetnacl/nacl-fast.min.js',
+            //'/components/tweetnacl/nacl-fast.min.js',
         ], function (Util, Hash, CPNF, Sortify, nThen, Crypto, Feedback) {
             return factory.apply(null, [
                 Util,

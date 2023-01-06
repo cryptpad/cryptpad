@@ -4,7 +4,7 @@ define([
     '/common/visible.js',
     '/common/common-hash.js',
     '/common/media-tag.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, Util, Visible, Hash, MediaTag) {
     var Nacl = window.nacl;
     var Thumb = {

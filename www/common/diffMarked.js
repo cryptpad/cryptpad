@@ -13,7 +13,7 @@ define([
 
     '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
     'css!/lib/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
 ],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
     var DiffMd = {};

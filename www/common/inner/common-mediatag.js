@@ -8,7 +8,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
     '/bower_components/croppie/croppie.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/croppie/croppie.css',

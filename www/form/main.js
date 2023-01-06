@@ -4,7 +4,7 @@ define([
     '/api/config',
     '/common/dom-ready.js',
     '/common/sframe-common-outer.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
     var Nacl = window.nacl;
 

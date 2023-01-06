@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "tweetnacl": "0.12.2",
     "components-font-awesome": "^4.6.3",
     "ckeditor": "4.14.0",
     "codemirror": "^5.19.0",

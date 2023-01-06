@@ -16,7 +16,7 @@ define([
     '/common/outer/login-block.js',
     '/common/common-hash.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
             Feedback, LocalStore, Messages, nThen, Block, Hash) {

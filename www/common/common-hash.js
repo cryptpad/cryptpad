@@ -752,7 +752,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             '/common/common-util.js',
             '/bower_components/chainpad-crypto/crypto.js',
             '/common/common-signing-keys.js',
-            '/bower_components/tweetnacl/nacl-fast.min.js'
+            '/components/tweetnacl/nacl-fast.min.js'
         ], function (Util, Crypto, Keys) {
             return factory(Util, Crypto, Keys, window.nacl);
         });

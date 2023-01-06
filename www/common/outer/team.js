@@ -20,7 +20,7 @@ define([
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
              ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt, Cache,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {

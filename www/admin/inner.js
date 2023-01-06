@@ -17,7 +17,7 @@ define([
     '/common/clipboard.js',
 
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',

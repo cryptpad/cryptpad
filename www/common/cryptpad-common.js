@@ -219,7 +219,7 @@ define([
             var n = Nthen;
             var nacl, theirs;
             n = n(function (waitFor) {
-                require(['/bower_components/tweetnacl/nacl-fast.min.js'], waitFor(function () {
+                require(['/components/tweetnacl/nacl-fast.min.js'], waitFor(function () {
                     nacl = window.nacl;
                     var s = new Uint8Array(32);
                     theirs = nacl.box.keyPair.fromSecretKey(s);
@@ -1561,7 +1561,7 @@ define([
                 '/file/file-crypto.js',
                 '/common/media-tag.js',
                 '/common/outer/upload.js',
-                '/bower_components/tweetnacl/nacl-fast.min.js'
+                '/components/tweetnacl/nacl-fast.min.js'
             ], waitFor(function (_FileCrypto, _MT, _Upload) {
                 FileCrypto = _FileCrypto;
                 MediaTag = _MT;
