@@ -6,7 +6,7 @@ var localStorage = {
     getItem: function (k) { return localStorage[k]; }
 };
 
-importScripts('/bower_components/requirejs/require.js');
+importScripts('/components/requirejs/require.js');
 
 require.config({
         // fix up locations so that relative urls work.

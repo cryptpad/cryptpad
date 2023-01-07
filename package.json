@@ -39,6 +39,8 @@
     "lesshint": "6.3.7",
     "marked": "^1.1.0",
     "rangy": "~1.3.0",
+    "requirejs": "2.3.5",
+    "requirejs-plugins": "^1.0.2",
     "selenium-webdriver": "^3.6.0"
   },
   "scripts": {

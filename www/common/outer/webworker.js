@@ -1,5 +1,5 @@
 /* jshint ignore:start */
-importScripts('/bower_components/requirejs/require.js');
+importScripts('/components/requirejs/require.js');
 
 window = self;
 localStorage = {
