@@ -46,7 +46,7 @@ var factory = function (Util, Nacl, Scrypt) {
         define([
             '/common/common-util.js',
             '/components/tweetnacl/nacl-fast.min.js',
-            '/bower_components/scrypt-async/scrypt-async.min.js',
+            '/components/scrypt-async/scrypt-async.min.js',
         ], function (Util) {
             return factory(Util, window.nacl, window.scrypt);
         });

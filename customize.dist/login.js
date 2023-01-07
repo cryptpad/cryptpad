@@ -17,7 +17,7 @@ define([
     '/common/common-hash.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
+    '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
             Feedback, LocalStore, Messages, nThen, Block, Hash) {
     var Exports = {
