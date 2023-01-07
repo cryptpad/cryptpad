@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "dragula.js": "3.7.2",
     "MathJax": "3.0.5"
   },
   "resolutions": {

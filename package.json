@@ -46,6 +46,7 @@
     "jshint": "^2.13.4",
     "json.sortify": "~2.1.0",
     "jszip": "3.7.1",
+    "dragula": "3.7.2",
     "html2canvas": "^1.4.0",
     "less": "3.7.1",
     "lesshint": "6.3.7",
