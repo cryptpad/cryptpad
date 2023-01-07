@@ -16,7 +16,7 @@ require.config({
             "jquery": "/components/jquery/dist/jquery.min",
             // json.sortify same
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
-            cm: '/bower_components/codemirror'
+            cm: '/components/codemirror'
         },
         map: {
             '*': {

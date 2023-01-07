@@ -14,7 +14,7 @@ define([
             "mermaid": "/lib/mermaid/mermaid.min",
             // json.sortify same
             "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
-            cm: '/bower_components/codemirror',
+            cm: '/components/codemirror',
             'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
             'tui-date-picker': '/lib/calendar/date-picker',
             'netflux-client': '/bower_components/netflux-websocket/netflux-client',
