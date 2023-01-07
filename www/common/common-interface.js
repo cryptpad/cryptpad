@@ -21,7 +21,7 @@ define([
     //'/common/test.js',
 
     '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
-    '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
+    '/components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
