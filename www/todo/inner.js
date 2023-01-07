@@ -9,7 +9,7 @@ define([
     '/common/common-hash.js',
     '/todo/todo.js',
     '/customize/messages.js',
-    '/bower_components/sortablejs/Sortable.min.js',
+    '/components/sortablejs/Sortable.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',

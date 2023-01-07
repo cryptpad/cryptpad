@@ -32,6 +32,8 @@ Fse.mkdirpSync(componentsPath);
     "localforage",
     "html2canvas",
     "croppie",
+    "sortablejs",
+    "saferphore",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

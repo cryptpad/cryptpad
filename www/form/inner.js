@@ -28,7 +28,7 @@ define([
     '/common/inner/properties.js',
 
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/sortablejs/Sortable.min.js',
+    '/components/sortablejs/Sortable.min.js',
 
     'cm/addon/edit/closebrackets',
     'cm/addon/edit/matchbrackets',

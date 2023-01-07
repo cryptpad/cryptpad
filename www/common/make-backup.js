@@ -9,7 +9,7 @@ define([
     '/common/inner/cache.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
+    '/components/saferphore/index.js',
     '/bower_components/jszip/dist/jszip.min.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
              Cache, Messages, nThen, Saferphore, JsZip) {

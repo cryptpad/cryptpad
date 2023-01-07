@@ -56,7 +56,9 @@
     "requirejs": "2.3.5",
     "requirejs-plugins": "^1.0.2",
     "scrypt-async": "1.2.0",
-    "selenium-webdriver": "^3.6.0"
+    "saferphore": "^0.0.1",
+    "selenium-webdriver": "^3.6.0",
+    "sortablejs": "^1.6.0"
   },
   "scripts": {
     "install:components": "node scripts/copy-components.js",

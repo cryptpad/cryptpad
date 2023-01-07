@@ -19,7 +19,7 @@ define([
     'chainpad-netflux',
     '/components/chainpad/chainpad.dist.js',
     '/components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
+    '/components/saferphore/index.js',
     '/components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
              ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt, Cache,
