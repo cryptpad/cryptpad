@@ -57,7 +57,7 @@ define([
         __stubbed: true,
         tex2svg: function (a, b) {
             require([
-                '/bower_components/MathJax/es5/tex-svg.js',
+                '/components/mathjax/es5/tex-svg.js',
             ], function () {
                 console.debug("Loaded mathjax");
                 if (Mathjax.__stubbed) {

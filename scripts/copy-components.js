@@ -36,6 +36,7 @@ Fse.mkdirpSync(componentsPath);
     "saferphore",
     "jszip",
     "dragula",
+    "mathjax",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

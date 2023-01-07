@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "MathJax": "3.0.5"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",

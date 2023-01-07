@@ -52,6 +52,7 @@
     "lesshint": "6.3.7",
     "localforage": "^1.5.2",
     "marked": "^1.1.0",
+    "mathjax": "3.0.5",
     "open-sans-fontface": "^1.4.0",
     "rangy": "~1.3.0",
     "require-css": "0.1.10",
