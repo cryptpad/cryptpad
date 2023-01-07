@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "^v4.0.0",
     "diff-dom": "2.1.1",
     "nthen": "0.1.7",
     "open-sans-fontface": "^1.4.2",

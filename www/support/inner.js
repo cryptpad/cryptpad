@@ -14,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/support/app-support.less',
 ], function (

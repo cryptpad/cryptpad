@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "alertify.js": "1.0.11",
+    "bootstrap": "^4.0.0",
     "chainpad": "^5.2.0",
     "chainpad-listmap": "github:xwiki-labs/chainpad-listmap#^1.0.0",
     "chainpad-netflux": "^1.0.0",

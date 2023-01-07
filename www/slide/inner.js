@@ -13,7 +13,7 @@ define([
     '/customize/messages.js',
     'cm/lib/codemirror',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/customize/src/print-landscape.css',
     'less!/slide/app-slide.less',

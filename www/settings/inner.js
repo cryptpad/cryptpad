@@ -18,7 +18,7 @@ define([
 
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/settings/app-settings.less',
 ], function(

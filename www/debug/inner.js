@@ -16,7 +16,7 @@ define([
     '/customize/application_config.js',
     '/debug/chainpad.dist.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/debug/app-debug.less',
 ], function (
