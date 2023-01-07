@@ -2623,7 +2623,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     name: 'dlmedias',
                     icon: 'fa-download',
                 }, function () {
-                    require(['/bower_components/jszip/dist/jszip.min.js'], function (JsZip) {
+                    require(['/components/jszip/dist/jszip.min.js'], function (JsZip) {
                         var zip = new JsZip();
                         Object.keys(mediasData || {}).forEach(function (url) {
                             var obj = mediasData[url];
