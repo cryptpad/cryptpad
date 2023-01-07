@@ -27,6 +27,7 @@ Fse.mkdirpSync(componentsPath);
     "require-css",
     "bootstrap",
     "nthen",
+    "open-sans-fontface",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

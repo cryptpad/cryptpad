@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "open-sans-fontface": "^1.4.2",
     "bootstrap-tokenfield": "0.12.1",
     "localforage": "^1.5.2",
     "html2canvas": "^0.4.1",
