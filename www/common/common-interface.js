@@ -14,7 +14,7 @@ define([
     '/common/common-hash.js',
     '/common/common-notifier.js',
     '/customize/application_config.js',
-    '/bower_components/alertifyjs/dist/js/alertify.js',
+    '/components/alertify.js/dist/js/alertify.js',
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
