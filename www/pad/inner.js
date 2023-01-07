@@ -50,7 +50,7 @@ define([
 
     'css!/customize/src/print.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/pad/app-pad.less'
 ], function(
     $,
@@ -631,7 +631,7 @@ define([
         var mediaTagMap = {};
         var $contentContainer = $('#cke_1_contents');
         var $html = $('html');
-        var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
+        var $faLink = $html.find('head link[href*="/components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }

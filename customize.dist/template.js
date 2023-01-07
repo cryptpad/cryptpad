@@ -4,7 +4,7 @@ define([
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Pages, nThen) {
     // we consider that there is no valid reason to load any of the info pages
     // in an iframe. abort everything if you detect that you are embedded.

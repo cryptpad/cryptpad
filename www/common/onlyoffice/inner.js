@@ -25,7 +25,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/common/onlyoffice/app-oo.less',
 ], function (
     $,

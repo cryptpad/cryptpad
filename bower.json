@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "components-font-awesome": "^4.6.3",
     "requirejs": "2.3.5",
     "json.sortify": "~2.1.0",
     "hyperjson": "~1.4.0",

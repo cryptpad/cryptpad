@@ -27,7 +27,7 @@ define([
     '/common/jscolor.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
 ], function (

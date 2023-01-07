@@ -12,6 +12,7 @@ Fse.mkdirpSync(componentsPath);
     "codemirror",
     "marked",
     "rangy",
+    "components-font-awesome",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

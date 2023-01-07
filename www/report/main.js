@@ -17,7 +17,7 @@ define([
 
 
     '/components/tweetnacl/nacl-fast.min.js',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
             nThen, Hash, Util, Crypt, Cryptpad, Cache, UI, CPNetflux,

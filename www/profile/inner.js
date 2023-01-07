@@ -25,7 +25,7 @@ define([
     'css!/components/codemirror/addon/dialog/dialog.css',
     'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
 ], function (
     $,

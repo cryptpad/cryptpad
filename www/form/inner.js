@@ -42,7 +42,7 @@ define([
     'css!/components/codemirror/addon/dialog/dialog.css',
     'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
     $,

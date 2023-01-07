@@ -13,7 +13,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;

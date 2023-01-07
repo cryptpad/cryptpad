@@ -10,7 +10,7 @@ define([
     '/common/common-interface.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/contacts/app-contacts.less',
 ], function (
     $,
