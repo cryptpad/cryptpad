@@ -2,7 +2,7 @@ require(['/api/config'], function(ApiConfig) {
     // see ckeditor_base.js getUrl()
     window.CKEDITOR_GETURL = function(resource) {
         if (resource.indexOf('/') === 0) {
-            resource = window.CKEDITOR.basePath.replace(/\/bower_components\/.*/, '') + resource;
+            resource = window.CKEDITOR.basePath.replace(/\/components\/.*/, '') + resource;
         } else if (resource.indexOf(':/') === -1) {
             resource = window.CKEDITOR.basePath + resource;
         }
@@ -20,7 +20,7 @@ require(['/api/config'], function(ApiConfig) {
         }
     };
 
-    require(['/bower_components/ckeditor/ckeditor.js']);
+    require(['/components/ckeditor/ckeditor.js']);
 });
 define([
     'jquery',
@@ -1405,7 +1405,7 @@ define([
                 var _getPath = Ckeditor.plugins.getPath;
                 Ckeditor.plugins.getPath = function (name) {
                     if (name === 'preview') {
-                        return window.location.origin + "/bower_components/ckeditor/plugins/preview/";
+                        return window.location.origin + "/components/ckeditor/plugins/preview/";
                     }
                     return _getPath(name);
                 };

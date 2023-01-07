@@ -19,7 +19,6 @@
   ],
   "dependencies": {
     "components-font-awesome": "^4.6.3",
-    "ckeditor": "4.14.0",
     "codemirror": "^5.19.0",
     "requirejs": "2.3.5",
     "marked": "1.1.0",

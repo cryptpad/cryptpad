@@ -8,6 +8,7 @@ Fse.mkdirpSync(componentsPath);
 [
     "jquery",
     "tweetnacl",
+    "ckeditor",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
