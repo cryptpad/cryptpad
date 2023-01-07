@@ -1,6 +1,5 @@
 datastore
 tasks
-www/bower_components/*
 www/components/*
 www/accounts
 node_modules

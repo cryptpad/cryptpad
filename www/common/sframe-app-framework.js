@@ -840,7 +840,7 @@ define([
                 try {
                     l = cpNfInner.chainpad.getLag();
                 } catch (e) {
-                    throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+                    throw new Error("ChainPad.getLag() does not exist, please `npm install && npm run install:components`");
                 }
                 if (l.lag < badStateTimeout) { return; }
 
