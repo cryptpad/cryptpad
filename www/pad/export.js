@@ -3,7 +3,7 @@ define([
     '/common/common-util.js',
     '/common/diffMarked.js',
     '/common/hyperscript.js',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     '/bower_components/nthen/index.js',
     '/lib/turndown.browser.umd.js'
 ], function ($, Util, DiffMd, h, Hyperjson, nThen, Turndown) {

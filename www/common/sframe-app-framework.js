@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     '/common/toolbar.js',
     'json.sortify',
     '/bower_components/nthen/index.js',

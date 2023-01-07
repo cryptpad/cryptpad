@@ -24,7 +24,7 @@ require(['/api/config'], function(ApiConfig) {
 });
 define([
     'jquery',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     '/common/sframe-app-framework.js',
     '/common/cursor.js',
     //'/common/TypingTests.js',

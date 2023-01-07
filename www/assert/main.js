@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     'json.sortify',
     '/drive/tests.js',
     //'/common/test.js',

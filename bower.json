@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "hyperjson": "~1.4.0",
     "chainpad-crypto": "^0.2.0",
     "chainpad-listmap": "^1.0.0",
     "chainpad": "^5.2.0",

@@ -33,6 +33,7 @@
     "ckeditor": "^4.12.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",
+    "hyper-json": "~1.4.0",
     "jquery": "3.6.0",
     "jshint": "^2.13.4",
     "json.sortify": "~2.1.0",
