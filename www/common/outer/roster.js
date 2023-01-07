@@ -921,13 +921,13 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             require("../common-util"),
             require("../common-hash"),
             require("../../bower_components/chainpad-netflux/chainpad-netflux.js"),
-            require("../../bower_components/json.sortify"),
+            require("../../components/json.sortify"),
             require("nthen"),
             require("../../bower_components/chainpad-crypto/crypto"),
             null // no feedback here
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        require.config({ paths:  { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
+        require.config({ paths:  { 'json.sortify': '/components/json.sortify/dist/JSON.sortify' } });
         define([
             '/common/common-util.js',
             '/common/common-hash.js',

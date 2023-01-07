@@ -13,7 +13,7 @@ define([
             "jquery": "/components/jquery/dist/jquery.min",
             "mermaid": "/lib/mermaid/mermaid.min",
             // json.sortify same
-            "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
+            "json.sortify": "/components/json.sortify/dist/JSON.sortify",
             cm: '/components/codemirror',
             'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
             'tui-date-picker': '/lib/calendar/date-picker',

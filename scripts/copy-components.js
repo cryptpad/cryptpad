@@ -15,6 +15,7 @@ Fse.mkdirpSync(componentsPath);
     "components-font-awesome",
     "requirejs",
     "requirejs-plugins",
+    "json.sortify",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

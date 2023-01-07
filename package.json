@@ -35,6 +35,7 @@
     "components-font-awesome": "^4.6.3",
     "jquery": "3.6.0",
     "jshint": "^2.13.4",
+    "json.sortify": "~2.1.0",
     "less": "3.7.1",
     "lesshint": "6.3.7",
     "marked": "^1.1.0",
