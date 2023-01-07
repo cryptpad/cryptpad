@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/api/config',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/hyperscript.js',

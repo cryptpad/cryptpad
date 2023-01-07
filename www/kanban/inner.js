@@ -15,7 +15,7 @@ define([
     '/common/text-cursor.js',
     '/common/diffMarked.js',
     '/bower_components/chainpad/chainpad.dist.js',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',

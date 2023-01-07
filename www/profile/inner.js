@@ -15,7 +15,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 

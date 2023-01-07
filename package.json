@@ -36,6 +36,7 @@
     "jshint": "^2.13.4",
     "less": "3.7.1",
     "lesshint": "6.3.7",
+    "marked": "^1.1.0",
     "selenium-webdriver": "^3.6.0"
   },
   "scripts": {
