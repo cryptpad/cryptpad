@@ -26,7 +26,7 @@ define([
         },
         map: {
             '*': {
-                'css': '/bower_components/require-css/css.js',
+                'css': '/components/require-css/css.js',
                 'less': '/common/RequireLess.js',
             }
         }

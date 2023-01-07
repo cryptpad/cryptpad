@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "require-css": "0.1.10",
     "bootstrap": "^v4.0.0",
     "diff-dom": "2.1.1",
     "nthen": "0.1.7",
