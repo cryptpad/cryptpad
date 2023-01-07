@@ -17,7 +17,7 @@ define([
             cm: '/components/codemirror',
             'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
             'tui-date-picker': '/lib/calendar/date-picker',
-            'netflux-client': '/bower_components/netflux-websocket/netflux-client',
+            'netflux-client': '/components/netflux-websocket/netflux-client',
             'chainpad-netflux': '/components/chainpad-netflux/chainpad-netflux',
             'chainpad-listmap': '/components/chainpad-listmap/chainpad-listmap',
             'cm-extra': '/lib/codemirror-extra-modes',

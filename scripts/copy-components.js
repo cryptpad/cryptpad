@@ -37,6 +37,7 @@ Fse.mkdirpSync(componentsPath);
     "jszip",
     "dragula",
     "mathjax",
+    "netflux-websocket",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
