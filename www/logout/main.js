@@ -1,5 +1,5 @@
 define([
-    '/bower_components/localforage/dist/localforage.min.js',
+    '/components/localforage/dist/localforage.min.js',
     '/common/outer/cache-store.js',
     '/components/nthen/index.js',
 ], function (localForage, Cache, nThen) {

@@ -26,7 +26,7 @@ define([
     '/common/common-feedback.js',
     '/common/common-language.js',
     '/common/common-constants.js',
-    '/bower_components/localforage/dist/localforage.min.js',
+    '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
 ], function (
     $,
