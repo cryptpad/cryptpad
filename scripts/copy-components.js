@@ -30,6 +30,7 @@ Fse.mkdirpSync(componentsPath);
     "open-sans-fontface",
     "bootstrap-tokenfield",
     "localforage",
+    "html2canvas",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
