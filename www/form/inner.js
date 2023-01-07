@@ -36,7 +36,7 @@ define([
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
     'css!/components/codemirror/lib/codemirror.css',
     'css!/components/codemirror/addon/dialog/dialog.css',

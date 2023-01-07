@@ -22,7 +22,7 @@ define([
     '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/components/components-font-awesome/css/font-awesome.min.css',

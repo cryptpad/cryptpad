@@ -46,7 +46,7 @@ define([
     //'/common/test.js',
 
     '/lib/diff-dom/diffDOM.js',
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
     'css!/customize/src/print.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',

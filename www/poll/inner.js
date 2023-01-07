@@ -25,7 +25,7 @@ define([
     'cm/mode/markdown/markdown',
     'css!cm/lib/codemirror.css',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',

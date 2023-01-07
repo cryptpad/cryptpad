@@ -21,6 +21,7 @@ Fse.mkdirpSync(componentsPath);
     "chainpad-crypto",
     "chainpad-listmap",
     "chainpad-netflux",
+    "file-saver",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

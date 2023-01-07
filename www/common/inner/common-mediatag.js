@@ -10,7 +10,7 @@ define([
 
     '/components/tweetnacl/nacl-fast.min.js',
     '/bower_components/croppie/croppie.min.js',
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
