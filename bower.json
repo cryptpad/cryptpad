@@ -18,7 +18,6 @@
     "tests"
   ],
   "dependencies": {
-    "croppie": "^2.5.0",
     "sortablejs": "^1.6.0",
     "saferphore": "^0.0.1",
     "jszip": "3.7.1",

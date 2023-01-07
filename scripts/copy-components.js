@@ -31,6 +31,7 @@ Fse.mkdirpSync(componentsPath);
     "bootstrap-tokenfield",
     "localforage",
     "html2canvas",
+    "croppie",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
