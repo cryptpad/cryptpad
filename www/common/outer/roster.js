@@ -933,7 +933,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             '/common/common-hash.js',
             'chainpad-netflux',
             'json.sortify',
-            '/bower_components/nthen/index.js',
+            '/components/nthen/index.js',
             '/components/chainpad-crypto/crypto.js',
             '/common/common-feedback.js',
             //'/components/tweetnacl/nacl-fast.min.js',

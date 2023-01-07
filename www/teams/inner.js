@@ -8,7 +8,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
     '/common/common-constants.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
     '/common/userObject.js',

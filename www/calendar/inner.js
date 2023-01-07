@@ -3,7 +3,7 @@ define([
     'json.sortify',
     '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',

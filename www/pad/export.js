@@ -4,7 +4,7 @@ define([
     '/common/diffMarked.js',
     '/common/hyperscript.js',
     '/components/hyper-json/hyperjson.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/lib/turndown.browser.umd.js'
 ], function ($, Util, DiffMd, h, Hyperjson, nThen, Turndown) {
     var module = {

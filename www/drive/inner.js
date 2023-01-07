@@ -7,7 +7,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
     '/customize/application_config.js',

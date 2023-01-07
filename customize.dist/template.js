@@ -2,7 +2,7 @@ define([
     'jquery',
     '/common/hyperscript.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 
     'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Pages, nThen) {

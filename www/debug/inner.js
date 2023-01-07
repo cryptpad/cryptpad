@@ -4,7 +4,7 @@ define([
     '/common/toolbar.js',
     'json.sortify',
     '/common/common-util.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',

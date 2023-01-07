@@ -12,7 +12,7 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/outer/login-block.js',
     '/common/common-hash.js',
 

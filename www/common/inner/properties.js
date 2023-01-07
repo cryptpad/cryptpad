@@ -7,7 +7,7 @@ define([
     '/common/inner/common-modal.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function ($, Util, Hash, UI, UIElements, Modal, h,
              Messages, nThen) {
     var Properties = {};

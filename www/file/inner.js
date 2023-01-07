@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-hash.js',
     '/common/common-interface.js',

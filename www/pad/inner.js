@@ -33,7 +33,7 @@ define([
     '/pad/comments.js',
     '/pad/export.js',
     '/pad/cursor.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
     '/common/common-hash.js',

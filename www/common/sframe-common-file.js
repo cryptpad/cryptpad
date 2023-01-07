@@ -11,7 +11,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/media-tag.js',
 
     '/components/file-saver/FileSaver.min.js',

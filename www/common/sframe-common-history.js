@@ -4,7 +4,7 @@ define([
     '/common/common-util.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     //'/components/chainpad-json-validator/json-ot.js',
 
     '/components/chainpad/chainpad.dist.js',

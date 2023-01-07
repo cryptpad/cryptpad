@@ -3,7 +3,7 @@ define([
     '/api/config',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/cryptget.js',

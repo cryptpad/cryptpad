@@ -2,7 +2,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/userObject.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (Util, Hash, UserObject, nThen) {
     var History = {};
     var commands = {};

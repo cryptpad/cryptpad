@@ -3,7 +3,7 @@ define([
     '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',

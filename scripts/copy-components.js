@@ -26,6 +26,7 @@ Fse.mkdirpSync(componentsPath);
     "scrypt-async",
     "require-css",
     "bootstrap",
+    "nthen",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

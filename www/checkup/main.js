@@ -5,7 +5,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/dom-ready.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common-outer.js',
     '/customize/login.js',
     '/common/common-hash.js',

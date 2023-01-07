@@ -6,7 +6,7 @@ define([
     '/common/outer/cache-store.js',
     '/calendar/recurrence.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     'chainpad-listmap',
     '/components/chainpad-crypto/crypto.js',
     '/components/chainpad/chainpad.dist.js',

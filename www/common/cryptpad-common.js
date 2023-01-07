@@ -14,7 +14,7 @@ define([
     '/common/outer/login-block.js',
 
     '/customize/application_config.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {

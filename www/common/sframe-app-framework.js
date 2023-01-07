@@ -3,7 +3,7 @@ define([
     '/components/hyper-json/hyperjson.js',
     '/common/toolbar.js',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/hyperscript.js',

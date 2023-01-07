@@ -4,7 +4,7 @@ define([
     '/common/userObject.js',
     '/common/outer/cache-store.js',
 
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/components/chainpad/chainpad.dist.js',

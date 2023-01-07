@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/api/config',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/outer/worker-channel.js',

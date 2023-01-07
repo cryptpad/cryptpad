@@ -8,7 +8,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (Crypto, Hash, Util, Realtime, Messaging, Constants, Messages, AppConfig, nThen) {
     'use strict';
     var Curve = Crypto.Curve;

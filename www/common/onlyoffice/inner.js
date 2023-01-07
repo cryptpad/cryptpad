@@ -2,7 +2,7 @@ define([
     'jquery',
     '/common/toolbar.js',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',

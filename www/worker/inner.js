@@ -2,7 +2,7 @@ define([
     'jquery',
     '/common/toolbar.js',
     '/common/cryptpad-common.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/customize/messages.js',

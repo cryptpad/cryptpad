@@ -29,7 +29,7 @@ define([
     'chainpad-netflux',
     'chainpad-listmap',
     'netflux-client',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,

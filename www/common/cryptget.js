@@ -8,7 +8,7 @@ define([
     '/common/outer/network-config.js',
     '/common/outer/cache-store.js',
     '/common/pinpad.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/components/chainpad/chainpad.dist.js',
 ], function (Crypto, CPNetflux, Netflux, Util, Hash, Realtime, NetConfig, Cache, Pinpad, nThen) {
     var finish = function (S, err, doc) {

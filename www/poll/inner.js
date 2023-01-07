@@ -3,7 +3,7 @@ define([
     '/common/toolbar.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
     '/customize/application_config.js',
