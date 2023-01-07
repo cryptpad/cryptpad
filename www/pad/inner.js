@@ -41,7 +41,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     //'/customize/application_config.js',
     //'/common/test.js',
 

@@ -17,6 +17,10 @@ Fse.mkdirpSync(componentsPath);
     "requirejs-plugins",
     "json.sortify",
     "hyper-json",
+    "chainpad",
+    "chainpad-crypto",
+    "chainpad-listmap",
+    "chainpad-netflux",
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);

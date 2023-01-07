@@ -920,10 +920,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         module.exports = factory(
             require("../common-util"),
             require("../common-hash"),
-            require("../../bower_components/chainpad-netflux/chainpad-netflux.js"),
+            require("../../components/chainpad-netflux/chainpad-netflux.js"),
             require("../../components/json.sortify"),
             require("nthen"),
-            require("../../bower_components/chainpad-crypto/crypto"),
+            require("../../components/chainpad-crypto/crypto"),
             null // no feedback here
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
@@ -934,7 +934,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             'chainpad-netflux',
             'json.sortify',
             '/bower_components/nthen/index.js',
-            '/bower_components/chainpad-crypto/crypto.js',
+            '/components/chainpad-crypto/crypto.js',
             '/common/common-feedback.js',
             //'/components/tweetnacl/nacl-fast.min.js',
         ], function (Util, Hash, CPNF, Sortify, nThen, Crypto, Feedback) {

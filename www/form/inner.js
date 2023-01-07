@@ -2,7 +2,7 @@ define([
     'jquery',
     'json.sortify',
     '/api/config',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
     '/form/export.js',
@@ -21,7 +21,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/text-cursor.js',
     'cm/lib/codemirror',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',

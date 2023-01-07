@@ -30,6 +30,9 @@
     "ws": "^3.3.1"
   },
   "devDependencies": {
+    "chainpad": "^5.2.0",
+    "chainpad-listmap": "github:xwiki-labs/chainpad-listmap#^1.0.0",
+    "chainpad-netflux": "^1.0.0",
     "ckeditor": "^4.12.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",

@@ -15,9 +15,9 @@ define([
     '/common/outer/cache-store.js',
 
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-netflux',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
     '/components/tweetnacl/nacl-fast.min.js',

@@ -13,7 +13,7 @@ define([
     '/api/config',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
     '/common/onlyoffice/history.js',
     '/common/onlyoffice/oocell_base.js',

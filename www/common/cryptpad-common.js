@@ -1702,7 +1702,7 @@ define([
 
             require([
                 '/common/cryptget.js',
-                '/bower_components/chainpad-crypto/crypto.js',
+                '/components/chainpad-crypto/crypto.js',
             ], waitFor(function (_Crypt, _Crypto) {
                 Crypt = _Crypt;
                 Crypto = _Crypto;

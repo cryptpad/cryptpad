@@ -130,7 +130,7 @@ define([
             require([
                 '/common/sframe-chainpad-netflux-outer.js',
                 '/common/cryptpad-common.js',
-                '/bower_components/chainpad-crypto/crypto.js',
+                '/components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
                 '/secureiframe/main.js',

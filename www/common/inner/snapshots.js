@@ -4,7 +4,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function ($, UI, h, Messages, nThen, ChainPad /* JsonOT */) {
     var Snapshots = {};
 

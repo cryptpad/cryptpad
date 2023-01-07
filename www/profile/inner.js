@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/common/toolbar.js',
     '/bower_components/nthen/index.js',

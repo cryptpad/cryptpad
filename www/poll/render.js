@@ -2,7 +2,7 @@ define([
     'jquery',
     '/components/hyper-json/hyperjson.js',
     '/common/text-cursor.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/common-util.js',
     '/customize/messages.js',
 

@@ -15,7 +15,7 @@ define([
     '/common/common-feedback.js',
     '/common/inner/snapshots.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/test.js',
 
     '/bower_components/file-saver/FileSaver.min.js',

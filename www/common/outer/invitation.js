@@ -109,7 +109,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
         define([
             '/common/common-util.js',
             '/common/common-credential.js',
-            '/bower_components/chainpad-crypto/crypto.js',
+            '/components/chainpad-crypto/crypto.js',
             '/components/tweetnacl/nacl-fast.min.js',
         ], function (Util, Cred, Crypto) {
             return factory(Util, Cred, window.nacl, Crypto);

@@ -8,7 +8,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/text-cursor.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 

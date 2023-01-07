@@ -24,8 +24,8 @@ define([
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
     'chainpad-netflux',
     'chainpad-listmap',
     'netflux-client',

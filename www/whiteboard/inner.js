@@ -12,7 +12,7 @@ define([
     '/customize/messages.js',
     '/whiteboard/colors.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 
     '/lib/fabric.min.js',
     'less!/whiteboard/app-whiteboard.less'
