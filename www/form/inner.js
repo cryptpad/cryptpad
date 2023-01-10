@@ -200,7 +200,6 @@ define([
         ];
     };
 
-
     var editDateOptions = function (cb) {
         var evOnSave = Util.mkEvent();
 
@@ -1145,8 +1144,6 @@ define([
             printResults: function () { return; },
             icon: h('i.cptools.cptools-form-page-break')
         },
-
-        
         section: {
             defaultOpts: {
                 questions: []
@@ -1663,7 +1660,6 @@ define([
                 };
             },
             printResults: function (answers, uid) { // results text
-
                 var results = [];
                 var empty = 0;
                 var tally = {};
@@ -2871,6 +2867,7 @@ define([
 
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
+
         var show = function (answers, header) {
             var order = getFullOrder(content);
             var elements = order.map(function (uid) {
@@ -2894,7 +2891,6 @@ define([
                         TYPES[type].icon.cloneNode(),
                         h('span', Messages['form_type_'+type])
                     ]),
-                    
                     q,
                     h('div.cp-form-block-content', print),
                 ]);
@@ -3633,6 +3629,7 @@ define([
             });
         }
 
+        
         var getFormCreator = function (uid, inSection) {
             if (!APP.isEditor) { return; }
             var full = !uid;
