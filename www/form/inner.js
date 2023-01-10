@@ -201,14 +201,6 @@ define([
     };
 
     var editDateOptions = function (cb) {
-        var evOnSave = Util.mkEvent();
-
-        evOnSave.reg(function () {
-            var res = getSaveRes();
-            if (!res) { return; }
-            cb(res);
-        });
-
         var saveAndCancel = saveAndCancelOptions(cb);
 
         return [
@@ -2079,20 +2071,6 @@ define([
 
 
             return h('div.cp-charts.cp-bar-table', results);
-        },
-        exportCSV: function (answer, form) {
-            var opts = form.opts || {};
-            var q = form.q || Messages.form_default;
-            if (answer === false) {
-                return (opts.items || []).map(function (obj) {
-                    return q + ' | ' + obj.v;
-                });
-            }
-            if (!answer) { return ['']; }
-            return (opts.items || []).map(function (obj) {
-                var uid = obj.uid;
-                return String(answer[uid] || '');
-            });
         },
         icon: h('i.cp-calendar-active.fa.fa-calendar')},
         checkbox: {
