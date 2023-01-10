@@ -3,6 +3,7 @@ define([
     '/customize/application_config.js'
 ], function (RequireConfig, AppConfig) {
 
+    // if an AppConfig.defaultDarkTheme variable is added to application_config.js and set to true, this sets the theme to dark by default irrespective of browser settings
     var checkDefaultDarkTheme = function () {
         if (AppConfig.defaultDarkTheme) {
             return os = 'dark';
