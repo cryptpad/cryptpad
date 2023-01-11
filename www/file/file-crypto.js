@@ -148,7 +148,7 @@ define([
         // if metadata is too large, drop the thumbnail.
         if (plaintext.length > 65535) {
             var temp = JSON.parse(JSON.stringify(metadata));
-            delete metadata.thumbnail;
+            delete temp.thumbnail;
             plaintext = Nacl.util.decodeUTF8(JSON.stringify(temp));
         }
 
