@@ -61,7 +61,7 @@ define([
         var metadataMgr = framework._.cpNfInner.metadataMgr;
 
         var brush = {
-            color: window.CryptPad_theme === "dark" ? '#FFFFFF' : '#000000',
+            color: '#000000',
             opacity: 1
         };
 
