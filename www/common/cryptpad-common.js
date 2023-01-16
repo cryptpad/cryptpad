@@ -2320,7 +2320,6 @@ define([
                 localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
             }
         }
-
         initFeedback(data.feedback);
     };
 
@@ -2729,6 +2728,7 @@ define([
                         if (data.error) { throw new Error(data.error); }
                         if (data.state === 'ALREADY_INIT') {
                             data = data.returned;
+                            initFeedback(data.feedback);
                         }
 
                         if (data.loggedIn) {
