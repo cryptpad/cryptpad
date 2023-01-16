@@ -3122,8 +3122,10 @@ define([
             description,
             h('div', Messages.form_alreadyAnsweredMult),
             table,
-            newAnswer,
-            responses ? h('div', responses) : undefined
+            h('div.cp-form-submit-success-actions', [
+                newAnswer,
+                responses || undefined
+            ])
         ]));
         $container.append(getLogo());
     };
