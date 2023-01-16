@@ -164,6 +164,10 @@ app.get(mainPagePattern, Express.static(Path.resolve('customize.dist')));
 app.use("/blob", Express.static(Env.paths.blob, {
     maxAge: Env.DEV_MODE? "0d": "365d"
 }));
+
+app.head("/datastore", Express.static(Env.paths.data, {
+    maxAge: "0d"
+}));
 app.use("/datastore", Express.static(Env.paths.data, {
     maxAge: "0d"
 }));
