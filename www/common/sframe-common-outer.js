@@ -15,6 +15,7 @@ define([
         'pad',
         'slide',
         'whiteboard',
+        'integration'
     ].map(function (x) {
         return `/${x}/`;
     });
@@ -695,7 +696,8 @@ define([
                         fromContent: Cryptpad.fromContent,
                         burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined),
-                        supportsWasm: Utils.Util.supportsWasm()
+                        supportsWasm: Utils.Util.supportsWasm(),
+                        integration: cfg.integration
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
@@ -1966,6 +1968,8 @@ define([
                     placeholder.remove();
                 }
 
+
+
                 var replaceHash = function (hash) {
                     // The pad has just been created but is not stored yet. We'll switch
                     // to hidden hash once the pad is stored
@@ -2059,6 +2063,11 @@ define([
                 var rtConfig = {
                     metadata: {}
                 };
+
+                if (cfg.integration) {
+                    rtConfig.metadata.selfdestruct = true;
+                }
+
                 if (data.team) {
                     Cryptpad.initialTeam = data.team.id;
                 }
