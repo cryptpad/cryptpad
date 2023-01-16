@@ -111,7 +111,7 @@ var init = function (client, cb) {
                             if (data && data.state === "ALREADY_INIT") {
                                 debug('Store already exists!');
                                 self.store = data.returned;
-                                return void cb(data.returned);
+                                return void cb(data);
                             }
                             self.store = data;
                             cb(data);
