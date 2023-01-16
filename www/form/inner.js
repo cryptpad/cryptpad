@@ -3102,7 +3102,7 @@ define([
             }
 
             var name = (answer._isAnon || !answer._userdata || !answer._userdata.name) ?
-                            Messages.anonymous : Util.fixHTML(answer._userdata.name)
+                            Messages.anonymous : Util.fixHTML(answer._userdata.name);
             entries.push(h('div.cp-form-submit-actions', [
                 h('span.cp-form-submit-time', date),
                 h('span.cp-form-submit-time', '-'),
