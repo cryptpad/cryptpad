@@ -968,7 +968,13 @@ define([
         if (!answers) { return; }
         return Object.keys(answers || {}).map(function (key) {
             var user = key.split('|')[0];
-            if (filterCurve && user === filterCurve) { return; }
+            if (filterCurve && user === filterCurve) {
+                var obj = answers[key];
+                // Only hide the current response (APP.editingUid), not all our responses
+                if (APP.editingUid && Util.find(obj, ['msg', '_uid']) === APP.editingUid) {
+                    return;
+                }
+            }
             try {
                 return {
                     curve: user,
