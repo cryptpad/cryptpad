@@ -899,7 +899,6 @@ define([
             $toc.removeClass('hidden');
             if (hide) { $toc.addClass('hidden'); }
 
-            var evOnHide = Util.mkEvent();
             $(hideBtn).click(function () {
                 $toc.addClass('hidden');
                 localHide = true;
@@ -928,6 +927,9 @@ define([
                     if (!obj.el || UIElements.isVisible(obj.el, $contentContainer)) { return; }
                     obj.el.scrollIntoView();
                     var $iframe = $('iframe').contents();
+                    var onScroll = function () {
+                        APP.tocScrollOff();
+                    };
                     APP.tocScrollOff = function () {
                         delete APP.tocScroll;
                         delete APP.tocScrollOff;
@@ -935,9 +937,6 @@ define([
                     };
                     APP.tocScroll = function () {
                         obj.el.scrollIntoView();
-                        APP.tocScrollOff();
-                    };
-                    var onScroll = function () {
                         APP.tocScrollOff();
                     };
                     //$(window).on('scroll', onScroll);
