@@ -121,18 +121,18 @@ define([
                     highlightMode: "gfm"
                 }); // XXX only for code
 
-                console.error('CRYPTPUT', data.sessionKey);
-                Crypt.put(data.sessionKey, content, w(), {
+                console.error('CRYPTPUT', data.key);
+                Crypt.put(data.key, content, w(), {
                     metadata: {
                         selfdestruct: true
                     }
                 });
             }).nThen(function () {
-                var href = Hash.hashToHref(data.sessionKey, data.application);
+                var href = Hash.hashToHref(data.key, data.application);
                 console.error(Hash.hrefToHexChannelId(href));
                 window.CP_integration_outer = {
                     pathname: `/${data.application}/`,
-                    hash: data.sessionKey,
+                    hash: data.key,
                     href: href
                 };
                 require(['/common/sframe-app-outer.js'], function () {

@@ -81,6 +81,7 @@
                 var onKeyValidated = function () {
                     chan.send('START', {
                         key: key,
+                        application: config.documentType,
                         document: config.document.url,
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
