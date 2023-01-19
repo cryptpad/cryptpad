@@ -128,14 +128,8 @@ define([
     };
 
     var importContent = UIElements.importContent = function (type, f, cfg) {
-        return function () {
-            var $files = $('<input>', {type:"file"});
-            if (cfg && cfg.accept) {
-                $files.attr('accept', cfg.accept);
-            }
-            $files.click();
-            $files.on('change', function (e) {
-                var file = e.target.files[0];
+        return function (_file) {
+            var todo = function (file) {
                 var reader = new FileReader();
                 var parsed = file && file.name && /.+\.([^.]+)$/.exec(file.name);
                 var ext = parsed && parsed[1];
@@ -144,7 +138,19 @@ define([
                    reader.readAsArrayBuffer(file, type);
                 } else {
                    reader.readAsText(file, type);
-               }
+                }
+            };
+
+            if (_file) { return void todo(_file); }
+
+            var $files = $('<input>', {type:"file"});
+            if (cfg && cfg.accept) {
+                $files.attr('accept', cfg.accept);
+            }
+            $files.click();
+            $files.on('change', function (e) {
+                var file = e.target.files[0];
+                todo(file);
             });
         };
     };
@@ -627,12 +633,16 @@ define([
                     });
 
                     var handler = data.first? function () {
-                        data.first(importer);
+                        data.first(function () {
+                            importer(); // Make sure we don't pass arguments to importer
+                        });
                     }: importer; //importContent;
 
                     button
                     .click(common.prepareFeedback(type))
-                    .click(handler);
+                    .click(function () {
+                        handler();
+                    });
                 //}
                 break;
             case 'upload':

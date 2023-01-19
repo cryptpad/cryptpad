@@ -426,6 +426,9 @@ define([
     funcs.handleNewFile = function (waitFor, config) {
         if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
+        if (priv.isNewFile && priv.initialState) {
+            return void setTimeout(waitFor());
+        }
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
             // If this is a new file but we have a hash in the URL and pad creation screen is

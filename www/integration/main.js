@@ -99,7 +99,7 @@ define([
                 isNew = true;
                 return Hash.createRandomHash('integration');
             };
-            var oldKey = data.sessionKey;
+            var oldKey = data.key;
             if (!oldKey) { return void cb({ key: getHash() }); }
 
             checkSession(oldKey, function (obj) {
@@ -112,33 +112,17 @@ define([
 
         chan.on('START', function (data) {
             console.warn('INNER START', data);
-            nThen(function (w) {
-                if (!isNew) { return; }
-
-                // XXX initial content TBD
-                var content = JSON.stringify({
-                    content: data.document,
-                    highlightMode: "gfm"
-                }); // XXX only for code
-
-                console.error('CRYPTPUT', data.key);
-                Crypt.put(data.key, content, w(), {
-                    metadata: {
-                        selfdestruct: true
-                    }
-                });
-            }).nThen(function () {
-                var href = Hash.hashToHref(data.key, data.application);
-                console.error(Hash.hrefToHexChannelId(href));
-                window.CP_integration_outer = {
-                    pathname: `/${data.application}/`,
-                    hash: data.key,
-                    href: href
-                };
-                require(['/common/sframe-app-outer.js'], function () {
-                    console.warn('SAO REQUIRED');
-                    delete window.CP_integration_outer;
-                });
+            var href = Hash.hashToHref(data.key, data.application);
+            console.error(Hash.hrefToHexChannelId(href));
+            window.CP_integration_outer = {
+                pathname: `/${data.application}/`,
+                hash: data.key,
+                href: href,
+                initialState: isNew ? data.document : undefined
+            };
+            require(['/common/sframe-app-outer.js'], function () {
+                console.warn('SAO REQUIRED');
+                delete window.CP_integration_outer;
             });
         });
 

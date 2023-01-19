@@ -78,15 +78,42 @@
                     config.events.onSave(data);
                 });
 
-                var onKeyValidated = function () {
+                var getBlob = function (cb) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', config.document.url, true);
+                    xhr.responseType = 'blob';
+                    xhr.onload = function(e) {
+                        if (this.status == 200) {
+                            var blob = this.response;
+                            // myBlob is now the blob that the object URL pointed to.
+                            cb(null, blob);
+                        } else {
+                            cb(this.status);
+                        }
+                    };
+                    xhr.onerror = function (e) {
+                        cb(e.message);
+                    };
+                    xhr.send();
+                };
+
+                var start = function (blob) {
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
-                        document: config.document.url,
+                        document: blob,
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         console.log('OUTER START SUCCESS');
                         resolve({});
+                    });
+                };
+
+                var onKeyValidated = function () {
+                    getBlob(function (err, blob) {
+                        if (err) { reject(err); return console.error(err); }
+                        blob.name = `document.${config.document.fileType}`;
+                        start(blob);
                     });
                 };
 
@@ -113,6 +140,7 @@
          * @param {object} config The object containing configuration parameters.
          *   @param {object} config.document The document to load.
          *     @param {string} document.url The document URL.
+         *     @param {string} document.fileType The document extension (md, xml, html, etc.).
          *     @param {string} document.key The collaborative session key.
          *   @param {object} config.events Event handlers.
          *     @param {function} events.onSave The save function to store the document when edited.
@@ -137,7 +165,7 @@
                 }
 
                 if (!config) { return reject('Missing args: no data provided'); }
-                ['document.url', 'document.key', 'documentType',
+                if(['document.url', 'document.fileType', 'document.key', 'documentType',
                     'events.onSave', 'events.onNewKey'].some(function (k) {
                     var s = k.split('.');
                     var c = config;
@@ -148,7 +176,7 @@
                         }
                         c = c[key];
                     });
-                });
+                })) { return; }
 
                 cryptpadURL = cryptpadURL.replace(/(\/)+$/, '');
                 var url = cryptpadURL + '/integration/';

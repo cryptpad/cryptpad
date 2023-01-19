@@ -28,7 +28,8 @@ define([
             href: href,
             useCreationScreen: !isIntegration,
             messaging: true,
-            integration: isIntegration
+            integration: isIntegration,
+            initialState: integration.initialState || undefined
         });
     });
 });
