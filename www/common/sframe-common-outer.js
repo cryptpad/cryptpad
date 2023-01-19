@@ -267,9 +267,10 @@ define([
                 // We're only going to check if a hash exists in the URL or not.
                 Cryptpad.ready(waitFor(), {
                     noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
+                    neverDrive: cfg.integration, // XXX we may want integration with drive later
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
-                    currentPad: currentPad
+                    currentPad: currentPad,
                 });
 
                 // Remove the login hash if needed

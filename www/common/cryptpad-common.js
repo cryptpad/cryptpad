@@ -2529,6 +2529,7 @@ define([
                 form_seed: localStorage.CP_formSeed,
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
+                neverDrive: rdyCfg.neverDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined

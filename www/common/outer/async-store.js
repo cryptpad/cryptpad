@@ -3198,7 +3198,9 @@ define([
 
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
-            if (data.noDrive && !data.userHash && !data.anonHash) {
+            // Or "neverDrive" (integration into another platform?)
+            // ==> don't create a drive
+            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // if we can't properly initialize the noDrive mode, use normal mode
