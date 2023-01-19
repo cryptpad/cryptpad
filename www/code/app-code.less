@@ -108,6 +108,7 @@
         color: @cp_preview-fg;
         max-width: 70ch;
         margin: 1em auto;
+        padding-left: 10px;
 
         .markdown_preformatted-code;
         .markdown_gfm-table();
@@ -126,9 +127,13 @@
     .cp-splitter {
         position: absolute;
         height: 100%;
-        width: 8px;
+        width: 5px;
         top: 0;
         left: 0;
+
+        // stripes to clue that the pain is slidable - not strictly necessary for the change but I like it
+        background-image: linear-gradient(45deg, grey 25%, darkgrey 25%, darkgrey 50%, grey 50%, grey 75%, darkgrey 75%, darkgrey 100%);
+        background-size: 28.28px 28.28px;
 
         cursor: col-resize;
     }
