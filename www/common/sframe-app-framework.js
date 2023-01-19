@@ -71,6 +71,7 @@ define([
         var evStart = Util.mkEvent(true);
 
         var mediaTagEmbedder;
+        var fileImporter;
         var $embedButton;
 
         var common;
@@ -545,7 +546,8 @@ define([
                         contentUpdate(newContent, waitFor);
                     }
                 } else {
-                    if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
+                    var priv = cpNfInner.metadataMgr.getPrivateData();
+                    if (!priv.isNewFile) {
                         // We're getting 'new pad' but there is an existing file
                         // We don't know exactly why this can happen but under no circumstances
                         // should we overwrite the content, so lets just try again.
@@ -558,11 +560,16 @@ define([
                         onCorruptedCache();
                         return;
                     }
+                    if (priv.initialState) {
+                        var blob = priv.initialState;
+                        var file = new File([blob], blob.name);
+                        UIElements.importContent('text/plain', fileImporter, {})(file);
+                    }
                     title.updateTitle(title.defaultTitle);
                     evOnDefaultContentNeeded.fire();
                 }
             }).nThen(function () {
-                // We have a valid chainpad, reenable cache fix in case with reconnect with
+                // We have a valid chainpad, reenable cache fix in case we reconnect with
                 // a corrupted cache
                 noCache = false;
 
@@ -698,31 +705,32 @@ define([
 
         var setFileImporter = function (options, fi, async) {
             if (readOnly) { return; }
-            toolbar.$drawer.append(
-                common.createButton('import', true, options, function (c, f) {
-                    if (state !== STATE.READY || unsyncMode) {
-                        return void UI.warn(Messages.disconnected);
-                    }
-                    if (async) {
-                        fi(c, f, function (content) {
-                            nThen(function (waitFor) {
-                                contentUpdate(content, waitFor);
-                            }).nThen(function () {
-                                onLocal();
-                            });
+            fileImporter = function (c, f) {
+                if (state !== STATE.READY || unsyncMode) {
+                    return void UI.warn(Messages.disconnected);
+                }
+                if (async) {
+                    fi(c, f, function (content) {
+                        nThen(function (waitFor) {
+                            contentUpdate(content, waitFor);
+                        }).nThen(function () {
+                            onLocal();
                         });
-                        return;
-                    }
-                    nThen(function (waitFor) {
-                        var content = fi(c, f);
-                        if (typeof(content) === "undefined") {
-                            return void UI.warn(Messages.importError);
-                        }
-                        contentUpdate(content, waitFor);
-                    }).nThen(function () {
-                        onLocal();
                     });
-                })
+                    return;
+                }
+                nThen(function (waitFor) {
+                    var content = fi(c, f);
+                    if (typeof(content) === "undefined") {
+                        return void UI.warn(Messages.importError);
+                    }
+                    contentUpdate(content, waitFor);
+                }).nThen(function () {
+                    onLocal();
+                });
+            };
+            toolbar.$drawer.append(
+                common.createButton('import', true, options, fileImporter)
             );
         };
 

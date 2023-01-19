@@ -353,6 +353,13 @@ define([
                     delete sessionStorage.CP_formExportSheet;
                 }
 
+                // New integrated pad
+                if (cfg.initialState) {
+                    currentPad.href = cfg.href;
+                    currentPad.hash = cfg.hash;
+                    return void todo();
+                }
+
                 // New pad options
                 var options = parsed.getOptions();
                 if (options.newPadOpts) {
@@ -697,7 +704,6 @@ define([
                         burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined),
                         supportsWasm: Utils.Util.supportsWasm(),
-                        integration: cfg.integration
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
@@ -718,6 +724,12 @@ define([
                         additionalPriv.isChannelMuted = true;
                     }
 
+                    // Integration
+                    additionalPriv.integration = cfg.integration;
+                    additionalPriv.initialState = cfg.initialState instanceof Blob ?
+                                                    cfg.initialState : undefined;
+
+                    // Early access
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
                     var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,
@@ -729,6 +741,7 @@ define([
                         additionalPriv.earlyAccessBlocked = true;
                     }
 
+                    // Safe apps
                     if (isSafe) {
                         additionalPriv.hashes = hashes;
                         additionalPriv.password = password;
@@ -744,7 +757,7 @@ define([
                         Utils.LocalStore.setPremium(metaObj.priv.plan);
                     }
 
-                    sframeChan.event('EV_METADATA_UPDATE', metaObj);
+                    sframeChan.event('EV_METADATA_UPDATE', metaObj, {raw: true});
                 });
             };
             Cryptpad.onMetadataChanged(updateMeta);
@@ -1994,6 +2007,15 @@ define([
                         });
                     });
                 }
+
+                // Make sure we add the validateKey to channel metadata when we don't use
+                // the pad creation screen
+                if (!rtConfig.metadata && secret.keys.validateKey) {
+                    rtConfig.metadata = {
+                        validateKey: secret.keys.validateKey
+                    };
+                }
+
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -2021,6 +2043,8 @@ define([
                         Cryptpad.getMetadata(waitFor(function (err, m) {
                             cpNfCfg.owners = [m.priv.edPublic];
                         }));
+                    } else if (isNewFile && !cfg.useCreationScreen && cfg.initialState) {
+                        console.log('new file with initial state provided');
                     } else if (isNewFile && !cfg.useCreationScreen && currentPad.hash) {
                         console.log("new file with hash in the address bar in an app without pcs and which requires owners");
                         sframeChan.onReady(function () {
