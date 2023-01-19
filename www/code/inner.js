@@ -461,6 +461,9 @@ define([
             });
         } else {
             CodeMirror.configureTheme(common);
+            
+            // If read only then hide the raw code
+            $('#cp-app-code-container').addClass('cp-app-code-hide-code');
         }
 
         framework.onContentUpdate(function (newContent) {
