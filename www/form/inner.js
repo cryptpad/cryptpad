@@ -968,15 +968,24 @@ define([
         if (!answers) { return; }
         return Object.keys(answers || {}).map(function (key) {
             var user = key.split('|')[0];
-            if (filterCurve && user === filterCurve) { return; }
+            if (filterCurve && user === filterCurve) {
+                var obj = answers[key];
+                // Only hide the current response (APP.editingUid), not all our responses
+                if (APP.editingUid && Util.find(obj, ['msg', '_uid']) === APP.editingUid) {
+                    return;
+                }
+            }
             try {
                 return {
                     curve: user,
                     user: answers[key].msg._userdata,
-                    results: answers[key].msg[uid]
+                    results: answers[key].msg[uid],
+                    time: answers[key].time
                 };
             } catch (e) { console.error(e); }
-        }).filter(Boolean);
+        }).filter(Boolean).sort(function (obj1, obj2) {
+            return obj1.time - obj2.time;
+        });
     };
 
     // When there is a change to the form, we need to check if we can still add
@@ -1603,6 +1612,12 @@ define([
         return rows;
     };
 
+    var getSortedKeys = function (answers) {
+        return Object.keys(answers).sort(function (uid1, uid2) {
+            return (answers[uid1].time || 0) - (answers[uid2].time || 0);
+        });
+    };
+
     var TYPES = APP.TYPES = {
         input: {
             defaultOpts: {
@@ -1651,7 +1666,7 @@ define([
                     return !answer || !answer.trim();
                 };
 
-                Object.keys(answers).forEach(function (author) {
+                getSortedKeys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (isEmpty(answer)) { return empty++; }
@@ -1662,7 +1677,7 @@ define([
 
                 //if (max < 2) { // there are no duplicates, so just return text
                     results.push(getEmpty(empty));
-                    Object.keys(answers).forEach(function (author) {
+                    getSortedKeys(answers).forEach(function (author) {
                         var obj = answers[author];
                         var answer = obj.msg[uid];
                         if (!answer || !answer.trim()) { return empty++; }
@@ -1732,7 +1747,7 @@ define([
             printResults: function (answers, uid) { // results textarea
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) { // TODO deduplicate these
+                getSortedKeys(answers).forEach(function (author) { // TODO deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -2827,66 +2842,75 @@ define([
             };
 
             var els = [];
+
+            // Get all responses
+            var allUnsorted = {};
             Object.keys(answers).forEach(function (curve) {
                 var userAnswers = answers[curve];
                 Object.keys(userAnswers).forEach(function (uid) {
-                    var obj = userAnswers[uid];
-                    var answer = obj.msg;
-                    var date = new Date(obj.time).toLocaleString();
-                    var text, warning, badge;
-                    if (!answer._userdata || (!answer._userdata.name && !answer._userdata.curvePublic)) {
-                        text = Messages._getKey('form_answerAnonymous', [date]);
-                    } else {
-                        var ud = answer._userdata;
-                        var user;
-                        if (ud.profile) {
-                            if (priv && priv.friends[curve]) {
-                                badge = h('span.cp-form-friend', [
-                                    h('i.fa.fa-address-book'),
-                                    Messages._getKey('isContact', [ud.name || Messages.anonymous])
-                                ]);
-                            }
-                            user = h('a', {
-                                href: getHref(ud.profile) // Only used visually
-                            }, Util.fixHTML(ud.name || Messages.anonymous));
-                            if (curve !== ud.curvePublic) {
-                                warning = h('span.cp-form-warning', Messages.form_answerWarning);
-                            }
-                        } else {
-                            user = h('b', Util.fixHTML(ud.name || Messages.anonymous));
-                        }
-                        text = Messages._getKey('form_answerName', [user.outerHTML, date]);
-                    }
-                    var span = UI.setHTML(h('span'), text);
-                    var viewButton = h('button.btn.btn-secondary.small', Messages.form_viewButton);
-                    var div = h('div.cp-form-individual', [span, viewButton, warning, badge]);
-                    $(viewButton).click(function () {
-                        var res = {};
-                        res[curve] = {};
-                        res[curve][uid] = obj;
-                        var back = h('button.btn.btn-secondary.small', Messages.form_backButton);
-                        $(back).click(function () {
-                            summary = true;
-                            $s.click();
-                        });
-                        var header = h('div.cp-form-individual', [
-                            span.cloneNode(true),
-                            back
-                        ]);
-                        show(res, header);
-                    });
-                    $(div).find('a').click(function (e) {
-                        e.preventDefault();
-                        APP.common.openURL(Hash.hashToHref(ud.profile, 'profile'));
-                    });
-                    if (showUser === curve) {
-                        setTimeout(function () {
-                            showUser = undefined;
-                            $(viewButton).click();
-                        });
-                    }
-                    els.push(div);
+                    allUnsorted[curve + '|' + uid] = userAnswers[uid];
                 });
+            });
+            // Sort them by date and print
+            getSortedKeys(allUnsorted).forEach(function (curveUid) {
+                var obj = allUnsorted[curveUid];
+                var uid = curveUid.split('|')[1];
+                var curve = curveUid.split('|')[0];
+                var answer = obj.msg;
+                var date = new Date(obj.time).toLocaleString();
+                var text, warning, badge;
+                if (!answer._userdata || (!answer._userdata.name && !answer._userdata.curvePublic)) {
+                    text = Messages._getKey('form_answerAnonymous', [date]);
+                } else {
+                    var ud = answer._userdata;
+                    var user;
+                    if (ud.profile) {
+                        if (priv && priv.friends[curve]) {
+                            badge = h('span.cp-form-friend', [
+                                h('i.fa.fa-address-book'),
+                                Messages._getKey('isContact', [ud.name || Messages.anonymous])
+                            ]);
+                        }
+                        user = h('a', {
+                            href: getHref(ud.profile) // Only used visually
+                        }, Util.fixHTML(ud.name || Messages.anonymous));
+                        if (curve !== ud.curvePublic) {
+                            warning = h('span.cp-form-warning', Messages.form_answerWarning);
+                        }
+                    } else {
+                        user = h('b', Util.fixHTML(ud.name || Messages.anonymous));
+                    }
+                    text = Messages._getKey('form_answerName', [user.outerHTML, date]);
+                }
+                var span = UI.setHTML(h('span'), text);
+                var viewButton = h('button.btn.btn-secondary.small', Messages.form_viewButton);
+                var div = h('div.cp-form-individual', [span, viewButton, warning, badge]);
+                $(viewButton).click(function () {
+                    var res = {};
+                    res[curve] = {};
+                    res[curve][uid] = obj;
+                    var back = h('button.btn.btn-secondary.small', Messages.form_backButton);
+                    $(back).click(function () {
+                        summary = true;
+                        $s.click();
+                    });
+                    var header = h('div.cp-form-individual', [
+                        span.cloneNode(true),
+                        back
+                    ]);
+                    show(res, header);
+                });
+                $(div).find('a').click(function (e) {
+                    e.preventDefault();
+                    APP.common.openURL(Hash.hashToHref(ud.profile, 'profile'));
+                });
+                if (showUser === curve) {
+                    setTimeout(function () {
+                        showUser = undefined;
+                        $(viewButton).click();
+                    });
+                }
+                els.push(div);
             });
             $results.append(els);
         });
@@ -3021,7 +3045,10 @@ define([
         }
 
         var entries = [];
-        Object.keys(answers).forEach(function (uid) {
+        var sorted = Object.keys(answers).sort(function (uid1, uid2) {
+            return answers[uid1]._time - answers[uid2]._time;
+        });
+        sorted.forEach(function (uid) {
             var answer = answers[uid];
 
             var viewOnly = content.answers.cantEdit || APP.isClosed;
@@ -3074,8 +3101,12 @@ define([
                 });
             }
 
+            var name = (answer._isAnon || !answer._userdata || !answer._userdata.name) ?
+                            Messages.anonymous : Util.fixHTML(answer._userdata.name);
             entries.push(h('div.cp-form-submit-actions', [
                 h('span.cp-form-submit-time', date),
+                h('span.cp-form-submit-time', '-'),
+                h('span.cp-form-submit-time', name),
                 h('span.cp-form-submit-action', action),
                 h('span.cp-form-submit-del', del),
             ]));
@@ -3091,8 +3122,10 @@ define([
             description,
             h('div', Messages.form_alreadyAnsweredMult),
             table,
-            newAnswer,
-            responses ? h('div', responses) : undefined
+            h('div.cp-form-submit-success-actions', [
+                newAnswer,
+                responses || undefined
+            ])
         ]));
         $container.append(getLogo());
     };
