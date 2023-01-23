@@ -97,7 +97,8 @@ nThen(function (w) {
 
     }));
 }).nThen(function (w) {
-    Eviction(Env, w(function () {
-
+    Eviction(Env, w(function (err, report) {
+        if (!report) { return; }
+        Env.Log.info('EVICT_INACTIVE_FINAL_REPORT', report);
     }));
 });
