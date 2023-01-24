@@ -29,6 +29,7 @@ define([
             useCreationScreen: !isIntegration,
             messaging: true,
             integration: isIntegration,
+            integrationUtils: integration.utils,
             initialState: integration.initialState || undefined
         });
     });
