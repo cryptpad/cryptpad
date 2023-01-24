@@ -110,6 +110,14 @@ define([
             });
         });
 
+        var save = function (data, cb) {
+
+        };
+        var reload = function (data, cb) {
+            chan.send('RELOAD', data);
+            console.error(data);
+        };
+
         chan.on('START', function (data) {
             console.warn('INNER START', data);
             var href = Hash.hashToHref(data.key, data.application);
@@ -118,7 +126,11 @@ define([
                 pathname: `/${data.application}/`,
                 hash: data.key,
                 href: href,
-                initialState: isNew ? data.document : undefined
+                initialState: data.document,
+                utils: {
+                    save: save,
+                    reload: reload
+                }
             };
             require(['/common/sframe-app-outer.js'], function () {
                 console.warn('SAO REQUIRED');

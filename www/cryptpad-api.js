@@ -69,14 +69,13 @@
             };
         };
 
+        var makeIframe = function () {} // placeholder
+
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
             setTimeout(function () {
                 var key = config.document.key;
-
-                chan.on('SAVE', function (data) {
-                    config.events.onSave(data);
-                });
+                var blob;
 
                 var getBlob = function (cb) {
                     var xhr = new XMLHttpRequest();
@@ -97,7 +96,7 @@
                     xhr.send();
                 };
 
-                var start = function (blob) {
+                var start = function () {
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
@@ -106,26 +105,45 @@
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         console.log('OUTER START SUCCESS');
                         resolve({});
+                        resolve = function () {};
+                        reject = function () {};
                     });
                 };
 
                 var onKeyValidated = function () {
-                    getBlob(function (err, blob) {
+                    if (config.document.blob) { // This is a reload
+                        blob = config.document.blob;
+                        return start();
+                    }
+                    getBlob(function (err, _blob) {
                         if (err) { reject(err); return console.error(err); }
-                        blob.name = `document.${config.document.fileType}`;
-                        start(blob);
+                        _blob.name = `document.${config.document.fileType}`;
+                        blob = _blob;
+                        start();
                     });
                 };
 
-                chan.send('GET_SESSION', {
-                    key: key
-                }, function (obj) {
-                    if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
-                    if (obj.key !== key) {
-                        key = obj.key;
-                        config.events.onNewKey(key);
-                    }
-                    onKeyValidated();
+                var getSession = function (cb) {
+                    chan.send('GET_SESSION', {
+                        key: key
+                    }, function (obj) {
+                        if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
+                        if (obj.key !== key) {
+                            key = obj.key;
+                            config.events.onNewKey(key);
+                        }
+                        cb();
+                    });
+                };
+                getSession(onKeyValidated);
+
+                chan.on('SAVE', function (data) {
+                    config.events.onSave(data);
+                });
+                chan.on('RELOAD', function (data) {
+                    config.document.blob = blob;
+                    document.getElementById('cryptpad-editor').remove();
+                    makeIframe(config);
                 });
 
             });
@@ -188,20 +206,22 @@
                     return reject('Invalid arg: cryptpadURL');
                 }
 
-                var iframe = document.createElement('iframe');
-                iframe.setAttribute('id', 'cryptpad-editor');
-                iframe.setAttribute("src", url);
-                container.appendChild(iframe);
+                makeIframe = function (config) {
+                    var iframe = document.createElement('iframe');
+                    iframe.setAttribute('id', 'cryptpad-editor');
+                    iframe.setAttribute("src", url);
+                    container.appendChild(iframe);
 
-                var onMsg = function (msg) {
-                    var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
-                    if (!data || data.q !== 'INTEGRATION_READY') { return; }
-                    window.removeEventListener('message', onMsg);
-                    var chan = makeChan(iframe, parsed.origin);
-                    start(config, chan).then(resolve).catch(reject);
+                    var onMsg = function (msg) {
+                        var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
+                        if (!data || data.q !== 'INTEGRATION_READY') { return; }
+                        window.removeEventListener('message', onMsg);
+                        var chan = makeChan(iframe, parsed.origin);
+                        start(config, chan).then(resolve).catch(reject);
+                    };
+                    window.addEventListener('message', onMsg);
                 };
-                window.addEventListener('message', onMsg);
-
+                makeIframe(config);
             });
             });
         };

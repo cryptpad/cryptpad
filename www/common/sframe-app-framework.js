@@ -459,7 +459,8 @@ define([
                 }
             }
 
-            common.getSframeChannel().on('EV_VERSION_TIME', function (time) {
+            var sframeChan = common.getSframeChannel();
+            sframeChan.on('EV_VERSION_TIME', function (time) {
                 if (!versionHashEl) { return; }
                 var vTime = time;
                 var vTimeStr = vTime ? new Date(vTime).toLocaleString()
@@ -467,6 +468,11 @@ define([
                 var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
                 versionHashEl.innerText = vTxt;
                 versionHashEl = undefined;
+            });
+            sframeChan.on('EV_INTEGRATION_NEEDSAVE', function (format) {
+                // XXX
+                // check priv.initialState.name (Blob) to get the format
+                sframeChan.event('Q_INTEGRATION_SAVE', {});
             });
         };
 
