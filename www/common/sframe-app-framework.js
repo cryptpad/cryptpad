@@ -63,6 +63,7 @@ define([
 
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
+        var evIntegrationSave = Util.mkEvent();
         var evCursorUpdate = Util.mkEvent();
         var evEditableStateChange = Util.mkEvent();
         var evOnReady = Util.mkEvent(true);
@@ -71,7 +72,7 @@ define([
         var evStart = Util.mkEvent(true);
 
         var mediaTagEmbedder;
-        var fileImporter;
+        var fileImporter, fileExporter;
         var $embedButton;
 
         var common;
@@ -82,6 +83,7 @@ define([
         var toolbar;
         var state = STATE.DISCONNECTED;
         var firstConnection = true;
+        var integration;
 
         var toolbarContainer = options.toolbarContainer ||
             (function () { throw new Error("toolbarContainer must be specified"); }());
@@ -234,8 +236,12 @@ define([
 
         var oldContent;
         var contentUpdate = function (newContent, waitFor) {
-            if (JSONSortify(newContent) === JSONSortify(oldContent)) { return; }
+            var sNew = JSONSortify(newContent);
+            if (sNew === JSONSortify(oldContent)) { return; }
             try {
+                if (sNew !== JSONSortify(normalize(oldContent || {}))) {
+                    evIntegrationSave.fire();
+                }
                 evContentUpdate.fire(newContent, waitFor);
                 oldContent = newContent;
             } catch (e) {
@@ -396,6 +402,10 @@ define([
         };
         */
 
+        var integrationOnPatch = function () {
+            cpNfInner.offPatchSent(integrationOnPatch);
+            evIntegrationSave.fire();
+        };
         onLocal = function (/*padChange*/) {
             if (unsyncMode) { return; }
             if (state !== STATE.READY) { return; }
@@ -414,7 +424,13 @@ define([
                 //cpNfInner.metadataMgr.addAuthor();
             }
             */
+            if (integration && oldContent && JSONSortify(content) !== JSONSortify(normalize(oldContent || {}))) {
+                cpNfInner.offPatchSent(integrationOnPatch);
+                cpNfInner.onPatchSent(integrationOnPatch);
+            }
+
             oldContent = content;
+
 
             if (Array.isArray(content)) {
                 // Pad
@@ -568,11 +584,14 @@ define([
                     }
                     if (priv.initialState) {
                         var blob = priv.initialState;
-                        var file = new File([blob], blob.name);
-                        UIElements.importContent('text/plain', fileImporter, {})(file);
+                        var file = new File([blob], 'document.'+priv.integrationConfig.fileType);
+                        stateChange(STATE.READY); // Required for fileImporter
+                        UIElements.importContent('text/plain', waitFor(fileImporter), {})(file);
+                        title.updateTitle(file.name);
+                    } else {
+                        title.updateTitle(title.defaultTitle);
+                        evOnDefaultContentNeeded.fire();
                     }
-                    title.updateTitle(title.defaultTitle);
-                    evOnDefaultContentNeeded.fire();
                 }
             }).nThen(function () {
                 // We have a valid chainpad, reenable cache fix in case we reconnect with
@@ -600,6 +619,39 @@ define([
                     });
                 } else {
                     common.getMetadataMgr().setDegraded(false);
+                }
+
+                if (privateDat.integration) {
+                    common.openIntegrationChannel(onLocal);
+                    var integrationSave = function (cb) {
+                        var ext = privateDat.integrationConfig.fileType;
+
+                        var upload = Util.once(function (_blob) {
+                            var sframeChan = common.getSframeChannel();
+                            sframeChan.query('Q_INTEGRATION_SAVE', {
+                                blob: _blob
+                            }, cb, {
+                                raw: true
+                            });
+                        });
+
+                        // "fe" (fileExpoter) can be sync or async depending on the app
+                        // we need to handle both cases
+                        var syncBlob = fileExporter(function (asyncBlob) {
+                            upload(asyncBlob);
+                        }, ext);
+                        if (syncBlob) {
+                            upload(syncBlob);
+                        }
+                    };
+                    var inte = common.createIntegration(onLocal, cpNfInner.chainpad,
+                                                        integrationSave, toolbar);
+                    if (inte) {
+                        integration = true;
+                        evIntegrationSave.reg(function () {
+                            inte.changed();
+                        });
+                    }
                 }
 
                 UI.removeLoadingScreen(emitResize);
@@ -643,6 +695,7 @@ define([
         };
 
         var setFileExporter = function (extension, fe, async) {
+            fileExporter = fe;
             var $export = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
@@ -718,7 +771,7 @@ define([
                 if (async) {
                     fi(c, f, function (content) {
                         nThen(function (waitFor) {
-                            contentUpdate(content, waitFor);
+                            contentUpdate(normalize(content), waitFor);
                         }).nThen(function () {
                             onLocal();
                         });
@@ -730,7 +783,7 @@ define([
                     if (typeof(content) === "undefined") {
                         return void UI.warn(Messages.importError);
                     }
-                    contentUpdate(content, waitFor);
+                    contentUpdate(normalize(content), waitFor);
                 }).nThen(function () {
                     onLocal();
                 });

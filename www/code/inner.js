@@ -560,7 +560,7 @@ define([
                 I used 'apply' with 'arguments' to avoid breaking things if this API ever changes.
             */
             var ret = CodeMirror.fileImporter.apply(null, Array.prototype.slice.call(arguments));
-            previewPane.modeChange(ret.mode);
+            previewPane.modeChange(ret.highlightMode);
             return ret;
         });
 
