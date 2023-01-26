@@ -110,8 +110,9 @@ define([
             });
         });
 
-        var save = function (data, cb) {
-
+        var save = function (obj, cb) {
+            console.error(obj);
+            chan.send('SAVE', obj.blob, cb);
         };
         var reload = function (data, cb) {
             chan.send('RELOAD', data);
@@ -127,6 +128,10 @@ define([
                 hash: data.key,
                 href: href,
                 initialState: data.document,
+                config: {
+                    fileType: data.ext,
+                    autosave: data.autosave
+                },
                 utils: {
                     save: save,
                     reload: reload

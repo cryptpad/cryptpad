@@ -30,6 +30,7 @@ define([
             messaging: true,
             integration: isIntegration,
             integrationUtils: integration.utils,
+            integrationConfig: integration.config || {},
             initialState: integration.initialState || undefined
         });
     });

@@ -727,6 +727,7 @@ define([
 
                     // Integration
                     additionalPriv.integration = cfg.integration;
+                    additionalPriv.integrationConfig = cfg.integrationConfig;
                     additionalPriv.initialState = cfg.initialState instanceof Blob ?
                                                     cfg.initialState : undefined;
 
@@ -1817,6 +1818,18 @@ define([
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
 
+            sframeChan.on('Q_INTEGRATION_OPENCHANNEL', function (data, cb) {
+                Cryptpad.universal.execCommand({
+                    type: 'integration',
+                    data: {
+                        cmd: 'INIT',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
+                    }
+                }, cb);
+            });
             sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
                 Cryptpad.universal.execCommand({
                     type: 'cursor',
@@ -1928,13 +1941,13 @@ define([
 
             var integrationSave = function () {};
             if (cfg.integration) {
-                // TODO
                 sframeChan.on('Q_INTEGRATION_SAVE', function (obj, cb) {
                     if (cfg.integrationUtils && cfg.integrationUtils.save) {
                         cfg.integrationUtils.save(obj, cb);
                     }
                 });
                 integrationSave = function () {
+                    // XXX TODO
                     sframeChan.event('EV_INTEGRATION_NEEDSAVE');
                 };
             }
@@ -2058,6 +2071,7 @@ define([
                     onError: function (err) {
                         if (!cfg.integration) { return; }
                         console.error(err);
+                        // XXX TODO on server crash, try to save to Nextcloud?
                         if (cfg.integrationUtils && cfg.integrationUtils.reload) {
                             cfg.integrationUtils.reload();
                         }

@@ -101,6 +101,8 @@
                         key: key,
                         application: config.documentType,
                         document: blob,
+                        ext: config.document.fileType,
+                        autosave: config.autosave || 10
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         console.log('OUTER START SUCCESS');
@@ -111,6 +113,7 @@
                 };
 
                 var onKeyValidated = function () {
+                    console.warn(config, config.document.blob);
                     if (config.document.blob) { // This is a reload
                         blob = config.document.blob;
                         return start();
@@ -137,8 +140,11 @@
                 };
                 getSession(onKeyValidated);
 
-                chan.on('SAVE', function (data) {
-                    config.events.onSave(data);
+                chan.on('SAVE', function (data, cb) {
+                    // XXX onSave should "return", "cb" and/or "promise" ?
+                    blob = data;
+                    console.error(blob);
+                    config.events.onSave(data, cb);
                 });
                 chan.on('RELOAD', function (data) {
                     config.document.blob = blob;
