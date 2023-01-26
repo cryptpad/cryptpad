@@ -19,8 +19,11 @@ var blob = new Blob([mystring], {
 var docUrl = URL.createObjectURL(blob);
 
 
-        var onSave = function (data) {
-            console.log('APP ONSAVE', data);
+        var onSave = function (data, cb) {
+            console.log('APP ONSAVE', _blob);
+            docUrl = URL.createObjectURL(_blob);
+            console.log('New doc URL', docUrl);
+            if (typeof (cb) === "function") { cb(); }
         };
         var onNewKey = function (newKey) {
             window.location.hash = newKey;
@@ -30,7 +33,8 @@ var docUrl = URL.createObjectURL(blob);
         Api(url, null, {
             document: {
                 url: docUrl,
-                key: key
+                key: key,
+                fileType: 'md'
             },
             documentType: 'code', // appname
             events: {
