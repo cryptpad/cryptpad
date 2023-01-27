@@ -196,7 +196,7 @@
                 }
 
                 if (!config) { return reject('Missing args: no data provided'); }
-                if(['document.url', 'document.fileType', 'document.key', 'documentType',
+                if(['document.url', 'document.fileType', 'documentType',
                     'events.onSave', 'events.onNewKey'].some(function (k) {
                     var s = k.split('.');
                     var c = config;
