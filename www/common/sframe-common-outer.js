@@ -267,7 +267,7 @@ define([
                 // We're only going to check if a hash exists in the URL or not.
                 Cryptpad.ready(waitFor(), {
                     noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
-                    neverDrive: cfg.integration, // XXX we may want integration with drive later
+                    neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
                     currentPad: currentPad,
@@ -1946,9 +1946,8 @@ define([
                         cfg.integrationUtils.save(obj, cb);
                     }
                 });
-                integrationSave = function () {
-                    // XXX TODO
-                    sframeChan.event('EV_INTEGRATION_NEEDSAVE');
+                integrationSave = function (cb) {
+                    sframeChan.query('Q_INTEGRATION_NEEDSAVE', null, cb);
                 };
             }
 
@@ -2048,6 +2047,7 @@ define([
                 }
 
 
+                var ready = false;
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -2068,13 +2068,23 @@ define([
                         if (readOnly || cfg.noHash) { return; }
                         replaceHash(Utils.Hash.getEditHashFromKeys(secret));
                     },
+                    onReady: function () {
+                        ready = true;
+                    },
                     onError: function (err) {
                         if (!cfg.integration) { return; }
-                        console.error(err);
-                        // XXX TODO on server crash, try to save to Nextcloud?
-                        if (cfg.integrationUtils && cfg.integrationUtils.reload) {
-                            cfg.integrationUtils.reload();
-                        }
+
+                        var reload = function () {
+                            if (cfg.integrationUtils && cfg.integrationUtils.reload) {
+                                cfg.integrationUtils.reload();
+                            }
+                        };
+
+                        // on server crash, try to save to Nextcloud
+                        if (ready) { return integrationSave(reload); }
+
+                        // if error during loading, reload without saving
+                        reload();
                     }
                 };
 

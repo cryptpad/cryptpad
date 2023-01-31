@@ -8,23 +8,16 @@ define([
         var metadataMgr = Common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
-        // XXX
-        // from privateData, get the autosave timer
-        // get "chainpad" to detect content changes
-        // when the autosave timer is up, wait for "onSettle" and setTimeout 5 seconds to request a save
-        //   if changes were made during that time, clear timeout and wait for onSettle again
-
-        // This module needs "chainpad" from app-framework
-        // It exports "setSaver"
-        //      the "saver" is defined in framework: get the content, use "export.js" to make a blob, push to outer and then API and call back to send "ISAVED"
-        // It may also export a function when a save is forced to Nextcloud (server crash?)
-
-
         var config = privateData.integrationConfig;
         if (!config.autosave) { return; }
+        if (typeof(saveHandler) !== "function") {
+            throw new Error("Incorrect save handler");
+        }
 
-        // TODO
-        // Add timeout to my save lock: if I can't save in a correct amount of time, someone else will do it
+        var debug = console.warn;
+        //debug = function () {};
+
+        toolbar = toolbar; // XXX Use custom "spinner" in toolbar to show what's saved in Nextcloud
 
         var state = {
             changed: false,
@@ -36,6 +29,7 @@ define([
 
         var saveTo;
         var onSettleTo;
+        var alreadySaved = false;
 
         var BASE_TIMER = config.autosave * 1000;
         var autosaveTimer = BASE_TIMER;
@@ -76,6 +70,7 @@ define([
 
         var onMessage = function (data) {
             if (!data || !data.msg) { return; }
+            debug('Integration onMessage', data);
             if (data.msg === "ISAVE") {
                 if (state.me) { return; } // I have the lock: abort
                 if (state.other && state.other !== data.uid) { return; } // someone else has the lock
@@ -102,6 +97,7 @@ define([
                 state.last = state.lastTmp || +new Date();
                 state.other = false;
                 state.me = false;
+                alreadySaved = true;
                 // And clear timeout
                 clearTimeout(saveTo);
                 clearTimeout(onSettleTo);
@@ -138,12 +134,15 @@ define([
         // is already saving
         requestSave = function (id, cb) {
             if (state.other || state.me) { return void cb(false); } // save in progress
+            debug('Integration send ISAVE');
+            alreadySaved = false; // someone may have saved while we were waiting for our callback
             execCommand('SEND', {
                 msg: 'ISAVE',
                 uid: id
             }, function (err) {
                 if (err) { console.error(err); return void cb(false); }
-                if (state.other || state.me) {
+                debug('Integration cb ISAVE', !(state.other || state.me || alreadySaved));
+                if (state.other || state.me || alreadySaved) {
                     // someone else requested before me
                     return void cb(false);
                 }
@@ -157,9 +156,11 @@ define([
             state.last = state.lastTmp || +new Date();
             state.other = false;
             state.me = false;
+            debug('Integration send ISAVED');
             execCommand('SEND', {
                 msg: 'ISAVED'
             }, function (err) {
+                debug('Integration cb ISAVED');
                 if (err) { console.error(err); }
                 // Make sure pending changes will be save at next interval
                 if (state.changed) { exp.changed(); }

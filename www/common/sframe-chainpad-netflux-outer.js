@@ -32,6 +32,7 @@ define([], function () {
         var validateKey = metadata.validateKey;
         var onConnect = conf.onConnect || function () { };
         var onError = conf.onError || function () { };
+        var onReady = conf.onReady || function () { };
         var lastTime; // Time of last patch (if versioned link);
         conf = undefined;
 
@@ -39,6 +40,7 @@ define([], function () {
 
         padRpc.onReadyEvent.reg(function () {
             sframeChan.event('EV_RT_READY', null);
+            onReady();
             if (lastTime && versionHash) {
                 sframeChan.event('EV_VERSION_TIME', lastTime);
             }
