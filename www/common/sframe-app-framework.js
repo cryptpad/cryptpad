@@ -485,11 +485,6 @@ define([
                 versionHashEl.innerText = vTxt;
                 versionHashEl = undefined;
             });
-            sframeChan.on('EV_INTEGRATION_NEEDSAVE', function (format) {
-                // XXX
-                // check priv.initialState.name (Blob) to get the format
-                sframeChan.event('Q_INTEGRATION_SAVE', {});
-            });
         };
 
         var noCache = false; // Prevent reload loops
@@ -599,7 +594,6 @@ define([
                 noCache = false;
 
                 stateChange(STATE.READY);
-                firstConnection = false;
 
                 oldContent = undefined;
 
@@ -623,11 +617,11 @@ define([
 
                 if (privateDat.integration) {
                     common.openIntegrationChannel(onLocal);
+                    var sframeChan = common.getSframeChannel();
                     var integrationSave = function (cb) {
                         var ext = privateDat.integrationConfig.fileType;
 
                         var upload = Util.once(function (_blob) {
-                            var sframeChan = common.getSframeChannel();
                             sframeChan.query('Q_INTEGRATION_SAVE', {
                                 blob: _blob
                             }, cb, {
@@ -652,7 +646,17 @@ define([
                             inte.changed();
                         });
                     }
+                    if (firstConnection) {
+                        sframeChan.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                            integrationSave(function (obj) {
+                                if (obj && obj.error) { console.error(obj.error); }
+                                cb();
+                            });
+                        });
+                    }
                 }
+
+                firstConnection = false;
 
                 UI.removeLoadingScreen(emitResize);
 

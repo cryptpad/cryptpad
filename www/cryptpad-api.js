@@ -97,6 +97,7 @@
                 };
 
                 var start = function () {
+                    config.document.key = key;
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
@@ -105,7 +106,6 @@
                         autosave: config.autosave || 10
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
-                        console.log('OUTER START SUCCESS');
                         resolve({});
                         resolve = function () {};
                         reject = function () {};
@@ -113,7 +113,6 @@
                 };
 
                 var onKeyValidated = function () {
-                    console.warn(config, config.document.blob);
                     if (config.document.blob) { // This is a reload
                         blob = config.document.blob;
                         return start();
@@ -132,8 +131,18 @@
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         if (obj.key !== key) {
-                            key = obj.key;
-                            config.events.onNewKey(key);
+                            // The outside app may reject our new key if the "old" one is deprecated.
+                            // This will happen if multiple users try to update the key at the same
+                            // time and in this case, only the first user will be able to generate a key.
+                            return config.events.onNewKey({
+                                old: key,
+                                new: obj.key
+                            }, function (_key) {
+                                // Delay reloading tabs with deprecated key
+                                var to = _key !== obj.key ? 1000 : 0;
+                                key = _key || obj.key;
+                                setTimeout(cb, to);
+                            });
                         }
                         cb();
                     });
@@ -141,9 +150,7 @@
                 getSession(onKeyValidated);
 
                 chan.on('SAVE', function (data, cb) {
-                    // XXX onSave should "return", "cb" and/or "promise" ?
                     blob = data;
-                    console.error(blob);
                     config.events.onSave(data, cb);
                 });
                 chan.on('RELOAD', function (data) {
@@ -167,8 +174,8 @@
          *     @param {string} document.fileType The document extension (md, xml, html, etc.).
          *     @param {string} document.key The collaborative session key.
          *   @param {object} config.events Event handlers.
-         *     @param {function} events.onSave The save function to store the document when edited.
-         *     @param {function} events.onNewKey The function called when a new key is used.
+         *     @param {function} events.onSave (blob, callback) The save function to store the document when edited.
+         *     @param {function} events.onNewKey (data, callback) The function called when a new key is used.
          *   @param {string} config.documentType The editor to load in CryptPad.
          * @return {promise}
          */

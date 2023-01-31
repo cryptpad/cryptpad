@@ -111,8 +111,10 @@ define([
         });
 
         var save = function (obj, cb) {
-            console.error(obj);
-            chan.send('SAVE', obj.blob, cb);
+            chan.send('SAVE', obj.blob, function (err) {
+                if (err) { return cb({error: err}); }
+                cb();
+            });
         };
         var reload = function (data, cb) {
             chan.send('RELOAD', data);
