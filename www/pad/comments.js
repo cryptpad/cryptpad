@@ -79,7 +79,7 @@ define([
         Env.metadataMgr.updateMetadata(md);
     };
 
-    var sendReplyNotification = function(Env, uid) {
+    var sendReplyNotification = function(Env, uid, mentionedCurve) {
         if (!Env.comments || !Env.comments.data || !Env.comments.authors) { return; }
         if (!Env.common.isLoggedIn()) { return; }
         var thread = Env.comments.data[uid];
@@ -88,8 +88,6 @@ define([
         var privateData = Env.metadataMgr.getPrivateData();
         var others = {};
 
-
-        // XXX mentioned users should be excluded from the list of notified recipients to avoid notifying them twice
         // Get all the other registered users with a mailbox
         thread.m.forEach(function(obj) {
             var u = obj.u;
@@ -97,6 +95,9 @@ define([
             var author = Env.comments.authors[u];
             if (!author || others[u] || !author.notifications || !author.curvePublic) { return; }
             if (author.curvePublic === userData.curvePublic) { return; } // don't send to yourself
+            if (Object.keys(mentionedCurve || {}).includes(author.curvePublic)) {
+                return; // Don't send to mentioned users
+            }
             others[u] = {
                 curvePublic: author.curvePublic,
                 comment: obj.m,
@@ -203,7 +204,7 @@ define([
             });
 
             // Push the content
-            cb(content);
+            cb(content, notify);
         });
         $(cancel).click(function(e) {
             e.stopPropagation();
@@ -525,7 +526,7 @@ define([
             $(reply).click(function(e) {
                 e.stopPropagation();
                 $actions.hide();
-                var form = getCommentForm(Env, key, function(val) {
+                var form = getCommentForm(Env, key, function(val, mentioned) {
                     // Show the "reply" and "resolve" buttons again
                     $(form).closest('.cp-comment-container')
                         .find('.cp-comment-actions').css('display', '');
@@ -551,7 +552,7 @@ define([
                     });
 
                     // Notify other users
-                    sendReplyNotification(Env, key);
+                    sendReplyNotification(Env, key, mentioned);
 
                     // Send to chainpad
                     updateMetadata(Env);
