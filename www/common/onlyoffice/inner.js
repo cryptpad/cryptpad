@@ -2134,9 +2134,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext = ['.xlsx', '.ods', '.bin',
-            //'.csv', // XXX 4.11.0
-            '.pdf'];
+            var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {

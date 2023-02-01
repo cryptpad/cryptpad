@@ -14,11 +14,6 @@ define([
             return;
         }
 
-/*
-Msg.install_header = "CryptPad Install"; // XXX
-Msg.install_notes = "<ul class=\"cp-notes-list\"><li>Create your first admin account using this form.</li>" +
-                    "<li>Please note your password carefully. <span class=\"red\">If you lose it there is no way we can recover your data.</span></li></ul>"; // XXX
-*/
 Msg.install_token = "Install token";
 
         document.title = Msg.install_header;

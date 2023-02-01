@@ -867,7 +867,7 @@ define([
             // In the properties, we should have the edit href if we know it.
             // We should know it because the pad is stored, but it's better to check...
             //if (!data.noEditPassword && !opts.noEditPassword && owned && data.href) {
-            if (!data.noEditPassword && !opts.noEditPassword && owned && data.href && parsed.type !== "form") { // XXX password change in forms block responses (validation & decryption)
+            if (!data.noEditPassword && !opts.noEditPassword && owned && data.href && parsed.type !== "form") { // TODO password change in forms block responses (validation & decryption)
                 var isOO = parsed.type === 'sheet';
                 var isFile = parsed.hashData.type === 'file';
                 var isSharedFolder = parsed.type === 'drive';
