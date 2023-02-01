@@ -16,6 +16,7 @@ define([
 
         var debug = console.warn;
         //debug = function () {};
+        var execCommand = function () {}; // placeholder
 
         toolbar = toolbar; // XXX Use custom "spinner" in toolbar to show what's saved in Nextcloud
 
@@ -127,7 +128,7 @@ define([
         var module = Common.makeUniversal('integration', {
             onEvent: onEvent
         });
-        var execCommand = module.execCommand;
+        execCommand = module.execCommand;
 
         // Request a save lock.
         // Callback with "true" if allowed to save or "false" if someone else

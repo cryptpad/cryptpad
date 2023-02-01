@@ -1,9 +1,7 @@
 define([
     '/common/sframe-common-outer.js',
     '/common/common-hash.js',
-    '/common/cryptget.js',
-    '/bower_components/nthen/index.js',
-], function (SCO, Hash, Crypt, nThen) {
+], function (SCO, Hash) {
 
     var getTxid = function () {
         return Math.random().toString(16).replace('0.', '');
@@ -116,9 +114,8 @@ define([
                 cb();
             });
         };
-        var reload = function (data, cb) {
+        var reload = function (data) {
             chan.send('RELOAD', data);
-            console.error(data);
         };
 
         chan.on('START', function (data) {

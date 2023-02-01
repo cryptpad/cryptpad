@@ -2071,7 +2071,7 @@ define([
                     onReady: function () {
                         ready = true;
                     },
-                    onError: function (err) {
+                    onError: function () {
                         if (!cfg.integration) { return; }
 
                         var reload = function () {

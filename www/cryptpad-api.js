@@ -69,7 +69,7 @@
             };
         };
 
-        var makeIframe = function () {} // placeholder
+        var makeIframe = function () {}; // placeholder
 
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
@@ -81,8 +81,8 @@
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', config.document.url, true);
                     xhr.responseType = 'blob';
-                    xhr.onload = function(e) {
-                        if (this.status == 200) {
+                    xhr.onload = function () {
+                        if (this.status === 200) {
                             var blob = this.response;
                             // myBlob is now the blob that the object URL pointed to.
                             cb(null, blob);
@@ -153,7 +153,7 @@
                     blob = data;
                     config.events.onSave(data, cb);
                 });
-                chan.on('RELOAD', function (data) {
+                chan.on('RELOAD', function () {
                     config.document.blob = blob;
                     document.getElementById('cryptpad-editor').remove();
                     makeIframe(config);
