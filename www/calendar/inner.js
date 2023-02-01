@@ -1,9 +1,9 @@
 define([
     'jquery',
     'json.sortify',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -25,10 +25,10 @@ define([
     '/common/inner/properties.js',
 
     '/common/jscolor.js',
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
 ], function (
     $,

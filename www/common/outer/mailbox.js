@@ -8,7 +8,7 @@ define([
     '/common/notify.js',
     '/common/outer/mailbox-handlers.js',
     'chainpad-netflux',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (Config, BCast, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 

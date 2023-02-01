@@ -2,7 +2,7 @@ define([
     'jquery',
     '/common/toolbar.js',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
@@ -13,7 +13,7 @@ define([
     '/api/config',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
     '/common/onlyoffice/history.js',
     '/common/onlyoffice/oocell_base.js',
@@ -22,10 +22,10 @@ define([
     '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'less!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/common/onlyoffice/app-oo.less',
 ], function (
     $,
@@ -2623,7 +2623,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     name: 'dlmedias',
                     icon: 'fa-download',
                 }, function () {
-                    require(['/bower_components/jszip/dist/jszip.min.js'], function (JsZip) {
+                    require(['/components/jszip/dist/jszip.min.js'], function (JsZip) {
                         var zip = new JsZip();
                         Object.keys(mediasData || {}).forEach(function (url) {
                             var obj = mediasData[url];

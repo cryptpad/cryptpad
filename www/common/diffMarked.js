@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/api/config',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/hyperscript.js',
@@ -13,7 +13,7 @@ define([
 
     '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
     'css!/lib/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
 ],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
     var DiffMd = {};
@@ -57,7 +57,7 @@ define([
         __stubbed: true,
         tex2svg: function (a, b) {
             require([
-                '/bower_components/MathJax/es5/tex-svg.js',
+                '/components/mathjax/es5/tex-svg.js',
             ], function () {
                 console.debug("Loaded mathjax");
                 if (Mathjax.__stubbed) {

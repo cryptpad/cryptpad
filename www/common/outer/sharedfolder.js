@@ -4,10 +4,10 @@ define([
     '/common/userObject.js',
     '/common/outer/cache-store.js',
 
-    '/bower_components/nthen/index.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/nthen/index.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (Hash, Util, UserObject, Cache,
              nThen, Crypto, Listmap, ChainPad) {
     var SF = {};

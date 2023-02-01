@@ -1,6 +1,6 @@
 define([
     '/api/config',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/common-util.js',
 ], function (ApiConfig, nThen, Util) {
     var X2T = {};

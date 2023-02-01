@@ -1,10 +1,10 @@
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     '/common/dom-ready.js',
     '/common/sframe-common-outer.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
     var Nacl = window.nacl;
 

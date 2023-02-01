@@ -1,5 +1,5 @@
 define([
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-constants.js',

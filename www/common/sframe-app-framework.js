@@ -1,9 +1,9 @@
 define([
     'jquery',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     '/common/toolbar.js',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
@@ -15,12 +15,12 @@ define([
     '/common/common-feedback.js',
     '/common/inner/snapshots.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/test.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/file-saver/FileSaver.min.js',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function (
     $,
     Hyperjson,
@@ -840,7 +840,7 @@ define([
                 try {
                     l = cpNfInner.chainpad.getLag();
                 } catch (e) {
-                    throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+                    throw new Error("ChainPad.getLag() does not exist, please `npm install && npm run install:components`");
                 }
                 if (l.lag < badStateTimeout) { return; }
 

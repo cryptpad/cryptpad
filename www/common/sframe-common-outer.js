@@ -1,6 +1,6 @@
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     '/common/requireconfig.js',
     '/customize/messages.js',
@@ -130,7 +130,7 @@ define([
             require([
                 '/common/sframe-chainpad-netflux-outer.js',
                 '/common/cryptpad-common.js',
-                '/bower_components/chainpad-crypto/crypto.js',
+                '/components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
                 '/secureiframe/main.js',
