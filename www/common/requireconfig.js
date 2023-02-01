@@ -4,7 +4,7 @@ define([
     var out = {
         // fix up locations so that relative urls work.
         baseUrl: window.location.pathname,
-        paths: { 
+        paths: {
             // json plugin
             text: '/components/requirejs-plugins/lib/text',
             json: '/components/requirejs-plugins/src/json',
@@ -28,6 +28,7 @@ define([
             '*': {
                 'css': '/components/require-css/css.js',
                 'less': '/common/RequireLess.js',
+                '/bower_components/tweetnacl/nacl-fast.min.js': '/components/tweetnacl/nacl-fast.min.js'
             }
         }
     };
