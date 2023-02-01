@@ -17,7 +17,6 @@ define([
     };
 
     var sendMsg = function (ctx, data, client, cb) {
-        console.error(data, client)
         var c = ctx.clients[client];
         if (!c) { return void cb({error: 'NO_CLIENT'}); }
         var chan = ctx.channels[c.channel];
@@ -37,7 +36,6 @@ define([
     var initIntegration = function (ctx, obj, client, cb) {
         var channel = obj.channel;
         var secret = obj.secret;
-        console.error('INIT INTE', channel, secret.channel);
         if (secret.keys.cryptKey) {
             secret.keys.cryptKey = convertToUint8(secret.keys.cryptKey);
         }
