@@ -2402,7 +2402,8 @@ define([
                         });
                         sortNode(toSort);
                         reorder();
-                    }
+                    },
+                    
                 };
 
             },
@@ -2428,6 +2429,114 @@ define([
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
+            // Creates every possible combination pair of given options
+            getCombinations: function(array, size) {
+                function p(t, i) {
+                if (t.length === size) {
+                    result.push(t);
+                    return;
+                }
+                if (i + 1 > array.length) {
+                    return;
+                }
+                p(t.concat(array[i]), i + 1);
+                p(t, i + 1);
+                }
+
+                var result = [];
+                p([], 0);
+                return result;
+                },
+
+            showCondorcetWinner: function(answers, opts) {
+
+                var _answers = parseAnswers(answers);
+
+                optionArray = []
+                console.log(opts)
+                opts.values.forEach(function (option) {
+                    optionArray.push(option.v)
+                })
+
+                listOfLists = []
+                Object.keys(_answers).forEach(function(a) {
+                    listOfLists.push(_answers[a].msg[Object.keys(_answers[a].msg)[0]])
+                })
+                var pairs = this.getCombinations(optionArray, 2)
+
+                var scoringDict = {}
+
+                pairs.forEach(function (pair) {
+                    //Creates a dictionary for each pair comparing how many times each option was scored over the other
+                    var option0 = pair[0]
+                    var option1 = pair[1]
+                    const pairDict = {}
+                    pairDict[option0] = 0
+                    pairDict[option1] = 0
+
+                    listOfLists.forEach(function(optionList) {
+                        if (optionList.indexOf(pair[0]) < optionList.indexOf(pair[1])) {
+                            pairDict[pair[0]] ++
+                        } else {
+                            pairDict[pair[1]] ++
+                        }
+                    })
+
+                    //Uses the pair score dictionary to declare winner of each pair
+                    scoringDict[pair] = "";
+                    if (pairDict[pair[0]] > pairDict[pair[1]]) {
+                        scoringDict[pair] = pair[0];
+                    } else if (pairDict[pair[0]] < pairDict[pair[1]]) {
+                        scoringDict[pair] = pair[1];
+                    }
+                })
+
+                //Counts the number of pairwise comparisons won by each option
+                listOfMatches = []
+                optionArray.forEach(function(option) {
+                var winningMatches = {}
+                winningMatches[option] = 0
+                Object.keys(scoringDict).forEach(function(key) {
+                if (key.includes(option) && scoringDict[key] == option) {
+                    winningMatches[option] ++;
+                }
+                })
+                listOfMatches.push(winningMatches);
+                })
+
+                console.log(listOfMatches)
+
+                //Checks for tie     
+                let scores = []
+                listOfMatches.forEach(function(match) {
+                    scores.push(Object.values(match))
+                    scores = scores.flat()
+                    duplicates = scores.filter((e, i, a) => a.indexOf(e) !== i)
+                })
+
+                var tiedOptions = []
+                if (duplicates.length > 0) {
+                    listOfMatches.forEach(function(match) {
+                        tiedOptions.push(match[Math.max(duplicates)])
+                    })
+                }
+
+                let condorcetWinner = "No Condorcet winner";
+
+                //Compares no. of matches won against n(number of candidates)-1
+                listOfMatches.forEach(function(match) {
+                    const key = Object.keys(match);
+                    if (match[key[0]] == optionArray.length-1) {
+                        condorcetWinner = `The Condorcet winner is: ${key[0]}`
+                    } else if (tiedOptions.length > 1) {
+                        condorcetWinner = "Tie: no winner"
+                    }
+                    })
+                    
+                return condorcetWinner
+
+            },
+
             icon: h('i.cptools.cptools-form-list-ordered')
         },
         poll: {
@@ -2783,8 +2892,11 @@ define([
                     answers: answers
                 });
 
-                var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+                if (type == "sort") {
+                    var condorcetWinner = model.showCondorcetWinner(answers, block.opts)
+                }
 
+                var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 //Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
@@ -2793,12 +2905,14 @@ define([
                     ]),
                     q,
                     h('div.cp-form-block-content', print),
+                    h('div.cp-form-block-content', condorcetWinner)
                 ]);
             });
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
         };
         show(answers);
+        
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
