@@ -2431,7 +2431,7 @@ define([
             },
             
 
-            showCondorcetWinner: function(answers, opts) {
+            showCondorcetWinner: function(answers, opts, uid) {
 
                 var _answers = parseAnswers(answers);
 
@@ -2460,13 +2460,12 @@ define([
                 return result;
                 }
 
-                var comparePairs = function(_answers) {
+                var comparePairs = function(_answers, uid) {
                 listOfLists = []
                 Object.keys(_answers).forEach(function(a) {
-                    listOfLists.push(_answers[a].msg[Object.keys(_answers[a].msg)[0]])
+                    listOfLists.push(_answers[a].msg[uid])
                 })
                 var pairs = getCombinations(optionArray, 2)
-
                 var scoringDict = {}
 
                 pairs.forEach(function (pair) {
@@ -2497,8 +2496,8 @@ define([
 
                 }
                 
-                var wonMatches = function(_answers) {
-                    var scoringDict = comparePairs(_answers)
+                var wonMatches = function(_answers, uid) {
+                    var scoringDict = comparePairs(_answers, uid)
                     //Counts the number of pairwise comparisons won by each option
                     listOfMatches = []
                     optionArray.forEach(function(option) {
@@ -2511,16 +2510,15 @@ define([
                         })
                     listOfMatches.push(winningMatches);
                 })
-
                 return listOfMatches
 
                 }
                 
-                var calculateWinner = function(_answers) {
+                var calculateWinner = function(_answers, uid) {
 
                 //Checks for tie     
                 let scores = []
-                var listOfMatches = wonMatches(_answers)
+                var listOfMatches = wonMatches(_answers, uid)
                 listOfMatches.forEach(function(match) {
                     scores.push(Object.values(match))
                     scores = scores.flat()
@@ -2550,7 +2548,7 @@ define([
 
                 }
 
-                return(calculateWinner(_answers))
+                return(calculateWinner(_answers, uid))
 
             },
 
@@ -2910,7 +2908,7 @@ define([
                 });
 
                 if (type == "sort") {
-                    var condorcetWinner = model.showCondorcetWinner(answers, block.opts)
+                    var condorcetWinner = model.showCondorcetWinner(answers, block.opts, uid)
                 }
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
