@@ -2429,13 +2429,25 @@ define([
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
-            // Creates every possible combination pair of given options
-            getCombinations: function(array, size) {
+            
+
+            showCondorcetWinner: function(answers, opts) {
+
+                var _answers = parseAnswers(answers);
+
+                optionArray = []
+                opts.values.forEach(function (option) {
+                    optionArray.push(option.v)
+                })
+
+                // Creates every possible combination pair of given options
+                var getCombinations = function(array, size) {
+
                 function p(t, i) {
-                if (t.length === size) {
-                    result.push(t);
-                    return;
-                }
+                    if (t.length === size) {
+                        result.push(t);
+                        return;
+                    }
                 if (i + 1 > array.length) {
                     return;
                 }
@@ -2446,23 +2458,14 @@ define([
                 var result = [];
                 p([], 0);
                 return result;
-                },
+                }
 
-            showCondorcetWinner: function(answers, opts) {
-
-                var _answers = parseAnswers(answers);
-
-                optionArray = []
-                console.log(opts)
-                opts.values.forEach(function (option) {
-                    optionArray.push(option.v)
-                })
-
+                var comparePairs = function(_answers) {
                 listOfLists = []
                 Object.keys(_answers).forEach(function(a) {
                     listOfLists.push(_answers[a].msg[Object.keys(_answers[a].msg)[0]])
                 })
-                var pairs = this.getCombinations(optionArray, 2)
+                var pairs = getCombinations(optionArray, 2)
 
                 var scoringDict = {}
 
@@ -2490,24 +2493,34 @@ define([
                         scoringDict[pair] = pair[1];
                     }
                 })
+                return scoringDict
 
-                //Counts the number of pairwise comparisons won by each option
-                listOfMatches = []
-                optionArray.forEach(function(option) {
-                var winningMatches = {}
-                winningMatches[option] = 0
-                Object.keys(scoringDict).forEach(function(key) {
-                if (key.includes(option) && scoringDict[key] == option) {
-                    winningMatches[option] ++;
                 }
-                })
-                listOfMatches.push(winningMatches);
+                
+                var wonMatches = function(_answers) {
+                    var scoringDict = comparePairs(_answers)
+                    //Counts the number of pairwise comparisons won by each option
+                    listOfMatches = []
+                    optionArray.forEach(function(option) {
+                        var winningMatches = {}
+                        winningMatches[option] = 0
+                        Object.keys(scoringDict).forEach(function(key) {
+                            if (key.includes(option) && scoringDict[key] == option) {
+                                winningMatches[option] ++;
+                            }
+                        })
+                    listOfMatches.push(winningMatches);
                 })
 
-                console.log(listOfMatches)
+                return listOfMatches
+
+                }
+                
+                var calculateWinner = function(_answers) {
 
                 //Checks for tie     
                 let scores = []
+                var listOfMatches = wonMatches(_answers)
                 listOfMatches.forEach(function(match) {
                     scores.push(Object.values(match))
                     scores = scores.flat()
@@ -2534,6 +2547,10 @@ define([
                     })
                     
                 return condorcetWinner
+
+                }
+
+                return(calculateWinner(_answers))
 
             },
 
