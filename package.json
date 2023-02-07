@@ -27,7 +27,12 @@
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
     "ulimit": "0.0.2",
-    "ws": "^3.3.1"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "ws": "^3.3.1",
+    "y-codemirror": "^3.0.1",
+    "y-websocket": "^1.4.5",
+    "yjs": "^13.5.45"
   },
   "devDependencies": {
     "jshint": "^2.13.4",
@@ -53,6 +58,7 @@
     "evict-inactive": "node scripts/evict-inactive.js",
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
-    "installtoken": "node scripts/install.js"
+    "installtoken": "node scripts/install.js",
+    "bundle-yjs": "cd scripts/yjs/ && npx webpack"
   }
 }

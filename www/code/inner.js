@@ -14,6 +14,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/lib/yjs_bundle.js',
 
 
     'css!cm/lib/codemirror.css',
@@ -60,8 +61,11 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
+    CMeditor,
+    Y)
 {
+    console.log(Y)
+    console.log(window)
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -505,6 +509,13 @@ define([
         // framework.onCursorUpdate(CodeMirror.setRemoteCursor);
         // framework.setCursorGetter(CodeMirror.getCursor);
         editor.on('cursorActivity', updateCursor);
+
+        // [START] Integrate into Yjs
+        console.log("🔌 CONNECT");
+        window.yjs_bundle.connect(CodeMirror, 'ws://localhost:1234', {"chanID": "test"});
+        // [END] Integrate into Yjs
+
+
 
         framework.onEditableChange(function () {
             editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
