@@ -463,47 +463,47 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-        framework.onContentUpdate(function (newContent) {
-            var highlightMode = newContent.highlightMode;
-            if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
-                CodeMirror.setMode(highlightMode, evModeChange.fire);
-            }
+        // framework.onContentUpdate(function (newContent) {
+        //     var highlightMode = newContent.highlightMode;
+        //     if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
+        //         CodeMirror.setMode(highlightMode, evModeChange.fire);
+        //     }
 
-            // Fix the markers offsets
-            markers.checkMarks(newContent);
+        //     // Fix the markers offsets
+        //     markers.checkMarks(newContent);
 
-            // Apply the text content
-            CodeMirror.contentUpdate(newContent);
-            previewPane.draw();
+        //     // Apply the text content
+        //     CodeMirror.contentUpdate(newContent);
+        //     previewPane.draw();
 
-            // Apply the markers
-            markers.setMarks();
+        //     // Apply the markers
+        //     markers.setMarks();
 
-            framework.localChange();
-        });
+        //     framework.localChange();
+        // });
 
-        framework.setContentGetter(function () {
-            CodeMirror.removeCursors();
-            var content = CodeMirror.getContent();
-            content.highlightMode = CodeMirror.highlightMode;
-            previewPane.draw();
+        // framework.setContentGetter(function () {
+        //     CodeMirror.removeCursors();
+        //     var content = CodeMirror.getContent();
+        //     content.highlightMode = CodeMirror.highlightMode;
+        //     previewPane.draw();
 
-            markers.updateAuthorMarks();
-            content.authormarks = markers.getAuthorMarks();
+        //     markers.updateAuthorMarks();
+        //     content.authormarks = markers.getAuthorMarks();
 
-            return content;
-        });
+        //     return content;
+        // });
 
         var cursorTo;
         var updateCursor = function () {
             if (cursorTo) { clearTimeout(cursorTo); }
             if (editor._noCursorUpdate) { return; }
             cursorTo = setTimeout(function () {
-                framework.updateCursor();
+                // framework.updateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
-        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
-        framework.setCursorGetter(CodeMirror.getCursor);
+        // framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        // framework.setCursorGetter(CodeMirror.getCursor);
         editor.on('cursorActivity', updateCursor);
 
         framework.onEditableChange(function () {
