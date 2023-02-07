@@ -506,10 +506,17 @@ define([
         };
         // framework.onCursorUpdate(CodeMirror.setRemoteCursor);
         // framework.setCursorGetter(CodeMirror.getCursor);
-        editor.on('cursorActivity', updateCursor);
+        // editor.on('cursorActivity', updateCursor);
 
         // [START] Integrate into Yjs
-        window.yjs_bundle.connect(CodeMirror.editor, 'ws://localhost:1234', {"chanID": "test"});
+      //
+        //     CodeMirror.removeCursors();
+        const connector = window.yjs_bundle.connect(CodeMirror.editor, 'ws://localhost:1234', {"chanID": "test"});
+        console.log(connector)
+        myUpdateHandler = (_updateMessage, _origin) => { previewPane.draw() };
+
+        connector.ydoc.on('update', myUpdateHandler)
+        connector.binding.on('cursorActivity', (_editor) => updateCursor())
         // [END] Integrate into Yjs
 
 

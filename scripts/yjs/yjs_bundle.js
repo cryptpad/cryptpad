@@ -13,5 +13,7 @@ export function connect(editor, serverName, cryptor) {
     { cryptor }
   )
   const ytext = ydoc.getText('codemirror')
-  new CodemirrorBinding(ytext, editor, provider.awareness)
+  const binding = new CodemirrorBinding(ytext, editor, provider.awareness)
+
+  return {ydoc, provider, binding}
 }
