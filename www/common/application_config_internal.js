@@ -11,7 +11,7 @@ define(function() {
      * redirected to the drive.
      * You should never remove the drive from this list.
      */
-    AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'kanban', 'code', 'form', 'poll', 'whiteboard',
+    AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'kanban', 'code', 'note', 'form', 'poll', 'whiteboard',
                                 'file', 'contacts', 'slide', 'convert'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
@@ -188,6 +188,7 @@ define(function() {
         link: 'fa-link',
         pad: 'cptools-richtext',
         code: 'cptools-code',
+        note: 'cptools-code',
         slide: 'cptools-slide',
         poll: 'cptools-poll',
         form: 'cptools-poll',

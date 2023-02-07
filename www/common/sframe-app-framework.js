@@ -533,6 +533,10 @@ define([
                 if (!newPad) {
                     var newContent = JSON.parse(newContentStr);
                     var metadata = extractMetadata(newContent);
+                    if (type === 'note' && ['code', 'slide'].includes(metadata.type)) {
+                        if (metadata.type === 'slide') { newContent.highlightMode = 'gfm'; }
+                        metadata.type = type;
+                    }
                     if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
                         var errorText = Messages.typeError;
                         UI.errorLoadingScreen(errorText);
