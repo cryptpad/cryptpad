@@ -62,10 +62,8 @@ define([
     TypingTest,
     Messages,
     CMeditor,
-    Y)
+    )
 {
-    console.log(Y)
-    console.log(window)
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -467,7 +465,7 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-        // framework.onContentUpdate(function (newContent) {
+        framework.onContentUpdate(function (newContent) {
         //     var highlightMode = newContent.highlightMode;
         //     if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
         //         CodeMirror.setMode(highlightMode, evModeChange.fire);
@@ -478,13 +476,13 @@ define([
 
         //     // Apply the text content
         //     CodeMirror.contentUpdate(newContent);
-        //     previewPane.draw();
+            previewPane.draw();
 
         //     // Apply the markers
         //     markers.setMarks();
 
         //     framework.localChange();
-        // });
+        });
 
         // framework.setContentGetter(function () {
         //     CodeMirror.removeCursors();
@@ -511,8 +509,7 @@ define([
         editor.on('cursorActivity', updateCursor);
 
         // [START] Integrate into Yjs
-        console.log("🔌 CONNECT");
-        window.yjs_bundle.connect(CodeMirror, 'ws://localhost:1234', {"chanID": "test"});
+        window.yjs_bundle.connect(CodeMirror.editor, 'ws://localhost:1234', {"chanID": "test"});
         // [END] Integrate into Yjs
 
 
