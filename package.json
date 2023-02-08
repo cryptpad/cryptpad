@@ -30,7 +30,7 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "ws": "^3.3.1",
-    "y-codemirror": "^3.0.1",
+    "y-codemirror": "github:theova/y-codemirror",
     "y-websocket": "^1.4.5",
     "yjs": "^13.5.45"
   },
