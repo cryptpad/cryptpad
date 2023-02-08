@@ -1,0 +1,90 @@
+/* The diagram editor styles should be loaded after the skin and before our overwrites. */
+@import url("mxgraph-editor/3.7.2/styles/grapheditor.css");
+
+body {
+  background-color: #ebebeb;
+}
+
+.diagram-editor {
+  height: 110%;
+  min-height: 20px;
+  background-color: #ebebeb;
+}
+
+.diagram-editor .geFooterContainer {
+  display: none;
+}
+
+.diagram-editor input[type="checkbox"], .diagram-editor input[type="radio"],
+.mxPopupMenu input[type="checkbox"], .mxPopupMenu input[type="radio"],
+.mxWindow input[type="checkbox"], .mxWindow input[type="radio"],
+.geDialog input[type="checkbox"], .geDialog input[type="radio"] {
+  vertical-align: text-bottom;
+}
+
+/**
+ * Overwrite XWiki skin styles
+ */
+.diagram-editor *,
+.mxPopupMenu *,
+.mxWindow *,
+.geDialog,
+.geDialog * {
+  box-sizing: content-box;
+}
+
+.mxPopupMenu,
+.mxWindow,
+.geDialog {
+  /* We need the same font size as on draw.io because the dialog height is hard-coded. */
+  font-size: 10pt;
+}
+
+.diagram-editor button, .diagram-editor select,
+.mxPopupMenu button, .mxPopupMenu select,
+.mxWindow button, .mxWindow select,
+.geDialog button, .geDialog select {
+  box-sizing: border-box;
+}
+
+.diagram-editor input[type="text"],
+.mxPopupMenu input[type="text"],
+.mxWindow input[type="text"],
+.geDialog input[type="text"] {
+  font-size: inherit;
+  height: auto;
+  padding: 1px;
+}
+
+.diagram-editor img,
+.mxPopupMenu img,
+.mxWindow img,
+.geDialog img {
+  vertical-align: baseline;
+}
+
+.diagram-editor hr,
+.mxPopupMenu hr,
+.mxWindow hr,
+.geDialog hr {
+  margin: 0;
+}
+
+.mxPopupMenu table,
+.mxWindow table,
+.geDialog table {
+  margin-bottom: 0;
+  width: auto;
+}
+
+.diagram-editor table > tbody > tr > td,
+.mxPopupMenu table > tbody > tr > td,
+.mxWindow table > tbody > tr > td,
+.geDialog table > tbody > tr > td {
+  border-top: 0 none;
+}
+
+.geDialog table > tbody > tr > td {
+  padding: 0;
+  vertical-align: baseline;
+}

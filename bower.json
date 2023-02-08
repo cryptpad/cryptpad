@@ -48,7 +48,8 @@
     "jszip": "3.7.1",
     "requirejs-plugins": "^1.0.3",
     "dragula.js": "3.7.2",
-    "MathJax": "3.0.5"
+    "MathJax": "3.0.5",
+    "x2js": "^1.2.0"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",

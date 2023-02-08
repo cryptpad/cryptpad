@@ -40,6 +40,7 @@ var EXEMPT = [
     /^\/common\/onlyoffice\/.*\.html.*/,
     /^\/(sheet|presentation|doc)\/inner\.html.*/,
     /^\/unsafeiframe\/inner\.html.*$/,
+    /^\/drawio\/drawio\/index\.html.*$/
 ];
 
 var cacheHeaders = function (Env, key, headers) {
