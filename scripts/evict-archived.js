@@ -98,7 +98,8 @@ nThen(function (w) {
 
     }));
 }).nThen(function (w) {
-    Eviction.archived(Env, w(function () {
-
+    Eviction.archived(Env, w(function (err, report) {
+        if (!report) { return; }
+        Env.Log.info('EVICT_ARCHIVED_FINAL_REPORT', report);
     }));
 });

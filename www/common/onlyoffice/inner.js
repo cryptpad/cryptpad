@@ -2993,7 +2993,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var m = metadataMgr.getChannelMembers().filter(function (str) {
                     return str.length === 32;
                 }).length;
-                if ((m - v) === 1 && !readOnly) {
+                if ((m - v) === 1 && !readOnly && common.isLoggedIn()) {
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
                 }
