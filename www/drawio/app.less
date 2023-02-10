@@ -1,0 +1,42 @@
+body.cp-app-generic {
+
+@import (once) "../../customize.dist/src/less2/include/browser.less";
+@import (once) "../../customize.dist/src/less2/include/framework.less";
+
+    .framework_main(
+        @bg-color: @colortheme_apps[code],
+    );
+
+// body
+&.cp-app-generic {
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+
+    .cp-app-generic-container {
+        display: inline-flex;
+        flex-flow: column;
+        height: 100%;
+        min-height: 100%;
+        width: 100%;
+        resize: horizontal;
+        overflow: hidden;
+    }
+    .cp-app-generic-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    @media (max-width: @browser_media-medium-screen) {
+        .cp-app-code-container {
+            flex: 1;
+            max-width: 100%;
+            resize: none;
+        }
+    }
+}
+}
