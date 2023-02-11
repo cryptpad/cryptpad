@@ -6,6 +6,7 @@ define([
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
     '/form/export.js',
+    '/form/condorcet.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
@@ -52,6 +53,7 @@ define([
     Framework,
     Toolbar,
     Exporter,
+    Condorcet,
     nThen,
     SFCommon,
     Util,
@@ -70,7 +72,7 @@ define([
     ChainPad,
     Share, Access, Properties,
     Flatpickr,
-    Sortable
+    Sortable, 
     )
 {
     var APP = window.APP = {
@@ -2431,7 +2433,9 @@ define([
             },
             
 
-            showCondorcetWinner: function(answers, opts, uid) {
+            showCondorcetWinner: function(answers, opts, uid, form) {
+
+                var showCondorcetWinner = {}
 
                 var _answers = parseAnswers(answers);
 
@@ -2440,116 +2444,11 @@ define([
                     optionArray.push(option.v)
                 })
 
-                // Creates every possible combination pair of given options
-                var getCombinations = function(array, size) {
-
-                function p(t, i) {
-                    if (t.length === size) {
-                        result.push(t);
-                        return;
-                    }
-                if (i + 1 > array.length) {
-                    return;
-                }
-                p(t.concat(array[i]), i + 1);
-                p(t, i + 1);
-                }
-
-                var result = [];
-                p([], 0);
-                return result;
-                }
-
-                var comparePairs = function(_answers, uid) {
                 listOfLists = []
                 Object.keys(_answers).forEach(function(a) {
                     listOfLists.push(_answers[a].msg[uid])
                 })
-                var pairs = getCombinations(optionArray, 2)
-                var scoringDict = {}
-
-                pairs.forEach(function (pair) {
-                    //Creates a dictionary for each pair comparing how many times each option was scored over the other
-                    var option0 = pair[0]
-                    var option1 = pair[1]
-                    const pairDict = {}
-                    pairDict[option0] = 0
-                    pairDict[option1] = 0
-
-                    listOfLists.forEach(function(optionList) {
-                        if (optionList.indexOf(pair[0]) < optionList.indexOf(pair[1])) {
-                            pairDict[pair[0]] ++
-                        } else {
-                            pairDict[pair[1]] ++
-                        }
-                    })
-
-                    //Uses the pair score dictionary to declare winner of each pair
-                    scoringDict[pair] = "";
-                    if (pairDict[pair[0]] > pairDict[pair[1]]) {
-                        scoringDict[pair] = pair[0];
-                    } else if (pairDict[pair[0]] < pairDict[pair[1]]) {
-                        scoringDict[pair] = pair[1];
-                    }
-                })
-                return scoringDict
-
-                }
-                
-                var wonMatches = function(_answers, uid) {
-                    var scoringDict = comparePairs(_answers, uid)
-                    //Counts the number of pairwise comparisons won by each option
-                    listOfMatches = []
-                    optionArray.forEach(function(option) {
-                        var winningMatches = {}
-                        winningMatches[option] = 0
-                        Object.keys(scoringDict).forEach(function(key) {
-                            if (key.includes(option) && scoringDict[key] == option) {
-                                winningMatches[option] ++;
-                            }
-                        })
-                    listOfMatches.push(winningMatches);
-                })
-                return listOfMatches
-
-                }
-                
-                var calculateWinner = function(_answers, uid) {
-
-                //Checks for tie     
-                let scores = []
-                var listOfMatches = wonMatches(_answers, uid)
-                listOfMatches.forEach(function(match) {
-                    scores.push(Object.values(match))
-                    scores = scores.flat()
-                    duplicates = scores.filter((e, i, a) => a.indexOf(e) !== i)
-                })
-
-                var tiedOptions = []
-                if (duplicates.length > 0) {
-                    listOfMatches.forEach(function(match) {
-                        tiedOptions.push(match[Math.max(duplicates)])
-                    })
-                }
-
-                let condorcetWinner = "No Condorcet winner";
-
-                //Compares no. of matches won against n(number of candidates)-1
-                listOfMatches.forEach(function(match) {
-                    const key = Object.keys(match);
-                    if (match[key[0]] == optionArray.length-1) {
-                        condorcetWinner = `The Condorcet winner is: ${key[0]}`
-                    } else if (tiedOptions.length > 1) {
-                        condorcetWinner = "Tie: no winner"
-                    }
-                    })
-                    
-                return condorcetWinner
-
-                }
-
-                return(calculateWinner(_answers, uid))
-
+                return Condorcet.showCondorcetWinner(_answers, opts, uid, form)
             },
 
             icon: h('i.cptools.cptools-form-list-ordered')
@@ -2893,6 +2792,7 @@ define([
         $controls.hide().append(switchMode);
 
         var show = function (answers, header) {
+            
             var order = getFullOrder(content);
             var elements = order.map(function (uid) {
                 var block = form[uid];
@@ -2907,8 +2807,51 @@ define([
                     answers: answers
                 });
 
+
+                let condorcetWinnerDiv = h('div')
+                
                 if (type == "sort") {
-                    var condorcetWinner = model.showCondorcetWinner(answers, block.opts, uid)
+                    condorcetWinnerDiv = h('div.cp-form-block', {style: { margin: 100, padding:100 }})
+                    if (form[uid].condorcet["method"] == 'schulze') {
+                        var condorcetResults = model.showCondorcetWinner(answers, block.opts, uid, form)[0][0]
+                        var condorcetWinner = condorcetResults[Object.keys(condorcetResults).length - 1]
+                        condorcetWinner.forEach(function(option) {
+                            condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetWinner, option, {style: { margin: '10px'}}))
+                        })
+                    } else {
+                        var condorcetResults = model.showCondorcetWinner(answers, block.opts, uid, form)[0][0]
+                        var condorcetWinner = condorcetResults[0]
+                        condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetWinner, condorcetWinner, {style: { margin: '10px'}}))
+                    }
+                    
+                    
+                    if (form[uid].condorcet["display"] == 'extended') {
+
+                        if (form[uid].condorcet["method"] == 'schulze') {
+                            var results = Object.keys(rankedResults).reverse().map(function(result) {
+                                return rankedResults[result] + ' : ' + result;
+                            });
+                            var alternateWinner = model.showCondorcetWinner(answers, block.opts, uid, form)[1][0][0]
+
+                        } else {
+                            var results = Object.keys(sortedRankDict).map(function(result) {
+                                return result + ' : ' + sortedRankDict[result];
+                            });
+                            var alternateWinner = model.showCondorcetWinner(answers, block.opts, uid, form)[1][0][model.showCondorcetWinner(answers, block.opts, uid, form)[0][0].length - 1]
+                        }
+                        
+                        condorcetWinnerDiv.append(h('div', Messages.form_condorcetExtendedDisplay, results.join(', '), {style: { margin: '10px'}}))
+
+                        var showAlternateWinnerButton = h('button.btn.btn-secondary', Messages.form_showAlternateWinnerButton, {style: { margin: '10px'}})
+                        condorcetWinnerDiv.append(h('div', showAlternateWinnerButton))
+
+                        $(showAlternateWinnerButton).click(function() {
+                            if ($(condorcetWinnerDiv).children().length < 4) {
+                                condorcetWinnerDiv.append(h('div', Messages.form_showAlternateWinner, alternateWinner, {style: { margin: '10px'}}))
+                            }
+                        })
+ 
+                    }   
                 }
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
@@ -2920,7 +2863,7 @@ define([
                     ]),
                     q,
                     h('div.cp-form-block-content', print),
-                    h('div.cp-form-block-content', condorcetWinner)
+                    condorcetWinnerDiv,
                 ]);
             });
             $results.empty().append(elements);
@@ -3791,6 +3734,39 @@ define([
                 uid: uid,
                 tmp: temp && temp[uid]
             });
+            var chooseCondorcetDiv = h('div')
+            if (type == "sort") {
+                var schulzeButton = h('button.btn.btn-secondary', Messages.form_schulzeMethod)
+                var rankedPairButton = h('button.btn.btn-secondary', Messages.form_rankedPairs)
+                var chooseCondorcetMethod = h('div',
+                    Messages.form_chooseCondorcetMethod, 
+                    schulzeButton, ' ',
+                    rankedPairButton,
+                    {style: { margin: '10px'}}
+                    )
+                var basicDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetBasicDisplayButton)
+                var extendedDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetExtendedDisplayButton,)
+                var chooseCondorcetDisplay = h('div',
+                    Messages.form_chooseCondorcetDisplay, 
+                    basicDisplayButton, ' ',
+                    extendedDisplayButton, 
+                    {style: { margin: '10px'}}
+                    )
+                chooseCondorcetDiv.append(chooseCondorcetMethod, chooseCondorcetDisplay)
+                form[uid].condorcet = {method: 'schulze', display: 'basic'}
+                $(schulzeButton).click(function() {
+                    form[uid].condorcet["method"] = 'schulze'
+                })
+                $(rankedPairButton).click(function() {
+                    form[uid].condorcet["method"] = 'ranked'
+                })
+                $(basicDisplayButton).click(function() {
+                    form[uid].condorcet["display"] = 'basic'
+                })
+                $(extendedDisplayButton).click(function() {
+                    form[uid].condorcet["display"] = 'extended'
+                })
+            }
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -3859,6 +3835,7 @@ define([
             if (APP.isEditor && type === "section") {
                 data.editing = true;
             }
+
 
             var changeType;
             if (editable) {
@@ -3938,7 +3915,8 @@ define([
                         model.icon.cloneNode(),
                         h('span', Messages['form_type_'+type])
                     ]);
-
+                
+                    
                 // Values
                 if (data.edit) {
                     var edit = h('button.btn.btn-default.cp-form-edit-button', [
@@ -4066,6 +4044,7 @@ define([
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
                     APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
+                    chooseCondorcetDiv,
                     editContainer,
                     editButtons
                 ]),
