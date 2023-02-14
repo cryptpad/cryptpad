@@ -625,7 +625,7 @@ define([
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
-            var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
+            var isSafe = true //Fixme ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
             var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
             var ooDownloadData = {};
 

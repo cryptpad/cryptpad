@@ -511,7 +511,14 @@ define([
         // [START] Integrate into Yjs
       //
         //     CodeMirror.removeCursors();
-        const connector = window.yjs_bundle.connect(CodeMirror.editor, 'ws://localhost:1234', {"chanID": "test"});
+        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+        var hash = privateData.hashes.editHash || privateData.hashes.viewHash;
+        var secret = Hash.getSecrets('pad', hash, privateData.password);
+        console.log({privateData})
+        console.log({secret})
+        var cryptor = secret.keys
+        cryptor.chanId = secret.channel
+        const connector = window.yjs_bundle.connect(CodeMirror.editor, 'ws://localhost:1234', cryptor)
         console.log(connector)
         myUpdateHandler = (_updateMessage, _origin) => { previewPane.draw() };
 
