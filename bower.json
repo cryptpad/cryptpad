@@ -49,7 +49,9 @@
     "requirejs-plugins": "^1.0.3",
     "dragula.js": "3.7.2",
     "MathJax": "3.0.5",
-    "drawio": "jgraph/drawio#v20.8.18"
+    "drawio": "jgraph/drawio#v20.8.18",
+    "js-base64": "^3.7.5",
+    "pako": "^2.1.0"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",
