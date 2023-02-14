@@ -140,7 +140,7 @@ define([
         return text.trim();
     };
 
-    var isMobile = window.orientation || (typeof(screen) !== "undefined" && screen.orientation);
+    var isMobile = /Android|iPhone/i.test(navigator.userAgent);
 
     module.mkIndentSettings = function (editor, metadataMgr) {
         var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
