@@ -85,12 +85,17 @@ define([
         drawioFrame.src = '/bower_components/drawio/src/main/webapp/index.html?'
             + new URLSearchParams({
                 // pages: 0,
-                dev: 1,
+                // dev: 1,
                 test: 1,
                 stealth: 1,
                 embed: 1,
                 drafts: 0,
+
+                // Hide save and exit buttons
                 noSaveBtn: 1,
+                saveAndExit: 0,
+                noExitBtn: 1,
+
                 modified: 'unsavedChanges',
                 proto: 'json',
             });
