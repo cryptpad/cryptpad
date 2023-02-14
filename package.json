@@ -61,6 +61,6 @@
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js",
-    "bundle-yjs": "cd scripts/yjs/ && ln -s ../../www/bower_components . && npx webpack"
+    "bundle-yjs": "cd scripts/yjs/ && ln -sf ../../www/bower_components . && npx webpack"
   }
 }
