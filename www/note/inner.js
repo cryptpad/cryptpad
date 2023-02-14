@@ -13,6 +13,10 @@ define([
     '/common/visible.js',
     '/common/TypingTests.js',
     '/customize/messages.js',
+    '/lib/cm6.js',
+
+
+    /*
     'cm/lib/codemirror',
 
 
@@ -41,6 +45,7 @@ define([
     'cm/addon/fold/markdown-fold',
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
+*/
 
     'css!/customize/src/print.css',
     'less!/note/app-note.less'
@@ -66,7 +71,7 @@ define([
 Messages.type.note = "Note"; // XXX
 
 
-    window.CodeMirror = CMeditor;
+    //window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
@@ -304,7 +309,6 @@ Messages.type.note = "Note"; // XXX
                         return;
                     }
                     $target.css('width', (w - x + evt.pageX) + 'px');
-                    editor.refresh();
                 };
                 $(window).off('mouseup mousemove', handler);
                 $(window).on('mouseup mousemove', handler);
@@ -632,9 +636,12 @@ Messages.type.note = "Note"; // XXX
             nThen(function (waitFor) {
                 $(waitFor());
             }).nThen(function () {
-                CodeMirror = SFCodeMirror.create(null, CMeditor);
+                CodeMirror = SFCodeMirror.create(null, window.CP_note_editor);
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
-                editor = CodeMirror.editor;
+                editor = CodeMirror;
+                window.editor = editor; // XXX
+                //editor = CodeMirror.editor;
+                $('#cp-app-code-container').append(CodeMirror.editor.dom);
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {

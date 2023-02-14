@@ -1479,6 +1479,10 @@ define([
                     return;
                 }
             }
+
+            // CodeMirror 6 refocus when updating language or theme: don't hide menu
+            if ($content.hasClass('noblur')) { return; }
+
             $button.removeClass('cp-toolbar-button-active');
             $content.hide();
         };

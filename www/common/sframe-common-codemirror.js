@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/modes.js',
-    '/common/themes.js',
+    '/common/themes.js', // XXX remove
     '/customize/messages.js',
     '/common/common-ui-elements.js',
     '/common/inner/common-mediatag.js',
@@ -9,6 +9,7 @@ define([
     '/common/common-util.js',
     '/common/text-cursor.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/lib/cm6.js',
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
@@ -39,8 +40,13 @@ define([
         return cursor;
     };
 
-    module.getContentExtension = function (mode) {
-        var ext = Modes.extensionOf(mode);
+    module.getContentExtension = function (id) {
+        var editor = window.CP_note_editor;
+        var modes = editor.CP_listLanguages();
+        var mode = modes.find(function (obj) {
+            return obj.id === id;
+        }) || modes[0];
+        var ext = mode.ext && mode.ext[0];
         return ext !== undefined ? ext : '.txt';
     };
     module.fileExporter = function (content) {
@@ -145,22 +151,34 @@ define([
     module.mkIndentSettings = function (editor, metadataMgr) {
         var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
             if (typeof(units) !== 'number') { return; }
-            var doc = editor.getDoc();
             if (isMobile && fontSize < 16) {
                 fontSize = 16;
             }
+
+            editor.CP_setIndent(useTabs, units);
+            /*
             editor.setOption('indentUnit', units);
             editor.setOption('tabSize', units);
             editor.setOption('indentWithTabs', useTabs);
-            editor.setOption('spellcheck', spellcheck);
-            editor.setOption('autoCloseBrackets', brackets);
+            */
+
+            //editor.setOption('spellcheck', spellcheck); // XXX not supported
+            editor.CP_setBrackets(brackets);
+            //editor.setOption('autoCloseBrackets', brackets);
+
+
             setTimeout(function () {
                 $('.CodeMirror').css('font-size', fontSize+'px');
-                editor.refresh();
+                //editor.refresh();
             });
 
             // orgmode is using its own shortcuts
-            if (editor.getMode().name === 'orgmode') { return; }
+            //if (editor.getMode().name === 'orgmode') { return; } // XXX orgmode todo (getMode not defined)
+
+            /*
+            // XXX not needed: these keys are alreayd disabled by default in cm6
+            return;
+            var doc = editor.getDoc();
             editor.setOption("extraKeys", {
                 Tab: function() {
                     if (doc.somethingSelected()) {
@@ -185,6 +203,7 @@ define([
                 "Shift-Alt-Up": undefined,
                 "Shift-Alt-Down": undefined,
             });
+            */
         };
 
         var indentKey = 'indentUnit';
@@ -211,11 +230,11 @@ define([
         updateIndentSettings();
     };
 
-    module.create = function (defaultMode, CMeditor, textarea) {
+    module.create = function (defaultMode, editor, textarea) {
         var exp = {};
 
-        var CodeMirror = exp.CodeMirror = CMeditor;
-        CodeMirror.modeURL = "cm/mode/%N/%N";
+        //var CodeMirror = exp.CodeMirror = CMeditor;
+        //CodeMirror.modeURL = "cm/mode/%N/%N";
 
         var $pad = $('#pad-iframe');
         var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
@@ -232,48 +251,208 @@ define([
             $drawer = toolbar.$theme || $();
         };
 
-        var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
-            allowDropFileTypes: [],
-            lineNumbers: true,
-            lineWrapping: true,
-            autoCloseBrackets: true,
-            matchBrackets : true,
-            showTrailingSpace : true,
-            styleActiveLine : true,
-            search: true,
-            inputStyle: 'contenteditable',
-            highlightSelectionMatches: {showToken: /\w+/},
-            extraKeys: {"Shift-Ctrl-R": undefined},
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            mode: defaultMode || "javascript",
-            readOnly: true
-        });
-        editor.focus();
+        exp.editor = editor;
+        console.error(editor);
 
-        // Fix cursor and scroll position after undo/redo
-        var undoData;
-        editor.on('beforeChange', function (editor, change) {
-            if (change.origin !== "undo" && change.origin !== "redo") { return; }
-            undoData = editor.getValue();
-        });
-        editor.on('change', function (editor, change) {
-            if (change.origin !== "undo" && change.origin !== "redo") { return; }
-            if (typeof(undoData) === "undefined") { return; }
-            var doc = editor.getValue();
-            var ops = ChainPad.Diff.diff(undoData, doc);
-            undoData = undefined;
-            if (!ops.length) { return; }
-            var cursor = posToCursor(ops[0].offset, doc);
-            editor.setCursor(cursor);
-            editor.scrollIntoView(cursor);
-        });
+        // editor to sframe-common-codemirror
+        exp.getValue = function () {
+            return editor.state.doc.toString();
+        };
+        exp.setValue = function (text) {
+            editor.dispatch({
+                changes: {from: 0, to: editor.state.doc.length, insert: text}
+            })
+        };
+        exp.on = function (type, handler) {
+            editor.CP_on(type, function (update) {
+                handler(editor, update);
+            });
+        };
+        exp.getMode = function () {
+            return {
+                name: exp.highlightMode
+            };
+        };
+        exp.replaceSelection = function (txt) {
+            return editor.dispatch(editor.state.replaceSelection(txt));
+        };
 
-        module.handleImagePaste(editor);
+        exp.focus = function () {
+            editor.focus();
+        };
+
+        exp.mkIndentSettings = function (metadataMgr) {
+            module.mkIndentSettings(editor, metadataMgr);
+        };
+
+        exp.setRemoteCursor = function () { console.warn('placeholder remotecursor'); };
+        exp.getCursor = function () {
+            // XXX
+            console.warn('placeholder cursor');
+            return {
+                selectionStart: 0,
+                selectionEnd: 0
+            };
+        };
+        exp.removeCursors = function () { console.warn('placeholder removecursor'); };
+        exp.getHeadingText = function () { console.warn('placeholder getheadingtext'); };
+        exp.refresh = function () { console.error('placeholder refresh'); };
+        exp.getAllMarks = function () { console.warn('placeholder getAllMarks'); return []; };
+
+
+        exp.highlightMode = '';
+
+
+        exp.getContentExtension = function () {
+            return module.getContentExtension(exp.highlightMode);
+        };
+        exp.fileExporter = function () {
+            return module.fileExporter(exp.getValue());
+        };
+        exp.fileImporter = function (content, file) {
+            var $toolbarContainer = $('#cme_toolbox');
+            /*
+            var mime = CodeMirror.findModeByMIME(file.type);
+            var mode;
+            if (!mime) {
+                var ext = /.+\.([^.]+)$/.exec(file.name);
+                if (ext && ext[1]) {
+                    mode = CMeditor.findModeByExtension(ext[1]);
+                    mode = mode && mode.mode || null;
+                }
+            } else {
+                mode = mime && mime.mode || null;
+            }
+            */
+            var reg = /.+\.([^.]+)$/.exec(file.name);
+            var ext = reg && reg[1];
+            var modes = editor.CP_listLanguages();
+            if (ext && !/^\./.test(ext)) { ext = `.${ext}`; }
+            var modeData = modes.find(function (data) {
+                return (data.ext || []).includes(ext);
+            });
+            var mode = modeData ? modeData.id : 'text';
+
+            if (mode === "markdown") { mode = "gfm"; }
+            exp.setMode(mode);
+            $toolbarContainer.find('#language-mode').val(mode);
+
+            // return the mode so that the code editor can decide how to display the new content
+        };
+
+        exp.setOption = function (type, value) {
+            if (type === "readOnly") {
+                return editor.CP_setReadOnly(value);
+            }
+        };
+
+        exp.configureTheme = function (Common, cb) {
+            /*  Remember the user's last choice of theme using localStorage */
+            var isDark = window.CryptPad_theme === "dark";
+            var themeKey = ['codemirror', isDark ? 'themedark' : 'theme'];
+            var defaultTheme = isDark ? 'basic_dark' : 'basic_light';
+
+            var allThemes = editor.CP_listThemes();
+            var getThemeData = function (id) {
+                return allThemes.find(function (el) {
+                    return el.id === id;
+                }) || {};
+            };
+
+            var todo = function (err, lastTheme) {
+                lastTheme = lastTheme || defaultTheme;
+                var options = [];
+                allThemes.forEach(function (l) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {
+                            'data-value': l.id,
+                            'href': '#',
+                        },
+                        content: [l.name] // Pretty name of the language value
+                    });
+                });
+                var dropdownConfig = {
+                    text: Messages.code_editorTheme, // Button initial text
+                    options: options, // Entries displayed in the menu
+                    isSelect: true,
+                    initialValue: lastTheme,
+                    feedback: 'CODE_THEME',
+                    common: Common
+                };
+                var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
+                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
+                    var state = $block.find('.cp-dropdown-content').is(':visible');
+                    var $c = $block.closest('.cp-toolbar-drawer-content');
+                    $c.removeClass('cp-dropdown-visible');
+                    if (!state) {
+                        $c.addClass('cp-dropdown-visible');
+                    }
+                });
+
+                var setTheme = function (theme, $select) {
+                    var $c = $block.closest('.cp-toolbar-drawer-content');
+                    var data = getThemeData(theme);
+                    $c.addClass('noblur');
+                    editor.CP_setTheme(theme);
+                    $c.removeClass('noblur');
+                    $block.find('button').focus();
+                    if ($select) {
+                        var name = theme.name || undefined;
+                        name = name ? Messages.themeButton + ' ('+name+')' : Messages.themeButton;
+                        $select.setValue(theme, name);
+                    }
+                };
+
+                setTheme(lastTheme, $block);
+
+                var isHovering = false;
+                var $aThemes = $block.find('a');
+                $aThemes.mouseenter(function () {
+                    isHovering = true;
+                    var theme = $(this).attr('data-value');
+                    setTheme(theme, $block);
+                });
+                $aThemes.mouseleave(function () {
+                    if (isHovering) {
+                        setTheme(lastTheme, $block);
+                        Common.setAttribute(themeKey, lastTheme);
+                    }
+                });
+                $aThemes.click(function () {
+                    isHovering = false;
+                    var theme = $(this).attr('data-value');
+                    setTheme(theme, $block);
+                    Common.setAttribute(themeKey, theme);
+                });
+
+                if ($drawer) { $drawer.append($block); }
+                if (cb) { cb(); }
+            };
+            Common.getAttribute(themeKey, todo);
+        };
 
         var setMode = exp.setMode = function (mode, cb) {
-            exp.highlightMode = mode;
             if (mode === 'markdown') { mode = 'gfm'; }
+            exp.highlightMode = mode;
+
+            var modes = editor.CP_listLanguages();
+            var getModeData = function (id) {
+                return modes.find(function (el) {
+                    return el.id === id;
+                }) || {};
+            };
+
+            var data = getModeData(mode);
+
+            var $c = $();
+            if (exp.$language) { $c = exp.$language.closest('.cp-toolbar-drawer-content'); }
+
+            $c.addClass('noblur');
+            editor.CP_setLanguage(mode);
+            $c.removeClass('noblur');
+
+            /* // XXX
             if (/text\/x/.test(mode)) {
                 CMeditor.autoLoadMode(editor, 'clike');
                 editor.setOption('mode', mode);
@@ -290,12 +469,16 @@ define([
                 }
                 editor.setOption('mode', mode);
             }
+            */
+
             if (exp.$language) {
-                var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
+                var name = data.name;
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
             }
 
+            // XXX TODO orgmode
+            /*
                 if (mode === "orgmode") {
                     if (CodeMirror.orgmode && typeof (CodeMirror.orgmode.init) === "function") {
                         CodeMirror.orgmode.init(editor);
@@ -305,57 +488,23 @@ define([
                         CodeMirror.orgmode.destroy(editor);
                     }
                 }
-
+            */
             if(cb) { cb(mode); }
         };
-
-        var setTheme = exp.setTheme = (function () {
-            var path = '/common/theme/';
-
-            var $head = $(window.document.head);
-
-            var themeLoaded = exp.themeLoaded = function (theme) {
-                return $head.find('link[href*="'+theme+'"]').length;
-            };
-
-            var loadTheme = exp.loadTheme = function (theme) {
-                $head.append($('<link />', {
-                    rel: 'stylesheet',
-                    href: path + theme + '.css',
-                }));
-            };
-
-            return function (theme, $select) {
-                if (!theme) {
-                    editor.setOption('theme', 'default');
-                } else {
-                    if (!themeLoaded(theme)) {
-                        loadTheme(theme);
-                    }
-                    editor.setOption('theme', theme);
-                }
-                if ($select) {
-                    var name = theme || undefined;
-                    name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
-                    $select.setValue(theme, name);
-                }
-            };
-        }());
-
-        exp.getHeadingText = function () {
-            return module.getHeadingText(editor);
-        };
-
         exp.configureLanguage = function (Common, cb, onModeChanged) {
             var options = [];
-            Modes.list.forEach(function (l) {
+            var modes = editor.CP_listLanguages();
+            modes.sort(function (a, b) {
+                return a.name < b.name ? -1 : (a.name === b.name ? 0 : 1);
+            });
+            modes.forEach(function (l) {
                 options.push({
                     tag: 'a',
                     attributes: {
-                        'data-value': l.mode,
+                        'data-value': l.id,
                         'href': '#',
                     },
-                    content: [l.language] // Pretty name of the language value
+                    content: [l.name] // Pretty name of the language value
                 });
             });
             var dropdownConfig = {
@@ -391,130 +540,78 @@ define([
             if (cb) { cb(); }
         };
 
-        exp.configureTheme = function (Common, cb) {
-            /*  Remember the user's last choice of theme using localStorage */
-            var isDark = window.CryptPad_theme === "dark";
-            var themeKey = ['codemirror', isDark ? 'themedark' : 'theme'];
-            var defaultTheme = isDark ? 'cryptpad-dark' : 'default';
+        var canonicalize = exp.canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
-            var todo = function (err, lastTheme) {
-                lastTheme = lastTheme || defaultTheme;
-                var options = [];
-                Themes.forEach(function (l) {
-                    options.push({
-                        tag: 'a',
-                        attributes: {
-                            'data-value': l.name,
-                            'href': '#',
-                        },
-                        content: [l.name] // Pretty name of the language value
-                    });
-                });
-                var dropdownConfig = {
-                    text: Messages.code_editorTheme, // Button initial text
-                    options: options, // Entries displayed in the menu
-                    isSelect: true,
-                    initialValue: lastTheme,
-                    feedback: 'CODE_THEME',
-                    common: Common
-                };
-                var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
-                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
-                    var state = $block.find('.cp-dropdown-content').is(':visible');
-                    var $c = $block.closest('.cp-toolbar-drawer-content');
-                    $c.removeClass('cp-dropdown-visible');
-                    if (!state) {
-                        $c.addClass('cp-dropdown-visible');
-                    }
-                });
-
-                setTheme(lastTheme, $block);
-
-                var isHovering = false;
-                var $aThemes = $block.find('a');
-                $aThemes.mouseenter(function () {
-                    isHovering = true;
-                    var theme = $(this).attr('data-value');
-                    setTheme(theme, $block);
-                });
-                $aThemes.mouseleave(function () {
-                    if (isHovering) {
-                        setTheme(lastTheme, $block);
-                        Common.setAttribute(themeKey, lastTheme);
-                    }
-                });
-                $aThemes.click(function () {
-                    isHovering = false;
-                    var theme = $(this).attr('data-value');
-                    setTheme(theme, $block);
-                    Common.setAttribute(themeKey, theme);
-                });
-
-                if ($drawer) { $drawer.append($block); }
-                if (cb) { cb(); }
-            };
-            Common.getAttribute(themeKey, todo);
-        };
-
-        exp.getContentExtension = function () {
-            return module.getContentExtension(exp.highlightMode);
-        };
-        exp.fileExporter = function () {
-            return module.fileExporter(editor.getValue());
-        };
-        exp.fileImporter = function (content, file) {
-            var $toolbarContainer = $('#cme_toolbox');
-            var mime = CodeMirror.findModeByMIME(file.type);
-            var mode;
-            if (!mime) {
-                var ext = /.+\.([^.]+)$/.exec(file.name);
-                if (ext && ext[1]) {
-                    mode = CMeditor.findModeByExtension(ext[1]);
-                    mode = mode && mode.mode || null;
-                }
-            } else {
-                mode = mime && mime.mode || null;
-            }
-            if (mode === "markdown") { mode = "gfm"; }
-            if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
-                exp.setMode(mode);
-                $toolbarContainer.find('#language-mode').val(mode);
-            } else {
-                console.log("Couldn't find a suitable highlighting mode: %s", mode);
-                exp.setMode('text');
-                $toolbarContainer.find('#language-mode').val('text');
-            }
-            // return the mode so that the code editor can decide how to display the new content
-            return { content: content, mode: mode };
+        exp.getContent = function () {
+            //editor.save();
+            return { content: canonicalize(exp.getValue()) };
         };
 
         exp.setValueAndCursor = function (oldDoc, remoteDoc) {
             return module.setValueAndCursor(editor, oldDoc, remoteDoc);
         };
 
-        /////
-
-        var canonicalize = exp.canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
-
-
         exp.contentUpdate = function (newContent) {
-            var oldDoc = canonicalize(editor.getValue());
+            var oldDoc = canonicalize(exp.getValue());
             var remoteDoc = newContent.content;
             // setValueAndCursor triggers onLocal, even if we don't make any change to the content
             // and it may revert other changes (metadata)
 
             if (oldDoc === remoteDoc) { return; }
-            exp.setValueAndCursor(oldDoc, remoteDoc);
+            exp.setValue(remoteDoc); // XXX
+            //exp.setValueAndCursor(oldDoc, remoteDoc);
         };
 
-        exp.getContent = function () {
-            editor.save();
-            return { content: canonicalize(editor.getValue()) };
+
+        return exp;
+
+        /*
+        var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
+            allowDropFileTypes: [],
+            lineNumbers: true,
+            lineWrapping: true,
+            autoCloseBrackets: true,
+            matchBrackets : true,
+            showTrailingSpace : true,
+            styleActiveLine : true,
+            search: true,
+            inputStyle: 'contenteditable',
+            highlightSelectionMatches: {showToken: /\w+/},
+            extraKeys: {"Shift-Ctrl-R": undefined},
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            mode: defaultMode || "javascript",
+            readOnly: true
+        });
+        editor.focus();
+*/
+
+        // Fix cursor and scroll position after undo/redo
+        var undoData;
+        editor.on('beforeChange', function (editor, change) {
+            if (change.origin !== "undo" && change.origin !== "redo") { return; }
+            undoData = editor.getValue();
+        });
+        editor.on('change', function (editor, change) {
+            if (change.origin !== "undo" && change.origin !== "redo") { return; }
+            if (typeof(undoData) === "undefined") { return; }
+            var doc = editor.getValue();
+            var ops = ChainPad.Diff.diff(undoData, doc);
+            undoData = undefined;
+            if (!ops.length) { return; }
+            var cursor = posToCursor(ops[0].offset, doc);
+            editor.setCursor(cursor);
+            editor.scrollIntoView(cursor);
+        });
+
+        module.handleImagePaste(editor);
+
+
+
+        exp.getHeadingText = function () {
+            return module.getHeadingText(editor);
         };
 
-        exp.mkIndentSettings = function (metadataMgr) {
-            module.mkIndentSettings(editor, metadataMgr);
-        };
 
         exp.getCursor = function () {
             var doc = canonicalize(editor.getValue());
