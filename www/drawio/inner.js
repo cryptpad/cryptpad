@@ -12,24 +12,22 @@ define([
     pako,
     base64) {
 
-    console.log('XXX base64', base64);
-
     // This is the main initialization loop
     var onFrameworkReady = function (framework) {
-        const drawioFrame = document.querySelector('#cp-app-drawio-content');
-        let lastContent = '';
-        let drawIoInitalized = false;
+        var drawioFrame = document.querySelector('#cp-app-drawio-content');
+        var lastContent = '';
+        var drawIoInitalized = false;
 
-        const postMessageToDrawio = function(msg) {
+        var postMessageToDrawio = function(msg) {
             if (!drawIoInitalized) {
                 return;
             }
 
-            console.log('XXX postMessageToDrawio', msg);
+            console.log('draw.io postMessageToDrawio', msg);
             drawioFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
         };
 
-        const onDrawioInit = function(data) {
+        var onDrawioInit = function(data) {
             drawIoInitalized = true;
 
             postMessageToDrawio({
@@ -39,7 +37,7 @@ define([
             });
         };
 
-        const onDrawioChange = function(newXml) {
+        var onDrawioChange = function(newXml) {
             newXml = decompressDrawioXml(newXml);
             if (lastContent != newXml) {
                 lastContent = newXml;
@@ -47,18 +45,17 @@ define([
             }
         }
 
-        const onDrawioAutodave = function(data) {
+        var onDrawioAutodave = function(data) {
             onDrawioChange(data.xml);
         }
 
-        const drawioHandlers = {
+        var drawioHandlers = {
             init: onDrawioInit,
             autosave: onDrawioAutodave,
         };
 
         // This is the function from which you will receive updates from CryptPad
         framework.onContentUpdate(function (newContent) {
-            console.log("Content should be updated to " + newContent);
             lastContent = newContent.content;
             postMessageToDrawio({
                 action: 'merge',
@@ -68,7 +65,6 @@ define([
 
         // This is the function called to get the current state of the data in your app
         framework.setContentGetter(function () {
-            console.log("Content current value is " + lastContent);
             return {
                 content: lastContent
             };
@@ -102,10 +98,10 @@ define([
 
         window.addEventListener("message", (event) => {
             if (event.source == drawioFrame.contentWindow) {
-                const data = JSON.parse(event.data);
-                console.log('XXX', data);
-                const eventType = data.event;
-                const handler = drawioHandlers[eventType];
+                var data = JSON.parse(event.data);
+                console.log('draw.io got message', data);
+                var eventType = data.event;
+                var handler = drawioHandlers[eventType];
                 if (handler) {
                     handler(data);
                 }
@@ -114,31 +110,31 @@ define([
     };
 
     // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
-    let decompressDrawioXml = function(xmlDocStr) {
-        const TEXT_NODE = 3;
+    var decompressDrawioXml = function(xmlDocStr) {
+        var TEXT_NODE = 3;
 
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xmlDocStr, "application/xml");
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(xmlDocStr, "application/xml");
 
         doc.firstChild.removeAttribute('modified');
         doc.firstChild.removeAttribute('agent');
         doc.firstChild.removeAttribute('etag');
 
-        const errorNode = doc.querySelector("parsererror");
+        var errorNode = doc.querySelector("parsererror");
         if (errorNode) {
             console.error("error while parsing", errorNode);
             return xmlStr;
         }
 
-        const diagrams = doc.querySelectorAll('diagram');
+        var diagrams = doc.querySelectorAll('diagram');
 
-        diagrams.forEach((diagram) => {
+        diagrams.forEach(function(diagram) {
             if (diagram.firstChild && diagram.firstChild.nodeType == TEXT_NODE)  {
-                const innerText = diagram.firstChild.nodeValue;
-                const bin = base64.toUint8Array(innerText);
-                const xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
-                const xmlStr = decodeURIComponent(xmlUrlStr);
-                const diagramDoc = parser.parseFromString(xmlStr, "application/xml");
+                var innerText = diagram.firstChild.nodeValue;
+                var bin = base64.toUint8Array(innerText);
+                var xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
+                var xmlStr = decodeURIComponent(xmlUrlStr);
+                var diagramDoc = parser.parseFromString(xmlStr, "application/xml");
                 diagram.replaceChild(diagramDoc.firstChild, diagram.firstChild);
             }
         });
