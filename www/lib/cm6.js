@@ -26427,103 +26427,95 @@
    let md = languages.find((el) => {
        return el.id === 'gfm';
    }) || languages[2];
-   let editor = window.CP_note_editor = new EditorView({
-       state: EditorState.create({
-           extensions: [
-               EditorView.lineWrapping,
-               updateListenerExtension,
-               lineNumbers(),
-               highlightActiveLineGutter(),
-               highlightSpecialChars(),
-               foldGutter(),
-               drawSelection(),
-               dropCursor(),
-               EditorState.allowMultipleSelections.of(true),
-               indentOnInput(),
-               syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
 
-               keymap.of([indentWithTab]),
-               indents.of(indentUnit.of('\t')),
-               tabSize.of(EditorState.tabSize.of(8)),
+   window.CP_getLanguages = () => languages.slice();
+   window.CP_createEditor = (cfg) => {
+       cfg = cfg || {};
+       let editor = new EditorView({
+           state: EditorState.create({
+               extensions: [
+                   EditorView.lineWrapping,
+                   updateListenerExtension,
+                   highlightActiveLineGutter(),
+                   highlightSpecialChars(),
+                   drawSelection(),
+                   dropCursor(),
+                   EditorState.allowMultipleSelections.of(true),
+                   indentOnInput(),
+                   syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
 
-               readOnly.of(EditorState.readOnly.of(true)),
+                   cfg.noNumber ? [] : lineNumbers(),
+                   cfg.noNumber ? [] : foldGutter(),
 
-               bracketMatching(),
-               brackets.of([closeB]),
-               //closeBracketsKeymap,
-               autocompletion(),
+                   keymap.of([indentWithTab]),
+                   indents.of(indentUnit.of('\t')),
+                   tabSize.of(EditorState.tabSize.of(8)),
 
-               rectangularSelection(),
-               crosshairCursor(),
-               highlightActiveLine(),
-               //highlightSelectionMatches(),
-               //defaultHighlightStyle
-               language.of([md.extension]),
-               theme.of([themes[2]])
-           ],
-           doc: `
-# Title
+                   readOnly.of(EditorState.readOnly.of(true)),
 
-## Test
+                   bracketMatching(),
+                   brackets.of([closeB]),
+                   //closeBracketsKeymap,
+                   autocompletion(),
 
-var a = function () {};
-
-`
-       }),
-       //extensions: [basicSetup, javascript()],
-     //parent: document.body
-   });
-
-
-   /*
-   let editor = window.CP_note_editor = new EditorView({
-       extensions: [
-           javascript(),
-           ...themeExtensions.dark
-       ],
-      // parent: document.body
-   });
-   */
-
-
-
-   editor.CP_listThemes = () => themes.slice();
-   editor.CP_setTheme = (id) => {
-       let t = themes.find((el) => {
-           return el.id === id;
-       }) || themes[1];
-       editor.dispatch({
-           effects: theme.reconfigure([t])
+                   rectangularSelection(),
+                   crosshairCursor(),
+                   highlightActiveLine(),
+                   //highlightSelectionMatches(),
+                   //defaultHighlightStyle
+                   language.of([md.extension]),
+                   theme.of([themes[2]])
+               ],
+               doc: ''
+           }),
        });
-   };
 
-   editor.CP_listLanguages = () => languages.slice();
-   editor.CP_setLanguage = (id) => {
-       let l = languages.find((el) => {
-           return el.id === id;
-       }) || languages[0];
-       editor.dispatch({
-           effects: language.reconfigure([l.extension])
-       });
-   };
+       editor.CP_listThemes = () => themes.slice();
+       editor.CP_setTheme = (id) => {
+           let t = themes.find((el) => {
+               return el.id === id;
+           }) || themes[1];
+           editor.dispatch({
+               effects: theme.reconfigure([t])
+           });
+       };
 
-   editor.CP_setIndent = (useTabs, unit) => {
-       let unitStr = useTabs ? '\t' : new Array(unit + 1).join(' ');
-       editor.dispatch({ effects: indents.reconfigure(indentUnit.of(unitStr)) });
-       editor.dispatch({ effects: tabSize.reconfigure(EditorState.tabSize.of(unit)) });
-   };
-   editor.CP_setBrackets = (autoclose) => {
-       editor.dispatch({ effects: brackets.reconfigure([autoclose ? closeB : []]) });
-   };
+       editor.CP_listLanguages = () => languages.slice();
+       editor.CP_setLanguage = (id) => {
+           let l = languages.find((el) => {
+               return el.id === id;
+           }) || languages[0];
+           editor.dispatch({
+               effects: language.reconfigure([l.extension])
+           });
+       };
 
-   editor.CP_setReadOnly = (bool) => {
-       editor.dispatch({ effects: readOnly.reconfigure(EditorState.readOnly.of(Boolean(bool))) });
-   };
+       editor.CP_setIndent = (useTabs, unit) => {
+           let unitStr = useTabs ? '\t' : new Array(unit + 1).join(' ');
+           editor.dispatch({ effects: indents.reconfigure(indentUnit.of(unitStr)) });
+           editor.dispatch({ effects: tabSize.reconfigure(EditorState.tabSize.of(unit)) });
+       };
+       editor.CP_setBrackets = (autoclose) => {
+           editor.dispatch({ effects: brackets.reconfigure([autoclose ? closeB : []]) });
+       };
 
-   editor.CP_on = (type, handler) => {
-       if (!evTypes[type]) { return; }
-       if (typeof(handler) !== "function") { return; }
-       evTypes[type].push(handler);
+       editor.CP_setReadOnly = (bool) => {
+           editor.dispatch({ effects: readOnly.reconfigure(EditorState.readOnly.of(Boolean(bool))) });
+       };
+
+       editor.CP_on = (type, handler) => {
+           if (!evTypes[type]) { return; }
+           if (typeof(handler) !== "function") { return; }
+           evTypes[type].push(handler);
+       };
+       editor.CP_off = (type, handler) => {
+           if (!evTypes[type]) { return; }
+           if (typeof(handler) !== "function") { return; }
+           let idx = evTypes[type].indexOf(handler);
+           if (idx !== -1) { evTypes[type].splice(idx, 1); }
+       };
+
+       return editor;
    };
 
 })();

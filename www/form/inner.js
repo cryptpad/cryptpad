@@ -20,7 +20,6 @@ define([
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
     '/common/text-cursor.js',
-    'cm/lib/codemirror',
     '/bower_components/chainpad/chainpad.dist.js',
 
     '/common/inner/share.js',
@@ -30,17 +29,10 @@ define([
     '/lib/datepicker/flatpickr.js',
     '/bower_components/sortablejs/Sortable.min.js',
 
-    'cm/addon/edit/closebrackets',
-    'cm/addon/edit/matchbrackets',
-    'cm/addon/display/placeholder',
-    'cm/mode/gfm/gfm',
-    'css!cm/lib/codemirror.css',
+    '/lib/cm6.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
@@ -66,7 +58,6 @@ define([
     DiffMd,
     SFCodeMirror,
     TextCursor,
-    CMeditor,
     ChainPad,
     Share, Access, Properties,
     Flatpickr,
@@ -1037,15 +1028,11 @@ define([
                             editor = tmp.editor;
                         }
 
-                        var cm;
                         if (!block || !editor) {
                             var t = h('textarea');
                             block = h('div.cp-form-edit-options-block', [t]);
-                            cm = SFCodeMirror.create("gfm", CMeditor, t);
-                            editor = cm.editor;
-                            editor.setOption('lineNumbers', true);
-                            editor.setOption('lineWrapping', true);
-                            editor.setOption('styleActiveLine', true);
+                            var cmeditor = window.CP_createEditor();
+                            editor = SFCodeMirror.create("gfm", cmeditor, t);
                             editor.setOption('readOnly', false);
                         }
 
@@ -1054,14 +1041,12 @@ define([
                             if (!(tmp && tmp.editor)) {
                                 editor.setValue(text);
                             } else {
-                                SFCodeMirror.setValueAndCursor(editor, editor.getValue(), text);
+                                editor.setValueAndCursor(editor.getValue(), text);
                             }
-                            editor.refresh();
-                            editor.save();
                             editor.focus();
                         });
 
-                        if (APP.common && !(tmp && tmp.block) && cm) {
+                        if (APP.common && !(tmp && tmp.block) && editor) {
                             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                                 embed: function (mt) {
                                     editor.focus();
@@ -1070,7 +1055,7 @@ define([
                             });
                             $(block).prepend(markdownTb.toolbar);
                             $(markdownTb.toolbar).show();
-                            cm.configureTheme(APP.common, function () {});
+                            editor.configureTheme(APP.common, function () {});
                         }
 
                         var getContent = function () {
@@ -1089,9 +1074,10 @@ define([
 
                         cursorGetter = function () {
                             if (document.activeElement && block.contains(document.activeElement)) {
+                                var c = editor.getCursor();
                                 cursor = {
-                                    start: editor.getCursor('from'),
-                                    end: editor.getCursor('to')
+                                    start: c.selectionStart,
+                                    end: c.selectionEnd
                                 };
                             }
                             return {
@@ -4024,13 +4010,7 @@ define([
                     $responseMsg.append(APP.responseDiv);
 
                     if (!temp || !temp.response || !temp.response.cursor) { return; }
-                    var editor = APP.responseEditor;
-                    var c = temp.response.cursor;
-                    var from = c.from;
-                    var to = c.to;
-                    editor.setSelection(from, to);
-                    editor.refresh();
-                    editor.save();
+                    var editor = APP.responseCM;
                     editor.focus();
                     return;
                 }
@@ -4205,14 +4185,8 @@ define([
                 temp[data.uid] = cursor;
             }
         });
-        if (APP.responseEditor && APP.responseEditor.hasFocus()) {
-            var editor = APP.responseEditor;
-            temp.response = {
-                cursor: {
-                    from: editor.getCursor('from'),
-                    to: editor.getCursor('to'),
-                }
-            };
+        if (APP.responseCM && APP.responseCM.hasFocus()) {
+            temp.response = { cursor: true };
         }
         return temp;
     };
@@ -5071,8 +5045,8 @@ define([
                     editButtons
                 ]),
             ]);
-            var cm = APP.responseCM = SFCodeMirror.create("gfm", CMeditor, t);
-            var editor = APP.responseEditor = cm.editor;
+            var cmeditor = window.CP_createEditor();
+            var editor = APP.responseCM = SFCodeMirror.create("gfm", cmeditor, t);
 
             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                 embed: function (mt) {
@@ -5127,15 +5101,10 @@ define([
                 $('.cp-form-response-button').show();
             });
 
-            cm.configureTheme(APP.common, function () {});
-            editor.setOption('lineNumbers', true);
-            editor.setOption('lineWrapping', true);
-            editor.setOption('styleActiveLine', true);
+            editor.configureTheme(APP.common, function () {});
             editor.setOption('readOnly', false);
             setTimeout(function () {
                 editor.setValue(content.answers.msg || '');
-                editor.refresh();
-                editor.save();
                 if (!focus) { return; }
                 editor.focus();
             });
@@ -5147,7 +5116,8 @@ define([
             });
             evOnChange.reg(function () {
                 if (!APP.responseCM) { return; }
-                APP.responseCM.contentUpdate({content: content.answers.msg});
+                var editor = APP.responseCM;
+                editor.contentUpdate({content: content.answers.msg});
                 framework.localChange();
                 updatePreview();
             });

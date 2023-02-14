@@ -505,7 +505,6 @@ Messages.type.note = "Note"; // XXX
         var cursorTo;
         var updateCursor = function () {
             if (cursorTo) { clearTimeout(cursorTo); }
-            if (editor._noCursorUpdate) { return; }
             cursorTo = setTimeout(function () {
                 framework.updateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
@@ -580,7 +579,7 @@ Messages.type.note = "Note"; // XXX
             };
         });
 
-        editor.on('change', function( cm, change ) {
+        editor.on('change', function( change ) {
             markers.localChange(change, framework.localChange);
         });
 
@@ -636,7 +635,8 @@ Messages.type.note = "Note"; // XXX
             nThen(function (waitFor) {
                 $(waitFor());
             }).nThen(function () {
-                CodeMirror = SFCodeMirror.create(null, window.CP_note_editor);
+                var cmeditor = window.CP_createEditor();
+                CodeMirror = SFCodeMirror.create(null, cmeditor);
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
                 editor = CodeMirror;
                 window.editor = editor; // XXX

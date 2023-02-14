@@ -41,8 +41,7 @@ define([
     };
 
     module.getContentExtension = function (id) {
-        var editor = window.CP_note_editor;
-        var modes = editor.CP_listLanguages();
+        var modes = window.CP_getLanguages();
         var mode = modes.find(function (obj) {
             return obj.id === id;
         }) || modes[0];
@@ -53,6 +52,7 @@ define([
         return new Blob([ content ], { type: 'text/plain;charset=utf-8' });
     };
     module.setValueAndCursor = function (editor, oldDoc, remoteDoc) {
+        // XXX deprecated function, only used in "poll"
         editor._noCursorUpdate = true;
         var scroll = editor.getScrollInfo();
         //get old cursor here
@@ -68,6 +68,7 @@ define([
             return TextCursor.transformCursor(oldCursor[attr], ops);
         });
 
+        // XXX setCursor setSelection
         editor._noCursorUpdate = false;
         editor.scrollTo(scroll.left, scroll.top);
 
@@ -235,10 +236,13 @@ define([
 
         //var CodeMirror = exp.CodeMirror = CMeditor;
         //CodeMirror.modeURL = "cm/mode/%N/%N";
+        if (textarea) { $(textarea).after(editor.dom).hide(); }
 
         var $pad = $('#pad-iframe');
+        /*
         var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
         if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
+        */
 
         var Title;
         var onLocal = function () {};
@@ -264,9 +268,10 @@ define([
             })
         };
         exp.on = function (type, handler) {
-            editor.CP_on(type, function (update) {
-                handler(editor, update);
-            });
+            editor.CP_on(type, handler);
+        };
+        exp.off = function (type, handler) {
+            editor.CP_off(type, handler);
         };
         exp.getMode = function () {
             return {
@@ -277,6 +282,7 @@ define([
             return editor.dispatch(editor.state.replaceSelection(txt));
         };
 
+        exp.hasFocus = function () { return editor.hasFocus; };
         exp.focus = function () {
             editor.focus();
         };
@@ -285,23 +291,29 @@ define([
             module.mkIndentSettings(editor, metadataMgr);
         };
 
-        exp.setRemoteCursor = function () { console.warn('placeholder remotecursor'); };
+        exp.hasFocus = function () { return true; }
         exp.getCursor = function () {
-            // XXX
-            console.warn('placeholder cursor');
             return {
-                selectionStart: 0,
-                selectionEnd: 0
+                selectionStart: editor.state.selection.main.anchor,
+                selectionEnd: editor.state.selection.main.head
             };
         };
+
+        exp.setSelection = function (from, to) {
+            if (from < 0) { from = 0; }
+            if (to < 0) { to = 0; }
+            if (from > editor.state.doc.length) { from = editor.state.doc.length; }
+            if (to > editor.state.doc.length) { to = editor.state.doc.length; }
+            editor.dispatch({selection: {anchor:from, head:to}});
+        };
+
+        exp.setRemoteCursor = function () { console.warn('placeholder remotecursor'); };
         exp.removeCursors = function () { console.warn('placeholder removecursor'); };
         exp.getHeadingText = function () { console.warn('placeholder getheadingtext'); };
         exp.refresh = function () { console.error('placeholder refresh'); };
         exp.getAllMarks = function () { console.warn('placeholder getAllMarks'); return []; };
 
-
         exp.highlightMode = '';
-
 
         exp.getContentExtension = function () {
             return module.getContentExtension(exp.highlightMode);
@@ -343,6 +355,9 @@ define([
         exp.setOption = function (type, value) {
             if (type === "readOnly") {
                 return editor.CP_setReadOnly(value);
+            }
+            if (type === 'lineNumbers') {
+                return editor.CP_setNumbers(value);
             }
         };
 
@@ -548,7 +563,26 @@ define([
         };
 
         exp.setValueAndCursor = function (oldDoc, remoteDoc) {
-            return module.setValueAndCursor(editor, oldDoc, remoteDoc);
+            // Store scroll position
+            var scroller = $(editor.dom).find('.cm-scroller')[0];
+            var scroll = scroller && scroller.scrollTop;
+
+            // Get old cursor here
+            var oldCursor = exp.getCursor();
+
+            // Set new value
+            exp.setValue(remoteDoc);
+
+            // Update cursor
+            var ops = ChainPad.Diff.diff(oldDoc, remoteDoc);
+            var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                return TextCursor.transformCursor(oldCursor[attr], ops);
+            });
+
+
+            if (scroller) { scroller.scrollTop = scroll; }
+
+            exp.setSelection(selects[0], selects[1]);
         };
 
         exp.contentUpdate = function (newContent) {
@@ -558,9 +592,10 @@ define([
             // and it may revert other changes (metadata)
 
             if (oldDoc === remoteDoc) { return; }
-            exp.setValue(remoteDoc); // XXX
-            //exp.setValueAndCursor(oldDoc, remoteDoc);
+            exp.setValueAndCursor(oldDoc, remoteDoc);
         };
+
+        if (defaultMode) { setMode(defaultMode); }
 
 
         return exp;

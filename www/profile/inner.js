@@ -17,13 +17,8 @@ define([
     '/customize/application_config.js',
     '/bower_components/marked/marked.min.js',
     '/common/sframe-common-codemirror.js',
-    'cm/lib/codemirror',
+    '/lib/cm6.js',
 
-    'cm/mode/markdown/markdown',
-
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
@@ -164,7 +159,7 @@ define([
         $(button).click(function () {
             $(text).val(APP.$link.attr('href'));
             $(code).css('display', 'flex');
-            APP.editor.refresh();
+            //APP.editor.refresh();
             $(button).hide();
         });
         $(save).click(function () {
@@ -448,28 +443,25 @@ define([
         ]);
         $block.append(div);
 
-        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
-        var editor = APP.editor = cm.editor;
-        editor.setOption('lineNumbers', true);
-        editor.setOption('lineWrapping', true);
-        editor.setOption('styleActiveLine', true);
-        editor.setOption('readOnly', false);
+        var cmeditor = window.CP_createEditor();
+        var cm = APP.editor = SFCodeMirror.create("gfm", cmeditor, text);
+        cm.setOption('readOnly', false);
         cm.configureTheme(common, function () {});
 
-        var markdownTb = common.createMarkdownToolbar(editor);
+        var markdownTb = common.createMarkdownToolbar(APP.editor); // XXX
         $(code).prepend(markdownTb.toolbar);
         $(markdownTb.toolbar).show();
 
         $(button).click(function () {
             $(code).show();
-            APP.editor.refresh();
+            //APP.editor.refresh();
             $(button).hide();
         });
         $(save).click(function () {
             $(save).hide();
             APP.module.execCommand('SET', {
                 key: 'description',
-                value: editor.getValue()
+                value: APP.editor.getValue()
             }, function (data) {
                 APP.updateValues(data);
                 $(code).hide();
@@ -495,7 +487,7 @@ define([
         APP.$descriptionEdit.find('span').text(val === "" ? Messages.profile_addDescription : Messages.profile_editDescription);
         if (!APP.editor) { return; }
         APP.editor.setValue(data.description || "");
-        APP.editor.save();
+        //APP.editor.save(); // XXX ?
     };
 
     var addPublicKey = function ($container) {

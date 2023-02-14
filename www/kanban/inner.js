@@ -16,21 +16,10 @@ define([
     '/common/diffMarked.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/marked/marked.min.js',
-    'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
+    '/lib/cm6.js',
 
-    'cm/mode/gfm/gfm',
-    'cm/addon/edit/closebrackets',
-    'cm/addon/edit/matchbrackets',
-    'cm/addon/edit/trailingspace',
-    'cm/addon/selection/active-line',
-    'cm/addon/search/search',
-    'cm/addon/search/match-highlighter',
-
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'less!/kanban/app-kanban.less'
 ], function (
     $,
@@ -50,7 +39,7 @@ define([
     DiffMd,
     ChainPad,
     Marked,
-    CodeMirror,
+    //CodeMirror,
     jKanban,
     Export)
 {
@@ -242,18 +231,20 @@ define([
         };
 
         // Body
-        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
-        var editor = cm.editor;
-        editor.setOption('gutters', []);
-        editor.setOption('lineNumbers', false);
+        var cmeditor = window.CP_createEditor({
+            noNumber: true
+        });
+        var cm = SFCodeMirror.create("gfm", cmeditor, text);
+        var editor = cm;
         editor.setOption('readOnly', false);
-        editor.on('keydown', function (editor, e) {
+        $(cmeditor.dom).on('keydown', function (e) {
             if (e.which === 27) {
                 // Focus the next form element but don't close the modal (stopPropagation)
                 $tags.find('.token-input').focus();
             }
             e.stopPropagation();
         });
+
         var common = framework._.sfCommon;
         var markdownTb = common.createMarkdownToolbar(editor, {
             embed: function (mt) {
@@ -263,7 +254,6 @@ define([
         });
         $(text).before(markdownTb.toolbar);
         $(markdownTb.toolbar).show();
-        editor.refresh();
         var body = {
             getValue: function () {
                 return editor.getValue();
@@ -272,17 +262,14 @@ define([
                 if (isBoard) { return; }
                 if (!preserveCursor) {
                     editor.setValue(val || '');
-                    editor.save();
+                    //editor.save();
                 } else {
-                    SFCodeMirror.setValueAndCursor(editor, editor.getValue(), val || '');
+                    editor.setValueAndCursor(editor.getValue(), val || '');
                 }
             },
-            refresh: function () {
-                editor.refresh();
-            }
         };
         cm.configureTheme(common, function () {});
-        SFCodeMirror.mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
+        cm.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         editor.on('change', function () {
             var val = editor.getValue();
             if (dataObject.body === val) { return; }
@@ -523,7 +510,6 @@ define([
             editModal[type].setValue(item[type]);
         });
         UI.openCustomModal(editModal.modal);
-        editModal.body.refresh();
     };
     var getBoardEditModal = function (framework, kanban, id) {
         // Create modal if needed
