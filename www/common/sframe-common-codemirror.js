@@ -147,30 +147,17 @@ define([
         return text.trim();
     };
 
-    var isMobile = window.orientation || (typeof(screen) !== "undefined" && screen.orientation);
-
     module.mkIndentSettings = function (editor, metadataMgr) {
         var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
             if (typeof(units) !== 'number') { return; }
-            if (isMobile && fontSize < 16) {
-                fontSize = 16;
-            }
 
             editor.CP_setIndent(useTabs, units);
-            /*
-            editor.setOption('indentUnit', units);
-            editor.setOption('tabSize', units);
-            editor.setOption('indentWithTabs', useTabs);
-            */
+            editor.CP_setBrackets(brackets);
 
             //editor.setOption('spellcheck', spellcheck); // XXX not supported
-            editor.CP_setBrackets(brackets);
-            //editor.setOption('autoCloseBrackets', brackets);
-
 
             setTimeout(function () {
-                $('.CodeMirror').css('font-size', fontSize+'px');
-                //editor.refresh();
+                $('.cm-editor').css('font-size', fontSize+'px');
             });
 
             // orgmode is using its own shortcuts
