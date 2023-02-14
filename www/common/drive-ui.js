@@ -3478,7 +3478,7 @@ define([
             var isInRoot = currentPath[0] === ROOT;
             var $element = $('<li>', {
                 'class': 'cp-app-drive-element-row cp-app-drive-new-ghost'
-            }).prepend($addIcon.clone()).appendTo($list);
+            }).prepend($addIcon.clone()).prependTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newButton));
             $element.click(function () {
