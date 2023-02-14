@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   entry: './yjs_bundle.js',
   output: {
@@ -7,4 +9,11 @@ module.exports = {
     // libraryTarget: 'window',
     // libraryExport: 'default'
   },
+  resolve: {
+    fallback: {
+      buffer: require.resolve('buffer/'),
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify')
+    },
+  }
 };

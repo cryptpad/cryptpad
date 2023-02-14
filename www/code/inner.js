@@ -518,6 +518,7 @@ define([
         console.log({secret})
         var cryptor = secret.keys
         cryptor.chanId = secret.channel
+        console.log("⛓️ Channel: " + cryptor.chanId)
         const connector = window.yjs_bundle.connect(CodeMirror.editor, 'ws://localhost:1234', cryptor)
         console.log(connector)
         myUpdateHandler = (_updateMessage, _origin) => { previewPane.draw() };
