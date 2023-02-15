@@ -51,7 +51,8 @@
     "MathJax": "3.0.5",
     "drawio": "jgraph/drawio#v20.8.18",
     "js-base64": "^3.7.5",
-    "pako": "^2.1.0"
+    "pako": "^2.1.0",
+    "abdmob/x2js": "x2js#^1.2.0"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",
