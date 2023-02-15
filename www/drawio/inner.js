@@ -4,7 +4,7 @@ define([
     '/customize/messages.js', // translation keys
     '/bower_components/pako/dist/pako.min.js',
     '/bower_components/js-base64/base64.js',
-    '/bower_components/abdmob/x2js/xml2json.min.js',
+    '/bower_components/x2js/xml2json.min.js',
     'less!/drawio/app.less',
     'css!/drawio/drawio.css',
 ], function (
