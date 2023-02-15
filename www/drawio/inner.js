@@ -77,6 +77,8 @@ define([
                 action: 'merge',
                 xml: xmlStr,
             });
+
+            framework.localChange();
         });
 
         // This is the function called to get the current state of the data in your app
@@ -157,18 +159,6 @@ define([
         var result = new XMLSerializer().serializeToString(doc);
         return result;
     }
-
-    var validateXml = function(xmlStr) {
-        var doc = parser.parseFromString(xmlStr, "application/xml");
-
-        var errorNode = doc.querySelector("parsererror");
-        if (errorNode) {
-            console.error("error while parsing, rejecting patch", errorNode);
-            return false;
-        }
-
-        return true;
-    };
 
     var deepEqual = function(o1, o2) {
         return JSON.stringify(o1) == JSON.stringify(o2);
