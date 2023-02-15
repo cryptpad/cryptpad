@@ -85,6 +85,9 @@ define([
     };
 
     module.handleImagePaste = function (editor) {
+        // XXX not needed?
+        // XXX used by poll
+        /*
         // Don't paste file path in the users wants to paste a file
         editor.on('paste', function (editor, ev) {
             try {
@@ -97,6 +100,7 @@ define([
                 ev.preventDefault();
             } catch (e) { console.error(e); }
         });
+        */
     };
 
     module.getHeadingText = function (editor) {
@@ -279,12 +283,6 @@ define([
         };
 
         exp.hasFocus = function () { return true; }
-        exp.getCursor = function () {
-            return {
-                selectionStart: editor.state.selection.main.anchor,
-                selectionEnd: editor.state.selection.main.head
-            };
-        };
 
         exp.setSelection = function (from, to) {
             if (from < 0) { from = 0; }
@@ -294,8 +292,6 @@ define([
             editor.dispatch({selection: {anchor:from, head:to}});
         };
 
-        exp.setRemoteCursor = function () { console.warn('placeholder remotecursor'); };
-        exp.removeCursors = function () { console.warn('placeholder removecursor'); };
         exp.getHeadingText = function () { console.warn('placeholder getheadingtext'); };
         exp.refresh = function () { console.error('placeholder refresh'); };
         exp.getAllMarks = function () { console.warn('placeholder getAllMarks'); return []; };
@@ -582,8 +578,66 @@ define([
             exp.setValueAndCursor(oldDoc, remoteDoc);
         };
 
-        if (defaultMode) { setMode(defaultMode); }
+        exp.getCursor = function () {
+            console.error('getcursor');
+            return {
+                selectionStart: editor.state.selection.main.anchor,
+                selectionEnd: editor.state.selection.main.head
+            };
+        };
 
+        var makeTippy = function (cursor) {
+            return MT.getCursorAvatar(cursor);
+        };
+        exp.removeCursors = function () {
+            editor.CP_removeCursors();
+        };
+        exp.setRemoteCursor = function (data) {
+            if (data.reset) {
+                return void exp.removeCursors();
+            }
+            if (data.leave) {
+                $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {
+                    var id = $(el).attr('id');
+                    editor.CP_removeCursors(id);
+                });
+                return;
+            }
+
+            var id = data.id;
+            var cursor = data.cursor;
+            var doc = canonicalize(exp.getValue());
+
+            editor.CP_removeCursors(id);
+
+            if (!cursor.selectionStart) { return; }
+
+            if (cursor.selectionStart === cursor.selectionEnd) {
+                editor.CP_addCursor(cursor.color, makeTippy(cursor), id, cursor.selectionStart);
+            } else {
+                var rgb = Util.hexToRGB(cursor.color).join(',');
+                var c = `rgba(${rgb},0.2)`;
+                editor.CP_addCursor(c, makeTippy(cursor), id, cursor.selectionStart, cursor.selectionEnd);
+                /*
+                var pos1 = posToCursor(cursor.selectionStart, doc);
+                var pos2 = posToCursor(cursor.selectionEnd, doc);
+                var css = cursor.color
+                    ? 'background-color: rgba(' + Util.hexToRGB(cursor.color).join(',') + ',0.2)'
+                    : 'background-color: rgba(255,0,0,0.2)';
+                marks[id] = editor.markText(pos1, pos2, {
+                    css: css,
+                    attributes: {
+                        'data-cptippy-html': true,
+                    },
+                    title: makeTippy(cursor),
+                    className: 'cp-tippy-html'
+                });
+                */
+            }
+        };
+
+
+        if (defaultMode) { setMode(defaultMode); }
 
         return exp;
 
@@ -626,7 +680,7 @@ define([
             editor.scrollIntoView(cursor);
         });
 
-        module.handleImagePaste(editor);
+        //module.handleImagePaste(editor); // XXX not needed
 
 
 
@@ -643,79 +697,6 @@ define([
             return cursor;
         };
 
-        var makeCursor = function (id) {
-            if (document.getElementById(id)) {
-                return document.getElementById(id);
-            }
-            return $('<span>', {
-                'id': id,
-                'class': 'cp-codemirror-cursor'
-            })[0];
-        };
-        var makeTippy = function (cursor) {
-            return MT.getCursorAvatar(cursor);
-        };
-        var marks = {};
-        exp.removeCursors = function () {
-            for (var id in marks) {
-                marks[id].clear();
-                delete marks[id];
-            }
-        };
-        exp.setRemoteCursor = function (data) {
-            if (data.reset) {
-                return void exp.removeCursors();
-            }
-            if (data.leave) {
-                $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {
-                    var id = $(el).attr('id');
-                    if (marks[id]) {
-                        marks[id].clear();
-                        delete marks[id];
-                    }
-                });
-                return;
-            }
-
-            var id = data.id;
-            var cursor = data.cursor;
-            var doc = canonicalize(editor.getValue());
-
-            if (marks[id]) {
-                marks[id].clear();
-                delete marks[id];
-            }
-
-            if (!cursor.selectionStart) { return; }
-
-            if (cursor.selectionStart === cursor.selectionEnd) {
-                var cursorPosS = posToCursor(cursor.selectionStart, doc);
-                var el = makeCursor(id);
-                if (cursor.color) {
-                    $(el).css('border-color', cursor.color)
-                         .css('background-color', cursor.color);
-                }
-                if (cursor.name) {
-                    $(el).attr('title', makeTippy(cursor))
-                         .attr('data-cptippy-html', true);
-                }
-                marks[id] = editor.setBookmark(cursorPosS, { widget: el });
-            } else {
-                var pos1 = posToCursor(cursor.selectionStart, doc);
-                var pos2 = posToCursor(cursor.selectionEnd, doc);
-                var css = cursor.color
-                    ? 'background-color: rgba(' + Util.hexToRGB(cursor.color).join(',') + ',0.2)'
-                    : 'background-color: rgba(255,0,0,0.2)';
-                marks[id] = editor.markText(pos1, pos2, {
-                    css: css,
-                    attributes: {
-                        'data-cptippy-html': true,
-                    },
-                    title: makeTippy(cursor),
-                    className: 'cp-tippy-html'
-                });
-            }
-        };
 
         return exp;
     };

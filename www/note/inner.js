@@ -68,9 +68,6 @@ define([
     CMeditor)
 {
 
-Messages.type.note = "Note"; // XXX
-
-
     //window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -184,7 +181,6 @@ Messages.type.note = "Note"; // XXX
         var $preview = $('#cp-app-code-preview-content');
         var $editorContainer = $('#cp-app-code-editor');
         var $codeMirrorContainer = $('#cp-app-code-container');
-        var $codeMirror = $('.CodeMirror');
 
         $('<img>', {
             src: '/customize/CryptPad_logo_grey.svg',
@@ -211,13 +207,7 @@ Messages.type.note = "Note"; // XXX
             forceDrawPreview();
         }, 400);
 
-        var previewTo;
         $previewButton.click(function () {
-            clearTimeout(previewTo);
-            $codeMirror.addClass('transition');
-            previewTo = setTimeout(function () {
-                $codeMirror.removeClass('transition');
-            }, 500);
             if (!previews[CodeMirror.highlightMode]) {
                 $previewContainer.show();
             }
@@ -541,7 +531,7 @@ Messages.type.note = "Note"; // XXX
 
 
             var fmConfig = {
-                dropArea: $('.CodeMirror'),
+                dropArea: $('.cm-editor'),
                 body: $('body'),
                 onUploaded: function (ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
