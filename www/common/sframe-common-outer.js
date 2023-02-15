@@ -943,6 +943,50 @@ define([
                     }, href);
                 });
 
+                sframeChan.on('Q_ACCEPT_OWNERSHIP', function (data, cb) {
+                    var parsed = Utils.Hash.parsePadUrl(data.href);
+                    if (parsed.type === 'drive') {
+                        // Shared folder
+                        var secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                        Cryptpad.addSharedFolder(null, secret, cb);
+                    } else {
+                        var _data = {
+                            password: data.password,
+                            href: data.href,
+                            channel: data.channel,
+                            title: data.title,
+                            owners: data.metadata ? data.metadata.owners : data.owners,
+                            expire: data.metadata ? data.metadata.expire : data.expire,
+                            forceSave: true
+                        };
+                        Cryptpad.setPadTitle(_data, function (err) {
+                            cb({error: err});
+                        });
+                    }
+
+                    // Also add your mailbox to the metadata object
+                    var padParsed = Utils.Hash.parsePadUrl(data.href);
+                    var padSecret = Utils.Hash.getSecrets(padParsed.type, padParsed.hash, data.password);
+                    var padCrypto = Utils.Crypto.createEncryptor(padSecret.keys);
+                    try {
+                        var value = {};
+                        value[edPublic] = padCrypto.encrypt(JSON.stringify({
+                            notifications: notifications,
+                            curvePublic: curvePublic
+                        }));
+                        var msg = {
+                            channel: data.channel,
+                            command: 'ADD_MAILBOX',
+                            value: value
+                        };
+                        Cryptpad.setPadMetadata(msg, function (res) {
+                            if (res.error) { console.error(res.error); }
+                        });
+                    } catch (err) {
+                        return void console.error(err);
+                    }
+                });
+
                 // Add or remove our mailbox from the list if we're an owner
                 sframeChan.on('Q_UPDATE_MAILBOX', function (data, cb) {
                     var metadata = data.metadata;
@@ -1236,50 +1280,6 @@ define([
                 Cryptpad.getPadAttribute('title', function (err, data) {
                     cb (!err && typeof (data) === "string");
                 });
-            });
-
-            sframeChan.on('Q_ACCEPT_OWNERSHIP', function (data, cb) {
-                var parsed = Utils.Hash.parsePadUrl(data.href);
-                if (parsed.type === 'drive') {
-                    // Shared folder
-                    var secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, data.password);
-                    Cryptpad.addSharedFolder(null, secret, cb);
-                } else {
-                    var _data = {
-                        password: data.password,
-                        href: data.href,
-                        channel: data.channel,
-                        title: data.title,
-                        owners: data.metadata.owners,
-                        expire: data.metadata.expire,
-                        forceSave: true
-                    };
-                    Cryptpad.setPadTitle(_data, function (err) {
-                        cb({error: err});
-                    });
-                }
-
-                // Also add your mailbox to the metadata object
-                var padParsed = Utils.Hash.parsePadUrl(data.href);
-                var padSecret = Utils.Hash.getSecrets(padParsed.type, padParsed.hash, data.password);
-                var padCrypto = Utils.Crypto.createEncryptor(padSecret.keys);
-                try {
-                    var value = {};
-                    value[edPublic] = padCrypto.encrypt(JSON.stringify({
-                        notifications: notifications,
-                        curvePublic: curvePublic
-                    }));
-                    var msg = {
-                        channel: data.channel,
-                        command: 'ADD_MAILBOX',
-                        value: value
-                    };
-                    Cryptpad.setPadMetadata(msg, function (res) {
-                        if (res.error) { console.error(res.error); }
-                    });
-                } catch (err) {
-                    return void console.error(err);
-                }
             });
 
             sframeChan.on('Q_IMPORT_MEDIATAG', function (obj, cb) {

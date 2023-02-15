@@ -332,6 +332,12 @@ define([
                                                                           : Messages.error;
                             return void UI.warn(text);
                         }
+                        sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
+                            if (err || (res && res.error)) {
+                                return void console.error(err || res.error);
+                            }
+                            UI.log(Messages.saved);
+                        });
                     }));
                 }
             }).nThen(function (waitFor) {
