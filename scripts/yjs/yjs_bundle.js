@@ -12,7 +12,7 @@ export function connect(editor, cryptor) {
   const ydoc = new Y.Doc()
   const protocol = host === "localhost" ? "ws" : "wss"
   const provider = new WebsocketProvider(
-    protocol + "://" + host + ":1234",
+    protocol + "://" + host + "/y-websocket",
     cryptor.chanId, // roomname
     ydoc,
     { cryptor }
