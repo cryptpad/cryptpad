@@ -88,7 +88,6 @@ define([
 
         // This is called when the history is synced. "onContentUpdate" has already been called with the full content and the loading screen is being removed.
         framework.onReady(function (newPad) {
-            // Here you can focus any editable part, check the integrity of the current data or intialize some values
         });
 
         // starting the CryptPad framework
@@ -102,6 +101,8 @@ define([
                 stealth: 1,
                 embed: 1,
                 drafts: 0,
+
+                chrome: framework.isReadOnly() ? 0 : 1,
 
                 // Hide save and exit buttons
                 noSaveBtn: 1,
