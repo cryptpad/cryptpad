@@ -281,6 +281,23 @@ define([
         };
 
         framework.onReady(function () {
+            // [START] Integrate into Yjs
+            var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var hash = privateData.hashes.editHash || privateData.hashes.viewHash;
+            console.log(hash)
+            var secret = Hash.getSecrets('pad', hash, privateData.password);
+            console.log({privateData})
+            console.log({secret})
+            var cryptor = secret.keys
+            cryptor.chanId = secret.channel
+            console.log("⛓️ Channel: " + cryptor.chanId)
+            const connector = window.yjs_bundle.connect(CodeMirror.editor, cryptor)
+            console.log(connector)
+            // connector.binding.on('cursorActivity', (_editor) => updateCursor())
+            // [END] Integrate into Yjs
+
+
+
             // add the splitter
             var splitter = $('<div>', {
                 'class': 'cp-splitter'
@@ -466,10 +483,10 @@ define([
         }
 
         framework.onContentUpdate(function (newContent) {
-        //     var highlightMode = newContent.highlightMode;
-        //     if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
-        //         CodeMirror.setMode(highlightMode, evModeChange.fire);
-        //     }
+            var highlightMode = newContent.highlightMode;
+            if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
+                CodeMirror.setMode(highlightMode, evModeChange.fire);
+            }
 
         //     // Fix the markers offsets
         //     markers.checkMarks(newContent);
@@ -484,17 +501,17 @@ define([
         //     framework.localChange();
         });
 
-        // framework.setContentGetter(function () {
+        framework.setContentGetter(function () {
         //     CodeMirror.removeCursors();
-        //     var content = CodeMirror.getContent();
-        //     content.highlightMode = CodeMirror.highlightMode;
-        //     previewPane.draw();
+            var content = CodeMirror.getContent();
+            content.highlightMode = CodeMirror.highlightMode;
+            previewPane.draw();
 
         //     markers.updateAuthorMarks();
         //     content.authormarks = markers.getAuthorMarks();
 
-        //     return content;
-        // });
+            return content;
+        });
 
         var cursorTo;
         var updateCursor = function () {
@@ -507,27 +524,6 @@ define([
         // framework.onCursorUpdate(CodeMirror.setRemoteCursor);
         // framework.setCursorGetter(CodeMirror.getCursor);
         // editor.on('cursorActivity', updateCursor);
-
-        // [START] Integrate into Yjs
-      //
-        //     CodeMirror.removeCursors();
-        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
-        var hash = privateData.hashes.editHash || privateData.hashes.viewHash;
-        var secret = Hash.getSecrets('pad', hash, privateData.password);
-        console.log({privateData})
-        console.log({secret})
-        var cryptor = secret.keys
-        cryptor.chanId = secret.channel
-        console.log("⛓️ Channel: " + cryptor.chanId)
-        const connector = window.yjs_bundle.connect(CodeMirror.editor, cryptor)
-        console.log(connector)
-        myUpdateHandler = (_updateMessage, _origin) => { previewPane.draw() };
-
-        connector.ydoc.on('update', myUpdateHandler)
-        connector.binding.on('cursorActivity', (_editor) => updateCursor())
-        // [END] Integrate into Yjs
-
-
 
         framework.onEditableChange(function () {
             editor.setOption('readOnly', framework.isReadOnly());
