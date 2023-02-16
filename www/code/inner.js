@@ -530,7 +530,7 @@ define([
 
 
         framework.onEditableChange(function () {
-            editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
+            editor.setOption('readOnly', framework.isReadOnly());
         });
 
         framework.setTitleRecommender(CodeMirror.getHeadingText);
