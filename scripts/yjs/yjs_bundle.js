@@ -2,17 +2,17 @@
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
 import { CodemirrorBinding } from 'y-codemirror'
-import * as ApiConfig from '../../config/config.js'
 
 
 
 export function connect(editor, cryptor) {
-  const host = new URL(ApiConfig.httpUnsafeOrigin).hostname
-  console.log("🌐" +  host)
+  const host = window.location.hostname
   const ydoc = new Y.Doc()
-  const protocol = host === "localhost" ? "ws" : "wss"
+  const isLocalhost = (host === "localhost")
+  const protocol = isLocalhost ? "ws" : "wss"
+  const path = isLocalhost ? ":1234" : "/y-websocket"
   const provider = new WebsocketProvider(
-    protocol + "://" + host + "/y-websocket",
+    protocol + "://" + host + path,
     cryptor.chanId, // roomname
     ydoc,
     { cryptor }
