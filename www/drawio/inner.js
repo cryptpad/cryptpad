@@ -52,6 +52,9 @@ define([
 
         var onDrawioAutodave = function(data) {
             onDrawioChange(data.xml);
+
+            // Tell draw.io to hide "Unsaved changes" message
+            postMessageToDrawio({action: 'status', message: '', modified: false});
         }
 
         var onDrawioMerge = function(data) {
