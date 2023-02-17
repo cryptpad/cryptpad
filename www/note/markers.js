@@ -24,22 +24,16 @@ define([
     var MARK_OPACITY = 0.5;
     var DEFAULT = {
         authors: {},
-        marks: [[-1, 0, 0, Number.MAX_SAFE_INTEGER,  Number.MAX_SAFE_INTEGER]]
+        marks: [[-1, 0, Number.MAX_SAFE_INTEGER]]
     };
 
     var addMark = function (Env, from, to, uid) {
         if (!Env.enabled) { return; }
-        var author = Env.authormarks.authors[uid] || {};
-        if (uid === -1) {
-            return void Env.editor.markText(from, to, {
-                css: "background-color: transparent",
-                attributes: {
-                    'data-type': 'authormark',
-                    'data-uid': uid
-                }
-            });
-        }
         uid = Number(uid);
+        if (uid === -1) {
+            return void Env.editor.CP_addAuthor("transparent", "", uid, false, from, to);
+        }
+        var author = Env.authormarks.authors[uid] || {};
         var name = Util.fixHTML(UI.getDisplayName(author.name));
         var animal;
         if ((!name || name === Messages.anonymous) && typeof(author.uid) === 'string') {
@@ -53,44 +47,25 @@ define([
 
         var col = Util.hexToRGB(author.color);
         var rgba = 'rgba('+col[0]+','+col[1]+','+col[2]+','+Env.opacity+');';
-        return Env.editor.markText(from, to, {
-            inclusiveLeft: uid === Env.myAuthorId,
-            inclusiveRight: uid === Env.myAuthorId,
-            css: "background-color: " + rgba,
-            attributes: {
-                title: Env.opacity ? Messages._getKey('cba_writtenBy', [name]) : '',
-                'data-type': 'authormark',
-                'data-uid': uid
-            }
-        });
+        var title = Env.opacity ? Messages._getKey('cba_writtenBy', [name]) : '';
+        var inclusive = uid === Env.myAuthorId; // include text just before or after inside the mark
+        return Env.editor.CP_addAuthor(rgba, title, uid, inclusive, from, to);
     };
     var sortMarks = function (a, b) {
         if (!Array.isArray(b)) { return -1; }
         if (!Array.isArray(a)) { return 1; }
-        // Check line
-        if (a[1] < b[1]) { return -1; }
-        if (a[1] > b[1]) { return 1; }
-        // Same line: check start offset
-        if (a[2] < b[2]) { return -1; }
-        if (a[2] > b[2]) { return 1; }
-        return 0;
+        return a[1] - b[1];
     };
 
     /* Formats:
-        [uid, startLine, startCh, endLine, endCh] (multi line)
-        [uid, startLine, startCh, endCh] (single line)
-        [uid, startLine, startCh] (single character)
+        [uid, from, to]
     */
     var parseMark = Markers.parseMark = function (array) {
         if (!Array.isArray(array)) { return {}; }
-        var multiline = typeof(array[4]) !== "undefined";
-        var singleChar = typeof(array[3]) === "undefined";
         return {
             uid: array[0],
-            startLine: array[1],
-            startCh: array[2],
-            endLine: multiline ? array[3] : array[1],
-            endCh: singleChar ? (array[2]+1) : (multiline ? array[4] : array[3])
+            from: array[1],
+            to: array[2],
         };
     };
 
@@ -118,54 +93,44 @@ define([
         var all = [];
 
         var i = 0;
-        Env.editor.getAllMarks().forEach(function (mark) {
-            var pos = mark.find();
-            var attributes = mark.attributes || {};
-            if (!pos || attributes['data-type'] !== 'authormark') { return; }
-
-
+        Env.editor.CP_getAllAuthors().forEach(function (mark) {
+            var attributes = mark.attrs || {};
             var uid = Number(attributes['data-uid']) || 0;
 
             all.forEach(function (obj) {
                 if (obj.uid !== uid) { return; }
                 if (obj.removed) { return; }
                 // Merge left
-                if (obj.pos.to.line === pos.from.line && obj.pos.to.ch === pos.from.ch) {
+                if (obj.pos.to === mark.from) {
                     obj.removed = true;
                     _marks[obj.index] = undefined;
                     obj.mark.clear();
                     mark.clear();
-                    mark = addMark(Env, obj.pos.from, pos.to, uid);
-                    pos.from = obj.pos.from;
+                    mark = addMark(Env, obj.pos.from, mark.to, uid);
+                    mark.from = obj.pos.from;
                     return;
                 }
                 // Merge right
-                if (obj.pos.from.line === pos.to.line && obj.pos.from.ch === pos.to.ch) {
+                if (obj.pos.from === mark.to) {
                     obj.removed = true;
                     _marks[obj.index] = undefined;
                     obj.mark.clear();
                     mark.clear();
-                    mark = addMark(Env, pos.from, obj.pos.to, uid);
-                    pos.to = obj.pos.to;
+                    mark = addMark(Env, mark.from, obj.pos.to, uid);
+                    mark.to = obj.pos.to;
                 }
             });
 
-            var array = [uid, pos.from.line, pos.from.ch];
-            if (pos.from.line === pos.to.line && pos.to.ch > (pos.from.ch+1)) {
-                // If there is more than 1 character, add the "to" character
-                array.push(pos.to.ch);
-            } else if (pos.from.line !== pos.to.line) {
-                // If the mark is on more than one line, add the "to" line data
-                Array.prototype.push.apply(array, [pos.to.line, pos.to.ch]);
-            }
-            _marks.push(array);
+            _marks.push([uid, mark.from, mark.to]);
             all.push({
                 uid: uid,
-                pos: pos,
+                pos: {
+                    from: mark.from,
+                    to: mark.to
+                },
                 mark: mark,
-                index: i
+                index: i++
             });
-            i++;
         });
         _marks.sort(sortMarks);
         debug('warn', _marks);
@@ -174,63 +139,49 @@ define([
 
     // Fix all marks located after the given operation in the provided document
     var fixMarksFromOp = function (Env, op, marks, doc) {
-        var pos = SFCodeMirror.posToCursor(op.offset, doc); // pos of start offset
-        var rPos = SFCodeMirror.posToCursor(op.offset + op.toRemove, doc); // end of removed content
-        var removed = doc.slice(op.offset, op.offset + op.toRemove).split('\n'); // removed content
-        var added = op.toInsert.split('\n'); // added content
-        var posEndLine = pos.line + added.length - 1; // end line after op
-        var posEndCh = added[added.length - 1].length; // end ch after op
-        var addLine = added.length - removed.length;
-        var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
-        if (addLine > 0) { addCh -= pos.ch; }
-        else if (addLine < 0) { addCh += pos.ch; }
-        else { posEndCh += pos.ch; }
+
+        var from = op.offset; // My patch start
+        var to = op.offset + op.toInsert.length; // My patch end
+        var removedEnd = op.offset + op.toRemove; // End of the removed content (before insert)
+        var diff = op.toInsert.length - op.toRemove; // Diff size
 
         var splitted;
 
         marks.forEach(function (mark, i) {
             if (!mark) { return; }
             var p = parseMark(mark);
+
             // Don't update marks located before the operation
-            if (p.endLine < pos.line || (p.endLine === pos.line && p.endCh < pos.ch)) { return; }
+            if (p.to < from) { return; }
+
             // Remove markers that have been deleted by my changes
-            if ((p.startLine > pos.line || (p.startLine === pos.line && p.startCh >= pos.ch)) &&
-                (p.endLine < rPos.line || (p.endLine === rPos.line && p.endCh <= rPos.ch))) {
+            if (p.from >= from && p.to <= removedEnd) {
                 marks[i] = undefined;
                 return;
             }
+
             // Update markers that have been cropped right
-            if (p.endLine < rPos.line || (p.endLine === rPos.line && p.endCh <= rPos.ch)) {
-                mark[3] = pos.line;
-                mark[4] = pos.ch;
+            if (p.to <= removedEnd) {
+                mark[2] = from;
                 return;
             }
+
             // Update markers that have been cropped left. This markers will be affected by
             // my toInsert so don't abort
-            if (p.startLine < rPos.line || (p.startLine === rPos.line && p.startCh < rPos.ch)) {
+            if (p.from < removedEnd) {
                 // If our change will split an existing mark, put the existing mark after the change
                 // and create a new mark before
-                if (p.startLine < pos.line || (p.startLine === pos.line && p.startCh < pos.ch)) {
-                    splitted = [mark[0], mark[1], mark[2], pos.line, pos.ch];
+                if (p.from < from) {
+                    splitted = [mark[0], p.from, from];
                 }
-                mark[1] = rPos.line;
-                mark[2] = rPos.ch;
+                mark[1] = removedEnd;
             }
-            // Apply my toInsert the to remaining marks
-            mark[1] += addLine;
-            if (typeof(mark[4]) !== "undefined") { mark[3] += addLine; }
 
-            if (mark[1] === posEndLine) {
-                mark[2] += addCh;
-                if (typeof(mark[4]) === "undefined" && typeof(mark[3]) !== "undefined") {
-                    mark[3] += addCh;
-                } else if (typeof(mark[4]) !== "undefined" && mark[3] === posEndLine) {
-                    mark[4] += addCh;
-                }
-            }
+            mark[1] += diff;
+            mark[2] += diff;
         });
         if (op.toInsert.length) {
-            marks.push([Env.myAuthorId, pos.line, pos.ch, posEndLine, posEndCh]);
+            marks.push([Env.myAuthorId, from, to]);
         }
         if (splitted) {
             marks.push(splitted);
@@ -262,24 +213,20 @@ define([
             last.marks.some(function (array, i) {
                 var p = parseMark(array);
                 // End of the mark before offset? ignore
-                if (p.endLine < lastAuthPos.line) { return; }
+                if (p.to < lastAuthOffset) { return; }
                 // Take everything from the first mark ending after the pos
-                if (p.endLine > lastAuthPos.line || p.endCh >= lastAuthPos.ch) {
-                    toKeep = last.marks.slice(i);
-                    last.marks.splice(i);
-                    return true;
-                }
+                toKeep = last.marks.slice(i);
+                last.marks.splice(i);
+                return true;
             });
             // Keep my marks (based on currentDoc) before their changes
             first.marks.some(function (array, i) {
                 var p = parseMark(array);
                 // End of the mark before offset? ignore
-                if (p.endLine < lastLocalPos.line) { return; }
+                if (p.to < lastLocalOffset) { return; }
                 // Take everything from the first mark ending after the pos
-                if (p.endLine > lastLocalPos.line || p.endCh >= lastLocalPos.ch) {
-                    first.marks.splice(i);
-                    return true;
-                }
+                first.marks.splice(i);
+                return true;
             });
         }
 
@@ -300,42 +247,14 @@ define([
 
         // Fix their offset: compute added lines and added characters on the last line
         // using the chainpad operation data (toInsert and toRemove)
-        var pos = SFCodeMirror.posToCursor(first.offset, content);
-        var removed = content.slice(first.offset, first.offset + first.toRemove).split('\n');
-        var added = first.toInsert.split('\n');
-        var posEndLine = pos.line + added.length - 1; // end line after op
-        var addLine = added.length - removed.length;
-        var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
-        if (addLine > 0) { addCh -= pos.ch; }
-        if (addLine < 0) { addCh += pos.ch; }
+        var diff = first.toInsert.length - first.toRemove;
         toKeepEnd.forEach(function (array) {
-            // Push to correct lines
-            array[1] += addLine;
-            if (typeof(array[4]) !== "undefined") { array[3] += addLine; }
-            // If they have markers on my end line, push their "ch"
-            if (array[1] === posEndLine) {
-                array[2] += addCh;
-                // If they have no end line, it means end line === start line,
-                // so we also push their end offset
-                if (typeof(array[4]) === "undefined" && typeof(array[3]) !== "undefined") {
-                    array[3] += addCh;
-                } else if (typeof(array[4]) !== "undefined" && array[3] === posEndLine) {
-                    array[4] += addCh;
-                }
-            }
+            array[1] += diff;
+            array[2] += diff;
         });
 
-        if (toKeep.length && toJoin && typeof(toJoin.endLine) !== "undefined"
-                                    && typeof(toJoin.endCh) !== "undefined") {
-            // Make sure the marks are joined correctly:
-            // fix the start position of the marks to keep
-            // Note: we must preserve the same end for this mark if it was single line!
-            if (typeof(toKeepEnd[0][4]) === "undefined") { // Single line
-                toKeepEnd[0][4] = toKeepEnd[0][3] || (toKeepEnd[0][2]+1); // preserve end ch
-                toKeepEnd[0][3] = toKeepEnd[0][1]; // preserve end line
-            }
-            toKeepEnd[0][1] = toJoin.endLine;
-            toKeepEnd[0][2] = toJoin.endCh;
+        if (toKeep.length && toJoin) {
+            toKeepEnd[0][1] = toJoin.to;
         }
 
         debug('log', 'Fixed');
@@ -390,7 +309,7 @@ define([
 
         debug('warn', 'Begin...');
 
-        var localDoc = CodeMirror.canonicalize(editor.getValue());
+        var localDoc = CodeMirror.canonicalize(CodeMirror.getValue());
 
         var commonParent = chainpad.getAuthBlock().getParent().getContent().doc;
         var content = JSON.parse(commonParent || '{}').content || '';
@@ -478,11 +397,7 @@ define([
     // Reset marks displayed in CodeMirror to the marks stored in Env
     var setMarks = function (Env) {
         // on remote update: remove all marks, add new marks if colors are enabled
-        Env.editor.getAllMarks().forEach(function (marker) {
-            if (marker.attributes && marker.attributes['data-type'] === 'authormark') {
-                marker.clear();
-            }
-        });
+        Env.editor.CP_removeAuthors();
 
         if (!Env.enabled) { return; }
 
@@ -493,25 +408,12 @@ define([
         authormarks.marks.forEach(function (mark) {
             var uid = mark[0];
             if (uid !== -1 && (!authormarks.authors || !authormarks.authors[uid])) { return; }
-            var from = {};
-            var to = {};
-            from.line = mark[1];
-            from.ch = mark[2];
-            if (mark.length === 3)  {
-                to.line = mark[1];
-                to.ch = mark[2]+1;
-            } else if (mark.length === 4) {
-                to.line = mark[1];
-                to.ch = mark[3];
-            } else if (mark.length === 5) {
-                to.line = mark[3];
-                to.ch = mark[4];
-            }
+            var from = mark[1];
+            var to = mark[2];
 
             // Remove marks that are placed under this one
             try {
-                Env.editor.findMarks(from, to).forEach(function (mark) {
-                    if (!mark || !mark.attributes || mark.attributes['data-type'] !== 'authormark') { return; }
+                Env.editor.CP_findAuthors(from, to).forEach(function (mark) {
                     mark.clear();
                 });
             } catch (e) {
@@ -547,17 +449,72 @@ define([
         debug('error', 'Local change');
         debug('log', change, true);
 
-        if (change.origin === "setValue") {
+        var origin = 'remote';
+        try {
+            origin = change.transactions[0].annotations[0].value;
+            if (typeof(origin) === "number") { origin = 'remote'; }
+        } catch (e) {}
+
+        if (origin === "remote") {
             // If the content is changed from a remote patch, we call localChange
             // in "onContentUpdate" directly
             return;
         }
-        if (change.text === undefined || ['+input', 'paste'].indexOf(change.origin) === -1) {
+
+        var insertedL = change.changes.inserted.reduce(function (length, obj) {
+            return length + obj.length;
+        }, 0);
+        if (!insertedL || !/^input/.test(origin)) {
             return void cb();
         }
 
         // add new author mark if text is added. marks from removed text are removed automatically
 
+        // Add my data to the doc if it's missing
+        if (!Env.authormarks.authors[Env.myAuthorId]) {
+            setMyData(Env);
+        }
+
+        change.changes.iterChanges(function (fromA, toA, fromB, toB, inserted) {
+
+            // If my text is inside an existing mark:
+            //  * if it's my mark, do nothing
+            //  * if it's someone else's mark, break it
+            // We can only have one author mark at a given position, but there may be
+            // another mark (cursor selection...) at this position so we use ".some"
+            var toSplit, abort;
+
+
+            Env.editor.CP_findAuthors(fromB, toB).some(function (mark) {
+                if (!mark.attrs) { return; }
+                if (mark.attrs['data-uid'] !== Env.myAuthorId) {
+                    toSplit = {
+                        mark: mark,
+                        uid: mark.attrs['data-uid']
+                    };
+                } else {
+                    // This is our mark: abort to avoid making a new one
+                    abort = true;
+                }
+
+                return true;
+            });
+            if (abort) { return; }
+
+            if (toSplit && toSplit.mark && typeof(toSplit.uid) !== "undefined") {
+                // Break the other user's mark if needed
+                var m = toSplit.mark;
+                toSplit.mark.clear();
+                addMark(Env, m.from, fromB, toSplit.uid); // their mark, 1st part
+                addMark(Env, fromB, toB, Env.myAuthorId); // my mark
+                addMark(Env, toB, m.to, toSplit.uid); // their mark, 2nd part
+            } else {
+                // Add my mark
+                addMark(Env, fromB, toB, Env.myAuthorId);
+            }
+        });
+
+        /*
         // change.to is not always correct, fix it!
         var to_add = {
             line: change.from.line + change.text.length-1,
@@ -569,48 +526,7 @@ define([
             // Single line => use the "from" position and add the length of the text
             to_add.ch = change.from.ch + change.text[change.text.length-1].length;
         }
-
-        // If my text is inside an existing mark:
-        //  * if it's my mark, do nothing
-        //  * if it's someone else's mark, break it
-        // We can only have one author mark at a given position, but there may be
-        // another mark (cursor selection...) at this position so we use ".some"
-        var toSplit, abort;
-
-
-        Env.editor.findMarks(change.from, to_add).some(function (mark) {
-            if (!mark.attributes) { return; }
-            if (mark.attributes['data-type'] !== 'authormark') { return; }
-            if (mark.attributes['data-uid'] !== Env.myAuthorId) {
-                toSplit = {
-                    mark: mark,
-                    uid: mark.attributes['data-uid']
-                };
-            } else {
-                // This is our mark: abort to avoid making a new one
-                abort = true;
-            }
-
-            return true;
-        });
-        if (abort) { return void cb(); }
-
-        // Add my data to the doc if it's missing
-        if (!Env.authormarks.authors[Env.myAuthorId]) {
-            setMyData(Env);
-        }
-
-        if (toSplit && toSplit.mark && typeof(toSplit.uid) !== "undefined") {
-            // Break the other user's mark if needed
-            var _pos = toSplit.mark.find();
-            toSplit.mark.clear();
-            addMark(Env, _pos.from, change.from, toSplit.uid); // their mark, 1st part
-            addMark(Env, change.from, to_add, Env.myAuthorId); // my mark
-            addMark(Env, to_add, _pos.to, toSplit.uid); // their mark, 2nd part
-        } else {
-            // Add my mark
-            addMark(Env, change.from, to_add, Env.myAuthorId);
-        }
+        */
 
         cb();
     };

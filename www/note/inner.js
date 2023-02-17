@@ -9,7 +9,7 @@ define([
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/code/markers.js',
+    '/note/markers.js',
     '/common/visible.js',
     '/common/TypingTests.js',
     '/customize/messages.js',
@@ -67,6 +67,14 @@ define([
     Messages,
     CMeditor)
 {
+
+/* TODO XXX
+* CBA migration
+* "undefined" color in noDrive
+* review XXX/TODO
+* missing languages and themes
+*/
+
 
     //window.CodeMirror = CMeditor;
 
@@ -433,7 +441,7 @@ define([
             framework: framework,
             CodeMirror: CodeMirror,
             devMode: privateData.devMode,
-            editor: editor
+            editor: CodeMirror.editor
         });
         mkCbaButton(framework, markers);
 

@@ -295,6 +295,8 @@ define([
         exp.getHeadingText = function () { console.warn('placeholder getheadingtext'); };
         exp.refresh = function () { console.error('placeholder refresh'); };
         exp.getAllMarks = function () { console.warn('placeholder getAllMarks'); return []; };
+        exp.findMarks = function () { console.warn('placeholder findMarks'); return []; };
+        exp.markText = function () { console.warn('placeholder markText'); return []; };
 
         exp.highlightMode = '';
 
@@ -579,7 +581,6 @@ define([
         };
 
         exp.getCursor = function () {
-            console.error('getcursor');
             return {
                 selectionStart: editor.state.selection.main.anchor,
                 selectionEnd: editor.state.selection.main.head
@@ -615,6 +616,7 @@ define([
             if (cursor.selectionStart === cursor.selectionEnd) {
                 editor.CP_addCursor(cursor.color, makeTippy(cursor), id, cursor.selectionStart);
             } else {
+                console.error(cursor.color); // XXX undefined for noDrive?
                 var rgb = Util.hexToRGB(cursor.color).join(',');
                 var c = `rgba(${rgb},0.2)`;
                 editor.CP_addCursor(c, makeTippy(cursor), id, cursor.selectionStart, cursor.selectionEnd);

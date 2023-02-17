@@ -655,7 +655,6 @@ define([
         return Boolean(Env.authormarks && Env.authormarks.marks);
     };
     var setState = function (Env, enabled) {
-        enabled = false; // XXX
         // If the state has changed in the pad, change the Env too
         if (!Env.ready) { return; }
         if (Env.enabled === enabled) { return; }
