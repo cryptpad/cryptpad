@@ -106,6 +106,7 @@ define([
                 drafts: 0,
 
                 chrome: framework.isReadOnly() ? 0 : 1,
+                dark: window.CryptPad_theme === "dark" ? 1 : 0,
 
                 // Hide save and exit buttons
                 noSaveBtn: 1,
