@@ -1068,7 +1068,7 @@ define([
                     }
                     var send = data.send;
                     var metadata = data.metadata;
-                    var owner, owners;
+                    var owners = [];
                     var _secret = secret;
                     if (metadata && metadata.roHref) {
                         var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
@@ -1081,24 +1081,24 @@ define([
                     nThen(function (waitFor) {
                         // Try to get the owner's mailbox from the pad metadata first.
                         var todo = function (obj) {
-                            owners = obj.owners;
-
-                            var mailbox;
-                            // Get the first available mailbox (the field can be an string or an object)
-                            // TODO maybe we should send the request to all the owners?
-                            if (typeof (obj.mailbox) === "string") {
-                                mailbox = obj.mailbox;
-                            } else if (obj.mailbox && obj.owners && obj.owners.length) {
-                                mailbox = obj.mailbox[obj.owners[0]];
-                            }
-                            if (mailbox) {
+                            var decrypt = function (mailbox) {
                                 try {
                                     var dataStr = crypto.decrypt(mailbox, true, true);
                                     var data = JSON.parse(dataStr);
                                     if (!data.notifications || !data.curvePublic) { return; }
-                                    owner = data;
+                                    return data;
                                 } catch (e) { console.error(e); }
+                            };
+                            if (typeof (obj.mailbox) === "string") {
+                                owners = [decrypt(obj.mailbox)];
+                                return;
                             }
+                            if (!obj.mailbox || !obj.owners || !obj.owners.length) { return; }
+                            owners = obj.owners.map(function (edPublic) {
+                                var mailbox = obj.mailbox[edPublic];
+                                if (typeof(mailbox) !== "string") { return; }
+                                return decrypt(mailbox);
+                            }).filter(Boolean);
                         };
 
                         // If we already have metadata, use it, otherwise, try to get it
@@ -1113,7 +1113,7 @@ define([
                         }));
                     }).nThen(function () {
                         // If we are just checking (send === false) and there is a mailbox field, cb state true
-                        if (!send) { return void cb({state: Boolean(owner)}); }
+                        if (!send) { return void cb({state: Boolean(owners.length)}); }
 
                         Cryptpad.padRpc.contactOwner({
                             send: send,
@@ -1121,7 +1121,6 @@ define([
                             query: data.query,
                             msgData: data.msgData,
                             channel: _secret.channel,
-                            owner: owner,
                             owners: owners
                         }, cb);
                     });
