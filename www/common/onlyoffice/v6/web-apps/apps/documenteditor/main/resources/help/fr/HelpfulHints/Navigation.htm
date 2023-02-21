@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Paramètres d'affichage et outils de navigation</title>
+        <meta charset="utf-8" />
+        <meta name="description" content="Description des paramètres d'affichage et des outils de navigation tels que zoom, les boutons page précédente/suivante" />
+        <link type="text/css" rel="stylesheet" href="../editor.css" />
+        <link type="text/css" rel="stylesheet" href="../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Paramètres d'affichage et outils de navigation</h1>
+			<p><a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)">Document Editor</a> est doté de plusieurs outils qui vous aide à visionner et naviguer à travers votre document: le zoom, l'indicateur de numéro de page etc.</p>
+			<h3>Régler les paramètres d'affichage</h3>
+			<p>
+				Pour régler les paramètres d'affichage par défaut et définir le mode le plus pratique pour travailler avec un document, passez à l'onglet Affichage et choisissez d'afficher ou de masquer les éléments d'interface. Les options disponibles sous l'onglet Affichage:
+			</p>
+			<ul>
+				<li><b>En-têtes</b> sert à afficher les en-têtes du document sur le panneau à gauche.</li>
+				<li><b>Zoom</b> sert à définir la valeur de zoom de 50% à 200% en sélectionnant de la liste déroulante.</li>
+				<li><b>Ajuster à la page</b> sert à adapter la page entière du document à la partie visible de la zone de travail.</li>
+				<li><b>Ajuster à la largeur</b> sert à adapter la largeur de la page du document à la partie visible de la zone de travail..</li>
+				<li><b>Thème d'interface</b> - sélectionnez l'une des thèmes d'interface disponibles de la liste déroulante: <em>Identique à système</em>, <em>Claire</em>, <em>Classique claire</em>, <em>Sombre</em>, <em>Contraste élevé sombre</em>. Lors de l'activation du thème <em>Sombre</em> ou <em>Contraste élevé sombre</em>, l'option <b>Document sombre</b> devient actif. Utilisez cette option pour définir la couleur de la zone de travail sur blanc ou grise.</li>
+				<li>
+					<b>Toujours afficher la barre d'outils</b> - une fois désactivé, la barre d'outils supérieure comportant toutes les commandes sera masquée mais tous les onglets restent visibles.
+					<p class="note">Vous pouvez également double-cliquer sur un onglet pour masquer la barre d'outils supérieure ou l'afficher à nouveau.</p>
+				</li>
+				<li><b>Barre d'état</b> - une fois désactivé, la barre qui se trouve tout en bas avec les boutons indiquant les <b>Numéros de pages</b>, les <b>Statistiques</b> et le <b>Zoom</b> sera masquée. Activez cette option pour afficher la <b>Barre d'état</b> masquée.</li>
+				<li><b>Règles</b> une fois désactivé, les règles qui sont utilisées pour aligner le texte, les graphiques, les tableaux et d'autres éléments dans un document, pour définir des marges, des tabulations et des retraits de paragraphe sont masquées. Pour afficher les <b>Règles</b>, activez cette option.</li>
+				<li><b>Panneau gauche</b> - une fois désactivé, le panneau gauche comportant les onglets <b>Rechercher</b>, <b>Commentaires</b>et autres onglets sera masqué. Pour afficher le panneau gauche, cochez cette case.</li>
+				<li><b>Panneau droit</b> - une fois désactivé, le panneau droit comportant les options de configurations des <b>Paramètres</b> sera masqué. Pour afficher le panneau droit, cochez cette case.</li>
+				</ul>
+			<p>La barre latérale sur la droite est réduite par défaut. Pour l'agrandir, sélectionnez un objet (par exemple, image, graphique, forme) ou un passage de texte et cliquez sur l'icône de l'onglet actuellement activé sur la droite. Pour réduire la barre latérale sur la droite, cliquez à nouveau sur l'icône.</p>
+			<p>
+				Lorsque le panneau <b>Commentaires</b> <span class="onlineDocumentFeatures"> ou <b>Chat</b></span>, la largeur de la barre latérale gauche est ajustée par simple glisser-déposer: déplacez le curseur de la souris sur la bordure gauche pour qu'elle se transforme en flèche bidirectionnelle et déplacez la bordure vers la droite pour agrandir la largeur du panneau latéral. Pour rétablir sa largeur originale faites glisser le bord à gauche.
+			</p>
+			<h3 id="navigationtools">Utiliser les outils de navigation</h3>
+			<p>Pour naviguer à travers votre document, utilisez les outils suivants:</p>
+			<p>
+				Les boutons <b>Zoom</b> sont situés en bas à droite et sont utilisés pour faire un zoom avant et arrière dans le document actif. Pour modifier la valeur de zoom sélectionnée en pourcentage, cliquez dessus et sélectionnez l'une des options de zoom disponibles dans la liste (50% / 75% / 100% / 125% / 150% / 175% / 200% / 300% / 400% / 500%) ou utilisez les boutons <b>Zoom avant</b> <span class="icon icon-zoomin"></span> ou <b>Zoom arrière</b> <span class="icon icon-zoomout"></span>. Cliquez sur l'icône <b>Ajuster à la largeur</b> <span class="icon icon-fitwidth"></span> pour adapter la largeur de la page du document à la partie visible de la zone de travail.. Pour adapter la page entière du document à la partie visible de la zone de travail, cliquez sur l'icône <b>Ajuster à la page</b> <span class="icon icon-fitpage"></span>. Les options de zoom sont également disponibles sous l'onglet <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Affichage</a>.
+			</p>
+			<p><b>Numéro de page</b> affiche la page active dans l'ensemble des pages du document actif (page 'n' sur 'nn'). Cliquez sur ce libellé pour ouvrir la fenêtre où vous pouvez entrer le numéro de la page et y accéder rapidement.</p>
+			<p><b>Statistiques</b> affiche des informations statistiques sur votre document.</p>
+		</div>
+	</body>
+</html>

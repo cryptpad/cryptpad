@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>La mise en forme conditionnelle</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="La mise en forme conditionnelle permet d'utiliser plusieurs styles de mise en forme (couleur, police, décoration, dégradé) pour travailler avec des données dans une feuille de calcul : mettre en surbrillance ou trier et afficher des données répondant au critères définies." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Mise en forme conditionnelle</h1>
+			<p><b>La mise en forme conditionnelle</b> permet d'appliquer des différents styles de mise en forme (couleur, police, décoration, dégradé) de cellules pour travailler avec les données en tableaux : mettre en surbrillance, trier les données et les afficher selon un ou plusieurs critères. Adaptez les critères à vos besoins, créez de nouvelles règles de mise en forme, modifiez, gérez ou effacez des règles existantes.
+            <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Éditeur de feuilles de calcul ONLYOFFICE</b></a> prend en charge les règles de mise en forme conditionnelle suivantes :</p>
+			<p><b>Valeur est</b>, <b>Premiers/Derniers</b>, <b>Moyenne</b>, <b>Texte</b>, <b>Date</b>, <b>Vide/Erreur</b>, <b>Doublon/Unique</b>, <b>Barres de données</b>, <b>Échelle de couleurs</b>, <b>Formule</b>.</p>
+            <p>Pour un accès rapide ou si vous souhaitez choisir l'une des conditions prédéfinies ou accéder à toutes les options de mise en forme conditionnelle disponibles, passez à l'onglet <b>Accueil</b> et cliquez sur le bouton <b>Mise en forme conditionnelle</b> <span class="icon icon-conditionalformatting_button"></span>.</p>
+                    <p><img alt="Onglet Accueil mise en forme conditionnelle" src="../images/interface/hometab.png" /></p>
+            <p>Toutes les options de <b>Mise en forme conditionnelle</b> sont également disponibles sur la barre latérale droite sous l'onglet <b>Paramètres de cellule</b>. Cliquez sur la flèche vers le bas du bouton <b>Mise en forme conditionnelle</b> pour accéder à la liste déroulante avec toutes les options disponibles.</p>
+                    <p><img alt="Mise en forme conditionnelle sur la barre latérale droite" src="../images/conditionalformatting_rightsidebar.png" /></p>
+            <p>Si vous souhaitez créer une nouvelle règle de mise en forme conditionnelle, cliquez avec le bouton droit sur une cellule et sélectionnez <b>Mise en forme conditionnelle</b> du menu contextuel pour afficher la fenêtre <b>Nouvelle règle de mise en forme</b>.</p>
+                    <p><img alt="Mise en forme conditionnelle clic droit" src="../images/conditionalformatting_rightclick.png" /></p>
+            <p>Pour appliquer une mise en forme prédéfinie, sélectionnez une plage de cellules, ensuite cliquez sur le bouton <b>Mise en forme conditionnelle</b> <span class="icon icon-conditionalformatting_button"></span> de la barre d'outils supérieure, ou cliquez sur <b>Mise en forme conditionnelle</b> sous l'onglet <b>Paramètres de cellule</b> sur la barre latérale droite et choisissez une règle appropriée dans la liste déroulante.</p> 
+            <p><img alt="Menu contextuel de mise en forme conditionnelle" src="../images/conditionalformatting_dropdown.png" />.
+            <p>La fenêtre <b>Nouvelle règle de mise en forme</b> s'affiche pour paramétrer les options de mise en surbrillance.</p>
+            <details class="details-example">
+            <summary><b>Règle de mise en forme Valeur est</b></summary>
+                <p>La règle de mise en forme <b>Valeur est</b> s'utilise pour rechercher et mettre en surbrillance des cellules répondant à certaines conditions de comparaison :</p>
+                <ul type="circle">
+                     <li>Supérieure à</li>
+                     <li>Supérieure ou égale à</li>
+                     <li>Inférieure à</li>
+                     <li>Inférieure ou égale à</li>
+                     <li>Égale à</li>
+                     <li>N'est pas égale à</li>
+                     <li>Entre</li>
+                     <li>Pas entre</li>
+                </ul>
+                    <p><img alt="Nouvelle règle Valeur est" src="../images/newrule_valueis.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition de comparaison sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles. Utilisez le champ <b>Sélectionner des données</b> pour sélectionner la valeur de comparaison. Utiliser la référence vers une cellule ou la référence avec une fonction de la feuille de calcul telle que SOMME (A1:B5). </li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b>
+                pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre les règles prédéfinies de mise en forme telles que <b>Supérieure à</b> et <b>Entre</b>. Selon cette règle la mise en forme est appliquée aux cellules pour mettre en vert les montagnes dont la hauteur est supérieure à 6,960 et mettre en rose le centile entre 5,000 et 6,500.</p>
+                <p><img alt="Valeur est" src="../images/conditionalformatting/valueis_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Règle de mise en forme <b>Premiers/Derniers</b></b></summary>
+                <p>La règle <b>Premiers/Derniers</b> s'utilise pour retrouver et afficher des valeurs les plus élevées et les moins élevées.</p>
+                <ul type="circle">
+                     <li>Les 10 premiers</li>
+                     <li>Premiers 10%</li>
+                     <li>Les 10 derniers</li>
+                     <li>Derniers 10%</li>
+               </ul>
+                    <p><img alt="Nouvelle règle Premiers/Derniers " src="../images/newrule_topbottom.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition de comparaison sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles pour définir des valeurs (pourcentage) supérieures ou inférieures à afficher et de définir si vous souhaitez mettre en surbrillance selon la quantité ou le pourcentage.</li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre les règles prédéfinies de mise en forme telles que <b>Premiers 10%</b> qui affiche 20% de valeurs les plus élevées et <b>Les 10 derniers</b>. Selon cette règle la mise en forme est appliquée aux cellules pour mettre en orange les premiers 20% de villes avec des frais les plus élevés et mette en bleu les derniers 10 villes où les livres sont moins vendus.</p>
+                <p><img alt="Premiers/Derniers" src="../images/conditionalformatting/topbottom_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Règle de mise en forme Moyenne</b></summary>
+                <p>La règle <b>Moyenne</b> s'utilise pour retrouver et afficher des valeurs au-dessus et en-dessous de la moyenne ou l'écart type.</p> 
+                <ul type="circle">
+                     <li>Au-dessus</li>
+                     <li>En dessous</li>
+                     <li>Si égale ou supérieure à</li>
+                     <li>Si égale ou en dessous</li>
+                     <li>1 écart-type au-dessus</li>
+                     <li>1 écart-type en dessous</li>
+                     <li>2 écarts types au-dessus</li>
+                     <li>2 écarts types en dessous</li>
+                     <li>3 écarts types au-dessus</li>
+                     <li>3 écarts types en dessous</li>
+               </ul>
+                    <p><img alt="Nouvelle règle Moyenne" src="../images/newrule_average.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles.</li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre la règle prédéfinie de mise en forme telle que <b>Au-dessus</b> de la moyenne. Selon cette règle la mise en forme est appliquée aux cellules pour mettre en vert des villes visitées au-dessus de la moyenne.</p>
+                <p><img alt="Moyenne" src="../images/conditionalformatting/average_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Règle de mise en forme Texte</b></summary>
+                <p>La règle de mise en forme <b>Texte </b>s'utilise pour retrouver et afficher des cellules comportant du texte répondant à certaines conditions de mise en forme :</p>
+                <ul type="circle">
+                     <li>Contient</li>
+                     <li>Ne contient pas</li>
+                     <li>Commence par</li>
+                     <li>Se termine par</li>
+               </ul>
+                    <p><img alt="Nouvelle règle Texte" src="../images/newrule_text.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition de mise en forme sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles. Utilisez le champ <b>Sélectionner des données</b> pour sélectionner la valeur de comparaison. Utiliser la référence vers une cellule ou la référence avec une fonction de la feuille de calcul telle que SOMME (A1:B5).</li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre la règle prédéfinie de mise en forme telle que <b>Contient</b>. Selon cette règle la mise en forme est appliquée aux cellules comportant Danemark pour mettre en rose des ventes dans un région spécifique.</p>
+                <p><img alt="Texte" src="../images/conditionalformatting/text_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Règle de mise en forme Date</b></summary>
+                <p>La règle de mise en forme <b>Date</b> s'utilise pour retrouver et afficher des cellules comportant de la date répondant à certaines conditions de mise en forme :</p>
+                <ul type="circle">
+                     <li>Hier</li>
+                     <li>Aujourd'hui</li>
+                     <li>Demain </li>
+                     <li>Pendant le 7 derniers jours</li>
+                     <li>Semaine dernière</li>
+                     <li>Cette semaine</li>
+                     <li>Semaine suivante</li>
+                     <li>Mois dernier</li>
+                     <li>Ce mois</li>
+                     <li>Mois suivant</li>
+               </ul>
+                    <p><img alt="Nouvelle règle Date" src="../images/newrule_date.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition de mise en forme sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles.</li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre la règle prédéfinie de mise en forme telle que <b>Mois dernier</b>. Selon cette règle la mise en forme est appliquée aux cellules comportant les dates du dernier mois pour mettre en jaune des ventes pendant une certaine période de temps.</p>
+                <p><img alt="Date" src="../images/conditionalformatting/date_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Règle de mise en forme Vide/Erreur</b></summary>
+                <p>La règle de mise en forme <b>Vide/Erreur</b> s'utilise pour retrouver et mettre en surbrillance des cellules vides ou erreurs.</p> 
+                <ul type="circle">
+                     <li>Contient les vides</li>
+                     <li>Ne contient pas les vides</li>
+                     <li>Contient les erreurs</li>
+                     <li>Ne contient pas les erreurs</li>
+               </ul>
+                    <p><img alt="Nouvelle règle Vide/Erreur" src="../images/newrule_blankerror.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition de mise en forme sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles. </li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre la règle prédéfinie de mise en forme telle que <b>Contient les vides</b>. Selon cette règle la mise en forme est appliquée aux cellules vides dans la colonne pour mettre en bleu la valeur de ventes.</p>
+                <p><img alt="Vide/Erreur" src="../images/conditionalformatting/blankerror_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Règle de mise en forme Doublon/Unique</b></summary>
+                <p>La règle de mise en forme <b>Doublon/Unique</b> s'utilise pour afficher des cellules comportant des doublons dans une feuille de calcul ou dans une plage de cellule définie par la mise en forme conditionnelle disponible :</p>
+                <ul type="circle">
+                     <li>Doublon</li>
+                     <li>Unique</li>
+               </ul>
+                    <p><img alt="Nouvelle règle Doublon/Unique " src="../images/newrule_duplicateunique.png" /></p>
+                <ul type="disc">
+                     <li>La section <b>Règle</b> affiche la règle et la condition de mise en forme sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles. </li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>L'exemple ci-après illustre la règle prédéfinie de mise en forme telle que <b>Doublon</b>. Selon cette règle la mise en forme est appliquée aux cellules comportant des contacts en double pour les mettre en jaune.</p>
+                    <p><img alt="Unique et doublons" src="../images/conditionalformatting/uniqueduplicates.gif" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Mise en forme en utilisant des barres de données</b></summary>
+                <p><b>Barres de données</b> s'utilisent pour comparer les valeurs sous la forme d'un graphique à barres.</p> 
+                    <p><span class="big big-databars_diagrams"></span></p>
+                <p>Par exemple, comparez l'altitude des sommets en affichant les valeurs par défaut en mètres (la barre verte) et les mêmes valeurs en pourcentage entre 0 et 100 (la barre jaune) ; rang-centile s'il y a des valeurs aberrantes (la barre bleu claire) ; les barres seulement au lieu de nombres (la barre bleu) ; analyse de donnés à deux colonnes pour voir les nombres aussi que les barres (la barre rouge).</p>
+                    <p><img alt="Barres de données" src="../images/conditionalformatting/databars.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Mise en forme en utilisant des échelles de couleurs</b></summary>
+                <p><b>Échelle de couleurs</b> s'utilise pour visualiser les données grâce à des dégradés de couleurs en fonction de la distribution des valeurs.</p> 
+                <p><span class="big big-colorscales"></span></p>
+                <p>L'exemple ci-après illustre toutes les colonnes de “Dairy” à “Beverage” comportant un dégradé bicolore jaune et rouge ; la colonne “Total Sales” comportant un dégradé tricolore, du fond moins foncé rouge pour les valeurs les plus faibles et au fond plus foncé bleu pour les valeurs les plus élevées.</p>
+                    <p><img alt="Dégradés" src="../images/conditionalformatting/gradient.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Mise en forme en utilisant des jeux d'icônes</b></summary>
+                <p><b>Jeux d'icônes</b> s'utilisent pour afficher l'icône pour la cellule répondant aux critères définis. Le Tableur prend en charge plusieurs jeux d'icônes :</p>
+               <ul type="circle">
+                     <li>Directionnel </li>
+                     <li>Formes</li>
+                     <li>Indices</li>
+                     <li>Évaluations</li>
+               </ul>
+               <p><span class="big big-iconsets"></span></p>
+               <p>Les exemples ci-après montrent les jeux d'icône les plus courantes dans la mise en forme conditionnelle.</p>
+               <ul>
+                        <li>Les cellules sont mis en forme en utilisant les flèches appropriées au lieu des nombres et pourcentage pour affichez votre chiffre d'affaires dans la colonne “Status” et son évolution dans la colonne “Trend”.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsetrevenue.png" /></p>
+                        </li>
+                        <li>L'outil de mise en forme conditionnelle affiche les icônes appropriés au lieux des nombres de 1 à 5 selon la légende en haut pour chaque élément sur la liste de classement.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsetbikerating.png" /></p>
+                        </li>
+                        <li>Il ne faut pas calculer manuellement et comparer les indicateurs mensuels d'évolution du chiffre d'affaires car ce fait est illustré par les flèches rouges ou verts dans les cellules mises en forme.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsettrends.png" /></p>
+                        </li>
+                        <li>Profitez des échelles de couleur (rouge, jaune, vert) pour visualiser l'évolution des ventes.
+                            <p><img alt="Jeux d'icône" src="../images/conditionalformatting/iconsettrafficlights.png" /></p>
+                        </li>
+               </ul>
+               </details>
+            <details class="details-example">
+                <summary><b>Mise en forme en utilisant des formules</b></summary>
+                <p>La mise en forme basé sur une <b>formule</b> utilise plusieurs formules pour filtrer des données en fonction de vos besoins spécifiques.</p> 
+                <p><img alt="Nouvelle règle Formule" src="../images/newrule_formula.png" /></p>
+                <ul>
+                <li>La section <b>Règle</b> affiche la règle et la condition de mise en forme sélectionnées, en cliquant sur la flèche vers le bas vous pouvez accéder à la liste des règles et des conditions disponibles. Utilisez le champ <b>Sélectionner des données</b> pour sélectionner la valeur de comparaison. Utiliser la référence vers une cellule ou la référence avec une fonction de la feuille de calcul telle que SOMME (A1:B5).</li>
+                     <li>La section <b>Format</b> propose plusieurs options prédéfinies de mise en forme des cellules. Vous pouvez choisir l'un des <b>Préréglages</b> disponibles :</li>
+                </ul>
+                     <p><img alt="Préréglages de format" src="../images/format_presets.png" /></p>
+                <p>ou</p>
+                <p>personnalisez la mise en forme en utilisant les options de mise en forme de <b>police</b> (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <b>couleur de texte</b>, <b>couleur de remplissage</b> et <b>bordures</b>. Utilisez la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>). Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule. Cliquez sur <b>Effacer</b> pour effacer la mise en forme définie.</p>
+                <p>Cliquez sur <b>OK</b> pour valider.</p>
+                <p>Les exemples ci-après illustre les possibilité de mise en forme en utilisant des formules.</p>
+                    <p>Ombrer des lignes filtrées alternées,</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/shading.png" /></p>
+                    <p>Comparer à la valeur de référence (ici c'est $55) et démontrer que celle-ci est au-dessus (vert) ou au-dessous (rouge),</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/comparison.png" /></p>
+                    <p>Appliquer la mise en forme aux lignes répondant aux critères que vous spécifiez (voir des objectifs à réaliser ce mois-ci, dans le cas d'espèce c'est octobre)</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/shaderows.png" /></p>
+                    <p>Ou mette en forme seulement les lignes uniques</p>
+                    <p><img alt="Mise en forme basé sur une formule" src="../images/conditionalformatting/shadeunique.png" /></p>
+                </details>
+        <h2>Créer de nouveaux règles</h2>
+            <p>Lorsque vous devez créer une nouvelle règle de mise en forme conditionnelle, choisissez l'une de façons suivantes de procéder :</p>
+                 <ul>
+                 <li> Passez à l'onglet <b>Accueil</b>, cliquez sur le bouton <b>Mise en forme conditionnelle</b> <div class = "icon icon-conditionalformatting_button"></div> et sélectionnez <b>Nouvelle règle</b> dans le menu déroulant.</li>
+                 <li> Cliquez sur l'onglet <b>Paramètres de cellule</b> sur la barre latérale gauche et cliquez sur la flèche en bas du bouton <b>Mise en forme conditionnelle</b> et sélectionnez <b>Nouvelle règle</b> dans le menu déroulant.</li>
+                 <li> Cliquez avec le bouton droit sur une cellule et sélectionnez <b>Mise en forme conditionnelle</b> du menu contextuel.</li>
+                 </ul>
+            <p>Le fenêtre <b>Nouvelle règle de mise en forme</b> s'affiche tout de suite. Paramétrez la règle comme il est décrit précédemment, et cliquez sur <b>OK</b>.</p>
+        <h2>Gérer des règles de mise en forme conditionnelle</h2>
+            <p>Une fois la règle de mise en forme conditionnelle est définie, il est possible de la modifier, supprimer et afficher tout simplement en utilisant l'option <b>Gérer les règles</b>. Pour ce faire, cliquez sur le bouton <b>Mise en forme conditionnelle</b> <span class = "icon icon-conditionalformatting_button"></span> sous l'onglet <b>Accueil</b> ou sous l'onglet <b>Paramètres de cellule</b> sur la barre latérale gauche. La fenêtre <b>Mise en forme conditionnelle</b> s'affiche :</p>
+            <p><img alt="Gérer les règles" src="../images/managerules.png" /><p>
+            <p>Afficher les règles de la mise en forme pour permet de sélectionner les règles à afficher :<p>
+        <ul type="circle">
+                     <li>Sélection actuelle</li>
+                     <li>Cette feuille de calcul</li>
+                     <li>Ce tableau</li>
+                     <li>Ce tableau croisé dynamique</li>
+        </ul>
+        <p> Tous les règles de la zone choisi s'affichent dans l'ordre de priorité (de haut en bas) dans la liste <b>Règles</b>. Dans la colonne <b>Appliquer à</b> s'affiche la zone à laquelle cette règle s'applique, vous pouvez modifier la zone en cliquant sur l'icône <b>Sélectionner des données</b> <span class="icon icon-selectdata_icon"></span>. Dans la colonne <b>Format</b> s'affiche la mise en forme utilisée.</p>
+        <ul>
+        <li>Utilisez le bouton <b>Nouvelle</b> pour ajouter une nouvelle règle.</li>
+        <li>Utilisez le bouton <b>Modifier</b> pour modifier une règle existante et accéder à la fenêtre <b>Modifier les règles de mise en forme</b>. Modifier la règle selon ce que vous jugez approprié et cliquez sur <b>OK</b>.</li>
+        <li>Utilisez les flèches vers le haut et vers le bas pour modifier l'ordre de priorité.</li>
+        <li>Cliquez sur <b>Supprimer</b> pour effacer la règle.</li>
+         <li>Cliquez sur <b>OK</b> pour valider.</li>
+        </ul>
+        <h2>Modifier la mise en forme conditionnelle</h2>
+            <details class="details-example">
+            <summary><b>Modifier des règles Valeur est, Premiers/Derniers, Moyenne, Texte, Date, Vide/Erreur, Doublon/Unique, Formule.</b></summary>
+            <p>La fenêtre <b>Modifier les règles de mise en forme</b> offre une gamme d'options communs pour les règles <b>Valeur est</b>, <b>Premiers/Derniers</b>, <b>Moyenne</b>, <b>Texte</b>, <b>Date</b>, <b>Vide/Erreur</b>, <b>Doublon/Unique</b>, <b>Formule</b> :</p>
+            <p><img alt="Modifier règle Valeur est" src="../images/editrule_valueis.png" /></p>
+        <ul type="disc">
+                     <li>Cliquez sur <b>Règle</b> pour modifier la règle et la condition définie ;</li>
+                     <li>Utilisez <b>Sélectionner des données</b> pour modifier la plage de cellules à laquelle on fait la référence.</li>
+                     <li>Utilisez des option de mise en forme de la <b>Police</b> et de la cellule (<em>Gras</em>, <em>Italique</em>, <em>Souligné</em>, <em>Barré</em>), <em>Couleur de texte</em>, <em>Couleur de remplissage</em> et <em>Bordures</em>. </li>
+                     <li>Cliquez sur la liste déroulante <b>Général</b> pour choisir le format de nombre approprié (<em>Général</em>, <em>Nombre</em>, <em>Scientifique</em>, <em>Comptabilité</em>, <em>Monétaire</em>, <em>Date</em>, <em>Heure</em>, <em>Pourcentage</em>).</li>
+                     <li>Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule.</li>
+                     <li>Cliquez sur <b>OK</b> pour valider.</li>
+        </ul>
+        </details>
+            <details class="details-example">
+            <summary><b>Modifier des barres de données</b></summary>
+            <p>La fenêtre <b>Modifier les règles de mise en forme</b> offre les options suivantes pour la mise en forme à l'aide des <b>Barres de données</b> :</p>
+            <p><img alt="Mise en forme en utilisant des barres de données" src="../images/editrule_databar.png" /></p>
+        <ul type="disc">
+             <li>Cliquez sur <b>Règle</b> pour modifier la règle et la condition définie ;</li>
+            <li>
+                <b>Minimum/Maximum</b> pour modifier le type de valeur minimale et et maximale dans les barres de données si vous souhaitez mettre l'accent sur les différences. Les types de valeurs minimales et maximales disponibles :
+                <ul>
+                    <li>Minimum / Maximum</li>
+                    <li>Nombre</li>
+                    <li>Pour cent</li>
+                    <li>Formule</li>
+                    <li>Centile</li>
+                    <li>Automatique</li>
+                </ul>
+                <p>Sélectionnez <b>Automatique</b> pour fixer la valeur minimale à zéro et la valeur maximale au plus grand nombre dans la plage de données. <b>Automatique</b> est l'option par défaut.</p>
+                <p>Cliquez sur <b>Sélectionner des données</b> pour modifier la plage de cellules pour les valeurs minimales et maximales.</p>
+                </li>
+              <li><b>Apparence de la barre</b>
+                   <p>Personnalisez l'aspect des <b>Barres de données</b> en choisissant le type et la couleur de remplissage et de bordure, aussi que la direction des barres.</p>
+                  <ul>
+                      <li>Il y a deux types de <b>Remplissage</b> : Remplissage <b>Solide</b> ou <b>Dégradé</b>. Utilisez la flèche au-dessous pour sélectionner la couleur de remplissage pour des valeurs Positives et Négatives dans les barres de données.</li>
+                      <li>Il y a deux types de <b>Bordures</b> : <b>Solide</b> et <b>Rien</b>. Utilisez la flèche au-dessous pour sélectionner la couleur de bordure pour des valeurs Positives et Négatives dans les barres de données.</li>
+                      <li>Activez <b>Même que positif</b> pour utiliser la même couleur pour afficher les valeurs positives et négatives. Une fois cette case cochée, les options <b>Négatif</b> sont désactivées.</li>
+                      <li>Utilisez la <b>Direction de la barre</b> pour modifier l'orientation des barres de données. <b>Contexte </b>est l'option par défaut mais vous pouvez choisir <b>De gauche à droite</b> ou <b>De droite à gauche</b> en fonction de la représentation des données désirée.</li>
+                      <li>Activez <b>Afficher la barre uniquement</b> pour afficher uniquement la barre de données dans la cellule et masquer des valeurs.</li>
+                  </ul>
+              </li>
+              <li><b>Axe</b>
+              <p>Sélectionnez la <b>Position</b> de l'axe de la barre de données par rapport au milieu de la cellule. Il y a trois options de position : <b>Automatique</b>, <b>Milieu de cellule</b> et <b>Rien</b>. Cliquez sur la flèche vers le bas de la zone de couleur pour définir la couler d'axe.</p>
+              </li>
+              <li>Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule.</li>
+              <li>Cliquez sur <b>OK</b> pour valider.</li>
+        </ul>
+        </details>
+        <details class="details-example">
+            <summary><b>Modifier la mise en forme en utilisant une échelle de couleur</b></summary>
+        <details class="details-example">
+            <summary><b>Modifier la mise en forme en utilisant une échelle à deux couleurs</b></summary>
+            <p>La fenêtre <b>Modifier les règles de mise en forme</b> offre les options suivantes pour la mise en forme en utilisant une <b>Échelle à deux couleurs</b> :</p>
+            <p><img alt="Modifier la mise en forme à deux couleurs" src="../images/editrule_2color.png" /></p>
+        <ul type="disc">
+             <li>Cliquez sur <b>Règle</b> pour modifier la règle et la condition définie ;</li>
+            <li>
+                Cliquez sur <b>Valeur minimum/maximum</b> pour définir le type des valeurs minimales et maximales si vous souhaitez mettre l'accent sur les différences. Les types des valeurs minimales et maximales disponibles :
+                <ul>
+                    <li>Minimum / Maximum</li>
+                    <li>Numérique</li>
+                    <li>Pour cent</li>
+                    <li>Formule</li>
+                    <li>Centile</li>
+                </ul>
+                <p><b>Minimum / Maximum</b> est l'option par défaut.</p>
+            </li>
+        <li>Utilisez <b>Sélectionner des données</b> pour modifier la plage de cellules pour les valeurs minimales et maximales.</li>
+        <li>Utilisez la flèche vers le bas au-dessous pour sélectionner la couleur pour chaque échelle.</li>
+        <li>Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule.</li>
+        <li>Cliquez sur <b>OK</b> pour valider.</li>
+        </ul>
+        </details>
+        <details class="details-example">
+            <summary><b>Modifier la mise en forme à trois couleurs</b></summary>
+            <p>La fenêtre <b>Modifier les règles de mise en forme</b> offre les options suivantes pour la mise en forme en utilisant une <b>Échelle à trois couleurs</b> :</p>
+            <p><img alt="Modifier la mise en forme à trois couleurs" src="../images/editrule_3color.png" /></p>
+        <ul type="disc">
+             <li>Cliquez sur <b>Règle</b> pour modifier la règle et la condition définie ;</li>
+            <li>
+                Cliquez sur <b>Valeur minimum/médiane/maximum</b> pour définir le type des valeurs minimales, médianes et maximales si vous souhaitez mettre l'accent sur les différences.
+                <p>Les types des valeurs minimales/maximales disponibles :</p>
+                <ul>
+                    <li>Minimum / Maximum</li>
+                    <li>Numérique</li>
+                    <li>Pour cent</li>
+                    <li>Formule</li>
+                    <li>Centile</li>
+                </ul>
+                <p>Les types des valeurs médianes disponibles :</p>
+                <ul>
+                    <li>Numérique</li>
+                    <li>Pour cent</li>
+                    <li>Formule</li>
+                    <li>Centile</li>
+                </ul>
+                <p><b>Minimum/Centile/Maximum</b> est l'option par défaut pour la mise en forme en utilisant <b>Échelle à trois couleurs</b></p>
+            </li>
+            <li>Utilisez <b>Sélectionner des données</b> pour modifier la plage de cellules pour les valeurs minimales, médianes et maximales.</li>
+            <li>Utilisez la flèche vers le bas au-dessous pour sélectionner la couleur pour chaque échelle.</li>
+            <li>Le champ <b>Aperçu</b> vous aide de visualiser l'aspect final de la cellule.</li>
+            <li>Cliquez sur <b>OK</b> pour valider.</li>
+            </ul>
+            </details>
+            </details>
+        <details class="details-example">
+            <summary><b>Modifier la mise en forme en utilisant des jeux d'icônes</b></summary>
+            <p>La fenêtre <b>Modifier les règles de mise en forme</b> offre les options suivantes pour la mise en forme en utilisant des <b>Jeux d'icônes</b> :</p>
+            <p><img alt="Mise en forme en utilisant des jeux d'icônes" src="../images/editrule_iconsets.png" /></p>
+        <ul type="disc">
+                     <li>Cliquez sur <b>Règle</b> pour modifier la règle et la condition définie ;</li>
+                     <li>Cliquez sur Style d'icône pour personnaliser le style d'icônes pour la règle créée.</li>
+                     <li>Activez <b>Afficher les icônes seulement</b> pour afficher uniquement les icônes dans la cellule et masquer des valeurs.</li>
+                     <li>Activez <b>Mettre les icônes dans le sens inverse</b> pour inverser l'ordre des icônes et les organiser de plus haut au plus bas. Par défaut, les icônes sont ordonnées de la plus basse à la plus élevée.</li>
+                     <li>Définissez la règle et l'opérateur de comparaison approprié (supérieure ou égale à, supérieure à) pour chaque icône, les valeurs des seuils et le type de valeur (<em>Nombre</em>, <em>Pour cent</em>, <em>Formule</em>, <em>Centile</em>) pour ordonner les valeurs de la plus basse à la plus élevée. Par défaut, les valeurs sont divisées de manière égale.</li>
+                     <li>Cliquez sur <b>OK</b> pour valider.</li>
+        </ul>
+        </details>
+        <h2>Effacer la mise en forme conditionnelle</h2>
+            <p>Pour effacer la mise en forme conditionnelle, passez à l'onglet <b>Accueil</b>, cliquez sur le bouton <b>Mise en forme conditionnelle</b> <span class="icon icon-conditionalformatting_button"></span>, ou cliquez sur <b><b>Mise en forme conditionnelle</b></b> sous l'onglet <b>Paramètres de cellule</b> sur la barre latérale droite, ensuite cliquez sur <b>Effacer les règles</b> dans le menu déroulante et sélectionnez l'option appropriée :</p>
+        <ul type="circle">
+                     <li>De la sélection actuelle</li>
+                     <li> À partir de cette feuille de calcul</li>
+                     <li> À partir de ce tableau</li>
+                     <li> À partir d'un tableau croisé dynamique</li>
+        </ul>
+			<p class="note"><b>Veuillez noter</b> que ce guide comprend des informations graphiques du manuel Microsoft Office <a href="https://download.microsoft.com/download/e/4/0/e4089f75-cdb0-4658-9d34-bfa3f7b48815/Conditional%20Formatting%20examples.xlsx" onclick="onhyperlinkclick(this)">La mise en forme conditionnelle : exemples et instructions</a>. Téléchargez ce manuel et ouvrez-le avec le Tableur pour essayer ces règles de visualisation.</p>
+			
+		</div>
+	</body>
+</html>

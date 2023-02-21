@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bilder einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fügen Sie Ihrer Tabelle ein Bild hinzu und passen Sie seine Position und Größe an" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Bilder einfügen</h1>
+            <p>In der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> können Sie Bilder in den gängigen Formaten in Ihre Tabelle einfügen. Die folgenden Formate werden unterstützt: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Bild einfügen</h3>
+            <p>Um ein Bild in die Tabelle einzufügen:</p>
+            <ol>
+                <li>Positionieren Sie den Cursor an der Stelle, an der Sie das Bild einfügen möchten.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+                <li>Klicken Sie auf das Symbol <div class = "icon icon-image"></div> <b>Bild</b> in der oberen Symbolleiste.</li>
+                <li>
+                    Wählen Sie eine der folgenden Optionen, um das Bild hochzuladen:
+                    <ul>
+                        <li>Mit der Option <b>Bild aus Datei</b> öffnen Sie das Standarddialogfenster zur Dateiauswahl. Durchsuchen Sie die Festplatte Ihres Computers nach der gewünschten Bilddatei und klicken Sie auf <b>Öffnen</b>.
+                            <p class="note">Im <em>Online-Editor</em> können Sie mehrere Bilder gleichzeitig auswählen.</p>
+                        </li>
+                        <li>Mit der Option <b>Bild aus URL</b> öffnen Sie das Fenster zum Eingeben der erforderlichen Webadresse, wenn Sie die Adresse eingegeben haben, klicken Sie auf <b>OK</b>.</li>
+                        <li class="onlineDocumentFeatures">Die Option <b>Bild aus dem Speicher</b> öffnet das Fenster <b>Datenquelle auswählen</b>. Wählen Sie ein in Ihrem Portal gespeichertes Bild aus und klicken Sie auf die Schaltfläche <b>OK</b>.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Das Bild wird dem Tabellenblatt hinzugefügt.</p>
+            <h3>Einstellungen des Bildes anpassen</h3>
+            <p>Wenn Sie das Bild hinzugefügt haben, können Sie seine <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">Größe und Position</a> ändern.</p>
+            <p>Um die genaue Bildgröße festzulegen:</p>
+            <ol>
+                <li>Wählen Sie das gewünschte Bild mit der Maus aus.</li>
+                <li>
+                    Klicken Sie auf das Symbol <b>Bild-Einstellungen</b> <div class = "icon icon-image_settings_icon"></div> auf der rechten Seitenleiste.
+                    <p><img alt="Dialogfenster Bild-Einstellungen in der rechten Seitenleiste" src="../images/imagesettings.png" /></p>
+                </li>
+                <li>Legen Sie im Bereich <b>Größe</b> die erforderlichen Werte für <b>Breite</b> und <b>Höhe</b> fest. Wenn Sie die Funktion <b>Seitenverhältnis sperren</b> <div class = "icon icon-constantproportions"></div> aktivieren (in diesem Fall sieht das Symbol so aus <div class = "icon icon-constantproportionsactivated"></div>), werden die Breite und Höhe gleichmäßig geändert und das ursprüngliche Bildseitenverhältnis wird beibehalten. Um die Standardgröße des hinzugefügten Bildes wiederherzustellen, klicken Sie auf <b>Tatsächlihe Größe</b>.</li>
+            </ol>
+            <p>Um ein Bild zuzuschneiden:</p>
+            <p>Klicken Sie auf die Schaltfläche <b>Zuschneiden</b>, um die Ziehpunkte zu aktivieren, die an den Bildecken und in der Mitte der Bildseiten angezeigt werden. Ziehen Sie die Ziehpunkte manuell, um den Zuschneidebereich festzulegen. Wenn Sie den Mauszeiger über den Zuschneidebereich bewegen, ändert sich der Zeiger in das Symbol <span class="icon icon-arrow"></span> und Sie können die Auswahl in die gewünschte Position ziehen.</p>
+            <ul>
+                <li>Um eine einzelne Seite zuzuschneiden, ziehen Sie den Ziehpunkt in der Mitte dieser Seite.</li>
+                <li>Um zwei benachbarte Seiten gleichzeitig zuzuschneiden, ziehen Sie einen der Ziehpunkte in den Ecken.</li>
+                <li>Um zwei gegenüberliegende Seiten des Bildes gleichermaßen zuzuschneiden, halten Sie die <em>Strg</em>-Taste gedrückt, während Sie den Ziehpunkt in der Mitte einer dieser Seiten ziehen.</li>
+                <li>Um alle Seiten des Bildes gleichermaßen zuzuschneiden, halten Sie die <em>Strg</em>-Taste gedrückt und ziehen Sie gleichzeitig einen der Ziehpunkt in den Ecken.</li>
+            </ul>
+            <p>Wenn der Zuschneidebereich festgelegt ist, klicken Sie erneut auf die Schaltfläche <b>Zuschneiden</b> oder drücken Sie die <em>Esc</em>-Taste oder klicken Sie auf eine beliebige Stelle außerhalb des Zuschneidebereichs, um die Änderungen zu übernehmen.</p>
+            <p>Nachdem der Zuschneidebereich ausgewählt wurde, können Sie auch die Optionen <b>Auf Form zuschneiden</b>, <b>Ausfüllen</b> und <b>Anpassen</b> verwenden, die im Drop-Down-Menü <b>Zuschneiden</b> verfügbar sind. Klicken Sie erneut auf die Schaltfläche <b>Zuschneiden</b> und wählen Sie die gewünschte Option aus:</p>
+            <ul>
+                <li>Wenn Sie die Option <b>Auf Form zuschneiden</b> auswählen, füllt das Bild eine bestimmte Form aus. Sie können eine Form aus der Galerie auswählen, die geöffnet wird, wenn Sie Ihren Mauszeiger über die Option <b>Auf Form zuschneiden</b> bewegen. Sie können weiterhin die Optionen <b>Ausfüllen</b> und <b>Anpassen</b> verwenden, um auszuwählen, wie Ihr Bild der Form entspricht.</li>
+                <li>Wenn Sie die Option <b>Ausfüllen</b> auswählen, wird der zentrale Teil des Originalbilds beibehalten und zum Ausfüllen des ausgewählten Zuschneidebereichs verwendet, während andere Teile des Bildes entfernt werden.</li>
+                <li>Wenn Sie die Option <b>Anpassen</b> auswählen, wird die Bildgröße so angepasst, dass sie der Höhe oder Breite des Zuschneidebereichs entspricht. Es werden keine Teile des Originalbilds entfernt, es können jedoch leere Bereiche innerhalb des ausgewählten Zuschneidebereichs erscheinen.</li>
+            </ul>
+            <p>Um ein Bild im Uhrzeigersinn zu drehen:</p>
+            <ol>
+                <li>Wählen Sie das gewünschte Bild mit der Maus aus.</li>
+                <li>Klicken Sie auf das Symbol <b>Bild-Einstellungen</b> <div class = "icon icon-image_settings_icon"></div> auf der rechten Seitenleiste.</li>
+                <li>
+                    Wählen Sie im Abschnitt <b>Rotation</b> eine der folgenden Optionen:
+                    <ul>
+                        <li><div class = "icon icon-rotatecounterclockwise"></div>, um das Bild um 90 Grad gegen den Uhrzeigersinn zu drehen.</li>
+                        <li><div class = "icon icon-rotateclockwise"></div>, um das Bild um 90 Grad im Uhrzeigersinn zu drehen.</li>
+                        <li><div class = "icon icon-fliplefttoright"></div>, um das Bild horizontal zu spiegeln (von links nach rechts).</li>
+                        <li><div class = "icon icon-flipupsidedown"></div>, um das Bild vertikal zu spiegeln (von oben nach unten).</li>
+                    </ul>
+                    <p class="note">Alternativ können Sie mit der rechten Maustaste auf das Bild klicken und die Option <b>Drehen</b> aus dem Kontextmenü nutzen.</p>
+                </li>
+            </ol>
+            <p>Um ein eingefügtes Bild zu ersetzen:</p>
+            <ol>
+                <li>Wählen Sie das gewünschte Bild mit der Maus aus.</li>
+                <li>Klicken Sie auf das Symbol <b>Bild-Einstellungen</b> <div class = "icon icon-image_settings_icon"></div> auf der rechten Seitenleiste.</li>
+                <li>Klicken Sie auf die Schaltfläche <b>Bild ersetzen</b>.</li>
+                <li>
+                    Wählen Sie in der Gruppe <b>Bild ersetzen</b> die gewünschte Option: <b>Bild aus Datei</b> oder <b>Bild aus URL</b> - und wählen Sie das entsprechende Bild aus.
+                    <p class="note">Alternativ können Sie mit der rechten Maustaste auf das Bild klicken und die Option <b>Bild ersetzen</b> im Kontextmenü nutzen.</p>
+                </li>
+            </ol>
+            <p>Das ausgewählte Bild wird ersetzt.</p>
+            <p>Wenn Sie das Bild ausgewählt haben, ist rechts auch das Symbol <b>Form-Einstellungen</b> <span class="icon icon-shape_settings_icon"></span> verfügbar. Klicken Sie auf dieses Symbol, um die Registerkarte <b>Form-Einstellungen</b> in der rechten Seitenleiste zu öffnen und passen Sie Form, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>Strichtyp</b></a>, -Größe und -Farbe an oder ändern Sie die Form und wählen Sie im Menü <b>AutoForm ändern</b> eine neue Form aus. Die Form des Bildes ändert sich entsprechend Ihrer Auswahl.</p>
+            <p>Auf der Registerkarte <b>Form-Einstellungen</b> können Sie auch die Option <b>Schatten anzeigen</b> verwenden, um dem Bild einen Schatten hinzuzufügen.</p>
+            <p><img alt="Registerkarte Form-Einstellungen" src="../images/right_image_shape.png" /></p>
+            <h3>Die erweiterten Einstellungen des Bildes anpassen</h3>
+            <p>Um die erweiterte Einstellungen des Bildes zu ändern, klicken Sie mit der rechten Maustaste auf das Bild und wählen Sie die Option <b>Erweiterte Einstellungen des Bildes</b> im Rechtsklickmenü oder klicken Sie einfach in der rechten Seitenleiste auf <b>Erweiterte Einstellungen anzeigen</b>. Das Fenster mit den Bildeigenschaften wird geöffnet:</p>
+            <p><img alt="Bild - Erweiterte Einstellungen: Drehen" src="../images/imageadvancedsettings1.png" /></p>
+            <p>Die Registerkarte <b>Rotation</b> umfasst die folgenden Parameter:</p>
+            <ul>
+                <li><b>Winkel</b>: Mit dieser Option können Sie das Bild in einem genau festgelegten Winkel drehen. Geben Sie den erforderlichen Wert in Grad in das Feld ein oder stellen Sie diesen mit den Pfeilen rechts ein.</li>
+                <li><b>Spiegeln</b>: Aktivieren Sie das Kontrollkästchen <b>Horizontal</b>, um das Bild horizontal zu spiegeln (von links nach rechts), oder aktivieren Sie das Kontrollkästchen <b>Vertikal</b>, um das Bild vertikal zu spiegeln (von oben nach unten).</li>
+            </ul>
+            <p><img alt="Bild - Erweiterte Einstellungen: Andocken an die Zelle" src="../images/imageadvancedsettings2.png" /></p>
+            <p>Die Registerkarte <b>Andocken an die Zelle</b> enthält die folgenden Parameter:</p>
+            <ul>
+                <li><b>Verschieben und Ändern der Größe mit Zellen</b>: Mit dieser Option können Sie das Bild an der Zelle dahinter ausrichten. Wenn sich die Zelle bewegt (z. B. wenn Sie einige Zeilen/Spalten einfügen oder löschen), wird das Bild zusammen mit der Zelle verschoben. Wenn Sie die Breite oder Höhe der Zelle vergrößern oder verkleinern, ändert auch das Bild seine Größe.</li>
+                <li><b>Verschieben, aber die Größe nicht ändern mit Zellen</b>: Mit dieser Option können Sie das Bild an der Zelle dahinter ausrichten, um zu verhindern, dass die Größe des Bilds geändert wird. Wenn sich die Zelle bewegt, wird das Bild zusammen mit der Zelle verschoben, aber wenn Sie die Zellengröße ändern, bleiben die Bildabmessungen unverändert.</li>
+                <li><b>Kein Verschieben oder Ändern der Größe mit Zellen</b>: Mit dieser Option können Sie verhindern, dass das Bild verschoben oder in der Größe geändert wird, wenn die Zellenposition oder -größe geändert wurde.</li>
+            </ul>
+            <p><img alt="Bild - Erweiterte Einstellungen" src="../images/imageadvancedsettings.png" /></p>
+            <p>Die Registerkarte <b>Der alternative Text</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen im Bild enthalten sind.</p>
+            <p>Um das gewünschte Bild zu löschen, klicken Sie darauf und drücken Sie die <b>ENTF</b>-Taste auf Ihrer Tastatur.</p>
+            <h3>Makro zum Bild zuweisen</h3>
+            <p>Sie können einen schnellen und einfachen Zugriff auf ein Makro in einer Tabelle bereitstellen, indem Sie einem beliebigen Bild ein Makro zuweisen. Nachdem Sie ein Makro zugewiesen haben, wird das Bild als Schaltflächen-Steuerelement angezeigt und Sie können das Makro jedes Mal ausführen, wenn Sie darauf klicken.</p>
+            <p>Um ein Makro zuzuweisen:</p>
+            <ul type="circle">
+                <li>
+                    Klicken Sie mit der rechten Maustaste auf das Bild, dem Sie ein Makro zuweisen möchten, und wählen Sie die Option <b>Makro zuweisen</b> aus dem Drop-Down-Menü.
+                    <p><img alt="Makro zuweisen - Menü" src="../images/assignmacro_rightclickimage.png" /></p>
+                </li>
+                <li>Das Dialogfenster <b>Makro zuweisen</b> wird geöffnet.</li>
+                <li>
+                    Wählen Sie ein Makro aus der Liste aus oder geben Sie den Makronamen ein und klicken Sie zur Bestätigung auf <b>OK</b>.
+                    <p><img alt="Makro zuweisen" src="../images/assignmacro.png" /></p>
+                </li>
+            </ul>
+        </div>
+	</body>
+</html>

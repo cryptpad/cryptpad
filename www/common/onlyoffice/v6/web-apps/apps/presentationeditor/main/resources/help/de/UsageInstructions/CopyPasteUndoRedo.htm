@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten kopieren/einfügen, Aktionen rückgängig machen/wiederholen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the presentation: copy, paste, undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Daten kopieren/einfügen, Aktionen rückgängig machen/wiederholen</h1>
+            <h3>Zwischenablage verwenden</h3>
+            <p>Um gewählte Objekte (Folien, Textabschnitte, AutoFormen) im <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> auszuschneiden, zu kopieren, einzufügen oder Aktionen rückgängig zu machen bzw. zu wiederholen, nutzen Sie die Optionen aus dem Rechtsklickmenü oder die entsprechenden Tastenkombinationen oder die Symbole die auf jeder beliebigen Registerkarte in der oberen Symbolleiste verfügbar sind:</p>
+            <ul>
+                <li><b>Ausschneiden</b> - wählen Sie ein Objekt aus und nutzen Sie die Option <b>Ausschneiden</b> im Rechtsklickmenü oder das Symbol <b>Ausschneiden</b> <div class="icon icon-cut"></div> in der oberen Symbolleiste, um die Auswahl zu löschen und in der Zwischenablage des Rechners zu speichern. <span class="onlineDocumentFeatures">Die ausgeschnittenen Daten können später an einer anderen Stelle in derselben Präsentation wieder eingefügt werden.</span></li>
+                <li><b>Kopieren</b> – wählen Sie ein Objekt aus und klicken Sie im Rechtsklickmenü auf <b>Kopieren</b> oder klicken Sie in der oberen Symbolleiste auf das Symbol <b>Kopieren</b> <div class = "icon icon-copy"></div>, um die Auswahl in die Zwischenablage Ihres Computers zu kopieren. <span class="onlineDocumentFeatures">Das kopierte Objekt kann später an einer anderen Stelle in derselben Präsentation eingefügt werden.</span></li>
+                <li><b>Einfügen</b> – platzieren Sie den Cursor an der Stelle in Ihrer Präsentation, an der Sie das zuvor kopierte Objekt einfügen möchten und wählen Sie im Rechtsklickmenü die Option <b>Einfügen</b> oder klicken Sie in der oberen Symbolleiste auf <b>Einfügen</b> <div class = "icon icon-paste"></div>. Das Objekt wird an der aktuellen Cursorposition eingefügt. <span class="onlineDocumentFeatures">Das Objekt kann vorher aus derselben Präsentation kopiert werden oder auch aus einem anderen Dokument oder Programm oder von einer Webseite.</span></li>
+            </ul>
+            <p><span class="onlineDocumentFeatures">In der <em>Online-Version</em> können nur die folgenden Tastenkombinationen zum Kopieren oder Einfügen von Daten aus/in eine andere Präsentation oder ein anderes Programm verwendet werden.</span> <span class="desktopDocumentFeatures">In der <em>Desktop-Version</em> können sowohl die entsprechenden Schaltflächen/Menüoptionen als auch Tastenkombinationen für alle Kopier-/Einfügevorgänge verwendet werden:</span></p>
+            <ul>
+                <li><b>STRG+C</b> - Kopieren;</li>
+                <li><b>STRG+V</b> - Einfügen;</li>
+                <li><b>STRG+X</b> - Ausschneiden;</li>
+            </ul>
+            <h3>Inhalte einfügen mit Optionen</h3>
+            <p class="note">Für die gemeinsame Bearbeitung ist die Option <b>Spezielles Einfügen</b> ist nur im Co-Editing-Modus <b>Formal</b> verfügbar.</p>
+            <p>Nachdem der kopierte Text eingefügt wurde, erscheint neben der eingefügten Textpassage oder dem eingefügten Objekt das Menü <b>Einfügeoptionen</b> <span class="icon icon-pastespecialbutton"></span>. Klicken Sie auf diese Schaltfläche, um die gewünschte Einfügeoption auszuwählen.</p>
+            <p>Für das Einfügen von Textpassagen stehen folgende Auswahlmöglichkeiten zur Verfügung:</p>
+            <ul>
+                <li><em>An Zielformatierung anpassen (Strg+H)</em> - die Formatierung der aktuellen Präsentation wird auf den eingefügten Text angewendet. Diese Option ist standardmäßig ausgewählt.</li>
+                <li><em>Ursprüngliche Formatierung beibehalten (Strg+K)</em> - die ursprüngliche Formatierung des kopierten Textabschnitts wird in die Präsentation eingefügt.</li>
+                <li><em>Bild (Strg+U)</em> - der Text wird als Bild eingefügt und kann nicht bearbeitet werden.</li>
+                <li><em>Nur den Text übernehmen (Strg+T)</em> - der kopierte Text wird in an die vorhandene Formatierung angepasst.</li>
+            </ul>
+            <p><img alt="Einfügeoptionen" src="../images/pastespecial.png" /></p>
+            <p>Für das Einfügen von Objekten (AutoFormen, Diagramme, Tabellen) stehen folgende Auswahlmöglichkeiten zur Verfügung:</p>
+            <ul>
+                <li><em>An Zielformatierung anpassen (Strg+H)</em> - die Formatierung der aktuellen Präsentation wird auf den eingefügten Text angewendet. Diese Option ist standardmäßig ausgewählt.</li>
+                <li><em>Bild (Strg+U)</em> - das Objekt wird als Bild eingefügt und kann nicht bearbeitet werden.</li>
+            </ul>
+            <p>Um die automatische Anzeige der Schaltfläche <b>Spezielles Einfügen</b> nach dem Einfügen zu aktivieren/deaktivieren, gehen Sie zur Registerkarte <b>Datei</b> > <b>Erweiterte Einstellungen</b> und aktivieren/deaktivieren Sie das Kontrollkästchen <b>Die Schaltfläche Einfügeoptionen beim Einfügen von Inhalten anzeigen</b>.</p>
+            <h3>Vorgänge rückgängig machen/wiederholen</h3>
+            <p>Verwenden Sie die entsprechenden Symbole im linken Bereich der Kopfzeile des Editors, um Vorgänge rückgängig zu machen/zu wiederholen oder nutzen Sie die entsprechenden Tastenkombinationen:</p>
+            <ul>
+                <li><b>Rückgängig machen</b> – klicken Sie auf das Symbol <b>Rückgängig machen</b> <div class = "icon icon-undo"></div>, um den zuletzt durchgeführten Vorgang rückgängig zu machen.</li>
+                <li>
+                    <b>Wiederholen</b> – klicken Sie auf das Symbol <b>Wiederholen</b> <div class = "icon icon-redo"></div>, um den zuletzt rückgängig gemachten Vorgang zu wiederholen.
+                    <p>Alternativ können Sie Vorgänge auch mit der Tastenkombination <b>STRG+Z</b> rückgängig machen bzw. mit <b>STRG+Y</b> wiederholen.</p>
+                </li>
+            </ul>
+            <p class="note">
+                Wenn Sie eine Präsentation im Modus <b>Schnell</b> gemeinsam bearbeiten, ist die Option letzten rückgängig gemachten Vorgang <b>wiederherstellen</b> nicht verfügbar.
+            </p>
+
+        </div>
+	</body>
+</html>

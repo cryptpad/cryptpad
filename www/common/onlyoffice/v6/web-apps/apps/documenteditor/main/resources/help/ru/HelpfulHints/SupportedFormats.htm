@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Поддерживаемые форматы электронных документов</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Список форматов документов, которые поддерживает редактор документов" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Поддерживаемые форматы электронных документов</h1>
+			<p>Электронные документы - это одни из наиболее широко используемых компьютерных файлов. 
+			Благодаря высокому уровню развития современных компьютерных сетей распространять электронные документы становится удобнее, чем печатные. 
+			Многообразие устройств, используемых для представления документов, обуславливает большое количество проприетарных и открытых файловых форматов. 
+			<b>Редактор документов</b> работает с самыми популярными из них.</p>
+            <p class="note">При загрузке или открытии файла на редактирование он будет сконвертирован в формат Office Open XML (DOCX). Это делается для ускорения обработки файла и повышения совместимости.</p>
+            <p>Следующая таблица содержит форматы, которые можно открыть на просмотр и/или редактирование.</p>
+			<table>
+				<tr>
+					<td><b>Форматы</b></td>
+					<td><b>Описание</b></td>
+					<td>Просмотр в исходном формате</td>
+                    <td>Просмотр после конвертации в OOXML</td>
+					<td>Редактирование в исходном формате</td>
+                    <td>Редактирование после конвертации в OOXML</td>
+				</tr>
+                <tr>
+                    <td>DjVu</td>
+                    <td>Формат файлов, предназначенный главным образом для хранения отсканированных документов, особенно тех, которые содержат комбинацию текста, рисунков и фотографий</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>DOC</td>
+                    <td>Расширение имени файла для текстовых документов, созданных программой Microsoft Word</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>DOCM</td>
+                    <td>Macro-Enabled Microsoft Word Document<br /> Расширение имени файла для текстовых документов, созданных программой Microsoft Word 2007 (или более поздних версий) с поддержкой макросов</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>DOCX</td>
+                    <td>Office Open XML<br /> разработанный компанией Microsoft формат файлов на основе XML, сжатых по технологии ZIP. Предназначен для представления электронных таблиц, диаграмм, презентаций и текстовых документов</td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>DOCXF</td>
+                    <td>Формат для создания, редактирования и совместной работы над Шаблоном формы.</td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>DOTX</td>
+                    <td>Word Open XML Document Template<br /> разработанный компанией Microsoft формат файлов на основе XML, сжатых по технологии ZIP. Предназначен для шаблонов текстовых документов. Шаблон DOTX содержит настройки форматирования, стили и т.д. и может использоваться для создания множества документов со схожим форматированием</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>EPUB</td>
+                    <td>Electronic Publication<br />Бесплатный открытый стандарт для электронных книг, созданный Международным форумом по цифровым публикациям (International Digital Publishing Forum)</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>FB2</td>
+                    <td>Расширение для электронных книг, позволяющее читать книги на компьютере или мобильных устройствах</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>HTML</td>
+                    <td>HyperText Markup Language<br />Основной язык разметки веб-страниц</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+				<tr>
+					<td>ODT</td>
+					<td>Формат текстовых файлов OpenDocument, открытый стандарт для электронных документов</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+					<td>+</td>
+				</tr>
+                <tr>
+                    <td>OFORM</td>
+                    <td>Формат для заполнения Формы. Поля формы являются заполняемыми, но пользователи не могут изменять форматирование или настройки элементов формы.*</td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                </tr>
+				<tr>
+					<td>OTT</td>
+					<td>OpenDocument Document Template<br />Формат текстовых файлов OpenDocument для шаблонов текстовых документов. Шаблон OTT содержит настройки форматирования, стили и т.д. и может использоваться для создания множества документов со схожим форматированием</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+					<td>+</td>
+				</tr>
+                <tr>
+                    <td>PDF</td>
+                    <td>Portable Document Format<br />Формат файлов, используемый для представления документов независимо от программного обеспечения, аппаратных средств и операционных систем</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>PDF/A</td>
+                    <td>Portable Document Format / A<br />Подмножество формата PDF, содержащее ограниченный набор возможностей представления данных. Данный формат является стандартом ISO и предназначен для долгосрочного архивного хранения электронных документов.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+				<tr>
+					<td>RTF</td>
+					<td>Rich Text Format<br />Формат документов, разработанный компанией Microsoft, для кроссплатформенного обмена документами</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+					<td>+</td>
+				</tr>
+				<tr>
+					<td>TXT</td>
+					<td>Расширение имени файла для текстовых файлов, как правило, с минимальным форматированием</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+					<td>+</td>
+				</tr>
+                <tr>
+                    <td>XML</td>
+                    <td>Расширяемый язык разметки (XML). <br /> Простой и гибкий язык разметки, созданный на основе SGML (ISO 8879) и предназначенный для хранения и передачи данных</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+				<tr>
+					<td>XPS</td>
+					<td>Open XML Paper Specification<br />Открытый бесплатный формат фиксированной разметки, разработанный компанией Microsoft</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+					<td></td>
+				</tr>
+			</table>
+			<p class="note"><b>Примечание*</b>: формат OFORM — это формат заполнения формы. Поэтому только поля формы доступны для редактирования.</p>
+            <p>Следующая таблица содержит форматы, в которые можно скачать документ из меню <b>Файл</b> -> <b>Скачать как</b>.</p>
+            <table>
+                <tr>
+                    <td><b>Исходный формат</b></td>
+                    <td><b>Можно скачать как</b></td>
+                </tr>
+                <tr>
+                    <td>DjVu</td>
+                    <td>DjVu, PDF</td>
+                </tr>
+                <tr>
+                    <td>DOC</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>DOCM</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>DOCX</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>DOCXF</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>DOTX</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>EPUB</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>FB2</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>HTML</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>ODT</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>OFORM</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>OTT</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>PDF</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, OFORM, PDF, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>PDF/A</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, OFORM, PDF, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>RTF</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>TXT</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>XML</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT</td>
+                </tr>
+                <tr>
+                    <td>XPS</td>
+                    <td>DOCX, DOCXF, DOTX, EPUB, FB2, HTML, ODT, OFORM, OTT, PDF, PDF/A, RTF, TXT, XPS</td>
+                </tr>
+            </table>
+            <p>Вы также можете обратиться к матрице конвертации на сайте <a href="https://api.onlyoffice.com/editors/conversionapi#text-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a>, чтобы узнать о возможности конвертации документов в самые известные форматы файлов.</p>
+		</div>
+	</body>
+</html>

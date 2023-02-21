@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Endnoten einfügen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Fügen Sie die Endnoten ein, um Kommentare zu bestimmten Sätzen oder Begriffen in Ihrem Text einzufügen, Referenzen und Quellen anzugeben usw." />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Endnoten einfügen</h1>
+        <p>Im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> können Sie Endnoten einfügen, um Kommentare zu bestimmten Sätzen oder Begriffen in Ihrem Text einzufügen, Referenzen und Quellen anzugeben usw., die am Ende des Dokuments angezeigt werden.</p>
+        <h2>Endnoten einfügen</h2>
+        <p>Um eine Endnote einzufügen,</p>
+        <ol>
+            <li>positionieren Sie den Einfügepunkt am Ende der Textpassage, der Sie eine Endnote hinzufügen möchten,</li>
+            <li>wechseln Sie in der oberen Symbolleiste zur Registerkarte <b>Verweise</b>,</li>
+            <li>
+                klicken Sie auf das Symbol <div class = "icon icon-addfootnote"></div> <b>Fußnote</b> in der oberen Symbolleiste oder<br /> klicken Sie auf den Pfeil neben dem Symbol <div class = "icon icon-addfootnote"></div> <b>Fußnote</b> und wählen Sie die Option <b>Endnote einfügen</b> aus dem Menü aus.<br />
+                <p>Das Endnotenzeichen (d.h. das hochgestellte Zeichen, das eine Endnote anzeigt) wird im Dokumenttext angezeigt und die Textmarke springt zum Ende des Dokuments.</p>
+            </li>
+            <li>geben Sie den Text der Endnote ein.</li>
+        </ol>
+        <p>Wiederholen Sie den beschriebenen Vorgang, um weitere Endnoten für andere Textpassagen in Ihrem Dokument hinzuzufügen. Die Endnoten werden automatisch nummeriert: <em>i, ii, iii,</em> usw. (standardmäßig).</p>
+        <p><img alt="Endnoten" src="../images/endnotesadded.png" /></p>
+        <h2>Darstellung der Endnoten im Dokument</h2>
+        <p>Wenn Sie den Mauszeiger über das Endnotenzeichen bewegen, öffnet sich ein kleines Popup-Fenster mit dem Endnotentext.</p>
+        <p><img alt="Endnoten Text" src="../images/endnotetext.png" /></p>
+        <h2>Navigieren durch Endnoten</h2>
+        <p>Um zwischen den hinzugefügten Endnoten im Dokument zu navigieren,</p>
+        <ol>
+            <li>klicken Sie auf der Registerkarte <b>Verweise</b> in der oberen Symbolleiste auf den Pfeil neben dem Symbol <div class = "icon icon-addfootnote"></div> <b>Fußnote</b>,</li>
+            <li>navigieren Sie im Abschnitt <b>Zu Endnoten</b> über die Pfeile <div class = "icon icon-previousfootnote"></div> und <div class = "icon icon-nextfootnote"></div> zur nächsten oder zur vorherigen Endnote.</li>
+        </ol>
+        <h2>Endnoten bearbeiten</h2>
+        <p>Um die Einstellungen der Endnoten zu ändern,</p>
+        <ol>
+            <li>Klicken Sie auf der Registerkarte <b>Verweise</b> in der oberen Symbolleiste auf den Pfeil neben dem Symbol <div class = "icon icon-addfootnote"></div> <b>Fußnote</b>.</li>
+            <li>Wählen Sie die Option <b>Hinweise Einstellungen</b> aus dem Menü aus.</li>
+            <li>
+                Ändern Sie im Fenster <b>Hinweise Einstellungen</b> die aktuellen Parameter:
+                <p><img alt="Fenster Endnoteneinstellungen" src="../images/endnotes_settings.png" /></p>
+                <ul>
+                    <li>
+                        Legen Sie die <b>Position</b> der Endnoten auf der Seite fest, indem Sie eine der verfügbaren Optionen aus dem Drop-Down-Menü rechts auswählen:
+                    <ul>
+                        <li><b>Ende des Abschnitts</b> - um Endnoten am ende des aktiven Abschnitts zu positionieren.</li>
+                        <li><b>Ende des Dokuments</b> - um Endnoten am Ende des Dokuments zu positionieren (diese Option ist standardmäßig ausgewählt).</li>
+                     </ul>
+                    </li>
+                    <li>
+                        Passen Sie den <b>Format</b> der Endnoten an:
+                        <ul>
+                            <li><b>Zahlenformat</b> - wählen Sie das gewünschte Format aus der Liste mit verfügbaren Formaten aus: <em>1, 2, 3,...</em>, <em>a, b, c,...</em>, <em>A, B, C,...</em>, <em>i, ii, iii,...</em>, <em>I, II, III,...</em>.</li>
+                            <li><b>Starten</b> - über die Pfeiltasten können Sie festlegen, bei welchem Buchstaben oder welcher Zahl Sie beginnen möchten.</li>
+                            <li>
+                                <b>Nummerierung</b> - wählen Sie aus, auf welche Weise Sie Ihre Endnoten nummerieren möchten:
+                                <ul>
+                                    <li><b>Kontinuierlich</b> - um Endnoten im gesamten Dokument fortlaufend zu nummerieren.</li>
+                                    <li><b>Jeden Abschnitt neu beginnen</b> - die Nummerierung der Endnoten beginnt in jedem neuen Abschnitt wieder bei 1 (oder einem anderen festgelegten Wert).</li>
+                                    <li><b>Jede Seite neu beginnen</b> - die Nummerierung der Endnoten beginnt auf jeder neuen Seite wieder bei 1 (oder einem anderen festgelegten Wert).</li>
+                                </ul>
+                            </li>
+                            <li><b>Benutzerdefiniert</b> - Legen Sie ein Sonderzeichen oder ein Wort fest, das Sie als Endnotenzeichen verwenden möchten (z. B. * oder Note1). Geben Sie das gewünschte Wort/Zeichen in das dafür vorgesehene Feld ein und klicken Sie auf <b>Einfügen</b> im Fenster <b>Hinweise Einstellungen</b></li>
+                        </ul>
+                    </li>
+                    <li>
+                        Legen Sie in der Dropdown-Liste <b>Änderungen anwenden</b> fest, ob Sie die angegebenen Endnoteneinstellungen auf das <b>ganze Dokument</b> oder nur den <b>aktuellen Abschnitt</b> anwenden wollen.
+                        <p class="note">Um unterschiedliche Endnotenformatierungen in verschiedenen Teilen des Dokuments zu verwenden, müssen Sie zunächst <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">Abschnittsumbrüche einfügen</a>.</p>
+                    </li>
+                </ul>
+            </li>
+            <li>Wenn Sie bereits sind, klicken Sie auf <b>Anwenden</b>.</li>
+        </ol>
+
+        <h2>Endnoten entfernen</h2>
+        <p>Um eine einzelne Endnote zu entfernen, positionieren Sie den Einfügepunkt direkt vor der Endnotenmarkierung und drücken Sie auf <b>ENTF</b>. Andere Endnoten werden automatisch neu nummeriert.</p>
+        <p>Um alle Endnoten in einem Dokument zu entfernen:</p>
+        <ol>
+            <li>Klicken Sie auf den Pfeil neben dem Symbol <div class = "icon icon-addfootnote"></div> <b>Fußnote</b> auf der Registerkarte <b>Verweise</b> in der oberen Symbolleiste.</li>
+            <li>Wählen Sie im Menü die Option <b>Alle Anmerkungen löschen</b>.</li>
+            <li>Wählen Sie im erscheinenden Fenster die Option <b>Alle Endnoten löschen</b> und klicken Sie auf <b>OK</b>.</li>
+        </ol>
+    </div>
+</body>
+</html>

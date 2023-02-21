@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Registerkarte Plugins</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Einführung in die Benutzeroberfläche der Tabellenkalkulation – Registerkarte Plugins" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+    <h1>Registerkarte Plugins</h1>
+            <p>Die Registerkarte <b>Plugins</b> in der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> ermöglicht den Zugriff auf erweiterte Bearbeitungsfunktionen mit verfügbaren Komponenten von Drittanbietern. Unter dieser Registerkarte können Sie auch Makros festlegen, um Routinevorgänge zu vereinfachen.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Dialogbox Online-Tabellenkalkulation:</p>
+                <p><img alt="Registerkarte Plugins" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dialogbox Desktop-Tabellenkalkulation:</p>
+                <p><img alt="Registerkarte Plugins" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">Durch Anklicken der Schaltfläche <b>Einstellungen</b> öffnet sich das Fenster, in dem Sie alle installierten Plugins anzeigen und verwalten sowie eigene Plugins hinzufügen können.</p>
+            <p>Durch Anklicken der Schaltfläche <b>Makros</b> öffnet sich ein Fenster in dem Sie Ihre eigenen Makros erstellen und ausführen können. Um mehr über Makros zu erfahren, lesen Sie bitte unsere <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">API-Dokumentation</a>.</p>
+            <p>Derzeit stehen folgende Plugins zur Verfügung:</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Senden</b> erlaubt das versenden der Tabelle durch das Standard Desktop Email Programm (nur in der <em>Desktop-Version</em> verfügbar).</li>
+                <li><a href="../UsageInstructions/HighlightedCode.htm" onclick="onhyperlinkclick(this)">Code hervorheben</a> - Hervorhebung der Syntax des Codes durch Auswahl der erforderlichen Sprache, des Stils, der Hintergrundfarbe.</li>
+                <li><a href="../UsageInstructions/PhotoEditor.htm" onclick="onhyperlinkclick(this)">Foto-Editor</a> - Bearbeitung von Bildern: schneiden, umlegen, rotieren, Linien und Formen zeichnen, Symbole und Text einfügen, eine Bildmaske laden und verschiedene Filter anwenden, wie zum Beispiel Graustufe, Invertiert, Blur, Schärfen, Emboss, usw.</li>
+                <li><a href="../UsageInstructions/Thesaurus.htm" onclick="onhyperlinkclick(this)">Thesaurus</a> erlaubt es, nach Synonymen und Antonymen eines Wortes zu suchen und es durch das ausgewählte Wort zu ersetzen.</li>
+                <li>
+                    <a href="../UsageInstructions/Translator.htm" onclick="onhyperlinkclick(this)">Übersetzer</a> erlaubt es, den ausgewählten Textabschnitten in andere Sprachen zu übersetzen.
+                    <p class="note">Dieses Plugin funktioniert nicht im Internet Explorer.</p>
+                </li>
+                <li><a href="../UsageInstructions/YouTube.htm" onclick="onhyperlinkclick(this)">YouTube</a> erlaubt es, YouTube-Videos in Ihre Tabelle einzubetten.</li>
+            </ul>
+            <p>Um mehr über Plugins zu erfahren, lesen Sie bitte unsere <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">API-Dokumentation</a>. Alle derzeit als Open-Source verfügbaren Plugin-Beispiele sind auf <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a> verfügbar.</p>
+		</div>
+	</body>
+</html>

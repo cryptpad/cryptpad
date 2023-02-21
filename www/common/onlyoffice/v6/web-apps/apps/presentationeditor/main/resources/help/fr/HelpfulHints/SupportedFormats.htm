@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formats des présentations électroniques pris en charge</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Formats des présentations électroniques pris en charge" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Formats des présentations électroniques pris en charge</h1>
+			<p>Une présentation est l'ensemble des diapositives qui peut inclure de différents types de contenu tels que des images, des fichiers multimédias, des textes, des effets etc.
+            <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Présentations</b></a> prend en charge les formats suivants :</p>
+            <p class="note">Lors du téléchargement ou de l'ouverture d'un fichier, celui-ci sera converti au format Office Open XML (PPTX). Cette conversion permet d'accélérer le traitement des fichiers et d'améliorer l'interopérabilité des données.</p>
+            <p>Le tableau ci-dessous présente les formats de fichiers pour l'affichage et/ou pour l'édition.</p>
+			<table>
+				<tr>
+					<td><b>Formats</b></td>
+					<td><b>Description</b></td>
+                    <td>Affichage au format natif</td>
+                    <td>Affichage lors de la conversion en OOXML</td>
+                    <td>Édition au format natif</td>
+                    <td>Édition lors de la conversion en OOXML</td>
+				</tr>
+                <tr>
+                    <td>ODP</td>
+                    <td>Présentation OpenDocument<br />Format de fichier utilisé pour les présentations créées par l'application Impress, qui fait partie des applications OpenOffice</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>OTP</td>
+                    <td>Modèle de présentation OpenDocument<br />Format de fichier OpenDocument pour les modèles de présentation. Un modèle OTP contient des paramètres de mise en forme, des styles, etc. et peut être utilisé pour créer plusieurs présentations avec la même mise en forme</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>POTX</td>
+                    <td>Modèle de document PowerPoint Open XML<br />Format de fichier zippé, basé sur XML, développé par Microsoft pour les modèles de présentation. Un modèle POTX contient des paramètres de mise en forme, des styles, etc. et peut être utilisé pour créer plusieurs présentations avec la même mise en forme</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>PPSX</td>
+                    <td>Microsoft PowerPoint Slide Show<br />Un format de présentation pour démarrer le diaporama.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>PPT</td>
+                    <td>Format de fichier utilisé par Microsoft PowerPoint</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+				<tr>
+                    <td>PPTX</td>
+					<td>Présentation Office Open XML<br />Compressé, le format de fichier basé sur XML développé par Microsoft pour représenter des classeurs, des tableaux, des présentations et des documents de traitement de texte</td>
+					<td>+</td>
+                    <td></td>
+					<td>+</td>
+                    <td></td>
+				</tr>
+			</table>
+            <p>Le tableau ci-dessous présente les formats pris en charge pour le téléchargement d'une présentation dans le menu <b>Fichier</b> -> <b>Télécharger comme</b>.</p>
+            <table>
+                <tr>
+                    <td><b>Format en entrée</b></td>
+                    <td><b>Téléchargeable comme</b></td>
+                </tr>                
+                <tr>
+                    <td>ODP</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>OTP</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>POTX</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>PPSX</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>PPT</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>PPTX</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+            </table>
+            <p>Veuillez consulter la matrice de conversion sur <a href="https://api.onlyoffice.com/editors/conversionapi#presentation-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a> pour vérifier s'il est possible de convertir vos présentations dans des formats les plus populaires.</p>
+		</div>
+	</body>
+</html>

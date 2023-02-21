@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TOROW Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>TOROW Function</h1>
+			<p>The <b>TOROW</b> function is one of the lookup and reference functions. It is used to return the array as one row.</p>
+			<p class="note">Please note that this is an array formula. To learn more, please read the <a href="../UsageInstructions/InsertArrayFormulas.htm" onclick="onhyperlinkclick(this)">Insert array formulas</a> article.</p>
+			<p>The <b>TOROW</b> function syntax is:</p>
+			<p style="text-indent: 150px;"><b><em>TOROW (array, [ignore], [scan_by_column])</em></b></p>
+			<p><em>where</em></p>
+			<p style="text-indent: 50px;"><b><em>array</em></b> is the array or reference to return as a row.</p>
+			<p style="text-indent: 50px;"><b><em>ignore</em></b> is used to set whether to ignore certain types of values. Defaults to ignoring no values. The following values are used: <b>0</b> to keep all values (default); <b>1</b> to ignore blanks; <b>2</b> to ignore errors; <b>3</b> to ignore blanks and errors.</p>
+			<p style="text-indent: 50px;"><b><em>scan_by_column</em></b> is used to scan the array by column. By default, array scanning is conducted by row. Scanning determines whether the values are arranged in rows or columns.</p>
+			<p>To apply the <b>TOROW</b> function,</p>
+			<ol>
+				<li>select the cell where you wish to display the result,</li>
+				<li>
+					click the <b>Insert function</b> <div class="icon icon-insertfunction"></div> icon situated at the top toolbar,
+					<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+					<br />or click the <div class="icon icon-function"></div> icon situated at the formula bar,
+				</li>
+				<li>select the <b>Lookup and Reference</b> function group from the list,</li>
+				<li>click the <b>TOROW</b> function,</li>
+				<li>enter the required arguments separating them by comma,</li>
+				<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<!--<p style="text-indent: 150px;"><img alt="TOROW Function" src="../images/torow.png" /></p>-->
+		</div>
+	</body>
+</html>

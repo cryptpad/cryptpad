@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Conditional Formatting</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Conditional formatting allows you to apply various formatting styles (color, font, decoration, gradient) to cells to work with data on the spreadsheet: highlight or sort through and display the data that meets the needed criteria." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Conditional Formatting</h1>
+			<p><b>Conditional formatting</b> allows you to apply various formatting styles (color, font, decoration, gradient) to cells to work with data on the spreadsheet: highlight or sort through and display the data that meets the needed criteria. Specify the fit for purpose criteria and create new formatting rules, edit, manage or clear the existing rules. 
+            Conditional formatting rules supported by the ONLYOFFICE <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> are:</p>
+			<p><b>Value is</b>, <b>Top/Bottom</b>, <b>Average</b>, <b>Text</b>, <b>Date</b>, <b>Blank/Error</b>, <b>Duplicate/Unique</b>, <b>Data Bars</b>, <b>Color Scales</b>, <b>Icon Sets</b>, <b>Formula</b>.</p>
+            <p>For quick access, or if you want to choose one of the available preset conditions, or to access all the available conditional formatting options go to the <b>Home</b> tab  and click the <b>Conditional formatting</b> button <span class="icon icon-conditionalformatting_button"></span>.</p>
+                    <p><img alt="Conditional Formatting Home Tab" src="../images/interface/hometab.png" /></p>
+            <p>All <b>Conditional Formatting</b> options are also available on the right sidebar in the <b>Cell Settings</b> tab. Click the <b>Conditional Formatting</b> control down arrow to open the drop-down menu containing all the available options.</p>
+                    <p><img alt="Conditional Formatting Right Sidebar" src="../images/conditionalformatting_rightsidebar.png" /></p>
+            <p>To open the <b>New Formatting Rule</b> window, you can  right-click any cell and choose <b>Conditional Formatting</b> from the contextual menu.</p>
+                    <p><img alt="Conditional Formatting Right Click" src="../images/conditionalformatting_rightclick.png" /></p>
+            <p>To apply a formatting rule condition, select the cell range then click the <b>Conditional formatting</b> button <span class="icon icon-conditionalformatting_button"></span> on the top toolbar, or click the <b>Conditional Formatting</b> control of the <b>Cell Settings</b> tab on the right sidebar, and choose the appropriate rule from the drop-down menu.</p> 
+            <p><img alt="Conditional Formatting Drop-Down" src="../images/conditionalformatting_dropdown.png" />. 
+            <p>The <b>New Formatting Rule</b> window will open for you to format the highlighting criteria.</p>
+            <details class="details-example">
+                <summary><b>Value is Formatting Rule</b></summary>
+                <p>The <b>Value is</b> formatting rule is used to find and highlight cells meeting a certain comparison condition:</p> 
+                <ul type="circle">
+                     <li>Greater than</li>
+                     <li>Greater than or equal to</li>
+                     <li>Less than</li>
+                     <li>Less than or equal to</li>
+                     <li>Equal to</li>
+                     <li>Not equal to</li>
+                     <li>Between</li>
+                     <li>Not between</li>
+                </ul>
+                    <p><img alt="New Rule Value Is" src="../images/newrule_valueis.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected comparison condition, by clicking the down arrow you can access the list of the available rules and conditions. Use the <b>Select Data</b> box to define the cell value to compare with. Use the reference to a single cell, or the reference with the worksheet function such as =SUM(A1:B5). </li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> 
+                to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Greater</b> than, and <b>Between</b>. This formats mountains with a height greater than 6,960 with a green background and percentile between 5,000 and 6,500 with pink.</p>
+                <p><img alt="Value Is" src="../images/conditionalformatting/valueis_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Top/Bottom Formatting Rule</b></summary>
+                <p>The <b>Top/Bottom</b> rule is used to find and display the top and bottom values within the spreadsheet:</p> 
+                <ul type="circle">
+                     <li>Top 10 items</li>
+                     <li>Top 10%</li>
+                     <li>Bottom 10 items</li>
+                     <li>Bottom 10%</li>
+               </ul>
+                    <p><img alt="New Rule Top&Bottom" src="../images/newrule_topbottom.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected condition, by clicking the down arrow you can access the list of the available rules and conditions, the number of items (percentage) to display, and choose either you want to highlight items or percentage.</li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Top 10%</b> set to show top 20% values, and <b>Bottom 10 items</b>. This formats Top 20% of fees in the cities you visited with an orange background and bottom values for cities where you sold a small number of books with a blue background.</p>
+                <p><img alt="Top Bottom" src="../images/conditionalformatting/topbottom_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Average Formatting Rule</b></summary>
+                <p>The <b>Average</b> is used to find and display values above or below an average or standard deviation in a rating:</p> 
+                <ul type="circle">
+                     <li>Above</li>
+                     <li>Below</li>
+                     <li>Equal to or above</li>
+                     <li>Equal to or below</li>
+                     <li>1 std dev above</li>
+                     <li>1 std dev below</li>
+                     <li>2 std dev above</li>
+                     <li>2 std dev below</li>
+                     <li>3 std dev above</li>
+                     <li>3 std dev below</li>
+               </ul>
+                    <p><img alt="New Rule Average" src="../images/newrule_average.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected condition, by clicking the down arrow you can access the list of the available rules and conditions.</li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Above</b> average. This formats the cities where the attendance was above average with a green background.</p>
+                <p><img alt="Average" src="../images/conditionalformatting/average_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Text Formatting Rule</b></summary>
+                <p>The <b>Text</b> formatting rule is used to find and highlight cells containing certain text and meeting one of the available formatting conditions:</p> 
+                <ul type="circle">
+                     <li>Contains</li>
+                     <li>Does not contain</li>
+                     <li>Begins with</li>
+                     <li>Ends with</li>
+               </ul>
+                    <p><img alt="New Rule Text" src="../images/newrule_text.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected formatting condition, by clicking the down arrow you can access the list of the available rules and conditions. Use the <b>Select Data</b> box to define the cell value to compare with. Use the reference to a single cell, or the reference with the worksheet function such as =SUM(A1:B5).</li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Contains</b>. This formats cells containing Denmark with a pink background to highlight sales for a specific region.</p>
+                <p><img alt="Text" src="../images/conditionalformatting/text_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Date Formatting Rule</b></summary>
+                <p>The <b>Date</b> formatting rule is used to find and highlight cells containing a certain date and meeting one of the available formatting conditions:</p> 
+                <ul type="circle">
+                     <li>Yesterday</li>
+                     <li>Today</li>
+                     <li>Tomorrow</li>
+                     <li>In the last 7 days</li>
+                     <li>Last week</li>
+                     <li>This week</li>
+                     <li>Next week</li>
+                     <li>Last month</li>
+                     <li>This month</li>
+                     <li>Next month</li>
+               </ul>
+                    <p><img alt="New Rule Date" src="../images/newrule_date.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected formatting condition, by clicking the down arrow you can access the list of the available rules and conditions.</li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Last month</b>. This formats cells containing dates from the previous month with a yellow background to highlight sales for a specific period of time.</p>
+                <p><img alt="Date" src="../images/conditionalformatting/date_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Blank/Error Formatting Rule</b></summary>
+                <p>The <b>Blank/Error</b> formatting rule is used to find and highlight cells containing or not containing blanks and errors:</p> 
+                <ul type="circle">
+                     <li>Contains blanks</li>
+                     <li>Does not contain blanks</li>
+                     <li>Contains errors</li>
+                     <li>Does not contain errors</li>
+               </ul>
+                    <p><img alt="New Rule Blank/Error" src="../images/newrule_blankerror.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected formatting condition, by clicking the down arrow you can access the list of the available rules and conditions. </li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Contains blanks</b>. This formats blank cells in the column showing the number of sales with a light blue background.</p>
+                <p><img alt="Blank/Error" src="../images/conditionalformatting/blankerror_example.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Duplicate/Unique Formatting Rule</b></summary>
+                <p>The <b>Duplicate/Unique</b> formatting rule is used to display duplicate values within the spreadsheet and the cell range defined by the conditional formatting, the available options are:</p> 
+                <ul type="circle">
+                     <li>Duplicate</li>
+                     <li>Unique</li>
+               </ul>
+                    <p><img alt="New Rule Duplicate/Unique" src="../images/newrule_duplicateunique.png" /></p>
+                <ul type="disc">
+                     <li>The <b>Rule</b> section shows the selected rule and the selected formatting condition, by clicking the down arrow you can access the list of the available rules and conditions. </li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The example below illustrates the preset formatting criteria, such as <b>Duplicate</b>. This formats duplicate contacts with a yellow background.</p>
+                    <p><img alt="Unique and duplicates" src="../images/conditionalformatting/uniqueduplicates.gif" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Data Bars Formatting</b></summary>
+                <p>The <b>Data Bars</b> are used to compare values in the form of a diagram bar.</p> 
+                    <p><span class="big big-databars_diagrams"></span></p>
+                <p>For example, compare mountain heights by displaying their default value in meters (green bar) and the same value in 0 to 100 percent range (yellow bar); percentile when extreme values slant the data (light blue bar); bars only instead of numbers (blue bar); two-column data analysis to see both numbers and bars (red bar).</p>
+                    <p><img alt="Data bars" src="../images/conditionalformatting/databars.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Color Scales Formatting</b></summary>
+                <p>The <b>Color Scales</b> are used to highlight values within the spreadsheet through a gradient scale.</p> 
+                <p><span class="big big-colorscales"></span></p>
+                <p>The example below illustrates the columns from “Dairy” through “Beverage” that display data via a two-color scale with variation from yellow to red; the “Total Sales” column displays data via a three-color scale from the smallest amount in red to the largest amount in blue.</p>
+                    <p><img alt="Gradient" src="../images/conditionalformatting/gradient.png" /></p>
+                </details>
+            <details class="details-example">
+                <summary><b>Icon Sets Formatting</b></summary>
+                <p>The <b>Icon Sets</b> are used to show the data by displaying a corresponding icon in the cell that meets the criteria. The Spreadsheet Editor supports various icon sets:</p> 
+               <ul type="circle">
+                     <li>Directional</li>
+                     <li>Shapes</li>
+                     <li>Indicators</li>
+                     <li>Ratings</li>
+               </ul>
+               <p><span class="big big-iconsets"></span></p>
+               <p>Below you will find examples for the most common icon set conditional formatting cases.</p>
+               <ul>
+                        <li>Instead of numbers and percent values, you see formatted cells with corresponding arrows showing you revenue achievement in the “Status” column and the dynamics for trends in the future in the “Trend” column.
+                            <p><img alt="Icon set" src="../images/conditionalformatting/iconsetrevenue.png" /></p>
+                        </li>
+                        <li>Instead of cells with rating numbers ranging from 1 to 5, the conditional formatting tool displays corresponding icons from the legend map at the top for each bike in the rating list.
+                            <p><img alt="Icon set" src="../images/conditionalformatting/iconsetbikerating.png" /></p>
+                        </li>
+                        <li>Instead of manually comparing monthly profit dynamics data, the formatted cells have a corresponding red or green arrow.
+                            <p><img alt="Icon set" src="../images/conditionalformatting/iconsettrends.png" /></p>
+                        </li>
+                        <li>Use the traffic lights system (red, yellow, and green circles) to visualize sales dynamics.
+                            <p><img alt="Icon set" src="../images/conditionalformatting/iconsettrafficlights.png" /></p>
+                        </li>
+               </ul>                
+               </details>
+            <details class="details-example">
+                <summary><b>Formatting Using Formulas</b></summary>
+                <p>The <b>Formula-based</b> formatting uses various formulas to filter data as per specific needs.</p>
+                <p><img alt="New Rule Formula" src="../images/newrule_formula.png" /></p>                
+                <ul>     
+                <li>The <b>Rule</b> section shows the selected rule and the selected formatting condition, by clicking the down arrow you can access the list of the available rules and conditions. Use the <b>Select Data</b> box to define the cell value to compare with. Use the reference to a single cell, or the reference with the worksheet function such as =SUM(A1:B5).</li>
+                     <li>The <b>Format</b> section offers a range of cell formatting options. You can choose one of the available format <b>Presets</b></li>
+                </ul>
+                     <p><img alt="Format Presets" src="../images/format_presets.png" /></p>                
+                <p>or</p> 
+                <p>customize the formatting using font format options (Bold, Italic, Underline, Strikeout), Text color, Fill color and Borders. Use the <b>General</b> drop-down list to choose the appropriate number format (General, Number, Scientific, Accounting, Currency, Date, Time, Percentage). The <b>Preview</b> box shows how the cell will look like after formatting. Click the <b>Clear</b> button to delete all the formatting.</p>
+                <p>Click <b>OK</b> to confirm.</p>
+                <p>The examples below illustrate the formula formatting possibilities.</p>
+                    <p>Shade alternate rows,</p>
+                    <p><img alt="Formula-based" src="../images/conditionalformatting/shading.png" /></p>
+                    <p>Compare with a reference value (here it is $55), and show if it is higher (green) or lower (red),</p>
+                    <p><img alt="Formula-based" src="../images/conditionalformatting/comparison.png" /></p>
+                    <p>Highlight the rows that meet the needed criteria (see what goals you shall achieve this month, in this case, it is October),</p>
+                    <p><img alt="Formula-based" src="../images/conditionalformatting/shaderows.png" /></p>
+                    <p>Or, highlight unique rows only</p>
+                    <p><img alt="Formula-based" src="../images/conditionalformatting/shadeunique.png" /></p>
+                </details>
+        <h2>Create New Rule</h2>
+            <p>When you need to create a new rule for conditional formatting, you can do that in one of the following ways:</p>
+                 <ul>
+                 <li> Go to the <b>Home</b> tab, click the <b>Conditional Formatting</b> button  <div class = "icon icon-conditionalformatting_button"></div>, and choose <b>New Rule</b> from the drop-down menu.</li>
+                 <li> Click the <b>Cell Settings</b> tab on the right sidebar and click the <b>Conditional formatting</b> control down arrow, and choose <b>New Rule</b> from the drop-down menu.</li>
+                 <li> Right-click any cell and choose <b>Conditional Formatting</b> from the contextual menu.</li>               
+                 </ul>
+            <p>The <b>New Formatting Rule</b> window will open right away. Set the necessary options to configure the rule as described above, and click <b>OK</b> to confirm.</p>
+        <h2>Manage Conditional Formatting Rules</h2>
+            <p>Once you have set up the rules for conditional formatting, you can easily edit, delete and view them using the <b>Manage Rule</b> option by clicking the <b>Conditional Formatting</b> button <span class="icon icon-conditionalformatting_button"></span> on the <b>Home</b> tab, or the <b>Conditional formatting</b> control on the right sidebar <b>Cell Settings</b> tab. The <b>Conditional Formatting</b> window appears:</p>
+            <p><img alt="Manage Rules" src="../images/managerules.png" /><p>
+            <p><b>Show formatting rules for</b> allows choosing the rules you wish to display:<p>
+        <ul type="circle">
+                     <li>Current selection</li>
+                     <li>This worksheet</li>
+                     <li>This table</li>
+                     <li>This pivot</li>
+        </ul>
+        <p> All rules found in the selected range will be shown in order of precedence (top to bottom) under <b>Rules</b>. The <b>Apply to</b> shows the range the rule is applied to, you can change the range by clicking the <b>Select data</b> icon <span class="icon icon-selectdata_icon"></span>. The <b>Format</b> shows the formatting rule applied.</p>
+        <ul>
+        <li>Use the <b>New button</b> to add a new rule.</li>
+        <li>Use the <b>Edit</b> button, if you want to edit the existing rule, the <b>Edit Formatting Rule</b> window will open. Edit the rule as you deem it appropriate, and click <b>OK</b>.</li>
+        <li>Use up and down arrows to change the place in the order of precedence.</li>
+        <li>Click <b>Delete</b> to remove the rule.</li>
+         <li>Click <b>OK</b> to confirm.</li>
+        </ul>
+        <h2>Edit Conditional Formatting</h2>
+            <details class="details-example">
+            <summary><b>Editing Value is, Top/Bottom, Average, Text, Date, Blank/Error, Duplicate/Unique, Formula</b></summary>
+            <p>The <b>Edit Formatting Rule</b> window for <b>Value is</b>, <b>Top/Bottom</b>, <b>Average</b>, <b>Text</b>, <b>Date</b>, <b>Blank/Error</b>, <b>Duplicate/Unique</b>, <b>Formula</b> offers a range of regular settings:</p>
+            <p><img alt="Edit Value is Rule" src="../images/editrule_valueis.png" /></p>
+        <ul type="disc">
+                     <li>Click <b>Rule</b> to change the rule and the formatting condition applied previously;</li>
+                     <li>Use the <b>Select data</b> box to change the cell range to refer to (for <i>Value is</i>, <i>Text and Formula</i>)</li>
+                     <li>Use the <b>Font</b> and cell format options (<i>Bold</i>, <i>Italic</i>, <i>Underline</i>, <i>Strikeout</i>), <i>Text color</i>, <i>Fill color</i> and <i>Borders</i>. </li>
+                     <li>Click the <b>General</b> drop-down list to choose the appropriate number format (<i>General</i>, <i>Number</i>, <i>Scientific</i>, <i>Accounting</i>, <i>Currency</i>, <i>Date</i>, <i>Time</i>, <i>Percentage</i>).</li>
+                     <li>The <b>Preview</b> box shows how the cell will look like after formatting.</li>
+                     <li>Click OK to confirm.</li>
+        </ul>
+        </details>
+        <details class="details-example">
+            <summary><b>Editing Data Bars</b></summary>
+            <p>The <b>Edit Formatting Rule</b> window for <b>Data Bar</b> offers the following options:</p>
+            <p><img alt="Edit Data Bar Formatting" src="../images/editrule_databar.png" /></p>
+        <ul type="disc">
+             <li><b>Rule</b> to change the rule and the formatting condition applied previously;</li>
+            <li>
+                <b>Minimum/Maximum</b> to define the type of the minimum and the maximum values for data bars if you want to focus on differences. The maximum/minimum value types:
+                <ul>
+                    <li>Minimum/Maximum</li>
+                    <li>Number</li>
+                    <li>Percent</li>
+                    <li>Formula</li>
+                    <li>Percentile</li>
+                    <li>Automatic</li>
+                </ul>
+                <p>Choose <b>Automatic</b> to set the minimum value to zero, and the maximum value to the largest number in the range. <b>Automatic</b> is the default option.</p>
+                <p>Click <b>Select data</b> box to change the cell range for the minimum/maximum values.</p>
+                </li>              
+              <li><b>Bar Appearance</b>
+                   <p>Customize the <b>Data Bar</b> appearance by choosing the type and the color of the fill and the border, and bar direction.</p>
+                  <ul>
+                      <li>There are two <b>Fill</b> type options: <b>Solid</b> fill and <b>Gradient</b> fill. Use the down arrow below to select the fill color for the bars representing Positive and Negative values.</li>
+                      <li>There are two <b>Border</b> type options: <b>Solid</b> and <b>None</b>. Use the down arrow below to select the border color for the bars representing Positive and Negative values.</li>
+                      <li>Enable <b>Same as positive</b> check box to display positive and negative using the same color. Color settings for <b>Negative</b> values will be disabled when this box is checked.</li>
+                      <li>Use <b>Bar Direction</b> to change the direction of data bars. <b>Context</b> is the option by default but you can choose <b>Left to right</b> or <b>Right to left</b> depending on your data representation preferences.</li>
+                      <li>Enable <b>Show bar only</b> check box to display only data bars in cells and hide values.</li>
+                  </ul>
+              </li>              
+              <li><b>Axis</b>
+              <p>Select the data bar axis <b>Position</b> in relation to the cell midpoint to separate positive and negative values. There are three axis position options: <b>Automatic</b>, <b>Cell midpoint</b> and <b>None</b>. Click the color box down arrow to set the axis color.</p>
+              </li>
+              <li>The <b>Preview</b> box shows how the cell will look like after formatting.</li>
+              <li>Click OK to confirm.</li>
+        </ul>
+        </details>
+        <details class="details-example">
+            <summary><b>Editing Color Scales</b></summary>
+        <details class="details-example">
+            <summary><b>Editing 2 Color Scale Formatting</b></summary>
+            <p>The <b>Edit Formatting Rule</b> window for <b>2 Color Scale</b> offers the following formatting options:</p>
+            <p><img alt="Edit 2 Color Scale Formatting" src="../images/editrule_2color.png" /></p>
+        <ul type="disc">
+             <li>Click <b>Rule</b> to change the rule and the formatting condition applied previously;</li>
+            <li>
+                Click <b>Minpoint/Maxpoint</b> to define the type of values for the color scale minimum and maximum points if you want to focus on differences. The minpoint/maxpoint value types:
+                <ul>
+                    <li>Minimum/Maximum</li>
+                    <li>Number</li>
+                    <li>Percent</li>
+                    <li>Formula</li>
+                    <li>Percentile</li>
+                </ul>
+                <p><b>Minimum/Maximum</b> is the default option.</p>
+            </li>
+        <li>Use <b>Select data</b> box to change the cell range for the minimum and maximum points.</li>
+        <li>Use the down arrow below to select the color for each scale.</li>
+        <li>The <b>Preview</b> box shows how the cell will look like after formatting.</li>
+        <li>Click <b>OK</b> to confirm.</li>
+        </ul>
+        </details>
+        <details class="details-example">
+            <summary><b>Editing 3 Color Scale Formatting</b></summary>
+            <p>The <b>Edit Formatting Rule</b> window for <b>3 Color Scale</b> offers the following formatting options:</p>
+            <p><img alt="Edit 3 Color Scale Formatting" src="../images/editrule_3color.png" /></p>
+        <ul type="disc">
+             <li>Click <b>Rule</b> to change the rule and the formatting condition applied previously;</li>
+            <li>
+                Click <b>Minpoint/Midpoint/Maxpoint</b> to define the type of values for the color scale minimum, middle and maximum points if you want to focus on differences.
+                <p>The minpoint/maxpoint value types:</p>
+                <ul>
+                    <li>Minimum/Maximum</li>
+                    <li>Number</li>
+                    <li>Percent</li>
+                    <li>Formula</li>
+                    <li>Percentile</li>
+                </ul>
+                <p>The midpoint value types:</p>
+                <ul>
+                    <li>Number</li>
+                    <li>Percent</li>
+                    <li>Formula</li>
+                    <li>Percentile</li>
+                </ul>
+                <p><b>Minimum/Percentile/Maximum</b> is the default option for <b>3 Color Scale</b> formatting.</p>
+            </li>
+            <li>Use the <b>Select data</b> box to change the cell range for the minimum, the middle and the maximum points.</li>
+            <li>Use the down arrow below to select the color for each scale.</li>
+            <li>The <b>Preview</b> box shows how the cell will look like after formatting.</li>
+            <li>Click <b>OK</b> to confirm.</li>
+            </ul>
+            </details>
+            </details>
+        <details class="details-example">
+            <summary><b>Editing Icon sets</b></summary>
+            <p>The <b>Edit Formatting Rule</b> window for <b>Icon Sets</b> offers the following formatting options:</p>
+            <p><img alt="Edit Icon Sets Formatting" src="../images/editrule_iconsets.png" /></p>
+        <ul type="disc">
+                     <li>Click <b>Rule</b> to change the rule and the formatting condition applied previously;</li>
+                     <li>Click <b>Icon Style</b> to customize the style of the icons for the created rule.</li>
+                     <li>Enable the <b>Show icon only</b> to display only icons in cells and hide values.</li>
+                     <li>Enable <b>Reverse Icons Order</b> to change the order of icons and arrange them from the lowest to the highest value. By default the icons are arranged from the highest to the lowest value.</li>
+                     <li>Set the rule for each icon and adjust comparison operators (<i>greater than or equal to</i>, <i>greater than</i>), threshold values and value type (<i>Number</i>, <i>Percent</i>, <i>Formula</i>, <i>Percentile</i>) to arrange values in sequence from top to bottom. By default, values are divided equally.</li>
+                     <li>Click <b>OK</b> to confirm.</li>
+        </ul>
+        </details>
+        <h2>Clear Conditional Formatting</h2>
+            <p>To clear all conditional formatting go to the <b>Home</b> tab, click the <b>Conditional Formatting</b> button <span class="icon icon-conditionalformatting_button"></span>, or click the <b>Conditional Formatting</b> control of the <b>Cell Settings</b> tab on the right sidebar, then click <b>Clear Rules</b> on the drop-down menu, and choose one of the appropriate actions:</p>
+        <ul type="circle">
+                     <li>Current selection</li>
+                     <li>This worksheet</li>
+                     <li>This table</li>
+                     <li>This pivot</li>
+        </ul>
+			<p class="note"><b>Please note</b> that this guide contains graphic information from the Microsoft Office <a href="https://download.microsoft.com/download/e/4/0/e4089f75-cdb0-4658-9d34-bfa3f7b48815/Conditional%20Formatting%20examples.xlsx" onclick="onhyperlinkclick(this)">Conditional Formatting Samples and guidelines</a> workbook. Try the aforementioned rules display by downloading the workbook and opening it in the Spreadsheet Editor.</p>
+			
+		</div>
+	</body>
+</html>
