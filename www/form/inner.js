@@ -5074,7 +5074,6 @@ define([
                 $e.hide();
                 $edit.show();
                 $preview.hide();
-                editor.refresh();
                 $tb.show();
             });
             APP.$e = $e;

@@ -39,7 +39,6 @@ define([
     DiffMd,
     ChainPad,
     Marked,
-    //CodeMirror,
     jKanban,
     Export)
 {

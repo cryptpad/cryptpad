@@ -157,7 +157,6 @@ define([
         $(button).click(function () {
             $(text).val(APP.$link.attr('href'));
             $(code).css('display', 'flex');
-            //APP.editor.refresh();
             $(button).hide();
         });
         $(save).click(function () {
@@ -446,13 +445,12 @@ define([
         cm.setOption('readOnly', false);
         cm.configureTheme(common, function () {});
 
-        var markdownTb = common.createMarkdownToolbar(APP.editor); // XXX
+        var markdownTb = common.createMarkdownToolbar(APP.editor);
         $(code).prepend(markdownTb.toolbar);
         $(markdownTb.toolbar).show();
 
         $(button).click(function () {
             $(code).show();
-            //APP.editor.refresh();
             $(button).hide();
         });
         $(save).click(function () {
