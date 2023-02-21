@@ -272,6 +272,22 @@ define([
         exp.replaceSelection = function (txt) {
             return editor.dispatch(editor.state.replaceSelection(txt));
         };
+        exp.replaceSelections = function (update) {
+            var tx = editor.state.changeByRange(function (r) {
+             var str = r.from === r.to  ? '' : editor.state.sliceDoc(r.from, r.to);
+             var n = update(str);
+             return {
+                changes: {
+                    from: r.from,
+                    to: r.to,
+                    insert: n
+                },
+                range: r,
+             }
+            });
+            editor.dispatch({changes: tx.changes});
+        };
+
 
         exp.hasFocus = function () { return editor.hasFocus; };
         exp.focus = function () {
@@ -433,7 +449,15 @@ define([
         };
 
         var setMode = exp.setMode = function (mode, cb) {
-            if (mode === 'markdown') { mode = 'gfm'; }
+            var MIGRATE = {
+                'markdown': 'gfm',
+                'text/x-java': 'java',
+                'text/x-c++src': 'cpp',
+                'text/x-csrc': 'c',
+                'htmlmixed': 'html'
+            };
+            if (MIGRATE[mode]) { mode = MIGRATE[mode]; }
+
             exp.highlightMode = mode;
 
             var modes = editor.CP_listLanguages();
@@ -582,9 +606,17 @@ define([
 
         exp.getCursor = function () {
             return {
-                selectionStart: editor.state.selection.main.anchor,
-                selectionEnd: editor.state.selection.main.head
+                selectionStart: editor.state.selection.main.from,
+                selectionEnd: editor.state.selection.main.to
             };
+        };
+        exp.getSelections = function () {
+            return editor.state.selection.ranges.map(function (r) {
+                return {
+                    range: r,
+                    value: editor.state.sliceDoc(r.from, r.to)
+                };
+            });
         };
 
         var makeTippy = function (cursor) {

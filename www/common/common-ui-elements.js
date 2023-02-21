@@ -1126,19 +1126,14 @@ define([
 
         var onClick = function () {
             var type = $(this).attr('data-type');
-            var texts = editor.getSelections();
-            if (actions[type].action) {
-                return actions[type].action();
-            }
-            var newTexts = texts.map(function (str) {
+            var update = function (str) {
                 str = str || Messages.mdToolbar_defaultText;
                 if (actions[type].apply) {
                     return actions[type].apply(str);
                 }
                 return actions[type].expr.replace('{0}', str);
-            });
-            editor.replaceSelections(newTexts, 'around');
-            editor.focus();
+            }
+            editor.replaceSelections(update);
         };
         for (var k in actions) {
             $('<button>', {
