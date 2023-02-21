@@ -265,7 +265,13 @@ define([
                     range: r,
                 };
             });
-            editor.dispatch({changes: tx.changes});
+            editor.dispatch({
+                changes: tx.changes,
+                annotations: {
+                    type: 'toolbar',
+                    value: 'input.click'
+                }
+            });
         };
 
         exp.hasFocus = function () { return editor.hasFocus; };

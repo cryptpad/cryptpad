@@ -614,12 +614,14 @@ define([
         // Get or create the user color for the cursor position
         Store.getUserColor = function () {
             var color = Util.find(store, ['proxy', 'settings', 'general', 'cursor', 'color']);
+            if (!color) { color = store.noDriveColor; }
             if (!color) {
                 color = Util.getRandomColor(true);
                 Store.setAttribute(null, {
                     attr: ['general', 'cursor', 'color'],
                     value: color
                 }, function () {});
+                if (!store.proxy || !store.proxy.uid) { store.noDriveColor = color; }
             }
             return color;
         };

@@ -455,7 +455,7 @@ define([
         if (origin === "remote") {
             // If the content is changed from a remote patch, we call localChange
             // in "onContentUpdate" directly
-            return;
+            return void cb();
         }
 
         var insertedL = change.changes.inserted.reduce(function (length, obj) {
