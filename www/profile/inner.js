@@ -40,9 +40,7 @@ define([
     Messages,
     AppConfig,
     Marked,
-    SFCodeMirror,
-    CodeMirror
-    )
+    SFCodeMirror)
 {
     var APP = window.APP = {
         _onRefresh: []

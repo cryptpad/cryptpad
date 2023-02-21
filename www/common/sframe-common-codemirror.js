@@ -84,26 +84,12 @@ define([
         editor.scrollTo(scroll.left, scroll.top);
     };
 
-    module.handleImagePaste = function (editor) {
-        // XXX not needed?
-        // XXX used by poll
-        /*
-        // Don't paste file path in the users wants to paste a file
-        editor.on('paste', function (editor, ev) {
-            try {
-                if (!ev.clipboardData.items) { return; }
-                var items = Array.prototype.slice.apply(ev.clipboardData.items);
-                var hasFile = items.some(function (el) {
-                    return el.kind === "file";
-                });
-                if (!hasFile) { return; }
-                ev.preventDefault();
-            } catch (e) { console.error(e); }
-        });
-        */
+    module.handleImagePaste = function () {
+        // XXX deprecated, used by poll
     };
 
     module.getHeadingText = function (editor) {
+        if (!editor.getValue) { return; }
         var lines = editor.getValue().split(/\n/);
 
         var text = '';
@@ -229,12 +215,6 @@ define([
         //CodeMirror.modeURL = "cm/mode/%N/%N";
         if (textarea) { $(textarea).after(editor.dom).hide(); }
 
-        var $pad = $('#pad-iframe');
-        /*
-        var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
-        if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
-        */
-
         var Title;
         var onLocal = function () {};
         var $drawer;
@@ -256,7 +236,7 @@ define([
         exp.setValue = function (text) {
             editor.dispatch({
                 changes: {from: 0, to: editor.state.doc.length, insert: text}
-            })
+            });
         };
         exp.on = function (type, handler) {
             editor.CP_on(type, handler);
@@ -274,20 +254,19 @@ define([
         };
         exp.replaceSelections = function (update) {
             var tx = editor.state.changeByRange(function (r) {
-             var str = r.from === r.to  ? '' : editor.state.sliceDoc(r.from, r.to);
-             var n = update(str);
-             return {
-                changes: {
-                    from: r.from,
-                    to: r.to,
-                    insert: n
-                },
-                range: r,
-             }
+                var str = r.from === r.to  ? '' : editor.state.sliceDoc(r.from, r.to);
+                var n = update(str);
+                return {
+                    changes: {
+                        from: r.from,
+                        to: r.to,
+                        insert: n
+                    },
+                    range: r,
+                };
             });
             editor.dispatch({changes: tx.changes});
         };
-
 
         exp.hasFocus = function () { return editor.hasFocus; };
         exp.focus = function () {
@@ -295,10 +274,10 @@ define([
         };
 
         exp.mkIndentSettings = function (metadataMgr) {
-            module.mkIndentSettings(editor, metadataMgr);
+            module.mkIndentSettings(editor, metadataMgr); // XXX module?
         };
 
-        exp.hasFocus = function () { return true; }
+        exp.hasFocus = function () { return editor.hasFocus; };
 
         exp.setSelection = function (from, to) {
             if (from < 0) { from = 0; }
@@ -308,11 +287,10 @@ define([
             editor.dispatch({selection: {anchor:from, head:to}});
         };
 
-        exp.getHeadingText = function () { console.warn('placeholder getheadingtext'); };
-        exp.refresh = function () { console.error('placeholder refresh'); };
-        exp.getAllMarks = function () { console.warn('placeholder getAllMarks'); return []; };
-        exp.findMarks = function () { console.warn('placeholder findMarks'); return []; };
-        exp.markText = function () { console.warn('placeholder markText'); return []; };
+        exp.getHeadingText = function () {
+            return module.getHeadingText(exp);
+        };
+        exp.refresh = function () { console.error('placeholder refresh'); }; // XXX remove
 
         exp.highlightMode = '';
 
@@ -414,7 +392,7 @@ define([
                     $c.removeClass('noblur');
                     $block.find('button').focus();
                     if ($select) {
-                        var name = theme.name || undefined;
+                        var name = data.name || undefined;
                         name = name ? Messages.themeButton + ' ('+name+')' : Messages.themeButton;
                         $select.setValue(theme, name);
                     }
@@ -639,7 +617,6 @@ define([
 
             var id = data.id;
             var cursor = data.cursor;
-            var doc = canonicalize(exp.getValue());
 
             editor.CP_removeCursors(id);
 
@@ -652,85 +629,11 @@ define([
                 var rgb = Util.hexToRGB(cursor.color).join(',');
                 var c = `rgba(${rgb},0.2)`;
                 editor.CP_addCursor(c, makeTippy(cursor), id, cursor.selectionStart, cursor.selectionEnd);
-                /*
-                var pos1 = posToCursor(cursor.selectionStart, doc);
-                var pos2 = posToCursor(cursor.selectionEnd, doc);
-                var css = cursor.color
-                    ? 'background-color: rgba(' + Util.hexToRGB(cursor.color).join(',') + ',0.2)'
-                    : 'background-color: rgba(255,0,0,0.2)';
-                marks[id] = editor.markText(pos1, pos2, {
-                    css: css,
-                    attributes: {
-                        'data-cptippy-html': true,
-                    },
-                    title: makeTippy(cursor),
-                    className: 'cp-tippy-html'
-                });
-                */
             }
         };
 
 
         if (defaultMode) { setMode(defaultMode); }
-
-        return exp;
-
-        /*
-        var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
-            allowDropFileTypes: [],
-            lineNumbers: true,
-            lineWrapping: true,
-            autoCloseBrackets: true,
-            matchBrackets : true,
-            showTrailingSpace : true,
-            styleActiveLine : true,
-            search: true,
-            inputStyle: 'contenteditable',
-            highlightSelectionMatches: {showToken: /\w+/},
-            extraKeys: {"Shift-Ctrl-R": undefined},
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            mode: defaultMode || "javascript",
-            readOnly: true
-        });
-        editor.focus();
-*/
-
-        // Fix cursor and scroll position after undo/redo
-        var undoData;
-        editor.on('beforeChange', function (editor, change) {
-            if (change.origin !== "undo" && change.origin !== "redo") { return; }
-            undoData = editor.getValue();
-        });
-        editor.on('change', function (editor, change) {
-            if (change.origin !== "undo" && change.origin !== "redo") { return; }
-            if (typeof(undoData) === "undefined") { return; }
-            var doc = editor.getValue();
-            var ops = ChainPad.Diff.diff(undoData, doc);
-            undoData = undefined;
-            if (!ops.length) { return; }
-            var cursor = posToCursor(ops[0].offset, doc);
-            editor.setCursor(cursor);
-            editor.scrollIntoView(cursor);
-        });
-
-        //module.handleImagePaste(editor); // XXX not needed
-
-
-
-        exp.getHeadingText = function () {
-            return module.getHeadingText(editor);
-        };
-
-
-        exp.getCursor = function () {
-            var doc = canonicalize(editor.getValue());
-            var cursor = {};
-            cursor.selectionStart = cursorToPos(editor.getCursor('from'), doc);
-            cursor.selectionEnd = cursorToPos(editor.getCursor('to'), doc);
-            return cursor;
-        };
-
 
         return exp;
     };

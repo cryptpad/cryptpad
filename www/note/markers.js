@@ -138,7 +138,7 @@ define([
     };
 
     // Fix all marks located after the given operation in the provided document
-    var fixMarksFromOp = function (Env, op, marks, doc) {
+    var fixMarksFromOp = function (Env, op, marks) {
 
         var from = op.offset; // My patch start
         var to = op.offset + op.toInsert.length; // My patch end
@@ -204,10 +204,8 @@ define([
         if (first.me !== last.me) {
             // Get their start position compared to the authDoc
             var lastAuthOffset = last.offset + last.total;
-            var lastAuthPos = SFCodeMirror.posToCursor(lastAuthOffset, last.doc);
             // Get their start position compared to the localDoc
             var lastLocalOffset = last.offset + first.total;
-            var lastLocalPos = SFCodeMirror.posToCursor(lastLocalOffset, first.doc);
 
             // Keep their changes in the marks (after their offset)
             last.marks.some(function (array, i) {
@@ -264,7 +262,6 @@ define([
     var checkMarks = function (Env, userDoc) {
 
         var chainpad = Env.framework._.cpNfInner.chainpad;
-        var editor = Env.editor;
         var CodeMirror = Env.CodeMirror;
 
         Env.enabled = Boolean(userDoc.authormarks && userDoc.authormarks.marks);
@@ -290,7 +287,7 @@ define([
             var _myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content).reverse();
             var authormarks = Util.clone(authDoc.authormarks);
             _myOps.forEach(function (op) {
-                fixMarksFromOp(Env, op, authormarks.marks, authDoc.content);
+                fixMarksFromOp(Env, op, authormarks.marks);
             });
             authormarks.marks = authormarks.marks.filter(Boolean);
             debug('log', 'Fixed marks');
@@ -475,7 +472,7 @@ define([
             setMyData(Env);
         }
 
-        change.changes.iterChanges(function (fromA, toA, fromB, toB, inserted) {
+        change.changes.iterChanges(function (fromA, toA, fromB, toB) {
 
             // If my text is inside an existing mark:
             //  * if it's my mark, do nothing

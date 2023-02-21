@@ -64,19 +64,14 @@ define([
     Markers,
     Visible,
     TypingTest,
-    Messages,
-    CMeditor)
+    Messages)
 {
 
 /* TODO XXX
-* CBA migration
 * "undefined" color in noDrive
 * review XXX/TODO
-* missing languages and themes
 */
 
-
-    //window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
@@ -126,9 +121,9 @@ define([
         });
         framework._.toolbar.$drawer.append($printButton);
     };
-    var mkMarkdownTb = function (editor, framework) {
+    var mkMarkdownTb = function (CodeMirror, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
-        var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
+        var markdownTb = framework._.sfCommon.createMarkdownToolbar(CodeMirror);
         $codeMirrorContainer.prepend(markdownTb.toolbar);
 
         framework._.toolbar.$bottomL.append(markdownTb.button);
@@ -184,7 +179,7 @@ define([
         });
     };
 
-    var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
+    var mkPreviewPane = function (CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
         var $editorContainer = $('#cp-app-code-editor');
@@ -201,12 +196,12 @@ define([
             var f = previews[CodeMirror.highlightMode];
             if (!f) { return; }
             try {
-                if (editor.getValue() === '') {
+                if (CodeMirror.getValue() === '') {
                     $previewContainer.addClass('cp-app-code-preview-isempty');
                     return;
                 }
                 $previewContainer.removeClass('cp-app-code-preview-isempty');
-                f(editor.getValue(), $preview, framework._.sfCommon);
+                f(CodeMirror.getValue(), $preview, framework._.sfCommon);
             } catch (e) { console.error(e); }
         };
         var drawPreview = Util.throttle(function () {
@@ -322,7 +317,7 @@ define([
                 // give up if content has been drawn
                 if ($preview.text()) { return void clear(); }
                 // only draw if there is actually content to display
-                if (editor && !editor.getValue().trim()) { return void clear(); }
+                if (CodeMirror && !CodeMirror.getValue().trim()) { return void clear(); }
                 forceDrawPreview();
             }, 1000);
         });
@@ -398,21 +393,21 @@ define([
         framework._.toolbar.$theme.append($cbaButton);
     };
 
-    var mkFilePicker = function (framework, editor, evModeChange) {
+    var mkFilePicker = function (framework, CodeMirror, evModeChange) {
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is enabled
                 framework.setMediaTagEmbedder(function (mt, d) {
-                    editor.focus();
+                    CodeMirror.focus();
                     var txt = $(mt)[0].outerHTML;
-                    if (editor.getMode().name === "asciidoc") {
+                    if (CodeMirror.getMode().name === "asciidoc") {
                         if (d.static) {
                             txt = d.href + `[${d.name}]`;
                         } else {
                             txt = `media-tag:${d.src}|${d.key}[]`;
                         }
                     }
-                    editor.replaceSelection(txt);
+                    CodeMirror.replaceSelection(txt);
                 });
             } else {
                 // Embedding is disabled
@@ -426,13 +421,13 @@ define([
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
+    var andThen2 = function (CodeMirror, framework, isPresentMode) {
 
         var common = framework._.sfCommon;
         var privateData = common.getMetadataMgr().getPrivateData();
 
-        var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
-        var markdownTb = mkMarkdownTb(editor, framework);
+        var previewPane = mkPreviewPane(CodeMirror, framework, isPresentMode);
+        var markdownTb = mkMarkdownTb(CodeMirror, framework);
 
         mkThemeButton(framework);
 
@@ -459,7 +454,7 @@ define([
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
-        mkFilePicker(framework, editor, evModeChange);
+        mkFilePicker(framework, CodeMirror, evModeChange);
 
         if (!framework.isReadOnly()) {
             CodeMirror.configureTheme(common, function () {
@@ -509,16 +504,16 @@ define([
         };
         framework.onCursorUpdate(CodeMirror.setRemoteCursor);
         framework.setCursorGetter(CodeMirror.getCursor);
-        editor.on('cursorActivity', updateCursor);
+        CodeMirror.on('cursorActivity', updateCursor);
 
         framework.onEditableChange(function () {
-            editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
+            CodeMirror.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
         });
 
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
         framework.onReady(function (newPad) {
-            editor.focus();
+            CodeMirror.focus();
 
             if (newPad && !CodeMirror.highlightMode) {
                 CodeMirror.setMode('gfm', evModeChange.fire);
@@ -548,14 +543,14 @@ define([
                     var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                     var key = Hash.encodeBase64(secret.keys.cryptKey);
                     var mt = UI.mediaTag(src, key).outerHTML;
-                    editor.replaceSelection(mt);
+                    CodeMirror.replaceSelection(mt);
                 }
             };
             common.createFileManager(fmConfig);
         });
 
         framework.onDefaultContentNeeded(function () {
-             editor.setValue('');
+             CodeMirror.setValue('');
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -577,7 +572,7 @@ define([
             };
         });
 
-        editor.on('change', function( change ) {
+        CodeMirror.on('change', function( change ) {
             markers.localChange(change, framework.localChange);
         });
 
@@ -585,7 +580,7 @@ define([
 
 
         window.easyTest = function () {
-            var test = TypingTest.testCode(editor);
+            var test = TypingTest.testCode(CodeMirror);
             return test;
         };
     };
@@ -599,7 +594,6 @@ define([
 
     var main = function () {
         var CodeMirror;
-        var editor;
         var framework;
 
         nThen(function (waitFor) {
@@ -617,7 +611,6 @@ define([
                         }
                         $(el).parents().css('overflow', '');
                         $(el).css('max-height', '');
-                        editor.refresh();
                     }
                 }
             }, waitFor(function (fw) { framework = fw; }));
@@ -636,15 +629,12 @@ define([
                 var cmeditor = window.CP_createEditor();
                 CodeMirror = SFCodeMirror.create(null, cmeditor);
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
-                editor = CodeMirror;
-                window.editor = editor; // XXX
-                //editor = CodeMirror.editor;
                 $('#cp-app-code-container').append(CodeMirror.editor.dom);
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
             framework._.sfCommon.isPresentUrl(function (err, val) {
-                andThen2(editor, CodeMirror, framework, val);
+                andThen2(CodeMirror, framework, val);
             });
         });
     };

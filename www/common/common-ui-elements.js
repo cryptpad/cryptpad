@@ -1132,7 +1132,7 @@ define([
                     return actions[type].apply(str);
                 }
                 return actions[type].expr.replace('{0}', str);
-            }
+            };
             editor.replaceSelections(update);
         };
         for (var k in actions) {
