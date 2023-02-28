@@ -13,6 +13,9 @@ define([
     '/common/visible.js',
     '/common/TypingTests.js',
     '/customize/messages.js',
+    '/bower_components/revealjs/dist/reveal.js',
+    '/bower_components/revealjs/plugin/markdown/markdown.js',
+    '/bower_components/revealjs/plugin/highlight/highlight.js',
     '/lib/cm6.js',
 
 
@@ -47,6 +50,9 @@ define([
     'cm/addon/display/placeholder',
 */
 
+    'css!/bower_components/revealjs/dist/reveal.css',
+    'css!/bower_components/revealjs/dist/theme/' + (window.CryptPad_theme === 'dark' ?
+                                                    'black.css' : 'white.css'),
     'css!/customize/src/print.css',
     'less!/note/app-note.less'
 
@@ -64,14 +70,11 @@ define([
     Markers,
     Visible,
     TypingTest,
-    Messages)
+    Messages,
+    Reveal,
+    RevealMd,
+    RevealH)
 {
-
-/* TODO XXX
-* "undefined" color in noDrive
-* review XXX/TODO
-*/
-
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
@@ -149,8 +152,7 @@ define([
     previews['gfm'] = function (val, $div, common) {
         DiffMd.apply(DiffMd.render(val), $div, common);
     };
-    previews['markdown'] = previews['gfm'];
-    previews['htmlmixed'] = function (val, $div, common) {
+    previews['html'] = function (val, $div, common) {
         DiffMd.apply(val, $div, common);
     };
     previews['asciidoc'] = function (val, $div, common) {
@@ -179,9 +181,75 @@ define([
         });
     };
 
+    var present = {};
+    var currentReveal;
+    present['gfm'] = function (value, $container, common) {
+        var el = h('div.reveal', [
+            h('div.slides', [
+                h('section', {
+                    'data-markdown':'',
+                    'data-separator-vertical': '^\r?\n--\r?\n$'
+                }, [
+                    h('textarea', {'data-template':true}, value)
+                ])
+            ])
+        ]);
+        $container.empty().append(el);
+        var state;
+        if (currentReveal) { state = currentReveal.getState(); }
+        var deck = new Reveal( el, {
+            plugins: [ RevealMd, RevealH ],
+            embedded: true,
+            keyboardCondition: 'focused',
+            slideNumber: 'c/t',
+            markdown: {
+                renderer: DiffMd.getRenderer()
+            }
+        } );
+        currentReveal = deck;
+        deck.initialize();
+
+        var getAttrs = function (el) {
+            var map = {};
+            var attrs = el.attributes;
+            var att;
+            for (var i = 0; i < attrs.length; i++){
+                att = attrs[i];
+                map[att.nodeName] = att.nodeValue;
+            }
+            return map;
+        };
+        var setAttrs = function (el, map) {
+            Object.keys(map).forEach(function (k) {
+                $(el).attr(k, map[k]);
+            });
+        };
+
+        deck.on('ready', function () {
+            $container.find('[data-markdown-parsed]').each(function (i, el) {
+                var id = 'cp_'+Util.uid();
+                var $el = $(el).attr('id', id);
+                var html = el.innerHTML;
+                $el.empty();
+                var attrs = getAttrs(el);
+                $el.addClass('present').removeClass('future');
+                DiffMd.apply(html, $el, common, 'section');
+                setAttrs(el, attrs);
+            });
+            deck.sync();
+        });
+
+        try {
+            deck.setState(state);
+        } catch (e) {}
+    };
+
     var mkPreviewPane = function (CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
+        var $presentContainer = $('#cp-app-code-present');
+
         var $preview = $('#cp-app-code-preview-content');
+        var $present = $('#cp-app-code-present-content');
         var $editorContainer = $('#cp-app-code-editor');
         var $codeMirrorContainer = $('#cp-app-code-container');
 
@@ -192,119 +260,186 @@ define([
         }).appendTo($previewContainer);
 
         var $previewButton = framework._.sfCommon.createButton('preview', true);
+        var $presentButton = framework._.sfCommon.createButton('present', true);
+
+        var modes = {
+            preview: {
+                button: $previewButton,
+                container: $previewContainer,
+                contentContainer: $preview,
+                handlers: previews,
+                handler: function (f) {
+                    f(CodeMirror.getValue(), $preview, framework._.sfCommon);
+                }
+            },
+            present: {
+                button: $presentButton,
+                container: $presentContainer,
+                contentContainer: $present,
+                handlers: present,
+                handler: function (f) {
+                    f(CodeMirror.getValue(), $present, framework._.sfCommon);
+                }
+            }
+        };
+
+        var current = false;
+
         var forceDrawPreview = function () {
-            var f = previews[CodeMirror.highlightMode];
+            var mode = modes[current];
+            if (!mode) { return; }
+            var f = mode.handlers[CodeMirror.highlightMode];
             if (!f) { return; }
             try {
                 if (CodeMirror.getValue() === '') {
-                    $previewContainer.addClass('cp-app-code-preview-isempty');
+                    mode.container.addClass('cp-app-code-preview-isempty');
                     return;
                 }
-                $previewContainer.removeClass('cp-app-code-preview-isempty');
-                f(CodeMirror.getValue(), $preview, framework._.sfCommon);
+                mode.container.removeClass('cp-app-code-preview-isempty');
+                mode.handler(f);
             } catch (e) { console.error(e); }
         };
         var drawPreview = Util.throttle(function () {
-            if (!previews[CodeMirror.highlightMode]) { return; }
-            if (!$previewButton.is('.cp-toolbar-button-active')) { return; }
+            var mode = modes[current];
+            if (!mode) { return; }
+            if (!mode.handlers[CodeMirror.highlightMode]) { return; }
+            if (!mode.button.is('.cp-toolbar-button-active')) { return; }
             forceDrawPreview();
         }, 400);
 
-        $previewButton.click(function () {
-            if (!previews[CodeMirror.highlightMode]) {
-                $previewContainer.show();
+        var hideAll = function () {
+            Object.keys(modes).forEach(function (id) {
+                modes[id].container.hide();
+                modes[id].button.removeClass('cp-toolbar-button-active');
+            });
+            $codeMirrorContainer.toggleClass('cp-app-code-fullpage', true);
+            $editorContainer.toggleClass('cp-app-code-present', false);
+            current = false;
+        };
+        var setViewMode = function (language, id) {
+            hideAll();
+            var mode = modes[id];
+            var state = mode && mode.handlers[language];
+            if (!state) { return false; }
+            mode.container.show();
+            mode.button.toggleClass('cp-toolbar-button-active', true);
+            $codeMirrorContainer.removeClass('cp-app-code-fullpage');
+            if (isPresentMode) {
+                $editorContainer.toggleClass('cp-app-code-present', true);
+                //$previewButton.hide();
             }
-            $previewContainer.toggle();
-            if ($previewContainer.is(':visible')) {
-                forceDrawPreview();
-                $codeMirrorContainer.removeClass('cp-app-code-fullpage');
-                $previewButton.addClass('cp-toolbar-button-active');
-                framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
-                    if (e) { return console.log(e); }
-                });
-            } else {
-                $codeMirrorContainer.addClass('cp-app-code-fullpage');
-                $previewButton.removeClass('cp-toolbar-button-active');
-                framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
-                    if (e) { return console.log(e); }
-                });
-            }
-        });
-
-        framework._.toolbar.$bottomM.append($previewButton);
-
-        $preview.click(function (e) {
-            if (!e.target) { return; }
-            var $t = $(e.target);
-            if ($t.is('a') || $t.parents('a').length) {
-                e.preventDefault();
-                var $a = $t.is('a') ? $t : $t.parents('a').first();
-                var href = $a.attr('href');
-                if (/^\/[^\/]/.test(href)) {
-                    var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
-                    href = privateData.origin + href;
-                } else if (/^#/.test(href)) {
-                    var target = document.getElementById('cp-md-0-'+href.slice(1));
-                    if (target) { target.scrollIntoView(); }
-                    return;
-                }
-                framework._.sfCommon.openUnsafeURL(href);
-            }
-        });
-
-        var modeChange = function (mode) {
-            if (previews[mode]) {
-                $previewButton.show();
-                framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
-                    if (e) { return void console.error(e); }
-                    if (data !== false) {
-                        $previewContainer.show();
-                        $previewButton.addClass('cp-toolbar-button-active');
-                        $codeMirrorContainer.removeClass('cp-app-code-fullpage');
-                        if (isPresentMode) {
-                            $editorContainer.addClass('cp-app-code-present');
-                            $previewButton.hide();
-                        }
-                    }
-                });
-                return;
-            }
-            $editorContainer.removeClass('cp-app-code-present');
-            $previewButton.hide();
-            $previewContainer.hide();
-            $previewButton.removeClass('active');
-            $codeMirrorContainer.addClass('cp-app-code-fullpage');
+            current = id;
+            forceDrawPreview();
+            return true;
         };
 
-        var isVisible = function () {
-            return $previewContainer.is(':visible');
+        Object.keys(modes).forEach(function (id) {
+            var mode = modes[id];
+            mode.button.click(function () {
+                var newState = current !== id;
+                if (newState) { setViewMode(CodeMirror.highlightMode, id); }
+                else { hideAll(); }
+
+                framework._.sfCommon.setPadAttribute('previewMode', current, function (e) {
+                    if (e) { return console.log(e); }
+                });
+            });
+            framework._.toolbar.$bottomM.append(mode.button);
+
+            // Protect links in the content container
+            mode.contentContainer.click(function (e) {
+                if (!e.target) { return; }
+                var $t = $(e.target);
+                if ($t.is('a') || $t.parents('a').length) {
+                    e.preventDefault();
+                    var $a = $t.is('a') ? $t : $t.parents('a').first();
+                    var href = $a.attr('href');
+                    if (/^\/[^\/]/.test(href)) {
+                        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+                        href = privateData.origin + href;
+                    } else if (/^#/.test(href)) {
+                        var target = document.getElementById('cp-md-0-'+href.slice(1));
+                        if (target) { target.scrollIntoView(); }
+                        return;
+                    }
+                    framework._.sfCommon.openUnsafeURL(href);
+                }
+            });
+
+        });
+
+        $('button.cp-app-code-present-fullscreen').click(function () {
+            if (current !== 'present') { return; }
+            if (!currentReveal) { return; }
+            currentReveal.configure({ keyboardCondition: null });
+            currentReveal.triggerKey(70);
+            currentReveal.configure({ keyboardCondition: 'focused' });
+        });
+
+        // XXX handle present mode...
+        // XXX and present+embed
+        // ==> what mode to use? should we keep the button in present mode?
+        // ==> default mode? can we show editor in present?
+        var modeChange = function (language) {
+            var todo = function (savedMode) {
+                var allowed = {};
+                Object.keys(modes).forEach(function (id) {
+                    var mode = modes[id];
+                    var state = mode.handlers[language];
+                    if (state) {
+                        allowed[id] = mode;
+                        mode.button.show();
+                        return;
+                    }
+                    mode.button.hide();
+                });
+
+                if (!savedMode) { return void hideAll(); }
+
+                // Try to display prefered mode or switch to others
+                var show = setViewMode(language, savedMode);
+                if (!show) {
+                    // Try other view modes
+                    Object.keys(allowed).some(function (id) {
+                        if (id === savedMode) { return false; }
+                        return setViewMode(language, id);
+                    });
+                }
+            };
+
+            framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
+                todo(data);
+            });
         };
 
         framework.onReady(function () {
             // add the splitter
-            var splitter = $('<div>', {
-                'class': 'cp-splitter'
-            }).appendTo($previewContainer);
+            Object.keys(modes).forEach(function (id) {
+                var mode = modes[id];
+                var splitter = $('<div>', {
+                    'class': 'cp-splitter'
+                }).appendTo(mode.container);
 
-            $previewContainer.on('scroll', function() {
-                splitter.css('top', $previewContainer.scrollTop() + 'px');
-            });
+                mode.container.on('scroll', function() {
+                    splitter.css('top', mode.container.scrollTop() + 'px');
+                });
 
-            var $target = $codeMirrorContainer;
+                var $target = $codeMirrorContainer;
+                splitter.on('mousedown', function (e) {
+                    e.preventDefault();
+                    var x = e.pageX;
+                    var w = $target.width();
+                    var handler = function (evt) {
+                        if (evt.type === 'mouseup') {
+                            $(window).off('mouseup mousemove', handler);
+                            return;
+                        }
+                        $target.css('width', (w - x + evt.pageX) + 'px');
+                    };
+                    $(window).off('mouseup mousemove', handler);
+                    $(window).on('mouseup mousemove', handler);
+                });
 
-            splitter.on('mousedown', function (e) {
-                e.preventDefault();
-                var x = e.pageX;
-                var w = $target.width();
-                var handler = function (evt) {
-                    if (evt.type === 'mouseup') {
-                        $(window).off('mouseup mousemove', handler);
-                        return;
-                    }
-                    $target.css('width', (w - x + evt.pageX) + 'px');
-                };
-                $(window).off('mouseup mousemove', handler);
-                $(window).on('mouseup mousemove', handler);
             });
 
             var previewInt;
@@ -312,10 +447,12 @@ define([
 
             // keep trying to draw until you're confident it has been drawn
             previewInt = setInterval(function () {
+                if (!current) { return void clear(); }
                 // give up if it's not a valid preview mode
-                if (!previews[CodeMirror.highlightMode]) { return void clear(); }
+                if (!modes[current][CodeMirror.highlightMode]) { return void clear(); }
                 // give up if content has been drawn
-                if ($preview.text()) { return void clear(); }
+                var mode = modes[current][CodeMirror.highlightMode];
+                if (mode.contentContainer.text()) { return void clear(); }
                 // only draw if there is actually content to display
                 if (CodeMirror && !CodeMirror.getValue().trim()) { return void clear(); }
                 forceDrawPreview();
@@ -341,7 +478,6 @@ define([
             forceDraw: forceDrawPreview,
             draw: drawPreview,
             modeChange: modeChange,
-            isVisible: isVisible
         };
     };
 
@@ -588,7 +724,7 @@ define([
     var getThumbnailContainer = function () {
         var $preview = $('#cp-app-code-preview-content');
         if ($preview.length && $preview.is(':visible')) {
-            return $preview[0];
+            return $preview[0]; // XXX
         }
     };
 
@@ -617,6 +753,10 @@ define([
 
             $('#cp-app-code-editor').append([
                 h('div#cp-app-code-container', h('textarea#editor1', {name:'editor1'})),
+                h('div#cp-app-code-present', [
+                    h('button.cp-app-code-present-fullscreen.fa.fa-arrows-alt'),
+                    h('div#cp-app-code-present-content'),
+                ]),
                 h('div#cp-app-code-preview', [
                     h('div#cp-app-code-preview-content'),
                     h('div#cp-app-code-print')

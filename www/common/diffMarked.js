@@ -53,6 +53,8 @@ define([
         }
     };
 
+
+
     var Mathjax = {
         __stubbed: true,
         tex2svg: function (a, b) {
@@ -641,7 +643,7 @@ define([
         });
     };
 
-    DiffMd.apply = function (newHtml, $content, common) {
+    DiffMd.apply = function (newHtml, $content, common, tag) {
         if (!sfCommon) { sfCommon = common; }
 
         var contextMenu = common.importMediaTagMenu();
@@ -658,9 +660,11 @@ define([
         var newDomFixed = domFromHTML(unsafe_newHtmlFixed);
         if (!newDomFixed || !newDomFixed.body) { return; }
         var safe_newHtmlFixed = newDomFixed.body.outerHTML;
-        var $div = $('<div>', {id: id}).append(safe_newHtmlFixed);
 
-        var Dom = domFromHTML($('<div>').append($div).html());
+        var tagHtml = tag ? `<${tag}>` : '<div>';
+        var $div = $(tagHtml, {id: id}).append(safe_newHtmlFixed);
+
+        var Dom = domFromHTML($(tagHtml).append($div).html());
         $content[0].normalize();
 
         Object.keys(plugins).forEach(function (id) {
@@ -935,6 +939,10 @@ define([
 
         // recover the previous scroll position to avoid jank
         $parent.scrollTop(scrollTop);
+    };
+
+    DiffMd.getRenderer = function () {
+        return renderer;
     };
 
     return DiffMd;
