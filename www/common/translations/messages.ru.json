@@ -468,7 +468,7 @@
     "team_owner": "Владельцы",
     "team_rosterDemote": "Понизить",
     "team_rosterPromote": "Повысить",
-    "team_cat_admin": "Администрация",
+    "team_cat_admin": "Администрирование",
     "team_cat_drive": "Хранилище",
     "team_cat_chat": "Чат",
     "team_cat_members": "Участники",
@@ -494,7 +494,7 @@
     "contact_email": "Эл. почта",
     "contact_chat": "Чат",
     "footer_donate": "Пожертвовать",
-    "adminPage": "Администрация",
+    "adminPage": "Администрирование",
     "admin_cat_stats": "Статистика",
     "admin_cat_general": "Общее",
     "autostore_store": "Хранить",
@@ -1578,5 +1578,5 @@
     "admin_nameTitle": "Имя экземпляря CryptPad",
     "admin_archiveNote": "Заметка",
     "form_editable_on": "Один раз и отредактировать",
-    "admin_reportContent": "Жалоба на содержимое"
+    "admin_reportContent": "Содержание отчета"
 }
