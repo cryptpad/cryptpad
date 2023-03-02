@@ -571,8 +571,8 @@ define([
         }, todo);
     };
 
-    common.clearOwnedChannel = function (channel, cb) {
-        postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
+    common.clearOwnedChannel = function (data, cb) {
+        postMessage("CLEAR_OWNED_CHANNEL", data, cb);
     };
     // "force" allows you to delete your drive ID
     common.removeOwnedChannel = function (data, cb) {
@@ -2320,7 +2320,6 @@ define([
                 localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
             }
         }
-
         initFeedback(data.feedback);
     };
 
@@ -2729,6 +2728,7 @@ define([
                         if (data.error) { throw new Error(data.error); }
                         if (data.state === 'ALREADY_INIT') {
                             data = data.returned;
+                            initFeedback(data.feedback);
                         }
 
                         if (data.loggedIn) {

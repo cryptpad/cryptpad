@@ -385,5 +385,9 @@ define([
         });
     };
 
+    SF.isSharedFolderChannel = function (chanId) {
+        return Object.keys(allSharedFolders).includes(chanId);
+    };
+
     return SF;
 });

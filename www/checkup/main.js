@@ -1530,6 +1530,7 @@ define([
             [
                 'application_config.js',
                 'pages.js',
+                'pages/index.js',
             ].forEach(resource => {
                 // sort this above errors and warnings and style in a neutral color.
                 var A = `/customize.dist/${resource}`;
@@ -1579,8 +1580,7 @@ define([
             var HSTS = H['strict-transport-security'];
 
             // check for a numerical value of max-age
-            // and the use of includeSubDomains
-            if (/max\-age=\d+/.test(HSTS) && /includeSubDomains/.test(HSTS)) {
+            if (/max\-age=\d+/.test(HSTS)) {
                 return void cb(true);
             }
 
@@ -1713,7 +1713,7 @@ define([
                     var href = `/customize/${asset}`;
                     return h('li', [
                         h('a', {
-                            href: `href?${+new Date()}`,
+                            href: `${href}?${+new Date()}`,
                             target: '_blank',
                         }, href),
                     ]);

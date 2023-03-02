@@ -342,10 +342,11 @@ define([
             cb(account);
         };
 
-        // clearOwnedChannel is only used for private chat at the moment
+        // clearOwnedChannel is only used for private chat and forms
         Store.clearOwnedChannel = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.clearOwnedChannel(data, function (err) {
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            s.rpc.clearOwnedChannel(data.channel, function (err) {
                 cb({error:err});
             });
         };
@@ -1693,7 +1694,7 @@ define([
                 var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
                 var edPrivate = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPrivate']);
                 if (allowed.indexOf(ed) === -1) { return false; }
-                if (!edPrivate) { return false; } // XXX: Only editors can authenticate...
+                if (!edPrivate) { return false; } // FIXME: Only editors can authenticate...
                 // This team is allowed: use its rpc
                 var t = teamModule.getTeam(teamId);
                 _store = t;
@@ -1951,11 +1952,15 @@ define([
         // contactPadOwner is used to send "REQUEST_ACCESS" messages
         // and to notify form owners when sending a response
         Store.contactPadOwner = function (clientId, data, cb) {
-            var owner = data.owner;
+            var owners = data.owners;
 
             // If send is true, send the request to the owner.
-            if (owner) {
-                if (data.send) {
+            if (!Array.isArray(owners) || !owners.length) { return cb({state: false}); }
+
+            if (!data.send) { return void cb({state: true}); }
+
+            nThen(function (waitFor) {
+                owners.forEach(function (owner) {
                     var sendTo = function (query, msg, user, _cb) {
                         if (store.mailbox && !data.anon) {
                             return store.mailbox.sendTo(query, msg, user, _cb);
@@ -1968,14 +1973,11 @@ define([
                     }, {
                         channel: owner.notifications,
                         curvePublic: owner.curvePublic
-                    }, function () {
-                        cb({state: true});
-                    });
-                    return;
-                }
-                return void cb({state: true});
-            }
-            cb({state: false});
+                    }, waitFor());
+                });
+            }).nThen(function () {
+                cb({state: true});
+            });
         };
         Store.givePadAccess = function (clientId, data, cb) {
             var edPublic = store.proxy.edPublic;
@@ -2439,6 +2441,27 @@ define([
         // Clients management
         var driveEventClients = [];
 
+        // Check if this is a channel that we shouldn't leave when closing the debug app
+        var alwaysOnline = function (chanId) {
+            if (!store) { return; }
+            // Drive
+            if (store.driveChannel === chanId) { return true; }
+            // Shared folders
+            if (SF.isSharedFolderChannel(chanId)) { return true; }
+            // Teams
+            if (Util.find(store, ['proxy', 'teams'])) {
+                var t = Util.find(store, ['proxy', 'teams']) || {};
+                return Object.keys(t).some(function (id) {
+                    return t[id].channel === chanId;
+                });
+            }
+            // Profile
+            if (Util.find(store, ['proxy', 'profile', 'href'])) {
+                return Hash.hrefToHexChannelId(Util.find(store, ['proxy', 'profile', 'href']))
+                        === chanId;
+            }
+        };
+
         var dropChannel = Store.dropChannel = function (chanId) {
             console.error('Drop channel', chanId);
 
@@ -2451,6 +2474,14 @@ define([
             try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
+
+            try {
+                if (alwaysOnline(chanId)) {
+                    delete Store.channels[chanId];
+                    return;
+                }
+            } catch (e) { console.error(e); }
+
             try {
                 Cache.leaveChannel(chanId);
             } catch (e) { console.error(e); }

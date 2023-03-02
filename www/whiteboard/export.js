@@ -1,7 +1,7 @@
 // This file is used when a user tries to export the entire CryptDrive.
 // Pads from the code app will be exported using this format instead of plain text.
 define([
-    '/bower_components/secure-fabric.js/dist/fabric.min.js',
+    '/lib/fabric.min.js',
 ], function () {
     var module = {};
 

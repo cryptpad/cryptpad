@@ -221,21 +221,21 @@ define([
                     // If they are trying to register,
                     // and the proxy is empty, then there is no 'legacy user' either
                     // so we should just shut down this session and disconnect.
-                    rt.network.disconnect();
+                    //rt.network.disconnect();
                     return; // proceed to the next async block
                 }
 
                 // they tried to just log in but there's no such user
                 // and since we're here at all there is no modern-block
                 if (!isRegister && isProxyEmpty(rt.proxy)) {
-                    rt.network.disconnect(); // clean up after yourself
+                    //rt.network.disconnect(); // clean up after yourself
                     waitFor.abort();
                     return void cb('NO_SUCH_USER', res);
                 }
 
                 // they tried to register, but those exact credentials exist
                 if (isRegister && !isProxyEmpty(rt.proxy)) {
-                    rt.network.disconnect();
+                    //rt.network.disconnect();
                     waitFor.abort();
                     Feedback.send('LOGIN', true);
                     return void cb('ALREADY_REGISTERED', res);
@@ -247,6 +247,7 @@ define([
                 // so setting them is just a precaution to keep things in good shape
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
+                res.network = rt.network;
 
                 // they're registering...
                 res.userHash = opt.userHash;
@@ -317,6 +318,7 @@ define([
 
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
+                res.network = rt.network;
 
                 // they're registering...
                 res.userHash = userHash;
@@ -328,14 +330,14 @@ define([
                     // this really shouldn't happen, but let's handle it anyway
                     Feedback.send('EMPTY_LOGIN_WITH_BLOCK');
 
-                    rt.network.disconnect(); // clean up after yourself
+                    //rt.network.disconnect(); // clean up after yourself
                     waitFor.abort();
                     return void cb('NO_SUCH_USER', res);
                 }
 
                 // they tried to register, but those exact credentials exist
                 if (isRegister && !isProxyEmpty(rt.proxy)) {
-                    rt.network.disconnect();
+                    //rt.network.disconnect();
                     waitFor.abort();
                     res.blockHash = blockHash;
                     if (shouldImport) {
@@ -462,7 +464,8 @@ define([
 
         var proceed = function (result) {
             hashing = false;
-            if (test && typeof test === "function" && test()) { return; }
+            // NOTE: test is also use as a cb for the install page
+            if (test && typeof test === "function" && test(result)) { return; }
             LocalStore.clearLoginToken();
             Realtime.whenRealtimeSyncs(result.realtime, function () {
                 Exports.redirect();

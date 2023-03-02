@@ -1397,8 +1397,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         if (updatedOn) { delete APP.recurrenceRule._next; }
         APP.wasRecurrent = Boolean(APP.recurrenceRule);
 
-// XXX TEST
 /*
+// Test data:
 APP.recurrenceRule = {
     freq: 'yearly',
     interval: 2,
@@ -2085,12 +2085,6 @@ APP.recurrenceRule = {
             }, function () {
                 $del.click();
             });
-            var $section = $el.find('.tui-full-calendar-section-button');
-            var ev = APP.editModalData;
-            var data = ev.schedule || {};
-            var id = data.id;
-            if (!id) { return; }
-            if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
 
             if (APP.nextLocationUid) {
                 var uid = APP.nextLocationUid;
@@ -2102,6 +2096,15 @@ APP.recurrenceRule = {
                     common.openUnsafeURL($a.attr('href'));
                 });
             }
+
+            var $section = $el.find('.tui-full-calendar-section-button');
+            var ev = APP.editModalData;
+            var data = ev.schedule || {};
+            var id = data.id;
+
+            if (!id) { return; }
+            if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
+
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-default', [
                 h('i.fa.fa-times'),

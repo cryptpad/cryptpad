@@ -470,7 +470,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         delete clone.previewChannel;
         members[curve] = clone;
 
-        // XXX
         var remaining = members[author].remaining || 1;
         if (remaining === -1) { return true; } // Infinite uses, keep the link
         if (remaining > 1) { // Remove 1 use

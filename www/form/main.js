@@ -141,12 +141,13 @@ define([
                         CPNetflux = _CPNetflux;
                         Pinpad = _Pinpad;
                     }));
+                    var personalDrive = !Cryptpad.initialTeam || Cryptpad.initialTeam === -1;
                     Cryptpad.getAccessKeys(w(function (_keys) {
                         if (!Array.isArray(_keys)) { return; }
                         accessKeys = _keys;
 
                         _keys.some(function (_k) {
-                            if ((!Cryptpad.initialTeam && !_k.id) || Cryptpad.initialTeam === _k.id) {
+                            if ((personalDrive && !_k.id) || Cryptpad.initialTeam === Number(_k.id)) {
                                 myKeys = _k;
                                 return true;
                             }
@@ -313,7 +314,7 @@ define([
                                 if (obj && obj.error) { err = obj.error; return; }
                                 var messages = obj.messages;
                                 if (!messages.length) {
-                                    // XXX TODO delete from drive.forms
+                                    // TODO delete from drive.forms?
                                     return;
                                 }
                                 if (obj.lastKnownHash !== answer.hash) { return; }
@@ -411,7 +412,7 @@ define([
             });
             sframeChan.on("Q_FORM_DELETE_ALL_ANSWERS", function (data, cb) {
                 if (!data || !data.channel) { return void cb({error: 'EINVAL'}); }
-                Cryptpad.clearOwnedChannel(data.channel, cb);
+                Cryptpad.clearOwnedChannel(data, cb);
             });
             sframeChan.on("Q_FORM_DELETE_ANSWER", function (data, cb) {
                 if (!deleteLines) {

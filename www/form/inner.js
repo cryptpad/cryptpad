@@ -2752,7 +2752,8 @@ define([
             UI.confirmButton(button, {classes:'danger'}, function () {
                 var sframeChan = framework._.sfCommon.getSframeChannel();
                 sframeChan.query('Q_FORM_DELETE_ALL_ANSWERS', {
-                    channel: content.answers.channel
+                    channel: content.answers.channel,
+                    teamId: typeof(owned) === "number" ? owned : undefined
                 }, function (err, obj) {
                     if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
                     APP.getResults();
@@ -4004,7 +4005,7 @@ define([
         $container.empty().append(_content);
 
 
-// XXX Delete key form_updateMsg
+// XXX Delete translation key form_updateMsg
         if (editable) {
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg).appendTo($container);

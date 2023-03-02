@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "http-proxy-middleware": "^2.0.6",
     "netflux-websocket": "^0.1.20",
     "nthen": "0.1.8",
+    "prompt-confirm": "^2.0.4",
     "pull-stream": "^3.6.1",
     "saferphore": "0.0.1",
     "sortify": "^1.0.4",
@@ -51,6 +52,8 @@
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
     "evict-inactive": "node scripts/evict-inactive.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "clear": "node scripts/clear.js",
+    "installtoken": "node scripts/install.js"
   }
 }

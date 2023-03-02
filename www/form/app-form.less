@@ -25,6 +25,10 @@
         }
     }
 
+    .flatpickr-calendar.open {
+        z-index: 100001 !important; // Alertify is 100000
+    }
+
     @palette0: @cp_kanban-color0; // Default bg color for header
     @form-colors: @cp_form-palette;
     .form-colors(@form-colors; @index) when (@index > 0){
