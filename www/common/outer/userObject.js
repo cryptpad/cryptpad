@@ -856,7 +856,7 @@ define([
                         }
                     }
                     if (!Hash.isValidChannel(el.channel)) {
-                        // XXX delete channel? replace with parsed.channel?
+                        // FIXME delete channel? replace with parsed.channel?
                         console.error('Remove invalid channel', el.channel, el);
                         // toClean.push(id);
                     }

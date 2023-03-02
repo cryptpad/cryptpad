@@ -8,9 +8,10 @@ define([
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     'chainpad-listmap',
+    '/lib/datepicker/flatpickr.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Util, Hash, Constants, Realtime, Cache, Rec, Messages, nThen, Listmap, Crypto, ChainPad) {
+], function (Util, Hash, Constants, Realtime, Cache, Rec, Messages, nThen, Listmap, FP, Crypto, ChainPad) {
     var Calendar = {};
 
     var getStore = function (ctx, id) {
@@ -131,9 +132,9 @@ define([
         var last = ctx.store.data.lastVisit;
 
         if (ev.isAllDay) {
-            if (ev.startDay) { ev.start = +new Date(ev.startDay); }
+            if (ev.startDay) { ev.start = +FP.parseDate(ev.startDay); }
             if (ev.endDay) {
-                var endDate = new Date(ev.endDay);
+                var endDate = FP.parseDate(ev.endDay);
                 endDate.setHours(23);
                 endDate.setMinutes(59);
                 endDate.setSeconds(59);
@@ -223,7 +224,7 @@ define([
     };
     var addReminders = function (ctx, id, ev) {
         var calendar = ctx.calendars[id];
-        if (!ev) { return; } // XXX deleted event remote: delete reminders
+        if (!ev) { return; }
         if (!calendar || !calendar.reminders) { return; }
         if (calendar.stores.length === 1 && calendar.stores[0] === 0) { return; }
 
@@ -1063,7 +1064,6 @@ define([
     Calendar.init = function (cfg, waitFor, emit) {
         var calendar = {};
         var store = cfg.store;
-        //if (!store.loggedIn || !store.proxy.edPublic) { return; } // XXX logged in only? we should al least allow read-only for URL calendars
         var ctx = {
             loggedIn: store.loggedIn && store.proxy.edPublic,
             store: store,

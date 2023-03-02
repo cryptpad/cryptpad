@@ -22,7 +22,6 @@ nThen(function (w) {
             console.log('Existing token');
             token = Env.installToken;
         }
-        // XXX IF ADMINS ABORT?
     }));
 }).nThen(function (w) {
     if (Env.installToken) { return; }

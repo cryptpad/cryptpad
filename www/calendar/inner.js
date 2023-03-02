@@ -1397,8 +1397,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         if (updatedOn) { delete APP.recurrenceRule._next; }
         APP.wasRecurrent = Boolean(APP.recurrenceRule);
 
-// XXX TEST
 /*
+// Test data:
 APP.recurrenceRule = {
     freq: 'yearly',
     interval: 2,
