@@ -39,7 +39,6 @@ var EXEMPT = [
     /^\/common\/onlyoffice\/.*\.html.*/,
     /^\/(sheet|presentation|doc)\/inner\.html.*/,
     /^\/unsafeiframe\/inner\.html.*$/,
-    /^\/bower_components\/drawio\/src\/main\/webapp\/index.html.*$/,
 ];
 
 var cacheHeaders = function (Env, key, headers) {
@@ -62,9 +61,15 @@ var getHeaders = function (Env, type) {
         headers = Default.httpHeaders(Env);
     }
 
-    headers['Content-Security-Policy'] = type === 'office'?
-        Default.padContentSecurity(Env):
-        Default.contentSecurity(Env);
+    var csp;
+    if (type === 'office') {
+        csp = Default.padContentSecurity(Env);
+    } else if (type === 'drawio') {
+        csp = Default.drawioContentSecurity(Env);
+    } else {
+        csp = Default.contentSecurity(Env);
+    }
+    headers['Content-Security-Policy'] = csp;
 
     if (Env.NO_SANDBOX) { // handles correct configuration for local development
     // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
@@ -91,6 +96,8 @@ var setHeaders = function (req, res) {
         type = 'office';
     } else if (/^\/api\/(broadcast|config)/.test(req.url)) {
         type = 'api';
+    } else if (/^\/bower_components\/drawio\/src\/main\/webapp\/index.html.*$/.test(req.url)) {
+        type = 'drawio'
     } else {
         type = 'standard';
     }
