@@ -792,6 +792,13 @@
                 margin-top: 100px;
                 padding-bottom: 20px;
             }
+            .cp-form-submit-success {
+                div.cp-form-submit-success-actions {
+                    button:not(:last-child) {
+                        margin-right: 10px;
+                    }
+                }
+            }
         }
         div.cp-form-creator-results {
             display: flex;
@@ -1037,7 +1044,7 @@
         }
         .cp-form-poll-body {
             flex-flow: column;
-            max-height: 225px;
+            // max-height: 225px;
 
             & > div {
                 display: flex;
@@ -1167,11 +1174,16 @@
                 flex-flow: column;
                 &.cp-form-poll-body {
                     flex-flow: row;
+                    max-height: unset;
                     & > div {
                         flex-flow: column;
                     }
+                    flex: 1;
+                    min-width: 0;
+                    overflow: auto;
                 }
             }
+
             .cp-poll-total {
                 flex-flow: column;
             }
@@ -1194,7 +1206,8 @@
                 width: auto !important;
             }
             .cp-poll-time-day {
-                flex-basis: 40px;
+                flex-basis: 40px !important;
+                flex-grow: 0;
                 border-right: none;
                 border-right: 1px solid @cryptpad_text_col;
                 border-bottom: 0px;
