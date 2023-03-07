@@ -1250,7 +1250,7 @@
     "oo_sheetMigration_complete": "Versión actualizada disponible, presione OK para recargar.",
     "admin_consentToContactTitle": "Consentir a contacto",
     "admin_checkupButton": "Ejecutar diagnóstico",
-    "admin_checkupHint": "Cryptopad incluye una página que automáticamente diagnostica errores comunes y sugiere cómo corregirlos si fuera necesario.",
+    "admin_checkupHint": "CryptoPad incluye una página que automáticamente diagnostica errores comunes y sugiere cómo corregirlos si fuera necesario.",
     "admin_checkupTitle": "Valide la configuración de la instancia",
     "admin_updateAvailableButton": "Ver las notas de lanzamiento",
     "admin_updateAvailableHint": "Una versión nueva de CryptPad está disponible",
