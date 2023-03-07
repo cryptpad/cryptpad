@@ -2068,7 +2068,6 @@ define([
         }).nThen(function (waitFor) {
             // Write the new login block
             var temp = {
-                User_name: accountName,
                 User_hash: newHash,
                 edPublic: edPublic,
             };
