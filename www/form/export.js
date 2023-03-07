@@ -14,6 +14,24 @@ define([
         return value;
     };
 
+    // Get all responses
+    var sortAnswers = function (answers) {
+        var allUnsorted = {};
+        Object.keys(answers).forEach(function (curve) {
+            var userAnswers = answers[curve];
+            Object.keys(userAnswers).forEach(function (uid) {
+                allUnsorted[curve + '|' + uid] = userAnswers[uid];
+            });
+        });
+        var sorted = Object.keys(allUnsorted).sort(function (uid1, uid2) {
+            return (allUnsorted[uid1].time || 0) - (allUnsorted[uid2].time || 0);
+        });
+        return {
+            answers: allUnsorted,
+            sortedKeys: sorted
+        };
+    };
+
     var exportJSON = function (content, answers, TYPES, order) {
         var form = content.form;
         var res = {
@@ -22,6 +40,10 @@ define([
         };
         var q = res.questions;
         var r = res.responses;
+
+        var sortObj  = sortAnswers(answers);
+        answers = sortObj.answers;
+        var sortedKeys = sortObj.sortedKeys;
 
         // Add questions
         var i = 1;
@@ -45,10 +67,8 @@ define([
             }
         });
 
-        Object.keys(answers || {}).forEach(function (key) {
-            var userObj = answers[key];
-            Object.keys(userObj).forEach(function (k) {
-                var obj = userObj[k];
+        sortedKeys.forEach(function (k) {
+                var obj = answers[k];
                 var time = new Date(obj.time).toISOString();
                 var msg = obj.msg || {};
                 var user = msg._userdata || {};
@@ -70,7 +90,6 @@ define([
                     data[id] = msg[key];
                 });
                 r.push(data);
-            });
         });
 
         return JSON.stringify(res, 0, 2);
@@ -79,6 +98,10 @@ define([
         if (!content || !content.form) { return; }
 
         if (format === "json") { return exportJSON(content, answers, TYPES, order); }
+
+        var sortObj  = sortAnswers(answers);
+        answers = sortObj.answers;
+        var sortedKeys = sortObj.sortedKeys;
 
         var isArray = format === "array";
         var csv = "";
@@ -104,10 +127,8 @@ define([
         });
         array.push(questions);
 
-        Object.keys(answers || {}).forEach(function (key) {
-            var _obj = answers[key];
-            Object.keys(_obj).forEach(function (uid) {
-                var obj = _obj[uid];
+        sortedKeys.forEach(function (k) {
+                var obj = answers[k];
                 csv += '\n';
                 var time = new Date(obj.time).toISOString();
                 var msg = obj.msg || {};
@@ -130,7 +151,6 @@ define([
                     csv += escapeCSV(v);
                 });
                 array.push(line);
-            });
         });
         if (isArray) { return array; }
         return csv;
