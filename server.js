@@ -107,8 +107,8 @@ nThen(function (w) {
         worker.on('message', msg => {
             if (!msg) { return; }
             var txid = msg.txid;
-            var content = msg.content; // XXX don't nest
-            if (!content) { return; } // XXX
+            var content = msg.content;
+            if (!content) { return; }
 
             var command = COMMANDS[content.command];
             if (typeof(command) !== 'function') {
