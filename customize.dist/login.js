@@ -99,7 +99,6 @@ define([
         opt.channelHex = parsed.channel;
         opt.keys = parsed.keys;
         opt.edPublic = blockInfo.edPublic;
-        opt.User_name = blockInfo.User_name;
         return opt;
     };
 
