@@ -314,7 +314,7 @@ define([
                                 if (obj && obj.error) { err = obj.error; return; }
                                 var messages = obj.messages;
                                 if (!messages.length) {
-                                    // XXX TODO delete from drive.forms
+                                    // TODO delete from drive.forms?
                                     return;
                                 }
                                 if (obj.lastKnownHash !== answer.hash) { return; }

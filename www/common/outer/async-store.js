@@ -1694,7 +1694,7 @@ define([
                 var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
                 var edPrivate = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPrivate']);
                 if (allowed.indexOf(ed) === -1) { return false; }
-                if (!edPrivate) { return false; } // XXX: Only editors can authenticate...
+                if (!edPrivate) { return false; } // FIXME: Only editors can authenticate...
                 // This team is allowed: use its rpc
                 var t = teamModule.getTeam(teamId);
                 _store = t;
@@ -1952,11 +1952,15 @@ define([
         // contactPadOwner is used to send "REQUEST_ACCESS" messages
         // and to notify form owners when sending a response
         Store.contactPadOwner = function (clientId, data, cb) {
-            var owner = data.owner;
+            var owners = data.owners;
 
             // If send is true, send the request to the owner.
-            if (owner) {
-                if (data.send) {
+            if (!Array.isArray(owners) || !owners.length) { return cb({state: false}); }
+
+            if (!data.send) { return void cb({state: true}); }
+
+            nThen(function (waitFor) {
+                owners.forEach(function (owner) {
                     var sendTo = function (query, msg, user, _cb) {
                         if (store.mailbox && !data.anon) {
                             return store.mailbox.sendTo(query, msg, user, _cb);
@@ -1969,14 +1973,11 @@ define([
                     }, {
                         channel: owner.notifications,
                         curvePublic: owner.curvePublic
-                    }, function () {
-                        cb({state: true});
-                    });
-                    return;
-                }
-                return void cb({state: true});
-            }
-            cb({state: false});
+                    }, waitFor());
+                });
+            }).nThen(function () {
+                cb({state: true});
+            });
         };
         Store.givePadAccess = function (clientId, data, cb) {
             var edPublic = store.proxy.edPublic;

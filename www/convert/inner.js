@@ -294,6 +294,7 @@ define([
 
     Messages.convertPage = "Convert"; // XXX 4.11.0
     Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterwards."; // XXX 4.11.0
+    Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :("; // XXX
 
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
@@ -328,7 +329,6 @@ define([
             type: 'file'
         });
         APP.$rightside.append([hint, picker]);
-        Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :("; // XXX
 
         $(picker).on('change', function () {
             APP.$rightside.find('button, div.notice').remove();
