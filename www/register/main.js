@@ -48,12 +48,19 @@ define([
 
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
         var br = function () { return h('br'); };
+        Messages.register_nameTooLong = "Usernames must be shorter than {0} characters"; // XXX
 
         var registerClick = function () {
             var uname = $uname.val().trim();
     // trim whitespace surrounding the username since it is otherwise included in key derivation
     // most people won't realize that its presence is significant
             $uname.val(uname);
+            if (uname.length > Cred.MAXIMUM_NAME_LENGTH) {
+                let nameWarning = Messages._getKey('register_nameTooLong', [ Cred.MAXIMUM_NAME_LENGTH ]);
+                return void UI.alert(nameWarning, function () {
+                    registering = false;
+                });
+            }
 
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();
