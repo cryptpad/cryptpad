@@ -1177,15 +1177,43 @@ define([
         });
     });
 
+    var COMMONLY_DUPLICATED_HEADERS = [
+        'X-Content-Type-Options',
+        'Access-Control-Allow-Origin',
+        'Permissions-Policy',
+        'X-XSS-Protection',
+    ];
+
     ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
         assert(function (cb, msg) {
             var url = new URL(relativeURL, trimmedUnsafe).href;
             Tools.common_xhr(url, xhr => {
+                var span = h('span', h('p', '// XXX DEBUGGING DUPLICATED HEADERS'));
+
+                var duplicated = false;
+                var pre = [];
+                COMMONLY_DUPLICATED_HEADERS.forEach(h => {
+                    var value = xhr.getResponseHeader(h);
+                    if (/,/.test(value)) {
+                        pre.push(`${h}: ${value}`);
+                        duplicated = true;
+                    }
+                });
+                if (duplicated) {
+                    span.appendChild(h('pre', pre.join('\n')));
+                }
+
+                // none of the headers should include a comma
+                // as that indicates they are duplicated
+                if (!duplicated) { return void cb(true); }
+
                 msg.appendChild(h('span', [
-                    h('p', '// XXX DEBUGGING DUPLICATED HEADERS'),
                     h('pre.cp-raw-text', xhr.getAllResponseHeaders()),
                 ]));
-                cb(false);
+                cb({
+                    duplicated,
+                    url,
+                });
             });
         });
     });
