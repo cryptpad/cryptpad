@@ -1183,7 +1183,7 @@ define([
             Tools.common_xhr(url, xhr => {
                 msg.appendChild(h('span', [
                     h('p', '// XXX DEBUGGING DUPLICATED HEADERS'),
-                    h('pre', xhr.getAllResponseHeaders()),
+                    h('pre.cp-raw-text', xhr.getAllResponseHeaders()),
                 ]));
                 cb(false);
             });
