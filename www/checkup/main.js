@@ -1207,9 +1207,7 @@ define([
                 // as that indicates they are duplicated
                 if (!duplicated) { return void cb(true); }
 
-                msg.appendChild(h('span', [
-                    h('pre.cp-raw-text', xhr.getAllResponseHeaders()),
-                ]));
+                msg.appendChild(span);
                 cb({
                     duplicated,
                     url,
