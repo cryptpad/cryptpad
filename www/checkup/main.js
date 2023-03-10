@@ -1177,6 +1177,19 @@ define([
         });
     });
 
+    ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
+        assert(function (cb, msg) {
+            var url = new URL(relativeURL, trimmedUnsafe).href;
+            Tools.common_xhr(url, xhr => {
+                msg.appendChild(h('span', [
+                    h('p', '// XXX DEBUGGING DUPLICATED HEADERS'),
+                    h('pre', xhr.getAllResponseHeaders()),
+                ]));
+                cb(false);
+            });
+        });
+    });
+
     var POLICY_ADVISORY = " This link will be included in the home page footer and 'About CryptPad' menu. It's advised that you either provide one or disable registration.";
     var APPCONFIG_DOCS_LINK = function (key, href) {
         return h('span', [
