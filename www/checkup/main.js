@@ -1091,12 +1091,14 @@ define([
         });
     };
 
-    assert(function (cb, msg) {
-        var header = 'Access-Control-Allow-Origin';
-        var url = new URL('/', trimmedUnsafe).href;
-        Tools.common_xhr(url, function (xhr) {
-            var raw = xhr.getResponseHeader(header);
-            checkAllowedOrigins(raw, url, msg, cb);
+    ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
+        assert(function (cb, msg) {
+            var header = 'Access-Control-Allow-Origin';
+            var url = new URL(relativeURL, trimmedUnsafe).href;
+            Tools.common_xhr(url, function (xhr) {
+                var raw = xhr.getResponseHeader(header);
+                checkAllowedOrigins(raw, url, msg, cb);
+            });
         });
     });
 
