@@ -9517,7 +9517,7 @@
            }
        });
    }
-   const baseTheme$1$1 = /*@__PURE__*/buildTheme("." + baseThemeID, {
+   const baseTheme$1$2 = /*@__PURE__*/buildTheme("." + baseThemeID, {
        "&": {
            position: "relative !important",
            boxSizing: "border-box",
@@ -10849,7 +10849,7 @@
        }
        mountStyles() {
            this.styleModules = this.state.facet(styleModule);
-           StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$1).reverse());
+           StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$2).reverse());
        }
        readMeasured() {
            if (this.updateState == 2 /* UpdateState.Updating */)
@@ -12683,7 +12683,7 @@
            scroll() { this.maybeMeasure(); }
        }
    });
-   const baseTheme$3 = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$a = /*@__PURE__*/EditorView.baseTheme({
        ".cm-tooltip": {
            zIndex: 100,
            boxSizing: "border-box"
@@ -12750,7 +12750,7 @@
    Facet to which an extension can add a value to show a tooltip.
    */
    const showTooltip = /*@__PURE__*/Facet.define({
-       enables: [tooltipPlugin, baseTheme$3]
+       enables: [tooltipPlugin, baseTheme$a]
    });
    /**
    Get the active tooltip view for a given tooltip, if available.
@@ -15385,7 +15385,7 @@
        return rule || null;
    }
    const t = Tag.define;
-   const comment$1 = t(), name = t(), typeName = t(name), propertyName = t(name), literal = t(), string = t(literal), number = t(literal), content = t(), heading = t(content), keyword = t(), operator = t(), punctuation = t(), bracket = t(punctuation), meta = t();
+   const comment$1 = t(), name = t(), typeName = t(name), propertyName = t(name), literal = t(), string = t(literal), number = t(literal), content = t(), heading$1 = t(content), keyword = t(), operator = t(), punctuation = t(), bracket = t(punctuation), meta = t();
    /// The default set of highlighting [tags](#highlight.Tag).
    ///
    /// This collection is heavily biased towards programming languages,
@@ -15524,19 +15524,19 @@
        /// Content, for example plain text in XML or markup documents.
        content,
        /// [Content](#highlight.tags.content) that represents a heading.
-       heading,
+       heading: heading$1,
        /// A level 1 [heading](#highlight.tags.heading).
-       heading1: t(heading),
+       heading1: t(heading$1),
        /// A level 2 [heading](#highlight.tags.heading).
-       heading2: t(heading),
+       heading2: t(heading$1),
        /// A level 3 [heading](#highlight.tags.heading).
-       heading3: t(heading),
+       heading3: t(heading$1),
        /// A level 4 [heading](#highlight.tags.heading).
-       heading4: t(heading),
+       heading4: t(heading$1),
        /// A level 5 [heading](#highlight.tags.heading).
-       heading5: t(heading),
+       heading5: t(heading$1),
        /// A level 6 [heading](#highlight.tags.heading).
-       heading6: t(heading),
+       heading6: t(heading$1),
        /// A prose separator (such as a horizontal rule).
        contentSeparator: t(content),
        /// [Content](#highlight.tags.content) that represents a list.
@@ -16916,6 +16916,13 @@
            return Decoration.set(ranges, true);
        }
    });
+   /**
+   Get a [range set](https://codemirror.net/6/docs/ref/#state.RangeSet) containing the folded ranges
+   in the given state.
+   */
+   function foldedRanges(state) {
+       return state.field(foldState, false) || RangeSet.empty;
+   }
    function findFold(state, from, to) {
        var _a;
        let found = null;
@@ -16942,7 +16949,7 @@
    Create an extension that configures code folding.
    */
    function codeFolding(config) {
-       let result = [foldState, baseTheme$1];
+       let result = [foldState, baseTheme$1$1];
        if (config)
            result.push(foldConfig.of(config));
        return result;
@@ -17051,7 +17058,7 @@
            codeFolding()
        ];
    }
-   const baseTheme$1 = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$1$1 = /*@__PURE__*/EditorView.baseTheme({
        ".cm-foldPlaceholder": {
            backgroundColor: "#eee",
            border: "1px solid #ddd",
@@ -17225,7 +17232,7 @@
            color: "#f00" }
    ]);
 
-   const baseTheme$2 = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$9 = /*@__PURE__*/EditorView.baseTheme({
        "&.cm-focused .cm-matchingBracket": { backgroundColor: "#328c8252" },
        "&.cm-focused .cm-nonmatchingBracket": { backgroundColor: "#bb555544" }
    });
@@ -17273,7 +17280,7 @@
    });
    const bracketMatchingUnique = [
        bracketMatchingState,
-       baseTheme$2
+       baseTheme$9
    ];
    /**
    Create an extension that enables bracket matching. Whenever the
@@ -19046,7 +19053,7 @@
        }
    });
 
-   const baseTheme = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$8 = /*@__PURE__*/EditorView.baseTheme({
        ".cm-tooltip.cm-tooltip-autocomplete": {
            "& > ul": {
                fontFamily: "monospace",
@@ -19337,7 +19344,7 @@
                let active = new ActiveSnippet(ranges, 0);
                let effects = spec.effects = [setActive.of(active)];
                if (editor.state.field(snippetState, false) === undefined)
-                   effects.push(StateEffect.appendConfig.of([snippetState, addSnippetKeymap, snippetPointerHandler, baseTheme]));
+                   effects.push(StateEffect.appendConfig.of([snippetState, addSnippetKeymap, snippetPointerHandler, baseTheme$8]));
            }
            editor.dispatch(editor.state.update(spec));
        };
@@ -19638,7 +19645,7 @@
            completionConfig.of(config),
            completionPlugin,
            completionKeymapExt,
-           baseTheme
+           baseTheme$8
        ];
    }
    /**
@@ -27363,7 +27370,7 @@
      _instanceof = 42,
      insteadof = 43,
      _interface = 44,
-     list = 45,
+     list$1 = 45,
      match = 46,
      namespace = 47,
      _new = 48,
@@ -27428,7 +27435,7 @@
      instanceof: _instanceof,
      insteadof,
      interface: _interface,
-     list,
+     list: list$1,
      match,
      namespace,
      new: _new,
@@ -33258,6 +33265,1232 @@
      provide: f => EditorView.decorations.from(f)
    });
 
+   var __defProp$c = Object.defineProperty;
+   var __defProps$3 = Object.defineProperties;
+   var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
+   var __getOwnPropSymbols$3 = Object.getOwnPropertySymbols;
+   var __hasOwnProp$3 = Object.prototype.hasOwnProperty;
+   var __propIsEnum$3 = Object.prototype.propertyIsEnumerable;
+   var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __spreadValues$3 = (a, b) => {
+     for (var prop in b || (b = {}))
+       if (__hasOwnProp$3.call(b, prop))
+         __defNormalProp$c(a, prop, b[prop]);
+     if (__getOwnPropSymbols$3)
+       for (var prop of __getOwnPropSymbols$3(b)) {
+         if (__propIsEnum$3.call(b, prop))
+           __defNormalProp$c(a, prop, b[prop]);
+       }
+     return a;
+   };
+   var __spreadProps$3 = (a, b) => __defProps$3(a, __getOwnPropDescs$3(b));
+   var __publicField$9 = (obj, key, value) => {
+     __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   function checkRangeOverlap(range1, range2) {
+     return range1[0] <= range2[1] && range2[0] <= range1[1];
+   }
+   function checkRangeSubset(parent, child) {
+     return child[0] >= parent[0] && child[1] <= parent[1];
+   }
+   function isCursorInRange(state, range) {
+     return state.selection.ranges.some(
+       (selection) => checkRangeOverlap(range, [selection.from, selection.to])
+     );
+   }
+   function iterateTreeInVisibleRanges(view, iterateFns) {
+     for (const { from, to } of view.visibleRanges) {
+       syntaxTree(view.state).iterate(__spreadProps$3(__spreadValues$3({}, iterateFns), { from, to }));
+     }
+   }
+   const invisibleDecoration = Decoration.replace({});
+   function editorLines(view, from, to) {
+     let lines = view.viewportLineBlocks.filter(
+       (block) => checkRangeOverlap([block.from, block.to], [from, to])
+     );
+     const folded = foldedRanges(view.state).iter();
+     while (folded.value) {
+       lines = lines.filter(
+         (line) => !checkRangeOverlap(
+           [folded.from, folded.to],
+           [line.from, line.to]
+         )
+       );
+       folded.next();
+     }
+     return lines;
+   }
+   class Slugger {
+     constructor() {
+       __publicField$9(this, "occurences", {});
+     }
+     slug(text) {
+       let slug = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+       if (slug in this.occurences) {
+         this.occurences[slug]++;
+         slug += "-" + this.occurences[slug];
+       } else {
+         this.occurences[slug] = 1;
+       }
+       return slug;
+     }
+   }
+
+   const blockquote$1 = {
+     widget: "cm-blockquote",
+     mark: "cm-blockquote-border"
+   }, codeblock$1 = {
+     widget: "cm-codeblock",
+     widgetBegin: "cm-codeblock-begin",
+     widgetEnd: "cm-codeblock-end"
+   }, heading = {
+     heading: "cm-heading",
+     level: (level) => `cm-heading-${level}`,
+     slug: (slug) => `cm-heading-slug-${slug}`
+   }, link = {
+     widget: "cm-link"
+   }, list = {
+     bullet: "cm-list-bullet",
+     taskCheckbox: "cm-task-marker-checkbox",
+     taskChecked: "cm-task-checked"
+   }, image$1 = {
+     widget: "cm-image"
+   };
+
+   var __defProp$b = Object.defineProperty;
+   var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$8 = (obj, key, value) => {
+     __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   const quoteMarkRE = /^(\s*>+)/gm;
+   class BlockQuoteBorderWidget extends WidgetType {
+     toDOM() {
+       const dom = document.createElement("span");
+       dom.classList.add(blockquote$1.mark);
+       return dom;
+     }
+   }
+   class BlockQuotePlugin {
+     constructor(view) {
+       __publicField$8(this, "decorations");
+       this.decorations = this.styleBlockquote(view);
+     }
+     update(update) {
+       if (update.docChanged || update.viewportChanged || update.selectionSet) {
+         this.decorations = this.styleBlockquote(update.view);
+       }
+     }
+     styleBlockquote(view) {
+       const widgets = [];
+       iterateTreeInVisibleRanges(view, {
+         enter: ({ name, from, to }) => {
+           if (name !== "Blockquote")
+             return;
+           const lines = editorLines(view, from, to);
+           lines.forEach((line) => {
+             const lineDec = Decoration.line({
+               class: blockquote$1.widget
+             });
+             widgets.push(lineDec.range(line.from));
+           });
+           if (lines.every(
+             (line) => !isCursorInRange(view.state, [line.from, line.to])
+           )) {
+             const marks = Array.from(
+               view.state.sliceDoc(from, to).matchAll(quoteMarkRE)
+             ).map((x) => from + x.index).map(
+               (i) => Decoration.replace({
+                 widget: new BlockQuoteBorderWidget()
+               }).range(i, i + 1)
+             );
+             lines.forEach((line) => {
+               if (!marks.some(
+                 (mark) => checkRangeSubset(
+                   [line.from, line.to],
+                   [mark.from, mark.to]
+                 )
+               ))
+                 marks.push(
+                   Decoration.widget({
+                     widget: new BlockQuoteBorderWidget()
+                   }).range(line.from)
+                 );
+             });
+             widgets.push(...marks);
+           }
+         }
+       });
+       return Decoration.set(widgets, true);
+     }
+   }
+   const blockQuotePlugin = ViewPlugin.fromClass(BlockQuotePlugin, {
+     decorations: (v) => v.decorations
+   });
+   const baseTheme$7 = EditorView.baseTheme({
+     ["." + blockquote$1.mark]: {
+       "border-left": "4px solid #ccc"
+     },
+     ["." + blockquote$1.widget]: {
+       color: "#555"
+     }
+   });
+   function blockquote() {
+     return [blockQuotePlugin, baseTheme$7];
+   }
+
+   var __defProp$a = Object.defineProperty;
+   var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$7 = (obj, key, value) => {
+     __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   const codeblock = () => [codeBlockPlugin, baseTheme$6];
+   const codeBlockPlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField$7(this, "decorations");
+         this.decorations = decorateCodeBlocks(view);
+       }
+       update(update) {
+         if (update.docChanged || update.viewportChanged || update.selectionSet)
+           this.decorations = decorateCodeBlocks(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   function decorateCodeBlocks(view) {
+     const widgets = [];
+     iterateTreeInVisibleRanges(view, {
+       enter: ({ type, from, to, node }) => {
+         if (!["FencedCode", "CodeBlock"].includes(type.name))
+           return;
+         let lang = view.state.sliceDoc(from + 3, from + 10).toLowerCase();
+         if (/^(mermaid|mathjax|markmap)/.test(lang)) {
+           return;
+         }
+         editorLines(view, from, to).forEach((block, i) => {
+           const lineDec = Decoration.line({
+             class: [
+               codeblock$1.widget,
+               i === 0 ? codeblock$1.widgetBegin : block.to === to ? codeblock$1.widgetEnd : ""
+             ].join(" ")
+           });
+           widgets.push(lineDec.range(block.from));
+         });
+         if (isCursorInRange(view.state, [from, to]))
+           return;
+         const codeBlock = node.toTree();
+         codeBlock.iterate({
+           enter: ({ type: type2, from: nodeFrom, to: nodeTo }) => {
+             switch (type2.name) {
+               case "CodeInfo":
+               case "CodeMark":
+                 const decRange = invisibleDecoration.range(
+                   from + nodeFrom,
+                   from + nodeTo
+                 );
+                 widgets.push(decRange);
+                 break;
+             }
+           }
+         });
+       }
+     });
+     return Decoration.set(widgets, true);
+   }
+   const baseTheme$6 = EditorView.baseTheme({
+     ["." + codeblock$1.widget]: {
+       backgroundColor: "#CCC7"
+     },
+     ["." + codeblock$1.widgetBegin]: {
+       borderRadius: "5px 5px 0 0"
+     },
+     ["." + codeblock$1.widgetEnd]: {
+       borderRadius: "0 0 5px 5px"
+     }
+   });
+
+   const headingSlugField = StateField.define({
+     create: (state) => {
+       const slugs = extractSlugs(state);
+       return slugs;
+     },
+     update: (value, tx) => {
+       if (tx.docChanged)
+         return extractSlugs(tx.state);
+       return value;
+     },
+     compare: (a, b) => a.length === b.length && a.every((slug, i) => slug.slug === b[i].slug && slug.pos === b[i].pos)
+   });
+   function extractSlugs(state) {
+     const slugs = [];
+     const slugger = new Slugger();
+     syntaxTree(state).iterate({
+       enter: ({ name, from, to, node }) => {
+         if (!name.includes("Heading"))
+           return;
+         const mark = node.getChild("HeaderMark");
+         const headerText = state.sliceDoc(from, to).split("");
+         headerText.splice(mark.from - from, mark.to - mark.from);
+         const slug = slugger.slug(headerText.join("").trim());
+         slugs.push({ slug, pos: from });
+       }
+     });
+     return slugs;
+   }
+
+   var __defProp$9 = Object.defineProperty;
+   var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$6 = (obj, key, value) => {
+     __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   const headings = () => [
+     headingDecorationsPlugin,
+     hideHeaderMarkPlugin,
+     baseTheme$5
+   ];
+   class HideHeaderMarkPlugin {
+     constructor(view) {
+       __publicField$6(this, "decorations");
+       this.decorations = this.hideHeaderMark(view);
+     }
+     update(update) {
+       if (update.docChanged || update.viewportChanged || update.selectionSet)
+         this.decorations = this.hideHeaderMark(update.view);
+     }
+     hideHeaderMark(view) {
+       const widgets = [];
+       const ranges = view.state.selection.ranges;
+       iterateTreeInVisibleRanges(view, {
+         enter: ({ type, from, to }) => {
+           const line = view.lineBlockAt(from);
+           const cursorOverlaps = ranges.some(
+             ({ from: from2, to: to2 }) => checkRangeOverlap([from2, to2], [line.from, line.to])
+           );
+           if (cursorOverlaps)
+             return;
+           if (type.name === "HeaderMark" && /[#]/.test(view.state.sliceDoc(from, to))) {
+             const dec = Decoration.replace({});
+             widgets.push(dec.range(from, to + 1));
+           }
+         }
+       });
+       return Decoration.set(widgets, true);
+     }
+   }
+   const hideHeaderMarkPlugin = ViewPlugin.fromClass(HideHeaderMarkPlugin, {
+     decorations: (v) => v.decorations
+   });
+   class HeadingDecorationsPlugin {
+     constructor(view) {
+       __publicField$6(this, "decorations");
+       this.decorations = this.decorateHeadings(view);
+     }
+     update(update) {
+       if (update.docChanged || update.viewportChanged || update.selectionSet) {
+         this.decorations = this.decorateHeadings(update.view);
+       }
+     }
+     decorateHeadings(view) {
+       const widgets = [];
+       iterateTreeInVisibleRanges(view, {
+         enter: ({ name, from }) => {
+           var _a;
+           if (!name.includes("Heading"))
+             return;
+           const slug = (_a = view.state.field(headingSlugField).find((s) => s.pos === from)) == null ? void 0 : _a.slug;
+           const level = parseInt(/[1-6]$/.exec(name)[0]);
+           const dec = Decoration.line({
+             class: [
+               heading.heading,
+               heading.level(level),
+               slug ? heading.slug(slug) : ""
+             ].join(" ")
+           });
+           widgets.push(dec.range(view.state.doc.lineAt(from).from));
+         }
+       });
+       return Decoration.set(widgets, true);
+     }
+   }
+   const headingDecorationsPlugin = ViewPlugin.fromClass(
+     HeadingDecorationsPlugin,
+     { decorations: (v) => v.decorations }
+   );
+   const baseTheme$5 = EditorView.baseTheme({
+     ".cm-heading": {
+       fontWeight: "bold"
+     },
+     ["." + heading.level(1)]: { fontSize: "2.2rem" },
+     ["." + heading.level(2)]: { fontSize: "1.8rem" },
+     ["." + heading.level(3)]: { fontSize: "1.4rem" },
+     ["." + heading.level(4)]: { fontSize: "1.2rem" },
+     ["." + heading.level(5)]: { fontSize: "1rem" },
+     ["." + heading.level(6)]: { fontSize: "0.8rem" }
+   });
+
+   var __defProp$8 = Object.defineProperty;
+   var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$5 = (obj, key, value) => {
+     __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   const typesWithMarks = [
+     "Emphasis",
+     "StrongEmphasis",
+     "InlineCode",
+     "Strikethrough"
+   ];
+   const markTypes = ["EmphasisMark", "CodeMark", "StrikethroughMark"];
+   class HideMarkPlugin {
+     constructor(view) {
+       __publicField$5(this, "decorations");
+       this.decorations = this.compute(view);
+     }
+     update(update) {
+       if (update.docChanged || update.viewportChanged || update.selectionSet)
+         this.decorations = this.compute(update.view);
+     }
+     compute(view) {
+       const widgets = [];
+       let parentRange;
+       iterateTreeInVisibleRanges(view, {
+         enter: ({ type, from, to, node }) => {
+           if (typesWithMarks.includes(type.name)) {
+             if (parentRange && checkRangeOverlap([from, to], parentRange))
+               return;
+             else
+               parentRange = [from, to];
+             if (isCursorInRange(view.state, [from, to]))
+               return;
+             const innerTree = node.toTree();
+             innerTree.iterate({
+               enter({ type: type2, from: markFrom, to: markTo }) {
+                 if (!markTypes.includes(type2.name))
+                   return;
+                 widgets.push(
+                   invisibleDecoration.range(
+                     from + markFrom,
+                     from + markTo
+                   )
+                 );
+               }
+             });
+           }
+         }
+       });
+       return Decoration.set(widgets, true);
+     }
+   }
+   const hideMarks = () => [
+     ViewPlugin.fromClass(HideMarkPlugin, {
+       decorations: (v) => v.decorations
+     })
+   ];
+
+   var __defProp$7 = Object.defineProperty;
+   var __defProps$2 = Object.defineProperties;
+   var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
+   var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
+   var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
+   var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
+   var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __spreadValues$2 = (a, b) => {
+     for (var prop in b || (b = {}))
+       if (__hasOwnProp$2.call(b, prop))
+         __defNormalProp$7(a, prop, b[prop]);
+     if (__getOwnPropSymbols$2)
+       for (var prop of __getOwnPropSymbols$2(b)) {
+         if (__propIsEnum$2.call(b, prop))
+           __defNormalProp$7(a, prop, b[prop]);
+       }
+     return a;
+   };
+   var __spreadProps$2 = (a, b) => __defProps$2(a, __getOwnPropDescs$2(b));
+   const imageLoadedEffect = StateEffect.define();
+   const imagePreview = StateField.define({
+     create(state) {
+       const images = extractImages(state);
+       const decorations = images.map(
+         (img) => Decoration.widget({
+           widget: new ImagePreviewWidget(img, 0 /* INITIAL */),
+           info: img,
+           src: img.src
+         }).range(img.to)
+       );
+       return Decoration.set(decorations, true);
+     },
+     update(value, tx) {
+       const loadedImages = tx.effects.filter(
+         (effect) => effect.is(imageLoadedEffect)
+       );
+       if (tx.docChanged || loadedImages.length > 0) {
+         const images = extractImages(tx.state);
+         const previous = value.iter();
+         const previousSpecs = new Array();
+         while (previous.value !== null) {
+           previousSpecs.push(previous.value.spec.info);
+           previous.next();
+         }
+         const decorations = images.map((img) => {
+           var _a;
+           const hasImageLoaded = Boolean(
+             loadedImages.find(
+               (effect) => effect.value.src === img.src
+             ) || ((_a = previousSpecs.find((spec) => spec.src === img.src)) == null ? void 0 : _a.loaded)
+           );
+           return Decoration.widget({
+             widget: new ImagePreviewWidget(
+               img,
+               hasImageLoaded ? 1 /* LOADED */ : 0 /* INITIAL */
+             ),
+             block: hasImageLoaded ? true : false,
+             src: img.src,
+             side: 1,
+             info: __spreadProps$2(__spreadValues$2({}, img), { loaded: hasImageLoaded })
+           }).range(img.to);
+         });
+         return Decoration.set(decorations, true);
+       }
+       return value.map(tx.changes);
+     },
+     provide(field) {
+       return EditorView.decorations.from(field);
+     }
+   });
+   const imageTextRE = /(?:!\[)(.*?)(?:\])/;
+   function extractImages(state) {
+     const imageUrls = [];
+     syntaxTree(state).iterate({
+       enter: ({ name, node, from, to }) => {
+         if (name !== "Image")
+           return;
+         const alt = state.sliceDoc(from, to).match(imageTextRE).pop();
+         const urlNode = node.getChild("URL");
+         if (urlNode) {
+           const url = state.sliceDoc(urlNode.from, urlNode.to);
+           imageUrls.push({ src: url, from, to, alt });
+         }
+       }
+     });
+     return imageUrls;
+   }
+   class ImagePreviewWidget extends WidgetType {
+     constructor(info, state) {
+       super();
+       this.info = info;
+       this.state = state;
+     }
+     toDOM(view) {
+       const img = new Image();
+       img.classList.add(image$1.widget);
+       img.src = this.info.src;
+       img.alt = this.info.alt;
+       img.addEventListener("load", () => {
+         const tx = {};
+         if (this.state === 0 /* INITIAL */) {
+           tx.effects = [
+             imageLoadedEffect.of(__spreadProps$2(__spreadValues$2({}, this.info), { loaded: true }))
+           ];
+         }
+         view.dispatch(tx);
+       });
+       if (this.state === 1 /* LOADED */)
+         return img;
+       else
+         return new Image();
+     }
+     eq(widget) {
+       return JSON.stringify(widget.info) === JSON.stringify(this.info) && widget.state === this.state;
+     }
+   }
+
+   var __defProp$6 = Object.defineProperty;
+   var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$4 = (obj, key, value) => {
+     __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   function hideNodes$2(view) {
+     const widgets = new Array();
+     iterateTreeInVisibleRanges(view, {
+       enter(node) {
+         if (node.name === "Image" && !isCursorInRange(view.state, [node.from, node.to])) {
+           widgets.push(invisibleDecoration.range(node.from, node.to));
+         }
+       }
+     });
+     return Decoration.set(widgets, true);
+   }
+   const hideImageNodePlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField$4(this, "decorations");
+         this.decorations = hideNodes$2(view);
+       }
+       update(update) {
+         if (update.docChanged || update.selectionSet)
+           this.decorations = hideNodes$2(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   const image = () => [
+     imagePreview,
+     hideImageNodePlugin,
+     baseTheme$4
+   ];
+   const baseTheme$4 = EditorView.baseTheme({
+     ["." + image$1.widget]: {
+       display: "block",
+       objectFit: "contain",
+       maxWidth: "100%",
+       paddingLeft: "4px",
+       maxHeight: "100%",
+       userSelect: "none"
+     }
+   });
+
+   var __defProp$5 = Object.defineProperty;
+   var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$3 = (obj, key, value) => {
+     __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   const links = () => [goToLinkPlugin, baseTheme$3];
+   class GoToLinkWidget extends WidgetType {
+     constructor(link) {
+       super();
+       this.link = link;
+     }
+     toDOM(view) {
+       const anchor = document.createElement("a");
+       if (this.link.startsWith("#")) {
+         const slugs = view.state.field(headingSlugField);
+         anchor.addEventListener("click", () => {
+           var _a;
+           const pos = (_a = slugs.find(
+             (h) => h.slug === this.link.slice(1)
+           )) == null ? void 0 : _a.pos;
+           if (typeof pos !== "undefined") {
+             const tr = view.state.update({
+               selection: { anchor: pos },
+               scrollIntoView: true
+             });
+             view.dispatch(tr);
+           }
+         });
+       } else
+         anchor.href = this.link;
+       anchor.target = "_blank";
+       anchor.classList.add(link.widget);
+       anchor.textContent = "\u{1F517}";
+       return anchor;
+     }
+   }
+   function getLinkAnchor(view) {
+     const widgets = [];
+     for (const { from, to } of view.visibleRanges) {
+       syntaxTree(view.state).iterate({
+         from,
+         to,
+         enter: ({ type, from: from2, to: to2, node }) => {
+           if (type.name !== "URL")
+             return;
+           const parent = node.parent;
+           const blackListedParents = ["Image"];
+           if (parent && !blackListedParents.includes(parent.name)) {
+             const marks = parent.getChildren("LinkMark");
+             const ranges = view.state.selection.ranges;
+             const cursorOverlaps = ranges.some(
+               ({ from: from3, to: to3 }) => checkRangeOverlap([from3, to3], [parent.from, parent.to])
+             );
+             if (!cursorOverlaps) {
+               widgets.push(
+                 ...marks.map(
+                   ({ from: from3, to: to3 }) => invisibleDecoration.range(from3, to3)
+                 ),
+                 invisibleDecoration.range(from2, to2)
+               );
+             }
+             const dec = Decoration.widget({
+               widget: new GoToLinkWidget(
+                 view.state.sliceDoc(from2, to2)
+               ),
+               side: 1
+             });
+             widgets.push(dec.range(to2, to2));
+           }
+         }
+       });
+     }
+     return Decoration.set(widgets, true);
+   }
+   const goToLinkPlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField$3(this, "decorations", Decoration.none);
+         this.decorations = getLinkAnchor(view);
+       }
+       update(update) {
+         if (update.docChanged || update.viewportChanged || update.selectionSet)
+           this.decorations = getLinkAnchor(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   const baseTheme$3 = EditorView.baseTheme({
+     ["." + link.widget]: {
+       cursor: "pointer",
+       textDecoration: "underline"
+     }
+   });
+
+   var __defProp$4 = Object.defineProperty;
+   var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$2 = (obj, key, value) => {
+     __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   const bulletListMarkerRE = /^[-+*]/;
+   const lists = () => [listBulletPlugin, taskListPlugin, baseTheme$2];
+   class ListBulletPlugin {
+     constructor(view) {
+       __publicField$2(this, "decorations", Decoration.none);
+       this.decorations = this.decorateLists(view);
+     }
+     update(update) {
+       if (update.docChanged || update.viewportChanged || update.selectionSet)
+         this.decorations = this.decorateLists(update.view);
+     }
+     decorateLists(view) {
+       const widgets = [];
+       iterateTreeInVisibleRanges(view, {
+         enter: ({ type, from, to }) => {
+           if (isCursorInRange(view.state, [from, to]))
+             return;
+           if (type.name === "ListMark") {
+             const listMark = view.state.sliceDoc(from, to);
+             if (bulletListMarkerRE.test(listMark)) {
+               const dec = Decoration.replace({
+                 widget: new ListBulletWidget(listMark)
+               });
+               widgets.push(dec.range(from, to));
+             }
+           }
+         }
+       });
+       return Decoration.set(widgets, true);
+     }
+   }
+   const listBulletPlugin = ViewPlugin.fromClass(ListBulletPlugin, {
+     decorations: (v) => v.decorations
+   });
+   class ListBulletWidget extends WidgetType {
+     constructor(bullet) {
+       super();
+       this.bullet = bullet;
+     }
+     toDOM() {
+       const listBullet = document.createElement("span");
+       listBullet.textContent = this.bullet;
+       listBullet.className = "cm-list-bullet";
+       return listBullet;
+     }
+   }
+   class TaskListsPlugin {
+     constructor(view) {
+       __publicField$2(this, "decorations", Decoration.none);
+       this.decorations = this.addCheckboxes(view);
+     }
+     update(update) {
+       if (update.docChanged || update.viewportChanged || update.selectionSet)
+         this.decorations = this.addCheckboxes(update.view);
+     }
+     addCheckboxes(view) {
+       const widgets = [];
+       iterateTreeInVisibleRanges(view, {
+         enter: this.iterateTree(view, widgets)
+       });
+       return Decoration.set(widgets, true);
+     }
+     iterateTree(view, widgets) {
+       return ({ type, from, to, node }) => {
+         if (type.name !== "Task")
+           return;
+         let checked = false;
+         node.toTree().iterate({
+           enter: (ref) => iterateInner(ref.type, ref.from, ref.to)
+         });
+         if (checked)
+           widgets.push(
+             Decoration.mark({
+               tagName: "span",
+               class: "cm-task-checked"
+             }).range(from, to)
+           );
+         function iterateInner(type2, nfrom, nto) {
+           if (type2.name !== "TaskMarker")
+             return;
+           if (isCursorInRange(view.state, [from + nfrom, from + nto]))
+             return;
+           const checkbox = view.state.sliceDoc(from + nfrom, from + nto);
+           if ("xX".includes(checkbox[1]))
+             checked = true;
+           const dec = Decoration.replace({
+             widget: new CheckboxWidget(checked, from + nfrom + 1)
+           });
+           widgets.push(dec.range(from + nfrom, from + nto));
+         }
+       };
+     }
+   }
+   class CheckboxWidget extends WidgetType {
+     constructor(checked, pos) {
+       super();
+       this.checked = checked;
+       this.pos = pos;
+     }
+     toDOM(view) {
+       const wrap = document.createElement("span");
+       wrap.classList.add(list.taskCheckbox);
+       const checkbox = document.createElement("input");
+       checkbox.type = "checkbox";
+       checkbox.checked = this.checked;
+       checkbox.addEventListener("click", ({ target }) => {
+         const change = {
+           from: this.pos,
+           to: this.pos + 1,
+           insert: this.checked ? " " : "x"
+         };
+         view.dispatch({ changes: change });
+         this.checked = !this.checked;
+         target.checked = this.checked;
+       });
+       wrap.appendChild(checkbox);
+       return wrap;
+     }
+   }
+   const taskListPlugin = ViewPlugin.fromClass(TaskListsPlugin, {
+     decorations: (v) => v.decorations
+   });
+   const baseTheme$2 = EditorView.baseTheme({
+     ["." + list.bullet]: {
+       position: "relative",
+       visibility: "hidden"
+     },
+     ["." + list.taskChecked]: {
+       textDecoration: "line-through !important"
+     },
+     ["." + list.bullet + ":after"]: {
+       visibility: "visible",
+       position: "absolute",
+       top: 0,
+       left: 0,
+       content: "'\\2022'"
+     }
+   });
+
+   var __defProp$3 = Object.defineProperty;
+   var __defProps$1 = Object.defineProperties;
+   var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
+   var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
+   var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
+   var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
+   var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __spreadValues$1 = (a, b) => {
+     for (var prop in b || (b = {}))
+       if (__hasOwnProp$1.call(b, prop))
+         __defNormalProp$3(a, prop, b[prop]);
+     if (__getOwnPropSymbols$1)
+       for (var prop of __getOwnPropSymbols$1(b)) {
+         if (__propIsEnum$1.call(b, prop))
+           __defNormalProp$3(a, prop, b[prop]);
+       }
+     return a;
+   };
+   var __spreadProps$1 = (a, b) => __defProps$1(a, __getOwnPropDescs$1(b));
+   const mtLoadedEffect = StateEffect.define();
+   const mediaPreview = StateField.define({
+     create(state) {
+       const images = extractMTs(state);
+       const decorations = images.map((img) => {
+         return Decoration.widget({
+           widget: new MTPreviewWidget(img, 0 /* INITIAL */),
+           info: img,
+           src: img.src
+         }).range(img.to + 12);
+       });
+       return Decoration.set(decorations, true);
+     },
+     update(value, tx) {
+       const loadedImages = tx.effects.filter(
+         (effect) => effect.is(mtLoadedEffect)
+       );
+       if (tx.docChanged || loadedImages.length > 0) {
+         const images = extractMTs(tx.state);
+         const previous = value.iter();
+         const previousSpecs = new Array();
+         while (previous.value !== null) {
+           previousSpecs.push(previous.value.spec.info);
+           previous.next();
+         }
+         const decorations = images.map((img) => {
+           var _a;
+           const hasImageLoaded = Boolean(
+             loadedImages.find(
+               (effect) => effect.value.src === img.src
+             ) || ((_a = previousSpecs.find((spec) => spec.src === img.src)) == null ? void 0 : _a.loaded)
+           );
+           return Decoration.widget({
+             widget: new MTPreviewWidget(
+               img,
+               hasImageLoaded ? 1 /* LOADED */ : 0 /* INITIAL */
+             ),
+             block: hasImageLoaded ? true : false,
+             src: img.src,
+             side: 1,
+             info: __spreadProps$1(__spreadValues$1({}, img), { loaded: hasImageLoaded })
+           }).range(img.to + 12);
+         });
+         return Decoration.set(decorations, true);
+       }
+       return value.map(tx.changes);
+     },
+     provide(field) {
+       return EditorView.decorations.from(field);
+     }
+   });
+   const srcRE = /src="([^"]+)"/;
+   const keyRE = /data-crypto-key="([^"]+)"/;
+   function extractMTs(state) {
+     const imageUrls = [];
+     syntaxTree(state).iterate({
+       enter: ({ name, node, from, to }) => {
+         if (name !== "HTMLTag")
+           return;
+         let tag = state.sliceDoc(from + 1, from + 10).toLowerCase();
+         if (tag !== "media-tag")
+           return;
+         const src = state.sliceDoc(from, to).match(srcRE).pop();
+         const key = state.sliceDoc(from, to).match(keyRE).pop();
+         const alt = "Media";
+         const srcStr = src + "|" + key;
+         imageUrls.push({ src: srcStr, from, to, alt });
+       }
+     });
+     return imageUrls;
+   }
+   class MTPreviewWidget extends WidgetType {
+     constructor(info, state) {
+       super();
+       this.info = info;
+       this.state = state;
+     }
+     toDOM(view) {
+       const el = document.createElement("media-container");
+       const mt = document.createElement("media-tag");
+       el.appendChild(mt);
+       let data = this.info.src.split("|");
+       mt.setAttribute("src", data[0]);
+       mt.setAttribute("data-crypto-key", data[1]);
+       const CP_CM_MT = window.CP_CM_MT;
+       if (CP_CM_MT) {
+         CP_CM_MT(el);
+       }
+       setTimeout(() => {
+         const tx = {};
+         if (this.state === 0 /* INITIAL */) {
+           tx.effects = [
+             mtLoadedEffect.of(__spreadProps$1(__spreadValues$1({}, this.info), { loaded: true }))
+           ];
+         }
+         view.dispatch(tx);
+       });
+       return el;
+     }
+     eq(widget) {
+       return JSON.stringify(widget.info) === JSON.stringify(this.info) && widget.state === this.state;
+     }
+   }
+
+   var __defProp$2 = Object.defineProperty;
+   var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$1 = (obj, key, value) => {
+     __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   function hideNodes$1(view) {
+     const widgets = new Array();
+     iterateTreeInVisibleRanges(view, {
+       enter(node) {
+         let tag = view.state.sliceDoc(node.from + 1, node.from + 10).toLowerCase();
+         if (node.name === "HTMLTag" && tag === "media-tag" && !isCursorInRange(view.state, [node.from, node.to + 12])) {
+           console.warn(node.from, node.to + 12, view.state.sliceDoc(node.from, node.to + 12));
+           widgets.push(invisibleDecoration.range(node.from, node.to + 12));
+         }
+       }
+     });
+     return Decoration.set(widgets, true);
+   }
+   const hideMTNodePlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField$1(this, "decorations");
+         this.decorations = hideNodes$1(view);
+       }
+       update(update) {
+         if (update.docChanged || update.selectionSet)
+           this.decorations = hideNodes$1(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   const mediatag = () => [
+     mediaPreview,
+     hideMTNodePlugin,
+     baseTheme$1
+   ];
+   const baseTheme$1 = EditorView.baseTheme({
+     ["." + image$1.widget]: {
+       display: "block",
+       objectFit: "contain",
+       maxWidth: "100%",
+       paddingLeft: "4px",
+       maxHeight: "100%",
+       userSelect: "none"
+     }
+   });
+
+   var __defProp$1 = Object.defineProperty;
+   var __defProps = Object.defineProperties;
+   var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+   var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+   var __hasOwnProp = Object.prototype.hasOwnProperty;
+   var __propIsEnum = Object.prototype.propertyIsEnumerable;
+   var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __spreadValues = (a, b) => {
+     for (var prop in b || (b = {}))
+       if (__hasOwnProp.call(b, prop))
+         __defNormalProp$1(a, prop, b[prop]);
+     if (__getOwnPropSymbols)
+       for (var prop of __getOwnPropSymbols(b)) {
+         if (__propIsEnum.call(b, prop))
+           __defNormalProp$1(a, prop, b[prop]);
+       }
+     return a;
+   };
+   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+   StateEffect.define();
+   const cpExtPreview = StateField.define({
+     create(state) {
+       const images = extractExts(state);
+       const decorations = images.map((img) => {
+         return Decoration.widget({
+           widget: new ExtPreviewWidget(img),
+           info: img,
+           side: 1,
+           block: true,
+           src: img.src
+         }).range(img.to);
+       });
+       return Decoration.set(decorations, true);
+     },
+     update(value, tx) {
+       if (tx.docChanged) {
+         const images = extractExts(tx.state);
+         const previous = value.iter();
+         const previousSpecs = new Array();
+         while (previous.value !== null) {
+           previousSpecs.push(previous.value.spec.info);
+           previous.next();
+         }
+         const CP_CM_clear = window.CP_CM_clear;
+         if (CP_CM_clear) {
+           CP_CM_clear(images);
+         }
+         const decorations = images.map((img) => {
+           return Decoration.widget({
+             widget: new ExtPreviewWidget(
+               img
+             ),
+             block: true,
+             src: img.src,
+             side: 1,
+             info: __spreadProps(__spreadValues({}, img), { loaded: true })
+           }).range(img.to);
+         });
+         return Decoration.set(decorations, true);
+       }
+       return value.map(tx.changes);
+     },
+     provide(field) {
+       return EditorView.decorations.from(field);
+     }
+   });
+   function extractExts(state) {
+     const extUrls = [];
+     syntaxTree(state).iterate({
+       enter: ({ name, node, from, to }) => {
+         if (!["FencedCode", "CodeBlock"].includes(name))
+           return;
+         let lang = state.sliceDoc(from + 3, from + 10).toLowerCase();
+         if (/^(mermaid|mathjax|markmap)/.test(lang)) {
+           let src = state.sliceDoc(from, to);
+           extUrls.push({ src, from, to });
+         }
+       }
+     });
+     return extUrls;
+   }
+   class ExtPreviewWidget extends WidgetType {
+     constructor(info) {
+       super();
+       this.info = info;
+     }
+     toDOM(view) {
+       const el = document.createElement("media-container");
+       el.setAttribute("class", "cp-ext");
+       const CP_CM_ext = window.CP_CM_ext;
+       if (CP_CM_ext) {
+         CP_CM_ext(el, this.info.src);
+       }
+       return el;
+     }
+     eq(widget) {
+       return JSON.stringify(widget.info) === JSON.stringify(this.info);
+     }
+   }
+
+   var __defProp = Object.defineProperty;
+   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField = (obj, key, value) => {
+     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   function hideNodes(view) {
+     const widgets = new Array();
+     iterateTreeInVisibleRanges(view, {
+       enter: ({ type, from, to, node }) => {
+         if (type.name !== "FencedCode") {
+           return;
+         }
+         if (!["FencedCode", "CodeBlock"].includes(type.name))
+           return;
+         let lang = view.state.sliceDoc(from + 3, from + 10).toLowerCase();
+         if (!/^(mermaid|mathjax|markmap)/.test(lang) || isCursorInRange(view.state, [from, to])) {
+           return;
+         }
+         editorLines(view, from, to).forEach((block, i) => {
+           if (block.from === block.to) {
+             return;
+           }
+           if (i) {
+             widgets.push(Decoration.line({
+               attributes: { "class": "cp-cm-hide-line" }
+             }).range(block.from));
+             return;
+           }
+           widgets.push(invisibleDecoration.range(block.from, block.to));
+         });
+       }
+     });
+     return Decoration.set(widgets, true);
+   }
+   const hideExtNodePlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField(this, "decorations");
+         this.decorations = hideNodes(view);
+       }
+       update(update) {
+         if (update.docChanged || update.selectionSet)
+           this.decorations = hideNodes(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   const cpExtension = () => [
+     cpExtPreview,
+     hideExtNodePlugin,
+     baseTheme
+   ];
+   const baseTheme = EditorView.baseTheme({
+     [".cp-cm-hide-line"]: {
+       display: "none"
+     }
+   });
+
+   const frontMatterFence = /^---\s*$/m;
+   ({
+     defineNodes: [{ name: "Frontmatter", block: true }, "FrontmatterMark"],
+     props: [
+       styleTags({
+         Frontmatter: [tags$1.documentMeta, tags$1.monospace],
+         FrontmatterMark: tags$1.processingInstruction
+       }),
+       foldNodeProp.add({
+         Frontmatter: foldInside,
+         FrontmatterMark: () => null
+       })
+     ],
+     wrap: parseMixed((node) => {
+       const { parser } = StreamLanguage.define(yaml);
+       if (node.type.name === "Frontmatter") {
+         return {
+           parser,
+           overlay: [{ from: node.from + 4, to: node.to - 4 }]
+         };
+       } else {
+         return null;
+       }
+     }),
+     parseBlock: [
+       {
+         name: "Fronmatter",
+         before: "HorizontalRule",
+         parse: (cx, line) => {
+           let end;
+           const children = new Array();
+           if (cx.lineStart === 0 && frontMatterFence.test(line.text)) {
+             children.push(cx.elt("FrontmatterMark", 0, 4));
+             while (cx.nextLine()) {
+               if (frontMatterFence.test(line.text)) {
+                 end = cx.lineStart + 4;
+                 break;
+               }
+             }
+             children.push(cx.elt("FrontmatterMark", end - 4, end));
+             cx.addElement(cx.elt("Frontmatter", 0, end, children));
+             return true;
+           } else {
+             return false;
+           }
+         }
+       }
+     ]
+   });
+
+   const ixora = [
+     headingSlugField,
+     imagePreview,
+     mediaPreview,
+     cpExtPreview,
+     blockquote(),
+     codeblock(),
+     headings(),
+     hideMarks(),
+     lists(),
+     links(),
+     image(),
+     mediatag(),
+     cpExtension()
+   ];
+   var src_default = ixora;
+
    /*
    import {defaultKeymap, history, historyKeymap} from "@codemirror/commands"
    import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
@@ -33273,6 +34506,8 @@
    let brackets = new Compartment;
    let indents = new Compartment;
    let readOnly = new Compartment;
+   let sv = new Compartment;
+
 
    let evTypes = {
        change: [],
@@ -33312,18 +34547,23 @@
        return el.id === 'gfm';
    }) || languages[2];
 
+
+
    window.CP_getLanguages = () => languages.slice();
    window.CP_createEditor = (cfg) => {
        cfg = cfg || {};
+       let classic = cfg.noNumber ? [[]] : [lineNumbers(), foldGutter()];
        let editor = new EditorView({
            state: EditorState.create({
                extensions: [
+                   sv.of(classic),
+
                    cursorExt,
                    authorExt,
 
                    EditorView.lineWrapping,
                    updateListenerExtension,
-                   //domEventExtension,
+
                    highlightActiveLineGutter(),
                    highlightSpecialChars(),
                    drawSelection(),
@@ -33331,9 +34571,6 @@
                    EditorState.allowMultipleSelections.of(true),
                    indentOnInput(),
                    syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
-
-                   cfg.noNumber ? [] : lineNumbers(),
-                   cfg.noNumber ? [] : foldGutter(),
 
                    keymap.of([indentWithTab]),
                    indents.of(indentUnit.of('\t')),
@@ -33349,14 +34586,18 @@
                    rectangularSelection(),
                    crosshairCursor(),
                    highlightActiveLine(),
-                   //highlightSelectionMatches(),
-                   //defaultHighlightStyle
+
                    language.of([md.extension]),
                    theme.of([themes[2]])
                ],
                doc: ''
            }),
        });
+
+       editor.CP_setInline = (state) => {
+           editor.dispatch({ effects: sv.reconfigure([state ? [src_default] : classic]) });
+       };
+
 
        editor.CP_listThemes = () => themes.slice();
        editor.CP_setTheme = (id) => {

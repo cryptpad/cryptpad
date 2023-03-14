@@ -31,9 +31,13 @@ define([
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
+    var drawMarkmap;
+    var drawMermaid;
+    var drawMathjax;
+
     var Mermaid = {
         __stubbed: true,
-        init: function () {
+        load: function ($el) {
             require([
                 'mermaid',
             ], function (_Mermaid) {
@@ -48,6 +52,7 @@ define([
                     });
                 }
 
+                drawMermaid($el);
                 pluginLoaded.fire();
             });
         }
@@ -57,7 +62,7 @@ define([
 
     var Mathjax = {
         __stubbed: true,
-        tex2svg: function (a, b) {
+        load: function ($el) {
             require([
                 '/bower_components/MathJax/es5/tex-svg.js',
             ], function () {
@@ -65,13 +70,13 @@ define([
                 if (Mathjax.__stubbed) {
                     Mathjax = window.MathJax;
                 }
-                Mathjax.tex2svg(a, b);
+
+                drawMathjax($el);
                 pluginLoaded.fire();
             });
         }
     };
 
-    var drawMarkmap;
     var MarkMapTransform;
     var Markmap;
 
@@ -501,41 +506,49 @@ define([
         $el.find('.clickable').removeClass('clickable');
     };
 
-    plugins.mermaid = {
-        name: 'mermaid',
-        attr: 'mermaid-source',
-        render: function ($el) {
+    drawMermaid = function ($el) {
+        if (Mermaid.__stubbed) { return void Mermaid.load($el); }
+
+        setTimeout(function () {
             Mermaid.init(undefined, $el);
             // clickable elements in mermaid don't work well with our sandboxing setup
             // the function below strips clickable elements but still leaves behind some artifacts
             // tippy tooltips might still be useful, so they're not removed. It would be
             // preferable to just support links, but this covers up a rough edge in the meantime
             removeMermaidClickables($el);
-        }
+        });
+    };
+
+    drawMathjax = function ($el) {
+        if (Mathjax.__stubbed) { return void Mathjax.load($el); }
+
+        var el = $el[0];
+        if (!el) { return; }
+        var code = el.getAttribute("mathjax-source");
+        var svg = Mathjax.tex2svg(code, {display: true});
+        if (!svg) { return; }
+        svg.innerHTML = svg.innerHTML.replace(/xlink:href/g, "href");
+        var wrapper = document.createElement('span');
+        wrapper.innerHTML = svg.innerHTML;
+        el.innerHTML = wrapper.outerHTML;
+    };
+
+    plugins.mermaid = {
+        name: 'mermaid',
+        attr: 'mermaid-source',
+        render: drawMermaid
     };
 
     plugins.markmap = {
         name: 'markmap',
         attr: 'markmap-source',
-        render:  function ($el) {
-            drawMarkmap($el);
-        }
+        render: drawMarkmap
     };
 
     plugins.mathjax = {
         name: 'mathjax',
         attr: 'mathjax-source',
-        render: function renderMathjax ($el) {
-            var el = $el[0];
-            if (!el) { return; }
-            var code = el.getAttribute("mathjax-source");
-            var svg = Mathjax.tex2svg(code, {display: true});
-            if (!svg) { return; }
-            svg.innerHTML = svg.innerHTML.replace(/xlink:href/g, "href");
-            var wrapper = document.createElement('span');
-            wrapper.innerHTML = svg.innerHTML;
-            el.innerHTML = wrapper.outerHTML;
-        }
+        render: drawMathjax
     };
 
     var applyCSS = function (el, css) {
@@ -917,6 +930,7 @@ define([
 
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
+                    $el.removeAttr('data-processed');
                     try {
                         plugin.render($el, {
                             scope: $content,

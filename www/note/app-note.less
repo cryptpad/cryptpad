@@ -27,6 +27,33 @@
             max-width: 100%;
             resize: none;
             flex: 1;
+            &.cp-app-code-halfpage {
+                align-items: center;
+                .cm-editor, .cp-markdown-toolbar {
+                    max-width: ~"min(100%,1000px)"; // XXX
+                    min-width: 0;
+                    width: 1000px; // XXX
+                }
+                media-container {
+                    &.cp-ext {
+                        min-width: 70ch !important;
+                        .markdown_extensions();
+                        pre {
+                            min-width: 70ch !important;
+                        }
+                        pre.mathjax {
+                            display: inline;
+                        }
+                    }
+                    display: inline-block;
+                    media-tag {
+                        display: inline-block;
+                        & > * {
+                            max-width: 70ch;
+                        }
+                    }
+                }
+            }
         }
     }
     .cm-editor {

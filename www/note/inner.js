@@ -76,6 +76,7 @@ define([
     RevealH)
 {
 
+
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
         'gfm',
@@ -181,9 +182,14 @@ define([
         });
     };
 
-    var present = {};
+    var inlines = {};
+    inlines['gfm'] = function () {
+
+    };
+
+    var presents = {};
     var currentReveal;
-    present['gfm'] = function (value, $container, common) {
+    presents['gfm'] = function (value, $container, common) {
         var el = h('div.reveal', [
             h('div.slides', [
                 h('section', {
@@ -261,8 +267,22 @@ define([
 
         var $previewButton = framework._.sfCommon.createButton('preview', true);
         var $presentButton = framework._.sfCommon.createButton('present', true);
+        var $inlineButton = framework._.sfCommon.createButton('', true, {
+            drawer: false,
+            icon: "fa-i-cursor",
+            text: "Inline" // XXX
+        });
 
         var modes = {
+            inline: {
+                button: $inlineButton,
+                container: $(),
+                contentContainer: $(),
+                handlers: inlines,
+                handler: function () {
+                    $codeMirrorContainer.toggleClass('cp-app-code-halfpage', true);
+                }
+            },
             preview: {
                 button: $previewButton,
                 container: $previewContainer,
@@ -276,7 +296,7 @@ define([
                 button: $presentButton,
                 container: $presentContainer,
                 contentContainer: $present,
-                handlers: present,
+                handlers: presents,
                 handler: function (f) {
                     f(CodeMirror.getValue(), $present, framework._.sfCommon);
                 }
@@ -312,6 +332,7 @@ define([
                 modes[id].container.hide();
                 modes[id].button.removeClass('cp-toolbar-button-active');
             });
+            $codeMirrorContainer.toggleClass('cp-app-code-halfpage', false);
             $codeMirrorContainer.toggleClass('cp-app-code-fullpage', true);
             $editorContainer.toggleClass('cp-app-code-present', false);
             current = false;
@@ -321,9 +342,12 @@ define([
             var mode = modes[id];
             var state = mode && mode.handlers[language];
             if (!state) { return false; }
+
+            CodeMirror.setInline(id === 'inline');
+
             mode.container.show();
             mode.button.toggleClass('cp-toolbar-button-active', true);
-            $codeMirrorContainer.removeClass('cp-app-code-fullpage');
+            if (id !== "inline") { $codeMirrorContainer.removeClass('cp-app-code-fullpage'); }
             if (isPresentMode) {
                 $editorContainer.toggleClass('cp-app-code-present', true);
                 //$previewButton.hide();
@@ -338,7 +362,10 @@ define([
             mode.button.click(function () {
                 var newState = current !== id;
                 if (newState) { setViewMode(CodeMirror.highlightMode, id); }
-                else { hideAll(); }
+                else {
+                    CodeMirror.setInline(false);
+                    hideAll();
+                }
 
                 framework._.sfCommon.setPadAttribute('previewMode', current, function (e) {
                     if (e) { return console.log(e); }
@@ -648,6 +675,58 @@ define([
 
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
+            window.CP_CM_MT = function (el) {
+                var id = 'cp_'+Util.uid();
+                var $el = $(el).attr('id', id);
+                var html = el.innerHTML;
+                $el.empty();
+                DiffMd.apply(html, $el, common, 'media-container');
+            };
+
+            var inlineCache = {};
+            window.CP_CM_ext = function (el, src) {
+                var MutationObserver = window.MutationObserver;
+                var id = 'cp_'+Util.uid();
+                var $el = $(el).attr('id', id);
+                $el.attr('class', 'cp-ext');
+                if (inlineCache[src]) {
+                    return $el.append(inlineCache[src].clone(true));
+                }
+
+                // If new elements, compute it and add to cache
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.some(function(mutation) {
+                        if (mutation.type === 'childList') {
+                            if ($el.find('pre > svg').length) {
+                                inlineCache[src] = $el.find('pre').clone(true);
+                                observer.disconnect();
+                                return true;
+                            }
+                        }
+                    });
+                });
+                observer.observe(el, {
+                    attributes: false,
+                    childList: true,
+                    subtree: true,
+                    characterData: false
+                });
+
+                $el.attr('class', 'cp-ext');
+                DiffMd.apply(DiffMd.render(src), $el, common, 'media-container');
+                $el.attr('class', 'cp-ext');
+            };
+            window.CP_CM_clear = function (images) {
+                // Clear from cache SVGs that are not needed anymore
+                Object.keys(inlineCache).forEach(function (src) {
+                    if (!images.some(function (img) {
+                        return img.src === src;
+                    })) {
+                        delete inlineCache[src];
+                    }
+                });
+            };
+
         framework.onReady(function (newPad) {
             CodeMirror.focus();
 
@@ -667,7 +746,6 @@ define([
                     markers.setState(true);
                 }
             });
-
 
             var fmConfig = {
                 dropArea: $('.cm-editor'),

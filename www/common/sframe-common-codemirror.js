@@ -227,7 +227,10 @@ define([
         };
 
         exp.editor = editor;
-        console.error(editor);
+
+        exp.setInline = function (state) {
+            editor.CP_setInline(state);
+        };
 
         // editor to sframe-common-codemirror
         exp.getValue = function () {
