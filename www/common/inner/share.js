@@ -12,6 +12,9 @@ define([
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/customize/pages.js',
+
+    '/bower_components/file-saver/FileSaver.min.js',
+    '/lib/qrcode.min.js',
 ], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
     var Share = {};
@@ -486,6 +489,58 @@ define([
         });
     };
 
+    var getQRCode = function (link) {
+        var div = h('div');
+        /*var code =*/ new window.QRCode(div, link);
+        return div;
+    };
+
+    var getQRTab = function (Env, data, opts, _cb) {
+        var qr = getQRCode(opts.getLinkValue());
+
+        var container = h('span#cp-qr-container', [
+            h('div#cp-qr-link-preview', qr),
+        ]);
+
+        var link = h('div.cp-share-modal', [
+            container,
+        ]);
+
+        $(container).css({
+            'background-color': 'white',
+            display: 'inline-flex',
+            padding: '5px',
+        });
+
+        var buttons = [
+            makeCancelButton(),
+            {
+                className: 'primary cp-bar',
+                name: Messages.share_bar,
+                onClick: function () {
+                    UI.warn("OOPS: NOT IMPLEMENTED"); // XXX
+                    return true;
+                },
+            },
+            {
+                className: 'primary cp-nobar',
+                name: Messages.download_dl,
+                iconClass: '.fa.fa-download',
+                onClick: function () {
+                    qr.querySelector('canvas').toBlob(blob => {
+                        var name = Util.fixFileName((opts.title || 'document') + '-qr.png');
+                        window.saveAs(blob, name);
+                    });
+                },
+            },
+        ];
+
+        return _cb(void 0, {
+            content: link,
+            buttons: buttons,
+        });
+    };
+
     var getEmbedTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -666,12 +721,17 @@ define([
         var getEmbed = function () {
             return $rights.parent().find('#cp-embed-link-preview');
         };
+        var getQR = function () {
+            return $rights.parent().find('#cp-qr-container');
+        };
 
         // update values for link and embed preview when radio btns change
         $rights.find('input[type="radio"]').on('change', function () {
-            getLink().val(opts.getLinkValue({
+            var link = opts.getLinkValue({
                 embed: Util.isChecked($('.alertify').find('#cp-share-embed'))
-            }));
+            });
+
+            getLink().val(link);
             // Hide or show the burn after reading alert
             if (Util.isChecked($rights.find('#cp-share-bar')) && !opts.burnAfterReadingUrl) {
                 $('.cp-alertify-bar-selected').show();
@@ -681,6 +741,10 @@ define([
                 return;
             }
             getEmbed().val(opts.getEmbedValue());
+
+            var qr = getQRCode(opts.getLinkValue());
+            getQR().html('').append(qr);
+
             // Hide burn after reading button
             $('.alertify').find('.cp-nobar').show();
             $('.alertify').find('.cp-bar').hide();
@@ -780,6 +844,11 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
+        }, {
+            getTab: getQRTab,
+            title: "QR", // XXX
+            icon: 'fa fa-qrcode',
+            active: true,
         }];
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
