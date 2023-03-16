@@ -3971,11 +3971,11 @@
      constructor(root) {
        if (!root.head && root.adoptedStyleSheets && typeof CSSStyleSheet != "undefined") {
          if (adoptedSet) {
-           root.adoptedStyleSheets = [adoptedSet.sheet].concat(root.adoptedStyleSheets);
+           root.adoptedStyleSheets = [adoptedSet.sheet, ...root.adoptedStyleSheets];
            return root[SET] = adoptedSet
          }
          this.sheet = new CSSStyleSheet;
-         root.adoptedStyleSheets = [this.sheet].concat(root.adoptedStyleSheets);
+         root.adoptedStyleSheets = [this.sheet, ...root.adoptedStyleSheets];
          adoptedSet = this;
        } else {
          this.styleTag = (root.ownerDocument || root).createElement("style");
@@ -4675,6 +4675,7 @@
        }
        static get(node) { return node.cmView; }
        get isEditable() { return true; }
+       get isWidget() { return false; }
        merge(from, to, source, hasStart, openStart, openEnd) {
            return false;
        }
@@ -5049,6 +5050,7 @@
            return this.length ? rect : flattenRect(rect, this.side > 0);
        }
        get isEditable() { return false; }
+       get isWidget() { return true; }
        destroy() {
            super.destroy();
            if (this.dom)
@@ -5758,6 +5760,8 @@
        }
        ignoreMutation() { return true; }
        ignoreEvent(event) { return this.widget.ignoreEvent(event); }
+       get isEditable() { return false; }
+       get isWidget() { return true; }
        destroy() {
            super.destroy();
            if (this.dom)
@@ -6182,11 +6186,6 @@
            let changedRanges = [];
            this.changes.iterChangedRanges((fromA, toA, fromB, toB) => changedRanges.push(new ChangedRange(fromA, toA, fromB, toB)));
            this.changedRanges = changedRanges;
-           let focus = view.hasFocus;
-           if (focus != view.inputState.notifiedFocused) {
-               view.inputState.notifiedFocused = focus;
-               this.flags |= 1 /* UpdateFlag.Focus */;
-           }
        }
        /**
        @internal
@@ -7321,11 +7320,11 @@
        }
        return { node, offset: closestOffset > -1 ? closestOffset : generalSide > 0 ? node.nodeValue.length : 0 };
    }
-   function posAtCoords(view, { x, y }, precise, bias = -1) {
-       var _a;
+   function posAtCoords(view, coords, precise, bias = -1) {
+       var _a, _b;
        let content = view.contentDOM.getBoundingClientRect(), docTop = content.top + view.viewState.paddingTop;
        let block, { docHeight } = view.viewState;
-       let yOffset = y - docTop;
+       let { x, y } = coords, yOffset = y - docTop;
        if (yOffset < 0)
            return 0;
        if (yOffset > docHeight)
@@ -7396,7 +7395,17 @@
                return yOffset > block.top + block.height / 2 ? block.to : block.from;
            ({ node, offset } = domPosAtCoords(line.dom, x, y));
        }
-       return view.docView.posFromDOM(node, offset);
+       let nearest = view.docView.nearest(node);
+       if (!nearest)
+           return null;
+       if (nearest.isWidget && ((_b = nearest.dom) === null || _b === void 0 ? void 0 : _b.nodeType) == 1) {
+           let rect = nearest.dom.getBoundingClientRect();
+           return coords.y < rect.top || coords.y <= rect.bottom && coords.x <= (rect.left + rect.right) / 2
+               ? nearest.posAtStart : nearest.posAtEnd;
+       }
+       else {
+           return nearest.localPosFromDOM(node, offset) + nearest.posAtStart;
+       }
    }
    function posAtCoordsImprecise(view, contentRect, block, x, y) {
        let into = Math.round((x - contentRect.left) * view.defaultCharacterWidth);
@@ -8119,7 +8128,7 @@
        view.observer.flush();
        let data = brokenClipboardAPI ? null : event.clipboardData;
        if (data) {
-           doPaste(view, data.getData("text/plain"));
+           doPaste(view, data.getData("text/plain") || data.getData("text/uri-text"));
            event.preventDefault();
        }
        else {
@@ -8187,17 +8196,23 @@
                userEvent: "delete.cut"
            });
    };
+   const isFocusChange = /*@__PURE__*/Annotation.define();
+   function focusChangeTransaction(state, focus) {
+       let effects = [];
+       for (let getEffect of state.facet(focusChangeEffect)) {
+           let effect = getEffect(state, focus);
+           if (effect)
+               effects.push(effect);
+       }
+       return effects ? state.update({ effects, annotations: isFocusChange.of(true) }) : null;
+   }
    function updateForFocusChange(view) {
        setTimeout(() => {
-           if (view.hasFocus != view.inputState.notifiedFocused) {
-               let effects = [], focus = !view.inputState.notifiedFocused;
-               for (let getEffect of view.state.facet(focusChangeEffect)) {
-                   let effect = getEffect(view.state, focus);
-                   if (effect)
-                       effects.push(effect);
-               }
-               if (effects.length)
-                   view.dispatch({ effects });
+           let focus = view.hasFocus;
+           if (focus != view.inputState.notifiedFocused) {
+               let tr = focusChangeTransaction(view.state, focus);
+               if (tr)
+                   view.dispatch(tr);
                else
                    view.update([]);
            }
@@ -8394,11 +8409,11 @@
            return new BlockInfo(this.from, this.length + other.length, this.top, this.height + other.height, detail);
        }
    }
-   var QueryType = /*@__PURE__*/(function (QueryType) {
+   var QueryType$1 = /*@__PURE__*/(function (QueryType) {
        QueryType[QueryType["ByPos"] = 0] = "ByPos";
        QueryType[QueryType["ByHeight"] = 1] = "ByHeight";
        QueryType[QueryType["ByPosNoHeight"] = 2] = "ByPosNoHeight";
-   return QueryType})(QueryType || (QueryType = {}));
+   return QueryType})(QueryType$1 || (QueryType$1 = {}));
    const Epsilon = 1e-3;
    class HeightMap {
        constructor(length, // The number of characters covered
@@ -8430,8 +8445,8 @@
            let me = this, doc = oracle.doc;
            for (let i = changes.length - 1; i >= 0; i--) {
                let { fromA, toA, fromB, toB } = changes[i];
-               let start = me.lineAt(fromA, QueryType.ByPosNoHeight, oracle.setDoc(oldDoc), 0, 0);
-               let end = start.to >= toA ? start : me.lineAt(toA, QueryType.ByPosNoHeight, oracle, 0, 0);
+               let start = me.lineAt(fromA, QueryType$1.ByPosNoHeight, oracle.setDoc(oldDoc), 0, 0);
+               let end = start.to >= toA ? start : me.lineAt(toA, QueryType$1.ByPosNoHeight, oracle, 0, 0);
                toB += end.to - toA;
                toA = end.to;
                while (i > 0 && start.from <= changes[i - 1].toA) {
@@ -8439,7 +8454,7 @@
                    fromB = changes[i - 1].fromB;
                    i--;
                    if (fromA < start.from)
-                       start = me.lineAt(fromA, QueryType.ByPosNoHeight, oracle, 0, 0);
+                       start = me.lineAt(fromA, QueryType$1.ByPosNoHeight, oracle, 0, 0);
                }
                fromB += start.from - fromA;
                fromA = start.from;
@@ -8593,9 +8608,9 @@
            }
        }
        lineAt(value, type, oracle, top, offset) {
-           if (type == QueryType.ByHeight)
+           if (type == QueryType$1.ByHeight)
                return this.blockAt(value, oracle, top, offset);
-           if (type == QueryType.ByPosNoHeight) {
+           if (type == QueryType$1.ByPosNoHeight) {
                let { from, to } = oracle.doc.lineAt(value);
                return new BlockInfo(from, to - from, 0, 0, BlockType.Text);
            }
@@ -8700,12 +8715,12 @@
        }
        lineAt(value, type, oracle, top, offset) {
            let rightTop = top + this.left.height, rightOffset = offset + this.left.length + this.break;
-           let left = type == QueryType.ByHeight ? value < rightTop : value < rightOffset;
+           let left = type == QueryType$1.ByHeight ? value < rightTop : value < rightOffset;
            let base = left ? this.left.lineAt(value, type, oracle, top, offset)
                : this.right.lineAt(value, type, oracle, rightTop, rightOffset);
            if (this.break || (left ? base.to < rightOffset : base.from > rightOffset))
                return base;
-           let subQuery = type == QueryType.ByPosNoHeight ? QueryType.ByPosNoHeight : QueryType.ByPos;
+           let subQuery = type == QueryType$1.ByPosNoHeight ? QueryType$1.ByPosNoHeight : QueryType$1.ByPos;
            if (left)
                return base.join(this.right.lineAt(rightOffset, subQuery, oracle, rightTop, rightOffset));
            else
@@ -8720,7 +8735,7 @@
                    this.right.forEachLine(from, to, oracle, rightTop, rightOffset, f);
            }
            else {
-               let mid = this.lineAt(rightOffset, QueryType.ByPos, oracle, top, offset);
+               let mid = this.lineAt(rightOffset, QueryType$1.ByPos, oracle, top, offset);
                if (from < mid.from)
                    this.left.forEachLine(from, mid.from - 1, oracle, top, offset, f);
                if (mid.to >= from && mid.from <= to)
@@ -9210,35 +9225,35 @@
            let marginTop = 0.5 - Math.max(-0.5, Math.min(0.5, bias / 1000 /* VP.Margin */ / 2));
            let map = this.heightMap, oracle = this.heightOracle;
            let { visibleTop, visibleBottom } = this;
-           let viewport = new Viewport(map.lineAt(visibleTop - marginTop * 1000 /* VP.Margin */, QueryType.ByHeight, oracle, 0, 0).from, map.lineAt(visibleBottom + (1 - marginTop) * 1000 /* VP.Margin */, QueryType.ByHeight, oracle, 0, 0).to);
+           let viewport = new Viewport(map.lineAt(visibleTop - marginTop * 1000 /* VP.Margin */, QueryType$1.ByHeight, oracle, 0, 0).from, map.lineAt(visibleBottom + (1 - marginTop) * 1000 /* VP.Margin */, QueryType$1.ByHeight, oracle, 0, 0).to);
            // If scrollTarget is given, make sure the viewport includes that position
            if (scrollTarget) {
                let { head } = scrollTarget.range;
                if (head < viewport.from || head > viewport.to) {
                    let viewHeight = Math.min(this.editorHeight, this.pixelViewport.bottom - this.pixelViewport.top);
-                   let block = map.lineAt(head, QueryType.ByPos, oracle, 0, 0), topPos;
+                   let block = map.lineAt(head, QueryType$1.ByPos, oracle, 0, 0), topPos;
                    if (scrollTarget.y == "center")
                        topPos = (block.top + block.bottom) / 2 - viewHeight / 2;
                    else if (scrollTarget.y == "start" || scrollTarget.y == "nearest" && head < viewport.from)
                        topPos = block.top;
                    else
                        topPos = block.bottom - viewHeight;
-                   viewport = new Viewport(map.lineAt(topPos - 1000 /* VP.Margin */ / 2, QueryType.ByHeight, oracle, 0, 0).from, map.lineAt(topPos + viewHeight + 1000 /* VP.Margin */ / 2, QueryType.ByHeight, oracle, 0, 0).to);
+                   viewport = new Viewport(map.lineAt(topPos - 1000 /* VP.Margin */ / 2, QueryType$1.ByHeight, oracle, 0, 0).from, map.lineAt(topPos + viewHeight + 1000 /* VP.Margin */ / 2, QueryType$1.ByHeight, oracle, 0, 0).to);
                }
            }
            return viewport;
        }
        mapViewport(viewport, changes) {
            let from = changes.mapPos(viewport.from, -1), to = changes.mapPos(viewport.to, 1);
-           return new Viewport(this.heightMap.lineAt(from, QueryType.ByPos, this.heightOracle, 0, 0).from, this.heightMap.lineAt(to, QueryType.ByPos, this.heightOracle, 0, 0).to);
+           return new Viewport(this.heightMap.lineAt(from, QueryType$1.ByPos, this.heightOracle, 0, 0).from, this.heightMap.lineAt(to, QueryType$1.ByPos, this.heightOracle, 0, 0).to);
        }
        // Checks if a given viewport covers the visible part of the
        // document and not too much beyond that.
        viewportIsAppropriate({ from, to }, bias = 0) {
            if (!this.inView)
                return true;
-           let { top } = this.heightMap.lineAt(from, QueryType.ByPos, this.heightOracle, 0, 0);
-           let { bottom } = this.heightMap.lineAt(to, QueryType.ByPos, this.heightOracle, 0, 0);
+           let { top } = this.heightMap.lineAt(from, QueryType$1.ByPos, this.heightOracle, 0, 0);
+           let { bottom } = this.heightMap.lineAt(to, QueryType$1.ByPos, this.heightOracle, 0, 0);
            let { visibleTop, visibleBottom } = this;
            return (from == 0 || top <= visibleTop - Math.max(10 /* VP.MinCoverMargin */, Math.min(-bias, 250 /* VP.MaxCoverMargin */))) &&
                (to == this.state.doc.length ||
@@ -9375,10 +9390,10 @@
        }
        lineBlockAt(pos) {
            return (pos >= this.viewport.from && pos <= this.viewport.to && this.viewportLines.find(b => b.from <= pos && b.to >= pos)) ||
-               scaleBlock(this.heightMap.lineAt(pos, QueryType.ByPos, this.heightOracle, 0, 0), this.scaler);
+               scaleBlock(this.heightMap.lineAt(pos, QueryType$1.ByPos, this.heightOracle, 0, 0), this.scaler);
        }
        lineBlockAtHeight(height) {
-           return scaleBlock(this.heightMap.lineAt(this.scaler.fromDOM(height), QueryType.ByHeight, this.heightOracle, 0, 0), this.scaler);
+           return scaleBlock(this.heightMap.lineAt(this.scaler.fromDOM(height), QueryType$1.ByHeight, this.heightOracle, 0, 0), this.scaler);
        }
        elementAtHeight(height) {
            return scaleBlock(this.heightMap.blockAt(this.scaler.fromDOM(height), this.heightOracle, 0, 0), this.scaler);
@@ -9458,8 +9473,8 @@
        constructor(oracle, heightMap, viewports) {
            let vpHeight = 0, base = 0, domBase = 0;
            this.viewports = viewports.map(({ from, to }) => {
-               let top = heightMap.lineAt(from, QueryType.ByPos, oracle, 0, 0).top;
-               let bottom = heightMap.lineAt(to, QueryType.ByPos, oracle, 0, 0).bottom;
+               let top = heightMap.lineAt(from, QueryType$1.ByPos, oracle, 0, 0).top;
+               let bottom = heightMap.lineAt(to, QueryType$1.ByPos, oracle, 0, 0).bottom;
                vpHeight += bottom - top;
                return { from, to, top, bottom, domTop: 0, domBottom: 0 };
            });
@@ -9517,7 +9532,7 @@
            }
        });
    }
-   const baseTheme$1$2 = /*@__PURE__*/buildTheme("." + baseThemeID, {
+   const baseTheme$1$3 = /*@__PURE__*/buildTheme("." + baseThemeID, {
        "&": {
            position: "relative !important",
            boxSizing: "border-box",
@@ -9573,6 +9588,9 @@
            padding: "0 2px 0 6px"
        },
        ".cm-layer": {
+           position: "absolute",
+           left: 0,
+           top: 0,
            contain: "size style",
            "& > *": {
                position: "absolute"
@@ -10580,6 +10598,20 @@
                this.viewState.state = state;
                return;
            }
+           let focus = this.hasFocus, focusFlag = 0, dispatchFocus = null;
+           if (transactions.some(tr => tr.annotation(isFocusChange))) {
+               this.inputState.notifiedFocused = focus;
+               // If a focus-change transaction is being dispatched, set this update flag.
+               focusFlag = 1 /* UpdateFlag.Focus */;
+           }
+           else if (focus != this.inputState.notifiedFocused) {
+               this.inputState.notifiedFocused = focus;
+               // Schedule a separate focus transaction if necessary, otherwise
+               // add a flag to this update
+               dispatchFocus = focusChangeTransaction(state, focus);
+               if (!dispatchFocus)
+                   focusFlag = 1 /* UpdateFlag.Focus */;
+           }
            // If there was a pending DOM change, eagerly read it and try to
            // apply it after the given transactions.
            let pendingKey = this.observer.delayedAndroidKey, domChange = null;
@@ -10598,6 +10630,7 @@
            if (state.facet(EditorState.phrases) != this.state.facet(EditorState.phrases))
                return this.setState(state);
            update = ViewUpdate.create(this, state, transactions);
+           update.flags |= focusFlag;
            let scrollTarget = this.viewState.scrollTarget;
            try {
                this.updateState = 2 /* UpdateState.Updating */;
@@ -10635,10 +10668,15 @@
            if (!update.empty)
                for (let listener of this.state.facet(updateListener))
                    listener(update);
-           if (domChange) {
-               if (!applyDOMChange(this, domChange) && pendingKey.force)
-                   dispatchKey(this.contentDOM, pendingKey.key, pendingKey.keyCode);
-           }
+           if (dispatchFocus || domChange)
+               Promise.resolve().then(() => {
+                   if (dispatchFocus && this.state == dispatchFocus.startState)
+                       this.dispatch(dispatchFocus);
+                   if (domChange) {
+                       if (!applyDOMChange(this, domChange) && pendingKey.force)
+                           dispatchKey(this.contentDOM, pendingKey.key, pendingKey.keyCode);
+                   }
+               });
        }
        /**
        Reset the view to the given state. (This will cause the entire
@@ -10713,7 +10751,7 @@
            if (this.destroyed)
                return;
            if (this.measureScheduled > -1)
-               cancelAnimationFrame(this.measureScheduled);
+               this.win.cancelAnimationFrame(this.measureScheduled);
            this.measureScheduled = 0; // Prevent requestMeasure calls from scheduling another animation frame
            if (flush)
                this.observer.forceFlush();
@@ -10849,7 +10887,7 @@
        }
        mountStyles() {
            this.styleModules = this.state.facet(styleModule);
-           StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$2).reverse());
+           StyleModule.mount(this.root, this.styleModules.concat(baseTheme$1$3).reverse());
        }
        readMeasured() {
            if (this.updateState == 2 /* UpdateState.Updating */)
@@ -11151,7 +11189,7 @@
            this.dom.remove();
            this.observer.destroy();
            if (this.measureScheduled > -1)
-               cancelAnimationFrame(this.measureScheduled);
+               this.win.cancelAnimationFrame(this.measureScheduled);
            this.destroyed = true;
        }
        /**
@@ -11464,6 +11502,14 @@
            Keymaps.set(bindings, map = buildKeymap(bindings.reduce((a, b) => a.concat(b), [])));
        return map;
    }
+   /**
+   Run the key handlers registered for a given scope. The event
+   object should be a `"keydown"` event. Returns true if any of the
+   handlers handled it.
+   */
+   function runScopeHandlers(view, event, scope) {
+       return runHandlers(getKeymap(view.state), event, view, scope);
+   }
    let storedPrefix = null;
    const PrefixTimeout = 4000;
    function buildKeymap(bindings, platform = currentPlatform) {
@@ -11655,9 +11701,10 @@
        let from = Math.max(range.from, view.viewport.from), to = Math.min(range.to, view.viewport.to);
        let ltr = view.textDirection == Direction.LTR;
        let content = view.contentDOM, contentRect = content.getBoundingClientRect(), base = getBase(view);
-       let lineStyle = window.getComputedStyle(content.firstChild);
-       let leftSide = contentRect.left + parseInt(lineStyle.paddingLeft) + Math.min(0, parseInt(lineStyle.textIndent));
-       let rightSide = contentRect.right - parseInt(lineStyle.paddingRight);
+       let lineElt = content.querySelector(".cm-line"), lineStyle = lineElt && window.getComputedStyle(lineElt);
+       let leftSide = contentRect.left +
+           (lineStyle ? parseInt(lineStyle.paddingLeft) + Math.min(0, parseInt(lineStyle.textIndent)) : 0);
+       let rightSide = contentRect.right - (lineStyle ? parseInt(lineStyle.paddingRight) : 0);
        let startBlock = blockAt(view, from), endBlock = blockAt(view, to);
        let visualStart = startBlock.type == BlockType.Text ? startBlock : null;
        let visualEnd = endBlock.type == BlockType.Text ? endBlock : null;
@@ -12683,7 +12730,7 @@
            scroll() { this.maybeMeasure(); }
        }
    });
-   const baseTheme$a = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$b = /*@__PURE__*/EditorView.baseTheme({
        ".cm-tooltip": {
            zIndex: 100,
            boxSizing: "border-box"
@@ -12750,7 +12797,7 @@
    Facet to which an extension can add a value to show a tooltip.
    */
    const showTooltip = /*@__PURE__*/Facet.define({
-       enables: [tooltipPlugin, baseTheme$a]
+       enables: [tooltipPlugin, baseTheme$b]
    });
    /**
    Get the active tooltip view for a given tooltip, if available.
@@ -12762,6 +12809,175 @@
        let found = plugin.manager.tooltips.indexOf(tooltip);
        return found < 0 ? null : plugin.manager.tooltipViews[found];
    }
+
+   const panelConfig = /*@__PURE__*/Facet.define({
+       combine(configs) {
+           let topContainer, bottomContainer;
+           for (let c of configs) {
+               topContainer = topContainer || c.topContainer;
+               bottomContainer = bottomContainer || c.bottomContainer;
+           }
+           return { topContainer, bottomContainer };
+       }
+   });
+   /**
+   Get the active panel created by the given constructor, if any.
+   This can be useful when you need access to your panels' DOM
+   structure.
+   */
+   function getPanel(view, panel) {
+       let plugin = view.plugin(panelPlugin);
+       let index = plugin ? plugin.specs.indexOf(panel) : -1;
+       return index > -1 ? plugin.panels[index] : null;
+   }
+   const panelPlugin = /*@__PURE__*/ViewPlugin.fromClass(class {
+       constructor(view) {
+           this.input = view.state.facet(showPanel);
+           this.specs = this.input.filter(s => s);
+           this.panels = this.specs.map(spec => spec(view));
+           let conf = view.state.facet(panelConfig);
+           this.top = new PanelGroup(view, true, conf.topContainer);
+           this.bottom = new PanelGroup(view, false, conf.bottomContainer);
+           this.top.sync(this.panels.filter(p => p.top));
+           this.bottom.sync(this.panels.filter(p => !p.top));
+           for (let p of this.panels) {
+               p.dom.classList.add("cm-panel");
+               if (p.mount)
+                   p.mount();
+           }
+       }
+       update(update) {
+           let conf = update.state.facet(panelConfig);
+           if (this.top.container != conf.topContainer) {
+               this.top.sync([]);
+               this.top = new PanelGroup(update.view, true, conf.topContainer);
+           }
+           if (this.bottom.container != conf.bottomContainer) {
+               this.bottom.sync([]);
+               this.bottom = new PanelGroup(update.view, false, conf.bottomContainer);
+           }
+           this.top.syncClasses();
+           this.bottom.syncClasses();
+           let input = update.state.facet(showPanel);
+           if (input != this.input) {
+               let specs = input.filter(x => x);
+               let panels = [], top = [], bottom = [], mount = [];
+               for (let spec of specs) {
+                   let known = this.specs.indexOf(spec), panel;
+                   if (known < 0) {
+                       panel = spec(update.view);
+                       mount.push(panel);
+                   }
+                   else {
+                       panel = this.panels[known];
+                       if (panel.update)
+                           panel.update(update);
+                   }
+                   panels.push(panel);
+                   (panel.top ? top : bottom).push(panel);
+               }
+               this.specs = specs;
+               this.panels = panels;
+               this.top.sync(top);
+               this.bottom.sync(bottom);
+               for (let p of mount) {
+                   p.dom.classList.add("cm-panel");
+                   if (p.mount)
+                       p.mount();
+               }
+           }
+           else {
+               for (let p of this.panels)
+                   if (p.update)
+                       p.update(update);
+           }
+       }
+       destroy() {
+           this.top.sync([]);
+           this.bottom.sync([]);
+       }
+   }, {
+       provide: plugin => EditorView.scrollMargins.of(view => {
+           let value = view.plugin(plugin);
+           return value && { top: value.top.scrollMargin(), bottom: value.bottom.scrollMargin() };
+       })
+   });
+   class PanelGroup {
+       constructor(view, top, container) {
+           this.view = view;
+           this.top = top;
+           this.container = container;
+           this.dom = undefined;
+           this.classes = "";
+           this.panels = [];
+           this.syncClasses();
+       }
+       sync(panels) {
+           for (let p of this.panels)
+               if (p.destroy && panels.indexOf(p) < 0)
+                   p.destroy();
+           this.panels = panels;
+           this.syncDOM();
+       }
+       syncDOM() {
+           if (this.panels.length == 0) {
+               if (this.dom) {
+                   this.dom.remove();
+                   this.dom = undefined;
+               }
+               return;
+           }
+           if (!this.dom) {
+               this.dom = document.createElement("div");
+               this.dom.className = this.top ? "cm-panels cm-panels-top" : "cm-panels cm-panels-bottom";
+               this.dom.style[this.top ? "top" : "bottom"] = "0";
+               let parent = this.container || this.view.dom;
+               parent.insertBefore(this.dom, this.top ? parent.firstChild : null);
+           }
+           let curDOM = this.dom.firstChild;
+           for (let panel of this.panels) {
+               if (panel.dom.parentNode == this.dom) {
+                   while (curDOM != panel.dom)
+                       curDOM = rm(curDOM);
+                   curDOM = curDOM.nextSibling;
+               }
+               else {
+                   this.dom.insertBefore(panel.dom, curDOM);
+               }
+           }
+           while (curDOM)
+               curDOM = rm(curDOM);
+       }
+       scrollMargin() {
+           return !this.dom || this.container ? 0
+               : Math.max(0, this.top ?
+                   this.dom.getBoundingClientRect().bottom - Math.max(0, this.view.scrollDOM.getBoundingClientRect().top) :
+                   Math.min(innerHeight, this.view.scrollDOM.getBoundingClientRect().bottom) - this.dom.getBoundingClientRect().top);
+       }
+       syncClasses() {
+           if (!this.container || this.classes == this.view.themeClasses)
+               return;
+           for (let cls of this.classes.split(" "))
+               if (cls)
+                   this.container.classList.remove(cls);
+           for (let cls of (this.classes = this.view.themeClasses).split(" "))
+               if (cls)
+                   this.container.classList.add(cls);
+       }
+   }
+   function rm(node) {
+       let next = node.nextSibling;
+       node.remove();
+       return next;
+   }
+   /**
+   Opening a panel is done by providing a constructor function for
+   the panel through this facet. (The panel is closed again when its
+   constructor is no longer provided.) Values of `null` are ignored.
+   */
+   const showPanel = /*@__PURE__*/Facet.define({
+       enables: panelPlugin
+   });
 
    /**
    A gutter marker represents a bit of information attached to a line
@@ -12815,7 +13031,7 @@
    determined by their extension priority.
    */
    function gutter(config) {
-       return [gutters(), activeGutters.of(Object.assign(Object.assign({}, defaults$2), config))];
+       return [gutters$2(), activeGutters.of(Object.assign(Object.assign({}, defaults$2), config))];
    }
    const unfixGutters = /*@__PURE__*/Facet.define({
        combine: values => values.some(x => x)
@@ -12830,7 +13046,7 @@
    CSS [`position:
    sticky`](https://developer.mozilla.org/en-US/docs/Web/CSS/position#sticky)).
    */
-   function gutters(config) {
+   function gutters$2(config) {
        let result = [
            gutterView,
        ];
@@ -13174,7 +13390,7 @@
    function lineNumbers(config = {}) {
        return [
            lineNumberConfig.of(config),
-           gutters(),
+           gutters$2(),
            lineNumberGutter
        ];
    }
@@ -16949,7 +17165,7 @@
    Create an extension that configures code folding.
    */
    function codeFolding(config) {
-       let result = [foldState, baseTheme$1$1];
+       let result = [foldState, baseTheme$1$2];
        if (config)
            result.push(foldConfig.of(config));
        return result;
@@ -17058,7 +17274,7 @@
            codeFolding()
        ];
    }
-   const baseTheme$1$1 = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$1$2 = /*@__PURE__*/EditorView.baseTheme({
        ".cm-foldPlaceholder": {
            backgroundColor: "#eee",
            border: "1px solid #ddd",
@@ -17232,7 +17448,7 @@
            color: "#f00" }
    ]);
 
-   const baseTheme$9 = /*@__PURE__*/EditorView.baseTheme({
+   const baseTheme$a = /*@__PURE__*/EditorView.baseTheme({
        "&.cm-focused .cm-matchingBracket": { backgroundColor: "#328c8252" },
        "&.cm-focused .cm-nonmatchingBracket": { backgroundColor: "#bb555544" }
    });
@@ -17280,7 +17496,7 @@
    });
    const bracketMatchingUnique = [
        bracketMatchingState,
-       baseTheme$9
+       baseTheme$a
    ];
    /**
    Create an extension that enables bracket matching. Whenever the
@@ -17984,6 +18200,1214 @@
    this.
    */
    const indentWithTab = { key: "Tab", run: indentMore, shift: indentLess };
+
+   function crelt() {
+     var elt = arguments[0];
+     if (typeof elt == "string") elt = document.createElement(elt);
+     var i = 1, next = arguments[1];
+     if (next && typeof next == "object" && next.nodeType == null && !Array.isArray(next)) {
+       for (var name in next) if (Object.prototype.hasOwnProperty.call(next, name)) {
+         var value = next[name];
+         if (typeof value == "string") elt.setAttribute(name, value);
+         else if (value != null) elt[name] = value;
+       }
+       i++;
+     }
+     for (; i < arguments.length; i++) add(elt, arguments[i]);
+     return elt
+   }
+
+   function add(elt, child) {
+     if (typeof child == "string") {
+       elt.appendChild(document.createTextNode(child));
+     } else if (child == null) ; else if (child.nodeType != null) {
+       elt.appendChild(child);
+     } else if (Array.isArray(child)) {
+       for (var i = 0; i < child.length; i++) add(elt, child[i]);
+     } else {
+       throw new RangeError("Unsupported child node: " + child)
+     }
+   }
+
+   const basicNormalize = typeof String.prototype.normalize == "function"
+       ? x => x.normalize("NFKD") : x => x;
+   /**
+   A search cursor provides an iterator over text matches in a
+   document.
+   */
+   class SearchCursor {
+       /**
+       Create a text cursor. The query is the search string, `from` to
+       `to` provides the region to search.
+       
+       When `normalize` is given, it will be called, on both the query
+       string and the content it is matched against, before comparing.
+       You can, for example, create a case-insensitive search by
+       passing `s => s.toLowerCase()`.
+       
+       Text is always normalized with
+       [`.normalize("NFKD")`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize)
+       (when supported).
+       */
+       constructor(text, query, from = 0, to = text.length, normalize, test) {
+           this.test = test;
+           /**
+           The current match (only holds a meaningful value after
+           [`next`](https://codemirror.net/6/docs/ref/#search.SearchCursor.next) has been called and when
+           `done` is false).
+           */
+           this.value = { from: 0, to: 0 };
+           /**
+           Whether the end of the iterated region has been reached.
+           */
+           this.done = false;
+           this.matches = [];
+           this.buffer = "";
+           this.bufferPos = 0;
+           this.iter = text.iterRange(from, to);
+           this.bufferStart = from;
+           this.normalize = normalize ? x => normalize(basicNormalize(x)) : basicNormalize;
+           this.query = this.normalize(query);
+       }
+       peek() {
+           if (this.bufferPos == this.buffer.length) {
+               this.bufferStart += this.buffer.length;
+               this.iter.next();
+               if (this.iter.done)
+                   return -1;
+               this.bufferPos = 0;
+               this.buffer = this.iter.value;
+           }
+           return codePointAt(this.buffer, this.bufferPos);
+       }
+       /**
+       Look for the next match. Updates the iterator's
+       [`value`](https://codemirror.net/6/docs/ref/#search.SearchCursor.value) and
+       [`done`](https://codemirror.net/6/docs/ref/#search.SearchCursor.done) properties. Should be called
+       at least once before using the cursor.
+       */
+       next() {
+           while (this.matches.length)
+               this.matches.pop();
+           return this.nextOverlapping();
+       }
+       /**
+       The `next` method will ignore matches that partially overlap a
+       previous match. This method behaves like `next`, but includes
+       such matches.
+       */
+       nextOverlapping() {
+           for (;;) {
+               let next = this.peek();
+               if (next < 0) {
+                   this.done = true;
+                   return this;
+               }
+               let str = fromCodePoint(next), start = this.bufferStart + this.bufferPos;
+               this.bufferPos += codePointSize(next);
+               let norm = this.normalize(str);
+               for (let i = 0, pos = start;; i++) {
+                   let code = norm.charCodeAt(i);
+                   let match = this.match(code, pos);
+                   if (match) {
+                       this.value = match;
+                       return this;
+                   }
+                   if (i == norm.length - 1)
+                       break;
+                   if (pos == start && i < str.length && str.charCodeAt(i) == code)
+                       pos++;
+               }
+           }
+       }
+       match(code, pos) {
+           let match = null;
+           for (let i = 0; i < this.matches.length; i += 2) {
+               let index = this.matches[i], keep = false;
+               if (this.query.charCodeAt(index) == code) {
+                   if (index == this.query.length - 1) {
+                       match = { from: this.matches[i + 1], to: pos + 1 };
+                   }
+                   else {
+                       this.matches[i]++;
+                       keep = true;
+                   }
+               }
+               if (!keep) {
+                   this.matches.splice(i, 2);
+                   i -= 2;
+               }
+           }
+           if (this.query.charCodeAt(0) == code) {
+               if (this.query.length == 1)
+                   match = { from: pos, to: pos + 1 };
+               else
+                   this.matches.push(1, pos);
+           }
+           if (match && this.test && !this.test(match.from, match.to, this.buffer, this.bufferPos))
+               match = null;
+           return match;
+       }
+   }
+   if (typeof Symbol != "undefined")
+       SearchCursor.prototype[Symbol.iterator] = function () { return this; };
+
+   const empty = { from: -1, to: -1, match: /*@__PURE__*//.*/.exec("") };
+   const baseFlags = "gm" + (/x/.unicode == null ? "" : "u");
+   /**
+   This class is similar to [`SearchCursor`](https://codemirror.net/6/docs/ref/#search.SearchCursor)
+   but searches for a regular expression pattern instead of a plain
+   string.
+   */
+   class RegExpCursor {
+       /**
+       Create a cursor that will search the given range in the given
+       document. `query` should be the raw pattern (as you'd pass it to
+       `new RegExp`).
+       */
+       constructor(text, query, options, from = 0, to = text.length) {
+           this.text = text;
+           this.to = to;
+           this.curLine = "";
+           /**
+           Set to `true` when the cursor has reached the end of the search
+           range.
+           */
+           this.done = false;
+           /**
+           Will contain an object with the extent of the match and the
+           match object when [`next`](https://codemirror.net/6/docs/ref/#search.RegExpCursor.next)
+           sucessfully finds a match.
+           */
+           this.value = empty;
+           if (/\\[sWDnr]|\n|\r|\[\^/.test(query))
+               return new MultilineRegExpCursor(text, query, options, from, to);
+           this.re = new RegExp(query, baseFlags + ((options === null || options === void 0 ? void 0 : options.ignoreCase) ? "i" : ""));
+           this.test = options === null || options === void 0 ? void 0 : options.test;
+           this.iter = text.iter();
+           let startLine = text.lineAt(from);
+           this.curLineStart = startLine.from;
+           this.matchPos = toCharEnd(text, from);
+           this.getLine(this.curLineStart);
+       }
+       getLine(skip) {
+           this.iter.next(skip);
+           if (this.iter.lineBreak) {
+               this.curLine = "";
+           }
+           else {
+               this.curLine = this.iter.value;
+               if (this.curLineStart + this.curLine.length > this.to)
+                   this.curLine = this.curLine.slice(0, this.to - this.curLineStart);
+               this.iter.next();
+           }
+       }
+       nextLine() {
+           this.curLineStart = this.curLineStart + this.curLine.length + 1;
+           if (this.curLineStart > this.to)
+               this.curLine = "";
+           else
+               this.getLine(0);
+       }
+       /**
+       Move to the next match, if there is one.
+       */
+       next() {
+           for (let off = this.matchPos - this.curLineStart;;) {
+               this.re.lastIndex = off;
+               let match = this.matchPos <= this.to && this.re.exec(this.curLine);
+               if (match) {
+                   let from = this.curLineStart + match.index, to = from + match[0].length;
+                   this.matchPos = toCharEnd(this.text, to + (from == to ? 1 : 0));
+                   if (from == this.curLineStart + this.curLine.length)
+                       this.nextLine();
+                   if ((from < to || from > this.value.to) && (!this.test || this.test(from, to, match))) {
+                       this.value = { from, to, match };
+                       return this;
+                   }
+                   off = this.matchPos - this.curLineStart;
+               }
+               else if (this.curLineStart + this.curLine.length < this.to) {
+                   this.nextLine();
+                   off = 0;
+               }
+               else {
+                   this.done = true;
+                   return this;
+               }
+           }
+       }
+   }
+   const flattened = /*@__PURE__*/new WeakMap();
+   // Reusable (partially) flattened document strings
+   class FlattenedDoc {
+       constructor(from, text) {
+           this.from = from;
+           this.text = text;
+       }
+       get to() { return this.from + this.text.length; }
+       static get(doc, from, to) {
+           let cached = flattened.get(doc);
+           if (!cached || cached.from >= to || cached.to <= from) {
+               let flat = new FlattenedDoc(from, doc.sliceString(from, to));
+               flattened.set(doc, flat);
+               return flat;
+           }
+           if (cached.from == from && cached.to == to)
+               return cached;
+           let { text, from: cachedFrom } = cached;
+           if (cachedFrom > from) {
+               text = doc.sliceString(from, cachedFrom) + text;
+               cachedFrom = from;
+           }
+           if (cached.to < to)
+               text += doc.sliceString(cached.to, to);
+           flattened.set(doc, new FlattenedDoc(cachedFrom, text));
+           return new FlattenedDoc(from, text.slice(from - cachedFrom, to - cachedFrom));
+       }
+   }
+   class MultilineRegExpCursor {
+       constructor(text, query, options, from, to) {
+           this.text = text;
+           this.to = to;
+           this.done = false;
+           this.value = empty;
+           this.matchPos = toCharEnd(text, from);
+           this.re = new RegExp(query, baseFlags + ((options === null || options === void 0 ? void 0 : options.ignoreCase) ? "i" : ""));
+           this.test = options === null || options === void 0 ? void 0 : options.test;
+           this.flat = FlattenedDoc.get(text, from, this.chunkEnd(from + 5000 /* Chunk.Base */));
+       }
+       chunkEnd(pos) {
+           return pos >= this.to ? this.to : this.text.lineAt(pos).to;
+       }
+       next() {
+           for (;;) {
+               let off = this.re.lastIndex = this.matchPos - this.flat.from;
+               let match = this.re.exec(this.flat.text);
+               // Skip empty matches directly after the last match
+               if (match && !match[0] && match.index == off) {
+                   this.re.lastIndex = off + 1;
+                   match = this.re.exec(this.flat.text);
+               }
+               if (match) {
+                   let from = this.flat.from + match.index, to = from + match[0].length;
+                   // If a match goes almost to the end of a noncomplete chunk, try
+                   // again, since it'll likely be able to match more
+                   if ((this.flat.to >= this.to || match.index + match[0].length <= this.flat.text.length - 10) &&
+                       (!this.test || this.test(from, to, match))) {
+                       this.value = { from, to, match };
+                       this.matchPos = toCharEnd(this.text, to + (from == to ? 1 : 0));
+                       return this;
+                   }
+               }
+               if (this.flat.to == this.to) {
+                   this.done = true;
+                   return this;
+               }
+               // Grow the flattened doc
+               this.flat = FlattenedDoc.get(this.text, this.flat.from, this.chunkEnd(this.flat.from + this.flat.text.length * 2));
+           }
+       }
+   }
+   if (typeof Symbol != "undefined") {
+       RegExpCursor.prototype[Symbol.iterator] = MultilineRegExpCursor.prototype[Symbol.iterator] =
+           function () { return this; };
+   }
+   function validRegExp(source) {
+       try {
+           new RegExp(source, baseFlags);
+           return true;
+       }
+       catch (_a) {
+           return false;
+       }
+   }
+   function toCharEnd(text, pos) {
+       if (pos >= text.length)
+           return pos;
+       let line = text.lineAt(pos), next;
+       while (pos < line.to && (next = line.text.charCodeAt(pos - line.from)) >= 0xDC00 && next < 0xE000)
+           pos++;
+       return pos;
+   }
+
+   function createLineDialog(view) {
+       let input = crelt("input", { class: "cm-textfield", name: "line" });
+       let dom = crelt("form", {
+           class: "cm-gotoLine",
+           onkeydown: (event) => {
+               if (event.keyCode == 27) { // Escape
+                   event.preventDefault();
+                   view.dispatch({ effects: dialogEffect.of(false) });
+                   view.focus();
+               }
+               else if (event.keyCode == 13) { // Enter
+                   event.preventDefault();
+                   go();
+               }
+           },
+           onsubmit: (event) => {
+               event.preventDefault();
+               go();
+           }
+       }, crelt("label", view.state.phrase("Go to line"), ": ", input), " ", crelt("button", { class: "cm-button", type: "submit" }, view.state.phrase("go")));
+       function go() {
+           let match = /^([+-])?(\d+)?(:\d+)?(%)?$/.exec(input.value);
+           if (!match)
+               return;
+           let { state } = view, startLine = state.doc.lineAt(state.selection.main.head);
+           let [, sign, ln, cl, percent] = match;
+           let col = cl ? +cl.slice(1) : 0;
+           let line = ln ? +ln : startLine.number;
+           if (ln && percent) {
+               let pc = line / 100;
+               if (sign)
+                   pc = pc * (sign == "-" ? -1 : 1) + (startLine.number / state.doc.lines);
+               line = Math.round(state.doc.lines * pc);
+           }
+           else if (ln && sign) {
+               line = line * (sign == "-" ? -1 : 1) + startLine.number;
+           }
+           let docLine = state.doc.line(Math.max(1, Math.min(state.doc.lines, line)));
+           view.dispatch({
+               effects: dialogEffect.of(false),
+               selection: EditorSelection.cursor(docLine.from + Math.max(0, Math.min(col, docLine.length))),
+               scrollIntoView: true
+           });
+           view.focus();
+       }
+       return { dom };
+   }
+   const dialogEffect = /*@__PURE__*/StateEffect.define();
+   const dialogField = /*@__PURE__*/StateField.define({
+       create() { return true; },
+       update(value, tr) {
+           for (let e of tr.effects)
+               if (e.is(dialogEffect))
+                   value = e.value;
+           return value;
+       },
+       provide: f => showPanel.from(f, val => val ? createLineDialog : null)
+   });
+   /**
+   Command that shows a dialog asking the user for a line number, and
+   when a valid position is provided, moves the cursor to that line.
+
+   Supports line numbers, relative line offsets prefixed with `+` or
+   `-`, document percentages suffixed with `%`, and an optional
+   column position by adding `:` and a second number after the line
+   number.
+
+   The dialog can be styled with the `panel.gotoLine` theme
+   selector.
+   */
+   const gotoLine = view => {
+       let panel = getPanel(view, createLineDialog);
+       if (!panel) {
+           let effects = [dialogEffect.of(true)];
+           if (view.state.field(dialogField, false) == null)
+               effects.push(StateEffect.appendConfig.of([dialogField, baseTheme$1$1]));
+           view.dispatch({ effects });
+           panel = getPanel(view, createLineDialog);
+       }
+       if (panel)
+           panel.dom.querySelector("input").focus();
+       return true;
+   };
+   const baseTheme$1$1 = /*@__PURE__*/EditorView.baseTheme({
+       ".cm-panel.cm-gotoLine": {
+           padding: "2px 6px 4px",
+           "& label": { fontSize: "80%" }
+       }
+   });
+
+   const defaultHighlightOptions = {
+       highlightWordAroundCursor: false,
+       minSelectionLength: 1,
+       maxMatches: 100,
+       wholeWords: false
+   };
+   const highlightConfig = /*@__PURE__*/Facet.define({
+       combine(options) {
+           return combineConfig(options, defaultHighlightOptions, {
+               highlightWordAroundCursor: (a, b) => a || b,
+               minSelectionLength: Math.min,
+               maxMatches: Math.min
+           });
+       }
+   });
+   /**
+   This extension highlights text that matches the selection. It uses
+   the `"cm-selectionMatch"` class for the highlighting. When
+   `highlightWordAroundCursor` is enabled, the word at the cursor
+   itself will be highlighted with `"cm-selectionMatch-main"`.
+   */
+   function highlightSelectionMatches(options) {
+       let ext = [defaultTheme, matchHighlighter];
+       if (options)
+           ext.push(highlightConfig.of(options));
+       return ext;
+   }
+   const matchDeco = /*@__PURE__*/Decoration.mark({ class: "cm-selectionMatch" });
+   const mainMatchDeco = /*@__PURE__*/Decoration.mark({ class: "cm-selectionMatch cm-selectionMatch-main" });
+   // Whether the characters directly outside the given positions are non-word characters
+   function insideWordBoundaries(check, state, from, to) {
+       return (from == 0 || check(state.sliceDoc(from - 1, from)) != CharCategory.Word) &&
+           (to == state.doc.length || check(state.sliceDoc(to, to + 1)) != CharCategory.Word);
+   }
+   // Whether the characters directly at the given positions are word characters
+   function insideWord(check, state, from, to) {
+       return check(state.sliceDoc(from, from + 1)) == CharCategory.Word
+           && check(state.sliceDoc(to - 1, to)) == CharCategory.Word;
+   }
+   const matchHighlighter = /*@__PURE__*/ViewPlugin.fromClass(class {
+       constructor(view) {
+           this.decorations = this.getDeco(view);
+       }
+       update(update) {
+           if (update.selectionSet || update.docChanged || update.viewportChanged)
+               this.decorations = this.getDeco(update.view);
+       }
+       getDeco(view) {
+           let conf = view.state.facet(highlightConfig);
+           let { state } = view, sel = state.selection;
+           if (sel.ranges.length > 1)
+               return Decoration.none;
+           let range = sel.main, query, check = null;
+           if (range.empty) {
+               if (!conf.highlightWordAroundCursor)
+                   return Decoration.none;
+               let word = state.wordAt(range.head);
+               if (!word)
+                   return Decoration.none;
+               check = state.charCategorizer(range.head);
+               query = state.sliceDoc(word.from, word.to);
+           }
+           else {
+               let len = range.to - range.from;
+               if (len < conf.minSelectionLength || len > 200)
+                   return Decoration.none;
+               if (conf.wholeWords) {
+                   query = state.sliceDoc(range.from, range.to); // TODO: allow and include leading/trailing space?
+                   check = state.charCategorizer(range.head);
+                   if (!(insideWordBoundaries(check, state, range.from, range.to)
+                       && insideWord(check, state, range.from, range.to)))
+                       return Decoration.none;
+               }
+               else {
+                   query = state.sliceDoc(range.from, range.to).trim();
+                   if (!query)
+                       return Decoration.none;
+               }
+           }
+           let deco = [];
+           for (let part of view.visibleRanges) {
+               let cursor = new SearchCursor(state.doc, query, part.from, part.to);
+               while (!cursor.next().done) {
+                   let { from, to } = cursor.value;
+                   if (!check || insideWordBoundaries(check, state, from, to)) {
+                       if (range.empty && from <= range.from && to >= range.to)
+                           deco.push(mainMatchDeco.range(from, to));
+                       else if (from >= range.to || to <= range.from)
+                           deco.push(matchDeco.range(from, to));
+                       if (deco.length > conf.maxMatches)
+                           return Decoration.none;
+                   }
+               }
+           }
+           return Decoration.set(deco);
+       }
+   }, {
+       decorations: v => v.decorations
+   });
+   const defaultTheme = /*@__PURE__*/EditorView.baseTheme({
+       ".cm-selectionMatch": { backgroundColor: "#99ff7780" },
+       ".cm-searchMatch .cm-selectionMatch": { backgroundColor: "transparent" }
+   });
+   // Select the words around the cursors.
+   const selectWord = ({ state, dispatch }) => {
+       let { selection } = state;
+       let newSel = EditorSelection.create(selection.ranges.map(range => state.wordAt(range.head) || EditorSelection.cursor(range.head)), selection.mainIndex);
+       if (newSel.eq(selection))
+           return false;
+       dispatch(state.update({ selection: newSel }));
+       return true;
+   };
+   // Find next occurrence of query relative to last cursor. Wrap around
+   // the document if there are no more matches.
+   function findNextOccurrence(state, query) {
+       let { main, ranges } = state.selection;
+       let word = state.wordAt(main.head), fullWord = word && word.from == main.from && word.to == main.to;
+       for (let cycled = false, cursor = new SearchCursor(state.doc, query, ranges[ranges.length - 1].to);;) {
+           cursor.next();
+           if (cursor.done) {
+               if (cycled)
+                   return null;
+               cursor = new SearchCursor(state.doc, query, 0, Math.max(0, ranges[ranges.length - 1].from - 1));
+               cycled = true;
+           }
+           else {
+               if (cycled && ranges.some(r => r.from == cursor.value.from))
+                   continue;
+               if (fullWord) {
+                   let word = state.wordAt(cursor.value.from);
+                   if (!word || word.from != cursor.value.from || word.to != cursor.value.to)
+                       continue;
+               }
+               return cursor.value;
+           }
+       }
+   }
+   /**
+   Select next occurrence of the current selection. Expand selection
+   to the surrounding word when the selection is empty.
+   */
+   const selectNextOccurrence = ({ state, dispatch }) => {
+       let { ranges } = state.selection;
+       if (ranges.some(sel => sel.from === sel.to))
+           return selectWord({ state, dispatch });
+       let searchedText = state.sliceDoc(ranges[0].from, ranges[0].to);
+       if (state.selection.ranges.some(r => state.sliceDoc(r.from, r.to) != searchedText))
+           return false;
+       let range = findNextOccurrence(state, searchedText);
+       if (!range)
+           return false;
+       dispatch(state.update({
+           selection: state.selection.addRange(EditorSelection.range(range.from, range.to), false),
+           effects: EditorView.scrollIntoView(range.to)
+       }));
+       return true;
+   };
+
+   const searchConfigFacet = /*@__PURE__*/Facet.define({
+       combine(configs) {
+           return combineConfig(configs, {
+               top: false,
+               caseSensitive: false,
+               literal: false,
+               wholeWord: false,
+               createPanel: view => new SearchPanel(view)
+           });
+       }
+   });
+   /**
+   A search query. Part of the editor's search state.
+   */
+   class SearchQuery {
+       /**
+       Create a query object.
+       */
+       constructor(config) {
+           this.search = config.search;
+           this.caseSensitive = !!config.caseSensitive;
+           this.literal = !!config.literal;
+           this.regexp = !!config.regexp;
+           this.replace = config.replace || "";
+           this.valid = !!this.search && (!this.regexp || validRegExp(this.search));
+           this.unquoted = this.unquote(this.search);
+           this.wholeWord = !!config.wholeWord;
+       }
+       /**
+       @internal
+       */
+       unquote(text) {
+           return this.literal ? text :
+               text.replace(/\\([nrt\\])/g, (_, ch) => ch == "n" ? "\n" : ch == "r" ? "\r" : ch == "t" ? "\t" : "\\");
+       }
+       /**
+       Compare this query to another query.
+       */
+       eq(other) {
+           return this.search == other.search && this.replace == other.replace &&
+               this.caseSensitive == other.caseSensitive && this.regexp == other.regexp &&
+               this.wholeWord == other.wholeWord;
+       }
+       /**
+       @internal
+       */
+       create() {
+           return this.regexp ? new RegExpQuery(this) : new StringQuery(this);
+       }
+       /**
+       Get a search cursor for this query, searching through the given
+       range in the given state.
+       */
+       getCursor(state, from = 0, to) {
+           let st = state.doc ? state : EditorState.create({ doc: state });
+           if (to == null)
+               to = st.doc.length;
+           return this.regexp ? regexpCursor(this, st, from, to) : stringCursor(this, st, from, to);
+       }
+   }
+   class QueryType {
+       constructor(spec) {
+           this.spec = spec;
+       }
+   }
+   function stringCursor(spec, state, from, to) {
+       return new SearchCursor(state.doc, spec.unquoted, from, to, spec.caseSensitive ? undefined : x => x.toLowerCase(), spec.wholeWord ? stringWordTest(state.doc, state.charCategorizer(state.selection.main.head)) : undefined);
+   }
+   function stringWordTest(doc, categorizer) {
+       return (from, to, buf, bufPos) => {
+           if (bufPos > from || bufPos + buf.length < to) {
+               bufPos = Math.max(0, from - 2);
+               buf = doc.sliceString(bufPos, Math.min(doc.length, to + 2));
+           }
+           return (categorizer(charBefore(buf, from - bufPos)) != CharCategory.Word ||
+               categorizer(charAfter(buf, from - bufPos)) != CharCategory.Word) &&
+               (categorizer(charAfter(buf, to - bufPos)) != CharCategory.Word ||
+                   categorizer(charBefore(buf, to - bufPos)) != CharCategory.Word);
+       };
+   }
+   class StringQuery extends QueryType {
+       constructor(spec) {
+           super(spec);
+       }
+       nextMatch(state, curFrom, curTo) {
+           let cursor = stringCursor(this.spec, state, curTo, state.doc.length).nextOverlapping();
+           if (cursor.done)
+               cursor = stringCursor(this.spec, state, 0, curFrom).nextOverlapping();
+           return cursor.done ? null : cursor.value;
+       }
+       // Searching in reverse is, rather than implementing inverted search
+       // cursor, done by scanning chunk after chunk forward.
+       prevMatchInRange(state, from, to) {
+           for (let pos = to;;) {
+               let start = Math.max(from, pos - 10000 /* FindPrev.ChunkSize */ - this.spec.unquoted.length);
+               let cursor = stringCursor(this.spec, state, start, pos), range = null;
+               while (!cursor.nextOverlapping().done)
+                   range = cursor.value;
+               if (range)
+                   return range;
+               if (start == from)
+                   return null;
+               pos -= 10000 /* FindPrev.ChunkSize */;
+           }
+       }
+       prevMatch(state, curFrom, curTo) {
+           return this.prevMatchInRange(state, 0, curFrom) ||
+               this.prevMatchInRange(state, curTo, state.doc.length);
+       }
+       getReplacement(_result) { return this.spec.unquote(this.spec.replace); }
+       matchAll(state, limit) {
+           let cursor = stringCursor(this.spec, state, 0, state.doc.length), ranges = [];
+           while (!cursor.next().done) {
+               if (ranges.length >= limit)
+                   return null;
+               ranges.push(cursor.value);
+           }
+           return ranges;
+       }
+       highlight(state, from, to, add) {
+           let cursor = stringCursor(this.spec, state, Math.max(0, from - this.spec.unquoted.length), Math.min(to + this.spec.unquoted.length, state.doc.length));
+           while (!cursor.next().done)
+               add(cursor.value.from, cursor.value.to);
+       }
+   }
+   function regexpCursor(spec, state, from, to) {
+       return new RegExpCursor(state.doc, spec.search, {
+           ignoreCase: !spec.caseSensitive,
+           test: spec.wholeWord ? regexpWordTest(state.charCategorizer(state.selection.main.head)) : undefined
+       }, from, to);
+   }
+   function charBefore(str, index) {
+       return str.slice(findClusterBreak(str, index, false), index);
+   }
+   function charAfter(str, index) {
+       return str.slice(index, findClusterBreak(str, index));
+   }
+   function regexpWordTest(categorizer) {
+       return (_from, _to, match) => !match[0].length ||
+           (categorizer(charBefore(match.input, match.index)) != CharCategory.Word ||
+               categorizer(charAfter(match.input, match.index)) != CharCategory.Word) &&
+               (categorizer(charAfter(match.input, match.index + match[0].length)) != CharCategory.Word ||
+                   categorizer(charBefore(match.input, match.index + match[0].length)) != CharCategory.Word);
+   }
+   class RegExpQuery extends QueryType {
+       nextMatch(state, curFrom, curTo) {
+           let cursor = regexpCursor(this.spec, state, curTo, state.doc.length).next();
+           if (cursor.done)
+               cursor = regexpCursor(this.spec, state, 0, curFrom).next();
+           return cursor.done ? null : cursor.value;
+       }
+       prevMatchInRange(state, from, to) {
+           for (let size = 1;; size++) {
+               let start = Math.max(from, to - size * 10000 /* FindPrev.ChunkSize */);
+               let cursor = regexpCursor(this.spec, state, start, to), range = null;
+               while (!cursor.next().done)
+                   range = cursor.value;
+               if (range && (start == from || range.from > start + 10))
+                   return range;
+               if (start == from)
+                   return null;
+           }
+       }
+       prevMatch(state, curFrom, curTo) {
+           return this.prevMatchInRange(state, 0, curFrom) ||
+               this.prevMatchInRange(state, curTo, state.doc.length);
+       }
+       getReplacement(result) {
+           return this.spec.unquote(this.spec.replace.replace(/\$([$&\d+])/g, (m, i) => i == "$" ? "$"
+               : i == "&" ? result.match[0]
+                   : i != "0" && +i < result.match.length ? result.match[i]
+                       : m));
+       }
+       matchAll(state, limit) {
+           let cursor = regexpCursor(this.spec, state, 0, state.doc.length), ranges = [];
+           while (!cursor.next().done) {
+               if (ranges.length >= limit)
+                   return null;
+               ranges.push(cursor.value);
+           }
+           return ranges;
+       }
+       highlight(state, from, to, add) {
+           let cursor = regexpCursor(this.spec, state, Math.max(0, from - 250 /* RegExp.HighlightMargin */), Math.min(to + 250 /* RegExp.HighlightMargin */, state.doc.length));
+           while (!cursor.next().done)
+               add(cursor.value.from, cursor.value.to);
+       }
+   }
+   /**
+   A state effect that updates the current search query. Note that
+   this only has an effect if the search state has been initialized
+   (by including [`search`](https://codemirror.net/6/docs/ref/#search.search) in your configuration or
+   by running [`openSearchPanel`](https://codemirror.net/6/docs/ref/#search.openSearchPanel) at least
+   once).
+   */
+   const setSearchQuery = /*@__PURE__*/StateEffect.define();
+   const togglePanel = /*@__PURE__*/StateEffect.define();
+   const searchState = /*@__PURE__*/StateField.define({
+       create(state) {
+           return new SearchState(defaultQuery(state).create(), null);
+       },
+       update(value, tr) {
+           for (let effect of tr.effects) {
+               if (effect.is(setSearchQuery))
+                   value = new SearchState(effect.value.create(), value.panel);
+               else if (effect.is(togglePanel))
+                   value = new SearchState(value.query, effect.value ? createSearchPanel : null);
+           }
+           return value;
+       },
+       provide: f => showPanel.from(f, val => val.panel)
+   });
+   class SearchState {
+       constructor(query, panel) {
+           this.query = query;
+           this.panel = panel;
+       }
+   }
+   const matchMark = /*@__PURE__*/Decoration.mark({ class: "cm-searchMatch" }), selectedMatchMark = /*@__PURE__*/Decoration.mark({ class: "cm-searchMatch cm-searchMatch-selected" });
+   const searchHighlighter = /*@__PURE__*/ViewPlugin.fromClass(class {
+       constructor(view) {
+           this.view = view;
+           this.decorations = this.highlight(view.state.field(searchState));
+       }
+       update(update) {
+           let state = update.state.field(searchState);
+           if (state != update.startState.field(searchState) || update.docChanged || update.selectionSet || update.viewportChanged)
+               this.decorations = this.highlight(state);
+       }
+       highlight({ query, panel }) {
+           if (!panel || !query.spec.valid)
+               return Decoration.none;
+           let { view } = this;
+           let builder = new RangeSetBuilder();
+           for (let i = 0, ranges = view.visibleRanges, l = ranges.length; i < l; i++) {
+               let { from, to } = ranges[i];
+               while (i < l - 1 && to > ranges[i + 1].from - 2 * 250 /* RegExp.HighlightMargin */)
+                   to = ranges[++i].to;
+               query.highlight(view.state, from, to, (from, to) => {
+                   let selected = view.state.selection.ranges.some(r => r.from == from && r.to == to);
+                   builder.add(from, to, selected ? selectedMatchMark : matchMark);
+               });
+           }
+           return builder.finish();
+       }
+   }, {
+       decorations: v => v.decorations
+   });
+   function searchCommand(f) {
+       return view => {
+           let state = view.state.field(searchState, false);
+           return state && state.query.spec.valid ? f(view, state) : openSearchPanel(view);
+       };
+   }
+   /**
+   Open the search panel if it isn't already open, and move the
+   selection to the first match after the current main selection.
+   Will wrap around to the start of the document when it reaches the
+   end.
+   */
+   const findNext = /*@__PURE__*/searchCommand((view, { query }) => {
+       let { to } = view.state.selection.main;
+       let next = query.nextMatch(view.state, to, to);
+       if (!next)
+           return false;
+       view.dispatch({
+           selection: { anchor: next.from, head: next.to },
+           scrollIntoView: true,
+           effects: announceMatch(view, next),
+           userEvent: "select.search"
+       });
+       return true;
+   });
+   /**
+   Move the selection to the previous instance of the search query,
+   before the current main selection. Will wrap past the start
+   of the document to start searching at the end again.
+   */
+   const findPrevious = /*@__PURE__*/searchCommand((view, { query }) => {
+       let { state } = view, { from } = state.selection.main;
+       let range = query.prevMatch(state, from, from);
+       if (!range)
+           return false;
+       view.dispatch({
+           selection: { anchor: range.from, head: range.to },
+           scrollIntoView: true,
+           effects: announceMatch(view, range),
+           userEvent: "select.search"
+       });
+       return true;
+   });
+   /**
+   Select all instances of the search query.
+   */
+   const selectMatches = /*@__PURE__*/searchCommand((view, { query }) => {
+       let ranges = query.matchAll(view.state, 1000);
+       if (!ranges || !ranges.length)
+           return false;
+       view.dispatch({
+           selection: EditorSelection.create(ranges.map(r => EditorSelection.range(r.from, r.to))),
+           userEvent: "select.search.matches"
+       });
+       return true;
+   });
+   /**
+   Select all instances of the currently selected text.
+   */
+   const selectSelectionMatches = ({ state, dispatch }) => {
+       let sel = state.selection;
+       if (sel.ranges.length > 1 || sel.main.empty)
+           return false;
+       let { from, to } = sel.main;
+       let ranges = [], main = 0;
+       for (let cur = new SearchCursor(state.doc, state.sliceDoc(from, to)); !cur.next().done;) {
+           if (ranges.length > 1000)
+               return false;
+           if (cur.value.from == from)
+               main = ranges.length;
+           ranges.push(EditorSelection.range(cur.value.from, cur.value.to));
+       }
+       dispatch(state.update({
+           selection: EditorSelection.create(ranges, main),
+           userEvent: "select.search.matches"
+       }));
+       return true;
+   };
+   /**
+   Replace the current match of the search query.
+   */
+   const replaceNext = /*@__PURE__*/searchCommand((view, { query }) => {
+       let { state } = view, { from, to } = state.selection.main;
+       if (state.readOnly)
+           return false;
+       let next = query.nextMatch(state, from, from);
+       if (!next)
+           return false;
+       let changes = [], selection, replacement;
+       let announce = [];
+       if (next.from == from && next.to == to) {
+           replacement = state.toText(query.getReplacement(next));
+           changes.push({ from: next.from, to: next.to, insert: replacement });
+           next = query.nextMatch(state, next.from, next.to);
+           announce.push(EditorView.announce.of(state.phrase("replaced match on line $", state.doc.lineAt(from).number) + "."));
+       }
+       if (next) {
+           let off = changes.length == 0 || changes[0].from >= next.to ? 0 : next.to - next.from - replacement.length;
+           selection = { anchor: next.from - off, head: next.to - off };
+           announce.push(announceMatch(view, next));
+       }
+       view.dispatch({
+           changes, selection,
+           scrollIntoView: !!selection,
+           effects: announce,
+           userEvent: "input.replace"
+       });
+       return true;
+   });
+   /**
+   Replace all instances of the search query with the given
+   replacement.
+   */
+   const replaceAll = /*@__PURE__*/searchCommand((view, { query }) => {
+       if (view.state.readOnly)
+           return false;
+       let changes = query.matchAll(view.state, 1e9).map(match => {
+           let { from, to } = match;
+           return { from, to, insert: query.getReplacement(match) };
+       });
+       if (!changes.length)
+           return false;
+       let announceText = view.state.phrase("replaced $ matches", changes.length) + ".";
+       view.dispatch({
+           changes,
+           effects: EditorView.announce.of(announceText),
+           userEvent: "input.replace.all"
+       });
+       return true;
+   });
+   function createSearchPanel(view) {
+       return view.state.facet(searchConfigFacet).createPanel(view);
+   }
+   function defaultQuery(state, fallback) {
+       var _a, _b, _c, _d;
+       let sel = state.selection.main;
+       let selText = sel.empty || sel.to > sel.from + 100 ? "" : state.sliceDoc(sel.from, sel.to);
+       if (fallback && !selText)
+           return fallback;
+       let config = state.facet(searchConfigFacet);
+       return new SearchQuery({
+           search: ((_a = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _a !== void 0 ? _a : config.literal) ? selText : selText.replace(/\n/g, "\\n"),
+           caseSensitive: (_b = fallback === null || fallback === void 0 ? void 0 : fallback.caseSensitive) !== null && _b !== void 0 ? _b : config.caseSensitive,
+           literal: (_c = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _c !== void 0 ? _c : config.literal,
+           wholeWord: (_d = fallback === null || fallback === void 0 ? void 0 : fallback.wholeWord) !== null && _d !== void 0 ? _d : config.wholeWord
+       });
+   }
+   /**
+   Make sure the search panel is open and focused.
+   */
+   const openSearchPanel = view => {
+       let state = view.state.field(searchState, false);
+       if (state && state.panel) {
+           let panel = getPanel(view, createSearchPanel);
+           if (!panel)
+               return false;
+           let searchInput = panel.dom.querySelector("[main-field]");
+           if (searchInput && searchInput != view.root.activeElement) {
+               let query = defaultQuery(view.state, state.query.spec);
+               if (query.valid)
+                   view.dispatch({ effects: setSearchQuery.of(query) });
+               searchInput.focus();
+               searchInput.select();
+           }
+       }
+       else {
+           view.dispatch({ effects: [
+                   togglePanel.of(true),
+                   state ? setSearchQuery.of(defaultQuery(view.state, state.query.spec)) : StateEffect.appendConfig.of(searchExtensions)
+               ] });
+       }
+       return true;
+   };
+   /**
+   Close the search panel.
+   */
+   const closeSearchPanel = view => {
+       let state = view.state.field(searchState, false);
+       if (!state || !state.panel)
+           return false;
+       let panel = getPanel(view, createSearchPanel);
+       if (panel && panel.dom.contains(view.root.activeElement))
+           view.focus();
+       view.dispatch({ effects: togglePanel.of(false) });
+       return true;
+   };
+   /**
+   Default search-related key bindings.
+
+    - Mod-f: [`openSearchPanel`](https://codemirror.net/6/docs/ref/#search.openSearchPanel)
+    - F3, Mod-g: [`findNext`](https://codemirror.net/6/docs/ref/#search.findNext)
+    - Shift-F3, Shift-Mod-g: [`findPrevious`](https://codemirror.net/6/docs/ref/#search.findPrevious)
+    - Alt-g: [`gotoLine`](https://codemirror.net/6/docs/ref/#search.gotoLine)
+    - Mod-d: [`selectNextOccurrence`](https://codemirror.net/6/docs/ref/#search.selectNextOccurrence)
+   */
+   const searchKeymap = [
+       { key: "Mod-f", run: openSearchPanel, scope: "editor search-panel" },
+       { key: "F3", run: findNext, shift: findPrevious, scope: "editor search-panel", preventDefault: true },
+       { key: "Mod-g", run: findNext, shift: findPrevious, scope: "editor search-panel", preventDefault: true },
+       { key: "Escape", run: closeSearchPanel, scope: "editor search-panel" },
+       { key: "Mod-Shift-l", run: selectSelectionMatches },
+       { key: "Alt-g", run: gotoLine },
+       { key: "Mod-d", run: selectNextOccurrence, preventDefault: true },
+   ];
+   class SearchPanel {
+       constructor(view) {
+           this.view = view;
+           let query = this.query = view.state.field(searchState).query.spec;
+           this.commit = this.commit.bind(this);
+           this.searchField = crelt("input", {
+               value: query.search,
+               placeholder: phrase(view, "Find"),
+               "aria-label": phrase(view, "Find"),
+               class: "cm-textfield",
+               name: "search",
+               form: "",
+               "main-field": "true",
+               onchange: this.commit,
+               onkeyup: this.commit
+           });
+           this.replaceField = crelt("input", {
+               value: query.replace,
+               placeholder: phrase(view, "Replace"),
+               "aria-label": phrase(view, "Replace"),
+               class: "cm-textfield",
+               name: "replace",
+               form: "",
+               onchange: this.commit,
+               onkeyup: this.commit
+           });
+           this.caseField = crelt("input", {
+               type: "checkbox",
+               name: "case",
+               form: "",
+               checked: query.caseSensitive,
+               onchange: this.commit
+           });
+           this.reField = crelt("input", {
+               type: "checkbox",
+               name: "re",
+               form: "",
+               checked: query.regexp,
+               onchange: this.commit
+           });
+           this.wordField = crelt("input", {
+               type: "checkbox",
+               name: "word",
+               form: "",
+               checked: query.wholeWord,
+               onchange: this.commit
+           });
+           function button(name, onclick, content) {
+               return crelt("button", { class: "cm-button", name, onclick, type: "button" }, content);
+           }
+           this.dom = crelt("div", { onkeydown: (e) => this.keydown(e), class: "cm-search" }, [
+               this.searchField,
+               button("next", () => findNext(view), [phrase(view, "next")]),
+               button("prev", () => findPrevious(view), [phrase(view, "previous")]),
+               button("select", () => selectMatches(view), [phrase(view, "all")]),
+               crelt("label", null, [this.caseField, phrase(view, "match case")]),
+               crelt("label", null, [this.reField, phrase(view, "regexp")]),
+               crelt("label", null, [this.wordField, phrase(view, "by word")]),
+               ...view.state.readOnly ? [] : [
+                   crelt("br"),
+                   this.replaceField,
+                   button("replace", () => replaceNext(view), [phrase(view, "replace")]),
+                   button("replaceAll", () => replaceAll(view), [phrase(view, "replace all")])
+               ],
+               crelt("button", {
+                   name: "close",
+                   onclick: () => closeSearchPanel(view),
+                   "aria-label": phrase(view, "close"),
+                   type: "button"
+               }, ["×"])
+           ]);
+       }
+       commit() {
+           let query = new SearchQuery({
+               search: this.searchField.value,
+               caseSensitive: this.caseField.checked,
+               regexp: this.reField.checked,
+               wholeWord: this.wordField.checked,
+               replace: this.replaceField.value,
+           });
+           if (!query.eq(this.query)) {
+               this.query = query;
+               this.view.dispatch({ effects: setSearchQuery.of(query) });
+           }
+       }
+       keydown(e) {
+           if (runScopeHandlers(this.view, e, "search-panel")) {
+               e.preventDefault();
+           }
+           else if (e.keyCode == 13 && e.target == this.searchField) {
+               e.preventDefault();
+               (e.shiftKey ? findPrevious : findNext)(this.view);
+           }
+           else if (e.keyCode == 13 && e.target == this.replaceField) {
+               e.preventDefault();
+               replaceNext(this.view);
+           }
+       }
+       update(update) {
+           for (let tr of update.transactions)
+               for (let effect of tr.effects) {
+                   if (effect.is(setSearchQuery) && !effect.value.eq(this.query))
+                       this.setQuery(effect.value);
+               }
+       }
+       setQuery(query) {
+           this.query = query;
+           this.searchField.value = query.search;
+           this.replaceField.value = query.replace;
+           this.caseField.checked = query.caseSensitive;
+           this.reField.checked = query.regexp;
+           this.wordField.checked = query.wholeWord;
+       }
+       mount() {
+           this.searchField.select();
+       }
+       get pos() { return 80; }
+       get top() { return this.view.state.facet(searchConfigFacet).top; }
+   }
+   function phrase(view, phrase) { return view.state.phrase(phrase); }
+   const AnnounceMargin = 30;
+   const Break = /[\s\.,:;?!]/;
+   function announceMatch(view, { from, to }) {
+       let line = view.state.doc.lineAt(from), lineEnd = view.state.doc.lineAt(to).to;
+       let start = Math.max(line.from, from - AnnounceMargin), end = Math.min(lineEnd, to + AnnounceMargin);
+       let text = view.state.sliceDoc(start, end);
+       if (start != line.from) {
+           for (let i = 0; i < AnnounceMargin; i++)
+               if (!Break.test(text[i + 1]) && Break.test(text[i])) {
+                   text = text.slice(i);
+                   break;
+               }
+       }
+       if (end != lineEnd) {
+           for (let i = text.length - 1; i > text.length - AnnounceMargin; i--)
+               if (!Break.test(text[i - 1]) && Break.test(text[i])) {
+                   text = text.slice(0, i);
+                   break;
+               }
+       }
+       return EditorView.announce.of(`${view.state.phrase("current match")}. ${text} ${view.state.phrase("on line")} ${line.number}.`);
+   }
+   const baseTheme$9 = /*@__PURE__*/EditorView.baseTheme({
+       ".cm-panel.cm-search": {
+           padding: "2px 6px 4px",
+           position: "relative",
+           "& [name=close]": {
+               position: "absolute",
+               top: "0",
+               right: "4px",
+               backgroundColor: "inherit",
+               border: "none",
+               font: "inherit",
+               padding: 0,
+               margin: 0
+           },
+           "& input, & button, & label": {
+               margin: ".2em .6em .2em 0"
+           },
+           "& input[type=checkbox]": {
+               marginRight: ".2em"
+           },
+           "& label": {
+               fontSize: "80%",
+               whiteSpace: "pre"
+           }
+       },
+       "&light .cm-searchMatch": { backgroundColor: "#ffff0054" },
+       "&dark .cm-searchMatch": { backgroundColor: "#00ffff8a" },
+       "&light .cm-searchMatch-selected": { backgroundColor: "#ff6a0054" },
+       "&dark .cm-searchMatch-selected": { backgroundColor: "#ff00ff8a" }
+   });
+   const searchExtensions = [
+       searchState,
+       /*@__PURE__*/Prec.lowest(searchHighlighter),
+       baseTheme$9
+   ];
 
    /**
    An instance of this is passed to completion source functions.
@@ -24109,7 +25533,7 @@
              let value = n.lastChild;
              if (value.type.id == AttributeValue) {
                let from = value.from + 1;
-               let to = value.to - (value.lastChild?.isError ? 0 : 1);
+               let last = value.lastChild, to = value.to - (last && last.isError ? 0 : 1);
                if (to > from) return {parser: attr.parser, overlay: [{from, to}]}
              } else if (value.type.id == UnquotedAttributeValue) {
                return {parser: attr.parser, overlay: [{from: value.from, to: value.to}]}
@@ -24361,18 +25785,77 @@
        "p", "pre", "ruby", "section", "select", "small", "source", "span", "strong", "sub", "summary",
        "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "tr", "u", "ul"
    ].map(name => ({ type: "type", label: name }));
-   const identifier$1 = /^[\w-]*/;
+   const identifier$1 = /^(\w[\w-]*|-\w[\w-]*|)$/, variable = /^-(-[\w-]*)?$/;
+   function isVarArg(node, doc) {
+       var _a;
+       if (node.name == "(" || node.type.isError)
+           node = node.parent || node;
+       if (node.name != "ArgList")
+           return false;
+       let callee = (_a = node.parent) === null || _a === void 0 ? void 0 : _a.firstChild;
+       if ((callee === null || callee === void 0 ? void 0 : callee.name) != "Callee")
+           return false;
+       return doc.sliceString(callee.from, callee.to) == "var";
+   }
+   const VariablesByNode = /*@__PURE__*/new NodeWeakMap();
+   const declSelector = ["Declaration"];
+   function astTop(node) {
+       for (let cur = node;;) {
+           if (cur.type.isTop)
+               return cur;
+           if (!(cur = cur.parent))
+               return node;
+       }
+   }
+   function variableNames(doc, node) {
+       if (node.to - node.from > 4096) {
+           let known = VariablesByNode.get(node);
+           if (known)
+               return known;
+           let result = [], seen = new Set, cursor = node.cursor(IterMode.IncludeAnonymous);
+           if (cursor.firstChild())
+               do {
+                   for (let option of variableNames(doc, cursor.node))
+                       if (!seen.has(option.label)) {
+                           seen.add(option.label);
+                           result.push(option);
+                       }
+               } while (cursor.nextSibling());
+           VariablesByNode.set(node, result);
+           return result;
+       }
+       else {
+           let result = [], seen = new Set;
+           node.cursor().iterate(node => {
+               var _a;
+               if (node.name == "VariableName" && node.matchContext(declSelector) && ((_a = node.node.nextSibling) === null || _a === void 0 ? void 0 : _a.name) == ":") {
+                   let name = doc.sliceString(node.from, node.to);
+                   if (!seen.has(name)) {
+                       seen.add(name);
+                       result.push({ label: name, type: "variable" });
+                   }
+               }
+           });
+           return result;
+       }
+   }
    /**
-   CSS property and value keyword completion source.
+   CSS property, variable, and value keyword completion source.
    */
    const cssCompletionSource = context => {
        let { state, pos } = context, node = syntaxTree(state).resolveInner(pos, -1);
-       if (node.name == "PropertyName")
+       let isDash = node.type.isError && node.from == node.to - 1 && state.doc.sliceString(node.from, node.to) == "-";
+       if (node.name == "PropertyName" ||
+           (isDash || node.name == "TagName") && /^(Block|Styles)$/.test(node.resolve(node.to).name))
            return { from: node.from, options: properties(), validFor: identifier$1 };
        if (node.name == "ValueName")
            return { from: node.from, options: values, validFor: identifier$1 };
        if (node.name == "PseudoClassName")
            return { from: node.from, options: pseudoClasses, validFor: identifier$1 };
+       if (node.name == "VariableName" || (context.explicit || isDash) && isVarArg(node, state.doc))
+           return { from: node.name == "VariableName" ? node.from : pos,
+               options: variableNames(state.doc, astTop(node)),
+               validFor: variable };
        if (node.name == "TagName") {
            for (let { parent } = node; parent; parent = parent.parent)
                if (parent.name == "Block")
@@ -24386,7 +25869,7 @@
            return { from: pos, options: pseudoClasses, validFor: identifier$1 };
        if (before && before.name == ":" && above.name == "Declaration" || above.name == "ArgList")
            return { from: pos, options: values, validFor: identifier$1 };
-       if (above.name == "Block")
+       if (above.name == "Block" || above.name == "Styles")
            return { from: pos, options: properties(), validFor: identifier$1 };
        return null;
    };
@@ -25409,37 +26892,37 @@
    // Colors from https://www.nordtheme.com/docs/colors-and-palettes
    // Polar Night
    const base00$5 = '#2e3440', // black
-   base01$5 = '#3b4252', // dark grey
-   base02$5 = '#434c5e', base03$5 = '#4c566a'; // grey
+   base01$6 = '#3b4252', // dark grey
+   base02$6 = '#434c5e', base03$5 = '#4c566a'; // grey
    // Snow Storm
    const base05$4 = '#e5e9f0', // off white
    base06$4 = '#eceff4'; // white
    // Frost
-   const base07$4 = '#8fbcbb', // moss green
-   base08$2 = '#88c0d0', // ice blue
-   base09$2 = '#81a1c1', // water blue
-   base0A$2 = '#5e81ac'; // deep blue
+   const base07$5 = '#8fbcbb', // moss green
+   base08$3 = '#88c0d0', // ice blue
+   base09$3 = '#81a1c1', // water blue
+   base0A$3 = '#5e81ac'; // deep blue
    // Aurora
-   const base0b$1 = '#bf616a', // red
-   base0C$2 = '#d08770', // orange
-   base0D$2 = '#ebcb8b', // yellow
-   base0E$2 = '#a3be8c', // green
-   base0F$2 = '#b48ead'; // purple
-   const invalid$8 = '#d30102', darkBackground$8 = base06$4, highlightBackground$8 = darkBackground$8, background$8 = '#ffffff', tooltipBackground$8 = base01$5, selection$8 = darkBackground$8, cursor$8 = base01$5;
+   const base0b$2 = '#bf616a', // red
+   base0C$3 = '#d08770', // orange
+   base0D$3 = '#ebcb8b', // yellow
+   base0E$3 = '#a3be8c', // green
+   base0F$3 = '#b48ead'; // purple
+   const invalid$a = '#d30102', darkBackground$9 = base06$4, highlightBackground$a = darkBackground$9, background$a = '#ffffff', tooltipBackground$a = base01$6, selection$a = darkBackground$9, cursor$a = base01$6;
    /**
    The editor theme styles for Basic Light.
    */
    const basicLightTheme = /*@__PURE__*/EditorView.theme({
        '&': {
            color: base00$5,
-           backgroundColor: background$8
+           backgroundColor: background$a
        },
        '.cm-content': {
-           caretColor: cursor$8
+           caretColor: cursor$a
        },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$8 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$8 },
-       '.cm-panels': { backgroundColor: darkBackground$8, color: base03$5 },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$a },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$a },
+       '.cm-panels': { backgroundColor: darkBackground$9, color: base03$5 },
        '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
        '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
        '.cm-searchMatch': {
@@ -25449,7 +26932,7 @@
        '.cm-searchMatch.cm-searchMatch-selected': {
            backgroundColor: base05$4
        },
-       '.cm-activeLine': { backgroundColor: highlightBackground$8 },
+       '.cm-activeLine': { backgroundColor: highlightBackground$a },
        '.cm-selectionMatch': { backgroundColor: base05$4 },
        '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
            outline: `1px solid ${base03$5}`
@@ -25460,6 +26943,349 @@
        '.cm-gutters': {
            backgroundColor: base06$4,
            color: base00$5,
+           border: 'none'
+       },
+       '.cm-activeLineGutter': {
+           backgroundColor: highlightBackground$a
+       },
+       '.cm-foldPlaceholder': {
+           backgroundColor: 'transparent',
+           border: 'none',
+           color: '#ddd'
+       },
+       '.cm-tooltip': {
+           border: 'none',
+           backgroundColor: tooltipBackground$a
+       },
+       '.cm-tooltip .cm-tooltip-arrow:before': {
+           borderTopColor: 'transparent',
+           borderBottomColor: 'transparent'
+       },
+       '.cm-tooltip .cm-tooltip-arrow:after': {
+           borderTopColor: tooltipBackground$a,
+           borderBottomColor: tooltipBackground$a
+       },
+       '.cm-tooltip-autocomplete': {
+           '& > ul > li[aria-selected]': {
+               backgroundColor: highlightBackground$a,
+               color: base03$5
+           }
+       }
+   }, { dark: false });
+   /**
+   The highlighting style for code in the Basic Light theme.
+   */
+   const basicLightHighlightStyle = /*@__PURE__*/HighlightStyle.define([
+       { tag: tags$1.keyword, color: base0A$3 },
+       {
+           tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+           color: base0C$3
+       },
+       { tag: [tags$1.variableName], color: base0C$3 },
+       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base0A$3 },
+       { tag: [tags$1.labelName], color: base09$3 },
+       {
+           tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
+           color: base0A$3
+       },
+       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E$3 },
+       { tag: [tags$1.brace], color: base07$5 },
+       {
+           tag: [tags$1.annotation],
+           color: invalid$a
+       },
+       {
+           tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+           color: base08$3
+       },
+       {
+           tag: [tags$1.typeName, tags$1.className],
+           color: base0D$3
+       },
+       {
+           tag: [tags$1.operator, tags$1.operatorKeyword],
+           color: base0E$3
+       },
+       {
+           tag: [tags$1.tagName],
+           color: base0F$3
+       },
+       {
+           tag: [tags$1.squareBracket],
+           color: base0b$2
+       },
+       {
+           tag: [tags$1.angleBracket],
+           color: base0C$3
+       },
+       {
+           tag: [tags$1.attributeName],
+           color: base0D$3
+       },
+       {
+           tag: [tags$1.regexp],
+           color: base0A$3
+       },
+       {
+           tag: [tags$1.quote],
+           color: base01$6
+       },
+       { tag: [tags$1.string], color: base0C$3 },
+       {
+           tag: tags$1.link,
+           color: base07$5,
+           textDecoration: 'underline',
+           textUnderlinePosition: 'under'
+       },
+       {
+           tag: [tags$1.url, tags$1.escape, /*@__PURE__*/tags$1.special(tags$1.string)],
+           color: base0C$3
+       },
+       { tag: [tags$1.meta], color: base08$3 },
+       { tag: [tags$1.comment], color: base02$6, fontStyle: 'italic' },
+       { tag: tags$1.strong, fontWeight: 'bold', color: base0A$3 },
+       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0A$3 },
+       { tag: tags$1.strikethrough, textDecoration: 'line-through' },
+       { tag: tags$1.heading, fontWeight: 'bold', color: base0A$3 },
+       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base0A$3 },
+       { tag: tags$1.heading1, fontWeight: 'bold', color: base0A$3 },
+       {
+           tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
+           fontWeight: 'bold',
+           color: base0A$3
+       },
+       {
+           tag: [tags$1.heading5, tags$1.heading6],
+           color: base0A$3
+       },
+       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0C$3 },
+       {
+           tag: [tags$1.processingInstruction, tags$1.inserted],
+           color: base07$5
+       },
+       {
+           tag: [tags$1.contentSeparator],
+           color: base0D$3
+       },
+       { tag: tags$1.invalid, color: base02$6, borderBottom: `1px dotted ${invalid$a}` }
+   ]);
+   /**
+   Extension to enable the Basic Light theme (both the editor theme and
+   the highlight style).
+   */
+   const basicLight = [
+       basicLightTheme,
+       /*@__PURE__*/syntaxHighlighting(basicLightHighlightStyle)
+   ];
+
+   const base00$4 = '#2E3235', base01$5 = '#DDDDDD', base02$5 = '#B9D2FF', base03$4 = '#b0b0b0', base05$3 = '#e0e0e0', base06$3 = '#808080', base07$4 = '#000000', base08$2 = '#A54543', base09$2 = '#fc6d24', base0A$2 = '#fda331', base0B = '#8abeb7', base0C$2 = '#b5bd68', base0D$2 = '#6fb3d2', base0E$2 = '#cc99cc', base0F$2 = '#6987AF';
+   const invalid$9 = base09$2, darkBackground$8 = '#292d30', highlightBackground$9 = base02$5 + '30', background$9 = base00$4, tooltipBackground$9 = base01$5, selection$9 = '#202325', cursor$9 = base01$5;
+   /**
+   The editor theme styles for Basic Dark.
+   */
+   const basicDarkTheme = /*@__PURE__*/EditorView.theme({
+       '&': {
+           color: base01$5,
+           backgroundColor: background$9
+       },
+       '.cm-content': {
+           caretColor: cursor$9
+       },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$9 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$9 },
+       '.cm-panels': { backgroundColor: darkBackground$8, color: base03$4 },
+       '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+       '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+       '.cm-searchMatch': {
+           backgroundColor: base02$5,
+           outline: `1px solid ${base03$4}`,
+           color: base07$4
+       },
+       '.cm-searchMatch.cm-searchMatch-selected': {
+           backgroundColor: base05$3,
+           color: base07$4
+       },
+       '.cm-activeLine': { backgroundColor: highlightBackground$9 },
+       '.cm-selectionMatch': { backgroundColor: highlightBackground$9 },
+       '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
+           outline: `1px solid ${base03$4}`
+       },
+       '&.cm-focused .cm-matchingBracket': {
+           backgroundColor: base02$5,
+           color: base07$4
+       },
+       '.cm-gutters': {
+           borderRight: `1px solid #ffffff10`,
+           color: base06$3,
+           backgroundColor: darkBackground$8
+       },
+       '.cm-activeLineGutter': {
+           backgroundColor: highlightBackground$9
+       },
+       '.cm-foldPlaceholder': {
+           backgroundColor: 'transparent',
+           border: 'none',
+           color: base02$5
+       },
+       '.cm-tooltip': {
+           border: 'none',
+           backgroundColor: tooltipBackground$9
+       },
+       '.cm-tooltip .cm-tooltip-arrow:before': {
+           borderTopColor: 'transparent',
+           borderBottomColor: 'transparent'
+       },
+       '.cm-tooltip .cm-tooltip-arrow:after': {
+           borderTopColor: tooltipBackground$9,
+           borderBottomColor: tooltipBackground$9
+       },
+       '.cm-tooltip-autocomplete': {
+           '& > ul > li[aria-selected]': {
+               backgroundColor: highlightBackground$9,
+               color: base03$4
+           }
+       }
+   }, { dark: true });
+   /**
+   The highlighting style for code in the Basic Light theme.
+   */
+   const basicDarkHighlightStyle = /*@__PURE__*/HighlightStyle.define([
+       { tag: tags$1.keyword, color: base0A$2 },
+       {
+           tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+           color: base0C$2
+       },
+       { tag: [tags$1.variableName], color: base0D$2 },
+       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base0A$2 },
+       { tag: [tags$1.labelName], color: base09$2 },
+       {
+           tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
+           color: base0A$2
+       },
+       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E$2 },
+       { tag: [tags$1.brace], color: base0E$2 },
+       {
+           tag: [tags$1.annotation],
+           color: invalid$9
+       },
+       {
+           tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+           color: base0A$2
+       },
+       {
+           tag: [tags$1.typeName, tags$1.className],
+           color: base0D$2
+       },
+       {
+           tag: [tags$1.operator, tags$1.operatorKeyword],
+           color: base0E$2
+       },
+       {
+           tag: [tags$1.tagName],
+           color: base0A$2
+       },
+       {
+           tag: [tags$1.squareBracket],
+           color: base0E$2
+       },
+       {
+           tag: [tags$1.angleBracket],
+           color: base0E$2
+       },
+       {
+           tag: [tags$1.attributeName],
+           color: base0D$2
+       },
+       {
+           tag: [tags$1.regexp],
+           color: base0A$2
+       },
+       {
+           tag: [tags$1.quote],
+           color: base01$5
+       },
+       { tag: [tags$1.string], color: base0C$2 },
+       {
+           tag: tags$1.link,
+           color: base0F$2,
+           textDecoration: 'underline',
+           textUnderlinePosition: 'under'
+       },
+       {
+           tag: [tags$1.url, tags$1.escape, /*@__PURE__*/tags$1.special(tags$1.string)],
+           color: base0B
+       },
+       { tag: [tags$1.meta], color: base08$2 },
+       { tag: [tags$1.comment], color: base06$3, fontStyle: 'italic' },
+       { tag: tags$1.monospace, color: base01$5 },
+       { tag: tags$1.strong, fontWeight: 'bold', color: base0A$2 },
+       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0D$2 },
+       { tag: tags$1.strikethrough, textDecoration: 'line-through' },
+       { tag: tags$1.heading, fontWeight: 'bold', color: base01$5 },
+       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base01$5 },
+       { tag: tags$1.heading1, fontWeight: 'bold', color: base01$5 },
+       {
+           tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
+           fontWeight: 'bold',
+           color: base01$5
+       },
+       {
+           tag: [tags$1.heading5, tags$1.heading6],
+           color: base01$5
+       },
+       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0B },
+       {
+           tag: [tags$1.processingInstruction, tags$1.inserted],
+           color: base0B
+       },
+       {
+           tag: [tags$1.contentSeparator],
+           color: base0D$2
+       },
+       { tag: tags$1.invalid, color: base02$5, borderBottom: `1px dotted ${invalid$9}` }
+   ]);
+   /**
+   Extension to enable the Basic Dark theme (both the editor theme and
+   the highlight style).
+   */
+   const basicDark = [
+       basicDarkTheme,
+       /*@__PURE__*/syntaxHighlighting(basicDarkHighlightStyle)
+   ];
+
+   const base00$3 = '#002b36', base01$4 = '#073642', base02$4 = '#586e75', base03$3 = '#657b83', base04$2 = '#839496', base05$2 = '#93a1a1', base06$2 = '#eee8d5', base07$3 = '#fdf6e3', base_red$2 = '#dc322f', base_orange$2 = '#cb4b16', base_yellow$2 = '#b58900', base_green$2 = '#859900', base_cyan$2 = '#2aa198', base_blue$1 = '#268bd2', base_violet$1 = '#6c71c4', base_magenta$1 = '#d33682';
+   const invalid$8 = '#d30102', stone$2 = base04$2, darkBackground$7 = '#00252f', highlightBackground$8 = '#173541', background$8 = base00$3, tooltipBackground$8 = base01$4, selection$8 = '#173541', cursor$8 = base04$2;
+   /**
+   The editor theme styles for Solarized Dark.
+   */
+   const solarizedDarkTheme = /*@__PURE__*/EditorView.theme({
+       '&': {
+           color: base05$2,
+           backgroundColor: background$8
+       },
+       '.cm-content': {
+           caretColor: cursor$8
+       },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$8 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$8 },
+       '.cm-panels': { backgroundColor: darkBackground$7, color: base03$3 },
+       '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+       '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+       '.cm-searchMatch': {
+           backgroundColor: '#72a1ff59',
+           outline: '1px solid #457dff'
+       },
+       '.cm-searchMatch.cm-searchMatch-selected': {
+           backgroundColor: '#6199ff2f'
+       },
+       '.cm-activeLine': { backgroundColor: highlightBackground$8 },
+       '.cm-selectionMatch': { backgroundColor: '#aafe661a' },
+       '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
+           outline: `1px solid ${base06$2}`
+       },
+       '.cm-gutters': {
+           backgroundColor: darkBackground$7,
+           color: stone$2,
            border: 'none'
        },
        '.cm-activeLineGutter': {
@@ -25485,349 +27311,6 @@
        '.cm-tooltip-autocomplete': {
            '& > ul > li[aria-selected]': {
                backgroundColor: highlightBackground$8,
-               color: base03$5
-           }
-       }
-   }, { dark: false });
-   /**
-   The highlighting style for code in the Basic Light theme.
-   */
-   const basicLightHighlightStyle = /*@__PURE__*/HighlightStyle.define([
-       { tag: tags$1.keyword, color: base0A$2 },
-       {
-           tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
-           color: base0C$2
-       },
-       { tag: [tags$1.variableName], color: base0C$2 },
-       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base0A$2 },
-       { tag: [tags$1.labelName], color: base09$2 },
-       {
-           tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
-           color: base0A$2
-       },
-       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E$2 },
-       { tag: [tags$1.brace], color: base07$4 },
-       {
-           tag: [tags$1.annotation],
-           color: invalid$8
-       },
-       {
-           tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-           color: base08$2
-       },
-       {
-           tag: [tags$1.typeName, tags$1.className],
-           color: base0D$2
-       },
-       {
-           tag: [tags$1.operator, tags$1.operatorKeyword],
-           color: base0E$2
-       },
-       {
-           tag: [tags$1.tagName],
-           color: base0F$2
-       },
-       {
-           tag: [tags$1.squareBracket],
-           color: base0b$1
-       },
-       {
-           tag: [tags$1.angleBracket],
-           color: base0C$2
-       },
-       {
-           tag: [tags$1.attributeName],
-           color: base0D$2
-       },
-       {
-           tag: [tags$1.regexp],
-           color: base0A$2
-       },
-       {
-           tag: [tags$1.quote],
-           color: base01$5
-       },
-       { tag: [tags$1.string], color: base0C$2 },
-       {
-           tag: tags$1.link,
-           color: base07$4,
-           textDecoration: 'underline',
-           textUnderlinePosition: 'under'
-       },
-       {
-           tag: [tags$1.url, tags$1.escape, /*@__PURE__*/tags$1.special(tags$1.string)],
-           color: base0C$2
-       },
-       { tag: [tags$1.meta], color: base08$2 },
-       { tag: [tags$1.comment], color: base02$5, fontStyle: 'italic' },
-       { tag: tags$1.strong, fontWeight: 'bold', color: base0A$2 },
-       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0A$2 },
-       { tag: tags$1.strikethrough, textDecoration: 'line-through' },
-       { tag: tags$1.heading, fontWeight: 'bold', color: base0A$2 },
-       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base0A$2 },
-       { tag: tags$1.heading1, fontWeight: 'bold', color: base0A$2 },
-       {
-           tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
-           fontWeight: 'bold',
-           color: base0A$2
-       },
-       {
-           tag: [tags$1.heading5, tags$1.heading6],
-           color: base0A$2
-       },
-       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0C$2 },
-       {
-           tag: [tags$1.processingInstruction, tags$1.inserted],
-           color: base07$4
-       },
-       {
-           tag: [tags$1.contentSeparator],
-           color: base0D$2
-       },
-       { tag: tags$1.invalid, color: base02$5, borderBottom: `1px dotted ${invalid$8}` }
-   ]);
-   /**
-   Extension to enable the Basic Light theme (both the editor theme and
-   the highlight style).
-   */
-   const basicLight = [
-       basicLightTheme,
-       /*@__PURE__*/syntaxHighlighting(basicLightHighlightStyle)
-   ];
-
-   const base00$4 = '#2E3235', base01$4 = '#DDDDDD', base02$4 = '#B9D2FF', base03$4 = '#b0b0b0', base05$3 = '#e0e0e0', base06$3 = '#808080', base07$3 = '#000000', base08$1 = '#A54543', base09$1 = '#fc6d24', base0A$1 = '#fda331', base0B = '#8abeb7', base0C$1 = '#b5bd68', base0D$1 = '#6fb3d2', base0E$1 = '#cc99cc', base0F$1 = '#6987AF';
-   const invalid$7 = base09$1, darkBackground$7 = '#292d30', highlightBackground$7 = base02$4 + '30', background$7 = base00$4, tooltipBackground$7 = base01$4, selection$7 = '#202325', cursor$7 = base01$4;
-   /**
-   The editor theme styles for Basic Dark.
-   */
-   const basicDarkTheme = /*@__PURE__*/EditorView.theme({
-       '&': {
-           color: base01$4,
-           backgroundColor: background$7
-       },
-       '.cm-content': {
-           caretColor: cursor$7
-       },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$7 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$7 },
-       '.cm-panels': { backgroundColor: darkBackground$7, color: base03$4 },
-       '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-       '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
-       '.cm-searchMatch': {
-           backgroundColor: base02$4,
-           outline: `1px solid ${base03$4}`,
-           color: base07$3
-       },
-       '.cm-searchMatch.cm-searchMatch-selected': {
-           backgroundColor: base05$3,
-           color: base07$3
-       },
-       '.cm-activeLine': { backgroundColor: highlightBackground$7 },
-       '.cm-selectionMatch': { backgroundColor: highlightBackground$7 },
-       '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
-           outline: `1px solid ${base03$4}`
-       },
-       '&.cm-focused .cm-matchingBracket': {
-           backgroundColor: base02$4,
-           color: base07$3
-       },
-       '.cm-gutters': {
-           borderRight: `1px solid #ffffff10`,
-           color: base06$3,
-           backgroundColor: darkBackground$7
-       },
-       '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$7
-       },
-       '.cm-foldPlaceholder': {
-           backgroundColor: 'transparent',
-           border: 'none',
-           color: base02$4
-       },
-       '.cm-tooltip': {
-           border: 'none',
-           backgroundColor: tooltipBackground$7
-       },
-       '.cm-tooltip .cm-tooltip-arrow:before': {
-           borderTopColor: 'transparent',
-           borderBottomColor: 'transparent'
-       },
-       '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$7,
-           borderBottomColor: tooltipBackground$7
-       },
-       '.cm-tooltip-autocomplete': {
-           '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$7,
-               color: base03$4
-           }
-       }
-   }, { dark: true });
-   /**
-   The highlighting style for code in the Basic Light theme.
-   */
-   const basicDarkHighlightStyle = /*@__PURE__*/HighlightStyle.define([
-       { tag: tags$1.keyword, color: base0A$1 },
-       {
-           tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
-           color: base0C$1
-       },
-       { tag: [tags$1.variableName], color: base0D$1 },
-       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base0A$1 },
-       { tag: [tags$1.labelName], color: base09$1 },
-       {
-           tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
-           color: base0A$1
-       },
-       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E$1 },
-       { tag: [tags$1.brace], color: base0E$1 },
-       {
-           tag: [tags$1.annotation],
-           color: invalid$7
-       },
-       {
-           tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-           color: base0A$1
-       },
-       {
-           tag: [tags$1.typeName, tags$1.className],
-           color: base0D$1
-       },
-       {
-           tag: [tags$1.operator, tags$1.operatorKeyword],
-           color: base0E$1
-       },
-       {
-           tag: [tags$1.tagName],
-           color: base0A$1
-       },
-       {
-           tag: [tags$1.squareBracket],
-           color: base0E$1
-       },
-       {
-           tag: [tags$1.angleBracket],
-           color: base0E$1
-       },
-       {
-           tag: [tags$1.attributeName],
-           color: base0D$1
-       },
-       {
-           tag: [tags$1.regexp],
-           color: base0A$1
-       },
-       {
-           tag: [tags$1.quote],
-           color: base01$4
-       },
-       { tag: [tags$1.string], color: base0C$1 },
-       {
-           tag: tags$1.link,
-           color: base0F$1,
-           textDecoration: 'underline',
-           textUnderlinePosition: 'under'
-       },
-       {
-           tag: [tags$1.url, tags$1.escape, /*@__PURE__*/tags$1.special(tags$1.string)],
-           color: base0B
-       },
-       { tag: [tags$1.meta], color: base08$1 },
-       { tag: [tags$1.comment], color: base06$3, fontStyle: 'italic' },
-       { tag: tags$1.monospace, color: base01$4 },
-       { tag: tags$1.strong, fontWeight: 'bold', color: base0A$1 },
-       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0D$1 },
-       { tag: tags$1.strikethrough, textDecoration: 'line-through' },
-       { tag: tags$1.heading, fontWeight: 'bold', color: base01$4 },
-       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base01$4 },
-       { tag: tags$1.heading1, fontWeight: 'bold', color: base01$4 },
-       {
-           tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
-           fontWeight: 'bold',
-           color: base01$4
-       },
-       {
-           tag: [tags$1.heading5, tags$1.heading6],
-           color: base01$4
-       },
-       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0B },
-       {
-           tag: [tags$1.processingInstruction, tags$1.inserted],
-           color: base0B
-       },
-       {
-           tag: [tags$1.contentSeparator],
-           color: base0D$1
-       },
-       { tag: tags$1.invalid, color: base02$4, borderBottom: `1px dotted ${invalid$7}` }
-   ]);
-   /**
-   Extension to enable the Basic Dark theme (both the editor theme and
-   the highlight style).
-   */
-   const basicDark = [
-       basicDarkTheme,
-       /*@__PURE__*/syntaxHighlighting(basicDarkHighlightStyle)
-   ];
-
-   const base00$3 = '#002b36', base01$3 = '#073642', base02$3 = '#586e75', base03$3 = '#657b83', base04$2 = '#839496', base05$2 = '#93a1a1', base06$2 = '#eee8d5', base07$2 = '#fdf6e3', base_red$2 = '#dc322f', base_orange$2 = '#cb4b16', base_yellow$2 = '#b58900', base_green$2 = '#859900', base_cyan$2 = '#2aa198', base_blue$1 = '#268bd2', base_violet$1 = '#6c71c4', base_magenta$1 = '#d33682';
-   const invalid$6 = '#d30102', stone$1 = base04$2, darkBackground$6 = '#00252f', highlightBackground$6 = '#173541', background$6 = base00$3, tooltipBackground$6 = base01$3, selection$6 = '#173541', cursor$6 = base04$2;
-   /**
-   The editor theme styles for Solarized Dark.
-   */
-   const solarizedDarkTheme = /*@__PURE__*/EditorView.theme({
-       '&': {
-           color: base05$2,
-           backgroundColor: background$6
-       },
-       '.cm-content': {
-           caretColor: cursor$6
-       },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$6 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$6 },
-       '.cm-panels': { backgroundColor: darkBackground$6, color: base03$3 },
-       '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-       '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
-       '.cm-searchMatch': {
-           backgroundColor: '#72a1ff59',
-           outline: '1px solid #457dff'
-       },
-       '.cm-searchMatch.cm-searchMatch-selected': {
-           backgroundColor: '#6199ff2f'
-       },
-       '.cm-activeLine': { backgroundColor: highlightBackground$6 },
-       '.cm-selectionMatch': { backgroundColor: '#aafe661a' },
-       '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
-           outline: `1px solid ${base06$2}`
-       },
-       '.cm-gutters': {
-           backgroundColor: darkBackground$6,
-           color: stone$1,
-           border: 'none'
-       },
-       '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$6
-       },
-       '.cm-foldPlaceholder': {
-           backgroundColor: 'transparent',
-           border: 'none',
-           color: '#ddd'
-       },
-       '.cm-tooltip': {
-           border: 'none',
-           backgroundColor: tooltipBackground$6
-       },
-       '.cm-tooltip .cm-tooltip-arrow:before': {
-           borderTopColor: 'transparent',
-           borderBottomColor: 'transparent'
-       },
-       '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$6,
-           borderBottomColor: tooltipBackground$6
-       },
-       '.cm-tooltip-autocomplete': {
-           '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$6,
                color: base03$3
            }
        }
@@ -25852,7 +27335,7 @@
        { tag: [tags$1.brace], color: base_magenta$1 },
        {
            tag: [tags$1.annotation],
-           color: invalid$6
+           color: invalid$8
        },
        {
            tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
@@ -25876,7 +27359,7 @@
        },
        {
            tag: [tags$1.angleBracket],
-           color: base02$3
+           color: base02$4
        },
        {
            tag: [tags$1.attributeName],
@@ -25884,7 +27367,7 @@
        },
        {
            tag: [tags$1.regexp],
-           color: invalid$6
+           color: invalid$8
        },
        {
            tag: [tags$1.quote],
@@ -25902,12 +27385,12 @@
            color: base_yellow$2
        },
        { tag: [tags$1.meta], color: base_red$2 },
-       { tag: [tags$1.comment], color: base02$3, fontStyle: 'italic' },
+       { tag: [tags$1.comment], color: base02$4, fontStyle: 'italic' },
        { tag: tags$1.strong, fontWeight: 'bold', color: base06$2 },
        { tag: tags$1.emphasis, fontStyle: 'italic', color: base_green$2 },
        { tag: tags$1.strikethrough, textDecoration: 'line-through' },
        { tag: tags$1.heading, fontWeight: 'bold', color: base_yellow$2 },
-       { tag: tags$1.heading1, fontWeight: 'bold', color: base07$2 },
+       { tag: tags$1.heading1, fontWeight: 'bold', color: base07$3 },
        {
            tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
            fontWeight: 'bold',
@@ -25926,7 +27409,7 @@
            tag: [tags$1.contentSeparator],
            color: base_yellow$2
        },
-       { tag: tags$1.invalid, color: base02$3, borderBottom: `1px dotted ${base_red$2}` }
+       { tag: tags$1.invalid, color: base02$4, borderBottom: `1px dotted ${base_red$2}` }
    ]);
    /**
    Extension to enable the Solarized Dark theme (both the editor theme and
@@ -25937,22 +27420,22 @@
        /*@__PURE__*/syntaxHighlighting(solarizedDarkHighlightStyle)
    ];
 
-   const base00$2 = '#657b83', base01$2 = '#586e75', base02$2 = '#073642', base03$2 = '#002b36', base1 = '#93a1a1', base3 = '#fdf6e3', base_red$1 = '#dc322f', base_orange$1 = '#cb4b16', base_yellow$1 = '#b58900', base_green$1 = '#859900', base_cyan$1 = '#2aa198', base_blue = '#268bd2', base_violet = '#6c71c4', base_magenta = '#d33682';
-   const invalid$5 = '#d30102', darkBackground$5 = '#dfd9c8', highlightBackground$5 = darkBackground$5, background$5 = base3, tooltipBackground$5 = base01$2, selection$5 = darkBackground$5, cursor$5 = base01$2;
+   const base00$2 = '#657b83', base01$3 = '#586e75', base02$3 = '#073642', base03$2 = '#002b36', base1 = '#93a1a1', base3 = '#fdf6e3', base_red$1 = '#dc322f', base_orange$1 = '#cb4b16', base_yellow$1 = '#b58900', base_green$1 = '#859900', base_cyan$1 = '#2aa198', base_blue = '#268bd2', base_violet = '#6c71c4', base_magenta = '#d33682';
+   const invalid$7 = '#d30102', darkBackground$6 = '#dfd9c8', highlightBackground$7 = darkBackground$6, background$7 = base3, tooltipBackground$7 = base01$3, selection$7 = darkBackground$6, cursor$7 = base01$3;
    /**
    The editor theme styles for Solarized Light.
    */
    const solarizedLightTheme = /*@__PURE__*/EditorView.theme({
        '&': {
            color: base00$2,
-           backgroundColor: background$5
+           backgroundColor: background$7
        },
        '.cm-content': {
-           caretColor: cursor$5
+           caretColor: cursor$7
        },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$5 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$5 },
-       '.cm-panels': { backgroundColor: darkBackground$5, color: base03$2 },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$7 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$7 },
+       '.cm-panels': { backgroundColor: darkBackground$6, color: base03$2 },
        '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
        '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
        '.cm-searchMatch': {
@@ -25962,7 +27445,7 @@
        '.cm-searchMatch.cm-searchMatch-selected': {
            backgroundColor: '#6199ff2f'
        },
-       '.cm-activeLine': { backgroundColor: highlightBackground$5 },
+       '.cm-activeLine': { backgroundColor: highlightBackground$7 },
        '.cm-selectionMatch': { backgroundColor: '#aafe661a' },
        '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
            outline: `1px solid ${base1}`
@@ -25973,7 +27456,7 @@
            border: 'none'
        },
        '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$5
+           backgroundColor: highlightBackground$7
        },
        '.cm-foldPlaceholder': {
            backgroundColor: 'transparent',
@@ -25982,19 +27465,19 @@
        },
        '.cm-tooltip': {
            border: 'none',
-           backgroundColor: tooltipBackground$5
+           backgroundColor: tooltipBackground$7
        },
        '.cm-tooltip .cm-tooltip-arrow:before': {
            borderTopColor: 'transparent',
            borderBottomColor: 'transparent'
        },
        '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$5,
-           borderBottomColor: tooltipBackground$5
+           borderTopColor: tooltipBackground$7,
+           borderBottomColor: tooltipBackground$7
        },
        '.cm-tooltip-autocomplete': {
            '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$5,
+               backgroundColor: highlightBackground$7,
                color: base03$2
            }
        }
@@ -26019,7 +27502,7 @@
        { tag: [tags$1.brace], color: base_magenta },
        {
            tag: [tags$1.annotation],
-           color: invalid$5
+           color: invalid$7
        },
        {
            tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
@@ -26043,7 +27526,7 @@
        },
        {
            tag: [tags$1.angleBracket],
-           color: base02$2
+           color: base02$3
        },
        {
            tag: [tags$1.attributeName],
@@ -26051,7 +27534,7 @@
        },
        {
            tag: [tags$1.regexp],
-           color: invalid$5
+           color: invalid$7
        },
        {
            tag: [tags$1.quote],
@@ -26069,8 +27552,8 @@
            color: base_yellow$1
        },
        { tag: [tags$1.meta], color: base_red$1 },
-       { tag: [tags$1.comment], color: base02$2, fontStyle: 'italic' },
-       { tag: tags$1.strong, fontWeight: 'bold', color: base01$2 },
+       { tag: [tags$1.comment], color: base02$3, fontStyle: 'italic' },
+       { tag: tags$1.strong, fontWeight: 'bold', color: base01$3 },
        { tag: tags$1.emphasis, fontStyle: 'italic', color: base_green$1 },
        { tag: tags$1.strikethrough, textDecoration: 'line-through' },
        { tag: tags$1.heading, fontWeight: 'bold', color: base_yellow$1 },
@@ -26093,7 +27576,7 @@
            tag: [tags$1.contentSeparator],
            color: base_yellow$1
        },
-       { tag: tags$1.invalid, color: base02$2, borderBottom: `1px dotted ${base_red$1}` }
+       { tag: tags$1.invalid, color: base02$3, borderBottom: `1px dotted ${base_red$1}` }
    ]);
    /**
    Extension to enable the Solarized Light theme (both the editor theme and
@@ -26104,22 +27587,22 @@
        /*@__PURE__*/syntaxHighlighting(solarizedLightHighlightStyle)
    ];
 
-   const base00$1 = '#2e3235', base01$1 = '#505d64', base02$1 = '#606f7a', base03$1 = '#707d8b', base04$1 = '#a0a4ae', base05$1 = '#bdbdbd', base06$1 = '#e0e0e0', base07$1 = '#fdf6e3', base_red = '#ff5f52', base_deeporange = '#ff6e40', base_pink = '#fa5788', base_yellow = '#facf4e', base_orange = '#ffad42', base_cyan = '#56c8d8', base_indigo = '#7186f0', base_purple = '#cf6edf', base_green = '#6abf69', base_lightgreen = '#99d066', base_teal = '#4ebaaa';
-   const invalid$4 = base_red, darkBackground$4 = '#202325', highlightBackground$4 = '#545b61', background$4 = base00$1, tooltipBackground$4 = base01$1, selection$4 = base01$1, cursor$4 = base04$1;
+   const base00$1 = '#2e3235', base01$2 = '#505d64', base02$2 = '#606f7a', base03$1 = '#707d8b', base04$1 = '#a0a4ae', base05$1 = '#bdbdbd', base06$1 = '#e0e0e0', base07$2 = '#fdf6e3', base_red = '#ff5f52', base_deeporange = '#ff6e40', base_pink = '#fa5788', base_yellow = '#facf4e', base_orange = '#ffad42', base_cyan = '#56c8d8', base_indigo = '#7186f0', base_purple = '#cf6edf', base_green = '#6abf69', base_lightgreen = '#99d066', base_teal = '#4ebaaa';
+   const invalid$6 = base_red, darkBackground$5 = '#202325', highlightBackground$6 = '#545b61', background$6 = base00$1, tooltipBackground$6 = base01$2, selection$6 = base01$2, cursor$6 = base04$1;
    /**
    The editor theme styles for Material Dark.
    */
    const materialDarkTheme = /*@__PURE__*/EditorView.theme({
        '&': {
            color: base05$1,
-           backgroundColor: background$4
+           backgroundColor: background$6
        },
        '.cm-content': {
-           caretColor: cursor$4
+           caretColor: cursor$6
        },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$4 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$4 },
-       '.cm-panels': { backgroundColor: darkBackground$4, color: base03$1 },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$6 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$6 },
+       '.cm-panels': { backgroundColor: darkBackground$5, color: base03$1 },
        '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
        '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
        '.cm-searchMatch': {
@@ -26127,11 +27610,11 @@
            backgroundColor: 'transparent'
        },
        '.cm-searchMatch.cm-searchMatch-selected': {
-           backgroundColor: highlightBackground$4
+           backgroundColor: highlightBackground$6
        },
-       '.cm-activeLine': { backgroundColor: highlightBackground$4 },
+       '.cm-activeLine': { backgroundColor: highlightBackground$6 },
        '.cm-selectionMatch': {
-           backgroundColor: darkBackground$4,
+           backgroundColor: darkBackground$5,
            outline: `1px solid ${base_teal}`
        },
        '&.cm-focused .cm-matchingBracket': {
@@ -26144,11 +27627,11 @@
        '.cm-gutters': {
            backgroundColor: base00$1,
            borderRight: '1px solid #4f5b66',
-           color: base02$1
+           color: base02$2
        },
        '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$4,
-           color: base07$1
+           backgroundColor: highlightBackground$6,
+           color: base07$2
        },
        '.cm-foldPlaceholder': {
            backgroundColor: 'transparent',
@@ -26157,19 +27640,19 @@
        },
        '.cm-tooltip': {
            border: 'none',
-           backgroundColor: tooltipBackground$4
+           backgroundColor: tooltipBackground$6
        },
        '.cm-tooltip .cm-tooltip-arrow:before': {
            borderTopColor: 'transparent',
            borderBottomColor: 'transparent'
        },
        '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$4,
-           borderBottomColor: tooltipBackground$4
+           borderTopColor: tooltipBackground$6,
+           borderBottomColor: tooltipBackground$6
        },
        '.cm-tooltip-autocomplete': {
            '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$4,
+               backgroundColor: highlightBackground$6,
                color: base03$1
            }
        }
@@ -26195,7 +27678,7 @@
        { tag: [tags$1.brace], color: base_purple },
        {
            tag: [tags$1.annotation],
-           color: invalid$4
+           color: invalid$6
        },
        {
            tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
@@ -26219,7 +27702,7 @@
        },
        {
            tag: [tags$1.angleBracket],
-           color: base02$1
+           color: base02$2
        },
        {
            tag: [tags$1.attributeName],
@@ -26227,7 +27710,7 @@
        },
        {
            tag: [tags$1.regexp],
-           color: invalid$4
+           color: invalid$6
        },
        {
            tag: [tags$1.quote],
@@ -26270,7 +27753,7 @@
            tag: [tags$1.contentSeparator],
            color: base_cyan
        },
-       { tag: tags$1.invalid, color: base02$1, borderBottom: `1px dotted ${base_red}` }
+       { tag: tags$1.invalid, color: base02$2, borderBottom: `1px dotted ${base_red}` }
    ]);
    /**
    Extension to enable the Material Dark theme (both the editor theme and
@@ -26284,59 +27767,59 @@
    // Colors from https://www.nordtheme.com/docs/colors-and-palettes
    // Polar Night
    const base00 = '#2e3440', // black
-   base01 = '#3b4252', // dark grey
-   base02 = '#434c5e', base03 = '#4c566a'; // grey
+   base01$1 = '#3b4252', // dark grey
+   base02$1 = '#434c5e', base03 = '#4c566a'; // grey
    // Snow Storm
    const base04 = '#d8dee9', // grey
    base05 = '#e5e9f0', // off white
    base06 = '#eceff4'; // white
    // Frost
-   const base07 = '#8fbcbb', // moss green
-   base08 = '#88c0d0', // ice blue
-   base09 = '#81a1c1', // water blue
-   base0A = '#5e81ac'; // deep blue
+   const base07$1 = '#8fbcbb', // moss green
+   base08$1 = '#88c0d0', // ice blue
+   base09$1 = '#81a1c1', // water blue
+   base0A$1 = '#5e81ac'; // deep blue
    // Aurora
-   const base0b = '#bf616a', // red
-   base0C = '#d08770', // orange
-   base0D = '#ebcb8b', // yellow
-   base0E = '#a3be8c', // green
-   base0F = '#b48ead'; // purple
-   const invalid$3 = '#d30102', darkBackground$3 = '#252a33', highlightBackground$3 = base03, background$3 = base00, tooltipBackground$3 = base01, selection$3 = base03, cursor$3 = base04;
+   const base0b$1 = '#bf616a', // red
+   base0C$1 = '#d08770', // orange
+   base0D$1 = '#ebcb8b', // yellow
+   base0E$1 = '#a3be8c', // green
+   base0F$1 = '#b48ead'; // purple
+   const invalid$5 = '#d30102', darkBackground$4 = '#252a33', highlightBackground$5 = base03, background$5 = base00, tooltipBackground$5 = base01$1, selection$5 = base03, cursor$5 = base04;
    /**
    The editor theme styles for Nord.
    */
    const nordTheme = /*@__PURE__*/EditorView.theme({
        '&': {
            color: base04,
-           backgroundColor: background$3
+           backgroundColor: background$5
        },
        '.cm-content': {
-           caretColor: cursor$3
+           caretColor: cursor$5
        },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$3 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$3 },
-       '.cm-panels': { backgroundColor: darkBackground$3, color: base03 },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$5 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$5 },
+       '.cm-panels': { backgroundColor: darkBackground$4, color: base03 },
        '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
        '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
        '.cm-searchMatch': {
            backgroundColor: 'transparent',
-           outline: `1px solid ${base07}`
+           outline: `1px solid ${base07$1}`
        },
        '.cm-searchMatch.cm-searchMatch-selected': {
            backgroundColor: base04,
            color: base00
        },
-       '.cm-activeLine': { backgroundColor: highlightBackground$3 },
+       '.cm-activeLine': { backgroundColor: highlightBackground$5 },
        '.cm-selectionMatch': {
            backgroundColor: base05,
-           color: base01
+           color: base01$1
        },
        '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
-           outline: `1px solid ${base07}`
+           outline: `1px solid ${base07$1}`
        },
        '&.cm-focused .cm-matchingBracket': {
            backgroundColor: base06,
-           color: base02
+           color: base02$1
        },
        '.cm-gutters': {
            backgroundColor: base00,
@@ -26344,7 +27827,7 @@
            border: 'none'
        },
        '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$3,
+           backgroundColor: highlightBackground$5,
            color: base04
        },
        '.cm-foldPlaceholder': {
@@ -26354,19 +27837,19 @@
        },
        '.cm-tooltip': {
            border: 'none',
-           backgroundColor: tooltipBackground$3
+           backgroundColor: tooltipBackground$5
        },
        '.cm-tooltip .cm-tooltip-arrow:before': {
            borderTopColor: 'transparent',
            borderBottomColor: 'transparent'
        },
        '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$3,
-           borderBottomColor: tooltipBackground$3
+           borderTopColor: tooltipBackground$5,
+           borderBottomColor: tooltipBackground$5
        },
        '.cm-tooltip-autocomplete': {
            '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$3,
+               backgroundColor: highlightBackground$5,
                color: base03
            }
        }
@@ -26375,99 +27858,99 @@
    The highlighting style for code in the Nord theme.
    */
    const nordHighlightStyle = /*@__PURE__*/HighlightStyle.define([
-       { tag: tags$1.keyword, color: base0A },
+       { tag: tags$1.keyword, color: base0A$1 },
        {
            tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
-           color: base08
+           color: base08$1
        },
-       { tag: [tags$1.variableName], color: base07 },
-       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base07 },
-       { tag: [tags$1.labelName], color: base09 },
+       { tag: [tags$1.variableName], color: base07$1 },
+       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base07$1 },
+       { tag: [tags$1.labelName], color: base09$1 },
        {
            tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
-           color: base0A
+           color: base0A$1
        },
-       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E },
-       { tag: [tags$1.brace], color: base07 },
+       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E$1 },
+       { tag: [tags$1.brace], color: base07$1 },
        {
            tag: [tags$1.annotation],
-           color: invalid$3
+           color: invalid$5
        },
        {
            tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-           color: base0F
+           color: base0F$1
        },
        {
            tag: [tags$1.typeName, tags$1.className],
-           color: base0D
+           color: base0D$1
        },
        {
            tag: [tags$1.operator, tags$1.operatorKeyword],
-           color: base0E
+           color: base0E$1
        },
        {
            tag: [tags$1.tagName],
-           color: base0F
+           color: base0F$1
        },
        {
            tag: [tags$1.squareBracket],
-           color: base0b
+           color: base0b$1
        },
        {
            tag: [tags$1.angleBracket],
-           color: base0C
+           color: base0C$1
        },
        {
            tag: [tags$1.attributeName],
-           color: base0D
+           color: base0D$1
        },
        {
            tag: [tags$1.regexp],
-           color: base0A
+           color: base0A$1
        },
        {
            tag: [tags$1.quote],
-           color: base0F
+           color: base0F$1
        },
-       { tag: [tags$1.string], color: base0E },
+       { tag: [tags$1.string], color: base0E$1 },
        {
            tag: tags$1.link,
-           color: base0E,
+           color: base0E$1,
            textDecoration: 'underline',
            textUnderlinePosition: 'under'
        },
        {
            tag: [tags$1.url, tags$1.escape, /*@__PURE__*/tags$1.special(tags$1.string)],
-           color: base07
+           color: base07$1
        },
-       { tag: [tags$1.meta], color: base08 },
+       { tag: [tags$1.meta], color: base08$1 },
        { tag: [tags$1.monospace], color: base04, fontStyle: 'italic' },
        { tag: [tags$1.comment], color: base03, fontStyle: 'italic' },
-       { tag: tags$1.strong, fontWeight: 'bold', color: base0A },
-       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0A },
+       { tag: tags$1.strong, fontWeight: 'bold', color: base0A$1 },
+       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0A$1 },
        { tag: tags$1.strikethrough, textDecoration: 'line-through' },
-       { tag: tags$1.heading, fontWeight: 'bold', color: base0A },
-       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base0A },
-       { tag: tags$1.heading1, fontWeight: 'bold', color: base0A },
+       { tag: tags$1.heading, fontWeight: 'bold', color: base0A$1 },
+       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base0A$1 },
+       { tag: tags$1.heading1, fontWeight: 'bold', color: base0A$1 },
        {
            tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
            fontWeight: 'bold',
-           color: base0A
+           color: base0A$1
        },
        {
            tag: [tags$1.heading5, tags$1.heading6],
-           color: base0A
+           color: base0A$1
        },
-       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0C },
+       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0C$1 },
        {
            tag: [tags$1.processingInstruction, tags$1.inserted],
-           color: base07
+           color: base07$1
        },
        {
            tag: [tags$1.contentSeparator],
-           color: base0D
+           color: base0D$1
        },
-       { tag: tags$1.invalid, color: base02, borderBottom: `1px dotted ${invalid$3}` }
+       { tag: tags$1.invalid, color: base02$1, borderBottom: `1px dotted ${invalid$5}` }
    ]);
    /**
    Extension to enable the Nord theme (both the editor theme and
@@ -26480,21 +27963,21 @@
 
    const dark1$1 = '#3c3836', dark2 = '#504945', dark3$1 = '#665c54', dark4 = '#7c6f64', gray_244 = '#928374', light0 = '#fbf1c7', light1$1 = '#ebdbb2', light3$1 = '#bdae93', faded_red = '#9d0006', faded_green = '#79740e', faded_yellow = '#b57614', faded_blue = '#076678', faded_purple = '#8f3f71', faded_aqua = '#427b58', faded_orange = '#af3a03';
    const bg0$1 = light0, bg1$1 = light1$1, bg3$1 = light3$1, gray$1 = gray_244, fg1$1 = dark1$1, fg2$1 = dark2, fg3$1 = dark3$1, fg4$1 = dark4, red$1 = faded_red, green$1 = faded_green, yellow$1 = faded_yellow, blue$1 = faded_blue, purple$1 = faded_purple, aqua$1 = faded_aqua, orange$1 = faded_orange;
-   const invalid$2 = red$1, darkBackground$2 = bg1$1, highlightBackground$2 = darkBackground$2, background$2 = bg0$1, tooltipBackground$2 = bg1$1, selection$2 = darkBackground$2, cursor$2 = orange$1;
+   const invalid$4 = red$1, darkBackground$3 = bg1$1, highlightBackground$4 = darkBackground$3, background$4 = bg0$1, tooltipBackground$4 = bg1$1, selection$4 = darkBackground$3, cursor$4 = orange$1;
    /**
    The editor theme styles for Gruvbox Light.
    */
    const gruvboxLightTheme = /*@__PURE__*/EditorView.theme({
        '&': {
            color: fg1$1,
-           backgroundColor: background$2
+           backgroundColor: background$4
        },
        '.cm-content': {
-           caretColor: cursor$2
+           caretColor: cursor$4
        },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$2 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$2 },
-       '.cm-panels': { backgroundColor: darkBackground$2, color: fg1$1 },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$4 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$4 },
+       '.cm-panels': { backgroundColor: darkBackground$3, color: fg1$1 },
        '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
        '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
        '.cm-searchMatch': {
@@ -26505,7 +27988,7 @@
        '.cm-searchMatch.cm-searchMatch-selected': {
            backgroundColor: bg3$1
        },
-       '.cm-activeLine': { backgroundColor: highlightBackground$2 },
+       '.cm-activeLine': { backgroundColor: highlightBackground$4 },
        '.cm-selectionMatch': { backgroundColor: bg3$1 },
        '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
            outline: `1px solid ${bg3$1}`,
@@ -26520,7 +28003,7 @@
            border: 'none'
        },
        '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$2
+           backgroundColor: highlightBackground$4
        },
        '.cm-foldPlaceholder': {
            backgroundColor: 'transparent',
@@ -26529,19 +28012,19 @@
        },
        '.cm-tooltip': {
            border: 'none',
-           backgroundColor: tooltipBackground$2
+           backgroundColor: tooltipBackground$4
        },
        '.cm-tooltip .cm-tooltip-arrow:before': {
            borderTopColor: 'transparent',
            borderBottomColor: 'transparent'
        },
        '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$2,
-           borderBottomColor: tooltipBackground$2
+           borderTopColor: tooltipBackground$4,
+           borderBottomColor: tooltipBackground$4
        },
        '.cm-tooltip-autocomplete': {
            '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$2,
+               backgroundColor: highlightBackground$4,
                color: fg2$1
            }
        }
@@ -26566,7 +28049,7 @@
        { tag: [tags$1.brace], color: fg1$1 },
        {
            tag: [tags$1.annotation],
-           color: invalid$2
+           color: invalid$4
        },
        {
            tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
@@ -26641,7 +28124,7 @@
            tag: [tags$1.contentSeparator],
            color: red$1
        },
-       { tag: tags$1.invalid, color: orange$1, borderBottom: `1px dotted ${invalid$2}` }
+       { tag: tags$1.invalid, color: orange$1, borderBottom: `1px dotted ${invalid$4}` }
    ]);
    /**
    Extension to enable the Gruvbox Light theme (both the editor theme and
@@ -26654,21 +28137,21 @@
 
    const dark0 = '#282828', dark1 = '#3c3836', dark3 = '#665c54', gray_245 = '#928374', light1 = '#ebdbb2', light2 = '#d5c4a1', light3 = '#bdae93', light4 = '#a89984', bright_red = '#fb4934', bright_green = '#b8bb26', bright_yellow = '#fabd2f', bright_blue = '#83a598', bright_purple = '#d3869b', bright_aqua = '#8ec07c', bright_orange = '#fe8019';
    const bg0 = dark0, bg1 = dark1, bg3 = dark3, gray = gray_245, fg1 = light1, fg2 = light2, fg3 = light3, fg4 = light4, red = bright_red, green = bright_green, yellow = bright_yellow, blue = bright_blue, purple = bright_purple, aqua = bright_aqua, orange = bright_orange;
-   const invalid$1 = red, darkBackground$1 = bg1, highlightBackground$1 = darkBackground$1, background$1 = bg0, tooltipBackground$1 = bg1, selection$1 = darkBackground$1, cursor$1 = orange;
+   const invalid$3 = red, darkBackground$2 = bg1, highlightBackground$3 = darkBackground$2, background$3 = bg0, tooltipBackground$3 = bg1, selection$3 = darkBackground$2, cursor$3 = orange;
    /**
    The editor theme styles for Gruvbox Dark.
    */
    const gruvboxDarkTheme = /*@__PURE__*/EditorView.theme({
        '&': {
            color: fg1,
-           backgroundColor: background$1
+           backgroundColor: background$3
        },
        '.cm-content': {
-           caretColor: cursor$1
+           caretColor: cursor$3
        },
-       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$1 },
-       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$1 },
-       '.cm-panels': { backgroundColor: darkBackground$1, color: fg1 },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor$3 },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection$3 },
+       '.cm-panels': { backgroundColor: darkBackground$2, color: fg1 },
        '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
        '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
        '.cm-searchMatch': {
@@ -26679,7 +28162,7 @@
        '.cm-searchMatch.cm-searchMatch-selected': {
            backgroundColor: bg3
        },
-       '.cm-activeLine': { backgroundColor: highlightBackground$1 },
+       '.cm-activeLine': { backgroundColor: highlightBackground$3 },
        '.cm-selectionMatch': { backgroundColor: bg3 },
        '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
            outline: `1px solid ${bg3}`,
@@ -26694,7 +28177,7 @@
            border: 'none'
        },
        '.cm-activeLineGutter': {
-           backgroundColor: highlightBackground$1
+           backgroundColor: highlightBackground$3
        },
        '.cm-foldPlaceholder': {
            backgroundColor: 'transparent',
@@ -26703,19 +28186,19 @@
        },
        '.cm-tooltip': {
            border: 'none',
-           backgroundColor: tooltipBackground$1
+           backgroundColor: tooltipBackground$3
        },
        '.cm-tooltip .cm-tooltip-arrow:before': {
            borderTopColor: 'transparent',
            borderBottomColor: 'transparent'
        },
        '.cm-tooltip .cm-tooltip-arrow:after': {
-           borderTopColor: tooltipBackground$1,
-           borderBottomColor: tooltipBackground$1
+           borderTopColor: tooltipBackground$3,
+           borderBottomColor: tooltipBackground$3
        },
        '.cm-tooltip-autocomplete': {
            '& > ul > li[aria-selected]': {
-               backgroundColor: highlightBackground$1,
+               backgroundColor: highlightBackground$3,
                color: fg2
            }
        }
@@ -26740,7 +28223,7 @@
        { tag: [tags$1.brace], color: fg1 },
        {
            tag: [tags$1.annotation],
-           color: invalid$1
+           color: invalid$3
        },
        {
            tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
@@ -26815,7 +28298,7 @@
            tag: [tags$1.contentSeparator],
            color: red
        },
-       { tag: tags$1.invalid, color: orange, borderBottom: `1px dotted ${invalid$1}` }
+       { tag: tags$1.invalid, color: orange, borderBottom: `1px dotted ${invalid$3}` }
    ]);
    /**
    Extension to enable the Gruvbox Dark theme (both the editor theme and
@@ -26827,22 +28310,22 @@
    ];
 
    // Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
-   const chalky = "#e5c07b", coral = "#e06c75", cyan = "#56b6c2", invalid = "#ffffff", ivory = "#abb2bf", stone = "#7d8799", // Brightened compared to original to increase contrast
-   malibu = "#61afef", sage = "#98c379", whiskey = "#d19a66", violet = "#c678dd", darkBackground = "#21252b", highlightBackground = "#2c313a", background = "#282c34", tooltipBackground = "#353a42", selection = "#3E4451", cursor = "#528bff";
+   const chalky$1 = "#e5c07b", coral$1 = "#e06c75", cyan$1 = "#56b6c2", invalid$2 = "#ffffff", ivory$2 = "#abb2bf", stone$1 = "#7d8799", // Brightened compared to original to increase contrast
+   malibu$1 = "#61afef", sage$1 = "#98c379", whiskey$1 = "#d19a66", violet$1 = "#c678dd", darkBackground$1 = "#21252b", highlightBackground$2 = "#2c313a", background$2 = "#282c34", tooltipBackground$2 = "#353a42", selection$2 = "#3E4451", cursor$2 = "#528bff";
    /**
    The editor theme styles for One Dark.
    */
    const oneDarkTheme = /*@__PURE__*/EditorView.theme({
        "&": {
-           color: ivory,
-           backgroundColor: background
+           color: ivory$2,
+           backgroundColor: background$2
        },
        ".cm-content": {
-           caretColor: cursor
+           caretColor: cursor$2
        },
-       ".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor },
-       "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": { backgroundColor: selection },
-       ".cm-panels": { backgroundColor: darkBackground, color: ivory },
+       ".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor$2 },
+       "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": { backgroundColor: selection$2 },
+       ".cm-panels": { backgroundColor: darkBackground$1, color: ivory$2 },
        ".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
        ".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
        ".cm-searchMatch": {
@@ -26858,12 +28341,12 @@
            backgroundColor: "#bad0f847"
        },
        ".cm-gutters": {
-           backgroundColor: background,
-           color: stone,
+           backgroundColor: background$2,
+           color: stone$1,
            border: "none"
        },
        ".cm-activeLineGutter": {
-           backgroundColor: highlightBackground
+           backgroundColor: highlightBackground$2
        },
        ".cm-foldPlaceholder": {
            backgroundColor: "transparent",
@@ -26872,20 +28355,20 @@
        },
        ".cm-tooltip": {
            border: "none",
-           backgroundColor: tooltipBackground
+           backgroundColor: tooltipBackground$2
        },
        ".cm-tooltip .cm-tooltip-arrow:before": {
            borderTopColor: "transparent",
            borderBottomColor: "transparent"
        },
        ".cm-tooltip .cm-tooltip-arrow:after": {
-           borderTopColor: tooltipBackground,
-           borderBottomColor: tooltipBackground
+           borderTopColor: tooltipBackground$2,
+           borderBottomColor: tooltipBackground$2
        },
        ".cm-tooltip-autocomplete": {
            "& > ul > li[aria-selected]": {
-               backgroundColor: highlightBackground,
-               color: ivory
+               backgroundColor: highlightBackground$2,
+               color: ivory$2
            }
        }
    }, { dark: true });
@@ -26894,21 +28377,21 @@
    */
    const oneDarkHighlightStyle = /*@__PURE__*/HighlightStyle.define([
        { tag: tags$1.keyword,
-           color: violet },
+           color: violet$1 },
        { tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
-           color: coral },
+           color: coral$1 },
        { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName), tags$1.labelName],
-           color: malibu },
+           color: malibu$1 },
        { tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
-           color: whiskey },
+           color: whiskey$1 },
        { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator],
-           color: ivory },
+           color: ivory$2 },
        { tag: [tags$1.typeName, tags$1.className, tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
-           color: chalky },
+           color: chalky$1 },
        { tag: [tags$1.operator, tags$1.operatorKeyword, tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link, /*@__PURE__*/tags$1.special(tags$1.string)],
-           color: cyan },
+           color: cyan$1 },
        { tag: [tags$1.meta, tags$1.comment],
-           color: stone },
+           color: stone$1 },
        { tag: tags$1.strong,
            fontWeight: "bold" },
        { tag: tags$1.emphasis,
@@ -26916,17 +28399,17 @@
        { tag: tags$1.strikethrough,
            textDecoration: "line-through" },
        { tag: tags$1.link,
-           color: stone,
+           color: stone$1,
            textDecoration: "underline" },
        { tag: tags$1.heading,
            fontWeight: "bold",
-           color: coral },
+           color: coral$1 },
        { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)],
-           color: whiskey },
+           color: whiskey$1 },
        { tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted],
-           color: sage },
+           color: sage$1 },
        { tag: tags$1.invalid,
-           color: invalid },
+           color: invalid$2 },
    ]);
    /**
    Extension to enable the One Dark theme (both the editor theme and
@@ -27891,9 +29374,9 @@
    const spec_identifier$1 = {__proto__:null,await:40, or:50, and:52, in:56, not:58, is:60, if:66, else:68, lambda:72, yield:90, from:92, async:98, for:100, None:152, True:154, False:154, del:168, pass:172, break:176, continue:180, return:184, raise:192, import:196, as:198, global:202, nonlocal:204, assert:208, elif:218, while:222, try:228, except:230, finally:232, with:236, def:240, class:250, match:261, case:267};
    const parser$2 = LRParser.deserialize({
      version: 14,
-     states: "!L`O`Q$IXOOO%fQ$I[O'#G|OOQ$IS'#Cm'#CmOOQ$IS'#Cn'#CnO'UQ$IWO'#ClO(wQ$I[O'#G{OOQ$IS'#G|'#G|OOQ$IS'#DS'#DSOOQ$IS'#G{'#G{O)eQ$IWO'#CsO)uQ$IWO'#DdO*VQ$IWO'#DhOOQ$IS'#Ds'#DsO*jO`O'#DsO*rOpO'#DsO*zO!bO'#DtO+VO#tO'#DtO+bO&jO'#DtO+mO,UO'#DtO-oQ$I[O'#GmOOQ$IS'#Gm'#GmO'UQ$IWO'#GlO/RQ$I[O'#GlOOQ$IS'#E]'#E]O/jQ$IWO'#E^OOQ$IS'#Gk'#GkO/tQ$IWO'#GjOOQ$IV'#Gj'#GjO0PQ$IWO'#FPOOQ$IS'#GX'#GXO0UQ$IWO'#FOOOQ$IV'#Hx'#HxOOQ$IV'#Gi'#GiOOQ$IT'#Fh'#FhQ`Q$IXOOO'UQ$IWO'#CoO0dQ$IWO'#C{O0kQ$IWO'#DPO0yQ$IWO'#HQO1ZQ$I[O'#EQO'UQ$IWO'#EROOQ$IS'#ET'#ETOOQ$IS'#EV'#EVOOQ$IS'#EX'#EXO1oQ$IWO'#EZO2VQ$IWO'#E_O0PQ$IWO'#EaO2jQ$I[O'#EaO0PQ$IWO'#EdO/jQ$IWO'#EgO/jQ$IWO'#EkO/jQ$IWO'#EnO2uQ$IWO'#EpO2|Q$IWO'#EuO3XQ$IWO'#EqO/jQ$IWO'#EuO0PQ$IWO'#EwO0PQ$IWO'#E|O3^Q$IWO'#FROOQ$IS'#Cc'#CcOOQ$IS'#Cd'#CdOOQ$IS'#Ce'#CeOOQ$IS'#Cf'#CfOOQ$IS'#Cg'#CgOOQ$IS'#Ch'#ChOOQ$IS'#Cj'#CjO'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O3eQ$IWO'#DmOOQ$IS,5:W,5:WO3xQ$IWO'#H[OOQ$IS,5:Z,5:ZO4VQ%1`O,5:ZO4[Q$I[O,59WO0dQ$IWO,59`O0dQ$IWO,59`O0dQ$IWO,59`O6zQ$IWO,59`O7PQ$IWO,59`O7WQ$IWO,59hO7_Q$IWO'#G{O8eQ$IWO'#GzOOQ$IS'#Gz'#GzOOQ$IS'#DY'#DYO8|Q$IWO,59_O'UQ$IWO,59_O9[Q$IWO,59_O9aQ$IWO,5:PO'UQ$IWO,5:POOQ$IS,5:O,5:OO9oQ$IWO,5:OO9tQ$IWO,5:VO'UQ$IWO,5:VO'UQ$IWO,5:TOOQ$IS,5:S,5:SO:VQ$IWO,5:SO:[Q$IWO,5:UOOOO'#Fp'#FpO:aO`O,5:_OOQ$IS,5:_,5:_OOOO'#Fq'#FqO:iOpO,5:_O:qQ$IWO'#DuOOOO'#Fr'#FrO;RO!bO,5:`OOQ$IS,5:`,5:`OOOO'#Fu'#FuO;^O#tO,5:`OOOO'#Fv'#FvO;iO&jO,5:`OOOO'#Fw'#FwO;tO,UO,5:`OOQ$IS'#Fx'#FxO<PQ$I[O,5:dO>qQ$I[O,5=WO?[Q%GlO,5=WO?{Q$I[O,5=WOOQ$IS,5:x,5:xO@dQ$IXO'#GQOAsQ$IWO,5;TOOQ$IV,5=U,5=UOBOQ$I[O'#HtOBgQ$IWO,5;kOOQ$IS-E:V-E:VOOQ$IV,5;j,5;jO3SQ$IWO'#EwOOQ$IT-E9f-E9fOBoQ$I[O,59ZODvQ$I[O,59gOEaQ$IWO'#G}OElQ$IWO'#G}O0PQ$IWO'#G}OEwQ$IWO'#DROFPQ$IWO,59kOFUQ$IWO'#HRO'UQ$IWO'#HRO/jQ$IWO,5=lOOQ$IS,5=l,5=lO/jQ$IWO'#D|OOQ$IS'#D}'#D}OFsQ$IWO'#FzOGTQ$IWO,58zOGTQ$IWO,58zO)hQ$IWO,5:jOGcQ$I[O'#HTOOQ$IS,5:m,5:mOOQ$IS,5:u,5:uOGvQ$IWO,5:yOHXQ$IWO,5:{OOQ$IS'#F}'#F}OHgQ$I[O,5:{OHuQ$IWO,5:{OHzQ$IWO'#HwOOQ$IS,5;O,5;OOIYQ$IWO'#HsOOQ$IS,5;R,5;RO3XQ$IWO,5;VO3XQ$IWO,5;YOIkQ$I[O'#HyO'UQ$IWO'#HyOIuQ$IWO,5;[O2uQ$IWO,5;[O/jQ$IWO,5;aO0PQ$IWO,5;cOIzQ$IXO'#ElOKTQ$IZO,5;]ONiQ$IWO'#HzO3XQ$IWO,5;aONtQ$IWO,5;cONyQ$IWO,5;hO! RQ$I[O,5;mO'UQ$IWO,5;mO!#uQ$I[O1G.hO!#|Q$I[O1G.hO!&mQ$I[O1G.hO!&wQ$I[O1G.hO!)bQ$I[O1G.hO!)uQ$I[O1G.hO!*YQ$IWO'#HZO!*hQ$I[O'#GmO/jQ$IWO'#HZO!*rQ$IWO'#HYOOQ$IS,5:X,5:XO!*zQ$IWO,5:XO!+PQ$IWO'#H]O!+[Q$IWO'#H]O!+oQ$IWO,5=vOOQ$IS'#Dq'#DqOOQ$IS1G/u1G/uOOQ$IS1G.z1G.zO!,oQ$I[O1G.zO!,vQ$I[O1G.zO0dQ$IWO1G.zO!-cQ$IWO1G/SOOQ$IS'#DX'#DXO/jQ$IWO,59rOOQ$IS1G.y1G.yO!-jQ$IWO1G/cO!-zQ$IWO1G/cO!.SQ$IWO1G/dO'UQ$IWO'#HSO!.XQ$IWO'#HSO!.^Q$I[O1G.yO!.nQ$IWO,59gO!/tQ$IWO,5=rO!0UQ$IWO,5=rO!0^Q$IWO1G/kO!0cQ$I[O1G/kOOQ$IS1G/j1G/jO!0sQ$IWO,5=mO!1jQ$IWO,5=mO/jQ$IWO1G/oO!2XQ$IWO1G/qO!2^Q$I[O1G/qO!2nQ$I[O1G/oOOQ$IS1G/n1G/nOOQ$IS1G/p1G/pOOOO-E9n-E9nOOQ$IS1G/y1G/yOOOO-E9o-E9oO!3OQ$IWO'#HhO/jQ$IWO'#HhO!3^Q$IWO,5:aOOOO-E9p-E9pOOQ$IS1G/z1G/zOOOO-E9s-E9sOOOO-E9t-E9tOOOO-E9u-E9uOOQ$IS-E9v-E9vO!3iQ%GlO1G2rO!4YQ$I[O1G2rO'UQ$IWO,5<eOOQ$IS,5<e,5<eOOQ$IS-E9w-E9wOOQ$IS,5<l,5<lOOQ$IS-E:O-E:OOOQ$IV1G0o1G0oO0PQ$IWO'#F|O!4qQ$I[O,5>`OOQ$IS1G1V1G1VO!5YQ$IWO1G1VOOQ$IS'#DT'#DTO/jQ$IWO,5=iOOQ$IS,5=i,5=iO!5_Q$IWO'#FiO!5jQ$IWO,59mO!5rQ$IWO1G/VO!5|Q$I[O,5=mOOQ$IS1G3W1G3WOOQ$IS,5:h,5:hO!6mQ$IWO'#GlOOQ$IS,5<f,5<fOOQ$IS-E9x-E9xO!7OQ$IWO1G.fOOQ$IS1G0U1G0UO!7^Q$IWO,5=oO!7nQ$IWO,5=oO/jQ$IWO1G0eO/jQ$IWO1G0eO0PQ$IWO1G0gOOQ$IS-E9{-E9{O!8PQ$IWO1G0gO!8[Q$IWO1G0gO!8aQ$IWO,5>cO!8oQ$IWO,5>cO!8}Q$IWO,5>_O!9eQ$IWO,5>_O!9vQ$IZO1G0qO!=XQ$IZO1G0tO!@gQ$IWO,5>eO!@qQ$IWO,5>eO!@yQ$I[O,5>eO/jQ$IWO1G0vO!ATQ$IWO1G0vO3XQ$IWO1G0{ONtQ$IWO1G0}OOQ$IV,5;W,5;WO!AYQ$IYO,5;WO!A_Q$IZO1G0wO!DsQ$IWO'#GUO3XQ$IWO1G0wO3XQ$IWO1G0wO!EQQ$IWO,5>fO!E_Q$IWO,5>fO0PQ$IWO,5>fOOQ$IV1G0{1G0{O!EgQ$IWO'#EyO!ExQ%1`O1G0}OOQ$IV1G1S1G1SO3XQ$IWO1G1SO!FQQ$IWO'#FTOOQ$IV1G1X1G1XO! RQ$I[O1G1XOOQ$IS,5=u,5=uOOQ$IS'#Dn'#DnO/jQ$IWO,5=uO!FVQ$IWO,5=tO!FjQ$IWO,5=tOOQ$IS1G/s1G/sO!FrQ$IWO,5=wO!GSQ$IWO,5=wO!G[Q$IWO,5=wO!GoQ$IWO,5=wO!HPQ$IWO,5=wOOQ$IS1G3b1G3bOOQ$IS7+$f7+$fO!5rQ$IWO7+$nO!IrQ$IWO1G.zO!IyQ$IWO1G.zOOQ$IS1G/^1G/^OOQ$IS,5<V,5<VO'UQ$IWO,5<VOOQ$IS7+$}7+$}O!JQQ$IWO7+$}OOQ$IS-E9i-E9iOOQ$IS7+%O7+%OO!JbQ$IWO,5=nO'UQ$IWO,5=nOOQ$IS7+$e7+$eO!JgQ$IWO7+$}O!JoQ$IWO7+%OO!JtQ$IWO1G3^OOQ$IS7+%V7+%VO!KUQ$IWO1G3^O!K^Q$IWO7+%VOOQ$IS,5<U,5<UO'UQ$IWO,5<UO!KcQ$IWO1G3XOOQ$IS-E9h-E9hO!LYQ$IWO7+%ZOOQ$IS7+%]7+%]O!LhQ$IWO1G3XO!MVQ$IWO7+%]O!M[Q$IWO1G3_O!MlQ$IWO1G3_O!MtQ$IWO7+%ZO!MyQ$IWO,5>SO!NaQ$IWO,5>SO!NaQ$IWO,5>SO!NoO!LQO'#DwO!NzOSO'#HiOOOO1G/{1G/{O# PQ$IWO1G/{O# XQ%GlO7+(^O# xQ$I[O1G2PP#!cQ$IWO'#FyOOQ$IS,5<h,5<hOOQ$IS-E9z-E9zOOQ$IS7+&q7+&qOOQ$IS1G3T1G3TOOQ$IS,5<T,5<TOOQ$IS-E9g-E9gOOQ$IS7+$q7+$qO#!pQ$IWO,5=WO##ZQ$IWO,5=WO##lQ$I[O,5<WO#$PQ$IWO1G3ZOOQ$IS-E9j-E9jOOQ$IS7+&P7+&PO#$aQ$IWO7+&POOQ$IS7+&R7+&RO#$oQ$IWO'#HvO0PQ$IWO'#HuO#%TQ$IWO7+&ROOQ$IS,5<k,5<kO#%`Q$IWO1G3}OOQ$IS-E9}-E9}OOQ$IS,5<g,5<gO#%nQ$IWO1G3yOOQ$IS-E9y-E9yO#&UQ$IZO7+&]O!DsQ$IWO'#GSO3XQ$IWO7+&]O3XQ$IWO7+&`O#)gQ$I[O,5<oO'UQ$IWO,5<oO#)qQ$IWO1G4POOQ$IS-E:R-E:RO#){Q$IWO1G4PO3XQ$IWO7+&bO/jQ$IWO7+&bOOQ$IV7+&g7+&gO!ExQ%1`O7+&iO#*TQ$IXO1G0rOOQ$IV-E:S-E:SO3XQ$IWO7+&cO3XQ$IWO7+&cOOQ$IV,5<p,5<pO#+yQ$IWO,5<pOOQ$IV7+&c7+&cO#,UQ$IZO7+&cO#/dQ$IWO,5<qO#/oQ$IWO1G4QOOQ$IS-E:T-E:TO#/|Q$IWO1G4QO#0UQ$IWO'#H|O#0dQ$IWO'#H|O0PQ$IWO'#H|OOQ$IS'#H|'#H|O#0oQ$IWO'#H{OOQ$IS,5;e,5;eO#0wQ$IWO,5;eO/jQ$IWO'#E{OOQ$IV7+&i7+&iO3XQ$IWO7+&iOOQ$IV7+&n7+&nO#0|Q$IYO,5;oOOQ$IV7+&s7+&sOOQ$IS1G3a1G3aOOQ$IS,5<Y,5<YO#1RQ$IWO1G3`OOQ$IS-E9l-E9lO#1fQ$IWO,5<ZO#1qQ$IWO,5<ZO#2UQ$IWO1G3cOOQ$IS-E9m-E9mO#2fQ$IWO1G3cO#2nQ$IWO1G3cO#3OQ$IWO1G3cO#2fQ$IWO1G3cOOQ$IS<<HY<<HYO#3ZQ$I[O1G1qOOQ$IS<<Hi<<HiP#3hQ$IWO'#FkO7WQ$IWO1G3YO#3uQ$IWO1G3YO#3zQ$IWO<<HiOOQ$IS<<Hj<<HjO#4[Q$IWO7+(xOOQ$IS<<Hq<<HqO#4lQ$I[O1G1pP#5]Q$IWO'#FjO#5jQ$IWO7+(yO#5zQ$IWO7+(yO#6SQ$IWO<<HuO#6XQ$IWO7+(sOOQ$IS<<Hw<<HwO#7OQ$IWO,5<XO'UQ$IWO,5<XOOQ$IS-E9k-E9kOOQ$IS<<Hu<<HuOOQ$IS,5<_,5<_O/jQ$IWO,5<_O#7TQ$IWO1G3nOOQ$IS-E9q-E9qO#7kQ$IWO1G3nOOOO'#Ft'#FtO#7yO!LQO,5:cOOOO,5>T,5>TOOOO7+%g7+%gO#8UQ$IWO1G2rO#8oQ$IWO1G2rP'UQ$IWO'#FlO/jQ$IWO<<IkO#9QQ$IWO,5>bO#9cQ$IWO,5>bO0PQ$IWO,5>bO#9tQ$IWO,5>aOOQ$IS<<Im<<ImP0PQ$IWO'#GPP/jQ$IWO'#F{OOQ$IV-E:Q-E:QO3XQ$IWO<<IwOOQ$IV,5<n,5<nO3XQ$IWO,5<nOOQ$IV<<Iw<<IwOOQ$IV<<Iz<<IzO#9yQ$I[O1G2ZP#:TQ$IWO'#GTO#:[Q$IWO7+)kO#:fQ$IZO<<I|O3XQ$IWO<<I|OOQ$IV<<JT<<JTO3XQ$IWO<<JTOOQ$IV'#GR'#GRO#=tQ$IZO7+&^OOQ$IV<<I}<<I}O#?pQ$IZO<<I}OOQ$IV1G2[1G2[O0PQ$IWO1G2[O3XQ$IWO<<I}O0PQ$IWO1G2]P/jQ$IWO'#GVO#COQ$IWO7+)lO#C]Q$IWO7+)lOOQ$IS'#Ez'#EzO/jQ$IWO,5>hO#CeQ$IWO,5>hOOQ$IS,5>h,5>hO#CpQ$IWO,5>gO#DRQ$IWO,5>gOOQ$IS1G1P1G1POOQ$IS,5;g,5;gO#DZQ$IWO1G1ZP#D`Q$IWO'#FnO#DpQ$IWO1G1uO#ETQ$IWO1G1uO#EeQ$IWO1G1uP#EpQ$IWO'#FoO#E}Q$IWO7+(}O#F_Q$IWO7+(}O#F_Q$IWO7+(}O#FgQ$IWO7+(}O#FwQ$IWO7+(tO7WQ$IWO7+(tOOQ$ISAN>TAN>TO#GbQ$IWO<<LeOOQ$ISAN>aAN>aO/jQ$IWO1G1sO#GrQ$I[O1G1sP#G|Q$IWO'#FmOOQ$IS1G1y1G1yP#HZQ$IWO'#FsO#HhQ$IWO7+)YOOOO-E9r-E9rO#IOQ$IWO7+(^OOQ$ISAN?VAN?VO#IiQ$IWO,5<jO#I}Q$IWO1G3|OOQ$IS-E9|-E9|O#J`Q$IWO1G3|OOQ$IS1G3{1G3{OOQ$IVAN?cAN?cOOQ$IV1G2Y1G2YO3XQ$IWOAN?hO#JqQ$IZOAN?hOOQ$IVAN?oAN?oOOQ$IV-E:P-E:POOQ$IV<<Ix<<IxO3XQ$IWOAN?iO3XQ$IWO7+'vOOQ$IVAN?iAN?iOOQ$IS7+'w7+'wO#NPQ$IWO<<MWOOQ$IS1G4S1G4SO/jQ$IWO1G4SOOQ$IS,5<r,5<rO#N^Q$IWO1G4ROOQ$IS-E:U-E:UOOQ$IU'#GY'#GYO#NoQ$IYO7+&uO#NzQ$IWO'#FUO$ rQ$IWO7+'aO$!SQ$IWO7+'aOOQ$IS7+'a7+'aO$!_Q$IWO<<LiO$!oQ$IWO<<LiO$!oQ$IWO<<LiO$!wQ$IWO'#HUOOQ$IS<<L`<<L`O$#RQ$IWO<<L`OOQ$IS7+'_7+'_O0PQ$IWO1G2UP0PQ$IWO'#GOO$#lQ$IWO7+)hO$#}Q$IWO7+)hOOQ$IVG25SG25SO3XQ$IWOG25SOOQ$IVG25TG25TOOQ$IV<<Kb<<KbOOQ$IS7+)n7+)nP$$`Q$IWO'#GWOOQ$IU-E:W-E:WOOQ$IV<<Ja<<JaO$%SQ$I[O'#FWOOQ$IS'#FY'#FYO$%dQ$IWO'#FXO$&UQ$IWO'#FXOOQ$IS'#FX'#FXO$&ZQ$IWO'#IOO#NzQ$IWO'#F`O#NzQ$IWO'#F`O$&rQ$IWO'#FaO#NzQ$IWO'#FbO$&yQ$IWO'#IPOOQ$IS'#IP'#IPO$'hQ$IWO,5;pOOQ$IS<<J{<<J{O$'pQ$IWO<<J{O$(QQ$IWOANBTO$(bQ$IWOANBTO$(jQ$IWO'#HVOOQ$IS'#HV'#HVO0kQ$IWO'#DaO$)TQ$IWO,5=pOOQ$ISANAzANAzOOQ$IS7+'p7+'pO$)lQ$IWO<<MSOOQ$IVLD*nLD*nO4VQ%1`O'#G[O$)}Q$I[O,5;yO#NzQ$IWO'#FdOOQ$IS,5;},5;}OOQ$IS'#FZ'#FZO$*oQ$IWO,5;sO$*tQ$IWO,5;sOOQ$IS'#F^'#F^O#NzQ$IWO'#GZO$+fQ$IWO,5;wO$,QQ$IWO,5>jO$,bQ$IWO,5>jO0PQ$IWO,5;vO$,sQ$IWO,5;zO$,xQ$IWO,5;zO#NzQ$IWO'#IQO$,}Q$IWO'#IQO$-SQ$IWO,5;{OOQ$IS,5;|,5;|O'UQ$IWO'#FgOOQ$IU1G1[1G1[O3XQ$IWO1G1[OOQ$ISAN@gAN@gO$-XQ$IWOG27oO$-iQ$IWO,59{OOQ$IS1G3[1G3[OOQ$IS,5<v,5<vOOQ$IS-E:Y-E:YO$-nQ$I[O'#FWO$-uQ$IWO'#IRO$.TQ$IWO'#IRO$.]Q$IWO,5<OOOQ$IS1G1_1G1_O$.bQ$IWO1G1_O$.gQ$IWO,5<uOOQ$IS-E:X-E:XO$/RQ$IWO,5<yO$/jQ$IWO1G4UOOQ$IS-E:]-E:]OOQ$IS1G1b1G1bOOQ$IS1G1f1G1fO$/zQ$IWO,5>lO#NzQ$IWO,5>lOOQ$IS1G1g1G1gO$0YQ$I[O,5<ROOQ$IU7+&v7+&vO$!wQ$IWO1G/gO#NzQ$IWO,5<PO$0aQ$IWO,5>mO$0hQ$IWO,5>mOOQ$IS1G1j1G1jOOQ$IS7+&y7+&yP#NzQ$IWO'#G_O$0pQ$IWO1G4WO$0zQ$IWO1G4WO$1SQ$IWO1G4WOOQ$IS7+%R7+%RO$1bQ$IWO1G1kO$1pQ$I[O'#FWO$1wQ$IWO,5<xOOQ$IS,5<x,5<xO$2VQ$IWO1G4XOOQ$IS-E:[-E:[O#NzQ$IWO,5<wO$2^Q$IWO,5<wO$2cQ$IWO7+)rOOQ$IS-E:Z-E:ZO$2mQ$IWO7+)rO#NzQ$IWO,5<QP#NzQ$IWO'#G^O$2uQ$IWO1G2cO#NzQ$IWO1G2cP$3TQ$IWO'#G]O$3[Q$IWO<<M^O$3fQ$IWO1G1lO$3tQ$IWO7+'}O7WQ$IWO'#C{O7WQ$IWO,59`O7WQ$IWO,59`O7WQ$IWO,59`O$4SQ$I[O,5=WO7WQ$IWO1G.zO/jQ$IWO1G/VO/jQ$IWO7+$nP$4gQ$IWO'#FyO'UQ$IWO'#GlO$4tQ$IWO,59`O$4yQ$IWO,59`O$5QQ$IWO,59kO$5VQ$IWO1G/SO0kQ$IWO'#DPO7WQ$IWO,59h",
-     stateData: "$5m~O%[OS%XOS%WOSQOS~OPhOTeOdsOfXOmtOq!SOtuO}vO!O!PO!R!VO!S!UO!VYO!ZZO!fdO!mdO!ndO!odO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#c!TO#f!WO#j!XO#l!YO#q!ZO#tlO#v![O%VqO%gQO%hQO%lRO%mVO&R[O&S]O&V^O&Y_O&``O&caO&ebO~OT!bO]!bO_!cOf!jO!V!lO!d!nO%b!]O%c!^O%d!_O%e!`O%f!`O%g!aO%h!aO%i!bO%j!bO%k!bO~Oi%pXj%pXk%pXl%pXm%pXn%pXq%pXx%pXy%pX!s%pX#^%pX%V%pX%Y%pX%r%pXe%pX!R%pX!S%pX%s%pX!U%pX!Y%pX!O%pX#V%pXr%pX!j%pX~P$bOdsOfXO!VYO!ZZO!fdO!mdO!ndO!odO%gQO%hQO%lRO%mVO&R[O&S]O&V^O&Y_O&``O&caO&ebO~Ox%oXy%oX#^%oX%V%oX%Y%oX%r%oX~Oi!qOj!rOk!pOl!pOm!sOn!tOq!uO!s%oX~P(cOT!{Om/iOt/wO}vO~P'UOT#OOm/iOt/wO!U#PO~P'UOT#SO_#TOm/iOt/wO!Y#UO~P'UO&T#XO&U#ZO~O&W#[O&X#ZO~O!Z#^O&Z#_O&_#aO~O!Z#^O&a#bO&b#aO~O!Z#^O&U#aO&d#dO~O!Z#^O&X#aO&f#fO~OT%aX]%aX_%aXf%aXi%aXj%aXk%aXl%aXm%aXn%aXq%aXx%aX!V%aX!d%aX%b%aX%c%aX%d%aX%e%aX%f%aX%g%aX%h%aX%i%aX%j%aX%k%aXe%aX!R%aX!S%aX~O&R[O&S]O&V^O&Y_O&``O&caO&ebOy%aX!s%aX#^%aX%V%aX%Y%aX%r%aX%s%aX!U%aX!Y%aX!O%aX#V%aXr%aX!j%aX~P+xOx#kOy%`X!s%`X#^%`X%V%`X%Y%`X%r%`X~Om/iOt/wO~P'UO#^#nO%V#pO%Y#pO~O%mVO~O!R#uO#l!YO#q!ZO#tlO~OmtO~P'UOT#zO_#{O%mVOyuP~OT$POm/iOt/wO!O$QO~P'UOy$SO!s$XO%r$TO#^!tX%V!tX%Y!tX~OT$POm/iOt/wO#^!}X%V!}X%Y!}X~P'UOm/iOt/wO#^#RX%V#RX%Y#RX~P'UO!d$_O!m$_O%mVO~OT$iO~P'UO!S$kO#j$lO#l$mO~Oy$nO~OT$uO~P'UOT%OO_%OOe%QOm/iOt/wO~P'UOm/iOt/wOy%TO~P'UO&Q%VO~O_!cOf!jO!V!lO!d!nOT`a]`ai`aj`ak`al`am`an`aq`ax`ay`a!s`a#^`a%V`a%Y`a%b`a%c`a%d`a%e`a%f`a%g`a%h`a%i`a%j`a%k`a%r`ae`a!R`a!S`a%s`a!U`a!Y`a!O`a#V`ar`a!j`a~Ol%[O~Om%[O~P'UOm/iO~P'UOi/kOj/lOk/jOl/jOm/sOn/tOq/xOe%oX!R%oX!S%oX%s%oX!U%oX!Y%oX!O%oX#V%oX!j%oX~P(cO%s%^Oe%nXx%nX!R%nX!S%nX!U%nXy%nX~Oe%`Ox%aO!R%eO!S%dO~Oe%`O~Ox%hO!R%eO!S%dO!U%zX~O!U%lO~Ox%mOy%oO!R%eO!S%dO!Y%uX~O!Y%sO~O!Y%tO~O&T#XO&U%vO~O&W#[O&X%vO~OT%yOm/iOt/wO}vO~P'UO!Z#^O&Z#_O&_%|O~O!Z#^O&a#bO&b%|O~O!Z#^O&U%|O&d#dO~O!Z#^O&X%|O&f#fO~OT!la]!la_!laf!lai!laj!lak!lal!lam!lan!laq!lax!lay!la!V!la!d!la!s!la#^!la%V!la%Y!la%b!la%c!la%d!la%e!la%f!la%g!la%h!la%i!la%j!la%k!la%r!lae!la!R!la!S!la%s!la!U!la!Y!la!O!la#V!lar!la!j!la~P#yOx&ROy%`a!s%`a#^%`a%V%`a%Y%`a%r%`a~P$bOT&TOmtOtuOy%`a!s%`a#^%`a%V%`a%Y%`a%r%`a~P'UOx&ROy%`a!s%`a#^%`a%V%`a%Y%`a%r%`a~OPhOTeOmtOtuO}vO!O!PO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#^$tX%V$tX%Y$tX~P'UO#^#nO%V&YO%Y&YO~O!d&ZOf&hX%V&hX#V&hX#^&hX%Y&hX#U&hX~Of!jO%V&]O~Oicajcakcalcamcancaqcaxcayca!sca#^ca%Vca%Yca%rcaeca!Rca!Sca%sca!Uca!Yca!Oca#Vcarca!jca~P$bOqoaxoayoa#^oa%Voa%Yoa%roa~Oi!qOj!rOk!pOl!pOm!sOn!tO!soa~PD_O%r&_Ox%qXy%qX~O%mVOx%qXy%qX~Ox&bOyuX~Oy&dO~Ox%mO#^%uX%V%uX%Y%uXe%uXy%uX!Y%uX!j%uX%r%uX~OT/rOm/iOt/wO}vO~P'UO%r$TO#^Sa%VSa%YSa~Ox&mO#^%wX%V%wX%Y%wXl%wX~P$bOx&pO!O&oO#^#Ra%V#Ra%Y#Ra~O#V&qO#^#Ta%V#Ta%Y#Ta~O!d$_O!m$_O#U&sO%mVO~O#U&sO~Ox&uO#^&kX%V&kX%Y&kX~Ox&wO#^&gX%V&gX%Y&gXy&gX~Ox&{Ol&mX~P$bOl'OO~OPhOTeOmtOtuO}vO!O!PO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO%V'TO~P'UOr'XO#g'VO#h'WOP#eaT#ead#eaf#eam#eaq#eat#ea}#ea!O#ea!R#ea!S#ea!V#ea!Z#ea!f#ea!m#ea!n#ea!o#ea!v#ea!x#ea!z#ea!|#ea#O#ea#S#ea#U#ea#X#ea#Y#ea#[#ea#c#ea#f#ea#j#ea#l#ea#q#ea#t#ea#v#ea%S#ea%V#ea%g#ea%h#ea%l#ea%m#ea&R#ea&S#ea&V#ea&Y#ea&`#ea&c#ea&e#ea%U#ea%Y#ea~Ox'YO#V'[Oy&nX~Of'^O~Of!jOy$nO~Oy'bO~P$bOT!bO]!bO_!cOf!jO!V!lO!d!nO%d!_O%e!`O%f!`O%g!aO%h!aO%i!bO%j!bO%k!bOiUijUikUilUimUinUiqUixUiyUi!sUi#^Ui%VUi%YUi%bUi%rUieUi!RUi!SUi%sUi!UUi!YUi!OUi#VUirUi!jUi~O%c!^O~P! YO%cUi~P! YOT!bO]!bO_!cOf!jO!V!lO!d!nO%g!aO%h!aO%i!bO%j!bO%k!bOiUijUikUilUimUinUiqUixUiyUi!sUi#^Ui%VUi%YUi%bUi%cUi%dUi%rUieUi!RUi!SUi%sUi!UUi!YUi!OUi#VUirUi!jUi~O%e!`O%f!`O~P!$TO%eUi%fUi~P!$TO_!cOf!jO!V!lO!d!nOiUijUikUilUimUinUiqUixUiyUi!sUi#^Ui%VUi%YUi%bUi%cUi%dUi%eUi%fUi%gUi%hUi%rUieUi!RUi!SUi%sUi!UUi!YUi!OUi#VUirUi!jUi~OT!bO]!bO%i!bO%j!bO%k!bO~P!'ROTUi]Ui%iUi%jUi%kUi~P!'RO!R%eO!S%dOe%}Xx%}X~O%r'fO%s'fO~P+xOx'hOe%|X~Oe'jO~Ox'kOy'mO!U&PX~Om/iOt/wOx'kOy'nO!U&PX~P'UO!U'pO~Ok!pOl!pOm!sOn!tOihiqhixhiyhi!shi#^hi%Vhi%Yhi%rhi~Oj!rO~P!+tOjhi~P!+tOi/kOj/lOk/jOl/jOm/sOn/tO~Or'rO~P!,}OT'wOe'xOm/iOt/wO~P'UOe'xOx'yO~Oe'{O~O!S'}O~Oe(OOx'yO!R%eO!S%dO~P$bOi/kOj/lOk/jOl/jOm/sOn/tOeoa!Roa!Soa%soa!Uoa!Yoa!Ooa#Voaroa!joa~PD_OT'wOm/iOt/wO!U%za~P'UOx(RO!U%za~O!U(SO~Ox(RO!R%eO!S%dO!U%za~P$bOT(WOm/iOt/wO!Y%ua#^%ua%V%ua%Y%uae%uay%ua!j%ua%r%ua~P'UOx(XO!Y%ua#^%ua%V%ua%Y%uae%uay%ua!j%ua%r%ua~O!Y([O~Ox(XO!R%eO!S%dO!Y%ua~P$bOx(_O!R%eO!S%dO!Y%{a~P$bOx(bOy&[X!Y&[X!j&[X~Oy(eO!Y(gO!j(hO~OT&TOmtOtuOy%`i!s%`i#^%`i%V%`i%Y%`i%r%`i~P'UOx(iOy%`i!s%`i#^%`i%V%`i%Y%`i%r%`i~O!d&ZOf&ha%V&ha#V&ha#^&ha%Y&ha#U&ha~O%V(nO~OT#zO_#{O%mVO~Ox&bOyua~OmtOtuO~P'UOx(XO#^%ua%V%ua%Y%uae%uay%ua!Y%ua!j%ua%r%ua~P$bOx(sO#^%`X%V%`X%Y%`X%r%`X~O%r$TO#^Si%VSi%YSi~O#^%wa%V%wa%Y%wal%wa~P'UOx(vO#^%wa%V%wa%Y%wal%wa~OT(zOf(|O%mVO~O#U(}O~O%mVO#^&ka%V&ka%Y&ka~Ox)PO#^&ka%V&ka%Y&ka~Om/iOt/wO#^&ga%V&ga%Y&gay&ga~P'UOx)SO#^&ga%V&ga%Y&gay&ga~Or)WO#a)VOP#_iT#_id#_if#_im#_iq#_it#_i}#_i!O#_i!R#_i!S#_i!V#_i!Z#_i!f#_i!m#_i!n#_i!o#_i!v#_i!x#_i!z#_i!|#_i#O#_i#S#_i#U#_i#X#_i#Y#_i#[#_i#c#_i#f#_i#j#_i#l#_i#q#_i#t#_i#v#_i%S#_i%V#_i%g#_i%h#_i%l#_i%m#_i&R#_i&S#_i&V#_i&Y#_i&`#_i&c#_i&e#_i%U#_i%Y#_i~Or)XOP#biT#bid#bif#bim#biq#bit#bi}#bi!O#bi!R#bi!S#bi!V#bi!Z#bi!f#bi!m#bi!n#bi!o#bi!v#bi!x#bi!z#bi!|#bi#O#bi#S#bi#U#bi#X#bi#Y#bi#[#bi#c#bi#f#bi#j#bi#l#bi#q#bi#t#bi#v#bi%S#bi%V#bi%g#bi%h#bi%l#bi%m#bi&R#bi&S#bi&V#bi&Y#bi&`#bi&c#bi&e#bi%U#bi%Y#bi~OT)ZOl&ma~P'UOx)[Ol&ma~Ox)[Ol&ma~P$bOl)`O~O%T)cO~Or)fO#g'VO#h)eOP#eiT#eid#eif#eim#eiq#eit#ei}#ei!O#ei!R#ei!S#ei!V#ei!Z#ei!f#ei!m#ei!n#ei!o#ei!v#ei!x#ei!z#ei!|#ei#O#ei#S#ei#U#ei#X#ei#Y#ei#[#ei#c#ei#f#ei#j#ei#l#ei#q#ei#t#ei#v#ei%S#ei%V#ei%g#ei%h#ei%l#ei%m#ei&R#ei&S#ei&V#ei&Y#ei&`#ei&c#ei&e#ei%U#ei%Y#ei~Om/iOt/wOy$nO~P'UOm/iOt/wOy&na~P'UOx)lOy&na~OT)pO_)qOe)tO%i)rO%mVO~Oy$nO&q)vO~O%V)zO~OT%OO_%OOm/iOt/wOe%|a~P'UOx*OOe%|a~Om/iOt/wOy*RO!U&Pa~P'UOx*SO!U&Pa~Om/iOt/wOx*SOy*VO!U&Pa~P'UOm/iOt/wOx*SO!U&Pa~P'UOx*SOy*VO!U&Pa~Ok/jOl/jOm/sOn/tOehiihiqhixhi!Rhi!Shi%shi!Uhiyhi!Yhi#^hi%Vhi%Yhi!Ohi#Vhirhi!jhi%rhi~Oj/lO~P!H[Ojhi~P!H[OT'wOe*[Om/iOt/wO~P'UOl*^O~Oe*[Ox*`O~Oe*aO~OT'wOm/iOt/wO!U%zi~P'UOx*bO!U%zi~O!U*cO~OT(WOm/iOt/wO!Y%ui#^%ui%V%ui%Y%uie%uiy%ui!j%ui%r%ui~P'UOx*fO!R%eO!S%dO!Y%{i~Ox*iO!Y%ui#^%ui%V%ui%Y%uie%uiy%ui!j%ui%r%ui~O!Y*jO~O_*lOm/iOt/wO!Y%{i~P'UOx*fO!Y%{i~O!Y*nO~OT*pOm/iOt/wOy&[a!Y&[a!j&[a~P'UOx*qOy&[a!Y&[a!j&[a~O!Z#^O&^*tO!Y!kX~O!Y*vO~Oy(eO!Y*wO~OT&TOmtOtuOy%`q!s%`q#^%`q%V%`q%Y%`q%r%`q~P'UOx$miy$mi!s$mi#^$mi%V$mi%Y$mi%r$mi~P$bOT&TOmtOtuO~P'UOT&TOm/iOt/wO#^%`a%V%`a%Y%`a%r%`a~P'UOx*xO#^%`a%V%`a%Y%`a%r%`a~Ox$`a#^$`a%V$`a%Y$`al$`a~P$bO#^%wi%V%wi%Y%wil%wi~P'UOx*{O#^#Rq%V#Rq%Y#Rq~Ox*|O#V+OO#^&jX%V&jX%Y&jXe&jX~OT+QOf(|O%mVO~O%mVO#^&ki%V&ki%Y&ki~Om/iOt/wO#^&gi%V&gi%Y&giy&gi~P'UOr+UO#a)VOP#_qT#_qd#_qf#_qm#_qq#_qt#_q}#_q!O#_q!R#_q!S#_q!V#_q!Z#_q!f#_q!m#_q!n#_q!o#_q!v#_q!x#_q!z#_q!|#_q#O#_q#S#_q#U#_q#X#_q#Y#_q#[#_q#c#_q#f#_q#j#_q#l#_q#q#_q#t#_q#v#_q%S#_q%V#_q%g#_q%h#_q%l#_q%m#_q&R#_q&S#_q&V#_q&Y#_q&`#_q&c#_q&e#_q%U#_q%Y#_q~Ol$wax$wa~P$bOT)ZOl&mi~P'UOx+]Ol&mi~OPhOTeOmtOq!SOtuO}vO!O!PO!R!VO!S!UO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#c!TO#f!WO#j!XO#l!YO#q!ZO#tlO#v![O~P'UOx+gOy$nO#V+gO~O#h+hOP#eqT#eqd#eqf#eqm#eqq#eqt#eq}#eq!O#eq!R#eq!S#eq!V#eq!Z#eq!f#eq!m#eq!n#eq!o#eq!v#eq!x#eq!z#eq!|#eq#O#eq#S#eq#U#eq#X#eq#Y#eq#[#eq#c#eq#f#eq#j#eq#l#eq#q#eq#t#eq#v#eq%S#eq%V#eq%g#eq%h#eq%l#eq%m#eq&R#eq&S#eq&V#eq&Y#eq&`#eq&c#eq&e#eq%U#eq%Y#eq~O#V+iOx$yay$ya~Om/iOt/wOy&ni~P'UOx+kOy&ni~Oy$SO%r+mOe&pXx&pX~O%mVOe&pXx&pX~Ox+qOe&oX~Oe+sO~O%T+uO~OT%OO_%OOm/iOt/wOe%|i~P'UOy+wOx$ca!U$ca~Om/iOt/wOy+xOx$ca!U$ca~P'UOm/iOt/wOy*RO!U&Pi~P'UOx+{O!U&Pi~Om/iOt/wOx+{O!U&Pi~P'UOx+{Oy,OO!U&Pi~Oe$_ix$_i!U$_i~P$bOT'wOm/iOt/wO~P'UOl,QO~OT'wOe,ROm/iOt/wO~P'UOT'wOm/iOt/wO!U%zq~P'UOx$^i!Y$^i#^$^i%V$^i%Y$^ie$^iy$^i!j$^i%r$^i~P$bOT(WOm/iOt/wO~P'UO_*lOm/iOt/wO!Y%{q~P'UOx,SO!Y%{q~O!Y,TO~OT(WOm/iOt/wO!Y%uq#^%uq%V%uq%Y%uqe%uqy%uq!j%uq%r%uq~P'UOy,UO~OT*pOm/iOt/wOy&[i!Y&[i!j&[i~P'UOx,ZOy&[i!Y&[i!j&[i~O!Z#^O&^*tO!Y!ka~OT&TOm/iOt/wO#^%`i%V%`i%Y%`i%r%`i~P'UOx,]O#^%`i%V%`i%Y%`i%r%`i~O%mVO#^&ja%V&ja%Y&jae&ja~Ox,`O#^&ja%V&ja%Y&jae&ja~Oe,cO~Ol$wix$wi~P$bOT)ZO~P'UOT)ZOl&mq~P'UOr,fOP#dyT#dyd#dyf#dym#dyq#dyt#dy}#dy!O#dy!R#dy!S#dy!V#dy!Z#dy!f#dy!m#dy!n#dy!o#dy!v#dy!x#dy!z#dy!|#dy#O#dy#S#dy#U#dy#X#dy#Y#dy#[#dy#c#dy#f#dy#j#dy#l#dy#q#dy#t#dy#v#dy%S#dy%V#dy%g#dy%h#dy%l#dy%m#dy&R#dy&S#dy&V#dy&Y#dy&`#dy&c#dy&e#dy%U#dy%Y#dy~OPhOTeOmtOq!SOtuO}vO!O!PO!R!VO!S!UO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#c!TO#f!WO#j!XO#l!YO#q!ZO#tlO#v![O%U,jO%Y,jO~P'UO#h,kOP#eyT#eyd#eyf#eym#eyq#eyt#ey}#ey!O#ey!R#ey!S#ey!V#ey!Z#ey!f#ey!m#ey!n#ey!o#ey!v#ey!x#ey!z#ey!|#ey#O#ey#S#ey#U#ey#X#ey#Y#ey#[#ey#c#ey#f#ey#j#ey#l#ey#q#ey#t#ey#v#ey%S#ey%V#ey%g#ey%h#ey%l#ey%m#ey&R#ey&S#ey&V#ey&Y#ey&`#ey&c#ey&e#ey%U#ey%Y#ey~Om/iOt/wOy&nq~P'UOx,oOy&nq~O%r+mOe&pax&pa~OT)pO_)qO%i)rO%mVOe&oa~Ox,sOe&oa~O#y,wO~OT%OO_%OOm/iOt/wO~P'UOm/iOt/wOy,xOx$ci!U$ci~P'UOm/iOt/wOx$ci!U$ci~P'UOy,xOx$ci!U$ci~Om/iOt/wOy*RO~P'UOm/iOt/wOy*RO!U&Pq~P'UOx,{O!U&Pq~Om/iOt/wOx,{O!U&Pq~P'UOq-OO!R%eO!S%dOe%vq!U%vq!Y%vqx%vq~P!,}O_*lOm/iOt/wO!Y%{y~P'UOx$ai!Y$ai~P$bO_*lOm/iOt/wO~P'UOT*pOm/iOt/wO~P'UOT*pOm/iOt/wOy&[q!Y&[q!j&[q~P'UOT&TOm/iOt/wO#^%`q%V%`q%Y%`q%r%`q~P'UO#V-SOx$ra#^$ra%V$ra%Y$rae$ra~O%mVO#^&ji%V&ji%Y&jie&ji~Ox-UO#^&ji%V&ji%Y&jie&ji~Or-XOP#d!RT#d!Rd#d!Rf#d!Rm#d!Rq#d!Rt#d!R}#d!R!O#d!R!R#d!R!S#d!R!V#d!R!Z#d!R!f#d!R!m#d!R!n#d!R!o#d!R!v#d!R!x#d!R!z#d!R!|#d!R#O#d!R#S#d!R#U#d!R#X#d!R#Y#d!R#[#d!R#c#d!R#f#d!R#j#d!R#l#d!R#q#d!R#t#d!R#v#d!R%S#d!R%V#d!R%g#d!R%h#d!R%l#d!R%m#d!R&R#d!R&S#d!R&V#d!R&Y#d!R&`#d!R&c#d!R&e#d!R%U#d!R%Y#d!R~Om/iOt/wOy&ny~P'UOT)pO_)qO%i)rO%mVOe&oi~O#y,wO%U-_O%Y-_O~OT-iOf-gO!V-fO!Z-hO!f-bO!n-dO!o-dO%h-aO%mVO&R[O&S]O&V^O~Om/iOt/wOx$cq!U$cq~P'UOy-nOx$cq!U$cq~Om/iOt/wOy*RO!U&Py~P'UOx-oO!U&Py~Om/iOt-sO~P'UOq-OO!R%eO!S%dOe%vy!U%vy!Y%vyx%vy~P!,}O%mVO#^&jq%V&jq%Y&jqe&jq~Ox-wO#^&jq%V&jq%Y&jqe&jq~OT)pO_)qO%i)rO%mVO~Of-{O!d-yOx#zX#V#zX%b#zXe#zX~Oq#zXy#zX!U#zX!Y#zX~P$$nO%g-}O%h-}Oq#{Xx#{Xy#{X#V#{X%b#{X!U#{Xe#{X!Y#{X~O!f.PO~Ox.TO#V.VO%b.QOq&rXy&rX!U&rXe&rX~O_.YO~P$ WOf-{Oq&sXx&sXy&sX#V&sX%b&sX!U&sXe&sX!Y&sX~Oq.^Oy$nO~Om/iOt/wOx$cy!U$cy~P'UOm/iOt/wOy*RO!U&P!R~P'UOx.bO!U&P!R~Oe%yXq%yX!R%yX!S%yX!U%yX!Y%yXx%yX~P!,}Oq-OO!R%eO!S%dOe%xa!U%xa!Y%xax%xa~O%mVO#^&jy%V&jy%Y&jye&jy~O!d-yOf$Raq$Rax$Ray$Ra#V$Ra%b$Ra!U$Rae$Ra!Y$Ra~O!f.kO~O%g-}O%h-}Oq#{ax#{ay#{a#V#{a%b#{a!U#{ae#{a!Y#{a~O%b.QOq$Pax$Pay$Pa#V$Pa!U$Pae$Pa!Y$Pa~Oq&ray&ra!U&rae&ra~P#NzOx.pOq&ray&ra!U&rae&ra~O!U.sO~Oe.sO~Oy.uO~O!Y.vO~Om/iOt/wOy*RO!U&P!Z~P'UOy.yO~O%r.zO~P$$nOx.{O#V.VO%b.QOe&uX~Ox.{Oe&uX~Oe.}O~O!f/OO~O#V.VOq$}ax$}ay$}a%b$}a!U$}ae$}a!Y$}a~O#V.VO%b.QOq%Rax%Ray%Ra!U%Rae%Ra~Oq&riy&ri!U&rie&ri~P#NzOx/QO#V.VO%b.QO!Y&ta~Oy$Za~P$bOe&ua~P#NzOx/YOe&ua~O_/[O!Y&ti~P$ WOx/^O!Y&ti~Ox/^O#V.VO%b.QO!Y&ti~O#V.VO%b.QOe$Xix$Xi~O%r/aO~P$$nO#V.VO%b.QOe%Qax%Qa~Oe&ui~P#NzOy/dO~O_/[O!Y&tq~P$ WOx/fO!Y&tq~O#V.VO%b.QOx%Pi!Y%Pi~O_/[O~P$ WO_/[O!Y&ty~P$ WO#V.VO%b.QOe$Yix$Yi~O#V.VO%b.QOx%Pq!Y%Pq~Ox*xO#^%`a%V%`a%Y%`a%r%`a~P$bOT&TOm/iOt/wO~P'UOl/nO~Om/nO~P'UOy/oO~Or/pO~P!,}O&S&V&c&e&R!Z&Z&a&d&f&Y&`&Y%m~",
-     goto: "!9p&vPPPP&wP'P*e*}+h,S,o-]P-zP'P.k.k'PPPP'P2PPPPPPP2P4oPP4oP6{7U=QPP=T=c=fPP'P'PPP=rPP'P'PPP'P'P'P'P'P=v>m'PP>pP>vByFcPFw'PPPPF{GR&wP&w&wP&wP&wP&wP&wP&w&w&wP&wPP&wPP&wPGXPG`GfPG`PG`G`PPPG`PIePInItIzIePG`JQPG`PJXJ_PJcJwKfLPJcJcLVLdJcJcJcJcLxMOMRMWMZMaMgMsNVN]NgNm! Z! a! g! m! w! }!!T!!Z!!a!!g!!y!#T!#Z!#a!#g!#q!#w!#}!$T!$Z!$e!$k!$u!${!%U!%[!%k!%s!%}!&UPPPPPPPPP!&[!&d!&m!&w!'SPPPPPPPPPPPP!+r!,[!0j!3vPP!4O!4^!4g!5]!5S!5f!5l!5o!5r!5u!5}!6nPPPPPPPPPP!6q!6tPPPPPPPPP!6z!7W!7d!7j!7s!7v!7|!8S!8Y!8]P!8e!8n!9j!9m]iOr#n$n)c+c'udOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#O#S#T#^#k#n$P$Q$S$U$X$i$k$l$n$u%O%T%[%_%a%d%h%m%o%y&R&T&`&d&m&o&p&w&{'O'V'Y'g'h'k'm'n'r'w'y'}(R(W(X(_(b(i(k(s(v)S)V)Z)[)`)c)l)v*O*R*S*V*]*^*`*b*e*f*i*l*p*q*x*z*{+S+[+]+c+j+k+n+v+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.^.b.y/i/j/k/l/n/o/p/q/r/t/x}!dP#j#w$Y$h$t%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m!P!eP#j#w$Y$h$t$v%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m!R!fP#j#w$Y$h$t$v$w%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m!T!gP#j#w$Y$h$t$v$w$x%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m!V!hP#j#w$Y$h$t$v$w$x$y%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m!X!iP#j#w$Y$h$t$v$w$x$y$z%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m!]!iP!o#j#w$Y$h$t$v$w$x$y$z${%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/m'uSOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#O#S#T#^#k#n$P$Q$S$U$X$i$k$l$n$u%O%T%[%_%a%d%h%m%o%y&R&T&`&d&m&o&p&w&{'O'V'Y'g'h'k'm'n'r'w'y'}(R(W(X(_(b(i(k(s(v)S)V)Z)[)`)c)l)v*O*R*S*V*]*^*`*b*e*f*i*l*p*q*x*z*{+S+[+]+c+j+k+n+v+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.^.b.y/i/j/k/l/n/o/p/q/r/t/x&ZUOXYZhrtv|}!R!S!T!X!j!l!p!q!r!t!u#^#k#n$Q$S$U$X$l$n%O%T%[%_%a%h%m%o%y&R&`&d&o&p&w'O'V'Y'g'h'k'm'n'r'y(R(X(_(b(i(k(s)S)V)`)c)l)v*O*R*S*V*]*^*`*b*e*f*i*p*q*x*{+S+c+j+k+n+v+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.b.y/i/j/k/l/n/o/p/q/t/x%eWOXYZhrv|}!R!S!T!X!j!l#^#k#n$Q$S$U$X$l$n%O%T%_%a%h%m%o%y&R&`&d&o&p&w'O'V'Y'g'h'k'm'n'r'y(R(X(_(b(i(k(s)S)V)`)c)l)v*O*R*S*V*]*`*b*e*f*i*p*q*x*{+S+c+j+k+n+v+w+x+z+{,O,S,U,W,Y,Z,],o,q,x,{-n-o.b/o/p/qQ#}uQ.c-sR/u/w'ldOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!l!p!q!r!t!u!{#O#S#T#^#k#n$P$Q$S$U$X$i$k$l$n$u%O%T%[%_%a%d%h%m%o%y&R&T&`&d&m&o&p&w&{'O'V'Y'g'k'm'n'r'w'y'}(R(W(X(_(b(i(k(s(v)S)V)Z)[)`)c)l)v*R*S*V*]*^*`*b*e*f*i*l*p*q*x*z*{+S+[+]+c+j+k+n+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.^.b.y/i/j/k/l/n/o/p/q/r/t/xW#ql!O!P$`W#yu&b-s/wQ$b!QQ$r!YQ$s!ZW$}!j'h*O+vS&a#z#{Q'R$mQ(l&ZQ(z&qU({&s(|(}U)O&u)P+RQ)n'[W)o'^+q,s-]S+p)p)qY,_*|,`-T-U-wQ,b+OQ,l+gQ,n+il-`,w-f-g-i.R.T.Y.p.u.z/P/[/a/dQ-v-SQ.Z-hQ.g-{Q.r.VU/V.{/Y/bX/]/Q/^/e/fR&`#yi!xXY!S!T%a%h'y(R)V*]*`*bR%_!wQ!|XQ%z#^Q&i$UR&l$XT-r-O.y![!kP!o#j#w$Y$h$t$v$w$x$y$z${%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/mQ&^#rR'a$sR'g$}Q%W!nR.e-y'tcOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#O#S#T#^#k#n$P$Q$S$U$X$i$k$l$n$u%O%T%[%_%a%d%h%m%o%y&R&T&`&d&m&o&p&w&{'O'V'Y'g'h'k'm'n'r'w'y'}(R(W(X(_(b(i(k(s(v)S)V)Z)[)`)c)l)v*O*R*S*V*]*^*`*b*e*f*i*l*p*q*x*z*{+S+[+]+c+j+k+n+v+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.^.b.y/i/j/k/l/n/o/p/q/r/t/xS#hc#i!P-d,w-f-g-h-i-{.R.T.Y.p.u.z.{/P/Q/Y/[/^/a/b/d/e/f'tcOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#O#S#T#^#k#n$P$Q$S$U$X$i$k$l$n$u%O%T%[%_%a%d%h%m%o%y&R&T&`&d&m&o&p&w&{'O'V'Y'g'h'k'm'n'r'w'y'}(R(W(X(_(b(i(k(s(v)S)V)Z)[)`)c)l)v*O*R*S*V*]*^*`*b*e*f*i*l*p*q*x*z*{+S+[+]+c+j+k+n+v+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.^.b.y/i/j/k/l/n/o/p/q/r/t/xT#hc#iS#__#`S#b`#cS#da#eS#fb#gT*t(e*uT(f%z(hQ$WwR+o)oX$Uw$V$W&kZkOr$n)c+cXoOr)c+cQ$o!WQ&y$fQ&z$gQ']$qQ'`$sQ)a'QQ)g'VQ)i'WQ)j'XQ)w'_Q)y'aQ+V)VQ+X)WQ+Y)XQ+^)_S+`)b)xQ+d)eQ+e)fQ+f)hQ,d+UQ,e+WQ,g+_Q,h+aQ,m+hQ-W,fQ-Y,kQ-Z,lQ-x-XQ._-lR.x.`WoOr)c+cR#tnQ'_$rR)b'RQ+n)oR,q+oQ)x'_R+a)bZmOnr)c+cQ'c$tR){'dT,u+u,vu-k,w-f-g-i-{.R.T.Y.p.u.z.{/P/Y/[/a/b/dt-k,w-f-g-i-{.R.T.Y.p.u.z.{/P/Y/[/a/b/dQ.Z-hX/]/Q/^/e/f!P-c,w-f-g-h-i-{.R.T.Y.p.u.z.{/P/Q/Y/[/^/a/b/d/e/fQ.O-bR.l.Pg.R-e.S.h.o.t/S/U/W/c/g/hu-j,w-f-g-i-{.R.T.Y.p.u.z.{/P/Y/[/a/b/dX-|-`-j.g/VR.i-{V/X.{/Y/bR.`-lQrOR#vrQ&c#|R(q&cS%n#R$OS(Y%n(]T(]%q&eQ%b!zQ%i!}W'z%b%i(P(TQ(P%fR(T%kQ&n$YR(w&nQ(`%rQ*g(ZT*m(`*gQ'i%PR*P'iS'l%S%TY*T'l*U+|,|-pU*U'm'n'oU+|*V*W*XS,|+},OR-p,}Q#Y]R%u#YQ#]^R%w#]Q#`_R%{#`Q(c%xS*r(c*sR*s(dQ*u(eR,[*uQ#c`R%}#cQ#eaR&O#eQ#gbR&P#gQ#icR&Q#iQ#lfQ&S#jW&V#l&S(t*yQ(t&hR*y/mQ$VwS&j$V&kR&k$WQ&x$dR)T&xQ&[#qR(m&[Q$`!PR&r$`Q*}({S,a*}-VR-V,bQ&v$bR)Q&vQ#ojR&X#oQ+c)cR,i+cQ)U&yR+T)UQ&|$hS)]&|)^R)^&}Q'U$oR)d'UQ'Z$pS)m'Z+lR+l)nQ+r)sR,t+rWnOr)c+cR#snQ,v+uR-^,vd.S-e.h.o.t/S/U/W/c/g/hR.n.SU-z-`.g/VR.f-zQ/R.tS/_/R/`R/`/SS.|.h.iR/Z.|Q.U-eR.q.USqOrT+b)c+cWpOr)c+cR'S$nYjOr$n)c+cR&W#n[wOr#n$n)c+cR&i$U&YPOXYZhrtv|}!R!S!T!X!j!l!p!q!r!t!u#^#k#n$Q$S$U$X$l$n%O%T%[%_%a%h%m%o%y&R&`&d&o&p&w'O'V'Y'g'h'k'm'n'r'y(R(X(_(b(i(k(s)S)V)`)c)l)v*O*R*S*V*]*^*`*b*e*f*i*p*q*x*{+S+c+j+k+n+v+w+x+z+{,O,Q,S,U,W,Y,Z,],o,q,x,{-O-n-o.b.y/i/j/k/l/n/o/p/q/t/xQ!oSQ#jeQ#wsU$Yx%d'}S$h!U$kQ$t![Q$v!dQ$w!eQ$x!fQ$y!gQ$z!hQ${!iQ%f!{Q%k#OQ%q#SQ%r#TQ&e$PQ&}$iQ'd$uQ(j&TU(u&m(v*zW)Y&{)[+[+]Q*Z'wQ*d(WQ+Z)ZQ,V*lQ.w.^R/m/rQ!zXQ!}YQ$f!SQ$g!T^'v%a%h'y(R*]*`*bR+W)V[fOr#n$n)c+ch!wXY!S!T%a%h'y(R)V*]*`*bQ#RZQ#mhS$Ov|Q$]}W$d!R$X'O)`S$p!X$lW$|!j'h*O+vQ%S!lQ%x#^`&U#k&R(i(k(s*x,]/qQ&f$QQ&g$SQ&h$UQ'e%OQ'o%TQ'u%_W(V%m(X*e*iQ(Z%oQ(d%yQ(o&`S(r&d/oQ(x&oQ(y&pU)R&w)S+SQ)h'VY)k'Y)l+j+k,oQ)|'g^*Q'k*S+z+{,{-o.bQ*W'mQ*X'nS*Y'r/pW*k(_*f,S,WW*o(b*q,Y,ZQ+t)vQ+y*RQ+}*VQ,X*pQ,^*{Q,p+nQ,y+wQ,z+xQ,},OQ-R,UQ-[,qQ-m,xR.a-nhTOr#k#n$n&R&d'r(i(k)c+c$z!vXYZhv|}!R!S!T!X!j!l#^$Q$S$U$X$l%O%T%_%a%h%m%o%y&`&o&p&w'O'V'Y'g'h'k'm'n'y(R(X(_(b(s)S)V)`)l)v*O*R*S*V*]*`*b*e*f*i*p*q*x*{+S+j+k+n+v+w+x+z+{,O,S,U,W,Y,Z,],o,q,x,{-n-o.b/o/p/qQ#xtW%X!p!t/j/tQ%Y!qQ%Z!rQ%]!uQ%g/iS'q%[/nQ's/kQ't/lQ,P*^Q-Q,QS-q-O.yR/v/xU#|u-s/wR(p&b[gOr#n$n)c+cX!yX#^$U$XQ#WZQ$RvR$[|Q%c!zQ%j!}Q%p#RQ'e$|Q(Q%fQ(U%kQ(^%qQ(a%rQ*h(ZQ-P,PQ-u-QR.d-tQ$ZxQ'|%dR*_'}Q-t-OR/T.yR#QYR#VZR%R!jQ%P!jV)}'h*O+v!]!mP!o#j#w$Y$h$t$v$w$x$y$z${%f%k%q%r&e&}'d(j(u)Y*Z*d+Z,V.w/mR%U!lR%z#^Q(g%zR*w(hQ$e!RQ&l$XQ)_'OR+_)`Q#rlQ$^!OQ$a!PR&t$`Q(z&sR+Q(}Q(z&sQ+P(|R+Q(}R$c!QXpOr)c+cQ$j!UR'P$kQ$q!XR'Q$lR)u'^Q)s'^V,r+q,s-]Q-l,wQ.W-fR.X-gU-e,w-f-gQ.]-iQ.h-{Q.m.RU.o.T.p/PQ.t.YQ/S.uQ/U.zU/W.{/Y/bQ/c/[Q/g/aR/h/dR.[-hR.j-{",
+     states: "!LfO`Q$IXOOO%fQ$I[O'#G|OOQ$IS'#Cm'#CmOOQ$IS'#Cn'#CnO'UQ$IWO'#ClO(wQ$I[O'#G{OOQ$IS'#G|'#G|OOQ$IS'#DS'#DSOOQ$IS'#G{'#G{O)eQ$IWO'#D]O)xQ$IWO'#DdO*YQ$IWO'#DhOOQ$IS'#Ds'#DsO*mO`O'#DsO*uOpO'#DsO*}O!bO'#DtO+YO#tO'#DtO+eO&jO'#DtO+pO,UO'#DtO-rQ$I[O'#GmOOQ$IS'#Gm'#GmO'UQ$IWO'#GlO/UQ$I[O'#GlOOQ$IS'#E]'#E]O/mQ$IWO'#E^OOQ$IS'#Gk'#GkO/wQ$IWO'#GjOOQ$IV'#Gj'#GjO0SQ$IWO'#FPOOQ$IS'#GX'#GXO0XQ$IWO'#FOOOQ$IV'#Hx'#HxOOQ$IV'#Gi'#GiOOQ$IT'#Fh'#FhQ`Q$IXOOO'UQ$IWO'#CoO0gQ$IWO'#C{O0nQ$IWO'#DPO0|Q$IWO'#HQO1^Q$I[O'#EQO'UQ$IWO'#EROOQ$IS'#ET'#ETOOQ$IS'#EV'#EVOOQ$IS'#EX'#EXO1rQ$IWO'#EZO2YQ$IWO'#E_O0SQ$IWO'#EaO2mQ$I[O'#EaO0SQ$IWO'#EdO/mQ$IWO'#EgO/mQ$IWO'#EkO/mQ$IWO'#EnO2xQ$IWO'#EpO3PQ$IWO'#EuO3[Q$IWO'#EqO/mQ$IWO'#EuO0SQ$IWO'#EwO0SQ$IWO'#E|O3aQ$IWO'#FROOQ$IS'#Cc'#CcOOQ$IS'#Cd'#CdOOQ$IS'#Ce'#CeOOQ$IS'#Cf'#CfOOQ$IS'#Cg'#CgOOQ$IS'#Ch'#ChOOQ$IS'#Cj'#CjO'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O'UQ$IWO,58|O3hQ$IWO'#DmOOQ$IS,5:W,5:WO3{Q$IWO'#H[OOQ$IS,5:Z,5:ZO4YQ%1`O,5:ZO4_Q$I[O,59WO0gQ$IWO,59`O0gQ$IWO,59`O0gQ$IWO,59`O6}Q$IWO,59`O7SQ$IWO,59`O7ZQ$IWO,59hO7bQ$IWO'#G{O8hQ$IWO'#GzOOQ$IS'#Gz'#GzOOQ$IS'#DY'#DYO9PQ$IWO,59_O'UQ$IWO,59_O9_Q$IWO,59_OOQ$IS,59w,59wO9dQ$IWO,5:PO'UQ$IWO,5:POOQ$IS,5:O,5:OO9rQ$IWO,5:OO9wQ$IWO,5:VO'UQ$IWO,5:VO'UQ$IWO,5:TOOQ$IS,5:S,5:SO:YQ$IWO,5:SO:_Q$IWO,5:UOOOO'#Fp'#FpO:dO`O,5:_OOQ$IS,5:_,5:_OOOO'#Fq'#FqO:lOpO,5:_O:tQ$IWO'#DuOOOO'#Fr'#FrO;UO!bO,5:`OOQ$IS,5:`,5:`OOOO'#Fu'#FuO;aO#tO,5:`OOOO'#Fv'#FvO;lO&jO,5:`OOOO'#Fw'#FwO;wO,UO,5:`OOQ$IS'#Fx'#FxO<SQ$I[O,5:dO>tQ$I[O,5=WO?_Q%GlO,5=WO@OQ$I[O,5=WOOQ$IS,5:x,5:xO@gQ$IXO'#GQOAvQ$IWO,5;TOOQ$IV,5=U,5=UOBRQ$I[O'#HtOBjQ$IWO,5;kOOQ$IS-E:V-E:VOOQ$IV,5;j,5;jO3VQ$IWO'#EwOOQ$IT-E9f-E9fOBrQ$I[O,59ZODyQ$I[O,59gOEdQ$IWO'#G}OEoQ$IWO'#G}O0SQ$IWO'#G}OEzQ$IWO'#DROFSQ$IWO,59kOFXQ$IWO'#HRO'UQ$IWO'#HRO/mQ$IWO,5=lOOQ$IS,5=l,5=lO/mQ$IWO'#D|OOQ$IS'#D}'#D}OFvQ$IWO'#FzOGWQ$IWO,58zOGWQ$IWO,58zO)kQ$IWO,5:jOGfQ$I[O'#HTOOQ$IS,5:m,5:mOOQ$IS,5:u,5:uOGyQ$IWO,5:yOH[Q$IWO,5:{OOQ$IS'#F}'#F}OHjQ$I[O,5:{OHxQ$IWO,5:{OH}Q$IWO'#HwOOQ$IS,5;O,5;OOI]Q$IWO'#HsOOQ$IS,5;R,5;RO3[Q$IWO,5;VO3[Q$IWO,5;YOInQ$I[O'#HyO'UQ$IWO'#HyOIxQ$IWO,5;[O2xQ$IWO,5;[O/mQ$IWO,5;aO0SQ$IWO,5;cOI}Q$IXO'#ElOKWQ$IZO,5;]ONlQ$IWO'#HzO3[Q$IWO,5;aONwQ$IWO,5;cON|Q$IWO,5;hO! UQ$I[O,5;mO'UQ$IWO,5;mO!#xQ$I[O1G.hO!$PQ$I[O1G.hO!&pQ$I[O1G.hO!&zQ$I[O1G.hO!)eQ$I[O1G.hO!)xQ$I[O1G.hO!*]Q$IWO'#HZO!*kQ$I[O'#GmO/mQ$IWO'#HZO!*uQ$IWO'#HYOOQ$IS,5:X,5:XO!*}Q$IWO,5:XO!+SQ$IWO'#H]O!+_Q$IWO'#H]O!+rQ$IWO,5=vOOQ$IS'#Dq'#DqOOQ$IS1G/u1G/uOOQ$IS1G.z1G.zO!,rQ$I[O1G.zO!,yQ$I[O1G.zO0gQ$IWO1G.zO!-fQ$IWO1G/SOOQ$IS'#DX'#DXO/mQ$IWO,59rOOQ$IS1G.y1G.yO!-mQ$IWO1G/cO!-}Q$IWO1G/cO!.VQ$IWO1G/dO'UQ$IWO'#HSO!.[Q$IWO'#HSO!.aQ$I[O1G.yO!.qQ$IWO,59gO!/wQ$IWO,5=rO!0XQ$IWO,5=rO!0aQ$IWO1G/kO!0fQ$I[O1G/kOOQ$IS1G/j1G/jO!0vQ$IWO,5=mO!1mQ$IWO,5=mO/mQ$IWO1G/oO!2[Q$IWO1G/qO!2aQ$I[O1G/qO!2qQ$I[O1G/oOOQ$IS1G/n1G/nOOQ$IS1G/p1G/pOOOO-E9n-E9nOOQ$IS1G/y1G/yOOOO-E9o-E9oO!3RQ$IWO'#HhO/mQ$IWO'#HhO!3aQ$IWO,5:aOOOO-E9p-E9pOOQ$IS1G/z1G/zOOOO-E9s-E9sOOOO-E9t-E9tOOOO-E9u-E9uOOQ$IS-E9v-E9vO!3lQ%GlO1G2rO!4]Q$I[O1G2rO'UQ$IWO,5<eOOQ$IS,5<e,5<eOOQ$IS-E9w-E9wOOQ$IS,5<l,5<lOOQ$IS-E:O-E:OOOQ$IV1G0o1G0oO0SQ$IWO'#F|O!4tQ$I[O,5>`OOQ$IS1G1V1G1VO!5]Q$IWO1G1VOOQ$IS'#DT'#DTO/mQ$IWO,5=iOOQ$IS,5=i,5=iO!5bQ$IWO'#FiO!5mQ$IWO,59mO!5uQ$IWO1G/VO!6PQ$I[O,5=mOOQ$IS1G3W1G3WOOQ$IS,5:h,5:hO!6pQ$IWO'#GlOOQ$IS,5<f,5<fOOQ$IS-E9x-E9xO!7RQ$IWO1G.fOOQ$IS1G0U1G0UO!7aQ$IWO,5=oO!7qQ$IWO,5=oO/mQ$IWO1G0eO/mQ$IWO1G0eO0SQ$IWO1G0gOOQ$IS-E9{-E9{O!8SQ$IWO1G0gO!8_Q$IWO1G0gO!8dQ$IWO,5>cO!8rQ$IWO,5>cO!9QQ$IWO,5>_O!9hQ$IWO,5>_O!9yQ$IZO1G0qO!=[Q$IZO1G0tO!@jQ$IWO,5>eO!@tQ$IWO,5>eO!@|Q$I[O,5>eO/mQ$IWO1G0vO!AWQ$IWO1G0vO3[Q$IWO1G0{ONwQ$IWO1G0}OOQ$IV,5;W,5;WO!A]Q$IYO,5;WO!AbQ$IZO1G0wO!DvQ$IWO'#GUO3[Q$IWO1G0wO3[Q$IWO1G0wO!ETQ$IWO,5>fO!EbQ$IWO,5>fO0SQ$IWO,5>fOOQ$IV1G0{1G0{O!EjQ$IWO'#EyO!E{Q%1`O1G0}OOQ$IV1G1S1G1SO3[Q$IWO1G1SO!FTQ$IWO'#FTOOQ$IV1G1X1G1XO! UQ$I[O1G1XOOQ$IS,5=u,5=uOOQ$IS'#Dn'#DnO/mQ$IWO,5=uO!FYQ$IWO,5=tO!FmQ$IWO,5=tOOQ$IS1G/s1G/sO!FuQ$IWO,5=wO!GVQ$IWO,5=wO!G_Q$IWO,5=wO!GrQ$IWO,5=wO!HSQ$IWO,5=wOOQ$IS1G3b1G3bOOQ$IS7+$f7+$fO!5uQ$IWO7+$nO!IuQ$IWO1G.zO!I|Q$IWO1G.zOOQ$IS1G/^1G/^OOQ$IS,5<V,5<VO'UQ$IWO,5<VOOQ$IS7+$}7+$}O!JTQ$IWO7+$}OOQ$IS-E9i-E9iOOQ$IS7+%O7+%OO!JeQ$IWO,5=nO'UQ$IWO,5=nOOQ$IS7+$e7+$eO!JjQ$IWO7+$}O!JrQ$IWO7+%OO!JwQ$IWO1G3^OOQ$IS7+%V7+%VO!KXQ$IWO1G3^O!KaQ$IWO7+%VOOQ$IS,5<U,5<UO'UQ$IWO,5<UO!KfQ$IWO1G3XOOQ$IS-E9h-E9hO!L]Q$IWO7+%ZOOQ$IS7+%]7+%]O!LkQ$IWO1G3XO!MYQ$IWO7+%]O!M_Q$IWO1G3_O!MoQ$IWO1G3_O!MwQ$IWO7+%ZO!M|Q$IWO,5>SO!NdQ$IWO,5>SO!NdQ$IWO,5>SO!NrO!LQO'#DwO!N}OSO'#HiOOOO1G/{1G/{O# SQ$IWO1G/{O# [Q%GlO7+(^O# {Q$I[O1G2PP#!fQ$IWO'#FyOOQ$IS,5<h,5<hOOQ$IS-E9z-E9zOOQ$IS7+&q7+&qOOQ$IS1G3T1G3TOOQ$IS,5<T,5<TOOQ$IS-E9g-E9gOOQ$IS7+$q7+$qO#!sQ$IWO,5=WO##^Q$IWO,5=WO##oQ$I[O,5<WO#$SQ$IWO1G3ZOOQ$IS-E9j-E9jOOQ$IS7+&P7+&PO#$dQ$IWO7+&POOQ$IS7+&R7+&RO#$rQ$IWO'#HvO0SQ$IWO'#HuO#%WQ$IWO7+&ROOQ$IS,5<k,5<kO#%cQ$IWO1G3}OOQ$IS-E9}-E9}OOQ$IS,5<g,5<gO#%qQ$IWO1G3yOOQ$IS-E9y-E9yO#&XQ$IZO7+&]O!DvQ$IWO'#GSO3[Q$IWO7+&]O3[Q$IWO7+&`O#)jQ$I[O,5<oO'UQ$IWO,5<oO#)tQ$IWO1G4POOQ$IS-E:R-E:RO#*OQ$IWO1G4PO3[Q$IWO7+&bO/mQ$IWO7+&bOOQ$IV7+&g7+&gO!E{Q%1`O7+&iO#*WQ$IXO1G0rOOQ$IV-E:S-E:SO3[Q$IWO7+&cO3[Q$IWO7+&cOOQ$IV,5<p,5<pO#+|Q$IWO,5<pOOQ$IV7+&c7+&cO#,XQ$IZO7+&cO#/gQ$IWO,5<qO#/rQ$IWO1G4QOOQ$IS-E:T-E:TO#0PQ$IWO1G4QO#0XQ$IWO'#H|O#0gQ$IWO'#H|O0SQ$IWO'#H|OOQ$IS'#H|'#H|O#0rQ$IWO'#H{OOQ$IS,5;e,5;eO#0zQ$IWO,5;eO/mQ$IWO'#E{OOQ$IV7+&i7+&iO3[Q$IWO7+&iOOQ$IV7+&n7+&nO#1PQ$IYO,5;oOOQ$IV7+&s7+&sOOQ$IS1G3a1G3aOOQ$IS,5<Y,5<YO#1UQ$IWO1G3`OOQ$IS-E9l-E9lO#1iQ$IWO,5<ZO#1tQ$IWO,5<ZO#2XQ$IWO1G3cOOQ$IS-E9m-E9mO#2iQ$IWO1G3cO#2qQ$IWO1G3cO#3RQ$IWO1G3cO#2iQ$IWO1G3cOOQ$IS<<HY<<HYO#3^Q$I[O1G1qOOQ$IS<<Hi<<HiP#3kQ$IWO'#FkO7ZQ$IWO1G3YO#3xQ$IWO1G3YO#3}Q$IWO<<HiOOQ$IS<<Hj<<HjO#4_Q$IWO7+(xOOQ$IS<<Hq<<HqO#4oQ$I[O1G1pP#5`Q$IWO'#FjO#5mQ$IWO7+(yO#5}Q$IWO7+(yO#6VQ$IWO<<HuO#6[Q$IWO7+(sOOQ$IS<<Hw<<HwO#7RQ$IWO,5<XO'UQ$IWO,5<XOOQ$IS-E9k-E9kOOQ$IS<<Hu<<HuOOQ$IS,5<_,5<_O/mQ$IWO,5<_O#7WQ$IWO1G3nOOQ$IS-E9q-E9qO#7nQ$IWO1G3nOOOO'#Ft'#FtO#7|O!LQO,5:cOOOO,5>T,5>TOOOO7+%g7+%gO#8XQ$IWO1G2rO#8rQ$IWO1G2rP'UQ$IWO'#FlO/mQ$IWO<<IkO#9TQ$IWO,5>bO#9fQ$IWO,5>bO0SQ$IWO,5>bO#9wQ$IWO,5>aOOQ$IS<<Im<<ImP0SQ$IWO'#GPP/mQ$IWO'#F{OOQ$IV-E:Q-E:QO3[Q$IWO<<IwOOQ$IV,5<n,5<nO3[Q$IWO,5<nOOQ$IV<<Iw<<IwOOQ$IV<<Iz<<IzO#9|Q$I[O1G2ZP#:WQ$IWO'#GTO#:_Q$IWO7+)kO#:iQ$IZO<<I|O3[Q$IWO<<I|OOQ$IV<<JT<<JTO3[Q$IWO<<JTOOQ$IV'#GR'#GRO#=wQ$IZO7+&^OOQ$IV<<I}<<I}O#?sQ$IZO<<I}OOQ$IV1G2[1G2[O0SQ$IWO1G2[O3[Q$IWO<<I}O0SQ$IWO1G2]P/mQ$IWO'#GVO#CRQ$IWO7+)lO#C`Q$IWO7+)lOOQ$IS'#Ez'#EzO/mQ$IWO,5>hO#ChQ$IWO,5>hOOQ$IS,5>h,5>hO#CsQ$IWO,5>gO#DUQ$IWO,5>gOOQ$IS1G1P1G1POOQ$IS,5;g,5;gO#D^Q$IWO1G1ZP#DcQ$IWO'#FnO#DsQ$IWO1G1uO#EWQ$IWO1G1uO#EhQ$IWO1G1uP#EsQ$IWO'#FoO#FQQ$IWO7+(}O#FbQ$IWO7+(}O#FbQ$IWO7+(}O#FjQ$IWO7+(}O#FzQ$IWO7+(tO7ZQ$IWO7+(tOOQ$ISAN>TAN>TO#GeQ$IWO<<LeOOQ$ISAN>aAN>aO/mQ$IWO1G1sO#GuQ$I[O1G1sP#HPQ$IWO'#FmOOQ$IS1G1y1G1yP#H^Q$IWO'#FsO#HkQ$IWO7+)YOOOO-E9r-E9rO#IRQ$IWO7+(^OOQ$ISAN?VAN?VO#IlQ$IWO,5<jO#JQQ$IWO1G3|OOQ$IS-E9|-E9|O#JcQ$IWO1G3|OOQ$IS1G3{1G3{OOQ$IVAN?cAN?cOOQ$IV1G2Y1G2YO3[Q$IWOAN?hO#JtQ$IZOAN?hOOQ$IVAN?oAN?oOOQ$IV-E:P-E:POOQ$IV<<Ix<<IxO3[Q$IWOAN?iO3[Q$IWO7+'vOOQ$IVAN?iAN?iOOQ$IS7+'w7+'wO#NSQ$IWO<<MWOOQ$IS1G4S1G4SO/mQ$IWO1G4SOOQ$IS,5<r,5<rO#NaQ$IWO1G4ROOQ$IS-E:U-E:UOOQ$IU'#GY'#GYO#NrQ$IYO7+&uO#N}Q$IWO'#FUO$ uQ$IWO7+'aO$!VQ$IWO7+'aOOQ$IS7+'a7+'aO$!bQ$IWO<<LiO$!rQ$IWO<<LiO$!rQ$IWO<<LiO$!zQ$IWO'#HUOOQ$IS<<L`<<L`O$#UQ$IWO<<L`OOQ$IS7+'_7+'_O0SQ$IWO1G2UP0SQ$IWO'#GOO$#oQ$IWO7+)hO$$QQ$IWO7+)hOOQ$IVG25SG25SO3[Q$IWOG25SOOQ$IVG25TG25TOOQ$IV<<Kb<<KbOOQ$IS7+)n7+)nP$$cQ$IWO'#GWOOQ$IU-E:W-E:WOOQ$IV<<Ja<<JaO$%VQ$I[O'#FWOOQ$IS'#FY'#FYO$%gQ$IWO'#FXO$&XQ$IWO'#FXOOQ$IS'#FX'#FXO$&^Q$IWO'#IOO#N}Q$IWO'#F`O#N}Q$IWO'#F`O$&uQ$IWO'#FaO#N}Q$IWO'#FbO$&|Q$IWO'#IPOOQ$IS'#IP'#IPO$'kQ$IWO,5;pOOQ$IS<<J{<<J{O$'sQ$IWO<<J{O$(TQ$IWOANBTO$(eQ$IWOANBTO$(mQ$IWO'#HVOOQ$IS'#HV'#HVO0nQ$IWO'#DaO$)WQ$IWO,5=pOOQ$ISANAzANAzOOQ$IS7+'p7+'pO$)oQ$IWO<<MSOOQ$IVLD*nLD*nO4YQ%1`O'#G[O$*QQ$I[O,5;yO#N}Q$IWO'#FdOOQ$IS,5;},5;}OOQ$IS'#FZ'#FZO$*rQ$IWO,5;sO$*wQ$IWO,5;sOOQ$IS'#F^'#F^O#N}Q$IWO'#GZO$+iQ$IWO,5;wO$,TQ$IWO,5>jO$,eQ$IWO,5>jO0SQ$IWO,5;vO$,vQ$IWO,5;zO$,{Q$IWO,5;zO#N}Q$IWO'#IQO$-QQ$IWO'#IQO$-VQ$IWO,5;{OOQ$IS,5;|,5;|O'UQ$IWO'#FgOOQ$IU1G1[1G1[O3[Q$IWO1G1[OOQ$ISAN@gAN@gO$-[Q$IWOG27oO$-lQ$IWO,59{OOQ$IS1G3[1G3[OOQ$IS,5<v,5<vOOQ$IS-E:Y-E:YO$-qQ$I[O'#FWO$-xQ$IWO'#IRO$.WQ$IWO'#IRO$.`Q$IWO,5<OOOQ$IS1G1_1G1_O$.eQ$IWO1G1_O$.jQ$IWO,5<uOOQ$IS-E:X-E:XO$/UQ$IWO,5<yO$/mQ$IWO1G4UOOQ$IS-E:]-E:]OOQ$IS1G1b1G1bOOQ$IS1G1f1G1fO$/}Q$IWO,5>lO#N}Q$IWO,5>lOOQ$IS1G1g1G1gO$0]Q$I[O,5<ROOQ$IU7+&v7+&vO$!zQ$IWO1G/gO#N}Q$IWO,5<PO$0dQ$IWO,5>mO$0kQ$IWO,5>mOOQ$IS1G1j1G1jOOQ$IS7+&y7+&yP#N}Q$IWO'#G_O$0sQ$IWO1G4WO$0}Q$IWO1G4WO$1VQ$IWO1G4WOOQ$IS7+%R7+%RO$1eQ$IWO1G1kO$1sQ$I[O'#FWO$1zQ$IWO,5<xOOQ$IS,5<x,5<xO$2YQ$IWO1G4XOOQ$IS-E:[-E:[O#N}Q$IWO,5<wO$2aQ$IWO,5<wO$2fQ$IWO7+)rOOQ$IS-E:Z-E:ZO$2pQ$IWO7+)rO#N}Q$IWO,5<QP#N}Q$IWO'#G^O$2xQ$IWO1G2cO#N}Q$IWO1G2cP$3WQ$IWO'#G]O$3_Q$IWO<<M^O$3iQ$IWO1G1lO$3wQ$IWO7+'}O7ZQ$IWO'#C{O7ZQ$IWO,59`O7ZQ$IWO,59`O7ZQ$IWO,59`O$4VQ$I[O,5=WO7ZQ$IWO1G.zO/mQ$IWO1G/VO/mQ$IWO7+$nP$4jQ$IWO'#FyO'UQ$IWO'#GlO$4wQ$IWO,59`O$4|Q$IWO,59`O$5TQ$IWO,59kO$5YQ$IWO1G/SO0nQ$IWO'#DPO7ZQ$IWO,59h",
+     stateData: "$5p~O%[OS%XOS%WOSQOS~OPhOTeOdsOfXOmtOq!SOtuO}vO!O!PO!R!VO!S!UO!VYO!ZZO!fdO!mdO!ndO!odO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#c!TO#f!WO#j!XO#l!YO#q!ZO#tlO#v![O%VqO%gQO%hQO%lRO%mVO&R[O&S]O&V^O&Y_O&``O&caO&ebO~OT!bO]!bO_!cOf!jO!V!lO!d!nO%b!]O%c!^O%d!_O%e!`O%f!`O%g!aO%h!aO%i!bO%j!bO%k!bO~Oi%pXj%pXk%pXl%pXm%pXn%pXq%pXx%pXy%pX!s%pX#^%pX%V%pX%Y%pX%r%pXe%pX!R%pX!S%pX%s%pX!U%pX!Y%pX!O%pX#V%pXr%pX!j%pX~P$bOdsOfXO!VYO!ZZO!fdO!mdO!ndO!odO%gQO%hQO%lRO%mVO&R[O&S]O&V^O&Y_O&``O&caO&ebO~Ox%oXy%oX#^%oX%V%oX%Y%oX%r%oX~Oi!qOj!rOk!pOl!pOm!sOn!tOq!uO!s%oX~P(cOT!{Oe!}Om/jOt/xO}vO~P'UOT#POm/jOt/xO!U#QO~P'UOT#TO_#UOm/jOt/xO!Y#VO~P'UO&T#YO&U#[O~O&W#]O&X#[O~O!Z#_O&Z#`O&_#bO~O!Z#_O&a#cO&b#bO~O!Z#_O&U#bO&d#eO~O!Z#_O&X#bO&f#gO~OT%aX]%aX_%aXf%aXi%aXj%aXk%aXl%aXm%aXn%aXq%aXx%aX!V%aX!d%aX%b%aX%c%aX%d%aX%e%aX%f%aX%g%aX%h%aX%i%aX%j%aX%k%aXe%aX!R%aX!S%aX~O&R[O&S]O&V^O&Y_O&``O&caO&ebOy%aX!s%aX#^%aX%V%aX%Y%aX%r%aX%s%aX!U%aX!Y%aX!O%aX#V%aXr%aX!j%aX~P+{Ox#lOy%`X!s%`X#^%`X%V%`X%Y%`X%r%`X~Om/jOt/xO~P'UO#^#oO%V#qO%Y#qO~O%mVO~O!R#vO#l!YO#q!ZO#tlO~OmtO~P'UOT#{O_#|O%mVOyuP~OT$QOm/jOt/xO!O$RO~P'UOy$TO!s$YO%r$UO#^!tX%V!tX%Y!tX~OT$QOm/jOt/xO#^!}X%V!}X%Y!}X~P'UOm/jOt/xO#^#RX%V#RX%Y#RX~P'UO!d$`O!m$`O%mVO~OT$jO~P'UO!S$lO#j$mO#l$nO~Oy$oO~OT$vO~P'UOT%PO_%POe%ROm/jOt/xO~P'UOm/jOt/xOy%UO~P'UO&Q%WO~O_!cOf!jO!V!lO!d!nOT`a]`ai`aj`ak`al`am`an`aq`ax`ay`a!s`a#^`a%V`a%Y`a%b`a%c`a%d`a%e`a%f`a%g`a%h`a%i`a%j`a%k`a%r`ae`a!R`a!S`a%s`a!U`a!Y`a!O`a#V`ar`a!j`a~Ol%]O~Om%]O~P'UOm/jO~P'UOi/lOj/mOk/kOl/kOm/tOn/uOq/yOe%oX!R%oX!S%oX%s%oX!U%oX!Y%oX!O%oX#V%oX!j%oX~P(cO%s%_Oe%nXx%nX!R%nX!S%nX!U%nXy%nX~Oe%aOx%bO!R%fO!S%eO~Oe%aO~Ox%iO!R%fO!S%eO!U%zX~O!U%mO~Ox%nOy%pO!R%fO!S%eO!Y%uX~O!Y%tO~O!Y%uO~O&T#YO&U%wO~O&W#]O&X%wO~OT%zOm/jOt/xO}vO~P'UO!Z#_O&Z#`O&_%}O~O!Z#_O&a#cO&b%}O~O!Z#_O&U%}O&d#eO~O!Z#_O&X%}O&f#gO~OT!la]!la_!laf!lai!laj!lak!lal!lam!lan!laq!lax!lay!la!V!la!d!la!s!la#^!la%V!la%Y!la%b!la%c!la%d!la%e!la%f!la%g!la%h!la%i!la%j!la%k!la%r!lae!la!R!la!S!la%s!la!U!la!Y!la!O!la#V!lar!la!j!la~P#yOx&SOy%`a!s%`a#^%`a%V%`a%Y%`a%r%`a~P$bOT&UOmtOtuOy%`a!s%`a#^%`a%V%`a%Y%`a%r%`a~P'UOx&SOy%`a!s%`a#^%`a%V%`a%Y%`a%r%`a~OPhOTeOmtOtuO}vO!O!PO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#^$tX%V$tX%Y$tX~P'UO#^#oO%V&ZO%Y&ZO~O!d&[Of&hX%V&hX#V&hX#^&hX%Y&hX#U&hX~Of!jO%V&^O~Oicajcakcalcamcancaqcaxcayca!sca#^ca%Vca%Yca%rcaeca!Rca!Sca%sca!Uca!Yca!Oca#Vcarca!jca~P$bOqoaxoayoa#^oa%Voa%Yoa%roa~Oi!qOj!rOk!pOl!pOm!sOn!tO!soa~PDbO%r&`Ox%qXy%qX~O%mVOx%qXy%qX~Ox&cOyuX~Oy&eO~Ox%nO#^%uX%V%uX%Y%uXe%uXy%uX!Y%uX!j%uX%r%uX~OT/sOm/jOt/xO}vO~P'UO%r$UO#^Sa%VSa%YSa~Ox&nO#^%wX%V%wX%Y%wXl%wX~P$bOx&qO!O&pO#^#Ra%V#Ra%Y#Ra~O#V&rO#^#Ta%V#Ta%Y#Ta~O!d$`O!m$`O#U&tO%mVO~O#U&tO~Ox&vO#^&kX%V&kX%Y&kX~Ox&xO#^&gX%V&gX%Y&gXy&gX~Ox&|Ol&mX~P$bOl'PO~OPhOTeOmtOtuO}vO!O!PO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO%V'UO~P'UOr'YO#g'WO#h'XOP#eaT#ead#eaf#eam#eaq#eat#ea}#ea!O#ea!R#ea!S#ea!V#ea!Z#ea!f#ea!m#ea!n#ea!o#ea!v#ea!x#ea!z#ea!|#ea#O#ea#S#ea#U#ea#X#ea#Y#ea#[#ea#c#ea#f#ea#j#ea#l#ea#q#ea#t#ea#v#ea%S#ea%V#ea%g#ea%h#ea%l#ea%m#ea&R#ea&S#ea&V#ea&Y#ea&`#ea&c#ea&e#ea%U#ea%Y#ea~Ox'ZO#V']Oy&nX~Of'_O~Of!jOy$oO~Oy'cO~P$bOT!bO]!bO_!cOf!jO!V!lO!d!nO%d!_O%e!`O%f!`O%g!aO%h!aO%i!bO%j!bO%k!bOiUijUikUilUimUinUiqUixUiyUi!sUi#^Ui%VUi%YUi%bUi%rUieUi!RUi!SUi%sUi!UUi!YUi!OUi#VUirUi!jUi~O%c!^O~P! ]O%cUi~P! ]OT!bO]!bO_!cOf!jO!V!lO!d!nO%g!aO%h!aO%i!bO%j!bO%k!bOiUijUikUilUimUinUiqUixUiyUi!sUi#^Ui%VUi%YUi%bUi%cUi%dUi%rUieUi!RUi!SUi%sUi!UUi!YUi!OUi#VUirUi!jUi~O%e!`O%f!`O~P!$WO%eUi%fUi~P!$WO_!cOf!jO!V!lO!d!nOiUijUikUilUimUinUiqUixUiyUi!sUi#^Ui%VUi%YUi%bUi%cUi%dUi%eUi%fUi%gUi%hUi%rUieUi!RUi!SUi%sUi!UUi!YUi!OUi#VUirUi!jUi~OT!bO]!bO%i!bO%j!bO%k!bO~P!'UOTUi]Ui%iUi%jUi%kUi~P!'UO!R%fO!S%eOe%}Xx%}X~O%r'gO%s'gO~P+{Ox'iOe%|X~Oe'kO~Ox'lOy'nO!U&PX~Om/jOt/xOx'lOy'oO!U&PX~P'UO!U'qO~Ok!pOl!pOm!sOn!tOihiqhixhiyhi!shi#^hi%Vhi%Yhi%rhi~Oj!rO~P!+wOjhi~P!+wOi/lOj/mOk/kOl/kOm/tOn/uO~Or'sO~P!-QOT'xOe'yOm/jOt/xO~P'UOe'yOx'zO~Oe'|O~O!S(OO~Oe(POx'zO!R%fO!S%eO~P$bOi/lOj/mOk/kOl/kOm/tOn/uOeoa!Roa!Soa%soa!Uoa!Yoa!Ooa#Voaroa!joa~PDbOT'xOm/jOt/xO!U%za~P'UOx(SO!U%za~O!U(TO~Ox(SO!R%fO!S%eO!U%za~P$bOT(XOm/jOt/xO!Y%ua#^%ua%V%ua%Y%uae%uay%ua!j%ua%r%ua~P'UOx(YO!Y%ua#^%ua%V%ua%Y%uae%uay%ua!j%ua%r%ua~O!Y(]O~Ox(YO!R%fO!S%eO!Y%ua~P$bOx(`O!R%fO!S%eO!Y%{a~P$bOx(cOy&[X!Y&[X!j&[X~Oy(fO!Y(hO!j(iO~OT&UOmtOtuOy%`i!s%`i#^%`i%V%`i%Y%`i%r%`i~P'UOx(jOy%`i!s%`i#^%`i%V%`i%Y%`i%r%`i~O!d&[Of&ha%V&ha#V&ha#^&ha%Y&ha#U&ha~O%V(oO~OT#{O_#|O%mVO~Ox&cOyua~OmtOtuO~P'UOx(YO#^%ua%V%ua%Y%uae%uay%ua!Y%ua!j%ua%r%ua~P$bOx(tO#^%`X%V%`X%Y%`X%r%`X~O%r$UO#^Si%VSi%YSi~O#^%wa%V%wa%Y%wal%wa~P'UOx(wO#^%wa%V%wa%Y%wal%wa~OT({Of(}O%mVO~O#U)OO~O%mVO#^&ka%V&ka%Y&ka~Ox)QO#^&ka%V&ka%Y&ka~Om/jOt/xO#^&ga%V&ga%Y&gay&ga~P'UOx)TO#^&ga%V&ga%Y&gay&ga~Or)XO#a)WOP#_iT#_id#_if#_im#_iq#_it#_i}#_i!O#_i!R#_i!S#_i!V#_i!Z#_i!f#_i!m#_i!n#_i!o#_i!v#_i!x#_i!z#_i!|#_i#O#_i#S#_i#U#_i#X#_i#Y#_i#[#_i#c#_i#f#_i#j#_i#l#_i#q#_i#t#_i#v#_i%S#_i%V#_i%g#_i%h#_i%l#_i%m#_i&R#_i&S#_i&V#_i&Y#_i&`#_i&c#_i&e#_i%U#_i%Y#_i~Or)YOP#biT#bid#bif#bim#biq#bit#bi}#bi!O#bi!R#bi!S#bi!V#bi!Z#bi!f#bi!m#bi!n#bi!o#bi!v#bi!x#bi!z#bi!|#bi#O#bi#S#bi#U#bi#X#bi#Y#bi#[#bi#c#bi#f#bi#j#bi#l#bi#q#bi#t#bi#v#bi%S#bi%V#bi%g#bi%h#bi%l#bi%m#bi&R#bi&S#bi&V#bi&Y#bi&`#bi&c#bi&e#bi%U#bi%Y#bi~OT)[Ol&ma~P'UOx)]Ol&ma~Ox)]Ol&ma~P$bOl)aO~O%T)dO~Or)gO#g'WO#h)fOP#eiT#eid#eif#eim#eiq#eit#ei}#ei!O#ei!R#ei!S#ei!V#ei!Z#ei!f#ei!m#ei!n#ei!o#ei!v#ei!x#ei!z#ei!|#ei#O#ei#S#ei#U#ei#X#ei#Y#ei#[#ei#c#ei#f#ei#j#ei#l#ei#q#ei#t#ei#v#ei%S#ei%V#ei%g#ei%h#ei%l#ei%m#ei&R#ei&S#ei&V#ei&Y#ei&`#ei&c#ei&e#ei%U#ei%Y#ei~Om/jOt/xOy$oO~P'UOm/jOt/xOy&na~P'UOx)mOy&na~OT)qO_)rOe)uO%i)sO%mVO~Oy$oO&q)wO~O%V){O~OT%PO_%POm/jOt/xOe%|a~P'UOx*POe%|a~Om/jOt/xOy*SO!U&Pa~P'UOx*TO!U&Pa~Om/jOt/xOx*TOy*WO!U&Pa~P'UOm/jOt/xOx*TO!U&Pa~P'UOx*TOy*WO!U&Pa~Ok/kOl/kOm/tOn/uOehiihiqhixhi!Rhi!Shi%shi!Uhiyhi!Yhi#^hi%Vhi%Yhi!Ohi#Vhirhi!jhi%rhi~Oj/mO~P!H_Ojhi~P!H_OT'xOe*]Om/jOt/xO~P'UOl*_O~Oe*]Ox*aO~Oe*bO~OT'xOm/jOt/xO!U%zi~P'UOx*cO!U%zi~O!U*dO~OT(XOm/jOt/xO!Y%ui#^%ui%V%ui%Y%uie%uiy%ui!j%ui%r%ui~P'UOx*gO!R%fO!S%eO!Y%{i~Ox*jO!Y%ui#^%ui%V%ui%Y%uie%uiy%ui!j%ui%r%ui~O!Y*kO~O_*mOm/jOt/xO!Y%{i~P'UOx*gO!Y%{i~O!Y*oO~OT*qOm/jOt/xOy&[a!Y&[a!j&[a~P'UOx*rOy&[a!Y&[a!j&[a~O!Z#_O&^*uO!Y!kX~O!Y*wO~Oy(fO!Y*xO~OT&UOmtOtuOy%`q!s%`q#^%`q%V%`q%Y%`q%r%`q~P'UOx$miy$mi!s$mi#^$mi%V$mi%Y$mi%r$mi~P$bOT&UOmtOtuO~P'UOT&UOm/jOt/xO#^%`a%V%`a%Y%`a%r%`a~P'UOx*yO#^%`a%V%`a%Y%`a%r%`a~Ox$`a#^$`a%V$`a%Y$`al$`a~P$bO#^%wi%V%wi%Y%wil%wi~P'UOx*|O#^#Rq%V#Rq%Y#Rq~Ox*}O#V+PO#^&jX%V&jX%Y&jXe&jX~OT+ROf(}O%mVO~O%mVO#^&ki%V&ki%Y&ki~Om/jOt/xO#^&gi%V&gi%Y&giy&gi~P'UOr+VO#a)WOP#_qT#_qd#_qf#_qm#_qq#_qt#_q}#_q!O#_q!R#_q!S#_q!V#_q!Z#_q!f#_q!m#_q!n#_q!o#_q!v#_q!x#_q!z#_q!|#_q#O#_q#S#_q#U#_q#X#_q#Y#_q#[#_q#c#_q#f#_q#j#_q#l#_q#q#_q#t#_q#v#_q%S#_q%V#_q%g#_q%h#_q%l#_q%m#_q&R#_q&S#_q&V#_q&Y#_q&`#_q&c#_q&e#_q%U#_q%Y#_q~Ol$wax$wa~P$bOT)[Ol&mi~P'UOx+^Ol&mi~OPhOTeOmtOq!SOtuO}vO!O!PO!R!VO!S!UO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#c!TO#f!WO#j!XO#l!YO#q!ZO#tlO#v![O~P'UOx+hOy$oO#V+hO~O#h+iOP#eqT#eqd#eqf#eqm#eqq#eqt#eq}#eq!O#eq!R#eq!S#eq!V#eq!Z#eq!f#eq!m#eq!n#eq!o#eq!v#eq!x#eq!z#eq!|#eq#O#eq#S#eq#U#eq#X#eq#Y#eq#[#eq#c#eq#f#eq#j#eq#l#eq#q#eq#t#eq#v#eq%S#eq%V#eq%g#eq%h#eq%l#eq%m#eq&R#eq&S#eq&V#eq&Y#eq&`#eq&c#eq&e#eq%U#eq%Y#eq~O#V+jOx$yay$ya~Om/jOt/xOy&ni~P'UOx+lOy&ni~Oy$TO%r+nOe&pXx&pX~O%mVOe&pXx&pX~Ox+rOe&oX~Oe+tO~O%T+vO~OT%PO_%POm/jOt/xOe%|i~P'UOy+xOx$ca!U$ca~Om/jOt/xOy+yOx$ca!U$ca~P'UOm/jOt/xOy*SO!U&Pi~P'UOx+|O!U&Pi~Om/jOt/xOx+|O!U&Pi~P'UOx+|Oy,PO!U&Pi~Oe$_ix$_i!U$_i~P$bOT'xOm/jOt/xO~P'UOl,RO~OT'xOe,SOm/jOt/xO~P'UOT'xOm/jOt/xO!U%zq~P'UOx$^i!Y$^i#^$^i%V$^i%Y$^ie$^iy$^i!j$^i%r$^i~P$bOT(XOm/jOt/xO~P'UO_*mOm/jOt/xO!Y%{q~P'UOx,TO!Y%{q~O!Y,UO~OT(XOm/jOt/xO!Y%uq#^%uq%V%uq%Y%uqe%uqy%uq!j%uq%r%uq~P'UOy,VO~OT*qOm/jOt/xOy&[i!Y&[i!j&[i~P'UOx,[Oy&[i!Y&[i!j&[i~O!Z#_O&^*uO!Y!ka~OT&UOm/jOt/xO#^%`i%V%`i%Y%`i%r%`i~P'UOx,^O#^%`i%V%`i%Y%`i%r%`i~O%mVO#^&ja%V&ja%Y&jae&ja~Ox,aO#^&ja%V&ja%Y&jae&ja~Oe,dO~Ol$wix$wi~P$bOT)[O~P'UOT)[Ol&mq~P'UOr,gOP#dyT#dyd#dyf#dym#dyq#dyt#dy}#dy!O#dy!R#dy!S#dy!V#dy!Z#dy!f#dy!m#dy!n#dy!o#dy!v#dy!x#dy!z#dy!|#dy#O#dy#S#dy#U#dy#X#dy#Y#dy#[#dy#c#dy#f#dy#j#dy#l#dy#q#dy#t#dy#v#dy%S#dy%V#dy%g#dy%h#dy%l#dy%m#dy&R#dy&S#dy&V#dy&Y#dy&`#dy&c#dy&e#dy%U#dy%Y#dy~OPhOTeOmtOq!SOtuO}vO!O!PO!R!VO!S!UO!vxO!xyO!zzO!|{O#O|O#S}O#U!OO#X!QO#Y!QO#[!RO#c!TO#f!WO#j!XO#l!YO#q!ZO#tlO#v![O%U,kO%Y,kO~P'UO#h,lOP#eyT#eyd#eyf#eym#eyq#eyt#ey}#ey!O#ey!R#ey!S#ey!V#ey!Z#ey!f#ey!m#ey!n#ey!o#ey!v#ey!x#ey!z#ey!|#ey#O#ey#S#ey#U#ey#X#ey#Y#ey#[#ey#c#ey#f#ey#j#ey#l#ey#q#ey#t#ey#v#ey%S#ey%V#ey%g#ey%h#ey%l#ey%m#ey&R#ey&S#ey&V#ey&Y#ey&`#ey&c#ey&e#ey%U#ey%Y#ey~Om/jOt/xOy&nq~P'UOx,pOy&nq~O%r+nOe&pax&pa~OT)qO_)rO%i)sO%mVOe&oa~Ox,tOe&oa~O#y,xO~OT%PO_%POm/jOt/xO~P'UOm/jOt/xOy,yOx$ci!U$ci~P'UOm/jOt/xOx$ci!U$ci~P'UOy,yOx$ci!U$ci~Om/jOt/xOy*SO~P'UOm/jOt/xOy*SO!U&Pq~P'UOx,|O!U&Pq~Om/jOt/xOx,|O!U&Pq~P'UOq-PO!R%fO!S%eOe%vq!U%vq!Y%vqx%vq~P!-QO_*mOm/jOt/xO!Y%{y~P'UOx$ai!Y$ai~P$bO_*mOm/jOt/xO~P'UOT*qOm/jOt/xO~P'UOT*qOm/jOt/xOy&[q!Y&[q!j&[q~P'UOT&UOm/jOt/xO#^%`q%V%`q%Y%`q%r%`q~P'UO#V-TOx$ra#^$ra%V$ra%Y$rae$ra~O%mVO#^&ji%V&ji%Y&jie&ji~Ox-VO#^&ji%V&ji%Y&jie&ji~Or-YOP#d!RT#d!Rd#d!Rf#d!Rm#d!Rq#d!Rt#d!R}#d!R!O#d!R!R#d!R!S#d!R!V#d!R!Z#d!R!f#d!R!m#d!R!n#d!R!o#d!R!v#d!R!x#d!R!z#d!R!|#d!R#O#d!R#S#d!R#U#d!R#X#d!R#Y#d!R#[#d!R#c#d!R#f#d!R#j#d!R#l#d!R#q#d!R#t#d!R#v#d!R%S#d!R%V#d!R%g#d!R%h#d!R%l#d!R%m#d!R&R#d!R&S#d!R&V#d!R&Y#d!R&`#d!R&c#d!R&e#d!R%U#d!R%Y#d!R~Om/jOt/xOy&ny~P'UOT)qO_)rO%i)sO%mVOe&oi~O#y,xO%U-`O%Y-`O~OT-jOf-hO!V-gO!Z-iO!f-cO!n-eO!o-eO%h-bO%mVO&R[O&S]O&V^O~Om/jOt/xOx$cq!U$cq~P'UOy-oOx$cq!U$cq~Om/jOt/xOy*SO!U&Py~P'UOx-pO!U&Py~Om/jOt-tO~P'UOq-PO!R%fO!S%eOe%vy!U%vy!Y%vyx%vy~P!-QO%mVO#^&jq%V&jq%Y&jqe&jq~Ox-xO#^&jq%V&jq%Y&jqe&jq~OT)qO_)rO%i)sO%mVO~Of-|O!d-zOx#zX#V#zX%b#zXe#zX~Oq#zXy#zX!U#zX!Y#zX~P$$qO%g.OO%h.OOq#{Xx#{Xy#{X#V#{X%b#{X!U#{Xe#{X!Y#{X~O!f.QO~Ox.UO#V.WO%b.ROq&rXy&rX!U&rXe&rX~O_.ZO~P$ ZOf-|Oq&sXx&sXy&sX#V&sX%b&sX!U&sXe&sX!Y&sX~Oq._Oy$oO~Om/jOt/xOx$cy!U$cy~P'UOm/jOt/xOy*SO!U&P!R~P'UOx.cO!U&P!R~Oe%yXq%yX!R%yX!S%yX!U%yX!Y%yXx%yX~P!-QOq-PO!R%fO!S%eOe%xa!U%xa!Y%xax%xa~O%mVO#^&jy%V&jy%Y&jye&jy~O!d-zOf$Raq$Rax$Ray$Ra#V$Ra%b$Ra!U$Rae$Ra!Y$Ra~O!f.lO~O%g.OO%h.OOq#{ax#{ay#{a#V#{a%b#{a!U#{ae#{a!Y#{a~O%b.ROq$Pax$Pay$Pa#V$Pa!U$Pae$Pa!Y$Pa~Oq&ray&ra!U&rae&ra~P#N}Ox.qOq&ray&ra!U&rae&ra~O!U.tO~Oe.tO~Oy.vO~O!Y.wO~Om/jOt/xOy*SO!U&P!Z~P'UOy.zO~O%r.{O~P$$qOx.|O#V.WO%b.ROe&uX~Ox.|Oe&uX~Oe/OO~O!f/PO~O#V.WOq$}ax$}ay$}a%b$}a!U$}ae$}a!Y$}a~O#V.WO%b.ROq%Rax%Ray%Ra!U%Rae%Ra~Oq&riy&ri!U&rie&ri~P#N}Ox/RO#V.WO%b.RO!Y&ta~Oy$Za~P$bOe&ua~P#N}Ox/ZOe&ua~O_/]O!Y&ti~P$ ZOx/_O!Y&ti~Ox/_O#V.WO%b.RO!Y&ti~O#V.WO%b.ROe$Xix$Xi~O%r/bO~P$$qO#V.WO%b.ROe%Qax%Qa~Oe&ui~P#N}Oy/eO~O_/]O!Y&tq~P$ ZOx/gO!Y&tq~O#V.WO%b.ROx%Pi!Y%Pi~O_/]O~P$ ZO_/]O!Y&ty~P$ ZO#V.WO%b.ROe$Yix$Yi~O#V.WO%b.ROx%Pq!Y%Pq~Ox*yO#^%`a%V%`a%Y%`a%r%`a~P$bOT&UOm/jOt/xO~P'UOl/oO~Om/oO~P'UOy/pO~Or/qO~P!-QO&S&V&c&e&R!Z&Z&a&d&f&Y&`&Y%m~",
+     goto: "!:f&vPPPP&wP'P*e*}+h,S,o-]P-zP'P.k.k'PPPP'P2PPPPPPP2P4oPP4oP6{7U=QPP=T=u=xPP'P'PPP>UPP'P'PPP'P'P'P'P'P>Y?P'PP?SP?YC]FuPGZ'PPPPG_Ge&wP&w&wP&wP&wP&wP&wP&w&w&wP&wPP&wPP&wPGkPGrGxPGrPGrGrPPPGrPIwPJQJWJ^IwPGrJdPGrPJkJqPJuKZKxLcJuJuLiLvJuJuJuJuM[MbMeMjMmMsMyNVNiNoNy! P! m! s! y!!P!!Z!!a!!g!!m!!s!!y!#]!#g!#m!#s!#y!$T!$Z!$a!$g!$m!$w!$}!%X!%_!%h!%n!%}!&V!&a!&hPPPPPPPPP!&n!&v!'P!'Z!'fPPPPPPPPPPPP!,U!-j!1`!4lPP!4t!5S!5]!6R!5x!6[!6b!6e!6h!6k!6s!7dPPPPPPPPPP!7g!7jPPPPPPPPP!7p!7|!8Y!8`!8i!8l!8r!8x!9O!9RP!9Z!9d!:`!:c]iOr#o$o)d+d'udOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#P#T#U#_#l#o$Q$R$T$V$Y$j$l$m$o$v%P%U%]%`%b%e%i%n%p%z&S&U&a&e&n&p&q&x&|'P'W'Z'h'i'l'n'o's'x'z(O(S(X(Y(`(c(j(l(t(w)T)W)[)])a)d)m)w*P*S*T*W*^*_*a*c*f*g*j*m*q*r*y*{*|+T+]+^+d+k+l+o+w+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p._.c.z/j/k/l/m/o/p/q/r/s/u/y}!dP#k#x$Z$i$u%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n!P!eP#k#x$Z$i$u$w%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n!R!fP#k#x$Z$i$u$w$x%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n!T!gP#k#x$Z$i$u$w$x$y%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n!V!hP#k#x$Z$i$u$w$x$y$z%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n!X!iP#k#x$Z$i$u$w$x$y$z${%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n!]!iP!o#k#x$Z$i$u$w$x$y$z${$|%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/n'uSOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#P#T#U#_#l#o$Q$R$T$V$Y$j$l$m$o$v%P%U%]%`%b%e%i%n%p%z&S&U&a&e&n&p&q&x&|'P'W'Z'h'i'l'n'o's'x'z(O(S(X(Y(`(c(j(l(t(w)T)W)[)])a)d)m)w*P*S*T*W*^*_*a*c*f*g*j*m*q*r*y*{*|+T+]+^+d+k+l+o+w+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p._.c.z/j/k/l/m/o/p/q/r/s/u/y&ZUOXYZhrtv|}!R!S!T!X!j!l!p!q!r!t!u#_#l#o$R$T$V$Y$m$o%P%U%]%`%b%i%n%p%z&S&a&e&p&q&x'P'W'Z'h'i'l'n'o's'z(S(Y(`(c(j(l(t)T)W)a)d)m)w*P*S*T*W*^*_*a*c*f*g*j*q*r*y*|+T+d+k+l+o+w+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p.c.z/j/k/l/m/o/p/q/r/u/y%eWOXYZhrv|}!R!S!T!X!j!l#_#l#o$R$T$V$Y$m$o%P%U%`%b%i%n%p%z&S&a&e&p&q&x'P'W'Z'h'i'l'n'o's'z(S(Y(`(c(j(l(t)T)W)a)d)m)w*P*S*T*W*^*a*c*f*g*j*q*r*y*|+T+d+k+l+o+w+x+y+{+|,P,T,V,X,Z,[,^,p,r,y,|-o-p.c/p/q/rQ$OuQ.d-tR/v/x'ldOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!l!p!q!r!t!u!{#P#T#U#_#l#o$Q$R$T$V$Y$j$l$m$o$v%P%U%]%`%b%e%i%n%p%z&S&U&a&e&n&p&q&x&|'P'W'Z'h'l'n'o's'x'z(O(S(X(Y(`(c(j(l(t(w)T)W)[)])a)d)m)w*S*T*W*^*_*a*c*f*g*j*m*q*r*y*{*|+T+]+^+d+k+l+o+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p._.c.z/j/k/l/m/o/p/q/r/s/u/yW#rl!O!P$aW#zu&c-t/xQ$c!QQ$s!YQ$t!ZW%O!j'i*P+wS&b#{#|Q'S$nQ(m&[Q({&rU(|&t(})OU)P&v)Q+SQ)o']W)p'_+r,t-^S+q)q)rY,`*},a-U-V-xQ,c+PQ,m+hQ,o+jl-a,x-g-h-j.S.U.Z.q.v.{/Q/]/b/eQ-w-TQ.[-iQ.h-|Q.s.WU/W.|/Z/cX/^/R/_/f/gR&a#z!_!xXY!S!T!l%U%b%i'l'n'o'z(S)W*S*T*W*^*a*c+x+y+{+|,P,y,|-o-p.cR%`!wQ!|XQ%{#_Q&j$VR&m$YT-s-P.z![!kP!o#k#x$Z$i$u$w$x$y$z${$|%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/nQ&_#sR'b$tR'h%OQ%X!nR.f-z'tcOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#P#T#U#_#l#o$Q$R$T$V$Y$j$l$m$o$v%P%U%]%`%b%e%i%n%p%z&S&U&a&e&n&p&q&x&|'P'W'Z'h'i'l'n'o's'x'z(O(S(X(Y(`(c(j(l(t(w)T)W)[)])a)d)m)w*P*S*T*W*^*_*a*c*f*g*j*m*q*r*y*{*|+T+]+^+d+k+l+o+w+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p._.c.z/j/k/l/m/o/p/q/r/s/u/yS#ic#j!P-e,x-g-h-i-j-|.S.U.Z.q.v.{.|/Q/R/Z/]/_/b/c/e/f/g'tcOSXYZehrstvx|}!R!S!T!U!X![!d!e!f!g!h!i!j!l!p!q!r!t!u!{#P#T#U#_#l#o$Q$R$T$V$Y$j$l$m$o$v%P%U%]%`%b%e%i%n%p%z&S&U&a&e&n&p&q&x&|'P'W'Z'h'i'l'n'o's'x'z(O(S(X(Y(`(c(j(l(t(w)T)W)[)])a)d)m)w*P*S*T*W*^*_*a*c*f*g*j*m*q*r*y*{*|+T+]+^+d+k+l+o+w+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p._.c.z/j/k/l/m/o/p/q/r/s/u/yT#ic#jS#`_#aS#c`#dS#ea#fS#gb#hT*u(f*vT(g%{(iQ$XwR+p)pX$Vw$W$X&lZkOr$o)d+dXoOr)d+dQ$p!WQ&z$gQ&{$hQ'^$rQ'a$tQ)b'RQ)h'WQ)j'XQ)k'YQ)x'`Q)z'bQ+W)WQ+Y)XQ+Z)YQ+_)`S+a)c)yQ+e)fQ+f)gQ+g)iQ,e+VQ,f+XQ,h+`Q,i+bQ,n+iQ-X,gQ-Z,lQ-[,mQ-y-YQ.`-mR.y.aWoOr)d+dR#unQ'`$sR)c'SQ+o)pR,r+pQ)y'`R+b)cZmOnr)d+dQ'd$uR)|'eT,v+v,wu-l,x-g-h-j-|.S.U.Z.q.v.{.|/Q/Z/]/b/c/et-l,x-g-h-j-|.S.U.Z.q.v.{.|/Q/Z/]/b/c/eQ.[-iX/^/R/_/f/g!P-d,x-g-h-i-j-|.S.U.Z.q.v.{.|/Q/R/Z/]/_/b/c/e/f/gQ.P-cR.m.Qg.S-f.T.i.p.u/T/V/X/d/h/iu-k,x-g-h-j-|.S.U.Z.q.v.{.|/Q/Z/]/b/c/eX-}-a-k.h/WR.j-|V/Y.|/Z/cR.a-mQrOR#wrQ&d#}R(r&dS%o#S$PS(Z%o(^T(^%r&fQ%c!zQ%j#OW'{%c%j(Q(UQ(Q%gR(U%lQ&o$ZR(x&oQ(a%sQ*h([T*n(a*hQ'j%QR*Q'jS'm%T%UY*U'm*V+},}-qU*V'n'o'pU+}*W*X*YS,},O,PR-q-OQ#Z]R%v#ZQ#^^R%x#^Q#a_R%|#aQ(d%yS*s(d*tR*t(eQ*v(fR,]*vQ#d`R&O#dQ#faR&P#fQ#hbR&Q#hQ#jcR&R#jQ#mfQ&T#kW&W#m&T(u*zQ(u&iR*z/nQ$WwS&k$W&lR&l$XQ&y$eR)U&yQ&]#rR(n&]Q$a!PR&s$aQ+O(|S,b+O-WR-W,cQ&w$cR)R&wQ#pjR&Y#pQ+d)dR,j+dQ)V&zR+U)VQ&}$iS)^&})_R)_'OQ'V$pR)e'VQ'[$qS)n'[+mR+m)oQ+s)tR,u+sWnOr)d+dR#tnQ,w+vR-_,wd.T-f.i.p.u/T/V/X/d/h/iR.o.TU-{-a.h/WR.g-{Q/S.uS/`/S/aR/a/TS.}.i.jR/[.}Q.V-fR.r.VSqOrT+c)d+dWpOr)d+dR'T$oYjOr$o)d+dR&X#o[wOr#o$o)d+dR&j$V&YPOXYZhrtv|}!R!S!T!X!j!l!p!q!r!t!u#_#l#o$R$T$V$Y$m$o%P%U%]%`%b%i%n%p%z&S&a&e&p&q&x'P'W'Z'h'i'l'n'o's'z(S(Y(`(c(j(l(t)T)W)a)d)m)w*P*S*T*W*^*_*a*c*f*g*j*q*r*y*|+T+d+k+l+o+w+x+y+{+|,P,R,T,V,X,Z,[,^,p,r,y,|-P-o-p.c.z/j/k/l/m/o/p/q/r/u/yQ!oSQ#keQ#xsU$Zx%e(OS$i!U$lQ$u![Q$w!dQ$x!eQ$y!fQ$z!gQ${!hQ$|!iQ%g!{Q%l#PQ%r#TQ%s#UQ&f$QQ'O$jQ'e$vQ(k&UU(v&n(w*{W)Z&|)]+]+^Q*['xQ*e(XQ+[)[Q,W*mQ.x._R/n/sQ!zXQ#OYQ$g!SQ$h!TQ%T!lQ'p%U^'w%b%i'z(S*^*a*c^*R'l*T+{+|,|-p.cQ*X'nQ*Y'oQ+X)WQ+z*SQ,O*WQ,z+xQ,{+yQ-O,PQ-n,yR.b-o[fOr#o$o)d+d!^!wXY!S!T!l%U%b%i'l'n'o'z(S)W*S*T*W*^*a*c+x+y+{+|,P,y,|-o-p.cQ#SZQ#nhS$Pv|Q$^}W$e!R$Y'P)aS$q!X$mW$}!j'i*P+wQ%y#_`&V#l&S(j(l(t*y,^/rQ&g$RQ&h$TQ&i$VQ'f%PQ'v%`W(W%n(Y*f*jQ([%pQ(e%zQ(p&aS(s&e/pQ(y&pQ(z&qU)S&x)T+TQ)i'WY)l'Z)m+k+l,pQ)}'hS*Z's/qW*l(`*g,T,XW*p(c*r,Z,[Q+u)wQ,Y*qQ,_*|Q,q+oQ-S,VR-],rhTOr#l#o$o&S&e's(j(l)d+d$z!vXYZhv|}!R!S!T!X!j!l#_$R$T$V$Y$m%P%U%`%b%i%n%p%z&a&p&q&x'P'W'Z'h'i'l'n'o'z(S(Y(`(c(t)T)W)a)m)w*P*S*T*W*^*a*c*f*g*j*q*r*y*|+T+k+l+o+w+x+y+{+|,P,T,V,X,Z,[,^,p,r,y,|-o-p.c/p/q/rQ#ytW%Y!p!t/k/uQ%Z!qQ%[!rQ%^!uQ%h/jS'r%]/oQ't/lQ'u/mQ,Q*_Q-R,RS-r-P.zR/w/yU#}u-t/xR(q&c[gOr#o$o)d+dX!yX#_$V$YQ#XZQ$SvR$]|Q%d!zQ%k#OQ%q#SQ'f$}Q(R%gQ(V%lQ(_%rQ(b%sQ*i([Q-Q,QQ-v-RR.e-uQ$[xQ'}%eR*`(OQ-u-PR/U.zR#RYR#WZR%S!jQ%Q!jV*O'i*P+w!]!mP!o#k#x$Z$i$u$w$x$y$z${$|%g%l%r%s&f'O'e(k(v)Z*[*e+[,W.x/nR%V!lR%{#_Q(h%{R*x(iQ$f!RQ&m$YQ)`'PR+`)aQ#slQ$_!OQ$b!PR&u$aQ({&tR+R)OQ({&tQ+Q(}R+R)OR$d!QXpOr)d+dQ$k!UR'Q$lQ$r!XR'R$mR)v'_Q)t'_V,s+r,t-^Q-m,xQ.X-gR.Y-hU-f,x-g-hQ.^-jQ.i-|Q.n.SU.p.U.q/QQ.u.ZQ/T.vQ/V.{U/X.|/Z/cQ/d/]Q/h/bR/i/eR.]-iR.k-|",
      nodeNames: "⚠ print Comment Script AssignStatement * BinaryExpression BitOp BitOp BitOp BitOp ArithOp ArithOp @ ArithOp ** UnaryExpression ArithOp BitOp AwaitExpression await ) ( ParenthesizedExpression BinaryExpression or and CompareOp in not is UnaryExpression ConditionalExpression if else LambdaExpression lambda ParamList VariableName AssignOp , : NamedExpression AssignOp YieldExpression yield from TupleExpression ComprehensionExpression async for LambdaExpression ] [ ArrayExpression ArrayComprehensionExpression } { DictionaryExpression DictionaryComprehensionExpression SetExpression SetComprehensionExpression CallExpression ArgList AssignOp MemberExpression . PropertyName Number String FormatString FormatReplacement FormatConversion FormatSpec ContinuedString Ellipsis None Boolean TypeDef AssignOp UpdateStatement UpdateOp ExpressionStatement DeleteStatement del PassStatement pass BreakStatement break ContinueStatement continue ReturnStatement return YieldStatement PrintStatement RaiseStatement raise ImportStatement import as ScopeStatement global nonlocal AssertStatement assert StatementGroup ; IfStatement Body elif WhileStatement while ForStatement TryStatement try except finally WithStatement with FunctionDefinition def ParamList AssignOp TypeDef ClassDefinition class DecoratedStatement Decorator At MatchStatement match MatchBody MatchClause case CapturePattern LiteralPattern ArithOp ArithOp AsPattern OrPattern LogicOp AttributePattern SequencePattern MappingPattern StarPattern ClassPattern PatternArgList KeywordPattern KeywordPattern Guard",
      maxTerm: 267,
      context: trackIndent,
@@ -27909,7 +29392,7 @@
      tokenizers: [legacyPrint, indentation, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, newlines],
      topRules: {"Script":[0,3]},
      specialized: [{term: 213, get: value => spec_identifier$1[value] || -1}],
-     tokenPrec: 7282
+     tokenPrec: 7285
    });
 
    const cache = /*@__PURE__*/new NodeWeakMap();
@@ -28106,7 +29589,7 @@
        let line = context.lineAt(context.pos, -1), to = line.from + line.text.length;
        // Don't consider blank, deindented lines at the end of the
        // block part of the block
-       if (!/\S/.test(line.text) &&
+       if (/^\s*($|#)/.test(line.text) &&
            context.node.to < to + 100 &&
            !/\S/.test(context.state.sliceDoc(to, context.node.to)) &&
            context.lineIndent(context.pos, -1) <= base)
@@ -34540,14 +36023,305 @@
    ];
    var src_default = ixora;
 
-   /*
-   import {defaultKeymap, history, historyKeymap} from "@codemirror/commands"
-   import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
-   import {lintKeymap} from "@codemirror/lint"
+   const chalky = "#e5c07b", coral = "#e06c75", cyan = "#56b6c2", invalid$1 = "#ffffff", ivory$1 = "#abb2bf", stone = "#7d8799", // Brightened compared to original to increase contrast
+   malibu = "#61afef", sage = "#98c379", whiskey = "#d19a66", violet = "#c678dd", darkBackground = "#21252b", highlightBackground$1 = "#2c313a", tooltipBackground$1 = "#353a42";
 
+   const text$1 = '#f8f8f2';
+   const background$1 = '#323232';
+   const cursor$1 = '#f8f8f0';
+   const gutters$1 = '#6D8A88'; //'#282a36';
+   const selection$1 = 'rgba(255, 255, 255, 0.20)';
+   const activeLine$1 = 'rgba(255, 255, 255, 0.10)';
 
+   const panelsBg$1 = darkBackground; // XXX not used in CM6 yet?
+   const panelsFg$1 = ivory$1;
+   /**
+   The editor theme styles for One Dark.
    */
+   const cpDarkTheme = /*@__PURE__*/EditorView.theme({
+       "&": {
+           color: text$1,
+           backgroundColor: background$1
+       },
+       ".cm-content": {
+           caretColor: cursor$1
+       },
+       ".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor$1 },
+       "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": { backgroundColor: selection$1 },
+       ".cm-panels": { backgroundColor: panelsBg$1, color: panelsFg$1 },
+       ".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
+       ".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
+       ".cm-searchMatch": {
+           backgroundColor: "#72a1ff59",
+           outline: "1px solid #457dff"
+       },
+       ".cm-searchMatch.cm-searchMatch-selected": {
+           backgroundColor: "#6199ff2f"
+       },
+       ".cm-activeLine": { backgroundColor: activeLine$1 },
+       ".cm-selectionMatch": { backgroundColor: "#aafe661a" },
+       "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
+           //backgroundColor: "#bad0f847"
+           textDecoration: "underline",
+           color: "white !important"
+       },
+       ".cm-gutters": {
+           backgroundColor: background$1,
+           color: gutters$1,
+           border: "none"
+       },
+       ".cm-activeLineGutter": {
+           backgroundColor: highlightBackground$1
+       },
+       ".cm-foldPlaceholder": {
+           backgroundColor: "transparent",
+           border: "none",
+           color: "#ddd"
+       },
+       ".cm-tooltip": {
+           border: "none",
+           backgroundColor: tooltipBackground$1
+       },
+       ".cm-tooltip .cm-tooltip-arrow:before": {
+           borderTopColor: "transparent",
+           borderBottomColor: "transparent"
+       },
+       ".cm-tooltip .cm-tooltip-arrow:after": {
+           borderTopColor: tooltipBackground$1,
+           borderBottomColor: tooltipBackground$1
+       },
+       ".cm-tooltip-autocomplete": {
+           "& > ul > li[aria-selected]": {
+               backgroundColor: highlightBackground$1,
+               color: ivory$1
+           }
+       }
+   }, { dark: true });
 
+   const cpDarkHighlightStyle = /*@__PURE__*/HighlightStyle.define([
+       { tag: tags$1.keyword,
+           color: violet },
+       { tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+           color: coral },
+       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName), tags$1.labelName],
+           color: malibu },
+       { tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
+           color: whiskey },
+       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator],
+           color: ivory$1 },
+       { tag: [tags$1.typeName, tags$1.className, tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+           color: chalky },
+       { tag: [tags$1.operator, tags$1.operatorKeyword, tags$1.url, tags$1.escape, tags$1.regexp, tags$1.link, /*@__PURE__*/tags$1.special(tags$1.string)],
+           color: cyan },
+       { tag: [tags$1.meta, tags$1.comment],
+           color: stone },
+       { tag: tags$1.strong,
+           fontWeight: "bold" },
+       { tag: tags$1.emphasis,
+           fontStyle: "italic" },
+       { tag: tags$1.strikethrough,
+           textDecoration: "line-through" },
+       { tag: tags$1.link,
+           color: stone,
+           textDecoration: "underline" },
+       { tag: tags$1.heading,
+           fontWeight: "bold",
+           color: coral },
+       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)],
+           color: whiskey },
+       { tag: [tags$1.processingInstruction, tags$1.string, tags$1.inserted],
+           color: sage },
+       { tag: tags$1.invalid,
+           color: invalid$1 },
+   ]);
+
+   const cryptpadDark = [cpDarkTheme, /*@__PURE__*/syntaxHighlighting(cpDarkHighlightStyle)];
+
+   const invalid = "#ffffff", ivory = "#abb2bf", highlightBackground = "#2c313a", tooltipBackground = "#353a42";
+
+
+   const text = '#000000';
+   const background = '#FFFFFF';
+   const cursor = '#000000';
+   const gutters = '#999'; //'#282a36';
+   const selection = 'rgba(0, 0, 0, 0.10)';
+   const activeLine = '#e8f2ff';
+
+   const panelsBg = '#FFFFFF';
+   const panelsFg = '#333';
+
+   const cpLightTheme = /*@__PURE__*/EditorView.theme({
+       "&": {
+           color: text,
+           backgroundColor: background
+       },
+       ".cm-content": {
+           caretColor: cursor
+       },
+       ".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor },
+       "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": { backgroundColor: selection },
+       ".cm-panels": { backgroundColor: panelsBg, color: panelsFg },
+       ".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
+       ".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
+       ".cm-searchMatch": {
+           backgroundColor: "#72a1ff59",
+           outline: "1px solid #457dff"
+       },
+       ".cm-searchMatch.cm-searchMatch-selected": {
+           backgroundColor: "#6199ff2f"
+       },
+       ".cm-activeLine": { backgroundColor: activeLine },
+       ".cm-selectionMatch": { backgroundColor: "#aafe661a" },
+       "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
+           //backgroundColor: "#bad0f847"
+           textDecoration: "underline",
+           color: "white !important"
+       },
+       ".cm-gutters": {
+           backgroundColor: background,
+           color: gutters,
+           border: "none"
+       },
+       ".cm-activeLineGutter": {
+           backgroundColor: highlightBackground
+       },
+       ".cm-foldPlaceholder": {
+           backgroundColor: "transparent",
+           border: "none",
+           color: "#ddd"
+       },
+       ".cm-tooltip": {
+           border: "none",
+           backgroundColor: tooltipBackground
+       },
+       ".cm-tooltip .cm-tooltip-arrow:before": {
+           borderTopColor: "transparent",
+           borderBottomColor: "transparent"
+       },
+       ".cm-tooltip .cm-tooltip-arrow:after": {
+           borderTopColor: tooltipBackground,
+           borderBottomColor: tooltipBackground
+       },
+       ".cm-tooltip-autocomplete": {
+           "& > ul > li[aria-selected]": {
+               backgroundColor: highlightBackground,
+               color: ivory
+           }
+       }
+   }, { dark: false });
+
+   // Polar Night
+   const base01 = '#3b4252', // dark grey
+   base02 = '#434c5e'; // grey
+   // Frost
+   const base07 = '#8fbcbb', // moss green
+   base08 = '#88c0d0', // ice blue
+   base09 = '#81a1c1', // water blue
+   base0A = '#5e81ac'; // deep blue
+   // Aurora
+   const base0b = '#bf616a', // red
+   base0C = '#d08770', // orange
+   base0D = '#ebcb8b', // yellow
+   base0E = '#a3be8c', // green
+   base0F = '#b48ead'; // purple
+   const annotation = '#d30102';
+
+   const cpLightHighlightStyle = /*@__PURE__*/HighlightStyle.define([
+       { tag: tags$1.keyword, color: base0A },
+       {
+           tag: [tags$1.name, tags$1.deleted, tags$1.character, tags$1.propertyName, tags$1.macroName],
+           color: base0C
+       },
+       { tag: [tags$1.variableName], color: base0C },
+       { tag: [/*@__PURE__*/tags$1.function(tags$1.variableName)], color: base0A },
+       { tag: [tags$1.labelName], color: base09 },
+       {
+           tag: [tags$1.color, /*@__PURE__*/tags$1.constant(tags$1.name), /*@__PURE__*/tags$1.standard(tags$1.name)],
+           color: base0A
+       },
+       { tag: [/*@__PURE__*/tags$1.definition(tags$1.name), tags$1.separator], color: base0E },
+       { tag: [tags$1.brace], color: base07 },
+       {
+           tag: [tags$1.annotation],
+           color: annotation
+       },
+       {
+           tag: [tags$1.number, tags$1.changed, tags$1.annotation, tags$1.modifier, tags$1.self, tags$1.namespace],
+           color: base08
+       },
+       {
+           tag: [tags$1.typeName, tags$1.className],
+           color: base0D
+       },
+       {
+           tag: [tags$1.operator, tags$1.operatorKeyword],
+           color: base0E
+       },
+       {
+           tag: [tags$1.tagName],
+           color: base0F
+       },
+       {
+           tag: [tags$1.squareBracket],
+           color: base0b
+       },
+       {
+           tag: [tags$1.angleBracket],
+           color: base0C
+       },
+       {
+           tag: [tags$1.attributeName],
+           color: base0D
+       },
+       {
+           tag: [tags$1.regexp],
+           color: base0A
+       },
+       {
+           tag: [tags$1.quote],
+           color: base01
+       },
+       { tag: [tags$1.string], color: base0C },
+       {
+           tag: tags$1.link,
+           color: base07,
+           textDecoration: 'underline',
+           textUnderlinePosition: 'under'
+       },
+       {
+           tag: [tags$1.url, tags$1.escape, /*@__PURE__*/tags$1.special(tags$1.string)],
+           color: base0C
+       },
+       { tag: [tags$1.meta], color: base08 },
+       { tag: [tags$1.comment], color: base02, fontStyle: 'italic' },
+       { tag: tags$1.strong, fontWeight: 'bold', color: base0A },
+       { tag: tags$1.emphasis, fontStyle: 'italic', color: base0A },
+       { tag: tags$1.strikethrough, textDecoration: 'line-through' },
+       { tag: tags$1.heading, fontWeight: 'bold', color: base0A },
+       { tag: /*@__PURE__*/tags$1.special(tags$1.heading1), fontWeight: 'bold', color: base0A },
+       { tag: tags$1.heading1, fontWeight: 'bold', color: base0A },
+       {
+           tag: [tags$1.heading2, tags$1.heading3, tags$1.heading4],
+           fontWeight: 'bold',
+           color: base0A
+       },
+       {
+           tag: [tags$1.heading5, tags$1.heading6],
+           color: base0A
+       },
+       { tag: [tags$1.atom, tags$1.bool, /*@__PURE__*/tags$1.special(tags$1.variableName)], color: base0C },
+       {
+           tag: [tags$1.processingInstruction, tags$1.inserted],
+           color: base07
+       },
+       {
+           tag: [tags$1.contentSeparator],
+           color: base0D
+       },
+       { tag: tags$1.invalid, color: base02, borderBottom: `1px dotted ${invalid}` }
+   ]);
+
+   const cryptpadLight = [cpLightTheme, /*@__PURE__*/syntaxHighlighting(cpLightHighlightStyle)];
 
    let language = new Compartment;
    let tabSize = new Compartment;
@@ -34602,6 +36376,7 @@
    window.CP_createEditor = (cfg) => {
        cfg = cfg || {};
        let classic = cfg.noNumber ? [[]] : [lineNumbers(), foldGutter()];
+       let lastTheme = themes[2];
        let editor = new EditorView({
            state: EditorState.create({
                extensions: [
@@ -34621,7 +36396,11 @@
                    indentOnInput(),
                    syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
 
-                   keymap.of([indentWithTab]),
+
+                   highlightSelectionMatches(),
+
+
+                   keymap.of([indentWithTab].concat(searchKeymap)),
                    indents.of(indentUnit.of('\t')),
                    tabSize.of(EditorState.tabSize.of(8)),
 
@@ -34637,14 +36416,19 @@
                    highlightActiveLine(),
 
                    language.of([md.extension]),
-                   theme.of([themes[2]])
+                   theme.of([lastTheme])
                ],
                doc: ''
            }),
        });
 
-       editor.CP_setInline = (state) => {
+       editor.CP_setInline = (state, dark) => {
            editor.dispatch({ effects: sv.reconfigure([state ? [src_default] : classic]) });
+           if (state) {
+               editor.dispatch({ effects: theme.reconfigure([dark ? cryptpadDark : cryptpadLight]) });
+           } else {
+               editor.dispatch({ effects: theme.reconfigure([lastTheme]) });
+           }
        };
 
 
@@ -34653,6 +36437,7 @@
            let t = themes.find((el) => {
                return el.id === id;
            }) || themes[1];
+           lastTheme = t;
            editor.dispatch({
                effects: theme.reconfigure([t])
            });

@@ -238,7 +238,7 @@ define([
         });
 
         exp.setInline = function (state) {
-            editor.CP_setInline(state);
+            editor.CP_setInline(state, window.CryptPad_theme === "dark");
         };
 
         // editor to sframe-common-codemirror
