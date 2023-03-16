@@ -33343,7 +33343,9 @@
    }, codeblock$1 = {
      widget: "cm-codeblock",
      widgetBegin: "cm-codeblock-begin",
-     widgetEnd: "cm-codeblock-end"
+     widgetEnd: "cm-codeblock-end",
+     contentBegin: "cm-codeblock-content-begin",
+     contentEnd: "cm-codeblock-content-end"
    }, heading = {
      heading: "cm-heading",
      level: (level) => `cm-heading-${level}`,
@@ -33467,19 +33469,34 @@
          if (!["FencedCode", "CodeBlock"].includes(type.name))
            return;
          let lang = view.state.sliceDoc(from + 3, from + 10).toLowerCase();
-         if (/^(mermaid|mathjax|markmap)/.test(lang)) {
-           return;
-         }
-         editorLines(view, from, to).forEach((block, i) => {
-           const lineDec = Decoration.line({
-             class: [
-               codeblock$1.widget,
-               i === 0 ? codeblock$1.widgetBegin : block.to === to ? codeblock$1.widgetEnd : ""
-             ].join(" ")
+         const isCpExt = /^(mermaid|mathjax|markmap)/.test(lang);
+         const inRange = isCursorInRange(view.state, [from, to]);
+         if (inRange || !isCpExt) {
+           const lines = editorLines(view, from, to);
+           lines.forEach((block, i) => {
+             let c = [];
+             if (i === 0) {
+               c.push(codeblock$1.widgetBegin);
+             }
+             if (i === lines.length - 1) {
+               c.push(codeblock$1.widgetEnd);
+             }
+             if (i === 1 && lines.length > 2) {
+               c.push(codeblock$1.contentBegin);
+             }
+             if (i === lines.length - 2 && lines.length > 2) {
+               c.push(codeblock$1.contentEnd);
+             }
+             if (inRange || i !== 0 && i !== lines.length - 1) {
+               c.push(codeblock$1.widget);
+             }
+             const lineDec = Decoration.line({
+               class: c.join(" ")
+             });
+             widgets.push(lineDec.range(block.from));
            });
-           widgets.push(lineDec.range(block.from));
-         });
-         if (isCursorInRange(view.state, [from, to]))
+         }
+         if (inRange)
            return;
          const codeBlock = node.toTree();
          codeBlock.iterate({
@@ -33505,10 +33522,18 @@
        backgroundColor: "#CCC7"
      },
      ["." + codeblock$1.widgetBegin]: {
-       borderRadius: "5px 5px 0 0"
+       borderRadius: "5px 5px 0 0",
+       display: "inline-block"
      },
      ["." + codeblock$1.widgetEnd]: {
-       borderRadius: "0 0 5px 5px"
+       borderRadius: "0 0 5px 5px",
+       display: "inline-block"
+     },
+     ["." + codeblock$1.contentBegin]: {
+       borderTopRightRadius: "5px"
+     },
+     ["." + codeblock$1.contentEnd]: {
+       borderBottomRightRadius: "5px"
      }
    });
 
@@ -34284,7 +34309,6 @@
      return a;
    };
    var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-   StateEffect.define();
    const cpExtPreview = StateField.define({
      create(state) {
        const images = extractExts(state);
@@ -34314,9 +34338,7 @@
          }
          const decorations = images.map((img) => {
            return Decoration.widget({
-             widget: new ExtPreviewWidget(
-               img
-             ),
+             widget: new ExtPreviewWidget(img),
              block: true,
              src: img.src,
              side: 1,
@@ -34385,16 +34407,18 @@
            return;
          }
          editorLines(view, from, to).forEach((block, i) => {
-           if (block.from === block.to) {
-             return;
-           }
            if (i) {
              widgets.push(Decoration.line({
                attributes: { "class": "cp-cm-hide-line" }
              }).range(block.from));
              return;
            }
-           widgets.push(invisibleDecoration.range(block.from, block.to));
+           const lineContent = Decoration.replace({
+             widget: new ExtHeaderWidget(lang, block.to + 1),
+             inclusive: true,
+             side: 0
+           }).range(block.from, block.to);
+           widgets.push(lineContent);
          });
        }
      });
@@ -34413,6 +34437,31 @@
      },
      { decorations: (v) => v.decorations }
    );
+   class ExtHeaderWidget extends WidgetType {
+     constructor(info, from) {
+       super();
+       this.info = info;
+       this.from = from;
+     }
+     toDOM(view) {
+       const el = document.createElement("div");
+       const c = ["cm-line", codeblock$1.widget, codeblock$1.widgetBegin].join(" ");
+       el.setAttribute("class", c);
+       const i = document.createElement("i");
+       i.setAttribute("class", "fa fa-question");
+       const s = document.createElement("span");
+       s.append(this.info);
+       el.append(i);
+       el.append(s);
+       el.addEventListener("click", () => {
+         view.dispatch({ selection: { anchor: this.from, head: this.from } });
+       });
+       return el;
+     }
+     eq(widget) {
+       return widget.info === this.info;
+     }
+   }
    const cpExtension = () => [
      cpExtPreview,
      hideExtNodePlugin,

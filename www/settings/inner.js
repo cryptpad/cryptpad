@@ -15,6 +15,7 @@ define([
     '/common/make-backup.js',
     '/common/common-feedback.js',
     '/common/common-constants.js',
+    '/common/sframe-common-codemirror.js',
 
     '/common/jscolor.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -37,7 +38,8 @@ define([
     ApiConfig,
     Backup,
     Feedback,
-    Constants
+    Constants,
+    SFCodeMirror
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -1561,7 +1563,7 @@ define([
         common.getAttribute(['codemirror', key], function(e, val) {
             if (e) { return void console.error(e); }
             if (typeof(val) !== 'number') {
-                $input.val(12);
+                $input.val(SFCodeMirror.CODEMIRROR_DEFAULT_FONT_SIZE);
             } else {
                 $input.val(val);
             }

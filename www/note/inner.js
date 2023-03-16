@@ -311,7 +311,7 @@ define([
             var f = mode.handlers[CodeMirror.highlightMode];
             if (!f) { return; }
             try {
-                if (CodeMirror.getValue() === '') {
+                if (CodeMirror.getValue() === '' && current !== 'inline') {
                     mode.container.addClass('cp-app-code-preview-isempty');
                     return;
                 }

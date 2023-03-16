@@ -13,7 +13,9 @@ define([
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
-     var cursorToPos = module.cursorToPos = function(cursor, oldText) {
+    module.CODEMIRROR_DEFAULT_FONT_SIZE = 16;
+
+    var cursorToPos = module.cursorToPos = function(cursor, oldText) {
         var cLine = cursor.line;
         var cCh = cursor.ch;
         var pos = 0;
@@ -200,7 +202,7 @@ define([
             setIndentation(
                 typeof(indentUnit) === 'number'? indentUnit : 2,
                 typeof(useTabs) === 'boolean'? useTabs : false,
-                typeof(fontSize) === 'number' ? fontSize : 12,
+                typeof(fontSize) === 'number' ? fontSize : module.CODEMIRROR_DEFAULT_FONT_SIZE,
                 typeof(spellcheck) === 'boolean' ? spellcheck : false,
                 typeof(brackets) === 'boolean' ? brackets : true);
         };
@@ -227,6 +229,13 @@ define([
         };
 
         exp.editor = editor;
+
+
+        $(window).on('resize', function () {
+            setTimeout(function () {
+                editor.focus(); // XXX Firefox fix: focus lost when closing dev console
+            });
+        });
 
         exp.setInline = function (state) {
             editor.CP_setInline(state);
@@ -276,6 +285,7 @@ define([
                 }
             });
         };
+
 
         exp.hasFocus = function () { return editor.hasFocus; };
         exp.focus = function () {

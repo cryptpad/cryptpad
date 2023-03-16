@@ -45,25 +45,46 @@
                             display: inline;
                         }
                     }
-                    display: inline-block;
+                    display: block;
+                    margin: 0 2px 0 6px; // XXX cm-line style
                     media-tag {
                         display: inline-block;
                         & > * {
                             max-width: 70ch;
                         }
                     }
+
+                    background-color: #CCC7; // XXX
+                    border-radius: 0 5px 5px 5px;
                 }
+
+                // XXX Add line number to code blocks
+                .cm-codeblock-begin + .cm-codeblock {
+                    counter-reset: line;
+                }
+                .cm-codeblock:not(.cm-codeblock-end):not(.cm-codeblock-begin):before {
+                    color: black;
+                    counter-increment: line;
+                    content: counter(line);
+                    width: 2em;
+                    text-align: right;
+                    display: inline-block;
+                    margin-right: 1em;
+                    flex: 0 0 auto;
+                }
+
+
             }
         }
     }
     .cm-editor {
         height: 100%;
+        flex: 1;
+        min-height: 0;
     }
 
 
-
-
-    .CodeMirror {
+    .CodeMirror { // XXX remove .CodeMirror classes
         flex: 1;
         font-size: initial;
         width: 100%;
