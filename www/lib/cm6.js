@@ -35897,7 +35897,7 @@
          let lang = state.sliceDoc(from + 3, from + 10).toLowerCase();
          if (/^(mermaid|mathjax|markmap)/.test(lang)) {
            let src = state.sliceDoc(from, to);
-           extUrls.push({ src, from, to });
+           extUrls.push({ src, from, to, lang });
          }
        }
      });
@@ -35911,6 +35911,7 @@
      toDOM(view) {
        const el = document.createElement("media-container");
        el.setAttribute("class", "cp-ext");
+       el.setAttribute("data-type", this.info.lang);
        const CP_CM_ext = window.CP_CM_ext;
        if (CP_CM_ext) {
          CP_CM_ext(el, this.info.src);
@@ -36079,14 +36080,19 @@
    malibu = "#61afef", sage = "#98c379", whiskey = "#d19a66", violet = "#c678dd", darkBackground = "#21252b", highlightBackground$1 = "#2c313a", tooltipBackground$1 = "#353a42";
 
    const text$1 = '#f8f8f2';
-   const background$1 = '#323232';
+   const background$1 = '#323232'; // 850, was 212121 in mockups but already used for CP background
    const cursor$1 = '#f8f8f0';
    const gutters$1 = '#6D8A88'; //'#282a36';
    const selection$1 = 'rgba(255, 255, 255, 0.20)';
    const activeLine$1 = 'rgba(255, 255, 255, 0.10)';
 
-   const panelsBg$1 = darkBackground; // XXX not used in CM6 yet?
+   const panelsBg$1 = darkBackground;
    const panelsFg$1 = ivory$1;
+
+
+   const ixoraCodeBg = "#424242"; // 800, was 323232 in mockups
+   const quoteText = '#9E9E9E'; // 500
+
    /**
    The editor theme styles for One Dark.
    */
@@ -36147,8 +36153,22 @@
                backgroundColor: highlightBackground$1,
                color: ivory$1
            }
-       }
+       },
+       // IXORA
+       ".cm-blockquote": {
+           color: quoteText
+       },
+       "media-container > media-tag, media-container > pre": {
+           backgroundColor: ixoraCodeBg,
+           borderRadius: "0 5px 5px 5px"
+       },
+       ".cm-codeblock": {
+           backgroundColor: ixoraCodeBg
+       },
+
    }, { dark: true });
+
+   const linkColor = '#99cfff';
 
    const cpDarkHighlightStyle = /*@__PURE__*/HighlightStyle.define([
        { tag: tags$1.keyword,
@@ -36174,7 +36194,7 @@
        { tag: tags$1.strikethrough,
            textDecoration: "line-through" },
        { tag: tags$1.link,
-           color: stone,
+           color: linkColor,
            textDecoration: "underline" },
        { tag: tags$1.heading,
            fontWeight: "bold",

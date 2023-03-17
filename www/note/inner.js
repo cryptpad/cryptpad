@@ -688,6 +688,7 @@ define([
                 var MutationObserver = window.MutationObserver;
                 var id = 'cp_'+Util.uid();
                 var $el = $(el).attr('id', id);
+                var lang = $(el).attr('data-type');
                 $el.attr('class', 'cp-ext');
                 if (inlineCache[src]) {
                     return $el.append(inlineCache[src].clone(true));
@@ -713,7 +714,9 @@ define([
                 });
 
                 $el.attr('class', 'cp-ext');
+                $el.attr('data-type', lang);
                 DiffMd.apply(DiffMd.render(src), $el, common, 'media-container');
+                $el.attr('data-type', lang);
                 $el.attr('class', 'cp-ext');
             };
             window.CP_CM_clear = function (images) {

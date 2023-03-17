@@ -42,13 +42,16 @@
                 }
                 media-container {
                     &.cp-ext {
-                        min-width: 70ch !important;
-                        .markdown_extensions();
-                        pre {
+                        &:not([data-type=mathjax]) {
                             min-width: 70ch !important;
+                            pre {
+                                min-width: 70ch !important;
+                            }
                         }
+                        .markdown_extensions();
                         pre.mathjax {
-                            display: inline;
+                            display: inline-block;
+                            margin: 0;
                         }
                     }
                     display: block;
@@ -59,9 +62,6 @@
                             max-width: 70ch;
                         }
                     }
-
-                    background-color: #CCC7; // XXX
-                    border-radius: 0 5px 5px 5px;
                 }
 
                 // XXX Add line number to code blocks
@@ -69,7 +69,7 @@
                     counter-reset: line;
                 }
                 .cm-codeblock:not(.cm-codeblock-end):not(.cm-codeblock-begin):before {
-                    color: black;
+                    color: #6c8987; // XXX
                     counter-increment: line;
                     content: counter(line);
                     width: 2em;
