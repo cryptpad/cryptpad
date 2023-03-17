@@ -35563,8 +35563,8 @@
        this.pos = pos;
      }
      toDOM(view) {
-       const wrap = document.createElement("span");
-       wrap.classList.add(list.taskCheckbox);
+       const wrap = document.createElement("label");
+       wrap.classList.add("cp-checkmark");
        const checkbox = document.createElement("input");
        checkbox.type = "checkbox";
        checkbox.checked = this.checked;
@@ -35578,7 +35578,10 @@
          this.checked = !this.checked;
          target.checked = this.checked;
        });
+       const mark = document.createElement("span");
+       mark.classList.add("cp-checkmark-mark");
        wrap.appendChild(checkbox);
+       wrap.appendChild(mark);
        return wrap;
      }
    }
@@ -35737,12 +35740,61 @@
        enter(node) {
          let tag = view.state.sliceDoc(node.from + 1, node.from + 10).toLowerCase();
          if (node.name === "HTMLTag" && tag === "media-tag" && !isCursorInRange(view.state, [node.from, node.to + 12])) {
-           console.warn(node.from, node.to + 12, view.state.sliceDoc(node.from, node.to + 12));
-           widgets.push(invisibleDecoration.range(node.from, node.to + 12));
+           const lineContent = Decoration.replace({
+             widget: new MtHeaderWidget(node.from),
+             inclusive: false,
+             side: 0
+           }).range(node.from, node.to + 12);
+           widgets.push(lineContent);
          }
        }
      });
      return Decoration.set(widgets, true);
+   }
+   class MtHeaderWidget extends WidgetType {
+     constructor(from) {
+       super();
+       this.from = from;
+     }
+     toDOM(view) {
+       let el = document.createElement("div");
+       const c = ["cm-line", codeblock$1.widget, codeblock$1.widgetBegin].join(" ");
+       el.setAttribute("class", c);
+       const i = document.createElement("i");
+       i.setAttribute("class", "fa fa-picture-o");
+       const s = document.createElement("span");
+       el.append(i);
+       el.append(s);
+       try {
+         let str = el.parentElement.nextElementSibling.getElementsByTagName("img")[0].getAttribute("alt");
+         if (!str) {
+           return;
+         }
+         s.innerText = str;
+       } catch (e) {
+         s.append("media-tag");
+         setTimeout(() => {
+           if (!el.parentElement) {
+             return;
+           }
+           try {
+             let str = el.parentElement.nextElementSibling.getElementsByTagName("img")[0].getAttribute("alt");
+             if (!str) {
+               return;
+             }
+             s.innerText = str;
+           } catch (e2) {
+           }
+         });
+       }
+       el.addEventListener("click", () => {
+         view.dispatch({ selection: { anchor: this.from, head: this.from } });
+       });
+       return el;
+     }
+     eq(widget) {
+       return false;
+     }
    }
    const hideMTNodePlugin = ViewPlugin.fromClass(
      class {
@@ -35931,7 +35983,7 @@
        const c = ["cm-line", codeblock$1.widget, codeblock$1.widgetBegin].join(" ");
        el.setAttribute("class", c);
        const i = document.createElement("i");
-       i.setAttribute("class", "fa fa-question");
+       i.setAttribute("class", "fa fa-object-ungroup");
        const s = document.createElement("span");
        s.append(this.info);
        el.append(i);
