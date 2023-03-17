@@ -208,11 +208,12 @@ define([
 
     renderer.code = function (code, language) {
         if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
-        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram|GitGraph)/)) {
+        var l = language.toLowerCase();
+        if (l === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram|GitGraph)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
-        } else if (language === 'markmap') {
+        } else if (l === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
-        } else if (language === 'mathjax') {
+        } else if (l === 'mathjax') {
             return '<pre class="mathjax" data-plugin="mathjax">'+Util.fixHTML(code)+'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
@@ -746,7 +747,7 @@ define([
                 $content.find('media-tag, pre[data-plugin]').each(function (i, el) {
                     if (el.nodeName.toLowerCase() === "pre") {
                         var clone = el.cloneNode();
-                        var plugin = plugins[el.getAttribute('data-plugin')];
+                        var plugin = plugins[el.getAttribute('data-plugin').toLowerCase()];
                         if (!plugin) { return; }
 
                         return void mts.push({

@@ -1,6 +1,7 @@
 @import (reference) "../../customize/src/less2/include/browser.less";
 @import (reference) "../../customize/src/less2/include/markdown.less";
 @import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/checkmark.less";
 
 &.cp-app-note {
     .framework_main(
@@ -33,6 +34,11 @@
                     max-width: ~"min(100%,1000px)"; // XXX
                     min-width: 0;
                     width: 1000px; // XXX
+                    .cp-checkmark {
+                        display: inline-flex;
+                        vertical-align: text-top;
+                    }
+                    .checkmark_main(16px);
                 }
                 media-container {
                     &.cp-ext {
