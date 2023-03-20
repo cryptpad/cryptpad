@@ -36009,6 +36009,170 @@
      }
    });
 
+   const tablePreview = (view) => {
+     return StateField.define({
+       create(state) {
+         const tables = extractTables(state);
+         const decorations = tables.map((data) => {
+           return Decoration.replace({
+             widget: new TablePreviewWidget(data, view),
+             inclusive: false,
+             info: data,
+             block: true
+           }).range(data.from, data.to);
+         });
+         return Decoration.set(decorations, true);
+       },
+       update(value, tx) {
+         if (tx.docChanged || tx.selection) {
+           const tables = extractTables(tx.state);
+           const decorations = tables.map((data) => {
+             return Decoration.replace({
+               widget: new TablePreviewWidget(data, view),
+               inclusive: false,
+               info: data,
+               block: true
+             }).range(data.from, data.to);
+           });
+           return Decoration.set(decorations, true);
+         }
+         return value.map(tx.changes);
+       },
+       provide(field) {
+         return EditorView.decorations.from(field);
+       }
+     });
+   };
+   function extractTables(state) {
+     const tables = [];
+     let isTable;
+     let row;
+     let align = [];
+     let wasDelimiter = false;
+     const makeTable = () => {
+       if (!isTable) {
+         return;
+       }
+       if (row.length) {
+         isTable.push(row);
+       }
+       tables.push({
+         content: isTable.slice(),
+         align: align.slice(),
+         from: isTable._from,
+         to: isTable._to
+       });
+       isTable = void 0;
+       row = void 0;
+       wasDelimiter = false;
+       align = [];
+     };
+     syntaxTree(state).iterate({
+       enter: ({ name, node, from, to }) => {
+         if (isCursorInRange(state, [from, to]))
+           return;
+         if (![
+           "Table",
+           "TableDelimiter",
+           "TableHeader",
+           "TableRow",
+           "TableCell"
+         ].includes(name))
+           return void makeTable();
+         if (name === "Table") {
+           isTable = [];
+           isTable._from = from;
+           isTable._to = to;
+           align = [];
+           return;
+         }
+         if (!isTable) {
+           return;
+         }
+         if (name === "TableDelimiter") {
+           if (!wasDelimiter) {
+             return wasDelimiter = true;
+           }
+           let content = state.sliceDoc(from, to);
+           let s = content.split("|").map((str) => str.trim()).filter(Boolean);
+           s.forEach((str) => {
+             const match = str.match(/(:)?(-+)(:)?/);
+             if (!match) {
+               return align.push("");
+             }
+             if (match[1] === ":") {
+               if (match[3] === ":") {
+                 return align.push("center");
+               }
+               return align.push("left");
+             }
+             if (match[3] === ":") {
+               return align.push("right");
+             }
+             align.push("");
+           });
+           return;
+         }
+         wasDelimiter = false;
+         if (name === "TableHeader") {
+           row = [];
+           return;
+         }
+         if (name === "TableRow") {
+           isTable.push(row.slice());
+           row = [];
+           return;
+         }
+         if (name === "TableCell" && row) {
+           row.push({
+             content: state.sliceDoc(from, to),
+             from,
+             to
+           });
+           return;
+         }
+       }
+     });
+     makeTable();
+     return tables;
+   }
+   class TablePreviewWidget extends WidgetType {
+     constructor(info, view) {
+       super();
+       this.info = info;
+       this.view = view;
+     }
+     toDOM(view) {
+       const align = this.info.align;
+       const table = document.createElement("table");
+       const thead = document.createElement("thead");
+       const tbody = document.createElement("tbody");
+       table.appendChild(thead);
+       table.appendChild(tbody);
+       this.info.content.forEach((data, i) => {
+         const tr = document.createElement("tr");
+         if (!i) {
+           thead.appendChild(tr);
+         } else {
+           tbody.appendChild(tr);
+         }
+         data.forEach((cell, j) => {
+           const td = document.createElement(i ? "td" : "th");
+           td.setAttribute("align", align[j]);
+           td.innerText = cell.content;
+           td.addEventListener("click", () => {
+             this.view.dispatch({ selection: { anchor: cell.from, head: cell.from } });
+           });
+           tr.appendChild(td);
+         });
+       });
+       return table;
+     }
+     eq(widget) {
+       return JSON.stringify(widget.info) === JSON.stringify(this.info);
+     }
+   }
+
    const frontMatterFence = /^---\s*$/m;
    ({
      defineNodes: [{ name: "Frontmatter", block: true }, "FrontmatterMark"],
@@ -36059,21 +36223,24 @@
      ]
    });
 
-   const ixora = [
-     headingSlugField,
-     imagePreview,
-     mediaPreview,
-     cpExtPreview,
-     blockquote(),
-     codeblock(),
-     headings(),
-     hideMarks(),
-     lists(),
-     links(),
-     image(),
-     mediatag(),
-     cpExtension()
-   ];
+   const ixora = (view) => {
+     return [
+       headingSlugField,
+       imagePreview,
+       mediaPreview,
+       cpExtPreview,
+       blockquote(),
+       codeblock(),
+       headings(),
+       hideMarks(),
+       lists(),
+       links(),
+       image(),
+       mediatag(),
+       cpExtension(),
+       tablePreview(view)
+     ];
+   };
    var src_default = ixora;
 
    const chalky = "#e5c07b", coral = "#e06c75", cyan = "#56b6c2", invalid$1 = "#ffffff", ivory$1 = "#abb2bf", stone = "#7d8799", // Brightened compared to original to increase contrast
@@ -36279,7 +36446,18 @@
                backgroundColor: highlightBackground,
                color: ivory
            }
-       }
+       },
+       // IXORA
+       ".cm-blockquote": {
+           //color: quoteText
+       },
+       "media-container > media-tag, media-container > pre": {
+           //backgroundColor: ixoraCodeBg,
+           borderRadius: "0 5px 5px 5px"
+       },
+       ".cm-codeblock": {
+           //backgroundColor: ixoraCodeBg
+       },
    }, { dark: false });
 
    // Polar Night
@@ -36494,8 +36672,9 @@
            }),
        });
 
+       const ixoraCp = src_default(editor);
        editor.CP_setInline = (state, dark) => {
-           editor.dispatch({ effects: sv.reconfigure([state ? [src_default] : classic]) });
+           editor.dispatch({ effects: sv.reconfigure([state ? [ixoraCp] : classic]) });
            if (state) {
                editor.dispatch({ effects: theme.reconfigure([dark ? cryptpadDark : cryptpadLight]) });
            } else {
