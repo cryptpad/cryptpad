@@ -1354,7 +1354,7 @@
     "form_preview": "Preview form",
     "form_changeTypeConfirm": "Select the new question type.",
     "form_corruptAnswers": "This form already has responses. Changing this question type may invalidate previous response data.",
-    "form_geturl": "Copy participant link",
+    "form_geturl": "Copy public link",
     "toolbar_preview": "Preview",
     "form_updateMsg": "Update submit message",
     "form_addMsg": "Add submit message",
