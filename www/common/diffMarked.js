@@ -164,21 +164,32 @@ define([
         highlight: highlighter(),
     });
 
-    var toc = [];
-    var getTOC = function () {
+    DiffMd.getTOC = function (_toc) {
         var content = [h('h2', Messages.markdown_toc)];
-        toc.forEach(function (obj) {
+        _toc.forEach(function (obj) {
             // Only include level 2 headings
             var level = obj.level - 1;
             if (level < 1) { return; }
+            var origin = ApiConfig.httpUnsafeOrigin || '';
             var a = h('a.cp-md-toc-link', {
-                href: '#',
+                href: origin+'#'+obj.id,
                 'data-href': obj.id,
             });
             a.innerHTML = obj.title;
+            if (obj.onclick) {
+                a.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    obj.onclick();
+                });
+            }
             content.push(h('p.cp-md-toc-'+level, ['• ',  a]));
         });
-        return h('div.cp-md-toc', content).outerHTML;
+        return h('div.cp-md-toc', content);
+    };
+    var toc = [];
+    var getTOC = function () {
+        return DiffMd.getTOC(toc).outerHTML;
     };
 
     var noHeadingId = false;

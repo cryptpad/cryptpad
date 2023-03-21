@@ -61,7 +61,14 @@
                         & > * {
                             max-width: 70ch;
                         }
+                        iframe { // XXX PDF size??
+                            width: 70ch;
+                            height: 50vh;
+                        }
                     }
+                }
+                .cm-editor {
+                    .markdown_toc();
                 }
 
                 // XXX Add line number to code blocks

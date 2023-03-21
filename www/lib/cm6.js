@@ -34748,27 +34748,27 @@
      provide: f => EditorView.decorations.from(f)
    });
 
-   var __defProp$c = Object.defineProperty;
+   var __defProp$e = Object.defineProperty;
    var __defProps$3 = Object.defineProperties;
    var __getOwnPropDescs$3 = Object.getOwnPropertyDescriptors;
    var __getOwnPropSymbols$3 = Object.getOwnPropertySymbols;
    var __hasOwnProp$3 = Object.prototype.hasOwnProperty;
    var __propIsEnum$3 = Object.prototype.propertyIsEnumerable;
-   var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __defNormalProp$e = (obj, key, value) => key in obj ? __defProp$e(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
    var __spreadValues$3 = (a, b) => {
      for (var prop in b || (b = {}))
        if (__hasOwnProp$3.call(b, prop))
-         __defNormalProp$c(a, prop, b[prop]);
+         __defNormalProp$e(a, prop, b[prop]);
      if (__getOwnPropSymbols$3)
        for (var prop of __getOwnPropSymbols$3(b)) {
          if (__propIsEnum$3.call(b, prop))
-           __defNormalProp$c(a, prop, b[prop]);
+           __defNormalProp$e(a, prop, b[prop]);
        }
      return a;
    };
    var __spreadProps$3 = (a, b) => __defProps$3(a, __getOwnPropDescs$3(b));
-   var __publicField$9 = (obj, key, value) => {
-     __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __publicField$b = (obj, key, value) => {
+     __defNormalProp$e(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    function checkRangeOverlap(range1, range2) {
@@ -34806,7 +34806,7 @@
    }
    class Slugger {
      constructor() {
-       __publicField$9(this, "occurences", {});
+       __publicField$b(this, "occurences", {});
      }
      slug(text) {
        let slug = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
@@ -34843,10 +34843,10 @@
      widget: "cm-image"
    };
 
-   var __defProp$b = Object.defineProperty;
-   var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$8 = (obj, key, value) => {
-     __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$d = Object.defineProperty;
+   var __defNormalProp$d = (obj, key, value) => key in obj ? __defProp$d(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$a = (obj, key, value) => {
+     __defNormalProp$d(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    const quoteMarkRE = /^(\s*>+)/gm;
@@ -34859,7 +34859,7 @@
    }
    class BlockQuotePlugin {
      constructor(view) {
-       __publicField$8(this, "decorations");
+       __publicField$a(this, "decorations");
        this.decorations = this.styleBlockquote(view);
      }
      update(update) {
@@ -34925,17 +34925,17 @@
      return [blockQuotePlugin, baseTheme$7];
    }
 
-   var __defProp$a = Object.defineProperty;
-   var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$7 = (obj, key, value) => {
-     __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$c = Object.defineProperty;
+   var __defNormalProp$c = (obj, key, value) => key in obj ? __defProp$c(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$9 = (obj, key, value) => {
+     __defNormalProp$c(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    const codeblock = () => [codeBlockPlugin, baseTheme$6];
    const codeBlockPlugin = ViewPlugin.fromClass(
      class {
        constructor(view) {
-         __publicField$7(this, "decorations");
+         __publicField$9(this, "decorations");
          this.decorations = decorateCodeBlocks(view);
        }
        update(update) {
@@ -35049,10 +35049,10 @@
      return slugs;
    }
 
-   var __defProp$9 = Object.defineProperty;
-   var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$6 = (obj, key, value) => {
-     __defNormalProp$9(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$b = Object.defineProperty;
+   var __defNormalProp$b = (obj, key, value) => key in obj ? __defProp$b(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$8 = (obj, key, value) => {
+     __defNormalProp$b(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    const headings = () => [
@@ -35062,7 +35062,7 @@
    ];
    class HideHeaderMarkPlugin {
      constructor(view) {
-       __publicField$6(this, "decorations");
+       __publicField$8(this, "decorations");
        this.decorations = this.hideHeaderMark(view);
      }
      update(update) {
@@ -35094,7 +35094,7 @@
    });
    class HeadingDecorationsPlugin {
      constructor(view) {
-       __publicField$6(this, "decorations");
+       __publicField$8(this, "decorations");
        this.decorations = this.decorateHeadings(view);
      }
      update(update) {
@@ -35140,10 +35140,10 @@
      ["." + heading.level(6)]: { fontSize: "0.8rem" }
    });
 
-   var __defProp$8 = Object.defineProperty;
-   var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$5 = (obj, key, value) => {
-     __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$a = Object.defineProperty;
+   var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$7 = (obj, key, value) => {
+     __defNormalProp$a(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    const typesWithMarks = [
@@ -35155,7 +35155,7 @@
    const markTypes = ["EmphasisMark", "CodeMark", "StrikethroughMark"];
    class HideMarkPlugin {
      constructor(view) {
-       __publicField$5(this, "decorations");
+       __publicField$7(this, "decorations");
        this.decorations = this.compute(view);
      }
      update(update) {
@@ -35199,21 +35199,21 @@
      })
    ];
 
-   var __defProp$7 = Object.defineProperty;
+   var __defProp$9 = Object.defineProperty;
    var __defProps$2 = Object.defineProperties;
    var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
    var __getOwnPropSymbols$2 = Object.getOwnPropertySymbols;
    var __hasOwnProp$2 = Object.prototype.hasOwnProperty;
    var __propIsEnum$2 = Object.prototype.propertyIsEnumerable;
-   var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __defNormalProp$9 = (obj, key, value) => key in obj ? __defProp$9(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
    var __spreadValues$2 = (a, b) => {
      for (var prop in b || (b = {}))
        if (__hasOwnProp$2.call(b, prop))
-         __defNormalProp$7(a, prop, b[prop]);
+         __defNormalProp$9(a, prop, b[prop]);
      if (__getOwnPropSymbols$2)
        for (var prop of __getOwnPropSymbols$2(b)) {
          if (__propIsEnum$2.call(b, prop))
-           __defNormalProp$7(a, prop, b[prop]);
+           __defNormalProp$9(a, prop, b[prop]);
        }
      return a;
    };
@@ -35316,10 +35316,10 @@
      }
    }
 
-   var __defProp$6 = Object.defineProperty;
-   var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$4 = (obj, key, value) => {
-     __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$8 = Object.defineProperty;
+   var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$6 = (obj, key, value) => {
+     __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    function hideNodes$2(view) {
@@ -35336,7 +35336,7 @@
    const hideImageNodePlugin = ViewPlugin.fromClass(
      class {
        constructor(view) {
-         __publicField$4(this, "decorations");
+         __publicField$6(this, "decorations");
          this.decorations = hideNodes$2(view);
        }
        update(update) {
@@ -35362,10 +35362,10 @@
      }
    });
 
-   var __defProp$5 = Object.defineProperty;
-   var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$3 = (obj, key, value) => {
-     __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$7 = Object.defineProperty;
+   var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$5 = (obj, key, value) => {
+     __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    const links = () => [goToLinkPlugin, baseTheme$3];
@@ -35440,7 +35440,7 @@
    const goToLinkPlugin = ViewPlugin.fromClass(
      class {
        constructor(view) {
-         __publicField$3(this, "decorations", Decoration.none);
+         __publicField$5(this, "decorations", Decoration.none);
          this.decorations = getLinkAnchor(view);
        }
        update(update) {
@@ -35457,17 +35457,17 @@
      }
    });
 
-   var __defProp$4 = Object.defineProperty;
-   var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$2 = (obj, key, value) => {
-     __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$6 = Object.defineProperty;
+   var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$4 = (obj, key, value) => {
+     __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    const bulletListMarkerRE = /^[-+*]/;
    const lists = () => [listBulletPlugin, taskListPlugin, baseTheme$2];
    class ListBulletPlugin {
      constructor(view) {
-       __publicField$2(this, "decorations", Decoration.none);
+       __publicField$4(this, "decorations", Decoration.none);
        this.decorations = this.decorateLists(view);
      }
      update(update) {
@@ -35511,7 +35511,7 @@
    }
    class TaskListsPlugin {
      constructor(view) {
-       __publicField$2(this, "decorations", Decoration.none);
+       __publicField$4(this, "decorations", Decoration.none);
        this.decorations = this.addCheckboxes(view);
      }
      update(update) {
@@ -35568,7 +35568,10 @@
        const checkbox = document.createElement("input");
        checkbox.type = "checkbox";
        checkbox.checked = this.checked;
-       checkbox.addEventListener("click", ({ target }) => {
+       checkbox.addEventListener("click", (e) => {
+         if (view.state.readOnly) {
+           return e.preventDefault();
+         }
          const change = {
            from: this.pos,
            to: this.pos + 1,
@@ -35576,7 +35579,7 @@
          };
          view.dispatch({ changes: change });
          this.checked = !this.checked;
-         target.checked = this.checked;
+         e.target.checked = this.checked;
        });
        const mark = document.createElement("span");
        mark.classList.add("cp-checkmark-mark");
@@ -35605,21 +35608,21 @@
      }
    });
 
-   var __defProp$3 = Object.defineProperty;
+   var __defProp$5 = Object.defineProperty;
    var __defProps$1 = Object.defineProperties;
    var __getOwnPropDescs$1 = Object.getOwnPropertyDescriptors;
    var __getOwnPropSymbols$1 = Object.getOwnPropertySymbols;
    var __hasOwnProp$1 = Object.prototype.hasOwnProperty;
    var __propIsEnum$1 = Object.prototype.propertyIsEnumerable;
-   var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
    var __spreadValues$1 = (a, b) => {
      for (var prop in b || (b = {}))
        if (__hasOwnProp$1.call(b, prop))
-         __defNormalProp$3(a, prop, b[prop]);
+         __defNormalProp$5(a, prop, b[prop]);
      if (__getOwnPropSymbols$1)
        for (var prop of __getOwnPropSymbols$1(b)) {
          if (__propIsEnum$1.call(b, prop))
-           __defNormalProp$3(a, prop, b[prop]);
+           __defNormalProp$5(a, prop, b[prop]);
        }
      return a;
    };
@@ -35728,10 +35731,10 @@
      }
    }
 
-   var __defProp$2 = Object.defineProperty;
-   var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField$1 = (obj, key, value) => {
-     __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$4 = Object.defineProperty;
+   var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$3 = (obj, key, value) => {
+     __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    function hideNodes$1(view) {
@@ -35799,7 +35802,7 @@
    const hideMTNodePlugin = ViewPlugin.fromClass(
      class {
        constructor(view) {
-         __publicField$1(this, "decorations");
+         __publicField$3(this, "decorations");
          this.decorations = hideNodes$1(view);
        }
        update(update) {
@@ -35825,21 +35828,21 @@
      }
    });
 
-   var __defProp$1 = Object.defineProperty;
+   var __defProp$3 = Object.defineProperty;
    var __defProps = Object.defineProperties;
    var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
    var __getOwnPropSymbols = Object.getOwnPropertySymbols;
    var __hasOwnProp = Object.prototype.hasOwnProperty;
    var __propIsEnum = Object.prototype.propertyIsEnumerable;
-   var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
    var __spreadValues = (a, b) => {
      for (var prop in b || (b = {}))
        if (__hasOwnProp.call(b, prop))
-         __defNormalProp$1(a, prop, b[prop]);
+         __defNormalProp$3(a, prop, b[prop]);
      if (__getOwnPropSymbols)
        for (var prop of __getOwnPropSymbols(b)) {
          if (__propIsEnum.call(b, prop))
-           __defNormalProp$1(a, prop, b[prop]);
+           __defNormalProp$3(a, prop, b[prop]);
        }
      return a;
    };
@@ -35923,10 +35926,10 @@
      }
    }
 
-   var __defProp = Object.defineProperty;
-   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-   var __publicField = (obj, key, value) => {
-     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+   var __defProp$2 = Object.defineProperty;
+   var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$2 = (obj, key, value) => {
+     __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
      return value;
    };
    function hideNodes(view) {
@@ -35963,7 +35966,7 @@
    const hideExtNodePlugin = ViewPlugin.fromClass(
      class {
        constructor(view) {
-         __publicField(this, "decorations");
+         __publicField$2(this, "decorations");
          this.decorations = hideNodes(view);
        }
        update(update) {
@@ -36008,6 +36011,162 @@
        display: "none"
      }
    });
+
+   var __defProp$1 = Object.defineProperty;
+   var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField$1 = (obj, key, value) => {
+     __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   function replaceNodes$1(view) {
+     const widgets = new Array();
+     iterateTreeInVisibleRanges(view, {
+       enter(node) {
+         if (node.name === "HorizontalRule" && !isCursorInRange(view.state, [node.from, node.to])) {
+           const lineContent = Decoration.replace({
+             widget: new HrWidget(),
+             inclusive: false,
+             side: 0
+           }).range(node.from, node.to);
+           widgets.push(lineContent);
+         }
+       }
+     });
+     return Decoration.set(widgets, true);
+   }
+   class HrWidget extends WidgetType {
+     constructor() {
+       super();
+     }
+     toDOM(view) {
+       let el = document.createElement("hr");
+       return el;
+     }
+     eq(widget) {
+       return false;
+     }
+   }
+   const hrNodePlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField$1(this, "decorations");
+         this.decorations = replaceNodes$1(view);
+       }
+       update(update) {
+         if (update.docChanged || update.selectionSet)
+           this.decorations = replaceNodes$1(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   const hr = () => [
+     hrNodePlugin
+   ];
+
+   var __defProp = Object.defineProperty;
+   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+   var __publicField = (obj, key, value) => {
+     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+     return value;
+   };
+   function replaceNodes(view) {
+     const widgets = new Array();
+     const CP_CM_TOC = window.CP_CM_TOC;
+     if (!CP_CM_TOC) {
+       return Decoration.set(widgets, true);
+     }
+     iterateTreeInVisibleRanges(view, {
+       enter(node) {
+         if (node.name === "Link" && !isCursorInRange(view.state, [node.from, node.to])) {
+           let tag = view.state.sliceDoc(node.from, node.to).toLowerCase();
+           if (tag !== "[toc]") {
+             return;
+           }
+           const lineContent = Decoration.replace({
+             widget: new TOCWidget(node.from),
+             inclusive: false,
+             side: 0
+           }).range(node.from, node.to);
+           widgets.push(lineContent);
+         }
+       }
+     });
+     return Decoration.set(widgets, true);
+   }
+   class TOCWidget extends WidgetType {
+     constructor(from) {
+       super();
+       this.from = from;
+     }
+     toDOM(view) {
+       const CP_CM_TOC = window.CP_CM_TOC;
+       if (!CP_CM_TOC) {
+         return;
+       }
+       const slugs = view.state.field(headingSlugField);
+       const data = slugs.map((obj) => {
+         let slug = obj.slug;
+         let pos = obj.pos;
+         let line = view.lineBlockAt(obj.pos);
+         let level = 2;
+         let title;
+         syntaxTree(view.state).iterate({
+           enter: ({ name, from, to, node }) => {
+             if (name === "Document") {
+               return;
+             }
+             if (!/^ATXHeading/.test(name)) {
+               return;
+             }
+             level = Number(name.slice(10));
+             const value = view.state.sliceDoc(from, to);
+             title = value.slice(level).trim();
+           },
+           from: line.from,
+           to: line.to
+         });
+         const onclick = () => {
+           const effect = EditorView.scrollIntoView(pos, {
+             y: "center"
+           });
+           view.dispatch({ effects: [effect] });
+         };
+         if (!title) {
+           return;
+         }
+         return {
+           title,
+           id: slug,
+           level,
+           onclick
+         };
+       }).filter(Boolean);
+       const el = CP_CM_TOC(data);
+       el.addEventListener("click", () => {
+         view.dispatch({ selection: { anchor: this.from, head: this.from } });
+       });
+       return el;
+     }
+     eq(widget) {
+       return false;
+     }
+   }
+   const tocNodePlugin = ViewPlugin.fromClass(
+     class {
+       constructor(view) {
+         __publicField(this, "decorations");
+         this.decorations = replaceNodes(view);
+       }
+       update(update) {
+         if (update.docChanged || update.selectionSet)
+           this.decorations = replaceNodes(update.view);
+       }
+     },
+     { decorations: (v) => v.decorations }
+   );
+   const toc = () => [
+     tocNodePlugin
+   ];
 
    const tablePreview = (view) => {
      return StateField.define({
@@ -36238,6 +36397,8 @@
        image(),
        mediatag(),
        cpExtension(),
+       hr(),
+       toc(),
        tablePreview(view)
      ];
    };
@@ -36259,6 +36420,7 @@
 
    const ixoraCodeBg = "#424242"; // 800, was 323232 in mockups
    const quoteText = '#9E9E9E'; // 500
+   const hrColor = '#9E9E9E';
 
    /**
    The editor theme styles for One Dark.
@@ -36322,6 +36484,10 @@
            }
        },
        // IXORA
+       "hr": {
+           margin: 0,
+           backgroundColor: hrColor
+       },
        ".cm-blockquote": {
            color: quoteText
        },

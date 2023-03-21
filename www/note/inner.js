@@ -675,6 +675,7 @@ define([
 
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
+            window.CP_CM_TOC = DiffMd.getTOC;
             window.CP_CM_MT = function (el) {
                 var id = 'cp_'+Util.uid();
                 var $el = $(el).attr('id', id);

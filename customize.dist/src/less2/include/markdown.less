@@ -1,28 +1,7 @@
 @import (reference) "./tools.less";
 
-.markdown_main() {
-    hr {
-        border-top: 1px solid @cp_markdown-border;
-    }
-    blockquote {
-        background: @cp_markdown-bg;
-        padding: 10px;
-        border-left: 2px solid @cp_markdown-border;
-        padding-right: 0;
-        p { margin: 0; }
-        blockquote { margin: 0; }
-        & > *:not(:last-child) {
-            margin-bottom: 10px !important;
-        }
-    }
 
-    // fix silly spacing around sublists in "loose lists"
-    :is(ul, ol) li > p {
-        & + :is(ul, ol) {
-            margin-bottom: 1rem;
-        }
-    }
-
+.markdown_toc() {
     // TOC
     div.cp-md-toc {
         background: @cp_markdown-bg;
@@ -59,6 +38,30 @@
             text-overflow: ellipsis;
         }
     }
+}
+.markdown_main() {
+    hr {
+        border-top: 1px solid @cp_markdown-border;
+    }
+    blockquote {
+        background: @cp_markdown-bg;
+        padding: 10px;
+        border-left: 2px solid @cp_markdown-border;
+        padding-right: 0;
+        p { margin: 0; }
+        blockquote { margin: 0; }
+        & > *:not(:last-child) {
+            margin-bottom: 10px !important;
+        }
+    }
+
+    // fix silly spacing around sublists in "loose lists"
+    :is(ul, ol) li > p {
+        & + :is(ul, ol) {
+            margin-bottom: 1rem;
+        }
+    }
+    .markdown_toc();
 }
 
 .mediatag_cryptpad() {

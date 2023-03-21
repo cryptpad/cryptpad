@@ -150,6 +150,7 @@ define([
 
             setTimeout(function () {
                 $('.cm-editor').css('font-size', fontSize+'px');
+                $('.cm-editor').find('.cm-content').attr('spellcheck', spellcheck);
             });
 
             // orgmode is using its own shortcuts
@@ -303,7 +304,7 @@ define([
             if (to < 0) { to = 0; }
             if (from > editor.state.doc.length) { from = editor.state.doc.length; }
             if (to > editor.state.doc.length) { to = editor.state.doc.length; }
-            editor.dispatch({selection: {anchor:from, head:to}});
+            editor.dispatch({scrollIntoView: true, selection: {anchor:from, head:to}});
         };
 
         exp.getHeadingText = function () {
