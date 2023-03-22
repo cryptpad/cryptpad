@@ -199,6 +199,15 @@ define([
             saveAndCancel
         ];
     };
+
+    var editDateOptions = function (cb) {
+        var saveAndCancel = saveAndCancelOptions(cb);
+
+        return [
+            saveAndCancel
+        ];
+    };
+
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var evOnSave = Util.mkEvent();
 
@@ -2010,6 +2019,75 @@ define([
             },
             icon: h('i.cptools.cptools-form-grid-radio')
         },
+        date: {
+        defaultOpts: {
+            type: 'date',
+        },
+        get: function (opts, a, n, evOnChange) {
+            opts = Util.clone(TYPES.date.defaultOpts)
+            var tag = h('input', {
+                type: opts.type,
+            });
+
+            var $tag = $(tag);
+            $tag.on('change keypress', Util.throttle(function () {
+                evOnChange.fire();
+            }, 500));
+            var cursorGetter;
+            var setCursorGetter = function (f) { cursorGetter = f; };
+
+            return {
+                tag: tag,
+                isEmpty: function () { return !$tag.val().trim(); },
+                getValue: function () {
+                    var invalid = $tag.is(':invalid');
+                    if (invalid) { return; }
+                    return $tag.val();
+                    
+                },
+                setValue: function (val) { $tag.val(val); },
+                setEditable: function (state) {
+                    if (state) { $tag.removeAttr('disabled'); }
+                    else { $tag.attr('disabled', 'disabled'); }
+                },
+                edit: function (cb, tmp) {
+
+                    return editDateOptions(cb);
+                },
+                getCursor: function () { return cursorGetter(); },
+                reset: function () { $tag.val(''); }
+            };
+        },
+        printResults: function (answers, uid) { // results text
+            var results = [];
+            var empty = 0;
+            var tally = {};
+
+            var isEmpty = function (answer) {
+                return !answer || !answer.trim();
+            };
+
+            Object.keys(answers).forEach(function (author) {
+                var obj = answers[author];
+                var answer = obj.msg[uid];
+                if (isEmpty(answer)) { return empty++; }
+                Util.inc(tally, answer);
+            });
+
+            //if (max < 2) { // there are no duplicates, so just return text
+                results.push(getEmpty(empty));
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (!answer || !answer.trim()) { return empty++; }
+                    results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
+                });
+                return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
+
+
+            return h('div.cp-charts.cp-bar-table', results);
+        },
+        icon: h('i.cp-calendar-active.fa.fa-calendar')},
         checkbox: {
             compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
@@ -3562,7 +3640,7 @@ define([
             });
         }
 
-
+        
         var getFormCreator = function (uid, inSection) {
             if (!APP.isEditor) { return; }
             var full = !uid;
