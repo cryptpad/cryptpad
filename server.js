@@ -256,6 +256,7 @@ var serveBroadcast = makeRouteCache(function () {
     return [
         'define(function(){',
         'return ' + JSON.stringify({
+            curvePublic: Env.curvePublic, // XXX could be in api/config but issue with static config
             lastBroadcastHash: Env.lastBroadcastHash,
             surveyURL: Env.surveyURL,
             maintenance: maintenance
