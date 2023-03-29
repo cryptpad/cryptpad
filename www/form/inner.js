@@ -2024,7 +2024,7 @@ define([
             type: 'date',
         },
         get: function (opts, a, n, evOnChange) {
-            opts = Util.clone(TYPES.date.defaultOpts)
+            opts = Util.clone(TYPES.date.defaultOpts);
 
             var tag = h('input');
                 
@@ -2054,11 +2054,10 @@ define([
                     if (state) { $tag.removeAttr('disabled'); }
                     else { $tag.attr('disabled', 'disabled'); }
                 },
-                edit: function (cb, tmp) {
+                edit: function (cb) {
 
                     return editDateOptions(cb);
                 },
-                getCursor: function () { return cursorGetter(); },
                 reset: function () { $tag.val(''); }
             };
         },
@@ -2087,9 +2086,6 @@ define([
                     results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                 });
                 return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
-
-
-            return h('div.cp-charts.cp-bar-table', results);
         },
         icon: h('i.cp-calendar-active.fa.fa-calendar')},
         checkbox: {
