@@ -2025,16 +2025,20 @@ define([
         },
         get: function (opts, a, n, evOnChange) {
             opts = Util.clone(TYPES.date.defaultOpts)
-            var tag = h('input', {
-                type: opts.type,
-            });
+
+            var tag = h('input');
+                
+            Flatpickr(tag, {
+                        enableTime: true,
+                        time_24hr: is24h,
+                        dateFormat: dateFormat,
+                    });
 
             var $tag = $(tag);
             $tag.on('change keypress', Util.throttle(function () {
                 evOnChange.fire();
             }, 500));
-            var cursorGetter;
-            var setCursorGetter = function (f) { cursorGetter = f; };
+
 
             return {
                 tag: tag,
@@ -3538,7 +3542,6 @@ define([
                     if (!data.isEmpty) { return; }
                     if (!block) { return; }
                     if (!block.opts || !block.opts.required) { return; }
-
                     // Don't require questions that are in a hidden section
                     var section = getSectionFromQ(content, uid);
                     if (section.uid) {
