@@ -2806,7 +2806,7 @@ define([
                     return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
                 };
 
-                var condorcetWinnerDiv = h('div');
+                var condorcetWinnerDiv = h('div.cp-form-block-content');
                 
 
                 if (type === "sort") {
