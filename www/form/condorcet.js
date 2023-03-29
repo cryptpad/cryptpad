@@ -154,7 +154,6 @@ define([], function () {
                         }
                     } 
                 });
-
                 return list;
     
             };
@@ -191,7 +190,6 @@ define([], function () {
                 finalRank.forEach(function(opt){
                     sortedRankDict[opt] = rankDict[opt];
                 });
-
                 return [finalRank, sortedRankDict];
             };
 
@@ -203,11 +201,11 @@ define([], function () {
             var condorcetWinner = [];
             var schulzeWinner = schulzeMethod(optionArray, listOfLists, _answers, uid);
             var rankedPairWinner = rankedPairsMethod(optionArray, listOfLists);
-            var method = form[uid].condorcet["method"];
-            if (method === "schulze") {
+            var method = form[uid].condorcetmethod;
+            if (method === "Schulze") {
                 condorcetWinner[0] = schulzeWinner;
                 condorcetWinner[1] = rankedPairWinner;
-            } else if (method === "ranked") {
+            } else if (method === "Ranked Pairs") {
                 condorcetWinner[0] = rankedPairWinner;
                 condorcetWinner[1] = schulzeWinner;
             }

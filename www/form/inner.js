@@ -75,16 +75,10 @@ define([
     Sortable 
     )
 {   
-    Messages.form_chooseCondorcetMethod = "Choose Condorcet winner using: "; //XXX;
-    Messages.form_chooseCondorcetDisplay =  "Condorcet winner display view: ";
-    Messages.form_schulzeMethod = "Schulze method";
-    Messages.form_rankedPairs = "Ranked pairs method";
-    Messages.form_condorcetBasicDisplayButton = "Basic display";
-    Messages.form_condorcetExtendedDisplayButton = "Extended display";
-    Messages.form_showCondorcetWinner = "The Condorcet winner is: ";
+    
+    Messages.form_showCondorcetMethod = "Condorcet method "; //XXX;
+    Messages.form_showCondorcetWinner = " winner: ";
     Messages.form_condorcetExtendedDisplay = "Number of matches won by each candidate: ";
-    Messages.form_showAlternateWinnerButton = "Show alternate method winner";
-    Messages.form_showAlternateWinner = "The alternate method Condorcet winner is: ";
 
     var APP = window.APP = {
         blocks: {}
@@ -153,7 +147,6 @@ define([
                 evOnSave.fire();
             }, 500));
         }
-
         var type, typeSelect;
         if (opts.type) {
             // Messages.form_text_text.form_text_number.form_text_url.form_text_email
@@ -661,7 +654,6 @@ define([
             if (typeSelect) {
                 res.type = typeSelect.getValue();
             }
-
             return res;
         };
 
@@ -2290,7 +2282,7 @@ define([
                         results.push(barRow(res, c[res], max, showBars));
                     });
                 });
-
+                
                 return h('div.cp-charts.cp-bar-table', results);
             },
             exportCSV: function (answer, form) {
@@ -2438,28 +2430,9 @@ define([
                         Util.inc(count, el, score);
                     });
                 });
-
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
-            
-
-            showCondorcetWinner: function(answers, opts, uid, form) {
-
-                var _answers = parseAnswers(answers);
-
-                var optionArray = [];
-                opts.values.forEach(function (option) {
-                    optionArray.push(option.v);
-                });
-
-                var listOfLists = [];
-                Object.keys(_answers).forEach(function(a) {
-                    listOfLists.push(_answers[a].msg[uid]);
-                });
-                return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
-            },
-
             icon: h('i.cptools.cptools-form-list-ordered')
         },
         poll: {
@@ -2799,6 +2772,7 @@ define([
 
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
+        
 
         var show = function (answers, header) {
             
@@ -2815,55 +2789,107 @@ define([
                     content: content,
                     answers: answers
                 });
-
-
-                let condorcetWinnerDiv = h('div');
                 
+                var showCondorcetWinner = function(answers, opts, uid, form) {
+                
+                    var _answers = parseAnswers(answers);
+    
+                    var optionArray = [];
+                    opts.values.forEach(function (option) {
+                        optionArray.push(option.v);
+                    });
+    
+                    var listOfLists = [];
+                    Object.keys(_answers).forEach(function(a) {
+                        listOfLists.push(_answers[a].msg[uid]);
+                    });
+                    return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
+                };
+
+                var condorcetWinnerDiv = h('div');
+                
+
                 if (type === "sort") {
-                    condorcetWinnerDiv = h('div.cp-form-block', {style: { margin: 100, padding:100 }});
-                    var rankedResults = model.showCondorcetWinner(answers, block.opts, uid, form)[0][0];
-                    var condorcetWinner;
-                    if (form[uid].condorcet["method"] === 'schulze') {
-                        condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
-                        condorcetWinner.forEach(function(option) {
-                            condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetWinner, option, {style: { margin: '10px'}}));
+                    if (summary) {
+
+                        var calculateCondorcet = function() {
+                            var condorcetWinner;                        
+                            var detailedResults;
+                            var condorcetResults = h('span');
+                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0][0];
+    
+                            if (form[uid].condorcetmethod === 'Schulze') {
+                                condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
+                                condorcetWinner.join(', ');
+                                condorcetWinner.forEach(function(option) {
+                                    condorcetResults.append(h('span', option));
+                                });
+    
+                                detailedResults = Object.keys(rankedResults).reverse().map(function(result) {
+                                    return rankedResults[result] + ' : ' + result;
+                                });
+                                return [condorcetResults, detailedResults];
+                            } else if (form[uid].condorcetmethod === 'Ranked Pairs') {
+                                var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[0][1];
+                                condorcetWinner = rankedResults[0]; 
+    
+                                detailedResults = Object.keys(sortedRankDict).map(function(result) {
+                                    return result + ' : ' + sortedRankDict[result];
+                                });
+                            }
+                            return [condorcetWinner, detailedResults];
+                        };
+                        
+    
+                        var dropdownOpts = ['Schulze', 'Ranked Pairs'];
+    
+                        var options = dropdownOpts.map(function (t) {
+                            return {
+                                tag: 'a',
+                                attributes: {
+                                    'class': 'cp-form-type-value',
+                                    'data-value': t,
+                                    'href': '#',
+                                },
+                                content: t
+                            };
                         });
-                    } else {
-                        condorcetWinner = rankedResults[0];
-                        condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetWinner, condorcetWinner, {style: { margin: '10px'}}));
+                        var dropdownConfig = {
+                            text: '', // Button initial text
+                            options: options, 
+                            isSelect: true,
+                            caretDown: true,
+                            buttonCls: 'btn btn-secondary'
+                        };
+                        var typeSelect = UIElements.createDropdown(dropdownConfig);
+    
+                        form[uid].condorcetmethod = 'Schulze';
+                        typeSelect.setValue(form[uid].condorcetmethod);
+    
+                        var method = h('div.cp-dropdown-container', typeSelect[0]);
+    
+                        var evOnSave = Util.mkEvent();
+                        typeSelect.onChange.reg(evOnSave.fire);
+                        var $typeSelect = $(typeSelect);
+    
+                        var $selector = $typeSelect.find('a');
+                        
+                        var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
+                        condorcetWinnerDiv = h('div.cp-form-edit-type');
+    
+                        var detailsDiv = h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
+    
+                        $selector.click(function () {
+                            form[uid].condorcetmethod = $(this).attr('data-value');
+                            $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
+                            $('#dD').replaceWith(h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
+                        });
+                                            
+                        condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
+                        
+                    }
                     }
                     
-                    
-                    if (form[uid].condorcet["display"] === 'extended') {
-                        var sortedRankDict = model.showCondorcetWinner(answers, block.opts, uid, form)[0][1];
-                        var alternateWinner;
-                        var results;
-                        if (form[uid].condorcet["method"] === 'schulze') {
-                            results = Object.keys(rankedResults).reverse().map(function(result) {
-                                return rankedResults[result] + ' : ' + result;
-                            });
-                            alternateWinner = model.showCondorcetWinner(answers, block.opts, uid, form)[1][0][0];
-
-                        } else {
-                            results = Object.keys(sortedRankDict).map(function(result) {
-                                return result + ' : ' + sortedRankDict[result];
-                            });
-                            alternateWinner = model.showCondorcetWinner(answers, block.opts, uid, form)[1][0][model.showCondorcetWinner(answers, block.opts, uid, form)[0][0].length - 1];
-                        }
-                        
-                        condorcetWinnerDiv.append(h('div', Messages.form_condorcetExtendedDisplay, results.join(', '), {style: { margin: '10px'}}));
-
-                        var showAlternateWinnerButton = h('button.btn.btn-secondary', Messages.form_showAlternateWinnerButton, {style: { margin: '10px'}});
-                        condorcetWinnerDiv.append(h('div', showAlternateWinnerButton));
-
-                        $(showAlternateWinnerButton).click(function() {
-                            if ($(condorcetWinnerDiv).children().length < 4) {
-                                condorcetWinnerDiv.append(h('div', Messages.form_showAlternateWinner, alternateWinner, {style: { margin: '10px'}}));
-                            }
-                        });
- 
-                    }   
-                }
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 //Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
@@ -3745,39 +3771,39 @@ define([
                 uid: uid,
                 tmp: temp && temp[uid]
             });
-            var chooseCondorcetDiv = h('div');
-            if (type === "sort") {
-                var schulzeButton = h('button.btn.btn-secondary', Messages.form_schulzeMethod);
-                var rankedPairButton = h('button.btn.btn-secondary', Messages.form_rankedPairs);
-                var chooseCondorcetMethod = h('div',
-                    Messages.form_chooseCondorcetMethod, 
-                    schulzeButton, ' ',
-                    rankedPairButton,
-                    {style: { margin: '10px'}}
-                    );
-                var basicDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetBasicDisplayButton);
-                var extendedDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetExtendedDisplayButton);
-                var chooseCondorcetDisplay = h('div',
-                    Messages.form_chooseCondorcetDisplay, 
-                    basicDisplayButton, ' ',
-                    extendedDisplayButton, 
-                    {style: { margin: '10px'}}
-                    );
-                chooseCondorcetDiv.append(chooseCondorcetMethod, chooseCondorcetDisplay);
-                form[uid].condorcet = {method: 'schulze', display: 'basic'};
-                $(schulzeButton).click(function() {
-                    form[uid].condorcet["method"] = 'schulze';
-                });
-                $(rankedPairButton).click(function() {
-                    form[uid].condorcet["method"] = 'ranked';
-                });
-                $(basicDisplayButton).click(function() {
-                    form[uid].condorcet["display"] = 'basic';
-                });
-                $(extendedDisplayButton).click(function() {
-                    form[uid].condorcet["display"] = 'extended';
-                });
-            }
+            // var chooseCondorcetDiv = h('div');
+            // if (type === "sort") {
+            //     var schulzeButton = h('button.btn.btn-secondary', Messages.form_schulzeMethod);
+            //     var rankedPairButton = h('button.btn.btn-secondary', Messages.form_rankedPairs);
+            //     var chooseCondorcetMethod = h('div',
+            //         Messages.form_chooseCondorcetMethod, 
+            //         schulzeButton, ' ',
+            //         rankedPairButton,
+            //         {style: { margin: '10px'}}
+            //         );
+            //     var basicDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetBasicDisplayButton);
+            //     var extendedDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetExtendedDisplayButton);
+            //     var chooseCondorcetDisplay = h('div',
+            //         Messages.form_chooseCondorcetDisplay, 
+            //         basicDisplayButton, ' ',
+            //         extendedDisplayButton, 
+            //         {style: { margin: '10px'}}
+            //         );
+            //     chooseCondorcetDiv.append(chooseCondorcetMethod, chooseCondorcetDisplay);
+            //     // form[uid].condorcet = {method: 'schulze', display: 'basic'};
+            //     $(schulzeButton).click(function() {
+            //         form[uid].condorcet["method"] = 'schulze';
+            //     });
+            //     $(rankedPairButton).click(function() {
+            //         form[uid].condorcet["method"] = 'ranked';
+            //     });
+            //     $(basicDisplayButton).click(function() {
+            //         form[uid].condorcet["display"] = 'basic';
+            //     });
+            //     $(extendedDisplayButton).click(function() {
+            //         form[uid].condorcet["display"] = 'extended';
+            //     });
+            // }
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -4055,7 +4081,7 @@ define([
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
                     APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
-                    chooseCondorcetDiv,
+                    // chooseCondorcetDiv,
                     editContainer,
                     editButtons
                 ]),
