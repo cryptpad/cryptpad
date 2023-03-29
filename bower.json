@@ -48,8 +48,7 @@
     "jszip": "3.7.1",
     "requirejs-plugins": "^1.0.3",
     "dragula.js": "3.7.2",
-    "MathJax": "3.0.5",
-    "autocorrect": "https://download.ckeditor.com/autocorrect/releases/autocorrect_3.0.zip"
+    "MathJax": "3.0.5"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",
