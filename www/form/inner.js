@@ -2029,17 +2029,21 @@ define([
             type: 'date',
         },
         get: function (opts, a, n, evOnChange) {
-            opts = Util.clone(TYPES.date.defaultOpts)
-            var tag = h('input', {
-                type: opts.type,
-            });
+            opts = Util.clone(TYPES.date.defaultOpts);
+
+            var tag = h('input');
+                
+            Flatpickr(tag, {
+                        enableTime: true,
+                        time_24hr: is24h,
+                        dateFormat: dateFormat,
+                    });
 
             var $tag = $(tag);
             $tag.on('change keypress', Util.throttle(function () {
                 evOnChange.fire();
             }, 500));
-            var cursorGetter;
-            var setCursorGetter = function (f) { cursorGetter = f; };
+
 
             return {
                 tag: tag,
@@ -2055,11 +2059,10 @@ define([
                     if (state) { $tag.removeAttr('disabled'); }
                     else { $tag.attr('disabled', 'disabled'); }
                 },
-                edit: function (cb, tmp) {
+                edit: function (cb) {
 
                     return editDateOptions(cb);
                 },
-                getCursor: function () { return cursorGetter(); },
                 reset: function () { $tag.val(''); }
             };
         },
@@ -2088,9 +2091,6 @@ define([
                     results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                 });
                 return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
-
-
-            return h('div.cp-charts.cp-bar-table', results);
         },
         icon: h('i.cp-calendar-active.fa.fa-calendar')},
         checkbox: {
@@ -3647,7 +3647,6 @@ define([
                     if (!data.isEmpty) { return; }
                     if (!block) { return; }
                     if (!block.opts || !block.opts.required) { return; }
-
                     // Don't require questions that are in a hidden section
                     var section = getSectionFromQ(content, uid);
                     if (section.uid) {
