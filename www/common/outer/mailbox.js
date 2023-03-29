@@ -164,6 +164,14 @@ proxy.mailboxes = {
             });
         });
     };
+    Mailbox.sendAs = function (ctx, keys, type, msg, user, cb) {
+        sendTo({
+            store: {
+                anon_rpc: ctx.store.anon_rpc,
+                proxy: keys
+            }
+        }, type, msg, user, cb);
+    };
     Mailbox.sendToAnon = function (anonRpc, type, msg, user, cb) {
         var Nacl = Crypto.Nacl;
         var curveSeed = Nacl.randomBytes(32);
@@ -664,6 +672,9 @@ proxy.mailboxes = {
             }
             if (cmd === 'SENDTO') {
                 return void sendTo(ctx, data.type, data.msg, data.user, cb);
+            }
+            if (cmd === 'SENDAS') {
+                return void Mailbox.sendAs(ctx, data.keys, data.type, data.msg, data.user, cb);
             }
             if (cmd === 'LOAD_HISTORY') {
                 return void loadHistory(ctx, clientId, data, cb);

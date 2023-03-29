@@ -110,6 +110,7 @@ define([
         var OOIframe;
         var Messaging;
         var Notifier;
+        var Revocable;
         var Utils = {
             nThen: nThen
         };
@@ -140,6 +141,7 @@ define([
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
                 '/common/common-util.js',
+                '/common/revocable.js',
                 '/common/common-realtime.js',
                 '/common/notify.js',
                 '/common/common-constants.js',
@@ -150,7 +152,8 @@ define([
                 //'/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
+            _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util,
+            _Revocable, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -162,6 +165,7 @@ define([
                 OOIframe = _OOIframe;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
+                Revocable = _Revocable;
                 Utils.Hash = _Hash;
                 Utils.Util = _Util;
                 Utils.Realtime = _Realtime;
@@ -1981,7 +1985,7 @@ define([
                     window.location.hash = hash;
                 };
 
-                if (burnAfterReading) {
+                if (burnAfterReading) { // XXX REVOCABLE
                     Cryptpad.padRpc.onReadyEvent.reg(function () {
                         Cryptpad.burnPad({
                             password: password,
@@ -1991,6 +1995,10 @@ define([
                         });
                     });
                 }
+                // XXX cpNfCfg should use mailbox credentials?
+                // XXX WE NEED TO AUTHENTICATE WIHT THE SERVER TO HAVE OUR CORRECT ACCESS RIGHTS
+                // XXX get doc keys in mailbox directly
+                // XXX ["JOIN", "channelId", encrypt(channel+netfluxId, my_priv, serv_pub)] in netflux websocket
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -2009,7 +2017,7 @@ define([
                             return;
                         }
                         if (readOnly || cfg.noHash) { return; }
-                        replaceHash(Utils.Hash.getEditHashFromKeys(secret));
+                        //replaceHash(Utils.Hash.getEditHashFromKeys(secret)); // XXX REVOCABLE
                     }
                 };
 
@@ -2029,6 +2037,7 @@ define([
                     Object.keys(rtConfig).forEach(function (k) {
                         cpNfCfg[k] = rtConfig[k];
                     });
+                    console.error(cpNfCfg);
                     CpNfOuter.start(cpNfCfg);
                 });
             };
@@ -2037,32 +2046,138 @@ define([
                 Cryptpad.onCorruptedCache(secret.channel);
             });
 
+            var sendMailboxMsg = function (data, cb) {
+                Cryptpad.mailbox.execCommand({
+                    cmd: 'SENDAS',
+                    data: data
+                }, cb);
+            };
+
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
                 // Create a new hash
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
-                secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
-                Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
 
-                // Update the hash in the address bar
-                currentPad.hash = newHash;
-                currentPad.href = '/' + parsed.type + '/#' + newHash;
-                Cryptpad.setTabHash(newHash);
+                // XXX MAILBOX
+                var randomKeys = Utils.Hash.getRevocable(parsed.type); // random curve keyPair for the first mailbox
+                var moderator = Utils.Hash.getRevocable(parsed.type);
+                var editor = Utils.Hash.getRevocable(parsed.type);
+                newHash = Utils.Hash.getRevocableHashFromKeys(parsed.type, editor, password); // displayed hash
+                var doc = Utils.Hash.getRevocableSecret(undefined, password); // genrate document keys
+                var serverCurvePublic;
 
-                // Update metadata values and send new metadata inside
-                parsed = Utils.Hash.parsePadUrl(currentPad.href);
-                defaultTitle = Utils.UserObject.getDefaultName(parsed);
-                hashes = Utils.Hash.getHashes(secret);
-                readOnly = false;
-                updateMeta();
+                nThen(function (waitFor) {
+                    var creatorKeys = {
+                        curvePrivate: doc.keys.creator,
+                        curvePublic: doc.keys.channel
+                    };
+                    sendMailboxMsg({
+                        type: "INIT",
+                        msg: {
+                            doc: {
+                                viewer: doc.keys.viewerSeed,
+                                editor: doc.keys.editorSeed,
+                                moderator: doc.keys.moderatorSeed,
+                                moderatorCurve: doc.keys.moderatorCurvePublic,
+                                channel: doc.channel
+                            },
+                            edPublic: moderator.keys.edPublic,
+                            edPrivate: moderator.keys.edPrivate,
+                        },
+                        user: moderator, // send to
+                        keys: randomKeys // send from
+                    }, waitFor());
+                    sendMailboxMsg({
+                        type: "INIT",
+                        msg: {
+                            doc: {
+                                viewer: doc.keys.viewerSeed,
+                                editor: doc.keys.editorSeed,
+                                moderatorCurve: doc.keys.moderatorCurvePublic,
+                                channel: doc.channel
+                            },
+                            edPublic: editor.keys.edPublic,
+                            edPrivate: editor.keys.edPrivate,
+                        },
+                        user: editor, // send to
+                        keys: moderator // send from
+                    }, waitFor());
+                    require([
+                        '/api/broadcast?'+ (+new Date()),
+                    ], waitFor(function (Broadcast) {
+                        serverCurvePublic = Broadcast.curvePublic;
+                    }));
+                }).nThen(function (waitFor) {
 
-                var rtConfig = {
-                    metadata: {}
-                };
-                if (data.team) {
-                    Cryptpad.initialTeam = data.team.id;
-                }
+                    secret = Utils.secret = doc;
+                    var crypto = Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
+
+                    // Update the hash in the address bar
+                    currentPad.hash = newHash;
+                    currentPad.href = '/' + parsed.type + '/#' + newHash;
+                    Cryptpad.setTabHash(newHash);
+
+                    parsed = Utils.Hash.parsePadUrl(currentPad.href);
+                    defaultTitle = Utils.UserObject.getDefaultName(parsed);
+                    //hashes = Utils.Hash.getHashes(secret);
+                    readOnly = false;
+                    updateMeta();
+
+                    // Create initial accesses
+                    var access = {};
+                    var modData = curvePublic ? { curvePublic: curvePublic }
+                        : { url: Utils.Hash.getRevocableHashFromKeys(parsed.type, moderator) };
+                    access[moderator.edPublic] = {
+                        rights: 'rwmd',
+                        mailbox: crypto.encrypt(moderator.channel),
+                        //contact: crypto.encrypt(), // XXX my contact mailbox
+                        notes: crypto.encrypt(JSON.stringify(modData)),
+                        validateKey: moderator.keys.edPublic
+                    };
+                    access[editor.edPublic] = {
+                        rights: 'rw',
+                        mailbox: crypto.encrypt(editor.channel),
+                        //contact: crypto.encrypt(), // XXX my contact mailbox
+                        notes: crypto.encrypt(JSON.stringify({
+                            url: Utils.Hash.getRevocableHashFromKeys(parsed.type, editor)
+                        }))
+                    };
+
+                    if (data.team) { Cryptpad.initialTeam = data.team.id; }
+
+
+                    // Get a hash of the cryptKeyfirst initial moderators log
+                    var keyHashStr = Revocable.hashBytes(doc.keys.cryptKey);
+
+                    var first = Revocable.firstLog(moderator.keys.edPublic);
+                    var prevHash = Revocable.hashMsg(first);
+
+                    var rotateMsg = Revocable.rotateLog(keyHashStr, doc.keys.validateKey, prevHash);
+                    var signature = Revocable.signLog(rotateMsg, moderator.keys.edPrivate);
+
+                    var rtConfig = {
+                        creation: {
+                            creatorEdPrivate: doc.keys.creator,
+                        },
+                        metadata: {
+                            validateKey: (secret.keys && secret.keys.validateKey) || undefined,
+                            access: access,
+                            revocableData: {
+                                creatorKey: moderator.curvePublic,
+                                creatorVKey: moderator.keys.edPublic,
+                                rotate: {
+                                    hash: keyHashStr,
+                                    validateKey: doc.keys.validateKey,
+                                    signature: signature,
+                                }
+                            }
+                        }
+                    };
+
+                    if (data.expire) { rtConfig.metadata.expire = data.expire; }
+
+/*
                 if (data.owned && data.team && data.team.edPublic) {
                     rtConfig.metadata.owners = [data.team.edPublic];
                 } else if (data.owned) {
@@ -2073,14 +2188,26 @@ define([
                         curvePublic: curvePublic
                     }));
                 }
-                if (data.expire) {
-                    rtConfig.metadata.expire = data.expire;
-                }
-                rtConfig.metadata.validateKey = (secret.keys && secret.keys.validateKey) || undefined;
+*/
+console.error(doc);
+console.error(moderator);
+console.error(editor);
+console.error(access);
+console.error(keyHashStr);
 
-                Utils.rtConfig = rtConfig;
+
+                    startRealtime(rtConfig); // XXX
+                    cb(); // XXX
+
+
+                });
+
+
+
                 var templatePw;
                 nThen(function(waitFor) {
+                    return;
+                    // XXX CRYPTGET USE MAILBOX
                     if (data.templateContent) { return; }
                     if (data.templateId) {
                         if (data.templateId === -1) {
@@ -2094,6 +2221,9 @@ define([
                         }));
                     }
                 }).nThen(function () {
+                    return;
+                    // XXX CRYPTGET USE MAILBOX
+
                     var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                     if (data.templateContent) {
                         Cryptget.put(currentPad.hash, JSON.stringify(data.templateContent), function () {

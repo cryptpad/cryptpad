@@ -11,6 +11,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/pinpad.js',
+    '/common/revocable.js',
     '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
@@ -32,7 +33,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad, Cache,
+             Realtime, Messaging, Pinpad, Revocable, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
@@ -1726,9 +1727,10 @@ define([
             if (data.versionHash) {
                 return void getVersionHash(clientId, data);
             }
-            if (!Hash.isValidChannel(data.channel)) {
+            /*if (!Hash.isValidChannel(data.channel)) { // XXX fix this function
                 return void postMessage(clientId, "PAD_ERROR", 'INVALID_CHAN');
-            }
+            }*/
+            console.warn(data);
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -1809,6 +1811,17 @@ define([
                 },
                 onCacheReady: function () {
                     postMessage(clientId, "PAD_CACHE_READY");
+                },
+                onInit: function (obj) {
+                    // We know our netflux ID: use it to prove you know the creator key
+                    if (data.metadata && data.metadata.revocableData) {
+                        var r = data.metadata.revocableData;
+                        var keys = data.creation || {};
+                        var msg = [data.channel, obj.myID];
+                        r.creationProof = Revocable.signLog(msg, keys.creatorEdPrivate);
+                        console.error('ok');
+                        console.error(Revocable.checkLog(msg, data.channel, r.creationProof));
+                    }
                 },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};

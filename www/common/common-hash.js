@@ -89,6 +89,16 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         }
         return hash;
     };
+    Hash.getRevocableHashFromKeys = function (type, secret, opts) {
+        opts = opts || {};
+        var pass = secret.password ? 'p/' : '';
+        var hash =  '/5/' + type + '/' + secret.keys.seed + '/' + pass;
+        var hashData = Hash.parseTypeHash(type, hash);
+        if (hashData && hashData.getHash) {
+            return hashData.getHash(opts || {});
+        }
+        return hash;
+    };
 
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (secret) {
         var version = secret.version;
@@ -180,6 +190,8 @@ Version 3: Safe links
 Version 4: Data URL when not a realtime link yet (new pad or "static" app)
     /login/#/4/login/newpad=eyJocmVmIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwL2NvZGUvIy8yL2NvZGUvZWRpdC91NUFDdnhBWW1odkcwRnRyTm45RklRY2YvIn0%3D/
     /drive/#/4/drive/login=e30%3D/
+Version 5: Revocable mailbox
+    /code/#/5/code/xYGXUrZKq23mC+JGpyhLaadcnc7krfIRXatuleVrAZE/p/
 */
 
     var getLoginOpts = function (hashArr) {
@@ -306,8 +318,9 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             }
 
             // Version >= 1: more hash options
+            var slice = 5;
             parsed.getHash = function (opts) {
-                var hash = hashArr.slice(0, 5).join('/') + '/';
+                var hash = hashArr.slice(0, slice).join('/') + '/';
                 var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
                 if (owner) { hash += owner + '/'; }
                 if (parsed.password || opts.password) { hash += 'p/'; }
@@ -355,6 +368,17 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 parsed.channel = hashArr[4];
 
                 options = hashArr.slice(5);
+                addOptions();
+
+                return parsed;
+            }
+            if (hashArr[1] && hashArr[1] === '5') { // Version 5: Revocable mailbox
+                parsed.version = 5;
+                parsed.app = hashArr[2];
+                parsed.key = hashArr[3];
+
+                slice = 4;
+                options = hashArr.slice(slice);
                 addOptions();
 
                 return parsed;
@@ -524,11 +548,33 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         return '/' + parsed.type + '/#' + parsed.hash;
     };
 
+
+    Hash.getRevocableSecret = function (data, password) {
+        var r = Crypto.createRevocable(data, password);
+        return {
+            keys: r,
+            channel: r.channel,
+        }
+    };
+
     /*
      * Returns all needed keys for a realtime channel
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
+    Hash.getRevocable = function (type) {
+        var r = Crypto.createRevocableMailbox();
+        return {
+            type: type,
+            version: 5,
+            keys: r,
+            channel: base64ToHex(r.chanId),
+            curvePublic: r.curvePublic,
+            curvePrivate: r.curvePrivate,
+            edPublic: r.edPublic,
+            edPrivate: r.edPrivate
+        };
+    };
     Hash.getSecrets = function (type, secretHash, password) {
         var secret = {};
         var generate = function () {
@@ -617,6 +663,14 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 } else if (parsed.type === "user") {
                     throw new Error("User hashes can't be opened (yet)");
                 }
+            } else if (parsed.version === 5) {
+                // New hash
+                secret.version = 5;
+                secret.type = type;
+                secret.password = password;
+                if (parsed.type !== "pad") { return secret; }
+                secret.keys = Crypto.createRevocableMailbox(parsed.key);
+                secret.channel = base64ToHex(secret.keys.chanId);
             }
         }
         return secret;
