@@ -3771,39 +3771,7 @@ define([
                 uid: uid,
                 tmp: temp && temp[uid]
             });
-            // var chooseCondorcetDiv = h('div');
-            // if (type === "sort") {
-            //     var schulzeButton = h('button.btn.btn-secondary', Messages.form_schulzeMethod);
-            //     var rankedPairButton = h('button.btn.btn-secondary', Messages.form_rankedPairs);
-            //     var chooseCondorcetMethod = h('div',
-            //         Messages.form_chooseCondorcetMethod, 
-            //         schulzeButton, ' ',
-            //         rankedPairButton,
-            //         {style: { margin: '10px'}}
-            //         );
-            //     var basicDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetBasicDisplayButton);
-            //     var extendedDisplayButton = h('button.btn.btn-secondary', Messages.form_condorcetExtendedDisplayButton);
-            //     var chooseCondorcetDisplay = h('div',
-            //         Messages.form_chooseCondorcetDisplay, 
-            //         basicDisplayButton, ' ',
-            //         extendedDisplayButton, 
-            //         {style: { margin: '10px'}}
-            //         );
-            //     chooseCondorcetDiv.append(chooseCondorcetMethod, chooseCondorcetDisplay);
-            //     // form[uid].condorcet = {method: 'schulze', display: 'basic'};
-            //     $(schulzeButton).click(function() {
-            //         form[uid].condorcet["method"] = 'schulze';
-            //     });
-            //     $(rankedPairButton).click(function() {
-            //         form[uid].condorcet["method"] = 'ranked';
-            //     });
-            //     $(basicDisplayButton).click(function() {
-            //         form[uid].condorcet["display"] = 'basic';
-            //     });
-            //     $(extendedDisplayButton).click(function() {
-            //         form[uid].condorcet["display"] = 'extended';
-            //     });
-            // }
+            
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -4081,7 +4049,6 @@ define([
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
                     APP.isEditor && !isStatic ? previewDiv : undefined,
                     data.tag,
-                    // chooseCondorcetDiv,
                     editContainer,
                     editButtons
                 ]),
