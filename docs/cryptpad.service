@@ -20,6 +20,8 @@ Environment='PWD="/home/cryptpad/cryptpad"'
 # or risk EMFILE errors.
 LimitNOFILE=1000000
 
+# hardening directives as per https://www.freedesktop.org/software/systemd/man/systemd.exec.html
+# check those with systemd-analyze security cryptpad.service for more information
 # Proc filesystem
 ProcSubset=all
 ProtectProc=invisible
