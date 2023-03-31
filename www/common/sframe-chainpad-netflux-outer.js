@@ -31,6 +31,7 @@ define([], function () {
         var versionHash = conf.versionHash;
         var validateKey = metadata.validateKey;
         var creation = conf.creation;
+        var authentication = conf.authentication;
         var onConnect = conf.onConnect || function () { };
         var lastTime; // Time of last patch (if versioned link);
         conf = undefined;
@@ -153,7 +154,8 @@ define([], function () {
             readOnly: readOnly,
             versionHash: versionHash,
             metadata: metadata,
-            creation: creation
+            creation: creation,
+            authentication: authentication
         });
     };
 

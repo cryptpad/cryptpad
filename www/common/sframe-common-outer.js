@@ -96,7 +96,9 @@ define([
     common.start = function (cfg) {
         cfg = cfg || {};
         var realtime = !cfg.noRealtime;
-        var secret;
+        var secret; // Containing document keys
+        var authSecret; // Containing authentication keys (mailbox)
+        var mailbox;
         var hashes;
         var isNewFile;
         var CpNfOuter;
@@ -485,6 +487,37 @@ define([
                 var newHref;
                 var expire;
                 nThen(function (w) {
+                    // XXX REVOCATION
+                    if (parsed.hashData.version !== 5) { return; }
+                    var seed = parsed.hashData.key;
+                    Cryptpad.universal.execCommand({
+                        type: 'revocation',
+                        data: {
+                            cmd: 'LOAD_PAD',
+                            data: {
+                                seed: seed
+                            }
+                        }
+                    }, w(function (obj) {
+                        // XXX fix with password workflow
+                        w.abort();
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return;
+                        }
+                        secret = Utils.secret = Utils.Hash.getRevocableSecret({
+                            channel: obj.channel,
+                            viewerSeedStr: obj.doc.viewer,
+                            editorSeedStr: obj.doc.editor,
+                            moderatorSeedStr: obj.doc.moderator
+                        }, password);
+                        secret.revocation = {
+                            edPrivate: obj.edPrivate,
+                            edPublic: obj.edPublic
+                        };
+                        done();
+                    }));
+                }).nThen(function (w) {
                     // If we're using an unsafe link, get pad attribute
                     if (parsed.hashData.key || !parsed.hashData.channel) {
                         Cryptpad.getPadAttribute('expire', w(function (err, data) {
@@ -616,7 +649,8 @@ define([
                 }));
             }
         }).nThen(function () {
-            var readOnly = secret.keys && !secret.keys.editKeyStr;
+            //var readOnly = secret.keys && !secret.keys.editKeyStr; // XXX XXX
+            var readOnly = secret.keys && !secret.keys.signKey;
             var isNewHash = true;
             if (!secret.keys) {
                 isNewHash = false;
@@ -917,6 +951,7 @@ define([
 
                 sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
                     var href;
+                    return; // XXX REVOCATION XXX XXX fix hases
                     if (readOnly && hashes.editHash) {
                         // If we have a stronger hash, use it for pad attributes
                         href = window.location.pathname + '#' + hashes.editHash;
@@ -1962,6 +1997,15 @@ define([
             // Join the netflux channel
             var rtStarted = false;
             var startRealtime = function (rtConfig) {
+                if (!rtConfig && secret.revocation) {
+                    rtConfig = {
+                        authentication: {
+                            edPublic: secret.revocation.edPublic,
+                            edPrivate: secret.revocation.edPrivate
+                        }
+                    };
+                }
+
                 rtConfig = rtConfig || {};
                 rtStarted = true;
 
@@ -1998,7 +2042,10 @@ define([
                 // XXX cpNfCfg should use mailbox credentials?
                 // XXX WE NEED TO AUTHENTICATE WIHT THE SERVER TO HAVE OUR CORRECT ACCESS RIGHTS
                 // XXX get doc keys in mailbox directly
-                // XXX ["JOIN", "channelId", encrypt(channel+netfluxId, my_priv, serv_pub)] in netflux websocket
+                // XXX ["JOIN", "channelId", sign(channel+netfluxId, my_priv, serv_pub)] in netflux websocket
+
+                console.error(secret);
+
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -2064,8 +2111,9 @@ define([
                 var moderator = Utils.Hash.getRevocable(parsed.type);
                 var editor = Utils.Hash.getRevocable(parsed.type);
                 newHash = Utils.Hash.getRevocableHashFromKeys(parsed.type, editor, password); // displayed hash
-                var doc = Utils.Hash.getRevocableSecret(undefined, password); // genrate document keys
+                var doc = Utils.Hash.getRevocableSecret(undefined, password); // generate document keys
                 var serverCurvePublic;
+                var rotateUid = Utils.Util.uid();
 
                 nThen(function (waitFor) {
                     var creatorKeys = {
@@ -2076,6 +2124,7 @@ define([
                         type: "INIT",
                         msg: {
                             doc: {
+                                uid: rotateUid,
                                 viewer: doc.keys.viewerSeed,
                                 editor: doc.keys.editorSeed,
                                 moderator: doc.keys.moderatorSeed,
@@ -2092,6 +2141,7 @@ define([
                         type: "INIT",
                         msg: {
                             doc: {
+                                uid: rotateUid,
                                 viewer: doc.keys.viewerSeed,
                                 editor: doc.keys.editorSeed,
                                 moderatorCurve: doc.keys.moderatorCurvePublic,
@@ -2153,12 +2203,16 @@ define([
                     var first = Revocable.firstLog(moderator.keys.edPublic);
                     var prevHash = Revocable.hashMsg(first);
 
-                    var rotateMsg = Revocable.rotateLog(keyHashStr, doc.keys.validateKey, prevHash);
+                    var rotateMsg = Revocable.rotateLog(keyHashStr, doc.keys.validateKey, rotateUid, prevHash);
                     var signature = Revocable.signLog(rotateMsg, moderator.keys.edPrivate);
 
                     var rtConfig = {
                         creation: {
                             creatorEdPrivate: doc.keys.creator,
+                        },
+                        authentication: {
+                            edPublic: moderator.edPublic,
+                            edPrivate: moderator.edPrivate
                         },
                         metadata: {
                             validateKey: (secret.keys && secret.keys.validateKey) || undefined,
@@ -2167,6 +2221,7 @@ define([
                                 creatorKey: moderator.curvePublic,
                                 creatorVKey: moderator.keys.edPublic,
                                 rotate: {
+                                    uid: rotateUid,
                                     hash: keyHashStr,
                                     validateKey: doc.keys.validateKey,
                                     signature: signature,
@@ -2203,6 +2258,7 @@ console.error(keyHashStr);
                 });
 
 
+return;
 
                 var templatePw;
                 nThen(function(waitFor) {

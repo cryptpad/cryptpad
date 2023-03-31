@@ -553,6 +553,7 @@ Version 5: Revocable mailbox
         var r = Crypto.createRevocable(data, password);
         return {
             keys: r,
+            revocable: true,
             channel: r.channel,
         }
     };
@@ -562,8 +563,8 @@ Version 5: Revocable mailbox
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
-    Hash.getRevocable = function (type) {
-        var r = Crypto.createRevocableMailbox();
+    Hash.getRevocable = function (type, seedStr) {
+        var r = Crypto.createRevocableMailbox(seedStr);
         return {
             type: type,
             version: 5,
@@ -743,7 +744,7 @@ Version 5: Revocable mailbox
     };
 
     Hash.isValidChannel = function (channelId) {
-        return /^[a-zA-Z0-9]{32,48}$/.test(channelId);
+        return /^[a-zA-Z0-9-+]{32,48}$/.test(channelId);
     };
 
     Hash.isValidHref = function (href) {

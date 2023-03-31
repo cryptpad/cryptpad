@@ -126,7 +126,7 @@ proxy.mailboxes = {
             crypto = Crypto.Mailbox.createEncryptor(keys);
 
             // Always send your data
-            if (typeof(msg) === "object" && !msg.user) {
+            if (typeof(msg) === "object" && !msg.user && !user.noSender) {
                 var myData = Messaging.createData(ctx.store.proxy, false);
                 msg.user = myData;
             }
@@ -165,6 +165,7 @@ proxy.mailboxes = {
         });
     };
     Mailbox.sendAs = function (ctx, keys, type, msg, user, cb) {
+        user.noSender = true;
         sendTo({
             store: {
                 anon_rpc: ctx.store.anon_rpc,

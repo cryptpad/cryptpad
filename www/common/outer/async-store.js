@@ -22,6 +22,7 @@ define([
     '/common/outer/messenger.js',
     '/common/outer/history.js',
     '/common/outer/calendar.js',
+    '/common/outer/revocation.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -35,7 +36,7 @@ define([
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Revocable, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             Calendar, NetConfig, AppConfig,
+             Calendar, Revocation, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
@@ -1730,7 +1731,18 @@ define([
             /*if (!Hash.isValidChannel(data.channel)) { // XXX fix this function
                 return void postMessage(clientId, "PAD_ERROR", 'INVALID_CHAN');
             }*/
-            console.warn(data);
+            var signFunction;
+            if (data.authentication && data.authentication.edPrivate) {
+                signFunction = function (msg) {
+                    var sig = Revocable.signLog(msg, data.authentication.edPrivate);
+                    return {
+                        sig: sig,
+                        key: data.authentication.edPublic
+                    };
+                };
+            }
+
+
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -1819,8 +1831,6 @@ define([
                         var keys = data.creation || {};
                         var msg = [data.channel, obj.myID];
                         r.creationProof = Revocable.signLog(msg, keys.creatorEdPrivate);
-                        console.error('ok');
-                        console.error(Revocable.checkLog(msg, data.channel, r.creationProof));
                     }
                 },
                 onReady: function (pad) {
@@ -1887,6 +1897,7 @@ define([
                 noChainPad: true,
                 channel: data.channel,
                 metadata: data.metadata,
+                sign: signFunction,
                 network: store.network || store.networkPromise,
                 websocketURL: NetConfig.getWebsocketURL(),
                 //readOnly: data.readOnly,
@@ -2113,7 +2124,7 @@ define([
 
             if (store.offline || !store.anon_rpc) { return void cb({ error: 'OFFLINE' }); }
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
-            if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
+            //if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
             if (!Hash.isValidChannel(data.channel)) {
                 Feedback.send('METADATA_INVALID_CHAN');
                 return void cb({ error: 'EINVAL' });
@@ -2741,6 +2752,8 @@ define([
                     };
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 }, true);
+            }).nThen(function (waitFor) {
+                loadUniversal(Revocation, 'revocation', waitFor, clientId);
             }).nThen(function (waitFor) {
                 loadUniversal(Team, 'team', waitFor, clientId);
             }).nThen(function (waitFor) {
