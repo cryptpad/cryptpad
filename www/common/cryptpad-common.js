@@ -883,7 +883,8 @@ define([
                     href: href,
                     title: data.title,
                     owners: optsPut.owners,
-                    path: ['template']
+                    path: ['template'],
+                    revocable: false // XXX REVOCATION
                 }, function (obj) {
                     if (obj && obj.error) { return void cb(obj.error); }
                     cb();

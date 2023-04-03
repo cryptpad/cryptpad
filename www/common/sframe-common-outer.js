@@ -96,10 +96,9 @@ define([
     common.start = function (cfg) {
         cfg = cfg || {};
         var realtime = !cfg.noRealtime;
-        var secret; // Containing document keys
-        var authSecret; // Containing authentication keys (mailbox)
-        var mailbox;
+        var secret;
         var hashes;
+        var padOpts = {};
         var isNewFile;
         var CpNfOuter;
         var Cryptpad;
@@ -365,6 +364,7 @@ define([
                         var newPad = Utils.Hash.decodeDataOptions(options.newPadOpts);
                         Cryptpad.initialTeam = newPad.t;
                         Cryptpad.initialPath = newPad.p;
+                        padOpts.readOnly = newPad.mode === "view";
                         if (newPad.pw) {
                             try {
                                 var uHash = Utils.LocalStore.getUserHash();
@@ -505,6 +505,7 @@ define([
                             console.error(obj.error);
                             return;
                         }
+                        console.error(obj);
                         secret = Utils.secret = Utils.Hash.getRevocableSecret({
                             channel: obj.channel,
                             viewerSeedStr: obj.doc.viewer,
@@ -650,7 +651,7 @@ define([
             }
         }).nThen(function () {
             //var readOnly = secret.keys && !secret.keys.editKeyStr; // XXX XXX
-            var readOnly = secret.keys && !secret.keys.signKey;
+            var readOnly = padOpts.readOnly || (secret.keys && !secret.keys.signKey);
             var isNewHash = true;
             if (!secret.keys) {
                 isNewHash = false;
@@ -2188,7 +2189,6 @@ define([
                     access[editor.edPublic] = {
                         rights: 'rw',
                         mailbox: crypto.encrypt(editor.channel),
-                        //contact: crypto.encrypt(), // XXX my contact mailbox
                         notes: crypto.encrypt(JSON.stringify({
                             url: Utils.Hash.getRevocableHashFromKeys(parsed.type, editor)
                         }))

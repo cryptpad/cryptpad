@@ -724,7 +724,7 @@ define([
             var secret;
             if (!data.roHref) {
                 var parsed = Hash.parsePadUrl(data.href);
-                if (parsed.hashData.type === "pad") {
+                if (parsed.hashData.type === "pad" && !parsed.revocable) {
                     secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                     data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                 }
@@ -735,6 +735,7 @@ define([
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             if (data.readme) { pad.readme = 1; }
+            if (data.revocable) { pad.r = 1; }
 
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
@@ -1172,7 +1173,7 @@ define([
             // team drive. In this case, we just need to check if the pad is already
             // stored in this team drive.
             // If no team ID is provided, this may be a pad shared with its URL.
-            // We need to check if the pad is stored in any managers (user or teams).
+            // We need to check if the pad is stored in any manager (user or teams).
             // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
             var sendTo = [];
@@ -1256,7 +1257,8 @@ define([
                         owners: owners,
                         expire: expire,
                         password: data.password,
-                        path: data.path
+                        path: data.path,
+                        revocable: p.revocable
                     }, cb);
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {

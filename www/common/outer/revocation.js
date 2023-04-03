@@ -26,8 +26,6 @@ define([
     var isValidRotateMessage = function (ctx, log, newSeeds, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
-console.warn(newSeeds);
-
         var rotateUid = newSeeds.uid;
         var expectedKeys = {};
         log.some(function (logMsg) {
@@ -88,10 +86,8 @@ console.warn(newSeeds);
         var MAILBOX_COMMANDS = {
             // Only the INIT message can add a private key AND must be line 0
             INIT: function (msg, log, i, waitFor) {
-                console.error(msg, i);
                 if (i || !msg.content || !msg.content.doc || !msg.content.edPrivate) { return; }
                 isValidRotateMessage(ctx, log, msg.content.doc, waitFor(function (valid, password) {
-                    console.warn(valid);
                     if (!valid) { return; }
                     data = JSON.parse(JSON.stringify(msg.content));
                     data.password = password;

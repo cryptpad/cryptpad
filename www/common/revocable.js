@@ -4,8 +4,6 @@ var factory = function (Hash, Nacl) {
 
     // Log
 
-    console.log(Hash.createRandomHash());
-
     Revocable.firstLog = function (modEdPublic) {
         return ['ADD', undefined, modEdPublic];
     };
@@ -34,6 +32,8 @@ var factory = function (Hash, Nacl) {
             var check = Nacl.sign.detached.verify(msgBytes, sig, key);
             if (!check) { return false; }
             var checked = msg.slice();
+            checked.push(signature);
+            checked.push(edPublic);
             return checked;
         } catch (e) {
             console.error(e);

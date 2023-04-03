@@ -1164,6 +1164,8 @@ define([
         var openFile = function (el, isRo, app) {
             var data = manager.getFileData(el);
 
+console.error(el, data, app, isRo);
+
             if (data.static) {
                 if (data.href) {
                     common.openUnsafeURL(data.href);
@@ -1176,7 +1178,7 @@ define([
                 return void logError("Missing data for the file", el, data);
             }
 
-            var href = isRo ? data.roHref : (data.href || data.roHref);
+            var href = isRo ? (data.roHref || data.href) : (data.href || data.roHref);
             var parsed = Hash.parsePadUrl(href);
 
             if (parsed.hashData && parsed.hashData.type === 'file' && !app
@@ -1185,6 +1187,12 @@ define([
             }
 
             var obj = { t: APP.team };
+
+            if (!data.roHref && parsed.revocable) { // Revocable
+                if (isRo) { obj.mode = 'view'; } // force view VS use best rights
+                return void common.openURL(Hash.getNewPadURL(href, obj));
+            }
+
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);

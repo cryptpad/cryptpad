@@ -814,7 +814,8 @@ define([
                     }
 
                     // If we have an edit link, check the view link
-                    if (decryptedHref && parsed.hashData.type === "pad" && parsed.hashData.version) {
+                    if (decryptedHref && parsed.hashData.type === "pad" && parsed.hashData.version
+                        && !parsed.revocable) { // Don't force roHref for revocable URLs // XXX XXX REVOCATION
                         if (parsed.hashData.mode === "view") {
                             el.roHref = decryptedHref;
                             delete el.href;

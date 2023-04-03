@@ -518,6 +518,7 @@ Version 5: Revocable mailbox
             if (idx === -1) { return ret; }
             ret.hash = href.slice(idx + 2);
             ret.hashData = parseTypeHash(ret.type, ret.hash);
+            if (ret.hashData.version === 5) { ret.revocable = true; }
             return ret;
         }
 
@@ -530,6 +531,7 @@ Version 5: Revocable mailbox
         if (idx === -1) { return ret; }
         ret.hash = href.slice(idx + 2);
         ret.hashData = parseTypeHash(ret.type, ret.hash);
+        if (ret.hashData.version === 5) { ret.revocable = true; }
         return ret;
     };
 
