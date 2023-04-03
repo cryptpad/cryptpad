@@ -202,10 +202,10 @@ define([], function () {
             var schulzeWinner = schulzeMethod(optionArray, listOfLists, _answers, uid);
             var rankedPairWinner = rankedPairsMethod(optionArray, listOfLists);
             var method = form[uid].condorcetmethod;
-            if (method === "Schulze") {
+            if (method === "schulze") {
                 condorcetWinner[0] = schulzeWinner;
                 condorcetWinner[1] = rankedPairWinner;
-            } else if (method === "Ranked Pairs") {
+            } else if (method === "ranked") {
                 condorcetWinner[0] = rankedPairWinner;
                 condorcetWinner[1] = schulzeWinner;
             }

@@ -77,7 +77,10 @@ define([
 {   
     
     Messages.form_showCondorcetMethod = "Condorcet method "; //XXX;
+    Messages.form_condorcetSchulze = "Schulze";
+    Messages.form_condorcetRanked = "Ranked Pairs";
     Messages.form_showCondorcetWinner = " winner: ";
+    Messages.form_showDetails = "Details";
     Messages.form_condorcetExtendedDisplay = "Number of matches won by each candidate: ";
 
     var APP = window.APP = {
@@ -2911,7 +2914,7 @@ define([
                             var condorcetResults = h('span');
                             var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0][0];
     
-                            if (form[uid].condorcetmethod === 'Schulze') {
+                            if (form[uid].condorcetmethod === 'schulze') {
                                 condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
                                 condorcetWinner.join(', ');
                                 condorcetWinner.forEach(function(option) {
@@ -2922,7 +2925,7 @@ define([
                                     return rankedResults[result] + ' : ' + result;
                                 });
                                 return [condorcetResults, detailedResults];
-                            } else if (form[uid].condorcetmethod === 'Ranked Pairs') {
+                            } else if (form[uid].condorcetmethod === 'ranked') {
                                 var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[0][1];
                                 condorcetWinner = rankedResults[0]; 
     
@@ -2934,7 +2937,7 @@ define([
                         };
                         
     
-                        var dropdownOpts = ['Schulze', 'Ranked Pairs'];
+                        var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
     
                         var options = dropdownOpts.map(function (t) {
                             return {
@@ -2955,9 +2958,13 @@ define([
                             buttonCls: 'btn btn-secondary'
                         };
                         var typeSelect = UIElements.createDropdown(dropdownConfig);
-    
-                        form[uid].condorcetmethod = 'Schulze';
-                        typeSelect.setValue(form[uid].condorcetmethod);
+
+                        typeSelect.setValue(dropdownOpts[0]);
+                        
+                        var methodOptions = {0: 'schulze', 1: 'ranked'};
+                        var optionIndex = dropdownOpts.indexOf(typeSelect.getValue());
+                        
+                        form[uid].condorcetmethod = methodOptions[optionIndex];
     
                         var method = h('div.cp-dropdown-container', typeSelect[0]);
     
@@ -2970,12 +2977,13 @@ define([
                         var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
                         condorcetWinnerDiv = h('div.cp-form-edit-type');
     
-                        var detailsDiv = h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
+                        var detailsDiv = h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
     
                         $selector.click(function () {
-                            form[uid].condorcetmethod = $(this).attr('data-value');
+                            optionIndex = dropdownOpts.indexOf($(this).attr('data-value'));
+                            form[uid].condorcetmethod = methodOptions[optionIndex];
                             $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
-                            $('#dD').replaceWith(h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
+                            $('#dD').replaceWith(h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
                         });
                                             
                         condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
