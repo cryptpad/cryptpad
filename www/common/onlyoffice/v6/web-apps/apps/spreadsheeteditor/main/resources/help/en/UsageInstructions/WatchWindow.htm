@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Watch Window</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Use the Watch Window to manage large worksheets" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Watch window</h1>
+            <p>When working with large worksheets in the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, the <b>Watch Window</b> might come in handy to keep cells and their formulas in check. The <b>Watch Window</b> allows you to see changes in the cells that are not currently in the visible area of the worksheet. You can also quickly switch to the required cell with a double click in the <b>Watch Window</b>.</p>
+            <p>The <b>Watch Window</b> allows you to monitor the following watch parameters: <em>Book</em>, <em>Sheet</em>, <em>Name</em>, <em>Cell</em>, <em>Value</em>, and <em>Formula</em>.</p>
+			<p><img alt="Watch window" src="../images/watchwindow.png" /></p>
+            <p>To <b>add</b> a new watch,</p>
+            <ol>
+                <li>Go to the <b>Formula</b> tab.</li>
+                <li>Click the <b>Watch Window</b> button.</li>
+                <li>Click the <b>Add watch</b> button in the <b>Watch window</b>.</li>
+                <li>Select the required data range to watch.</li>
+                <li>Click <b>Close</b> to return to the worksheet or continue working in the worksheet with an opened watch. All changes in the cells will be visible in the watch. </li>
+            </ol>
+            <p>To <b>delete</b> a watch,</p>
+            <ol>
+                <li>Go to the <b>Formula</b> tab.</li>
+                <li>Click the <b>Watch Window</b> button.</li>
+                <li>Select the required watch or several watches by clicking them via a button combination <code>Ctrl</code>+<code>Left Mouse Button</code>.</li>
+                <li>Click the <b>Delete watch</b> button and choose whether you want to <b>Delete watch</b> or <b>Delete all</b>.</li>
+            </ol>
+		</div>
+	</body>
+</html>

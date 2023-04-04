@@ -1,0 +1,2557 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>AutoCorrect Features</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="The AutoCorrect features are used to automatically format text or insert special math symbols." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>AutoCorrect Features</h1>
+            <p>The AutoCorrect features in ONLYOFFICE <a target="_blank" href="https://www.onlyoffice.com/en/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a> are used to automatically format text when detected or insert special math symbols by recognizing particular character usage.</p>
+            <p>The available AutoCorrect options are listed in the corresponding dialog box. To access it, go to the <b>File</b> tab -> <b>Advanced Settings</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b>.</p>
+            <p>The AutoCorrect dialog box consists of four tabs: <em>Math Autocorrect</em>, <em>Recognized Functions</em>, <em>AutoFormat As You Type</em>, and <em>Text AutoCorrect</em>.</p>
+            <h1>Math AutoCorrect</h1>
+            <p>When working with equations, you can insert a lot of symbols, accents and mathematical operation signs typing them on the keyboard instead of choosing a template from the gallery.</p>
+            <p>In the equation editor, place the insertion point within the necessary placeholder, type a math autocorrect code, then press <b>Spacebar</b>. The entered code will be converted into the corresponding symbol, and the space will be eliminated.</p>
+            <p class="note">The codes are case sensitive.</p>
+            <p>You can add, modify, restore, and remove autocorrect entries from the AutoCorrect list. Go to the <b>File</b> tab -> <b>Advanced Settings</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b> -> <b>Math AutoCorrect</b>.</p>
+            <p>Adding an entry to the AutoCorrect list</p>
+            <p>
+                <ul>
+                    <li>Enter the autocorrect code you want to use in the <b>Replace</b> box.</li>
+                    <li>Enter the symbol to be assigned to the code you entered in the <b>By</b> box.</li>
+                    <li>Click the <b>Add</b> button.</li>
+                </ul>
+            </p>
+            <p>Modifying an entry on the AutoCorrect list</p>
+            <p>
+                <ul>
+                    <li>Select the entry to be modified.</li>
+                    <li>You can change the information in both fields: the code in the <b>Replace</b> box or the symbol in the <b>By</b> box.</li>
+                    <li>Click the <b>Replace</b> button.</li>
+                </ul>
+            </p>
+            <p>Removing entries from the AutoCorrect list</p>
+            <p>
+                <ul>
+                    <li>Select an entry to remove from the list.</li>
+                    <li>Click the <b>Delete</b> button.</li>
+                </ul>
+            </p>
+            <p>To restore the previously deleted entries, select the entry to be restored from the list and click the <b>Restore</b> button.</p>
+            <p>Use the <b>Reset to default</b> button to restore default settings. Any autocorrect entry you added will be removed and the changed ones will be restored to their original values.</p>
+            <p>To disable Math AutoCorrect and to avoid automatic changes and replacements, uncheck the <b>Replace text as you type</b> box.</p>
+            <p><img alt="Replace text as you type" src="../images/replacetext.png" /></p>
+            <p>The table below contains all the currently supported codes available in the <b>Presentation Editor</b>. The full list of the supported codes can also be found on the <b>File</b> tab in the <b>Advanced Settings...</b> -> <b>Spell checking</b> -> <b>Proofing</b> section.</p>
+            <details class="details-example">
+                <summary>The supported codes</summary>
+                <table>
+                    <tr>
+                        <td><b>Code</b></td>
+                        <td><b>Symbol</b></td>
+                        <td><b>Category</b></td>
+                    </tr>
+                    <tr>
+                        <td>!!</td>
+                        <td><div class = "smb smb-doublefactorial"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>...</td>
+                        <td><div class = "smb smb-horizontalellipsis"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>::</td>
+                        <td><div class = "smb smb-doublecolon"></div></td>
+                        <td>Operators</td>
+                    </tr>
+                    <tr>
+                        <td>:=</td>
+                        <td><div class = "smb smb-colonequal"></div></td>
+                        <td>Operators</td>
+                    </tr>
+                    <tr>
+                        <td>/<</td>
+                        <td><div class = "smb smb-notlessthan"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>/></td>
+                        <td><div class = "smb smb-notgreaterthan"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>/=</td>
+                        <td><div class = "smb smb-notequal"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\above</td>
+                        <td><div class = "smb smb-above"></div></td>
+                        <td>Above/Below scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\acute</td>
+                        <td><div class = "smb smb-acute"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\aleph</td>
+                        <td><div class = "smb smb-aleph"></div></td>
+                        <td>Hebrew letters</td>
+                    </tr>
+                    <tr>
+                        <td>\alpha</td>
+                        <td><div class = "smb smb-alpha"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Alpha</td>
+                        <td><div class = "smb smb-alpha2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\amalg</td>
+                        <td><div class = "smb smb-amalg"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\angle</td>
+                        <td><div class = "smb smb-angle"></div></td>
+                        <td>Geometry notation</td>
+                    </tr>
+                    <tr>
+                        <td>\aoint</td>
+                        <td><div class = "smb smb-aoint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\approx</td>
+                        <td><div class = "smb smb-approx"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\asmash</td>
+                        <td><div class = "smb smb-asmash"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\ast</td>
+                        <td><div class = "smb smb-ast"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\asymp</td>
+                        <td><div class = "smb smb-asymp"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\atop</td>
+                        <td><div class = "smb smb-atop"></div></td>
+                        <td>Operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bar</td>
+                        <td><div class = "smb smb-bar"></div></td>
+                        <td>Over/Underbar</td>
+                    </tr>
+                    <tr>
+                        <td>\Bar</td>
+                        <td><div class = "smb smb-bar2"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\because</td>
+                        <td><div class = "smb smb-because"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\begin</td>
+                        <td><div class = "smb smb-begin"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\below</td>
+                        <td><div class = "smb smb-below"></div></td>
+                        <td>Above/Below scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\bet</td>
+                        <td><div class = "smb smb-bet"></div></td>
+                        <td>Hebrew letters</td>
+                    </tr>
+                    <tr>
+                        <td>\beta</td>
+                        <td><div class = "smb smb-beta"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Beta</td>
+                        <td><div class = "smb smb-beta2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\beth</td>
+                        <td><div class = "smb smb-beth"></div></td>
+                        <td>Hebrew letters</td>
+                    </tr>
+                    <tr>
+                        <td>\bigcap</td>
+                        <td><div class = "smb smb-bigcap"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigcup</td>
+                        <td><div class = "smb smb-bigcup"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigodot</td>
+                        <td><div class = "smb smb-bigodot"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigoplus</td>
+                        <td><div class = "smb smb-bigoplus"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigotimes</td>
+                        <td><div class = "smb smb-bigotimes"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigsqcup</td>
+                        <td><div class = "smb smb-bigsqcup"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\biguplus</td>
+                        <td><div class = "smb smb-biguplus"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigvee</td>
+                        <td><div class = "smb smb-bigvee"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bigwedge</td>
+                        <td><div class = "smb smb-bigwedge"></div></td>
+                        <td>Large operators</td>
+                    </tr>
+                    <tr>
+                        <td>\binomial</td>
+                        <td><div class = "smb smb-binomial"></div></td>
+                        <td>Equations</td>
+                    </tr>
+                    <tr>
+                        <td>\bot</td>
+                        <td><div class = "smb smb-bot"></div></td>
+                        <td>Logic notation</td>
+                    </tr>
+                    <tr>
+                        <td>\bowtie</td>
+                        <td><div class = "smb smb-bowtie"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\box</td>
+                        <td><div class = "smb smb-box"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\boxdot</td>
+                        <td><div class = "smb smb-boxdot"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\boxminus</td>
+                        <td><div class = "smb smb-boxminus"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\boxplus</td>
+                        <td><div class = "smb smb-boxplus"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\bra</td>
+                        <td><div class = "smb smb-bra"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\break</td>
+                        <td><div class = "smb smb-break"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\breve</td>
+                        <td><div class = "smb smb-breve"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\bullet</td>
+                        <td><div class = "smb smb-bullet"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\cap</td>
+                        <td><div class = "smb smb-cap"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\cbrt</td>
+                        <td><div class = "smb smb-cbrt"></div></td>
+                        <td>Square roots and radicals</td>
+                    </tr>
+                    <tr>
+                        <td>\cases</td>
+                        <td><div class = "smb smb-cases"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\cdot</td>
+                        <td><div class = "smb smb-cdot"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\cdots</td>
+                        <td><div class = "smb smb-cdots"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\check</td>
+                        <td><div class = "smb smb-check"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\chi</td>
+                        <td><div class = "smb smb-chi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Chi</td>
+                        <td><div class = "smb smb-chi2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\circ</td>
+                        <td><div class = "smb smb-circ"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\close</td>
+                        <td><div class = "smb smb-close"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\clubsuit</td>
+                        <td><div class = "smb smb-clubsuit"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\coint</td>
+                        <td><div class = "smb smb-coint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\cong</td>
+                        <td><div class = "smb smb-cong"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\coprod</td>
+                        <td><div class = "smb smb-coprod"></div></td>
+                        <td>Math operators</td>
+                    </tr>
+                    <tr>
+                        <td>\cup</td>
+                        <td><div class = "smb smb-cup"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\dalet</td>
+                        <td><div class = "smb smb-dalet"></div></td>
+                        <td>Hebrew letters</td>
+                    </tr>
+                    <tr>
+                        <td>\daleth</td>
+                        <td><div class = "smb smb-daleth"></div></td>
+                        <td>Hebrew letters</td>
+                    </tr>
+                    <tr>
+                        <td>\dashv</td>
+                        <td><div class = "smb smb-dashv"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\dd</td>
+                        <td><div class = "smb smb-dd"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Dd</td>
+                        <td><div class = "smb smb-dd2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\ddddot</td>
+                        <td><div class = "smb smb-ddddot"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\dddot</td>
+                        <td><div class = "smb smb-dddot"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\ddot</td>
+                        <td><div class = "smb smb-ddot"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\ddots</td>
+                        <td><div class = "smb smb-ddots"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\defeq</td>
+                        <td><div class = "smb smb-defeq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\degc</td>
+                        <td><div class = "smb smb-degc"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\degf</td>
+                        <td><div class = "smb smb-degf"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\degree</td>
+                        <td><div class = "smb smb-degree"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\delta</td>
+                        <td><div class = "smb smb-delta"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Delta</td>
+                        <td><div class = "smb smb-delta2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Deltaeq</td>
+                        <td><div class = "smb smb-deltaeq"></div></td>
+                        <td>Operators</td>
+                    </tr>
+                    <tr>
+                        <td>\diamond</td>
+                        <td><div class = "smb smb-diamond"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\diamondsuit</td>
+                        <td><div class = "smb smb-diamondsuit"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\div</td>
+                        <td><div class = "smb smb-div"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\dot</td>
+                        <td><div class = "smb smb-dot"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\doteq</td>
+                        <td><div class = "smb smb-doteq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\dots</td>
+                        <td><div class = "smb smb-dots"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\doublea</td>
+                        <td><div class = "smb smb-doublea"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleA</td>
+                        <td><div class = "smb smb-doublea2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleb</td>
+                        <td><div class = "smb smb-doubleb"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleB</td>
+                        <td><div class = "smb smb-doubleb2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublec</td>
+                        <td><div class = "smb smb-doublec"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleC</td>
+                        <td><div class = "smb smb-doublec2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubled</td>
+                        <td><div class = "smb smb-doubled"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleD</td>
+                        <td><div class = "smb smb-doubled2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublee</td>
+                        <td><div class = "smb smb-doublee"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleE</td>
+                        <td><div class = "smb smb-doublee2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublef</td>
+                        <td><div class = "smb smb-doublef"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleF</td>
+                        <td><div class = "smb smb-doublef2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleg</td>
+                        <td><div class = "smb smb-doubleg"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleG</td>
+                        <td><div class = "smb smb-doubleg2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleh</td>
+                        <td><div class = "smb smb-doubleh"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleH</td>
+                        <td><div class = "smb smb-doubleh2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublei</td>
+                        <td><div class = "smb smb-doublei"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleI</td>
+                        <td><div class = "smb smb-doublei2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublej</td>
+                        <td><div class = "smb smb-doublej"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleJ</td>
+                        <td><div class = "smb smb-doublej2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublek</td>
+                        <td><div class = "smb smb-doublek"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleK</td>
+                        <td><div class = "smb smb-doublek2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublel</td>
+                        <td><div class = "smb smb-doublel"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleL</td>
+                        <td><div class = "smb smb-doublel2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublem</td>
+                        <td><div class = "smb smb-doublem"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleM</td>
+                        <td><div class = "smb smb-doublem2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublen</td>
+                        <td><div class = "smb smb-doublen"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleN</td>
+                        <td><div class = "smb smb-doublen2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleo</td>
+                        <td><div class = "smb smb-doubleo"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleO</td>
+                        <td><div class = "smb smb-doubleo2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublep</td>
+                        <td><div class = "smb smb-doublep"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleP</td>
+                        <td><div class = "smb smb-doublep2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleq</td>
+                        <td><div class = "smb smb-doubleq"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleQ</td>
+                        <td><div class = "smb smb-doubleq2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubler</td>
+                        <td><div class = "smb smb-doubler"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleR</td>
+                        <td><div class = "smb smb-doubler2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubles</td>
+                        <td><div class = "smb smb-doubles"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleS</td>
+                        <td><div class = "smb smb-doubles2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublet</td>
+                        <td><div class = "smb smb-doublet"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleT</td>
+                        <td><div class = "smb smb-doublet2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleu</td>
+                        <td><div class = "smb smb-doubleu"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleU</td>
+                        <td><div class = "smb smb-doubleu2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublev</td>
+                        <td><div class = "smb smb-doublev"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleV</td>
+                        <td><div class = "smb smb-doublev2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublew</td>
+                        <td><div class = "smb smb-doublew"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleW</td>
+                        <td><div class = "smb smb-doublew2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublex</td>
+                        <td><div class = "smb smb-doublex"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleX</td>
+                        <td><div class = "smb smb-doublex2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubley</td>
+                        <td><div class = "smb smb-doubley"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleY</td>
+                        <td><div class = "smb smb-doubley2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doublez</td>
+                        <td><div class = "smb smb-doublez"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\doubleZ</td>
+                        <td><div class = "smb smb-doublez2"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\downarrow</td>
+                        <td><div class = "smb smb-downarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Downarrow</td>
+                        <td><div class = "smb smb-downarrow2"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\dsmash</td>
+                        <td><div class = "smb smb-dsmash"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\ee</td>
+                        <td><div class = "smb smb-ee"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\ell</td>
+                        <td><div class = "smb smb-ell"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\emptyset</td>
+                        <td><div class = "smb smb-emptyset"></div></td>
+                        <td>Set notations</td>
+                    </tr>
+                    <tr>
+                        <td>\emsp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\end</td>
+                        <td><div class = "smb smb-end"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\ensp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\epsilon</td>
+                        <td><div class = "smb smb-epsilon"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Epsilon</td>
+                        <td><div class = "smb smb-epsilon2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\eqarray</td>
+                        <td><div class = "smb smb-eqarray"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\equiv</td>
+                        <td><div class = "smb smb-equiv"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\eta</td>
+                        <td><div class = "smb smb-eta"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Eta</td>
+                        <td><div class = "smb smb-eta2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\exists</td>
+                        <td><div class = "smb smb-exists"></div></td>
+                        <td>Logic notations</td>
+                    </tr>
+                    <tr>
+                        <td>\forall</td>
+                        <td><div class = "smb smb-forall"></div></td>
+                        <td>Logic notations</td>
+                    </tr>
+                    <tr>
+                        <td>\fraktura</td>
+                        <td><div class = "smb smb-fraktura"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturA</td>
+                        <td><div class = "smb smb-fraktura2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturb</td>
+                        <td><div class = "smb smb-frakturb"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturB</td>
+                        <td><div class = "smb smb-frakturb2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturc</td>
+                        <td><div class = "smb smb-frakturc"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturC</td>
+                        <td><div class = "smb smb-frakturc2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturd</td>
+                        <td><div class = "smb smb-frakturd"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturD</td>
+                        <td><div class = "smb smb-frakturd2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakture</td>
+                        <td><div class = "smb smb-frakture"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturE</td>
+                        <td><div class = "smb smb-frakture2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturf</td>
+                        <td><div class = "smb smb-frakturf"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturF</td>
+                        <td><div class = "smb smb-frakturf2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturg</td>
+                        <td><div class = "smb smb-frakturg"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturG</td>
+                        <td><div class = "smb smb-frakturg2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturh</td>
+                        <td><div class = "smb smb-frakturh"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturH</td>
+                        <td><div class = "smb smb-frakturh2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturi</td>
+                        <td><div class = "smb smb-frakturi"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturI</td>
+                        <td><div class = "smb smb-frakturi2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturk</td>
+                        <td><div class = "smb smb-frakturk"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturK</td>
+                        <td><div class = "smb smb-frakturk2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturl</td>
+                        <td><div class = "smb smb-frakturl"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturL</td>
+                        <td><div class = "smb smb-frakturl2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturm</td>
+                        <td><div class = "smb smb-frakturm"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturM</td>
+                        <td><div class = "smb smb-frakturm2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturn</td>
+                        <td><div class = "smb smb-frakturn"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturN</td>
+                        <td><div class = "smb smb-frakturn2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturo</td>
+                        <td><div class = "smb smb-frakturo"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturO</td>
+                        <td><div class = "smb smb-frakturo2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturp</td>
+                        <td><div class = "smb smb-frakturp"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturP</td>
+                        <td><div class = "smb smb-frakturp2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturq</td>
+                        <td><div class = "smb smb-frakturq"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturQ</td>
+                        <td><div class = "smb smb-frakturq2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturr</td>
+                        <td><div class = "smb smb-frakturr"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturR</td>
+                        <td><div class = "smb smb-frakturr2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturs</td>
+                        <td><div class = "smb smb-frakturs"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturS</td>
+                        <td><div class = "smb smb-frakturs2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturt</td>
+                        <td><div class = "smb smb-frakturt"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturT</td>
+                        <td><div class = "smb smb-frakturt2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturu</td>
+                        <td><div class = "smb smb-frakturu"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturU</td>
+                        <td><div class = "smb smb-frakturu2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturv</td>
+                        <td><div class = "smb smb-frakturv"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturV</td>
+                        <td><div class = "smb smb-frakturv2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturw</td>
+                        <td><div class = "smb smb-frakturw"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturW</td>
+                        <td><div class = "smb smb-frakturw2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturx</td>
+                        <td><div class = "smb smb-frakturx"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturX</td>
+                        <td><div class = "smb smb-frakturx2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\fraktury</td>
+                        <td><div class = "smb smb-fraktury"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturY</td>
+                        <td><div class = "smb smb-fraktury2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturz</td>
+                        <td><div class = "smb smb-frakturz"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frakturZ</td>
+                        <td><div class = "smb smb-frakturz2"></div></td>
+                        <td>Fraktur letters</td>
+                    </tr>
+                    <tr>
+                        <td>\frown</td>
+                        <td><div class = "smb smb-frown"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\funcapply</td>
+                        <td></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\G</td>
+                        <td><div class = "smb smb-g"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\gamma</td>
+                        <td><div class = "smb smb-gamma"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Gamma</td>
+                        <td><div class = "smb smb-gamma2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\ge</td>
+                        <td><div class = "smb smb-ge"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\geq</td>
+                        <td><div class = "smb smb-geq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\gets</td>
+                        <td><div class = "smb smb-gets"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\gg</td>
+                        <td><div class = "smb smb-gg"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\gimel</td>
+                        <td><div class = "smb smb-gimel"></div></td>
+                        <td>Hebrew letters</td>
+                    </tr>
+                    <tr>
+                        <td>\grave</td>
+                        <td><div class = "smb smb-grave"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\hairsp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\hat</td>
+                        <td><div class = "smb smb-hat"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\hbar</td>
+                        <td><div class = "smb smb-hbar"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\heartsuit</td>
+                        <td><div class = "smb smb-heartsuit"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\hookleftarrow</td>
+                        <td><div class = "smb smb-hookleftarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\hookrightarrow</td>
+                        <td><div class = "smb smb-hookrightarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\hphantom</td>
+                        <td><div class = "smb smb-hphantom"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\hsmash</td>
+                        <td><div class = "smb smb-hsmash"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\hvec</td>
+                        <td><div class = "smb smb-hvec"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\identitymatrix</td>
+                        <td><div class = "smb smb-identitymatrix"></div></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\ii</td>
+                        <td><div class = "smb smb-ii"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\iiint</td>
+                        <td><div class = "smb smb-iiint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\iint</td>
+                        <td><div class = "smb smb-iint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\iiiint</td>
+                        <td><div class = "smb smb-iiiint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\Im</td>
+                        <td><div class = "smb smb-im"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\imath</td>
+                        <td><div class = "smb smb-imath"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\in</td>
+                        <td><div class = "smb smb-in"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\inc</td>
+                        <td><div class = "smb smb-inc"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\infty</td>
+                        <td><div class = "smb smb-infty"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\int</td>
+                        <td><div class = "smb smb-int"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\integral</td>
+                        <td><div class = "smb smb-integral"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\iota</td>
+                        <td><div class = "smb smb-iota"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Iota</td>
+                        <td><div class = "smb smb-iota2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\itimes</td>
+                        <td></td>
+                        <td>Math operators</td>
+                    </tr>
+                    <tr>
+                        <td>\j</td>
+                        <td><div class = "smb smb-j"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\jj</td>
+                        <td><div class = "smb smb-jj"></div></td>
+                        <td>Double-struck letters</td>
+                    </tr>
+                    <tr>
+                        <td>\jmath</td>
+                        <td><div class = "smb smb-jmath"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\kappa</td>
+                        <td><div class = "smb smb-kappa"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Kappa</td>
+                        <td><div class = "smb smb-kappa2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\ket</td>
+                        <td><div class = "smb smb-ket"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\lambda</td>
+                        <td><div class = "smb smb-lambda"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Lambda</td>
+                        <td><div class = "smb smb-lambda2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\langle</td>
+                        <td><div class = "smb smb-langle"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\lbbrack</td>
+                        <td><div class = "smb smb-lbbrack"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\lbrace</td>
+                        <td><div class = "smb smb-lbrace"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\lbrack</td>
+                        <td><div class = "smb smb-lbrack"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\lceil</td>
+                        <td><div class = "smb smb-lceil"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\ldiv</td>
+                        <td><div class = "smb smb-ldiv"></div></td>
+                        <td>Fraction slashes</td>
+                    </tr>
+                    <tr>
+                        <td>\ldivide</td>
+                        <td><div class = "smb smb-ldivide"></div></td>
+                        <td>Fraction slashes</td>
+                    </tr>
+                    <tr>
+                        <td>\ldots</td>
+                        <td><div class = "smb smb-ldots"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\le</td>
+                        <td><div class = "smb smb-le"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\left</td>
+                        <td><div class = "smb smb-left"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\leftarrow</td>
+                        <td><div class = "smb smb-leftarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Leftarrow</td>
+                        <td><div class = "smb smb-leftarrow2"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\leftharpoondown</td>
+                        <td><div class = "smb smb-leftharpoondown"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\leftharpoonup</td>
+                        <td><div class = "smb smb-leftharpoonup"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\leftrightarrow</td>
+                        <td><div class = "smb smb-leftrightarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Leftrightarrow</td>
+                        <td><div class = "smb smb-leftrightarrow2"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\leq</td>
+                        <td><div class = "smb smb-leq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\lfloor</td>
+                        <td><div class = "smb smb-lfloor"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\lhvec</td>
+                        <td><div class = "smb smb-lhvec"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\limit</td>
+                        <td><div class = "smb smb-limit"></div></td>
+                        <td>Limits</td>
+                    </tr>
+                    <tr>
+                        <td>\ll</td>
+                        <td><div class = "smb smb-ll"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\lmoust</td>
+                        <td><div class = "smb smb-lmoust"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\Longleftarrow</td>
+                        <td><div class = "smb smb-longleftarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Longleftrightarrow</td>
+                        <td><div class = "smb smb-longleftrightarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Longrightarrow</td>
+                        <td><div class = "smb smb-longrightarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\lrhar</td>
+                        <td><div class = "smb smb-lrhar"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\lvec</td>
+                        <td><div class = "smb smb-lvec"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\mapsto</td>
+                        <td><div class = "smb smb-mapsto"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\matrix</td>
+                        <td><div class = "smb smb-matrix"></div></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\medsp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\mid</td>
+                        <td><div class = "smb smb-mid"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\middle</td>
+                        <td><div class = "smb smb-middle"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\models</td>
+                        <td><div class = "smb smb-models"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\mp</td>
+                        <td><div class = "smb smb-mp"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\mu</td>
+                        <td><div class = "smb smb-mu"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Mu</td>
+                        <td><div class = "smb smb-mu2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\nabla</td>
+                        <td><div class = "smb smb-nabla"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\naryand</td>
+                        <td><div class = "smb smb-naryand"></div></td>
+                        <td>Operators</td>
+                    </tr>
+                    <tr>
+                        <td>\nbsp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\ne</td>
+                        <td><div class = "smb smb-ne"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\nearrow</td>
+                        <td><div class = "smb smb-nearrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\neq</td>
+                        <td><div class = "smb smb-neq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\ni</td>
+                        <td><div class = "smb smb-ni"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\norm</td>
+                        <td><div class = "smb smb-norm"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\notcontain</td>
+                        <td><div class = "smb smb-notcontain"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\notelement</td>
+                        <td><div class = "smb smb-notelement"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\notin</td>
+                        <td><div class = "smb smb-notin"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\nu</td>
+                        <td><div class = "smb smb-nu"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Nu</td>
+                        <td><div class = "smb smb-nu2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\nwarrow</td>
+                        <td><div class = "smb smb-nwarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\o</td>
+                        <td><div class = "smb smb-o"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\O</td>
+                        <td><div class = "smb smb-o2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\odot</td>
+                        <td><div class = "smb smb-odot"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\of</td>
+                        <td><div class = "smb smb-of"></div></td>
+                        <td>Operators</td>
+                    </tr>
+                    <tr>
+                        <td>\oiiint</td>
+                        <td><div class = "smb smb-oiiint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\oiint</td>
+                        <td><div class = "smb smb-oiint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\oint</td>
+                        <td><div class = "smb smb-oint"></div></td>
+                        <td>Integrals</td>
+                    </tr>
+                    <tr>
+                        <td>\omega</td>
+                        <td><div class = "smb smb-omega"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Omega</td>
+                        <td><div class = "smb smb-omega2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\ominus</td>
+                        <td><div class = "smb smb-ominus"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\open</td>
+                        <td><div class = "smb smb-open"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\oplus</td>
+                        <td><div class = "smb smb-oplus"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\otimes</td>
+                        <td><div class = "smb smb-otimes"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\over</td>
+                        <td><div class = "smb smb-over"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\overbar</td>
+                        <td><div class = "smb smb-overbar"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\overbrace</td>
+                        <td><div class = "smb smb-overbrace"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\overbracket</td>
+                        <td><div class = "smb smb-overbracket"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\overline</td>
+                        <td><div class = "smb smb-overline"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\overparen</td>
+                        <td><div class = "smb smb-overparen"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\overshell</td>
+                        <td><div class = "smb smb-overshell"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\parallel</td>
+                        <td><div class = "smb smb-parallel"></div></td>
+                        <td>Geometry notation</td>
+                    </tr>
+                    <tr>
+                        <td>\partial</td>
+                        <td><div class = "smb smb-partial"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\pmatrix</td>
+                        <td><div class = "smb smb-pmatrix"></div></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\perp</td>
+                        <td><div class = "smb smb-perp"></div></td>
+                        <td>Geometry notation</td>
+                    </tr>
+                    <tr>
+                        <td>\phantom</td>
+                        <td><div class = "smb smb-phantom"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\phi</td>
+                        <td><div class = "smb smb-phi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Phi</td>
+                        <td><div class = "smb smb-phi2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\pi</td>
+                        <td><div class = "smb smb-pi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Pi</td>
+                        <td><div class = "smb smb-pi2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\pm</td>
+                        <td><div class = "smb smb-pm"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\pppprime</td>
+                        <td><div class = "smb smb-pppprime"></div></td>
+                        <td>Primes</td>
+                    </tr>
+                    <tr>
+                        <td>\ppprime</td>
+                        <td><div class = "smb smb-ppprime"></div></td>
+                        <td>Primes</td>
+                    </tr>
+                    <tr>
+                        <td>\pprime</td>
+                        <td><div class = "smb smb-pprime"></div></td>
+                        <td>Primes</td>
+                    </tr>
+                    <tr>
+                        <td>\prec</td>
+                        <td><div class = "smb smb-prec"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\preceq</td>
+                        <td><div class = "smb smb-preceq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\prime</td>
+                        <td><div class = "smb smb-prime"></div></td>
+                        <td>Primes</td>
+                    </tr>
+                    <tr>
+                        <td>\prod</td>
+                        <td><div class = "smb smb-prod"></div></td>
+                        <td>Math operators</td>
+                    </tr>
+                    <tr>
+                        <td>\propto</td>
+                        <td><div class = "smb smb-propto"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\psi</td>
+                        <td><div class = "smb smb-psi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Psi</td>
+                        <td><div class = "smb smb-psi2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\qdrt</td>
+                        <td><div class = "smb smb-qdrt"></div></td>
+                        <td>Square roots and radicals</td>
+                    </tr>
+                    <tr>
+                        <td>\quadratic</td>
+                        <td><div class = "smb smb-quadratic"></div></td>
+                        <td>Square roots and radicals</td>
+                    </tr>
+                    <tr>
+                        <td>\rangle</td>
+                        <td><div class = "smb smb-rangle"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\Rangle</td>
+                        <td><div class = "smb smb-rangle2"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\ratio</td>
+                        <td><div class = "smb smb-ratio"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\rbrace</td>
+                        <td><div class = "smb smb-rbrace"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\rbrack</td>
+                        <td><div class = "smb smb-rbrack"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\Rbrack</td>
+                        <td><div class = "smb smb-rbrack2"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\rceil</td>
+                        <td><div class = "smb smb-rceil"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\rddots</td>
+                        <td><div class = "smb smb-rddots"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\Re</td>
+                        <td><div class = "smb smb-re"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\rect</td>
+                        <td><div class = "smb smb-rect"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\rfloor</td>
+                        <td><div class = "smb smb-rfloor"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\rho</td>
+                        <td><div class = "smb smb-rho"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Rho</td>
+                        <td><div class = "smb smb-rho2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\rhvec</td>
+                        <td><div class = "smb smb-rhvec"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\right</td>
+                        <td><div class = "smb smb-right"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\rightarrow</td>
+                        <td><div class = "smb smb-rightarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Rightarrow</td>
+                        <td><div class = "smb smb-rightarrow2"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\rightharpoondown</td>
+                        <td><div class = "smb smb-rightharpoondown"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\rightharpoonup</td>
+                        <td><div class = "smb smb-rightharpoonup"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\rmoust</td>
+                        <td><div class = "smb smb-rmoust"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\root</td>
+                        <td><div class = "smb smb-root"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\scripta</td>
+                        <td><div class = "smb smb-scripta"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptA</td>
+                        <td><div class = "smb smb-scripta2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptb</td>
+                        <td><div class = "smb smb-scriptb"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptB</td>
+                        <td><div class = "smb smb-scriptb2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptc</td>
+                        <td><div class = "smb smb-scriptc"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptC</td>
+                        <td><div class = "smb smb-scriptc2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptd</td>
+                        <td><div class = "smb smb-scriptd"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptD</td>
+                        <td><div class = "smb smb-scriptd2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripte</td>
+                        <td><div class = "smb smb-scripte"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptE</td>
+                        <td><div class = "smb smb-scripte2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptf</td>
+                        <td><div class = "smb smb-scriptf"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptF</td>
+                        <td><div class = "smb smb-scriptf2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptg</td>
+                        <td><div class = "smb smb-scriptg"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptG</td>
+                        <td><div class = "smb smb-scriptg2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripth</td>
+                        <td><div class = "smb smb-scripth"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptH</td>
+                        <td><div class = "smb smb-scripth2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripti</td>
+                        <td><div class = "smb smb-scripti"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptI</td>
+                        <td><div class = "smb smb-scripti2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptk</td>
+                        <td><div class = "smb smb-scriptk"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptK</td>
+                        <td><div class = "smb smb-scriptk2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptl</td>
+                        <td><div class = "smb smb-scriptl"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptL</td>
+                        <td><div class = "smb smb-scriptl2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptm</td>
+                        <td><div class = "smb smb-scriptm"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptM</td>
+                        <td><div class = "smb smb-scriptm2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptn</td>
+                        <td><div class = "smb smb-scriptn"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptN</td>
+                        <td><div class = "smb smb-scriptn2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripto</td>
+                        <td><div class = "smb smb-scripto"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptO</td>
+                        <td><div class = "smb smb-scripto2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptp</td>
+                        <td><div class = "smb smb-scriptp"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptP</td>
+                        <td><div class = "smb smb-scriptp2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptq</td>
+                        <td><div class = "smb smb-scriptq"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptQ</td>
+                        <td><div class = "smb smb-scriptq2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptr</td>
+                        <td><div class = "smb smb-scriptr"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptR</td>
+                        <td><div class = "smb smb-scriptr2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripts</td>
+                        <td><div class = "smb smb-scripts"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptS</td>
+                        <td><div class = "smb smb-scripts2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptt</td>
+                        <td><div class = "smb smb-scriptt"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptT</td>
+                        <td><div class = "smb smb-scriptt2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptu</td>
+                        <td><div class = "smb smb-scriptu"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptU</td>
+                        <td><div class = "smb smb-scriptu2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptv</td>
+                        <td><div class = "smb smb-scriptv"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptV</td>
+                        <td><div class = "smb smb-scriptv2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptw</td>
+                        <td><div class = "smb smb-scriptw"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptW</td>
+                        <td><div class = "smb smb-scriptw2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptx</td>
+                        <td><div class = "smb smb-scriptx"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptX</td>
+                        <td><div class = "smb smb-scriptx2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scripty</td>
+                        <td><div class = "smb smb-scripty"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptY</td>
+                        <td><div class = "smb smb-scripty2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptz</td>
+                        <td><div class = "smb smb-scriptz"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\scriptZ</td>
+                        <td><div class = "smb smb-scriptz2"></div></td>
+                        <td>Scripts</td>
+                    </tr>
+                    <tr>
+                        <td>\sdiv</td>
+                        <td><div class = "smb smb-sdiv"></div></td>
+                        <td>Fraction slashes</td>
+                    </tr>
+                    <tr>
+                        <td>\sdivide</td>
+                        <td><div class = "smb smb-sdivide"></div></td>
+                        <td>Fraction slashes</td>
+                    </tr>
+                    <tr>
+                        <td>\searrow</td>
+                        <td><div class = "smb smb-searrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\setminus</td>
+                        <td><div class = "smb smb-setminus"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\sigma</td>
+                        <td><div class = "smb smb-sigma"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Sigma</td>
+                        <td><div class = "smb smb-sigma2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\sim</td>
+                        <td><div class = "smb smb-sim"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\simeq</td>
+                        <td><div class = "smb smb-simeq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\smash</td>
+                        <td><div class = "smb smb-smash"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\smile</td>
+                        <td><div class = "smb smb-smile"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\spadesuit</td>
+                        <td><div class = "smb smb-spadesuit"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\sqcap</td>
+                        <td><div class = "smb smb-sqcap"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\sqcup</td>
+                        <td><div class = "smb smb-sqcup"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\sqrt</td>
+                        <td><div class = "smb smb-sqrt"></div></td>
+                        <td>Square roots and radicals</td>
+                    </tr>
+                    <tr>
+                        <td>\sqsubseteq</td>
+                        <td><div class = "smb smb-sqsubseteq"></div></td>
+                        <td>Set notation</td>
+                    </tr>
+                    <tr>
+                        <td>\sqsuperseteq</td>
+                        <td><div class = "smb smb-sqsuperseteq"></div></td>
+                        <td>Set notation</td>
+                    </tr>
+                    <tr>
+                        <td>\star</td>
+                        <td><div class = "smb smb-star"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\subset</td>
+                        <td><div class = "smb smb-subset"></div></td>
+                        <td>Set notation</td>
+                    </tr>
+                    <tr>
+                        <td>\subseteq</td>
+                        <td><div class = "smb smb-subseteq"></div></td>
+                        <td>Set notation</td>
+                    </tr>
+                    <tr>
+                        <td>\succ</td>
+                        <td><div class = "smb smb-succ"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\succeq</td>
+                        <td><div class = "smb smb-succeq"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\sum</td>
+                        <td><div class = "smb smb-sum"></div></td>
+                        <td>Math operators</td>
+                    </tr>
+                    <tr>
+                        <td>\superset</td>
+                        <td><div class = "smb smb-superset"></div></td>
+                        <td>Set notation</td>
+                    </tr>
+                    <tr>
+                        <td>\superseteq</td>
+                        <td><div class = "smb smb-superseteq"></div></td>
+                        <td>Set notation</td>
+                    </tr>
+                    <tr>
+                        <td>\swarrow</td>
+                        <td><div class = "smb smb-swarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\tau</td>
+                        <td><div class = "smb smb-tau"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Tau</td>
+                        <td><div class = "smb smb-tau2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\therefore</td>
+                        <td><div class = "smb smb-therefore"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\theta</td>
+                        <td><div class = "smb smb-theta"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Theta</td>
+                        <td><div class = "smb smb-theta2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\thicksp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\thinsp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\tilde</td>
+                        <td><div class = "smb smb-tilde"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\times</td>
+                        <td><div class = "smb smb-times"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\to</td>
+                        <td><div class = "smb smb-to"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\top</td>
+                        <td><div class = "smb smb-top"></div></td>
+                        <td>Logic notation</td>
+                    </tr>
+                    <tr>
+                        <td>\tvec</td>
+                        <td><div class = "smb smb-tvec"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\ubar</td>
+                        <td><div class = "smb smb-ubar"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\Ubar</td>
+                        <td><div class = "smb smb-ubar2"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\underbar</td>
+                        <td><div class = "smb smb-underbar"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\underbrace</td>
+                        <td><div class = "smb smb-underbrace"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\underbracket</td>
+                        <td><div class = "smb smb-underbracket"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\underline</td>
+                        <td><div class = "icon icon-underline"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\underparen</td>
+                        <td><div class = "smb smb-underparen"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\uparrow</td>
+                        <td><div class = "smb smb-uparrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Uparrow</td>
+                        <td><div class = "smb smb-uparrow2"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\updownarrow</td>
+                        <td><div class = "smb smb-updownarrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\Updownarrow</td>
+                        <td><div class = "smb smb-updownarrow2"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\uplus</td>
+                        <td><div class = "smb smb-uplus"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\upsilon</td>
+                        <td><div class = "smb smb-upsilon"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Upsilon</td>
+                        <td><div class = "smb smb-upsilon2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\varepsilon</td>
+                        <td><div class = "smb smb-varepsilon"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\varphi</td>
+                        <td><div class = "smb smb-varphi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\varpi</td>
+                        <td><div class = "smb smb-varpi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\varrho</td>
+                        <td><div class = "smb smb-varrho"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\varsigma</td>
+                        <td><div class = "smb smb-varsigma"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\vartheta</td>
+                        <td><div class = "smb smb-vartheta"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\vbar</td>
+                        <td><div class = "smb smb-vbar"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\vdash</td>
+                        <td><div class = "smb smb-vdash"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>\vdots</td>
+                        <td><div class = "smb smb-vdots"></div></td>
+                        <td>Dots</td>
+                    </tr>
+                    <tr>
+                        <td>\vec</td>
+                        <td><div class = "smb smb-vec"></div></td>
+                        <td>Accents</td>
+                    </tr>
+                    <tr>
+                        <td>\vee</td>
+                        <td><div class = "smb smb-vee"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\vert</td>
+                        <td><div class = "smb smb-vert"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\Vert</td>
+                        <td><div class = "smb smb-vert2"></div></td>
+                        <td>Delimiters</td>
+                    </tr>
+                    <tr>
+                        <td>\Vmatrix</td>
+                        <td><div class = "smb smb-vmatrix"></div></td>
+                        <td>Matrices</td>
+                    </tr>
+                    <tr>
+                        <td>\vphantom</td>
+                        <td><div class = "smb smb-vphantom"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>\vthicksp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\wedge</td>
+                        <td><div class = "smb smb-wedge"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\wp</td>
+                        <td><div class = "smb smb-wp"></div></td>
+                        <td>Symbols</td>
+                    </tr>
+                    <tr>
+                        <td>\wr</td>
+                        <td><div class = "smb smb-wr"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>\xi</td>
+                        <td><div class = "smb smb-xi"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Xi</td>
+                        <td><div class = "smb smb-xi2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\zeta</td>
+                        <td><div class = "smb smb-zeta"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\Zeta</td>
+                        <td><div class = "smb smb-zeta2"></div></td>
+                        <td>Greek letters</td>
+                    </tr>
+                    <tr>
+                        <td>\zwnj</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>\zwsp</td>
+                        <td></td>
+                        <td>Space characters</td>
+                    </tr>
+                    <tr>
+                        <td>~=</td>
+                        <td><div class = "smb smb-cong"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>-+</td>
+                        <td><div class = "smb smb-mp"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td>+-</td>
+                        <td><div class = "smb smb-pm"></div></td>
+                        <td>Binary operators</td>
+                    </tr>
+                    <tr>
+                        <td><<</td>
+                        <td><div class = "smb smb-ll"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td><=</td>
+                        <td><div class = "smb smb-lessthanorequalto"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>-></td>
+                        <td><div class = "smb smb-arrow"></div></td>
+                        <td>Arrows</td>
+                    </tr>
+                    <tr>
+                        <td>>=</td>
+                        <td><div class = "smb smb-greaterthanorequalto"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                    <tr>
+                        <td>>></td>
+                        <td><div class = "smb smb-gg"></div></td>
+                        <td>Relational operators</td>
+                    </tr>
+                </table>
+            </details>
+            <br />
+            <h2>Recognized Functions</h2>
+            <p>In this tab, you will find the list of math expressions that will be recognized by the Equation editor as functions and therefore will not be automatically italicized. For the list of recognized functions go to the <b>File</b> tab -> <b>Advanced Settings</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b> -> <b>Recognized Functions</b>.</p>
+            <p>To add an entry to the list of recognized functions, enter the function in the blank field and click the <b>Add</b> button.</p>
+            <p>To remove an entry from the list of recognized functions, select the function to be removed and click the <b>Delete</b> button.</p>
+            <p>To restore the previously deleted entries, select the entry to be restored from the list and click the <b>Restore</b> button.</p>
+            <p>Use the <b>Reset to default</b> button to restore default settings. Any function you added will be removed  and the removed ones will be restored.</p>
+            <p><img alt="Recognized Functions" src="../images/recognizedfunctions.png" /></p>
+            <h2>AutoFormat as You Type</h2>
+            <p>By default, the editor formats the text while you are typing according to the auto-formatting presets: replaces quotation marks, converts hyphens to dashes, converts text recognized as internet or network path into a hyperlink, starts a bullet list or a numbered list when a list is detected.</p>
+            <p>The <b>Add period with double-space</b> option allows to add a period when you double tap the spacebar. Enable or disable it as appropriate.By default, this option is disabled for Linux and Windows, and is enabled for macOS.</p>
+            <p>To enable or disable the auto-formatting presets, go to the <b>File</b> tab -> <b>Advanced Settings</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b> -> <b>AutoFormat As You Type</b>.</p>
+            <p><img alt="AutoFormat as You Type" src="../images/autoformatasyoutype.png" /></p>
+            <h2>Text AutoCorrect</h2>
+            <p>You can set the editor to capitalize the first word of each sentence automatically. The option is enabled by default. To disable this option, go to the <b>File</b> tab -> <b>Advanced Settings</b> -> <b>Proofing</b> -> <b>AutoCorrect Options</b> -> <b>Text AutoCorrect</b> and uncheck the <b>Capitalize first letter of sentences</b> option.</p>
+            <p><img alt="AutoCorrect" src="../../../../../../common/main/resources/help/en/images/autocorrect.png" /></p>
+        </div>
+	</body>
+</html>

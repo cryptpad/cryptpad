@@ -1,0 +1,22 @@
+{
+  "common.view.modals.txtCopy": "Sao chép vào khay nhớ tạm",
+  "common.view.modals.txtHeight": "Chiều cao",
+  "common.view.modals.txtWidth": "Chiều rộng",
+  "SSE.ApplicationController.convertationTimeoutText": "Đã quá thời gian chờ chuyển đổi.",
+  "SSE.ApplicationController.criticalErrorTitle": "Lỗi",
+  "SSE.ApplicationController.downloadErrorText": "Tải về không thành công.",
+  "SSE.ApplicationController.downloadTextText": "Đang tải về bảng tính...",
+  "SSE.ApplicationController.errorAccessDeny": "Bạn đang cố gắng thực hiện hành động mà bạn không có quyền.<br>Vui lòng liên hệ với quản trị viên Server Tài liệu của bạn.",
+  "SSE.ApplicationController.errorDefaultMessage": "Mã lỗi: %1",
+  "SSE.ApplicationController.errorFilePassProtect": "Tài liệu được bảo vệ bằng mật khẩu và không thể mở được.",
+  "SSE.ApplicationController.errorUserDrop": "Không thể truy cập file ngay lúc này.",
+  "SSE.ApplicationController.notcriticalErrorTitle": "Cảnh báo",
+  "SSE.ApplicationController.textLoadingDocument": "Đang tải bảng tính",
+  "SSE.ApplicationController.textOf": "trên",
+  "SSE.ApplicationController.txtClose": "Đóng",
+  "SSE.ApplicationController.unknownErrorText": "Lỗi không xác định.",
+  "SSE.ApplicationController.unsupportedBrowserErrorText": "Trình duyệt của bạn không được hỗ trợ.",
+  "SSE.ApplicationView.txtDownload": "Tải về",
+  "SSE.ApplicationView.txtFullScreen": "Toàn màn hình",
+  "SSE.ApplicationView.txtShare": "Chia sẻ"
+}

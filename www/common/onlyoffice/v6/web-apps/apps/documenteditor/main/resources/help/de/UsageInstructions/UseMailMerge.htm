@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Serienbrief verwenden</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use Mail Merge to create a lot of personalized letters and send them to recipients" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Serienbrief verwenden</h1>
+            <p class="note">Diese Option ist nur in der <em>Online-Version</em> verfügbar.</p>
+            <p>Die Funktion <b>Seriendruck</b> wird verwendet, um eine Reihe von Dokumenten zu erstellen, die einen gemeinsamen Inhalt aus einem Textdokument und einige einzelne Komponenten (Variablen wie Namen, Grüße usw.) aus einer Tabelle (z. B. eine Kundenliste). Dies kann nützlich sein, wenn Sie viele personalisierte Briefe erstellen und an die Empfänger senden müssen.</p>
+            <ul>
+                <li><b>Eine Datenquelle vorbereiten und sie in das Hauptdokument laden</b>
+                    <ol>
+                        <li>Eine für den Seriendruck verwendete Datenquelle muss eine <b>.xlsx</b>-Tabelle sein, die in Ihrem Portal gespeichert ist. Öffnen Sie eine vorhandene Tabelle oder erstellen Sie eine neue Tabelle und stellen Sie sicher, dass sie die folgenden Anforderungen erfüllt.
+                        <li>Die Tabelle sollte eine Kopfzeile mit den Spaltentiteln haben, da die Werte in der ersten Zelle jeder Spalte Briefvorlagenfelder bezeichnen (d. h. Variablen, die Sie in den Text einfügen können). Jede Spalte sollte eine Reihe von tatsächlichen Werten für eine Variable enthalten. Jede Zeile in der Tabelle sollte einem separaten Datensatz entsprechen (d. h. einer Reihe von Werten, die einem bestimmten Empfänger gehören). Während des Zusammenführungsprozesses wird für jeden Datensatz eine Kopie des Hauptdokuments erstellt und jedes in den Haupttext eingefügte Zusammenführungsfeld wird durch einen tatsächlichen Wert aus der entsprechenden Spalte ersetzt. Wenn Sie Ergebnisse per E-Mail senden möchten, muss die Tabelle auch eine Spalte mit den E-Mail-Adressen der Empfänger enthalten.</li>
+                        <li>
+                            Öffnen Sie ein vorhandenes Textdokument oder erstellen Sie ein neues Dokument. Es muss den Haupttext enthalten, der für jede Version des zusammengeführten Dokuments gleich ist. Klicken Sie auf das Symbol <b>Serienbrief</b> <div class = "icon icon-mailmergeicon"></div> auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste und wählen Sie den Speicherort der Datenquelle: <b>Aus Datei</b>, <b>Aus URL</b> oder <b>Aus dem Speicher</b>.
+                            <p><img alt="Mail Merge Options" src="../images/mailmerge_options.png" /></p>
+                        </li>
+                        <li>
+                            Wählen Sie die erforderliche Datei aus oder fügen Sie eine URL ein und klicken Sie auf <b>OK</b>.
+                            <p>Sobald die Datenquelle geladen ist, ist die Registerkarte <b>Seriendruckeinstellungen</b> in der rechten Seitenleiste verfügbar.</p>
+                            <p><img alt="Registerkarte Seriendruckeinstellungen" src="../images/right_mailmerge.png" /></p>
+                        </li>
+                    </ol>
+                <li><b>Die Empfängerliste überprüfen oder ändern</b>
+                    <ol>
+                        <li>Klicken Sie in der rechten Seitenleiste auf die Schaltfläche <b>Empfängerliste bearbeiten</b>, um das Fenster <b>Serienbriefempfänger</b> zu öffnen, in dem der Inhalt der ausgewählten Datenquelle angezeigt wird.
+                        <p><img alt="Fenster Empfänger Serienbrief" src="../images/mailmergerecipients.png" /></p>
+                        </li>
+                        <li>
+                            Hier können Sie bei Bedarf neue Informationen hinzufügen bzw. vorhandene Daten bearbeiten oder löschen. Um das Arbeiten mit Daten zu vereinfachen, können Sie die Symbole oben im Fenster verwenden:
+                            <ul>
+                                <li><div class = "icon icon-copy"></div> und <div class = "icon icon-paste"></div> - zum Kopieren und Einfügen der kopierten Daten.</li>
+                                <li><div class = "icon icon-undo1"></div> und <div class = "icon icon-redo1"></div> - um Aktionen rückgängig zu machen und zu wiederholen.</li>
+                                <li><div class = "icon icon-sortatoz"></div> und <div class = "icon icon-sortztoa"></div> - um Ihre Daten in einem Zellenbereich in aufsteigender oder absteigender Reihenfolge zu sortieren.</li>
+                                <li><div class = "icon icon-sortandfilter"></div> - um den Filter für den zuvor ausgewählten Zellenbereich zu aktivieren oder den aktuellen Filter zu entfernen.</li>
+                                <li>
+                                    <div class = "icon icon-clearfilter"></div> - um alle angewendeten Filterparameter zu löschen.
+                                    <p class="note">Weitere Informationen zur Verwendung des Filters finden Sie im Abschnitt <b>Sortieren und Filtern von Daten</b> im Hilfemenü des <b>Tabelleneditors</b>.</p>
+                                </li>
+                                <li>
+                                    <div class = "icon icon-searchicon"></div> - um nach einem bestimmten Wert zu suchen und ihn gegebenenfalls durch einen anderen zu ersetzen.
+                                    <p class="note">Weitere Informationen zur Verwendung des Werkzeugs <b>Suchen und Ersetzen</b> finden Sie im Abschnitt <b>Suchen und Ersetzen von Funktionen</b> im Hilfemenü der <b>Tabellenkalkulation</b>.</p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Wenn Sie alle notwendigen Änderungen durchgeführt haben, klicken Sie auf <b>Speichern &amp; Schließen</b>. Um die Änderungen zu verwerfen, klicken Sie auf <b>Schließen</b>.</li>
+                    </ol>
+                </li>
+                <li><b>Einfügen von Serienbrieffeldern und überprüfen der Ergebnisse</b>
+                <ol>
+                    <li>Positionieren Sie den Mauszeiger im Text des Hauptdokuments an der Stelle an der Sie ein Serienbrieffeld einfügen möchten, klicken Sie in der rechten Seitenleiste auf die Schaltfläche <b>Serienbrieffeld einfügen</b> und wählen Sie das erforderliche Feld aus der Liste aus Die verfügbaren Felder entsprechen den Daten in der ersten Zelle jeder Spalte der ausgewählten Datenquelle. Fügen Sie alle benötigten Felder an beliebiger Stelle im Dokument ein.
+                    <p><img alt="Gruppe Serienbrieffelder" src="../images/mergefields.png" /></p>
+                    </li>
+                    <li>Aktivieren Sie in der rechten Seitenleiste den Schalter <b>Serienbrieffelder hervorheben</b>, um die eingefügten Felder im Text deutlicher zu kennzeichnen.
+                    <p><img alt="Hauptdokument mit eingefügten Feldern" src="../images/insertedfields.png" /></p>
+                    </li>
+                    <li>Aktivieren Sie in der rechten Seitenleiste den Schalter <b>Ergebnisvorschau</b>, um den Dokumenttext mit den aus der Datenquelle eingesetzten tatsächlichen Werten anzuzeigen. Verwenden Sie die Pfeiltasten, um für jeden Datensatz eine Vorschau des zusammengeführten Dokuments anzuzeigen.
+                    <p><img alt="Ergebnisvorschau" src="../images/previewinsertedfields.png" /></p>
+                    </li>
+                    </ol>
+                    <ul>
+                        <li>Um ein eingefügtes Feld zu löschen, deaktivieren sie den Modus <b>Ergebnisvorschau</b>, wählen Sie das entsprechende Feld mit der Maus aus und drücken Sie die Taste <b>Entf</b> auf der Tastatur.</li>
+                        <li>Um ein eingefügtes Feld zu ersetzen, deaktivieren sie den Modus <b>Ergebnisvorschau</b>, wählen Sie das entsprechende Feld mit der Maus aus, klicken Sie in der rechten Seitenleiste auf die Schaltfläche <b>Serienbrieffeld einfügen</b> und wählen Sie ein neues Feld aus der Liste aus.</li>
+                    </ul>
+                </li>
+                <li><b>Parameter für den Serienbrief festlegen</b>
+                <ol>
+                    <li>Wählen Sie den Zusammenführungstyp aus. Sie können den Massenversand beginnen oder das Ergebnis als Datei im PDF- oder Docx-Format speichern und es später drucken oder bearbeiten. Wählen Sie die gewünschte Option aus der Liste <b>Zusammenführen als</b> aus:
+                    <p><img alt="Auswahl Zusammenführungstyp" src="../images/mergeto.png" /></p>
+                    <ul>
+                        <li><b>PDF</b> - um ein einzelnes Dokument im PDF-Format zu erstellen, das alle zusammengeführten Kopien enthält, damit Sie diese später drucken können</li>
+                        <li><b>DOCX</b> - um ein einzelnes Dokument im DOCX-Format zu erstellen, das alle zusammengeführten Kopien enthält, damit Sie diese später bearbeiten können</li>
+                        <li>
+                            <b>E-Mail</b> - um die Ergebnisse als E-Mail an die Empfänger zu senden
+                            <p class="note">Die E-Mail-Adressen der Empfänger müssen in der geladenen Datenquelle angegeben werden und Sie müssen mindestens ein E-Mail-Konto im <b>Mail</b>-Modul in Ihrem Portal hinterlegt haben.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Wählen Sie die Datensätze aus, auf die Sie die Zusammenführung anwenden möchten:
+                    <ul>
+                        <li><b>Alle Datensätze</b> - (diese Option ist standardmäßig ausgewählt) - um zusammengeführte Dokumente für alle Datensätze aus der geladenen Datenquelle zu erstellen</li>
+                        <li><b>Aktueller Datensatz</b> - zum Erstellen eines zusammengeführten Dokuments für den aktuell angezeigten Datensatz</li>
+                        <li>
+                            <b>Von</b>... <b>Bis</b> - um ein zusammengeführtes Dokument für eine Reihe von Datensätzen zu erstellen (in diesem Fall müssen Sie zwei Werte angeben: die Werte für den ersten und den letzten Datensatz im gewünschten Bereich)
+                            <p class="note">Es können maximal 100 Empfänger angegeben werden. Wenn Sie mehr als 100 Empfänger in Ihrer Datenquelle haben, führen Sie den Serienbrief schrittweise aus: Geben Sie die Werte von 1 bis 100 ein, warten Sie, bis der Serienbriefprozess abgeschlossen ist, und wiederholen Sie den Vorgang mit den Werten von 101 bis N.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Serienbrief abschließen
+                    <ul>
+                        <li>Wenn Sie sich entschieden haben, die Ergebnisse der Zusammenführung als Datei zu speichern,
+                        <ul>
+                            <li>klicken Sie auf die Schaltfläche <b>Herunterladen als</b>, um die Datei an einem beliebigen Ort auf Ihrem PC zu speichern. Sie finden die Datei in Ihrem <em>Standardordner für Downloads</em>.</li>
+                            <li>Klicken Sie auf die Schaltfläche <b>Speichern</b>, um die Datei in Ihrem Portal zu speichern. Im Fenster <b>Speichern unter</b> können Sie den Dateinamen ändern und den Ort angeben, an dem Sie die Datei speichern möchten. Sie können auch das Kontrollkästchen <b>Zusammengeführtes Dokument in neuem Tab öffnen</b> aktivieren, um das Ergebnis zu überprüfen, sobald der Serienbriefprozess abgeschlossen ist. Klicken Sie zum Schluss im Fenster <b>Speichern unter</b> auf <b>Speichern</b>.</li>
+                        </ul>
+                        </li>
+                        <li>Wenn Sie die Option <b>E-Mail</b> ausgewählt haben, erscheint in der rechten Seitenleiste die Schaltfläche <b>Teilen</b>. Wenn Sie auf die Schaltfläche klicken, öffnet sich das Fenster <b>An E-Mail senden</b>:
+                        <p><img alt="An E-Mail senden" src="../images/sendtoemail.png" /></p>
+                        <ul>
+                            <li>Wenn Sie mehrere Konten mit Ihrem <b>Mail</b>-Modul verbunden haben, wählen Sie in der Liste <b>Von</b> das E-Mail-Konto aus, das Sie zum Senden der E-Mails verwenden möchten.</li>
+                            <li>Wählen Sie in der Liste <b>An</b> das Serienbrieffeld aus, das den E-Mail-Adressen der Empfänger entspricht, falls es nicht automatisch ausgewählt wurde.</li>
+                            <li>Geben Sie den Betreff Ihrer Nachricht in die <b>Betreffzeile</b> ein.</li>
+                            <li>Wählen sie das Mailformat aus der Liste aus: <b>HTML</b>, <b>als DOCX anhängen</b> oder <b>als PDF anhängen</b>. Wenn eine der beiden letzteren Optionen ausgewählt ist, müssen Sie auch den <b>Dateinamen</b> für Anhänge angeben und die <b>Nachricht</b> eingeben (der Text Ihres Briefes, der an die Empfänger gesendet wird).</li>
+                            <li>Klicken Sie auf <b>Senden</b>.</li>
+                        </ul>
+                        <p>Sobald das Mailing abgeschlossen ist, erhalten Sie an die im Feld <b>Von</b> angegebene E-Mail-Adresse eine Benachrichtigung.</p>
+                        </li>
+                    </ul>
+                    </li>
+                </ol>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>

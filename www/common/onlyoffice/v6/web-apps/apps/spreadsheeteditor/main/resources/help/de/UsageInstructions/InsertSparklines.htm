@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sparklines einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fügen Sie Ihrer Tabelle eine Sparkline hinzu" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Sparklines einfügen</h1>
+            <h3>Sparklines verwenden</h3>
+            <p>Sparkline ist ein kleines Diagramm, das in eine Zelle passt, um Trends oder Datenvariationen darzustellen. Sparklines haben im Vergleich zu normalen Diagrammen eine eingeschränkte Funktionalität, sind jedoch ein hervorragendes Werkzeug, um Ihre Daten schnell zu analysieren und eine prägnante visuelle Darstellung zu erstellen. Die Größe der Sparkline hängt von der Größe der Zelle ab. Ändern Sie die Zellenbreite und -länge, um die Größe anzupassen. Nachdem Sie eine Sparkline hinzugefügt haben, können Sie weiterhin Text eingeben oder bedingte Formatierungen in die Zelle einfügen. ONLYOFFICE <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"> <b>Tabellenkalkulation</b></a> bietet drei Arten von Sparklines:</p>
+            <p><div class = "big big-sparklines_types"></div> </p>
+            <ul>
+                <li><b>Spalte</b> ist einem <b>Spaltendiagramm</b> ähnlich.</li>
+                <li><b>Linie</b> ist einem <b>Liniendiagramm</b> ähnlich.</li>
+                <li><b>Gewinn/Verlust</b> ist zum Darstellen von Daten geeignet, die sowohl positive als auch negative Werte enthalten.</li>
+            </ul>
+            <h3>Sparklines einfügen</h3>
+            <p>Um ein <b>Sparkline</b>-Diagramm einzufügen, wählen Sie den Datenbereich aus, der in die Sparkline aufgenommen werden soll, oder klicken Sie auf eine leere Zelle, um sie zu platzieren, gehen Sie zur Registerkarte <b>Einfügen</b> und klicken Sie auf die Schaltfläche <b>Sparkline</b> <span class="icon icon-sparklines_button"></span> in der oberen Symbolleiste. Wählen Sie eine Sparkline, die Ihrem Zweck dient. Das Fenster <b>Sparklines erstellen</b> wird geöffnet. Klicken Sie auf das Symbol <b>Daten auswählen</b>, um den Datenbereich und die Position der Sparkline anzugeben. Klicken Sie zur Bestätigung auf <b>OK</b></p>
+			<p><img alt="Fenster - Sparkline erstellen" src="../images/createsparkline_window.png" /></p>
+            <h3>Sparklines bearbeiten und formatieren</h3>
+            <p>Nachdem Sie eine Sparkline eingefügt haben, können Sie sie anpassen und bearbeiten. Klicken Sie auf die Zelle mit einer Sparkline, um die Registerkarte <b>Sparkline Einstellungen</b> in der rechten Seitenleiste zu aktivieren.</p>
+            <p><img alt="Registerkarte Sparkline Einstellungen" src="../images/sparklinesettings_tab.png" /></p>
+            <ul>
+                <li>Im Abschnitt <b>Typ</b> können Sie einen der verfügbaren Sparkline-Typen aus der Drop-Down-Liste auswählen:
+                    <p><b>Spalte</b> - dieser Typ ist einem <b>Spaltendiagramm</b> ähnlich.</p>
+                    <p><b>Linie</b> - dieser Typ ist einem <b>Liniendiagramm</b> ähnlich.</p>
+                    <p><b>Gewinn/Verlust</b> - dieser Typ ist zum Darstellen von Daten geeignet, die sowohl positive als auch negative Werte enthalten.</p>
+                </li>
+                <li>Im Abschnitt <b>Stil</b> können Sie aus der Drop-Down-Liste <b>Vorlage</b> den Stil auswählen, der am besten passt, die erforderliche <b>Farbe</b> für die Sparkline, und die erforderliche <b>Linienbreite</b> (nur für die <b>Linie</b>-Sparkline verfügbar)</li>
+                <li>Im Abschnitt <b>Anzeigen</b> können Sie bestimmte Daten in der Sparkline hervorheben oder markieren:
+                    <p><em>Höchstpunkt</em> – verwenden Sie diese Option, um den Maximalwert hervorzuheben.</p>
+                    <p><em>Tiefpunkt</em> – verwenden Sie diese Option, um den Mindestwert hervorzuheben.</p>
+                    <p><em>Negativpunkt</em> – verwenden Sie diese Option, um negative Werte hervorzuheben.</p>
+                    <p><em>Erster Punkt</em> – verwenden Sie diese Option, um den Startpunkt im Datenbereich hervorzuheben.</p>
+                    <p><em>Letzter Punkt</em> - verwenden Sie diese Option, um den Endpunkt im Datenbereich hervorzuheben. </p>
+                    <p><em>Markierungen</em> – ist nur für Linien-Sparklines verfügbar, verwenden Sie diese Option, um einen Marker für alle Punkte zu aktivieren.</p>
+                </li>
+            </ul>    
+            <p>Klicken Sie im Farbfeld auf den Abwärtspfeil, um für jeden Punkt eine Farbe auszuwählen.</p>
+            <p>Wenn Sie Ihre Sparkline genauer und leichter lesbar machen möchten, klicken Sie auf die Option <b>Erweiterte Einstellungen anzeigen</b>, um das Fenster <b>Sparkline – Erweiterte Einstellungen</b> zu öffnen.</p>
+            <p><img alt="Fenster - Sparkline – Erweiterte Einstellungen" src="../images/sparkline_advancedsettings1.png" /> </p>   
+            <p> </p>
+            <p>Auf der Registerkarte <b>Typ und Daten</b> können Sie den <b>Typ</b> und <b>Stil</b> der Sparkline ändern sowie die Anzeigeeinstellungen für <b>ausgeblendete und leere Zellen</b>:</p>
+            <ul>
+                <li>
+                    <b>Leere Zellen anzeigen</b> - mit dieser Option können Sie verwalten, wie Sparklines angezeigt werden, wenn einige Zellen in einem Datenbereich leer sind. Wählen Sie die erforderliche Option aus der Liste aus:
+                    <ul>
+                        <li><b>Lücken</b>, um die Sparkline mit Lücken anstelle fehlender Daten anzuzeigen,</li>
+                        <li><b>Null</b>, um die Sparkline so anzuzeigen, als ob der Wert in einer leeren Zelle Null wäre,</li>
+                        <li><b>Datenpunkte mit Linie verbinden</b> (nur für den Typ <b>Linie</b> verfügbar), um leere Zellen zu ignorieren und eine Verbindungslinie zwischen Datenpunkten anzuzeigen.</li>
+                    </ul>
+                </li>
+                <li><b>Daten in ausgeblendeten Zeilen und Spalten anzeigen</b> – aktivieren Sie dieses Kontrollkästchen, wenn Sie Werte aus den ausgeblendeten Zellen in Sparklines einschließen möchten.</li>
+            </ul>
+            <p><img alt="Fenster - Sparkline – Erweiterte Einstellungen" src="../images/sparkline_advancedsettings2.png" /></p>
+            <p>Auf der Registerkarte <b>Parameter der Achse</b> können Sie die folgenden Parameter für die <b>Horizontale/Vertikale Achse</b> festlegen:</p>
+            <ul>
+                <li>
+                    Im Abschnitt <b>Horizontale Achse</b> sind die folgenden Parameter verfügbar:
+                    <ul>
+                        <li><b>Achse anzeigen</b> - aktivieren Sie dieses Kontrollkästchen, um die horizontale Achse anzuzeigen. Wenn die Quelldaten negative Werte enthalten, hilft diese Option, diese Werte anschaulicher darzustellen.</li>
+                        <li><b>Reihenfolge umkehren</b> - aktivieren Sie dieses Kontrollkästchen, um die Daten in umgekehrter Reihenfolge anzuzeigen.</li>
+                    </ul>
+                </li>
+                <li>
+                    Im Abschnitt <b>Vertikale Achse</b> stehen die folgenden Parameter zur Verfügung, um den <b>Minimal-/Maximalwert</b> zu definieren:
+                    <ul>
+                        <li>
+                            <b>Minimal-/Maximalwert</b>
+                            <ul>
+                                <li><b>Automatisch für jeden</b> – diese Option ist standardmäßig ausgewählt. Es ermöglicht Ihnen, für jede Sparkline eigene minimale/maximale Werte zu verwenden. Die minimalen/maximalen Werte werden den separaten Datenreihen entnommen, die verwendet werden, um jede Sparkline darzustellen. Der Höchstwert für jede Sparkline befindet sich oben in der Zelle und der Mindestwert befindet sich unten.
+                                    <p><span class="big big-autoforeach"></span></p>
+                                </li>
+                                <li><b>Das Gleiche für alle</b> - mit dieser Option können Sie denselben Mindest-/Höchstwert für die gesamte Sparkline-Gruppe verwenden. Die minimalen/maximalen Werte werden aus dem gesamten Datenbereich entnommen, der zum Zeichnen der Sparkline-Gruppe verwendet wird. Die maximalen/minimalen Werte für jede Sparkline werden relativ zum höchsten/niedrigsten Wert innerhalb des Bereichs skaliert. Wenn Sie diese Option auswählen, ist es einfacher, mehrere Sparklines zu vergleichen.
+                                    <p><span class="big big-sameforall"></span></p></li>
+                                <li><b>Fixiert</b> - Mit dieser Option können Sie einen benutzerdefinierten Mindest-/Höchstwert festlegen. Die Werte, die niedriger oder höher als die angegebenen Wert sind, werden in den Sparklines nicht angezeigt.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Sparklines löschen</h3>
+            <p>Um Sparklines zu löschen, wählen Sie die Zelle(n) mit den zu entfernenden Sparklines aus und klicken Sie mit der rechten Maustaste darauf. Wählen Sie <b>Sparklines</b> aus dem Drop-Down-Menü und klicken Sie auf <b>Ausgewählte Sparklines löschen</b> oder <b>Ausgewählte Sparklinegruppen löschen</b>.
+            </div>
+	</body>
+</html>

@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Erweiterte Einstellungen der Tabellenkalkulation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Erweiterte Einstellungen der Tabellenkalkulation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Erweiterte Einstellungen der Tabellenkalkulation</h1>
+            <p>Über die Funktion erweiterte Einstellungen können Sie die Grundeinstellungen in der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> ändern. Klicken Sie dazu in der oberen Symbolleiste auf die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Erweiterte Einstellungen</b>.</p>
+            <p>Die erweiterten Einstellungen sind wie folgt gruppiert:</p>
+
+            <h3>Bearbeitung und Speicherung</h3>
+            <ol>
+                <li><span class="onlineDocumentFeatures">Die Option <b>Automatisches speichern</b> wird in der <em>Online-Version</em> verwendet, um das automatische Speichern von Änderungen, die Sie während der Bearbeitung vornehmen, ein-/auszuschalten.</span></li>
+                <li><span class="desktopDocumentFeatures">Die Option <b>Wiederherstellen</b> wird in der <em>Desktop-Version</em> verwendet, um die Option ein-/auszuschalten, die die automatische Wiederherstellung von Kalkulationstabellen ermöglicht, falls das Programm unerwartet geschlossen wird.</span></li>
+                <li><b>Die Schaltfläche Einfügeoptionen beim Einfügen von Inhalten anzeigen</b>. Das entsprechende Symbol wird angezeigt, wenn Sie Inhalte in die Kalkulationstabelle einfügen.</li>
+            </ol>
+
+            <h3>Zusammenarbeit</h3>
+            <ol>
+                <li class="onlineDocumentFeatures">
+                    Im Unterabschnitt <b>Modus "Gemeinsame Bearbeitung"</b> können Sie den bevorzugten Modus zum Anzeigen von Änderungen an der Kalkulationstabelle festlegen, wenn Sie gemeinsam arbeiten.
+                    <ul>
+                        <li><b>Schnell</b> (standardmäßig). Die Benutzer, die an der gemeinsamen Bearbeitung von Dokumenten teilnehmen, sehen die Änderungen in Echtzeit, sobald sie von anderen Benutzern vorgenommen wurden.</li>
+                        <li><b>Formal</b>. Alle von Mitbearbeitern vorgenommenen Änderungen werden erst angezeigt, nachdem Sie auf das Symbol <b>Speichern</b> <div class="icon icon-saveupdate"></div> geklickt haben, das Sie über neue Änderungen informiert.</li>
+                    </ul>
+                </li>
+                <li><b>Kommentare im Text anzeigen</b>. Wenn Sie diese Funktion deaktivieren, werden die kommentierten Passagen nur dann hervorgehoben, wenn Sie auf das Symbol <b>Kommentare</b> <div class="icon icon-commentsicon"></div> in der linken Seitenleiste klicken.</li>
+                <li><b>Gelöste Kommentare anzeigen</b>. Diese Funktion ist standardmäßig deaktiviert, sodass die aufgelösten Kommentare in der Kalkulationstabelle ausgeblendet werden. Sie können solche Kommentare nur anzeigen, wenn Sie in der linken Seitenleiste auf das Symbol <b>Kommentare</b> <div class="icon icon-commentsicon"></div> klicken. Aktivieren Sie diese Option, wenn Sie aufgelöste Kommentare in der Kalkulationstabelle anzeigen möchten.</li>
+            </ol>
+
+            <h3>Arbeitsbereich</h3>
+            <ol>
+                <li>
+                    Die Option <b>Z1S1-Bezugsart</b> wird verwendet, um den <b>Z1S1-Referenzstil</b> ein- oder auszuschalten Diese Option ist standardmäßig ausgewählt und es wird der <b>Referenzstil A1</b> verwendet.
+                    <p>Wenn der <b>Referenzstil A1</b> verwendet wird, werden Spalten durch Buchstaben und Zeilen durch Zahlen gekennzeichnet. Wenn Sie die Zelle in Zeile 3 und Spalte 2 auswählen, sieht die Adresse in der Box links neben der Formelleiste folgendermaßen aus: <b>B3</b>. Wenn der <b>Referenzstil Z1S1</b> verwendet wird, werden sowohl Spalten als auch Zeilen durch Zahlen gekennzeichnet. Wenn Sie die Zelle am Schnittpunkt von Zeile 3 und Spalte 2 auswählen, sieht die Adresse folgendermaßen aus: <b>Z3S2</b>. Buchstabe Z gibt die Zeilennummer und Buchstabe S die Spaltennummer an.</p>
+                    <p><img alt="Aktive Zelle" src="../images/activecell.png" /></p>
+                    <p>Wenn Sie sich auf andere Zellen mit dem <b>Referenzstil R1C1</b> beziehen, wird der Verweis auf eine Zielzelle basierend auf der Entfernung von einer aktiven Zelle gebildet. Wenn Sie beispielsweise die Zelle in Zeile 5 und Spalte 1 auswählen und auf die Zelle in Zeile 3 und Spalte 2 verweisen, lautet der Bezug <b>Z[-2]S[1]</b>. Zahlen in eckigen Klammern geben die Position der Zelle an, auf die Sie in Relation mit der aktuellen Zellenposition verweisen, d. h. die Zielzelle ist 2 Zeilen höher und 1 Spalte weiter rechts als die aktive Zelle. Wenn Sie die Zelle in Zeile 1 und Spalte 2 auswählen und auf die gleiche Zelle in Zeile 3 und Spalte 2 verweisen, lautet der Bezug <b>Z[2]S</b>, d. h. die Zielzelle ist 2 Zeilen tiefer aber in der gleichen Spalte wie die aktive Zelle.</p>
+                    <p><div class="big big-relativereference"></div></p>
+                </li>
+                <li>Die Option <b>Verwenden Sie die Alt-Taste, um über die Tastatur in der Benutzeroberfläche zu navigieren</b> wird verwendet, um die Verwendung der <em>Alt</em>-Taste in Tastaturkürzeln zu aktivieren.</li>
+                <li>
+                    Die Option <b>Thema der Benutzeroberfläche</b> wird verwendet, um das Farbschema der Benutzeroberfläche des Editors zu ändern.
+                    <ul>
+                        <li>Die Option <b>Wie im System</b> sorgt dafür, dass der Editor dem Oberflächendesign Ihres Systems folgt.</li>
+                        <li>Das Farbschema <b>Hell</b> umfasst die Standardfarben Blau, Weiß und Hellgrau mit weniger Kontrast in UI-Elementen, die für die Arbeit tagsüber geeignet sind.</li>
+                        <li>Das Farbschema <b>Klassisch Hell</b> umfasst die Standardfarben Blau, Weiß und Hellgrau.</li>
+                        <li>Das Farbschema <b>Dunkel</b> umfasst schwarze, dunkelgraue und hellgraue Farben, die für Arbeiten bei Nacht geeignet sind.</li>
+                        <li>Das Farbschema <b>Dunkler Kontrast</b> umfasst schwarze, dunkelgraue und weiße Farben mit mehr Kontrast in UI-Elementen, die den Arbeitsbereich der Datei hervorheben.
+                            <p class="note">Abgesehen von den verfügbaren Benutzeroberflächendesigns <b>Hell</b>, <b>Klassisch Hell</b>, <b>Dunkel</b> und <b>Dunkler Kontrast</b> können jetzt ONLYOFFICE-Editoren mit Ihrem eigenen Farbschema angepasst werden. Bitte befolgen Sie <a target="_blank" href="https://helpcenter.onlyoffice.com/installation/docs-developer-change-theme.aspx" onclick="onhyperlinkclick(this)">diese Anleitung</a>, um zu erfahren, wie Sie das tun können.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>Die Option <b>Maßeinheit</b> wird verwendet, um anzugeben, welche Einheiten auf den Linealen und in Eigenschaften von Objekten verwendet werden, wenn Parameter wie Breite, Höhe, Abstand, Ränder usw. eingestellt werden. Die verfügbaren Einheiten sind <em>Zentimeter</em>, <em>Punkt</em> und <em>Zoll</em>.</li>
+                <li>Die Option <b>Standard-Zoom-Wert</b> wird verwendet, um den Standard-Zoom-Wert festzulegen, indem Sie ihn in der Liste der verfügbaren Optionen zwischen 50 % und 500 % auswählen.</li>
+                <li>
+                    Die Option <b>Schriftglättung</b> wird verwendet, um auszuwählen, wie Schriftarten in der Tabellenkalkulation angezeigt werden.
+                    <ul>
+                        <li>Wählen Sie <b>Wie Windows</b>, wenn Ihnen die Art gefällt, wie die Schriftarten unter Windows gewöhnlich angezeigt werden, d.h. mit Windows-artigen Hints.</li>
+                        <li>Wählen Sie <b>Wie OS X</b>, wenn Ihnen die Art gefällt, wie die Schriftarten auf einem Mac gewöhnlich angezeigt werden, d.h. ohne Hints.</li>
+                        <li>Wählen Sie <b>Eingebettet</b>, wenn Sie möchten, dass Ihr Text mit den Hints angezeigt wird, die in Schriftartdateien eingebettet sind.</li>
+                        <li>
+                            Die Einstellungen <b>Standard-Cache-Modus</b> wird verwendet, um den Cache-Modus für die Schriftzeichen auszuwählen. Es wird nicht empfohlen, ihn ohne Grund zu wechseln. Dies kann nur in einigen Fällen hilfreich sein, beispielsweise wenn ein Problem mit der aktivierten Hardwarebeschleunigung im Google Chrome-Browser auftritt.
+                            <p>Die Tabellenkalkulation hat 2 Cache-Modi:</p>
+                            <ol>
+                                <li>Im <b>ersten Cache-Modus</b> wird jeder Buchstabe als separates Bild zwischengespeichert.</li>
+                                <li>Im <b>zweiten Cache-Modus</b> wird ein Bild einer bestimmten Größe ausgewählt, in dem Buchstaben dynamisch platziert werden, und ein Mechanismus zum Zuweisen/Entfernen von Speicher in diesem Bild wird ebenfalls implementiert. Wenn nicht genügend Speicher vorhanden ist, wird ein zweites Bild erstellt usw.</li>
+                            </ol>
+                            <p>Die Einstellung <b>Standard-Cache-Modus</b> wendet zwei der oben genannten Cache-Modi separat für verschiedene Browser an:</p>
+                            <ul>
+                                <li>Wenn die Einstellung <b>Standard-Cache-Modus</b> aktiviert ist, verwendet Internet Explorer (v. 9, 10, 11) den <b>zweiten Cache-Modus</b>, andere Browser verwenden den <b>ersten Cache-Modus</b>.</li>
+                                <li>Wenn die Einstellung <b>Standard-Cache-Modus</b> deaktiviert ist, verwendet Internet Explorer (v. 9, 10, 11) den <b>ersten Cache-Modus</b>, andere Browser verwenden den <b>zweiten Cache-Modus</b>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Die Option <b>Einstellungen von Makros</b> wird verwendet, um die Anzeige von Makros mit einer Benachrichtigung einzustellen.
+                    <ul>
+                        <li>Wählen Sie <b>Alle deaktivieren</b>, um alle Makros im Dokument zu deaktivieren.</li>
+                        <li>Wählen Sie <b>Benachrichtigung anzeigen</b>, um Benachrichtigungen über Makros im Dokument zu erhalten.</li>
+                        <li>Wählen Sie <b>Alle aktivieren</b>, um automatisch alle Makros im Dokument auszuführen.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>Regionale Einstellungen</h3>
+            <ol>
+                <li>
+                    Die Option <b>Formelsprache</b> wird verwendet, um die Sprache für die Anzeige und Eingabe von Formelnamen, Argumentnamen und Beschreibungen auszuwählen.
+                    <p><b>Formelsprache</b> wird für 32 Sprachen unterstützt:</p>
+                    <p><em>Weißrussisch</em>, <em>Bulgarisch</em>, <em>Katalanisch</em>, <em>Chinesisch</em>, <em>Tschechisch</em>, <em>Dänisch</em>, <em>Niederländisch</em>, <em>Englisch</em>, <em>Finnisch</em>, <em>Französisch</em>, <em>Deutsch</em>, <em>Griechisch</em>, <em>Ungarisch</em>, <em>Indonesisch</em>, <em>Italienisch</em>, <em>Japanisch</em>, <em>Koreanisch</em>, <em>Lao</em>, <em>Lettisch</em>, <em>Norwegisch</em>, <em>Polnisch</em>, <em>Portugiesisch (Brasilien)</em>, <em>Portugiesisch (Portugal)</em>, <em>Rumänisch</em>, <em>Russisch</em>, <em>Slowakisch</em>, <em>Slowenisch</em>, <em>Spanisch</em>, <em>Schwedisch</em>, <em>Türkisch</em>, <em>Ukrainisch</em>, <em>Vietnamesisch</em>.</p>
+                </li>
+                <li>Mit der Option <b>Region</b> wird der Anzeigemodus für Währung, Datum und Uhrzeit eingestellt.</li>
+                <li>Die Option <b>Trennzeichen basierend auf regionalen Einstellungen verwenden</b> ist standardmäßig aktiviert, die Trennzeichen der eingestellten Region entsprechen. Um benutzerdefinierte Trennzeichen festzulegen, deaktivieren Sie diese Option und geben Sie die erforderlichen Trennzeichen in die Felder <b>Dezimaltrennzeichen</b> und <b>Tausendertrennzeichen</b> ein.</li>
+            </ol>
+
+            <h3>Rechtschreibprüfung</h3>
+            <ol>
+                <li>Die Option <b>Sprache des Wörterbuchs</b> wird verwendet, um das bevorzugte Wörterbuch für die Rechtschreibprüfung festzulegen.</li>
+                <li><b>Wörter in GROSSBUCHSTABEN ignorieren</b>. In Großbuchstaben eingegebene Wörter werden bei der Rechtschreibprüfung ignoriert.</li>
+                <li><b>Wörter mit Zahlen ignorieren</b>. Wörter mit Zahlen werden bei der Rechtschreibprüfung ignoriert.</li>
+                <li>Über das Menü <b>Optionen von AutoKorrektur</b> können Sie auf die <a href="../UsageInstructions/MathAutoCorrect.htm" onclick="onhyperlinkclick(this)">Autokorrektur-Einstellungen</a> zugreifen, z. B. Text während der Eingabe ersetzen, Funktionen erkennen, automatische Formatierung usw.</li>
+            </ol>
+
+            <h3>Berechnung</h3>
+            <ol>
+                <li>Die Option <b>1904-Datumswerte verwenden</b> wird verwendet, um Datumsangaben mit dem 1. Januar 1904 als Ausgangspunkt zu berechnen. Dies kann nützlich sein, wenn Sie mit Tabellenkalkulationen arbeiten, die in MS Excel 2008 für Mac und früheren Versionen von MS Excel für Mac erstellt wurden.</li>
+            </ol>
+            <p>Um die vorgenommenen Änderungen zu speichern, klicken Sie auf <b>Übernehmen</b>.</p>
+        </div>
+	</body>
+</html>

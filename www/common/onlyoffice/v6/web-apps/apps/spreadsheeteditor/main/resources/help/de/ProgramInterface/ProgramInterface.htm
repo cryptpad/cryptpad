@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Einführung in die Benutzeroberfläche der Tabellenkalkulation</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Einführung in die Benutzeroberfläche der Tabellenkalkulation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Einführung in die Benutzeroberfläche der Tabellenkalkulation</h1>
+            <p>Die <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> verfügt über eine Benutzeroberfläche mit Registerkarten, in der Bearbeitungsbefehle nach Funktionalität in Registerkarten gruppiert sind.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Dialogbox Online-Tabellenkalkulation:</p>
+                <p><img alt="Dialogbox Online-Tabellenkalkulation" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dialogbox Desktop-Tabellenkalkulation:</p>
+                <p><img alt="Dialogbox Desktop-Tabellenkalkulation" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>Die Oberfläche des Editors besteht aus folgenden Hauptelementen:</p>
+            <ol>
+                <li>
+                    In der <b>Kopfzeile des Editors</b> werden das Logo, <span class="desktopDocumentFeatures">geöffnete Arbeitsblätter,</span> der Name der Arbeitsmappe sowie die Menü-Registerkarten angezeigt.
+                    <p>Im linken Bereich der <b>Kopfzeile des Editors</b> finden Sie die Schaltflächen <b>Speichern</b>, <b>Datei drucken</b>, <b>Rückgängig machen</b> und <b>Wiederholen</b>.</p>
+                    <p><img alt="Symbole in der Kopfzeile des Editors" src="../images/interface/leftpart.png" /></p>
+                    <p>Im rechten Bereich der <b>Kopfzeile des Editors</b> werden der Benutzername und die folgenden Symbole angezeigt:</p>
+                    <ul>
+                        <li><div class="icon icon-gotodocuments"></div> <b>Dateispeicherort öffnen</b> - <span class="desktopDocumentFeatures">In der <em>Desktiop-Version</em> können Sie den Ordner öffnen in dem die Datei gespeichert ist; nutzen Sie dazu das Fenster <b>Datei-Explorer</b>.</span> <span class="onlineDocumentFeatures">In der <em>Online-Version</em> haben Sie außerdem die Möglichkeit den Ordner des Moduls <b>Dokumente</b>, in dem die Datei gespeichert ist, in einem neuen Browser-Fenster zu öffnen.</span></li>
+                        <li class="onlineDocumentFeatures"><div class="icon icon-access_rights"></div> <b>Freigeben</b> - (nur in der <em>Online-Version</em> verfügbar). Es ermöglicht die Anpassung von <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">Zugriffsrechten</a> für die in der Cloud gespeicherten Dokumente.</li>
+                        <li><div class="icon icon-favorites_icon"></div> <b>Als Favorit kennzeichnen</b> - klicken Sie auf den Stern, um eine Datei zu den Favoriten hinzuzufügen, damit Sie sie leichter finden können. Die hinzugefügte Datei ist nur eine Verknüpfung, sodass die Datei selbst am ursprünglichen Speicherort gespeichert bleibt. Durch das Löschen einer Datei aus den Favoriten wird die Datei nicht an ihrem ursprünglichen Speicherort entfernt.</li>
+                        <li><div class="icon icon-search_icon_header"></div> <b>Suchen</b> - ermöglicht das Durchsuchen der Kalkulationstabelle nach einem bestimmten Wort oder Symbol usw.</li>
+                    </ul>
+                </li>
+                <li>Abhängig von der ausgewählten Registerkarte werden in der <b>oberen Symbolleiste</b> eine Reihe von Bearbeitungsbefehlen angezeigt. Aktuell stehen die folgenden Registerkarten zur Verfügung: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Datei</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Start</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Einfügen</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Layout</a>, <span class="onlineDocumentFeatures"><a href="../ProgramInterface/PivotTableTab.htm" onclick="onhyperlinkclick(this)">Pivot-Tabelle</a>,</span> <a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Zusammenarbeit</a>, <a href="../ProgramInterface/ProtectionTab.htm" onclick="onhyperlinkclick(this)">Schützen,</a> <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Tabellenansicht</a>, <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plugins</a>.
+                <p>Die Befehle <span class="icon icon-copy"></span> <b>Kopieren</b>, <span class="icon icon-paste"></span> <b>Einfügen</b>, <span class="icon icon-cut"></span> <b>Ausschneiden</b> und <span class="icon icon-select_all"></span> <b>Alles auswählen</b> stehen unabhängig von der ausgewählten Registerkarte jederzeit im linken Teil der <b>oberen Menüleiste</b> zur Verfügung.</p>
+                </li>
+                <li>Über die <b>Bearbeitungsleiste</b> können <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">Formeln</a> oder Werte in Zellen eingegeben oder bearbeitet werden. In der <b>Bearbeitungsleiste</b> wird der Inhalt der aktuell ausgewählten Zelle angezeigt.</li>
+                <li>In der <b>Statusleiste</b> am unteren Rand des Editorfensters, finden Sie verschiedene <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">Navigationswerkzeuge</a>: Navigationsschaltflächen, Schaltfläche "Arbeitsblatt hinzufügen", Schaltfläche "Liste der Blätter", Blattregister und Zoom-Schaltflächen. In der <b>Statusleiste</b> werden außerdem den Hintergrundspeicherstatus und Verbindungsstatus, wenn keine Verbindung besteht und der Editor versucht, die Verbindung wiederherzustellen, und die Anzahl der gefilterten Ergebnisse angezeigt, sofern Sie einen <a href="../UsageInstructions/SortData.htm#filter" onclick="onhyperlinkclick(this)">Filter</a> gesetzt haben, oder Ergebnisse der <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">automatischen Berechnungen</a>, wenn Sie mehrere Zellen mit Daten ausgewählt haben.</li>
+                <li>
+                    Symbole in der <b>linken Seitenleiste</b>:
+                    <ul>
+                        <li><div class = "icon icon-searchicon"></div> - die Funktion <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Suchen und Ersetzen</a>,</li>
+                        <li><div class = "icon icon-commentsicon"></div> - <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Kommentarfunktion öffnen</a>,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-chaticon"></div> (nur in der <em>Online-Version</em> verfügbar) - hier können Sie das <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chatfenster</a> öffnen,</li>
+                        <li><div class = "icon icon-spellcheckdeactivated"></div> - ermöglicht es, die Rechtschreibung Ihres Textes in einer bestimmten Sprache zu überprüfen und Fehler beim Bearbeiten zu korrigieren,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-feedbackicon"></div> - (nur in der <em>Online-Version</em> verfügbar) ermöglicht die Kontaktaufnahme mit unserem Support-Team,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-abouticon"></div> - (nur in der <em>Online-Version</em> verfügbar) ermöglicht die Anzeige der Informationen über das Programm.</li>
+                    </ul>
+                </li>
+                <li>Über die rechte <b>Seitenleiste</b> können zusätzliche Parameter von verschiedenen Objekten angepasst werden. Wenn Sie ein bestimmtes Objekt auf einem Arbeitsblatt auswählen, wird das entsprechende Symbol in der rechten Seitenleiste aktiviert. Klicken Sie auf dieses Symbol, um die rechte Seitenleiste zu erweitern.</li>
+                <li>Über den <b>Arbeitsbereich</b> können Sie den Inhalt der Kalkulationstabelle anzeigen und Daten eingeben und bearbeiten.</li>
+                <li>Mit den horizontalen und vertikalen <b>Bildlaufleisten</b> können Sie das aktuelle Tabellenblatt nach oben und unten und nach links und rechts bewegen.</li>
+            </ol>
+            <p>Zur Vereinfachung können Sie bestimmte Komponenten verbergen und bei Bedarf erneut anzeigen. Weitere Informationen zum Anpassen der Ansichtseinstellungen finden Sie auf <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</p>
+           
+		</div>
+	</body>
+</html>

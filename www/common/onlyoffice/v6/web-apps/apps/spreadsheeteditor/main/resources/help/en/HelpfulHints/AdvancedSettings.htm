@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Advanced Settings of the Spreadsheet Editor</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The advanced settings of Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Advanced Settings of the Spreadsheet Editor</h1>
+			<p>The <a href="https://www.onlyoffice.com/en/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> allows you to change its general advanced settings. To access them, open the <b>File</b> tab on the top toolbar and select the <b>Advanced Settings</b> option.</p>
+            <p>The advanced settings are grouped as follows:</p>
+
+            <h3>Editing and saving</h3>
+            <ol>
+                <li><span class="onlineDocumentFeatures"><b>Autosave</b> is used in the <em>online version</em> to turn on/off automatic saving of changes made during the editing process.</span></li>
+                <li><span class="desktopDocumentFeatures"><b>Autorecover</b> is used in the <em>desktop version</em> to turn on/off the option that allows you to automatically recover spreadsheets if the program closes unexpectedly.</span></li>
+                <li><b>Show the Paste Options button when the content is pasted</b>. The corresponding icon will appear when you paste content in the spreadsheet.</li>
+            </ol>
+
+            <h3>Collaboration</h3>
+            <ol>
+                <li class="onlineDocumentFeatures">
+                    The <b>Co-editing mode</b> subsection allows you to set the preferable mode for seeing changes made to the spreadsheet when working in collaboration.
+                    <ul>
+                        <li><b>Fast</b> (by default). The users who take part in the spreadsheet co-editing will see the changes in real time once they are made by other users.</li>
+                        <li><b>Strict</b>. All the changes made by co-editors will be shown only after you click the <b>Save</b> <div class="icon icon-saveupdate"></div> icon that will notify you about new changes.</li>
+                    </ul>
+                </li>
+                <li><b>Show changes from other users</b>. This feature allows to see changes made by other users in the spreadsheet opened for viewing only in the <b>Live Viewer</b> mode.</li>
+                <li><b>Show comments in text</b>. If you disable this feature, the commented passages will be highlighted only if you click the <b>Comments</b> <div class="icon icon-commentsicon"></div> icon on the left sidebar.</li>
+                <li><b>Show resolved comments</b>. This feature is disabled by default so that the resolved comments are hidden in the spreadsheet. You can view such comments only if you click the <b>Comments</b> <div class="icon icon-commentsicon"></div> icon on the left sidebar. Enable this option if you want to display resolved comments in the spreadsheet.</li>
+            </ol>
+
+            <h3>Workspace</h3>
+            <ol>
+                <li>
+                    <p>The <b>R1C1 reference style</b> option is disabled by default and the A1 reference style is used.</p>
+                    <p>When the <b>A1 reference style</b> is used, columns are designated by letters, and rows are designated by numbers. If you select the cell located in row 3 and column 2, its address displayed in the box to the left of the the formula bar looks like this: <b>B3</b>. If the <b>R1C1 reference style</b> is enabled, both rows and columns are designated by numbers. If you select the cell at the intersection of row 3 and column 2, its address will look like this: <b>R3C2</b>. Letter R indicates the row number and letter C indicates the column number.</p>
+                    <p><img alt="Active cell" src="../images/activecell.png" /></p>
+                    <p>In case you refer to other cells using the <b>R1C1 reference style</b>, the reference to a target cell is formed based on the distance from an active cell. For example, when you select the cell in row 5 and column 1 and refer to the cell in row 3 and column 2, the reference is <b>R[-2]C[1]</b>. The numbers in square brackets designate the position of the cell relative to the current cell position, i.e. the target cell is 2 rows up and 1 column to the right of the active cell. If you select the cell in row 1 and column 2 and refer to the same cell in row 3 and column 2, the reference is <b>R[2]C</b>, i.e. the target cell is 2 rows down from the active cell and in the same column.</p>
+                    <p><div class="big big-relativereference"></div></p>
+                </li>
+                <li>The <b>Use Alt key to navigate the user interface using the keyboard</b> option is used to enable using the <em>Alt</em> / <em>Option</em> key in keyboard shortcuts.</li>
+                <li>
+                    The <b>Interface theme</b> option is used to change the color scheme of the editor’s interface.
+                    <ul>
+                        <li>The <b>Same as system</b> option makes the editor follow the interface theme of your system.</li>
+                        <li>The <b>Light</b> color scheme incorporates standard blue, white, and light gray colors with less contrast in UI elements suitable for working during daytime.</li>
+                        <li>The <b>Classic Light</b> color scheme incorporates standard blue, white, and light gray colors.</li>
+                        <li>The <b>Dark</b> color scheme incorporates black, dark gray, and light gray colors suitable for working during nighttime.</li>
+                        <li>
+                            The <b>Contrast Dark</b> color scheme incorporates black, dark gray, and white colors with more contrast in UI elements highlighting the working area of the file.
+                            <p class="note"><b>Note</b>: Apart from the available <b>Light</b>, <b>Classic Light</b>, <b>Dark</b>, and <b>Contrast Dark</b> interface themes, ONLYOFFICE editors can now be customized with your own color theme. Please follow <a target="_blank" href="https://helpcenter.onlyoffice.com/installation/docs-developer-change-theme.aspx" onclick="onhyperlinkclick(this)">these instructions</a> to learn how you can do that.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>The <b>Unit of Measurement</b> option is used to specify what units are used on the rulers and in properties of objects when setting such parameters as width, height, spacing, margins etc. The available units are <em>Centimeter</em>, <em>Point</em>, and <em>Inch</em>.</li>
+                <li>The <b>Default Zoom Value</b> option is used to set the default zoom value, selecting it in the list of available options from 50% to 500%.</li>
+                <li>
+                    The <b>Font Hinting</b> option is used to select how fonts are displayed in the Spreadsheet Editor.
+                    <ul>
+                        <li>Choose <b>As Windows</b> if you like the way fonts are usually displayed on Windows, i.e. using Windows font hinting.</li>
+                        <li>Choose <b>As OS X</b> if you like the way fonts are usually displayed on a Mac, i.e. without any font hinting at all.</li>
+                        <li>Choose <b>Native</b> to display the text with hinting embedded into the font files.</li>
+                        <li>
+                            <b>Default cache mode</b> - used to select the cache mode for the font characters. It’s not recommended to switch it without any reason. It can be helpful in some cases only, for example, when an issue with the enabled hardware acceleration in the Google Chrome browser occurs.
+                            <p>The Spreadsheet Editor has two cache modes:</p>
+                            <ol>
+                                <li>In the <b>first cache mode</b>, each letter is cached as a separate picture.</li>
+                                <li>In the <b>second cache mode</b>, a picture of a certain size is selected where letters are placed dynamically and a mechanism of allocating/removing memory in this picture is also implemented. If there is not enough memory, a second picture is created, etc.</li>
+                            </ol>
+                            <p>The <b>Default cache mode</b> setting applies two above mentioned cache modes separately for different browsers:</p>
+                            <ul>
+                                <li>When the <b>Default cache mode</b> setting is enabled, Internet Explorer (v. 9, 10, 11) uses the <b>second cache mode</b>, other browsers use the <b>first cache mode</b>.</li>
+                                <li>When the <b>Default cache mode</b> setting is disabled, Internet Explorer (v. 9, 10, 11) uses the <b>first cache mode</b>, other browsers use the <b>second cache mode</b>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    The <b>Macros Settings</b> option is used to set macros display with a notification.
+                    <ul>
+                        <li>Choose <b>Disable All</b> to disable all macros within the spreadsheet.</li>
+                        <li>Choose <b>Show Notification</b> to receive notifications about macros within the spreadsheet.</li>
+                        <li>Choose <b>Enable All</b> to automatically run all macros within the spreadsheet.</li>
+                    </ul>
+                </li>            
+            </ol>
+
+            <h3>Regional Settings</h3>
+            <ol>
+                <li>
+                    The <b>Formula Language</b> option is used to select the language for displaying and entering formula names, argument names, and descriptions.
+                    <p><b>Formula language</b> is supported for 32 languages:</p>
+                    <p><em>Belarussian</em>, <em>Bulgarian</em>, <em>Catalan</em>, <em>Chinese</em>, <em>Czech</em>, <em>Danish</em>, <em>Dutch</em>, <em>English</em>, <em>Finnish</em>, <em>French</em>, <em>German</em>, <em>Greek</em>, <em>Hungarian</em>, <em>Indonesian</em>, <em>Italian</em>, <em>Japanese</em>, <em>Korean</em>, <em>Lao</em>, <em>Latvian</em>, <em>Norwegian</em>, <em>Polish</em>, <em>Portuguese (Brazil)</em>, <em>Portuguese (Portugal)</em>, <em>Romanian</em>, <em>Russian</em>, <em>Slovak</em>, <em>Slovenian</em>, <em>Spanish</em>, <em>Swedish</em>, <em>Turkish</em>, <em>Ukrainian</em>, <em>Vietnamese</em>.</p>
+                </li>
+                <li>The <b>Region</b> option is used to set the display mode for currency, date, and time.</li>
+                <li>The <b>Use separators based on regional settings</b> option is enabled by default, the separators will correspond to the set region. To set custom separators, uncheck this option and enter the required separators in <b>Decimal separator</b> and <b>Thousands separator</b> fields.</li>
+            </ol>
+
+            <h3>Proofing</h3>
+            <ol>
+                <li>The <b>Dictionary language</b> option is used to set the preferred dictionary for the spell checking.</li>
+                <li><b>Ignore words in UPPERCASE</b>. Words typed in capital letters are ignored during the spell checking.</li>
+                <li><b>Ignore words with numbers</b>. Words with numbers in them are ignored during the spell checking.</li>
+                <li>The <b>AutoCorrect options</b> menu allows you to access the <a href="../UsageInstructions/MathAutoCorrect.htm" onclick="onhyperlinkclick(this)">autocorrect settings</a> such as replacing text as you type, recognizing functions, automatic formatting etc.</li>
+            </ol>
+
+            <h3>Calculating</h3>
+            <ol>
+                <li>The <b>Use 1904 date system</b> option is used to calculate dates by using January 1, 1904, as a starting point. It can be useful when working with spreadsheets created in MS Excel 2008 for Mac and earlier MS Excel for Mac versions.</li>
+            </ol>
+			<p>To save the changes you made, click the <b>Apply</b> button.</p>
+		</div>
+	</body>
+</html>

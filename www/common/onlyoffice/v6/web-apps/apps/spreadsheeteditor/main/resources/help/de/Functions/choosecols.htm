@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>SPALTENWAHL-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>SPALTENWAHL-Funktion</h1>
+			<p>Die <b>SPALTENWAHL</b>-Funktion ist eine der Suchen- und Bezügefunktionen. Sie wird verwendet, um Spalten aus einem Array oder einer Referenz zurückzugeben.</p>
+			<p class="note">Bitte beachten Sie, dass dies eine Matrixformel ist. Um mehr zu erfahren, lesen Sie bitte den Artikel <a href="../UsageInstructions/InsertArrayFormulas.htm" onclick="onhyperlinkclick(this)">Matrixformeln einfügen</a>.</p>
+			<p>Die Formelsyntax der Funktion <b>SPALTENWAHL</b> ist:</p>
+			<p style="text-indent: 150px;"><b><em>SPALTENWAHL(array,col_num1,[col_num2],…)</em></b></p>
+			<p><em>dabei gilt</em></p>
+			<p style="text-indent: 50px;"><b><em>array</em></b> wird verwendet, um das Array mit den zurückzugebenden Spalten in einem neuen Array festzulegen.</p>
+			<p style="text-indent: 50px;"><b><em>col_num1</em></b> wird verwendet, um die erste zurückzugebende Spaltennummer festzulegen.</p>
+			<p style="text-indent: 50px;"><b><em>col_num2</em></b> ist ein optionales Argument. Es wird verwendet, um zusätzliche Spaltennummern festzulegen, die zurückgegeben werden sollen.</p>
+			<p>Anwendung der Funktion <b>SPALTENWAHL</b>:</p>
+			<ol>
+				<li>Wählen Sie die Zelle aus, in der Sie das Ergebnis anzeigen möchten.</li>
+				<li>
+					Klicken Sie auf das Symbol <b>Funktion</b> <div class="icon icon-insertfunction"></div> in der oberen Symbolleiste
+					<br />oder klicken Sie mit der rechten Maustaste in eine ausgewählte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Menü
+					<br />oder klicken Sie auf das Symbol <div class="icon icon-function"></div> in der Bearbeitungsleiste.
+				</li>
+				<li>Wählen Sie aus der Liste die Funktionsgruppe <b>Suchen und Bezüge</b>.</li>
+				<li>Klicken Sie auf die Funktion <b>SPALTENWAHL</b>.</li>
+				<li>Geben Sie die erforderlichen Argumente ein, indem Sie sie durch Kommas trennen.</li>
+				<li>Drücken Sie die <b>Eingabe</b>-Taste.</li>
+			</ol>
+			<p>Das Ergebnis wird in der ausgewählten Zelle angezeigt.</p>
+			<!--<p style="text-indent: 150px;"><img alt="CHOOSECOLS Function" src="../images/choosecols.png" /></p>-->
+		</div>
+	</body>
+</html>

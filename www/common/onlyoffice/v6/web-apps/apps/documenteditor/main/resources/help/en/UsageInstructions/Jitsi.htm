@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Make Audio and Video Calls</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The description of Jitsi plugin for ONLYOFFICE editors, which makes audio and video calls accessible immediately from the Document Editor." />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Make Audio and Video Calls</h1>
+        <p>Audio and video calls are immediately accessible from ONLYOFFICE <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, using Jitsi plugin. Jitsi provides video conferencing capabilities that are secure and easy to deploy.</p>
+        <p class="note">Note: Jitsi plugin is not installed by default and shall be added manually. Please, refer to the corresponding article to find the manual installation guide <a href="https://api.onlyoffice.com/plugin/installation/cloud">Adding plugins to ONLYOFFICE Cloud</a> or <a href="https://helpcenter.onlyoffice.com/installation/docs-add-plugin.aspx">Adding new plugins to server editors</a></p>
+        <ol>
+            <li>Switch to the <b>Plugins</b> tab and click the <b>Jitsi</b> icon on the top toolbar.</li>
+            <li>
+                Fill in the fields at the bottom of the left sidebar before you start a call:
+                <p><b>Domain</b> - enter the domain name if you want to connect your domain.</p>
+                <p><b>Room name</b> - enter the name of the meeting room. This field is mandatory and you cannot start a call if you leave it out.</p>
+            </li>
+            <li>Click the <b>Start</b> button to open the <b>Jitsi Meet iframe</b>.</li>
+            <li>Enter your name and allow camera and microphone access to your browser.
+            <li>If you want to close the Jitsi Meet iframe click the Stop button at the bottom of the left.</li>
+            <li>Click the <b>Join the meeting</b> button to start a call with audio or click the arrow to join without audio.</li>
+        </ol>
+        <img class="gif" alt="Youtube plugin gif" src="../../images/jitsi_plugin.gif" width="600" />
+        <p>The <b>Jitsi Meet iframe</b> interface elements before launching a meeting:</p>
+        <p>
+            <div class = "icon icon-jitsi_micro"></div>
+            <b>Audio settings and Mute/Unmute</b>
+        </p>
+        <ul>
+            <li>Click the arrow to access the preview of Audio Settings.</li>
+            <li>Click the micro to mute/unmute your microphone.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_camera"></div>
+            <b>Video settings and Start/Stop</b>
+        </p>
+        <ul>
+            <li>Click the arrow to access video preview.</li>
+            <li>Click the camera to start/stop your video.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_invite"></div>
+            <b>Invite people</b>
+        </p>
+        <ul>
+            <li>Click this button to invite more people to your meeting.</li>
+            <li>
+                Share the meeting by copying the meeting link, or <br>
+                Share meeting invitation by copying it, or via your default email, Google email, Outlook email or Yahoo email.
+            </li>
+            <li>Embed the meeting by copying the link.</li>
+            <li>Use one of the available dial-in numbers to join the meeting.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_background"></div>
+            <b>Select background</b>
+        </p>
+        <ul>
+            <li>Select or add a virtual background for your meeting.</li>
+            <li>Share your desktop by choosing the appropriate option: <b>Screen</b>,<b> Window</b> or <b>Tab</b>.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_settings"></div>
+            <b>Settings</b>
+        </p>
+        <p>Configure advanced settings that are organized in the following categories:</p>
+        <ul>
+            <li><b>Devices</b> for setting up your Microphone, Camera and Audio Output, and playing a test sound.</li>
+            <li><b>Profile</b> for setting up your name to be displayed and gravatar email, hide/show self view.</li>
+            <li><b>Calendar</b> for integration your Google or Microsoft calendar.</li>
+            <li><b>Sounds</b> for selecting the actions to play the sound on.</li>
+            <li><b>More</b> for configuring some additional options: enable/disable pre meeting screen and keyboard shortcuts, set up a language and desktop sharing frame rate.</li>
+        </ul>
+        <p>
+            Interface elements that appear during a video conference:
+        </p>
+        <img alt="Jitsi Conference" src="../images/jitsi_conference.png" />
+        <p>Click the side arrow on the right to display the participant thumbnails at the top.</p>
+        <p>
+            <img alt="Jitsi Timer" src="../images/jitsi_timer.png" />
+            The timer at the iframe top shows the meeting duration.
+        </p>
+        <p>
+            <div class = "icon icon-jitsi_openchat"></div>
+            <b>Open chat</b>
+        </p>
+        <ul>
+            <li>Type a text message or create a poll.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_participants"></div>
+            <b>Participants</b>
+        </p>
+        <ul>
+            <li>View the list of the meeting participants, invite more participants and search a participant.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_more"></div>
+            <b>More Actions</b>
+        </p>
+        <ul>
+            <li>Find a range of options to use all the available Jitsi features to the full.Scroll through the options to see them all.</li>
+        </ul>
+        <details class="details-example">
+            <summary>Available options,</summary>
+            <ul>
+                <li>Start screen sharing</li>
+                <li>Invite people</li>
+                <li>Enter/Exit tile view</li>
+                <li>Performance settings for adjusting the quality</li>
+                <li>View full screen</li>
+                <li>
+                    Security options
+                    <ul>
+                        <li><b>Lobby mode</b> for participants to join the meeting after the moderator’s approval;</li>
+                        <li><b>Add password mode</b> for participants to join the meeting with a password;</li>
+                        <li><b>End-to-end encryption</b> is an experimental method of making secure calls (mind the restrictions like disabling server-side provided services and using browsers that support insertable streams).</li>
+                    </ul>
+                </li>
+                <li>Start live stream</li>
+                <li>Mute everyone</li>
+                <li>Disable everyone’s camera</li>
+                <li>Share video</li>
+                <li>Select background</li>
+                <li>Speaker stats</li>
+                <li>Settings</li>
+                <li>View shortcuts</li>
+                <li>Embed meeting</li>
+                <li>Leave feedback</li>
+                <li>Help</li>
+            </ul>
+        </details>
+        <p>
+            <div class = "icon icon-jitsi_leave"></div>
+            <b>Leave the meeting</b>
+        </p>
+        <ul>
+            <li>Click it whenever you wish to end a call.</li>
+        </ul>
+    </div>
+</body>
+</html>

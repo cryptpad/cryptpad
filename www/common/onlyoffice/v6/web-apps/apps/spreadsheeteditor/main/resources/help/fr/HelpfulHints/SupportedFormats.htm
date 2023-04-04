@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formats des feuilles de calcul pris en charge</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="La liste des formats des feuilles de calcul pris en charge par le Tableur" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Formats des feuilles de calcul pris en charge</h1>
+			<p>Une <b>feuille de calcul</b> c'est une table de données organisées en lignes et en colonnes.
+            Grâce à la capacité de recalculer automatiquement la feuille toute entière après un changement dans une seule cellule, elle est la plus souvent utilisée pour stocker l'information financière.
+            <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)">Tableur</a> vous permet d'ouvrir et de modifier les formats les plus populaires.</p>
+            <p class="note">Lors du téléchargement ou de l'ouverture d'un fichier, celui-ci sera converti au format Office Open XML (XLSX). Cette conversion permet d'accélérer le traitement des fichiers et d'améliorer l'interopérabilité des données.</p>
+            <p>Le tableau ci-dessous présente les formats de fichiers pour l'affichage et/ou pour l'édition.</p>
+			<table>
+				<tr>
+					<td><b>Formats</b></td>
+					<td><b>Description</b></td>
+                    <td>Affichage au format natif</td>
+                    <td>Affichage lors de la conversion en OOXML</td>
+                    <td>Édition au format natif</td>
+                    <td>Édition lors de la conversion en OOXML</td>
+				</tr>
+                <tr>
+                    <td>CSV</td>
+                    <td>Valeurs séparées par une virgule<br />Le format de fichier utilisé pour stocker des données tabulaires (des chiffres et du texte) sous forme de texte clair</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>ODS</td>
+                    <td>L'extension de fichier pour une feuille de calcul utilisée par les suites OpenOffice et StarOffice, un standard ouvert pour les feuilles de calcul</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>OTS</td>
+                    <td>Modèle de feuille de calcul OpenDocument<br />Format de fichier OpenDocument pour les modèles de feuilles de calcul. Un modèle OTS contient des paramètres de mise en forme, des styles, etc. et peut être utilisé pour créer plusieurs feuilles de calcul avec la même mise en forme</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+				<tr>
+					<td>XLS</td>
+					<td>L'extension de fichier pour une feuille de calcul créée par Microsoft Excel</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+					<td>+</td>
+				</tr>
+                <!--<tr>
+                    <td>XLSB</td>
+                    <td>Excel Binary Spreadsheet<br />File extension for spreadsheet files which store information in binary format instead of XML</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>-->
+				<tr>
+                    <td>XLSX</td>
+					<td>L'extension de fichier par défaut pour une feuille de calcul créée par Microsoft Office Excel 2007 (ou la version ultérieure)</td>
+					<td>+</td>
+                    <td></td>
+					<td>+</td>
+                    <td></td>
+				</tr>                
+                <tr>
+                    <td>XLTX</td>
+                    <td>Modèle de feuille de calcul Excel Open XML<br />Format de fichier zippé, basé sur XML, développé par Microsoft pour les modèles de feuilles de calcul. U n modèle XLTX contient des paramètres de mise en forme, des styles, etc. et peut être utilisé pour créer plusieurs feuilles de calcul avec la même mise en forme</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>				
+			</table>
+            <p>Le tableau ci-dessous présente les formats pris en charge pour le téléchargement d'une feuille de calcul dans le menu <b>Fichier</b> -> <b>Télécharger comme</b>.</p>
+            <table>
+                <tr>
+                    <td><b>Format en entrée</b></td>
+                    <td><b>Téléchargeable comme</b></td>
+                </tr>
+                <tr>
+                    <td>CSV</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>ODS</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>OTS</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>                
+                <tr>
+                    <td>XLS</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <!--<tr>
+            <td>XLSB</td>
+            <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+        </tr>-->
+                <tr>
+                    <td>XLSX</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>XLTX</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+            </table>
+            <p>Veuillez consulter la matrice de conversion sur <a href="https://api.onlyoffice.com/editors/conversionapi#spreadsheet-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a> pour vérifier s'il est possible de convertir vos feuilles de calcul dans des formats les plus populaires.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Gemeinsame Bearbeitung von Kalkulationstabellen in Echtzeit</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Tips on collaborative editing" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Gemeinsame Bearbeitung von Kalkulationstabellen in Echtzeit</h1>
+            <p>Die <a target="_blank" href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> ermöglicht es Ihnen, einen konstanten teamweiten Ansatz für den Arbeitsablauf beizubehalten: Sie können die Dateien und Ordner <a href="https://helpcenter.onlyoffice.com/de/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">freigeben</a>; direkt in der Tabellenkalkulation <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">kommunizieren</a>; bestimmte Teile Ihrer Kalkulationstabellen, die zusätzliche Eingaben von Drittanbietern erfordern, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">kommentieren</a>; <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">Kalkulationstabellenversionen</a> für die zukünftige Verwendung speichern.</p>
+            <p>In der <b>Tabellenkalkulation</b> können Sie mithilfe von zwei Modi in Echtzeit an Kalkulationstabellen zusammenarbeiten: <b>Schnell</b> oder <b>Formal</b>.</p>
+            <p>Die Modi können in den <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">erweiterten Einstellungen</a> ausgewählt werden. Es ist auch möglich, den erforderlichen Modus über das Symbol <span class="icon icon-coeditingmode"></span> <b>Modus "Gemeinsame Bearbeitung"</b> auf der Registerkarte <b>Zusammenarbeit</b> in der oberen Symbolleiste auswählen:</p>
+            <p><img alt="Co-editing Mode menu" src="../../../../../../common/main/resources/help/de/images/coeditingmodemenu.png" /></p>
+            <p>Die Anzahl der Benutzer, die an der aktuellen Kalkulationstabelle arbeiten, wird auf der rechten Seite der Kopfzeile des Editors angegeben - <span class="icon icon-usersnumber"></span>. Wenn Sie sehen möchten, wer genau die Datei gerade bearbeitet, können Sie auf dieses Symbol klicken oder das <b>Chat</b>-Bedienfeld mit der vollständigen Liste der Benutzer öffnen.</p>
+            <h3>Modus "Schnell"</h3>
+            <p>Der Modus <b>Schnell</b> wird standardmäßig verwendet und zeigt die von anderen Benutzern vorgenommenen Änderungen in Echtzeit an. Wenn Sie in diesem Modus eine Kalkulationstabelle gemeinsam bearbeiten, ist die Möglichkeit zum <b>Wiederholen</b> des letzten rückgängig gemachten Vorgangs nicht verfügbar. Dieser Modus zeigt die Aktionen und die Namen der Mitbearbeiter, wenn sie die Daten in Zellen bearbeiten. Unterschiedliche Rahmenfarben heben auch die Zellbereiche hervor, die gerade von jemand anderem ausgewählt wurden.</p>
+            <p>Bewegen Sie Ihren Mauszeiger über die Auswahl, um den Namen des Benutzers anzuzeigen, der sie bearbeitet.</p>
+            <h3>Modus "Formal"</h3>
+            <p>Der Modus <b>Formal</b> wird ausgewählt, um von anderen Benutzern vorgenommene Änderungen auszublenden, bis Sie auf das Symbol <b>Speichern</b> <span class="icon icon-saveupdate"></span> klicken, um Ihre Änderungen zu speichern und die von Co-Autoren vorgenommenen Änderungen anzunehmen.</p>
+            <p>Wenn eine Tabelle von mehreren Benutzern gleichzeitig im Modus <b>Formal</b> bearbeitet wird, werden die bearbeiteten Zellen mit gestrichelten Linien in verschiedenen Farben markiert. Die Registerkarten der Tabelle, auf denen sich diese Zellen befinden, sind mit einer roten Markierung markiert. Bewegen Sie den Mauszeiger über eine der bearbeiteten Zellen, um den Namen des Benutzers anzuzeigen, der sie gerade bearbeitet.</p>
+            <p><img alt="Coediting Highlighted Selection" src="../images/coedit_selector.png" /></p>
+            <p>Sobald einer der Benutzer seine Änderungen speichert, indem er auf das Symbol <span class="icon icon-savewhilecoediting"></span> klickt, sehen die anderen einen Hinweis in der oberen linken Ecke, der darauf informiert, das es Aktualisierungen gibt. Um die von Ihnen vorgenommenen Änderungen zu speichern, damit andere Benutzer sie sehen, und die von Ihren Mitbearbeitern gespeicherten Aktualisierungen abzurufen, klicken Sie auf das Symbol <span class="icon icon-saveupdate"></span> in der linken oberen Ecke der oberen Symbolleiste.</p>
+            <h3>Modus "Live Viewer"</h3>
+            <p>Der Modus <b>Live Viewer</b> wird verwendet, um die von anderen Benutzern vorgenommenen Änderungen in Echtzeit anzuzeigen, wenn die Kalkulationstabelle von einem Benutzer mit den Zugriffsrechten <b>Schreibgeschützt</b> geöffnet wird.</p>
+            <p class="note">Damit der Modus richtig funktioniert, stellen Sie sicher, dass das Kontrollkästchen <b>Änderungen von anderen Benutzer anzeigen</b> in den <b>Erweiterten Einstellungen</b> des Editors aktiviert ist.</p>
+            <h3>Anonym</h3>
+            <p>Portalbenutzer, die nicht registriert sind und kein Profil haben, gelten als anonym, können jedoch weiterhin an Dokumenten zusammenarbeiten. Um ihnen einen Namen zuzuweisen, muss der anonyme Benutzer beim ersten Öffnen des Dokuments einen Namen in das entsprechende Feld in der rechten oberen Ecke des Bildschirms eingeben. Aktivieren Sie das Kontrollkästchen "Nicht mehr anzeigen", um den Namen beizubehalten.</p>
+            <p><img alt="Anonym - Zusammenarbeit" src="../images/anonymous_collab.png" /></p>
+        </div>
+	</body>
+</html>

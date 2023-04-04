@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Mettre sous forme de modèle de tableau</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Apply a table template to the selected cell range and automatically enable the filter." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Mettre sous forme de modèle de tableau</h1>
+            <h3>Créer un nouveau tableau mis en forme</h3>
+            <p>Pour faciliter le travail avec vos données, <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> vous permet d'appliquer un modèle de tableau à une plage de cellules sélectionnée en activant automatiquement le filtre. Pour ce faire,</p>
+            <ol>
+                <li>sélectionnez une plage de cellules que vous souhaitez mettre en forme,</li>
+                <li>cliquez sur l'icône <b>Mettre sous forme de modèle de tableau </b> <div class = "icon icon-tabletemplate"></div> sous l'onglet <b>Accueil</b> dans la barre d'outils supérieure,</li>
+                <li>Sélectionnez le modèle souhaité dans la galerie,</li>
+                <li>dans la fenêtre contextuelle ouverte, vérifiez la plage de cellules à mettre en forme comme un tableau,</li>
+                <li>cochez la case <b>Titre</b> si vous souhaitez inclure les en-têtes de tableau dans la plage de cellules sélectionnée, sinon la ligne d'en-tête sera ajoutée en haut tandis que la plage de cellules sélectionnée sera déplacée d'une ligne vers le bas,</li>
+                <li>cliquez sur le bouton <b>OK</b> pour appliquer le modèle sélectionné.</li>
+            </ol>
+            <p>Le modèle sera appliqué à la plage de cellules sélectionnée et vous serez en mesure d'éditer les en-têtes de tableau et <a href="SortData.htm" onclick="onhyperlinkclick(this)"> d'appliquer le filtre</a> pour travailler avec vos données.</p>
+            <p>Vous pouvez aussi appliquer un modèle de tableau en utilisant le bouton <b>Tableau </b>sous l'onglet <b>Insérer</b>. Dans ce cas, un modèle par défaut s'applique.</p>
+            <p class="note"><b>Remarque</b> : une fois que vous avez créé un nouveau tableau, <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">un nom par défaut</a> (<em>Tableau1</em>, <em>Tableau2</em> etc.) lui sera automatiquement affecté. Vous pouvez changer ce nom pour le rendre plus significatif et l'utiliser pour d'autres travaux.</p>
+            <p>Si vous entrez une nouvelle valeur dans une cellule sous la dernière ligne du tableau (si le tableau n'a pas la ligne Total) ou dans une cellule à droite de la dernière colonne du tableau, le tableau mis en forme sera automatiquement étendue pour inclure une nouvelle ligne ou colonne. Si vous ne souhaitez pas étendre le tableau, cliquez sur le bouton Coller qui s'affiche et sélectionnez l'option <b>Annuler l'expansion automatique du tableau</b>. Une fois cette action annulée, l'option <b>Rétablir l&rsquo;expansion automatique</b> du tableau sera disponible dans ce menu.</p>
+            <p><img alt="Annuler l'expansion automatique du tableau" src="../images/undoautoexpansion.png" /></p>
+            <p class="note"><b>Remarque</b> : Pour activer ou désactiver l'option de développent automatique du tableau, accédez à <b>Paramètres avancés</b> -> <b>Vérification de l'orthographe</b> -> <b>Vérification</b> -> <b>Options de correction automatique</b> -> Mise en forme automatique au cours de la frappe et décochez la case <b>Inclure nouvelles lignes et colonnes dans le tableau</b>.</p>
+            <h3>Sélectionner les lignes et les colonnes</h3>
+            <p>Pour sélectionner la ligne entière, déplacez le curseur sur la bordure gauche de la ligne du tableau lorsque il se transforme en flèche noir <span class="icon icon-selectrow_cursor"></span>, puis cliquez sur le bouton gauche de la souris.</p>
+            <p><img alt="Sélectionner une ligne" src="../images/selectrow.png" /></p>
+            <p>Pour sélectionner la colonne entière du tableau mis en forme, déplacez le curseur sur le bord inférieur de l'en-tête de la colonne lorsque il se transforme en flèche noir <span class="icon icon-selectcolumn_cursor"></span>, puis cliquez sur le bouton gauche de la souris. Sur un clic unique toutes les données de la colonne sont sélectionnées (comme indiqué sur l'illustration ci-dessous); sur un double clic la colonne entière y compris l'en-tête est sélectionnée.</p>
+            <p><img alt="Sélectionner une colonne" src="../images/selectcolumn.png" /></p>
+            <p>Pour sélectionner le tableau entier, déplacez le curseur sur le coin supérieur gauche du tableau lorsque il se transforme en flèche noir en diagonale <span class="icon icon-selecttable_cursor"></span>, puis cliquez sur le bouton gauche de la souris.</p>
+            <p><img alt="Sélectionner un tableau" src="../images/selecttable.png" /></p>
+            <h3>Éditer un tableau mis en forme d'après un modèle</h3>
+            <p>Certains paramètres du tableau peuvent être modifiés dans l'onglet <b>Paramètres du tableau</b> de la barre latérale droite qui s'ouvre si vous sélectionnez au moins une cellule du tableau avec la souris et cliquez sur l'icône <b>Paramètres du tableau</b> <span class="icon icon-table_settings_icon"></span> sur la droite.</p>
+            <p><img alt="L'onglet Paramètres du tableau" src="../images/tablesettingstab.png" /></p>
+            <p>Les sections <b>Lignes</b> et <b>Colonnes</b> en haut vous permettent de mettre en évidence certaines lignes/colonnes en leur appliquant une mise en forme spécifique ou de mettre en évidence différentes lignes/colonnes avec les différentes couleurs d'arrière-plan pour les distinguer clairement. Les options suivantes sont disponibles :</p>
+            <ul>
+                <li><b>En-tête</b> - permet d'afficher la ligne d'en-tête.</li>
+                <li>
+                    <b>Total</b> - ajoute la ligne <b>Résumé</b> en bas du tableau.
+                    <p class="note"><b>Remarque</b> : lorsque cette option est sélectionnée, on peut utiliser la fonction pour calculer le résumé des valeurs. Une fois la cellule pour la ligne Résumé sélectionnée, le bouton <span class="icon icon-dropdownarrow"></span> est disponible à droite de la cellule. Cliquez sur ce bouton et choisissez parmi les fonctions proposées dans la liste : <em>Moyenne</em>, <em>Calculer</em>, <em>Max</em>, <em>Min</em>, <em>Somme</em>, <em>Ecartype</em> ou <em>Var</em>. L'option <em>Plus de fonctions</em> permet d'ouvrir la fenêtre <b>Insérer une fonction</b> et de sélectionner une autre fonction. Si vous choisissez l'option <em>Aucune</em> le résumé des données de la colonne ne s'affiche pas dans la ligne <b>Résumé</b>.</p>
+                    <p><img alt="Résumé" src="../images/summary.png" /></p>
+                </li>
+                <li><b>Bordé</b> - permet l'alternance des couleurs d'arrière-plan pour les lignes paires et impaires.</li>
+                <li><b>Bouton Filtre</b> - permet d'afficher les flèches déroulantes <div class = "icon icon-dropdownarrow"></div> dans les cellules de la ligne d'en-tête. Cette option est uniquement disponible lorsque l'option<b> En-tête</b> est sélectionnée.</li>
+                <li><b>Première</b> - accentue la colonne la plus à gauche du tableau avec un formatage spécial.</li>
+                <li><b>Dernière</b> - accentue la colonne la plus à droite du tableau avec un formatage spécial.</li>
+                <li><b>Bordé</b> - permet l'alternance des couleurs d'arrière-plan pour les colonnes paires et impaires.</li>
+            </ul>
+            <p>
+                La section <b>Sélectionner à partir d'un modèle</b> vous permet de choisir l'un des styles de tableaux prédéfinis. Chaque modèle combine certains paramètres de formatage, tels qu'une couleur d'arrière-plan, un style de bordure, des lignes/colonnes en bandes, etc.
+                Selon les options cochées dans les sections <b>Lignes</b> et/ou <b>Colonnes ci-dessus</b>, l'ensemble de modèles sera affiché différemment. Par exemple, si vous avez coché l'option <b>En-tête</b> dans la section <b>Lignes</b> et l'option <b>Bordé</b> dans la section <b>Colonnes</b>, la liste des modèles affichés inclura uniquement les modèles avec la ligne d'en-tête et les colonnes en bandes activées :
+            </p>
+            <p><span class="big big-templateslist"></span></p>
+            <p>Si vous souhaitez effacer le style de tableau actuel (couleur d'arrière-plan, bordures, etc.) sans supprimer le tableau lui-même, appliquez le modèle <b>Aucun</b> à partir de la liste des modèles :</p>
+            <p><span class="big big-nonetemplate"></span></p>
+            <p>La section <b>Redimensionner le tableau</b> vous permet de modifier la plage de cellules auxquelles la mise en forme du tableau est appliquée. Cliquez sur le bouton <b>Sélectionner des données</b> - une nouvelle fenêtre s'ouvrira. Modifiez le lien vers la plage de cellules dans le champ de saisie ou sélectionnez la plage de cellules nécessaire dans la feuille de calcul avec la souris et cliquez sur le bouton <b>OK</b>.</p>
+            <p class="note"><b>Remarque</b> : Les en-têtes doivent rester sur la même ligne et la plage de valeurs du tableau de résultat doit se superposer à la plage de valeur du tableau d'origine.</p>
+            <p><img alt="Redimensionner le tableau" src="../images/resizetable.png" /></p>
+            <p>La section <b>Lignes et colonnes</b> <span class="icon icon-rowsandcolumns"></span> vous permet d'effectuer les opérations suivantes :</p>
+            <ul>
+                <li><b>Sélectionner</b> une ligne, une colonne, toutes les données de colonnes à l'exclusion de la ligne d'en-tête ou la table entière incluant la ligne d'en-tête.</li>
+                <li><b>Insérer</b> une nouvelle ligne au-dessus ou en dessous de celle sélectionnée ainsi qu'une nouvelle colonne à gauche ou à droite de celle sélectionnée.</li>
+                <li><b>Supprimer</b> une ligne, une colonne (en fonction de la position du curseur ou de la sélection) ou la totalité du tableau.</li>
+            </ul>
+            <p class="note"><b>Remarque :</b> les options de la section <b>Lignes et colonnes</b> sont également accessibles depuis le <b>menu contextuel</b>.</p>
+            <p>L'option <span class="icon icon-removeduplicates"></span> <b>Supprimer les </b><b>valeurs dupliquées</b> vous permet de supprimer les valeurs en double dans le tableau mis en forme. Pour plus de détails sur suppression des doublons, veuillez vous référer à <a href="RemoveDuplicates.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+            <p>L'option <span class="icon icon-converttorange"></span> <b>Conversion en plage</b> peut être utilisée si vous souhaitez transformer le tableau en une plage de données normale en supprimant le filtre tout en préservant le style de la table (c'est-à-dire les couleurs de cellule et de police, etc.). Une fois que vous avez appliqué cette option, l'onglet <b>Paramètres du tableau</b> dans la barre latérale droite serait indisponible.</p>
+            <p>L'option <span class="icon icon-insertslicer"></span> <b>Insérer un segment</b> vous permet de créer un segment pour filtrer les données du tableau. Pour plus de détails sur utilisation des segments, veuillez vous référer à <a href="Slicers.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+            <p>L'option <span class="icon icon-insertpivot"></span> <b>Insérer un tableau croisé dynamique </b>vous permet de créer un  tableau croisé dynamique à base du tableau auquel la mise en forme est appliqué. Pour plus de détails sur utilisation des tableaux croisés dynamiques, veuillez vous référer à <a href="PivotTables.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+            <h3>Configurer les paramètres du tableau</h3>
+            <p>Pour changer les paramètres avancés du tableau, cliquez sur le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Tableau - Paramètres avancés s'ouvre :</p>
+            <p><img alt="Tableau - Paramètres avancés" src="../images/tableadvancedsettings.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du tableau.</p>
+            <p class="note"><b>Remarque</b> : Pour activer ou désactiver l'option d'expansion automatique du tableau, accédez à <b>Paramètres avancés</b> -> <b>Vérification de l'orthographe</b> -> <b>Vérification</b> -> <b>Options de correction automatique</b> -> <b>Mise en forme automatique au cours de la frappe</b>.</p>
+            <h3>Utiliser la saisie automatique de formule pour ajouter des formules aux tableaux mis en forme d'après un modèle</h3>
+            <p>La liste de <b>Saisie automatique de formule</b>  affiche des options disponibles pour des formules ajoutées aux tableaux mis en forme d'après un modèle. Vous pouvez faire un renvoi vers un tableau dans votre formules à l'intérieur ou en dehors du tableau. Les titres des colonnes et des éléments sont utilisés en tant que références au lieu des adresses de cellule.</p>
+            <p>L'exemple ci-dessous illustre un renvoi vers le tableau dans la fonction SUM.</p>
+                <ol>
+                    <li>
+                        Sélectionnez une cellule et commencez à saisir une formule qui commence par un signe égal, sélectionnez la fonction nécessaire dans la liste de <b>Saisie automatique de formule</b>. Après la parenthèse ouvrante, commencez à saisir le <em>nom du tableau</em> et sélectionnez-le dans la liste <b>Saisie automatique de formule</b>.
+                        <p><img alt="Formules du tableau" src="../images/tableformulas.png" />
+                    </li>
+                    <li>
+                        Ensuite, saisissez le crochet ouvrant [ pour ouvrir la liste déroulante des colonnes et des éléments qu'on peut utiliser dans la formule. Une info-bulle avec la description de la référence s'affiche lorsque vous placez le pointeur de la souris sur la référence dans la liste.
+                        <p><img alt="Formules du tableau" src="../images/tableformulas1.png" />
+                    </li>
+                </ol>
+            <p class="note"><b>Remarque</b> : Chaque référence doit comprendre un crochet ouvrant et un crochet fermant. Veuillez vérifier la syntaxe de la formule.</p>
+        </div>
+	</body>
+</html>

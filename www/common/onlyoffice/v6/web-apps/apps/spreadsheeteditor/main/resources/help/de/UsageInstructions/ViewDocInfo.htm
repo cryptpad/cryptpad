@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dateiinformationen anzeigen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="View spreadsheet title, author, location, creation date, and statistics" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Dateiinformationen anzeigen</h1>
+            <p>Für detaillierte Informationen über die bearbeitete Tabelle in der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a>, klicken Sie auf das Symbol <b>Datei</b> im linken Seitenbereich und wählen Sie die Option <b>Tabelleninformationen</b>.</p>
+            <h3>Allgemeine Eigenschaften</h3>
+            <p>Die Tabellenkalkulationsinformationen umfassen eine Reihe von Dateieigenschaften, die die Tabellenkalkulation beschreiben. Einige dieser Eigenschaften werden automatisch aktualisiert und einige können bearbeitet werden.</p>
+            <ul>
+                <li class="onlineDocumentFeatures"><b>Speicherort</b> - der Ordner im Modul <b>Dokumente</b>, in dem die Datei gespeichert ist. <b>Besitzer</b> – der Name des Benutzers, der die Datei erstellt hat. <b>Hochgeladen</b> – Datum und Uhrzeit der Erstellung der Datei. Diese Eigenschaften sind nur in der <em>Online-Version</em> verfügbar.</li>
+                <li><b>Title</b>, <b>Thema</b>, <b>Kommentar</b> - diese Eigenschaften ermöglichen es Ihnen, die Klassifizierung Ihrer Dokumente zu vereinfachen. Den erforderlichen Text können Sie in den Eigenschaftsfeldern angeben.</li>
+                <li><b>Zuletzt geändert</b> - Datum und Uhrzeit der letzten Änderung der Datei.</li>
+                <li><b>Zuletzt geändert von</b> - der Name des Benutzers, der die letzte Änderung an der Tabelle vorgenommen hat, wenn die Tabelle freigegeben wurde und von mehreren Benutzern bearbeitet werden kann.</li>
+                <li><b>Anwendung</b> - die Anwendung, mit der die Tabelle erstellt wurde.</li>
+                <li><b>Autor</b> - die Person, die die Datei erstellt hat. In dieses Feld können Sie den erforderlichen Namen eingeben. Drücken Sie die <em>Eingabetaste</em>, um ein neues Feld hinzuzufügen, in dem Sie einen weiteren Autor angeben können.</li>
+            </ul>
+            <p>Wenn Sie die Dateieigenschaften geändert haben, klicken Sie auf die Schaltfläche <b>Anwenden</b>, um die Änderungen zu übernehmen.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note">Sie können den Namen der Tabelle direkt über die Oberfläche des Editors ändern. Klicken Sie dazu in der oberen Menüleiste auf die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Umbenennen</b>, geben Sie den neuen <b>Dateinamen</b> an und klicken Sie auf <b>OK</b>.</p>
+            </div>
+            <div class="onlineDocumentFeatures">
+                <h3>Zugriffsrechte</h3>
+                <p>In der <em>Online-Version</em> können Sie die Informationen zu Berechtigungen für die in der Cloud gespeicherten Dateien einsehen.</p>
+                <p class="note">Diese Option steht im <b>schreibgeschützten</b> Modus nicht zur Verfügung.</p>
+                <p>Um einzusehen, wer zur Ansicht oder Bearbeitung der Tabelle berechtigt ist, wählen Sie die Option <b>Zugriffsrechte</b> in der linken Seitenleiste.</p>
+                <p>Sie können die aktuell ausgewählten Zugriffsrechte auch ändern, klicken Sie dazu im Abschnitt <b>Personen mit Berechtigungen</b> auf die Schaltfläche <b>Zugriffsrechte ändern</b>.</p>
+                <p>Um den Bereich <b>Datei</b> zu schließen und zu Ihrer Tabelle zurückzukehren, wählen Sie die Option <b>Menü schließen</b>.</p>
+                <h3>Versionsverlauf</h3>
+                <p>In der <em>Online-Version</em> können Sie den Versionsverlauf der in der Cloud gespeicherten Dateien einsehen.</p>
+                <p class="note">Diese Option ist für Benutzer mit <b>Schreibgeschützt</b>-Berechtigungen nicht verfügbar.</p>
+                <p>Um alle an dieser Kalkulationstabelle vorgenommenen Änderungen anzuzeigen, wählen Sie in der linken Seitenleiste die Option <b>Versionsverlauf</b>. Es ist auch möglich, den Versionsverlauf über das Symbol <span class="icon icon-versionhistoryicon"></span> <b>Versionsverlauf</b> auf der Registerkarte <b>Zusammenarbeit</b> der oberen Symbolleiste anzuzeigen. Sie sehen die Liste dieser Dokumentversionen (größere Änderungen) und Revisionen (kleinere Änderungen) mit Angabe der einzelnen Versionen/Revisionsautoren sowie Erstellungsdatum und -zeit. Bei Dokumentversionen wird zusätzlich die Versionsnummer angegeben (z. B. <em>Ver. 2</em>). Um genau zu wissen, welche Änderungen in jeder einzelnen Version/Revision vorgenommen wurden, können Sie die gewünschte Änderung anzeigen, indem Sie in der linken Seitenleiste darauf klicken. Die vom Versions-/Revisionsautor vorgenommenen Änderungen sind mit der Farbe gekennzeichnet, die neben dem Autorennamen in der linken Seitenleiste angezeigt wird. Sie können den Link <b>Wiederherstellen</b> unter der ausgewählten Version/Revision verwenden, um sie wiederherzustellen. <!--To hide the list of the revisions within a certain version, use the <img alt="Collapse icon" src="../images/collapse.png" /> icon next to the version. To display revisions again, use the <img alt="Expand icon" src="../images/expand.png" /> icon.--> </p>
+                <p><img alt="Versionsverlauf" src="../images/versionhistory.png" /></p>
+                <p>Um zur aktuellen Version des Dokuments zurückzukehren, verwenden Sie die Option <b>Verlauf schließen</b> oben in der Versionsliste.</p>
+            </div>
+        </div>
+	</body>
+</html>

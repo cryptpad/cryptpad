@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Protéger une feuille de calcul</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Protéger des feuilles de calcul pour contrôler les modifications apportées par d'autres utilisateurs" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Protéger une feuille de calcul</h1>
+			<p>L'option <b>Protéger la feuille de calcul</b> permet de protéger des feuilles de calcul et de contrôler les modifications apportées par d'autres utilisateurs à la feuille de calcul pour empêcher toute modification indésirable et limiter les possibilités de modification d'autres utilisateurs. Vois pouvez protéger une feuille de calcul avec ou sans un mot de passe. Si vous opter pour la protection sans un mot de passe, toute personne peut désactiver la protection d'une feuille de calcul.</p>
+			<p>Pour protéger une feuille de calcul :</p>
+			<ol>
+				<li>
+					Passez à l'onglet <b>Protection</b> et cliquez sur le bouton <b>Protéger la feuille de calcul</b> de la barre d'outils supérieure.
+					<p>ou</p>
+					<p>Faites un clic droit sur l'onglet de la feuille de calcul à protéger et sélectionnez <b>Protéger</b> de la liste d'options.</p>
+					<p><img alt="Protéger depuis l'onglet de la feuille de calcul" src="../images/protect_sheettab.png" /></p>
+				</li>
+			<li>Dans la fenêtre <b>Protéger la feuille de calcul</b> qui s'affiche, saisissez et validez le mot de passe qu'on doit entrer pour désactiver la protection de la feuille de calcul.
+			<p><img alt="Protéger la feuille de calcul" src="../images/protect_sheet.png" /></p>
+			<p class="note">Il n'est pas possible de récupérer un mot de passe perdu ou oublié. Gardez vos mots de passe dans un endroit sécurisé.</p>
+			</li> 
+			<li>Activez les options appropriées sous la rubrique <b>Permettre à tous les utilisateurs de cette feuille</b> pour définir les opérations que les utilisateurs pourront effectuer. Les opérations par défaut sont <b>Sélectionner les cellules verrouillées</b> et <b>Sélectionner les cellules non verrouillées</b>.
+                <details class="details-example">
+                    <summary>Les opérations que les utilisateurs peuvent exécuter.</summary>
+                        <ul>
+                            <li>Sélectionner les cellules verrouillées</li>
+                            <li>Sélectionner les cellules non verrouillées</li>
+                            <li>Modifier les cellules</li>
+                            <li>Modifier les colonnes</li>
+                            <li>Modifier les lignes</li>
+                            <li>Insérer des colonnes</li>
+                            <li>Insérer des lignes</li>
+							<li>Insérer un lien hypertexte</li>
+							<li>Supprimer les colonnes</li>
+							<li>Supprimer les lignes</li>
+							<li>Trier</li>
+							<li>Utiliser Autofilter</li>
+							<li>Utiliser tableau et graphique croisés dynamiques</li>
+							<li>Modifier les objets</li>
+							<li>Modifier les scénarios</li>
+                        </ul>
+                    </details>
+			</li>
+		<li>Cliquez sur le bouton <b>Protéger</b> pour activer la protection. Une fois la feuille de calcul protégée, le bouton <b>Protéger la feuille de calcul</b> devient activé.
+			<p><img alt="Protéger la feuille de calcul activé" src="../images/protectsheet_highlighted.png" /></p>
+		</li>
+		<li>Pour désactiver la protection d'une feuille de calcul :
+				<ul>
+					<li>cliquez sur le bouton <b>Protéger la feuille de calcul</b>,
+					<p>ou</p>
+					<p>faites un clic droit sur l'onglet de la feuille de calcul protégée et sélectionnez <b>Déprotéger</b> de la liste d'options.</p>
+					<p><img alt="Déprotéger depuis l'onglet de la feuille de calcul" src="../images/unprotect_sheettab.png" /></p>
+					</li>
+					<li>Saisissez le mot de passe et cliquez sur <b>OK</b> si la fenêtre <b>Déprotéger la feuille</b> apparaît.
+					<p><img alt="Déprotéger la feuille" src="../images/unprotect_sheet.png" /></p>
+					</li>
+				</ul>
+			</ol>
+		</div>
+	</body>
+</html>

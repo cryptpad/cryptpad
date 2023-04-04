@@ -1,0 +1,19 @@
+{
+  "DE.Controllers.ApplicationController.convertationTimeoutText": "Đã quá thời gian chờ chuyển đổi.",
+  "DE.Controllers.ApplicationController.criticalErrorTitle": "Lỗi",
+  "DE.Controllers.ApplicationController.downloadErrorText": "Tải về không thành công.",
+  "DE.Controllers.ApplicationController.downloadTextText": "Đang tải tài liệu...",
+  "DE.Controllers.ApplicationController.errorAccessDeny": "Bạn đang cố gắng thực hiện hành động mà bạn không có quyền.<br>Vui lòng liên hệ với quản trị viên Server Tài liệu của bạn.",
+  "DE.Controllers.ApplicationController.errorDefaultMessage": "Mã lỗi: %1",
+  "DE.Controllers.ApplicationController.errorFilePassProtect": "Tài liệu được bảo vệ bằng mật khẩu và không thể mở được.",
+  "DE.Controllers.ApplicationController.errorUserDrop": "Không thể truy cập file ngay lúc này.",
+  "DE.Controllers.ApplicationController.notcriticalErrorTitle": "Cảnh báo",
+  "DE.Controllers.ApplicationController.textLoadingDocument": "Đang tải tài liệu",
+  "DE.Controllers.ApplicationController.textOf": "trên",
+  "DE.Controllers.ApplicationController.txtClose": "Đóng",
+  "DE.Controllers.ApplicationController.unknownErrorText": "Lỗi không xác định.",
+  "DE.Controllers.ApplicationController.unsupportedBrowserErrorText": "Trình duyệt của bạn không được hỗ trợ.",
+  "DE.Views.ApplicationView.txtDownload": "Tải về",
+  "DE.Views.ApplicationView.txtFullScreen": "Toàn màn hình",
+  "DE.Views.ApplicationView.txtShare": "Chia sẻ"
+}

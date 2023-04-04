@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Suchen und Ersetzen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search and replace functions in Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Suchen und Ersetzen</h1>
+			<p>Um in der aktuellen <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> nach Zeichen, Wörtern oder Phrasen suchen wollen, klicken Sie auf das Symbol <span class="icon icon-searchicon"></span> in der linken Seitenleiste, das Symbol <span class="icon icon-search_icon_header"></span> in der oberen rechten Ecke, oder verwenden Sie die Tastenkombination <em>Strg+F</em> (<em>Command+F</em> für MacOS), um das kleine Suchfeld zu öffnen, oder die Tastenkombination <em>Strg+H</em>, um das vollständige Suchfenster zu öffnen.</p>
+			<p>Ein kleiner <b>Suchen</b>-Bereich öffnet sich in der oberen rechten Ecke des Arbeitsbereichs.</p>
+			<p><img alt="Suchen-Bereich" src="../../../../../../common/main/resources/help/de/images/find_small.png" /></p>
+			<p>Um auf die erweiterten Einstellungen zuzugreifen, klicken Sie auf das Symbol <span class="icon icon-search_advanced"></span>.</p>
+			<p>Die Dialogbox <b>Suchen und ersetzen</b> wird geöffnet:</p>
+			<img alt="Dialogbox Suchen und Ersetzen" src="../images/search_window.png" />
+			<ol>
+				<li>Geben Sie Ihre Anfrage in das entsprechende Dateneingabefeld <b>Suchen</b> ein.</li>
+				<li>Um zwischen den gefundenen Vorkommen zu navigieren, klicken Sie auf eine der Pfeilschaltflächen. Die Schaltfläche <div class="icon icon-searchdownbutton"></div> zeigt das nächste Vorkommen an, während die Schaltfläche <div class="icon icon-searchupbutton"></div> das vorherige Vorkommen anzeigt.</li>
+				<li>Wenn Sie ein oder mehrere Vorkommen der gefundenen Zeichen <b>ersetzen</b> müssen, geben Sie den Ersetzungstext in das entsprechende Dateneingabefeld <b>Ersetzen durch</b> ein. Sie können wählen, ob Sie ein einzelnes derzeit markiertes Vorkommen oder alle Vorkommen ersetzen möchten, indem Sie auf die entsprechenden Schaltflächen <b>Ersetzen</b> und <b>Alle ersetzen</b> klicken.</li>
+				<li>
+					Geben Sie Suchoptionen an, indem Sie die erforderlichen Optionen unter den Eingabefeldern aktivieren:
+					<ul>
+						<li>Die Option <b>Innerhalb</b> wird verwendet, um nur das aktive <em>Blatt</em>, die gesamte <em>Arbeitsmappe</em> oder den <em>benutzerdefinierten Bereich</em> zu durchsuchen. Im letzteren Fall wird das Feld <b>Datenbereich auswählen</b> aktiv, in dem Sie den erforderlichen Bereich angeben können.</li>
+						<li>Die Option <b>Suchen</b> wird verwendet, um die Richtung anzugeben, in der Sie suchen möchten: nach rechts <b>nach Zeilen</b> oder nach unten <b>nach Spalten</b>.</li>
+						<li>Die Option <b>Suchen in</b> wird verwendet, um anzugeben, ob Sie den <b>Wert</b> der Zellen oder die zugrunde liegenden <b>Formeln</b> suchen möchten.</li>
+					</ul>
+				</li>
+				<li>
+					Geben Sie Suchparameter an, indem Sie die erforderlichen Optionen unter den Eingabefeldern aktivieren:
+					<ul>
+						<li>Die Option <b>Groß-/Kleinschreibung beachten</b> wird verwendet, um nur die Vorkommen zu finden, die in der gleichen Groß-/Kleinschreibung wie Ihre Anfrage eingegeben wurden (z. B. wenn Ihre Anfrage „Editor“ lautet und diese Option ausgewählt ist, werden Wörter wie „Editor“ oder „EDITOR“ usw. nicht gefunden).</li>
+						<li>Die Option <b>Gesamter Zellinhalt</b> wird verwendet, um nur die Zellen zu finden, die keine anderen Zeichen als die in Ihrer Anfrage angegebenen enthalten (z. B. wenn Ihre Anfrage „56“ lautet und diese Option ausgewählt ist, werden die Zellen mit Daten wie „0,56“ oder „156“ usw. nicht gefunden).</li>
+					</ul>
+				</li>
+			</ol>
+			<p>Alle Vorkommen werden in der Datei hervorgehoben und als Liste im Bereich <b>Suchen</b> auf der linken Seite angezeigt. Verwenden Sie die Liste, um zum gewünschten Vorkommen zu springen, oder verwenden Sie die Navigationsschaltflächen <span class="icon icon-searchupbutton"></span> und <span class="icon icon-searchdownbutton"></span>.</p>
+		</div>
+	</body>
+</html>
