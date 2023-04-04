@@ -369,6 +369,13 @@ else
 		// else - error
 		return error;
 	};
+	CFile.prototype["getFileAsBase64"] = function()
+	{
+		if (0 >= this.stream)
+			return "";
+
+		return new Uint8Array(Module["HEAP8"].buffer, this.stream, this.stream_size);
+	};
 	CFile.prototype["isNeedPassword"] = function()
 	{
 		return this._isNeedPassword;

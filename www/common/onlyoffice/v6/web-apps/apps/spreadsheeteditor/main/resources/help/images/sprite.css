@@ -24,164 +24,158 @@
 	height: 237px;
 }
 
-.big-equationtoolbar {
-	background-position: -660px 0px;
-	width: 523px;
-	height: 218px;
-}
-
 .big-reshaping {
-	background-position: -660px -218px;
+	background-position: -236px -407px;
 	width: 147px;
 	height: 162px;
 }
 
 .big-relativereference {
-	background-position: -660px -380px;
+	background-position: -660px 0px;
 	width: 449px;
 	height: 159px;
 }
 
 .big-maintain_proportions {
-	background-position: -807px -218px;
+	background-position: -660px -159px;
 	width: 146px;
 	height: 144px;
 }
 
 .big-connectors_moveshape {
-	background-position: -236px -407px;
+	background-position: -806px -159px;
 	width: 267px;
 	height: 134px;
 }
 
 .big-nestedfraction {
-	background-position: 0px -644px;
+	background-position: -660px -303px;
 	width: 257px;
 	height: 134px;
 }
 
 .big-formatastext {
-	background-position: -257px -644px;
+	background-position: -660px -437px;
 	width: 257px;
 	height: 115px;
 }
 
 .big-newslot {
-	background-position: -953px -218px;
+	background-position: -383px -407px;
 	width: 193px;
 	height: 115px;
 }
 
 .big-colorscales {
-	background-position: -240px -293px;
+	background-position: -917px -303px;
 	width: 142px;
 	height: 108px;
 }
 
 .big-autoforeach {
-	background-position: -660px -539px;
+	background-position: -917px -437px;
 	width: 119px;
 	height: 103px;
 }
 
 .big-sameforall {
-	background-position: -779px -539px;
+	background-position: -240px -293px;
 	width: 119px;
 	height: 103px;
 }
 
 .big-databars_diagrams {
-	background-position: -898px -539px;
+	background-position: -359px -293px;
 	width: 263px;
 	height: 96px;
 }
 
 .big-autofill {
-	background-position: -382px -293px;
+	background-position: 0px -644px;
 	width: 195px;
 	height: 96px;
 }
 
 .big-deleteequation {
-	background-position: -236px -541px;
+	background-position: -195px -644px;
 	width: 193px;
 	height: 96px;
 }
 
 .big-insertedequation {
-	background-position: -429px -541px;
+	background-position: -388px -644px;
 	width: 193px;
 	height: 96px;
 }
 
 .big-sparklines_types {
-	background-position: -514px -644px;
+	background-position: -660px -552px;
 	width: 208px;
 	height: 87px;
 }
 
 .big-connectors_firstshape {
-	background-position: -722px -644px;
+	background-position: -581px -644px;
 	width: 267px;
 	height: 77px;
 }
 
 .big-connectors_secondshape {
-	background-position: 0px -778px;
+	background-position: 0px -740px;
 	width: 267px;
 	height: 77px;
 }
 
 .big-moveelement {
-	background-position: -989px -644px;
+	background-position: -868px -552px;
 	width: 188px;
 	height: 60px;
 }
 
 .big-resizeelement {
-	background-position: -267px -778px;
+	background-position: -236px -569px;
 	width: 188px;
 	height: 60px;
 }
 
 .big-templateslist {
-	background-position: -577px -293px;
+	background-position: -576px -407px;
 	width: 83px;
 	height: 54px;
 }
 
 .big-nonetemplate {
-	background-position: -1109px -380px;
+	background-position: -1036px -437px;
 	width: 63px;
 	height: 48px;
 }
 
 .big-rightpart {
-	background-position: -455px -778px;
+	background-position: -383px -522px;
 	width: 173px;
 	height: 30px;
 }
 
 .big-spellchecking_language {
-	background-position: -953px -333px;
+	background-position: -917px -411px;
 	width: 180px;
 	height: 26px;
 }
 
 .big-fontfamily {
-	background-position: -503px -407px;
+	background-position: -868px -612px;
 	width: 87px;
 	height: 22px;
 }
 
 .big-pagebreak {
-	background-position: -807px -362px;
+	background-position: -806px -293px;
 	width: 185px;
 	height: 9px;
 }
 
 .big-sectionbreak {
-	background-position: -807px -371px;
+	background-position: -240px -396px;
 	width: 200px;
 	height: 8px;
 }

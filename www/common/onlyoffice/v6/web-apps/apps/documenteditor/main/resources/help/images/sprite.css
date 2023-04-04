@@ -12,200 +12,194 @@
 	height: 286px;
 }
 
-.big-equationtoolbar {
-	background-position: -357px 0px;
-	width: 523px;
-	height: 256px;
-}
-
 .big-picturecontentcontrol {
-	background-position: 0px -286px;
+	background-position: -357px 0px;
 	width: 198px;
 	height: 238px;
 }
 
 .big-image_form_inserted {
-	background-position: -198px -286px;
+	background-position: 0px -286px;
 	width: 235px;
 	height: 229px;
 }
 
 .big-reshaping {
-	background-position: -433px -286px;
+	background-position: -235px -286px;
 	width: 123px;
 	height: 147px;
 }
 
 .big-nestedfraction {
-	background-position: -556px -286px;
+	background-position: -358px -286px;
 	width: 146px;
 	height: 85px;
 }
 
 .big-newslot {
-	background-position: -433px -433px;
+	background-position: -235px -433px;
 	width: 192px;
 	height: 77px;
 }
 
 .big-formatastext {
-	background-position: -702px -286px;
+	background-position: -555px 0px;
 	width: 162px;
 	height: 75px;
 }
 
 .big-resizetable {
-	background-position: -625px -433px;
+	background-position: 0px -515px;
 	width: 233px;
 	height: 65px;
 }
 
 .big-moveelement {
-	background-position: -556px -371px;
+	background-position: -358px -371px;
 	width: 188px;
 	height: 60px;
 }
 
 .big-resizeelement {
-	background-position: 0px -524px;
+	background-position: -233px -515px;
 	width: 188px;
 	height: 60px;
 }
 
 .big-templateslist {
-	background-position: -744px -371px;
+	background-position: -555px -75px;
 	width: 83px;
 	height: 54px;
 }
 
 .big-nonetemplate {
-	background-position: -188px -524px;
+	background-position: -638px -75px;
 	width: 63px;
 	height: 48px;
 }
 
 .big-editedequation2 {
-	background-position: -251px -524px;
+	background-position: -555px -129px;
 	width: 97px;
 	height: 47px;
 }
 
 .big-email_address_inserted {
-	background-position: -348px -524px;
+	background-position: -421px -515px;
 	width: 211px;
 	height: 45px;
 }
 
 .big-checkbox_checked {
-	background-position: -559px -524px;
+	background-position: -555px -176px;
 	width: 127px;
 	height: 45px;
 }
 
 .big-phone_number_inserted {
-	background-position: -686px -524px;
+	background-position: -555px -221px;
 	width: 138px;
 	height: 44px;
 }
 
 .big-radio_button_checked {
-	background-position: 0px -584px;
+	background-position: -555px -265px;
 	width: 98px;
 	height: 41px;
 }
 
 .big-radio_button_inserted {
-	background-position: -98px -584px;
+	background-position: -555px -306px;
 	width: 114px;
 	height: 39px;
 }
 
 .big-checkbox_inserted {
-	background-position: -212px -584px;
+	background-position: -555px -345px;
 	width: 82px;
 	height: 38px;
 }
 
 .big-credit_card_inserted {
-	background-position: -294px -584px;
+	background-position: -555px -383px;
 	width: 159px;
 	height: 36px;
 }
 
 .big-datecontentcontrol {
-	background-position: -453px -584px;
+	background-position: -555px -419px;
 	width: 109px;
 	height: 33px;
 }
 
 .big-indents_ruler {
-	background-position: -357px -256px;
+	background-position: 0px -580px;
 	width: 469px;
 	height: 30px;
 }
 
 .big-tabstops_ruler {
-	background-position: 0px -625px;
+	background-position: 0px -610px;
 	width: 465px;
 	height: 30px;
 }
 
 .big-columnspacing {
-	background-position: -562px -584px;
+	background-position: 0px -640px;
 	width: 300px;
 	height: 30px;
 }
 
 .big-margins {
-	background-position: -465px -625px;
+	background-position: -469px -580px;
 	width: 227px;
 	height: 30px;
 }
 
 .big-select_text_languages {
-	background-position: -692px -625px;
+	background-position: -652px -129px;
 	width: 65px;
 	height: 28px;
 }
 
 .big-fontfamily {
-	background-position: -757px -625px;
+	background-position: -555px -452px;
 	width: 87px;
 	height: 22px;
 }
 
 .big-wrap_boundary {
-	background-position: 0px -655px;
+	background-position: -653px -265px;
 	width: 61px;
 	height: 22px;
 }
 
 .big-date_time_inserted {
-	background-position: -61px -655px;
+	background-position: -555px -474px;
 	width: 109px;
 	height: 21px;
 }
 
 .big-zip_code_inserted {
-	background-position: -170px -655px;
+	background-position: -555px -495px;
 	width: 92px;
 	height: 20px;
 }
 
 .big-pagebreak {
-	background-position: -625px -498px;
+	background-position: -357px -238px;
 	width: 185px;
 	height: 9px;
 }
 
 .big-columnbreak {
-	background-position: -198px -515px;
+	background-position: -421px -560px;
 	width: 200px;
 	height: 8px;
 }
 
 .big-sectionbreak {
-	background-position: -398px -515px;
+	background-position: -465px -610px;
 	width: 200px;
 	height: 8px;
 }

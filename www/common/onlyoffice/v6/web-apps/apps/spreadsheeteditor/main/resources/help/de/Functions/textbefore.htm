@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEXTVOR-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>TEXTVOR-Funktion</h1>
+			<p>Die Funktion <b>TEXTVOR</b> ist eine der Text- und Datenfunktionen. Sie wird verwendet, um Text zurückzugeben, der vor dem Begrenzen von Zeichen auftritt.</p>
+			<p>Die Formelsyntax der Funktion <b>TEXTVOR</b> ist:</p>
+			<p style="text-indent: 150px;"><b><em>TEXTVOR(text,delimiter,[instance_num], [match_mode], [match_end], [if_not_found])</em></b></p>
+			<p>dabei gilt</p>
+			<p style="text-indent: 50px;"><b><em>text</em></b> ist der Text, in dem die Suche durchgeführt wird. Wildcard-Zeichen sind nicht erlaubt. Wenn <b>text</b> ein leerer String ist, gibt die Funktion leeren Text zurück.</p>
+			<p style="text-indent: 50px;"><b><em>delimiter</em></b> ist der Text, der den Punkt markiert, vor dem die Funktion den Text extrahiert.</p>
+			<p style="text-indent: 50px;"><b><em>instance_num</em></b> ist ein optionales Argument. Die Instanz des Trennzeichens, vor dem die Funktion den Text extrahiert. Standardmäßig ist <b>instance_num</b> <b>1</b> gleich. Eine negative Zahl beginnt die Textsuche am Ende.</p>
+			<p style="text-indent: 50px;"><b><em>match_mode</em></b> ist ein optionales Argument. Es wird verwendet, um zu bestimmen, ob bei der Textsuche zwischen Groß- und Kleinschreibung unterschieden wird. Groß- und Kleinschreibung werden standardmäßig beachtet. Die folgenden Werte werden verwendet: <b>0</b>, um die Groß-/Kleinschreibung zu beachten; <b>1</b>, um die Groß-/Kleinschreibung nicht zu beachten.</p>
+			<p style="text-indent: 50px;"><b><em>match_end</em></b> ist ein optionales Argument. Es behandelt das Ende des Textes als Trennzeichen. Standardmäßig ist der Text eine exakte Übereinstimmung. Folgende Werte werden verwendet: <b>0</b>, um das Trennzeichen mit dem Ende des Textes <b>nicht</b> abzugleichen; <b>1</b>, um das Trennzeichen mit dem Ende des Textes abzugleichen.</p>
+			<p style="text-indent: 50px;"><b><em>if_not_found</em></b> ist ein optionales Argument. Es legt einen Wert fest, der zurückgegeben wird, wenn keine Übereinstimmung gefunden wird.</p>
+			<p>Anwendung der Funktion <b>TEXTVOR</b>:</p>
+			<ol>
+				<li>Wählen Sie die Zelle aus, in der Sie das Ergebnis anzeigen möchten,</li>
+				<li>
+					Klicken Sie auf das Symbol <b>Funktion</b> <div class="icon icon-insertfunction"></div> in der oberen Symbolleiste
+					<br />oder klicken Sie mit der rechten Maustaste in eine ausgewählte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Menü
+					<br />oder klicken Sie auf das Symbol <div class="icon icon-function"></div> in der Bearbeitungsleiste.
+				</li>
+				<li>Wählen Sie aus der Liste die Funktionsgruppe <b>Text und Daten</b>.</li>
+				<li>Klicken Sie auf die Funktion <b>TEXTVOR</b>.</li>
+				<li>Geben Sie die erforderlichen Argumente ein, indem Sie sie durch Kommas trennen.</li>
+				<li>Drücken Sie die <b>Eingabe</b>-Taste.</li>
+			</ol>
+			<p>Das Ergebnis wird in der ausgewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="TEXTVOR-Funktion" src="../images/textbefore.png" /></p>
+		</div>
+	</body>
+</html>

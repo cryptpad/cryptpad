@@ -25,7 +25,7 @@
   "SSE.ApplicationController.errorUpdateVersionOnDisconnect": "A conexão à internet foi restabelecida, e a versão do arquivo foi alterada. <br> Antes de continuar seu trabalho, transfira o arquivo ou copie seu conteúdo para assegurar que nada seja perdido, e recarregue esta página.",
   "SSE.ApplicationController.errorUserDrop": "O arquivo não pode ser acessado agora.",
   "SSE.ApplicationController.notcriticalErrorTitle": "Aviso",
-  "SSE.ApplicationController.openErrorText": "Ocorreu um erro ao abrir o arquivo",
+  "SSE.ApplicationController.openErrorText": "Ocorreu um erro ao abrir o arquivo.",
   "SSE.ApplicationController.scriptLoadError": "A conexão está muito lenta, e alguns dos componentes não puderam ser carregados. Por favor, recarregue a página.",
   "SSE.ApplicationController.textAnonymous": "Anônimo",
   "SSE.ApplicationController.textGuest": "Convidado(a)",
