@@ -2897,22 +2897,28 @@ define([
     
                     var listOfLists = [];
                     Object.keys(_answers).forEach(function(a) {
-                        listOfLists.push(_answers[a].msg[uid]);
+                        if (_answers[a].msg[uid] !== undefined) {
+                            listOfLists.push(_answers[a].msg[uid]);
+                        }
+                        
                     });
-                    return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
+
+                    if (Object.keys(listOfLists).length !== 0) {
+                        return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
+                    }
                 };
 
                 var condorcetWinnerDiv = h('div.cp-form-block-content');
                 
 
                 if (type === "sort") {
-                    if (summary) {
+                    if (summary && showCondorcetWinner(answers, block.opts, uid, form) !== undefined) {
 
                         var calculateCondorcet = function() {
                             var condorcetWinner;                        
                             var detailedResults;
                             var condorcetResults = h('span');
-                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0][0];
+                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0];
     
                             if (form[uid].condorcetmethod === 'schulze') {
                                 condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
@@ -2926,7 +2932,7 @@ define([
                                 });
                                 return [condorcetResults, detailedResults];
                             } else if (form[uid].condorcetmethod === 'ranked') {
-                                var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[0][1];
+                                var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[1];
                                 condorcetWinner = rankedResults[0]; 
     
                                 detailedResults = Object.keys(sortedRankDict).map(function(result) {

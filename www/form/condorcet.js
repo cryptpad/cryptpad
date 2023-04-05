@@ -28,7 +28,6 @@ define([], function () {
 
         var comparePairs = function() {
             var pairs = getPermutations(optionArray, 2);
-            
             var pairDict = {};
             pairs.forEach(function (pair) {                        
                 pairDict[pair] = 0;
@@ -203,11 +202,9 @@ define([], function () {
             var rankedPairWinner = rankedPairsMethod(optionArray, listOfLists);
             var method = form[uid].condorcetmethod;
             if (method === "schulze") {
-                condorcetWinner[0] = schulzeWinner;
-                condorcetWinner[1] = rankedPairWinner;
+                condorcetWinner = schulzeWinner;
             } else if (method === "ranked") {
-                condorcetWinner[0] = rankedPairWinner;
-                condorcetWinner[1] = schulzeWinner;
+                condorcetWinner = rankedPairWinner;
             }
             return condorcetWinner;
         };
