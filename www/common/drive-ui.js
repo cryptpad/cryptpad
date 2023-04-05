@@ -4934,10 +4934,14 @@ console.error(el, data, app, isRo);
                     var auditorHash;
                     if (parsed.hash && parsed.type === "form") {
                         var formData = Hash.getFormData(null, parsed.hash, data.password);
-                        console.log(formData);
                         if (formData) {
                             auditorHash = formData.form_auditorHash;
                         }
+                    }
+
+                    var rev;
+                    if (parsed.revocable) {
+                        rev = { channel:data.channel }
                     }
 
                     var roParsed = Hash.parsePadUrl(data.roHref);
@@ -4952,7 +4956,8 @@ console.error(el, data, app, isRo);
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: ro && roParsed.hash,
-                            fileHash: parsed.hash
+                            fileHash: parsed.hash,
+                            revocableData: rev
                         },
                         auditorHash: auditorHash,
                         fileData: {

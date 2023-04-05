@@ -15,6 +15,44 @@ define([
                     cursor: clientObj.cursor
                 }, [client]);
     */
+
+    /*
+id: {
+    channel: channelId,
+    atime: 0,
+    ctime: 0,
+    title: '',
+    r: 1,
+    href: '', 
+    accesses: [] // list of hrefs
+}
+
+// XXX PROPOSAL 1
+//     Use HREF for pad "shared directlywith you"
+//     Use other field for URLs shared with you
+
+// XXX "href" and "accesses" subject to change
+// many parts of CryptPad require "href", here we need all of them
+// let's consider for now that we have one href and a list of other accesses consisting of other hrefs
+// try to store our moderator access there for the prototype?
+    */
+
+
+    var getStoredPadPasswords = function (ctx, padChan) {
+        var pw = [''];
+        ctx.Store.getAllStores().forEach(function (s) {
+            // we may have multiple occurences in each team because of shared folders
+            var pads = s.manager.findChannel(padChan);
+            pads.forEach(function (obj) {
+                var padData = obj.data;
+                if (!padData || !padData.password) { return; }
+                if (pw.includes(padData.password)) { return; }
+                pw.push(padData.password);
+            });
+        });
+        return pw;
+    };
+
     var getPadMetadata = function (ctx, channel, cb) {
         ctx.Store.getPadMetadata(null, {
             channel: channel
@@ -23,7 +61,7 @@ define([
         });
     };
 
-    var isValidRotateMessage = function (ctx, log, newSeeds, _cb) {
+    var isValidRotateMessage = function (ctx, log, newSeeds, channel, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
         var rotateUid = newSeeds.uid;
@@ -40,7 +78,10 @@ define([
         if (!expectedKeys.hash) { return void cb(false); } // Invalid "uid"
 
 
-        var check = function (pw) {
+        var knownPasswords = getStoredPadPasswords(ctx, channel); // XXX CACHE THIS VALUE WHEN MULTIPLE BOXES LOADED FOR A SINGLE PAD
+
+
+        var isValidPw = function (pw) {
             var secret = Hash.getRevocableSecret({
                 channel: '', // Not used here
                 viewerSeedStr: newSeeds.viewer,
@@ -52,6 +93,21 @@ define([
             var h = Revocable.hashBytes(c);
 
             var valid = h === expectedKeys.hash && (!newSeeds.editor || v === expectedKeys.validate);
+            return valid;
+        };
+
+        var check = function (pw) {
+            var valid;
+            if (pw === false) {
+                valid = knownPasswords.some(function (password) {
+                    var v = isValidPw(password);
+                    if (!v) { return; }
+                    pw = password;
+                    return true;
+                });
+            } else {
+                valid = isValidPw(pw);
+            }
             if (valid) { return void cb(true, pw); }
             return void cb(false);
             /*
@@ -68,7 +124,7 @@ define([
             });
             */
         };
-        check();
+        check(false);
     };
 
 
@@ -85,19 +141,20 @@ define([
 
         var MAILBOX_COMMANDS = {
             // Only the INIT message can add a private key AND must be line 0
-            INIT: function (msg, log, i, waitFor) {
+            INIT: function (msg, log, channel, i, waitFor) {
                 if (i || !msg.content || !msg.content.doc || !msg.content.edPrivate) { return; }
-                isValidRotateMessage(ctx, log, msg.content.doc, waitFor(function (valid, password) {
+                isValidRotateMessage(ctx, log, msg.content.doc, channel,
+                                        waitFor(function (valid, password) {
                     if (!valid) { return; }
                     data = JSON.parse(JSON.stringify(msg.content));
                     data.password = password;
                 }));
             },
-            ROTATE: function (msg, log, i, waitFor) {
+            ROTATE: function (msg, log, channel, i, waitFor) {
                 if (!i || !data.doc) { return; }
                 // Trust that all the keys you need are there
                 // Make sure it was sent by the same moderator than in the moderators log
-                isValidRotateMessage(ctx, log, msg, waitFor(function (valid, password) {
+                isValidRotateMessage(ctx, log, msg, channel, waitFor(function (valid, password) {
                     if (!valid) { return; }
                     data.doc = msg.content
                     data.password = password;
@@ -119,10 +176,8 @@ define([
             n = n(function (waitFor) {
                 // Get latest metadata and parse incoming messsages
                 getPadMetadata(ctx, channel, waitFor(function (md) {
-                    console.warn(channel, md);
                     if (md && md.error) { return; }
-                    var log = Revocable.getSanitizedLog(md);
-                    console.warn(log);
+                    var log = Revocable.getSanitizedLog(md); // XXX CACHE WHEN LOADING MULTIPLE BOXES
 
                     var nn = nThen;
 
@@ -131,7 +186,7 @@ define([
                             var type = msg.type;
                             var f = MAILBOX_COMMANDS[type];
                             if (!f) { return; }
-                            f(msg, log, i, w);
+                            f(msg, log, channel, i, w);
                         }).nThen;
                     });
 
@@ -148,7 +203,7 @@ define([
         };
 
         var getContent = function () {
-            return JSON.parse(JSON.stringify(data));
+            return Util.clone(data);
         };
         var getChannel = function () {
             return channel;
@@ -161,21 +216,36 @@ define([
         };
     };
 
-    var loadMailbox = function (ctx, clientId, seed, onNewKeys, cb) {
-        // XXX ADD TO CTX
+    var loadMailbox = function (ctx, clientId, boxData, onNewKeys, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+
+        var seed = boxData.seed;
 
 
         var secret = Hash.getRevocable('pad', seed);
 
-        if (ctx.mailboxes[secret.channel]) {
+        var box = ctx.mailboxes[secret.channel];
+        if (box) {
             // XXX return existing box
+            if (!box.clients.includes(clientId)) { box.clients.push(clientId); }
+            return void cb(box.parse.getContent());
         }
 
-        var box = ctx.mailboxes[secret.channel] = {
+        box = ctx.mailboxes[secret.channel] = {
             messages: [],
             clients: [clientId],
             ready: false
         };
+
+
+        if (boxData.link || !boxData.store) {
+            box.origin = 'URL ' + seed; // XXX
+        } else if (boxData.fId) {
+            box.origin = 'SF ' + boxData.fId; // XXX
+        } else if (boxData.store) {
+            box.origin = boxData.store.id ? ('Team ' + boxdata.store.id) // XXX
+                                          : 'My Drive'; // XXX
+        }
 
         var crypto = Crypto.Mailbox.createEncryptor({
             curvePrivate: secret.curvePrivate,
@@ -200,6 +270,10 @@ define([
             onNewKeys(keys);
         });
 
+
+        // XXX
+        // box.wc = webChannel;
+        // box.onReconnect
 
         config.onReady = function () {
             if (box.ready) { return; }
@@ -226,6 +300,92 @@ define([
 
     };
 
+    var findMailboxesForPad = function (ctx, padChan) {
+        return Object.keys(ctx.mailboxes).filter(function (id) {
+            return ctx.mailboxes[id].padChan === padChan;
+        }).map(function (id) {
+            return ctx.mailboxes[id];
+        });
+    };
+
+    var getBestKeysForPad = function (ctx, padChan) {
+        var boxes = findMailboxesForPad(ctx, padChan);
+        var best;
+        boxes.some(function (box) {
+            // XXX when a box doesn't receive new keys, find a way to know it's deprecated
+            // XXX one option is to store the last key hash for each channel somewhere
+            // XXX another option is to send a message to mailboxes when we revoke their access
+            var keys = box.parse && box.parse.getContent();
+            if (keys.doc.moderator) { // if we have moderator, we won't find better, abort
+                best = keys;
+                return true;
+            }
+            if (best && best.doc.editor) { return; } // we already had editor, next
+            if (keys.doc.editor) { // we had at most viewer and now editor, update best
+                best = keys;
+            }
+            if (best && best.doc.viewer) { return; } // we already had viewer, next
+            best = keys; // We had nothing, preserve
+        });
+        return best;
+    };
+
+    var getSeedFromHref = function (href) {
+        var p = Hash.parsePadUrl(href);
+        if (!p.revocable) { return; }
+        return p.hashData && p.hashData.key;
+    };
+    var loadMailboxesFromChannel = function (ctx, data, clientId, cb) {
+        // Compute list of mailboxes to load for this channel
+        var accesses = [];
+        var addSeed = function (seedData) {
+            if (!seedData || !seedData.seed) { return; }
+            if (!accesses.some(function (obj) {
+                return obj.seed === seedData.seed;
+            })) { accesses.push(seedData); }
+        };
+        ctx.Store.getAllStores().forEach(function (s) {
+            // we may have multiple occurences in each team because of shared folders
+            var pads = s.manager.findChannel(data.channel);
+            pads.forEach(function (obj) {
+                var padData = obj.data;
+                if (!padData) { return; }
+                addSeed({
+                    seed: getSeedFromHref(padData.href),
+                    store: s,
+                    password: padData.password,
+                    fId: obj.fId,
+                    id: obj.id
+                });
+                if (Array.isArray(padData.accesses)) {
+                    obj.accesses.forEach(function (href) {
+                        addSeed({
+                            seed: getSeedFromHref(href),
+                            store: s,
+                            password: padData.password,
+                            link: true, // XXX only link in data.accesses?
+                            id: obj.id
+                        });
+                    });
+                }
+            });
+        });
+
+        var n = nThen;
+        accesses.map(function (obj) {
+            n = n(function (waitFor) {
+                loadMailbox(ctx, clientId, obj, function (newKeys) {
+                    // XXX called when we received new keys in real time
+                }, waitFor());
+            }).nThen;
+        });
+
+        n(function () {
+            var keys = getBestKeysForPad(ctx, data.channel);
+            cb(keys || {error: 'ENOENT'});
+        });
+    };
+
     // XXX password history?
     // OR keep deleting history on password change (easier)
 
@@ -239,14 +399,186 @@ define([
     var loadPadFromBox = function (ctx, data, clientId, cb) {
         var seed = data.seed;
 
-        loadMailbox(ctx, clientId, seed, function (obj) {
+        loadMailbox(ctx, clientId, {
+            seed: seed
+        }, function (newKeys) {
             // XXX called when we received new keys in real time
         }, function (obj) {
             if (obj && obj.error) { return void cb(obj); }
+            // XXX we now know the channel ID and we can load the other mailboxes on this channel
             console.error(obj);
-            cb(obj);
+            var chan = obj.channel;
+            loadMailboxesFromChannel(ctx, {channel: chan}, clientId, function (bestKeys) {
+                cb(bestKeys);
+            });
         });
     };
+
+
+
+    var listPadAccess = function (ctx, data, clientId, cb) {
+        var channel = data.channel;
+        var teamId = data.teamId;
+        if (!channel) { return void cb({error: 'EINVAL'}); }
+
+        var boxes = findMailboxesForPad(ctx, channel);
+
+        nThen(function (waitFor) {
+            // Either the pad is stored and we can get a mailbox from our drive
+            // or it isn't stored but ti means it's already loaded (share modal from the pad)
+            if (boxes.length) { return; }
+            loadMailboxesFromChannel(ctx, data, clientId, waitFor());
+        }).nThen(function (waitFor) {
+            var best = getBestKeysForPad(ctx, data.channel);
+            if (!best) { return void cb({error: 'ENOENT'}); }
+
+            var myKeys = findMailboxesForPad(ctx, data.channel).map(function (box) {
+                var c = box.parse.getContent();
+                return {
+                    key: c.edPublic,
+                    origin: box.origin,
+                    moderator: Boolean(c.doc.moderator)
+                };
+            });
+
+            var secret = Hash.getRevocableSecret({
+                channel: '',
+                viewerSeedStr: best.doc.viewer,
+                editorSeedStr: best.doc.editor,
+            }, best.password);
+            var crypto = Crypto.createEncryptor(secret.keys);
+
+            getPadMetadata(ctx, channel, waitFor(function (md) {
+                if (md && md.error) { return; }
+                var access = md.access;
+                Object.keys(access).forEach(function (ed) {
+                    var a = access[ed];
+                    if (a.mailbox) {
+                        try {
+                            a.mailbox = crypto.decrypt(a.mailbox, true, true);
+                        } catch (e) { console.error(e); }
+                    }
+                    if (a.notes) {
+                        try {
+                            a.notes = JSON.parse(crypto.decrypt(a.notes, true, true));
+                        } catch (e) { console.error(e); }
+                    }
+                });
+                cb({
+                    list: access,
+                    myKeys: myKeys,
+                });
+            }));
+        });
+
+    };
+
+
+/*
+updateAccess({
+    channel: channel,
+    value: {
+        user: userKey,
+        access: newAccess,
+        signature: signature
+    },
+    from: myAccessKey (in case I have multiple accesses for this pad)
+}
+*/
+
+    var getNetfluxId = function (ctx) {
+        try {
+            return ctx.store.network.webChannels[0].myID;
+        } catch (e) { console.error(e); return; }
+    };
+    var findBoxFromKey = function (ctx, edPublic) {
+        var _box;
+        Object.keys(ctx.mailboxes).some(function (key) {
+            var box = ctx.mailboxes[key];
+            var c = box.parse && box.parse.getContent();
+            if (c.edPublic === edPublic) {
+                console.error('ok');
+                _box = box;
+                return true;
+            }
+        });
+        return _box;
+    };
+
+    /*
+    ctx.Store.anonRpcMsg(clientId, {
+        msg: 'SET_REVOCATION_METADATA',
+        data: {
+            data: {
+                command: 'UPDATE_ACCESS',
+                channel: channel,
+                value: {
+                    user: edPublic,
+                    access: newAccess,
+                    signature: signedModeratorLog (add or remove)
+                }
+            },
+            signature: sign(data),
+            key: key
+        }
+    }, cb);
+    */
+    var updateAccess = function (ctx, obj, clientId, cb) {
+        var key = obj.from;
+        var box = findBoxFromKey(ctx, key);
+        if (!box) { return void cb({error: 'EINVAL'}); }
+        var edPrivate = box.parse.getContent().edPrivate;
+
+        getPadMetadata(ctx, obj.channel, function (md) {
+            if (md && md.error) { return; }
+            var log = Revocable.getSanitizedLog(md);
+            var last = log[log.length-1];
+
+            // Sign an "add" or "remove" log in case this user was or will be a moderator
+            var value = obj.value; // {user, access}
+            var newRights = value && value.access;
+            var toSign;
+            if (!Revocable.isModerator(newRights)) {
+                toSign = Revocable.removeLog(value.user, Revocable.hashMsg(last));
+            } else {
+                toSign = Revocable.addLog(value.user, Revocable.hashMsg(last));
+            }
+            var logSig = Revocable.signLog(toSign, edPrivate);
+            value.signature = logSig;
+
+            var data = {
+                channel: obj.channel,
+                command: 'UPDATE_ACCESS',
+                value: value
+            };
+
+            var netfluxId = getNetfluxId(ctx);
+            var sig = Revocable.signLog([JSON.stringify(data), netfluxId], edPrivate);
+
+console.warn({
+                msg: 'SET_REVOCATION_METADATA',
+                data: {
+                    data: data,
+                    signature: sig,
+                    key: key
+                }
+            });
+
+            ctx.Store.anonRpcMsg(clientId, {
+                msg: 'SET_REVOCATION_METADATA',
+                data: {
+                    data: data,
+                    signature: sig,
+                    key: key
+                }
+            }, function (obj) {
+                console.error(obj);
+                cb(obj);
+            });
+
+        });
+    };
+
 
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
@@ -309,6 +641,12 @@ define([
         revocation.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
+            if (cmd === 'LIST_ACCESS') {
+                return void listPadAccess(ctx, data, clientId, cb);
+            }
+            if (cmd === 'UPDATE_ACCESS') {
+                return void updateAccess(ctx, data, clientId, cb);
+            }
             if (cmd === 'LOAD_PAD') {
                 return void loadPadFromBox(ctx, data, clientId, cb);
             }

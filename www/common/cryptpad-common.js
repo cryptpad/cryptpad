@@ -748,11 +748,12 @@ define([
         postMessage("SET_DISPLAY_NAME", value, cb);
     };
 
-    common.setPadAttribute = function (attr, value, cb, href) {
+    common.setPadAttribute = function (attr, value, cb, href, channel) {
         cb = cb || function () {};
         href = Hash.getRelativeHref(href || currentPad.href);
         postMessage("SET_PAD_ATTRIBUTE", {
             href: href,
+            channel: channel,
             attr: attr,
             value: value
         }, function (obj) {
@@ -760,13 +761,14 @@ define([
             cb();
         });
     };
-    common.getPadAttribute = function (attr, cb, href) {
+    common.getPadAttribute = function (attr, cb, href, channel) {
         href = Hash.getRelativeHref(href || currentPad.href);
         if (!href) {
             return void cb('E404');
         }
         postMessage("GET_PAD_ATTRIBUTE", {
             href: href,
+            channel: channel,
             attr: attr,
         }, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }

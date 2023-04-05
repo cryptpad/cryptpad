@@ -516,6 +516,13 @@ define([
                             edPrivate: obj.edPrivate,
                             edPublic: obj.edPublic
                         };
+                        hashes = {
+                            editHash: currentPad.hash,
+                            revocableData: {
+                                channel: secret.channel,
+                                keys: secret.revocation
+                            }
+                        };
                         done();
                     }));
                 }).nThen(function (w) {
@@ -952,7 +959,6 @@ define([
 
                 sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
                     var href;
-                    return; // XXX REVOCATION XXX XXX fix hases
                     if (readOnly && hashes.editHash) {
                         // If we have a stronger hash, use it for pad attributes
                         href = window.location.pathname + '#' + hashes.editHash;
@@ -969,7 +975,7 @@ define([
                             error: e,
                             data: data
                         });
-                    }, href);
+                    }, href, data.channel);
                 });
                 sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
                     var href;
@@ -980,7 +986,7 @@ define([
                     if (data.href) { href = data.href; }
                     Cryptpad.setPadAttribute(data.key, data.value, function (e) {
                         cb({error:e});
-                    }, href);
+                    }, href, data.channel);
                 });
 
                 // Add or remove our mailbox from the list if we're an owner
@@ -2177,20 +2183,31 @@ define([
 
                     // Create initial accesses
                     var access = {};
-                    var modData = curvePublic ? { curvePublic: curvePublic }
-                        : { url: Utils.Hash.getRevocableHashFromKeys(parsed.type, moderator) };
+                    var modData = curvePublic ? {
+                        value: curvePublic,
+                        type: 'user',
+                        note: 'Document creator' // XXX
+                    } : {
+                        value: Utils.Hash.getRevocableHashFromKeys(parsed.type, moderator),
+                        type: 'link',
+                        note: 'Initial moderator access' // XXX
+                    };
+                    console.error('MODERATOR HASH', Utils.Hash.getRevocableHashFromKeys(parsed.type, moderator));
                     access[moderator.edPublic] = {
                         rights: 'rwmd',
                         mailbox: crypto.encrypt(moderator.channel),
+                        curvePublic: moderator.curvePublic,
                         //contact: crypto.encrypt(), // XXX my contact mailbox
                         notes: crypto.encrypt(JSON.stringify(modData)),
-                        validateKey: moderator.keys.edPublic
                     };
                     access[editor.edPublic] = {
                         rights: 'rw',
                         mailbox: crypto.encrypt(editor.channel),
+                        curvePublic: editor.curvePublic,
                         notes: crypto.encrypt(JSON.stringify({
-                            url: Utils.Hash.getRevocableHashFromKeys(parsed.type, editor)
+                            value: Utils.Hash.getRevocableHashFromKeys(parsed.type, editor),
+                            type: 'link',
+                            note: 'Initial editor access' // XXX
                         }))
                     };
 

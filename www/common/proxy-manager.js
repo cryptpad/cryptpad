@@ -1106,6 +1106,10 @@ define([
     // NOTE: we also return the atime, so that we can also check with each team manager
     var getPadAttribute = function (Env, data, cb) {
         cb = cb || function () {};
+
+
+
+        // XXX REVOCATION: get shared folder from their channel ID
         var sfId = Env.user.userObject.getSFIdFromHref(data.href);
         if (sfId) {
             var sfData = getSharedFolderData(Env, sfId);
@@ -1118,7 +1122,10 @@ define([
             });
             return;
         }
-        var datas = findHref(Env, data.href);
+
+        // With the revocation system, pads can have multiple URLs (mailboxes).
+        // We can only search them with channel ID.
+        var datas = data.channel ? findChannel(Env, data.channel) : findHref(Env, data.href);
         var res = {};
         datas.forEach(function (d) {
             var atime = d.data.atime;

@@ -36,6 +36,13 @@ define([
         var data = {};
         nThen(function (waitFor) {
             var priv = common.getMetadataMgr().getPrivateData();
+
+            var hashes = opts.hashes || priv.hashes;
+            var channel;
+            if (hashes && hashes.revocableData) {
+                channel = hashes.revocableData.channel;
+            }
+
             var base = priv.origin;
             // this fetches attributes from your shared worker's memory
             common.getPadAttribute('', waitFor(function (err, val) {
@@ -70,7 +77,7 @@ define([
                 Util.extend(data, val);
                 if (data.href) { data.href = base + data.href; }
                 if (data.roHref) { data.roHref = base + data.roHref; }
-            }), opts.href);
+            }), opts.href, channel);
 
             if (opts.channel) { data.channel = opts.channel; }
             // If this is a file, don't try to look for metadata

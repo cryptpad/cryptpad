@@ -523,19 +523,21 @@ define([
     };
 
     // href is optional here: if not provided, we use the href of the current tab
-    funcs.getPadAttribute = function (key, cb, href) {
+    funcs.getPadAttribute = function (key, cb, href, channel) {
         ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {
             key: key,
+            channel: channel,
             href: href
         }, function (err, res) {
             cb(err || res.error, res && res.data);
         });
     };
-    funcs.setPadAttribute = function (key, value, cb, href) {
+    funcs.setPadAttribute = function (key, value, cb, href, channel) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
             key: key,
             href: href,
+            channel: channel,
             value: value
         }, cb);
     };

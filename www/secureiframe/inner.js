@@ -44,6 +44,7 @@ define([
 
         // Share modal
         create['share'] = function (data) {
+            console.error(data);
             var priv = metadataMgr.getPrivateData();
             var friends = common.getFriends();
 

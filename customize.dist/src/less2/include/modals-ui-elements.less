@@ -2,6 +2,7 @@
 @import (reference) "./variables.less";
 @import (reference) "./browser.less";
 @import (reference) "./markdown.less";
+@import (reference) "./dropdown.less";
 
 .modals-ui-elements_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -30,6 +31,39 @@
                 }
                 .cp-radio {
                     margin: 0 0 5px 0;
+                }
+            }
+        }
+    }
+    div.cp-share-access-list-container {
+        .dropdown_main();
+        .cp-dropdown-container {
+            position: unset;
+        }
+        div.cp-share-access-list {
+            display: flex;
+            flex-flow: column;
+            div.cp-share-access {
+                display: flex;
+                max-width: 100%;
+                align-items: center;
+                &:not(:last-child) {
+                    margin-bottom: 10px;
+                }
+                & > *:not(:last-child) {
+                    margin-right: 10px;
+                }
+                i {
+                    width: 25px;
+                    text-align: center;
+                }
+                .cp-share-access-id {
+                    flex: 1;
+                    min-width: 0;
+                    margin-bottom: 0;
+                }
+                .cp-checkmark-mark {
+                    margin-right: 0;
                 }
             }
         }
