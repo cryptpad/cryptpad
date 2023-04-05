@@ -180,6 +180,7 @@ define([
 
         var getSaveRes = function () {
             return {
+                text: opts.text,
                 maxLength: getLengthVal ? getLengthVal() : undefined,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
@@ -1757,6 +1758,173 @@ define([
 
                 return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
             },
+            icon: h('i.cptools.cptools-form-paragraph')
+        },
+        textarea2: {
+            defaultOpts: {
+                text: Messages.form_description_default,
+                maxLength: 1000
+            },
+            get: function (opts) {
+                if (!opts) { opts = Util.clone(TYPES.md2.defaultOpts); }
+                var text = h('textarea', {maxlength: opts.maxLength});
+                var $text = $(text);
+                var charCount = h('div.cp-form-type-textarea-charcount');
+                var updateChar = function () {
+                    var l = $text.val().length;
+                    var maxLength = opts.maxLength;
+                    if (l > opts.maxLength) {
+                        $text.val($text.val().slice(0, opts.maxLength));
+                        l = $text.val().length;
+                    }
+
+                    $(charCount).text(Messages._getKey('form_maxLength', [
+                        l,
+                        maxLength
+                    ]));
+                };
+                updateChar();
+
+                var md = h('div', {
+                    id: 'form'+Util.uid()
+                }, opts.text)
+
+                var tag = h('div', {
+                    id: 'form'+Util.uid()
+                }, md, text, charCount);
+
+                var $tag = $(md);
+                DiffMd.apply(DiffMd.render(opts.text || ''), $tag, APP.common);
+                $tag.find('a').click(linkClickHandler);
+
+                var evChange = Util.throttle(function () {
+                    evOnChange.fire();
+                }, 500);
+                    
+                $text.on('change keypress keyup keydown', function () {
+                    setTimeout(updateChar);
+                    evChange();
+                });
+                var cursorGetter;
+                var setCursorGetter = function (f) { cursorGetter = f; };
+                return {
+                    tag: tag,
+                    isEmpty: function () { return !$text.val().trim(); },
+                    getValue: function () { return $text.val().slice(0, opts.maxLength); },
+                    setValue: function (val) {
+                        $text.val(val);
+                        updateChar();
+                    },
+                    setEditable: function (state) {
+                        if (state) { $(tag).find('textarea').removeAttr('disabled'); }
+                        else { $(tag).find('textarea').attr('disabled', 'disabled'); }
+                    },
+                    edit: function (cb, tmp) {
+                        // Cancel changes
+                        var cancelBlock = saveAndCancelOptions(cb);
+
+                        var text = opts.text;
+                        var cursor;
+                        if (tmp && tmp.cursor) {
+                            cursor = tmp.cursor;
+                        }
+
+                        var block, editor;
+                        if (tmp && tmp.block) {
+                            block = tmp.block;
+                            editor = tmp.editor;
+                        }
+
+                        var cm;
+                        if (!block || !editor) {
+                            var t = h('textarea');
+                            block = h('div.cp-form-edit-options-block', [t]);
+                            cm = SFCodeMirror.create("gfm", CMeditor, t);
+                            editor = cm.editor;
+                            editor.setOption('lineNumbers', true);
+                            editor.setOption('lineWrapping', true);
+                            editor.setOption('styleActiveLine', true);
+                            editor.setOption('readOnly', false);
+                        }
+
+                        setTimeout(function () {
+                            editor.focus();
+                            if (!(tmp && tmp.editor)) {
+                                editor.setValue(text);
+                            } else {
+                                SFCodeMirror.setValueAndCursor(editor, editor.getValue(), text);
+                            }
+                            editor.refresh();
+                            editor.save();
+                            editor.focus();
+                        });
+
+                        if (APP.common && !(tmp && tmp.block) && cm) {
+                            var markdownTb = APP.common.createMarkdownToolbar(editor, {
+                                embed: function (mt) {
+                                    editor.focus();
+                                    editor.replaceSelection($(mt)[0].outerHTML);
+                                }
+                            });
+                            $(block).prepend(markdownTb.toolbar);
+                            $(markdownTb.toolbar).show();
+                            cm.configureTheme(APP.common, function () {});
+                        }
+
+                        getLengthVal = function () {
+                            var val = Number($(lengthInput).val()) || 1000;
+                            if (val < 1) { val = 1; }
+                            if (val > 5000) { val = 5000; }
+                            return val;
+                        };
+
+                        var getContent = function () {
+                            return {
+                                text: editor.getValue(),
+                                maxLength: opts.maxLength,
+                                type: undefined
+                            };
+                        };
+
+                        if (tmp && tmp.onChange) {
+                            editor.off('change', tmp.onChange);
+                        }
+                        var on = function () {
+                            cb(getContent());
+
+                        };
+                        editor.on('change', on);
+
+                        cursorGetter = function () {
+                            if (document.activeElement && block.contains(document.activeElement)) {
+                                cursor = {
+                                    start: editor.getCursor('from'),
+                                    end: editor.getCursor('to')
+                                };
+                            }
+                            return {
+                                cursor: cursor,
+                                block: block,
+                                editor: editor,
+                                onChange: on
+                            };
+                        };
+
+                        var v = Util.clone(opts);
+                        values = editTextOptions(v, setCursorGetter, cb, tmp);
+
+                        return [
+                            block,
+                            values[0],
+                            values[1],
+                            values[2]
+                        ];
+                    },
+                    getCursor: function () { return cursorGetter(); },
+                    reset: function () { $text.val(''); }
+                };
+            },
+            printResults: function () { return; },
             icon: h('i.cptools.cptools-form-paragraph')
         },
         radio: {

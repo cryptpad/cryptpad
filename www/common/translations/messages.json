@@ -1214,6 +1214,7 @@
     "form_default": "Your question here?",
     "form_type_input": "Text",
     "form_type_textarea": "Paragraph",
+    "form_type_textarea2": "Paragraph+Description",
     "form_type_radio": "Choice",
     "form_type_multiradio": "Choice Grid",
     "form_type_checkbox": "Checkbox",
