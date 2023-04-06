@@ -4,8 +4,22 @@ var factory = function (Hash, Nacl) {
 
     // Access metadata
     Revocable.isModerator = function (access) {
+        if (typeof(access) === "string") {
+            return access.includes('m');
+        }
         if (!access || !access.rights) { return false; }
         return access.rights.includes('m');
+    };
+    Revocable.isEditor = function (access) {
+        if (typeof(access) === "string") {
+            return access.includes('w');
+        }
+        if (!access || !access.rights) { return false; }
+        return access.rights.includes('w');
+    };
+    Revocable.isValidRights = function (rights) {
+        if (typeof(rights) !== "string") { return false; }
+        return /^rw?m?d?$/.test(rights);
     };
     Revocable.isValidAccessUpdate = function (oldValue, newValue) {
         if (oldValue && !newValue) { return true; } // Deletion
@@ -139,6 +153,67 @@ var factory = function (Hash, Nacl) {
         // XXX make sure "moderators" matches the md.access data
 
         return result;
+    };
+
+    // Mailbox
+    var RIGHTS = {
+        r: 'viewer',
+        w: 'editor',
+        m: 'moderator'
+    };
+    // Send missing keys to the user
+    Revocable.getUpgradeMessage = function (docKeys, newAccess, oldAccess) {
+        if (!newAccess) { return; } // Revoke
+        if (!oldAccess) { return; } // Create
+        var oldR = oldAccess.rights || 'r';
+        var newR = newAccess.rights || 'r';
+        var toSend = {};
+        newR.split('').forEach(function (key) {
+            if (oldR.includes(key)) { return; } // they already have this seed
+            if (!RIGHTS[key]) { return; } // no destroy seed
+            var type = RIGHTS[key];
+            if (!docKeys[type]) { return; } // make sure I know this key
+            toSend[type] = docKeys[type];
+        });
+        if (!Object.keys(toSend).length) { return; }
+        return toSend;
+    };
+
+
+    Revocable.createMailbox = function (type, fromKeys, docKeys, rights) {
+        if (!Revocable.isValidRights(rights)) { return; }
+        var mailbox = Hash.getRevocable(type);
+        var clone = JSON.parse(JSON.stringify(docKeys));
+        if (!Revocable.isModerator(rights)) { delete clone.moderator; }
+        if (!Revocable.isEditor(rights)) { delete clone.editor; }
+        var initMsg = {
+            type: "INIT",
+            msg: {
+                doc: clone,
+                edPublic: mailbox.keys.edPublic,
+                edPrivate: mailbox.keys.edPrivate,
+            },
+            user: mailbox, // send to
+            keys: fromKeys // send from
+        };
+        return {
+            rights: rights,
+            initMsg: initMsg,
+            mailbox: mailbox,
+            edPublic: mailbox.keys.edPublic
+        };
+    };
+    Revocable.createAccess = function (type, user, notes, encryptSym, encryptAsym, contact) {
+        if (!Revocable.isValidRights(user.rights)) { return; }
+        notes.hash = Hash.getRevocableHashFromKeys(type, user.mailbox);
+        var access = {
+            rights: user.rights,
+            mailbox: encryptSym(user.mailbox.channel),
+            curvePublic: user.mailbox.curvePublic,
+            notes: encryptAsym(JSON.stringify(notes))
+        };
+        if (contact) { access.contact = encryptSym(contact); }
+        return access;
     };
 
 

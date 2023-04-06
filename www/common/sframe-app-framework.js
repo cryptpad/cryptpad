@@ -81,6 +81,7 @@ define([
         var toolbar;
         var state = STATE.DISCONNECTED;
         var firstConnection = true;
+        var restricted = false;
 
         var toolbarContainer = options.toolbarContainer ||
             (function () { throw new Error("toolbarContainer must be specified"); }());
@@ -200,6 +201,7 @@ define([
                     break;
                 }
                 case STATE.ERROR: {
+                    if (text === 'ERESTRICTED') { restricted = true; }
                     evStart.reg(function () {
                         if (text === 'ERESTRICTED') {
                             toolbar.failed(true);
@@ -481,6 +483,7 @@ define([
             sframeChan.event("EV_CORRUPTED_CACHE");
         };
         var onCacheReady = function () {
+            if (state === STATE.ERROR && restricted) { return; }
             stateChange(STATE.INITIALIZING);
             toolbar.offline(true);
             var newContentStr = cpNfInner.chainpad.getUserDoc();

@@ -659,6 +659,10 @@ proxy.mailboxes = {
             sendTo(ctx, type, msg, user, cb);
         };
 
+        mailbox.sendAs = function (type, msg, to, as, cb) {
+            Mailbox.sendAs(ctx, as, type, msg, to, cb);
+        };
+
         mailbox.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };

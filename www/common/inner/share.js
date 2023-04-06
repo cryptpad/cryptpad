@@ -352,6 +352,7 @@ define([
         var revocation = common.makeUniversal('revocation');
 
         var updateAccess = function () {};
+        var addAccess = function () {};
 
         var TYPES = {
             user: { icon: '.fa.fa-user', order: 1 },
@@ -390,8 +391,15 @@ define([
                 buttonCls: 'btn btn-secondary'
             };
             var select = UIElements.createDropdown(dropdownConfig);
-            select.setValue(value);
+            select.setValue(current);
             return select;
+        };
+        var getRights = function (dd, $d) {
+            var r = dd.getValue() || 'r';
+            var d = Util.isChecked($d);
+            var rights = r === 'm' ? 'rwm' : (r === 'w' ? 'rw' : 'r');
+            if (d) { rights += 'd'; }
+            return rights;
         };
         var renderAccess = function (edPublic, accessData, editable, maxR, renderedAs) {
             var type = accessData.notes.type
@@ -407,32 +415,29 @@ define([
                 h('span', 'REVOKE') // XXX
             ]);
             if (!editable) { $(revoke).attr('disabled', 'disabled'); }
-
-            var getRights = function () {};
+            else {
+                $(revoke).click(function () {
+                    UI.confirm(Messages.areYouSure, function (yes) { // XXX REVOCATION message
+                        if (!yes) { return; }
+                        updateAccess(edPublic, false, renderedAs.key);
+                    });
+                });
+            }
 
             var $d = $(canDestroy).find('input');
             if (editable && maxR === 'm') {
                 $d.on('change', function () {
-                    updateAccess(edPublic, getRights(), renderedAs.key);
+                    updateAccess(edPublic, getRights(dd, $d), renderedAs.key);
                 });
             }
 
             var dd = makeDD(rights, editable, maxR);
             if (dd.onChange) {
                 dd.onChange.reg(function () {
-                    console.warn('ici');
-                    console.error(getRights());
-                    updateAccess(edPublic, getRights(), renderedAs.key);
+                    updateAccess(edPublic, getRights(dd, $d), renderedAs.key);
                 });
             }
 
-            getRights = function () {
-                var r = dd.getValue() || 'r';
-                var d = Util.isChecked($d);
-                var rights = r === 'm' ? 'rwm' : (r === 'w' ? 'rw' : 'r');
-                if (d) { rights += 'd'; }
-                return rights;
-            };
 
             return h('div.cp-share-access', {
                 order: TYPES[type].order
@@ -446,18 +451,72 @@ define([
             ]);
         };
 
+        var addAccessButton = function (maxR, renderedAs) {
+            // new form
+            var input = h('input', {placeholder:'Note'}); // XXX
+            var dd = makeDD('r', true, maxR);
+            var canDestroy = UI.createCheckbox('cp-share-can-destroy', h('i.fa.fa-trash'), false, {});
+            var $d = $(canDestroy).find('input');
+            var saveBtn = h('button.btn.btn-primary', [
+                h('i.fa.fa-floppy-o'),
+                h('span', 'SAVE') // XXX
+            ]);
+            var cancelBtn = h('button.btn.btn-cancel', [
+                h('i.fa.fa-times')
+            ]);
+
+            var temp = h('div.cp-share-access', {order:100, style: 'display:none;'}, [
+                h('i.fa.fa-plus'),
+                input,
+                dd[0],
+                canDestroy,
+                saveBtn,
+                cancelBtn
+            ]);
+            var $temp = $(temp);
+
+            // show form btn
+            var button = h('button.btn.btn-primary', [
+                h('i.fa.fa-plus'),
+                h('span', 'ADD') // XXX
+            ]);
+            var $b = $(button);
+
+            $(saveBtn).click(function () {
+                var access = getRights(dd, $d);
+                var note = {
+                    type: 'link',
+                    note: $(input).val()
+                };
+                if (false) { note.edPublic = "edpublic"; } // XXX user access
+                addAccess(access, note, renderedAs.key);
+            });
+            $(cancelBtn).click(function () {
+                $b.show();
+                $temp.hide();
+            });
+            $b.click(function () {
+                $b.hide();
+                $temp.css('display', 'flex');
+
+            });
+
+            $content.append(temp);
+            $(content).append(h('div', button));
+        };
 
         var renderAll = function (obj, renderedAs) {
             $content.empty();
             var list = obj.list;
+            var myAccess = list[renderedAs.key];
+            var maxRights = myAccess.rights.includes('m') ? 'm' :
+                           (myAccess.rights.includes('w') ? 'w' : 'r');
             Object.keys(list || {}).forEach(function (ed) {
                 var editable = renderedAs.moderator || renderedAs.key === list[ed].from;
-                var myAccess = list[renderedAs.key];
-                var maxRights = myAccess.rights.includes('m') ? 'm' :
-                               (myAccess.rights.includes('w') ? 'w' : 'r');
                 var a = renderAccess(ed, list[ed], editable, maxRights, renderedAs);
                 $content.append(a);
             });
+            addAccessButton(maxRights, renderedAs);
         };
         var renderAs = function (obj) {
             $viewAs.empty();
@@ -491,6 +550,18 @@ define([
             renderAll(obj, myKeys[0]);
         };
 
+        addAccess = function (rights, note, updateAs) {
+            revocation.execCommand('ADD_ACCESS', {
+                type: priv.app,
+                channel: channel,
+                rights: rights,
+                note: note,
+                from: updateAs
+            }, function (obj) {
+                console.warn(obj);
+                // XXX refresh view
+            });
+        };
         updateAccess = function (user, rights, updateAs) {
             var access = !rights ? false : {
                 rights: rights
@@ -503,7 +574,7 @@ define([
                 },
                 from: updateAs
             }, function () {
-
+                // XXX refresh view
             });
         };
 
@@ -519,9 +590,6 @@ define([
             }
             renderAs(obj);
         });
-
-
-        var b = h('button', 'button');
 
         cb(void 0, {
             content: content,

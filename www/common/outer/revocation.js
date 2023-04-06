@@ -53,10 +53,32 @@ id: {
         return pw;
     };
 
-    var getPadMetadata = function (ctx, channel, cb) {
+    var getPadMetadata = function (ctx, channel, cb, keys) {
         ctx.Store.getPadMetadata(null, {
             channel: channel
         }, function (md) {
+            if (!keys || !md || md.error) { return void cb(md); }
+
+            var secret = Hash.getRevocableSecret({
+                channel: '',
+                viewerSeedStr: keys.doc.viewer,
+                editorSeedStr: keys.doc.editor,
+            }, keys.password);
+            var crypto = Crypto.createEncryptor(secret.keys);
+
+            Object.keys(md.access || {}).forEach(function (ed) {
+                var a = md.access[ed];
+                if (a.mailbox) {
+                    try {
+                        a.mailbox = crypto.decrypt(a.mailbox, true, true);
+                    } catch (e) { console.error(e); }
+                }
+                if (a.notes) { // XXX use moderator keys!
+                    try {
+                        a.notes = JSON.parse(crypto.decrypt(a.notes, true, true));
+                    } catch (e) { console.error(e); }
+                }
+            });
             cb(md);
         });
     };
@@ -136,7 +158,9 @@ id: {
         return content && content.doc && content.doc.channel;
     };
     var getMailboxParser = function (ctx, onNewKeys) {
-        var data = {};
+        var data = {
+            doc: {}
+        };
         var channel;
 
         var MAILBOX_COMMANDS = {
@@ -154,11 +178,23 @@ id: {
                 if (!i || !data.doc) { return; }
                 // Trust that all the keys you need are there
                 // Make sure it was sent by the same moderator than in the moderators log
-                isValidRotateMessage(ctx, log, msg, channel, waitFor(function (valid, password) {
+                isValidRotateMessage(ctx, log, msg.content, channel, waitFor(function (valid, password) {
                     if (!valid) { return; }
                     data.doc = msg.content
                     data.password = password;
                 }));
+            },
+            UPDATE: function (msg, log, channel, i, waitFor) {
+                if (!data || !data.doc) { return; }
+                var doc = data.doc;
+                var content = msg.content;
+                if (content.uid !== doc.uid) { return; } // doesn't match our viewer key version
+                if (content.editor && !doc.editor) {
+                    doc.editor = content.editor;
+                }
+                if (content.moderator && !doc.moderator) {
+                    doc.moderator = content.moderator;
+                }
             }
         };
 
@@ -190,9 +226,15 @@ id: {
                         }).nThen;
                     });
 
+
                     nn(waitFor(function () {
                         data.channel = channel;
-                        onNewKeys(Util.clone(data));
+                        var clone = Util.clone(data);
+                        var myAccess = md.access && md.access[data.edPublic];
+                        //if (!myAccess) { return void onNewKeys(false); }
+                        if (!Revocable.isModerator(myAccess)) { delete data.doc.moderator; }
+                        if (!Revocable.isEditor(myAccess)) { delete data.doc.editor; }
+                        onNewKeys(clone);
                         // XXX once messages handled, emit to client
                         // XXX password change or keys rotation
                         // XXX make sure only one notication per pad (in case of multiple mailboxes)
@@ -226,7 +268,7 @@ id: {
 
         var box = ctx.mailboxes[secret.channel];
         if (box) {
-            // XXX return existing box
+            if (box.revoked) { return void cb({error: 'EFORBIDDEN'}); }
             if (!box.clients.includes(clientId)) { box.clients.push(clientId); }
             return void cb(box.parse.getContent());
         }
@@ -234,9 +276,9 @@ id: {
         box = ctx.mailboxes[secret.channel] = {
             messages: [],
             clients: [clientId],
+            secret: secret,
             ready: false
         };
-
 
         if (boxData.link || !boxData.store) {
             box.origin = 'URL ' + seed; // XXX
@@ -265,6 +307,12 @@ id: {
         };
 
         box.parse = getMailboxParser(ctx, function (keys) {
+            if (keys === false) {
+                // XXX revoked
+                // XXX close mailbox, etc.
+                box.revoked = true;
+                cb({error: 'EFORBIDDEN'});
+            }
             if (first) { cb(keys); }
             first = false;
             onNewKeys(keys);
@@ -441,34 +489,14 @@ id: {
                 };
             });
 
-            var secret = Hash.getRevocableSecret({
-                channel: '',
-                viewerSeedStr: best.doc.viewer,
-                editorSeedStr: best.doc.editor,
-            }, best.password);
-            var crypto = Crypto.createEncryptor(secret.keys);
-
             getPadMetadata(ctx, channel, waitFor(function (md) {
                 if (md && md.error) { return; }
                 var access = md.access;
-                Object.keys(access).forEach(function (ed) {
-                    var a = access[ed];
-                    if (a.mailbox) {
-                        try {
-                            a.mailbox = crypto.decrypt(a.mailbox, true, true);
-                        } catch (e) { console.error(e); }
-                    }
-                    if (a.notes) {
-                        try {
-                            a.notes = JSON.parse(crypto.decrypt(a.notes, true, true));
-                        } catch (e) { console.error(e); }
-                    }
-                });
                 cb({
                     list: access,
                     myKeys: myKeys,
                 });
-            }));
+            }), best);
         });
 
     };
@@ -505,6 +533,15 @@ updateAccess({
         return _box;
     };
 
+
+    var sendMailboxMsg = function (ctx, type, content, to, from, cb) {
+        if (!ctx.store.mailbox) { return void cb({error: 'NOT_READY'}); }
+        ctx.store.mailbox.sendAs(type, content, to, from, cb);
+    };
+    var sendInitMsg = function (ctx, data, cb) {
+        sendMailboxMsg(ctx, data.type, data.msg, data.user, data.keys, cb)
+    };
+
     /*
     ctx.Store.anonRpcMsg(clientId, {
         msg: 'SET_REVOCATION_METADATA',
@@ -523,14 +560,36 @@ updateAccess({
         }
     }, cb);
     */
+
+    var sendUpdateMsg = function (ctx, target, newAccess, box, md, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+
+        var oldAccess = md.access[target];
+        var keys = box.parse.getContent();
+        var toSend = Revocable.getUpgradeMessage(keys.doc, newAccess, oldAccess);
+        if (!toSend) { return void cb(false); }
+
+        toSend.uid = keys.doc.uid;
+        var sendTo = {
+            channel: oldAccess.mailbox, // decrypted from getPadMetadata
+            curvePublic: oldAccess.curvePublic
+        };
+        var sendFrom = {
+            curvePrivate: box.secret.curvePrivate,
+            curvePublic: box.secret.curvePublic
+        };
+        sendMailboxMsg(ctx, 'UPDATE', toSend, sendTo, sendFrom, cb);
+    };
+
     var updateAccess = function (ctx, obj, clientId, cb) {
         var key = obj.from;
         var box = findBoxFromKey(ctx, key);
         if (!box) { return void cb({error: 'EINVAL'}); }
-        var edPrivate = box.parse.getContent().edPrivate;
+        var keys = box.parse.getContent();
 
         getPadMetadata(ctx, obj.channel, function (md) {
             if (md && md.error) { return; }
+            var edPrivate = keys.edPrivate;
             var log = Revocable.getSanitizedLog(md);
             var last = log[log.length-1];
 
@@ -555,15 +614,6 @@ updateAccess({
             var netfluxId = getNetfluxId(ctx);
             var sig = Revocable.signLog([JSON.stringify(data), netfluxId], edPrivate);
 
-console.warn({
-                msg: 'SET_REVOCATION_METADATA',
-                data: {
-                    data: data,
-                    signature: sig,
-                    key: key
-                }
-            });
-
             ctx.Store.anonRpcMsg(clientId, {
                 msg: 'SET_REVOCATION_METADATA',
                 data: {
@@ -571,14 +621,150 @@ console.warn({
                     signature: sig,
                     key: key
                 }
-            }, function (obj) {
-                console.error(obj);
-                cb(obj);
+            }, function (res) {
+                if (obj.add) { return void cb(res); }
+
+                sendUpdateMsg(ctx, value.user, newRights, box, md, function (sent) {
+                    if (sent === false) { return; }
+                    console.log('UPDATE message sent');
+                });
+                cb(res);
             });
 
+        }, keys);
+    };
+
+    var addAccess = function (ctx, obj, clientId, cb) {
+        var key = obj.from;
+        var box = findBoxFromKey(ctx, key);
+        if (!box) { return void cb({error: 'EINVAL'}); }
+        var keys = box.parse.getContent();
+
+        var type = obj.type;
+        var rights = obj.rights;
+        var note = obj.note;
+
+        var doc = Hash.getRevocableSecret({
+            channel: keys.channel,
+            viewerSeedStr: keys.doc.viewer,
+            editorSeedStr: keys.doc.editor,
+            moderatorSeedStr: keys.doc.moderator
+        }, keys.password);
+        var crypto = Crypto.createEncryptor(doc.keys);
+        var cryptoSym = crypto.encrypt;
+        var cryptoAsym = crypto.encrypt; // XXX
+
+        var mailboxData = Revocable.createMailbox(type, box.secret, keys.doc, rights);
+        var access = Revocable.createAccess(type, mailboxData, note, cryptoSym, cryptoAsym);
+console.error('NEW HASH', Hash.getRevocableHashFromKeys(type, mailboxData.mailbox)); // XXX
+
+        sendInitMsg(ctx, mailboxData.initMsg, function () {
+            updateAccess(ctx, {
+                add: true,
+                channel: keys.channel,
+                value: {
+                    user: mailboxData.edPublic,
+                    access: access
+                },
+                from: obj.from,
+            }, clientId, cb);
         });
     };
 
+    var createPad = function (ctx, obj, clientId, cb) {
+        var type = obj.type;
+        var password = obj.password;
+        var edPublic = obj.edPublic;
+
+        // random curve keyPair for the first mailbox
+        var randomKeys = Hash.getRevocable(type);
+
+        var doc = Hash.getRevocableSecret(undefined, password); // generate document keys
+        var docKeys = {
+            uid: Util.uid(),
+            viewer: doc.keys.viewerSeed,
+            editor: doc.keys.editorSeed,
+            moderator: doc.keys.moderatorSeed,
+            moderatorCurve: doc.keys.moderatorCurvePublic,
+            channel: doc.channel
+        };
+
+        var moderator = Revocable.createMailbox(type, randomKeys, docKeys, 'rwmd');
+        var editor = Revocable.createMailbox(type, moderator.mailbox, docKeys, 'rw');
+
+console.error('MODERATOR HASH', Hash.getRevocableHashFromKeys(type, moderator.mailbox)); // XXX
+
+        var crypto = Crypto.createEncryptor(doc.keys);
+
+        var cryptoSym = crypto.encrypt;
+        var cryptoAsym = crypto.encrypt; // XXX
+
+        var access = {};
+        var modNote = {
+            type: edPublic ? 'user' : 'link',
+            note: 'Document creator' // XXX
+        };
+        if (edPublic) { modNote.edPublic = edPublic; }
+        access[moderator.edPublic] = Revocable.createAccess(type, moderator, modNote, cryptoSym, cryptoAsym);
+        var editNote = {
+            type: 'link',
+            note: 'Initial editor access' // XXX
+        };
+        access[editor.edPublic] = Revocable.createAccess(type, editor, editNote, cryptoSym, cryptoAsym);
+
+        // Get a hash of the cryptKey for initial moderators log
+        var keyHashStr = Revocable.hashBytes(doc.keys.cryptKey);
+
+        var first = Revocable.firstLog(moderator.edPublic);
+        var prevHash = Revocable.hashMsg(first);
+        var rotateMsg = Revocable.rotateLog(keyHashStr, doc.keys.validateKey, docKeys.uid, prevHash);
+        var signature = Revocable.signLog(rotateMsg, moderator.mailbox.edPrivate);
+
+        var data = {
+            // displayed hash
+            newHash: Hash.getRevocableHashFromKeys(type, editor.mailbox, password),
+            docKeys: docKeys,
+            crypto: crypto,
+            rtConfig: {
+                creation: {
+                    creatorEdPrivate: doc.keys.creator,
+                },
+                authentication: {
+                    edPublic: moderator.mailbox.edPublic,
+                    edPrivate: moderator.mailbox.edPrivate
+                },
+                metadata: {
+                    validateKey: (doc.keys && doc.keys.validateKey) || undefined,
+                    access: access,
+                    revocableData: {
+                        creatorKey: moderator.mailbox.curvePublic,
+                        creatorVKey: moderator.mailbox.edPublic,
+                        rotate: {
+                            uid: docKeys.uid,
+                            hash: keyHashStr,
+                            validateKey: doc.keys.validateKey,
+                            signature: signature,
+                        }
+                    }
+                }
+
+
+            }
+        };
+
+console.error(doc);
+console.error(moderator);
+console.error(editor);
+console.error(access);
+console.error(keyHashStr);
+
+        nThen(function (waitFor) {
+            sendInitMsg(ctx, moderator.initMsg, waitFor());
+            sendInitMsg(ctx, editor.initMsg, waitFor());
+        }).nThen(function (waitFor) {
+            cb(data);
+        });
+    };
 
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
@@ -647,8 +833,14 @@ console.warn({
             if (cmd === 'UPDATE_ACCESS') {
                 return void updateAccess(ctx, data, clientId, cb);
             }
+            if (cmd === 'ADD_ACCESS') {
+                return void addAccess(ctx, data, clientId, cb);
+            }
             if (cmd === 'LOAD_PAD') {
                 return void loadPadFromBox(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CREATE_PAD') {
+                return void createPad(ctx, data, clientId, cb);
             }
         };
 

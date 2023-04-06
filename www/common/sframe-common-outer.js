@@ -502,6 +502,9 @@ define([
                         // XXX fix with password workflow
                         w.abort();
                         if (obj && obj.error) {
+                            if (obj.error === 'EFORBIDDEN') {
+                                sframeChan.event("EV_RESTRICTED_ERROR");
+                            }
                             console.error(obj.error);
                             return;
                         }
@@ -2113,67 +2116,30 @@ define([
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
 
-                // XXX MAILBOX
-                var randomKeys = Utils.Hash.getRevocable(parsed.type); // random curve keyPair for the first mailbox
-                var moderator = Utils.Hash.getRevocable(parsed.type);
-                var editor = Utils.Hash.getRevocable(parsed.type);
-                newHash = Utils.Hash.getRevocableHashFromKeys(parsed.type, editor, password); // displayed hash
-                var doc = Utils.Hash.getRevocableSecret(undefined, password); // generate document keys
-                var serverCurvePublic;
-                var rotateUid = Utils.Util.uid();
 
-                nThen(function (waitFor) {
-                    var creatorKeys = {
-                        curvePrivate: doc.keys.creator,
-                        curvePublic: doc.keys.channel
-                    };
-                    sendMailboxMsg({
-                        type: "INIT",
-                        msg: {
-                            doc: {
-                                uid: rotateUid,
-                                viewer: doc.keys.viewerSeed,
-                                editor: doc.keys.editorSeed,
-                                moderator: doc.keys.moderatorSeed,
-                                moderatorCurve: doc.keys.moderatorCurvePublic,
-                                channel: doc.channel
-                            },
-                            edPublic: moderator.keys.edPublic,
-                            edPrivate: moderator.keys.edPrivate,
-                        },
-                        user: moderator, // send to
-                        keys: randomKeys // send from
-                    }, waitFor());
-                    sendMailboxMsg({
-                        type: "INIT",
-                        msg: {
-                            doc: {
-                                uid: rotateUid,
-                                viewer: doc.keys.viewerSeed,
-                                editor: doc.keys.editorSeed,
-                                moderatorCurve: doc.keys.moderatorCurvePublic,
-                                channel: doc.channel
-                            },
-                            edPublic: editor.keys.edPublic,
-                            edPrivate: editor.keys.edPrivate,
-                        },
-                        user: editor, // send to
-                        keys: moderator // send from
-                    }, waitFor());
-                    require([
-                        '/api/broadcast?'+ (+new Date()),
-                    ], waitFor(function (Broadcast) {
-                        serverCurvePublic = Broadcast.curvePublic;
-                    }));
-                }).nThen(function (waitFor) {
-
-                    secret = Utils.secret = doc;
-                    var crypto = Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
+                Cryptpad.universal.execCommand({
+                    type: 'revocation',
+                    data: {
+                        cmd: 'CREATE_PAD',
+                        data: {
+                            type: parsed.type,
+                            password: password,
+                            edPublic: edPublic
+                        }
+                    }
+                }, function (data) {
+                    var docKeys = data.docKeys;
+                    secret = Utils.secret = Utils.Hash.getRevocableSecret({
+                        channel: docKeys.channel,
+                        viewerSeedStr: docKeys.viewer,
+                        editorSeedStr: docKeys.editor,
+                    }, password);
+                    var crypto = Utils.crypto = Crypto.createEncryptor(secret.keys);
 
                     // Update the hash in the address bar
-                    currentPad.hash = newHash;
-                    currentPad.href = '/' + parsed.type + '/#' + newHash;
-                    Cryptpad.setTabHash(newHash);
+                    currentPad.hash = data.newHash;
+                    currentPad.href = '/' + parsed.type + '/#' + data.newHash;
+                    Cryptpad.setTabHash(data.newHash);
 
                     parsed = Utils.Hash.parsePadUrl(currentPad.href);
                     defaultTitle = Utils.UserObject.getDefaultName(parsed);
@@ -2181,72 +2147,9 @@ define([
                     readOnly = false;
                     updateMeta();
 
-                    // Create initial accesses
-                    var access = {};
-                    var modData = curvePublic ? {
-                        value: curvePublic,
-                        type: 'user',
-                        note: 'Document creator' // XXX
-                    } : {
-                        value: Utils.Hash.getRevocableHashFromKeys(parsed.type, moderator),
-                        type: 'link',
-                        note: 'Initial moderator access' // XXX
-                    };
-                    console.error('MODERATOR HASH', Utils.Hash.getRevocableHashFromKeys(parsed.type, moderator));
-                    access[moderator.edPublic] = {
-                        rights: 'rwmd',
-                        mailbox: crypto.encrypt(moderator.channel),
-                        curvePublic: moderator.curvePublic,
-                        //contact: crypto.encrypt(), // XXX my contact mailbox
-                        notes: crypto.encrypt(JSON.stringify(modData)),
-                    };
-                    access[editor.edPublic] = {
-                        rights: 'rw',
-                        mailbox: crypto.encrypt(editor.channel),
-                        curvePublic: editor.curvePublic,
-                        notes: crypto.encrypt(JSON.stringify({
-                            value: Utils.Hash.getRevocableHashFromKeys(parsed.type, editor),
-                            type: 'link',
-                            note: 'Initial editor access' // XXX
-                        }))
-                    };
-
                     if (data.team) { Cryptpad.initialTeam = data.team.id; }
 
-
-                    // Get a hash of the cryptKeyfirst initial moderators log
-                    var keyHashStr = Revocable.hashBytes(doc.keys.cryptKey);
-
-                    var first = Revocable.firstLog(moderator.keys.edPublic);
-                    var prevHash = Revocable.hashMsg(first);
-
-                    var rotateMsg = Revocable.rotateLog(keyHashStr, doc.keys.validateKey, rotateUid, prevHash);
-                    var signature = Revocable.signLog(rotateMsg, moderator.keys.edPrivate);
-
-                    var rtConfig = {
-                        creation: {
-                            creatorEdPrivate: doc.keys.creator,
-                        },
-                        authentication: {
-                            edPublic: moderator.edPublic,
-                            edPrivate: moderator.edPrivate
-                        },
-                        metadata: {
-                            validateKey: (secret.keys && secret.keys.validateKey) || undefined,
-                            access: access,
-                            revocableData: {
-                                creatorKey: moderator.curvePublic,
-                                creatorVKey: moderator.keys.edPublic,
-                                rotate: {
-                                    uid: rotateUid,
-                                    hash: keyHashStr,
-                                    validateKey: doc.keys.validateKey,
-                                    signature: signature,
-                                }
-                            }
-                        }
-                    };
-
+                    var rtConfig = data.rtConfig;
                     if (data.expire) { rtConfig.metadata.expire = data.expire; }
 
 /*
@@ -2261,11 +2164,6 @@ define([
                     }));
                 }
 */
-console.error(doc);
-console.error(moderator);
-console.error(editor);
-console.error(access);
-console.error(keyHashStr);
 
 
                     startRealtime(rtConfig); // XXX
