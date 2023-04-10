@@ -33,7 +33,7 @@
     "jshint": "^2.13.4",
     "less": "3.7.1",
     "lesshint": "6.3.7",
-    "selenium-webdriver": "^3.6.0"
+    "selenium-webdriver": "^4.8.2"
   },
   "scripts": {
     "start": "node server.js",
