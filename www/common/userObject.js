@@ -374,7 +374,7 @@ define([
             }
             // handle links
             if (data.static) { return data.name; }
-            if (!file || !(data.href || data.roHref)) {
+            if (!file || !(data.href || data.roHref || data.accesses)) {
                 error("getTitle called with a non-existing file id: ", file, data);
                 return;
             }

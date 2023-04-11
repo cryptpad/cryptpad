@@ -1102,7 +1102,7 @@ define([
     common.setPadTitle = function (data, cb) {
         if (!data || typeof (data) !== "object") { return cb ('Data is not an object'); }
 
-        var href = data.href || currentPad.href;
+        var href = data.href || data.accessHref || currentPad.href;
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return cb ('Invalid hash'); }
         data.href = parsed.getUrl({present: parsed.present});

@@ -508,6 +508,10 @@ define([
                             console.error(obj.error);
                             return;
                         }
+
+                        // XXX get access type (sf/team/user/link)
+                        currentPad.type = 'link';
+
                         console.error(obj);
                         secret = Utils.secret = Utils.Hash.getRevocableSecret({
                             channel: obj.channel,
@@ -1227,6 +1231,10 @@ define([
             };
 
             var setPadTitle = function (data, cb) {
+                if (currentPad.type) {
+                    data.accessType = currentPad.type;
+                    data.accessHref = Utils.Hash.getRelativeHref(currentPad.href);
+                }
                 Cryptpad.setPadTitle(data, function (err, obj) {
                     if (!err && !(obj && obj.notStored)) {
                         // No error and the pad was correctly stored

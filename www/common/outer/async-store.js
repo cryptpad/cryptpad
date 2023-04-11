@@ -708,23 +708,25 @@ define([
             });
         };
 
-        var makePad = function (href, roHref, title) {
+        var makePad = function (href, roHref, title, accesses) {
             var now = +new Date();
-            return {
-                href: href,
-                roHref: roHref,
+            var obj = {
                 atime: now,
                 ctime: now,
                 title: title || UserObject.getDefaultName(Hash.parsePadUrl(href)),
             };
+            if (href) { obj.href = href; }
+            if (roHref) { obj.roHref = roHref; }
+            if (Array.isArray(accesses) && accesses.length) { obj.accesses = accesses; }
+            return obj;
         };
 
         Store.addPad = function (clientId, data, cb) {
-            if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
+            if (!data.href && !data.roHref && !data.accesses) { return void cb({error:'NO_HREF'}); }
             var secret;
-            if (!data.roHref) {
+            if (!data.roHref && !data.revocable) {
                 var parsed = Hash.parsePadUrl(data.href);
-                if (parsed.hashData.type === "pad" && !parsed.revocable) {
+                if (parsed.hashData.type === "pad") {
                     secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                     data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                 }
@@ -736,6 +738,7 @@ define([
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             if (data.readme) { pad.readme = 1; }
             if (data.revocable) { pad.r = 1; }
+            if (Array.isArray(data.accesses)) { pad.accesses = data.accesses; }
 
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
@@ -1133,10 +1136,14 @@ define([
         Store.setPadTitle = function (clientId, data, cb) {
             onReadyEvt.reg(function () {
             var title = data.title;
-            var href = data.href;
+            var href = Hash.getRelativeHref(data.href || data.accessHref);
             var channel = data.channel;
             var p = Hash.parsePadUrl(href);
             var h = p.hashData;
+
+            var accessType = data.accessType;
+            var accessHref = data.accessHref;
+            var revocable = Boolean(accessType);
 
             if (title.trim() === "") { title = UserObject.getDefaultName(p); }
 
@@ -1206,7 +1213,7 @@ define([
             } else if (store.offline) {
                 return void cb();
             }
-            allData.forEach(function (obj) {
+            allData.forEach(function (obj) { // update
                 var pad = obj.data;
                 pad.atime = +new Date();
                 pad.title = title;
@@ -1220,6 +1227,21 @@ define([
                 if (pad.readme) {
                     delete pad.readme;
                     Feedback.send('OPEN_README');
+                }
+
+                // XXX REVOCATION auto-store new accesses to already stored pad
+                console.error(accessHref);
+                if (accessType === 'link') {
+                    if (!Array.isArray(pad.accesses)) {
+                        pad.accesses = [accessHref];
+                    } else if (!pad.accesses.includes(accessHref)) {
+                        pad.accesses.push(accessHref);
+                    }
+                } else if (accessType) {
+                    if (!pad.href) {
+                        obj.userObject.setHref(channel, null, accessHref);
+                        // XXX SF: roHref with revocable
+                    }
                 }
 
                 if (h.mode === 'view') { return; }
@@ -1248,18 +1270,27 @@ define([
                         roHref = href;
                         href = undefined;
                     }
-                    Store.addPad(clientId, {
+                    var padData = {
                         teamId: data.teamId,
-                        href: href,
-                        roHref: roHref,
                         channel: channel,
                         title: title,
-                        owners: owners,
                         expire: expire,
                         password: data.password,
                         path: data.path,
                         revocable: p.revocable
-                    }, cb);
+                    };
+                    if (revocable) {
+                        if (accessType === 'link') {
+                            padData.accesses = [href];
+                        } else {
+                            padData.href = href;
+                        }
+                    } else {
+                        padData.href = href;
+                        padData.roHref = roHref;
+                        padData.owners = owners;
+                    }
+                    Store.addPad(clientId, padData, cb);
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         stored: true,

@@ -773,6 +773,11 @@ define([
                     id = Number(id);
                     var el = fd[id];
 
+                    if (el.r && !el.href) {
+                        // XXX REVOCATION sanitize/check/fix revocable pads separately
+                        continue;
+                    }
+
                     // Clean corrupted data
                     if (!el || typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);

@@ -1500,7 +1500,13 @@ define([
     /* Tools */
 
     var findChannels = _findChannels;
-    var getFileData = _getFileData;
+    var getFileData = function (Env, id) {
+        var d = _getFileData(Env, id, false);
+        if (!d.href && !d.roHref && Array.isArray(d.accesses)) {
+            d.href = d.accesses[0]; // XXX REVOCATION HACK, could be fixed in drive-ui
+        }
+        return d;
+    };
     var getUserObjectPath = _getUserObjectPath;
 
     var find = function (Env, path, fId) {

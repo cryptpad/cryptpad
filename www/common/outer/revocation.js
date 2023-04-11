@@ -54,6 +54,8 @@ id: {
     };
 
     var getPadMetadata = function (ctx, channel, cb, keys) {
+    // XXX authenticate here too
+    // XXX in order to get your subtree labels
         ctx.Store.getPadMetadata(null, {
             channel: channel
         }, function (md) {
@@ -233,7 +235,7 @@ id: {
                         var myAccess = md.access && md.access[data.edPublic];
                         //if (!myAccess) { return void onNewKeys(false); }
                         if (!Revocable.isModerator(myAccess)) { delete data.doc.moderator; }
-                        //if (!Revocable.isEditor(myAccess)) { delete data.doc.editor; }
+                        if (!Revocable.isEditor(myAccess)) { delete data.doc.editor; }
                         onNewKeys(clone);
                         // XXX once messages handled, emit to client
                         // XXX password change or keys rotation
@@ -398,15 +400,17 @@ id: {
             pads.forEach(function (obj) {
                 var padData = obj.data;
                 if (!padData) { return; }
-                addSeed({
-                    seed: getSeedFromHref(padData.href),
-                    store: s,
-                    password: padData.password,
-                    fId: obj.fId,
-                    id: obj.id
-                });
+                if (padData.href) {
+                    addSeed({
+                        seed: getSeedFromHref(padData.href),
+                        store: s,
+                        password: padData.password,
+                        fId: obj.fId,
+                        id: obj.id
+                    });
+                }
                 if (Array.isArray(padData.accesses)) {
-                    obj.accesses.forEach(function (href) {
+                    padData.accesses.forEach(function (href) {
                         addSeed({
                             seed: getSeedFromHref(href),
                             store: s,
