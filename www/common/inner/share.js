@@ -502,9 +502,12 @@ define([
             });
 
             $content.append(temp);
-            $(content).append(h('div', button));
+            var container = h('div', button);
+            $(content).append(container);
+            return container;
         };
 
+        var addButton;
         var renderAll = function (obj, renderedAs) {
             $content.empty();
             var list = obj.list;
@@ -516,7 +519,8 @@ define([
                 var a = renderAccess(ed, list[ed], editable, maxRights, renderedAs);
                 $content.append(a);
             });
-            addAccessButton(maxRights, renderedAs);
+            if (addButton) { $(addButton).remove(); }
+            addButton = addAccessButton(maxRights, renderedAs);
         };
         var renderAs = function (obj) {
             $viewAs.empty();
