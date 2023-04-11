@@ -152,7 +152,7 @@ proxy.mailboxes = {
 
         anonRpc.send("WRITE_PRIVATE_MESSAGE", [
             channel,
-            ciphertext
+            ciphertext // XXX REVOCATION CHECK NO NEED TO SIGN MAILBOXES
         ], function (err /*, response */) {
             if (err) {
                 return void cb({

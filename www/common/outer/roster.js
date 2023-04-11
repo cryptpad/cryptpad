@@ -732,7 +732,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             response.expect(id, cb, TIMEOUT_INTERVAL);
             anon_rpc.send('WRITE_PRIVATE_MESSAGE', [
                 channel,
-                ciphertext
+                ciphertext,
+                // XXX REVOCATION SIGN
             ], function (err) {
                 if (err) { return response.handle(id, [err.message || err]); }
             });

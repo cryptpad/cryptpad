@@ -2134,6 +2134,7 @@ define([
                         viewerSeedStr: docKeys.viewer,
                         editorSeedStr: docKeys.editor,
                     }, password);
+
                     var crypto = Utils.crypto = Crypto.createEncryptor(secret.keys);
 
                     // Update the hash in the address bar

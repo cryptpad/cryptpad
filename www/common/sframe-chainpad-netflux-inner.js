@@ -66,6 +66,17 @@ define([
                 sframeChan.query('Q_RT_MESSAGE', message, function (_err, obj) {
                     var err = _err || (obj && obj.error);
                     if (!err) { evPatchSent.fire(); }
+                    if (err === 'EFORBIDDEN') {
+                        // XXX REVOCATION
+                        // XXX try other keys instead?
+                        // Stop chainpad and force a page reload to try other keys?
+                        // XXX We need to update outer/revocation to revoke this mailbox
+                        // XXX Maybe switch to read-only instead of errorLoadingScreen?
+                        isReady = false;
+                        chainpad.abort();
+                        onError(err);
+                        return;
+                    }
                     cb(err);
                 }, { timeout: -1 });
             });

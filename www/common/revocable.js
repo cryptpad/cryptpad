@@ -17,6 +17,13 @@ var factory = function (Hash, Nacl) {
         if (!access || !access.rights) { return false; }
         return access.rights.includes('w');
     };
+    Revocable.isViewer = function (access) {
+        if (typeof(access) === "string") {
+            return access.includes('r');
+        }
+        if (!access || !access.rights) { return false; }
+        return access.rights.includes('r');
+    };
     Revocable.isValidRights = function (rights) {
         if (typeof(rights) !== "string") { return false; }
         return /^rw?m?d?$/.test(rights);
@@ -249,6 +256,9 @@ var factory = function (Hash, Nacl) {
     };
     Revocable.checkRead = function (channel, userId, signature, md) {
         return checkAccess(channel, userId, signature, md, 'r');
+    };
+    Revocable.checkWrite = function (channel, userId, signature, md) {
+        return checkAccess(channel, userId, signature, md, 'w');
     };
 
     Revocable.creatorAuth = function (channel, userId, edPrivate) { // XXX DEPRECATED

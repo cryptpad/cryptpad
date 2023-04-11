@@ -2242,6 +2242,9 @@ define([
                 }
             };
             network.on('message', onMsg);
+
+            // XXX REVOCATION SIGNATURE
+            // XXX netfluxID: store.network.myID
             network.sendto(hk, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
         };
 
@@ -2316,6 +2319,8 @@ define([
                 txid: txid,
                 lastKnownHash: data.lastKnownHash
             };
+            // XXX REVOCATION SIGNATURE
+            // XXX netfluxID: store.network.myID
             var msg = ['GET_HISTORY', data.channel, cfg];
             network.sendto(hk, JSON.stringify(msg));
         };
@@ -2375,6 +2380,9 @@ define([
             };
 
             network.on('message', onMsg);
+
+            // XXX REVOCATION SIGNATURE
+            // XXX netfluxID: store.network.myID
             network.sendto(hk, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
                 from: data.lastKnownHash,
                 to: data.toHash,

@@ -233,7 +233,7 @@ id: {
                         var myAccess = md.access && md.access[data.edPublic];
                         //if (!myAccess) { return void onNewKeys(false); }
                         if (!Revocable.isModerator(myAccess)) { delete data.doc.moderator; }
-                        if (!Revocable.isEditor(myAccess)) { delete data.doc.editor; }
+                        //if (!Revocable.isEditor(myAccess)) { delete data.doc.editor; }
                         onNewKeys(clone);
                         // XXX once messages handled, emit to client
                         // XXX password change or keys rotation

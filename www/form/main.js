@@ -388,7 +388,8 @@ define([
                     var hash = ciphertext.slice(0,64);
                     Cryptpad.anonRpcMsg("WRITE_PRIVATE_MESSAGE", [
                         box.channel,
-                        ciphertext
+                        ciphertext,
+                        // XXX REVOCATION SIGN ? PROBABLY NOT FOR A MAILBOX
                     ], function (err, response) {
                         Cryptpad.storeFormAnswer({
                             uid: uid,
