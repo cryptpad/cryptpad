@@ -3138,7 +3138,7 @@ define([
                 // initialize the chat (messenger) and the cursor modules.
                 loadUniversal(Cursor, 'cursor', function () {});
                 loadUniversal(Messenger, 'messenger', function () {});
-                loadUniversal(Revocation, 'revocation', waitFor, clientId);
+                loadUniversal(Revocation, 'revocation', function () {});
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready
